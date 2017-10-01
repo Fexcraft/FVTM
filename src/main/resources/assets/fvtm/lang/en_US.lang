@@ -1,0 +1,58 @@
+## fvtm Lang File
+
+##Contributors:
+#> FEX___96
+#>
+#>
+#>
+
+#Commands
+commands.fvtm.main_usage=&9Use &7'/fvtm help' &9for detailed info.
+commands.fvtm.main_help_desc=&3Available arguments:
+commands.fvtm.main_help_addons=&7/fvtm addons &3- opens the Addon Manager
+commands.fvtm.main_help_version=&7/fvtm version &3- prints currently installed version into chat
+commands.fvtm.main_version=&7Currently Installed Version:
+
+#GUIs
+gui.fvtm.addon_manager.main_description_0=Welcome to the FVTM Addon Manager!
+gui.fvtm.addon_manager.main_description_1=Here you can view, enable and disable
+gui.fvtm.addon_manager.main_description_2=all currently installed Addons.
+gui.fvtm.addon_manager.main_button_0_0=View All
+gui.fvtm.addon_manager.main_button_0_1=Open Folder
+gui.fvtm.addon_manager.main_button_0_2=Toggle Debug
+gui.fvtm.addon_manager.main_button_1_0=< - - - >
+gui.fvtm.addon_manager.main_button_1_1=< - - - >
+gui.fvtm.addon_manager.main_button_1_2=< - - - >
+gui.fvtm.addon_manager.main_button_2_0=Use a Hammer
+gui.fvtm.addon_manager.main_button_2_0_e=&o&7AddonManager Crashed&8...
+gui.fvtm.addon_manager.main_button_2_1=Tutorials
+gui.fvtm.addon_manager.main_button_2_2=Get More >>
+#
+gui.fvtm.addon_manager.view_all_loadedaddons=Addons Loaded:
+gui.fvtm.addon_manager.view_all_note=Changes need a game restart!
+gui.fvtm.addon_manager.view_all_state_enabled=State: enabled;
+gui.fvtm.addon_manager.view_all_state_disabled=State: disabled;
+#
+gui.fvtm.addon_manager.view_one_state_enabled=Enable
+gui.fvtm.addon_manager.view_one_state_disabled=Disable
+gui.fvtm.addon_manager.view_one_update=Find Update
+
+#Creative Tabs
+itemGroup.fvtm_landvehicles=FVTM - (Land) Vehicles
+itemGroup.fvtm_airvehicles=FVTM - (Air) Vehicles
+itemGroup.fvtm_watervehicles=FVTM - (Water) Vehicles
+itemGroup.fvtm_railvehicles=FVTM - (Rail) Vehicles
+itemGroup.fvtm_parts=FVTM - Parts
+itemGroup.fvtm_materials=FVTM - Materials
+itemGroup.fvtm_blocks=FVTM - Blocks
+
+#Blocks
+tile.fvtm:vehicle_constructor_controller.name=Constructor Controller
+tile.fvtm:vehicle_constructor_center.name=Constructor Center (Display)
+tile.fvtm:display_block.name=Display Block
+tile.fvtm:paint_table.name=Paint Table
+tile.fvtm:vehicle_crafter=Blueprint Table
+
+
+
+

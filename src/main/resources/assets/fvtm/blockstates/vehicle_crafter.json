@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "normal": { "model": "fvm:vehicle_crafter" },
+        "facing=north": { "model": "fvm:vehicle_crafter", "y": 180 },
+        "facing=south": { "model": "fvm:vehicle_crafter" },
+        "facing=west":  { "model": "fvm:vehicle_crafter", "y": 90 },
+        "facing=east":  { "model": "fvm:vehicle_crafter", "y": 270 }
+    }
+}
+ 

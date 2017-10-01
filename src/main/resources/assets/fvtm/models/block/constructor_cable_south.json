@@ -1,0 +1,62 @@
+{
+	"__comment": "Designed by Ferdinand (FEX___96) with Cubik Studio",
+	"textures": {
+		"particle": "fvtm:blocks/constructor_cables",
+		"cable": "fvtm:blocks/constructor_cable",
+		"cables": "fvtm:blocks/constructor_cables"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Box2",
+			"from": [ 7.25, 0, 10 ],
+			"to": [ 7.5, 0.25, 16 ],
+			"faces": {
+				"down": { "uv": [ 0, 0, 4, 16 ], "texture": "#cables" },
+				"up": { "uv": [ 0, 0, 4, 16 ], "texture": "#cables" },
+				"north": { "uv": [ 0, 0, 4, 4 ], "texture": "#cables" },
+				"south": { "uv": [ 0, 0, 4, 4 ], "texture": "#cables" },
+				"west": { "uv": [ 0, 0, 4, 16 ], "texture": "#cables", "rotation": 90 },
+				"east": { "uv": [ 0, 0, 4, 16 ], "texture": "#cables", "rotation": 90 }
+			}
+		},
+		{
+			"__comment": "Box3",
+			"from": [ 8.5, 0, 10 ],
+			"to": [ 8.75, 0.25, 16 ],
+			"faces": {
+				"down": { "uv": [ 4, 0, 8, 16 ], "texture": "#cables" },
+				"up": { "uv": [ 4, 0, 8, 16 ], "texture": "#cables" },
+				"north": { "uv": [ 4, 0, 8, 4 ], "texture": "#cables" },
+				"south": { "uv": [ 4, 0, 8, 4 ], "texture": "#cables" },
+				"west": { "uv": [ 4, 0, 8, 16 ], "texture": "#cables", "rotation": 90 },
+				"east": { "uv": [ 4, 0, 8, 16 ], "texture": "#cables", "rotation": 90 }
+			}
+		},
+		{
+			"__comment": "Box4",
+			"from": [ 7.75, 0, 10 ],
+			"to": [ 8, 0.25, 16 ],
+			"faces": {
+				"down": { "uv": [ 8, 0, 12, 16 ], "texture": "#cables" },
+				"up": { "uv": [ 8, 0, 12, 16 ], "texture": "#cables" },
+				"north": { "uv": [ 8, 0, 12, 4 ], "texture": "#cables" },
+				"south": { "uv": [ 8, 0, 12, 4 ], "texture": "#cables" },
+				"west": { "uv": [ 8, 0, 12, 16 ], "texture": "#cables", "rotation": 90 },
+				"east": { "uv": [ 8, 0, 12, 16 ], "texture": "#cables", "rotation": 90 }
+			}
+		},
+		{
+			"__comment": "Box5",
+			"from": [ 8, 0, 10 ],
+			"to": [ 8.25, 0.25, 16 ],
+			"faces": {
+				"down": { "uv": [ 12, 0, 16, 16 ], "texture": "#cables" },
+				"up": { "uv": [ 12, 0, 16, 16 ], "texture": "#cables" },
+				"north": { "uv": [ 12, 0, 16, 4 ], "texture": "#cables" },
+				"south": { "uv": [ 12, 0, 16, 4 ], "texture": "#cables" },
+				"west": { "uv": [ 12, 0, 16, 16 ], "texture": "#cables", "rotation": 90 },
+				"east": { "uv": [ 12, 0, 16, 16 ], "texture": "#cables", "rotation": 90 }
+			}
+		}
+	]
+}

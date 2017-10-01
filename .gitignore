@@ -1,4 +1,4 @@
-# eclipse
+# Eclipse
 bin
 *.launch
 .settings
@@ -6,17 +6,24 @@ bin
 .classpath
 .project
 
-# idea
+# Idea
 out
 *.ipr
 *.iws
 *.iml
 .idea
 
-# gradle
+# Gradle
 build
 .gradle
 
-# other
+# Other
 eclipse
 run
+!run/addons
+
+# Yet Other
+src/main/java/com/
+src/main/java/net/fexcraft/mod/addons/manus/models/
+src/main/resources/assets/flansmod/
+src/main/java/org/

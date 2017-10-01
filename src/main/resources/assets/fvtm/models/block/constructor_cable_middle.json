@@ -1,0 +1,23 @@
+{
+	"__comment": "Designed by Ferdinand (FEX___96) with Cubik Studio",
+	"textures": {
+		"particle": "fvtm:blocks/constructor_cables",
+		"cable": "fvtm:blocks/constructor_cable",
+		"cables": "fvtm:blocks/constructor_cables"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Box1",
+			"from": [ 6, 0, 6 ],
+			"to": [ 10, 0.5, 10 ],
+			"faces": {
+				"down": { "uv": [ 8, 8, 16, 16 ], "texture": "#cable" },
+				"up": { "uv": [ 0, 0, 8, 8 ], "texture": "#cable" },
+				"north": { "uv": [ 6, 8, 8, 16 ], "texture": "#cable", "rotation": 180 },
+				"south": { "uv": [ 0, 8, 2, 16 ], "texture": "#cable", "rotation": 90 },
+				"west": { "uv": [ 8, 0, 10, 8 ], "texture": "#cable", "rotation": 270 },
+				"east": { "uv": [ 14, 0, 16, 8 ], "texture": "#cable", "rotation": 90 }
+			}
+		}
+	]
+}

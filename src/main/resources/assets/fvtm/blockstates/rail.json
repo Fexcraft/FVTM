@@ -1,0 +1,14 @@
+{
+    "variants": {
+        "shape=north_south": { "model": "frsm:placeholder" },
+        "shape=east_west": { "model": "frsm:placeholder", "y": 90 },
+        "shape=ascending_east": { "model": "frsm:placeholder", "y": 90 },
+        "shape=ascending_west": { "model": "frsm:placeholder", "y": 90 },
+        "shape=ascending_north": { "model": "frsm:placeholder" },
+        "shape=ascending_south": { "model": "frsm:placeholder" },
+        "shape=south_east": { "model": "frsm:placeholder" },
+        "shape=south_west": { "model": "frsm:placeholder", "y": 90 },
+        "shape=north_west": { "model": "frsm:placeholder", "y": 180 },
+        "shape=north_east": { "model": "frsm:placeholder", "y": 270 }
+    }
+}

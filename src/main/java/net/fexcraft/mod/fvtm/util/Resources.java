@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.flansmod.common.util.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -152,7 +151,7 @@ public class Resources {
 			method.setAccessible(true);
 		}
 		catch (Exception e){
-			Util.log("Failed to get class loader. All content loading will now fail.");
+			Print.log("Failed to get class loader. All content loading will now fail.");
 			e.printStackTrace();
 		}
 		
@@ -420,7 +419,7 @@ public class Resources {
 				continue;
 			}
 		}
-		this.VEHICLES.getValues().forEach((vehicle) -> {
+		VEHICLES.getValues().forEach((vehicle) -> {
 			vehicle.getSounds().forEach((soundloc) -> {
 				if(SOUNDS.containsKey(soundloc)){
 					vehicle.setSound(soundloc, SOUNDS.get(soundloc));
@@ -433,7 +432,7 @@ public class Resources {
 				}
 			});
 		});
-		this.PARTS.getValues().forEach((part) -> {
+		PARTS.getValues().forEach((part) -> {
 			part.getSounds().forEach((soundloc) -> {
 				if(SOUNDS.containsKey(soundloc)){
 					part.setSound(soundloc, SOUNDS.get(soundloc));
@@ -452,6 +451,7 @@ public class Resources {
 		//Static.halt();
 	}
 
+	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
 	public static <T> T getModel(String name, Class<T> clazz, T def){
 		if(name == null || name.equals("") || name.equals("null")){
@@ -466,7 +466,7 @@ public class Resources {
 			switch(type){
 				case JAVA:
 				case TMT:
-					Class clasz = Class.forName(name.replace(".class", ""));
+					Class<?> clasz = Class.forName(name.replace(".class", ""));
 					model = (T)clasz.newInstance();
 					break;
 				case JTMT:

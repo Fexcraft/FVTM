@@ -1,0 +1,26 @@
+{
+    "RegistryName": "fvp:c4z1_cargospace",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "null",
+    "FullName": "C4-Z1 Cargo Space",
+    "Category": [
+        "cargo"
+    ],
+    "Attributes":[
+        "inventory"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c4z1.png"
+    ],
+    "Removable": true,
+    "Available": false,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c4z1",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "AttributeData":{
+        "Inventory-Size": 80
+    }
+}

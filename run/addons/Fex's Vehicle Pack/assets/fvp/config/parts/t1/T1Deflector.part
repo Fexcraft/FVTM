@@ -1,0 +1,38 @@
+{
+    "RegistryName": "fvp:t1_deflector",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "fvp:models/parts/t1dc1.jtmt",
+    "Category": [
+        "top_deflector"
+    ],
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Removable": true,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:t1",
+            "x": 0,  "y": 1, "z": 0
+        }
+    ],
+    "Incompatible": [
+        {
+            "Vehicle": "fvp:t1",
+            "Parts": [
+                "fvp:t1_dc2"
+            ]
+        }
+    ],
+     "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 12
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

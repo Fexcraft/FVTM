@@ -1,0 +1,59 @@
+{
+    "RegistryName": "generic:fuel_tank",
+    "Addon": "fvtm:generic",
+    "FullName": "Generic Fuel Tank",
+    "ModelFile": "null",
+    "Category": [
+        "fuel_tank",
+        "secondary_fuel_tank"
+    ],
+    "Attributes":[
+        "fuel_tank"
+    ],
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Removable": true,
+    "Available": false,
+    "Compatible": [],
+    "AttributeData":{
+        "Fuel-TankSize": 100
+    },
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 6
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 4,
+                    "Meta": 8
+                },
+                {
+                    "Item": "fvtm:material",
+                    "Amount": 2,
+                    "NBTTagCompound":{
+                        "FVTM:Material": "generic:rubber"
+                    }
+                }
+            ],
+            "Output": 1
+        },
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "fvtm:material",
+                    "Amount": 4,
+                    "NBTTagCompound":{
+                        "FVTM:Material": "generic:canister"
+                    }
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

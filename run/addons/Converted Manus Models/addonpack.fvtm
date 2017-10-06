@@ -1,0 +1,12 @@
+{
+  "id": "fvtm:manus",
+  "name": "Converted Manus Models",
+  "url": "http://minecraft-smp.de/",
+  "updateid": "addon-manus",
+  "license": "? ? ?",
+  "dependencies": ["fvtm:generic"],
+  "authors": [
+    "01e4af9b-2a30-471e-addf-f6338ffce04b"
+  ],
+  "version": "1.0"
+}

@@ -1,0 +1,59 @@
+{
+    "RegistryName": "fvp:c7_seats",
+    "Addon": "fvtm:fvp",
+    "FullName": "C7 Seats",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7Seats.class",
+    "Category": [
+        "seats"
+    ],
+    "Attributes":[
+        "seat"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c7.png"
+    ],
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c7",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "Removable": true,
+    "Available": false,
+    "AttributeData":{
+        "FM-Seats":[
+            { "x":   2, "y": 3, "z": -8, "driver": true },
+            { "x":   2, "y": 3, "z":  8 },
+            { "x": -18, "y": 3, "z": -8 },
+            { "x": -18, "y": 3, "z":  8 },
+            { "x": -18, "y": 3, "z":  0 }
+        ]
+    },
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:leather",
+                    "Amount": 6
+                },
+                {
+                    "Item": "minecraft:sponge",
+                    "Amount": 5
+                },
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 4
+                },
+                {
+                    "Item": "fvtm:material",
+                    "Amount": 3,
+                    "NBTTagCompound":{
+                        "FVTM:Material": "generic:rubber"
+                    }
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

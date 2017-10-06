@@ -19,7 +19,7 @@ build
 
 # Other
 eclipse
-run
+run/*
 !run/addons/
 
 # Yet Other

@@ -1,0 +1,66 @@
+{
+    "RegistryName": "fvp:t1_back_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT1BW.class",
+    "Category": [
+        "wheels",
+        "right_back_wheel",
+        "left_back_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t1p.png"
+    ],
+    "Removable": false,
+    "Available": true,
+    "Adjustable": false,
+    "Compatible": [
+        {
+           "Vehicle": "fvp:t1",
+            "x": 0, "y": 0, "z": 0
+        },
+        {
+            "Vehicle": "fvp:ot1",
+             "x": 18,"y": 0,"z": 0
+        }
+    ],
+     "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 4
+                },
+                {
+                    "Item": "fvtm:material",
+                    "Amount": 7,
+                    "NBTTagCompound":{
+                        "FVTM:Material": "generic:rubber"
+                    }
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 6
+                }
+            ],
+            "Output": 1
+        },
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 1
+                },
+                {
+                    "Item": "fvtm:part",
+                    "Amount": 6,
+                    "NBTTagCompound":{
+                        "FVTM:Part": "fvp:t1_front_wheel"
+                    }
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "RegistryName": "generic:petroleum_canister",
+    "Addon": "fvtm:generic",
+    "FullName": "Petroleum Canister",
+    "FuelType": "gasoline",
+    "MaxCapacity": 250
+}

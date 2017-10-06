@@ -1,0 +1,28 @@
+{
+    "RegistryName": "fvp:t1_type1_cargoupgrade",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT1_1.class",
+    "FullName": "T1 Type 1 Cargo Upgrade",
+    "Category": [
+        "cargo"
+    ],
+    "Attributes":[
+        "inventory"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t1_1p.png",
+        "fvp:textures/entities/t1_alt_skin_1.png",
+        "fvp:textures/entities/t1_alt_skin_2.png"
+    ],
+    "Removable": true,
+    "Available": true,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:t1",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "AttributeData":{
+        "Inventory-Size": 128
+    }
+}

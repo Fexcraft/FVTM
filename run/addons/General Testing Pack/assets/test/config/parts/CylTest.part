@@ -1,0 +1,12 @@
+{
+    "RegistryName": "test:cyl",
+    "Addon": "fvtm:test",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelCylTest.class",
+    "FullName": "CylTest",
+    "Category": [
+        "cyltest"
+    ],
+    "Textures": [ "fvtm:textures/entities/null_texture.png" ],
+    "Removable": true,
+    "Available": true
+}

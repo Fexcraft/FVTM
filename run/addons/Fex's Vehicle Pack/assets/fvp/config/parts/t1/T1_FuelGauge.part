@@ -1,0 +1,47 @@
+{
+    "RegistryName": "fvp:t1_fuelgauge",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT1FuelGauge.class",
+    "FullName": "Fuel Guage",
+    "Description": [
+        "&7Generic T1 Fuel Gauge."
+    ],
+    "Category": [
+        "fuel_gauge"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t1_fuelgauge.png"
+    ],
+    "Removable": true,
+    "Available": true,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:t1",
+            "x": 0, "y": 0, "z": 0
+        },
+        {
+            "Vehicle": "fvp:c7",
+            "x": -35.5, "y": 5.5, "z": -3.5
+        }
+    ],
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 1
+                },
+                {
+                    "Item": "minecraft:redstone",
+                    "Amount": 1
+                },
+                {
+                    "Item": "minecraft:gold_nugget",
+                    "Amount": 1
+                }
+            ],
+            "Output": 3
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "RegistryName": "fvp:ot1_steering_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "fvp:models/parts/ot1st.jtmt",
+    "Category": [
+        "steering_wheel"
+    ],
+    "Attributes":[
+        "particle_spawner"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_ot1.png"
+    ],
+    "Removable": false,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:ot1",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "AttributeData":{
+        "Particle-Spawner":[
+            {
+                "x": 4.5,
+                "y": 5.5,
+                "z": -16,
+                "speed_x": -0.02,
+                "speed_y": 0.000005,
+                "speed_z": 0,
+                "type": "smoke",
+                "frequency": 10
+            },
+            {
+                "x": 4.5,
+                "y": 5.5,
+                "z": -16,
+                "speed_x": -0.02,
+                "speed_y": 0.000005,
+                "speed_z": 0,
+                "type": "smoke",
+                "frequency": 8
+            }
+        ] 
+    },
+     "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:leather",
+                    "Amount": 4
+                },
+                {
+                    "Item": "minecraft:redstone",
+                    "Amount": 2
+                },
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 3
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

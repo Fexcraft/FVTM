@@ -1,0 +1,48 @@
+{
+    "RegistryName": "fvp:c4z1_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC4Z1Wheel.class",
+    "FullName": "C4Z1 Default Wheel",
+    "Category": [
+        "exchange_wheel",
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c4z1.png",
+        "fvp:textures/entities/skin_vehicle_c4z1_alt.png"
+    ],
+    "Removable": true,
+    "Available": false,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c4z1",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 4
+                },
+                {
+                    "Item": "fvtm:material",
+                    "Amount": 7,
+                    "NBTTagCompound":{
+                        "FVTM:Material": "generic:rubber"
+                    }
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 7
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

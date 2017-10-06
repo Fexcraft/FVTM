@@ -1,0 +1,33 @@
+{
+    "RegistryName": "fvp:c2_interior",
+    "Addon": "fvtm:fvp",
+    "FullName": "C2 Interior & Settings",
+    "ModelFile": "null",
+    "Category": [
+        "interior"
+    ],
+    "Attributes": [
+        "seat"
+    ],
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Compatible": [{ "Vehicle": "fvp:c2", "x": 0, "y": 0, "z": 0 }],
+    "Removable": false,
+    "Available": false,
+    "AttributeData":{
+        "FM-Seats":[
+            {
+                "driver": true,
+                "x": -4,
+                "y": 12,
+                "z": -13
+            },
+            {
+                "x": -4,
+                "y": 12,
+                "z": 13
+            }
+        ]
+    }
+}

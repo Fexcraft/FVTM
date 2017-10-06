@@ -1,0 +1,56 @@
+{
+    "RegistryName": "fvp:t1",
+    "Addon": "fvtm:fvp",
+    "FullName": "T1 Type P-",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelT1P.class",
+    "PrimaryColor": {
+        "Red": 168,
+        "Blue": 168,
+        "Green": 168
+    },
+    "SecondaryColor": {
+        "Red": 194,
+        "Blue": 194,
+        "Green": 194
+    },
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t1p.png"
+    ],
+    "WheelPos":[
+        { "x": -71, "y": -10, "z": -17 },
+        { "x": -71, "y": -10, "z":  17 },
+        { "x":  35, "y": -10, "z":  17 },
+        { "x":  35, "y": -10, "z": -17 }
+    ],
+    "ConstructionLength": 6,
+    "ConstructionYOffSet": 12.5,
+    "ConstructionWheelOffset": 19.5,
+    "RequiredParts": [
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel",
+        "engine",
+        "fuel_tank"
+    ],
+    "PreInstalled":[
+        {
+            "as": "steering_wheel",
+            "part": "fvp:t1_steering_wheel"
+        },
+        {
+            "as": "driver_seat",
+            "part": "fvp:t1_driver_seat"
+        },
+        {
+            "as": "passenger_seats",
+            "part": "fvp:t1_front_seats"
+        }
+    ],
+    "DriveType": "front",
+    "FM-CameraDistance": 6.75,
+    "FM-MaxPositiveThrottle": 1.2,
+    "FM-MaxNegativeThrottle": 0.2,
+    "FM-TurnLeftModifier": 1.5,
+    "FM-TurnRightModifier": 1.5
+}

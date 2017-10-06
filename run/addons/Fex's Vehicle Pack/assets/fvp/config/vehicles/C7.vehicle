@@ -1,0 +1,44 @@
+{
+    "RegistryName": "fvp:c7",
+    "Addon": "fvtm:fvp",
+    "FullName": "C7",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelC7.class",
+    "PrimaryColor": {
+        "Red": 168,
+        "Blue": 168,
+        "Green": 168
+    },
+    "SecondaryColor": {
+        "Red": 194,
+        "Blue": 194,
+        "Green": 194
+    },
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c7.png"
+    ],
+    "WheelPos":[
+        { "x": -31.5, "y": -4, "z": -16 },
+        { "x": -31.5, "y": -4, "z":  16 },
+        { "x":  31.5, "y": -4, "z":  16 },
+        { "x":  31.5, "y": -4, "z": -16 }
+    ],
+    "ConstructionLength": 3,
+    "ConstructionYOffSet": 20.5,
+    "ConstructionWheelOffset": 15,
+    "RequiredParts": [
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel",
+        "steering_wheel",
+        "interior",
+        "seats",
+        "engine",
+        "fuel_tank"
+    ],
+    "DriveType": "4wd",
+    "FM-MaxPositiveThrottle": 1.567,
+    "FM-MaxNegativeThrottle": 0.8,
+    "FM-TurnLeftModifier": 1.45,
+    "FM-TurnRightModifier": 1.45
+}

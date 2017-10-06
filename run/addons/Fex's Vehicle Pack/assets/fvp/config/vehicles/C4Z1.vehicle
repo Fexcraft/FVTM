@@ -1,0 +1,51 @@
+{
+    "RegistryName": "fvp:c4z1",
+    "Addon": "fvtm:fvp",
+    "FullName": "C4-Z1",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelC4Z1.class",
+    "PrimaryColor": {
+        "Red": 255,
+        "Blue": 255,
+        "Green": 255
+    },
+    "SecondaryColor": {
+        "Red": 112,
+        "Blue": 112,
+        "Green": 74
+    },
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c4z1.png",
+        "fvp:textures/entities/skin_vehicle_c4z1_alt.png"
+    ],
+    "WheelPos":[
+        { "x": -63, "y": -7, "z": -20 },
+        { "x": -63, "y": -7, "z":  21 },
+        { "x":  60, "y": -7, "z":  21 },
+        { "x":  60, "y": -7, "z": -20 }
+    ],
+    "ConstructionLength": 4,
+    "ConstructionYOffSet": 16,
+    "ConstructionWheelOffset": 20.5,
+    "RequiredParts": [
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel",
+        "steering_wheel",
+        "interior",
+        "seats",
+        "engine",
+        "fuel_tank"
+    ],
+    "PreInstalled":[
+        {
+            "as": "cargo",
+            "part": "fvp:c4z1_cargospace"
+        }
+    ],
+    "DriveType": "4wd",
+    "FM-MaxPositiveThrottle": 1.56,
+    "FM-MaxNegativeThrottle": 0.67,
+    "FM-TurnLeftModifier": 1.7,
+    "FM-TurnRightModifier": 1.7
+}

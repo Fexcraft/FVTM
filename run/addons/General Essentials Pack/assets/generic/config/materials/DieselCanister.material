@@ -1,0 +1,7 @@
+{
+    "RegistryName": "generic:diesel_canister",
+    "Addon": "fvtm:generic",
+    "FullName": "Diesel Canister",
+    "FuelType": "diesel",
+    "MaxCapacity": 256
+}

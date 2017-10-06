@@ -1,0 +1,48 @@
+{
+    "RegistryName": "fvp:c2",
+    "Addon": "fvtm:fvp",
+    "FullName": "C2 Type P",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelC2.class",
+    "PrimaryColor": {
+        "Red": 168,
+        "Blue": 168,
+        "Green": 168
+    },
+    "SecondaryColor": {
+        "Red": 194,
+        "Blue": 194,
+        "Green": 194
+    },
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c2.png"
+    ],
+    "WheelPos":[
+        { "x": -59, "y": 2, "z": -20 },
+        { "x": -59, "y": 2, "z":  20 },
+        { "x":  28, "y": 2, "z":  20 },
+        { "x":  28, "y": 2, "z": -20 }
+    ],
+    "ConstructionLength": 5,
+    "ConstructionYOffSet": 22.5,
+    "ConstructionWheelOffset": 20,
+    "RequiredParts": [
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel",
+        "steering_wheel",
+        "engine",
+        "fuel_tank"
+    ],
+    "PreInstalled":[
+        {
+            "as": "interior",
+            "part": "fvp:c2_interior"
+        }
+    ],
+    "DriveType": "fwd",
+    "FM-MaxPositiveThrottle": 1.47,
+    "FM-MaxNegativeThrottle": 0.7,
+    "FM-TurnLeftModifier": 1.325,
+    "FM-TurnRightModifier": 1.325
+}

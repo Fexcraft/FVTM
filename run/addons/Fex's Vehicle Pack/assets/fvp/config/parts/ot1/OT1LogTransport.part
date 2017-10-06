@@ -1,0 +1,37 @@
+{
+    "RegistryName": "fvp:ot1_logtransport",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelOT1LogTransportUpgrade.class",
+    "Category": [
+        "cargo"
+    ],
+    "Attributes":[
+        "inventory"
+    ],
+    "Textures": [
+        "fvp:textures/entities/ot1_logtransportupgrade.png"
+    ],
+    "Removable": true,
+    "Available": true,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:ot1",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "AttributeData":{
+        "Inventory-Size": 68,
+        "Inventory-Whitelist":[
+            { "id": "minecraft:log" },
+            { "id": "minecraft:log2" },
+            { "id": "minecraft:planks" },
+            { "id": "minecraft:oak_stairs" },
+            { "id": "minecraft:spruce_stairs" },
+            { "id": "minecraft:birch_stairs" },
+            { "id": "minecraft:jungle_stairs" },
+            { "id": "minecraft:acacia_stairs" },
+            { "id": "minecraft:dark_oak_stairs" },
+            { "id": "minecraft:wooden_slab" }
+        ]
+    }
+}

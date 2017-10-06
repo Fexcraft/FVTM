@@ -1,0 +1,62 @@
+{
+    "RegistryName": "generic:engine",
+    "Addon": "fvtm:generic",
+    "FullName": "Default Test Engine",
+    "ModelFile": "null",
+    "Category": [
+        "engine"
+    ],
+    "Attributes":[
+        "engine"
+    ],
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Removable": true,
+    "Available": false,
+    "Compatible": [],
+    "AttributeData":{
+        "Engine-Speed": 1.00,
+        "Fuel-Consumption": 0.7,
+        "Fuel-Type": "diesel"
+    },
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_block",
+                    "Amount": 1
+                },
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 4
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 4,
+                    "Meta": 7
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 1,
+                    "Meta": 15
+                },
+                {
+                    "Item": "fvtm:material",
+                    "Amount": 4,
+                    "NBTTagCompound":{
+                        "FVTM:Material": "generic:rubber"
+                    }
+                }
+            ],
+            "Output": 1
+        }
+    ],
+    "Sounds":[
+        {
+            "event": "engine_running",
+            "sound": "generic:engine_running"
+        }
+    ]
+}

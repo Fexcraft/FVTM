@@ -1,0 +1,21 @@
+{
+    "RegistryName": "generic:rubber",
+    "Addon": "fvtm:generic",
+    "FullName": "Rubber",
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:slime_ball",
+                    "Amount": 4
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 1
+                }
+            ],
+            "Output": 2
+        }
+    ]
+}

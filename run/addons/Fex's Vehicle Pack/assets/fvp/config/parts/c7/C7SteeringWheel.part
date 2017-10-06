@@ -1,0 +1,40 @@
+{
+    "RegistryName": "fvp:c7_steering_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7SW.class",
+    "FullName": "C7 Default Steering Wheel",
+    "Category": [
+        "steering_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c7.png"
+    ],
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c7",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "Removable": true,
+    "Available": false,
+     "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:leather",
+                    "Amount": 2
+                },
+                {
+                    "Item": "minecraft:redstone",
+                    "Amount": 2
+                },
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 1
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

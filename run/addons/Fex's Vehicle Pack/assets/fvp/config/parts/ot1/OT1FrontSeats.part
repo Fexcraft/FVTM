@@ -1,0 +1,42 @@
+{
+    "RegistryName": "fvp:ot1_front_seats",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "null",
+    "Category": [
+        "front_seats"
+    ],
+    "Attributes":[
+        "seat"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t1p.png"
+    ],
+    "Removable": false,
+    "Available": false,
+    "AttributeData":{
+        "FM-Seats":[
+            { "x": 29, "y": 6.5, "z": -8, "driver": true },
+            { "x": 29, "y": 6.5, "z":  8 }
+        ]    
+    },
+     "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:leather",
+                    "Amount": 7
+                },
+                {
+                    "Item": "minecraft:sponge",
+                    "Amount": 3
+                },
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 6
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

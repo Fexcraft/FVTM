@@ -1,0 +1,16 @@
+{
+    "RegistryName": "fvp:ot1_type3",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelOT1_3.class",
+    "Category": [
+        "cargo"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_ot1_3.png"
+    ],
+    "Removable": true,
+    "Available": true,
+    "Compatible": [
+        { "Vehicle": "fvp:ot1", "x": 0, "y": 0, "z": 0 }
+    ]
+}

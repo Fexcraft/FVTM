@@ -1,0 +1,20 @@
+{
+    "RegistryName": "fvp:c2_steering_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC2ST.class",
+    "FullName": "C2 Steering Wheel",
+    "Category": [
+        "steering_wheel"
+    ],
+    "Textures": [
+        "fvm:textures/entities/skin_vehicle_c2.png"
+    ],
+    "Removable": false,
+    "Avaiable": false,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c2",
+            "x": 0, "y": 0, "z": 0
+        }
+    ]
+}

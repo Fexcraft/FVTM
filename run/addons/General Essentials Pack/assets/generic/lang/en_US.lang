@@ -1,0 +1,23 @@
+## Addon(generic) Lang File
+
+##Contributors:
+#> FEX___96
+#>
+#>
+#>
+
+item.generic:engine.name=Engine (C)
+item.generic:engine2.name=Engine (C+)
+item.generic:fuel_tank.name=Fuel Tank (C)
+
+#Materials
+item.generic:rubber.name=Rubber
+item.generic:steel_ingot.name=Steel Ingot
+item.generic:steel_plate.name=Steel Plate
+item.generic:canister.name=Canister
+item.generic:diesel_canister.name=Diesel Canister
+item.generic:petroleum_canister.name=Petroleum Canister
+
+
+
+

@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
 public class VehicleModel extends ModelBase {
@@ -77,12 +78,12 @@ public class VehicleModel extends ModelBase {
 		else{
 			render(bodyDoorCloseColoredPrimary);
 		}
-		data.getPrimaryColor().glColorReset();
+		RGB.glColorReset();
 		
 		//Render Secondary Color Things
 		data.getSecondaryColor().glColorApply();
 		render(bodyColoredSecondary);
-		data.getSecondaryColor().glColorReset();
+		RGB.glColorReset();
 		
 		//Render Turret
 		render(turret);

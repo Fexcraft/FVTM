@@ -20,7 +20,7 @@ build
 # Other
 eclipse
 run
-!run/addons
+!run/addons/
 
 # Yet Other
 src/main/java/com/

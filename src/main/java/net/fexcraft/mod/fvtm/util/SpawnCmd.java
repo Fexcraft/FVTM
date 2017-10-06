@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util;
 
-import static net.fexcraft.mod.frsm.util.CCS.*;
-
 import net.fexcraft.mod.lib.api.common.fCommand;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.command.CommandBase;
@@ -30,7 +28,7 @@ public class SpawnCmd extends CommandBase {
     @Override 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args)  throws CommandException{
         if(args.length < 1){
-        	Print.chat(sender, DAQUA + "/fvtms <args>");
+        	Print.chat(sender, "&9/fvtms <args>");
         	return;
         }
         else if(args[0].equals("preset")){

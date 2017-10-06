@@ -12,6 +12,7 @@ package net.fexcraft.mod.addons.fvp.models.vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.lib.util.render.RGB;
 
 public class ModelC7 extends VehicleModel {
 	
@@ -721,7 +722,8 @@ public class ModelC7 extends VehicleModel {
 		render(body);
 		data.getPrimaryColor().glColorApply();
 		render(bodyColoredPrimary);
-		data.getPrimaryColor().glColorReset();
+		data.getPrimaryColor();
+		RGB.glColorReset();
 	}
 	
 }

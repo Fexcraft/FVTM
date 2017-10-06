@@ -3,10 +3,8 @@
     "Addon": "fvtm:test",
     "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelCylTest.class",
     "FullName": "CylTest",
-    "Category": [
-        "cyltest"
-    ],
-    "Textures": [ "fvtm:textures/entities/null_texture.png" ],
+    "Category": [ "cyltest" ],
+    "Textures": [ "test:textures/parts/cyltest.png" ],
     "Removable": true,
     "Available": true
 }

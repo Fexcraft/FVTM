@@ -15,12 +15,19 @@ public class ModelCylTest extends PartModel {
 
 	public ModelCylTest(){
 		this.creators.add("Ferdinand (FEX___96)");
+		body = new ModelRendererTurbo[3];
 		//
-		body = new ModelRendererTurbo[1];
 		body[0] = new ModelRendererTurbo(this, 0, 0, 512, 512);
-		body[0].addCylinder(0, -24, 0, 5, 20, 16, 1, 1, ModelRendererTurbo.MR_TOP, 4, 4, 5);
+		body[0].addCylinder(0, -24, -12, 5, 20, 16, 1, 1, ModelRendererTurbo.MR_TOP);
 		body[0].setRotationPoint(0, -24F, 0);
-		body[0].setOldRotationOrder(true);
+		//
+		body[1] = new ModelRendererTurbo(this, 0, 0, 512, 512);
+		body[1].addCylinder(0, -24, 0, 5, 20, 32, 1, 1, ModelRendererTurbo.MR_TOP);
+		body[1].setRotationPoint(0, -24F, 0);
+		//
+		body[2] = new ModelRendererTurbo(this, 0, 0, 512, 512);
+		body[2].addCylinder(0, -24, 12, 5, 20, 16, 1.5f, 1.2f, ModelRendererTurbo.MR_RIGHT);
+		body[2].setRotationPoint(0, -24F, 0);
 	}
 	
 }

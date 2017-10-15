@@ -43,15 +43,16 @@ public class GenericPart implements Part {
 	private TreeMap<ResourceLocation, ArrayList<ResourceLocation>> incompatible = new TreeMap<ResourceLocation, ArrayList<ResourceLocation>>();
 	private ArrayList<ResourceLocation> textures;
 	private boolean removable, available, adjustable;
-	@SideOnly(Side.CLIENT) private PartModel model;
+	@SideOnly(Side.CLIENT) private PartModel<VehicleData> model;
 	private JsonObject attributedata;
-	private HashMap<Class, Attribute> attributes = new HashMap<Class, Attribute>();
+	private HashMap<Class<? extends Attribute>, Attribute> attributes = new HashMap<Class<? extends Attribute>, Attribute>();
 	private ArrayList<Class<? extends VehicleScript>> scripts = new ArrayList<Class<? extends VehicleScript>>();
 	//Sound
 	private TreeMap<String, ResourceLocation> sounds = new TreeMap<String, ResourceLocation>();
 	private TreeMap<ResourceLocation, SoundEvent> soundevents = new TreeMap<ResourceLocation, SoundEvent>();
 	private TreeMap<String, Integer> soundlenghts = new TreeMap<String, Integer>();
 	
+	@SuppressWarnings("unchecked")
 	public GenericPart(JsonObject obj){
 		this.registryname = DataUtil.getRegistryName(obj, "PART");
 		this.addon = DataUtil.getAddon(registryname, obj, "PART");
@@ -224,7 +225,7 @@ public class GenericPart implements Part {
 	}
 
 	@Override @SideOnly(Side.CLIENT)
-	public PartModel getModel(){
+	public PartModel<VehicleData> getModel(){
 		return model;
 	}
 
@@ -233,6 +234,7 @@ public class GenericPart implements Part {
 		return this.attributedata;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Attribute> T getAttribute(Class<T> clazz){
 		return (T)attributes.get(clazz);
@@ -262,7 +264,7 @@ public class GenericPart implements Part {
 	}
 
 	@Override
-	public Collection<Class> getAttributeClasses(){
+	public Collection<Class<? extends Attribute>> getAttributeClasses(){
 		return this.attributes.keySet();
 	}
 

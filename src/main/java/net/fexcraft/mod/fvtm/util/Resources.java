@@ -512,8 +512,8 @@ public class Resources {
 				}
 			}
 			else{
-				Print.log("NBTTagCompound supposed to hold vehicle data, but Vehicle could not be found. Thus will be deleted, here though the data so you can possibly respawn it: ");
-				Print.log(compound.toString());
+				System.out.println("NBTTagCompound supposed to hold vehicle data, but Vehicle could not be found. Thus will be deleted, here though the data so you can possibly respawn it: ");
+				System.out.println(compound.toString());
 			}
 		}
 		return null;
@@ -604,6 +604,10 @@ public class Resources {
 	
 	public static final List<Vehicle> getVehiclesByType(VehicleType type){
 		return Resources.VEHICLES.getValues().stream().filter(p -> p.getType() == type).collect(Collectors.toList());
+	}
+
+	public final File getConfigPath(){
+		return configpath;
 	}
 	
 }

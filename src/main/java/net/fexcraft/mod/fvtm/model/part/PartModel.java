@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.lib.tmt.ModelBase;
+import net.fexcraft.mod.lib.tmt.JsonToTMT;
+import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
-public class PartModel extends ModelBase {
+public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 	
 	public ModelRendererTurbo body[] = new ModelRendererTurbo[0];
 	public ModelRendererTurbo bodyColoredPrimary[] = new ModelRendererTurbo[0];
@@ -49,23 +51,33 @@ public class PartModel extends ModelBase {
 		creators = JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray());
 		tx = obj.get("texture_size_x").getAsInt();
 		ty = obj.get("texture_size_y").getAsInt();
-		body = parse("body", obj, tx, ty);
-		bodyColoredPrimary = parse("body_colored_primary", obj, tx, ty);
-		bodyColoredSecondary= parse("body_colored_secondary", obj, tx, ty);
-		bodyDoorOpen = parse("body_door_open", obj, tx, ty);
-		bodyDoorClose = parse("body_door_close", obj, tx, ty);
-		bodyDoorOpenColoredPrimary = parse("body_door_open_colored_primary", obj, tx, ty);
-		bodyDoorCloseColoredPrimary = parse("body_door_close_colored_primary", obj, tx, ty);
-		turret = parse("turret", obj, tx, ty);
+		body = JsonToTMT.parse(this, "body", obj, tx, ty);
+		bodyColoredPrimary = JsonToTMT.parse(this, "body_colored_primary", obj, tx, ty);
+		bodyColoredSecondary= JsonToTMT.parse(this, "body_colored_secondary", obj, tx, ty);
+		bodyDoorOpen = JsonToTMT.parse(this, "body_door_open", obj, tx, ty);
+		bodyDoorClose = JsonToTMT.parse(this, "body_door_close", obj, tx, ty);
+		bodyDoorOpenColoredPrimary = JsonToTMT.parse(this, "body_door_open_colored_primary", obj, tx, ty);
+		bodyDoorCloseColoredPrimary = JsonToTMT.parse(this, "body_door_close_colored_primary", obj, tx, ty);
+		turret = JsonToTMT.parse(this, "turret", obj, tx, ty);
 		//
-		steering = parse("steering", obj, tx, ty);
-		wheels = parse("wheels", obj, tx, ty);
-		wheel_front = parse("wheel_front", obj, tx, ty);
-		wheel_back = parse("wheel_back", obj, tx, ty);
-		wheel_front_left = parse("wheel_front_left", obj, tx, ty);
-		wheel_back_left = parse("wheel_back_left", obj, tx, ty);
-		wheel_front_right = parse("wheel_front_right", obj, tx, ty);
-		wheel_back_right = parse("wheel_back_right", obj, tx, ty);
+		steering = JsonToTMT.parse(this, "steering", obj, tx, ty);
+		wheels = JsonToTMT.parse(this, "wheels", obj, tx, ty);
+		wheel_front = JsonToTMT.parse(this, "wheel_front", obj, tx, ty);
+		wheel_back = JsonToTMT.parse(this, "wheel_back", obj, tx, ty);
+		wheel_front_left = JsonToTMT.parse(this, "wheel_front_left", obj, tx, ty);
+		wheel_back_left = JsonToTMT.parse(this, "wheel_back_left", obj, tx, ty);
+		wheel_front_right = JsonToTMT.parse(this, "wheel_front_right", obj, tx, ty);
+		wheel_back_right = JsonToTMT.parse(this, "wheel_back_right", obj, tx, ty);
+	}
+	
+	@Override
+	public void render(){
+		//cannot render without providing vehicledata;
+	}
+
+	@Override
+	public void render(VehicleData type, Entity ent){
+		render(type, "", ent);
 	}
 
 	public void render(VehicleData data, String usedAS){
@@ -87,12 +99,12 @@ public class PartModel extends ModelBase {
 		else{
 			render(bodyDoorCloseColoredPrimary);
 		}
-		data.getPrimaryColor().glColorReset();
+		RGB.glColorReset();
 		
 		//Render Secondary Color Things
 		data.getSecondaryColor().glColorApply();
 		render(bodyColoredSecondary);
-		data.getSecondaryColor().glColorReset();
+		RGB.glColorReset();
 		
 		//Render Turret
 		render(turret);
@@ -134,12 +146,12 @@ public class PartModel extends ModelBase {
 		else{
 			render(bodyDoorCloseColoredPrimary);
 		}
-		data.getPrimaryColor().glColorReset();
+		RGB.glColorReset();
 		
 		//Render Secondary Color Things
 		data.getSecondaryColor().glColorApply();
 		render(bodyColoredSecondary);
-		data.getSecondaryColor().glColorReset();
+		RGB.glColorReset();
 		
 		//Render Turret
 		render(turret);
@@ -272,6 +284,30 @@ public class PartModel extends ModelBase {
 		}
 	}
 
+
+	@Override
+	public void rotateAll(float x, float y, float z) {
+		rotate(body, x, y, z);
+		rotate(bodyColoredPrimary, x, y, z);
+		rotate(bodyColoredSecondary, x, y, z);
+		rotate(bodyDoorOpen, x, y, z);
+		rotate(bodyDoorClose, x, y, z);
+		rotate(bodyDoorOpenColoredPrimary, x, y, z);
+		rotate(bodyDoorCloseColoredPrimary, x, y, z);
+		rotate(turret, x, y, z);
+		rotate(steering, x, y, z);
+		rotate(wheels, x, y, z);
+		rotate(wheel_front, x, y, z);
+		rotate(wheel_back, x, y, z);
+		rotate(wheel_front_left, x, y, z);
+		rotate(wheel_back_left, x, y, z);
+		rotate(wheel_front_right, x, y, z);
+		rotate(wheel_back_right, x, y, z);
+		rotate(track_wheels, x, y, z);
+		rotate(track_wheels_right, x, y, z);
+		rotate(track_wheels_left, x, y, z);
+	}
+
 	public void translateAll(float x, float y, float z){
 		translate(body, x, y, z);
 		translate(bodyColoredPrimary, x, y, z);
@@ -282,6 +318,16 @@ public class PartModel extends ModelBase {
 		translate(bodyDoorCloseColoredPrimary, x, y, z);
 		translate(turret, x, y, z);
 		translate(steering, x, y, z);
+		translate(wheels, x, y, z);
+		translate(wheel_front, x, y, z);
+		translate(wheel_back, x, y, z);
+		translate(wheel_front_left, x, y, z);
+		translate(wheel_back_left, x, y, z);
+		translate(wheel_front_right, x, y, z);
+		translate(wheel_back_right, x, y, z);
+		translate(track_wheels, x, y, z);
+		translate(track_wheels_right, x, y, z);
+		translate(track_wheels_left, x, y, z);
 	}
 	
 	public void flip(ModelRendererTurbo[] mod){

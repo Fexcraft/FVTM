@@ -59,12 +59,12 @@ public interface Part extends IForgeRegistryEntry<Part> {
 	@Nullable
 	public <T extends Attribute> T getAttribute(Class<T> clazz);
 	
-	public Collection<Class> getAttributeClasses();
+	public Collection<Class<? extends Attribute>> getAttributeClasses();
 	
 	public boolean canInstall(String as, VehicleData data, EntityPlayer player);
 	
 	@SideOnly(Side.CLIENT)
-	public PartModel getModel();
+	public PartModel<VehicleData> getModel();
 	
 	public Class<? extends PartData> getDataClass();
 	

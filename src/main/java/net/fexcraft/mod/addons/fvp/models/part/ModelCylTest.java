@@ -22,6 +22,8 @@ public class ModelCylTest extends PartModel {
 		body[0].setRotationPoint(0, -24F, 0);
 		//
 		body[1] = new ModelRendererTurbo(this, 0, 0, 512, 512);
+		body[1].mirror = true;
+		body[1].flip = true;
 		body[1].addCylinder(0, -24, 0, 5, 20, 32, 1, 1, ModelRendererTurbo.MR_TOP);
 		body[1].setRotationPoint(0, -24F, 0);
 		//

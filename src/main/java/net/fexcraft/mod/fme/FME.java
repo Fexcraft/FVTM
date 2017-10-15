@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  *
  */
 
-@Mod(modid = FME.MODID, name = "Fex's Model Editor", version = "1.0", dependencies = "required-after:fcl")
+@Mod(modid = FME.MODID, name = "Fex's Model Editor", version = "1.0", clientSideOnly = true, dependencies = "required-after:fcl")
 public class FME {
 	
 	public static final String MODID = "fme";

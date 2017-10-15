@@ -46,6 +46,7 @@ public class GenericPartItem extends Item implements PartItem {
 		
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@SideOnly(Side.CLIENT)
 	@Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){

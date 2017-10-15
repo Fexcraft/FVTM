@@ -55,7 +55,7 @@ public class GenericVehicleData implements VehicleData {
 	}
 
 	@Override
-	public Map<String, PartData> getParts(){
+	public TreeMap<String, PartData> getParts(){
 		return parts;
 	}
 

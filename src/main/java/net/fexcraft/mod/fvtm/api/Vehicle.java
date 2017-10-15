@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.api;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Part.PartData;
@@ -63,7 +65,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	public RGB getDefSecondaryolor();
 	
 	@SideOnly(Side.CLIENT)
-	public VehicleModel getModel();
+	public VehicleModel<VehicleData> getModel();
 	
 	public Class<? extends VehicleData> getDataClass();
 	
@@ -118,7 +120,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		
 		public int getFuelTankSize();
 		
-		public Map<String, PartData> getParts();
+		public TreeMap<String, PartData> getParts();
 
 		public PartData getPart(String string);
 		

@@ -8,14 +8,15 @@
 
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelCylTest extends PartModel {
+public class ModelCylTest extends PartModel<VehicleData> {
 
 	public ModelCylTest(){
 		this.creators.add("Ferdinand (FEX___96)");
-		body = new ModelRendererTurbo[3];
+		body = new ModelRendererTurbo[4];
 		//
 		body[0] = new ModelRendererTurbo(this, 0, 0, 512, 512);
 		body[0].addCylinder(0, -24, -12, 5, 20, 16, 1, 1, ModelRendererTurbo.MR_TOP);
@@ -30,6 +31,10 @@ public class ModelCylTest extends PartModel {
 		body[2] = new ModelRendererTurbo(this, 0, 0, 512, 512);
 		body[2].addCylinder(0, -24, 12, 5, 20, 16, 1.5f, 1.2f, ModelRendererTurbo.MR_RIGHT);
 		body[2].setRotationPoint(0, -24F, 0);
+		//
+		body[3] = new ModelRendererTurbo(this, 0, 0, 512, 512);
+		body[3].addCone(12, -24, -12, 5, 20, 16, 1f, ModelRendererTurbo.MR_RIGHT);
+		body[3].setRotationPoint(0, -24F, 0);
 	}
 	
 }

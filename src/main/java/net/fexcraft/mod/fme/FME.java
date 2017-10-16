@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fme;
 
+import net.fexcraft.mod.fme.overlay.SelectedPolygon;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
@@ -22,6 +25,11 @@ public class FME {
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
 		autoreg = new AutoRegisterer(MODID);
+	}
+	
+	@Mod.EventHandler
+	public void init(FMLInitializationEvent event){
+		MinecraftForge.EVENT_BUS.register(new SelectedPolygon());
 	}
 	
 }

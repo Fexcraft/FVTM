@@ -51,7 +51,7 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
-		vehicledata = Resources.getVehicleData(compound, world.isRemote);
+		vehicledata = Resources.getVehicleData(compound, world == null ? true : world.isRemote);
 	}
 	
 }

@@ -1,10 +1,13 @@
 package net.fexcraft.mod.fme.blocks;
 
 import net.fexcraft.mod.fme.FME;
+import net.fexcraft.mod.fme.overlay.SelectedPolygon;
+import net.fexcraft.mod.fme.overlay.SelectedPolygon.PolygonType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -29,7 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FME.MODID, name = "editor"/*, tileentity = EditorTileEntity.class*/)
+@fBlock(modid = FME.MODID, name = "editor", tileentity = EditorTileEntity.class)
 public class EditorBlock extends Block implements ITileEntityProvider {
 	
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -80,10 +83,6 @@ public class EditorBlock extends Block implements ITileEntityProvider {
 	@Override
     public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
 		if(w.isRemote){
-			//TODO open GUI (prevention of game pausing/blocking when using tools)
-			//new EditorBox((EditorTileEntity)w.getTileEntity(pos)).setVisible(true);
-			//TODO open tools
-			//TODO open box editor
 			return true;
 		}
 		EditorTileEntity te = (EditorTileEntity)w.getTileEntity(pos);
@@ -109,6 +108,15 @@ public class EditorBlock extends Block implements ITileEntityProvider {
 				if(te.vehicledata != null){
 					droptilecon(te, w, pos);
 				}
+			}
+		}
+		else{
+			if(Static.getServer().isSinglePlayer()){
+				SelectedPolygon.toggleVisibility();
+				SelectedPolygon.selectNew(PolygonType.BOX, "none", 0);
+			}
+			else{
+				Print.debug("... this block shouldn't even exists in multiplayer.");
 			}
 		}
 		return true;

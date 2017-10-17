@@ -104,10 +104,10 @@ public class SelectedPolygon extends GuiScreen {
 		//
 		RADS(new String[]{"rads", "type", "null", "leng", "base"}, true),
 		LENG(new String[]{"leng", "naml", "rads", "segm", "tops"}, true),
-		SEGM(new String[]{"segm", "namr", "leng", "null", "cone"}, true),
+		SEGM(new String[]{"segm", "namr", "leng", "null", "dirc"}, true),
 		BASE(new String[]{"base", "rads", "null", "tops", "null"}, true),
-		TOPS(new String[]{"tops", "leng", "base", "cone", "null"}, true),
-		CONE(new String[]{"cone", "cone", "tops", "null", "null"}, true);
+		TOPS(new String[]{"tops", "leng", "base", "dirc", "null"}, true),
+		DIRC(new String[]{"dirc", "segm", "tops", "null", "null"}, true);
 		
 		public String id, up, left, right, down;
 		public boolean cylo;

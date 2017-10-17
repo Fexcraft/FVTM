@@ -113,7 +113,9 @@ public class EditorBlock extends Block implements ITileEntityProvider {
 		else{
 			if(Static.getServer().isSinglePlayer()){
 				SelectedPolygon.toggleVisibility();
-				SelectedPolygon.selectNew(PolygonType.BOX, "none", 0);
+				if(SelectedPolygon.isVisible()){
+					SelectedPolygon.selectNew(PolygonType.BOX, "none", 0);//TODO temporary
+				}
 			}
 			else{
 				Print.debug("... this block shouldn't even exists in multiplayer.");

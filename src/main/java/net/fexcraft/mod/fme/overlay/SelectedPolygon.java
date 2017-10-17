@@ -1,9 +1,14 @@
 package net.fexcraft.mod.fme.overlay;
 
+import com.google.gson.JsonObject;
+
+import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,12 +24,13 @@ public class SelectedPolygon extends GuiScreen {
 	}
 	
 	public static SelectedPolygon INSTANCE;
-	private static boolean shown;
+	private boolean shown;
 	//private String group = "body";
 	//private int element = -1;
 	public static final ResourceLocation texture = new ResourceLocation("fme:textures/gui/box_stats.png");
 	//
 	private PolygonType type = PolygonType.NONE;
+	private BlockPos editor = null;
 	
 	@SubscribeEvent
 	public void display(RenderGameOverlayEvent event){
@@ -42,18 +48,20 @@ public class SelectedPolygon extends GuiScreen {
 				
 			}
 			else{
+				Print.log(editor.toString());
 				Static.halt();
 			}
 			//
 		}
 	}
 
-	public static final void toggleVisibility(){
-		shown = !shown;
+	public static final void toggleVisibility(boolean bool, BlockPos pos){
+		INSTANCE.shown = bool;
+		INSTANCE.editor = pos;
 	}
 	
 	public static final boolean isVisible(){
-		return shown;
+		return INSTANCE.shown;
 	}
 	
 	public static enum PolygonType {
@@ -135,6 +143,28 @@ public class SelectedPolygon extends GuiScreen {
 			}
 			return null;
 		}
+		
+	}
+	
+	public static interface Polygon {
+		
+		public ModelRendererTurbo toTMT();
+		
+		public JsonObject toJTMT();
+		
+		public void fromTMT();
+		
+		public void fromJTMT();
+		
+		public void processInput(float value, String field);
+		
+	}
+	
+	public static class Box {
+		
+	}
+	
+	public static class ShapeBox extends Box {
 		
 	}
 	

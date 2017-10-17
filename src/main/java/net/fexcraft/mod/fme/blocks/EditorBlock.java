@@ -112,7 +112,7 @@ public class EditorBlock extends Block implements ITileEntityProvider {
 		}
 		else{
 			if(Static.getServer().isSinglePlayer()){
-				SelectedPolygon.toggleVisibility();
+				SelectedPolygon.toggleVisibility(!SelectedPolygon.isVisible(), pos);
 				if(SelectedPolygon.isVisible()){
 					SelectedPolygon.selectNew(PolygonType.BOX, "none", 0);//TODO temporary
 				}

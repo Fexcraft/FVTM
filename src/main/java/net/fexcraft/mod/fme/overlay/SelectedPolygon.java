@@ -103,6 +103,27 @@ public class SelectedPolygon extends GuiScreen {
 			this.clazz = claxx;
 		}
 		
+		public PolygonType get(JsonObject obj){
+			if(obj.has("type")){
+				switch(obj.get("type").getAsString()){
+					case "box": case "cube": case "b": {
+						return BOX;
+					}
+					case "shapebox": case "sbox": case "sb": {
+						return SHAPEBOX;
+					}
+					case "cylinder": case "cyl": case "c": {
+						return CYLINDER;
+					}
+					case "cone": case "cn": {
+						return CONE;
+					}
+					default: break;
+				}
+			}
+			return NONE;
+		}
+		
 	}
 	
 	public static void selectNew(PolygonType type, String group, int element){
@@ -177,6 +198,8 @@ public class SelectedPolygon extends GuiScreen {
 		
 		public void processInput(String field, float value);
 		
+		public String getType();
+		
 	}
 	
 	public static class Box implements Polygon {
@@ -240,6 +263,7 @@ public class SelectedPolygon extends GuiScreen {
 			if(mirror){
 				obj.addProperty(compress ? "m" : "mirror", mirror);
 			}
+			obj.addProperty("type", this.getType());
 			return obj;
 		}
 
@@ -275,6 +299,11 @@ public class SelectedPolygon extends GuiScreen {
 			switch(field){
 			
 			}
+		}
+
+		@Override
+		public String getType(){
+			return "box";
 		}
 		
 	}

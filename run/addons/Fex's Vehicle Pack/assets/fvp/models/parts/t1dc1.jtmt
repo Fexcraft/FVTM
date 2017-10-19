@@ -10,9 +10,9 @@
             "texture_x": 0,
             "texture_y": 0,
             "type": "shapebox",
-            "pos_x": 0,
-            "pos_y": 0,
-            "pos_z": 0,
+            "off_x": 0,
+            "off_y": 0,
+            "off_z": 0,
             "width": 32,
             "height": 8,
             "depth": 46,
@@ -22,17 +22,17 @@
             "x2": -4,
             "z2": -1,
             "z3": -1,
-            "rotation_point_x": 22,
-            "rotation_point_y": -48,
-            "rotation_point_z": -23
+            "pos_x": 22,
+            "pos_y": -48,
+            "pos_z": -23
         },
         {
             "texture_x": 0,
             "texture_y": 0,
             "type": "shapebox",
-            "pos_x": 0,
-            "pos_y": 0,
-            "pos_z": 0,
+            "off_x": 0,
+            "off_y": 0,
+            "off_z": 0,
             "width": 28,
             "height": 4,
             "depth": 44,
@@ -42,9 +42,9 @@
             "x2": -6,
             "z2": -1,
             "z3": -1,
-            "rotation_point_x": 22,
-            "rotation_point_y": -52,
-            "rotation_point_z": -22
+            "pos_x": 22,
+            "pos_y": -52,
+            "pos_z": -22
         }
     ]
 }

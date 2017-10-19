@@ -2,11 +2,14 @@ package net.fexcraft.mod.fme.overlay;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.lib.tmt.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -32,6 +35,9 @@ public class SelectedPolygon extends GuiScreen {
 	private PolygonType type = PolygonType.NONE;
 	private BlockPos editor = null;
 	private Polygon polygon;
+	public static final int TXSx = 512;
+	public static final int TXSy = 512;
+	public static boolean compress;
 	
 	@SubscribeEvent
 	public void display(RenderGameOverlayEvent event){
@@ -50,6 +56,7 @@ public class SelectedPolygon extends GuiScreen {
 			}
 			else{
 				Print.log(editor.toString());
+				Print.log(polygon);
 				Static.halt();
 			}
 			//
@@ -160,48 +167,114 @@ public class SelectedPolygon extends GuiScreen {
 	
 	public static interface Polygon {
 		
-		public ModelRendererTurbo toTMT();
+		public ModelRendererTurbo toTMT(ModelBase base);
 		
 		public JsonObject toJTMT();
 		
-		public void fromTMT();
+		public void fromTMT(ModelRendererTurbo model);
 		
-		public void fromJTMT();
+		public void fromJTMT(JsonObject obj);
 		
-		public void processInput(float value, String field);
+		public void processInput(String field, float value);
 		
 	}
 	
 	public static class Box implements Polygon {
+		
+		private float rotx, roty, rotz;
+		private float offx, offy, offz;
+		private float posx, posy, posz;
+		private int w, h, d;
+		private float expansion = 0f;
+		private int texx, texy;
+		//
+		private boolean rotorder, flip, mirror;
 
 		@Override
-		public ModelRendererTurbo toTMT() {
-			// TODO Auto-generated method stub
+		public ModelRendererTurbo toTMT(ModelBase base){
+			ModelRendererTurbo turbo = new ModelRendererTurbo(base, texx, texy, TXSx, TXSy);
+			turbo.addBox(offx, offy, offz, w, h, d, expansion);
+			turbo.rotateAngleX = rotx;
+			turbo.rotateAngleY = roty;
+			turbo.rotateAngleZ = rotz;
+			turbo.setRotationPoint(posx, posy, posz);
 			return null;
 		}
 
 		@Override
-		public JsonObject toJTMT() {
-			// TODO Auto-generated method stub
-			return null;
+		public JsonObject toJTMT(){
+			JsonObject obj = new JsonObject();
+			obj.addProperty(compress ? "x" : "rotation_point_x", posx);
+			obj.addProperty(compress ? "y" : "rotation_point_y", posy);
+			obj.addProperty(compress ? "y" : "rotation_point_y", posy);
+			obj.addProperty(compress ? "w" : "width", w);
+			obj.addProperty(compress ? "h" : "height", h);
+			obj.addProperty(compress ? "d" : "depth", d);
+			if(expansion != 0f){
+				obj.addProperty(compress ? "e" : "expansion", expansion);
+			}
+			if(rotx != 0f){
+				obj.addProperty(compress ? "rx" : "rotation_angle_x", rotx);
+			}
+			if(roty != 0f){
+				obj.addProperty(compress ? "ry" : "rotation_angle_y", rotx);
+			}
+			if(rotz != 0f){
+				obj.addProperty(compress ? "rz" : "rotation_angle_z", rotx);
+			}
+			if(offx != 0f){
+				obj.addProperty(compress ? "ox" : "offset_x", offx);
+			}
+			if(offy != 0f){
+				obj.addProperty(compress ? "oy" : "offset_y", offy);
+			}
+			if(offz != 0f){
+				obj.addProperty(compress ? "oz" : "offset_x", offz);
+			}
+			if(rotorder){
+				obj.addProperty("oro", rotorder);
+			}
+			if(flip){
+				obj.addProperty("flip", flip);
+			}
+			if(mirror){
+				obj.addProperty(compress ? "m" : "mirror", mirror);
+			}
+			return obj;
 		}
 
 		@Override
-		public void fromTMT() {
-			// TODO Auto-generated method stub
-			
+		public void fromTMT(ModelRendererTurbo model){
+			//currently most likely not possible
 		}
 
 		@Override
-		public void fromJTMT() {
-			// TODO Auto-generated method stub
-			
+		public void fromJTMT(JsonObject obj){
+			posx = JsonToTMT.get(JsonToTMT.posx, obj, 0);
+			posy = JsonToTMT.get(JsonToTMT.posy, obj, 0);
+			posz = JsonToTMT.get(JsonToTMT.posz, obj, 0);
+			offx = JsonToTMT.get(JsonToTMT.offx, obj, 0);
+			offy = JsonToTMT.get(JsonToTMT.offy, obj, 0);
+			offz = JsonToTMT.get(JsonToTMT.offz, obj, 0);
+			rotx = JsonToTMT.get(JsonToTMT.rotx, obj, 0);
+			roty = JsonToTMT.get(JsonToTMT.roty, obj, 0);
+			rotz = JsonToTMT.get(JsonToTMT.rotz, obj, 0);
+			//
+			w = JsonToTMT.get(JsonToTMT.width, obj, 0);
+			h = JsonToTMT.get(JsonToTMT.height, obj, 0);
+			d = JsonToTMT.get(JsonToTMT.depth, obj, 0);
+			expansion = JsonToTMT.get(JsonToTMT.expansion, obj, 0);
+			//
+			rotorder = JsonUtil.getIfExists(obj, JsonToTMT.oldrot, false);
+			mirror = JsonUtil.getIfExists(obj, JsonToTMT.mirror, false);
+			flip = JsonUtil.getIfExists(obj, JsonToTMT.flip, false);
 		}
 
 		@Override
-		public void processInput(float value, String field) {
-			// TODO Auto-generated method stub
+		public void processInput(String field, float value){
+			switch(field){
 			
+			}
 		}
 		
 	}

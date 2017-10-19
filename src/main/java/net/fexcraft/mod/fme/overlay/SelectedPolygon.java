@@ -87,7 +87,7 @@ public class SelectedPolygon extends GuiScreen {
 			if(i < 4 && keys[i].isPressed()){
 				selfield.move(i);
 			}
-			else if((i == 4 || i == 5)&& (type != PolygonType.NONE || polygon != null)){
+			else if((i == 4 || i == 5) && (type != PolygonType.NONE && polygon != null)){
 				polygon.processInput(selfield.id, i == 4 ? +1 : -1);//TODO brush/whatever size
 			}
 		}
@@ -164,39 +164,42 @@ public class SelectedPolygon extends GuiScreen {
 	
 	public static enum Field {
 		
-		POSX(new String[]{"posx", "null", "null", "posy", "offx"}, false),
-		POSY(new String[]{"posy", "null", "posx", "posz", "offy"}, false),
-		POSZ(new String[]{"posz", "null", "posy", "null", "offz"}, false),
-		OFFX(new String[]{"offx", "posx", "null", "offy", "rotx"}, false),
-		OFFY(new String[]{"offy", "posy", "offx", "offz", "roty"}, false),
-		OFFZ(new String[]{"offz", "posz", "offy", "null", "rotz"}, false),
-		ROTX(new String[]{"rotx", "offx", "null", "roty", "texx"}, false),
-		ROTY(new String[]{"roty", "offy", "rotx", "rotz", "texy"}, false),
-		ROTZ(new String[]{"rotz", "offz", "roty", "null", "texe"}, false),
-		TEXX(new String[]{"texx", "rotx", "null", "texy", "type"}, false),
-		TEXY(new String[]{"texy", "roty", "texx", "texe", "naml"}, false),
-		TEXE(new String[]{"texe", "rotz", "texy", "null", "namr"}, false),
-		TYPE(new String[]{"type", "texx", "null", "naml", "rads"}, false),
-		NAML(new String[]{"naml", "texy", "type", "namr", "leng"}, false),
-		NAMR(new String[]{"namr", "texe", "naml", "null", "segm"}, false),
+		POSX(new String[]{"posx", "null", "null", "posy", "offx"}, false,  6, 3),
+		POSY(new String[]{"posy", "null", "posx", "posz", "offy"}, false, 38, 3),
+		POSZ(new String[]{"posz", "null", "posy", "null", "offz"}, false, 70, 3),
+		OFFX(new String[]{"offx", "posx", "null", "offy", "rotx"}, false,  6, 13),
+		OFFY(new String[]{"offy", "posy", "offx", "offz", "roty"}, false, 38, 13),
+		OFFZ(new String[]{"offz", "posz", "offy", "null", "rotz"}, false, 70, 13),
+		ROTX(new String[]{"rotx", "offx", "null", "roty", "texx"}, false,  6, 23),
+		ROTY(new String[]{"roty", "offy", "rotx", "rotz", "texy"}, false, 38, 23),
+		ROTZ(new String[]{"rotz", "offz", "roty", "null", "texe"}, false, 70, 23),
+		TEXX(new String[]{"texx", "rotx", "null", "texy", "type"}, false,  6, 33),
+		TEXY(new String[]{"texy", "roty", "texx", "texe", "naml"}, false, 38, 33),
+		TEXE(new String[]{"texe", "rotz", "texy", "null", "namr"}, false, 70, 33),
+		TYPE(new String[]{"type", "texx", "null", "naml", "rads"}, false,  6, 43),
+		NAML(new String[]{"naml", "texy", "type", "namr", "leng"}, false, 38, 43),
+		NAMR(new String[]{"namr", "texe", "naml", "null", "segm"}, false, 99, 43),
 		//
-		RADS(new String[]{"rads", "type", "null", "leng", "base"}, true),
-		LENG(new String[]{"leng", "naml", "rads", "segm", "tops"}, true),
-		SEGM(new String[]{"segm", "namr", "leng", "null", "dirc"}, true),
-		BASE(new String[]{"base", "rads", "null", "tops", "null"}, true),
-		TOPS(new String[]{"tops", "leng", "base", "dirc", "null"}, true),
-		DIRC(new String[]{"dirc", "segm", "tops", "null", "null"}, true);
+		RADS(new String[]{"rads", "type", "null", "leng", "base"}, true,  6, 56),
+		LENG(new String[]{"leng", "naml", "rads", "segm", "tops"}, true, 38, 56),
+		SEGM(new String[]{"segm", "namr", "leng", "null", "dirc"}, true, 70, 56),
+		BASE(new String[]{"base", "rads", "null", "tops", "null"}, true,  6, 66),
+		TOPS(new String[]{"tops", "leng", "base", "dirc", "null"}, true, 38, 66),
+		DIRC(new String[]{"dirc", "segm", "tops", "null", "null"}, true, 70, 66);
 		
 		public String id, up, left, right, down;
 		public boolean cylo;
+		public int x, y;
 		
-		Field(String[] args, boolean bool){
+		Field(String[] args, boolean bool, int px, int py){
 			id = args[0];
 			up = args[1];
 			left = args[3];
 			right = args[4];
 			down = args[2];
 			cylo = bool;
+			x = px;
+			y = py;
 		}
 		
 		public void move(int i){
@@ -219,7 +222,7 @@ public class SelectedPolygon extends GuiScreen {
 					}
 					break;
 				}
-				case 3:{//left
+				case 3:{//down
 					if(!down.equals("null")){
 						selfield = getField(down);
 					}

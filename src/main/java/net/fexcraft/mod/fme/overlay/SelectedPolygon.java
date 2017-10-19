@@ -80,6 +80,9 @@ public class SelectedPolygon extends GuiScreen {
 	
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event){
+		if(!isVisible()){
+			return;
+		}
 		for(int i = 0; i < keys.length; i++){
 			if(i < 4 && keys[i].isPressed()){
 				selfield.move(i);

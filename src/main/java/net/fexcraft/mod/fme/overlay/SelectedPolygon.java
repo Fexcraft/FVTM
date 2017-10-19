@@ -31,6 +31,7 @@ public class SelectedPolygon extends GuiScreen {
 	//
 	private PolygonType type = PolygonType.NONE;
 	private BlockPos editor = null;
+	private Polygon polygon;
 	
 	@SubscribeEvent
 	public void display(RenderGameOverlayEvent event){
@@ -66,7 +67,12 @@ public class SelectedPolygon extends GuiScreen {
 	
 	public static enum PolygonType {
 		
-		NONE, BOX, SHAPEBOX, SHAPE, CYLINDER, CONE;
+		NONE(null),
+		BOX(Box.class),
+		SHAPEBOX(ShapeBox.class),
+		SHAPE(null),
+		CYLINDER(Cylinder.class),
+		CONE(Cone.class);
 		
 		public boolean isCylinder(){
 			return this == CYLINDER || this == CONE;
@@ -82,6 +88,12 @@ public class SelectedPolygon extends GuiScreen {
 		
 		public boolean any(){
 			return !(this == NONE);
+		}
+		
+		public Class<? extends Polygon> clazz;
+		
+		PolygonType(Class<? extends SelectedPolygon.Polygon> claxx){
+			this.clazz = claxx;
 		}
 		
 	}
@@ -160,11 +172,49 @@ public class SelectedPolygon extends GuiScreen {
 		
 	}
 	
-	public static class Box {
+	public static class Box implements Polygon {
+
+		@Override
+		public ModelRendererTurbo toTMT() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public JsonObject toJTMT() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void fromTMT() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void fromJTMT() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processInput(float value, String field) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 	
 	public static class ShapeBox extends Box {
+		
+	}
+	
+	public static class Cylinder extends Box {
+		
+	}
+	
+	public static class Cone extends Cylinder {
 		
 	}
 	

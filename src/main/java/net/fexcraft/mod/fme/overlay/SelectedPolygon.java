@@ -59,6 +59,7 @@ public class SelectedPolygon extends GuiScreen {
 		if(event.getType() == ElementType.HOTBAR && shown && type.any()){
 			mc.getTextureManager().bindTexture(texture);
 			this.drawTexturedModalRect(0, 0, 0, 0, 103, type.isCylinder() ? 77 : 54);
+			this.drawTexturedModalRect(selfield.x, selfield.y, 0, 244, 1, 10);
 			//
 			if(type.isRectangle()){
 				

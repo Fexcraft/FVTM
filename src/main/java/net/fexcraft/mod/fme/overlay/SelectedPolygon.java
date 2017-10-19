@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fme.overlay;
 
+import org.lwjgl.input.Keyboard;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.lib.tmt.JsonToTMT;
@@ -10,11 +12,13 @@ import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class SelectedPolygon extends GuiScreen {
 	
@@ -38,6 +42,17 @@ public class SelectedPolygon extends GuiScreen {
 	public static final int TXSx = 512;
 	public static final int TXSy = 512;
 	public static boolean compress;
+	private static Field selfield = Field.POSX;
+	//
+	private static final String keyCategory = "Fex's Model Editor";
+	public static KeyBinding[] keys = new KeyBinding[]{
+		new KeyBinding("Editor - Left",  Keyboard.KEY_NUMPAD4, keyCategory),
+		new KeyBinding("Editor - Right", Keyboard.KEY_NUMPAD6, keyCategory),
+		new KeyBinding("Editor - Up",    Keyboard.KEY_NUMPAD8, keyCategory),
+		new KeyBinding("Editor - Down",  Keyboard.KEY_NUMPAD2, keyCategory),
+		new KeyBinding("Editor - Add.",  Keyboard.KEY_ADD, keyCategory),
+		new KeyBinding("Editor - Sub.",  Keyboard.KEY_SUBTRACT, keyCategory)
+	};
 	
 	@SubscribeEvent
 	public void display(RenderGameOverlayEvent event){
@@ -60,6 +75,18 @@ public class SelectedPolygon extends GuiScreen {
 				Static.halt();
 			}
 			//
+		}
+	}
+	
+	@SubscribeEvent
+	public void onKeyInput(KeyInputEvent event){
+		for(int i = 0; i < keys.length; i++){
+			if(i < 4 && keys[i].isPressed()){
+				selfield.move(i);
+			}
+			else if((i == 4 || i == 5)&& (type != PolygonType.NONE || polygon != null)){
+				polygon.processInput(selfield.id, i == 4 ? +1 : -1);//TODO brush/whatever size
+			}
 		}
 	}
 
@@ -169,6 +196,35 @@ public class SelectedPolygon extends GuiScreen {
 			cylo = bool;
 		}
 		
+		public void move(int i){
+			switch(i){
+				case 0:{//left
+					if(!left.equals("null")){
+						selfield = getField(left);
+					}
+					break;
+				}
+				case 1:{//right
+					if(!right.equals("null")){
+						selfield = getField(right);
+					}
+					break;
+				}
+				case 2:{//up
+					if(!up.equals("null")){
+						selfield = getField(up);
+					}
+					break;
+				}
+				case 3:{//left
+					if(!down.equals("null")){
+						selfield = getField(down);
+					}
+					break;
+				}
+			}
+		}
+
 		public Field getField(String str){
 			if(str == null || str.equals("null")){
 				return null;

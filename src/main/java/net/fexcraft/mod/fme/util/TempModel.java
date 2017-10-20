@@ -14,13 +14,12 @@ public class TempModel extends Model<Object> {
 	
 	public TreeMap<String, ArrayList<ModelRendererTurbo>> groups;
 	public File file;
-	public int tx, ty;
 	public ResourceLocation texture;
 	
 	public TempModel(File file){
 		this.file = file;
 		this.groups = new TreeMap<String, ArrayList<ModelRendererTurbo>>();
-		tx = ty = 512;
+		this.textureWidth = this.textureHeight = 512;
 	}
 
 	@Override

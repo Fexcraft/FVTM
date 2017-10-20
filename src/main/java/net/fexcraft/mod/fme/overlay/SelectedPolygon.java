@@ -4,14 +4,16 @@ import org.lwjgl.input.Keyboard;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fme.blocks.EditorTileEntity;
+import net.fexcraft.mod.fme.util.TempModel;
 import net.fexcraft.mod.lib.tmt.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -32,26 +34,30 @@ public class SelectedPolygon extends GuiScreen {
 	
 	public static SelectedPolygon INSTANCE;
 	private boolean shown;
-	//private String group = "body";
-	//private int element = -1;
+	private String group = "body";
+	private int element = -1;
 	public static final ResourceLocation texture = new ResourceLocation("fme:textures/gui/box_stats.png");
 	//
 	private PolygonType type = PolygonType.NONE;
 	private BlockPos editor = null;
 	private Polygon polygon;
-	public static final int TXSx = 512;
-	public static final int TXSy = 512;
 	public static boolean compress;
 	private static Field selfield = Field.POSX;
 	//
 	private static final String keyCategory = "Fex's Model Editor";
+	public static KeyBinding keyLeft;
+	public static KeyBinding keyRight;
+	public static KeyBinding keyUp;
+	public static KeyBinding keyDown;
+	public static KeyBinding keyAdd;
+	public static KeyBinding keySub;
 	public static KeyBinding[] keys = new KeyBinding[]{
-		new KeyBinding("Editor - Left",  Keyboard.KEY_NUMPAD4, keyCategory),
-		new KeyBinding("Editor - Right", Keyboard.KEY_NUMPAD6, keyCategory),
-		new KeyBinding("Editor - Up",    Keyboard.KEY_NUMPAD8, keyCategory),
-		new KeyBinding("Editor - Down",  Keyboard.KEY_NUMPAD2, keyCategory),
-		new KeyBinding("Editor - Add.",  Keyboard.KEY_ADD, keyCategory),
-		new KeyBinding("Editor - Sub.",  Keyboard.KEY_SUBTRACT, keyCategory)
+		keyLeft  = new KeyBinding("Editor - Left",  Keyboard.KEY_NUMPAD4, keyCategory),//75
+		keyRight = new KeyBinding("Editor - Right", Keyboard.KEY_NUMPAD6, keyCategory),//77
+		keyUp    = new KeyBinding("Editor - Up",    Keyboard.KEY_NUMPAD8, keyCategory),//72
+		keyDown  = new KeyBinding("Editor - Down",  Keyboard.KEY_NUMPAD2, keyCategory),//80
+		keyAdd   = new KeyBinding("Editor - Add.",  Keyboard.KEY_NUMPAD9, keyCategory),//73
+		keySub   = new KeyBinding("Editor - Sub.",  Keyboard.KEY_NUMPAD7, keyCategory),//71
 	};
 	
 	@SubscribeEvent
@@ -59,21 +65,36 @@ public class SelectedPolygon extends GuiScreen {
 		if(event.getType() == ElementType.HOTBAR && shown && type.any()){
 			mc.getTextureManager().bindTexture(texture);
 			this.drawTexturedModalRect(0, 0, 0, 0, 103, type.isCylinder() ? 77 : 54);
-			this.drawTexturedModalRect(selfield.x, selfield.y, 0, 244, 1, 10);
+			this.drawTexturedModalRect(selfield.x, selfield.y, 0, 248, 1, 8);
 			//
-			if(type.isRectangle()){
-				
-			}
-			else if(type.isCylinder()){
-				
-			}
-			else if(type.isShape()){
-				
+			if(polygon != null){
+				Box box = (Box)polygon;
+				TempModel model = this.getModel();
+				GlStateManager.scale(0.5, 0.5, 0.5);
+				mc.fontRenderer.drawString(box.posx + "",  8 * 2, 5 * 2, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.posy + "", 40 * 2, 5 * 2, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.posz + "", 72 * 2, 5 * 2, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.offx + "",  16, 30, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.offy + "",  80, 30, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.offz + "", 144, 30, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.rotx + "",  16, 50, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.roty + "",  80, 50, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.rotz + "", 144, 50, MapColor.GRAY.colorValue);
+				//
+				mc.fontRenderer.drawString(box.texx + "",  16, 70, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.texy + "",  80, 70, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(model.hasTexture() + "", 144, 70, MapColor.GRAY.colorValue);
+				//
+				mc.fontRenderer.drawString(box.getType() + "",  16, 90, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.getName() + "",  80, 90, MapColor.GRAY.colorValue);
+				//
+				if(type.isCylinder()){
+					
+				}
+				GlStateManager.scale(2, 2, 2);
 			}
 			else{
-				Print.log(editor.toString());
-				Print.log(polygon);
-				Static.halt();
+				
 			}
 			//
 		}
@@ -88,8 +109,9 @@ public class SelectedPolygon extends GuiScreen {
 			if(i < 4 && keys[i].isPressed()){
 				selfield.move(i);
 			}
-			else if((i == 4 || i == 5) && (type != PolygonType.NONE && polygon != null)){
+			else if((i == 4 || i == 5) && type != PolygonType.NONE && polygon != null){
 				polygon.processInput(selfield.id, i == 4 ? +1 : -1);//TODO brush/whatever size
+				this.getModel().groups.get(group).set(element, polygon.toTMT(this.getModel()));
 			}
 		}
 	}
@@ -101,6 +123,10 @@ public class SelectedPolygon extends GuiScreen {
 	
 	public static final boolean isVisible(){
 		return INSTANCE.shown;
+	}
+	
+	public final TempModel getModel(){
+		return ((EditorTileEntity)Static.getServer().getEntityWorld().getTileEntity(editor)).getModel();
 	}
 	
 	public static enum PolygonType {
@@ -128,7 +154,7 @@ public class SelectedPolygon extends GuiScreen {
 			return !(this == NONE);
 		}
 		
-		public Class<? extends Polygon> clazz;
+		private Class<? extends Polygon> clazz;
 		
 		PolygonType(Class<? extends SelectedPolygon.Polygon> claxx){
 			this.clazz = claxx;
@@ -155,12 +181,23 @@ public class SelectedPolygon extends GuiScreen {
 			return NONE;
 		}
 		
+		public Polygon getPolygon(){
+			try{
+				return this.clazz.newInstance();
+			}
+			catch(InstantiationException | IllegalAccessException e){
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
 	}
 	
 	public static void selectNew(PolygonType type, String group, int element){
 		INSTANCE.type = type;
-		//INSTANCE.group = group;
-		//INSTANCE.element = element;
+		INSTANCE.polygon = INSTANCE.type.getPolygon();
+		INSTANCE.group = group;
+		INSTANCE.element = element;
 	}
 	
 	public static enum Field {
@@ -195,9 +232,9 @@ public class SelectedPolygon extends GuiScreen {
 		Field(String[] args, boolean bool, int px, int py){
 			id = args[0];
 			up = args[1];
-			left = args[3];
-			right = args[4];
-			down = args[2];
+			left = args[2];
+			right = args[3];
+			down = args[4];
 			cylo = bool;
 			x = px;
 			y = py;
@@ -234,24 +271,24 @@ public class SelectedPolygon extends GuiScreen {
 
 		public Field getField(String str){
 			if(str == null || str.equals("null")){
-				return null;
+				return this;
 			}
 			for(Field field : values()){
 				if(field.id.equals(str)){
 					if(field.cylo && !INSTANCE.type.isCylinder()){
-						return null;
+						return this;
 					}
 					return field;
 				}
 			}
-			return null;
+			return this;
 		}
 		
 	}
 	
 	public static interface Polygon {
 		
-		public ModelRendererTurbo toTMT(ModelBase base);
+		public ModelRendererTurbo toTMT(TempModel base);
 		
 		public JsonObject toJTMT();
 		
@@ -262,6 +299,8 @@ public class SelectedPolygon extends GuiScreen {
 		public void processInput(String field, float value);
 		
 		public String getType();
+		
+		public String getName();
 		
 	}
 	
@@ -275,16 +314,17 @@ public class SelectedPolygon extends GuiScreen {
 		private int texx, texy;
 		//
 		private boolean rotorder, flip, mirror;
+		private String name;
 
 		@Override
-		public ModelRendererTurbo toTMT(ModelBase base){
-			ModelRendererTurbo turbo = new ModelRendererTurbo(base, texx, texy, TXSx, TXSy);
+		public ModelRendererTurbo toTMT(TempModel model){
+			ModelRendererTurbo turbo = new ModelRendererTurbo(model, texx, texy, model.textureHeight, model.textureWidth);
 			turbo.addBox(offx, offy, offz, w, h, d, expansion);
 			turbo.rotateAngleX = rotx;
 			turbo.rotateAngleY = roty;
 			turbo.rotateAngleZ = rotz;
 			turbo.setRotationPoint(posx, posy, posz);
-			return null;
+			return turbo;
 		}
 
 		@Override
@@ -360,13 +400,20 @@ public class SelectedPolygon extends GuiScreen {
 		@Override
 		public void processInput(String field, float value){
 			switch(field){
-			
+				case "posx":{ this.posx += value; break; }
+				case "posy":{ this.posy += value; break; }
+				case "posz":{ this.posz += value; break; }
 			}
 		}
 
 		@Override
 		public String getType(){
 			return "box";
+		}
+
+		@Override
+		public String getName(){
+			return name;
 		}
 		
 	}

@@ -166,7 +166,8 @@ public class ConstructorCable extends Block {
         }
     }
     
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn){
+    @SuppressWarnings("deprecation")
+	public IBlockState withMirror(IBlockState state, Mirror mirrorIn){
         switch (mirrorIn){
             case LEFT_RIGHT:
                 return state.withProperty(NORTH, state.getValue(SOUTH)).withProperty(SOUTH, state.getValue(NORTH));

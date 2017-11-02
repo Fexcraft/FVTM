@@ -52,6 +52,7 @@ tile.fvtm:vehicle_constructor_center.name=Constructor Center (Display)
 tile.fvtm:display_block.name=Display Block
 tile.fvtm:paint_table.name=Paint Table
 tile.fvtm:vehicle_crafter=Blueprint Table
+tile.fvtm:adj_sign=Adjustable Sign
 
 
 

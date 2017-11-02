@@ -37,7 +37,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
  * @author Ferdinand
  *
  */
-@Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION, dependencies = "required-after:fcl")
+@Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl")
 public class FVTM {
 	
 	public static final String MODID = "fvtm";

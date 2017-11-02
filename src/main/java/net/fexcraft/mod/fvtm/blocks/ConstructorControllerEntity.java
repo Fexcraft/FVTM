@@ -179,6 +179,7 @@ public class ConstructorControllerEntity {
 			this.partdata = Resources.getPartData(compound);
 		}
 
+		@SuppressWarnings("unchecked")
 		public void onButtonPress(Button button, EntityPlayer player, String[] args){
 			if(button.isHome()){
 				this.updateScreen("main");
@@ -936,6 +937,7 @@ public class ConstructorControllerEntity {
 			Print.chat(player, "&7No &aFree &7Center Block found!");
 		}
 
+		@SuppressWarnings("unchecked")
 		private final NBTTagCompound getWindowUpdate(NBTTagCompound compound){
 			if(window.startsWith("attr")){
 				//TODO

@@ -53,12 +53,26 @@ public class AdjustableSign extends BlockContainer {
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return FULL_BLOCK_AABB;
+        return get((EnumFacing)state.getValue(FACING));
     }
 
 	@Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
-        return FULL_BLOCK_AABB;
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
+        return get((EnumFacing)state.getValue(FACING));
+    }
+	
+	public static final AxisAlignedBB SOUTH = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.05);
+	public static final AxisAlignedBB NORTH = new AxisAlignedBB(0.0D, 0.0D, 0.95, 1.0D, 1.0D, 1.0D);
+	public static final AxisAlignedBB WEST  = new AxisAlignedBB(0.95, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+	public static final AxisAlignedBB EAST  = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.05, 1.0D, 1.0D);
+    
+    public static final AxisAlignedBB get(EnumFacing facing){
+    	switch(facing){
+    		case SOUTH: return SOUTH;
+    		case NORTH: return NORTH;
+    		case WEST: return WEST;
+    		case EAST: default: return EAST;
+    	}
     }
 	
 	@Override

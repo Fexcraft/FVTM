@@ -20,7 +20,7 @@ public class ConstructorControllerRender extends TileEntitySpecialRenderer<Const
 	public void render(ConstructorControllerEntity.Client te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
     	GL11.glPushMatrix();
 		GL11.glTranslated(posX, posY, posZ);
-		Minecraft.getMinecraft().renderEngine.bindTexture(model.getTexture());
+		Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorController.getTexture());
 		GL11.glPushMatrix();
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		switch(te.getBlockMetadata()){

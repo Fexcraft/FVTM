@@ -127,7 +127,7 @@ public class ConstructorControllerEntity {
 		
 		@Override
 		public void processServerPacket(PacketTileEntityUpdate pkt){
-			
+			//
 		}
 		
 		@Override
@@ -1316,6 +1316,7 @@ public class ConstructorControllerEntity {
 		public String[] text = new String[8];
 		public String window;
 		public byte selection = -1, lift = 0;
+		@SuppressWarnings("unused")
 		private BlockPos center;
 		
 		@Override

@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
@@ -20,7 +21,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 	public void render(ConstructorCenterEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
     	GL11.glPushMatrix();
 		GL11.glTranslated(posX + 0.5F, posY + 1.5F, posZ + 0.5F);
-		Minecraft.getMinecraft().renderEngine.bindTexture(model.getTexture());
+		Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
 		GL11.glPushMatrix();
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		double d = 60;
@@ -42,7 +43,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 		GL11.glRotated(90 , 0, 1D, 0);
 		VehicleData vehicledata = te.getVehicleData();
 		if(vehicledata != null){
-			VehicleModel modvec = vehicledata.getVehicle().getModel();
+			VehicleModel<VehicleData>modvec = vehicledata.getVehicle().getModel();
 			if(modvec != null){
 				Minecraft.getMinecraft().renderEngine.bindTexture(vehicledata.getTexture());
 				GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * 0.0625f) - te.getLiftState(), 0);
@@ -54,7 +55,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 					partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translateR();
 				});
 				GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * -0.0625f) + te.getLiftState(), 0);
-				Minecraft.getMinecraft().renderEngine.bindTexture(model.getTexture());
+				Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
 			}
 			else{
 				//Static.exception(4, "Model is null.");
@@ -85,10 +86,10 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 				data.getSecondaryColor().glColorApply();
 				turbo[3].render();
 				turbo[4].render();
-				data.getSecondaryColor().glColorReset();
+				RGB.glColorReset();
 				data.getPrimaryColor().glColorApply();
 				turbo[5].render();
-				data.getPrimaryColor().glColorReset();
+				RGB.glColorReset();
 				if(i != 4){
 					GL11.glTranslated(0, -1, 0);
 				}

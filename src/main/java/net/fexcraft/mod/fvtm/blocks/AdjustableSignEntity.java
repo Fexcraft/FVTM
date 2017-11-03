@@ -64,7 +64,7 @@ public class AdjustableSignEntity extends TileEntity implements IPacketReceiver<
 
 	public void setTexture(ItemStack stack){
 		if(stack == null){
-			this.texture = (UCResourceLocation)Resources.NULL_TEXTURE;
+			this.texture = new UCResourceLocation(Resources.NULL_TEXTURE);
 		}
 		if(stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(AdjSignItem.NBT)){
 			this.texture = new UCResourceLocation("", stack.getTagCompound().getString(AdjSignItem.NBT));
@@ -100,7 +100,7 @@ public class AdjustableSignEntity extends TileEntity implements IPacketReceiver<
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
 		super.writeToNBT(compound);
-		compound.setString("texture", this.texture.toString());
+		compound.setString("texture", this.texture.getResourcePath());
 		compound.setByte("width", width);
 		compound.setByte("height", height);
 		return compound;
@@ -122,7 +122,7 @@ public class AdjustableSignEntity extends TileEntity implements IPacketReceiver<
 		//
 		if(Static.side().isClient()){
 			if(texture.toString().contains("fcl:remote/")){
-				texture = new UCResourceLocation(texture.toString().replace("fcl:remote/", ""));
+				texture = new UCResourceLocation("", texture.toString().replace("fcl:remote/", ""));
 			}
 			model = AdjSignModel.getModel(width, height);
 			texture = ExternalTextureHelper.get(texture.getResourcePath());

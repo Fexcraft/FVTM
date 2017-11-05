@@ -7,8 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class Renderer {
 	
-	public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking)
-    {
+	public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking){
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
@@ -18,12 +17,11 @@ public class Renderer {
         GL11.glScaled(0.005, 0.005, 0.005);
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
-
-        if (!isSneaking)
-        {
+        //
+        if(!isSneaking){
             GlStateManager.disableDepth();
         }
-
+        //
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         /*int i = fontRendererIn.getStringWidth(str) / 2;
@@ -37,13 +35,12 @@ public class Renderer {
         bufferbuilder.pos((double)(i + 1), (double)(-1 + verticalShift), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();*/
-
-        if (!isSneaking)
-        {
+        //
+        if(!isSneaking){
             fontRendererIn.drawString(str, 0/*-fontRendererIn.getStringWidth(str) / 2*/, verticalShift, 0x000000); /*553648127*/
             GlStateManager.enableDepth();
         }
-
+        //
         GlStateManager.depthMask(true);
         fontRendererIn.drawString(str, 0/*-fontRendererIn.getStringWidth(str) / 2*/, verticalShift, isSneaking ? 0x000000 : -1);
         GlStateManager.enableLighting();

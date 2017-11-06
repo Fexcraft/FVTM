@@ -129,4 +129,9 @@ public class AdjustableSignEntity extends TileEntity implements IPacketReceiver<
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared(){
+        return 512D;
+    }
+	
 }

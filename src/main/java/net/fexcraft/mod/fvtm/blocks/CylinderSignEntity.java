@@ -132,5 +132,10 @@ public class CylinderSignEntity extends TileEntity implements IPacketReceiver<Pa
 			texture = ExternalTextureHelper.get(texture.getResourcePath());
 		}
 	}
+	
+	@SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared(){
+        return 512D;
+    }
 
 }

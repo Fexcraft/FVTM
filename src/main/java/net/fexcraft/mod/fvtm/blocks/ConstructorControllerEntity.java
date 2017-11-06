@@ -30,6 +30,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ConstructorControllerEntity {
 	
@@ -1386,6 +1388,11 @@ public class ConstructorControllerEntity {
 				text[i] = compound.getString("Text" + i);
 			}
 		}
+		
+		@SideOnly(Side.CLIENT)
+	    public double getMaxRenderDistanceSquared(){
+	        return 512D;
+	    }
 		
 	}
 	

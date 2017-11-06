@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle;
-import net.fexcraft.mod.fvtm.api.VehicleType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;

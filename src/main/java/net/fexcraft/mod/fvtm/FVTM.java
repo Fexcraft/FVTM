@@ -2,8 +2,10 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
+import net.fexcraft.mod.fvtm.entities.TestVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.FvtmUpdateHandler;
 import net.fexcraft.mod.fvtm.util.RecipeObject;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -11,12 +13,14 @@ import net.fexcraft.mod.fvtm.util.SpawnCmd;
 import net.fexcraft.mod.lib.crafting.RecipeRegistry;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.SimpleUpdateHandler;
+import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -24,6 +28,7 @@ import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -54,6 +59,9 @@ public class FVTM {
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources());
 		REGISTERER = new AutoRegisterer(MODID);
 		new ConstructorController();
+		//
+		PermManager.setEnabled(MODID);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:testveh"), TestVehicleEntity.class, "testvehicle", 1992, this, 256, 1, true);
 	}
 	
 	@Mod.EventHandler
@@ -75,6 +83,10 @@ public class FVTM {
 		FvtmUpdateHandler.register();
 		//check if addons have updates
 		RESOURCES.checkForUpdates();
+		FvtmPermissions.register();
+		if(event.getSide().isClient()){
+			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
+		}
 	}
 	
 	@Mod.EventHandler

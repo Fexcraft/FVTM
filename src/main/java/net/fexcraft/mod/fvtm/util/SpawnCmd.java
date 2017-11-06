@@ -1,11 +1,16 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.mod.fvtm.api.Vehicle;
+import net.fexcraft.mod.fvtm.entities.TestVehicleEntity;
 import net.fexcraft.mod.lib.api.common.fCommand;
+import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 
 @fCommand
 public class SpawnCmd extends CommandBase {
@@ -22,6 +27,9 @@ public class SpawnCmd extends CommandBase {
     
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender){
+    	if(sender instanceof EntityPlayer){
+    		return PermManager.getPlayerPerms((EntityPlayer)sender).hasPermission(FvtmPermissions.SPAWN_CMD);
+    	}
     	return true;
     }
 
@@ -45,11 +53,11 @@ public class SpawnCmd extends CommandBase {
         }
         else{
         	try{
-        		//Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(args[0]));
-        		//sender.getEntityWorld().spawnEntity(new LandVehicleEntity(sender.getEntityWorld(), vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle), sender.getPositionVector().addVector(0, 2, 0)));
+        		Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(args[0]));
+        		sender.getEntityWorld().spawnEntity(new TestVehicleEntity(sender.getEntityWorld(), vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle), sender.getPositionVector().addVector(0, 2, 0)));
         	}
         	catch(Exception e){
-        		Print.chat(sender, e.getLocalizedMessage());
+        		Print.stacktrace(sender, e);
         		e.printStackTrace();
         	}
         }

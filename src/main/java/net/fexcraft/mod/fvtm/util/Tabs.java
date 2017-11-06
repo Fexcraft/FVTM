@@ -4,7 +4,7 @@ import java.util.List;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle;
-import net.fexcraft.mod.fvtm.api.VehicleType;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,7 +21,7 @@ public class Tabs {
 	private static int a_veh_id = 0;
 	private static int w_veh_id = 0;
 	private static int r_veh_id = 0;
-	private static int block_id = 0;
+	//private static int block_id = 0;
 	
 	public static final CreativeTabs LANDVEHICLES = new CreativeTabs("fvtm_landvehicles"){
 		@Override

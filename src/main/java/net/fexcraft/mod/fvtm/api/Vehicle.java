@@ -257,4 +257,36 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		
 	}
 	
+	//<-- VEHICLE ENTITY -->//
+	public static interface VehicleEntity {
+		
+		public VehicleData getVehicleData();
+
+		public void keyPress(String string, EntityPlayer player);
+		
+		public VehicleType getVehicleType();
+		
+	}
+	
+	//<-- VEHICLE  -->//
+	public static enum VehicleType {
+		
+		LAND, AIR, WATER, RAIL, NULL;
+		
+		VehicleType(){
+			//
+		}
+		
+		public static VehicleType fromString(String string){
+			string = string.toUpperCase();
+			for(VehicleType type : values()){
+				if(type.name().equals(string)) {
+					return type;
+				}
+			}
+			return LAND;
+		}
+		
+	}
+	
 }

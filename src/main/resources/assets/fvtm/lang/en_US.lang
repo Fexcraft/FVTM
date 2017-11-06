@@ -54,6 +54,8 @@ tile.fvtm:paint_table.name=Paint Table
 tile.fvtm:vehicle_crafter.name=Blueprint Table
 tile.fvtm:adj_sign.name=Adjustable Sign
 tile.fvtm:cyl_sign.name=Cylinder/Round Sign
+#Items
+item.fvtm:constructor_remote.name=Constructor Remote
 
 
 

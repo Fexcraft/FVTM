@@ -8,6 +8,7 @@ import net.fexcraft.mod.fme.blocks.EditorTileEntity;
 import net.fexcraft.mod.fme.util.TempModel;
 import net.fexcraft.mod.lib.tmt.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.block.material.MapColor;
@@ -85,8 +86,8 @@ public class SelectedPolygon extends GuiScreen {
 				mc.fontRenderer.drawString(box.texy + "",  80, 70, MapColor.GRAY.colorValue);
 				mc.fontRenderer.drawString(model.hasTexture() + "", 144, 70, MapColor.GRAY.colorValue);
 				//
-				mc.fontRenderer.drawString(box.getType() + "",  16, 90, MapColor.GRAY.colorValue);
-				mc.fontRenderer.drawString(box.getName() + "",  80, 90, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.getType(),  16, 90, MapColor.GRAY.colorValue);
+				mc.fontRenderer.drawString(box.getName(),  80, 90, MapColor.GRAY.colorValue);
 				//
 				if(type.isCylinder()){
 					
@@ -109,9 +110,10 @@ public class SelectedPolygon extends GuiScreen {
 			if(i < 4 && keys[i].isPressed()){
 				selfield.move(i);
 			}
-			else if((i == 4 || i == 5) && type != PolygonType.NONE && polygon != null){
+			else if((i == 4 && keys[i].isPressed()) || (i == 5 && keys[i].isPressed()) && type != PolygonType.NONE && polygon != null){
 				polygon.processInput(selfield.id, i == 4 ? +1 : -1);//TODO brush/whatever size
 				this.getModel().groups.get(group).set(element, polygon.toTMT(this.getModel()));
+				Print.chat(mc.player, i == 4 ? "add" : "sub");
 			}
 		}
 	}

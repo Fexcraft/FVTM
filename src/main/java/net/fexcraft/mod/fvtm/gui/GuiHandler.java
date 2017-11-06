@@ -53,6 +53,12 @@ public class GuiHandler implements IGuiHandler {
 				return new ConstructorInputGui(player, new BlockPos(x, y, z));
 			case 9910:
 				return new VehicleInventoryGui.Client(player, world, x, y, z);
+			case 9912:{
+				net.minecraft.tileentity.TileEntity ent = world.getTileEntity(new BlockPos(x, y, z));
+				if(ent != null){
+					//TODO
+				}
+			}
 			default:
 				return null;
 		}

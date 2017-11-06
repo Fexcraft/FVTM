@@ -168,7 +168,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 				player.getHeldItem(hand).shrink(1);
 			}
 		}
-		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItemMainhand());
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 	
 }

@@ -334,7 +334,7 @@ public class AddonManagerGui extends GuiContainer {
 		return nbt;
 	}
 	
-	public String trs(String string){
+	public static final String trs(String string){
 		return I18n.format("gui.fvtm.addon_manager." + string, new Object[0]);
 	}
 	

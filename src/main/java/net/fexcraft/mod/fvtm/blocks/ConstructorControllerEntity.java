@@ -535,6 +535,24 @@ public class ConstructorControllerEntity {
 							this.updateScreen("part_view_selected");
 						}
 					}
+					if(button.isReset()){
+						Entry<String, PartData> entry = (Entry<String, PartData>)vehicledata.getParts().entrySet().toArray()[sel];
+						if(entry.getValue().getPart().isRemovable()){
+							vehicledata.getParts().remove(entry.getKey());
+							//
+							PartData data = entry.getValue();
+							Print.chat(player, "&7Part &c'" + data.getPart().getName() + "' &7removed from vehicle!");
+							EntityItem item = new EntityItem(world);
+							item.setItem(data.getPart().getItemStack(data));
+							item.setPosition(this.pos.getX() + 0.5, this.pos.getY() + 1.5, this.pos.getZ() + 0.5);
+							world.spawnEntity(item);
+							this.updateVehicle(null);
+						}
+						else{
+							Print.chat(player, "Part is marked as non-removable.");
+						}
+						this.updateScreen("part_view_installed");
+					}
 					break;
 				}
 				case "part_view_selected":{

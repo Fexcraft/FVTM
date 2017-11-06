@@ -33,6 +33,7 @@ public class GuiHandler implements IGuiHandler {
 		switch(ID){
 			case 55:
 			case 88:
+			case 9912:
 				return new GenericPlaceholderContainer();
 			case 9910:
 				return new VehicleInventoryGui.Server(player, world, x, y, z);
@@ -54,9 +55,14 @@ public class GuiHandler implements IGuiHandler {
 			case 9910:
 				return new VehicleInventoryGui.Client(player, world, x, y, z);
 			case 9912:{
-				net.minecraft.tileentity.TileEntity ent = world.getTileEntity(new BlockPos(x, y, z));
-				if(ent != null){
-					//TODO
+				BlockPos pos = new BlockPos(x, y, z);
+				net.minecraft.tileentity.TileEntity ent = world.getTileEntity(pos);
+				if(ent != null && ent instanceof ConstructorControllerEntity.Client){
+					return new ConstructorRemoteGui((ConstructorControllerEntity.Client)ent, player, pos);
+				}
+				else{
+					Print.chat(player, "Constructor Controller not found. [" + x + "|" + y + "|" + z + "];");
+					return null;
 				}
 			}
 			default:
@@ -146,6 +152,48 @@ public class GuiHandler implements IGuiHandler {
 					int[] args = packet.nbt.hasKey("args") ? packet.nbt.getIntArray("args") : new int[0];
 					EntityPlayer player = (EntityPlayer)objs[0];
 					player.openGui(FVTM.getInstance(), gui, player.world, args.length >= 1 ? args[0] : 0, args.length >= 2 ? args[1] : 0, args.length >= 3 ? args[2] : 0);
+					break;
+				}
+				case "constructor_remote":{
+					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+					int button = packet.nbt.getInteger("button");
+					EntityPlayer player = (EntityPlayer)objs[0];
+					ConstructorController.Button conbutton = ConstructorController.Button.NULL;
+					switch(button){
+						case 0:{
+							conbutton = ConstructorController.Button.HOME;
+							break;
+						}
+						case 1:{
+							conbutton = ConstructorController.Button.RETURN;
+							break;
+						}
+						case 2:{
+							conbutton = ConstructorController.Button.ARROW_LEFT;
+							break;
+						}
+						case 3:{
+							conbutton = ConstructorController.Button.ARROW_RIGHT;
+							break;
+						}
+						case 4:{
+							conbutton = ConstructorController.Button.ARROW_UP;
+							break;
+						}
+						case 5:{
+							conbutton = ConstructorController.Button.ARROW_DOWN;
+							break;
+						}
+						case 6:{
+							conbutton = ConstructorController.Button.SELECT;
+							break;
+						}
+						case 7:{
+							conbutton = ConstructorController.Button.REMOVE;
+							break;
+						}
+					}
+					((ConstructorControllerEntity.Server)player.world.getTileEntity(pos)).onButtonPress(conbutton, player, null);
 					break;
 				}
 			}

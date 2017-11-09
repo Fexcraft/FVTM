@@ -47,8 +47,8 @@ itemGroup.fvtm_materials=FVTM - Materials
 itemGroup.fvtm_blocks=FVTM - Blocks
 
 #Blocks
-tile.fvtm:vehicle_constructor_controller.name=Constructor Controller
-tile.fvtm:vehicle_constructor_center.name=Constructor Center (Display)
+tile.fvtm:landvehicle_constructor_controller.name=Constructor Controller
+tile.fvtm:landvehicle_constructor_center.name=Constructor Center (Display)
 tile.fvtm:display_block.name=Display Block
 tile.fvtm:paint_table.name=Paint Table
 tile.fvtm:vehicle_crafter.name=Blueprint Table

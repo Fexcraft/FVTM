@@ -3,7 +3,8 @@ package net.fexcraft.mod.fvtm.api;
 public enum EntityType {
 	
 	NONE(0), //un-spawned
-	FLANSMOD(1), //Flansmod Re-Minus
+	INTERNAL(1),
+	//FLANSMOD(1), //Flansmod Re-Minus
 	MTS(2), //if it ever get's that far
 	TiM(3); //Trains-Only
 	

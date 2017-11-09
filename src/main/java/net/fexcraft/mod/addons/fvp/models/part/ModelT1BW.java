@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelT1BW extends PartModel {
+public class ModelT1BW extends PartModel<VehicleData> {
 	
 	int textureX = 512;
 	int textureY = 512;

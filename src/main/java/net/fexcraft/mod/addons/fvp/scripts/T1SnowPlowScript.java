@@ -1,13 +1,10 @@
 package net.fexcraft.mod.addons.fvp.scripts;
 
 import org.lwjgl.input.Keyboard;
-
-import com.flansmod.common.RotatedAxes;
-import com.flansmod.common.vector.Vector3f;
-import com.flansmod.fvtm.LandVehicle;
-
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.math.Pos;
@@ -20,6 +17,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -80,10 +78,10 @@ public class T1SnowPlowScript implements VehicleScript {
 
 	@Override
 	public void onUpdate(Entity entity, VehicleData data){
-		com.flansmod.fvtm.LandVehicle vehicle = (LandVehicle) entity;
+		LandVehicleEntity vehicle = (LandVehicleEntity) entity;
 		if(!vehicle.world.isRemote){
 			if(on){
-				Vector3f[] pos = new Vector3f[6];
+				Vec3d[] pos = new Vec3d[6];
 				pos[0] = calculate(vehicle,  2);
 				pos[1] = calculate(vehicle,  1);
 				pos[2] = calculate(vehicle,  0);
@@ -93,7 +91,7 @@ public class T1SnowPlowScript implements VehicleScript {
 				IBlockState[] states = new IBlockState[6];
 				int j = 0;
 				for(int i = 0; i < 6; i++){
-					BlockPos poss = new BlockPos(pos[i].toVec3());
+					BlockPos poss = new BlockPos(new Vec3d(pos[i].x, pos[i].y, pos[i].z));
 					states[i] = vehicle.world.getBlockState(poss);
 					if(i < 5){
 						if(states[i].getMaterial() == Material.SNOW){
@@ -115,14 +113,10 @@ public class T1SnowPlowScript implements VehicleScript {
 		}
 	}
 	
-	private static final Vector3f calculate(com.flansmod.fvtm.LandVehicle vehicle, int i){
+	private static final Vec3d calculate(LandVehicleEntity vehicle, int i){
 		Pos pos = new Pos(70, 4, i * 16);
-		Vector3f loc = new Vector3f(pos.to16FloatX(), pos.to16FloatY(), pos.to16FloatZ());
-		RotatedAxes yaw = new RotatedAxes(vehicle.seats[0].looking.getYaw(), 0F, 0F);
-		Vector3f rotatedOffset = yaw.findLocalVectorGlobally(vehicle.seats[0].seatInfo.rotatedOffset);
-		Vector3f.add(loc, new Vector3f(rotatedOffset.x, 0F, rotatedOffset.z), loc);
-		Vector3f rel = vehicle.axes.findLocalVectorGlobally(loc);
-		return new Vector3f(vehicle.posX + rel.x, vehicle.posY + rel.y, vehicle.posZ + rel.z);
+		Vec3d rel = vehicle.getAxes().getRelativeVector(pos.to16Double());
+		return new Vec3d(vehicle.posX + rel.x, vehicle.posY + rel.y, vehicle.posZ + rel.z);
 	}
 
 	@Override
@@ -131,14 +125,14 @@ public class T1SnowPlowScript implements VehicleScript {
 	}
 	
 	@Override
-	public void onKeyInput(int key){
+	public void onKeyInput(int key, int seat, VehicleEntity ent){
 		//Print.debug(key);
-		if(Keyboard.isKeyDown(ClientReg.keybind.getKeyCode()) && VehicleScript.getClientSeatId() == 0){
+		if(Keyboard.isKeyDown(ClientReg.keybind.getKeyCode()) && seat == 0){
 			on = !on;
 			Print.debugChat("Snow Plow " + (on ? "enabled" : "disabled") + ".");
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setBoolean("On", on);
-			this.sendPacketToServer(VehicleScript.getVehicle(), nbt);
+			this.sendPacketToServer(ent.getEntity(), nbt);
 		}
 	}
 	

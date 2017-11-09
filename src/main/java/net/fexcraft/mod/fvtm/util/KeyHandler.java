@@ -1,60 +1,50 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 
-@SideOnly(Side.CLIENT)
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.gui.GuiVehicleConroller;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+
 public class KeyHandler {
 	
-	private static Minecraft mcc;
-	//private static final String category = "FVTM - Vehicle Controls";
-	//public static KeyBinding accelerate = new KeyBinding("Accelerate", Keyboard.KEY_W, category);
-	//public static KeyBinding decelerate = new KeyBinding("Decelerate", Keyboard.KEY_S, category);
-	//public static KeyBinding turn_right = new KeyBinding("Turn Right", Keyboard.KEY_D, category);
-	//public static KeyBinding turn_left  = new KeyBinding("Turn Left",  Keyboard.KEY_A, category);
-	//public static KeyBinding brake  = new KeyBinding("Brake", Keyboard.KEY_SPACE, category);
+	private final Minecraft minecraft;
+	public static KeyBinding engineToggle;
+	public static KeyBinding openInventory;
+	public static KeyBinding leftMouse;
+	public static KeyBinding rightMouse;
+	public static KeyBinding doorToggle;
+	public static final String category = "FVTM Controls";
 	
 	public KeyHandler(){
-		//ClientRegistry.registerKeyBinding(accelerate);
-		//ClientRegistry.registerKeyBinding(decelerate);
-		//ClientRegistry.registerKeyBinding(turn_right);
-		//ClientRegistry.registerKeyBinding(turn_left);
-		//ClientRegistry.registerKeyBinding(brake);
-		mcc = Minecraft.getMinecraft();
+		this.minecraft = Minecraft.getMinecraft();
+		engineToggle = new KeyBinding("Engine", Keyboard.KEY_LCONTROL, category);
+		openInventory = new KeyBinding("Inventory", Keyboard.KEY_R, category);
+		leftMouse = new KeyBinding("Prototype LM", Keyboard.KEY_8, category);
+		rightMouse = new KeyBinding("Prototype RM", Keyboard.KEY_9, category);
+		doorToggle = new KeyBinding("Doors", Keyboard.KEY_K, category);
 	}
 	
+	//TODO sunscribe keyinput event
+	
 	@SubscribeEvent
-	public void onKeyInput(KeyInputEvent event){
-		if(FMLClientHandler.instance().isGUIOpen(GuiChat.class) || mcc.currentScreen != null){
-			return;
-		}
-		//
-		EntityPlayer player = mcc.player;
-		if(player.isRiding() && player.getRidingEntity() instanceof VehicleEntity){
-			VehicleEntity ent = (VehicleEntity)player.getRidingEntity();
-			if(mcc.gameSettings.keyBindForward.isPressed()){
-				ent.keyPress("accelerate", player);
+	public void clientTick(TickEvent.ClientTickEvent event){
+		switch(event.phase){
+			case START :{
+				Tabs.update();
+				break;
 			}
-			if(mcc.gameSettings.keyBindBack.isPressed()){
-				ent.keyPress("decelerate", player);
+			case END :{
+				if(minecraft.player == null || minecraft.world == null){ return; }
+				if(minecraft.player.getRidingEntity() instanceof SeatEntity && minecraft.currentScreen == null){
+					minecraft.displayGuiScreen(new GuiVehicleConroller((SeatEntity)minecraft.player.getRidingEntity()));
+				}
+				break;
 			}
-			if(mcc.gameSettings.keyBindRight.isPressed()){
-				ent.keyPress("turn_right", player);
-			}
-			if(mcc.gameSettings.keyBindLeft.isPressed()){
-				ent.keyPress("turn_left", player);
-			}
-			if(mcc.gameSettings.keyBindJump.isPressed()){
-				ent.keyPress("brake", player);
-			}
-		}
+		}	
 	}
 	
 }

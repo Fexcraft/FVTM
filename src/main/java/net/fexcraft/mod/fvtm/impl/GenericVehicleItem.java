@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
@@ -71,6 +72,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 			}
 			tooltip.add(Formatter.format("&9Lock Code: &r" + veh.getLockCode()));
 			tooltip.add(Formatter.format("&9Selected Texture: &7" + veh.getSelectedTexture()));
+			tooltip.add(Formatter.format("&9Seat Amount: &r" + veh.getFMSeats().size()));
 			tooltip.add(Formatter.format("&9Fuel Tank: &7" + RGB.format(veh.getFuelTankContent()) + "&8/&e" + veh.getFuelTankSize()));
 			tooltip.add(Formatter.format("&9Fuel Type: &7" + (veh.getPart("engine") == null ? "unknown / no engine" : veh.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelType().getName())));
 			if(veh.getParts().size() > 0){
@@ -162,7 +164,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 		if(movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK){
 			BlockPos pos = movingobjectposition.getBlockPos();
 			if(!world.isRemote){
-				world.spawnEntity(new com.flansmod.fvtm.LandVehicle(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, this.getVehicle(player.getHeldItem(hand))));
+				world.spawnEntity(new LandVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, this.getVehicle(player.getHeldItem(hand))));
 			}
 			if(!player.capabilities.isCreativeMode){
 				player.getHeldItem(hand).shrink(1);

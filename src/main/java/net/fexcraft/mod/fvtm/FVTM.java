@@ -2,14 +2,26 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
-import net.fexcraft.mod.fvtm.entities.TestVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.render.entity.RenderEmpty;
+import net.fexcraft.mod.fvtm.render.entity.RenderLandVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.FvtmUpdateHandler;
 import net.fexcraft.mod.fvtm.util.RecipeObject;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.SpawnCmd;
+import net.fexcraft.mod.fvtm.util.packets.PacketSeatDismount;
+import net.fexcraft.mod.fvtm.util.packets.PacketSeatUpdate;
+import net.fexcraft.mod.fvtm.util.packets.PacketVehicleControl;
+import net.fexcraft.mod.fvtm.util.packets.PacketVehicleKeyPress;
+import net.fexcraft.mod.fvtm.util.packets.SeatDismountPacketHandler;
+import net.fexcraft.mod.fvtm.util.packets.SeatUpdatePacketHandler;
+import net.fexcraft.mod.fvtm.util.packets.VehicleControlPacketHandler;
+import net.fexcraft.mod.fvtm.util.packets.VehicleKeyPressPacketHandler;
 import net.fexcraft.mod.lib.crafting.RecipeRegistry;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.SimpleUpdateHandler;
@@ -61,7 +73,16 @@ public class FVTM {
 		new ConstructorController();
 		//
 		PermManager.setEnabled(MODID);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:testveh"), TestVehicleEntity.class, "testvehicle", 1992, this, 256, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:seat"), SeatEntity.class, "fvtm:seat", 1993, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), LandVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 1, false);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1995, this, 256, 1, true);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicleEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, true);
+		if(event.getSide().isClient()){
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleEntity.class, RenderLandVehicle::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
+		}
 	}
 	
 	@Mod.EventHandler
@@ -73,6 +94,13 @@ public class FVTM {
 		RecipeObject.registerRecipes();
 		RecipeRegistry.addBluePrintRecipe("FVTM:Blocks", new ItemStack(ConstructorController.INSTANCE, 1, 0), new ItemStack(Blocks.IRON_BLOCK, 2), new ItemStack(Items.REDSTONE, 8), new ItemStack(Items.GOLD_INGOT, 3));
 		RecipeRegistry.addBluePrintRecipe("FVTM:Blocks", new ItemStack(ConstructorCenter.INSTANCE, 1, 0), new ItemStack(Blocks.IRON_BLOCK, 1), new ItemStack(Items.REDSTONE, 4), new ItemStack(Items.GOLD_INGOT, 2), new ItemStack(Blocks.PLANKS, 4), new ItemStack(Items.STICK, 4), new ItemStack(Blocks.LOG, 2));
+		//
+		PacketHandler.getInstance().registerMessage(VehicleControlPacketHandler.Client.class, PacketVehicleControl.class, PacketHandler.nextpacketid++, Side.CLIENT);
+		PacketHandler.getInstance().registerMessage(VehicleControlPacketHandler.Server.class, PacketVehicleControl.class, PacketHandler.nextpacketid++, Side.SERVER);
+		PacketHandler.getInstance().registerMessage(VehicleKeyPressPacketHandler.class, PacketVehicleKeyPress.class, PacketHandler.nextpacketid++, Side.SERVER);
+		PacketHandler.getInstance().registerMessage(SeatUpdatePacketHandler.Client.class, PacketSeatUpdate.class, PacketHandler.nextpacketid++, Side.CLIENT);
+		PacketHandler.getInstance().registerMessage(SeatUpdatePacketHandler.Server.class, PacketSeatUpdate.class, PacketHandler.nextpacketid++, Side.SERVER);
+		PacketHandler.getInstance().registerMessage(SeatDismountPacketHandler.Client.class, PacketSeatDismount.class, PacketHandler.nextpacketid++, Side.CLIENT);
 	}
 	
 	@Mod.EventHandler

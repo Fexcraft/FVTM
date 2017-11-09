@@ -9,7 +9,10 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.util.math.Pos;
@@ -203,34 +206,6 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 
 		public void onRemove(Entity entity, VehicleData data);
 		
-		@SideOnly(Side.CLIENT)
-		public static int getClientSeatId(){
-			EntityPlayer player = net.minecraft.client.Minecraft.getMinecraft().player;
-			if(player.getRidingEntity() != null && player.getRidingEntity() instanceof com.flansmod.fvtm.EntitySeat){
-				return ((com.flansmod.fvtm.EntitySeat)player.getRidingEntity()).getSeatId();
-			}
-			else return -1;
-		}
-		
-		@SideOnly(Side.CLIENT)
-		public static Entity getVehicle(){
-			return ((com.flansmod.fvtm.EntitySeat)net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()).vehicle;
-		}
-		
-		@SideOnly(Side.CLIENT)
-		public static boolean playerIsInVehicle(com.flansmod.fvtm.LandVehicle vehicle){
-			EntityPlayer player = net.minecraft.client.Minecraft.getMinecraft().player;
-			for(com.flansmod.fvtm.EntitySeat seat : vehicle.seats){
-				if(player.getRidingEntity() == null){
-					return false;
-				}
-				if(player.getRidingEntity().equals(seat)){
-					return true;
-				}
-			}
-			return false;
-		}
-		
 		public default void sendPacketToClient(Entity ent, EntityPlayerMP player, NBTTagCompound nbt){
 			nbt.setString("ScriptId", getId().toString());
 			PacketHandler.getInstance().sendTo(new PacketEntityUpdate(ent, nbt), player);
@@ -251,7 +226,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 			PacketHandler.getInstance().sendToServer(new PacketEntityUpdate(ent, nbt));
 		}
 
-		public default void onKeyInput(int key){
+		public default void onKeyInput(int key, int seatid, VehicleEntity vehicle){
 			return;
 		}
 		
@@ -261,10 +236,22 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	public static interface VehicleEntity {
 		
 		public VehicleData getVehicleData();
-
-		public void keyPress(String string, EntityPlayer player);
 		
 		public VehicleType getVehicleType();
+		
+		public Entity getEntity();
+
+		public VehicleAxes getAxes();
+
+		public WheelEntity[] getWheels();
+
+		public SeatEntity[] getSeats();
+
+		public boolean onKeyPress(int key, int seat, EntityPlayer player);
+
+		public Entity getCamera();
+
+		public double getThrottle();
 		
 	}
 	

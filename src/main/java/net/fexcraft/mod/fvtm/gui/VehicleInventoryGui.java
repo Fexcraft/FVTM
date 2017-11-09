@@ -9,6 +9,7 @@ import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttrib
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Formatter;
@@ -55,7 +56,7 @@ public class VehicleInventoryGui {
 		public Client(EntityPlayer player, World world, int x, int y, int z){
 			super(server = new Server(player, world, x, y, z));
 			this.x = x; this.y = y; this.z = z;
-			data = ((com.flansmod.fvtm.EntitySeat)player.getRidingEntity()).vehicle.data;
+			data = ((SeatEntity)player.getRidingEntity()).getVehicle().getVehicleData();
 			switch(x){
 				case 0:{
 					this.xSize = 168;
@@ -294,6 +295,7 @@ public class VehicleInventoryGui {
 			}
 		}
 		
+		@SuppressWarnings("unused")
 		private static void sendRefresh(int screen, int part, int scroll){
 			
 		}
@@ -308,7 +310,7 @@ public class VehicleInventoryGui {
 	public static class Server extends Container {
 		
 		private EntityPlayer player;
-		private int x, y, z;
+		//private int x, y, z;
 		private TempInventory temp = null;
 		private VehicleData data;
 		//
@@ -316,8 +318,8 @@ public class VehicleInventoryGui {
 		
 		public Server(EntityPlayer player, World world, int x, int y, int z){
 			this.player = player;
-			this.x = x; this.y = y; this.z = z;
-			data = ((com.flansmod.fvtm.EntitySeat)player.getRidingEntity()).vehicle.data;
+			//this.x = x; this.y = y; this.z = z;
+			data = ((SeatEntity)player.getRidingEntity()).getVehicle().getVehicleData();
 			switch(x){
 				case 0:{
 					//do nothing

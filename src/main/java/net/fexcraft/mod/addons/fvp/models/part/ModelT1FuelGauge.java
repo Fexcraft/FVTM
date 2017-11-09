@@ -14,7 +14,7 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 
-public class ModelT1FuelGauge extends PartModel {
+public class ModelT1FuelGauge extends PartModel<VehicleData> {
 	
 	int textureX = 32;
 	int textureY = 32;

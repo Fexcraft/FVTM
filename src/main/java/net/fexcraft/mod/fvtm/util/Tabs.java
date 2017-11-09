@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 
 public class Tabs {
 	
-	private static int sec = 0;
+	private static int sec = -1;
 	private static int mat_id = 0;
 	private static int part_id = 0;
 	private static int l_veh_id = 0;
@@ -89,7 +89,6 @@ public class Tabs {
 		}
 		@Override
 		public ItemStack getIconItemStack(){
-			update();
 			return Resources.MATERIALS.getEntries().size() > 0 ? ((Material)Resources.MATERIALS.getValues().toArray()[mat_id]).getItemStack() : new ItemStack(Items.STONE_AXE);
 		}
 	};
@@ -101,7 +100,7 @@ public class Tabs {
 		}
 	};
 	
-	private static final void update(){
+	public static final void update(){
 		if(sec != Time.getSecond()){
 			sec = Time.getSecond();
 			mat_id++;

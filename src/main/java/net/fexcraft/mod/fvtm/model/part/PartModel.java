@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.lib.tmt.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
@@ -377,7 +378,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 	}
 	
 	public void def_renderWheels4(VehicleData type, String us, Entity veh){//TODO
-		com.flansmod.fvtm.LandVehicle vehicle = (com.flansmod.fvtm.LandVehicle)veh;
+		LandVehicleEntity vehicle = (LandVehicleEntity)veh;
 		switch(us){
 			case "left_front_wheel":
 				for(ModelRendererTurbo element : wheel_front_left){

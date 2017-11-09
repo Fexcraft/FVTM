@@ -9,10 +9,11 @@
 
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelT1SW extends PartModel {
+public class ModelT1SW extends PartModel<VehicleData> {
 	
 	int textureX = 512;
 	int textureY = 512;

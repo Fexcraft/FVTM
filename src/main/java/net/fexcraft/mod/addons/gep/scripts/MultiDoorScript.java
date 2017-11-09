@@ -4,6 +4,7 @@ import org.lwjgl.input.Keyboard;
 
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -27,7 +28,6 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 	}
 	
 	public boolean hood, trunk, front_left, front_right, back_left, back_right;
-	public Entity veh;
 
 	@Override
 	public ResourceLocation getId(){
@@ -80,7 +80,7 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 
 	@Override
 	public void onCreated(Entity entity, VehicleData data){
-		this.veh = entity;
+		//
 	}
 
 	@Override
@@ -114,11 +114,10 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 	}
 	
 	@Override
-	public void onKeyInput(int key){
-		Print.debug(veh);
+	public void onKeyInput(int key, int seat, VehicleEntity ent){
+		Print.debug(ent.getEntity());
 		if(Keyboard.isKeyDown(ClientReg.doorkey.getKeyCode())){
 			Print.debug("L");
-			int seat = VehicleScript.getClientSeatId();
 			switch(seat){
 				case 0:{
 					front_left = !front_left;
@@ -139,26 +138,26 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 				default: break;
 			}
 			if(seat < 4){
-				sendDoorPacket(veh);
+				sendDoorPacket(ent.getEntity());
 				Print.debugChat("L > Door");
 			}
 		}
 		else if(Keyboard.isKeyDown(ClientReg.hoodkey.getKeyCode())){
 			Print.debug("O");
-			if(VehicleScript.getClientSeatId() != 0){
+			if(seat != 0){
 				return;
 			}
 			hood = !hood;
-			sendDoorPacket(veh);
+			sendDoorPacket(ent.getEntity());
 			Print.debugChat("O > Hood");
 		}
 		else if(Keyboard.isKeyDown(ClientReg.backkey.getKeyCode())){
 			Print.debug("P");
-			if(VehicleScript.getClientSeatId() != 0){
+			if(seat != 0){
 				return;
 			}
 			trunk = !trunk;
-			sendDoorPacket(veh);
+			sendDoorPacket(ent.getEntity());
 			Print.debugChat("P > Back");
 		}
 		else return;

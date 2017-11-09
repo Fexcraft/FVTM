@@ -42,7 +42,7 @@ public class GenericVehicleData implements VehicleData {
 	private List<Pos> wheelpos;
 	private RGB primary, secondary;
 	private boolean doors, isexternal, locked, remote;
-	private Map<Class, VehicleScript> scripts = new HashMap<Class, VehicleScript>();
+	private Map<Class<?>, VehicleScript> scripts = new HashMap<Class<?>, VehicleScript>();
 	private ArrayList<FMSeat> seats = new ArrayList<FMSeat>();
 	
 	public GenericVehicleData(Vehicle veh){
@@ -291,19 +291,18 @@ public class GenericVehicleData implements VehicleData {
 	private void updatePartDependantData(){
 		seats.clear();
 		parts.forEach((key, partdata) -> {
-			if(partdata.getPart().getAttribute(FMSeatAttribute.class) != null) {
+			if(partdata.getPart().getAttribute(FMSeatAttribute.class) != null){
 				seats.addAll(partdata.getPart().getAttribute(FMSeatAttribute.class).getSeats());
 			}
 		});
-		FMSeat[] fmseat = new FMSeat[1];
-		seats.forEach((seat) -> {
-			if(seat.isDriver()){
-				fmseat[0] = seat;
+		FMSeat seat = null;
+		for(int i = 0; i < seats.size(); i++){
+			if(seats.get(i).isDriver()){
+				seat = seats.remove(i);
 			}
-		});
-		if(fmseat != null && seats.size() > 0){
-			FMSeat fseat = seats.set(0, fmseat[0]);
-			if(fseat != null) { seats.add(fseat); }
+		}
+		if(seat != null){
+			seats.add(0, seat);
 		}
 	}
 
@@ -312,6 +311,7 @@ public class GenericVehicleData implements VehicleData {
 		return remote;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends VehicleScript> T getScript(Class<T> clazz){
 		return (T)scripts.get(clazz);

@@ -31,13 +31,6 @@ minecraft {
 
 dependencies {
     compile project(':FCL')
-    if(rootProject.name == "FVTM"){
-		println "skipping flansmod"
-	}
-	else{
-		println "compiling flansmod"
-    	compile project(':FlansMod')
-	}
 }
 
 processResources {

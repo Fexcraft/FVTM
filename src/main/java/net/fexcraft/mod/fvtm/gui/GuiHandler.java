@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketListener;
@@ -240,7 +241,7 @@ public class GuiHandler implements IGuiHandler {
 				}
 				case "update_fuel_tanks":{
 					Print.debug(packet.nbt.toString());
-					VehicleData data = ((com.flansmod.fvtm.EntitySeat)((EntityPlayer)objs[0]).getRidingEntity()).vehicle.data;
+					VehicleData data = ((SeatEntity)((EntityPlayer)objs[0]).getRidingEntity()).getVehicle().getVehicleData();
 					NBTTagList list = (NBTTagList)packet.nbt.getTag("parts");
 					list.forEach((nbtbase) -> {
 						NBTTagCompound compound = (NBTTagCompound)nbtbase;

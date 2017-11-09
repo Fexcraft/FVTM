@@ -4,6 +4,7 @@ import org.lwjgl.input.Keyboard;
 
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -79,14 +80,14 @@ public class T1_2Script implements Vehicle.VehicleScript {
 	}
 	
 	@Override
-	public void onKeyInput(int key){
+	public void onKeyInput(int key, int seat, VehicleEntity ent){
 		//Print.debug(key, keybind.getKeyCategory(), keybind.getKeyCode());
-		if(Keyboard.isKeyDown(ClientReg.keybind.getKeyCode()) && VehicleScript.getClientSeatId() == 0){
+		if(Keyboard.isKeyDown(ClientReg.keybind.getKeyCode()) && seat == 0){
 			out = !out;
 			Print.debugChat(out ? "Out" : "In");
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setBoolean("Out", out);
-			this.sendPacketToServer(VehicleScript.getVehicle(), nbt);
+			this.sendPacketToServer(ent.getEntity(), nbt);
 		}
 	}
 	

@@ -40,13 +40,13 @@ public class GenericVehicle implements Vehicle {
 	private List<ResourceLocation> textures;
 	private TreeMap<String, ResourceLocation> preinstalled = new TreeMap<String, ResourceLocation>();
 	private List<String> required;
-	@SideOnly(Side.CLIENT) private VehicleModel model;
+	@SideOnly(Side.CLIENT) private VehicleModel<VehicleData> model;
 	private List<Pos> wheelpos;
 	private RGB primary, secondary;
 	private int constructionlength;
 	private DriveType drivetype;
 	private ArrayList<EntityType> accentmods = new ArrayList<EntityType>();
-	{ accentmods.add(EntityType.FLANSMOD); }
+	{ accentmods.add(EntityType.INTERNAL); }
 	//Sound
 	private TreeMap<String, ResourceLocation> sounds = new TreeMap<String, ResourceLocation>();
 	private TreeMap<ResourceLocation, SoundEvent> soundevents = new TreeMap<ResourceLocation, SoundEvent>();
@@ -54,6 +54,7 @@ public class GenericVehicle implements Vehicle {
 	//FM
 	private float cameradis, maxposthrottle, maxnegthrottle, turnleftmod, turnrightmod, wheelspringstrength, wheelstepheight;
 	
+	@SuppressWarnings("unchecked")
 	public GenericVehicle(JsonObject obj){
 		this.registryname = DataUtil.getRegistryName(obj, "LANDVEHICLE");
 		this.addon = DataUtil.getAddon(registryname, obj, "LANDVEHICLE");
@@ -180,7 +181,7 @@ public class GenericVehicle implements Vehicle {
 	}
 
 	@Override @SideOnly(Side.CLIENT)
-	public VehicleModel getModel(){
+	public VehicleModel<VehicleData> getModel(){
 		return model;
 	}
 

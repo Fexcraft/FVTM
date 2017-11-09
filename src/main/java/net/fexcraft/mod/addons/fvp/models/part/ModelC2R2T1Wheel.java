@@ -11,13 +11,14 @@ package net.fexcraft.mod.addons.fvp.models.part;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 
-public class ModelC2R2T1Wheel extends PartModel {
+public class ModelC2R2T1Wheel extends PartModel<VehicleData> {
 	
 	int textureX = 128;
 	int textureY = 64;
@@ -265,7 +266,7 @@ public class ModelC2R2T1Wheel extends PartModel {
 	
 	@Override
 	public void render(VehicleData data, String us, Entity veh){
-		com.flansmod.fvtm.LandVehicle vehicle = (com.flansmod.fvtm.LandVehicle)veh;
+		LandVehicleEntity vehicle = (LandVehicleEntity)veh;
 		switch(us){
 			case "right_front_wheel":{
 				leftfront.translate();

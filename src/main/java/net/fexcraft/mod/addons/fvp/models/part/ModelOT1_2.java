@@ -13,14 +13,14 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelOT1_3 extends PartModel<VehicleData> {
+public class ModelOT1_2 extends PartModel<VehicleData> {
 	
 	int textureX = 512;
 	int textureY = 512;
 
-	public ModelOT1_3(){
+	public ModelOT1_2(){
 		creators.add("Ferdinand (FEX___96)");
-		body = new ModelRendererTurbo[41];
+		body = new ModelRendererTurbo[35];
 		body[0] = new ModelRendererTurbo(this, 33, 249, textureX, textureY); // Box 373
 		body[1] = new ModelRendererTurbo(this, 225, 249, textureX, textureY); // Box 374
 		body[2] = new ModelRendererTurbo(this, 369, 233, textureX, textureY); // Box 375
@@ -56,12 +56,6 @@ public class ModelOT1_3 extends PartModel<VehicleData> {
 		body[32] = new ModelRendererTurbo(this, 265, 393, textureX, textureY); // Box 409
 		body[33] = new ModelRendererTurbo(this, 449, 281, textureX, textureY); // Box 410
 		body[34] = new ModelRendererTurbo(this, 433, 361, textureX, textureY); // Box 411
-		body[35] = new ModelRendererTurbo(this, 241, 209, textureX, textureY); // Box 421
-		body[36] = new ModelRendererTurbo(this, 257, 209, textureX, textureY); // Box 422
-		body[37] = new ModelRendererTurbo(this, 1, 217, textureX, textureY); // Box 423
-		body[38] = new ModelRendererTurbo(this, 17, 217, textureX, textureY); // Box 424
-		body[39] = new ModelRendererTurbo(this, 1, 409, textureX, textureY); // Box 425
-		body[40] = new ModelRendererTurbo(this, 1, 425, textureX, textureY); // Box 426
 
 		body[0].addBox(0F, 0F, 0F, 93, 12, 2, 0F); // Box 373
 		body[0].setRotationPoint(-75F, -25F, 23F);
@@ -168,24 +162,6 @@ public class ModelOT1_3 extends PartModel<VehicleData> {
 		body[34].addShapeBox(0F, 0F, 0F, 1, 23, 24, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, -4F, 0F, -0.4F, -4F, 0F, -0.4F, 4F, 0F, -0.4F, 4F, 0F, -0.4F, 4F, -1F, -0.4F, 4F, -1F); // Box 411
 		body[34].setRotationPoint(18F, -52F, 0.5F);
 
-		body[35].addBox(0F, 0F, 0F, 1, 5, 4, 0F); // Box 421
-		body[35].setRotationPoint(11F, -18F, 16F);
-
-		body[36].addBox(0F, 0F, 0F, 1, 5, 4, 0F); // Box 422
-		body[36].setRotationPoint(-67F, -18F, 16F);
-
-		body[37].addBox(0F, 0F, 0F, 1, 5, 4, 0F); // Box 423
-		body[37].setRotationPoint(11F, -18F, -20F);
-
-		body[38].addBox(0F, 0F, 0F, 1, 5, 4, 0F); // Box 424
-		body[38].setRotationPoint(-67F, -18F, -20F);
-
-		body[39].addShapeBox(0F, 0F, 0F, 83, 1, 8, 0F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 425
-		body[39].setRotationPoint(-69F, -19F, 14F);
-
-		body[40].addShapeBox(0F, 0F, 0F, 83, 1, 8, 0F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 426
-		body[40].setRotationPoint(-69F, -19F, -22F);
-
 
 		bodyDoorOpen = new ModelRendererTurbo[2];
 		bodyDoorOpen[0] = new ModelRendererTurbo(this, 321, 265, textureX, textureY); // Box 382
@@ -244,9 +220,8 @@ public class ModelOT1_3 extends PartModel<VehicleData> {
 
 		bodyDoorClose[10].addShapeBox(0F, 0F, 0F, 1, 1, 2, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F); // Box 420
 		bodyDoorClose[10].setRotationPoint(-77F, -26F, -1F);
-
-		translateAll(0F, 0F, 0F);
 		
+		//translateAll(0F, 0F, 0F);
 		//flipAll();
 		
 	}

@@ -69,7 +69,7 @@ public class VehicleControlPacketHandler {
 		}
 	}
 	
-	protected static void updatevehicle(LandVehicleEntity vehicle, PacketVehicleControl pkt){
+	private static void updatevehicle(LandVehicleEntity vehicle, PacketVehicleControl pkt){
 		vehicle.setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll, pkt.motX, pkt.motY, pkt.motZ, pkt.avelx, pkt.avely, pkt.avelz, pkt.throttle, pkt.steeringYaw);
 		vehicle.getVehicleData().toggleDoors(pkt.doors);
 	}

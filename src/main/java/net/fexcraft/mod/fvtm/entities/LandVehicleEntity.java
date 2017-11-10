@@ -403,18 +403,20 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 							Print.chat(player, "Turn engine off first!");
 						}
 						else{
-							((EntityPlayer)this.getControllingPassenger()).openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 0, 0, 0);
+							player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 0, 0, 0);
 						}
 						//open inventory
 					}
 					return true;
 				}
 				case 10:{
-					if(doorToggleTimer <= 0){
-						vehicledata.toggleDoors(null);
-						player.sendMessage(new TextComponentString("Doors " + (vehicledata.doorsOpen() ? "opened" : "closed") + "."));
-						doorToggleTimer = 10;
-						PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
+					if(!world.isRemote){
+						if(doorToggleTimer <= 0){
+							vehicledata.toggleDoors(null);
+							player.sendMessage(new TextComponentString("Doors " + (vehicledata.doorsOpen() ? "opened" : "closed") + "."));
+							doorToggleTimer = 10;
+							PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
+						}
 					}
 					return true;
 				}

@@ -14,7 +14,7 @@ public class FuelInventory implements IInventory {
 	
 	@Override
 	public String getName(){
-		return fuelinv.get(0).isEmpty() ? "Null;" : fuelinv.get(0).getDisplayName();
+		return fuelinv == null || fuelinv.isEmpty() || fuelinv.get(0).isEmpty() ? "Null;" : fuelinv.get(0).getDisplayName();
 	}
 
 	@Override

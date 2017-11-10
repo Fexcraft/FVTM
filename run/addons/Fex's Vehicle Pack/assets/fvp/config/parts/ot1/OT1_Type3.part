@@ -5,11 +5,28 @@
     "Category": [
         "cargo"
     ],
+    "Attributes":[
+        "seat"
+    ],
     "Textures": [
         "fvp:textures/entities/skin_vehicle_ot1_3.png"
     ],
     "Removable": true,
     "Available": true,
+    "AttributeData":{
+        "FM-Seats":[
+            { "x":   4, "y": 16, "z":  16 },
+            { "x":   4, "y": 16, "z": -16 },
+            { "x": -12, "y": 16, "z": -16 },
+            { "x": -12, "y": 16, "z": -16 },
+            { "x": -28, "y": 16, "z": -16 },
+            { "x": -28, "y": 16, "z": -16 },
+            { "x": -44, "y": 16, "z": -16 },
+            { "x": -44, "y": 16, "z": -16 },
+            { "x": -60, "y": 16, "z": -16 },
+            { "x": -60, "y": 16, "z": -16 }
+        ]    
+    },
     "Compatible": [
         { "Vehicle": "fvp:ot1", "x": 0, "y": 0, "z": 0 }
     ]

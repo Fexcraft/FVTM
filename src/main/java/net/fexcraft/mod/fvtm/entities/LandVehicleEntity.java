@@ -900,7 +900,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		return vehicledata;
 	}
 	
-	private int lr = -1;
+	private long lr = -1;
 	
 	@Override
 	public void processServerPacket(PacketEntityUpdate pkt){
@@ -914,10 +914,10 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		if(pkt.nbt.hasKey("task")){
 			switch(pkt.nbt.getString("task")){
 				case "engine_toggle":{
-					if(lr == Time.getSecond()){
+					if(lr + 1000 >= Time.getDate()){
 						break;
 					}
-					lr = Time.getSecond();
+					lr = Time.getDate();
 					pkt.nbt.setBoolean("engine_toggle_result", vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).toggle());
 					if(vehicledata.getFuelTankContent() == 0 || vehicledata.getFuelTankContent() < 0.1){
 						pkt.nbt.setBoolean("engine_toggle_result", false);

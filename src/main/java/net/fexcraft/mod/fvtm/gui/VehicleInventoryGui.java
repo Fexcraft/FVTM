@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Map.Entry;
 
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
@@ -14,8 +16,8 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.GenericGuiButton;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.math.Time;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -123,7 +125,7 @@ public class VehicleInventoryGui {
 					this.fontRenderer.drawString(data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
 					this.fontRenderer.drawString(Formatter.format("&a" + (perducenti / 2) + "%"), i + 171, j + 91, MapColor.SNOW.colorValue);
 					this.fontRenderer.drawString(Formatter.format("&6" + fipc + "%"), i + 171, j + 77, MapColor.SNOW.colorValue);
-					this.fontRenderer.drawString(RGB.format(data.getFuelTankContent()) + " / " + data.getFuelTankSize(), i + 9, j + 28, MapColor.SNOW.colorValue);
+					this.fontRenderer.drawString(format(data.getFuelTankContent()) + " / " + data.getFuelTankSize(), i + 9, j + 28, MapColor.SNOW.colorValue);
 					break;
 				}
 				case 3:{
@@ -393,53 +395,60 @@ public class VehicleInventoryGui {
 			}
 		}
 		
-		private int sec = -1;
+		private long date = -1;
 		
 		@Override
 		public void detectAndSendChanges(){
 			super.detectAndSendChanges();
-			if(fuelinv != null && !fuelinv.isEmpty()){
-				if(sec != Time.getSecond()){
-					sec = Time.getSecond();
-					ItemStack stack = fuelinv.getStackInSlot(0);
-					FuelItem item = (FuelItem)stack.getItem();
-					int con = 2;//5//10
-					//
-					if(item.getContent(stack) > 0){
-						double d = item.getContent(stack) >= con ? con : item.getContent(stack);
-						if(data.getFuelTankContent() + d > data.getFuelTankSize()){
-							d = data.getFuelTankSize() - data.getFuelTankContent();
-							if(d > 0 && data.consumeFuel(-d)){
-								item.setContent(stack, item.getContent(stack) - d);
-							}
-						}
-						else{
-							if(data.consumeFuel(-d)){
-								item.setContent(stack, item.getContent(stack) - d);
-							}
+			if((fuelinv != null && !fuelinv.isEmpty()) && date + 50 <= Time.getDate()){//1000
+				date = Time.getDate();
+				Print.debug("FUELINVTICK");
+				ItemStack stack = fuelinv.getStackInSlot(0);
+				FuelItem item = (FuelItem)stack.getItem();
+				double con = 0.1;//2;//5//10
+				//
+				if(item.getContent(stack) > 0){
+					Print.debug("HASFUEL");
+					double d = item.getContent(stack) >= con ? con : item.getContent(stack);
+					if(data.getFuelTankContent() + d > data.getFuelTankSize()){
+						d = data.getFuelTankSize() - data.getFuelTankContent();
+						if(d > 0 && data.consumeFuel(-d)){
+							item.setContent(stack, item.getContent(stack) - d);
 						}
 					}
-					if(!player.world.isRemote){
-						NBTTagCompound nbt = new NBTTagCompound();
-						nbt.setString("target_listener", "fvtm");
-						nbt.setString("cargo", "update_fuel_tanks");
-						NBTTagList list = new NBTTagList();
-						for(Entry<String, PartData> entry : data.getParts().entrySet()){
-							if(entry.getValue().getPart().getAttribute(FuelTankExtensionAttribute.class) == null){
-								continue;
-							}
-							NBTTagCompound compound = new NBTTagCompound();
-							compound.setString("part", entry.getKey());
-							compound.setDouble("amount", entry.getValue().getAttributeData(FuelTankExtensionAttributeData.class).getContent());
-							list.appendTag(compound);
+					else{
+						if(data.consumeFuel(-d)){
+							item.setContent(stack, item.getContent(stack) - d);
 						}
-						nbt.setTag("parts", list);
-						PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(nbt), (EntityPlayerMP)player);
 					}
+				}
+				if(!player.world.isRemote){
+					NBTTagCompound nbt = new NBTTagCompound();
+					nbt.setString("target_listener", "fvtm");
+					nbt.setString("cargo", "update_fuel_tanks");
+					NBTTagList list = new NBTTagList();
+					for(Entry<String, PartData> entry : data.getParts().entrySet()){
+						if(entry.getValue().getPart().getAttribute(FuelTankExtensionAttribute.class) == null){
+							continue;
+						}
+						NBTTagCompound compound = new NBTTagCompound();
+						compound.setString("part", entry.getKey());
+						compound.setDouble("amount", entry.getValue().getAttributeData(FuelTankExtensionAttributeData.class).getContent());
+						list.appendTag(compound);
+					}
+					nbt.setTag("parts", list);
+					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(nbt), (EntityPlayerMP)player);
 				}
 			}
 		}
 		
+	}
+	
+	private static final DecimalFormat df = new DecimalFormat("##.#");
+	static { df.setRoundingMode(RoundingMode.DOWN); }
+	
+	public static String format(double d){
+		return df.format(d);
 	}
 	
 }

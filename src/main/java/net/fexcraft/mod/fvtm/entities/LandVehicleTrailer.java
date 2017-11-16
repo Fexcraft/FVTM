@@ -1,11 +1,8 @@
 package net.fexcraft.mod.fvtm.entities;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
-import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
-import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -24,11 +21,7 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.perms.player.PlayerPerms;
-import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.math.Pos;
-import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,41 +30,32 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
+public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
 	
 	public boolean sync = true;
-	public int serverPositionTransitionTicker;
+	public int serverPositionTransitionTicker, parentid;
 	public double serverPosX, serverPosY, serverPosZ;
 	public double serverYaw, serverPitch, serverRoll;
 	public VehicleData vehicledata;
 	public double throttle;
 	public SeatEntity[] seats;
 	public WheelEntity[] wheels;
-	public boolean fuelling;
 	public float prevRotationRoll;
 	public Vec3d angularVelocity = new Vec3d(0F, 0F, 0F);
-	public boolean leftMouseHeld = false, rightMouseHeld = false;
 	public VehicleAxes prevAxes, axes;
 	private float yOffset;
 	//
-	@SideOnly(Side.CLIENT)
-	public Entity camera;
-	public float wheelsYaw;
-	public float wheelsAngle;
-	public int doorToggleTimer = 0;
-	public VehicleEntity trailer;
+	public VehicleEntity parent;
 	
-	public LandVehicleEntity(World world){
+	public LandVehicleTrailer(World world){
 		super(world);
 		axes = new VehicleAxes();
 		prevAxes = new VehicleAxes();
@@ -86,33 +70,29 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		stepHeight = 1.0F;
 	}
 	
-	private LandVehicleEntity(World world, VehicleData type){
+	private LandVehicleTrailer(World world, VehicleData data){
 		this(world);
-		vehicledata = type;
+		vehicledata = data;
 	}
 	
 	//From Item;
-	public LandVehicleEntity(World world, double x, double y, double z, EntityPlayer placer, VehicleData vehicleData){
-		this(world, vehicleData);
-		stepHeight = 1.0F;
-		setPosition(x, y, z);
-		rotateYaw(placer.rotationYaw + 90F);
-		initType(vehicleData, false);
-	}
-	
-	//From Constructor;
-	public LandVehicleEntity(World world, double x, double y, double z, int placer, VehicleData data){
+	public LandVehicleTrailer(World world, VehicleData data, VehicleEntity parent){
 		this(world, data);
 		stepHeight = 1.0F;
-		setPosition(x, y, z);
-		rotateYaw((placer * 90f) + 90F);
+		Vec3d vec = parent.getAxes().getRelativeVector(parent.getVehicleData().getRearConnector().to16Double());
+		setPosition(parent.getEntity().posX + vec.x, parent.getEntity().posY + vec.y, parent.getEntity().posZ + vec.z);
+		//TODO rotateYaw(placer.rotationYaw + 90F);
+		this.parentid = parent.getEntity().getEntityId();
+		this.axes = parent.getAxes();
 		initType(data, false);
-		Print.debugChat("SPAWNING");
+		Print.debug("SPAWNING TRAILER");
 	}
 
 	@Override
 	public void writeSpawnData(ByteBuf buffer){
-		ByteBufUtils.writeTag(buffer, axes.write(this, vehicledata.writeToNBT(new NBTTagCompound())));
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setInteger("ParentId", this.parentid);
+		ByteBufUtils.writeTag(buffer, axes.write(this, vehicledata.writeToNBT(nbt)));
 	}
 
 	@Override
@@ -124,15 +104,13 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			prevRotationYaw = axes.getYaw();
 			prevRotationPitch = axes.getPitch();
 			prevRotationRoll = axes.getRoll();
+			this.parentid = compound.getInteger("ParentId");
 			initType(vehicledata, true);
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			Print.debug("Failed to receive additional spawn data for this vehicle!");
+			Print.debug("Failed to receive additional spawn data for this trailer!");
 		}
-		
-		camera = new CameraEntity(world, this);
-		world.spawnEntity(camera);
 		
 	}
 	
@@ -143,7 +121,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			for(int i = 0; i < type.getSeats().size(); i++){
 				world.spawnEntity(seats[i] = new SeatEntity(world, this, i));
 			}
-			for(int i = 0; i < wheels.length; i++){
+			for(int i = 0; i < type.getWheelPos().size(); i++){
 				world.spawnEntity(wheels[i] = new WheelEntity(world, this, i));
 			}
 		}
@@ -161,6 +139,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	protected void writeEntityToNBT(NBTTagCompound tag){
 		tag = vehicledata.writeToNBT(tag);
 		axes.write(this, tag);
+		tag.setInteger("ParentId", parentid);
 	}
 
 	@Override
@@ -175,6 +154,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		prevRotationPitch = tag.getFloat("RotationPitch");
 		prevRotationRoll = tag.getFloat("RotationRoll");
 		axes = VehicleAxes.read(this, tag);
+		parentid = tag.getInteger("ParentId");
 		initType(vehicledata, false);
 	}
 	
@@ -210,9 +190,6 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	@Override
 	public void setDead(){
 		super.setDead();
-		if(world.isRemote){
-			camera.setDead();
-		}
 		for(SeatEntity seat : seats){
 			if(seat != null){
 				seat.setDead();
@@ -248,7 +225,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		if(ticksExisted > 1){
 			return;
 		}
-		if(!this.getPassengers().isEmpty() && this.getControllingPassenger() instanceof EntityPlayer){
+		if(!this.parent.getEntity().getPassengers().isEmpty() && this.parent.getEntity().getControllingPassenger() instanceof EntityPlayer){
 			//
 		}
 		else{				
@@ -271,7 +248,6 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		}
 	}
 	
-	@Override
 	public void setPositionRotationAndMotion(double x, double y, double z, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle2, float steeringYaw){
 		if(world.isRemote){
 			serverPosX = x;
@@ -294,8 +270,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		motionZ = motZ;
 		angularVelocity = new Vec3d(avelx, avely, avelz);
 		throttle = throttle2;
-		//
-		wheelsYaw = steeringYaw;
+		//wheelsYaw = steeringYaw;
 	}
 	
 
@@ -308,7 +283,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	
 	@Override
 	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
-		if(isDead || world.isRemote || hand == EnumHand.OFF_HAND){
+		if(isDead || world.isRemote){
 			return false;
 		}
 		ItemStack stack = player.getHeldItem(hand);
@@ -322,27 +297,21 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			return true;
 		}
 		if(vehicledata.isLocked()){
-			Print.chat(player, "Vehicle is locked.");
+			Print.chat(player, "Trailer is locked.");
 			return true;
 		}
 		if(!stack.isEmpty()){
 			if(stack.getItem() instanceof FuelItem){
-				player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 2, 0, 0);//Fuel Inventory.
+				player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 1, 0, 0);//Inventory.
 				return true;
 			}
 			if(stack.getItem() instanceof VehicleItem){
 				if(this.vehicledata.getRearConnector() != null && this.getEntityAtRear() == null && ((VehicleItem)stack.getItem()).getVehicle(stack).getVehicle().isTrailerOrWagon()){
-					Print.chat(player, "Connecting...");
+					/*Print.chat(player, "Connecting...");
 					LandVehicleTrailer trailer = new LandVehicleTrailer(world, ((VehicleItem)stack.getItem()).getVehicle(stack), this);
 					world.spawnEntity(trailer);
-					stack.shrink(1);
-					return true;
-				}
-			}
-		}
-		if(!vehicledata.getScripts().isEmpty()){
-			for(VehicleScript script : vehicledata.getScripts()){
-				if(script.onInteract(this, vehicledata, player)){
+					stack.shrink(1);*/
+					//TODO
 					return true;
 				}
 			}
@@ -358,85 +327,21 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	
 	@Override
 	public boolean onKeyPress(int key, int seat, EntityPlayer player){
-		//Print.debug("V: " + key + " " + seat + " " + player.getName() + " [" + Time.getDate() + "];");
-		if(seat != 0 && key != 6){
-			return false;
-		}
+		//Print.debug("T: " + key + " " + seat + " " + player.getName() + " [" + Time.getDate() + "];");
 		try{
 			if(world.isRemote && key >= 6){
 				PacketHandler.getInstance().sendToServer(new PacketVehicleKeyPress(key));
 				return true;
 			}
 			switch(key){
-				case 0:{//Accelerate;
-					throttle += 0.01F;
-					if(throttle > 1F){
-						throttle = 1F;
-					}
-					return true;
-				}
-				case 1:{//Decelerate
-					throttle -= 0.01F;
-					if(throttle < -1F){
-						throttle = -1F;
-					}
-					if(throttle < 0F && vehicledata.getVehicle().getFMMaxNegativeThrottle() == 0F){
-						throttle = 0F;
-					}
-					return true;
-				}
-				case 2:{//Left
-					wheelsYaw -= 1F;
-					return true;
-				}
-				case 3:{//Right
-					wheelsYaw += 1F;
-					return true;
-				}
-				case 4:{//Brake
-					throttle *= 0.8F;
-					if(onGround){
-						motionX *= 0.8F;
-						motionZ *= 0.8F;
-					}
-					if(throttle < -0.0001){
-						throttle = 0;
-					}
-					return true;
-				}
-				case 5:{//Toggle Engine
-					NBTTagCompound nbt = new NBTTagCompound();
-					nbt.setString("task", "engine_toggle");
-					ApiUtil.sendEntityUpdatePacketToServer(this, nbt);
-					return true;
-				}
 				case 6:{//Exit
 					player.dismountRidingEntity();
 			  		return true;
 				}
 				case 7:{//Inventory
 					if(!world.isRemote){
-						if(this.vehicledata.getPart("engine") != null && this.vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).isOn()){
-							Print.chat(player, "Turn engine off first!");
-						}
-						else{
-							player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 0, 0, 0);
-						}
+						player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 0, 0, 0);
 						//open inventory
-					}
-					return true;
-				}
-				case 10:{
-					if(!world.isRemote){
-						if(doorToggleTimer <= 0){
-							vehicledata.toggleDoors(null);
-							if(this.trailer != null){
-								this.trailer.getVehicleData().toggleDoors(vehicledata.doorsOpen());
-							}
-							player.sendMessage(new TextComponentString("Doors " + (vehicledata.doorsOpen() ? "opened" : "closed") + "."));
-							doorToggleTimer = 10;
-							PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
-						}
 					}
 					return true;
 				}
@@ -448,30 +353,42 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			return false;
 		}
 	}
-
-	private boolean driverIsCreative(){
-		try{
-			return seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode;
-		}
-		catch(Exception e){
-			return false;
-		}
-	}
 		
 	@Override
     public void onUpdate(){
         super.onUpdate();
+        if(parent == null){
+        	try{
+            	parent = (VehicleEntity)world.getEntityByID(parentid);
+        		((LandVehicleEntity)parent).trailer = this;
+        		//
+        		this.posX = parent.getEntity().posX;
+        		this.posY = parent.getEntity().posY;
+        		this.posZ = parent.getEntity().posZ;
+        		Print.debug("Found vehicle. ");
+        	}
+        	catch(Exception e){
+        		e.printStackTrace();
+        	}
+        }
+        if(parent == null){
+        	Print.debug("Vehicle which this trailer was connected to not found.");
+    		vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
+			ItemStack stack = vehicledata.getVehicle().getItemStack(vehicledata);
+			entityDropItem(stack, 0.5F);
+	 		setDead();
+        	return;
+        }
+        //
         if(!world.isRemote){
         	for(int i = 0; i < vehicledata.getSeats().size(); i++){
         		if(seats[i] == null || !seats[i].addedToChunk){
-        			seats[i] = new SeatEntity(world, this, i);
-    				world.spawnEntity(seats[i]);
+    				world.spawnEntity(seats[i] = new SeatEntity(world, this, i));
         		}
         	}
         	for(int i = 0; i < vehicledata.getWheelPos().size(); i++){
         		if(wheels[i] == null || !wheels[i].addedToChunk){
-        			wheels[i] = new WheelEntity(world, this, i);
-    				world.spawnEntity(wheels[i]);
+    				world.spawnEntity(wheels[i] = new WheelEntity(world, this, i));
         		}
         	}
         }
@@ -480,51 +397,11 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		prevRotationPitch = axes.getPitch();
 		prevRotationRoll = axes.getRoll();		
 		prevAxes = axes.clone();
+		this.ticksExisted++;
 		//
-		boolean canThrust = driverIsCreative() || vehicledata.getFuelTankContent() > 0;
-		if(seats == null || seats.length == 0){
-			this.setDead();
-			return;
-		}
-		if((seats[0] != null && seats[0].getControllingPassenger() == null) || !canThrust && vehicledata.getVehicle().getFMMaxPositiveThrottle() != 0 && vehicledata.getVehicle().getFMMaxPositiveThrottle() != 0){
-			throttle *= 0.98F;
-			rightMouseHeld = leftMouseHeld = false;
-		}
-		if(vehicledata == null){
-			Print.log("Vehicle type null. Not ticking vehicle.");
-			Static.stop();
-			return;
-		}
-		boolean drivenByPlayer = world.isRemote && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer;
-		//		
-		if(doorToggleTimer > 0){
-			doorToggleTimer--;
-		}
-		//Aesthetics
-		if(hasEnoughFuel()){
-			wheelsAngle += throttle * 0.2F;	
-		}
-		wheelsYaw *= 0.9F;
-		if(wheelsYaw >  20){ wheelsYaw = 20; }
-		if(wheelsYaw < -20){ wheelsYaw = -20; }
-		if(world.isRemote && !drivenByPlayer){
-			if(serverPositionTransitionTicker > 0){
-				double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
-				double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
-				double z = posZ + (serverPosZ - posZ) / serverPositionTransitionTicker;
-				double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
-				double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
-				double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
-				rotationYaw = (float)(axes.getYaw() + dYaw / serverPositionTransitionTicker);
-				rotationPitch = (float)(axes.getPitch() + dPitch / serverPositionTransitionTicker);
-				float rotationRoll = (float)(axes.getRoll() + dRoll / serverPositionTransitionTicker);
-				--serverPositionTransitionTicker;
-				setPosition(x, y, z);
-				setRotation(rotationYaw, rotationPitch, rotationRoll);
-				//return;
-			}
-		}
-		Vec3d atmc = new Vec3d(0, 0, 0);
+		boolean drivenByPlayer = world.isRemote && parent.getSeats()[0] != null && parent.getSeats()[0].getControllingPassenger() instanceof EntityPlayer;
+		//
+		//Vec3d atmc = new Vec3d(0, 0, 0);
 		for(WheelEntity wheel : wheels){
 			if(wheel != null && world != null){
 				wheel.prevPosX = wheel.posX;
@@ -532,15 +409,39 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 				wheel.prevPosZ = wheel.prevPosZ;
 			}
 		}
-		//TODO config for vehicles need fuel
-		boolean canThrustCreatively = /*!Config.vehicleConsumeFuel|| */(seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
-		boolean consumed = false;
-		Part.PartData enginepart = vehicledata.getPart("engine");
-		if(enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
-			double d = (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
-			consumed = vehicledata.consumeFuel(d > 0 ? d : (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() / 320));
+		//
+		if(wheels.length == 2 && world.isRemote && ticksExisted % 100 == 0){
+			if(!(wheels[0] == null || wheels[1] == null)){
+				//DEfault Trailer
+				Vec3d axle = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
+				Vec3d conn = parent.getVehicleData().getRearConnector().to16Double();
+				axes.rotYaw((float)(Math.atan2(axle.x - conn.x, axle.z - conn.z)));
+				//axes.setAngles((Math.atan2(conn.x - axle.x, conn.z - axle.z) * 180 / Math.PI) + 180, 0, 0);
+				//
+				Vec3d vec = parent.getAxes().getRelativeVector(conn);
+				//this.move(MoverType.SELF, parent.getEntity().posX + vec.x, parent.getEntity().posY + vec.y, parent.getEntity().posZ + vec.z);
+				prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
+				posX = parent.getEntity().posX + vec.x;
+				posY = parent.getEntity().posY + vec.y;
+				posZ = parent.getEntity().posZ + vec.z;
+				//
+				Vec3d w0 = this.axes.getRelativeVector(this.vehicledata.getWheelPos().get(0).to16Double());
+				wheels[0].move(MoverType.SELF, posX + w0.x, posY + w0.y, posZ + w0.z);
+				Vec3d w1 = this.axes.getRelativeVector(this.vehicledata.getWheelPos().get(1).to16Double());
+				wheels[1].move(MoverType.SELF, posX + w1.x, posY + w1.y, posZ + w1.z);
+				//
+				Print.debug(vec, this.getPositionVector().toString());
+				//PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
+			}
+			else{
+				Print.debug("Wheels are null!");
+			}
 		}
-		for(WheelEntity wheel : wheels){
+		else if(wheels.length == 4){
+			//4 Wheeled Trailer
+			//TODO
+		}
+		/*for(WheelEntity wheel : wheels){
 			if(wheel == null){
 				continue;
 			}
@@ -606,9 +507,6 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 					}
 				}
 			}
-			/*if(data.floatOnWater && world.containsAnyLiquid(wheel.getEntityBoundingBox()))//.isAnyLiquid(wheel.getEntityBoundingBox())){
-				wheel.motionY += vehicledata.buoyancy;
-			}*/
 			wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 			//pull wheels back to car
 			Pos pos = vehicledata.getWheelPos().get(wheel.wheelid);
@@ -649,7 +547,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			if(seat != null){
 				seat.updatePosition();
 			}
-		}
+		}*/
 		if(drivenByPlayer){
 			PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
 			serverPosX = posX;
@@ -673,32 +571,19 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 				return false;
 			}
 			else{
-				if(vehicledata.getPart("engine") != null){
-					vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).setOn(false);
-				}
+				PlayerPerms pp = PermManager.getPlayerPerms((EntityPlayer)damagesource.getImmediateSource());
 				vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
 				ItemStack stack = vehicledata.getVehicle().getItemStack(vehicledata);
-				//
-				PlayerPerms pp = PermManager.getPlayerPerms((EntityPlayer)damagesource.getImmediateSource());
 				boolean brk = pp.hasPermission(FvtmPermissions.LAND_VEHICLE_BREAK) ? pp.hasPermission(FvtmPermissions.permBreak(stack)) : false;
 				if(brk){
 					entityDropItem(stack, 0.5F);
 			 		setDead();
 			 		Print.debug(stack.toString());
-			 		//
-			 		if(this.getEntityAtRear() != null){
-			 			Entity ent = this.getEntityAtRear().getEntity();
-			 			VehicleData rear = this.getEntityAtRear().getVehicleData();
-			 			rear.getScripts().forEach((script) -> script.onRemove(ent, rear));
-			 			ItemStack trailerstack = rear.getVehicle().getItemStack(rear);
-			 			ent.entityDropItem(trailerstack, 0.5F);
-				 		ent.setDead();
-				 		Print.debug(trailerstack.toString());
-			 		}
 			 		return true;
 				}
 				else{
 					Print.chat(damagesource.getImmediateSource(), "No permission to break this vehicle/type.");
+			 		Print.debug(stack.toString());
 					return false;
 				}
 			}
@@ -864,9 +749,6 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 				return true;
 			}
 		}
-		if(this.getEntityAtRear() != null){
-			
-		}
 		return ent == this;	
 	}
 	
@@ -875,20 +757,6 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		ItemStack stack = vehicledata.getVehicle().getItemStack(vehicledata);
 		stack.setItemDamage(0);
 		return stack;
-	}
-	
-	public boolean hasFuel(){
-		if(seats == null || seats[0] == null || seats[0].getControllingPassenger() == null){
-			return false;
-		}
-		return driverIsCreative() || vehicledata.getFuelTankContent() > 0;
-	}
-
-	public boolean hasEnoughFuel(){
-		if(seats == null || seats[0] == null || seats[0].getControllingPassenger() == null){
-			return false;
-		}
-		return driverIsCreative() || vehicledata.getFuelTankContent() > vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle;
 	}
 	
 	public double get3DSpeed(){
@@ -918,22 +786,17 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	
 	@SideOnly(Side.CLIENT)
 	public boolean showInventory(int seat){
-		return seat != 0;
+		return true;
 	}
 
 	@Override
 	public Entity getCamera(){
-		if(Static.side().isClient()){
-			return null;
-		}
-		return camera;
+		return parent.getCamera();
 	}
 
 	public VehicleData getData(){
 		return vehicledata;
 	}
-	
-	private long lr = -1;
 	
 	@Override
 	public void processServerPacket(PacketEntityUpdate pkt){
@@ -946,20 +809,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		}
 		if(pkt.nbt.hasKey("task")){
 			switch(pkt.nbt.getString("task")){
-				case "engine_toggle":{
-					if(lr + 1000 >= Time.getDate()){
-						break;
-					}
-					lr = Time.getDate();
-					pkt.nbt.setBoolean("engine_toggle_result", vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).toggle());
-					if(vehicledata.getFuelTankContent() == 0 || vehicledata.getFuelTankContent() < 0.1){
-						pkt.nbt.setBoolean("engine_toggle_result", false);
-						pkt.nbt.setBoolean("no_fuel", true);
-					}
-					ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
-					throttle = 0;
-					break;
-				}
+				//
 			}
 		}
 	}
@@ -975,15 +825,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		}
 		if(pkt.nbt.hasKey("task")){
 			switch(pkt.nbt.getString("task")){
-				case "engine_toggle":{
-					if(net.minecraft.client.Minecraft.getMinecraft().player.isRiding() && this.seats[0] == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
-						Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).setOn(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
-						if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
-							Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");
-						}
-					}
-					throttle = 0;
-				}
+				//
 			}
 		}
 	}
@@ -1025,12 +867,12 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 
 	@Override
 	public VehicleEntity getEntityAtFront(){
-		return null;
+		return parent;
 	}
 
 	@Override
 	public VehicleEntity getEntityAtRear(){
-		return trailer;
+		return null;
 	}
 
 	@Override
@@ -1040,7 +882,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 
 	@Override
 	public float getWheelsYaw(){
-		return this.wheelsYaw;
+		return this.parent.getWheelsYaw();
 	}
 	
 }

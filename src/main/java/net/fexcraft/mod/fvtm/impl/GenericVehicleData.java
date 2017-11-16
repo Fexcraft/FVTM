@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.fexcraft.mod.addons.gep.attributes.ConnectorAttribute;
 import net.fexcraft.mod.addons.gep.attributes.FMSeatAttribute;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
@@ -44,6 +45,7 @@ public class GenericVehicleData implements VehicleData {
 	private boolean doors, isexternal, locked, remote;
 	private Map<Class<?>, VehicleScript> scripts = new HashMap<Class<?>, VehicleScript>();
 	private ArrayList<FMSeat> seats = new ArrayList<FMSeat>();
+	private Pos frontConnector, rearConnector;
 	
 	public GenericVehicleData(Vehicle veh){
 		this.vehicle = veh;
@@ -284,7 +286,7 @@ public class GenericVehicleData implements VehicleData {
 	}
 
 	@Override
-	public List<FMSeat> getFMSeats(){
+	public List<FMSeat> getSeats(){
 		return seats;
 	}
 
@@ -304,6 +306,17 @@ public class GenericVehicleData implements VehicleData {
 		if(seat != null){
 			seats.add(0, seat);
 		}
+		//
+		parts.forEach((key, partdata) -> {
+			if(partdata.getPart().getAttribute(ConnectorAttribute.class) != null){
+				if(partdata.getPart().getAttribute(ConnectorAttribute.class).hasFrontConnector(this.getVehicle().getRegistryName())){
+					this.frontConnector = partdata.getPart().getAttribute(ConnectorAttribute.class).getFrontConnector(this.getVehicle().getRegistryName());
+				}
+				if(partdata.getPart().getAttribute(ConnectorAttribute.class).hasRearConnector(this.getVehicle().getRegistryName())){
+					this.rearConnector = partdata.getPart().getAttribute(ConnectorAttribute.class).getRearConnector(this.getVehicle().getRegistryName());
+				}
+			}
+		});
 	}
 
 	@Override
@@ -387,6 +400,16 @@ public class GenericVehicleData implements VehicleData {
 	@Override
 	public String toString(){
 		return this.writeToNBT(new NBTTagCompound()).toString();
+	}
+
+	@Override
+	public Pos getFrontConnector(){
+		return frontConnector;
+	}
+
+	@Override
+	public Pos getRearConnector(){
+		return rearConnector;
 	}
 	
 }

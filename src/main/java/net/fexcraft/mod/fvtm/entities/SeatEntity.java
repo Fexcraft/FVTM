@@ -69,7 +69,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		seatid = id;
 		driver = id == 0;
 		vehicleid = veh.getEntity().getEntityId();
-		seatdata = vehicle.getVehicleData().getFMSeats().get(id);
+		seatdata = vehicle.getVehicleData().getSeats().get(id);
 		setPosition(veh.getEntity().posX, veh.getEntity().posY, veh.getEntity().posZ);
 		pass_x = prev_pass_x = posX; pass_y = prev_pass_y = posY; pass_z = prev_pass_z = posZ;
 		looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);

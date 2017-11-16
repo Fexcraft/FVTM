@@ -1,8 +1,10 @@
 package net.fexcraft.mod.fvtm.util.packets;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.api.network.IPacket;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketVehicleControl implements IPacket, IMessage{
@@ -18,22 +20,22 @@ public class PacketVehicleControl implements IPacket, IMessage{
 	
 	public PacketVehicleControl(){}
 	
-	public PacketVehicleControl(LandVehicleEntity vehicle){
-		entityId = vehicle.getEntityId();
-		posX = vehicle.posX;
-		posY = vehicle.posY;
-		posZ = vehicle.posZ;
-		yaw = vehicle.axes.getYaw();
-		pitch = vehicle.axes.getPitch();
-		roll = vehicle.axes.getRoll();
-		motX = vehicle.motionX;
-		motY = vehicle.motionY;
-		motZ = vehicle.motionZ;
-		avelx = vehicle.angularVelocity.x;
-		avely = vehicle.angularVelocity.y;
-		avelz = vehicle.angularVelocity.z;
-		throttle = vehicle.throttle;
-		steeringYaw = vehicle.wheelsYaw;
+	public PacketVehicleControl(VehicleEntity vehicle){
+		Entity ent = vehicle.getEntity();
+		entityId = ent.getEntityId();
+		posX = ent.posX;
+		posY = ent.posY;
+		posZ = ent.posZ;
+		yaw = vehicle.getAxes().getYaw();
+		pitch = vehicle.getAxes().getPitch();
+		roll = vehicle.getAxes().getRoll();
+		motX = ent.motionX;
+		motY = ent.motionY;
+		motZ = ent.motionZ;
+		Vec3d agl = vehicle.getAngularVelocity();
+		avelx = agl.x; avely = agl.y; avelz = agl.z;
+		throttle = vehicle.getThrottle();
+		steeringYaw = vehicle.getWheelsYaw();
 		doors = vehicle.getVehicleData().doorsOpen();
 	}
 

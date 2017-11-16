@@ -66,13 +66,16 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 			if(veh == null){
 				return;
 			}
+			if(veh.getVehicle().isTrailerOrWagon()){
+				tooltip.add(Formatter.format("&o&6Trailer/Wagon."));
+			}
 			tooltip.add(Formatter.format("&9Name: &7" + veh.getVehicle().getName()));
 			for(String s : veh.getVehicle().getDescription()){
 				tooltip.add(Formatter.format(s));
 			}
 			tooltip.add(Formatter.format("&9Lock Code: &r" + veh.getLockCode()));
 			tooltip.add(Formatter.format("&9Selected Texture: &7" + veh.getSelectedTexture()));
-			tooltip.add(Formatter.format("&9Seat Amount: &r" + veh.getFMSeats().size()));
+			tooltip.add(Formatter.format("&9Seat Amount: &r" + veh.getSeats().size()));
 			tooltip.add(Formatter.format("&9Fuel Tank: &7" + RGB.format(veh.getFuelTankContent()) + "&8/&e" + veh.getFuelTankSize()));
 			tooltip.add(Formatter.format("&9Fuel Type: &7" + (veh.getPart("engine") == null ? "unknown / no engine" : veh.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelType().getName())));
 			if(veh.getParts().size() > 0){

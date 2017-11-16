@@ -1,0 +1,50 @@
+{
+    "RegistryName": "fvp:t1_trailer_connector",
+    "Addon": "fvtm:fvp",
+    "FullName": "Trailer hitch.",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT1TC.class",
+    "Category": [
+        "rear_connector"
+    ],
+    "Attributes":[
+        "connector"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t1_trailer_connector.png"
+    ],
+    "Compatible": [
+        {
+            "Vehicle": "fvp:t1",
+            "x": 0, "y": 0, "z": 0
+        },
+        {
+            "Vehicle": "fvp:ot1",
+            "x": 25, "y": 0, "z": 0
+        }
+    ],
+    "Removable": true,
+    "Available": true,
+    "AttributeData":{
+        "Rear-Connector":[
+	        {
+	        	"x": -105.5, "y": 2, "z": 0.5
+	        },
+	        {
+	        	"Vehicle": "fvp:ot1",
+	        	"x": -80.5, "y": 2, "z": 0.5
+	        }
+	    ]
+    },
+     "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 12
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

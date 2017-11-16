@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.api.EntityType;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -201,13 +202,17 @@ public class ConstructorControllerEntity {
 				}
 				else{
 					try{
-						if(!vehicledata.getVehicle().canSpawnAs("flansmod")){
-							Print.chat(player, "This vehicle cannot be spawned as flansmod entity.");
+						if(!vehicledata.getVehicle().canSpawnAs(EntityType.INTERNAL.name())){
+							Print.chat(player, "This vehicle cannot be spawned as entity from the Constructor.");
 							return;
 						}
 						if(!vehicledata.readyToSpawn()){
 							Print.chat(player, "&7Vehicle can not be spawned yet.");
 							Print.chat(player, "&7Check if all &erequired &7parts are installed!");
+							return;
+						}
+						if(vehicledata.getVehicle().isTrailerOrWagon()){
+							Print.chat(player, "&7Cannot spawn Trailers from Constructor.");
 							return;
 						}
 						if(center == null){

@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -99,6 +100,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	public void setSound(ResourceLocation sound, SoundEvent soundevent);
 	
 	public int getFMSoundLength(String event);
+
+	public boolean isTrailerOrWagon();
 	
 	//<-- VEHICLE DATA -->//
 	public static interface VehicleData {
@@ -159,7 +162,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 
 		public void setSpawnedKeysAmount(@Nullable Integer i);
 
-		public List<FMSeat> getFMSeats();
+		public List<FMSeat> getSeats();
 
 		public default boolean allowsLocking(){
 			return true;
@@ -173,6 +176,12 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		public NonNullList<ItemStack> getAllInventoryContents();
 
 		public List<PartData> getInventoryContainers();
+		
+		@Nullable
+		public Pos getFrontConnector();
+		
+		@Nullable
+		public Pos getRearConnector();
 		
 	}
 	
@@ -252,6 +261,16 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		public Entity getCamera();
 
 		public double getThrottle();
+
+		public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw);
+		
+		public VehicleEntity getEntityAtFront();
+		
+		public VehicleEntity getEntityAtRear();
+
+		public Vec3d getAngularVelocity();
+
+		public float getWheelsYaw();
 		
 	}
 	

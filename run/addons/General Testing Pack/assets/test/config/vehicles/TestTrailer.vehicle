@@ -1,0 +1,12 @@
+{
+    "RegistryName": "test:trailer",
+    "Addon": "fvtm:test",
+    "FullName": "Test Trailer - Arrow?",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelTestArrow.class",
+    "Textures": [ "fvtm:textures/entities/null_texture.png" ],
+    "WheelPos":[
+        { "x":  28, "y": 2, "z":  20 },
+        { "x":  28, "y": 2, "z": -20 }
+    ],
+    "Trailer": true
+}

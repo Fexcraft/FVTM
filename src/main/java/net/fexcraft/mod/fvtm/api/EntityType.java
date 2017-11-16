@@ -4,7 +4,7 @@ public enum EntityType {
 	
 	NONE(0), //un-spawned
 	INTERNAL(1),
-	//FLANSMOD(1), //Flansmod Re-Minus
+	//FLANSMOD(1), //Flansmod Minus
 	MTS(2), //if it ever get's that far
 	TiM(3); //Trains-Only
 	

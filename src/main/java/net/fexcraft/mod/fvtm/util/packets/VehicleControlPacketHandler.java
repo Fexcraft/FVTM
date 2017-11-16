@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.util.packets;
 
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -21,11 +21,11 @@ public class VehicleControlPacketHandler {
 				@Override
 				public void run(){
 					EntityPlayerMP player = Static.getServer().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
-					LandVehicleEntity vehicle = null;
+					VehicleEntity vehicle = null;
 					for(int i = 0; i < player.world.loadedEntityList.size(); i++){
 						Object obj = player.world.loadedEntityList.get(i);
-						if(obj instanceof LandVehicleEntity && ((Entity)obj).getEntityId() == packet.entityId){
-							vehicle = (LandVehicleEntity)obj;
+						if(obj instanceof VehicleEntity && ((Entity)obj).getEntityId() == packet.entityId){
+							vehicle = (VehicleEntity)obj;
 							break;
 						}
 					}
@@ -50,11 +50,11 @@ public class VehicleControlPacketHandler {
 					if(player == null || player.world == null){
 						return;
 					}
-					LandVehicleEntity vehicle = null;
+					VehicleEntity vehicle = null;
 					for(Object obj : player.world.loadedEntityList){
-						if(obj instanceof LandVehicleEntity && ((Entity)obj).getEntityId() == packet.entityId){
-							vehicle = (LandVehicleEntity)obj;
-							if(vehicle.getControllingPassenger() != null && vehicle.getControllingPassenger() == player){
+						if(obj instanceof VehicleEntity && ((Entity)obj).getEntityId() == packet.entityId){
+							vehicle = (VehicleEntity)obj;
+							if(vehicle.getEntity().getControllingPassenger() == player){
 								return;
 							}
 							break;
@@ -69,9 +69,12 @@ public class VehicleControlPacketHandler {
 		}
 	}
 	
-	private static void updatevehicle(LandVehicleEntity vehicle, PacketVehicleControl pkt){
+	private static void updatevehicle(VehicleEntity vehicle, PacketVehicleControl pkt){
 		vehicle.setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll, pkt.motX, pkt.motY, pkt.motZ, pkt.avelx, pkt.avely, pkt.avelz, pkt.throttle, pkt.steeringYaw);
 		vehicle.getVehicleData().toggleDoors(pkt.doors);
+		if(vehicle.getEntityAtRear() != null){
+			vehicle.getEntityAtRear().getVehicleData().toggleDoors(pkt.doors);
+		}
 	}
 	
 }

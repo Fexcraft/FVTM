@@ -47,6 +47,7 @@ public class GenericVehicle implements Vehicle {
 	private DriveType drivetype;
 	private ArrayList<EntityType> accentmods = new ArrayList<EntityType>();
 	{ accentmods.add(EntityType.INTERNAL); }
+	private boolean isTrailer;
 	//Sound
 	private TreeMap<String, ResourceLocation> sounds = new TreeMap<String, ResourceLocation>();
 	private TreeMap<ResourceLocation, SoundEvent> soundevents = new TreeMap<ResourceLocation, SoundEvent>();
@@ -120,6 +121,7 @@ public class GenericVehicle implements Vehicle {
 				this.soundlenghts.put(jsn.get("event").getAsString(), JsonUtil.getIfExists(jsn, "length", 0).intValue());
 			}
 		}
+		this.isTrailer = JsonUtil.getIfExists(obj, new String[]{"Trailer", "Wagon", "IsTrailer"}, false);
 	}
 
 	@Override
@@ -284,6 +286,11 @@ public class GenericVehicle implements Vehicle {
 	@Override
 	public int getFMSoundLength(String event){
 		return this.soundlenghts.get(event);
+	}
+
+	@Override
+	public boolean isTrailerOrWagon(){
+		return isTrailer;
 	}
 	
 }

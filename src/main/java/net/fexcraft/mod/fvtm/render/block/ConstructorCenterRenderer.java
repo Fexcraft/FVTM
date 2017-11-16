@@ -43,7 +43,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 		GL11.glRotated(90 , 0, 1D, 0);
 		VehicleData vehicledata = te.getVehicleData();
 		if(vehicledata != null){
-			VehicleModel<VehicleData>modvec = vehicledata.getVehicle().getModel();
+			VehicleModel<VehicleData> modvec = vehicledata.getVehicle().getModel();
 			if(modvec != null){
 				Minecraft.getMinecraft().renderEngine.bindTexture(vehicledata.getTexture());
 				GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * 0.0625f) - te.getLiftState(), 0);

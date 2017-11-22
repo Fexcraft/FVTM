@@ -3,10 +3,10 @@
   "name": "Fexcraft Vehicle Pack",
   "url": "http://fexcraft.net/download?modid=addon-fvp",
   "updateid": "addon-fvp",
-  "license": "https://fexcraft.net/license?id=mods",
+  "license": "http://fexcraft.net/license?id=mods",
   "dependencies": ["fvtm:generic"],
   "authors": [
     "01e4af9b-2a30-471e-addf-f6338ffce04b"
   ],
-  "version": "1.6"
+  "version": "1.7"
 }

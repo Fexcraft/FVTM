@@ -3,11 +3,11 @@
   "name": "General Essentials Pack",
   "url": "http://fexcraft.net/download?modid=addon-gep",
   "updateid": "addon-gep",
-  "license": "https://fexcraft.net/license?id=mods",
+  "license": "http://fexcraft.net/license?id=mods",
   "dependencies": [],
   "authors": [
     "01e4af9b-2a30-471e-addf-f6338ffce04b"
   ],
   "class": "net.fexcraft.mod.addons.gep.GeneralEssentials",
-  "version": "1.3"
+  "version": "1.4"
 }

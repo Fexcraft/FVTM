@@ -562,7 +562,7 @@ public class Resources {
 					obj = Network.getModData(str);
 					if(obj != null && obj.has("versions")){
 						JsonArray array = obj.get("versions").getAsJsonArray();
-						array.forEach((elm) -> {
+						for(JsonElement elm : array){
 							JsonObject jsn = elm.getAsJsonObject();
 							if(jsn.get("version").getAsString().equals(FCL.mcv)){
 								String lv = jsn.get("latest_version").getAsString();
@@ -577,9 +577,10 @@ public class Resources {
 									if(proceed){
 										updatelist.put(addon.getRegistryName(), lv);
 									}
+									break;
 								}
 							}
-						});
+						}
 					}
 				}
 				else{

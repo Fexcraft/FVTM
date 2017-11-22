@@ -23,6 +23,7 @@
         }
     ],
     "AttributeData":{
-        "Inventory-Size": 128
+        "Inventory-Size": 1200,
+        "Inventory-Type": "fluid"
     }
 }

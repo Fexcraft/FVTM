@@ -27,6 +27,7 @@ public class InventoryAttribute implements Attribute {
 	private int size;
 	private ArrayList<ItemStack> whitelist = new ArrayList<ItemStack>();
 	private ArrayList<ItemStack> blacklist = new ArrayList<ItemStack>();
+	private InventoryType type = InventoryType.ITEM;
 	
 	@Override
 	public ResourceLocation getRegistryName(){
@@ -58,6 +59,7 @@ public class InventoryAttribute implements Attribute {
 				}
 			});
 		}
+		type = InventoryType.fromString(JsonUtil.getIfExists(obj, "Inventory-Type", "item"));
 	}
 
 	@Override
@@ -79,7 +81,8 @@ public class InventoryAttribute implements Attribute {
 
 	@Override
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag){
-		tooltip.add(Formatter.format("&9Inventory Size: &7" + size));
+		tooltip.add(Formatter.format("&9Inventory Size: &7" + size + " " + type.units));
+		tooltip.add(Formatter.format("&9Inventory Type: &7" + type.id));
 	}
 
 	@Override
@@ -169,9 +172,29 @@ public class InventoryAttribute implements Attribute {
 		}
 		return true;
 	}
+	
+	public static enum InventoryType {
+		
+		ITEM("item", "stacks"), FLUID("fluid", "buckets"), ENERGY("energy", "FE"), FUEL("fuel", "units");
+		private String id, units;
+		
+		InventoryType(String str, String u){
+			this.id = str;
+			this.units = u;
+		}
 
-	/*public boolean isItemValidForSlot(int index, ItemStack stack){
-		return isItemValid(stack);
-	}*/
+		public static InventoryType fromString(String exists){
+			for(InventoryType type : values()){
+				if(type.id.equals(exists)){
+					return type;
+				}
+			}
+			return ITEM;
+		}
+	}
+	
+	public InventoryType getType(){
+		return type;
+	}
 	
 }

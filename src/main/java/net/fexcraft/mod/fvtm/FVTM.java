@@ -84,7 +84,7 @@ public class FVTM {
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleEntity.class, RenderLandVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleTrailer.class, RenderLandVehicleTrailer::new);
-			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
 		}
 	}
@@ -109,8 +109,8 @@ public class FVTM {
 	
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
-		SimpleUpdateHandler.register("fvtm", 1, VERSION);
-		SimpleUpdateHandler.setUpdateMessage("fvtm", PREFIX + "Update avaible! &3(" + SimpleUpdateHandler.getLatestVersionOf("fvtm") + ")&7");
+		SimpleUpdateHandler.register(MODID, 1, VERSION);
+		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + "Update avaible! &3(" + SimpleUpdateHandler.getLatestVersionOf("fvtm") + ")&7");
 		FvtmUpdateHandler.load();
 		FvtmUpdateHandler.register();
 		//check if addons have updates

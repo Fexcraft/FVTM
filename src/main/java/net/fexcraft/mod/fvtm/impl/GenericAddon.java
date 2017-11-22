@@ -172,6 +172,7 @@ public class GenericAddon implements Addon {
 		return this.hybrid;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Class<Addon> getClass(File file) throws ClassNotFoundException{
 		JsonObject obj = file.isDirectory() ? JsonUtil.get(new File(file, Resources.DEFPACKCFGFILENAME)) : ZipUtil.getJsonObject(file, Resources.DEFPACKCFGFILENAME);
 		return (Class<Addon>)Class.forName(obj.get("class").getAsString());

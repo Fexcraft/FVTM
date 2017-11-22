@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "2.2-alpha15"
+version = "2.2-alpha16"
 group = "net.fexcraft.mod.fvtm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "FVTM-ALL"
 
@@ -69,14 +69,14 @@ task fvp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/fvp/'}
     from 'run/addons/Fex\'s Vehicle Pack'
     baseName = 'Fex\'s Vehicle Pack'
-    appendix = '1.6 - for FVTM'
+    appendix = '1.7 - for FVTM'
 }
 
 task def_parts_pack(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
     from 'run/addons/General Essentials Pack'
     baseName = 'General Essentials Pack'
-    appendix = '1.3 - for FVTM'
+    appendix = '1.4 - for FVTM'
 }
 
 build {

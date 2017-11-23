@@ -128,7 +128,8 @@ public class SpawnCmd extends CommandBase {
         		boolean cptc = args.length >= 2 && args[1].equals("clipboard");
         		NBTTagCompound nbt = ((VehicleItem)stack.getItem()).getVehicle(stack).writeToNBT(new NBTTagCompound());
         		JsonObject json = NBTToJson.getJsonFromTag(nbt);
-        		json.addProperty("PresetAuthor", ((EntityPlayer)sender).getGameProfile().getId().toString());
+        		json.addProperty("PresetCreator", ((EntityPlayer)sender).getName());
+        		json.addProperty("PresetCreatorUUID", ((EntityPlayer)sender).getGameProfile().getId().toString());
         		json.addProperty("PresetCreated", Time.getDate());
         		if(cptc){
         			StringSelection selection = new StringSelection(json.toString());

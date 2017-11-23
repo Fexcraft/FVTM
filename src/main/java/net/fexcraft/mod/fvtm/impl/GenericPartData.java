@@ -21,7 +21,7 @@ public class GenericPartData implements PartData {
 	private String url;
 	private ResourceLocation custom;
 	private boolean isexternal;
-	private HashMap<Class, AttributeData> attributes = new HashMap<Class, AttributeData>();
+	private HashMap<Class<?>, AttributeData> attributes = new HashMap<Class<?>, AttributeData>();
 	
 	public GenericPartData(Part part){
 		this.part = part;
@@ -112,6 +112,7 @@ public class GenericPartData implements PartData {
 		return sel >= 0 ? part.getTextures().get(sel) : this.getCustomTexture();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends AttributeData> T getAttributeData(Class<T> clazz){
 		return (T)attributes.get(clazz);

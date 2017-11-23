@@ -1,0 +1,184 @@
+{
+  "FVTM:Vehicle": "fvp:c7",
+  "fvtm_landvehicle": {
+    "CustomTexture": "minecraft:",
+    "DoorsOpen": "0b",
+    "IsTextureExternal": "0b",
+    "LockCode": "78986a25",
+    "Locked": "0b",
+    "MultiDoor-BackLeft": "0b",
+    "MultiDoor-BackRight": "0b",
+    "MultiDoor-FrontLeft": "0b",
+    "MultiDoor-FrontRight": "0b",
+    "MultiDoor-Hood": "0b",
+    "MultiDoor-Trunk": "0b",
+    "Parts": [
+      {
+        "FVTM:Part": "fvp:c7_doors",
+        "UsedAs": "doors",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:engine_c7i4",
+        "UsedAs": "engine",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "EngineOn": "0b",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_wheel",
+        "UsedAs": "exchange_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t1_fuelgauge",
+        "UsedAs": "fuel_gauge",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_fuel_tank",
+        "UsedAs": "fuel_tank",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "FuelTankContent": "0.0d",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_hood",
+        "UsedAs": "hood",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_interior",
+        "UsedAs": "interior",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_wheel",
+        "UsedAs": "left_back_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_wheel",
+        "UsedAs": "left_front_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_wheel",
+        "UsedAs": "right_back_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_wheel",
+        "UsedAs": "right_front_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_seats",
+        "UsedAs": "seats",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_steering_wheel",
+        "UsedAs": "steering_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      }
+    ],
+    "PrimaryBlue": "45b",
+    "PrimaryGreen": "45b",
+    "PrimaryRed": "86b",
+    "SecondaryBlue": "66b",
+    "SecondaryGreen": "66b",
+    "SecondaryRed": "66b",
+    "SelectedTexture": "0",
+    "SpawnedKeys": "0"
+  }
+}

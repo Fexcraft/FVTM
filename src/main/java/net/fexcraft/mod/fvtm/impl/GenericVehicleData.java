@@ -91,14 +91,14 @@ public class GenericVehicleData implements VehicleData {
 			compound.setTag("WheelPos", wlist);
 		}
 		if(this.primary != null){
-			compound.setFloat("PrimaryRed", this.primary.red);
-			compound.setFloat("PrimaryGreen", this.primary.green);
-			compound.setFloat("PrimaryBlue", this.primary.blue);
+			compound.setByte("PrimaryRed", this.primary.red);
+			compound.setByte("PrimaryGreen", this.primary.green);
+			compound.setByte("PrimaryBlue", this.primary.blue);
 		}
 		if(this.secondary != null){
-			compound.setFloat("SecondaryRed", this.secondary.red);
-			compound.setFloat("SecondaryGreen", this.secondary.green);
-			compound.setFloat("SecondaryBlue", this.secondary.blue);
+			compound.setByte("SecondaryRed", this.secondary.red);
+			compound.setByte("SecondaryGreen", this.secondary.green);
+			compound.setByte("SecondaryBlue", this.secondary.blue);
 		}
 		compound.setBoolean("DoorsOpen", doors);
 		//FM

@@ -1,8 +1,11 @@
 package net.fexcraft.mod.fvtm.impl;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
+
+import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle;
@@ -11,6 +14,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.SpawnCmd;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.render.RGB;
@@ -19,6 +23,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -66,6 +71,10 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 			if(veh == null){
 				return;
 			}
+			if(stack.getTagCompound().hasKey("PresetKey")){
+				tooltip.add(Formatter.format("&9Preset: &6" + stack.getTagCompound().getString("PresetKey")));
+				tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
+			}
 			if(veh.getVehicle().isTrailerOrWagon()){
 				tooltip.add(Formatter.format("&o&6Trailer/Wagon."));
 			}
@@ -80,9 +89,14 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 			tooltip.add(Formatter.format("&9Fuel Type: &7" + (veh.getPart("engine") == null ? "unknown / no engine" : veh.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelType().getName())));
 			if(veh.getParts().size() > 0){
 				tooltip.add(Formatter.format("&3Installed Parts:"));
-				veh.getParts().forEach((key, data) -> {
-					tooltip.add(Formatter.format("&7- &3" + data.getPart().getName() + " &7(" + key + ")"));
-				});
+				if(tooltip.size() >= 9 && veh.getParts().size() > 6 && !flagIn.isAdvanced()){
+					tooltip.add(Formatter.format("&7- &oEnable Advanced Tooltips to see all."));
+				}
+				else{
+					veh.getParts().forEach((key, data) -> {
+						tooltip.add(Formatter.format("&7- &3" + data.getPart().getName() + " &7(" + key + ")"));
+					});
+				}
 			}
 			if(veh.getVehicle().getModel() != null && veh.getVehicle().getModel().creators.size() > 0){
 				tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
@@ -131,6 +145,20 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 				nbt.setString(NBTKEY, veh.getRegistryName().toString());
 				stack.setTagCompound(nbt);
 				items.add(stack);
+			}
+		}
+		if(tab == Tabs.VEHICLE_PRESETS){
+			for(Entry<String, JsonObject> entry : Resources.PRESETS.entrySet()){
+				try{
+					NBTTagCompound nbt = JsonToNBT.getTagFromJson(SpawnCmd.quickFix(entry.getValue()).toString());
+					ItemStack stack = new ItemStack(this);
+					nbt.setString("PresetKey", entry.getKey());
+					stack.setTagCompound(nbt);
+					items.add(stack);
+				}
+				catch(Exception e){
+					//e.printStackTrace();
+				};
 			}
 		}
 	}

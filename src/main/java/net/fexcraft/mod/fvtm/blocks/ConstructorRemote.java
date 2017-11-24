@@ -26,10 +26,12 @@ import net.minecraft.world.World;
 public class ConstructorRemote extends Item {
 	
 	public static final String NBTKEY = "ConstructorControllerPos";
+	public static ConstructorRemote INSTANCE;
 	
 	public ConstructorRemote(){
 		this.setMaxStackSize(1);
 		this.setCreativeTab(Tabs.BLOCKS);
+		INSTANCE = this;
 	}
 	
 	@Override

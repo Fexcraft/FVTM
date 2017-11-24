@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -69,6 +70,7 @@ public class Resources {
 	public static IForgeRegistry<Vehicle> VEHICLES;// = (IForgeRegistry<LandVehicle>)new RegistryBuilder<LandVehicle>().setName(new ResourceLocation("fvtm:landvehicles")).setType(LandVehicle.class).create();
 	public static TreeMap<String, Object> MODELS = new TreeMap<String, Object>();
 	public static TreeMap<ResourceLocation, SoundEvent> SOUNDS = new TreeMap<ResourceLocation, SoundEvent>();
+	public static TreeMap<String, JsonObject> PRESETS = new TreeMap<String, JsonObject>();
 	public static IForgeRegistry<Attribute> PARTATTRIBUTES;// = (IForgeRegistry<Attribute>)new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
 	public static ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entities/null_texture.png");
 	private final File configpath, addonconfig;
@@ -356,6 +358,32 @@ public class Resources {
 						Print.debug(file.getPath());
 						//else skip;
 					}
+					//check for presets
+					File presetfolder = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/presets/");
+					Print.debug(presetfolder.getPath());
+					if(!presetfolder.exists()){ presetfolder.mkdirs();}
+					for(File file : presetfolder.listFiles()){
+						if(!file.isDirectory() && file.getName().endsWith(".preset")){
+							JsonElement elm = JsonUtil.read(file, false);
+							if(elm != null){
+								PRESETS.put(addon.getRegistryName().toString() + "/" + file.getName().replace(".preset", ""), elm.getAsJsonObject());
+							}
+							Print.debug(file.getName());
+						}
+						else if(file.isDirectory()){
+							for(File fl : file.listFiles()){
+								if(fl.getName().endsWith(".preset")){
+									JsonElement elm = JsonUtil.read(file, false);
+									if(elm != null){
+										PRESETS.put(addon.getRegistryName().toString() + "/" + file.getName() + "/" + fl.getName().replace(".preset", ""), elm.getAsJsonObject());
+									}
+									Print.debug(file.getName());
+								}
+							}
+						}
+						Print.debug(file.getPath());
+						//else skip;
+					}
 				}
 				else{
 					JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/vehicles/", ".vehicle");
@@ -366,6 +394,12 @@ public class Resources {
 							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
 						}
 						Print.debug(veh.getRegistryName());
+					}
+					//check for presets
+					Map<String, JsonObject> arr = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/presets/", ".preset", true);
+					for(Entry<String, JsonObject> entry : arr.entrySet()){
+						PRESETS.put(addon.getRegistryName().toString() + "/" + entry.getKey(), entry.getValue());
+						Print.debug(entry.getKey());
 					}
 				}
 			}

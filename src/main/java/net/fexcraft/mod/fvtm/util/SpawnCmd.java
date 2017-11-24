@@ -63,6 +63,7 @@ public class SpawnCmd extends CommandBase {
         	Print.chat(sender, "&9/fvtms preset &6<filelocation> &5item");
         	Print.chat(sender, "&9/fvtms print &f&o(vehicle item in hand)");
         	Print.chat(sender, "&9/fvtms print clipboard &f&o(vehicle item in hand)");
+        	Print.chat(sender, "&9/fvtms print file &6<filename> &f&o(vehicle item in hand)");
         	Print.chat(sender, "&9/fvtms registry &6<vehicle-registry-name>");
         	Print.chat(sender, FVTM.PREFIX + "&8=============== &2==== &8==");
         	return;
@@ -91,21 +92,7 @@ public class SpawnCmd extends CommandBase {
         			Print.chat(sender, "&7&o" + file.toString());
         			return;
         		}
-        		JsonObject obj = JsonUtil.get(file);
-        		{
-        			//quick fix
-        			JsonObject jsn = obj.has("fvtm_landvehicle") ? obj.get("fvtm_landvehicle").getAsJsonObject() : null;//TODO adapt for other vehicle types
-        			Print.debug(obj);
-        			Print.debug(jsn);
-            		if(jsn.has("PrimaryRed")){ jsn.addProperty("PrimaryRed", Byte.parseByte(jsn.get("PrimaryRed").getAsString().replace("b", ""))); }
-            		if(jsn.has("PrimaryGreen")){ jsn.addProperty("PrimaryGreen", Byte.parseByte(jsn.get("PrimaryGreen").getAsString().replace("b", ""))); }
-            		if(jsn.has("PrimaryBlue")){ jsn.addProperty("PrimaryBlue", Byte.parseByte(jsn.get("PrimaryBlue").getAsString().replace("b", ""))); }
-            		if(jsn.has("SecondaryRed")){ jsn.addProperty("SecondaryRed", Byte.parseByte(jsn.get("SecondaryRed").getAsString().replace("b", ""))); }
-            		if(jsn.has("SecondaryGreen")){ jsn.addProperty("SecondaryGreen", Byte.parseByte(jsn.get("SecondaryGreen").getAsString().replace("b", ""))); }
-            		if(jsn.has("SecondaryBlue")){ jsn.addProperty("SecondaryBlue", Byte.parseByte(jsn.get("SecondaryBlue").getAsString().replace("b", ""))); }
-        			Print.debug(jsn);
-        		}
-        		VehicleData data = Resources.getVehicleData(JsonToNBT.getTagFromJson(obj.toString()), sender.getEntityWorld().isRemote);
+        		VehicleData data = Resources.getVehicleData(JsonToNBT.getTagFromJson(quickFix(JsonUtil.get(file)).toString()), sender.getEntityWorld().isRemote);
     			Print.debug(data.writeToNBT(new NBTTagCompound()));
         		if(args.length >= 3 && args[2].equals("item")){
         			ItemStack stack = data.getVehicle().getItemStack(data);
@@ -126,19 +113,38 @@ public class SpawnCmd extends CommandBase {
         	ItemStack stack = ((EntityPlayer)sender).getHeldItem(EnumHand.MAIN_HAND);
         	if(!stack.isEmpty() && stack.getItem() instanceof VehicleItem){
         		boolean cptc = args.length >= 2 && args[1].equals("clipboard");
+        		boolean asfl = args.length >= 2 && args[1].equals("file");
         		NBTTagCompound nbt = ((VehicleItem)stack.getItem()).getVehicle(stack).writeToNBT(new NBTTagCompound());
         		JsonObject json = NBTToJson.getJsonFromTag(nbt);
         		json.addProperty("PresetCreator", ((EntityPlayer)sender).getName());
         		json.addProperty("PresetCreatorUUID", ((EntityPlayer)sender).getGameProfile().getId().toString());
         		json.addProperty("PresetCreated", Time.getDate());
         		if(cptc){
-        			StringSelection selection = new StringSelection(json.toString());
+        			StringSelection selection = new StringSelection(JsonUtil.getGson().toJson(json));
         		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         		    clipboard.setContents(selection, selection);
         		    Print.chat(sender, "Copied to clipboard!");
         		}
+        		else if(asfl){
+        			if(args.length < 3){
+            			Print.chat(sender, "&7&lMissing \"filename\" Argument.");
+        				return;
+        			}
+            		File file = new File(FCL.getInstance().getConfigDirectory().getParentFile().getParentFile(), "/addons/presets/" + args[2] + ".preset");
+            		if(!file.getParentFile().exists()){
+            			file.mkdirs();
+            		}
+            		if(file.exists() && (args.length < 4 || !args[3].equals("overwrite"))){
+            			Print.chat(sender, "&7&lA preset with that name already does exists.");
+            			Print.chat(sender, "&7&oTry: /fvtms print file <filename> overwrite");
+        				return;
+            		}
+            		JsonUtil.write(file, json);
+            		Print.chat(sender, "&7Preset created!");
+            		Print.chat(sender, "&8&o" + file.toString());
+        		}
         		else{
-            		Print.chat(sender, "&7&o" + json.toString());
+            		Print.chat(sender, "&7&o" + JsonUtil.getGson().toJson(json));
         		}
         	}
         	else{
@@ -166,5 +172,15 @@ public class SpawnCmd extends CommandBase {
         }
     }
     
+    public static final JsonObject quickFix(JsonObject obj){
+    	JsonObject jsn = obj.has("fvtm_landvehicle") ? obj.get("fvtm_landvehicle").getAsJsonObject() : null;//TODO adapt for other vehicle types
+		if(jsn.has("PrimaryRed")){ jsn.addProperty("PrimaryRed", Byte.parseByte(jsn.get("PrimaryRed").getAsString().replace("b", ""))); }
+		if(jsn.has("PrimaryGreen")){ jsn.addProperty("PrimaryGreen", Byte.parseByte(jsn.get("PrimaryGreen").getAsString().replace("b", ""))); }
+		if(jsn.has("PrimaryBlue")){ jsn.addProperty("PrimaryBlue", Byte.parseByte(jsn.get("PrimaryBlue").getAsString().replace("b", ""))); }
+		if(jsn.has("SecondaryRed")){ jsn.addProperty("SecondaryRed", Byte.parseByte(jsn.get("SecondaryRed").getAsString().replace("b", ""))); }
+		if(jsn.has("SecondaryGreen")){ jsn.addProperty("SecondaryGreen", Byte.parseByte(jsn.get("SecondaryGreen").getAsString().replace("b", ""))); }
+		if(jsn.has("SecondaryBlue")){ jsn.addProperty("SecondaryBlue", Byte.parseByte(jsn.get("SecondaryBlue").getAsString().replace("b", ""))); }
+		return obj;
+    }
+    
 }
-

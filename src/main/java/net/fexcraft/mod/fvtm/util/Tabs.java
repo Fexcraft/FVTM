@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
+import net.fexcraft.mod.fvtm.blocks.ConstructorRemote;
 import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -97,6 +98,13 @@ public class Tabs {
 		@Override
 		public ItemStack getTabIconItem(){
 			return new ItemStack(ConstructorController.INSTANCE);
+		}
+	};
+	
+	public static final CreativeTabs VEHICLE_PRESETS = new CreativeTabs("fvtm_vehiclepresets"){
+		@Override
+		public ItemStack getTabIconItem(){
+			return new ItemStack(ConstructorRemote.INSTANCE);
 		}
 	};
 	

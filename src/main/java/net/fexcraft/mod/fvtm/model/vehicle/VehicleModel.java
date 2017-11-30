@@ -145,10 +145,11 @@ public class VehicleModel<T extends VehicleData> extends Model<VehicleData> {
 	}
 	
 	public void flip(ModelRendererTurbo[] mod){
-		for(ModelRendererTurbo sub : mod){
+		/*for(ModelRendererTurbo sub : mod){
 			sub.doMirror(false, true, true);
 			sub.setRotationPoint(sub.rotationPointX, - sub.rotationPointY, - sub.rotationPointZ);
-		}
+		}*/
+		this.fixRotations(mod);
 	}
 
 	public void flipAll(){

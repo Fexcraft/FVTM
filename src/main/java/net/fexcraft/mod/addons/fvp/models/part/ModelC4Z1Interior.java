@@ -71,7 +71,7 @@ public class ModelC4Z1Interior extends PartModel {
 		body[13].addBox(0F, 0F, 0F, 1, 1, 4, 0F); // Box 285
 		body[13].setRotationPoint(51.8F, -21.5F, 2F);
 		
-		this.fixRotation(body, false, false, true);
+		this.fixRotations(body);
 	}
 	
 	@Override

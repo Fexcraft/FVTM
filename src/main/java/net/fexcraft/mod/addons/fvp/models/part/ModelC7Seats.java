@@ -147,7 +147,7 @@ public class ModelC7Seats extends PartModel {
 		body[29].addShapeBox(0F, 0F, 0F, 1, 2, 10, 0F, 0F, 0F, 0F, 0F, -0.2F, -1F, 0F, -0.2F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.2F, -1F, 0F, -0.2F, -1F, 0F, 0F, 0F); // Box 244
 		body[29].setRotationPoint(10F, -6F, -15F);
 		
-		super.fixRotation(body, false, false, true);
+		super.fixRotations(body);
 		//TODO sub models without paint be.
 		
 	}

@@ -25,5 +25,5 @@ run/*
 # Yet Other
 src/main/java/com/
 src/main/java/net/fexcraft/mod/addons/manus/models/
-src/main/resources/assets/flansmod/
+src/main/java/net/fexcraft/mod/addons/test/models/
 src/main/java/org/

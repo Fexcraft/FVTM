@@ -117,7 +117,7 @@ public class ModelC4Z1Seats extends PartModel {
 		body[21].addBox(0F, 0F, 0F, 9, 10, 42, 0F); // Box 504
 		body[21].setRotationPoint(25F, -14F, -20F);
 		
-		super.fixRotation(body, false, false, true);
+		super.fixRotations(body);
 		//TODO sub models without paint be.
 	}
 	

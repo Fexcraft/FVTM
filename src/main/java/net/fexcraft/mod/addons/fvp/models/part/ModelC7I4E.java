@@ -546,7 +546,7 @@ public class ModelC7I4E extends PartModel {
 		body[129].addShapeBox(0F, 0F, 0F, 1, 1, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 129
 		body[129].setRotationPoint(26F, -2.5F, -6.5F);
 		
-		this.fixRotation(body, false, false, true);
+		this.fixRotations(body);
 
 	}
 	

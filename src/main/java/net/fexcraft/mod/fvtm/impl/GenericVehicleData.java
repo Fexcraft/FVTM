@@ -110,14 +110,14 @@ public class GenericVehicleData implements VehicleData {
 			script.writeToNBT(compound);
 		});
 		//
-		tagcompound.setTag(FVTM.MODID + "_landvehicle", compound);
+		tagcompound.setTag(FVTM.MODID + "_vehicle", compound);
 		return tagcompound;
 	}
 
 	@Override
 	public VehicleData readFromNBT(NBTTagCompound compound, boolean isRemote){
 		this.remote = isRemote();
-		compound = compound.getCompoundTag(FVTM.MODID + "_landvehicle");
+		compound = compound.hasKey(FVTM.MODID + "_landvehicle") ? compound.getCompoundTag(FVTM.MODID + "_landvehicle") : compound.getCompoundTag(FVTM.MODID + "_vehicle");
 		this.sel = compound.getInteger("SelectedTexture");
 		isexternal = compound.getBoolean("IsTextureExternal");
 		url = isexternal ? compound.getString("CustomTexture") : null;

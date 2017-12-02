@@ -45,6 +45,7 @@ public class GenericVehicle implements Vehicle {
 	private RGB primary, secondary;
 	private int constructionlength;
 	private DriveType drivetype;
+	private VehicleType type;
 	private ArrayList<EntityType> accentmods = new ArrayList<EntityType>();
 	{ accentmods.add(EntityType.INTERNAL); }
 	private boolean isTrailer;
@@ -53,7 +54,7 @@ public class GenericVehicle implements Vehicle {
 	private TreeMap<ResourceLocation, SoundEvent> soundevents = new TreeMap<ResourceLocation, SoundEvent>();
 	private TreeMap<String, Integer> soundlenghts = new TreeMap<String, Integer>();
 	//FM
-	private float cameradis, maxposthrottle, maxnegthrottle, turnleftmod, turnrightmod, wheelspringstrength, wheelstepheight;
+	private float cameradis, maxposthrottle, maxnegthrottle, turnleftmod, turnrightmod, wheelspringstrength, wheelstepheight, bouyancy;
 	
 	@SuppressWarnings("unchecked")
 	public GenericVehicle(JsonObject obj){
@@ -122,6 +123,8 @@ public class GenericVehicle implements Vehicle {
 			}
 		}
 		this.isTrailer = JsonUtil.getIfExists(obj, new String[]{"Trailer", "Wagon", "IsTrailer"}, false);
+		this.type = VehicleType.fromJson(obj);
+		this.bouyancy = JsonUtil.getIfExists(obj, "Bouyancy", 0.0165F).floatValue();
 	}
 
 	@Override
@@ -291,6 +294,16 @@ public class GenericVehicle implements Vehicle {
 	@Override
 	public boolean isTrailerOrWagon(){
 		return isTrailer;
+	}
+
+	@Override
+	public VehicleType getType(){
+		return type;
+	}
+
+	@Override
+	public double getBuoyancy(){
+		return bouyancy;
 	}
 	
 }

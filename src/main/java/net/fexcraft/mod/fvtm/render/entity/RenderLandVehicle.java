@@ -6,31 +6,20 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.util.math.Pos;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRenderFactory<LandVehicleEntity> {
-	
-	private static boolean reg = false;
 	
 	public RenderLandVehicle(RenderManager renderManager){
 		super(renderManager);
 		shadowSize = 0.5F;
-		if(!reg){
+		/*if(!reg){
 			MinecraftForge.EVENT_BUS.register(this);
 			reg = true;
-		}
+		}*/
 	}
 
 	public void bindTexture(LandVehicleEntity ent){
@@ -41,7 +30,8 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 		super.bindTexture(rs);
 	}
 	
-    public void render(LandVehicleEntity vehicle, double x, double y, double z, float f, float f1){
+	@Override
+    public void doRender(LandVehicleEntity vehicle, double x, double y, double z, float entity_yaw, float ticks){
     	if(vehicle.getVehicleData() == null){
     		return;
     	}
@@ -56,9 +46,9 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 		    float roll  =  (vehicle.axes.getRoll()  - vehicle.prevRotationRoll );
 		    for(; roll  >   180F; roll  -= 360F){}
 		    for(; roll  <= -180F; roll  += 360F){}
-		    GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * f1, 0.0F, 1.0F, 0.0F);
-		    GL11.glRotatef(vehicle.prevRotationPitch + pitch * f1, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(vehicle.prevRotationRoll + roll * f1, 1.0F, 0.0F, 0.0F);
+		    GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
+		    GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
         	GL11.glRotatef(180f, 0f, 0f, 1f);
 			GL11.glPushMatrix();
 			VehicleModel<VehicleData> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
@@ -85,8 +75,8 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 		return entity.getVehicleData().getTexture();
 	}
 	
-	@SubscribeEvent
-	public void renderWorld(RenderWorldLastEvent event){
+	//@SubscribeEvent
+	/*public void renderWorld(RenderWorldLastEvent event){
 		World world = Minecraft.getMinecraft().world;
 		if(world == null){
 			return;
@@ -117,7 +107,7 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 		        int k = i / 65536;
 		        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
 		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		        render(vehicle, vehicle.prevPosX + (vehicle.posX - vehicle.prevPosX) * event.getPartialTicks(), vehicle.prevPosY + (vehicle.posY - vehicle.prevPosY) * event.getPartialTicks(), vehicle.prevPosZ + (vehicle.posZ - vehicle.prevPosZ) * event.getPartialTicks(), 0F, event.getPartialTicks());
+		        doRender(vehicle, vehicle.prevPosX + (vehicle.posX - vehicle.prevPosX) * event.getPartialTicks(), vehicle.prevPosY + (vehicle.posY - vehicle.prevPosY) * event.getPartialTicks(), vehicle.prevPosZ + (vehicle.posZ - vehicle.prevPosZ) * event.getPartialTicks(), 0F, event.getPartialTicks());
 			}
 		}
 		//
@@ -125,7 +115,7 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
-	}
+	}*/
 
 	@Override
 	public Render<LandVehicleEntity> createRenderFor(RenderManager manager){

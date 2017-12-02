@@ -5,11 +5,13 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.LandVehicleTrailer;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.render.entity.RenderEmpty;
 import net.fexcraft.mod.fvtm.render.entity.RenderLandVehicle;
 import net.fexcraft.mod.fvtm.render.entity.RenderLandVehicleTrailer;
+import net.fexcraft.mod.fvtm.render.entity.RenderWaterVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.FvtmUpdateHandler;
@@ -79,13 +81,14 @@ public class FVTM {
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:seat"), SeatEntity.class, "fvtm:seat", 1993, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), LandVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicletrailer"), LandVehicleTrailer.class, "fvtm:landvehicletrailer", 1995, this, 256, 1, false);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicleEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, true);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 1, true);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicleEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, true);//1997 wagons?
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 1, true);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleEntity.class, RenderLandVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleTrailer.class, RenderLandVehicleTrailer::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WaterVehicleEntity.class, RenderWaterVehicle::new);
 		}
 	}
 	

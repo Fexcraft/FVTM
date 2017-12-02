@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
@@ -47,7 +46,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
+public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
 	
 	public boolean sync = true;
 	public int serverPositionTransitionTicker;
@@ -71,7 +70,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	public int doorToggleTimer = 0;
 	public VehicleEntity trailer;
 	
-	public LandVehicleEntity(World world){
+	public WaterVehicleEntity(World world){
 		super(world);
 		axes = new VehicleAxes();
 		prevAxes = new VehicleAxes();
@@ -86,13 +85,13 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		stepHeight = 1.0F;
 	}
 	
-	private LandVehicleEntity(World world, VehicleData type){
+	private WaterVehicleEntity(World world, VehicleData type){
 		this(world);
 		vehicledata = type;
 	}
 	
 	//From Item;
-	public LandVehicleEntity(World world, double x, double y, double z, EntityPlayer placer, VehicleData vehicleData){
+	public WaterVehicleEntity(World world, double x, double y, double z, EntityPlayer placer, VehicleData vehicleData){
 		this(world, vehicleData);
 		stepHeight = 1.0F;
 		setPosition(x, y, z);
@@ -101,7 +100,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	}
 	
 	//From Constructor;
-	public LandVehicleEntity(World world, double x, double y, double z, int placer, VehicleData data){
+	public WaterVehicleEntity(World world, double x, double y, double z, int placer, VehicleData data){
 		this(world, data);
 		stepHeight = 1.0F;
 		setPosition(x, y, z);
@@ -330,7 +329,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 				player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 2, 0, 0);//Fuel Inventory.
 				return true;
 			}
-			if(stack.getItem() instanceof VehicleItem){
+			/*if(stack.getItem() instanceof VehicleItem){
 				if(this.vehicledata.getRearConnector() != null && this.getEntityAtRear() == null && ((VehicleItem)stack.getItem()).getVehicle(stack).getVehicle().isTrailerOrWagon()){
 					Print.chat(player, "Connecting...");
 					LandVehicleTrailer trailer = new LandVehicleTrailer(world, ((VehicleItem)stack.getItem()).getVehicle(stack), this);
@@ -338,7 +337,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 					stack.shrink(1);
 					return true;
 				}
-			}
+			}*/
 		}
 		if(!vehicledata.getScripts().isEmpty()){
 			for(VehicleScript script : vehicledata.getScripts()){
@@ -544,8 +543,8 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			if(wheel == null){
 				continue;
 			}
-			onGround = true;
-			wheel.onGround = true;
+			onGround = false;
+			wheel.onGround = false;
 			wheel.rotationYaw = axes.getYaw();
 			if(!vehicledata.getVehicle().getDriveType().hasTracks() && (wheel.wheelid == 2 || wheel.wheelid == 3)){
 				wheel.rotationYaw += wheelsYaw;
@@ -605,6 +604,9 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 						//
 					}
 				}
+			}
+			if(world.containsAnyLiquid(wheel.getEntityBoundingBox())){//.isAnyLiquid(wheel.getEntityBoundingBox())){
+				wheel.motionY += vehicledata.getVehicle().getBuoyancy();
 			}
 			wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 			//pull wheels back to car

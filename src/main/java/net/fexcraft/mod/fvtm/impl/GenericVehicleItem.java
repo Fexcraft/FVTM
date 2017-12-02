@@ -13,11 +13,14 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.SpawnCmd;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -87,6 +90,9 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 			tooltip.add(Formatter.format("&9Seat Amount: &r" + veh.getSeats().size()));
 			tooltip.add(Formatter.format("&9Fuel Tank: &7" + RGB.format(veh.getFuelTankContent()) + "&8/&e" + veh.getFuelTankSize()));
 			tooltip.add(Formatter.format("&9Fuel Type: &7" + (veh.getPart("engine") == null ? "unknown / no engine" : veh.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelType().getName())));
+			if(veh.getVehicle().getType().isWaterVehicle()){
+				tooltip.add(Formatter.format("&9Bouyancy: &r" + veh.getVehicle().getBuoyancy()));
+			}
 			if(veh.getParts().size() > 0){
 				tooltip.add(Formatter.format("&3Installed Parts:"));
 				if(tooltip.size() >= 9 && veh.getParts().size() > 6 && !flagIn.isAdvanced()){
@@ -194,8 +200,40 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 		}
 		if(movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK){
 			BlockPos pos = movingobjectposition.getBlockPos();
-			if(!world.isRemote){
-				world.spawnEntity(new LandVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, this.getVehicle(player.getHeldItem(hand))));
+			VehicleData data = this.getVehicle(player.getHeldItem(hand));
+			switch(data.getVehicle().getType()){
+				case LAND:{
+					if(world.getBlockState(pos).getBlock() instanceof BlockLiquid){
+						Print.chat(player, "Vehicle not placeable on water!");
+						return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+					}
+					if(!world.isRemote){
+						world.spawnEntity(new LandVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
+					}
+					break;
+				}
+				case WATER:{
+					if(world.getBlockState(pos).getBlock() instanceof BlockLiquid == false){
+						Print.chat(player, "Vehicle not placeable on land!");
+						return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+					}
+					if(!world.isRemote){
+						world.spawnEntity(new WaterVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
+					}
+					break;
+				}
+				case AIR:{
+					Print.chat(player, "Unavailable yet.");
+					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+				}
+				case RAIL:{
+					Print.chat(player, "Unavailable yet.");
+					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+				}
+				default: case NULL:{
+					Print.chat(player, "Invalid Vehicle Type.");
+					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+				}
 			}
 			if(!player.capabilities.isCreativeMode){
 				player.getHeldItem(hand).shrink(1);

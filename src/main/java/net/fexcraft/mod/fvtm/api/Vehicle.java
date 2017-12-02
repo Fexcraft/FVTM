@@ -7,6 +7,8 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.JsonObject;
+
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
@@ -44,9 +46,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		return Vehicle.class;
 	}
 	
-	public default VehicleType getType(){
-		return VehicleType.LAND;
-	}
+	public VehicleType getType();
 	
 	public ItemStack getItemStack(@Nullable VehicleData data);
 	
@@ -284,15 +284,42 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		}
 		
 		public static VehicleType fromString(String string){
-			string = string.toUpperCase();
 			for(VehicleType type : values()){
-				if(type.name().equals(string)) {
+				if(type.name().equalsIgnoreCase(string)){
 					return type;
 				}
 			}
 			return LAND;
 		}
+
+		public static VehicleType fromJson(JsonObject obj){
+			if(obj.has("VehicleType")){
+				return fromString(obj.get("VehicleType").getAsString());
+			}
+			if(obj.has("Type")){
+				return fromString(obj.get("Type").getAsString());
+			}
+			return LAND;
+		}
+
+		public boolean isLandVehicle(){
+			return this == LAND;
+		}
+
+		public boolean isWaterVehicle(){
+			return this == WATER;
+		}
+
+		public boolean isAirVehicle(){
+			return this == AIR;
+		}
+
+		public boolean isRailVehicle(){
+			return this == LAND;
+		}
 		
 	}
+
+	public double getBuoyancy();
 	
 }

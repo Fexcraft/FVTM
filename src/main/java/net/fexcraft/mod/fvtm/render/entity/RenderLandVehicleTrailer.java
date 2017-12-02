@@ -6,31 +6,20 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.LandVehicleTrailer;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.util.math.Pos;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class RenderLandVehicleTrailer extends Render<LandVehicleTrailer> implements IRenderFactory<LandVehicleTrailer> {
-	
-	private static boolean reg = false;
 	
 	public RenderLandVehicleTrailer(RenderManager renderManager){
 		super(renderManager);
 		shadowSize = 0.5F;
-		if(!reg){
+		/*if(!reg){
 			MinecraftForge.EVENT_BUS.register(this);
 			reg = true;
-		}
+		}*/
 	}
 
 	public void bindTexture(LandVehicleTrailer ent){
@@ -41,7 +30,8 @@ public class RenderLandVehicleTrailer extends Render<LandVehicleTrailer> impleme
 		super.bindTexture(rs);
 	}
 	
-    public void render(LandVehicleTrailer vehicle, double x, double y, double z, float f, float f1){
+	@Override
+    public void doRender(LandVehicleTrailer vehicle, double x, double y, double z, float f, float f1){
     	if(vehicle.getVehicleData() == null){
     		return;
     	}
@@ -85,8 +75,8 @@ public class RenderLandVehicleTrailer extends Render<LandVehicleTrailer> impleme
 		return entity.getVehicleData().getTexture();
 	}
 	
-	@SubscribeEvent
-	public void renderWorld(RenderWorldLastEvent event){
+	//@SubscribeEvent
+	/*public void renderWorld(RenderWorldLastEvent event){
 		World world = Minecraft.getMinecraft().world;
 		if(world == null){
 			return;
@@ -125,7 +115,7 @@ public class RenderLandVehicleTrailer extends Render<LandVehicleTrailer> impleme
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
-	}
+	}*/
 
 	@Override
 	public Render<LandVehicleTrailer> createRenderFor(RenderManager manager){

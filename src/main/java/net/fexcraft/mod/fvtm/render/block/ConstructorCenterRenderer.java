@@ -96,8 +96,13 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 			}
 			GL11.glTranslated(0, 4, 0);
 		}
+		if(data != null && data.getVehicle().getType().isWaterVehicle()){
+			return;
+		}
 		GL11.glTranslated(0, -te.getLiftState(), 0);
-		model.render(model.trailerModel);
+		if(data != null){
+			model.render(model.trailerModel);
+		}
 		GL11.glTranslatef(te.getLength() + 1, 0, 0);
 		for(int i = 0; i < te.getRenderLength(); i++){
 			GL11.glTranslatef(-1, 0, 0);

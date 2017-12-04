@@ -1039,5 +1039,10 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	public float getWheelsYaw(){
 		return this.wheelsYaw;
 	}
+
+	@Override
+	public float getWheelsAngle(){
+		return this.wheelsAngle;
+	}
 	
 }

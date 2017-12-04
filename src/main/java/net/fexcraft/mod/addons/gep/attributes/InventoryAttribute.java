@@ -8,12 +8,10 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
-import net.fexcraft.mod.fvtm.blocks.ConstructorController.Button;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -66,18 +64,6 @@ public class InventoryAttribute implements Attribute {
 	@Override
 	public String getName(){
 		return "Inventory Attribute";
-	}
-
-	@Override
-	public NBTTagCompound getScreen(NBTTagCompound compound, PartData part, int selection, int scroll){
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void onButtonPress(Button button, EntityPlayer player, String[] args){
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

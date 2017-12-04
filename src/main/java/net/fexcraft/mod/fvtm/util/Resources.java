@@ -498,7 +498,6 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void regContainers(RegistryEvent.Register<Container> event){
-		this.queryAddons();
 		for(Addon addon : ADDONS.getValues()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid()){
@@ -518,7 +517,7 @@ public class Resources {
 					Print.debug(confol.getPath());
 					if(!confol.exists()){ confol.mkdirs();}
 					for(File file : confol.listFiles()){
-						if(!file.isDirectory() && file.getName().endsWith(".part")){
+						if(!file.isDirectory() && file.getName().endsWith(".container")){
 							GenericContainer con = new GenericContainer(JsonUtil.get(file));
 							event.getRegistry().register(con);
 							if(Static.side().isClient()){
@@ -528,7 +527,7 @@ public class Resources {
 						}
 						else if(file.isDirectory()){
 							for(File fl : file.listFiles()){
-								if(fl.getName().endsWith(".part")){
+								if(fl.getName().endsWith(".container")){
 									GenericContainer con = new GenericContainer(JsonUtil.get(fl));
 									event.getRegistry().register(con);
 									if(Static.side().isClient()){
@@ -543,7 +542,7 @@ public class Resources {
 					}
 				}
 				else{
-					JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/parts/", ".part");
+					JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/parts/", ".container");
 					for(JsonElement elm : array){
 						GenericContainer con = new GenericContainer(elm.getAsJsonObject());
 						event.getRegistry().register(con);

@@ -40,7 +40,8 @@ public class GeneralEssentials extends HybridAddon {
 			new FuelTankExtensionAttribute(),
 			new FMSeatAttribute(),
 			new InventoryAttribute(),
-			new ConnectorAttribute()
+			new ConnectorAttribute(),
+			new ContainerAttribute()
 		);
 	}
 

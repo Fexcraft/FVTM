@@ -37,6 +37,7 @@ public class VehicleInventoryGui {
 	//x 1 = pin view
 	//x 2 = fuel view
 	//x 3 = status view
+	//x 4 = container view
 	
 	//y n = part id
 	
@@ -45,6 +46,7 @@ public class VehicleInventoryGui {
 	private static final ResourceLocation maintex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_main.png");
 	private static final ResourceLocation invtex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory.png");
 	private static final ResourceLocation fueltex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_fuel.png");
+	private static final ResourceLocation contex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_container.png");
 	
 	public static class Client extends GuiContainer {
 		
@@ -81,6 +83,11 @@ public class VehicleInventoryGui {
 					//TODO
 					break;
 				}
+				case 4:{
+					this.xSize = 210;
+					this.ySize = 103;
+					break;
+				}
 			}
 		}
 		
@@ -93,17 +100,16 @@ public class VehicleInventoryGui {
 
 		@Override
 		protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY){
+			int i = this.guiLeft, j = this.guiTop;
 			switch(x){
 				case 0:{
 					this.mc.getTextureManager().bindTexture(maintex);
-					int i = this.guiLeft, j = this.guiTop;
 					this.drawTexturedModalRect(i, j, 0, 0, this.xSize + 12, this.ySize);
 					this.fontRenderer.drawString(data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
 					break;
 				}
 				case 1:{
 					this.mc.getTextureManager().bindTexture(invtex);
-					int i = this.guiLeft, j = this.guiTop;
 					this.drawTexturedModalRect(i, j, 0, 0, this.xSize + 16, this.ySize);
 					this.fontRenderer.drawString(data.getInventoryContainers().get(y).getPart().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
 					//
@@ -116,7 +122,6 @@ public class VehicleInventoryGui {
 				}
 				case 2:{
 					this.mc.getTextureManager().bindTexture(fueltex);
-					int i = this.guiLeft, j = this.guiTop;
 					this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 					int perducenti = (int)(data.getFuelTankContent() / data.getFuelTankSize() * 200);
 					this.drawTexturedModalRect(i + 6, j + 25, 0, 242, perducenti, 14);
@@ -130,6 +135,12 @@ public class VehicleInventoryGui {
 				}
 				case 3:{
 					//TODO
+					break;
+				}
+				case 4:{
+					this.mc.getTextureManager().bindTexture(contex);
+					this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+					this.fontRenderer.drawString(data.getContainerHolders().get(y).getPart().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
 					break;
 				}
 			}
@@ -170,7 +181,12 @@ public class VehicleInventoryGui {
 							nbt.setString("target_listener", "fvtm");
 							nbt.setString("task", "open_gui");
 							nbt.setInteger("gui", GuiHandler.VEHICLE_INVENTORY);
-							nbt.setIntArray("args", new int[]{1, y, 0});
+							if(y >= data.getInventoryContainers().size()){
+								nbt.setIntArray("args", new int[]{4, y - data.getInventoryContainers().size(), 0});
+							}
+							else{
+								nbt.setIntArray("args", new int[]{1, y, 0});
+							}
 							PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
 							break;
 						}
@@ -222,6 +238,10 @@ public class VehicleInventoryGui {
 					//TODO
 					break;
 				}
+				case 4:{
+					//TODO
+					break;
+				}
 			}
 		}
 		
@@ -249,7 +269,8 @@ public class VehicleInventoryGui {
 					arrowDown.enabled = scroll + 9 < data.getInventoryContainers().size();
 					//
 					for(int k = 0; k < 9; k++){
-						String name = k >= data.getInventoryContainers().size() ? "" : Formatter.format("&6" + k + "&e| &r" + data.getInventoryContainers().get(k).getPart().getName());
+						int l = k - data.getInventoryContainers().size();
+						String name = k >= data.getInventoryContainers().size() ? ( l >= data.getContainerHolders().size() ? "" : Formatter.format("&5" + l + "&e| &r" + data.getContainerHolders().get(l).getPart().getName())) : Formatter.format("&6" + k + "&e| &r" + data.getInventoryContainers().get(k).getPart().getName());
 						this.buttonList.add(parts[k] = new GenericGuiButton(k + 2, 5 + i, (19 + (k * 14)) + j, 158, 12, name));
 						parts[k].setTexture(maintex);
 						parts[k].setTexturePos(0, 0, 232);
@@ -294,6 +315,10 @@ public class VehicleInventoryGui {
 					//TODO
 					break;
 				}
+				case 4:{
+					//TODO
+					break;
+				}
 			}
 		}
 		
@@ -317,6 +342,7 @@ public class VehicleInventoryGui {
 		private VehicleData data;
 		//
 		FuelInventory fuelinv;
+		//ContainerInventory upper_coninv, lower_coninv;
 		
 		public Server(EntityPlayer player, World world, int x, int y, int z){
 			this.player = player;
@@ -364,6 +390,18 @@ public class VehicleInventoryGui {
 				}
 				case 3:{
 					//TODO
+					break;
+				}
+				case 4:{
+					//TODO container slots
+					for(int row = 0; row < 3; row++){
+						for(int col = 0; col < 9; col++){
+							addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 6 + col * 18, 25 + row * 18));
+						}
+					}
+					for(int col = 0; col < 9; col++){
+						addSlotToContainer(new Slot(player.inventory, col, 6 + col * 18, 81));
+					}
 					break;
 				}
 			}

@@ -5,10 +5,11 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.addons.gep.models.containers.GenericContainerModel;
+import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
 import net.fexcraft.mod.fvtm.model.part.ContainerModel;
-import net.fexcraft.mod.fvtm.model.part.GenericContainerModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -24,6 +25,7 @@ public class GenericContainer implements Container {
 	
 	private ResourceLocation registryname;
 	private ContainerType type;
+	private Addon addon;
 	@SideOnly(Side.CLIENT) private ContainerModel<ContainerData> model;
 	private List<ResourceLocation> textures;
 	private String[] description;
@@ -35,14 +37,17 @@ public class GenericContainer implements Container {
 
 	@SuppressWarnings("unchecked")
 	public GenericContainer(JsonObject obj){
-		type = ContainerType.valueOf(obj.has("Type") ? obj.get("Type").getAsString().toUpperCase() : obj.has("ContainerType") ? obj.get("ContainerType").getAsString().toUpperCase() : Container.ContainerType.MEDIUM.name());
+		this.registryname = DataUtil.getRegistryName(obj, "CONTAINER");
+		this.addon = DataUtil.getAddon(registryname, obj, "CONTAINER");
+		this.type = ContainerType.valueOf(obj.has("Type") ? obj.get("Type").getAsString().toUpperCase() : obj.has("ContainerType") ? obj.get("ContainerType").getAsString().toUpperCase() : Container.ContainerType.MEDIUM.name());
 		if(Static.side().isClient()){
 			this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), ContainerModel.class, GenericContainerModel.get());
 		}
-		name = JsonUtil.getIfExists(obj, "FullName", this.getRegistryName().toString());
-		textures = DataUtil.getTextures(obj, registryname, "CONTAINER");;
-		description = DataUtil.getDescription(obj);
+		this.name = JsonUtil.getIfExists(obj, "FullName", this.getRegistryName().toString());
+		this.textures = DataUtil.getTextures(obj, registryname, "CONTAINER");;
+		this.description = DataUtil.getDescription(obj);
 		this.inventory = JsonUtil.getIfExists(obj, "InventorySize", 4).intValue();
+		this.invtype = InventoryType.fromString(JsonUtil.getIfExists(obj, "InventoryType", "item"));
 		//
 		if(obj.has("InventoryWhitelist")){
 			obj.get("InventoryWhitelist").getAsJsonArray().forEach((elm) -> {
@@ -146,6 +151,11 @@ public class GenericContainer implements Container {
 			return found;
 		}
 		return true;
+	}
+
+	@Override
+	public Addon getAddon(){
+		return addon;
 	}
 	
 }

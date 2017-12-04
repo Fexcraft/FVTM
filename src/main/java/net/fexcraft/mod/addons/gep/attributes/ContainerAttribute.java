@@ -8,13 +8,11 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
-import net.fexcraft.mod.fvtm.blocks.ConstructorController.Button;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -34,22 +32,12 @@ public class ContainerAttribute implements Attribute {
 	@Override
 	public void load(JsonObject obj){
 		type = ContainerType.valueOf(JsonUtil.getIfExists(obj, "Container-Type", ContainerType.MEDIUM.name()).toUpperCase());
+		offset = Pos.fromJSON(JsonUtil.getIfExists(obj, "Container-Offset", new JsonObject()).getAsJsonObject());
 	}
 
 	@Override
 	public String getName(){
 		return "Container Holder";
-	}
-
-	@Override
-	public NBTTagCompound getScreen(NBTTagCompound compound, PartData part, int selection, int scroll){
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void onButtonPress(Button button, EntityPlayer player, String[] args){
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -65,7 +53,7 @@ public class ContainerAttribute implements Attribute {
 
 	@Override
 	public Class<? extends AttributeData> getDataClass(){
-		return null;
+		return ContainerAttributeData.class;
 	}
 	
 	public Pos getContainerOffset(){

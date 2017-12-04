@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import net.fexcraft.mod.addons.gep.attributes.ConnectorAttribute;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.FMSeatAttribute;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
@@ -388,13 +390,12 @@ public class GenericVehicleData implements VehicleData {
 
 	@Override
 	public List<PartData> getInventoryContainers(){
-		ArrayList<PartData> map = new ArrayList<PartData>();
-		this.parts.forEach((key, data) -> {
-			if(data.getPart().getAttribute(InventoryAttribute.class) != null){
-				map.add(data);
-			}
-		});
-		return map;
+		return parts.values().stream().filter(pre -> pre.getPart().getAttribute(InventoryAttribute.class) != null).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PartData> getContainerHolders(){
+		return parts.values().stream().filter(pre -> pre.getPart().getAttribute(ContainerAttribute.class) != null).collect(Collectors.toList());
 	}
 	
 	@Override

@@ -1,7 +1,8 @@
-package net.fexcraft.mod.fvtm.model.part;
+package net.fexcraft.mod.addons.gep.models.containers;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
+import net.fexcraft.mod.fvtm.model.part.ContainerModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 

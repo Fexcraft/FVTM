@@ -176,6 +176,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		public NonNullList<ItemStack> getAllInventoryContents();
 
 		public List<PartData> getInventoryContainers();
+
+		public List<PartData> getContainerHolders();
 		
 		@Nullable
 		public Pos getFrontConnector();
@@ -269,6 +271,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		public VehicleEntity getEntityAtRear();
 
 		public Vec3d getAngularVelocity();
+
+		public float getWheelsAngle();
 
 		public float getWheelsYaw();
 		

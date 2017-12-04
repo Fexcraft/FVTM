@@ -4,8 +4,14 @@ import java.util.ArrayList;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
+import net.fexcraft.mod.fvtm.api.Container.ContainerType;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.tmt.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
@@ -332,11 +338,8 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		translate(track_wheels_left, x, y, z);
 	}
 	
-	public void flip(ModelRendererTurbo[] mod){
-		for(ModelRendererTurbo sub : mod){
-			sub.doMirror(false, true, true);
-			sub.setRotationPoint(sub.rotationPointX, - sub.rotationPointY, - sub.rotationPointZ);
-		}
+	public void flip(ModelRendererTurbo[] model){
+		this.fixRotations(model);
 	}
 
 	public void flipAll(){
@@ -378,37 +381,121 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		}
 	}
 	
-	public void def_renderWheels4(VehicleData type, String us, Entity veh){//TODO
-		LandVehicleEntity vehicle = (LandVehicleEntity)veh;
+	public void def_renderWheels4(VehicleData type, String us, Entity veh){
+		VehicleEntity vehicle = (VehicleEntity)veh;
 		switch(us){
 			case "left_front_wheel":
 				for(ModelRendererTurbo element : wheel_front_left){
-					element.rotateAngleZ = vehicle.wheelsAngle;
-					element.rotateAngleY = vehicle.wheelsYaw * Static.rad180 / 180F * 3F;
+					element.rotateAngleZ = vehicle.getWheelsAngle();
+					element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
 					element.render();
 					element.rotateAngleY = 0;
 				}
 				break;
 			case "right_front_wheel":
 				for(ModelRendererTurbo element : wheel_front_right){
-					element.rotateAngleZ = vehicle.wheelsAngle;
-					element.rotateAngleY = vehicle.wheelsYaw * Static.rad180 / 180F * 3F;
+					element.rotateAngleZ = vehicle.getWheelsAngle();
+					element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
 					element.render();
 					element.rotateAngleY = 0;
 				}
 				break;
 			case "left_back_wheel":
 				for(ModelRendererTurbo element : wheel_back_left){
-					element.rotateAngleZ = vehicle.wheelsAngle;
+					element.rotateAngleZ = vehicle.getWheelsAngle();
 					element.render();
 				}
 				break;
 			case "right_back_wheel":
 				for(ModelRendererTurbo element : wheel_back_right){
-					element.rotateAngleZ = vehicle.wheelsAngle;
+					element.rotateAngleZ = vehicle.getWheelsYaw();
 					element.render();
 				}
 				break;
+		}
+	}
+	
+	public static void def_renderContainer(VehicleData type, String us){
+		PartData partdata = type.getPart(us);
+		if(partdata == null){
+			return;
+		}
+		ContainerAttribute conattr;
+		if((conattr = partdata.getPart().getAttribute(ContainerAttribute.class)) != null){
+			conattr.getContainerOffset().translate();
+			ContainerAttributeData condata = partdata.getAttributeData(ContainerAttributeData.class);
+			ContainerData container;
+			if(conattr.getContainerType() == ContainerType.LARGE){
+				if(condata.getContainer(ContainerPosition.MEDIUM_DUAL2) != null){
+					if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL1)) != null){
+						Model.bindTexture(container.getTexture());
+						container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL1);
+					}
+					//
+					if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL2)) != null){
+						Model.bindTexture(container.getTexture());
+						container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL2);
+					}
+				}
+				else{
+					if((container = condata.getContainer(ContainerPosition.LARGE_SINGLE)) != null){
+						Model.bindTexture(container.getTexture());
+						container.getContainer().getModel().render(container, ContainerPosition.LARGE_SINGLE);
+					}
+				}
+			}
+			else if(conattr.getContainerType() == ContainerType.MEDIUM){
+				if((container = condata.getContainer(ContainerPosition.MEDIUM_SINGLE)) != null){
+					Model.bindTexture(container.getTexture());
+					container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_SINGLE);
+				}
+			}
+			else {
+				//No other types supported yet.
+			}
+			conattr.getContainerOffset().translateR();
+		}
+	}
+	
+	public static void def_renderContainer(VehicleData type, String us, Entity ent){
+		PartData partdata = type.getPart(us);
+		if(partdata == null){
+			return;
+		}
+		ContainerAttribute conattr = partdata.getPart().getAttribute(ContainerAttribute.class);
+		if(conattr != null){
+			conattr.getContainerOffset().translate();
+			ContainerAttributeData condata = partdata.getAttributeData(ContainerAttributeData.class);
+			ContainerData container;
+			if(conattr.getContainerType() == ContainerType.LARGE){
+				if(condata.getContainer(ContainerPosition.MEDIUM_DUAL2) != null){
+					if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL1)) != null){
+						Model.bindTexture(container.getTexture());
+						container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL1, ent);
+					}
+					//
+					if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL2)) != null){
+						Model.bindTexture(container.getTexture());
+						container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL2, ent);
+					}
+				}
+				else{
+					if((container = condata.getContainer(ContainerPosition.LARGE_SINGLE)) != null){
+						Model.bindTexture(container.getTexture());
+						container.getContainer().getModel().render(container, ContainerPosition.LARGE_SINGLE, ent);
+					}
+				}
+			}
+			else if(conattr.getContainerType() == ContainerType.MEDIUM){
+				if((container = condata.getContainer(ContainerPosition.MEDIUM_SINGLE)) != null){
+					Model.bindTexture(container.getTexture());
+					container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_SINGLE, ent);
+				}
+			}
+			else {
+				//No other types supported yet.
+			}
+			conattr.getContainerOffset().translateR();
 		}
 	}
 	

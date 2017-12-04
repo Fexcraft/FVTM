@@ -59,6 +59,8 @@ public class GenericContainerItem extends Item implements ContainerItem {
 			for(String s : con.getContainer().getDescription()){
 				tooltip.add(Formatter.format(s));
 			}
+			tooltip.add(Formatter.format("&9Capacity: &7" + con.getContainer().getInventorySize() + " " + con.getContainer().getInventoryType().getUnitsName()));
+			//tooltip.add(Formatter.format("&9LoadType: &7" + con.getContainer().getInventoryType().getName()));
 			tooltip.add(Formatter.format("&9Selected Texture: &7" + con.getSelectedTexture()));
 			if(con.getContainer().getModel() != null && con.getContainer().getModel().creators.size() > 0){
 				tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));

@@ -1041,5 +1041,10 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 	public float getWheelsYaw(){
 		return this.wheelsYaw;
 	}
+
+	@Override
+	public float getWheelsAngle(){
+		return this.wheelsAngle;
+	}
 	
 }

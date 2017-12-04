@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.api.Attribute.AttributeData;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
 import net.minecraft.nbt.NBTTagCompound;
@@ -78,6 +79,7 @@ public class GenericPartData implements PartData {
 					this.attributes.put(attr.getDataClass(), attr.getDataClass().getConstructor(PartData.class, Attribute.class).newInstance(this, attr).readFromNBT(this, tagc[0]));
 				}
 				catch(Exception e){
+					Print.debug(part.getRegistryName().toString(), clazz);
 					e.printStackTrace();
 				}
 			}

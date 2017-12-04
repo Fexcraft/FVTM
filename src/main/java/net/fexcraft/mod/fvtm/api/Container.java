@@ -26,6 +26,8 @@ public interface Container extends IForgeRegistryEntry<Container> {
 	public default boolean isLargeContainer(){
 		return this.getType() == ContainerType.LARGE;
 	}
+	
+	public Addon getAddon();
 
 	public String getName();
 	

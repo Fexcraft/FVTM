@@ -36,14 +36,14 @@ public class ConstructorController extends BlockContainer {
 	public ConstructorController(){
 		super(Material.ANVIL, MapColor.OBSIDIAN);
 		if(INSTANCE != null){
-			Print.log("LANDVEHICLE CONSTRUCTOR CONTROLLER WAS INITIALIZED TWICE, THIS IS NOT ALLOWED.");
+			Print.log("VEHICLE CONSTRUCTOR CONTROLLER WAS INITIALIZED TWICE, THIS IS NOT ALLOWED.");
 			Static.halt();
 		}
     	this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 		this.setCreativeTab(Tabs.BLOCKS);
 		INSTANCE = this;
 		
-		FVTM.getRegisterer().addBlock("landvehicle_constructor_controller", this, null, 1, null);
+		FVTM.getRegisterer().addBlock("constructor_controller", this, null, 1, null);
 		GameRegistry.registerTileEntity(ConstructorControllerEntity.Server.class, this.getRegistryName().toString() + "_server");
 		GameRegistry.registerTileEntity(ConstructorControllerEntity.Client.class, this.getRegistryName().toString() + "_client");
 	}

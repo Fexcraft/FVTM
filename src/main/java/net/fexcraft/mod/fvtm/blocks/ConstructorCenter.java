@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "landvehicle_constructor_center", tileentity = ConstructorCenterEntity.class)
+@fBlock(modid = FVTM.MODID, name = "constructor_center", tileentity = ConstructorCenterEntity.class)
 public class ConstructorCenter extends BlockContainer {
 	
 	public static ConstructorCenter INSTANCE;
@@ -29,7 +29,7 @@ public class ConstructorCenter extends BlockContainer {
 	public ConstructorCenter(){
 		super(Material.ANVIL, MapColor.OBSIDIAN);
 		if(INSTANCE != null){
-			Print.log("LANDVEHICLE CONSTRUCTOR CENTER WAS INITIALIZED TWICE, THIS IS NOT ALLOWED.");
+			Print.log("VEHICLE CONSTRUCTOR CENTER WAS INITIALIZED TWICE, THIS IS NOT ALLOWED.");
 			Static.halt();
 		}
     	this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));

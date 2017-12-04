@@ -2,6 +2,11 @@ package net.fexcraft.mod.fvtm.render.entity;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
+import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
@@ -58,7 +63,38 @@ public class RenderWaterVehicle extends Render<WaterVehicleEntity> implements IR
 						pos.translate();
 						partdata.getPart().getModel().render(vehicle.getVehicleData(), key, vehicle);
 						pos.translateR();
-					});
+						ContainerAttribute conattr;
+						if((conattr = partdata.getPart().getAttribute(ContainerAttribute.class)) != null){
+							conattr.getContainerOffset().translate();
+							ContainerAttributeData condata = partdata.getAttributeData(ContainerAttributeData.class);
+							ContainerData container;
+							if(conattr.getContainerType() == ContainerType.LARGE){
+								if(condata.getContainer(ContainerPosition.MEDIUM_DUAL2) != null){
+									container = condata.getContainer(ContainerPosition.MEDIUM_DUAL1);
+									this.bindTexture(container.getTexture());
+									container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL1, vehicle);
+									//
+									container = condata.getContainer(ContainerPosition.MEDIUM_DUAL2);
+									this.bindTexture(container.getTexture());
+									container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL2, vehicle);
+								}
+								else{
+									container = condata.getContainer(ContainerPosition.LARGE_SINGLE);
+									this.bindTexture(container.getTexture());
+									container.getContainer().getModel().render(container, ContainerPosition.LARGE_SINGLE, vehicle);
+								}
+							}
+							else if(conattr.getContainerType() == ContainerType.MEDIUM){
+								container = condata.getContainer(ContainerPosition.MEDIUM_SINGLE);
+								this.bindTexture(container.getTexture());
+								container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_SINGLE, vehicle);
+							}
+							else {
+								//No other types supported yet.
+							}
+							conattr.getContainerOffset().translateR();
+						}
+					});//TODO put container rendering into one generic method
 				}
 			}
 			GL11.glPopMatrix();

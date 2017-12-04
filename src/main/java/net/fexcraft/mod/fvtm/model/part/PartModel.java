@@ -82,6 +82,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 	}
 
 	public void render(VehicleData data, String usedAS){
+		//TODO if(data.getPart(usedAS).getAttributeData(null))
 		//Vehicle Body
 		render(body);
 		if(data.doorsOpen()){

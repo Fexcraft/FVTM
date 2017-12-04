@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
+import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController.Button;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -81,8 +82,8 @@ public class InventoryAttribute implements Attribute {
 
 	@Override
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag){
-		tooltip.add(Formatter.format("&9Inventory Size: &7" + size + " " + type.units));
-		tooltip.add(Formatter.format("&9Inventory Type: &7" + type.id));
+		tooltip.add(Formatter.format("&9Inventory Size: &7" + size + " " + type.getUnitsName()));
+		tooltip.add(Formatter.format("&9Inventory Type: &7" + type.getName()));
 	}
 
 	@Override
@@ -171,26 +172,6 @@ public class InventoryAttribute implements Attribute {
 			return found;
 		}
 		return true;
-	}
-	
-	public static enum InventoryType {
-		
-		ITEM("item", "stacks"), FLUID("fluid", "buckets"), ENERGY("energy", "FE"), FUEL("fuel", "units");
-		private String id, units;
-		
-		InventoryType(String str, String u){
-			this.id = str;
-			this.units = u;
-		}
-
-		public static InventoryType fromString(String exists){
-			for(InventoryType type : values()){
-				if(type.id.equals(exists)){
-					return type;
-				}
-			}
-			return ITEM;
-		}
 	}
 	
 	public InventoryType getType(){

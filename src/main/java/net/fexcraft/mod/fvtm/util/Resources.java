@@ -18,6 +18,9 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Attribute;
+import net.fexcraft.mod.fvtm.api.Container;
+import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Fuel;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
@@ -28,6 +31,8 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
+import net.fexcraft.mod.fvtm.impl.GenericContainer;
+import net.fexcraft.mod.fvtm.impl.GenericContainerItem;
 import net.fexcraft.mod.fvtm.impl.GenericVehicle;
 import net.fexcraft.mod.fvtm.impl.GenericVehicleItem;
 import net.fexcraft.mod.fvtm.impl.GenericMaterial;
@@ -68,6 +73,7 @@ public class Resources {
 	public static IForgeRegistry<Material> MATERIALS;// = (IForgeRegistry<Material>)new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
 	public static IForgeRegistry<Part> PARTS;// = (IForgeRegistry<Part>)new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
 	public static IForgeRegistry<Vehicle> VEHICLES;// = (IForgeRegistry<LandVehicle>)new RegistryBuilder<LandVehicle>().setName(new ResourceLocation("fvtm:landvehicles")).setType(LandVehicle.class).create();
+	public static IForgeRegistry<Container> CONTAINERS;
 	public static TreeMap<String, Object> MODELS = new TreeMap<String, Object>();
 	public static TreeMap<ResourceLocation, SoundEvent> SOUNDS = new TreeMap<ResourceLocation, SoundEvent>();
 	public static TreeMap<String, JsonObject> PRESETS = new TreeMap<String, JsonObject>();
@@ -89,6 +95,7 @@ public class Resources {
 		PARTS = (IForgeRegistry<Part>)new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
 		VEHICLES = (IForgeRegistry<Vehicle>)new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		PARTATTRIBUTES = (IForgeRegistry<Attribute>)new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
+		CONTAINERS = (IForgeRegistry<Container>)new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
 	}
 
 	public void updateAddonConfig() {
@@ -136,6 +143,7 @@ public class Resources {
 		event.getRegistry().register(GenericMaterialItem.INSTANCE);
 		event.getRegistry().register(GenericPartItem.INSTANCE);
 		event.getRegistry().register(GenericVehicleItem.INSTANCE);
+		event.getRegistry().register(GenericContainerItem.INSTANCE);
 		
 		//
 	}
@@ -145,6 +153,7 @@ public class Resources {
 		net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(GenericMaterialItem.INSTANCE, new GenericMaterialItem.ItemMeshDef());
 		net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(GenericPartItem.INSTANCE, new GenericPartItem.ItemMeshDef());
 		net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(GenericVehicleItem.INSTANCE, new GenericVehicleItem.ItemMeshDef());
+		net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(GenericContainerItem.INSTANCE, new GenericContainerItem.ItemMeshDef());
 	}
 	
 	@SubscribeEvent
@@ -486,6 +495,67 @@ public class Resources {
 		//Print.debug(SOUNDS.values());
 		//Static.halt();
 	}
+	
+	@SubscribeEvent
+	public void regContainers(RegistryEvent.Register<Container> event){
+		this.queryAddons();
+		for(Addon addon : ADDONS.getValues()){
+			if(addon instanceof GenericAddon){
+				if(((GenericAddon)addon).isHybrid()){
+					((HybridAddon)addon).regContainers(event);
+					if(((HybridAddon)addon).skipDefaultRegistryMethods()){
+						continue;
+					}
+				}
+			}
+			else{
+				continue;
+			}
+			Print.debug(addon.getRegistryName());
+			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+				if(addon.getFile().isDirectory()){
+					File confol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/containers/");
+					Print.debug(confol.getPath());
+					if(!confol.exists()){ confol.mkdirs();}
+					for(File file : confol.listFiles()){
+						if(!file.isDirectory() && file.getName().endsWith(".part")){
+							GenericContainer con = new GenericContainer(JsonUtil.get(file));
+							event.getRegistry().register(con);
+							if(Static.side().isClient()){
+								net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
+							}
+							Print.debug(con.getRegistryName());
+						}
+						else if(file.isDirectory()){
+							for(File fl : file.listFiles()){
+								if(fl.getName().endsWith(".part")){
+									GenericContainer con = new GenericContainer(JsonUtil.get(fl));
+									event.getRegistry().register(con);
+									if(Static.side().isClient()){
+										net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
+									}
+									Print.debug(con.getRegistryName());
+								}
+							}
+						}
+						Print.debug(file.getPath());
+						//else skip;
+					}
+				}
+				else{
+					JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/parts/", ".part");
+					for(JsonElement elm : array){
+						GenericContainer con = new GenericContainer(elm.getAsJsonObject());
+						event.getRegistry().register(con);
+						if(Static.side().isClient()){
+							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
+						}
+						Print.debug(con.getRegistryName());
+					}
+				}
+			}
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
@@ -582,6 +652,21 @@ public class Resources {
 		}
 		return null;
 	}
+
+	public static ContainerData getContainerData(NBTTagCompound compound){
+		if(compound.hasKey(ContainerItem.NBTKEY)){
+			Container con = CONTAINERS.getValue(new ResourceLocation(compound.getString(ContainerItem.NBTKEY)));
+			if(con != null){
+				try{
+					return con.getDataClass().getConstructor(Container.class).newInstance(con).readFromNBT(compound);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
 	
 	// UPDATE CHECKS //
 	
@@ -650,5 +735,40 @@ public class Resources {
 	public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
 		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, 256);//TODO config
 	}
+	
+	/*public static final TreeMap<ResourceLocation, Object> OLDREGNAMES = new TreeMap<ResourceLocation, Object>();
+	
+	private void initMappings(){
+		if(OLDREGNAMES.isEmpty()){
+			OLDREGNAMES.put(new ResourceLocation("landvehicle_constructor_controller"), ConstructorController.INSTANCE);
+			OLDREGNAMES.put(new ResourceLocation("landvehicle_constructor_center"), ConstructorCenter.INSTANCE);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onMissingBlockMappings(RegistryEvent.MissingMappings<Block> event){
+		this.initMappings();
+		for(Mapping<Block> mapping : event.getMappings()){
+			if(OLDREGNAMES.containsKey(mapping.key)){
+				mapping.remap((Block)OLDREGNAMES.get(mapping.key));
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onMissingItemMappings(RegistryEvent.MissingMappings<Item> event){
+		this.initMappings();
+		for(Mapping<Item> mapping : event.getMappings()){
+			if(OLDREGNAMES.containsKey(mapping.key)){
+				Object obj = OLDREGNAMES.get(mapping.key);
+				if(obj instanceof Item){
+					mapping.remap((Item)obj);
+				}
+				else if(obj instanceof Block){
+					mapping.remap(RegistryUtil.getItem(((Block)obj).getRegistryName()));
+				}
+			}
+		}
+	}*/
 	
 }

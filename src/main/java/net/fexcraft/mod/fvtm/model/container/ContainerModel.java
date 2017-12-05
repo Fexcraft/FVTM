@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.model.part;
+package net.fexcraft.mod.fvtm.model.container;
 
 import java.util.ArrayList;
 
@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.lib.tmt.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
@@ -40,15 +41,15 @@ public class ContainerModel<T extends ContainerData> extends Model<ContainerData
 
 	@Override
 	public void render(ContainerData type, Entity ent){
-		render(type, ContainerPosition.MEDIUM_SINGLE, ent);
+		//render(type, ContainerPosition.MEDIUM_SINGLE, ent);
 	}
 
-	public void render(ContainerData data, ContainerPosition pos){
+	public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos){
 		render(body);
 		
 	}
 	
-	public void render(ContainerData data, ContainerPosition pos, Entity vehicle){
+	public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos, Entity vehicle){
 		render(body);
 	}
 	

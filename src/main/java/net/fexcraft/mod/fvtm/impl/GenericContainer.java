@@ -9,7 +9,7 @@ import net.fexcraft.mod.addons.gep.models.containers.GenericContainerModel;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
-import net.fexcraft.mod.fvtm.model.part.ContainerModel;
+import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -17,6 +17,7 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -156,6 +157,18 @@ public class GenericContainer implements Container {
 	@Override
 	public Addon getAddon(){
 		return addon;
+	}
+
+	@Override
+	public ItemStack getItemStack(ContainerData data){
+		ItemStack stack = new ItemStack(GenericContainerItem.INSTANCE);
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setString(ContainerItem.NBTKEY, this.getRegistryName().toString());
+		if(data != null){
+			data.writeToNBT(nbt);
+		}
+		stack.setTagCompound(nbt);
+		return stack;
 	}
 	
 }

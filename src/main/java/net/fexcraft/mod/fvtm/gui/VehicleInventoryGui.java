@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
@@ -342,7 +343,7 @@ public class VehicleInventoryGui {
 		private VehicleData data;
 		//
 		FuelInventory fuelinv;
-		//ContainerInventory upper_coninv, lower_coninv;
+		ContainerInventory coninv;
 		
 		public Server(EntityPlayer player, World world, int x, int y, int z){
 			this.player = player;
@@ -393,7 +394,8 @@ public class VehicleInventoryGui {
 					break;
 				}
 				case 4:{
-					//TODO container slots
+					addSlotToContainer(new ContainerSlot(coninv = new ContainerInventory(data.getContainerHolders().get(y).getAttributeData(ContainerAttributeData.class)), 0, 179, 27));
+					addSlotToContainer(new ContainerSlot(coninv, 1, 179, 59));
 					for(int row = 0; row < 3; row++){
 						for(int col = 0; col < 9; col++){
 							addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 6 + col * 18, 25 + row * 18));
@@ -430,6 +432,9 @@ public class VehicleInventoryGui {
 			super.onContainerClosed(player);
 			if(fuelinv != null){
 				fuelinv.closeInventory(player);
+			}
+			if(coninv != null){
+				coninv.closeInventory(player);
 			}
 		}
 		

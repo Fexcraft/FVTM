@@ -429,25 +429,25 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 				if(condata.getContainer(ContainerPosition.MEDIUM_DUAL2) != null){
 					if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL1)) != null){
 						Model.bindTexture(container.getTexture());
-						container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL1);
+						container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_DUAL1);
 					}
 					//
 					if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL2)) != null){
 						Model.bindTexture(container.getTexture());
-						container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL2);
+						container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_DUAL2);
 					}
 				}
 				else{
 					if((container = condata.getContainer(ContainerPosition.LARGE_SINGLE)) != null){
 						Model.bindTexture(container.getTexture());
-						container.getContainer().getModel().render(container, ContainerPosition.LARGE_SINGLE);
+						container.getContainer().getModel().render(type, us, container, ContainerPosition.LARGE_SINGLE);
 					}
 				}
 			}
 			else if(conattr.getContainerType() == ContainerType.MEDIUM){
 				if((container = condata.getContainer(ContainerPosition.MEDIUM_SINGLE)) != null){
 					Model.bindTexture(container.getTexture());
-					container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_SINGLE);
+					container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_SINGLE);
 				}
 			}
 			else {
@@ -471,25 +471,25 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 				if(condata.getContainer(ContainerPosition.MEDIUM_DUAL2) != null){
 					if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL1)) != null){
 						Model.bindTexture(container.getTexture());
-						container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL1, ent);
+						container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_DUAL1, ent);
 					}
 					//
 					if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL2)) != null){
 						Model.bindTexture(container.getTexture());
-						container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_DUAL2, ent);
+						container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_DUAL2, ent);
 					}
 				}
 				else{
 					if((container = condata.getContainer(ContainerPosition.LARGE_SINGLE)) != null){
 						Model.bindTexture(container.getTexture());
-						container.getContainer().getModel().render(container, ContainerPosition.LARGE_SINGLE, ent);
+						container.getContainer().getModel().render(type, us, container, ContainerPosition.LARGE_SINGLE, ent);
 					}
 				}
 			}
 			else if(conattr.getContainerType() == ContainerType.MEDIUM){
 				if((container = condata.getContainer(ContainerPosition.MEDIUM_SINGLE)) != null){
 					Model.bindTexture(container.getTexture());
-					container.getContainer().getModel().render(container, ContainerPosition.MEDIUM_SINGLE, ent);
+					container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_SINGLE, ent);
 				}
 			}
 			else {

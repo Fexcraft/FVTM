@@ -2,8 +2,10 @@ package net.fexcraft.mod.fvtm.api;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
-import net.fexcraft.mod.fvtm.model.part.ContainerModel;
+import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -18,6 +20,8 @@ public interface Container extends IForgeRegistryEntry<Container> {
 	public default Class<Container> getRegistryType(){
 		return Container.class;
 	}
+	
+	public ItemStack getItemStack(@Nullable ContainerData data);
 	
 	public default boolean isMediumContainer(){
 		return this.getType() == ContainerType.MEDIUM;

@@ -980,6 +980,11 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 						}
 					}
 					throttle = 0;
+					break;
+				}
+				case "update_vehicledata":{
+					this.vehicledata.readFromNBT(pkt.nbt, world.isRemote);
+					break;
 				}
 			}
 		}

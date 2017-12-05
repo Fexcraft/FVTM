@@ -18,6 +18,10 @@ item.generic:canister.name=Canister
 item.generic:diesel_canister.name=Diesel Canister
 item.generic:petroleum_canister.name=Petroleum Canister
 
+#Containers
+item.generic:container_large.name=Large Container
+item.generic:container_medium.name=Medium Container
+
 
 
 

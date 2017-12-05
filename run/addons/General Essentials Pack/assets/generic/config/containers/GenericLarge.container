@@ -1,11 +1,13 @@
 {
-	"RegistryName": "container_large",
+	"RegistryName": "generic:container_large",
 	"Addon": "fvtm:generic",
 	"ContainerType": "LARGE",
 	"ModelFile": "net.fexcraft.mod.addons.gep.models.containers.GenericContainerModel.class",
 	"FullName": "Default Large Container",
 	"Textures":[
-		"gep:textures/other/genericcontainer.png"
+		"generic:textures/other/genericcontainer.png",
+		"generic:textures/other/genericcontainer_alt1.png",
+		"generic:textures/other/genericcontainer_alt2.png"
 	],
 	"InventorySize": 2916,
 	"InventoryType": "item"

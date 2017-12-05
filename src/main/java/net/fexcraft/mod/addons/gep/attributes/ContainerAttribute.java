@@ -21,8 +21,8 @@ import net.minecraft.world.World;
 public class ContainerAttribute implements Attribute {
 	
 	private static final ResourceLocation regname = new ResourceLocation("container");
-	public ContainerType type;
-	public Pos offset;
+	private ContainerType type;
+	private Pos offset;
 
 	@Override
 	public ResourceLocation getRegistryName(){
@@ -66,10 +66,11 @@ public class ContainerAttribute implements Attribute {
 	
 	public static class ContainerAttributeData implements AttributeData {
 		
+		private  Attribute root;
 		public ContainerData main, second;
 		
 		public ContainerAttributeData(PartData data, Attribute attr){
-			//
+			root = attr;
 		}
 
 		@Override
@@ -92,6 +93,10 @@ public class ContainerAttribute implements Attribute {
 		
 		public ContainerData getContainer(ContainerPosition pos){
 			return pos == ContainerPosition.MEDIUM_DUAL2 ? second : main;
+		}
+		
+		public ContainerAttribute getAttribute(){
+			return (ContainerAttribute)root;
 		}
 		
 	}

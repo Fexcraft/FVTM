@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
@@ -76,11 +77,25 @@ public class GenericContainerItem extends Item implements ContainerItem {
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
         if(this.isInCreativeTab(tab)){
         	for(Container con : Resources.CONTAINERS.getValues()){
-        		ItemStack stack = new ItemStack(this);
-        		NBTTagCompound nbt = new NBTTagCompound();
-        		nbt.setString(NBTKEY, con.getRegistryName().toString());
-        		stack.setTagCompound(nbt);
-                items.add(stack);
+        		if(con.getClass().equals(GenericContainer.class)){
+            		for(int i = 0; i < con.getTextures().size(); i++){
+                		ItemStack stack = new ItemStack(this);
+                		NBTTagCompound nbt = new NBTTagCompound();
+                		nbt.setString(NBTKEY, con.getRegistryName().toString());
+                		NBTTagCompound com = new NBTTagCompound();
+                		com.setInteger("SelectedTexture", i);
+                		nbt.setTag(FVTM.MODID + "_container", com);
+                		stack.setTagCompound(nbt);
+                        items.add(stack);
+            		}
+        		}
+        		else{
+        			ItemStack stack = new ItemStack(this);
+            		NBTTagCompound nbt = new NBTTagCompound();
+            		nbt.setString(NBTKEY, con.getRegistryName().toString());
+            		stack.setTagCompound(nbt);
+                    items.add(stack);
+        		}
         	}
         }
     }

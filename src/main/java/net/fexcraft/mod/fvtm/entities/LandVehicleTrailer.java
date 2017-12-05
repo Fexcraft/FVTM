@@ -825,7 +825,10 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		}
 		if(pkt.nbt.hasKey("task")){
 			switch(pkt.nbt.getString("task")){
-				//
+				case "update_vehicledata":{
+					this.vehicledata.readFromNBT(pkt.nbt, world.isRemote);
+					break;
+				}
 			}
 		}
 	}

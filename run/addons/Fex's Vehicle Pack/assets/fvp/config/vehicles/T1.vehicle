@@ -9,9 +9,9 @@
         "Green": 168
     },
     "SecondaryColor": {
-        "Red": 194,
-        "Blue": 194,
-        "Green": 194
+        "Red": 0,
+        "Blue": 102,
+        "Green": 0
     },
     "Textures": [
         "fvp:textures/entities/skin_vehicle_t1p.png"

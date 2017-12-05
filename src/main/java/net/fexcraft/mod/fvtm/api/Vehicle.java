@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
+import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
@@ -275,6 +276,12 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		public float getWheelsAngle();
 
 		public float getWheelsYaw();
+
+		public default void syncVehicleData(){
+			NBTTagCompound nbt = this.getVehicleData().writeToNBT(new NBTTagCompound());
+			nbt.setString("task", "update_vehicledata");
+			ApiUtil.sendEntityUpdatePacketToAllAround(this.getEntity(), nbt);
+		}
 		
 	}
 	

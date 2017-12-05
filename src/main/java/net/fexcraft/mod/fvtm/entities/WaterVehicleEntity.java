@@ -982,6 +982,11 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 						}
 					}
 					throttle = 0;
+					break;
+				}
+				case "update_vehicledata":{
+					this.vehicledata.readFromNBT(pkt.nbt, world.isRemote);
+					break;
 				}
 			}
 		}

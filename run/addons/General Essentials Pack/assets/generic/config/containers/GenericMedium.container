@@ -1,11 +1,13 @@
 {
-	"RegistryName": "container_medium",
+	"RegistryName": "generic:container_medium",
 	"Addon": "fvtm:generic",
 	"ContainerType": "MEDIUM",
 	"ModelFile": "net.fexcraft.mod.addons.gep.models.containers.GenericContainerModel.class",
 	"FullName": "Default Medium Container",
 	"Textures":[
-		"gep:textures/other/genericcontainer.png"
+		"generic:textures/other/genericcontainer.png",
+		"generic:textures/other/genericcontainer_alt1.png",
+		"generic:textures/other/genericcontainer_alt2.png"
 	],
 	"InventorySize": 1458,
 	"InventoryType": "item"

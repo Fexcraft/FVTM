@@ -283,6 +283,10 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 			ApiUtil.sendEntityUpdatePacketToAllAround(this.getEntity(), nbt);
 		}
 		
+		public default void moveTrailer(){
+			//TO BE OVERRIDEN BY A TRAILER
+		}
+		
 	}
 	
 	//<-- VEHICLE  -->//

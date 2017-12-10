@@ -617,6 +617,10 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 				despos.scale(0.5F);
 				atmc = atmc.subtract(despos);
 			}
+			//
+			if(this.getEntityAtRear() != null && this.moved()){
+				((VehicleEntity)this.getEntityAtRear()).moveTrailer();
+			}
 		}
 		move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
 		
@@ -660,6 +664,10 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
 	}
 	
+	private boolean moved(){
+		return prevPosX != posX || prevPosY != posY || prevPosZ != posZ;
+	}
+
 	public boolean attackEntityFrom(DamageSource damagesource, float i){
 		if(world.isRemote || isDead){
 			return true;

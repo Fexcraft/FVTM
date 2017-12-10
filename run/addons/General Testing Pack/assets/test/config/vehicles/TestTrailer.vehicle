@@ -5,8 +5,8 @@
     "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelTestArrow.class",
     "Textures": [ "fvtm:textures/entities/null_texture.png" ],
     "WheelPos":[
-        { "x":  28, "y": 2, "z":  20 },
-        { "x":  28, "y": 2, "z": -20 }
+        { "x":  -48, "y": -8, "z": -14 },
+        { "x":  -48, "y": -8, "z":  14 }
     ],
     "Trailer": true
 }

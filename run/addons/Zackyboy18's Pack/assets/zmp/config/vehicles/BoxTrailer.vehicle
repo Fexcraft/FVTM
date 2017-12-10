@@ -1,0 +1,12 @@
+{
+    "RegistryName": "zmp:box_trailer",
+    "Addon": "fvtm:zmp",
+    "FullName": "Box Trailer",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.trailer.ModelBoxTrailer.class",
+    "Textures": [ "zmp:textures/trailers/box_trailer.png" ],
+    "WheelPos":[
+        { "x": -49, "y": -8, "z": -18 },
+        { "x": -49, "y": -8, "z":  18 }
+    ],
+    "Trailer": true
+}

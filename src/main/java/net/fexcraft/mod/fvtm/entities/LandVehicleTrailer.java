@@ -22,6 +22,7 @@ import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.perms.player.PlayerPerms;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -83,7 +84,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		setPosition(parent.getEntity().posX + vec.x, parent.getEntity().posY + vec.y, parent.getEntity().posZ + vec.z);
 		//TODO rotateYaw(placer.rotationYaw + 90F);
 		this.parentid = parent.getEntity().getEntityId();
-		this.axes = parent.getAxes();
+		this.axes = parent.getAxes().clone();
 		initType(data, false);
 		Print.debug("SPAWNING TRAILER");
 	}
@@ -360,7 +361,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
         if(parent == null){
         	try{
             	parent = (VehicleEntity)world.getEntityByID(parentid);
-        		((LandVehicleEntity)parent).trailer = this;
+        		((LandVehicleEntity)parent).trailer = this;//TODO
         		//
         		this.posX = parent.getEntity().posX;
         		this.posY = parent.getEntity().posY;
@@ -371,7 +372,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
         		e.printStackTrace();
         	}
         }
-        if(parent == null){
+        if(!world.isRemote && /*ticksExisted > 200 && */ (parent == null || this.getPositionVector().squareDistanceTo(parent.getEntity().getPositionVector()) > 256)){
         	Print.debug("Vehicle which this trailer was connected to not found.");
     		vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
 			ItemStack stack = vehicledata.getVehicle().getItemStack(vehicledata);
@@ -401,7 +402,6 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		//
 		boolean drivenByPlayer = world.isRemote && parent.getSeats()[0] != null && parent.getSeats()[0].getControllingPassenger() instanceof EntityPlayer;
 		//
-		//Vec3d atmc = new Vec3d(0, 0, 0);
 		for(WheelEntity wheel : wheels){
 			if(wheel != null && world != null){
 				wheel.prevPosX = wheel.posX;
@@ -412,26 +412,38 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		//
 		if(wheels.length == 2 && world.isRemote /*&& ticksExisted % 100 == 0*/){
 			if(!(wheels[0] == null || wheels[1] == null)){
-				//DEfault Trailer
-				Vec3d axle = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
-				Vec3d conn = parent.getVehicleData().getRearConnector().to16Double();
-				axes.rotYaw((float)(Math.atan2(axle.x - conn.x, axle.z - conn.z)));
-				//axes.setAngles((Math.atan2(conn.x - axle.x, conn.z - axle.z) * 180 / Math.PI) + 180, 0, 0);
-				//
-				Vec3d vec = parent.getAxes().getRelativeVector(conn);
-				//this.move(MoverType.SELF, parent.getEntity().posX + vec.x, parent.getEntity().posY + vec.y, parent.getEntity().posZ + vec.z);
-				prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
-				posX = parent.getEntity().posX + vec.x;
-				posY = parent.getEntity().posY + vec.y;
-				posZ = parent.getEntity().posZ + vec.z;
-				//
-				Vec3d w0 = this.axes.getRelativeVector(this.vehicledata.getWheelPos().get(0).to16Double());
-				wheels[0].move(MoverType.SELF, posX + w0.x, posY + w0.y, posZ + w0.z);
-				Vec3d w1 = this.axes.getRelativeVector(this.vehicledata.getWheelPos().get(1).to16Double());
-				wheels[1].move(MoverType.SELF, posX + w1.x, posY + w1.y, posZ + w1.z);
-				//
-				Print.debug(vec, this.getPositionVector().toString());
-				//PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
+				Static.getServer().addScheduledTask(new Runnable(){
+					@Override
+					public void run(){
+						//Default Trailer
+						/*if(parent.getThrottle() > 0.001 || parent.getThrottle() < -0.001){
+							Vec3d axle = new Vec3d((wheels[0].posX + wheels[1].posX) * 0.5, (wheels[0].posY + wheels[1].posY) * 0.5, (wheels[0].posZ + wheels[1].posZ) * 0.5);
+							Vec3d conn = parent.getVehicleData().getRearConnector().to16Double();
+							rotateYaw((float)Math.atan2(conn.x - axle.x, conn.z - axle.z));
+							//
+							Vec3d vec = parent.getAxes().getRelativeVector(conn);
+							posX = parent.getEntity().posX + vec.x;
+							posY = parent.getEntity().posY + vec.y;
+							posZ = parent.getEntity().posZ + vec.z;
+							//Print.debug(Time.getDate(), vec, getPositionVector().toString());
+						}*/
+						for(int i = 0; i < wheels.length; i++){
+							if(wheels[i] == null){ continue; }
+							WheelEntity wheel = wheels[i];
+							onGround = true;
+							wheel.onGround = true;
+							wheel.rotationYaw = axes.getYaw();
+							//
+							Vec3d targetpos = axes.getRelativeVector(vehicledata.getWheelPos().get(i).to16Double());
+							Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+							Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMWheelSpringStrength());
+							if(despos.lengthSquared() > 0.001F){
+								wheel.move(MoverType.SELF, despos.x, despos.y - (0.98F / 20F), despos.z);
+								despos.scale(0.5F);
+							}
+						}
+					}
+				});
 			}
 			else{
 				Print.debug("Wheels are null!");
@@ -441,87 +453,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 			//4 Wheeled Trailer
 			//TODO
 		}
-		/*for(WheelEntity wheel : wheels){
-			if(wheel == null){
-				continue;
-			}
-			onGround = true;
-			wheel.onGround = true;
-			wheel.rotationYaw = axes.getYaw();
-			if(!vehicledata.getVehicle().getDriveType().hasTracks() && (wheel.wheelid == 2 || wheel.wheelid == 3)){
-				wheel.rotationYaw += wheelsYaw;
-			}
-			wheel.motionX *= 0.9F;
-			wheel.motionY *= 0.9F;
-			wheel.motionZ *= 0.9F;
-			wheel.motionY -= 0.98F / 20F;//Gravity
-			if(enginepart != null){
-				if((canThrustCreatively || consumed)){
-					double velocityScale;
-					if(vehicledata.getVehicle().getDriveType().hasTracks()){
-						boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
-						//
-						float turningDrag = 0.02F;
-						wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-						wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-						//
-						velocityScale = 0.04F * (throttle > 0 ? vehicledata.getVehicle().getFMMaxPositiveThrottle() : vehicledata.getVehicle().getFMMaxNegativeThrottle()) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
-						float steeringScale = 0.1F * (wheelsYaw > 0 ? vehicledata.getVehicle().getFMTurnLeftModifier() : vehicledata.getVehicle().getFMTurnRightModifier());
-						double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
-						wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
-						wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
-					}
-					else if(vehicledata.getVehicle().getDriveType().isFWD() || vehicledata.getVehicle().getDriveType().is4WD()){
-						if(wheel.wheelid == 2 || wheel.wheelid == 3){
-							velocityScale = 0.1F * throttle * (throttle > 0 ? vehicledata.getVehicle().getFMMaxPositiveThrottle() : vehicledata.getVehicle().getFMMaxNegativeThrottle()) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
-							wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-							wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-							velocityScale = 0.01F * (wheelsYaw > 0 ? vehicledata.getVehicle().getFMTurnLeftModifier() : vehicledata.getVehicle().getFMTurnRightModifier()) * (throttle > 0 ? 1 : -1);
-							wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-							wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-						}
-						else{
-							wheel.motionX *= 0.9F;
-							wheel.motionZ *= 0.9F;
-						}
-					}
-					else if(vehicledata.getVehicle().getDriveType().isRWD()){
-						if(wheel.wheelid == 0 || wheel.wheelid == 1){
-							velocityScale = 0.1F * throttle * (throttle > 0 ? vehicledata.getVehicle().getFMMaxPositiveThrottle() : vehicledata.getVehicle().getFMMaxNegativeThrottle()) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
-							wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-							wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-						}
-						if(wheel.wheelid == 2 || wheel.wheelid == 3){
-							velocityScale = 0.01F * ((wheelsYaw > 0 ? vehicledata.getVehicle().getFMTurnLeftModifier() : vehicledata.getVehicle().getFMTurnRightModifier()) * 16) * (throttle > 0 ? 1 : -1);
-							wheel.motionX = wheels[wheel.wheelid - 2].motionX;
-							wheel.motionZ = wheels[wheel.wheelid - 2].motionZ;
-							wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-							wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-							//wheels[wheel.wheelid - 2].motionX *= 0.9F;
-							//wheels[wheel.wheelid - 2].motionZ *= 0.9F;
-						}
-						//This is surely wrong.
-					}
-					else{
-						//
-					}
-				}
-			}
-			wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-			//pull wheels back to car
-			Pos pos = vehicledata.getWheelPos().get(wheel.wheelid);
-			Vec3d targetpos = axes.getRelativeVector(new Vec3d(pos.to16FloatX(), pos.to16FloatY(), pos.to16FloatZ()));
-			Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-			Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMWheelSpringStrength());
-			if(despos.lengthSquared() > 0.001F){
-				wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
-				despos.scale(0.5F);
-				atmc = atmc.subtract(despos);
-			}
-		}
-		move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-		
-		if(wheels[0] != null && wheels[1] != null && wheels[2] != null && wheels[3] != null){
+		/*if(wheels[0] != null && wheels[1] != null && wheels[2] != null && wheels[3] != null){
 			Vec3d front = new Vec3d((wheels[2].posX + wheels[3].posX) / 2F, (wheels[2].posY + wheels[3].posY) / 2F, (wheels[2].posZ + wheels[3].posZ) / 2F); 
 			Vec3d back  = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F); 
 			Vec3d left = new Vec3d((wheels[0].posX + wheels[3].posX) / 2F, (wheels[0].posY + wheels[3].posY) / 2F, (wheels[0].posZ + wheels[3].posZ) / 2F); 
@@ -541,13 +473,13 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 				yaw = (float)Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float)Math.PI / 2F;
 			}
 			axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
-		}
+		}*/
 		checkForCollisions();
 		for(SeatEntity seat : seats){
 			if(seat != null){
 				seat.updatePosition();
 			}
-		}*/
+		}
 		if(drivenByPlayer){
 			PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
 			serverPosX = posX;
@@ -559,6 +491,21 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 			PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
 		}
 		vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
+	}
+	
+	@Override
+	public void moveTrailer(){
+		prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
+		//
+		Vec3d axle = new Vec3d((wheels[0].posX + wheels[1].posX) * 0.5, (wheels[0].posY + wheels[1].posY) * 0.5, (wheels[0].posZ + wheels[1].posZ) * 0.5);
+		Vec3d conn = parent.getVehicleData().getRearConnector().to16Double();
+		rotateYaw((float)Math.atan2(conn.x - axle.x, conn.z - axle.z) + 90);
+		//
+		Vec3d vec = parent.getAxes().getRelativeVector(conn);
+		posX = parent.getEntity().posX + vec.x;
+		posY = parent.getEntity().posY + vec.y;
+		posZ = parent.getEntity().posZ + vec.z;
+		//Print.debug(Time.getDate(), vec, getPositionVector().toString());
 	}
 	
 	public boolean attackEntityFrom(DamageSource damagesource, float i){

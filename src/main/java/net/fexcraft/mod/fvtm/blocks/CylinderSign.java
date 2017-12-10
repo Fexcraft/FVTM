@@ -80,7 +80,7 @@ public class CylinderSign extends BlockContainer {
     }
 	
 	@Override
-    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
+    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
 		if(w.isRemote){
 			return false;
 		}
@@ -89,7 +89,7 @@ public class CylinderSign extends BlockContainer {
 			return false;
 		}
 		ItemStack stack = null;
-		if(!(stack = p.getHeldItem(hand)).isEmpty()){
+		if(!(stack = player.getHeldItem(hand)).isEmpty()){
 			if(stack.getItem() instanceof CylSignItem){
 				if(hitY > 0.75){
 					ent.enlarge();
@@ -98,7 +98,7 @@ public class CylinderSign extends BlockContainer {
 					ent.addSegment();
 				}
 				else{
-					ent.setTexture(stack);
+					ent.setTexture(stack, player);
 				}
 				return true;
 			}

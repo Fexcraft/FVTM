@@ -48,8 +48,8 @@ itemGroup.fvtm_blocks=FVTM - Blocks
 itemGroup.fvtm_vehiclepresets=FVTM - Vehicle Presets
 
 #Blocks
-tile.fvtm:landvehicle_constructor_controller.name=Constructor Controller
-tile.fvtm:landvehicle_constructor_center.name=Constructor Center (Display)
+tile.fvtm:constructor_controller.name=Constructor Controller
+tile.fvtm:constructor_center.name=Constructor Center (Display)
 tile.fvtm:display_block.name=Display Block
 tile.fvtm:paint_table.name=Paint Table
 tile.fvtm:vehicle_crafter.name=Blueprint Table

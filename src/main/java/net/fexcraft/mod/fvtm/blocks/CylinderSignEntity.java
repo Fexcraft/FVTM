@@ -6,9 +6,11 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.registry.UCResourceLocation;
 import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -66,12 +68,14 @@ public class CylinderSignEntity extends TileEntity implements IPacketReceiver<Pa
 		this.sendUpdate();
 	}
 
-	public void setTexture(ItemStack stack){
+	public void setTexture(ItemStack stack, EntityPlayer player){
 		if(stack == null){
 			this.texture = new UCResourceLocation(Resources.NULL_TEXTURE);
+			Print.chat(player, "Resseting texture.");
 		}
 		if(stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(CylSignItem.NBT)){
 			this.texture = new UCResourceLocation("", stack.getTagCompound().getString(CylSignItem.NBT));
+			Print.chat(player, "Texture set to: " + this.texture.getResourcePath());
 		}
 		this.sendUpdate();
 	}

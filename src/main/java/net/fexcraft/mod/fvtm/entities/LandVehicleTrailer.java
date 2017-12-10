@@ -410,7 +410,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 			}
 		}
 		//
-		if(wheels.length == 2 && world.isRemote && ticksExisted % 100 == 0){
+		if(wheels.length == 2 && world.isRemote /*&& ticksExisted % 100 == 0*/){
 			if(!(wheels[0] == null || wheels[1] == null)){
 				//DEfault Trailer
 				Vec3d axle = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);

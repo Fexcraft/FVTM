@@ -19,11 +19,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiVehicleConroller extends GuiScreen {
+public class GuiVehicleController extends GuiScreen {
 	
 	private SeatEntity seat;
 	
-	public GuiVehicleConroller(SeatEntity entity){
+	public GuiVehicleController(SeatEntity entity){
 		super();
 		this.seat = entity;
 	}
@@ -228,7 +228,7 @@ public class GuiVehicleConroller extends GuiScreen {
 		return df.format(d);
 	}
 
-	public static float calculateSpeed(Entity ent){
+	public static final float calculateSpeed(Entity ent){
 		double dX = ent.posX - ent.prevPosX, dY = ent.posY - ent.prevPosY, dZ = ent.posZ - ent.prevPosZ;
 		float speed = (float)Math.sqrt(dX * dX + dY * dY + dZ * dZ) * 1000F / 16F; 
 		return speed = (int)(speed * 10F) / 10F;

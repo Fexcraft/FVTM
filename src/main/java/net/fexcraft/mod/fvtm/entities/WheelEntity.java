@@ -22,7 +22,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	
 	public WheelEntity(World world){
 		super(world);
-		setSize(1F, 1F);
+		setSize(0.5F, 0.5F);
 		stepHeight = 1.0F;
 	}
 
@@ -107,5 +107,15 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     public void setPositionAndRotationDirect(double d, double d1, double d2, float f, float f1, int i, boolean b){
 		//
     }
+	
+	@Override
+    public boolean canBePushed(){
+        return false;
+    }
+
+	@Override
+	public boolean canBeCollidedWith(){
+		return false;//!isDead;
+	}
 	
 }

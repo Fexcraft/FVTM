@@ -46,7 +46,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 	public double serverPosX, serverPosY, serverPosZ;
 	public double serverYaw, serverPitch, serverRoll;
 	public VehicleData vehicledata;
-	public double throttle;
+	//public double throttle;
 	public SeatEntity[] seats;
 	public WheelEntity[] wheels;
 	public float prevRotationRoll;
@@ -271,7 +271,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		motionY = motY;
 		motionZ = motZ;
 		angularVelocity = new Vec3d(avelx, avely, avelz);
-		throttle = throttle2;
+		//throttle = throttle2;
 		//wheelsYaw = steeringYaw;
 	}
 	
@@ -505,9 +505,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		}
 		//
 		Vec3d conn = parent.getAxes().getRelativeVector(parent.getVehicleData().getRearConnector().to16Double());
-		posX = parent.getEntity().posX + conn.x;
-		posY = parent.getEntity().posY + conn.y;
-		posZ = parent.getEntity().posZ + conn.z;
+		this.setPosition(parent.getEntity().posX + conn.x, parent.getEntity().posY + conn.y, parent.getEntity().posZ + conn.z);
 		//
 		alignWheels();
 		//
@@ -520,8 +518,8 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		//
 		Vec3d front = new Vec3d((parent.getWheels()[0].posX + parent.getWheels()[1].posX) / 2F, (parent.getWheels()[0].posY + parent.getWheels()[1].posY) / 2F, (parent.getWheels()[0].posZ + parent.getWheels()[1].posZ) / 2F);
 		Vec3d back  = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
-		Vec3d left = new Vec3d((wheels[0].posX + parent.getWheels()[1].posX) / 2F, (wheels[0].posY + parent.getWheels()[1].posY) / 2F, (wheels[0].posZ + parent.getWheels()[1].posZ) / 2F);
-		Vec3d right = new Vec3d((wheels[1].posX + parent.getWheels()[0].posX) / 2F, (wheels[1].posY + parent.getWheels()[0].posY) / 2F, (wheels[1].posZ + parent.getWheels()[0].posZ) / 2F);
+		Vec3d left = new Vec3d((wheels[0].posX + parent.getWheels()[0].posX) / 2F, (wheels[0].posY + parent.getWheels()[0].posY) / 2F, (wheels[0].posZ + parent.getWheels()[0].posZ) / 2F);
+		Vec3d right = new Vec3d((wheels[1].posX + parent.getWheels()[1].posX) / 2F, (wheels[1].posY + parent.getWheels()[1].posY) / 2F, (wheels[1].posZ + parent.getWheels()[1].posZ) / 2F);
 		//
 		double dx = front.x - back.x, dy = front.y - back.y, dz = front.z - back.z;
 		double drx = left.x - right.x, dry = left.y - right.y, drz = left.z - right.z;
@@ -537,7 +535,10 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 			yaw = (float)Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float)Math.PI / 2F;
 		}
 		//Print.debug(axes.getYaw(), axes.getRadianYaw());
-		double diff = (Math.toDegrees(yaw) - axes.getYaw()) * parent.getThrottle();
+		double thrt = parent.getThrottle() > 0 ? parent.getThrottle() : -parent.getThrottle();
+		double rawy = Math.toDegrees(yaw) - axes.getYaw();
+		double diff = rawy * thrt * 0.2;
+		diff = rawy > 0 ? diff > rawy ? rawy : diff : diff < rawy ? rawy : diff;
 		axes.setRotation(axes.getRadianYaw() + Math.toRadians(diff), pitch, roll);
 		//Print.debug(axes.getYaw(), axes.getRadianYaw());
 		//alignWheels();
@@ -547,7 +548,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		if(world.isRemote || isDead){
 			return true;
 		}
-		if(damagesource.damageType.equals("player") && damagesource.getImmediateSource().onGround && (seats[0] == null || seats[0].getControllingPassenger() == null)){
+		if(damagesource.damageType.equals("player") && damagesource.getImmediateSource().onGround && (seats.length == 0 || seats[0] == null || seats[0].getControllingPassenger() == null)){
 			if(vehicledata.isLocked()){
 				Print.chat(damagesource.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
 				return false;
@@ -847,7 +848,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 
 	@Override
 	public double getThrottle(){
-		return throttle;
+		return parent.getThrottle();
 	}
 
 	@Override

@@ -27,7 +27,6 @@ import net.fexcraft.mod.lib.perms.player.PlayerPerms;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -608,8 +607,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			}
 			wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 			//pull wheels back to car
-			Pos pos = vehicledata.getWheelPos().get(wheel.wheelid);
-			Vec3d targetpos = axes.getRelativeVector(new Vec3d(pos.to16FloatX(), pos.to16FloatY(), pos.to16FloatZ()));
+			Vec3d targetpos = axes.getRelativeVector(vehicledata.getWheelPos().get(wheel.wheelid).to16Double());
 			Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
 			Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMWheelSpringStrength());
 			if(despos.lengthSquared() > 0.001F){
@@ -618,7 +616,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 				atmc = atmc.subtract(despos);
 			}
 			//
-			if(this.getEntityAtRear() != null && this.moved()){
+			if(this.getEntityAtRear() != null){
 				((VehicleEntity)this.getEntityAtRear()).moveTrailer();
 			}
 		}
@@ -662,10 +660,6 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
 		}
 		vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
-	}
-	
-	private boolean moved(){
-		return prevPosX != posX || prevPosY != posY || prevPosZ != posZ;
 	}
 
 	public boolean attackEntityFrom(DamageSource damagesource, float i){
@@ -825,7 +819,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		if(Math.abs(rotateBy) < 0.01F){
 			return;
 		}
-		axes.rotYaw(rotateBy);
+		axes.rotateYawD(rotateBy);
 		updatePrevAngles();
 	}
 	
@@ -833,14 +827,14 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		if(Math.abs(rotateBy) < 0.01F){
 			return;
 		}
-		axes.rotPitch(rotateBy);
+		axes.rotatePitchD(rotateBy);
 		updatePrevAngles();
 	}
 
 	public void rotateRoll(float rotateBy){
 		if(Math.abs(rotateBy) < 0.01F)
 			return;
-		axes.rotRoll(rotateBy);
+		axes.rotateRollD(rotateBy);
 		updatePrevAngles();
 	}
 		

@@ -819,7 +819,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 		if(Math.abs(rotateBy) < 0.01F){
 			return;
 		}
-		axes.rotYaw(rotateBy);
+		axes.rotateYawD(rotateBy);
 		updatePrevAngles();
 	}
 	
@@ -827,14 +827,14 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 		if(Math.abs(rotateBy) < 0.01F){
 			return;
 		}
-		axes.rotPitch(rotateBy);
+		axes.rotatePitchD(rotateBy);
 		updatePrevAngles();
 	}
 
 	public void rotateRoll(float rotateBy){
 		if(Math.abs(rotateBy) < 0.01F)
 			return;
-		axes.rotRoll(rotateBy);
+		axes.rotateRollD(rotateBy);
 		updatePrevAngles();
 	}
 		

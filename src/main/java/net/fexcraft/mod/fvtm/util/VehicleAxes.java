@@ -20,9 +20,11 @@ public class VehicleAxes {
 	public VehicleAxes(float yaw, float pitch, float roll){
 		setAngles(yaw, pitch, roll);
 	}
-
+	
+	/** Degrees */
+	//TODO clean up this whole degree/radian stuff;
 	private double yaw, pitch, roll;
-	private Matrix4f matrix;//TODO replace
+	private Matrix4f matrix;
 
 	public Vec3d getRelativeVector(Vec3d vec){
 		Matrix4f mat = new Matrix4f();
@@ -78,12 +80,24 @@ public class VehicleAxes {
 		return (float) yaw;
 	}
 
+	public double getRadianYaw(){
+		return yaw * 3.14159265F / 180F;
+	}
+
 	public float getPitch(){
 		return (float)pitch;
 	}
 
+	public double getRadianPitch(){
+		return pitch * 3.14159265F / 180F;
+	}
+
 	public float getRoll(){
 		return (float)roll;
+	}
+
+	public double getRadianRoll(){
+		return roll * 3.14159265F / 180F;
 	}
 
 	public void copy(VehicleAxes axes){
@@ -92,18 +106,33 @@ public class VehicleAxes {
 		this.pitch = axes.pitch;
 	}
 
-	public void rotYaw(float f){
-		matrix.rotate(f * 3.14159265F / 180F, getYAxis().normalise(null));
+	public void rotateYawD(float deg){
+		matrix.rotate(deg * 3.14159265F / 180F, getYAxis().normalise(null));
+		convertMatrixToAngles();
+	}
+
+	public void rotateYawR(float rad){
+		matrix.rotate(rad, getYAxis().normalise(null));
 		convertMatrixToAngles();
 	}
 	
-	public void rotPitch(float f){
-		matrix.rotate(f * 3.14159265F / 180F, getZAxis().normalise(null));
+	public void rotatePitchD(float deg){
+		matrix.rotate(deg * 3.14159265F / 180F, getZAxis().normalise(null));
 		convertMatrixToAngles();
 	}
 	
-	public void rotRoll(float f){
-		matrix.rotate(f * 3.14159265F / 180F, getXAxis().normalise(null));
+	public void rotatePitchR(float rad){
+		matrix.rotate(rad, getZAxis().normalise(null));
+		convertMatrixToAngles();
+	}
+	
+	public void rotateRollD(float deg){
+		matrix.rotate(deg * 3.14159265F / 180F, getXAxis().normalise(null));
+		convertMatrixToAngles();
+	}
+	
+	public void rototeRollR(float rad){
+		matrix.rotate(rad, getXAxis().normalise(null));
 		convertMatrixToAngles();
 	}
 	
@@ -123,24 +152,17 @@ public class VehicleAxes {
 		return matrix;
 	}
 	
-	private void convertMatrixToAngles(){
+	private final void convertMatrixToAngles(){
 		yaw   = (float)Math.atan2( matrix.m20, matrix.m00) * 180F / 3.14159265F;
 		pitch = (float)Math.atan2(-matrix.m10, Math.sqrt(matrix.m12 * matrix.m12 + matrix.m11 * matrix.m11)) * 180F / 3.14159265F;
 		roll  = (float)Math.atan2( matrix.m12, matrix.m11) * 180F / 3.14159265F;
 	}
-
-	public void setRotation(float yaw, float pitch, float roll){
-		this.yaw   = yaw;
-		this.pitch = pitch;
-		this.roll  = roll;
-		convertAnglesToMatrix();
-	}
 	
-	private void convertAnglesToMatrix(){
+	private final void convertToMatrix(boolean rad){
 		matrix = new Matrix4f();
-		matrix.rotate((float)(roll  * 3.14159265F / 180F), new Vector3f(1F, 0F, 0F));
-		matrix.rotate((float)(pitch * 3.14159265F / 180F), new Vector3f(0F, 0F, 1F));
-		matrix.rotate((float)(yaw * 3.14159265F / 180F), new Vector3f(0F, 1F, 0F));
+		matrix.rotate((float)(rad ? roll  : roll  * 3.14159265F / 180F), new Vector3f(1F, 0F, 0F));
+		matrix.rotate((float)(rad ? pitch : pitch * 3.14159265F / 180F), new Vector3f(0F, 0F, 1F));
+		matrix.rotate((float)(rad ? yaw   : yaw   * 3.14159265F / 180F), new Vector3f(0F, 1F, 0F));
 		convertMatrixToAngles();
 	}
 	
@@ -156,7 +178,18 @@ public class VehicleAxes {
 		this.yaw   = yaw;
 		this.pitch = pitch;
 		this.roll  = roll;
-		convertAnglesToMatrix();
+		convertToMatrix(false);
+	}
+
+	public void setRotation(float yaw, float pitch, float roll){
+		this.yaw   = yaw;
+		this.pitch = pitch;
+		this.roll  = roll;
+		convertToMatrix(true);
+	}
+
+	public void setRotation(double yaw, double pitch, double roll){
+		setRotation((float)yaw, (float)pitch, (float)roll);
 	}
 	
 } 

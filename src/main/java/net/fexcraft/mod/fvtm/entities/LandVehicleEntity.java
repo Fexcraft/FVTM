@@ -334,7 +334,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 					Print.chat(player, "Connecting...");
 					LandVehicleTrailer trailer = new LandVehicleTrailer(world, ((VehicleItem)stack.getItem()).getVehicle(stack), this);
 					world.spawnEntity(trailer);
-					stack.shrink(1);
+					stack.shrink(64);
 					return true;
 				}
 			}

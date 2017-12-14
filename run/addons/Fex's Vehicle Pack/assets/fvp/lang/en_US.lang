@@ -25,6 +25,7 @@ item.fvp:t1_type5_cargoupgrade.name=T1 Cargo Upgrade (5)
 item.fvp:t1_snowplow.name=T1 Snow Plow
 item.fvp:t1_fuelgauge.name=T1 Fuel Gauge
 item.fvp:t1_trailer_connector.name=T1 Rear Trailer Connector
+item.fvp:t2r1t1_wheel.name=T2R1T1 Wheel
 item.fvp:ot1_logtransport.name=OT1 Log Transport
 item.fvp:ot1_type2.name=OT1 Type 2 Cargo Upgrade
 item.fvp:ot1_type3.name=OT1 Type 3 Cargo Upgrade

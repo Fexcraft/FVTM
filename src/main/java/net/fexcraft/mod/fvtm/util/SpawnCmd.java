@@ -173,7 +173,7 @@ public class SpawnCmd extends CommandBase {
     }
     
     public static final JsonObject quickFix(JsonObject obj){
-    	JsonObject jsn = obj.has("fvtm_landvehicle") ? obj.get("fvtm_landvehicle").getAsJsonObject() : null;//TODO adapt for other vehicle types
+    	JsonObject jsn = obj.has("fvtm_landvehicle") ? obj.get("fvtm_landvehicle").getAsJsonObject() : obj.has("fvtm_vehicle") ? obj.get("fvtm_vehicle").getAsJsonObject() : null;
 		if(jsn.has("PrimaryRed")){ jsn.addProperty("PrimaryRed", Byte.parseByte(jsn.get("PrimaryRed").getAsString().replace("b", ""))); }
 		if(jsn.has("PrimaryGreen")){ jsn.addProperty("PrimaryGreen", Byte.parseByte(jsn.get("PrimaryGreen").getAsString().replace("b", ""))); }
 		if(jsn.has("PrimaryBlue")){ jsn.addProperty("PrimaryBlue", Byte.parseByte(jsn.get("PrimaryBlue").getAsString().replace("b", ""))); }

@@ -136,6 +136,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 	}
 	
 	public void render(VehicleData data, String usedAS, Entity vehicle){
+		VehicleEntity ent = (VehicleEntity)vehicle;
 		//Vehicle Body
 		render(body);
 		if(data.doorsOpen()){
@@ -165,53 +166,53 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		render(turret);
 		
 		//Render Steering
-		for (ModelRendererTurbo submodel : steering) {
-			//submodel.rotateAngleX = vehicle.wheelsYaw * 3.14159265F / 180F * 3F;
+		for(ModelRendererTurbo submodel : steering) {
+			submodel.rotateAngleX = ent.getWheelsYaw() * 3.14159265F / 180F * 3F;
 			submodel.render();
 		}
 		
 		//Render Wheels
 		for(ModelRendererTurbo element : wheel_back_left){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
+			element.rotateAngleZ = ent.getWheelsAngle();
 			element.render();
 		}
 		for(ModelRendererTurbo element : wheel_back_right){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
+			element.rotateAngleZ = ent.getWheelsAngle();
 			element.render();
 		}
 		for(ModelRendererTurbo element : wheel_back){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
+			element.rotateAngleZ = ent.getWheelsAngle();
 			element.render();
 		}
 		for(ModelRendererTurbo element : wheel_front_left){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
-			//element.rotateAngleY = vehicle.wheelsYaw * Static.rad180 / 180F * 3F;
+			element.rotateAngleZ = ent.getWheelsAngle();
+			element.rotateAngleY = ent.getWheelsYaw() * Static.rad180 / 180F * 3F;
 			element.render();
 		}
 		for(ModelRendererTurbo element : wheel_front_right){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
-			//element.rotateAngleY = vehicle.wheelsYaw * Static.rad180 / 180F * 3F;
+			element.rotateAngleZ = ent.getWheelsAngle();
+			element.rotateAngleY = ent.getWheelsYaw() * Static.rad180 / 180F * 3F;
 			element.render();
 		}
 		for(ModelRendererTurbo element : wheel_front){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
-			//element.rotateAngleY = vehicle.wheelsYaw * Static.rad180 / 180F * 3F;
+			element.rotateAngleZ = ent.getWheelsAngle();
+			element.rotateAngleY = ent.getWheelsYaw() * Static.rad180 / 180F * 3F;
 			element.render();
 		}
 		for(ModelRendererTurbo element : wheels){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
+			element.rotateAngleZ = ent.getWheelsAngle();
 			element.render();
 		}
 		for(ModelRendererTurbo element : track_wheels){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
+			element.rotateAngleZ = ent.getWheelsAngle();
 			element.render();
 		}
 		for(ModelRendererTurbo element : track_wheels_right){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
+			element.rotateAngleZ = ent.getWheelsAngle();
 			element.render();
 		}
 		for(ModelRendererTurbo element : track_wheels_left){
-			//element.rotateAngleZ = vehicle.wheelsAngle;
+			element.rotateAngleZ = ent.getWheelsAngle();
 			element.render();
 		}
 		
@@ -497,6 +498,15 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 			}
 			conattr.getContainerOffset().translateR();
 		}
+	}
+	
+	public void def_renderWheelWithRotations(ModelRendererTurbo[] model, VehicleData data, String us, Entity ent){
+		float f = ((VehicleEntity)ent).getWheelsAngle();
+		if(f != model[0].rotateAngleZ){
+			f -= model[0].rotateAngleZ;
+			this.rotate(model, 0, 0, f, false);
+		}
+		this.render(model);
 	}
 	
 }

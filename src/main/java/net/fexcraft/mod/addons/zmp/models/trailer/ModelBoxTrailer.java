@@ -10,6 +10,7 @@ public class ModelBoxTrailer extends VehicleModel<VehicleData> {
 	int textureY = 512;
 
 	public ModelBoxTrailer(){
+		this.creators.add("zackyboy18");
 		body = new ModelRendererTurbo[198];
 		body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 298
 		body[1] = new ModelRendererTurbo(this, 9, 1, textureX, textureY); // Box 299

@@ -118,7 +118,7 @@ public class GenericVehicleData implements VehicleData {
 
 	@Override
 	public VehicleData readFromNBT(NBTTagCompound compound, boolean isRemote){
-		this.remote = isRemote();
+		this.remote = isRemote;
 		compound = compound.hasKey(FVTM.MODID + "_landvehicle") ? compound.getCompoundTag(FVTM.MODID + "_landvehicle") : compound.getCompoundTag(FVTM.MODID + "_vehicle");
 		this.sel = compound.getInteger("SelectedTexture");
 		isexternal = compound.getBoolean("IsTextureExternal");

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.lib.FCL;
 import net.fexcraft.mod.lib.network.Network;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -15,18 +16,37 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class FvtmUpdateHandler {
 	
+	/** Updated from Mod's (update) JSON if changed. */
+	public static String WIKIURL = "https://github.com/Fexcraft/FVTM/wiki";
+	private static String newversion;
 	private static JsonArray msg;
 	private static Side side;
 	
 	public static void load(){
 		JsonObject obj = Network.getModData("fvtm");
 		JsonObject jsn = null;
-		if(obj != null && obj.has("notifications")){
-			JsonArray array = obj.get("notifications").getAsJsonArray();
-			for(JsonElement elm : array){
-				if(elm.getAsJsonObject().has("version") && elm.getAsJsonObject().get("version").getAsString().equals(FVTM.VERSION)){
-					jsn = elm.getAsJsonObject();
+		if(obj != null){
+			if(obj.has("notifications")){
+				JsonArray array = obj.get("notifications").getAsJsonArray();
+				for(JsonElement elm : array){
+					if(elm.getAsJsonObject().has("version") && elm.getAsJsonObject().get("version").getAsString().equals(FVTM.VERSION)){
+						jsn = elm.getAsJsonObject();
+					}
 				}
+			}
+			if(obj.has("versions")){
+				JsonArray array = obj.get("versions").getAsJsonArray();
+				for(JsonElement elm : array){
+					if(elm.getAsJsonObject().get("version").getAsString().equals(FCL.mcv)){
+						newversion = elm.getAsJsonObject().get("latest_version").getAsString();
+					}
+				}
+			}
+			else if(obj.has("latest_version")){
+				newversion = obj.get("latest_version").getAsString();
+			}
+			if(obj.has("wiki-url")){
+				WIKIURL = obj.get("wiki-url").getAsString();
 			}
 		}
 		if(jsn != null){
@@ -58,15 +78,18 @@ public class FvtmUpdateHandler {
 	}
 
 	public static void register(){
-		if(msg != null && (side == null ? true : side == Static.side())){
-			MinecraftForge.EVENT_BUS.register(new FvtmUpdateHandler());
-		}
+		MinecraftForge.EVENT_BUS.register(new FvtmUpdateHandler());
 	}
 	
 	@SubscribeEvent
 	public void onJoin(PlayerLoggedInEvent event){
-		for(JsonElement elm : msg){
-			Print.chat(event.player, elm.getAsString());
+		if(side == Static.side()){
+			for(JsonElement elm : msg){
+				Print.chat(event.player, elm.getAsString());
+			}
+		}
+		if(!newversion.equals(FVTM.VERSION)){
+			Print.chat(event.player, FVTM.PREFIX + "Update available! (" + newversion + ")");
 		}
 	}
 	

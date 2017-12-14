@@ -28,7 +28,6 @@ import net.fexcraft.mod.fvtm.util.packets.VehicleControlPacketHandler;
 import net.fexcraft.mod.fvtm.util.packets.VehicleKeyPressPacketHandler;
 import net.fexcraft.mod.lib.crafting.RecipeRegistry;
 import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.SimpleUpdateHandler;
 import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.lib.util.common.Formatter;
@@ -113,8 +112,6 @@ public class FVTM {
 	
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
-		SimpleUpdateHandler.register(MODID, 1, VERSION);
-		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + "Update avaible! &3(" + SimpleUpdateHandler.getLatestVersionOf("fvtm") + ")&7");
 		FvtmUpdateHandler.load();
 		FvtmUpdateHandler.register();
 		//check if addons have updates

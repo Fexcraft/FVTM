@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
+import net.fexcraft.mod.fvtm.util.FvtmUpdateHandler;
 import net.fexcraft.mod.lib.network.Browser;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
@@ -210,6 +211,9 @@ public class AddonManagerGui extends GuiContainer {
 					Print.chat(mc.player, trs("main_button_2_0_e"));
 					Static.halt();
 				}
+				else if(button.id == 7){
+    				Browser.browse(mc.player, FvtmUpdateHandler.WIKIURL);
+				}
 				break;
 			case VIEW_ALL:
 				switch(button.id){
@@ -362,7 +366,7 @@ public class AddonManagerGui extends GuiContainer {
 				menubuttons[2][0] = new Button(6,   5 + this.guiLeft, 94 + this.guiTop, trs("main_button_2_0"));
 				menubuttons[2][0].enabled = true;
 				menubuttons[2][1] = new Button(7,  88 + this.guiLeft, 94 + this.guiTop, trs("main_button_2_1"));
-				menubuttons[2][1].enabled = false;
+				menubuttons[2][1].enabled = true;
 				menubuttons[2][2] = new Button(8, 171 + this.guiLeft, 94 + this.guiTop, trs("main_button_2_2"));
 				menubuttons[2][2].enabled = false;
 				for(int l = 0; l < 3; l++){

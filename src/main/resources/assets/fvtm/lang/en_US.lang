@@ -25,7 +25,7 @@ gui.fvtm.addon_manager.main_button_1_1=< - - - >
 gui.fvtm.addon_manager.main_button_1_2=< - - - >
 gui.fvtm.addon_manager.main_button_2_0=Use a Hammer
 gui.fvtm.addon_manager.main_button_2_0_e=&o&7AddonManager Crashed&8...
-gui.fvtm.addon_manager.main_button_2_1=Tutorials
+gui.fvtm.addon_manager.main_button_2_1=Wiki/Guides
 gui.fvtm.addon_manager.main_button_2_2=Get More >>
 #
 gui.fvtm.addon_manager.view_all_loadedaddons=Addons Loaded:

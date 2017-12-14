@@ -1,6 +1,6 @@
 {
   "id": "fvtm:zmp",
-  "name": "Zack's Model Projects'",
+  "name": "Zack's Model Projects",
   "dependencies": ["fvtm:generic"],
   "authors": [
     "643a5fd6-f325-442f-9ea8-6445dbb0cdc9",

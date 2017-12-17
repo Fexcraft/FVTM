@@ -8,14 +8,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Attribute;
-import net.fexcraft.mod.fvtm.api.Part.PartData;
-import net.fexcraft.mod.fvtm.blocks.ConstructorController.Button;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 

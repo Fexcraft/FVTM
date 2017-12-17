@@ -2,8 +2,11 @@ package net.fexcraft.mod.fvtm.model.part;
 
 import java.util.ArrayList;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.addons.gep.attributes.AdjustableWheelAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
@@ -17,6 +20,7 @@ import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
@@ -416,6 +420,43 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		}
 	}
 	
+	public void def_renderWheelWithRotations(ModelRendererTurbo[] model, Entity ent, boolean steering){
+		VehicleEntity vehicle = (VehicleEntity)ent;
+		float f = vehicle.getWheelsAngle();
+		if(f != model[0].rotateAngleZ){
+			f -= model[0].rotateAngleZ;
+			this.rotate(model, 0, 0, f, false);
+			
+		}
+		if(steering){
+			this.rotate(model, 0, vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F, 0, true);
+		}
+		this.render(model);
+		if(steering){
+			this.rotate(model, 0, 0, 0, true); 
+		}
+	}
+	
+	public void def_renderWheels4(VehicleData type, String us, Entity veh, boolean rot){
+		if(rot){
+			switch(us){
+				case "left_front_wheel":
+					this.def_renderWheelWithRotations(wheel_front_left, veh, true);
+					break;
+				case "right_front_wheel":
+					this.def_renderWheelWithRotations(wheel_front_right, veh, true);
+					break;
+				case "left_back_wheel":
+					this.def_renderWheelWithRotations(wheel_back_left, veh, false);
+					break;
+				case "right_back_wheel":
+					this.def_renderWheelWithRotations(wheel_back_right, veh, false);
+					break;
+			}
+		}
+		else def_renderWheels4(type, us, veh);
+	}
+	
 	public static void def_renderContainer(VehicleData type, String us){
 		PartData partdata = type.getPart(us);
 		if(partdata == null){
@@ -500,13 +541,119 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		}
 	}
 	
-	public void def_renderWheelWithRotations(ModelRendererTurbo[] model, VehicleData data, String us, Entity ent){
-		float f = ((VehicleEntity)ent).getWheelsAngle();
-		if(f != model[0].rotateAngleZ){
-			f -= model[0].rotateAngleZ;
-			this.rotate(model, 0, 0, f, false);
+	public void def_renderAdjustableWheels4(VehicleData data, String us){
+		Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
+		pos = pos == null ? new Pos(0, 0, 0) : pos;
+		pos.translate();
+		switch(us){
+			case "left_front_wheel":
+			case "left_back_wheel":
+			default:
+				GL11.glRotated( 180, 0, 1, 0);
+				render(wheels);
+				GL11.glRotated(-180, 0, 1, 0);
+				break;
+			case "right_front_wheel":
+			case "right_back_wheel":
+				render(wheels);
+				break;
 		}
-		this.render(model);
+		pos.translateR();
+	}
+	
+	public void def_renderAdjustableWheels4(VehicleData data, String us, Entity ent){
+		Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
+		pos = pos == null ? new Pos(0, 0, 0) : pos;
+		pos.translate();
+		boolean str, mir;
+		VehicleEntity vehicle = (VehicleEntity)ent;
+		switch(us){
+			case "left_front_wheel":{
+				str = true;
+				mir = false;
+				break;
+			}
+			case "right_front_wheel":{
+				str = true;
+				mir = true;
+				break;
+			}
+			case "left_back_wheel":{
+				str = false;
+				mir = false;
+				break;
+			}
+			case "right_back_wheel":{
+				str = false;
+				mir = true;
+				break;
+			}
+			default:{
+				str = false;
+				mir = false;
+				break;
+			}
+		}
+		if(!mir){
+			GL11.glRotated( 180, 0, 1, 0);
+		}
+		for(ModelRendererTurbo element : wheels){
+			element.rotateAngleZ = vehicle.getWheelsAngle();
+			if(str){
+				element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
+			}
+			element.render();
+			element.rotateAngleY = 0;
+		}
+		if(!mir){
+			GL11.glRotated(-180, 0, 1, 0);
+		}
+		pos.translateR();
+	}
+	
+	public void def_renderAdjustableWheels4(VehicleData data, String us, Entity ent, boolean rot){
+		if(rot){
+			Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
+			pos = pos == null ? new Pos(0, 0, 0) : pos;
+			pos.translate();
+			boolean str, mir;
+			switch(us){
+				case "left_front_wheel":{
+					str = true;
+					mir = false;
+					break;
+				}
+				case "right_front_wheel":{
+					str = true;
+					mir = true;
+					break;
+				}
+				case "left_back_wheel":{
+					str = false;
+					mir = false;
+					break;
+				}
+				case "right_back_wheel":{
+					str = false;
+					mir = true;
+					break;
+				}
+				default:{
+					str = false;
+					mir = false;
+					break;
+				}
+			}
+			if(!mir){
+				GL11.glRotated( 180, 0, 1, 0);
+			}
+			this.def_renderWheelWithRotations(wheels, ent, str);
+			if(!mir){
+				GL11.glRotated(-180, 0, 1, 0);
+			}
+			pos.translateR();
+		}
+		else def_renderAdjustableWheels4(data, us, ent);
 	}
 	
 }

@@ -41,7 +41,8 @@ public class GeneralEssentials extends HybridAddon {
 			new FMSeatAttribute(),
 			new InventoryAttribute(),
 			new ConnectorAttribute(),
-			new ContainerAttribute()
+			new ContainerAttribute(),
+			new AdjustableWheelAttribute()
 		);
 	}
 

@@ -8,14 +8,9 @@
 
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 
 public class ModelC2R2T1Wheel extends PartModel<VehicleData> {
@@ -224,96 +219,14 @@ public class ModelC2R2T1Wheel extends PartModel<VehicleData> {
 		//flipAll();
 	}
 	
-	private static final Pos leftfront  = new Pos( 29.5f, -7.5f, -22f);
-	private static final Pos rightfront = new Pos( 29.5f, -7.5f,  22f);
-	private static final Pos leftback   = new Pos(-59.5f, -7.5f, -22f);
-	private static final Pos rightback  = new Pos(-59.5f, -7.5f,  22f);
-	
 	@Override
 	public void render(VehicleData data, String us){
-		switch(us){
-			case "right_front_wheel":{
-				leftfront.translate();
-				GL11.glRotated( 180, 0, 1, 0);
-				render(wheels);
-				GL11.glRotated(-180, 0, 1, 0);
-				leftfront.translateR();
-				break;
-			}
-			case "left_front_wheel":{
-				rightfront.translate();
-				render(wheels);
-				rightfront.translateR();
-				break;
-			}
-			case "right_back_wheel":{
-				leftback.translate();
-				GL11.glRotated( 180, 0, 1, 0);
-				render(wheels);
-				GL11.glRotated(-180, 0, 1, 0);
-				leftback.translateR();
-				break;
-			}
-			case "left_back_wheel":{
-				rightback.translate();
-				render(wheels);
-				rightback.translateR();
-				break;
-			}
-			default: return;
-		}
+		this.def_renderAdjustableWheels4(data, us);
 	}
 	
 	@Override
 	public void render(VehicleData data, String us, Entity veh){
-		LandVehicleEntity vehicle = (LandVehicleEntity)veh;
-		switch(us){
-			case "right_front_wheel":{
-				leftfront.translate();
-				GL11.glRotated( 180, 0, 1, 0);
-				for(ModelRendererTurbo element : wheels){
-					element.rotateAngleZ = vehicle.wheelsAngle;
-					element.rotateAngleY = vehicle.wheelsYaw * Static.rad180 / 180F * 3F;
-					element.render();
-					element.rotateAngleY = 0;
-				}
-				GL11.glRotated(-180, 0, 1, 0);
-				leftfront.translateR();
-				break;
-			}
-			case "left_front_wheel":{
-				rightfront.translate();
-				for(ModelRendererTurbo element : wheels){
-					element.rotateAngleZ = vehicle.wheelsAngle;
-					element.rotateAngleY = vehicle.wheelsYaw * Static.rad180 / 180F * 3F;
-					element.render();
-					element.rotateAngleY = 0;
-				}
-				rightfront.translateR();
-				break;
-			}
-			case "right_back_wheel":{
-				leftback.translate();
-				GL11.glRotated( 180, 0, 1, 0);
-				for(ModelRendererTurbo element : wheels){
-					element.rotateAngleZ = vehicle.wheelsAngle;
-					element.render();
-				}
-				GL11.glRotated(-180, 0, 1, 0);
-				leftback.translateR();
-				break;
-			}
-			case "left_back_wheel":{
-				rightback.translate();
-				for(ModelRendererTurbo element : wheels){
-					element.rotateAngleZ = vehicle.wheelsAngle;
-					element.render();
-				}
-				rightback.translateR();
-				break;
-			}
-			default: return;
-		}
+		this.def_renderAdjustableWheels4(data, us, veh, false);
 	}
 	
 }

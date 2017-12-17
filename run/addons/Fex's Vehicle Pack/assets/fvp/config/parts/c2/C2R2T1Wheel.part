@@ -10,6 +10,9 @@
         "right_back_wheel",
         "left_back_wheel"
     ],
+    "Attributes": [
+        "adjustable_wheel"
+    ],
     "Textures": [
         "fvp:textures/entities/skin_vehicle_c2r2t1_wheel.png"
     ],
@@ -21,6 +24,26 @@
             "Offset": {"x":0,"y":0,"z":0}
         }
     ],
+    "AttributeData":{
+    	"Adjustable-Wheel-Positions":[
+    		{
+    			"part":"left_front_wheel",
+    			"x": 29.5, "y": -7.5, "z": -22
+    		},
+    		{
+    			"part":"right_front_wheel",
+    			"x": 29.5, "y": -7.5, "z":  22
+    		},
+    		{
+    			"part":"left_back_wheel",
+    			"x": -59.5, "y": -7.5, "z": -22
+    		},
+    		{
+    			"part":"right_back_wheel",
+    			"x": -59.5, "y": -7.5, "z":  22
+    		}
+    	]
+    },
     "Recipes":[
         {
             "Type": "Blueprint",

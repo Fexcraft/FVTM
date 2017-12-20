@@ -78,9 +78,16 @@ task def_parts_pack(type: Jar){
     baseName = 'General Essentials Pack'
     appendix = '1.5 - for FVTM'
 }
+task zmp_fvtm(type: Jar){
+    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}
+    from 'run/addons/Zackyboy18\'s Pack'
+    baseName = 'Zack\s Model Projects'
+    appendix = 'NVN'
+}
 
 build {
     dependsOn fvtm
-    dependsOn fvp_fvtm
     dependsOn def_parts_pack
+    dependsOn fvp_fvtm
+    dependsOn zmp_fvtm
 }

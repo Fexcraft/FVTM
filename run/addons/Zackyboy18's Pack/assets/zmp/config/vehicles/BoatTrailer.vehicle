@@ -1,0 +1,12 @@
+{
+    "RegistryName": "zmp:boat_trailer",
+    "Addon": "fvtm:zmp",
+    "FullName": "Boat Trailer",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.trailer.ModelBoatTrailer.class",
+    "Textures": [ "zmp:textures/trailers/boat_trailer.png" ],
+    "WheelPos":[
+        { "x": -75, "y": -16, "z": -20 },
+        { "x": -75, "y": -16, "z":  20 }
+    ],
+    "Trailer": true
+}

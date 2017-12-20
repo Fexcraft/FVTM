@@ -1,0 +1,12 @@
+{
+    "RegistryName": "zmp:car_transporter",
+    "Addon": "fvtm:zmp",
+    "FullName": "Car Transporter",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.trailer.ModelCarTranspoter.class",
+    "Textures": [ "zmp:textures/trailers/car_transporter.png" ],
+    "WheelPos":[
+        { "x": -75, "y": -16, "z": -20 },
+        { "x": -75, "y": -16, "z":  20 }
+    ],
+    "Trailer": true
+}

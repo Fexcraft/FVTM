@@ -1,0 +1,12 @@
+{
+    "RegistryName": "zmp:horse_float",
+    "Addon": "fvtm:zmp",
+    "FullName": "Horse Float",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.trailer.ModelHorseFloat.class",
+    "Textures": [ "zmp:textures/trailers/horse_float.png" ],
+    "WheelPos":[
+        { "x": -75, "y": -16, "z": -20 },
+        { "x": -75, "y": -16, "z":  20 }
+    ],
+    "Trailer": true
+}

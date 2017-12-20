@@ -5,8 +5,8 @@
     "ModelFile": "net.fexcraft.mod.addons.zmp.models.trailer.ModelBoxTrailer.class",
     "Textures": [ "zmp:textures/trailers/box_trailer.png" ],
     "WheelPos":[
-        { "x": -49, "y": -16, "z": -22 },
-        { "x": -49, "y": -16, "z":  22 }
+        { "x": -49, "y": -14, "z": -22 },
+        { "x": -49, "y": -14, "z":  22 }
     ],
     "Trailer": true
 }

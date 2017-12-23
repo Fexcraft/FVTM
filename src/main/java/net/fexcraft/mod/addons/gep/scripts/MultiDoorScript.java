@@ -1,33 +1,27 @@
 package net.fexcraft.mod.addons.gep.scripts;
 
-import org.lwjgl.input.Keyboard;
+import java.util.TreeMap;
 
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MultiDoorScript implements Vehicle.VehicleScript {
-	
-	private static boolean reg = false;
-	public MultiDoorScript(){
-		if(!reg && Static.side().isClient()){
-			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(ClientReg.doorkey);
-			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(ClientReg.hoodkey);
-			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(ClientReg.backkey);
-			reg = true;
-		}
-	}
+
 	
 	public boolean hood, trunk, front_left, front_right, back_left, back_right;
+	public static final String setting_hood = "Hood/Front";
+	public static final String setting_back = "Trunk/Back";
+	public static final String setting_door = "Door";
+	
+	public MultiDoorScript(){}
 
 	@Override
 	public ResourceLocation getId(){
@@ -115,9 +109,39 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 	
 	@Override
 	public void onKeyInput(int key, int seat, VehicleEntity ent){
-		Print.debug(ent.getEntity());
-		if(Keyboard.isKeyDown(ClientReg.doorkey.getKeyCode())){
-			Print.debug("L");
+		//
+	}
+
+	@Override
+	public TreeMap<String, String> getSettingKeys(int seat){
+		TreeMap<String, String> map = new TreeMap<String, String>();
+		if(seat == 0){
+			map.put("Hood/Front", "boolean");
+			map.put("Trunk/Back", "boolean");
+		}
+		map.put("Door", "boolean");
+		return map;
+	}
+
+	@Override
+	public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value){
+		if(setting.equals(setting_hood)){
+			if(seat != 0){
+				return;
+			}
+			hood = value == null ? !hood : (boolean)value;
+			sendDoorPacket(ent.getEntity());
+			Print.debugChat("O > Hood");
+		}
+		else if(setting.equals(setting_back)){
+			if(seat != 0){
+				return;
+			}
+			trunk = value == null ? !trunk : (boolean)value;
+			sendDoorPacket(ent.getEntity());
+			Print.debugChat("P > Back");
+		}
+		else if(setting.equals(setting_door)){
 			switch(seat){
 				case 0:{
 					front_left = !front_left;
@@ -142,32 +166,34 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 				Print.debugChat("L > Door");
 			}
 		}
-		else if(Keyboard.isKeyDown(ClientReg.hoodkey.getKeyCode())){
-			Print.debug("O");
-			if(seat != 0){
-				return;
-			}
-			hood = !hood;
-			sendDoorPacket(ent.getEntity());
-			Print.debugChat("O > Hood");
-		}
-		else if(Keyboard.isKeyDown(ClientReg.backkey.getKeyCode())){
-			Print.debug("P");
-			if(seat != 0){
-				return;
-			}
-			trunk = !trunk;
-			sendDoorPacket(ent.getEntity());
-			Print.debugChat("P > Back");
-		}
-		else return;
 	}
-	
-	@SideOnly(Side.CLIENT)
-	private static class ClientReg{
-		public static net.minecraft.client.settings.KeyBinding doorkey = new net.minecraft.client.settings.KeyBinding("Door Key", Keyboard.KEY_L, "GEP MultiDoor Script");
-		public static net.minecraft.client.settings.KeyBinding hoodkey = new net.minecraft.client.settings.KeyBinding("Front/Hood Key", Keyboard.KEY_O, "GEP MultiDoor Script");
-		public static net.minecraft.client.settings.KeyBinding backkey = new net.minecraft.client.settings.KeyBinding("Back/Trunk Key", Keyboard.KEY_P, "GEP MultiDoor Script");
+
+	@Override
+	public Object getSettingValue(int seat, String setting){
+		if(setting.equals(setting_hood)){
+			return hood;
+		}
+		else if(setting.equals(setting_back)){
+			return trunk;
+		}
+		else if(setting.equals(setting_door)){
+			switch(seat){
+				case 0:{
+					return front_left;
+				}
+				case 1:{
+					return front_right;
+				}
+				case 2:{
+					return back_left;
+				}
+				case 3:{
+					return back_right;
+				}
+				default: return null;
+			}
+		}
+		return null;
 	}
 	
 }

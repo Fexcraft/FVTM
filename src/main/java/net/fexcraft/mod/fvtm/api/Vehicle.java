@@ -218,9 +218,9 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 
 		public void onRemove(Entity entity, VehicleData data);
 		
-		public default void sendPacketToClient(Entity ent, EntityPlayerMP player, NBTTagCompound nbt){
+		public default void sendPacketToClient(Entity ent, EntityPlayer player, NBTTagCompound nbt){
 			nbt.setString("ScriptId", getId().toString());
-			PacketHandler.getInstance().sendTo(new PacketEntityUpdate(ent, nbt), player);
+			PacketHandler.getInstance().sendTo(new PacketEntityUpdate(ent, nbt), (EntityPlayerMP)player);
 		}
 		
 		public default void sendPacketToAll(Entity ent, NBTTagCompound nbt){
@@ -241,6 +241,12 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		public default void onKeyInput(int key, int seatid, VehicleEntity vehicle){
 			return;
 		}
+
+		public TreeMap<String, String> getSettingKeys(int seat);
+		
+		public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value);
+		
+		public Object getSettingValue(int seat, String setting);
 		
 	}
 	

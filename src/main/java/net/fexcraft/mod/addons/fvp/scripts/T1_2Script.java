@@ -1,31 +1,24 @@
 package net.fexcraft.mod.addons.fvp.scripts;
 
-import org.lwjgl.input.Keyboard;
+import java.util.TreeMap;
 
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class T1_2Script implements Vehicle.VehicleScript {
 
-	@SideOnly(Side.CLIENT)
-	public boolean out = false, reg = false;
+	private static final TreeMap<String, String> SETTINGS = new TreeMap<String, String>();
+	static { SETTINGS.put("T1 Type2", "boolean"); }
+	public boolean out = false;
 	
-	public T1_2Script(){
-		if(!reg && Static.side().isClient()){
-			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(ClientReg.keybind);
-			reg = true;
-		}
-	}
+	public T1_2Script(){}
 
 	@Override
 	public ResourceLocation getId(){
@@ -81,19 +74,30 @@ public class T1_2Script implements Vehicle.VehicleScript {
 	
 	@Override
 	public void onKeyInput(int key, int seat, VehicleEntity ent){
-		//Print.debug(key, keybind.getKeyCategory(), keybind.getKeyCode());
-		if(Keyboard.isKeyDown(ClientReg.keybind.getKeyCode()) && seat == 0){
-			out = !out;
-			Print.debugChat(out ? "Out" : "In");
+		//
+	}
+
+	@Override
+	public TreeMap<String, String> getSettingKeys(int seat){
+		return seat == 0 ? SETTINGS : new TreeMap<String, String>();
+	}
+
+	@Override
+	public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value){
+		if(setting.equals(SETTINGS.keySet().toArray()[0]) && seat == 0){
+			out = value == null ? !out : (boolean)value;
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setBoolean("Out", out);
 			this.sendPacketToServer(ent.getEntity(), nbt);
 		}
 	}
-	
-	@SideOnly(Side.CLIENT)
-	private static class ClientReg{
-		private static net.minecraft.client.settings.KeyBinding keybind = new net.minecraft.client.settings.KeyBinding("T1 Type 2", Keyboard.KEY_L, "Fex`s Vehicle Pack");
+
+	@Override
+	public Object getSettingValue(int seat, String setting){
+		if(setting.equals(SETTINGS.keySet().toArray()[0])){
+			return out;
+		}
+		return null;
 	}
 	
 }

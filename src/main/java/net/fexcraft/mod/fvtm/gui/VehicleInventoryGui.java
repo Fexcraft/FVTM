@@ -2,7 +2,10 @@ package net.fexcraft.mod.fvtm.gui;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute;
@@ -12,6 +15,8 @@ import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttrib
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
@@ -39,6 +44,7 @@ public class VehicleInventoryGui {
 	//x 2 = fuel view
 	//x 3 = status view
 	//x 4 = container view
+	//x 5 = scripts view
 	
 	//y n = part id
 	
@@ -48,19 +54,23 @@ public class VehicleInventoryGui {
 	private static final ResourceLocation invtex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory.png");
 	private static final ResourceLocation fueltex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_fuel.png");
 	private static final ResourceLocation contex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_container.png");
+	private static final ResourceLocation scrtex = new ResourceLocation("fvtm:textures/guis/vehicle_scripts.png");
 	
 	public static class Client extends GuiContainer {
 		
+		private VehicleEntity ent;
 		private VehicleData data;
 		private int x, y, z;
 		private GenericGuiButton arrowUp, arrowDown, fuel, info;
-		private GenericGuiButton[] parts;
+		private GenericGuiButton[] parts, settings;
 		private int scroll;
+		private TreeMap<String, VehicleScript> map;
 		private static Server server;
 
 		public Client(EntityPlayer player, World world, int x, int y, int z){
 			super(server = new Server(player, world, x, y, z));
 			this.x = x; this.y = y; this.z = z;
+			ent = ((SeatEntity)player.getRidingEntity()).getVehicle();
 			data = ((SeatEntity)player.getRidingEntity()).getVehicle().getVehicleData();
 			switch(x){
 				case 0:{
@@ -87,6 +97,15 @@ public class VehicleInventoryGui {
 				case 4:{
 					this.xSize = 210;
 					this.ySize = 103;
+					break;
+				}
+				case 5:{
+					this.xSize = 168;
+					this.ySize = 153;
+					//
+					map = new TreeMap<String, VehicleScript>();
+					data.getScripts().forEach(vehscr -> vehscr.getSettingKeys(y).keySet().forEach(entry -> map.put(entry, vehscr)));
+					settings = new GenericGuiButton[18];
 					break;
 				}
 			}
@@ -144,9 +163,24 @@ public class VehicleInventoryGui {
 					this.fontRenderer.drawString(data.getContainerHolders().get(y).getPart().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
 					break;
 				}
+				case 5:{
+					this.mc.getTextureManager().bindTexture(scrtex);
+					this.drawTexturedModalRect(i, j, 0, 0, this.xSize + 12, this.ySize);
+					this.fontRenderer.drawString(data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
+					List<VehicleScript> list = new ArrayList<VehicleScript>(data.getScripts());
+					TreeMap<String, VehicleScript> map = new TreeMap<String, VehicleScript>();
+					list.forEach(vehscr -> vehscr.getSettingKeys(y).keySet().forEach(entry -> map.put(entry, vehscr)));
+					for(int k = 0; k < 9; k++){
+						String str = (k + z) >= map.size() /*|| (k + z) < 0*/ ? null : (String)map.keySet().toArray()[k + z];
+						this.fontRenderer.drawString(str == null ? "" : str, i + 8, j + 22 + (k * 14), MapColor.BLACK_STAINED_HARDENED_CLAY.colorValue);
+						this.fontRenderer.drawString(str == null ? "" : this.fontRenderer.trimStringToWidth(map.get(str).getSettingValue(y, str).toString(), 32), i + 120, j + 22 + (k * 14), MapColor.GREEN_STAINED_HARDENED_CLAY.colorValue);
+					}
+					break;
+				}
 			}
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void actionPerformed(GuiButton button){
 			switch(x){
@@ -227,8 +261,8 @@ public class VehicleInventoryGui {
 								nbt.setIntArray("args", new int[]{1, y, scroll});
 								PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
 							}
+							break;
 						}
-						break;
 					}
 				}
 				case 2:{
@@ -243,9 +277,55 @@ public class VehicleInventoryGui {
 					//TODO
 					break;
 				}
+				case 5:{
+					if(button.id == 0 || button.id == 1){
+						scroll = button.id == 0 ? scroll - 1 : scroll + 1;
+						scroll = scroll < 0 ? 0 : scroll + 9 > map.size() ? map.size() - 9 : scroll;
+						arrowUp.enabled = scroll > 0;
+						arrowDown.enabled = scroll + 9 < map.size();
+					}
+					else{
+						int i = ((button.id - 2) - (button.id - 2 >= 9 ? 9 : 0)) + z;
+						Entry<String, VehicleScript> entry = (Entry<String, VehicleScript>)map.entrySet().toArray()[i];
+						String type = entry.getValue().getSettingKeys(y).get((String)map.keySet().toArray()[i]);
+						Object obj = map.get(entry.getKey()).getSettingValue(y, entry.getKey());
+						if(button.id >= 2 && button.id < 9 + 2){
+							switch(type){
+								case "boolean":{
+									entry.getValue().onSettingsUpdate(ent, y, entry.getKey(), true);
+									break;
+								}
+								case "integer":{
+									int n = (int)obj;
+									entry.getValue().onSettingsUpdate(ent, y, entry.getKey(), n + 1);
+								}
+							}
+						}
+						else if(button.id >= 9 + 2 && button.id < 18 + 2){
+							switch(type){
+								case "boolean":{
+									entry.getValue().onSettingsUpdate(ent, y, entry.getKey(), false);
+									break;
+								}
+								case "integer":{
+									int n = (int)obj;
+									entry.getValue().onSettingsUpdate(ent, y, entry.getKey(), n - 1);
+								}
+							}
+						}
+					}
+					//
+					NBTTagCompound nbt = new NBTTagCompound();
+					nbt.setString("target_listener", "fvtm");
+					nbt.setString("task", "open_gui");
+					nbt.setInteger("gui", GuiHandler.VEHICLE_INVENTORY);
+					nbt.setIntArray("args", new int[]{5, y, scroll});
+					PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
+				}
 			}
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public void initGui(){
 			super.initGui();
@@ -318,6 +398,52 @@ public class VehicleInventoryGui {
 				}
 				case 4:{
 					//TODO
+					break;
+				}
+				case 5:{
+					//
+					this.buttonList.add(arrowUp = new GenericGuiButton(0, 167 + i, 5 + j, 9, 12, ""));
+					arrowUp.setTexturePos(0, 220, 0);
+					arrowUp.setTexturePos(1, 229, 0);
+					arrowUp.setTexturePos(2, 238, 0);
+					arrowUp.setTexturePos(3, 247, 0);
+					arrowUp.setTexture(scrtex);
+					arrowUp.enabled = scroll > 0;
+					this.buttonList.add(arrowDown = new GenericGuiButton(1, 167 + i, 23 + j, 9, 12, ""));
+					arrowDown.setTexturePos(0, 220, 12);
+					arrowDown.setTexturePos(1, 229, 12);
+					arrowDown.setTexturePos(2, 238, 12);
+					arrowDown.setTexturePos(3, 247, 12);
+					arrowDown.setTexture(scrtex);
+					arrowDown.enabled = scroll + 9 < map.size();
+					//
+					for(int k = 0; k < 18; k++){
+						int l = (k >= 9 ? k - 9 : k) + z;
+						if(l >= map.size()){
+							continue;//break;
+						}
+						this.buttonList.add(settings[k] = new GenericGuiButton(k + 2, (k >= 9 ? 154 : 109) + i, 19 + j + (14 * (k >= 9 ? k - 9 : k)), 9, 12, ""));
+						settings[k].setTexturePos(0, 220, k >= 9 ? 12 : 0);
+						settings[k].setTexturePos(1, 229, k >= 9 ? 12 : 0);
+						settings[k].setTexturePos(2, 238, k >= 9 ? 12 : 0);
+						settings[k].setTexturePos(3, 247, k >= 9 ? 12 : 0);
+						settings[k].setTexture(scrtex);
+						Entry<String, VehicleScript> entry = (Entry<String, VehicleScript>)map.entrySet().toArray()[l];
+						String type = entry.getValue().getSettingKeys(y).get((String)map.keySet().toArray()[l]);
+						Object obj = map.get(entry.getKey()).getSettingValue(y, entry.getKey());
+						switch(type){
+							case "boolean":{
+								boolean b = (boolean)obj;
+								settings[k].enabled = k >= 9 ? b == true : b == false;
+								break;
+							}
+							case "integer":{
+								int n = (int)obj;
+								settings[k].enabled = k >= 9 ? n > 0 : n < 10000;
+							}
+						}
+					}
+					//
 					break;
 				}
 			}
@@ -404,6 +530,10 @@ public class VehicleInventoryGui {
 					for(int col = 0; col < 9; col++){
 						addSlotToContainer(new Slot(player.inventory, col, 6 + col * 18, 81));
 					}
+					break;
+				}
+				case 5:{
+					//TODO
 					break;
 				}
 			}

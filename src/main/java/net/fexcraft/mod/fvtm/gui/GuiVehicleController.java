@@ -169,6 +169,9 @@ public class GuiVehicleController extends GuiScreen {
 			if(isKeyDown(KeyHandler.doorToggle.getKeyCode())){
 				seat.onKeyPress(10, player);
 			}
+			if(isKeyDown(KeyHandler.scriptsGUI.getKeyCode())){
+				seat.onKeyPress(11, player);
+			}
 			if(s > 0){ s--; }
 			if(s == 0){
 				seat.onKeyPress(-1, player);

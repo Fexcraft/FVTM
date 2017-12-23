@@ -358,7 +358,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 	@Override
 	public boolean onKeyPress(int key, int seat, EntityPlayer player){
 		//Print.debug("V: " + key + " " + seat + " " + player.getName() + " [" + Time.getDate() + "];");
-		if(seat != 0 && key != 6){
+		if(seat != 0 && key != 6 && key != 11){
 			return false;
 		}
 		try{
@@ -438,6 +438,12 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 						}
 					}
 					return true;
+				}
+				case 11:{
+					if(!world.isRemote){
+						player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 5, seat, 0);
+						//open scripts gui
+					}
 				}
 			}
 			return false;

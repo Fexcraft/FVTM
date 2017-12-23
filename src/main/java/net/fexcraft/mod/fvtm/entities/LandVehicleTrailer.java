@@ -348,6 +348,12 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 					}
 					return true;
 				}
+				case 11:{
+					if(!world.isRemote){
+						player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 5, seat, 0);
+						//open scripts gui
+					}
+				}
 			}
 			return false;
 		}

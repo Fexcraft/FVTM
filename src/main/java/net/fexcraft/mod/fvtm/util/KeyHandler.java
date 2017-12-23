@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.GuiVehicleController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -16,16 +17,17 @@ public class KeyHandler {
 	public static KeyBinding openInventory;
 	public static KeyBinding leftMouse;
 	public static KeyBinding rightMouse;
-	public static KeyBinding doorToggle;
+	public static KeyBinding doorToggle, scriptsGUI;
 	public static final String category = "FVTM Controls";
 	
 	public KeyHandler(){
 		this.minecraft = Minecraft.getMinecraft();
-		engineToggle = new KeyBinding("Engine", Keyboard.KEY_LCONTROL, category);
-		openInventory = new KeyBinding("Inventory", Keyboard.KEY_R, category);
-		leftMouse = new KeyBinding("Prototype LM", Keyboard.KEY_8, category);
-		rightMouse = new KeyBinding("Prototype RM", Keyboard.KEY_9, category);
-		doorToggle = new KeyBinding("Doors", Keyboard.KEY_K, category);
+		ClientRegistry.registerKeyBinding(engineToggle = new KeyBinding("Engine", Keyboard.KEY_LCONTROL, category));
+		ClientRegistry.registerKeyBinding(openInventory = new KeyBinding("Inventory", Keyboard.KEY_R, category));
+		ClientRegistry.registerKeyBinding(leftMouse = new KeyBinding("Prototype LM", Keyboard.KEY_8, category));
+		ClientRegistry.registerKeyBinding(rightMouse = new KeyBinding("Prototype RM", Keyboard.KEY_9, category));
+		ClientRegistry.registerKeyBinding(doorToggle = new KeyBinding("Doors", Keyboard.KEY_K, category));
+		ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("Scripts GUI", Keyboard.KEY_G, category));
 	}
 	
 	//TODO sunscribe keyinput event

@@ -1,12 +1,11 @@
 package net.fexcraft.mod.addons.fvp.scripts;
 
-import org.lwjgl.input.Keyboard;
+import java.util.TreeMap;
+
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.block.BlockSnow;
 import net.minecraft.block.material.Material;
@@ -19,18 +18,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class T1SnowPlowScript implements VehicleScript {
 	
-	public boolean on = false, reg = false;
+	private static final TreeMap<String, String> SETTINGS = new TreeMap<String, String>();
+	static { SETTINGS.put("T1 Snow Plow", "boolean"); }
+	public boolean on = false;
 	
-	public T1SnowPlowScript(){
-		if(!reg && Static.side().isClient()){
-			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(ClientReg.keybind);
-			reg = true;
-		}
-	}
+	public T1SnowPlowScript(){}
 
 	@Override
 	public ResourceLocation getId(){
@@ -126,19 +121,30 @@ public class T1SnowPlowScript implements VehicleScript {
 	
 	@Override
 	public void onKeyInput(int key, int seat, VehicleEntity ent){
-		//Print.debug(key);
-		if(Keyboard.isKeyDown(ClientReg.keybind.getKeyCode()) && seat == 0){
-			on = !on;
-			Print.debugChat("Snow Plow " + (on ? "enabled" : "disabled") + ".");
+		//
+	}
+
+	@Override
+	public TreeMap<String, String> getSettingKeys(int seat){
+		return seat == 0 ? SETTINGS : new TreeMap<String, String>();
+	}
+
+	@Override
+	public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value){
+		if(setting.equals(SETTINGS.keySet().toArray()[0]) && seat == 0){
+			on = value == null ? !on : (boolean)value;
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setBoolean("On", on);
 			this.sendPacketToServer(ent.getEntity(), nbt);
 		}
 	}
-	
-	@SideOnly(Side.CLIENT)
-	private static class ClientReg{
-		private static net.minecraft.client.settings.KeyBinding keybind = new net.minecraft.client.settings.KeyBinding("T1 Snow Plow", Keyboard.KEY_F, "Fex`s Vehicle Pack");
+
+	@Override
+	public Object getSettingValue(int seat, String setting){
+		if(setting.equals(SETTINGS.keySet().toArray()[0])){
+			return on;
+		}
+		return null;
 	}
 	
 }

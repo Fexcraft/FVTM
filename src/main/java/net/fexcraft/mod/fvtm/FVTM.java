@@ -89,6 +89,8 @@ public class FVTM {
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WaterVehicleEntity.class, RenderWaterVehicle::new);
+			//
+			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
 		}
 	}
 	
@@ -117,9 +119,6 @@ public class FVTM {
 		//check if addons have updates
 		RESOURCES.checkForUpdates();
 		FvtmPermissions.register();
-		if(event.getSide().isClient()){
-			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
-		}
 	}
 	
 	@Mod.EventHandler

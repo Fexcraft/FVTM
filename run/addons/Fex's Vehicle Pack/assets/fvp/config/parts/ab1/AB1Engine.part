@@ -1,0 +1,58 @@
+{
+    "RegistryName": "fvp:ab1_engine",
+    "Addon": "fvtm:fvp",
+    "FullName": "AB Type AutoBus Engine",
+    "ModelFile": "null",
+    "Category": [
+        "engine"
+    ],
+    "Attributes":[
+        "engine"
+    ],
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Removable": true,
+    "Available": false,
+    "Compatible": [
+        { "Vehicle": "fvp:ab1", "x": 0, "y": 0, "z": 0 }
+     ],
+    "AttributeData":{
+        "Engine-Speed": 1.40,
+        "Fuel-Consumption": 0.8,
+        "Fuel-Type": "diesel"
+    },
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_block",
+                    "Amount": 2
+                },
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 3
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 5,
+                    "Meta": 7
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 2,
+                    "Meta": 15
+                },
+                {
+                    "Item": "fvtm:material",
+                    "Amount": 6,
+                    "NBTTagCompound":{
+                        "FVTM:Material": "generic:rubber"
+                    }
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

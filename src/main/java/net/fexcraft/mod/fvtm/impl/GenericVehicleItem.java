@@ -201,6 +201,10 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 		if(movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK){
 			BlockPos pos = movingobjectposition.getBlockPos();
 			VehicleData data = this.getVehicle(player.getHeldItem(hand));
+			if(!data.readyToSpawn()){
+				Print.chat(player, "Vehicle can not be spawned, missing parts!");
+				return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+			}
 			switch(data.getVehicle().getType()){
 				case LAND:{
 					if(world.getBlockState(pos).getBlock() instanceof BlockLiquid){

@@ -5,9 +5,10 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
-public class ModelC7Doors extends PartModel {
+public class ModelC7Doors extends PartModel<VehicleData> {
 	
 	private static final int textureX = 512, textureY = 512;
 	public ModelRendererTurbo[] trunkn, trunkc;
@@ -91,7 +92,7 @@ public class ModelC7Doors extends PartModel {
 		render(this.back_left);
 		render(this.back_right);
 		render(this.trunkc);
-		data.getPrimaryColor().glColorReset();
+		RGB.glColorReset();
 		render(this.trunkn);
 	}
 	
@@ -111,7 +112,7 @@ public class ModelC7Doors extends PartModel {
 			//
 			rotate(this.trunkc, 0, 0, data.doorsOpen() ? Static.rad120 : 0, true);
 			render(this.trunkc);
-			data.getPrimaryColor().glColorReset();
+			RGB.glColorReset();
 			rotate(this.trunkn, 0, 0, data.doorsOpen() ? Static.rad120 : 0, true);
 			render(this.trunkn);
 		}
@@ -128,7 +129,7 @@ public class ModelC7Doors extends PartModel {
 			//
 			rotate(this.trunkc, 0, 0, script.trunk ? Static.rad120 : 0, true);
 			render(this.trunkc);
-			data.getPrimaryColor().glColorReset();
+			RGB.glColorReset();
 			rotate(this.trunkn, 0, 0, script.trunk ? Static.rad120 : 0, true);
 			render(this.trunkn);
 		}

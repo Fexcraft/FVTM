@@ -1,0 +1,47 @@
+{
+    "RegistryName": "fvp:ab1_driver_seat",
+    "FullName": "AB1 Driver Seat",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "null",
+    "Category": [
+        "driver_seat"
+    ],
+    "Attributes":[
+        "seat"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_ab1b.png"
+    ],
+    "Removable": false,
+    "Available": false,
+    "AttributeData":{
+        "FM-Seats":[
+            {
+                "driver": true,
+                "x": 74,
+                "y": 14,
+                "z": -20
+            }
+        ]    
+    },
+     "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:leather",
+                    "Amount": 4
+                },
+                {
+                    "Item": "minecraft:sponge",
+                    "Amount": 1
+                },
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 3
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

@@ -222,7 +222,7 @@ public class GenericVehicle implements Vehicle {
 
 	@Override
 	public boolean canSpawnAs(String modid){
-		return modid.equals("flansmod") || modid.equals("fvtm");
+		return modid.equalsIgnoreCase("internal") || modid.equalsIgnoreCase("fvtm");
 	}
 
 	@Override

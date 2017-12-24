@@ -50,7 +50,6 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 	//
 	public ArrayList<String> creators = new ArrayList<String>();
 	
-	
 	private int tx, ty;
 	
 	public PartModel(){}
@@ -429,11 +428,15 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 			
 		}
 		if(steering){
-			this.rotate(model, 0, vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F, 0, true);
+			for(ModelRendererTurbo sub : model){
+				sub.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
+			}
 		}
 		this.render(model);
 		if(steering){
-			this.rotate(model, 0, 0, 0, true); 
+			for(ModelRendererTurbo sub : model){
+				sub.rotateAngleY = 0;
+			}
 		}
 	}
 	

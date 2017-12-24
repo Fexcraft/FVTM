@@ -1,0 +1,53 @@
+{
+    "RegistryName": "fvp:ab1",
+    "Addon": "fvtm:fvp",
+    "FullName": "AB1 Variant B",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelAB1B.class",
+    "PrimaryColor": {
+        "Red": 239,
+        "Blue": 239,
+        "Green": 239
+    },
+    "SecondaryColor": {
+        "Red": 250,
+        "Blue": 250,
+        "Green": 250
+    },
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_ab1b.png"
+    ],
+    "WheelPos":[
+        { "x": -70, "y": -10, "z": -28 },
+        { "x": -70, "y": -10, "z":  28 },
+        { "x":  68, "y": -10, "z":  28 },
+        { "x":  68, "y": -10, "z": -28 }
+    ],
+    "ConstructionLength": 7,
+    "ConstructionYOffSet": 13,
+    "ConstructionWheelOffset": 27,
+    "RequiredParts": [
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel",
+        "engine",
+        "fuel_tank",
+        "lights"
+    ],
+    "PreInstalled":[
+        {
+            "as": "steering_wheel",
+            "part": "fvp:ab1_steering_wheel"
+        },
+        {
+            "as": "driver_seat",
+            "part": "fvp:ab1_driver_seat"
+        }
+    ],
+    "DriveType": "front",
+    "FM-CameraDistance": 6.75,
+    "FM-MaxPositiveThrottle": 1.1,
+    "FM-MaxNegativeThrottle": 0.5,
+    "FM-TurnLeftModifier": 1.6,
+    "FM-TurnRightModifier": 1.6
+}

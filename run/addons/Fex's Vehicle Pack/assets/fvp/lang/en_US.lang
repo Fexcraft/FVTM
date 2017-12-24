@@ -47,6 +47,12 @@ item.fvp:c4z1_steerin_wheel.name=C4-Z1 Default Steering Wheel
 item.fvp:c4z1_seats.name=C4Z1 Default Seats
 item.fvp:c4z1_steerin_wheel.name=C4-Z1 Default Steering Wheel
 item.fvp:c4z1_cargospace.name=C4-Z1 Cargo Space Part
+item.fvp:ab1_driver_seat.name=AB1 Driver Seat
+item.fvp:ab1_engine.name=AB1 Engine
+item.fvp:ab1_passenger_seats.name=AB1 Passenger Seats
+item.fvp:ab1_steering_wheel.name=AB1 Steering Wheel
+item.fvp:ab1_doors.name=AB1 Doors
+item.fvp:ab1_lights.name=AB1 Lights
 
 #Vehicles
 item.fvp:t1.name=T1
@@ -54,6 +60,7 @@ item.fvp:ot1.name=OT1
 item.fvp:c2.name=C2
 item.fvp:c7.name=C7
 item.fvp:c4z1.name=C4-Z1
+item.fvp:ab1.name=AB1-B
 
 #Containers
 item.fvp:container_medium.name=Medium Container

@@ -1,10 +1,14 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import org.lwjgl.opengl.GL11;
+
+import net.fexcraft.mod.addons.gep.attributes.AdjustableWheelAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.Coord2D;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.tmt.Shape2D;
+import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 
 public class ModelT2W extends PartModel<VehicleData>{
@@ -13,6 +17,7 @@ public class ModelT2W extends PartModel<VehicleData>{
 	int textureY = 64;
 
 	public ModelT2W(){
+		creators.add("Ferdinand (FEX___96)");
 		wheels = new ModelRendererTurbo[93];
 		wheels[0] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 0
 		wheels[1] = new ModelRendererTurbo(this, 49, 1, textureX, textureY); // Box 20
@@ -481,13 +486,69 @@ public class ModelT2W extends PartModel<VehicleData>{
 	@Override
 	public void render(VehicleData data, String us){
 		//this.render(wheels);
-		this.def_renderAdjustableWheels4(data, us);
+		//this.def_renderAdjustableWheels4(data, us);
+		Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
+		pos = pos == null ? new Pos(0, 0, 0) : pos;
+		pos.translate();
+		switch(us){
+			case "left_front_wheel":
+			case "left_back_wheel":
+			default:
+				render(wheels);
+				break;
+			case "right_front_wheel":
+			case "right_back_wheel":
+				GL11.glRotated( 180, 0, 1, 0);
+				render(wheels);
+				GL11.glRotated(-180, 0, 1, 0);
+				break;
+		}
+		pos.translateR();
 	}
 	
 	@Override
 	public void render(VehicleData data, String us, Entity vehicle){
 		//this.def_renderWheelWithRotations(wheels, data, us, vehicle);
-		this.def_renderAdjustableWheels4(data, us, vehicle, true);
+		//this.def_renderAdjustableWheels4(data, us, vehicle, true);
+		Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
+		pos = pos == null ? new Pos(0, 0, 0) : pos;
+		pos.translate();
+		boolean str, mir;
+		switch(us){
+			case "left_front_wheel":{
+				str = true;
+				mir = false;
+				break;
+			}
+			case "right_front_wheel":{
+				str = true;
+				mir = true;
+				break;
+			}
+			case "left_back_wheel":{
+				str = false;
+				mir = false;
+				break;
+			}
+			case "right_back_wheel":{
+				str = false;
+				mir = true;
+				break;
+			}
+			default:{
+				str = false;
+				mir = false;
+				break;
+			}
+		}
+		if(mir){
+			GL11.glRotated( 180, 0, 1, 0);
+		}
+		this.def_renderWheelWithRotations(wheels, vehicle, str);
+		if(mir){
+			GL11.glRotated(-180, 0, 1, 0);
+		}
+		pos.translateR();
 	}
 	
 }

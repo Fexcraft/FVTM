@@ -1,0 +1,17 @@
+{
+    "RegistryName": "fvp:ab1_doors",
+    "Addon": "fvtm:fvp",
+    "FullName": "AB1 Default Doors",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelAB1Doors.class",
+    "Category": [
+        "doors"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_ab1b.png"
+    ],
+    "Compatible": [
+        { "Vehicle": "fvp:ab1", "x": 0, "y": 0, "z": 0 }
+    ],
+    "Removable": true,
+    "Available": false
+}

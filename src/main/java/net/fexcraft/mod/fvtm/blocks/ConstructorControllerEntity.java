@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController.Button;
+import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
@@ -20,7 +21,6 @@ import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.math.Time;
 import net.fexcraft.mod.lib.util.render.RGB;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,7 +30,6 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -206,6 +205,10 @@ public class ConstructorControllerEntity {
 							Print.chat(player, "This vehicle cannot be spawned as entity from the Constructor.");
 							return;
 						}
+						if(!vehicledata.getVehicle().getType().isLandVehicle()){
+							Print.chat(player, "Currently only land vehicles can be spawned directly from Constructor.");
+							return;
+						}
 						if(!vehicledata.readyToSpawn()){
 							Print.chat(player, "&7Vehicle can not be spawned yet.");
 							Print.chat(player, "&7Check if all &erequired &7parts are installed!");
@@ -218,8 +221,7 @@ public class ConstructorControllerEntity {
 						if(center == null){
 							Print.chat(player, "ER: C#NULL");
 						}
-						Entity ent = (Entity)Class.forName("com.flansmod.fvtm.LandVehicle").getConstructor(World.class, double.class, double.class, double.class, int.class, VehicleData.class)
-								.newInstance(world, center.getX() + 0.5d, center.getY() + 3, center.getZ() + 0.5d, world.getTileEntity(center).getBlockMetadata() + 1, vehicledata);
+						LandVehicleEntity ent = new LandVehicleEntity(world, center.getX() + 0.5d, center.getY() + (vehicledata.getVehicle().getYAxisConstructorOffset() / 16) + 1.5d, center.getZ() + 0.5d, world.getTileEntity(center).getBlockMetadata() + 1, vehicledata);
 						world.spawnEntity(ent);
 						this.vehicledata = null;
 						this.updateVehicle(null);

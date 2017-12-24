@@ -4,9 +4,7 @@
     "FullName": "C7 Default Doors",
     "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7Doors.class",
     "Description": [
-        "&7Use the &c`L`&7 key to open/close the door next to you.",
-        "&7Use the &c`O`&7 key to open/close the hood.",
-        "&7Use the &c`P`&7 key to open/close the trunk."
+        "&7Use the &c`G`&7 key to open settings."
     ],
     "Category": [
         "doors"

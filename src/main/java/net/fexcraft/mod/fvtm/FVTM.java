@@ -54,7 +54,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
  * and, <i>more</i>.
  * <br>
  * License: <a href="http://fexcraft.net/license?id=mods">http://fexcraft.net/license?id=mods</a>
- * @author Ferdinand
+ * @author Ferdinand Calo'
  *
  */
 @Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl")
@@ -73,7 +73,8 @@ public class FVTM {
 	public void initPre(FMLPreInitializationEvent event){
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources());
 		REGISTERER = new AutoRegisterer(MODID);
-		new ConstructorController();
+		try{ new ConstructorController(); }
+		catch(Exception e){ e.printStackTrace(); }
 		//
 		PermManager.setEnabled(MODID);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);

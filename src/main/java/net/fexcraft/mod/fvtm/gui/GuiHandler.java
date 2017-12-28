@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.gui;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
+import net.fexcraft.mod.fvtm.api.ConstructorButton;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
@@ -145,7 +145,7 @@ public class GuiHandler implements IGuiHandler {
 					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 					String input = packet.nbt.getString("input");
 					EntityPlayer player = (EntityPlayer)objs[0];
-					((ConstructorControllerEntity.Server)player.world.getTileEntity(pos)).onButtonPress(ConstructorController.Button.INPUT, player, new String[]{input});
+					((ConstructorControllerEntity.Server)player.world.getTileEntity(pos)).onButtonPress(ConstructorButton.INPUT, player, new String[]{input});
 					break;
 				}
 				case "open_gui":{
@@ -159,38 +159,38 @@ public class GuiHandler implements IGuiHandler {
 					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 					int button = packet.nbt.getInteger("button");
 					EntityPlayer player = (EntityPlayer)objs[0];
-					ConstructorController.Button conbutton = ConstructorController.Button.NULL;
+					ConstructorButton conbutton = ConstructorButton.NULL;
 					switch(button){
 						case 0:{
-							conbutton = ConstructorController.Button.HOME;
+							conbutton = ConstructorButton.HOME;
 							break;
 						}
 						case 1:{
-							conbutton = ConstructorController.Button.RETURN;
+							conbutton = ConstructorButton.RETURN;
 							break;
 						}
 						case 2:{
-							conbutton = ConstructorController.Button.ARROW_LEFT;
+							conbutton = ConstructorButton.ARROW_LEFT;
 							break;
 						}
 						case 3:{
-							conbutton = ConstructorController.Button.ARROW_RIGHT;
+							conbutton = ConstructorButton.ARROW_RIGHT;
 							break;
 						}
 						case 4:{
-							conbutton = ConstructorController.Button.ARROW_UP;
+							conbutton = ConstructorButton.ARROW_UP;
 							break;
 						}
 						case 5:{
-							conbutton = ConstructorController.Button.ARROW_DOWN;
+							conbutton = ConstructorButton.ARROW_DOWN;
 							break;
 						}
 						case 6:{
-							conbutton = ConstructorController.Button.SELECT;
+							conbutton = ConstructorButton.SELECT;
 							break;
 						}
 						case 7:{
-							conbutton = ConstructorController.Button.REMOVE;
+							conbutton = ConstructorButton.REMOVE;
 							break;
 						}
 					}

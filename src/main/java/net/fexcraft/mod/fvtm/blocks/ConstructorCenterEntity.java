@@ -36,7 +36,7 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 			nbt.setBoolean("reset", false);
 			ApiUtil.sendTileEntityUpdatePacket(world, this.pos, nbt);
 			//remind controller we're here
-			((Server)world.getTileEntity(constructor)).setCenter(this.pos);
+			((Server)world.getTileEntity(constructor)).setCenterPos(this.pos);
 		}
 	}
 	

@@ -1,9 +1,12 @@
 package net.fexcraft.mod.fvtm.blocks;
 
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.api.ConstructorButton;
+import net.fexcraft.mod.fvtm.api.ConstructorScreen;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
+import net.fexcraft.mod.fvtm.impl.conscr.*;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.item.PaintItem;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -33,7 +36,7 @@ public class ConstructorController extends BlockContainer {
 	
 	public static ConstructorController INSTANCE;
 	
-	public ConstructorController(){
+	public ConstructorController() throws Exception {
 		super(Material.ANVIL, MapColor.OBSIDIAN);
 		if(INSTANCE != null){
 			Print.log("VEHICLE CONSTRUCTOR CONTROLLER WAS INITIALIZED TWICE, THIS IS NOT ALLOWED.");
@@ -42,10 +45,29 @@ public class ConstructorController extends BlockContainer {
     	this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 		this.setCreativeTab(Tabs.BLOCKS);
 		INSTANCE = this;
-		
+		//
 		FVTM.getRegisterer().addBlock("constructor_controller", this, null, 1, null);
 		GameRegistry.registerTileEntity(ConstructorControllerEntity.Server.class, this.getRegistryName().toString() + "_server");
 		GameRegistry.registerTileEntity(ConstructorControllerEntity.Client.class, this.getRegistryName().toString() + "_client");
+		//
+		ConstructorScreen.addScreen("main", new MainScreen());
+		ConstructorScreen.addScreen("info", new InfoScreen());
+		ConstructorScreen.addScreen("colour_menu", new ColorMenuScreen());
+		ConstructorScreen.addScreen("colour_unavailable", new ColorUnavailableScreen());
+		ConstructorScreen.addScreen("crash", new CrashScreen());
+		ConstructorScreen.addScreens(new String[]{"colour_edit_primary", "colour_edit_secondary"}, new ColorEditScreen());
+		ConstructorScreen.addScreen("part_menu", new PartMenuScreen());
+		ConstructorScreen.addScreen("part_add_new", new PartAddNewScreen());
+		ConstructorScreen.addScreen("part_view_cache", new PartViewCacheScreen());
+		ConstructorScreen.addScreen("part_cache_install", new PartCacheInstallScreen());
+		ConstructorScreen.addScreen("part_view_required", new PartViewRequiredScreen());
+		ConstructorScreen.addScreen("part_view_installed", new PartViewInstalledScreen());
+		ConstructorScreen.addScreen("part_view_selected", new PartViewSelectedScreen());
+		ConstructorScreen.addScreen("constructor_menu", new ConstructorMenuScreen());
+		ConstructorScreen.addScreen("constructor_connect_center", new ConstructorConnectCenterScreen());
+		ConstructorScreen.addScreen("part_selected_edit_texture", new PartSelectedEditTextureScreen());
+		ConstructorScreen.addScreen("vehicle_menu", new VehicleMenuScreen());
+		ConstructorScreen.addScreen("vehicle_edit_texture", new VehicleEditTextureScreen());
 	}
 
 	@Override
@@ -130,15 +152,15 @@ public class ConstructorController extends BlockContainer {
 		if(!p.getHeldItem(hand).isEmpty()){
 			ItemStack stack = p.getHeldItem(hand);
 			if(stack.getItem() instanceof VehicleItem){
-				if(te.getData() != null){
-					ItemStack istack = te.getData().getVehicle().getItemStack(te.getData());
+				if(te.getVehicleData() != null){
+					ItemStack istack = te.getVehicleData().getVehicle().getItemStack(te.getVehicleData());
 					EntityItem item = new EntityItem(w);
 					item.setItem(istack);
 					item.setPosition(pos.getX() + 0.5f, pos.getY() + 1.5d, pos.getZ() + 0.5f);
 					w.spawnEntity(item);
 				}
 				te.setData((VehicleItem)stack.getItem(), stack);
-				Print.chat(p, "Vehicle: " + te.getData().getVehicle().getName());
+				Print.chat(p, "Vehicle: " + te.getVehicleData().getVehicle().getName());
 				p.getHeldItem(hand).shrink(64);
 				te.updateColour(null, null);
 				return true;
@@ -149,13 +171,13 @@ public class ConstructorController extends BlockContainer {
 					return false;
 				}
 				if(!te.getScreenId().equals("part_add_new")){
-					if(!te.getData().getParts().containsKey(data.getPart().getCategory())){
-						if(data.getPart().canInstall(data.getPart().getCategory(), te.getData(), p)){
-							te.getData().installPart(data.getPart().getCategory(), data);
+					if(!te.getVehicleData().getParts().containsKey(data.getPart().getCategory())){
+						if(data.getPart().canInstall(data.getPart().getCategory(), te.getVehicleData(), p)){
+							te.getVehicleData().installPart(data.getPart().getCategory(), data);
 							Print.chat(p, "Part installed. (" + data.getPart().getName() + ")");
 							p.getHeldItem(hand).shrink(1);
-							te.updateVehicle(null);
-							te.updateScreen(null, false);
+							te.updateVehicleData(null);
+							te.updateScreenId(null, false);
 						}
 					}
 					else{
@@ -176,17 +198,17 @@ public class ConstructorController extends BlockContainer {
 			}
 			else if(stack.getItem() instanceof PaintItem){
 				if(hand == EnumHand.OFF_HAND){
-					te.getData().getSecondaryColor().copyFrom(((PaintItem)stack.getItem()).getRGBColor());
+					te.getVehicleData().getSecondaryColor().copyFrom(((PaintItem)stack.getItem()).getRGBColor());
 				}
 				else{
-					te.getData().getPrimaryColor().copyFrom(((PaintItem)stack.getItem()).getRGBColor());
+					te.getVehicleData().getPrimaryColor().copyFrom(((PaintItem)stack.getItem()).getRGBColor());
 				}
-				te.updateVehicle(null);
+				te.updateVehicleData(null);
 				Print.chat(p, "Colour updated.");
 			}
 		}
 		else{
-			if(te.getCenter() == null || w.getTileEntity(te.getCenter()) == null){
+			if(te.getCenterPos() == null || w.getTileEntity(te.getCenterPos()) == null){
 				//Print.chat(p, "&7No Center Block connected!");
 				//Print.chat(p, "&7You can connect one via the Constructor's &8Settings&7.");
 				if(hand != EnumHand.OFF_HAND){
@@ -195,7 +217,7 @@ public class ConstructorController extends BlockContainer {
 				else return true;
 			}
 			else{
-				if(te.getData() == null){
+				if(te.getVehicleData() == null){
 					Print.chat(p, "No Vehicle.");
 				}
 				else{
@@ -218,7 +240,7 @@ public class ConstructorController extends BlockContainer {
 			int z = calculateCoord(hitZ);
 			//Print.debugChat(x + " ||| " + z);
 			//Print.debugChat(state.getValue(FACING).toString());
-			Button button = Button.findButton(state.getValue(FACING), x, z);
+			ConstructorButton button = ConstructorButton.findButton(state.getValue(FACING), x, z);
 			if(button != null){
 				//Print.debugChat(button.name());
 				if(button.ID < 10){
@@ -231,118 +253,6 @@ public class ConstructorController extends BlockContainer {
 			}
 		}
 		return found;
-	}
-	
-	public static enum Button {
-		
-		NULL(-1, new int[]{-1}, new int[]{-1}),
-		SPAWN_ITEM(0,   new int[]{14, 15}, new int[]{3, 2}),
-		SPAWN_ENTITY(1, new int[]{12, 13}, new int[]{3, 2}),
-		REMOVE(2,       new int[]{ 6}, new int[]{ 5}),
-		SELECT(3,       new int[]{ 6}, new int[]{ 6}),
-		ARROW_DOWN(4,   new int[]{ 6}, new int[]{ 7}),
-		ARROW_UP(5,     new int[]{ 6}, new int[]{ 8}),
-		ARROW_RIGHT(6,  new int[]{ 6}, new int[]{ 9}),
-		ARROW_LEFT(7,   new int[]{ 6}, new int[]{10}),
-		RETURN(8,       new int[]{ 6}, new int[]{11}),
-		HOME(9,         new int[]{ 6}, new int[]{12}),
-		LIFT_DOWN(10,   new int[]{ 9, 10}, new int[]{3, 2}),
-		LIFT_UP(11,     new int[]{ 6,  7}, new int[]{3, 2}),
-		INPUT(12,       new int[]{ 0}, new int[]{ 0});
-		
-		public int ID;
-		public int[] xc, zc;
-		
-		Button(int id, int[] x, int[] z){
-			this.ID = id; this.xc = x; this.zc = z;
-		}
-		
-		public boolean collides(EnumFacing facing, int x, int z){
-			int xx = rotate(x, z, facing, true);
-			int zz = rotate(z, x, facing, false);
-			boolean xcb = false, zcb = false;
-			for(int i : xc){
-				if(i == xx){ xcb = true; break; }
-			}
-			for(int i : zc){
-				if(i == zz){ zcb = true; break; }
-			}
-			return xcb && zcb;
-		}
-		
-		private static final int rotate(int i, int o, EnumFacing facing, boolean x){
-			switch(facing){
-				case NORTH: return x ? (-o) + 17 : o;
-				case SOUTH: return x ? o : (-o) + 17;
-				case WEST:  return (-i) + 17;
-				default: return i;
-			}
-		}
-
-		public static final Button fromId(int id){
-			for(Button button : values()){
-				if(button.ID == id){
-					return button;
-				}
-			}
-			return NULL;
-		}
-		
-		public static final Button findButton(EnumFacing value, int x, int z){
-			for(Button button : values()){
-				if(button.collides(value, x, z)){ return button; }
-			}
-			return null;
-		}
-
-		public boolean isVerticalArrow(){
-			return this == ARROW_DOWN || this == ARROW_UP;
-		}
-		
-		public boolean isHorizontalArrow(){
-			return this == ARROW_RIGHT || this == ARROW_LEFT;
-		}
-		
-		public boolean isLiftButton(){
-			return this == LIFT_DOWN || this == LIFT_UP;
-		}
-
-		public boolean isSelect(){
-			return this == SELECT;
-		}
-		
-		public boolean isReset(){
-			return this == REMOVE;
-		}
-		
-		public boolean isReturn(){
-			return this == RETURN;
-		}
-		
-		public boolean isHome(){
-			return this == HOME;
-		}
-
-		public boolean isLeftArrow(){
-			return this == ARROW_LEFT;
-		}
-		
-		public boolean isRightArrow(){
-			return this == ARROW_RIGHT;
-		}
-		
-		public boolean isUpArrow(){
-			return this == ARROW_UP;
-		}
-		
-		public boolean isDownArrow(){
-			return this == ARROW_DOWN;
-		}
-
-		public boolean isInput(){
-			return this == INPUT;
-		}
-		
 	}
 
 	private final int calculateCoord(float coords){

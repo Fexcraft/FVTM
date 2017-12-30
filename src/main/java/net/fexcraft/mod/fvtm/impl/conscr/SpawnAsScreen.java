@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.impl.conscr;
 import net.fexcraft.mod.fvtm.api.*;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -67,7 +68,13 @@ public class SpawnAsScreen extends ConstructorScreen {
 					break;
 				}
 				case PROTOTYPE:{
-					Print.chat(player, "Not available yet.");
+					if(!Static.dev()){
+						Print.chat(player, "&7Not available on normal Client/Server!");
+						Print.chat(player, "&7Please use &aINTERNAL&7 or an &cDEV&7 environment.");
+					}
+					else{
+						Print.chat(player, "Not available yet.");
+					}
 					break;
 				}
 				default:{
@@ -97,7 +104,7 @@ public class SpawnAsScreen extends ConstructorScreen {
 				continue;
 			}
 			EntityType enttype = EntityType.byIndex(j);
-			compound.setString("Text" + i, "&c[&e" + j + "&c]> &7" + enttype.name());
+			compound.setString("Text" + i, "&c[&e" + j + "&c]> &7" + enttype.getName());
 		}
 	}
 

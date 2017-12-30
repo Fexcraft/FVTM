@@ -2,16 +2,18 @@ package net.fexcraft.mod.fvtm.api;
 
 public enum EntityType {
 	
-	NONE(0), //un-spawned
-	INTERNAL(1),
-	PROTOTYPE(2),
-	MTS(3), //if it ever get's that far
-	TiM(4); //Trains-Only
+	NONE(0, "No Type"), //un-spawned
+	INTERNAL(1, "INTERNAL"),
+	PROTOTYPE(2, "PROTOTYPE"),
+	MTS(3, "MC Trans. Sim."), //if it ever get's that far
+	TiM(4, "Trains In Motion"); //Trains-Only
 	
 	private int index;
+	private String name;
 	
-	EntityType(int index){
+	EntityType(int index, String name){
 		this.index = index;
+		this.name = name;
 	}
 	
 	@Override
@@ -42,5 +44,7 @@ public enum EntityType {
 	public final int index(){
 		return index;
 	}
+
+	public final String getName(){ return name; }
 	
 }

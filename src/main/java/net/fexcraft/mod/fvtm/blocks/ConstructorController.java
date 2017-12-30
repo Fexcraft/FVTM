@@ -68,6 +68,7 @@ public class ConstructorController extends BlockContainer {
 		ConstructorScreen.addScreen("part_selected_edit_texture", new PartSelectedEditTextureScreen());
 		ConstructorScreen.addScreen("vehicle_menu", new VehicleMenuScreen());
 		ConstructorScreen.addScreen("vehicle_edit_texture", new VehicleEditTextureScreen());
+		ConstructorScreen.addScreen("spawn_as", new SpawnAsScreen());
 	}
 
 	@Override

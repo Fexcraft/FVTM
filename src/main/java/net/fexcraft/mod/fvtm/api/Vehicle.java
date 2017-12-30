@@ -74,7 +74,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	
 	public Class<? extends VehicleData> getDataClass();
 	
-	public boolean canSpawnAs(String modid);
+	public boolean canSpawnAs(EntityType type);
 
 	public float getFMCameraDistance();//5f
 
@@ -91,8 +91,6 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	public float getFMTurnRightModifier();
 
 	public DriveType getDriveType();
-	
-	public boolean canSpawnAs(EntityType type);
 	
 	public Collection<ResourceLocation> getSounds();
 	

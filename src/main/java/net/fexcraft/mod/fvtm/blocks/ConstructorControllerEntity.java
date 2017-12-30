@@ -56,7 +56,7 @@ public class ConstructorControllerEntity {
 		}
 
 		public void setPartData(PartData data){
-			if(this.partdata != null){
+			if(this.partdata != null && data != null){
 				ItemStack stack = this.partdata.getPart().getItemStack(partdata);
 				EntityItem entity = new EntityItem(world, this.pos.getX() + 0.5, this.pos.getY() + 1.5f, this.pos.getZ() + 0.5, stack);
 				world.spawnEntity(entity);
@@ -193,43 +193,12 @@ public class ConstructorControllerEntity {
 					world.spawnEntity(item);
 					this.vehicledata = null;
 					this.updateVehicleData(null);
+					this.updateScreenId("main");
+					return;
 				}
 				else{
-					try{
-						if(!vehicledata.getVehicle().canSpawnAs(EntityType.INTERNAL.name())){
-							Print.chat(player, "This vehicle cannot be spawned as entity from the Constructor.");
-							return;
-						}
-						if(!vehicledata.getVehicle().getType().isLandVehicle()){
-							Print.chat(player, "Currently only land vehicles can be spawned directly from Constructor.");
-							return;
-						}
-						if(!vehicledata.readyToSpawn()){
-							Print.chat(player, "&7Vehicle can not be spawned yet.");
-							Print.chat(player, "&7Check if all &erequired &7parts are installed!");
-							return;
-						}
-						if(vehicledata.getVehicle().isTrailerOrWagon()){
-							Print.chat(player, "&7Cannot spawn Trailers from Constructor.");
-							return;
-						}
-						if(center == null){
-							Print.chat(player, "ER: C#NULL");
-						}
-						LandVehicleEntity ent = new LandVehicleEntity(world, center.getX() + 0.5d, center.getY() + (vehicledata.getVehicle().getYAxisConstructorOffset() / 16) + 1.5d, center.getZ() + 0.5d, world.getTileEntity(center).getBlockMetadata() + 1, vehicledata);
-						world.spawnEntity(ent);
-						this.vehicledata = null;
-						this.updateVehicleData(null);
-						
-						this.liftstate = 0;
-						this.updateLiftState();
-						this.lift = 0;
-						this.updateLift();
-						this.updateScreenId("main");
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
+					this.updateScreenId("spawn_as");
+					return;
 				}
 			}
 			ConstructorScreen scr = ConstructorScreen.getScreen(window);
@@ -316,6 +285,11 @@ public class ConstructorControllerEntity {
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setString("task", "update_vehicledata");
 			ApiUtil.sendTileEntityUpdatePacket(this, vehicledata == null ? nbt : vehicledata.writeToNBT(nbt), 256);
+		}
+
+		@Override
+		public void setVehicleData(VehicleData data){
+			this.vehicledata = data;
 		}
 
 		public int getSelection(){

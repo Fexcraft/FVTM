@@ -16,20 +16,20 @@ public interface ConstructorEntity {
 
 	public void updateVehicleData(VehicleData data);
 
+	public void setVehicleData(VehicleData data);
+
 	public int getSelection();
 
 	public void setSelection(int i);
 
-	public default void updateSelection(int i){
-		this.updateSelection(i, false);
-	}
+	public default void updateSelection(int i){ this.updateSelection(i, false); }
 
 	public void updateSelection(int i, boolean b);
 
 	public String getScreenId();
 
 	public default void updateScreenId(String string){
-		this.updateScreenId(string, false);
+		this.updateScreenId(string, true);
 	}
 
 	public void updateScreenId(String string, boolean ressel);

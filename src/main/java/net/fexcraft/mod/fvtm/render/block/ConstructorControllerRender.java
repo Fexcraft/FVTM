@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render.block;
 
+import net.fexcraft.mod.lib.util.render.RGB;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 public class ConstructorControllerRender extends TileEntitySpecialRenderer<ConstructorControllerEntity.Client> {
 	
 	private static final ModelConstructorController model = new ModelConstructorController();
+	private static final RGB green = new RGB(161, 212, 144), orange = new RGB(224, 152, 36);
 	
 	@Override
 	public void render(ConstructorControllerEntity.Client te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
@@ -43,12 +45,19 @@ public class ConstructorControllerRender extends TileEntitySpecialRenderer<Const
 		//Buttons
 		{
 			for(int i = 0; i < model.turretModel.length; i++){
-				/*switch(i){
-					case 0:{ RGB.GREEN.glColorApply(); }
-					case 1:{ ConstructorControllerEntity.ORANGE.glColorApply(); }
-					default:{ ConstructorControllerEntity.GRAY.glColorApply(); }
-				}*/
-				model.turretModel[i].render();
+				if(i == 0){
+					green.glColorApply();
+					model.turretModel[i].render();
+					RGB.glColorReset();
+				}
+				else if(i == 1){
+					orange.glColorApply();
+					model.turretModel[i].render();
+					RGB.glColorReset();
+				}
+				else{
+					model.turretModel[i].render();
+				}
 				//RGB.glColorReset();
 			}
 		}

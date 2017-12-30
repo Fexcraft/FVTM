@@ -47,7 +47,6 @@ public class GenericVehicle implements Vehicle {
 	private DriveType drivetype;
 	private VehicleType type;
 	private ArrayList<EntityType> accentmods = new ArrayList<EntityType>();
-	{ accentmods.add(EntityType.INTERNAL); }
 	private boolean isTrailer;
 	//Sound
 	private TreeMap<String, ResourceLocation> sounds = new TreeMap<String, ResourceLocation>();
@@ -125,6 +124,8 @@ public class GenericVehicle implements Vehicle {
 		this.isTrailer = JsonUtil.getIfExists(obj, new String[]{"Trailer", "Wagon", "IsTrailer"}, false);
 		this.type = VehicleType.fromJson(obj);
 		this.bouyancy = JsonUtil.getIfExists(obj, "Bouyancy", 0.0165F).floatValue();
+		//
+		{ accentmods.add(EntityType.INTERNAL); accentmods.add(EntityType.PROTOTYPE); }
 	}
 
 	@Override
@@ -218,11 +219,6 @@ public class GenericVehicle implements Vehicle {
 	@Override
 	public Class<? extends VehicleData> getDataClass(){
 		return GenericVehicleData.class;
-	}
-
-	@Override
-	public boolean canSpawnAs(String modid){
-		return modid.equalsIgnoreCase("internal") || modid.equalsIgnoreCase("fvtm");
 	}
 
 	@Override

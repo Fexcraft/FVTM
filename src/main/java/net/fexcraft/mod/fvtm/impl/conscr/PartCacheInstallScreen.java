@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.impl.conscr;
 
-import jdk.nashorn.internal.objects.annotations.Constructor;
 import net.fexcraft.mod.fvtm.api.ConstructorButton;
 import net.fexcraft.mod.fvtm.api.ConstructorEntity;
 import net.fexcraft.mod.fvtm.api.ConstructorScreen;

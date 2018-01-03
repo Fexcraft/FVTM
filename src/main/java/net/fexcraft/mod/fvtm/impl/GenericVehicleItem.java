@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -207,6 +208,9 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 			}
 			if(!data.readyToSpawn()){
 				Print.chat(player, "Vehicle can not be spawned, missing parts!");
+				return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+			}
+			if(world.getBlockState(pos).getBlock() instanceof DisplayBlock){
 				return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 			}
 			switch(data.getVehicle().getType()){

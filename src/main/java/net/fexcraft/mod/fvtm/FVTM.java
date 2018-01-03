@@ -79,11 +79,11 @@ public class FVTM {
 		PermManager.setEnabled(MODID);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:seat"), SeatEntity.class, "fvtm:seat", 1993, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), LandVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicletrailer"), LandVehicleTrailer.class, "fvtm:landvehicletrailer", 1995, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), LandVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 10, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicletrailer"), LandVehicleTrailer.class, "fvtm:landvehicletrailer", 1995, this, 256, 10, false);
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicleEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, true);
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railwagon"), RailWagonEntity.class, "fvtm:railwagon", 1997, this, 256, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 10, false);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleEntity.class, RenderLandVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleTrailer.class, RenderLandVehicleTrailer::new);

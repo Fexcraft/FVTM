@@ -79,7 +79,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		yOffset = 6F / 16F;
 		ignoreFrustumCheck = true;
 		if(world.isRemote){
-			setRenderDistanceWeight(200D);
+			setRenderDistanceWeight(512D);
 		}
 		//
 		stepHeight = 1.0F;
@@ -244,10 +244,8 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	
 	@Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport){
-		if(ticksExisted > 1){
-			return;
-		}
-		if(!this.getPassengers().isEmpty() && this.getControllingPassenger() instanceof EntityPlayer){
+		if(ticksExisted > 1){ return; }
+		if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
 			//
 		}
 		else{				
@@ -257,7 +255,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			else{
 				double var10 = x - posX; double var12 = y - posY; double var14 = z - posZ;
 				double var16 = var10 * var10 + var12 * var12 + var14 * var14;
-				if (var16 <= 1.0D){
+				if(var16 <= 1.0D){
 					return;
 				}
 				serverPositionTransitionTicker = 3;
@@ -454,7 +452,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		}
 	}
 
-	private boolean driverIsCreative(){
+	protected boolean driverIsCreative(){
 		try{
 			return seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode;
 		}
@@ -861,7 +859,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	}
 	
 	public boolean isPartOfThis(Entity ent){
-		for(SeatEntity seat : seats){
+		/*for(SeatEntity seat : seats){
 			if(seat == null){
 				continue;
 			}
@@ -871,8 +869,8 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		}
 		if(this.getEntityAtRear() != null){
 			
-		}
-		return ent == this;	
+		}*/
+		return (ent instanceof VehicleEntity || ent instanceof SeatEntity || ent instanceof  WheelEntity);
 	}
 	
 	@Override

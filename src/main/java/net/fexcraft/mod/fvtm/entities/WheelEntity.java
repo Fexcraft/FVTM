@@ -22,7 +22,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	
 	public WheelEntity(World world){
 		super(world);
-		setSize(0.5F, 0.5F);
+		setSize(1.F, 1.0F);
 		stepHeight = 1.0F;
 	}
 
@@ -116,6 +116,13 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	@Override
 	public boolean canBeCollidedWith(){
 		return false;//!isDead;
+	}
+
+	@Override
+	public void applyEntityCollision(Entity entity){
+		if(!(entity instanceof VehicleEntity || entity instanceof SeatEntity || entity instanceof  WheelEntity)){
+			super.applyEntityCollision(entity);
+		}
 	}
 	
 }

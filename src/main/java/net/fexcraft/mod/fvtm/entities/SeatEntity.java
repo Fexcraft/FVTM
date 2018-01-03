@@ -139,6 +139,38 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 			pass_z = prev_pass_z = posZ = vehicle.getEntity().posZ;*/
 		}
 		//
+		if(world.isRemote && vehicle == null){
+			return;
+		}
+		prev_pass_x = pass_x; prev_pass_y = pass_y; prev_pass_z = pass_z;
+		prev_pass_yaw = pass_yaw; prev_pass_pitch = pass_pitch; prev_pass_roll = pass_roll;
+
+		Vec3d relativePosition = vehicle.getAxes().getRelativeVector(seatdata.getPos().to16Double());
+		setPosition(vehicle.getEntity().posX + relativePosition.x, vehicle.getEntity().posY + relativePosition.y, vehicle.getEntity().posZ + relativePosition.z);
+
+		if(this.getControllingPassenger() != null){
+			Vec3d yOffset = vehicle.getAxes().getRelativeVector(new Vec3d(0, this.getControllingPassenger().getEyeHeight() * 3 / 4, 0)).subtract(0, this.getControllingPassenger().getEyeHeight(), 0);
+			pass_x = posX + yOffset.x; pass_y = posY + yOffset.y; pass_z = posZ + yOffset.z;
+			this.updatePassenger();
+			//
+			VehicleAxes globalLookAxes = vehicle.getAxes().getRelativeVector(passlooking);
+			pass_yaw = -90F + globalLookAxes.getYaw();
+			pass_pitch = globalLookAxes.getPitch();
+			//
+			double yaw = pass_yaw - prev_pass_yaw;
+			if(yaw >  180){ prev_pass_yaw += 360F; }
+			if(yaw < -180){ prev_pass_yaw -= 360F; }
+			if(this.getControllingPassenger() instanceof EntityPlayer){
+				this.getControllingPassenger().prevRotationYaw = prev_pass_yaw;
+				this.getControllingPassenger().prevRotationPitch = prev_pass_pitch;
+				//
+				this.getControllingPassenger().rotationYaw = pass_yaw;
+				this.getControllingPassenger().rotationPitch = pass_pitch;
+			}
+			if(world.isRemote){
+				pass_roll = -globalLookAxes.getRoll();
+			}
+		}
 	}
 	
 	public void processServerPacket(PacketEntityUpdate pkt){
@@ -189,15 +221,15 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 	}
 	
 	public void updatePosition(){
-		if(world.isRemote && vehicle == null){
+		/*if(world.isRemote && vehicle == null){
 			return;
 		}
 		prev_pass_x = pass_x; prev_pass_y = pass_y; prev_pass_z = pass_z;
 		prev_pass_yaw = pass_yaw; prev_pass_pitch = pass_pitch; prev_pass_roll = pass_roll;
-		
+
 		Vec3d relativePosition = vehicle.getAxes().getRelativeVector(seatdata.getPos().to16Double());
 		setPosition(vehicle.getEntity().posX + relativePosition.x, vehicle.getEntity().posY + relativePosition.y, vehicle.getEntity().posZ + relativePosition.z);
-		
+
 		if(this.getControllingPassenger() != null){
 			Vec3d yOffset = vehicle.getAxes().getRelativeVector(new Vec3d(0, this.getControllingPassenger().getEyeHeight() * 3 / 4, 0)).subtract(0, this.getControllingPassenger().getEyeHeight(), 0);
 			pass_x = posX + yOffset.x; pass_y = posY + yOffset.y; pass_z = posZ + yOffset.z;
@@ -220,7 +252,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 			if(world.isRemote){
 				pass_roll = -globalLookAxes.getRoll();
 			}
-		}
+		}*/
 	}
 	
 	@Override
@@ -484,6 +516,13 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 
 	public int getSeatId(){
 		return seatid;
+	}
+
+	@Override
+	public void applyEntityCollision(Entity entity){
+		if(!(entity instanceof VehicleEntity || entity instanceof SeatEntity || entity instanceof  WheelEntity)){
+			super.applyEntityCollision(entity);
+		}
 	}
 	
 }

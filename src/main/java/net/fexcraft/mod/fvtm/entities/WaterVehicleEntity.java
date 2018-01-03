@@ -861,7 +861,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 	}
 	
 	public boolean isPartOfThis(Entity ent){
-		for(SeatEntity seat : seats){
+		/*for(SeatEntity seat : seats){
 			if(seat == null){
 				continue;
 			}
@@ -871,8 +871,8 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 		}
 		if(this.getEntityAtRear() != null){
 			
-		}
-		return ent == this;	
+		}*/
+		return (ent instanceof VehicleEntity || ent instanceof SeatEntity || ent instanceof  WheelEntity);
 	}
 	
 	@Override

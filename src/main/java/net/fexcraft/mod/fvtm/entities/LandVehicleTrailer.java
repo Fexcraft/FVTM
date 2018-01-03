@@ -700,15 +700,15 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 	}
 	
 	public boolean isPartOfThis(Entity ent){
-		for(SeatEntity seat : seats){
+		/*for(SeatEntity seat : seats){
 			if(seat == null){
 				continue;
 			}
 			if(ent == seat || seats[0].getControllingPassenger() == ent){
 				return true;
 			}
-		}
-		return ent == this;	
+		}*/
+		return (ent instanceof VehicleEntity || ent instanceof SeatEntity || ent instanceof  WheelEntity);
 	}
 	
 	@Override

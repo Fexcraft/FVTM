@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.resources.I18n;
@@ -18,8 +19,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 
 public class Command extends CommandBase {
-
-	private static final int MAXKEYS = 5;//TODO config
 
 	@Override
 	public String getName(){
@@ -60,6 +59,9 @@ public class Command extends CommandBase {
 			}
 			case "version":{
 				Print.chat(sender, trs("commands.fvtm.main_version") + " " + FVTM.VERSION);
+				if(Static.dev()){
+					Print.chat(sender, "TEST:STATE: " + Config.TEST);
+				}
 				break;
 			}
 			case "key":{
@@ -93,7 +95,7 @@ public class Command extends CommandBase {
 								break;
 							}
 							Vehicle.VehicleEntity ent = seat.getVehicle();
-							if(ent.getVehicleData().getSpawnedKeysAmount() >= MAXKEYS){
+							if(ent.getVehicleData().getSpawnedKeysAmount() >= Config.MAX_SPAWNED_VEHICLE_KEYS){
 								Print.chat(sender, trs("commands.fvtm.main_key_max_used"));
 								break;
 							}
@@ -119,7 +121,7 @@ public class Command extends CommandBase {
 								break;
 							}
 							Vehicle.VehicleEntity ent = seat.getVehicle();
-							if(ent.getVehicleData().getSpawnedKeysAmount() >= MAXKEYS){
+							if(ent.getVehicleData().getSpawnedKeysAmount() >= Config.MAX_SPAWNED_VEHICLE_KEYS){
 								Print.chat(sender, trs("commands.fvtm.main_key_max_used"));
 								break;
 							}
@@ -128,7 +130,7 @@ public class Command extends CommandBase {
 							stack.getTagCompound().setString("VehicleKeyCreator", player.getGameProfile().getId().toString());
 							stack.getTagCompound().setBoolean("VehicleKeyType", false);
 							stack.getTagCompound().setString("VehicleKeyCode", ent.getVehicleData().getLockCode());
-							for(int i = ent.getVehicleData().getSpawnedKeysAmount(); i < MAXKEYS; i++){
+							for(int i = ent.getVehicleData().getSpawnedKeysAmount(); i < Config.MAX_SPAWNED_VEHICLE_KEYS; i++){
 								if(!player.inventory.addItemStackToInventory(stack)){
 									player.dropItem(stack, false);
 								}
@@ -186,7 +188,7 @@ public class Command extends CommandBase {
 						}
 						Vehicle.VehicleData data = seat.getVehicle().getVehicleData();
 						Print.chat(sender, trs("commands.fvtm.main_key_view_veh") + data.getVehicle().getName());
-						Print.chat(sender, trs("commands.fvtm.main_key_view_spawned") + data.getSpawnedKeysAmount() + "/" + MAXKEYS);
+						Print.chat(sender, trs("commands.fvtm.main_key_view_spawned") + data.getSpawnedKeysAmount() + "/" + Config.MAX_SPAWNED_VEHICLE_KEYS);
 						Print.chat(sender, trs("commands.fvtm.main_key_view_type") + data.getVehicle().getDefaultKey());
 						Print.chat(sender, trs("commands.fvtm.main_key_view_code") + data.getLockCode());
 						break;

@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.VehicleAxes;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packets.PacketSeatDismount;
 import net.fexcraft.mod.fvtm.util.packets.PacketSeatUpdate;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
@@ -52,7 +53,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 	
 	public SeatEntity(World world){
 		super(world);
-		setSize(1F, 1F);
+		setSize(0.75F, 0.75F);
 		prevlooking= new VehicleAxes();
 		looking = new VehicleAxes();
 		passlooking = new VehicleAxes();
@@ -139,7 +140,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 			pass_z = prev_pass_z = posZ = vehicle.getEntity().posZ;*/
 		}
 		//
-		if(world.isRemote && vehicle == null){
+		if((world.isRemote && vehicle == null) || !Config.ALTERNATIVE_SEAT_UPDATE){
 			return;
 		}
 		prev_pass_x = pass_x; prev_pass_y = pass_y; prev_pass_z = pass_z;
@@ -221,7 +222,10 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 	}
 	
 	public void updatePosition(){
-		/*if(world.isRemote && vehicle == null){
+		if(world.isRemote && vehicle == null){
+			return;
+		}
+		if(Config.ALTERNATIVE_SEAT_UPDATE){
 			return;
 		}
 		prev_pass_x = pass_x; prev_pass_y = pass_y; prev_pass_z = pass_z;
@@ -252,7 +256,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 			if(world.isRemote){
 				pass_roll = -globalLookAxes.getRoll();
 			}
-		}*/
+		}
 	}
 	
 	@Override

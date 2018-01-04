@@ -2,34 +2,19 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.LandVehicleTrailer;
-import net.fexcraft.mod.fvtm.entities.SeatEntity;
-import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.WheelEntity;
+import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.render.entity.RenderEmpty;
 import net.fexcraft.mod.fvtm.render.entity.RenderLandVehicle;
 import net.fexcraft.mod.fvtm.render.entity.RenderLandVehicleTrailer;
 import net.fexcraft.mod.fvtm.render.entity.RenderWaterVehicle;
-import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.FvtmPermissions;
-import net.fexcraft.mod.fvtm.util.FvtmUpdateHandler;
-import net.fexcraft.mod.fvtm.util.RecipeObject;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.SpawnCmd;
-import net.fexcraft.mod.fvtm.util.packets.PacketSeatDismount;
-import net.fexcraft.mod.fvtm.util.packets.PacketSeatUpdate;
-import net.fexcraft.mod.fvtm.util.packets.PacketVehicleControl;
-import net.fexcraft.mod.fvtm.util.packets.PacketVehicleKeyPress;
-import net.fexcraft.mod.fvtm.util.packets.SeatDismountPacketHandler;
-import net.fexcraft.mod.fvtm.util.packets.SeatUpdatePacketHandler;
-import net.fexcraft.mod.fvtm.util.packets.VehicleControlPacketHandler;
-import net.fexcraft.mod.fvtm.util.packets.VehicleKeyPressPacketHandler;
+import net.fexcraft.mod.fvtm.util.*;
+import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.packets.*;
 import net.fexcraft.mod.lib.crafting.RecipeRegistry;
 import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
+import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
 import net.minecraft.init.Blocks;
@@ -38,15 +23,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 /**
  * Fex's Vehicle and Transportation Mod
@@ -57,7 +37,9 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
  * @author Ferdinand Calo'
  *
  */
-@Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl")
+@Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl",
+		guiFactory = "net.fexcraft.mod.fvtm.util.config.GuiFactory")
+
 public class FVTM {
 	
 	public static final String MODID = "fvtm";
@@ -71,6 +53,8 @@ public class FVTM {
 	
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
+		Config.initalize(event, event.getSuggestedConfigurationFile());
+		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources());
 		REGISTERER = new AutoRegisterer(MODID);
 		try{ new ConstructorController(); }
@@ -79,11 +63,11 @@ public class FVTM {
 		PermManager.setEnabled(MODID);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:seat"), SeatEntity.class, "fvtm:seat", 1993, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), LandVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 10, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicletrailer"), LandVehicleTrailer.class, "fvtm:landvehicletrailer", 1995, this, 256, 10, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), LandVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 4, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicletrailer"), LandVehicleTrailer.class, "fvtm:landvehicletrailer", 1995, this, 256, 4, false);
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicleEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, true);
 		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railwagon"), RailWagonEntity.class, "fvtm:railwagon", 1997, this, 256, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 10, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 4, false);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleEntity.class, RenderLandVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleTrailer.class, RenderLandVehicleTrailer::new);

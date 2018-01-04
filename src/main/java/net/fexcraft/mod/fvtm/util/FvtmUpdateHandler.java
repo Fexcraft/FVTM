@@ -49,6 +49,9 @@ public class FvtmUpdateHandler {
 				WIKIURL = obj.get("wiki-url").getAsString();
 			}
 		}
+		else{
+			Static.stop();
+		}
 		if(jsn != null){
 			try{
 				if(jsn.has("side")){
@@ -90,6 +93,7 @@ public class FvtmUpdateHandler {
 		}
 		if(!newversion.equals(FVTM.VERSION)){
 			Print.chat(event.player, FVTM.PREFIX + "Update available! (" + newversion + ")");
+			Print.debug(newversion + " || " + FVTM.VERSION);
 		}
 	}
 	

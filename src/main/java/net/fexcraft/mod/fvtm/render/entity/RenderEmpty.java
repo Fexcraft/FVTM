@@ -12,7 +12,7 @@ public class RenderEmpty extends Render<Entity> implements IRenderFactory<Entity
 
 	public RenderEmpty(RenderManager renderManager){
 		super(renderManager);
-		shadowSize = 0.5F;
+		shadowSize = 0.125F;
 	}
 	@Override
 	public void doRender(Entity entity, double x, double y, double z, float yaw, float partialticks){

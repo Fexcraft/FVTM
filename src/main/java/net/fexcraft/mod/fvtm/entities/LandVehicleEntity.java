@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.entities;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
+import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Material;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.VehicleAxes;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packets.PacketVehicleControl;
 import net.fexcraft.mod.fvtm.util.packets.PacketVehicleKeyPress;
 import net.fexcraft.mod.lib.api.common.LockableObject;
@@ -32,6 +34,7 @@ import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -209,6 +212,19 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	
 	@Override
 	public void setDead(){
+		if(Config.DROP_ITEMS_ON_BREAK && !world.isRemote){
+			for(Part.PartData partData : this.vehicledata.getInventoryContainers()){
+				InventoryAttribute.InventoryAttributeData invattr = partData.getAttributeData(InventoryAttribute.InventoryAttributeData.class);
+				if(invattr == null){
+					continue;
+				}
+				for(int i = 0; i < invattr.getInventory().size(); i++){
+					this.entityDropItem(invattr.getInventory().get(i), 0.5f);
+					invattr.getInventory().set(i, ItemStack.EMPTY);
+				}
+			}
+		}
+		//
 		super.setDead();
 		if(world.isRemote){
 			camera.setDead();

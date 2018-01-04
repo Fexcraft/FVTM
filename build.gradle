@@ -76,7 +76,7 @@ task def_parts_pack(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
     from 'run/addons/General Essentials Pack'
     baseName = 'General Essentials Pack'
-    appendix = '1.5.2 - for FVTM'
+    appendix = '1.5.3 - for FVTM'
 }
 task zmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}

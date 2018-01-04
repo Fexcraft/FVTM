@@ -2,10 +2,10 @@
 	{
 	  "modid": "fvtm",
 	  "name": "Fex's Vehicle and Transportation Mod",
-	  "description": "< - todo - >",
+	  "description": "A Mod adding an API to be able to create highly customisable Vehicles in Minecraft, as well as other things.",
 	  "version": "${version}",
 	  "mcversion": "${mcversion}",
-	  "url": "http://fexcraft.net",
+	  "url": "http://fexcraft.net/",
 	  "updateUrl": "http://fexcraft.net/download?modid=fvtm",
 	  "authorList": ["FEX___96"],
 	  "credits": "LandVehicle and Ship Entities are based off Flansmod made by jamioflan/The Flansmod Team.",

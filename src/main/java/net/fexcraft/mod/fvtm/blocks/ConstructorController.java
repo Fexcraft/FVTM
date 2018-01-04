@@ -5,9 +5,11 @@ import net.fexcraft.mod.fvtm.api.ConstructorButton;
 import net.fexcraft.mod.fvtm.api.ConstructorScreen;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
+import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.impl.conscr.*;
 import net.fexcraft.mod.fvtm.util.Tabs;
+import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.item.PaintItem;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -153,6 +155,10 @@ public class ConstructorController extends BlockContainer {
 		if(!p.getHeldItem(hand).isEmpty()){
 			ItemStack stack = p.getHeldItem(hand);
 			if(stack.getItem() instanceof VehicleItem){
+				if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
+					Print.chat(p, "Current VehicleData is locked.");
+					return true;
+				}
 				if(te.getVehicleData() != null){
 					ItemStack istack = te.getVehicleData().getVehicle().getItemStack(te.getVehicleData());
 					EntityItem item = new EntityItem(w);
@@ -167,6 +173,10 @@ public class ConstructorController extends BlockContainer {
 				return true;
 			}
 			else if(stack.getItem() instanceof PartItem){
+				if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
+					Print.chat(p, "VehicleData is locked.");
+					return true;
+				}
 				PartData data = ((PartItem)stack.getItem()).getPart(stack);
 				if(data == null){
 					return false;
@@ -198,6 +208,10 @@ public class ConstructorController extends BlockContainer {
 				return true;
 			}
 			else if(stack.getItem() instanceof PaintItem){
+				if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
+					Print.chat(p, "VehicleData is locked.");
+					return true;
+				}
 				if(hand == EnumHand.OFF_HAND){
 					te.getVehicleData().getSecondaryColor().copyFrom(((PaintItem)stack.getItem()).getRGBColor());
 				}
@@ -206,6 +220,46 @@ public class ConstructorController extends BlockContainer {
 				}
 				te.updateVehicleData(null);
 				Print.chat(p, "Colour updated.");
+				return true;
+			}
+			else if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof net.fexcraft.mod.fvtm.api.Material.MaterialItem ? ((net.fexcraft.mod.fvtm.api.Material.MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
+				if(te.getVehicleData() == null){
+					Print.bar(p, "No VehicleData.");
+				}
+				else{
+					KeyItem item = (KeyItem)stack.getItem();
+					if(!te.getVehicleData().isLocked()){
+						if(item.getCode(stack).equals(te.getVehicleData().getLockCode())){
+							te.getVehicleData().setLocked(true);
+							Print.chat(p, "VehicleData locked.");
+						}
+						else if(item.getType(stack) == KeyItem.KeyType.ADMIN){
+							te.getVehicleData().setLocked(true);
+							Print.chat(p, "&8[&aAO&8] &7VehicleData locked.");
+						}
+						else{
+							Print.chat(p, "Invalid code!");
+							Print.chat(p, item.getCode(stack) + " != " + te.getVehicleData().getLockCode());
+						}
+						Print.debug(te.getVehicleData().isLocked());
+					}
+					else{
+						if(item.getCode(stack).equals(te.getVehicleData().getLockCode())){
+							te.getVehicleData().setLocked(false);
+							Print.chat(p, "VehicleData unlocked.");
+						}
+						else if(item.getType(stack) == KeyItem.KeyType.ADMIN){
+							te.getVehicleData().setLocked(false);
+							Print.chat(p, "&8[&aAO&8] &7VehicleData unlocked.");
+						}
+						else{
+							Print.chat(p, "Invalid code!");
+							Print.chat(p, item.getCode(stack) + " != " + te.getVehicleData().getLockCode());
+						}
+					}
+					te.updateVehicleData(null);
+				}
+				return true;
 			}
 		}
 		else{
@@ -222,7 +276,12 @@ public class ConstructorController extends BlockContainer {
 					Print.chat(p, "No Vehicle.");
 				}
 				else{
+					if(te.getVehicleData().isLocked()){
+						Print.bar(p, "&cLOCKED");
+						return true;
+					}
 					if(hand != EnumHand.OFF_HAND){
+
 						return findAndPressButton(te, w, pos, state, p, side, hitX, hitY, hitZ);
 					}
 					else return true;

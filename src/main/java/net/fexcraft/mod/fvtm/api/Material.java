@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.api;
 
+import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+
+import java.util.UUID;
 
 public interface Material extends IForgeRegistryEntry<Material> {
 	
@@ -23,14 +26,34 @@ public interface Material extends IForgeRegistryEntry<Material> {
 	public Fuel getFuelType();
 	
 	public int maxCapacity();
+
+	public boolean isVehicleKey();
 	
 	//<--- ITEM --->//
-	public static interface MaterialItem {
+	public static abstract class MaterialItem extends KeyItem {
 		
 		public static final String NBTKEY = "FVTM:Material";
 		
-		public Material getMaterial(ItemStack stack);
-		
+		public abstract Material getMaterial(ItemStack stack);
+
+		@Override
+		public KeyType getType(ItemStack stack){
+			Material mat = this.getMaterial(stack);
+			return mat != null && mat.isVehicleKey() ? stack.getTagCompound().getBoolean("VehicleKeyType") ? KeyType.ADMIN : KeyType.COMMON : null;
+		}
+
+		@Override
+		public String getCode(ItemStack stack){
+			Material mat = this.getMaterial(stack);
+			return mat != null && mat.isVehicleKey() ? stack.getTagCompound().getString("VehicleKeyCode") : null;
+		}
+
+		@Override
+		public UUID getCreator(ItemStack stack){
+			Material mat = this.getMaterial(stack);
+			return mat != null && mat.isVehicleKey() ? UUID.fromString(stack.getTagCompound().getString("VehicleKeyCreator")) : null;
+		}
+
 	}
 	
 }

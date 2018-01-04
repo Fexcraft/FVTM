@@ -32,7 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GenericVehicle implements Vehicle {
 	
-	private ResourceLocation registryname;
+	private ResourceLocation registryname, def_key;
 	private Addon addon;
 	private String name;
 	private String[] description;
@@ -124,6 +124,7 @@ public class GenericVehicle implements Vehicle {
 		this.isTrailer = JsonUtil.getIfExists(obj, new String[]{"Trailer", "Wagon", "IsTrailer"}, false);
 		this.type = VehicleType.fromJson(obj);
 		this.bouyancy = JsonUtil.getIfExists(obj, "Bouyancy", 0.0165F).floatValue();
+		this.def_key = new ResourceLocation(JsonUtil.getIfExists(obj,"DefaultKey", "generic:key"));
 		//
 		{ accentmods.add(EntityType.INTERNAL); accentmods.add(EntityType.PROTOTYPE); }
 	}
@@ -290,6 +291,11 @@ public class GenericVehicle implements Vehicle {
 	@Override
 	public boolean isTrailerOrWagon(){
 		return isTrailer;
+	}
+
+	@Override
+	public ResourceLocation getDefaultKey(){
+		return def_key;
 	}
 
 	@Override

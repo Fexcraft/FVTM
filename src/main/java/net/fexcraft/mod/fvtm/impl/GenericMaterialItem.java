@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -11,10 +12,10 @@ import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -23,7 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GenericMaterialItem extends Item implements MaterialItem, FuelItem {
+public class GenericMaterialItem extends MaterialItem implements FuelItem {
 	
 	public static final GenericMaterialItem INSTANCE = new GenericMaterialItem();
 	
@@ -64,6 +65,16 @@ public class GenericMaterialItem extends Item implements MaterialItem, FuelItem 
 				tooltip.add(Formatter.format("&9Fuel Type: &7" + mat.getFuelType().getName()));
 				tooltip.add(Formatter.format("&9Fuel: &7" + RGB.format(this.getContent(stack)) + "&6/&3" + mat.maxCapacity()));
 			}
+			if(mat.isVehicleKey()){
+				/*if(!stack.getTagCompound().hasKey("VehicleKeyType") || !stack.getTagCompound().hasKey("VehicleKeyCode") || !stack.getTagCompound().hasKey("VehicleKeyCode")){
+					stack.getTagCompound().setBoolean("VehicleKeyType", false);
+					stack.getTagCompound().setString("VehicleKeyCode", this.getNewKeyCode());
+					stack.getTagCompound().setString("VehicleKeyCreator", Static.NULL_UUID_STRING);
+				}*/
+				tooltip.add(Formatter.format("&9KeyType: &7" + (stack.getTagCompound().getBoolean("VehicleKeyType") ? "Admin/Universal" : "Common/Normal")));
+				tooltip.add(Formatter.format("&9KeyCode: &7" + stack.getTagCompound().getString("VehicleKeyCode")));
+				tooltip.add(Formatter.format("&9KeyCreator: &7" + stack.getTagCompound().getString("VehicleKeyCreator")));
+			}
 		}
     }
 	
@@ -77,6 +88,11 @@ public class GenericMaterialItem extends Item implements MaterialItem, FuelItem 
         		if(material.isFuelContainer()){
         			nbt.setDouble("FuelContent", 0);
         		}
+				if(material.isVehicleKey()){
+					nbt.setBoolean("VehicleKeyType", false);
+					nbt.setString("VehicleKeyCode", this.getNewKeyCode());
+					nbt.setString("VehicleKeyCreator", Static.NULL_UUID_STRING);
+				}
         		stack.setTagCompound(nbt);
                 items.add(stack);
                 if(material.isFuelContainer()){

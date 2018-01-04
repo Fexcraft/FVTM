@@ -17,6 +17,8 @@ item.generic:steel_plate.name=Steel Plate
 item.generic:canister.name=Canister
 item.generic:diesel_canister.name=Diesel Canister
 item.generic:petroleum_canister.name=Petroleum Canister
+item.generic:key.name=Key
+item.generic:goldkey.name=Key
 
 #Containers
 item.generic:container_large.name=Large Container

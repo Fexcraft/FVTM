@@ -1,0 +1,6 @@
+{
+    "RegistryName": "generic:key",
+    "Addon": "fvtm:generic",
+    "FullName": "Generic Vehicle Key",
+    "VehicleKey": true
+}

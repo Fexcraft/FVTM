@@ -101,6 +101,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	public int getFMSoundLength(String event);
 
 	public boolean isTrailerOrWagon();
+
+	public ResourceLocation getDefaultKey();
 	
 	//<-- VEHICLE DATA -->//
 	public static interface VehicleData {

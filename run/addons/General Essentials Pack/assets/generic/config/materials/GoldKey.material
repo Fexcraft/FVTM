@@ -1,0 +1,9 @@
+{
+    "RegistryName": "generic:goldkey",
+    "Addon": "fvtm:generic",
+    "FullName": "Golden Vehicle Key",
+    "Description":[
+        "&oMay not be as durable as a normal one."
+    ],
+    "VehicleKey": true
+}

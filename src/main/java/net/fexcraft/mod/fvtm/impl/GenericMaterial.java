@@ -8,6 +8,8 @@ import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.RecipeObject;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.lib.api.item.KeyItem;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +22,7 @@ public class GenericMaterial implements Material {
 	private String name;
 	private String[] description;
 	//
-	private boolean isFuelContainer;
+	private boolean isFuelContainer, isKey;
 	private Integer maxcapacity;
 	private Fuel fueltype;
 	
@@ -34,6 +36,7 @@ public class GenericMaterial implements Material {
 			this.fueltype = Resources.FUELS.getValue(new ResourceLocation(JsonUtil.getIfExists(obj, "FuelType", "minecraft:stone")));
 			this.maxcapacity = JsonUtil.getIfExists(obj, "MaxCapacity", 100).intValue();
 		}
+		this.isKey = JsonUtil.getIfExists(obj, "VehicleKey", false);
 		if(obj.has("Recipes")){
 			obj.get("Recipes").getAsJsonArray().forEach((elm) -> {
 				try{
@@ -80,6 +83,11 @@ public class GenericMaterial implements Material {
 		if(this.isFuelContainer){
 			nbt.setDouble("FuelContent", 0);
 		}
+		if(this.isKey){
+			nbt.setBoolean("VehicleKeyType", false);
+			nbt.setString("VehicleKeyCode", KeyItem.getNewKeyCode());
+			nbt.setString("VehicleKeyCreator", Static.NULL_UUID_STRING);
+		}
 		stack.setTagCompound(nbt);
 		return stack;
 	}
@@ -93,6 +101,9 @@ public class GenericMaterial implements Material {
 	public int maxCapacity(){
 		return maxcapacity == null ? 0 : maxcapacity;
 	}
+
+	@Override
+	public boolean isVehicleKey(){ return isKey; }
 
 	@Override
 	public Fuel getFuelType(){

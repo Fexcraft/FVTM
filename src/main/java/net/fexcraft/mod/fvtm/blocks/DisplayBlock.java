@@ -79,14 +79,14 @@ public class DisplayBlock extends BlockContainer {
 					}
 				}
 			}
-			else if(stack.getItem() instanceof KeyItem){
+			else if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof net.fexcraft.mod.fvtm.api.Material.MaterialItem ? ((net.fexcraft.mod.fvtm.api.Material.MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
 				if(te.getVehicleData() == null){
 					Print.bar(player, "No VehicleData.");
 				}
 				else{
 					KeyItem item = (KeyItem)stack.getItem();
 					Vehicle.VehicleData data = te.getVehicleData();
-					if(data.isLocked()){
+					if(!data.isLocked()){
 						if(item.getCode(stack).equals(data.getLockCode())){
 							data.setLocked(true);
 							Print.chat(player, "VehicleData locked.");
@@ -107,7 +107,7 @@ public class DisplayBlock extends BlockContainer {
 						}
 						else if(item.getType(stack) == KeyItem.KeyType.ADMIN){
 							data.setLocked(false);
-							Print.chat(player, "&8[&aAO&8] &7VehicleData locked.");
+							Print.chat(player, "&8[&aAO&8] &7VehicleData unlocked.");
 						}
 						else{
 							Print.chat(player, "Invalid code!");

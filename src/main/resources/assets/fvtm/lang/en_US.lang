@@ -8,10 +8,25 @@
 
 #Commands
 commands.fvtm.main_usage=&9Use &7'/fvtm help' &9for detailed info.
+commands.fvtm.main_noconsole=&9Command only usable in-game by a Player Entity.
 commands.fvtm.main_help_desc=&3Available arguments:
 commands.fvtm.main_help_addons=&7/fvtm addons &3- opens the Addon Manager
 commands.fvtm.main_help_version=&7/fvtm version &3- prints currently installed version into chat
+commands.fvtm.main_help_key_help=&7/fvtm key help &3- shows help for obtaining keys
 commands.fvtm.main_version=&7Currently Installed Version:
+#
+commands.fvtm.main_key_error=&cMissing Arguments!
+commands.fvtm.main_key_not_in_veh=&cYou must sit on the Driver seat to get a Key!
+commands.fvtm.main_key_max_used=&cAlready spawned maximal amount of Keys.
+commands.fvtm.main_key_no_permission=&cNo Permission
+commands.fvtm.main_key_help_desc=&3Available arguments:
+commands.fvtm.main_key_help_get=&7/fvtm key get (one/all) &3- gives a normal key, or all
+commands.fvtm.main_key_help_admin=&7/fvtm key admin &3- gives an Admin/OP key
+commands.fvtm.main_key_help_view=&7/fvtm key view &3- prints this vehicle's key status
+commands.fvtm.main_key_view_veh=&7Vehicle: &3
+commands.fvtm.main_key_view_spawned=&7Spawned Keys: &3
+commands.fvtm.main_key_view_type=&7Preferred Key Type: &3
+commands.fvtm.main_key_view_code=&7Current Lock Code: &3
 
 #GUIs
 gui.fvtm.addon_manager.main_description_0=Welcome to the FVTM Addon Manager!

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.entities;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
+import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -290,7 +291,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 			return false;
 		}
 		ItemStack stack = player.getHeldItem(hand);
-		if(!stack.isEmpty() && stack.getItem() instanceof KeyItem){
+		if(!stack.isEmpty() && stack.getItem() instanceof KeyItem && (stack.getItem() instanceof Material.MaterialItem ? ((Material.MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
 			if(this.isLocked()){
 				this.unlock(world, player, stack, (KeyItem)stack.getItem());
 			}

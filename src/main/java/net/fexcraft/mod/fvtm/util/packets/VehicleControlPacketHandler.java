@@ -19,21 +19,10 @@ public class VehicleControlPacketHandler {
 			IThreadListener ls = Static.getServer();
 			ls.addScheduledTask(new Runnable(){
 				@Override
-				public void run(){
+				public void run() {
 					EntityPlayerMP player = Static.getServer().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
-					VehicleEntity vehicle = null;
-					for(int i = 0; i < player.world.loadedEntityList.size(); i++){
-						Object obj = player.world.loadedEntityList.get(i);
-						if(obj instanceof VehicleEntity && ((Entity)obj).getEntityId() == packet.entityId){
-							vehicle = (VehicleEntity)obj;
-							break;
-						}
-					}
-					if(vehicle != null){
-						updatevehicle(vehicle, packet);
-					}
+					updatevehicle((VehicleEntity) player.world.getEntityByID(packet.entityId), packet);
 				}
-				
 			});
 			return null;
 		}
@@ -48,21 +37,11 @@ public class VehicleControlPacketHandler {
 				public void run(){
 					EntityPlayer player = Minecraft.getMinecraft().player;
 					if(player == null || player.world == null){
+						try{ throw new Exception("Player or World is NULL;"); }
+						catch(Exception e){ e.printStackTrace(); }
 						return;
 					}
-					VehicleEntity vehicle = null;
-					for(Object obj : player.world.loadedEntityList){
-						if(obj instanceof VehicleEntity && ((Entity)obj).getEntityId() == packet.entityId){
-							vehicle = (VehicleEntity)obj;
-							if(vehicle.getEntity().getControllingPassenger() == player){
-								return;
-							}
-							break;
-						}
-					}
-					if(vehicle != null){
-						updatevehicle(vehicle, packet);
-					}
+					updatevehicle((VehicleEntity)player.world.getEntityByID(packet.entityId), packet);
 				}
 			});
 			return null;

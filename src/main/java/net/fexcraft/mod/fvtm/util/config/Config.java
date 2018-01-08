@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Config {
 
-	public static boolean TEST, DROP_ITEMS_ON_BREAK, ALTERNATIVE_SEAT_UPDATE;
+	public static boolean TEST, DROP_ITEMS_ON_BREAK, ALTERNATIVE_SEAT_UPDATE, VEHICLE_NEEDS_FUEL;
 	public static int MAX_SPAWNED_VEHICLE_KEYS;
 	//
 	private static Configuration config;
@@ -24,6 +24,7 @@ public class Config {
 	private static final String MAX_SPAWNED_VEHICLE_KEYS_ = "Max Spawned Vehicle Keys";
 	private static final String DROP_ITEMS_ON_BREAK_ = "Drop Items On Break";
 	private static final String ALTERNATIVE_SEAT_UPDATE_ = "Alternative Seat Update";
+	private static final String VEHICLE_NEEDS_FUEL_ = "Vehicle Needs Fuel";
 
 	public static final void initalize(FMLPreInitializationEvent event, File file){
 		config = new Configuration(file, FVTM.VERSION, true);
@@ -50,6 +51,7 @@ public class Config {
 		MAX_SPAWNED_VEHICLE_KEYS = config.getInt(MAX_SPAWNED_VEHICLE_KEYS_, GENERAL, 5, 1, 64, "Maximal amount of keys that can be spawned per vehicle. Does not include universal/admin keys.\n");
 		DROP_ITEMS_ON_BREAK = config.getBoolean(DROP_ITEMS_ON_BREAK_, GENERAL, false, "Should the contends of Vehicle Inventories be dropped when breaking the vehicle?");
 		ALTERNATIVE_SEAT_UPDATE = config.getBoolean(ALTERNATIVE_SEAT_UPDATE_, PROTOTYPING, false, "Should seats be updated in their own `onUpdate` method instead of being updated directly from the Vehicle?");
+		VEHICLE_NEEDS_FUEL = config.getBoolean(VEHICLE_NEEDS_FUEL_, GENERAL, true, "Do vehicles need Fuel to run?");
 	}
 
 	public static void add(List<IConfigElement> list){

@@ -120,9 +120,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 
 	@Override
 	public void applyEntityCollision(Entity entity){
-		if(!(entity instanceof VehicleEntity || entity instanceof SeatEntity || entity instanceof  WheelEntity)){
-			super.applyEntityCollision(entity);
-		}
+		return;
 	}
 	
 }

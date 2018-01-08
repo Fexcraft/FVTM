@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -424,14 +425,32 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		prevRotationRoll = axes.getRoll();		
 		prevAxes = axes.clone();
 		this.ticksExisted++;
+		if(this.ticksExisted > Integer.MAX_VALUE){ this.ticksExisted = 0; }
 		//
 		boolean drivenByPlayer = world.isRemote && parent.getSeats()[0] != null && parent.getSeats()[0].getControllingPassenger() instanceof EntityPlayer;
 		//
+		if(world.isRemote && !drivenByPlayer){
+			if(serverPositionTransitionTicker > 0){
+				double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
+				double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
+				double z = posZ + (serverPosZ - posZ) / serverPositionTransitionTicker;
+				double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
+				double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
+				double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
+				rotationYaw = (float)(axes.getYaw() + dYaw / serverPositionTransitionTicker);
+				rotationPitch = (float)(axes.getPitch() + dPitch / serverPositionTransitionTicker);
+				float rotationRoll = (float)(axes.getRoll() + dRoll / serverPositionTransitionTicker);
+				--serverPositionTransitionTicker;
+				setPosition(x, y, z);
+				setRotation(rotationYaw, rotationPitch, rotationRoll);
+				//return;
+			}
+		}
 		for(WheelEntity wheel : wheels){
 			if(wheel != null && world != null){
 				wheel.prevPosX = wheel.posX;
 				wheel.prevPosY = wheel.posY;
-				wheel.prevPosZ = wheel.prevPosZ;
+				wheel.prevPosZ = wheel.posZ;
 			}
 		}
 		//

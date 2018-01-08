@@ -254,64 +254,11 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	
 	@Override
 	public void applyEntityCollision(Entity entity){
-		if(!isPartOfThis(entity)){
+		/*if(!isPartOfThis(entity)){
 			super.applyEntityCollision(entity);
-		}
+		}*/
+		return;
 	}
-	
-	@Override
-    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport){
-		if(ticksExisted > 1){ return; }
-		if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
-			//
-		}
-		else{				
-			if(sync){
-				serverPositionTransitionTicker = posRotationIncrements + 5;
-			}
-			else{
-				double var10 = x - posX; double var12 = y - posY; double var14 = z - posZ;
-				double var16 = var10 * var10 + var12 * var12 + var14 * var14;
-				if(var16 <= 1.0D){
-					return;
-				}
-				serverPositionTransitionTicker = 3;
-			}
-			serverPosX = x;
-			serverPosY = y;
-			serverPosZ = z;
-			serverYaw = yaw;
-			serverPitch = pitch;
-		}
-	}
-	
-	@Override
-	public void setPositionRotationAndMotion(double x, double y, double z, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle2, float steeringYaw){
-		if(world.isRemote){
-			serverPosX = x;
-			serverPosY = y;
-			serverPosZ = z;
-			serverYaw = yaw;
-			serverPitch = pitch;
-			serverRoll = roll;
-			serverPositionTransitionTicker = 5;
-		}
-		else{
-			setPosition(x, y, z);
-			prevRotationYaw = yaw;
-			prevRotationPitch = pitch;
-			prevRotationRoll = roll;
-			setRotation(yaw, pitch, roll);
-		}
-		motionX = motX;
-		motionY = motY;
-		motionZ = motZ;
-		angularVelocity = new Vec3d(avelx, avely, avelz);
-		throttle = throttle2;
-		//
-		wheelsYaw = steeringYaw;
-	}
-	
 
 	@Override
 	public void setVelocity(double d, double d1, double d2){
@@ -477,6 +424,61 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			return false;
 		}
 	}
+
+	@Override
+	public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport){
+		if(ticksExisted > 1){ return; }
+		if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
+			//
+		}
+		else{
+			if(sync){
+				serverPositionTransitionTicker = posRotationIncrements + 5;
+			}
+			else{
+				double var10 = x - posX; double var12 = y - posY; double var14 = z - posZ;
+				double var16 = var10 * var10 + var12 * var12 + var14 * var14;
+				if(var16 <= 1.0D){
+					return;
+				}
+				serverPositionTransitionTicker = 3;
+			}
+			serverPosX = x;
+			serverPosY = y;
+			serverPosZ = z;
+			serverYaw = yaw;
+			serverPitch = pitch;
+		}
+	}
+
+	@Override
+	public void setPositionRotationAndMotion(double x, double y, double z, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle2, float steeringYaw){
+		if(world.isRemote){
+			serverPosX = x;
+			serverPosY = y;
+			serverPosZ = z;
+			serverYaw = yaw;
+			serverPitch = pitch;
+			serverRoll = roll;
+			serverPositionTransitionTicker = 5;
+		}
+		else{
+			setPosition(x, y, z);
+			prevRotationYaw = yaw;
+			prevRotationPitch = pitch;
+			prevRotationRoll = roll;
+			setRotation(yaw, pitch, roll);
+		}
+		motionX = motX;
+		motionY = motY;
+		motionZ = motZ;
+		angularVelocity = new Vec3d(avelx, avely, avelz);
+		if(!(seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer)){
+			throttle = throttle2;
+		}
+		//
+		wheelsYaw = steeringYaw;
+	}
 		
 	@Override
     public void onUpdate(){
@@ -500,6 +502,8 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		prevRotationPitch = axes.getPitch();
 		prevRotationRoll = axes.getRoll();		
 		prevAxes = axes.clone();
+		this.ticksExisted++;
+		if(this.ticksExisted > Integer.MAX_VALUE){ this.ticksExisted = 0; }
 		//
 		boolean canThrust = driverIsCreative() || vehicledata.getFuelTankContent() > 0;
 		if(seats == null || seats.length == 0){
@@ -508,10 +512,10 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		}
 		if((seats[0] != null && seats[0].getControllingPassenger() == null) || !canThrust && vehicledata.getVehicle().getFMMaxPositiveThrottle() != 0 && vehicledata.getVehicle().getFMMaxPositiveThrottle() != 0){
 			throttle *= 0.98F;
-			rightMouseHeld = leftMouseHeld = false;
+			//rightMouseHeld = leftMouseHeld = false;
 		}
 		if(vehicledata == null){
-			Print.log("Vehicle type null. Not ticking vehicle.");
+			Print.log("VehicleData is NULL; Not ticking vehicle.");
 			Static.stop();
 			return;
 		}
@@ -527,7 +531,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		wheelsYaw *= 0.9F;
 		if(wheelsYaw >  20){ wheelsYaw = 20; }
 		if(wheelsYaw < -20){ wheelsYaw = -20; }
-		if(world.isRemote && !drivenByPlayer){
+		if(!drivenByPlayer){
 			if(serverPositionTransitionTicker > 0){
 				double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
 				double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
@@ -549,14 +553,13 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			if(wheel != null && world != null){
 				wheel.prevPosX = wheel.posX;
 				wheel.prevPosY = wheel.posY;
-				wheel.prevPosZ = wheel.prevPosZ;
+				wheel.prevPosZ = wheel.posZ;
 			}
 		}
-		//TODO config for vehicles need fuel
-		boolean canThrustCreatively = /*!Config.vehicleConsumeFuel|| */(seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
+		boolean canThrustCreatively = !Config.VEHICLE_NEEDS_FUEL || (seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
 		boolean consumed = false;
 		Part.PartData enginepart = vehicledata.getPart("engine");
-		if(enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
+		if(!canThrustCreatively && enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
 			double d = (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
 			consumed = vehicledata.consumeFuel(d > 0 ? d : (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() / 320));
 		}
@@ -638,7 +641,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			}
 			//
 			if(this.getEntityAtRear() != null){
-				((VehicleEntity)this.getEntityAtRear()).moveTrailer();
+				this.getEntityAtRear().moveTrailer();
 			}
 		}
 		move(MoverType.SELF, atmc.x, atmc.y, atmc.z);

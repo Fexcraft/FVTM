@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import net.fexcraft.mod.fvtm.util.config.Config;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.JsonArray;
@@ -732,7 +733,7 @@ public class Resources {
 	}
 
 	public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
-		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, 256);//TODO config
+		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.VEHICLE_UPDATE_RANGE);
 	}
 	
 	/*public static final TreeMap<ResourceLocation, Object> OLDREGNAMES = new TreeMap<ResourceLocation, Object>();

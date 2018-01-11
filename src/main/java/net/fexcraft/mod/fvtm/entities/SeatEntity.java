@@ -29,8 +29,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.google.common.collect.Lists;
 
@@ -88,32 +86,6 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
     	nbt.setString("request", "sync");
     	ApiUtil.sendEntityUpdatePacketToServer(this, nbt);
 	}
-
-	/*@Override
-	public void writeSpawnData(ByteBuf buffer){
-		buffer.writeInt(vehicleid);
-		buffer.writeInt(seatid);
-		seatdata.write(buffer);
-	}
-
-	@Override
-	public void readSpawnData(ByteBuf buffer){
-		vehicleid = buffer.readInt();
-		if(world.getEntityByID(vehicleid) instanceof VehicleEntity){
-			vehicle = (VehicleEntity)world.getEntityByID(vehicleid);
-		}
-		seatid = buffer.readInt();
-		driver = seatid == 0;
-		seatdata = new FMSeat(buffer);
-		if(vehicle != null){
-			Print.debug(seatdata.getPos().toString());
-			looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-			pass_x = prev_pass_x = posX = vehicle.getEntity().posX;
-			pass_y = prev_pass_y = posY = vehicle.getEntity().posY;
-			pass_z = prev_pass_z = posZ = vehicle.getEntity().posZ;
-			setPosition(posX, posY, posZ);
-		}
-	}*/
 	
 	@Override
 	public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int partialticks, boolean b){
@@ -126,18 +98,6 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		//
 		if(world.isRemote && vehicle == null){
 			rqSync();
-			/*vehicle = (VehicleEntity)world.getEntityByID(vehicleid);
-			if(vehicle == null){
-				return;
-			}
-			vehicle.getSeats()[seatid] = this;
-			seatdata = vehicle.getVehicleData().getFMSeats().get(seatid);//unreliable atm
-			Print.debug(seatdata.getPos().toString() + " WSYNC");
-			looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-			prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-			pass_x = prev_pass_x = posX = vehicle.getEntity().posX;
-			pass_y = prev_pass_y = posY = vehicle.getEntity().posY;
-			pass_z = prev_pass_z = posZ = vehicle.getEntity().posZ;*/
 		}
 		//
 		if((world.isRemote && vehicle == null) || !Config.ALTERNATIVE_SEAT_UPDATE){
@@ -186,6 +146,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		prev_pass_yaw = pass_yaw; prev_pass_pitch = pass_pitch; prev_pass_roll = pass_roll;
 
 		Vec3d relpos = vehicle.getAxes().getRelativeVector(seatdata.getPos().to16Double());
+		//this.posX = vehicle.getEntity().posX + relpos.x; this.posY = vehicle.getEntity().posY + relpos.y; this.posZ = vehicle.getEntity().posZ + relpos.z;
 		setPosition(vehicle.getEntity().posX + relpos.x, vehicle.getEntity().posY + relpos.y, vehicle.getEntity().posZ + relpos.z);
 		this.lastTickPosX = this.prevPosX = posX; this.lastTickPosY = this.prevPosY = posY; this.lastTickPosZ = this.prevPosZ = posZ;
 
@@ -216,9 +177,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 
 	@Override
 	public void updatePassenger(Entity passengerr){
-		if(passengerr == null){
-			return;
-		}
+		if(passengerr == null){ return; }
 		//
 		passenger.rotationYaw = pass_yaw;
 		passenger.rotationPitch = pass_pitch;
@@ -280,11 +239,6 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 	
 	public void updatePassenger(){
 		this.updatePassenger(passenger);
-	}
-		
-	@SideOnly(Side.CLIENT)
-	public Entity getCamera(){
-		return vehicle.getCamera();
 	}
 
 	@Override

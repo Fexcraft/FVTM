@@ -1,12 +1,11 @@
 package net.fexcraft.mod.fvtm.util.packets;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.IThreadListener;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -15,14 +14,16 @@ public class VehicleControlPacketHandler {
 	
 	public static class Server implements IMessageHandler<PacketVehicleControl, IMessage>{
 		@Override
-		public IMessage onMessage(final PacketVehicleControl packet, final MessageContext ctx) {
-			IThreadListener ls = Static.getServer();
-			ls.addScheduledTask(new Runnable(){
-				@Override
-				public void run() {
-					EntityPlayerMP player = Static.getServer().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
-					updatevehicle((VehicleEntity) player.world.getEntityByID(packet.entityId), packet);
+		public IMessage onMessage(final PacketVehicleControl packet, final MessageContext ctx){
+			Static.getServer().addScheduledTask(() -> {
+				EntityPlayerMP player = Static.getServer().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
+				for(Entity ent : player.world.loadedEntityList){
+					if(ent.getEntityId() == packet.entityId){
+						updatevehicle(ent, packet);
+						return;
+					}
 				}
+				return;
 			});
 			return null;
 		}
@@ -30,25 +31,23 @@ public class VehicleControlPacketHandler {
 	
 	public static class Client implements IMessageHandler<PacketVehicleControl, IMessage>{
 		@Override
-		public IMessage onMessage(final PacketVehicleControl packet, final MessageContext ctx) {
-			IThreadListener ls = Minecraft.getMinecraft();
-			ls.addScheduledTask(new Runnable(){
-				@Override
-				public void run(){
-					EntityPlayer player = Minecraft.getMinecraft().player;
-					if(player == null || player.world == null){
-						try{ throw new Exception("Player or World is NULL;"); }
-						catch(Exception e){ e.printStackTrace(); }
+		public IMessage onMessage(final PacketVehicleControl packet, final MessageContext ctx){
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+				for(Entity ent : Minecraft.getMinecraft().world.getLoadedEntityList()){
+					if(ent.getEntityId() == packet.entityId){
+						updatevehicle(ent, packet);
 						return;
 					}
-					updatevehicle((VehicleEntity)player.world.getEntityByID(packet.entityId), packet);
 				}
+				return;
 			});
 			return null;
 		}
 	}
 	
-	private static void updatevehicle(VehicleEntity vehicle, PacketVehicleControl pkt){
+	private static void updatevehicle(Entity entity, PacketVehicleControl pkt){
+		if(entity == null){ return; }
+		VehicleEntity vehicle = (VehicleEntity)entity;
 		vehicle.setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll, pkt.motX, pkt.motY, pkt.motZ, pkt.avelx, pkt.avely, pkt.avelz, pkt.throttle, pkt.steeringYaw);
 		vehicle.getVehicleData().toggleDoors(pkt.doors);
 		if(vehicle.getEntityAtRear() != null){

@@ -61,7 +61,6 @@ task fvtm(type: Jar) {
         include 'LICENSE.txt'
     }
     baseName = 'FVTM'
-    appendix = project.version
 }
 
 //Addons

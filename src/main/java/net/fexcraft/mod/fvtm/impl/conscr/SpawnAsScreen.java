@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.impl.conscr;
 
 import net.fexcraft.mod.fvtm.api.*;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.pro.GenericLandVehicleEntity;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,7 +74,15 @@ public class SpawnAsScreen extends ConstructorScreen {
 						Print.chat(player, "&7Please use &aINTERNAL&7 or an &cDEV&7 environment.");
 					}
 					else{
-						Print.chat(player, "Not available yet.");
+						BlockPos center = tileentity.getCenterPos();
+						World world = tileentity.getWorld();
+						//
+						GenericLandVehicleEntity ent = new GenericLandVehicleEntity(world, data);
+						ent.setPosition(center.getX(), center.getY(), center.getZ());
+						world.spawnEntity(ent);
+						//
+						tileentity.setVehicleData(null);
+						tileentity.updateVehicleData(null);
 					}
 					break;
 				}

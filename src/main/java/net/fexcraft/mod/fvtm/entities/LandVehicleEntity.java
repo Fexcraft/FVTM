@@ -8,11 +8,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.api.Vehicle.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -34,7 +30,6 @@ import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -83,7 +78,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		yOffset = 6F / 16F;
 		ignoreFrustumCheck = true;
 		if(world.isRemote){
-			setRenderDistanceWeight(512D);
+			setRenderDistanceWeight(Double.MAX_VALUE);
 		}
 		//
 		stepHeight = 1.0F;
@@ -372,6 +367,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 					return true;
 				}
 				case 6:{//Exit
+					PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
 					player.dismountRidingEntity();
 			  		return true;
 				}
@@ -531,7 +527,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		wheelsYaw *= 0.9F;
 		if(wheelsYaw >  20){ wheelsYaw = 20; }
 		if(wheelsYaw < -20){ wheelsYaw = -20; }
-		if(!drivenByPlayer){
+		if(world.isRemote && (seats[0] == null || seats[0].getControllingPassenger() instanceof EntityPlayer == false)){
 			if(serverPositionTransitionTicker > 0){
 				double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
 				double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;

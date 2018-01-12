@@ -515,7 +515,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			Static.stop();
 			return;
 		}
-		boolean drivenByPlayer = world.isRemote && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer;
+		boolean drivenByPlayer = seats[0] != null && seats[0].isPassengerThePlayer();
 		//		
 		if(doorToggleTimer > 0){
 			doorToggleTimer--;
@@ -527,7 +527,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		wheelsYaw *= 0.9F;
 		if(wheelsYaw >  20){ wheelsYaw = 20; }
 		if(wheelsYaw < -20){ wheelsYaw = -20; }
-		if(world.isRemote && (seats[0] == null || seats[0].getControllingPassenger() instanceof EntityPlayer == false)){
+		if(world.isRemote && !drivenByPlayer){
 			if(serverPositionTransitionTicker > 0){
 				double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
 				double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;

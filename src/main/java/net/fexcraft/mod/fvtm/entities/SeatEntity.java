@@ -482,5 +482,12 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 	public void applyEntityCollision(Entity entity){
 		return;
 	}
-	
+
+	public boolean isPassengerThePlayer(){
+		if(world.isRemote){
+			return passenger == net.minecraft.client.Minecraft.getMinecraft().player;
+		}
+		else return false;
+	}
+
 }

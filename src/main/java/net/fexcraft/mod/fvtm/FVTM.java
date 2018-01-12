@@ -14,6 +14,7 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -76,9 +77,11 @@ public class FVTM {
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
 		}
 		//PROTOTYPE
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle_prototype"), GenericLandVehicleEntity.class, "fvtm:landvehicle_prototype", 2004, this, 256, 1, false);
-		if(event.getSide().isClient()){
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(GenericLandVehicleEntity.class, RenderGenericLandVehicle::new);
+		if(Static.dev()){
+			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle_prototype"), GenericLandVehicleEntity.class, "fvtm:landvehicle_prototype", 2004, this, 256, 1, false);
+			if(event.getSide().isClient()){
+				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(GenericLandVehicleEntity.class, RenderGenericLandVehicle::new);
+			}
 		}
 	}
 	
@@ -125,15 +128,15 @@ public class FVTM {
 		//THREADMANAGER.clear();
 	}
 	
-	public static final Resources getResources(){
+	public static Resources getResources(){
 		return RESOURCES;
 	}
 	
-	public static final FVTM getInstance(){
+	public static FVTM getInstance(){
 		return INSTANCE;
 	}
 	
-	public static final AutoRegisterer getRegisterer(){
+	public static AutoRegisterer getRegisterer(){
 		return REGISTERER;
 	}
 	

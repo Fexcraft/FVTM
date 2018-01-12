@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.api;
 
 public enum EntityType {
-	
+
 	NONE(0, "No Type"), //un-spawned
 	INTERNAL(1, "INTERNAL"),
 	PROTOTYPE(2, "PROTOTYPE"),

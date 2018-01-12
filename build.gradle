@@ -10,7 +10,8 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "2.3-alpha20"
+version = "(MC 1.12.x)"
+def modversion = "2.3-alpha20"
 group = "net.fexcraft.mod.fvtm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "FVTM-ALL"
 
@@ -23,7 +24,7 @@ minecraft {
     version = "1.12.2-14.23.0.2494"
     runDir = "run"
     
-    replace "@VERSION@", project.version
+    replace "@VERSION@", modversion
     replaceIn "FVTM.java"
     
     mappings = "snapshot_20170624"
@@ -61,6 +62,7 @@ task fvtm(type: Jar) {
         include 'LICENSE.txt'
     }
     baseName = 'FVTM'
+    appendix = modversion
 }
 
 //Addons
@@ -68,14 +70,14 @@ task fvp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/fvp/'}
     from 'run/addons/Fex\'s Vehicle Pack'
     baseName = 'Fexcraft Vehicle Pack'
-    appendix = '1.9 - for FVTM'
+    appendix = '1.9'
 }
 
 task def_parts_pack(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
     from 'run/addons/General Essentials Pack'
     baseName = 'General Essentials Pack'
-    appendix = '1.5.3 - for FVTM'
+    appendix = '1.5.3'
 }
 task zmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}

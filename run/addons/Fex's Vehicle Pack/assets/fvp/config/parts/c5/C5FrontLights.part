@@ -1,0 +1,17 @@
+{
+    "RegistryName": "fvp:c5_front_lights",
+    "Addon": "fvtm:fvp",
+    "FullName": "C5 Front Lights",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC5FL.class",
+    "Category": [
+        "front_lights"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c5.png"
+    ],
+    "Compatible": [
+        { "Vehicle": "fvp:c5", "x": 0, "y": 0, "z": 0 }
+    ],
+    "Removable": true,
+    "Available": true
+}

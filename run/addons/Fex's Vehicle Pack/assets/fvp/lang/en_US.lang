@@ -53,6 +53,9 @@ item.fvp:ab1_passenger_seats.name=AB1 Passenger Seats
 item.fvp:ab1_steering_wheel.name=AB1 Steering Wheel
 item.fvp:ab1_doors.name=AB1 Doors
 item.fvp:ab1_lights.name=AB1 Lights
+item.fvp:c5_front_lights.name=C5 Front Lights
+item.fvp:c5_back_lights.name=C5 Back Lights
+item.fvp:c5_wheel.name=C5 Default Wheel
 
 #Vehicles
 item.fvp:t1.name=T1
@@ -61,6 +64,7 @@ item.fvp:c2.name=C2
 item.fvp:c7.name=C7
 item.fvp:c4z1.name=C4-Z1
 item.fvp:ab1.name=AB1-B
+item.fvp:c5.name=C5
 
 #Containers
 item.fvp:container_medium.name=Medium Container

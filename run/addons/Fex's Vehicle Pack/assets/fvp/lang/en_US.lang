@@ -56,6 +56,9 @@ item.fvp:ab1_lights.name=AB1 Lights
 item.fvp:c5_front_lights.name=C5 Front Lights
 item.fvp:c5_back_lights.name=C5 Back Lights
 item.fvp:c5_wheel.name=C5 Default Wheel
+item.fvp:c5_steering_wheel.name=C5 Default Steering Wheel
+item.fvp:c5_interior.name=C5 Interior
+item.fvp:c5_seats.name=C5 Default Seats
 
 #Vehicles
 item.fvp:t1.name=T1

@@ -70,7 +70,7 @@ task fvp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/fvp/'}
     from 'run/addons/Fex\'s Vehicle Pack'
     baseName = 'Fexcraft Vehicle Pack'
-    appendix = '1.9'
+    appendix = '1.10'
 }
 
 task def_parts_pack(type: Jar){

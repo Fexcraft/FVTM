@@ -960,7 +960,7 @@ public class ModelC5 extends VehicleModel {
 
 		//translateAll(0F, 0F, 0F);
 		flipAll();
-
+		for(ModelRendererTurbo mod : body){ mod.rotateAngleY = -mod.rotateAngleY; }
 	}
 	
 }

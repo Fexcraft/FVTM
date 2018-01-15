@@ -483,6 +483,11 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		return;
 	}
 
+	@Override
+	public boolean canBePushed(){
+		return false;
+	}
+
 	public boolean isPassengerThePlayer(){
 		if(world.isRemote){
 			return passenger == net.minecraft.client.Minecraft.getMinecraft().player;

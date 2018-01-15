@@ -1,0 +1,20 @@
+{
+    "RegistryName": "fvp:c5_steering_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC5ST.class",
+    "FullName": "C5 Steering Wheel",
+    "Category": [
+        "steering_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c5.png"
+    ],
+    "Removable": false,
+    "Avaiable": false,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c5",
+            "x": 0, "y": 0, "z": 0
+        }
+    ]
+}

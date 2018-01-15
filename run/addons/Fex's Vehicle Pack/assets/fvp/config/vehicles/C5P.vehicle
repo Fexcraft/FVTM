@@ -17,10 +17,10 @@
         "fvp:textures/entities/skin_vehicle_c5.png"
     ],
     "WheelPos":[
-        { "x": -26, "y": 2, "z": -19 },
-        { "x": -26, "y": 2, "z":  19 },
-        { "x":  46, "y": 2, "z":  19 },
-        { "x":  46, "y": 2, "z": -19 }
+        { "x": -26, "y": -10, "z": -19 },
+        { "x": -26, "y": -10, "z":  19 },
+        { "x":  46, "y": -10, "z":  19 },
+        { "x":  46, "y": -10, "z": -19 }
     ],
     "ConstructionLength": 5,
     "ConstructionYOffSet": 12.5,

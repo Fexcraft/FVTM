@@ -30,6 +30,12 @@ public class VehicleModel<T extends VehicleData> extends Model<VehicleData> {
 	public ArrayList<String> creators = new ArrayList<String>();
 	
 	private int tx, ty;
+	public float gui_translate_x = 0;
+	public float gui_translate_y = 0;
+	public float gui_translate_z = 0;
+	public float gui_scale_x = 0.125f;
+	public float gui_scale_y = 0.125f;
+	public float gui_scale_z = 0.125f;
 	
 	public VehicleModel(){}
 	

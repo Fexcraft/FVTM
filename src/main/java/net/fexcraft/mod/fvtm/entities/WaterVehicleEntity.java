@@ -308,7 +308,9 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 		motionY = motY;
 		motionZ = motZ;
 		angularVelocity = new Vec3d(avelx, avely, avelz);
-		throttle = throttle2;
+		if(!(seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer)){
+			throttle = throttle2;
+		}
 		//
 		wheelsYaw = steeringYaw;
 	}
@@ -426,6 +428,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 					return true;
 				}
 				case 6:{//Exit
+					PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
 					player.dismountRidingEntity();
 			  		return true;
 				}
@@ -516,7 +519,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 			Static.stop();
 			return;
 		}
-		boolean drivenByPlayer = world.isRemote && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer;
+		boolean drivenByPlayer = seats[0] != null && seats[0].isPassengerThePlayer();
 		//		
 		if(doorToggleTimer > 0){
 			doorToggleTimer--;
@@ -553,8 +556,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 				wheel.prevPosZ = wheel.prevPosZ;
 			}
 		}
-		//TODO config for vehicles need fuel
-		boolean canThrustCreatively = /*!Config.vehicleConsumeFuel|| */(seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
+		boolean canThrustCreatively = !Config.VEHICLE_NEEDS_FUEL || (seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
 		boolean consumed = false;
 		Part.PartData enginepart = vehicledata.getPart("engine");
 		if(enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Config {
 
-	public static boolean TEST, DROP_ITEMS_ON_BREAK, ALTERNATIVE_SEAT_UPDATE, VEHICLE_NEEDS_FUEL;
+	public static boolean TEST, DROP_ITEMS_ON_BREAK, ALTERNATIVE_SEAT_UPDATE, VEHICLE_NEEDS_FUEL, RENDER_IN_GUI;
 	public static int MAX_SPAWNED_VEHICLE_KEYS, VEHICLE_UPDATE_RANGE;
 	//
 	private static Configuration config;
@@ -26,6 +26,7 @@ public class Config {
 	private static final String ALTERNATIVE_SEAT_UPDATE_ = "Alternative Seat Update";
 	private static final String VEHICLE_NEEDS_FUEL_ = "Vehicle Needs Fuel";
 	private static final String VEHICLE_UPDATE_RANGE_ = "Vehicle Update Range";
+	private static final String RENDER_IN_GUI_ = "Render Vehicles As Icons";
 
 	public static final void initalize(FMLPreInitializationEvent event, File file){
 		config = new Configuration(file, FVTM.VERSION, true);
@@ -54,6 +55,7 @@ public class Config {
 		ALTERNATIVE_SEAT_UPDATE = config.getBoolean(ALTERNATIVE_SEAT_UPDATE_, PROTOTYPING, false, "Should seats be updated in their own `onUpdate` method instead of being updated directly from the Vehicle?");
 		VEHICLE_NEEDS_FUEL = config.getBoolean(VEHICLE_NEEDS_FUEL_, GENERAL, true, "Do vehicles need Fuel to run?");
 		VEHICLE_UPDATE_RANGE = config.getInt(VEHICLE_UPDATE_RANGE_, GENERAL, 256, 16, 4096, "Range in which Update Packets are sent.");
+		RENDER_IN_GUI = config.getBoolean(RENDER_IN_GUI_, GENERAL, false, "Should Vehicles be rendered in GUI instead of their default plain Texture Icons?");
 	}
 
 	public static void add(List<IConfigElement> list){

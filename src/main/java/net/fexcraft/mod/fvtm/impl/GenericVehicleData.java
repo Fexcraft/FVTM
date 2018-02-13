@@ -51,6 +51,9 @@ public class GenericVehicleData implements VehicleData {
 	
 	public GenericVehicleData(Vehicle veh){
 		this.vehicle = veh;
+		//
+		this.primary = new RGB(RGB.WHITE);
+		this.secondary = new RGB(RGB.WHITE);
 	}
 	
 	@Override

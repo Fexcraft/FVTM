@@ -21,6 +21,12 @@ public class ContainerModel<T extends ContainerData> extends Model<ContainerData
 	
 	
 	private int tx, ty;
+	public float gui_translate_x = 0;
+	public float gui_translate_y = 0;
+	public float gui_translate_z = 0;
+	public float gui_scale_x = 0.125f;
+	public float gui_scale_y = 0.125f;
+	public float gui_scale_z = 0.125f;
 	
 	public ContainerModel(){}
 	

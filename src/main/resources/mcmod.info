@@ -8,7 +8,7 @@
 	  "url": "http://fexcraft.net/",
 	  "updateUrl": "http://fexcraft.net/download?modid=fvtm",
 	  "authorList": ["FEX___96"],
-	  "credits": "LandVehicle and Ship Entities are based off Flansmod made by jamioflan/The Flansmod Team.",
+	  "credits": "LandVehicle and Ship Entities are based off Flansmod made by jamioflan/The Flansmod Team. Also thanks to TypicalDarkness, for help in Custom Item Rendering.",
 	  "logoFile": "",
 	  "screenshots": [],
 	  "dependencies": ["fcl"]

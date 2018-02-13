@@ -1,0 +1,12 @@
+{
+    "RegistryName": "zmp:huonclass_coast_guard_trailer",
+    "Addon": "fvtm:zmp",
+    "FullName": "Huonclass Coast Guard Trailer",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.trailer.ModelHuonclassCoastGuardTrailer.class",
+    "Textures": [ "zmp:textures/trailers/huonclass_coast_guard_trailer.png" ],
+    "WheelPos":[
+        { "x": -199, "y": -14, "z": -38 },
+        { "x": -199, "y": -14, "z":  38 }
+    ],
+    "Trailer": true
+}

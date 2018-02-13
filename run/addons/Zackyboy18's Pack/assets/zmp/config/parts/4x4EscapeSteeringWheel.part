@@ -1,0 +1,30 @@
+{
+    "RegistryName": "zmp:4x4_escape_steering_wheel",
+    "Addon": "fvtm:zmp",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.part.Model4x4EscapeSterringWheel.class",
+    "FullName": "4x4 Esc Steering Wheel",
+    "Category": [
+        "steering_wheel"
+    ],
+    "Textures": [
+        "zmp:textures/vehicles/skin_vehicle_4x4_police.png",
+        "zmp:textures/vehicles/skin_vehicle_4x4_samu.png",
+        "zmp:textures/vehicles/skin_vehicle_4x4_escape.png"
+    ],
+    "Removable": false,
+    "Avaiable": false,
+    "Compatible": [
+        {
+            "Vehicle": "zmp:4x4_police",
+            "x": 0, "y": 0, "z": 0
+        },
+        {
+            "Vehicle": "zmp:4x4_samu",
+            "x": 0, "y": 0, "z": 0
+        },
+        {
+            "Vehicle": "zmp:4x4_escape",
+            "x": 0, "y": 0, "z": 0
+        }
+    ]
+}

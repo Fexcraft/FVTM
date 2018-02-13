@@ -1,0 +1,35 @@
+{
+    "RegistryName": "zmp:4x4_escape_back_seats",
+    "FullName": "4x4 Esc Back Seats",
+    "Addon": "fvtm:zmp",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.part.Model4x4EscapeBackSeats.class",
+    "Category": [
+        "back_seats"
+    ],
+    "Attributes":[
+        "seat"
+    ],
+    "Textures": [
+        "zmp:textures/vehicles/skin_vehicle_4x4_police.png",
+        "zmp:textures/vehicles/skin_vehicle_4x4_samu.png",
+        "zmp:textures/vehicles/skin_vehicle_4x4_escape.png"
+    ],
+    "Removable": false,
+    "Available": false,
+    "AttributeData":{
+        "FM-Seats":[
+            { "x": -13, "y": 4, "z":  12 },
+            { "x": -13, "y": 4, "z": -12 }
+        ]    
+    },
+    "Compatible": [
+        {
+            "Vehicle": "zmp:4x4_police",
+            "x": 0, "y": 0, "z": 0
+        },
+        {
+            "Vehicle": "zmp:4x4_escape",
+            "x": 0, "y": 0, "z": 0
+        }
+    ]
+}

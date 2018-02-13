@@ -1,0 +1,47 @@
+{
+    "RegistryName": "zmp:4x4_police",
+    "Addon": "fvtm:zmp",
+    "FullName": "4x4 Police",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.vehicle.Model4x4Police.class",
+    "Description": [
+    	"Police version of the 4x4 \"Escape\"."
+    ],
+    "PrimaryColor": {
+        "Red": 168,
+        "Blue": 168,
+        "Green": 168
+    },
+    "SecondaryColor": {
+        "Red": 194,
+        "Blue": 194,
+        "Green": 194
+    },
+    "Textures": [
+        "zmp:textures/vehicles/skin_vehicle_4x4_police.png",
+        "zmp:textures/vehicles/skin_vehicle_4x4_police_ci.png"
+    ],
+    "WheelPos":[
+        { "x": -34, "y": -9, "z": -22 },
+        { "x": -34, "y": -9, "z":  22 },
+        { "x":  41, "y": -9, "z":  22 },
+        { "x":  41, "y": -9, "z": -22 }
+    ],
+    "ConstructionLength": 3,
+    "ConstructionYOffSet": 2,
+    "ConstructionWheelOffset": 16,
+    "RequiredParts": [
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel",
+        "steering_wheel",
+        "front_seats",
+        "engine",
+        "fuel_tank"
+    ],
+    "DriveType": "4wd",
+    "FM-MaxPositiveThrottle": 1.67,
+    "FM-MaxNegativeThrottle": 0.6,
+    "FM-TurnLeftModifier": 1.5,
+    "FM-TurnRightModifier": 1.5
+}

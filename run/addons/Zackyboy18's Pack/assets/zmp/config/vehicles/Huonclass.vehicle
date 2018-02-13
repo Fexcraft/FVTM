@@ -1,0 +1,24 @@
+{
+    "RegistryName": "zmp:huonclass",
+    "Addon": "fvtm:zmp",
+    "FullName": "Huonclass Coast Guard",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.vehicle.ModelHuonclass.class",
+    "Textures": [
+        "zmp:textures/vehicles/skin_vehicle_huonclass.png",
+        "zmp:textures/vehicles/skin_vehicle_huonclass_alt.png"
+    ],
+    "PreInstalled":[
+        {
+            "as": "interior",
+            "part": "zmp:huonclass_interior"
+        }
+    ],
+    "WheelPos":[
+        { "x": -42, "y": -8, "z": -24 },
+        { "x": -42, "y": -8, "z":  24 },
+        { "x":  64, "y": -8, "z":  24 },
+        { "x":  64, "y": -8, "z": -24 }
+    ],
+    "Bouyancy": 0.128,
+    "Type": "Water"
+}

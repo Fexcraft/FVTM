@@ -1,0 +1,36 @@
+{
+    "RegistryName": "zmp:4x4_escape_trailer_hitch",
+    "Addon": "fvtm:zmp",
+    "FullName": "Trailer Hitch",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.part.Model4x4EscapeTrailerHitch.class",
+    "Category": [
+        "trailer_hitch"
+    ],
+    "Attributes":[
+        "connector"
+    ],
+    "Textures": [
+        "zmp:textures/vehicles/skin_vehicle_4x4_police.png",
+        "zmp:textures/vehicles/skin_vehicle_4x4_samu.png",
+        "zmp:textures/vehicles/skin_vehicle_4x4_escape.png"
+    ],
+    "Compatible": [
+        {
+            "Vehicle": "zmp:4x4_police",
+            "x": 0, "y": 0, "z": 0
+        },
+        {
+            "Vehicle": "zmp:4x4_samu",
+            "x": 0, "y": 0, "z": 0
+        },
+        {
+            "Vehicle": "zmp:4x4_escape",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "Removable": true,
+    "Available": true,
+    "AttributeData":{
+        "Rear-Connector":[ { "x": -52, "y": 0, "z": 0.5 } ]
+    }
+}

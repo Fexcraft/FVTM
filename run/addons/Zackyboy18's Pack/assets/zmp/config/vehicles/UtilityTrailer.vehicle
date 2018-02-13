@@ -1,0 +1,12 @@
+{
+    "RegistryName": "zmp:utility_trailer",
+    "Addon": "fvtm:zmp",
+    "FullName": "Utility Trailer",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.trailer.ModelUtilityTrailer.class",
+    "Textures": [ "zmp:textures/trailers/utility_trailer.png" ],
+    "WheelPos":[
+        { "x": -76, "y": -14, "z": -20 },
+        { "x": -76, "y": -14, "z":  20 }
+    ],
+    "Trailer": true
+}

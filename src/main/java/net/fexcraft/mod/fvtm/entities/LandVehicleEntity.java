@@ -402,6 +402,42 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 						player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 5, seat, 0);
 						//open scripts gui
 					}
+					return true;
+				}
+				case 12:{
+					if(!world.isRemote){
+						if(doorToggleTimer <= 0){
+							int i = vehicledata.getLightsState();
+							vehicledata.setLightsState(++i > 3 ? 0 : i < 0 ? 0 : i);
+							if(this.trailer != null){
+								this.trailer.getVehicleData().setLightsState(vehicledata.getLightsState());
+							}
+							switch(vehicledata.getLightsState()){
+								case 0:{
+									Print.chat(player, "Lights Off.");
+									break;
+								}
+								case 1:{
+									Print.chat(player, "Lights On.");
+									break;
+								}
+								case 2:{
+									Print.chat(player, "(Long) Lights On.");
+									break;
+								}
+								case 3:{
+									Print.chat(player, "(Fog) Lights On.");
+									break;
+								}
+							}
+							doorToggleTimer = 10;
+							NBTTagCompound nbt = new NBTTagCompound();
+							nbt.setString("task", "lights_toggle");
+							nbt.setInteger("lightsstate", vehicledata.getLightsState());
+							ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+						}
+					}
+					return true;
 				}
 			}
 			return false;
@@ -1006,6 +1042,10 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 				}
 				case "update_vehicledata":{
 					this.vehicledata.readFromNBT(pkt.nbt, world.isRemote);
+					break;
+				}
+				case "lights_toggle":{
+					this.vehicledata.setLightsState(pkt.nbt.getInteger("lightsstate"));
 					break;
 				}
 			}

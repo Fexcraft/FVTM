@@ -2,10 +2,19 @@ package net.fexcraft.mod.fvtm.render.entity;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.mod.addons.gep.attributes.LightProviderAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.lib.tmt.Model;
+import net.fexcraft.mod.lib.tmt.ModelConverter;
+import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.math.Pos;
+import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -28,6 +37,15 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 	
 	public void bindTexture(ResourceLocation rs){
 		super.bindTexture(rs);
+	}
+	
+	private static final ModelRendererTurbo light = new ModelRendererTurbo(new ModelConverter());
+	private static final ModelRendererTurbo light2 = new ModelRendererTurbo(new ModelConverter());
+	static {
+		//light.flip = true;
+		light.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
+		light2.flip = true;
+		light2.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
 	}
 	
 	@Override
@@ -66,6 +84,54 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 				}
 			}
 			GL11.glPopMatrix();
+			//
+			if(vehicle.getVehicleData().getLightsState() > 0){
+				GL11.glPushMatrix();
+					Model.bindTexture(Resources.NULL_TEXTURE);
+					GlStateManager.enableBlend();
+			        GlStateManager.disableAlpha();
+			        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+			        GlStateManager.depthMask(false);
+			        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 50f, 50f);
+			        //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
+			        Minecraft.getMinecraft().entityRenderer.setupFogColor(true);
+			        vehicle.getVehicleData().getParts().values().forEach(part -> {
+			        	if(part.getPart().getAttribute(LightProviderAttribute.class) != null){
+			        		LightProviderAttribute attr = part.getPart().getAttribute(LightProviderAttribute.class);
+			        		attr.getLightsOfType("normal").forEach(light -> {
+			        			light.render();
+			        		});
+			        		attr.getLightsOfType("rear").forEach(light -> {
+			        			light.updateColorIfMissing(RGB.RED);
+			        			light.render();
+			        		});
+			        		if(vehicle.getVehicleData().getLightsState() == 1){
+				        		attr.getLightsOfType("front").forEach(light -> {
+				        			light.render();
+				        		});
+			        		}
+			        		if(vehicle.getVehicleData().getLightsState() == 2){
+			        			attr.getLightsOfType("long").forEach(light -> {
+				        			light.render();
+				        		});
+			        		}
+			        		if(vehicle.getVehicleData().getLightsState() == 3){
+			        			attr.getLightsOfType("fog").forEach(light -> {
+				        			light.render();
+				        		});
+			        		}
+			        	}
+			        });
+					Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
+			        int i = vehicle.getBrightnessForRender();
+			        int j = i % 65536;
+			        int k = i / 65536;
+			        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
+			        GlStateManager.depthMask(true);
+			        GlStateManager.disableBlend();
+			        GlStateManager.enableAlpha();
+				GL11.glPopMatrix();
+			}
 		}
 		GL11.glPopMatrix();
 	}

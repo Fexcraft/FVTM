@@ -80,6 +80,7 @@ public class Resources {
 	public static TreeMap<String, JsonObject> PRESETS = new TreeMap<String, JsonObject>();
 	public static IForgeRegistry<Attribute> PARTATTRIBUTES;// = (IForgeRegistry<Attribute>)new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
 	public static ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entities/null_texture.png");
+	public static ResourceLocation TRANSPARENT_TEXTURE = new ResourceLocation("fvtm:textures/entities/transparent_texture.png");
 	private final File configpath, addonconfig;
 	private Method method;
 	

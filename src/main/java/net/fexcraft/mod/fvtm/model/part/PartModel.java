@@ -22,6 +22,9 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 
 public class PartModel<T extends VehicleData> extends Model<VehicleData> {
@@ -47,6 +50,12 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 	public ModelRendererTurbo track_wheels[] = new ModelRendererTurbo[0];
 	public ModelRendererTurbo track_wheels_right[] = new ModelRendererTurbo[0];
 	public ModelRendererTurbo track_wheels_left[] = new ModelRendererTurbo[0];
+	//
+	public ModelRendererTurbo lights[] = new ModelRendererTurbo[0];
+	public ModelRendererTurbo front_lights[] = new ModelRendererTurbo[0];
+	public ModelRendererTurbo back_lights[] = new ModelRendererTurbo[0];
+	public ModelRendererTurbo reverse_lights[] = new ModelRendererTurbo[0];
+	public ModelRendererTurbo fog_lights[] = new ModelRendererTurbo[0];
 	//
 	public ArrayList<String> creators = new ArrayList<String>();
 	
@@ -135,7 +144,9 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		render(track_wheels);
 		render(track_wheels_right);
 		render(track_wheels_left);
-		
+		//
+		render(lights);
+		render(reverse_lights);
 	}
 	
 	public void render(VehicleData data, String usedAS, Entity vehicle){
@@ -218,7 +229,32 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 			element.rotateAngleZ = ent.getWheelsAngle();
 			element.render();
 		}
-		
+		//
+		boolean s1 = data.getLightsState() > 0, s3 = data.getLightsState() > 2, sr = ent.getThrottle() < -0.01;
+		{
+			if(s1){ lightOff(vehicle); }
+			render(lights);
+			render(front_lights);
+			//render(back_lights);
+			if(s1){ lightOn(vehicle); }
+		}
+		{
+			if(s1 || sr){ lightOff(vehicle); }
+			render(back_lights);
+			if(s1 || sr){ lightOn(vehicle); }
+		}
+		{
+			if(s3){ lightOff(vehicle); }
+			render(fog_lights);
+			if(s3){ lightOn(vehicle); }
+		}
+		{
+			if(sr){ lightOff(vehicle); }
+			//render(back_lights);
+			render(reverse_lights);
+			if(sr){ lightOn(vehicle); }
+		}
+		//
 		//Particles
 		/*if(vehicle.throttle != 0 && data.parts.get(usedAS).pspawners != null){
 			PartType part = data.parts.get(usedAS);
@@ -282,6 +318,40 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		com.flansmod.common.vector.Vector3f rel = vehicle.axes.findLocalVectorGlobally(loc);
 		return new Vec3d(vehicle.posX + rel.x, vehicle.posY + rel.y, vehicle.posZ + rel.z);
 	}*/
+	
+	/**
+	 * > "based on" spider eyes
+	 * */
+	protected void lightOn(Entity ent){
+		//GL11.glEnable(GL11.GL_LIGHTING);
+		//GL11.glPopMatrix();
+		//
+		Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
+        int i = ent.getBrightnessForRender();
+        int j = i % 65536;
+        int k = i / 65536;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+	}
+	protected void lightOff(Entity ent){
+		//GL11.glPushMatrix();
+		//GL11.glDisable(GL11.GL_LIGHTING);
+		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
+		//
+		GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+        if(ent.isInvisible()){
+            GlStateManager.depthMask(false);
+        }
+        else{
+            GlStateManager.depthMask(true);
+        }
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        Minecraft.getMinecraft().entityRenderer.setupFogColor(true);
+	}
 	
 	public void rotate(ModelRendererTurbo[] part, float x, float y, float z, boolean mode){
 		if(!mode){

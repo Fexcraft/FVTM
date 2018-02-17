@@ -1,6 +1,6 @@
 //This File was created with the Minecraft-SMP Modelling Toolbox 2.3.0.0
 // Copyright (C) 2017 Minecraft-SMP.de
-// This file is for FVM
+// This file is for FVTM
 
 // Model: C2 Type P
 // Model Creator: FEX___96
@@ -9,10 +9,11 @@
 
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelC5 extends VehicleModel {
+public class ModelC5 extends VehicleModel<VehicleData> {
 
 	int textureX = 512;
 	int textureY = 512;

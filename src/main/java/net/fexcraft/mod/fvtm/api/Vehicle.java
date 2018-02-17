@@ -186,6 +186,16 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		@Nullable
 		public Pos getRearConnector();
 		
+		/**
+		 * 0 = off
+		 * 1 = on
+		 * 2 = long (?)
+		 * 3 = fog lights (?)
+		 * */
+		public int getLightsState();
+		
+		public void setLightsState(int i);
+		
 	}
 	
 	//<-- VEHICLE ITEM -->//

@@ -37,7 +37,7 @@ import net.minecraft.util.ResourceLocation;
 public class GenericVehicleData implements VehicleData {
 	
 	private Vehicle vehicle;
-	private int sel, keys;
+	private int sel, keys, lights;
 	//private double tank;
 	private String url, lockcode;
 	private ResourceLocation custom;
@@ -52,6 +52,7 @@ public class GenericVehicleData implements VehicleData {
 	public GenericVehicleData(Vehicle veh){
 		this.vehicle = veh;
 		//
+		this.lights = 0;
 		this.primary = new RGB(RGB.WHITE);
 		this.secondary = new RGB(RGB.WHITE);
 	}
@@ -78,6 +79,7 @@ public class GenericVehicleData implements VehicleData {
 		compound.setInteger("SelectedTexture", sel);
 		compound.setString("CustomTexture", isexternal ? url == null ? "" : url : custom == null ? "minecraft:stone" : custom.toString());
 		compound.setBoolean("IsTextureExternal", isexternal);
+		compound.setInteger("LightsState", lights);
 		//compound.setDouble("FuelTank", tank);
 		if(parts.size() > 0){
 			NBTTagList list = new NBTTagList();
@@ -127,6 +129,7 @@ public class GenericVehicleData implements VehicleData {
 		isexternal = compound.getBoolean("IsTextureExternal");
 		url = isexternal ? compound.getString("CustomTexture") : null;
 		custom = isexternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
+		lights = compound.getInteger("LightsState");
 		//this.tank = compound.getDouble("FuelTank");
 		if(compound.hasKey("Parts")){
 			NBTTagList list = (NBTTagList)compound.getTag("Parts");
@@ -414,6 +417,16 @@ public class GenericVehicleData implements VehicleData {
 	@Override
 	public Pos getRearConnector(){
 		return rearConnector;
+	}
+
+	@Override
+	public int getLightsState(){
+		return lights;
+	}
+
+	@Override
+	public void setLightsState(int i){
+		lights = i;
 	}
 	
 }

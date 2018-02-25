@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 /**
  * 
  * Currently shipped together with FVTM,
- * separate is distribution forbidden.
+ * separate distribution is forbidden.
  * 
  * @author Ferdinand (FEX___96)
  *

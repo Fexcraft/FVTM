@@ -68,6 +68,7 @@ item.fvp:c7.name=C7
 item.fvp:c4z1.name=C4-Z1
 item.fvp:ab1.name=AB1-B
 item.fvp:c5.name=C5
+item.fvp:c1r1.name=C1-R1
 
 #Containers
 item.fvp:container_medium.name=Medium Container

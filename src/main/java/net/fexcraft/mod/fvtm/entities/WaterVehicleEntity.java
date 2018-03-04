@@ -629,7 +629,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 						wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
 						wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
 					}
-					else if(vehicledata.getVehicle().getDriveType().isFWD() || vehicledata.getVehicle().getDriveType().is4WD()){
+					/*else if(vehicledata.getVehicle().getDriveType().isFWD() || vehicledata.getVehicle().getDriveType().is4WD()){
 						if(wheel.wheelid == 2 || wheel.wheelid == 3){
 							velocityScale = 0.1F * throttle * (throttle > 0 ? vehicledata.getVehicle().getFMMaxPositiveThrottle() : vehicledata.getVehicle().getFMMaxNegativeThrottle()) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
 							wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
@@ -659,9 +659,21 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 							//wheels[wheel.wheelid - 2].motionZ *= 0.9F;
 						}
 						//This is surely wrong.
-					}
+					}*/
 					else{
+						velocityScale = 0.1F * throttle * (throttle > 0 ? vehicledata.getVehicle().getFMMaxPositiveThrottle() : vehicledata.getVehicle().getFMMaxNegativeThrottle()) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
+						wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
+						wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
 						//
+						if(wheel.wheelid == 2 || wheel.wheelid == 3){
+							velocityScale = 0.01F * (wheelsYaw > 0 ? vehicledata.getVehicle().getFMTurnLeftModifier() : vehicledata.getVehicle().getFMTurnRightModifier()) * (throttle > 0 ? 1 : -1);
+							wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
+							wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
+						}
+						else{
+							wheel.motionX *= 0.9F;
+							wheel.motionZ *= 0.9F;
+						}
 					}
 				}
 			}

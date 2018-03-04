@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.impl;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
@@ -109,7 +110,12 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 				tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
 				tooltip.add(Formatter.format("&6Model by:"));
 				for(String string : veh.getVehicle().getModel().creators){
-					tooltip.add(Formatter.format("&7- &3" + string));
+					try{
+						tooltip.add(Formatter.format("&7- &3" + UUID.fromString(string)));
+					}
+					catch(Exception e){
+						tooltip.add(Formatter.format("&7- &3" + string));
+					}
 				}
 			}
 			tooltip.add(Formatter.format("&9Ready to Spawn: " + (veh.readyToSpawn() ? "&ayes" : "&cno")));

@@ -30,7 +30,8 @@ public class PartViewInstalledScreen extends ConstructorScreen {
 			}
 		}
 		if(button.isReset()){
-			Map.Entry<String, Part.PartData> entry = (Map.Entry<String, Part.PartData>) tileentity.getVehicleData().getParts().entrySet().toArray()[tileentity.getSelPart()];
+			@SuppressWarnings("unchecked")
+			Map.Entry<String, Part.PartData> entry = (Map.Entry<String, Part.PartData>) tileentity.getVehicleData().getParts().values().toArray()[tileentity.getSelPart()];
 			if(entry.getValue().getPart().isRemovable()){
 				tileentity.getVehicleData().getParts().remove(entry.getKey());
 				//

@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.impl;
 
 import java.util.List;
-import java.util.UUID;
-
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Fuel;
@@ -11,6 +9,7 @@ import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
+import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
@@ -90,7 +89,7 @@ public class GenericMaterialItem extends MaterialItem implements FuelItem {
         		}
 				if(material.isVehicleKey()){
 					nbt.setBoolean("VehicleKeyType", false);
-					nbt.setString("VehicleKeyCode", this.getNewKeyCode());
+					nbt.setString("VehicleKeyCode", KeyItem.getNewKeyCode());
 					nbt.setString("VehicleKeyCreator", Static.NULL_UUID_STRING);
 				}
         		stack.setTagCompound(nbt);

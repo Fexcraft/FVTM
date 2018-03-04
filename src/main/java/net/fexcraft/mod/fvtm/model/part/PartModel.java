@@ -101,6 +101,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 
 	public void render(VehicleData data, String usedAS){
 		//TODO if(data.getPart(usedAS).getAttributeData(null))
+		
 		//Vehicle Body
 		render(body);
 		if(data.doorsOpen()){
@@ -111,25 +112,27 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		}
 		
 		//Render Primary Color Things
-		data.getPrimaryColor().glColorApply();
-		render(bodyColoredPrimary);
-		if(data.doorsOpen()){
-			render(bodyDoorOpenColoredPrimary);
+		if(rq(bodyColoredPrimary, bodyDoorCloseColoredPrimary, bodyDoorOpenColoredPrimary)){
+			data.getPrimaryColor().glColorApply();
+			render(bodyColoredPrimary);
+			if(data.doorsOpen()){
+				render(bodyDoorOpenColoredPrimary);
+			}
+			else{
+				render(bodyDoorCloseColoredPrimary);
+			}
+			RGB.glColorReset();
 		}
-		else{
-			render(bodyDoorCloseColoredPrimary);
-		}
-		RGB.glColorReset();
 		
 		//Render Secondary Color Things
-		data.getSecondaryColor().glColorApply();
-		render(bodyColoredSecondary);
-		RGB.glColorReset();
+		if(rq(bodyColoredSecondary)){
+			data.getSecondaryColor().glColorApply();
+			render(bodyColoredSecondary);
+			RGB.glColorReset();
+		}
 		
-		//Render Turret
+		//Render Other
 		render(turret);
-		
-		//TODO
 		render(steering);
 		
 		//Render Wheels
@@ -146,7 +149,10 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		render(track_wheels_left);
 		//
 		render(lights);
+		render(front_lights);
+		render(back_lights);
 		render(reverse_lights);
+		render(fog_lights);
 	}
 	
 	public void render(VehicleData data, String usedAS, Entity vehicle){
@@ -161,20 +167,24 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		}
 		
 		//Render Primary Color Things
-		data.getPrimaryColor().glColorApply();
-		render(bodyColoredPrimary);
-		if(data.doorsOpen()){
-			render(bodyDoorOpenColoredPrimary);
+		if(rq(bodyColoredPrimary, bodyDoorCloseColoredPrimary, bodyDoorOpenColoredPrimary)){
+			data.getPrimaryColor().glColorApply();
+			render(bodyColoredPrimary);
+			if(data.doorsOpen()){
+				render(bodyDoorOpenColoredPrimary);
+			}
+			else{
+				render(bodyDoorCloseColoredPrimary);
+			}
+			RGB.glColorReset();
 		}
-		else{
-			render(bodyDoorCloseColoredPrimary);
-		}
-		RGB.glColorReset();
 		
 		//Render Secondary Color Things
-		data.getSecondaryColor().glColorApply();
-		render(bodyColoredSecondary);
-		RGB.glColorReset();
+		if(rq(bodyColoredSecondary)){
+			data.getSecondaryColor().glColorApply();
+			render(bodyColoredSecondary);
+			RGB.glColorReset();
+		}
 		
 		//Render Turret
 		render(turret);
@@ -232,27 +242,35 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		//
 		boolean s1 = data.getLightsState() > 0, s3 = data.getLightsState() > 2, sr = ent.getThrottle() < -0.01;
 		{
-			if(s1){ lightOff(vehicle); }
-			render(lights);
-			render(front_lights);
-			//render(back_lights);
-			if(s1){ lightOn(vehicle); }
+			if(rq(lights, front_lights)){
+				if(s1){ lightOff(vehicle); }
+				render(lights);
+				render(front_lights);
+				//render(back_lights);
+				if(s1){ lightOn(vehicle); }
+			}
 		}
 		{
-			if(s1 || sr){ lightOff(vehicle); }
-			render(back_lights);
-			if(s1 || sr){ lightOn(vehicle); }
+			if(rq(back_lights)){
+				if(s1 || sr){ lightOff(vehicle); }
+				render(back_lights);
+				if(s1 || sr){ lightOn(vehicle); }
+			}
 		}
 		{
-			if(s3){ lightOff(vehicle); }
-			render(fog_lights);
-			if(s3){ lightOn(vehicle); }
+			if(rq(fog_lights)){
+				if(s3){ lightOff(vehicle); }
+				render(fog_lights);
+				if(s3){ lightOn(vehicle); }
+			}
 		}
 		{
-			if(sr){ lightOff(vehicle); }
-			//render(back_lights);
-			render(reverse_lights);
-			if(sr){ lightOn(vehicle); }
+			if(rq(reverse_lights)){
+				if(sr){ lightOff(vehicle); }
+				//render(back_lights);
+				render(reverse_lights);
+				if(sr){ lightOn(vehicle); }
+			}
 		}
 		//
 		//Particles
@@ -297,6 +315,15 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		}*/
 	}
 	
+	private boolean rq(ModelRendererTurbo[]... turbos){
+		for(ModelRendererTurbo[] turbo : turbos){
+			if(turbo != null && turbo.length > 0){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/*protected static IBlockState getBlockToRender(int index, VehicleData data){
 		if(data.container.getStackInSlot(index).isEmpty()){
 			return Blocks.AIR.getDefaultState();

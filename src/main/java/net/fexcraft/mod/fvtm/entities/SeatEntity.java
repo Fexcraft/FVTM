@@ -151,8 +151,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		this.lastTickPosX = this.prevPosX = posX; this.lastTickPosY = this.prevPosY = posY; this.lastTickPosZ = this.prevPosZ = posZ;
 
 		if(this.getControllingPassenger() != null){
-			Vec3d yOffset = vehicle.getAxes().getRelativeVector(new Vec3d(0, this.getControllingPassenger().getEyeHeight() * 3 / 4, 0)).subtract(0, this.getControllingPassenger().getEyeHeight(), 0);
-			pass_x = posX + yOffset.x; pass_y = posY + yOffset.y; pass_z = posZ + yOffset.z;
+			pass_x = posX; pass_y = posY - 0.5; pass_z = posZ;
 			this.updatePassenger();
 			//
 			VehicleAxes globalLookAxes = vehicle.getAxes().getRelativeVector(passlooking);

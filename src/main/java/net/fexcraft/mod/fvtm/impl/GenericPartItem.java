@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -69,7 +70,12 @@ public class GenericPartItem extends Item implements PartItem {
 				tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
 				tooltip.add(Formatter.format("&6Model by:"));
 				for(String string : part.getPart().getModel().creators){
-					tooltip.add(Formatter.format("&7- &3" + string));
+					try{
+						tooltip.add(Formatter.format("&7- &3" + UUID.fromString(string)));
+					}
+					catch(Exception e){
+						tooltip.add(Formatter.format("&7- &3" + string));
+					}
 				}
 			}
 			if(part.getPart().getScripts().size() > 0){

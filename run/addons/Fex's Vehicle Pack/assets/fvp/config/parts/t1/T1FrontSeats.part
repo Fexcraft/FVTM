@@ -16,8 +16,8 @@
     "Available": false,
     "AttributeData":{
         "FM-Seats":[
-            { "x": 33, "y": 12, "z":  6 },
-            { "x": 33, "y": 12, "z": 14 }
+            { "x": 33, "y": 15, "z":  6 },
+            { "x": 33, "y": 15, "z": 14 }
         ]    
     },
      "Recipes":[

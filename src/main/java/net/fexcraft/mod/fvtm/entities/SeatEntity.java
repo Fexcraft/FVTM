@@ -481,6 +481,21 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 	public void applyEntityCollision(Entity entity){
 		return;
 	}
+	
+	@Override
+	public boolean shouldRiderSit(){
+        return true;//TODO add a config option for this
+    }
+	
+	@Override
+	public boolean canRiderInteract(){
+        return super.canRiderInteract();//TODO test this
+    }
+	
+	@Override
+	public AxisAlignedBB getCollisionBox(Entity entity){
+		return null;//entity.getEntityBoundingBox();
+	}
 
 	@Override
 	public boolean canBePushed(){

@@ -34,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -187,8 +188,13 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	
 	@Override
 	public AxisAlignedBB getCollisionBox(Entity entity){
-		return entity.getEntityBoundingBox();
+		return null;//entity.getEntityBoundingBox();
 	}
+	
+	@Override
+    public boolean isNonBoss(){
+        return false;
+    }
 
 	@Override
     public boolean canBePushed(){
@@ -199,6 +205,11 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	public double getMountedYOffset(){
 		return 0D;
 	}
+	
+	@Override
+    public SoundCategory getSoundCategory(){
+        return SoundCategory.NEUTRAL;
+    }
 	
 	@Override
     public double getYOffset(){
@@ -244,7 +255,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 
 	@Override
 	public boolean canBeCollidedWith(){
-		return !isDead;
+		return true;
 	}
 	
 	@Override
@@ -325,14 +336,14 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			}
 			switch(key){
 				case 0:{//Accelerate;
-					throttle += 0.01F;
+					throttle += 0.005F;
 					if(throttle > 1F){
 						throttle = 1F;
 					}
 					return true;
 				}
 				case 1:{//Decelerate
-					throttle -= 0.01F;
+					throttle -= 0.005F;
 					if(throttle < -1F){
 						throttle = -1F;
 					}

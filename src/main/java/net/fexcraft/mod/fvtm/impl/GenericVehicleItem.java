@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.util.SpawnCmd;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.util.ITooltipFlag;
@@ -111,7 +112,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 				tooltip.add(Formatter.format("&6Model by:"));
 				for(String string : veh.getVehicle().getModel().creators){
 					try{
-						tooltip.add(Formatter.format("&7- &3" + UUID.fromString(string)));
+						tooltip.add(Formatter.format("&7- &3" + Static.getPlayerNameByUUID(UUID.fromString(string))));
 					}
 					catch(Exception e){
 						tooltip.add(Formatter.format("&7- &3" + string));

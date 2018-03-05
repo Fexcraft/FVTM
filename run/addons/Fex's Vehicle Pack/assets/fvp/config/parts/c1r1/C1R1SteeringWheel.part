@@ -1,0 +1,20 @@
+{
+    "RegistryName": "fvp:c1r1_steering_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC1R1ST.class",
+    "FullName": "C1R1 Steering Wheel",
+    "Category": [
+        "steering_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c1_r1.png"
+    ],
+    "Removable": false,
+    "Avaiable": false,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c1r1",
+            "x": 0, "y": 0, "z": 0
+        }
+    ]
+}

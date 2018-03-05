@@ -72,7 +72,7 @@ public class GenericMaterialItem extends MaterialItem implements FuelItem {
 				}*/
 				tooltip.add(Formatter.format("&9KeyType: &7" + (stack.getTagCompound().getBoolean("VehicleKeyType") ? "Admin/Universal" : "Common/Normal")));
 				tooltip.add(Formatter.format("&9KeyCode: &7" + stack.getTagCompound().getString("VehicleKeyCode")));
-				tooltip.add(Formatter.format("&9KeyCreator: &7" + stack.getTagCompound().getString("VehicleKeyCreator")));
+				tooltip.add(Formatter.format("&9KeyCreator: &7" + Static.getPlayerNameByUUID(stack.getTagCompound().getString("VehicleKeyCreator"))));
 			}
 		}
     }

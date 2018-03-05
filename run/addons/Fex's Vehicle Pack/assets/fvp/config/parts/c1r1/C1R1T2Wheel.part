@@ -1,0 +1,47 @@
+{
+    "RegistryName": "fvp:c1r1t2_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC1R1T2Wheel.class",
+    "FullName": "C1R1T2 Wheel",
+    "Category": [
+        "exchange_wheel",
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel"
+    ],
+    "Attributes": [
+        "adjustable_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c1_r1.png"
+    ],
+    "Removable": true,
+    "Available": false,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c1r1",
+            "Offset": {"x":0,"y":0,"z":0}
+        }
+    ],
+    "AttributeData":{
+    	"Adjustable-Wheel-Positions":[
+    		{
+    			"part":"left_front_wheel",
+    			"x": 43.5, "y": -0.5, "z": -17
+    		},
+    		{
+    			"part":"right_front_wheel",
+    			"x": 43.5, "y": -0.5, "z": 17
+    		},
+    		{
+    			"part":"left_back_wheel",
+    			"x": -43.5, "y": -0.5, "z": -17
+    		},
+    		{
+    			"part":"right_back_wheel",
+    			"x": -43.5, "y": -0.5, "z": 17
+    		}
+    	]
+    }
+}

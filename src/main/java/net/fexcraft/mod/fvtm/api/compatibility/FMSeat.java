@@ -13,6 +13,7 @@ public class FMSeat {
 	private int id;
 	public double maxyaw, minyaw;
 	public double maxpitch, minpitch;
+	public boolean sitting;
 	
 	public FMSeat(JsonObject obj){
 		pos = Pos.fromJSON(obj);
@@ -24,6 +25,7 @@ public class FMSeat {
 		minyaw = JsonUtil.getIfExists(obj, "min_yaw", -360).doubleValue();
 		maxpitch = JsonUtil.getIfExists(obj, "max_pitch", 89).doubleValue();
 		minpitch = JsonUtil.getIfExists(obj, "min_pitch", -89).doubleValue();
+		sitting = JsonUtil.getIfExists(obj, "sitting", true);
 	}
 
 	public Pos getPos(){
@@ -51,6 +53,7 @@ public class FMSeat {
 		nbt.setDouble("minyaw", minyaw);
 		nbt.setDouble("maxpitch", maxpitch);
 		nbt.setDouble("minpitch", minpitch);
+		nbt.setBoolean("sitting", sitting);
 		return nbt;
 	}
 	
@@ -60,6 +63,7 @@ public class FMSeat {
 		minyaw = nbt.getDouble("minyaw");
 		maxpitch = nbt.getDouble("maxpitch");
 		minpitch = nbt.getDouble("minpitch");
+		sitting = nbt.getBoolean("sitting");
 	}
 	
 }

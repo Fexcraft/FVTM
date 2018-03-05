@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -71,7 +72,7 @@ public class GenericPartItem extends Item implements PartItem {
 				tooltip.add(Formatter.format("&6Model by:"));
 				for(String string : part.getPart().getModel().creators){
 					try{
-						tooltip.add(Formatter.format("&7- &3" + UUID.fromString(string)));
+						tooltip.add(Formatter.format("&7- &3" + Static.getPlayerNameByUUID(UUID.fromString(string))));
 					}
 					catch(Exception e){
 						tooltip.add(Formatter.format("&7- &3" + string));

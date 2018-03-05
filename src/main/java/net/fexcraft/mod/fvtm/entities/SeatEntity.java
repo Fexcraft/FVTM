@@ -484,7 +484,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 	
 	@Override
 	public boolean shouldRiderSit(){
-        return true;//TODO add a config option for this
+        return seatdata == null ? true : seatdata.sitting;
     }
 	
 	@Override

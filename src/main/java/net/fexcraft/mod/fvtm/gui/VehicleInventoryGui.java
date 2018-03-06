@@ -173,7 +173,13 @@ public class VehicleInventoryGui {
 					for(int k = 0; k < 9; k++){
 						String str = (k + z) >= map.size() /*|| (k + z) < 0*/ ? null : (String)map.keySet().toArray()[k + z];
 						this.fontRenderer.drawString(str == null ? "" : str, i + 8, j + 22 + (k * 14), MapColor.BLACK_STAINED_HARDENED_CLAY.colorValue);
-						this.fontRenderer.drawString(str == null ? "" : this.fontRenderer.trimStringToWidth(map.get(str).getSettingValue(y, str).toString(), 32), i + 120, j + 22 + (k * 14), MapColor.GREEN_STAINED_HARDENED_CLAY.colorValue);
+						if(str == null){
+							this.fontRenderer.drawString(this.fontRenderer.trimStringToWidth("", 32), i + 120, j + 22 + (k * 14), MapColor.GREEN_STAINED_HARDENED_CLAY.colorValue);
+						}
+						else{
+							Object object = map.get(str).getSettingValue(y, str);
+							this.fontRenderer.drawString(this.fontRenderer.trimStringToWidth(object == null ? "null" : object.toString(), 32), i + 120, j + 22 + (k * 14), MapColor.GREEN_STAINED_HARDENED_CLAY.colorValue);
+						}
 					}
 					break;
 				}

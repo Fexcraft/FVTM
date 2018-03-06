@@ -82,7 +82,7 @@ public class RenderCustomItem {
 					break;
 				}
 				case HEAD:{
-					//TODO
+					//GL11.glTranslatef(0, 8, 0);
 					break;
 				}
 				default: break;

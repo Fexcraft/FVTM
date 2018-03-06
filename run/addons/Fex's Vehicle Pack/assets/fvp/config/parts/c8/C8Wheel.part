@@ -1,0 +1,24 @@
+{
+    "RegistryName": "fvp:c8_phwheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8PHW.class",
+    "FullName": "C8 Placeholder Wheel",
+    "Category": [
+        "exchange_wheel",
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c8.png"
+    ],
+    "Removable": true,
+    "Available": false,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c8",
+            "x": 0, "y": 0, "z": 0
+        }
+    ]
+}

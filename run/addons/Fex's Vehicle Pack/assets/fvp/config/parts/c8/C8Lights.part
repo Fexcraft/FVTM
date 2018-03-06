@@ -1,0 +1,15 @@
+{
+    "RegistryName": "fvp:c8_lights",
+    "Addon": "fvtm:fvp",
+    "FullName": "C8 Standard Lights",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8Lights.class",
+    "Category": [
+        "lights"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c8.png"
+    ],
+    "Compatible": [{ "Vehicle": "fvp:c8", "x": 0, "y": 0, "z": 0 }],
+    "Removable": true,
+    "Available": true
+}

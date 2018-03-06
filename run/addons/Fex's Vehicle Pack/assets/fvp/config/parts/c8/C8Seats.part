@@ -1,0 +1,26 @@
+{
+    "RegistryName": "fvp:c8_seats",
+    "FullName": "C8 Standard Seats",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8Seats.class",
+    "Category": [
+        "seats"
+    ],
+    "Attributes":[
+        "seat"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c8.png"
+    ],
+    "Removable": false,
+    "Available": false,
+    "AttributeData":{
+        "FM-Seats":[
+            { "x":   6, "y": 0, "z": -11, "driver": true },
+            { "x":   6, "y": 0, "z":  11 },
+            { "x": -14, "y": 0, "z": -11 },
+            { "x": -14, "y": 0, "z":  11 },
+            { "x": -14, "y": 0, "z":   0 }
+        ]    
+    }
+}

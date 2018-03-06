@@ -1,0 +1,20 @@
+{
+    "RegistryName": "fvp:c8_steering_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8ST.class",
+    "FullName": "C8 Steering Wheel",
+    "Category": [
+        "steering_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c8.png"
+    ],
+    "Removable": true,
+    "Avaiable": true,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:c8",
+            "x": 0, "y": 0, "z": 0
+        }
+    ]
+}

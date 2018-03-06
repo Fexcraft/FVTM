@@ -204,6 +204,12 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 		Vec3d lookVec = posVec.addVector(sinYaw * cosPitch * length, sinPitch * length, cosYaw * cosPitch * length);
 		RayTraceResult movingobjectposition = world.rayTraceBlocks(posVec, lookVec, true);
 		if(movingobjectposition == null){
+			/*ItemStack stack = player.getHeldItem(hand);
+	        if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()){
+	            player.setItemStackToSlot(EntityEquipmentSlot.HEAD, stack.copy());
+	            stack.setCount(0);
+	            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+	        }*/
 			return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
 		}
 		if(movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK){

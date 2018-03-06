@@ -347,7 +347,7 @@ public class ModelC1R1T2Wheel extends PartModel<VehicleData> {
 	
 	@Override
 	public void render(VehicleData data, String us, Entity veh){
-		this.def_renderAdjustableWheels4(data, us, veh, false);
+		this.def_renderAdjustableWheels4(data, us, veh, true);
 	}
 	
 }

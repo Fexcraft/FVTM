@@ -104,6 +104,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 
 	public ResourceLocation getDefaultKey();
 	
+	//TODO public TreeMap<String, Pos> getWheels();
+	
 	//<-- VEHICLE DATA -->//
 	public static interface VehicleData {
 		

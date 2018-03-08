@@ -49,6 +49,7 @@ public class ConstructorRemoteGui extends GuiContainer {
 		//
 		for(int k = 0; k < 8; k++){
 			this.fontRenderer.drawString(Formatter.format((k == tile.selection ? "&6> &e" : "&7> &f") + tile.text[k]), i + 8, j + 8 + (k * 11), MapColor.GRAY.colorValue);
+			//Renderer.drawTextOutlined(fontRenderer, tile.text[k], i + 8, j + 8 + (k * 11), MapColor.GRAY.colorValue);
 		}
 	}
 	

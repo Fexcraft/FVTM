@@ -19,6 +19,7 @@ public class PartMenuScreen extends ConstructorScreen {
 			tileentity.updateSelection(button == ConstructorButton.ARROW_UP ? -1 : 1);
 		}
 		if(button.isSelect()){
+			tileentity.setScroll(0);
 			switch(tileentity.getSelection()){
 				case 2:{
 					tileentity.updateScreenId("part_view_installed");

@@ -27,6 +27,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int ADDON_MANAGER = 55;
 	public static final int CONSTRUCTOR_INPUT = 88;
 	public static final int VEHICLE_INVENTORY = 9910;
+	public static final int CONSTRUCTOR = 9000;//92110;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
@@ -38,9 +39,11 @@ public class GuiHandler implements IGuiHandler {
 				return new GenericPlaceholderContainer();
 			case 9910:
 				return new VehicleInventoryGui.Server(player, world, x, y, z);
-			default:
-				return null;
 		}
+		if(ID >= CONSTRUCTOR && ID < VEHICLE_INVENTORY){
+			return new GenericPlaceholderContainer();
+		}
+		return null;
 	}
 
 	@Override
@@ -66,9 +69,12 @@ public class GuiHandler implements IGuiHandler {
 					return null;
 				}
 			}
-			default:
-				return null;
 		}
+		if(ID >= CONSTRUCTOR && ID < VEHICLE_INVENTORY){
+			Print.debug("CREATING GUI!");
+			return new ConstructorMainGUI(ID, player, world, x, y, z);
+		}
+		return null;
 	}
 	
 	public static class SReceiver implements IPacketListener<PacketNBTTagCompound> {

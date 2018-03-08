@@ -49,4 +49,17 @@ public class Renderer {
         GlStateManager.popMatrix();
     }
 	
+	/** got this from <b>ebf</b>*/
+	public static void drawTextOutlined(FontRenderer font, String string, int x, int y, int color){
+        font.drawString(string, x - 1, y + 1, 0);
+        font.drawString(string, x    , y + 1, 0);
+        font.drawString(string, x + 1, y + 1, 0);
+        font.drawString(string, x - 1, y    , 0);
+        font.drawString(string, x + 1, y    , 0);
+        font.drawString(string, x - 1, y - 1, 0);
+        font.drawString(string, x    , y - 1, 0);
+        font.drawString(string, x + 1, y - 1, 0);
+        font.drawString(string,x,y,color);
+    }
+	
 }

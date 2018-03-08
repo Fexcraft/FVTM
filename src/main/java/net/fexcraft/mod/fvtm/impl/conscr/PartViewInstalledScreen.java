@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.api.ConstructorButton;
 import net.fexcraft.mod.fvtm.api.ConstructorEntity;
 import net.fexcraft.mod.fvtm.api.ConstructorScreen;
 import net.fexcraft.mod.fvtm.api.Part;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +24,7 @@ public class PartViewInstalledScreen extends ConstructorScreen {
 		}
 		if(button.isSelect()){
 			int sel = tileentity.getSelection() + tileentity.getScroll();
-			Part.PartData data = tileentity.getVehicleData().getParts().values().toArray(new Part.PartData[]{})[sel];
+			Part.PartData data = (PartData)tileentity.getVehicleData().getParts().values().toArray()[sel];
 			if(data != null){
 				tileentity.setSelPart(sel);
 				tileentity.updateScreenId("part_view_selected");
@@ -51,14 +52,15 @@ public class PartViewInstalledScreen extends ConstructorScreen {
 	}
 
 	@Override
-	public void getScreenUpdate(ConstructorEntity tileentity, NBTTagCompound compound) {
+	public void getScreenUpdate(ConstructorEntity tileentity, NBTTagCompound compound){
+		Object[] values = tileentity.getVehicleData().getParts().values().toArray();
 		for(int i = 0; i < tileentity.getRows(); i++){
 			int j = i + tileentity.getScroll();
 			if(j >= tileentity.getVehicleData().getParts().size()){
 				compound.setString("Text" + i, "[" + j + "]");
 			}
 			else{
-				Part.PartData data = tileentity.getVehicleData().getParts().values().toArray(new Part.PartData[]{})[j];
+				PartData data = (PartData)values[i];
 				compound.setString("Text" + i, "[" + j + "] " + data.getPart().getName());
 			}
 		}

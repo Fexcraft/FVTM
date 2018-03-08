@@ -59,6 +59,19 @@ item.fvp:c5_wheel.name=C5 Default Wheel
 item.fvp:c5_steering_wheel.name=C5 Default Steering Wheel
 item.fvp:c5_interior.name=C5 Interior
 item.fvp:c5_seats.name=C5 Default Seats
+item.fvp:c1r1_back_seats.name=C1R1 Back Seats
+item.fvp:c1r1_front_seats.name=C1R1 Front Seats
+item.fvp:c1r1_interior.name=C1R1 Standard Interior
+item.fvp:c1r1_lights.name=C1R1 Standard Lights
+item.fvp:c1r1_steering_wheel.name=C1R1 Steering Wheel
+item.fvp:c1r1t1_wheel.name=C1R1 Type 1 Wheel
+item.fvp:c1r1t2_wheel.name=C1R1 Type 2 Wheel
+item.fvp:c8_doors.name=C8 Standard Doors
+item.fvp:c8_interior.name=C8 Standard Interior
+item.fvp:c8_lights.name=C8 Standard Lights
+item.fvp:c8_seats.name=C8 Standard Seats
+item.fvp:c8_steering_wheel.name=C8 Steering Wheel
+item.fvp:c8_phwheel.name=C8 Placeholder Wheel
 
 #Vehicles
 item.fvp:t1.name=T1
@@ -69,6 +82,7 @@ item.fvp:c4z1.name=C4-Z1
 item.fvp:ab1.name=AB1-B
 item.fvp:c5.name=C5
 item.fvp:c1r1.name=C1-R1
+item.fvp:c8.name=C8
 
 #Containers
 item.fvp:container_medium.name=Medium Container

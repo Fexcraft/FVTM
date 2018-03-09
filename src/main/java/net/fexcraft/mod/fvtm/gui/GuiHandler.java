@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.ConstructorButton;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
+import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity.Server;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -15,6 +16,7 @@ import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -203,6 +205,16 @@ public class GuiHandler implements IGuiHandler {
 					((ConstructorControllerEntity.Server)player.world.getTileEntity(pos)).onButtonPress(conbutton, player, null);
 					break;
 				}
+				case "constructor_9000_init":{
+					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+					EntityPlayer player = (EntityPlayer)objs[0];
+					ConstructorControllerEntity.Server serv = (Server)player.world.getTileEntity(pos);
+					NBTTagCompound com = getPacketCompound("constructor_9000_get");
+					com.setBoolean("connected", serv.getCenterPos() != null);
+					com.setBoolean("paint", false);//TODO
+					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player);
+					break;
+				}
 			}
 		}
 		
@@ -253,6 +265,10 @@ public class GuiHandler implements IGuiHandler {
 						NBTTagCompound compound = (NBTTagCompound)nbtbase;
 						data.getPart(compound.getString("part")).getAttributeData(FuelTankExtensionAttributeData.class).setContent(compound.getDouble("amount"));
 					});
+					break;
+				}
+				case "constructor_9000_init":{
+					ConstructorMainGUI.processInitResponse(packet.nbt);
 					break;
 				}
 			}

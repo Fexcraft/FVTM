@@ -24,7 +24,7 @@ public class ConnectionStatus implements Window {
 	public void drawWindow(ConstructorMainGUI gui, Minecraft mc, int i, int j, int mouseX, int mouseY, float partialTicks){
 		mc.getTextureManager().bindTexture(texture);
 		gui.drawTexturedModalRect(i + 170, j + 115, 170, 115, 85, 64);
-		mc.fontRenderer.drawString(ConstructorMainGUI.connected ? "Connected" : "Disconnected", i + 174, j + 119, 14737632, false);
+		mc.fontRenderer.drawString(ConstructorMainGUI.connected ? "Connected" : "Disconnected", i + 174, j + 118, 14737632, false);
 		//
 		search.enabled = manual.enabled = !ConstructorMainGUI.connected;
 	}
@@ -67,21 +67,21 @@ public class ConnectionStatus implements Window {
 		search.setTexturePos(1, 98, 232);
 		search.setTexturePos(2, 177, 208);
 		search.setTexturePos(3, 98, 208);
-		search.setTextPos(i + 182, j + 129);
+		search.setTextPos(i + 182, j + 128);
 		manual = new GenericGuiButton(13, i + 173, j + 138, 79, 8, "Manual Conn..");
 		manual.setTexture(texture);
 		manual.setTexturePos(0, 177, 240);
 		manual.setTexturePos(1, 98, 240);
 		manual.setTexturePos(2, 177, 216);
 		manual.setTexturePos(3, 98, 216);
-		manual.setTextPos(i + 182, j + 139);
+		manual.setTextPos(i + 182, j + 138);
 		close = new GenericGuiButton(14, i + 173, j + 168, 79, 8, "Close");
 		close.setTexture(texture);
 		close.setTexturePos(0, 177, 248);
 		close.setTexturePos(1, 98, 248);
 		close.setTexturePos(2, 177, 224);
 		close.setTexturePos(3, 98, 224);
-		close.setTextPos(i + 182, j + 169);
+		close.setTextPos(i + 182, j + 168);
 		buttonList.add(search);
 		buttonList.add(manual);
 		buttonList.add(close);

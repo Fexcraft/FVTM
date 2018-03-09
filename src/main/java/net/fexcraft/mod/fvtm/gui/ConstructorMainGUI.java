@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import net.fexcraft.mod.fvtm.gui.windows.ConnectionStatus;
+import net.fexcraft.mod.fvtm.gui.windows.ConstructorStatus;
 import net.fexcraft.mod.fvtm.gui.windows.Window;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
@@ -22,20 +23,23 @@ import net.minecraft.world.World;
 public class ConstructorMainGUI extends GuiContainer {
 	
 	public static final TreeMap<String, Window> WINDOWPOOL = new TreeMap<>();
+	public static final int COLOR = 14737632;
 	static {
 		WINDOWPOOL.put("connection_status", new ConnectionStatus());
+		WINDOWPOOL.put("status", new ConstructorStatus());
 	}
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000.png");
 	public static EntityPlayer player;
-	private static BlockPos pos;
-	private static World world;
-	private static int id;
+	public BlockPos pos;
+	public static World world;
+	public static int id;
 	//
 	public static boolean menu = false, connected, paint;
 	public ArrayList<Window> windows = new ArrayList<Window>();
 	public static String title = "";
 	public static GuiButton time, conn, batt, resy, recy;
 	public static GenericGuiButton menub;
+	public static MenuButton menub0, menub1, menub2, menub3, menub4, menub5;
 
 	public ConstructorMainGUI(int iD, EntityPlayer ply, World w, int x, int y, int z){
 		super(new GenericPlaceholderContainer());
@@ -73,6 +77,7 @@ public class ConstructorMainGUI extends GuiContainer {
 		if(menu){
 			this.mc.getTextureManager().bindTexture(texture);
 			this.drawTexturedModalRect(i + 1, j + 115, 128, 192, 128, 64);
+			//menub0.drawButton(mc, mouseX, mouseY, partialTicks);
 		}
 	}
 	
@@ -92,6 +97,14 @@ public class ConstructorMainGUI extends GuiContainer {
 		this.buttonList.add(batt = new StatusButton(3, i + 199, j + 180, "battery"));
 		this.buttonList.add(resy = new StatusButton(4, i + 188, j + 180, "resync"));
 		this.buttonList.add(recy = new StatusButton(5, i + 177, j + 180, "recycle"));
+		this.buttonList.add(menub0 = new MenuButton(6, i + 12, j + 118, "Con. Status"));
+		this.buttonList.add(menub1 = new MenuButton(7, i + 12, j + 128, "Vehicle Data"));
+		this.buttonList.add(menub2 = new MenuButton(8, i + 12, j + 138, "Spraying Tool"));
+		this.buttonList.add(menub3 = new MenuButton(9, i + 12, j + 148, "Texture Tool"));
+		this.buttonList.add(menub4 = new MenuButton(10, i + 12, j + 158, "Part Manager"));
+		this.buttonList.add(menub5 = new MenuButton(11, i + 12, j + 168, "Shutdown"));
+		menub0.visible = menu; menub1.visible = menu; menub2.visible = menu;
+		menub3.visible = menu; menub4.visible = menu; menub5.visible = menu;
 	}
 	
 	@Override
@@ -106,7 +119,12 @@ public class ConstructorMainGUI extends GuiContainer {
 			switch(button.id){
 				case 1:{
 					menu = !menu;
-					//menub0.visible = menub0.enabled = menu;//TODO
+					menub0.visible = menub0.enabled = menu;
+					menub1.visible = menub1.enabled = menu;
+					menub2.visible = menub2.enabled = menu;
+					menub3.visible = menub3.enabled = menu;
+					menub4.visible = menub4.enabled = menu;
+					menub5.visible = menub5.enabled = menu;
 					break;
 				}
 				case 2:{
@@ -124,6 +142,15 @@ public class ConstructorMainGUI extends GuiContainer {
 				case 5:{
 					NBTTagCompound nbt = getPacketNBT("constructor_9000_recycle");
 					sendPacket(nbt);
+					break;
+				}
+				case 6:{
+					openWindow("status");
+					Print.debug("Opening Constructor Status.");
+					break;
+				}
+				case 11:{
+					Minecraft.getMinecraft().currentScreen = null;//TODO
 					break;
 				}
 				default: return;
@@ -193,6 +220,20 @@ public class ConstructorMainGUI extends GuiContainer {
 	    }
 		
 	}
+	
+	private static class MenuButton extends GuiButton {
+
+		public MenuButton(int buttonId, int x, int y, String buttonText){
+			super(buttonId, x, y, 114, 8, buttonText);
+		}
+		
+		@Override
+		public void drawButton(Minecraft mc, int mouseX, int mouseY, float pt){
+			if(!this.visible){ return; }
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+			mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(this.displayString, 114), x + 1, y, hovered ? 16777120 : 14737632, false);
+		}
+	}
 		
 	private static class StatusButton extends GuiButton {
 
@@ -239,8 +280,8 @@ public class ConstructorMainGUI extends GuiContainer {
 	}
 
 	public static void processInitResponse(NBTTagCompound nbt){
-		connected = nbt.getBoolean("connected");
-		paint = nbt.getBoolean("paint");
+		connected = nbt.hasKey("connected") ? nbt.getBoolean("connected") : false;
+		paint = nbt.hasKey("paint") ? nbt.getBoolean("paint") : false;
 		title = "";
 	}
 	

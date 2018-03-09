@@ -209,10 +209,28 @@ public class GuiHandler implements IGuiHandler {
 					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 					EntityPlayer player = (EntityPlayer)objs[0];
 					ConstructorControllerEntity.Server serv = (Server)player.world.getTileEntity(pos);
-					NBTTagCompound com = getPacketCompound("constructor_9000_get");
+					NBTTagCompound com = getPacketCompound("constructor_9000_init");
 					com.setBoolean("connected", serv.getCenterPos() != null);
-					com.setBoolean("paint", false);//TODO
+					com.setBoolean("paint", true);//TODO
 					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player);
+					break;
+				}
+				case "constructor_9000":{
+					if(packet.nbt.hasKey("payload")){
+						BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+						EntityPlayer player = (EntityPlayer)objs[0];
+						ConstructorControllerEntity.Server serv = (Server)player.world.getTileEntity(pos);
+						switch(packet.nbt.getString("payload")){
+							case "auto_connect":{
+								if(serv.getCenterPos() == null){
+									serv.scanAndConnect(player);
+									NBTTagCompound com = getPacketCompound("constructor_9000_init");
+									com.setBoolean("connected", serv.getCenterPos() != null);
+									PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player);
+								}
+							}
+						}
+					}
 					break;
 				}
 			}

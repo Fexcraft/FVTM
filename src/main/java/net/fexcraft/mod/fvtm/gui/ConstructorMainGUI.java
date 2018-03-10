@@ -66,9 +66,9 @@ public class ConstructorMainGUI extends GuiContainer {
 		//menub.drawButton(mc, mouseX, mouseY, partialTicks);
 		//conn.drawButton(mc, mouseX, mouseY, partialTicks);
 		if(windows.size() > 0){
-			windows.forEach(window -> {
-				window.drawWindow(this, mc, i, j, mouseX, mouseY, partialTicks);
-			});
+			for(int k = windows.size() - 1; k >= 0; k--){
+				windows.get(k).drawWindow(this, mc, i, j, mouseX, mouseY, partialTicks);
+			}
 		}
 		if(title != null && title.length() > 0){
 			mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(title, 122), i + 15, j + 181, 14737632, false);
@@ -162,6 +162,14 @@ public class ConstructorMainGUI extends GuiContainer {
 	}
 	
 	public void openWindow(String string){
+		menu = false;
+		menub0.visible = menub0.enabled = menu;
+		menub1.visible = menub1.enabled = menu;
+		menub2.visible = menub2.enabled = menu;
+		menub3.visible = menub3.enabled = menu;
+		menub4.visible = menub4.enabled = menu;
+		menub5.visible = menub5.enabled = menu;
+		//
 		if(windows.size() > 0 && windows.get(0).getId().equals(string)){
 			windows.get(0).close(this, string);
 			windows.remove(0);
@@ -173,12 +181,19 @@ public class ConstructorMainGUI extends GuiContainer {
 		Window win = WINDOWPOOL.get(string);
 		if(!(win == null)){
 			if(windows.contains(win)){
-				windows.remove(win);
-				//TODO put on front/0 instead
+				boolean b = windows.remove(win);
+				if(b){
+					windows.add(0, win);
+					win.toggleButtonState(this, true);
+					title = win.getTitle() == null ? title : win.getTitle();
+					return;
+				}
 			}
 			if(win.closesOther()){
 				windows.forEach(window -> {
-					window.close(this, win.getId());
+					if(!win.getId().equals(window.getId())){
+						window.close(this, win.getId());
+					}
 				});
 				windows.clear();
 			}

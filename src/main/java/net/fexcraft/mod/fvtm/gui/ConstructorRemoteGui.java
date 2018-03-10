@@ -5,10 +5,8 @@ import org.lwjgl.input.Keyboard;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.GenericGuiButton;
 import net.fexcraft.mod.lib.util.common.Print;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -20,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 public class ConstructorRemoteGui extends GuiContainer {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructorremotegui.png");
-	private static ConstructorControllerEntity.Client tile;
+	private static ConstructorControllerEntity tile;
 	private static EntityPlayer player;
 	private static BlockPos pos;
 	private static GenericGuiButton buttonHome;
@@ -32,7 +30,7 @@ public class ConstructorRemoteGui extends GuiContainer {
 	private static GenericGuiButton buttonSelect;
 	private static GenericGuiButton buttonRemove;
 
-	public ConstructorRemoteGui(ConstructorControllerEntity.Client ent, EntityPlayer entityplayer, BlockPos blockpos){
+	public ConstructorRemoteGui(ConstructorControllerEntity ent, EntityPlayer entityplayer, BlockPos blockpos){
 		super(new GenericPlaceholderContainer());
 		this.xSize = 158;
 		this.ySize = 109;
@@ -48,7 +46,7 @@ public class ConstructorRemoteGui extends GuiContainer {
 		this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 		//
 		for(int k = 0; k < 8; k++){
-			this.fontRenderer.drawString(Formatter.format((k == tile.selection ? "&6> &e" : "&7> &f") + tile.text[k]), i + 8, j + 8 + (k * 11), MapColor.GRAY.colorValue);
+			//this.fontRenderer.drawString(Formatter.format((k == tile.selection ? "&6> &e" : "&7> &f") + tile.text[k]), i + 8, j + 8 + (k * 11), MapColor.GRAY.colorValue);
 			//Renderer.drawTextOutlined(fontRenderer, tile.text[k], i + 8, j + 8 + (k * 11), MapColor.GRAY.colorValue);
 		}
 	}

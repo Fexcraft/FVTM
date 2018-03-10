@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.item.fItem;
 import net.fexcraft.mod.lib.util.common.Formatter;
@@ -77,7 +78,7 @@ public class ConstructorRemote extends Item {
 		ItemStack stack = player.getHeldItem(hand);
 		if(stack.hasTagCompound() && stack.getTagCompound().hasKey(NBTKEY)){
 			BlockPos pos = BlockPos.fromLong(stack.getTagCompound().getLong(NBTKEY));
-			player.openGui(FVTM.getInstance(), 9912, world, pos.getX(), pos.getY(), pos.getZ());
+			player.openGui(FVTM.getInstance(), GuiHandler.CONSTRUCTOR, world, pos.getX(), pos.getY(), pos.getZ());
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));

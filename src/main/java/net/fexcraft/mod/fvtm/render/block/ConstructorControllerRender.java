@@ -5,21 +5,19 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorController;
-import net.fexcraft.mod.fvtm.render.Renderer;
 import net.fexcraft.mod.lib.api.render.fTESR;
-import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
-public class ConstructorControllerRender extends TileEntitySpecialRenderer<ConstructorControllerEntity.Client> {
+public class ConstructorControllerRender extends TileEntitySpecialRenderer<ConstructorControllerEntity> {
 	
 	private static final ModelConstructorController model = new ModelConstructorController();
 	private static final RGB green = new RGB(161, 212, 144), orange = new RGB(224, 152, 36);
 	
 	@Override
-	public void render(ConstructorControllerEntity.Client te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
+	public void render(ConstructorControllerEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
     	GL11.glPushMatrix();
 		GL11.glTranslated(posX, posY, posZ);
 		Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorController.getTexture());
@@ -66,11 +64,11 @@ public class ConstructorControllerRender extends TileEntitySpecialRenderer<Const
 			model.steeringWheelModel[1].rotateAngleX = te.lift * Static.rad5;
 			model.render(model.steeringWheelModel);
 		}
-		this.setLightmapDisabled(true);
+		/*this.setLightmapDisabled(true);
 		for(int i = 0; i < 8; i++){
             Renderer.drawNameplate(this.getFontRenderer(), Formatter.format((i == te.selection ? "&e> " : "&7> ") + "&0" + te.text[i]), 0.09375f, -1.6775f + (i * 0.064f), 0.81f, 0, 0, 0, false, false);
 		}
-        this.setLightmapDisabled(false);
+        this.setLightmapDisabled(false);*/
 		//DEBUG
 		/*if(te.hitX != 0 && te.hitY != 0 && te.hitZ != 0){
 			GL11.glRotated(-d, 0, 1, 0);

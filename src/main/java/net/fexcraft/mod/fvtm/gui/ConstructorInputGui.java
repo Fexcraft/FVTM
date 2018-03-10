@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
 
-import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity.Client;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.minecraft.client.Minecraft;
@@ -29,7 +28,7 @@ public class ConstructorInputGui extends GuiContainer {
 
 	public ConstructorInputGui(EntityPlayer player, BlockPos pos){
 		super(new GenericPlaceholderContainer());
-		window = ((Client)player.world.getTileEntity(pos)).window;
+		window = "null";//((ConstructorControllerEntity)player.world.getTileEntity(pos)).window;
 		this.xSize = 256;
 		this.ySize = 32;
 		this.player = player;

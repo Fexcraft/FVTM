@@ -90,7 +90,8 @@ public class ConnectionStatus implements Window {
 	@Override
 	public void toggleButtonState(ConstructorMainGUI gui, boolean visible){
 		if(!visible){
-			gui.openWindow(getId());
+			gui.windows.remove(this);
+			this.close(gui, getId());
 		}
 	}
 

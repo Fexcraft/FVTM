@@ -3,10 +3,8 @@ package net.fexcraft.mod.fvtm.gui;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
-import net.fexcraft.mod.fvtm.api.ConstructorButton;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
-import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity.Server;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -27,7 +25,6 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 public class GuiHandler implements IGuiHandler {
 
 	public static final int ADDON_MANAGER = 55;
-	public static final int CONSTRUCTOR_INPUT = 88;
 	public static final int VEHICLE_INVENTORY = 9910;
 	public static final int CONSTRUCTOR = 9000;//92110;
 
@@ -36,8 +33,6 @@ public class GuiHandler implements IGuiHandler {
 		Print.debug("REQUEST " + ID + " | " + x + ", " + y + ", " + z + ";");
 		switch(ID){
 			case 55:
-			case 88:
-			case 9912:
 				return new GenericPlaceholderContainer();
 			case 9910:
 				return new VehicleInventoryGui.Server(player, world, x, y, z);
@@ -55,22 +50,8 @@ public class GuiHandler implements IGuiHandler {
 			case 55:
 				Print.debug("CREATING GUI!;");
 				return new AddonManagerGui(x, y, z);
-			case 88:
-				Print.debug("CREATING GUI!");
-				return new ConstructorInputGui(player, new BlockPos(x, y, z));
 			case 9910:
 				return new VehicleInventoryGui.Client(player, world, x, y, z);
-			case 9912:{
-				BlockPos pos = new BlockPos(x, y, z);
-				net.minecraft.tileentity.TileEntity ent = world.getTileEntity(pos);
-				if(ent != null && ent instanceof ConstructorControllerEntity.Client){
-					return new ConstructorRemoteGui((ConstructorControllerEntity.Client)ent, player, pos);
-				}
-				else{
-					Print.chat(player, "Constructor Controller not found. [" + x + "|" + y + "|" + z + "];");
-					return null;
-				}
-			}
 		}
 		if(ID >= CONSTRUCTOR && ID < VEHICLE_INVENTORY){
 			Print.debug("CREATING GUI!");
@@ -149,13 +130,6 @@ public class GuiHandler implements IGuiHandler {
 					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(tagc), (net.minecraft.entity.player.EntityPlayerMP)objs[0]);
 					Print.debug("S: " + tagc);
 					break;
-				case "constructor_input":{
-					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
-					String input = packet.nbt.getString("input");
-					EntityPlayer player = (EntityPlayer)objs[0];
-					((ConstructorControllerEntity.Server)player.world.getTileEntity(pos)).onButtonPress(ConstructorButton.INPUT, player, new String[]{input});
-					break;
-				}
 				case "open_gui":{
 					int gui = packet.nbt.getInteger("gui");
 					int[] args = packet.nbt.hasKey("args") ? packet.nbt.getIntArray("args") : new int[0];
@@ -163,54 +137,12 @@ public class GuiHandler implements IGuiHandler {
 					player.openGui(FVTM.getInstance(), gui, player.world, args.length >= 1 ? args[0] : 0, args.length >= 2 ? args[1] : 0, args.length >= 3 ? args[2] : 0);
 					break;
 				}
-				case "constructor_remote":{
-					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
-					int button = packet.nbt.getInteger("button");
-					EntityPlayer player = (EntityPlayer)objs[0];
-					ConstructorButton conbutton = ConstructorButton.NULL;
-					switch(button){
-						case 0:{
-							conbutton = ConstructorButton.HOME;
-							break;
-						}
-						case 1:{
-							conbutton = ConstructorButton.RETURN;
-							break;
-						}
-						case 2:{
-							conbutton = ConstructorButton.ARROW_LEFT;
-							break;
-						}
-						case 3:{
-							conbutton = ConstructorButton.ARROW_RIGHT;
-							break;
-						}
-						case 4:{
-							conbutton = ConstructorButton.ARROW_UP;
-							break;
-						}
-						case 5:{
-							conbutton = ConstructorButton.ARROW_DOWN;
-							break;
-						}
-						case 6:{
-							conbutton = ConstructorButton.SELECT;
-							break;
-						}
-						case 7:{
-							conbutton = ConstructorButton.REMOVE;
-							break;
-						}
-					}
-					((ConstructorControllerEntity.Server)player.world.getTileEntity(pos)).onButtonPress(conbutton, player, null);
-					break;
-				}
 				case "constructor_9000_init":{
 					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 					EntityPlayer player = (EntityPlayer)objs[0];
-					ConstructorControllerEntity.Server serv = (Server)player.world.getTileEntity(pos);
+					ConstructorControllerEntity serv = (ConstructorControllerEntity)player.world.getTileEntity(pos);
 					NBTTagCompound com = getPacketCompound("constructor_9000_init");
-					com.setBoolean("connected", serv.getCenterPos() != null);
+					com.setBoolean("connected", serv.center != null);
 					com.setBoolean("paint", true);//TODO
 					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player);
 					break;
@@ -219,13 +151,13 @@ public class GuiHandler implements IGuiHandler {
 					if(packet.nbt.hasKey("payload")){
 						BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 						EntityPlayer player = (EntityPlayer)objs[0];
-						ConstructorControllerEntity.Server serv = (Server)player.world.getTileEntity(pos);
+						ConstructorControllerEntity serv = (ConstructorControllerEntity)player.world.getTileEntity(pos);
 						switch(packet.nbt.getString("payload")){
 							case "auto_connect":{
-								if(serv.getCenterPos() == null){
+								if(serv.center == null){
 									serv.scanAndConnect(player);
 									NBTTagCompound com = getPacketCompound("constructor_9000_init");
-									com.setBoolean("connected", serv.getCenterPos() != null);
+									com.setBoolean("connected", serv.center != null);
 									PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player);
 								}
 							}

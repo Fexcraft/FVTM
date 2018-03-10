@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.blocks;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity.*;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
@@ -15,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ConstructorCenterEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 	
-	private ConstructorControllerEntity.Client link = null;
+	private ConstructorControllerEntity link = null;
 	private final int offset = 24;
 	private final int length = 4;
 	private BlockPos constructor;
@@ -23,7 +22,7 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 	public void link(BlockPos pos){
 		if(world.isRemote){
 			try{
-				link = (Client)world.getTileEntity(pos);
+				link = (ConstructorControllerEntity)world.getTileEntity(pos);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -36,7 +35,7 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 			nbt.setBoolean("reset", false);
 			ApiUtil.sendTileEntityUpdatePacket(world, this.pos, nbt);
 			//remind controller we're here
-			((Server)world.getTileEntity(constructor)).setCenterPos(this.pos);
+			((ConstructorControllerEntity)world.getTileEntity(constructor)).center = this.pos;
 		}
 	}
 	
@@ -76,7 +75,7 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 		return offset * 0.0625f;
 	}
 	
-	public ConstructorControllerEntity.Client getLink(){
+	public ConstructorControllerEntity getLink(){
 		return link;
 	}
 

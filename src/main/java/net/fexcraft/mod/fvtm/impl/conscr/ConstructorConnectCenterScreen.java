@@ -27,7 +27,7 @@ public class ConstructorConnectCenterScreen extends ConstructorScreen {
 						Print.chat(player, "&7Remove it to proceed.");
 					}
 					else{
-						((ConstructorControllerEntity.Server)tileentity).scanAndConnect(player);
+						((ConstructorControllerEntity)tileentity).scanAndConnect(player);
 					}
 					break;
 				}

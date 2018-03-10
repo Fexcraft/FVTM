@@ -2,11 +2,11 @@ package net.fexcraft.mod.fvtm.blocks;
 
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.ConstructorButton;
-import net.fexcraft.mod.fvtm.api.ConstructorScreen;
+import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
-import net.fexcraft.mod.fvtm.impl.conscr.*;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.item.PaintItem;
@@ -48,10 +48,9 @@ public class ConstructorController extends BlockContainer {
 		INSTANCE = this;
 		//
 		FVTM.getRegisterer().addBlock("constructor_controller", this, null, 1, null);
-		GameRegistry.registerTileEntity(ConstructorControllerEntity.Server.class, this.getRegistryName().toString() + "_server");
-		GameRegistry.registerTileEntity(ConstructorControllerEntity.Client.class, this.getRegistryName().toString() + "_client");
+		GameRegistry.registerTileEntity(ConstructorControllerEntity.class, this.getRegistryName().toString());
 		//
-		ConstructorScreen.addScreen("main", new MainScreen());
+		/*ConstructorScreen.addScreen("main", new MainScreen());
 		ConstructorScreen.addScreen("info", new InfoScreen());
 		ConstructorScreen.addScreen("colour_menu", new ColorMenuScreen());
 		ConstructorScreen.addScreen("colour_unavailable", new ColorUnavailableScreen());
@@ -69,12 +68,12 @@ public class ConstructorController extends BlockContainer {
 		ConstructorScreen.addScreen("part_selected_edit_texture", new PartSelectedEditTextureScreen());
 		ConstructorScreen.addScreen("vehicle_menu", new VehicleMenuScreen());
 		ConstructorScreen.addScreen("vehicle_edit_texture", new VehicleEditTextureScreen());
-		ConstructorScreen.addScreen("spawn_as", new SpawnAsScreen());
+		ConstructorScreen.addScreen("spawn_as", new SpawnAsScreen());*/
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta){
-		return world.isRemote ? new ConstructorControllerEntity.Client() : new ConstructorControllerEntity.Server();
+		return new ConstructorControllerEntity();
 	}
 	
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -147,7 +146,7 @@ public class ConstructorController extends BlockContainer {
 			//te.lift += Static.rad10;*/
 			return false;
 		}
-		ConstructorControllerEntity.Server te = (ConstructorControllerEntity.Server)w.getTileEntity(pos);
+		ConstructorControllerEntity te = (ConstructorControllerEntity)w.getTileEntity(pos);
 		if(te == null){
 			return false;
 		}
@@ -168,7 +167,7 @@ public class ConstructorController extends BlockContainer {
 				te.setData((VehicleItem)stack.getItem(), stack);
 				Print.chat(p, "Vehicle: " + te.getVehicleData().getVehicle().getName());
 				p.getHeldItem(hand).shrink(64);
-				te.updateColour(null, null);
+				te.sendUpdate(null);
 				return true;
 			}
 			else if(stack.getItem() instanceof PartItem){
@@ -180,28 +179,23 @@ public class ConstructorController extends BlockContainer {
 				if(data == null){
 					return false;
 				}
-				if(!te.getScreenId().equals("part_add_new")){
-					if(!te.getVehicleData().getParts().containsKey(data.getPart().getCategory())){
-						if(data.getPart().canInstall(data.getPart().getCategory(), te.getVehicleData(), p)){
-							te.getVehicleData().installPart(data.getPart().getCategory(), data);
-							Print.chat(p, "Part installed. (" + data.getPart().getName() + ")");
-							p.getHeldItem(hand).shrink(1);
-							te.updateVehicleData(null);
-							te.updateScreenId(null, false);
-						}
-					}
-					else{
-						Print.chat(p, "Part of that category already installed, try the part menu for installing the part in another category.");
+				if(!te.getVehicleData().getParts().containsKey(data.getPart().getCategory())){
+					if(data.getPart().canInstall(data.getPart().getCategory(), te.getVehicleData(), p)){
+						te.getVehicleData().installPart(data.getPart().getCategory(), data);
+						Print.chat(p, "Part installed. (" + data.getPart().getName() + ")");
+						p.getHeldItem(hand).shrink(1);
+						te.sendUpdate(null);
 					}
 				}
 				else{
 					if(data.getPart().isAvailable()){
 						te.setPartData(data);
 						p.getHeldItem(hand).shrink(1);
+						te.sendUpdate(null);
 						Print.chat(p, "Part put into Contructor. You can access it via the part menu.");
 					}
 					else{
-						Print.chat(p, "This part isn't available for editement in the Constructor.");
+						Print.chat(p, "Part of that category is already installed, additionally this part isn't available for editement in the Constructor.");
 					}
 				}
 				return true;
@@ -217,11 +211,11 @@ public class ConstructorController extends BlockContainer {
 				else{
 					te.getVehicleData().getPrimaryColor().copyFrom(((PaintItem)stack.getItem()).getRGBColor());
 				}
-				te.updateVehicleData(null);
+				te.sendUpdate(null);
 				Print.chat(p, "Colour updated.");
 				return true;
 			}
-			else if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof net.fexcraft.mod.fvtm.api.Material.MaterialItem ? ((net.fexcraft.mod.fvtm.api.Material.MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
+			else if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof MaterialItem ? ((MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
 				if(te.getVehicleData() == null){
 					Print.bar(p, "No VehicleData.");
 				}
@@ -256,34 +250,18 @@ public class ConstructorController extends BlockContainer {
 							Print.chat(p, item.getCode(stack) + " != " + te.getVehicleData().getLockCode());
 						}
 					}
-					te.updateVehicleData(null);
+					te.sendUpdate(null);
 				}
 				return true;
 			}
 		}
 		else{
-			if(te.getCenterPos() == null || w.getTileEntity(te.getCenterPos()) == null){
-				//Print.chat(p, "&7No Center Block connected!");
-				//Print.chat(p, "&7You can connect one via the Constructor's &8Settings&7.");
-				if(hand != EnumHand.OFF_HAND){
-					return findAndPressButton(te, w, pos, state, p, side, hitX, hitY, hitZ);//TODO remove, only for debug right now
-				}
-				else return true;
+			if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
+				Print.bar(p, "&cLOCKED");
 			}
-			else{
-				if(te.getVehicleData() == null){
-					Print.chat(p, "No Vehicle.");
-				}
-				else{
-					if(te.getVehicleData().isLocked()){
-						Print.bar(p, "&cLOCKED");
-						return true;
-					}
-					if(hand != EnumHand.OFF_HAND){
-
-						return findAndPressButton(te, w, pos, state, p, side, hitX, hitY, hitZ);
-					}
-					else return true;
+			if(hand != EnumHand.OFF_HAND){
+				if(!findAndPressButton(te, w, pos, state, p, side, hitX, hitY, hitZ)){
+					p.openGui(FVTM.getInstance(), GuiHandler.CONSTRUCTOR, w, te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
 				}
 			}
 			return true;
@@ -291,7 +269,7 @@ public class ConstructorController extends BlockContainer {
 		return false;
     }
 	
-	private boolean findAndPressButton(ConstructorControllerEntity.Server te, World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumFacing side, float hitX, float hitY, float hitZ){
+	private boolean findAndPressButton(ConstructorControllerEntity te, World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumFacing side, float hitX, float hitY, float hitZ){
 		boolean found = false;
 		if(side == EnumFacing.UP){
 			//Print.debugChat(hitX + " ||| " + hitZ);

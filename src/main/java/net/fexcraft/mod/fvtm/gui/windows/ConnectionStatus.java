@@ -53,7 +53,7 @@ public class ConnectionStatus implements Window {
 			Print.chat(ConstructorMainGUI.player, "Function not available yet.");
 		}
 		else if(button.id == 14){
-			gui.openWindow(getId());
+			gui.closeWindow(getId());
 		}
 		else return;
 	}
@@ -90,8 +90,7 @@ public class ConnectionStatus implements Window {
 	@Override
 	public void toggleButtonState(ConstructorMainGUI gui, boolean visible){
 		if(!visible){
-			gui.windows.remove(this);
-			this.close(gui, getId());
+			gui.closeWindow(getId());
 		}
 	}
 

@@ -50,8 +50,7 @@ public class ConstructorStatus implements Window {
 	@Override
 	public void actionPerformed(ConstructorMainGUI gui, GuiButton button){
 		if(button.id == 12){
-			gui.windows.remove(this);
-			this.close(gui, getId());
+			gui.closeWindow(getId());
 		}
 		else return;
 	}

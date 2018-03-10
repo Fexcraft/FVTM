@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.windows.ConnectionStatus;
 import net.fexcraft.mod.fvtm.gui.windows.ConstructorStatus;
+import net.fexcraft.mod.fvtm.gui.windows.SprayingTool;
 import net.fexcraft.mod.fvtm.gui.windows.Window;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
@@ -23,14 +25,16 @@ import net.minecraft.world.World;
 public class ConstructorMainGUI extends GuiContainer {
 	
 	public static final TreeMap<String, Window> WINDOWPOOL = new TreeMap<>();
-	public static final int COLOR = 14737632;
+	public final int COLOR = 14737632;
 	static {
 		WINDOWPOOL.put("connection_status", new ConnectionStatus());
 		WINDOWPOOL.put("status", new ConstructorStatus());
+		WINDOWPOOL.put("rgb_painter", new SprayingTool());
 	}
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000.png");
 	public static EntityPlayer player;
 	public BlockPos pos;
+	public ConstructorControllerEntity tile;
 	public static World world;
 	public static int id;
 	//
@@ -48,7 +52,8 @@ public class ConstructorMainGUI extends GuiContainer {
 		player = ply;
 		pos = new BlockPos(x, y, z);
 		id = iD; world = w;
-		title = "loading...";
+		title = "...";
+		tile = (ConstructorControllerEntity)world.getTileEntity(pos);
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("target_listener", "fvtm");
 		compound.setString("task", "constructor_9000_init");
@@ -146,7 +151,10 @@ public class ConstructorMainGUI extends GuiContainer {
 				}
 				case 6:{
 					openWindow("status");
-					Print.debug("Opening Constructor Status.");
+					break;
+				}
+				case 8:{
+					openWindow("rgb_painter");
 					break;
 				}
 				case 11:{
@@ -175,6 +183,7 @@ public class ConstructorMainGUI extends GuiContainer {
 			windows.remove(0);
 			if(!windows.isEmpty()){
 				windows.get(0).toggleButtonState(this, true);
+				title = windows.get(0).getTitle() == null ? "..." : windows.get(0).getTitle();
 			}
 			return;
 		}
@@ -207,6 +216,23 @@ public class ConstructorMainGUI extends GuiContainer {
 			return;
 		}
 		Print.debug("Window with ID:'" + string + "' not found!");
+	}
+	
+	public void closeWindow(String string){
+		if(!windows.isEmpty() && windows.get(0).getId().equals(string)){
+			windows.get(0).close(this, string);
+			windows.remove(0);
+			if(!windows.isEmpty()){
+				windows.get(0).toggleButtonState(this, true);
+			}
+			title = "...";
+			//
+			if(!windows.isEmpty()){
+				windows.get(0).toggleButtonState(this, true);
+				title = windows.get(0).getTitle() == null ? "..." : windows.get(0).getTitle();
+			}
+			return;
+		}
 	}
 
 	private static class TimeButton extends GuiButton {
@@ -301,7 +327,6 @@ public class ConstructorMainGUI extends GuiContainer {
 		if(nbt.hasKey("paint")){
 			paint = nbt.getBoolean("paint");
 		}
-		title = "";
 	}
 	
 	public List<GuiButton> getButtonList(){

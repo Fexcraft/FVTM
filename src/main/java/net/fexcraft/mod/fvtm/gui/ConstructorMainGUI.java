@@ -295,8 +295,12 @@ public class ConstructorMainGUI extends GuiContainer {
 	}
 
 	public static void processInitResponse(NBTTagCompound nbt){
-		connected = nbt.hasKey("connected") ? nbt.getBoolean("connected") : false;
-		paint = nbt.hasKey("paint") ? nbt.getBoolean("paint") : false;
+		if(nbt.hasKey("connected")){
+			connected = nbt.getBoolean("connected");
+		}
+		if(nbt.hasKey("paint")){
+			paint = nbt.getBoolean("paint");
+		}
 		title = "";
 	}
 	

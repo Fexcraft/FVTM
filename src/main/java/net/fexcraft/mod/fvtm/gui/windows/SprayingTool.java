@@ -35,13 +35,23 @@ public class SprayingTool implements Window {
 		gui.drawTexturedModalRect(i + 172, j + 15, 172, 15, 78, 30);
 		RGB.glColorReset();
 		//
-		drawRGB(15, rgb.red);
-		drawRGB(27, rgb.green);
-		drawRGB(39, rgb.blue);
+		drawRGB(gui, i + 14, j + 15, 15, rgb.red, RGB.RED);
+		drawRGB(gui, i + 14, j + 27, 27, rgb.green, RGB.GREEN);
+		drawRGB(gui, i + 14, j + 39, 39, rgb.blue, RGB.BLUE);
 		//
-		for(int k = 0; k < 16; k++){
+		for(int k = 0; k < 15; k++){
 			for(int l = 0; l < 6; l++){
-				//TODO draw "colour map"
+				switch(l){
+					case 0: rgb = new RGB(16 + (16 * k), 16 + (16 * k),        l * 42); break;
+					case 1: rgb = new RGB( 8 + (16 * k),  8 + (16 * k),        l * 42); break;
+					case 2: rgb = new RGB(16 + (16 * k),        l * 42, 16 + (16 * k)); break;
+					case 3: rgb = new RGB( 8 + (16 * k),        l * 42,  8 + (16 * k)); break;
+					case 4: rgb = new RGB(l * 42       , 16 + (16 * k), 16 + (16 * k)); break;
+					case 5: rgb = new RGB(l * 42       ,  8 + (16 * k),  8 + (16 * k)); break;
+				}
+				rgb.glColorApply();
+				gui.drawTexturedModalRect(i + 8 + (k * 16), j + 50 + (l * 16), 8, 50, 16, 16);
+				RGB.glColorReset();
 			}
 		}
 		//
@@ -49,8 +59,12 @@ public class SprayingTool implements Window {
 		mc.fontRenderer.drawString("Brush: " + brush, i + 182, j + 150, MapColor.GRAY.colorValue, false);
 	}
 
-	private void drawRGB(int i, byte blue){
-		//TODO
+	private void drawRGB(ConstructorMainGUI gui, int i, int j, int t, byte b, RGB rgb){
+		int l = b + 128;
+		l = l > 255 ? 255 : l < 0 ? 0 : l;
+		rgb.glColorApply();
+		gui.drawTexturedModalRect(i, j, 14, t, (l / 2) + 1, 6);
+		RGB.glColorReset();
 	}
 
 	@Override

@@ -152,7 +152,7 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
-		this.vehicledata = Resources.getVehicleData(compound, false);
+		this.vehicledata = Resources.getVehicleData(compound, world.isRemote);
 		this.liftstate = compound.getFloat("LiftState");
 		this.center = compound.hasKey("Center") ? BlockPos.fromLong(compound.getLong("Center")) : null;
 		this.partdata = Resources.getPartData(compound);

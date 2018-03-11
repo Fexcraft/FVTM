@@ -10,9 +10,6 @@
         "right_back_wheel",
         "left_back_wheel"
     ],
-    "Attributes": [
-        "adjustable_wheel"
-    ],
     "Textures": [
         "fvp:textures/entities/skin_vehicle_t2_wheel.png"
     ],
@@ -24,30 +21,6 @@
         { "Vehicle": "fvp:t2", "x": 0, "y": 0, "z": 0 },
         { "Vehicle": "fvp:ab1", "x": 0, "y": 0, "z": 0 }
      ],
-    "AttributeData":{
-    	"Adjustable-Wheel-Positions":[
-    		{
-    			"vehicle": "fvp:ab1",
-    			"part":"left_front_wheel",
-    			"x": 68, "y": -2, "z":  25
-    		},
-    		{
-    			"vehicle": "fvp:ab1",
-    			"part":"right_front_wheel",
-    			"x": 68, "y": -2, "z": -25
-    		},
-    		{
-    			"vehicle": "fvp:ab1",
-    			"part":"left_back_wheel",
-    			"x": -70, "y": -2, "z":  25
-    		},
-    		{
-    			"vehicle": "fvp:ab1",
-    			"part":"right_back_wheel",
-    			"x": -70, "y": -2, "z": -25
-    		}
-    	]
-    },
      "Recipes":[
         {
             "Type": "Blueprint",

@@ -22,6 +22,12 @@
         { "x":  68, "y": -10, "z":  28 },
         { "x":  68, "y": -10, "z": -28 }
     ],
+    "WheelCoords":[
+        { "x":  68, "y": -2, "z":  25, "id": "left_front_wheel" },
+        { "x":  68, "y": -2, "z": -25, "id": "right_front_wheel" },
+        { "x": -70, "y": -2, "z":  25, "id": "left_back_wheel" },
+        { "x": -70, "y": -2, "z": -25, "id": "right_back_wheel" }
+    ],
     "ConstructionLength": 7,
     "ConstructionYOffSet": 13,
     "ConstructionWheelOffset": 27,

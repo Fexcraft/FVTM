@@ -39,6 +39,7 @@ public class GenericVehicle implements Vehicle {
 	private float yoffset, wheeloffset;
 	private List<ResourceLocation> textures;
 	private TreeMap<String, ResourceLocation> preinstalled = new TreeMap<String, ResourceLocation>();
+	private TreeMap<String, Pos> wheel_coords = new TreeMap<>();
 	private List<String> required;
 	@SideOnly(Side.CLIENT) private VehicleModel<VehicleData> model;
 	private List<Pos> wheelpos;
@@ -125,6 +126,21 @@ public class GenericVehicle implements Vehicle {
 		this.type = VehicleType.fromJson(obj);
 		this.bouyancy = JsonUtil.getIfExists(obj, "Bouyancy", 0.0165F).floatValue();
 		this.def_key = new ResourceLocation(JsonUtil.getIfExists(obj,"DefaultKey", "generic:key"));
+		if(obj.has("WheelCoords")){
+			JsonArray array = obj.get("WheelCoords").getAsJsonArray();
+			for(JsonElement elm : array){
+				JsonObject jsn = elm.getAsJsonObject();
+				String str = jsn.get("id").getAsString();
+				Pos pos = Pos.fromJSON(jsn);
+				this.wheel_coords.put(str, pos);
+			}
+		}
+		else{
+			this.wheel_coords.put("left_front_wheel", new Pos(0, 0, 0));
+			this.wheel_coords.put("right_front_wheel", new Pos(0, 0, 0));
+			this.wheel_coords.put("left_back_wheel", new Pos(0, 0, 0));
+			this.wheel_coords.put("right_back_wheel", new Pos(0, 0, 0));
+		}
 		//
 		{ accentmods.add(EntityType.INTERNAL); accentmods.add(EntityType.PROTOTYPE); }
 	}
@@ -306,6 +322,11 @@ public class GenericVehicle implements Vehicle {
 	@Override
 	public double getBuoyancy(){
 		return bouyancy;
+	}
+
+	@Override
+	public TreeMap<String, Pos> getWheelPositions(){
+		return wheel_coords;
 	}
 	
 }

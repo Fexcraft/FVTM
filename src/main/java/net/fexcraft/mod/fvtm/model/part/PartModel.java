@@ -2,11 +2,8 @@ package net.fexcraft.mod.fvtm.model.part;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-
 import com.google.gson.JsonObject;
 
-import net.fexcraft.mod.addons.gep.attributes.AdjustableWheelAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
@@ -20,7 +17,6 @@ import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -639,121 +635,6 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 			}
 			conattr.getContainerOffset().translateR();
 		}
-	}
-	
-	public void def_renderAdjustableWheels4(VehicleData data, String us){
-		Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
-		pos = pos == null ? new Pos(0, 0, 0) : pos;
-		pos.translate();
-		switch(us){
-			case "left_front_wheel":
-			case "left_back_wheel":
-			default:
-				GL11.glRotated( 180, 0, 1, 0);
-				render(wheels);
-				GL11.glRotated(-180, 0, 1, 0);
-				break;
-			case "right_front_wheel":
-			case "right_back_wheel":
-				render(wheels);
-				break;
-		}
-		pos.translateR();
-	}
-	
-	public void def_renderAdjustableWheels4(VehicleData data, String us, Entity ent){
-		Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
-		pos = pos == null ? new Pos(0, 0, 0) : pos;
-		pos.translate();
-		boolean str, mir;
-		VehicleEntity vehicle = (VehicleEntity)ent;
-		switch(us){
-			case "left_front_wheel":{
-				str = true;
-				mir = false;
-				break;
-			}
-			case "right_front_wheel":{
-				str = true;
-				mir = true;
-				break;
-			}
-			case "left_back_wheel":{
-				str = false;
-				mir = false;
-				break;
-			}
-			case "right_back_wheel":{
-				str = false;
-				mir = true;
-				break;
-			}
-			default:{
-				str = false;
-				mir = false;
-				break;
-			}
-		}
-		if(!mir){
-			GL11.glRotated( 180, 0, 1, 0);
-		}
-		for(ModelRendererTurbo element : wheels){
-			element.rotateAngleZ = vehicle.getWheelsAngle();
-			if(str){
-				element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
-			}
-			element.render();
-			element.rotateAngleY = 0;
-		}
-		if(!mir){
-			GL11.glRotated(-180, 0, 1, 0);
-		}
-		pos.translateR();
-	}
-	
-	public void def_renderAdjustableWheels4(VehicleData data, String us, Entity ent, boolean rot){
-		if(rot){
-			Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
-			pos = pos == null ? new Pos(0, 0, 0) : pos;
-			pos.translate();
-			boolean str, mir;
-			switch(us){
-				case "left_front_wheel":{
-					str = true;
-					mir = false;
-					break;
-				}
-				case "right_front_wheel":{
-					str = true;
-					mir = true;
-					break;
-				}
-				case "left_back_wheel":{
-					str = false;
-					mir = false;
-					break;
-				}
-				case "right_back_wheel":{
-					str = false;
-					mir = true;
-					break;
-				}
-				default:{
-					str = false;
-					mir = false;
-					break;
-				}
-			}
-			if(!mir){
-				GL11.glRotated( 180, 0, 1, 0);
-			}
-			this.def_renderWheelWithRotations(wheels, ent, str);
-			if(!mir){
-				GL11.glRotated(-180, 0, 1, 0);
-			}
-			pos.translateR();
-		}
-		else def_renderAdjustableWheels4(data, us, ent);
 	}
 	
 }

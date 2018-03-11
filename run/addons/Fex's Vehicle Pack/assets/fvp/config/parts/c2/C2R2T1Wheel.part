@@ -22,48 +22,12 @@
         {
             "Vehicle": "fvp:c2",
             "Offset": {"x":0,"y":0,"z":0}
+        },
+        {
+            "Vehicle": "fvp:c8",
+            "Offset": {"x":0,"y":0,"z":0}
         }
     ],
-    "AttributeData":{
-    	"Adjustable-Wheel-Positions":[
-    		{
-    			"part":"left_front_wheel",
-    			"x": 29.5, "y": -7.5, "z": -22
-    		},
-    		{
-    			"part":"right_front_wheel",
-    			"x": 29.5, "y": -7.5, "z":  22
-    		},
-    		{
-    			"part":"left_back_wheel",
-    			"x": -59.5, "y": -7.5, "z": -22
-    		},
-    		{
-    			"part":"right_back_wheel",
-    			"x": -59.5, "y": -7.5, "z":  22
-    		},
-    		{
-    			"vehicle": "fvp:c8",
-    			"part":"left_front_wheel",
-    			"x": 39, "y": 2, "z": -19
-    		},
-    		{
-    			"vehicle": "fvp:c8",
-    			"part":"right_front_wheel",
-    			"x": 39, "y": 2, "z":  19
-    		},
-    		{
-    			"vehicle": "fvp:c8",
-    			"part":"left_back_wheel",
-    			"x": -39, "y": 2, "z": -19
-    		},
-    		{
-    			"vehicle": "fvp:c8",
-    			"part":"right_back_wheel",
-    			"x": -39, "y": 2, "z":  19
-    		}
-    	]
-    },
     "Recipes":[
         {
             "Type": "Blueprint",

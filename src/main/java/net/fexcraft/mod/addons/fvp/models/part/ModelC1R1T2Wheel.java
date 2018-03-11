@@ -8,12 +8,10 @@
 
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.AdjustableWheelModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.minecraft.entity.Entity;
 
-public class ModelC1R1T2Wheel extends PartModel<VehicleData> {
+public class ModelC1R1T2Wheel extends AdjustableWheelModel {
 	
 	int textureX = 512;
 	int textureY = 512;
@@ -338,16 +336,6 @@ public class ModelC1R1T2Wheel extends PartModel<VehicleData> {
 
 		//translateAll(0F, 0F, 0F);
 		flipAll();
-	}
-	
-	@Override
-	public void render(VehicleData data, String us){
-		this.def_renderAdjustableWheels4(data, us);
-	}
-	
-	@Override
-	public void render(VehicleData data, String us, Entity veh){
-		this.def_renderAdjustableWheels4(data, us, veh, true);
 	}
 	
 }

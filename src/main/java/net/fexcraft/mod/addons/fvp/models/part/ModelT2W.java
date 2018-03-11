@@ -2,7 +2,6 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.mod.addons.gep.attributes.AdjustableWheelAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.Coord2D;
@@ -487,7 +486,7 @@ public class ModelT2W extends PartModel<VehicleData>{
 	public void render(VehicleData data, String us){
 		//this.render(wheels);
 		//this.def_renderAdjustableWheels4(data, us);
-		Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
+		Pos pos = data.getVehicle().getWheelPositions().get(us);
 		pos = pos == null ? new Pos(0, 0, 0) : pos;
 		pos.translate();
 		switch(us){
@@ -510,7 +509,7 @@ public class ModelT2W extends PartModel<VehicleData>{
 	public void render(VehicleData data, String us, Entity vehicle){
 		//this.def_renderWheelWithRotations(wheels, data, us, vehicle);
 		//this.def_renderAdjustableWheels4(data, us, vehicle, true);
-		Pos pos = data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class) == null ? null : data.getPart(us).getPart().getAttribute(AdjustableWheelAttribute.class).getOffsetFor(data, us);
+		Pos pos = data.getVehicle().getWheelPositions().get(us);
 		pos = pos == null ? new Pos(0, 0, 0) : pos;
 		pos.translate();
 		boolean str, mir;

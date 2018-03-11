@@ -98,14 +98,16 @@ public class GenericVehicleData implements VehicleData {
 			compound.setTag("WheelPos", wlist);
 		}
 		if(this.primary != null){
-			compound.setByte("PrimaryRed", this.primary.red);
+			/*compound.setByte("PrimaryRed", this.primary.red);
 			compound.setByte("PrimaryGreen", this.primary.green);
-			compound.setByte("PrimaryBlue", this.primary.blue);
+			compound.setByte("PrimaryBlue", this.primary.blue);*/
+			compound.setInteger("PrimaryRGB", this.primary.packed);
 		}
 		if(this.secondary != null){
-			compound.setByte("SecondaryRed", this.secondary.red);
+			/*compound.setByte("SecondaryRed", this.secondary.red);
 			compound.setByte("SecondaryGreen", this.secondary.green);
-			compound.setByte("SecondaryBlue", this.secondary.blue);
+			compound.setByte("SecondaryBlue", this.secondary.blue);*/
+			compound.setInteger("SecondaryRGB", this.secondary.packed);
 		}
 		compound.setBoolean("DoorsOpen", doors);
 		//FM
@@ -161,8 +163,8 @@ public class GenericVehicleData implements VehicleData {
 				}
 			}
 		}
-		this.primary = compound.hasKey("PrimaryRed") ? new RGB(compound.getByte("PrimaryRed"), compound.getByte("PrimaryGreen"), compound.getByte("PrimaryBlue")) : new RGB(vehicle.getDefPrimaryColor());
-		this.secondary = compound.hasKey("SecondaryRed") ? new RGB(compound.getByte("SecondaryRed"), compound.getByte("SecondaryGreen"), compound.getByte("SecondaryBlue")) : new RGB(vehicle.getDefSecondaryolor());
+		this.primary = compound.hasKey("PrimaryRed") ? new RGB(compound.getByte("PrimaryRed"), compound.getByte("PrimaryGreen"), compound.getByte("PrimaryBlue")) : (compound.hasKey("PrimaryRGB") ? new RGB(compound.getInteger("PrimaryRGB")) : new RGB(vehicle.getDefPrimaryColor()));
+		this.secondary = compound.hasKey("SecondaryRed") ? new RGB(compound.getByte("SecondaryRed"), compound.getByte("SecondaryGreen"), compound.getByte("SecondaryBlue")) : (compound.hasKey("SecondaryRGB") ? new RGB(compound.getInteger("SecondaryRGB")) : new RGB(vehicle.getDefSecondaryolor()));
 		this.doors = compound.getBoolean("DoorsOpen");
 		//FM
 		this.locked = compound.getBoolean("Locked");

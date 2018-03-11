@@ -101,6 +101,12 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 					}
 					break;
 				}
+				case "rgb":
+				case "color":{
+					compound.setInteger("primary_rgb", vehicledata.getPrimaryColor().getColorInt());
+					compound.setInteger("secondary_rgb", vehicledata.getSecondaryColor().getColorInt());
+					break;
+				}
 			}
 		}
 		else{
@@ -129,6 +135,12 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 			}
 			if(com.hasKey("center_con")){
 				center = com.getBoolean("center_con") ? BlockPos.fromLong(com.getLong("center")) : null;
+			}
+			if(com.hasKey("primary_rgb")){
+				vehicledata.getPrimaryColor().packed = com.getInteger("primary_rgb");
+			}
+			if(com.hasKey("secondary_rgb")){
+				vehicledata.getSecondaryColor().packed = com.getInteger("secondary_rgb");
 			}
 		}
 	}

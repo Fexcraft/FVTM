@@ -160,6 +160,23 @@ public class GuiHandler implements IGuiHandler {
 									com.setBoolean("connected", serv.center != null);
 									PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player);
 								}
+								break;
+							}
+							case "rgb_update":{
+								if(serv.vehicledata == null){
+									return;
+								}
+								String group = packet.nbt.getString("group");
+								int rgb = packet.nbt.getInteger("rgb");
+								if(group.equals("primary")){
+									serv.vehicledata.getPrimaryColor().packed = rgb;
+								}
+								else if(group.equals("secondary")){
+									serv.vehicledata.getSecondaryColor().packed = rgb;
+								}
+								else return;
+								serv.sendUpdate("rgb");
+								break;
 							}
 						}
 					}

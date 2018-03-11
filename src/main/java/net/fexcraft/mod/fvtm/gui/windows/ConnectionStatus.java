@@ -50,7 +50,7 @@ public class ConnectionStatus implements Window {
 			gui.sendPacket(nbt);
 		}
 		else if(button.id == 13){
-			Print.chat(ConstructorMainGUI.player, "Function not available yet.");
+			Print.chat(gui.player, "Function not available yet.");
 		}
 		else if(button.id == 14){
 			gui.closeWindow(getId());

@@ -55,7 +55,7 @@ public class DataUtil {
 	}
 	
 	public static RGB getRGB(JsonObject obj, String string){
-		return obj.has(string) ? new RGB(obj.get(string).getAsJsonObject()) : new RGB();
+		return obj.has(string) ? (obj.get(string).isJsonObject() ? new RGB(obj.get(string).getAsJsonObject()) : new RGB(obj.get(string))) : new RGB();
 	}
 
 	public static ArrayList<ResourceLocation> getTextures(JsonObject obj, ResourceLocation registryname, String type){

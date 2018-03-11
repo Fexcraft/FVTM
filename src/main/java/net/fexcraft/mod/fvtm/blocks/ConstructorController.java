@@ -206,10 +206,10 @@ public class ConstructorController extends BlockContainer {
 					return true;
 				}
 				if(hand == EnumHand.OFF_HAND){
-					te.getVehicleData().getSecondaryColor().copyFrom(((PaintItem)stack.getItem()).getRGBColor());
+					te.getVehicleData().getSecondaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
 				}
 				else{
-					te.getVehicleData().getPrimaryColor().copyFrom(((PaintItem)stack.getItem()).getRGBColor());
+					te.getVehicleData().getPrimaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
 				}
 				te.sendUpdate(null);
 				Print.chat(p, "Colour updated.");

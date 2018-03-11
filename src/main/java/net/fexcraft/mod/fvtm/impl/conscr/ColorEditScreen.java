@@ -24,7 +24,7 @@ public class ColorEditScreen extends ConstructorScreen {
 					tileentity.setBrush(1);
 					break;
 				}
-				case 2: case 3: {
+				/*case 2: case 3: {
 					rgb.red   = 127;
 					break;
 				}
@@ -35,7 +35,7 @@ public class ColorEditScreen extends ConstructorScreen {
 				case 6: case 7: {
 					rgb.blue  = 127;
 					break;
-				}
+				}*/
 			}
 			tileentity.updateScreenId(tileentity.getScreenId(), false);
 			tileentity.updateColour(str, rgb);
@@ -50,7 +50,7 @@ public class ColorEditScreen extends ConstructorScreen {
 					tileentity.setBrush(tileentity.getBrush() + (button.isLeftArrow() ? -1 : 1));
 					break;
 				}
-				case 3: case 2:{
+				/*case 3: case 2:{
 					rgb.add(0, button.isLeftArrow() ? -brush : brush);
 					break;
 				}
@@ -61,7 +61,7 @@ public class ColorEditScreen extends ConstructorScreen {
 				case 7: case 6:{
 					rgb.add(2, button.isLeftArrow() ? -brush : brush);
 					break;
-				}
+				}*/
 			}
 			tileentity.updateScreenId(tileentity.getScreenId(), false);
 			tileentity.updateColour(str, rgb);
@@ -77,11 +77,11 @@ public class ColorEditScreen extends ConstructorScreen {
 		RGB rgb = str.equals("primary") ? tileentity.getVehicleData().getPrimaryColor() : tileentity.getVehicleData().getSecondaryColor();
 		compound.setString("Text0", "Color Editor (" + str + ")");
 		compound.setString("Text1", "&3Brush: &7" + tileentity.getBrush());
-		compound.setString("Text2", "&cRed:   &7{" + (rgb.red   + 128) + "}i [" + rgb.red   + "]b");
+		/*compound.setString("Text2", "&cRed:   &7{" + (rgb.red   + 128) + "}i [" + rgb.red   + "]b");
 		compound.setString("Text3", getColorBar(rgb.red,   "c"));
 		compound.setString("Text4", "&aGreen: &7{" + (rgb.green + 128) + "}i [" + rgb.green + "]b");
 		compound.setString("Text5", getColorBar(rgb.green, "a"));
 		compound.setString("Text6", "&bBlue:  &7{" + (rgb.blue  + 128) + "}i [" + rgb.blue  + "]b");
-		compound.setString("Text7", getColorBar(rgb.blue,  "b"));
+		compound.setString("Text7", getColorBar(rgb.blue,  "b"));*/
 	}
 }

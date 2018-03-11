@@ -32,7 +32,7 @@ public class ConstructorMainGUI extends GuiContainer {
 		WINDOWPOOL.put("rgb_painter", new SprayingTool());
 	}
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000.png");
-	public static EntityPlayer player;
+	public EntityPlayer player;
 	public BlockPos pos;
 	public ConstructorControllerEntity tile;
 	public static World world;
@@ -130,7 +130,7 @@ public class ConstructorMainGUI extends GuiContainer {
 					menub3.visible = menub3.enabled = menu;
 					menub4.visible = menub4.enabled = menu;
 					menub5.visible = menub5.enabled = menu;
-					break;
+					return;
 				}
 				case 2:{
 					openWindow("connection_status");
@@ -151,11 +151,11 @@ public class ConstructorMainGUI extends GuiContainer {
 				}
 				case 6:{
 					openWindow("status");
-					break;
+					return;
 				}
 				case 8:{
 					openWindow("rgb_painter");
-					break;
+					return;
 				}
 				case 11:{
 					Minecraft.getMinecraft().currentScreen = null;//TODO

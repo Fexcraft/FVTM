@@ -10,6 +10,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class SprayingTool implements Window {
@@ -19,6 +20,7 @@ public class SprayingTool implements Window {
 	private static String[] groups = new String[]{"primary", "secondary"};//trimary, etc.
 	private static byte brush = 1, group = 0;
 	private static ARB[] buttons = new ARB[10];
+	private static Palette palette;
 
 	@Override
 	public String getId(){
@@ -35,28 +37,49 @@ public class SprayingTool implements Window {
 		gui.drawTexturedModalRect(i + 172, j + 15, 172, 15, 78, 30);
 		RGB.glColorReset();
 		//
-		drawRGB(gui, i + 14, j + 15, 15, rgb.red, RGB.RED);
-		drawRGB(gui, i + 14, j + 27, 27, rgb.green, RGB.GREEN);
-		drawRGB(gui, i + 14, j + 39, 39, rgb.blue, RGB.BLUE);
+		byte[] arr = rgb.toByteArray();
+		drawRGB(gui, i + 14, j + 15, 15, arr[0], RGB.RED);
+		drawRGB(gui, i + 14, j + 27, 27, arr[1], RGB.GREEN);
+		drawRGB(gui, i + 14, j + 39, 39, arr[2], RGB.BLUE);
 		//
-		for(int k = 0; k < 15; k++){
-			for(int l = 0; l < 6; l++){
-				switch(l){
-					case 0: rgb = new RGB(16 + (16 * k), 16 + (16 * k),        l * 42); break;
-					case 1: rgb = new RGB( 8 + (16 * k),  8 + (16 * k),        l * 42); break;
-					case 2: rgb = new RGB(16 + (16 * k),        l * 42, 16 + (16 * k)); break;
-					case 3: rgb = new RGB( 8 + (16 * k),        l * 42,  8 + (16 * k)); break;
-					case 4: rgb = new RGB(l * 42       , 16 + (16 * k), 16 + (16 * k)); break;
-					case 5: rgb = new RGB(l * 42       ,  8 + (16 * k),  8 + (16 * k)); break;
-				}
+		for(int k = 0; k < 30; k++){
+			for(int l = 0; l < 12; l++){
+				rgb = getByPos(k, l);
 				rgb.glColorApply();
-				gui.drawTexturedModalRect(i + 8 + (k * 16), j + 50 + (l * 16), 8, 50, 16, 16);
+				gui.drawTexturedModalRect(i + 8 + (k * 8), j + 50 + (l * 8), 8, 50, 8, 8);
 				RGB.glColorReset();
 			}
 		}
 		//
 		mc.fontRenderer.drawString("ColorGroup: " + groups[group], i + 6, j + 150, MapColor.GRAY.colorValue, false);
 		mc.fontRenderer.drawString("Brush: " + brush, i + 182, j + 150, MapColor.GRAY.colorValue, false);
+	}
+	
+	private static RGB getByPos(int k, int l){
+		int m = k * 8, n = l * 21;
+		switch(l){
+			//000
+			//100
+			//010
+			//001
+			//110
+			//011
+			//101
+			//111
+			case 0: return new RGB(m, m, m);
+			case 1: return new RGB(n, m, m);
+			case 2: return new RGB(m, n, m);
+			case 3: return new RGB(m, m, n);
+			case 4: return new RGB(n, n, m);
+			case 5: return new RGB(m, n, n);
+			case 6: return new RGB(n, m, n);
+			case 7: return new RGB(n, n, n);
+			case 8: return new RGB(m, m, m);
+			case 9: return new RGB(n + 4, m, m);
+			case 10: return new RGB(m, n + 4, m);
+			case 11: return new RGB(m, m, n + 4);
+		}
+		return new RGB();
 	}
 
 	private void drawRGB(ConstructorMainGUI gui, int i, int j, int t, byte b, RGB rgb){
@@ -78,6 +101,7 @@ public class SprayingTool implements Window {
 		for(ARB button : buttons){
 			gui.getButtonList().remove(button);
 		}
+		gui.getButtonList().remove(palette);
 	}
 
 	@Override
@@ -88,7 +112,30 @@ public class SprayingTool implements Window {
 		else if(button instanceof ARB){
 			//TODO
 		}
+		else if(button instanceof Palette){
+			if(palette.xx == 0 && palette.yy == 0){
+				return;
+			}
+			//Print.chat(gui.player, palette.xx + " " + palette.yy);
+			int i = palette.xx, j = palette.yy, k = 0, l = 0;
+			while((i -= 8) > 0){ k++; }
+			k += i > 0 ? 1 : 0;
+			while((j -= 8) > 0){ l++; }
+			l += j > 0 ? 1 : 0;
+			RGB rgb = getByPos(k, l);
+			//Print.chat(gui.player, k + " " + l);
+			//Print.chat(gui.player, rgb.toString() + " " + rgb.packed);
+			sendUpdate(gui, rgb);
+		}
 		else return;
+	}
+	
+	private void sendUpdate(ConstructorMainGUI gui, RGB rgb){
+		NBTTagCompound compound = gui.getPacketNBT("constructor_9000");
+		compound.setString("payload", "rgb_update");
+		compound.setString("group", groups[group]);
+		compound.setInteger("rgb", rgb.getColorInt());
+		gui.sendPacket(compound);
 	}
 
 	@Override
@@ -109,6 +156,7 @@ public class SprayingTool implements Window {
 		buttonList.add(buttons[7] = new ARB(20, i + 165, j + 149, false));
 		buttonList.add(buttons[8] = new ARB(21, i + 230, j + 149, true));
 		buttonList.add(buttons[9] = new ARB(22, i + 242, j + 149, false));
+		buttonList.add(palette = new Palette(23, i + 8, j + 50));
 	}
 
 	@Override
@@ -117,6 +165,7 @@ public class SprayingTool implements Window {
 		for(ARB button : buttons){
 			button.visible = visible;
 		}
+		palette.visible = visible;
 		Print.debug("buttons " + (visible ? "enabled" : "disabled"));
 	}
 
@@ -159,6 +208,23 @@ public class SprayingTool implements Window {
     				this.drawTexturedModalRect(this.x, this.y, left ? 146 : 158, 13, this.width, this.height);
     			}
     		}
+	    }
+		
+	}
+	
+	private static class Palette extends GuiButton {
+		
+		private int xx = 0, yy = 0;
+
+		public Palette(int buttonId, int x, int y){
+			super(buttonId, x, y, 240, 96, "");
+		}
+		
+		@Override
+		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks){
+			if(!visible){ return; }
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+            xx = mouseX - x; yy = mouseY - this.y;
 	    }
 		
 	}

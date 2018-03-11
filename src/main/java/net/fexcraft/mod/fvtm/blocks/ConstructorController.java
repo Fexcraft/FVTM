@@ -12,6 +12,7 @@ import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.item.PaintItem;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -22,6 +23,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -205,6 +208,10 @@ public class ConstructorController extends BlockContainer {
 					Print.chat(p, "VehicleData is locked.");
 					return true;
 				}
+				if(te.getVehicleData() == null){
+					Print.chat(p, "No VehicleData.");
+					return true;
+				}
 				if(hand == EnumHand.OFF_HAND){
 					te.getVehicleData().getSecondaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
 				}
@@ -214,6 +221,25 @@ public class ConstructorController extends BlockContainer {
 				te.sendUpdate(null);
 				Print.chat(p, "Colour updated.");
 				return true;
+			}
+			else if(stack.getItem() instanceof ItemDye){
+				if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
+					Print.chat(p, "VehicleData is locked.");
+					return true;
+				}
+				if(te.getVehicleData() == null){
+					Print.chat(p, "No VehicleData.");
+					return true;
+				}
+				EnumDyeColor dyecolor = EnumDyeColor.byDyeDamage(stack.getMetadata());
+				if(hand == EnumHand.OFF_HAND){
+					te.getVehicleData().getSecondaryColor().packed = RGB.fromDyeColor(dyecolor).packed;
+				}
+				else{
+					te.getVehicleData().getPrimaryColor().packed = RGB.fromDyeColor(dyecolor).packed;
+				}
+				stack.shrink(1);
+				te.sendUpdate("rgb");
 			}
 			else if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof MaterialItem ? ((MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
 				if(te.getVehicleData() == null){

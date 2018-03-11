@@ -50,9 +50,14 @@ public class SprayingTool implements Window {
 				RGB.glColorReset();
 			}
 		}
+		rgb = gui.tile.vehicledata == null ? RGB.WHITE : (group == 0 ? gui.tile.vehicledata.getPrimaryColor() : gui.tile.vehicledata.getSecondaryColor());
 		//
+		arr = rgb.toByteArray();
 		mc.fontRenderer.drawString("ColorGroup: " + groups[group], i + 6, j + 150, MapColor.GRAY.colorValue, false);
 		mc.fontRenderer.drawString("Brush: " + brush, i + 182, j + 150, MapColor.GRAY.colorValue, false);
+		mc.fontRenderer.drawString("R:" + (arr[0] + 128), i +  8, j + 165, gui.COLOR, false);
+		mc.fontRenderer.drawString("G:" + (arr[1] + 128), i + 40, j + 165, gui.COLOR, false);
+		mc.fontRenderer.drawString("B:" + (arr[2] + 128), i + 72, j + 165, gui.COLOR, false);
 	}
 	
 	private static RGB getByPos(int k, int l){
@@ -110,21 +115,63 @@ public class SprayingTool implements Window {
 			gui.closeWindow(getId());
 		}
 		else if(button instanceof ARB){
-			//TODO
+			if(gui.tile.vehicledata == null){
+				return;
+			}
+			RGB ORG = group == 0 ? gui.tile.vehicledata.getPrimaryColor() : gui.tile.vehicledata.getSecondaryColor();
+			int i = button.id - 12;
+			switch(i){
+				case 1:
+				case 2:{
+					byte[] arr = ORG.toByteArray();
+					arr[0] += i == 1 ? -brush : brush;
+					ORG.packed = new RGB(arr[0], arr[1], arr[2]).packed;
+					break;
+				}
+				case 3:
+				case 4:{
+					byte[] arr = ORG.toByteArray();
+					arr[1] += i == 3 ? -brush : brush;
+					ORG.packed = new RGB(arr[0], arr[1], arr[2]).packed;
+					break;
+				}
+				case 5:
+				case 6:{
+					byte[] arr = ORG.toByteArray();
+					arr[2] += i == 5 ? -brush : brush;
+					ORG.packed = new RGB(arr[0], arr[1], arr[2]).packed;
+					break;
+				}
+				case 7:
+				case 8:{
+					group += i == 7 ? -1 : 1;
+					group = group < 0 ? 0 : group >= groups.length ? (byte)(groups.length - 1) : group;
+					break;
+				}
+				case 9:
+				case 10:{
+					brush += i == 9 ? -1 : brush;
+					brush = brush < 1 ? 1 : brush > 32 ? 32 : brush;
+					break;
+				}
+				default:
+					break;
+			}
+			gui.tile.sendUpdate("rgb");
 		}
 		else if(button instanceof Palette){
+			if(gui.tile.vehicledata == null){
+				return;
+			}
 			if(palette.xx == 0 && palette.yy == 0){
 				return;
 			}
-			//Print.chat(gui.player, palette.xx + " " + palette.yy);
 			int i = palette.xx, j = palette.yy, k = 0, l = 0;
 			while((i -= 8) > 0){ k++; }
 			k += i > 0 ? 1 : 0;
 			while((j -= 8) > 0){ l++; }
 			l += j > 0 ? 1 : 0;
 			RGB rgb = getByPos(k, l);
-			//Print.chat(gui.player, k + " " + l);
-			//Print.chat(gui.player, rgb.toString() + " " + rgb.packed);
 			sendUpdate(gui, rgb);
 		}
 		else return;
@@ -153,7 +200,7 @@ public class SprayingTool implements Window {
 		buttonList.add(buttons[4] = new ARB(17, i + 146, j + 37, true));
 		buttonList.add(buttons[5] = new ARB(18, i + 158, j + 37, false));
 		buttonList.add(buttons[6] = new ARB(19, i + 152, j + 149, true));
-		buttonList.add(buttons[7] = new ARB(20, i + 165, j + 149, false));
+		buttonList.add(buttons[7] = new ARB(20, i + 164, j + 149, false));
 		buttonList.add(buttons[8] = new ARB(21, i + 230, j + 149, true));
 		buttonList.add(buttons[9] = new ARB(22, i + 242, j + 149, false));
 		buttonList.add(palette = new Palette(23, i + 8, j + 50));

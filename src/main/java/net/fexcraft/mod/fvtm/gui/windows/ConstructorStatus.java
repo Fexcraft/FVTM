@@ -73,5 +73,10 @@ public class ConstructorStatus implements Window {
 	public String getTitle(){
 		return "System Status";
 	}
+
+	@Override
+	public void applyArguments(ConstructorMainGUI gui, String[] args){
+		//
+	}
 	
 }

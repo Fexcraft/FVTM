@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -8,6 +9,7 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.windows.ConnectionStatus;
 import net.fexcraft.mod.fvtm.gui.windows.ConstructorStatus;
 import net.fexcraft.mod.fvtm.gui.windows.SprayingTool;
+import net.fexcraft.mod.fvtm.gui.windows.TextureTool;
 import net.fexcraft.mod.fvtm.gui.windows.Window;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
@@ -30,6 +32,7 @@ public class ConstructorMainGUI extends GuiContainer {
 		WINDOWPOOL.put("connection_status", new ConnectionStatus());
 		WINDOWPOOL.put("status", new ConstructorStatus());
 		WINDOWPOOL.put("rgb_painter", new SprayingTool());
+		WINDOWPOOL.put("texture_tool", new TextureTool());
 	}
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000.png");
 	public EntityPlayer player;
@@ -157,6 +160,10 @@ public class ConstructorMainGUI extends GuiContainer {
 					openWindow("rgb_painter");
 					return;
 				}
+				case 9:{
+					openWindow("texture_tool", new String[]{"type:vehicle"});
+					return;
+				}
 				case 11:{
 					Minecraft.getMinecraft().currentScreen = null;//TODO
 					break;
@@ -169,7 +176,19 @@ public class ConstructorMainGUI extends GuiContainer {
 		}
 	}
 	
+	@Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if(!windows.isEmpty() && windows.get(0).isKeyTyped(typedChar, keyCode)){
+        	//
+        }
+        super.keyTyped(typedChar, keyCode);
+    }
+	
 	public void openWindow(String string){
+		openWindow(string, null);
+	}
+	
+	public void openWindow(String string, String[] args){
 		menu = false;
 		menub0.visible = menub0.enabled = menu;
 		menub1.visible = menub1.enabled = menu;
@@ -212,6 +231,9 @@ public class ConstructorMainGUI extends GuiContainer {
 			windows.add(0, win);
 			win.addButtons(this, this.buttonList);
 			title = win.getTitle() == null ? title : win.getTitle();
+			if(args != null && args.length != 0){
+				win.applyArguments(this, args);
+			}
 			Print.debug(win.getId());
 			return;
 		}

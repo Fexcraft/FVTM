@@ -98,5 +98,10 @@ public class ConnectionStatus implements Window {
 	public String getTitle(){
 		return null;
 	}
+
+	@Override
+	public void applyArguments(ConstructorMainGUI gui, String[] args){
+		//
+	}
 	
 }

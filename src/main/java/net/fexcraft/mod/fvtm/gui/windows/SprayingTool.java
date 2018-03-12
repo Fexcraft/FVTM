@@ -275,5 +275,10 @@ public class SprayingTool implements Window {
 	    }
 		
 	}
+
+	@Override
+	public void applyArguments(ConstructorMainGUI gui, String[] args){
+		//
+	}
 	
 }

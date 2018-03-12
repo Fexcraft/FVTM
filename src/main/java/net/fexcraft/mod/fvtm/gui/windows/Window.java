@@ -23,5 +23,11 @@ public interface Window {
 	public void toggleButtonState(ConstructorMainGUI gui, boolean visible);
 
 	public String getTitle();
+
+	public void applyArguments(ConstructorMainGUI gui, String[] args);
+
+	public default boolean isKeyTyped(char typedChar, int keyCode){
+		return true;
+	}
 	
 }

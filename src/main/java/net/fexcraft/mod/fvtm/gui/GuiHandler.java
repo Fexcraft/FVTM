@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
@@ -176,6 +177,54 @@ public class GuiHandler implements IGuiHandler {
 								}
 								else return;
 								serv.sendUpdate("rgb");
+								break;
+							}
+							case "texture_update":{
+								if(serv.vehicledata == null){
+									return;
+								}
+								boolean vehicle = packet.nbt.getString("type").equals("vehicle");
+								PartData part = vehicle ? null : serv.vehicledata.getPart(packet.nbt.getString("type").split(":")[1]);
+								int cat = packet.nbt.getInteger("category");
+								String data = packet.nbt.getString("data");
+								if(cat == 0){
+									if(data.equals("prev")){
+										if(vehicle){
+											int i = serv.vehicledata.getSelectedTexture() - 1;
+											i = i < 0 ? 0 : i;
+											serv.vehicledata.setSelectedTexture(i);
+										}
+										else{
+											int i = part.getSelectedTexture() - 1;
+											i = i < 0 ? 0 : i;
+											part.setSelectedTexture(i);
+										}
+									}
+									else if(data.equals("next")){
+										if(vehicle){
+											int i = serv.vehicledata.getSelectedTexture() + 1;
+											i = i >= serv.vehicledata.getVehicle().getTextures().size() ? serv.vehicledata.getVehicle().getTextures().size() - 1 : i;
+											serv.vehicledata.setSelectedTexture(i);
+										}
+										else{
+											int i = part.getSelectedTexture() - 1;
+											i = i < 0 ? 0 : i;
+											part.setSelectedTexture(i);
+										}
+									}
+									else return;
+								}
+								else{
+									if(vehicle){
+										serv.vehicledata.setSelectedTexture(-1);
+										serv.vehicledata.setCustomTexture(data, cat == 2);
+									}
+									else{
+										part.setSelectedTexture(-1);
+										part.setCustomTexture(data, cat == 2);
+									}
+								}
+								serv.sendUpdate("vehicle");
 								break;
 							}
 						}

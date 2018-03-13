@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class TextureTool implements Window {
@@ -23,6 +24,7 @@ public class TextureTool implements Window {
 	private static boolean vehicle = false;
 	private static String part = null;
 	private GuiTextField ifield, efield;
+	private ARB[] arbs = new ARB[4];
 
 	@Override
 	public String getId(){
@@ -169,17 +171,38 @@ public class TextureTool implements Window {
 		if(button.id == 12){
 			gui.closeWindow(getId());
 		}
+		else if(button instanceof ARB){
+			switch(button.id){
+				case 15:{
+					sendUpdate(gui, 0, "prev");
+					break;
+				}
+				case 16:{
+					sendUpdate(gui, 0, "next");
+					break;
+				}
+				case 17:{
+					sendUpdate(gui, 1, ifield.getText());
+					break;
+				}
+				case 18:{
+					sendUpdate(gui, 2, efield.getText());
+					break;
+				}
+			}
+		}
 		//
 		else return;
 	}
 	
-	/*private void sendUpdate(ConstructorMainGUI gui, RGB rgb){
+	private void sendUpdate(ConstructorMainGUI gui, int cat, String str){
 		NBTTagCompound compound = gui.getPacketNBT("constructor_9000");
-		compound.setString("payload", "rgb_update");
-		//compound.setString("group", groups[group]);
-		//compound.setInteger("rgb", rgb.getColorInt());
+		compound.setString("payload", "texture_update");
+		compound.setString("type", vehicle ? "vehicle" : "part:" + part);
+		compound.setInteger("category", cat);
+		compound.setString("data", str);
 		gui.sendPacket(compound);
-	}*/
+	}
 
 	@Override
 	public void addButtons(ConstructorMainGUI gui, List<GuiButton> buttonList){
@@ -188,6 +211,7 @@ public class TextureTool implements Window {
 		close.setTexture(texture);
 		close.setTexturePos(0, 246, 2);
 		close.setTexturePos(1, 246, 2);
+		buttonList.add(close);
 		//
         Keyboard.enableRepeatEvents(true);
 		ifield = new GuiTextField(13, gui.mc.fontRenderer, i + 7, j + 71, 184, 8);
@@ -204,6 +228,10 @@ public class TextureTool implements Window {
         efield.setEnableBackgroundDrawing(false);
         efield.setMaxStringLength(1024);
         //
+        buttonList.add(arbs[0] = new ARB(15, i + 171, j +  28, true));
+        buttonList.add(arbs[1] = new ARB(16, i + 183, j +  28, false));
+        buttonList.add(arbs[2] = new ARB(17, i + 183, j +  83, false));
+        buttonList.add(arbs[3] = new ARB(18, i + 183, j + 138, false));
 	}
 
 	@Override
@@ -242,5 +270,43 @@ public class TextureTool implements Window {
         ifield.mouseClicked(mouseX, mouseY, mouseButton);
         efield.mouseClicked(mouseX, mouseY, mouseButton);
     }
+	
+	private static class ARB extends GuiButton {
+		
+		private boolean left = false;
+
+		public ARB(int buttonId, int x, int y, boolean left){
+			super(buttonId, x, y, 10, 10, "");
+			this.left = left;
+		}
+		
+		@Override
+		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks){
+			if(!visible){ return; }
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            //
+            if(this.enabled){
+    			if(this.hovered){
+    				this.drawTexturedModalRect(this.x, this.y, left ? 199 : 210, 180, this.width, this.height);
+    			}
+    			else{
+    				this.drawTexturedModalRect(this.x, this.y, left ? 171 : 183, 28, this.width, this.height);
+    			}
+    		}
+    		else{
+    			if(this.hovered){
+    				this.drawTexturedModalRect(this.x, this.y, left ? 177 : 188, 180, this.width, this.height);
+    			}
+    			else{
+    				this.drawTexturedModalRect(this.x, this.y, left ? 171 : 183, 28, this.width, this.height);
+    			}
+    		}
+	    }
+		
+	}
 	
 }

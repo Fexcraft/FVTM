@@ -54,16 +54,6 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 		return;
 	}
 	
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket(){
-		return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
-	}
-	
-	@Override
-	public NBTTagCompound getUpdateTag(){
-		return this.writeToNBT(new NBTTagCompound());
-	}
-	
 	public void sendUpdate(String string){
 		NBTTagCompound compound = null;
 		if(string != null){
@@ -138,6 +128,16 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 			}
 		}
 	}
+	
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket(){
+		return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
+	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag(){
+		return this.writeToNBT(new NBTTagCompound());
+	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
@@ -152,11 +152,13 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 		if(partdata != null){
 			compound = this.partdata.writeToNBT(compound);
 		}
+		Print.debug(compound);
 		return compound;
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
+		Print.debug(compound);
 		super.readFromNBT(compound);
 		this.vehicledata = Resources.getVehicleData(compound, world.isRemote);
 		this.liftstate = compound.getFloat("LiftState");

@@ -8,10 +8,10 @@ import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
+import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.item.PaintItem;
 import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
@@ -33,25 +33,20 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
-//@fBlock(modid = FVTM.MODID, name = "landvehicle_constructor_controller", tileentity = ConstructorControllerEntity.class)
+@fBlock(modid = FVTM.MODID, name = "constructor_controller", tileentity = ConstructorControllerEntity.class)
 public class ConstructorController extends BlockContainer {
 	
 	public static ConstructorController INSTANCE;
 	
 	public ConstructorController() throws Exception {
 		super(Material.ANVIL, MapColor.OBSIDIAN);
-		if(INSTANCE != null){
-			Print.log("VEHICLE CONSTRUCTOR CONTROLLER WAS INITIALIZED TWICE, THIS IS NOT ALLOWED.");
-			Static.halt();
-		}
     	this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 		this.setCreativeTab(Tabs.BLOCKS);
 		INSTANCE = this;
 		//
-		FVTM.getRegisterer().addBlock("constructor_controller", this, null, 1, null);
-		GameRegistry.registerTileEntity(ConstructorControllerEntity.class, this.getRegistryName().toString());
+		//FVTM.getRegisterer().addBlock("constructor_controller", this, null, 1, null);
+		//GameRegistry.registerTileEntity(ConstructorControllerEntity.class, this.getRegistryName().toString());
 		//
 		/*ConstructorScreen.addScreen("main", new MainScreen());
 		ConstructorScreen.addScreen("info", new InfoScreen());
@@ -83,7 +78,7 @@ public class ConstructorController extends BlockContainer {
 
     @Override
 	public boolean isFullBlock(IBlockState state){
-		return false;
+		return true;
 	}
 	
 	@Override

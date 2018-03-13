@@ -162,6 +162,9 @@ public class TextureTool implements Window {
 	@Override
 	public void close(ConstructorMainGUI gui, String rqFrom){
 		gui.getButtonList().remove(close);
+		for(ARB arb : arbs){
+			gui.getButtonList().remove(arb);
+		}
         Keyboard.enableRepeatEvents(false);
 		//
 	}
@@ -237,7 +240,9 @@ public class TextureTool implements Window {
 	@Override
 	public void toggleButtonState(ConstructorMainGUI gui, boolean visible){
 		close.visible = visible;
-		//
+		for(ARB arb : arbs){
+			arb.visible = visible;
+		}
 	}
 
 	@Override

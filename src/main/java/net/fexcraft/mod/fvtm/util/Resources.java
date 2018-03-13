@@ -608,6 +608,7 @@ public class Resources {
 	}
 	
 	public static final VehicleData getVehicleData(NBTTagCompound compound, boolean remote){
+		if(compound == null){ return null; }
 		if(compound.hasKey(VehicleItem.NBTKEY) || compound.hasKey(VehicleItem.OLDNBTKEY)){
 			Vehicle vehicle = VEHICLES.getValue(new ResourceLocation(compound.hasKey(VehicleItem.NBTKEY) ? compound.getString(VehicleItem.NBTKEY) : compound.getString(VehicleItem.OLDNBTKEY)));
 			if(vehicle != null){
@@ -627,6 +628,7 @@ public class Resources {
 	}
 	
 	public static final PartData getPartData(NBTTagCompound compound){
+		if(compound == null){ return null; }
 		if(compound.hasKey(PartItem.NBTKEY)){
 			Part part = PARTS.getValue(new ResourceLocation(compound.getString(PartItem.NBTKEY)));
 			if(part != null){

@@ -55,6 +55,7 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 	}
 	
 	public void sendUpdate(String string){
+		this.markDirty();
 		NBTTagCompound compound = null;
 		if(string != null){
 			compound = new NBTTagCompound();
@@ -160,7 +161,7 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 	public void readFromNBT(NBTTagCompound compound){
 		Print.debug(compound);
 		super.readFromNBT(compound);
-		this.vehicledata = Resources.getVehicleData(compound, world.isRemote);
+		this.vehicledata = Resources.getVehicleData(compound, world == null ? true : world.isRemote);
 		this.liftstate = compound.getFloat("LiftState");
 		this.center = compound.hasKey("Center") ? BlockPos.fromLong(compound.getLong("Center")) : null;
 		this.partdata = Resources.getPartData(compound);

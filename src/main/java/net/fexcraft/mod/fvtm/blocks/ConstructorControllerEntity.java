@@ -61,13 +61,7 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 	
 	@Override
 	public NBTTagCompound getUpdateTag(){
-		NBTTagCompound compound = super.writeToNBT(new NBTTagCompound());
-		if(this.vehicledata != null){
-			compound = this.vehicledata.writeToNBT(compound);
-		}
-		compound.setDouble("LiftState", liftstate);
-		compound.setByte("Lift", lift);
-		return compound;
+		return this.writeToNBT(new NBTTagCompound());
 	}
 	
 	public void sendUpdate(String string){

@@ -29,5 +29,7 @@ public interface Window {
 	public default boolean isKeyTyped(char typedChar, int keyCode){
 		return true;
 	}
+
+	public default void mouseClicked(int mouseX, int mouseY, int mouseButton){}
 	
 }

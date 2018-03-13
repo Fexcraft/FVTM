@@ -191,15 +191,15 @@ public class TextureTool implements Window {
 		//
         Keyboard.enableRepeatEvents(true);
 		ifield = new GuiTextField(13, gui.mc.fontRenderer, i + 7, j + 71, 184, 8);
-		ifield.setText("");
-		ifield.setTextColor(MapColor.GRAY.colorValue);
+		ifield.setText(getCustomTexture(gui));
+		ifield.setTextColor(gui.COLOR);
         ifield.setDisabledTextColour(MapColor.RED.colorValue);
         ifield.setEnableBackgroundDrawing(false);
         ifield.setMaxStringLength(1024);
         //
         efield = new GuiTextField(14, gui.mc.fontRenderer, i + 7, j + 126, 184, 8);
-		efield.setText("");
-		efield.setTextColor(MapColor.GRAY.colorValue);
+		efield.setText(getExternalTexture(gui));
+		efield.setTextColor(gui.COLOR);
         efield.setDisabledTextColour(MapColor.RED.colorValue);
         efield.setEnableBackgroundDrawing(false);
         efield.setMaxStringLength(1024);
@@ -230,13 +230,17 @@ public class TextureTool implements Window {
 			}
 		}
 		//
-		ifield.setText(getCustomTexture(gui));
-		efield.setText(getExternalTexture(gui));
 	}
 
 	@Override
 	public boolean isKeyTyped(char typedChar, int keyCode){
 		return ifield.textboxKeyTyped(typedChar, keyCode) || efield.textboxKeyTyped(typedChar, keyCode);
 	}
+	
+	@Override
+	public void mouseClicked(int mouseX, int mouseY, int mouseButton){
+        ifield.mouseClicked(mouseX, mouseY, mouseButton);
+        efield.mouseClicked(mouseX, mouseY, mouseButton);
+    }
 	
 }

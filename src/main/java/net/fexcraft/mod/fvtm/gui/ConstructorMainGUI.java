@@ -161,11 +161,15 @@ public class ConstructorMainGUI extends GuiContainer {
 					return;
 				}
 				case 9:{
+					if(tile.vehicledata == null){
+						title = "no vehicle";
+						return;
+					}
 					openWindow("texture_tool", new String[]{"type:vehicle"});
 					return;
 				}
 				case 11:{
-					Minecraft.getMinecraft().currentScreen = null;//TODO
+					player.closeScreen();
 					break;
 				}
 				default: return;
@@ -178,10 +182,20 @@ public class ConstructorMainGUI extends GuiContainer {
 	
 	@Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(!windows.isEmpty() && windows.get(0).isKeyTyped(typedChar, keyCode)){
-        	//
+        if(!windows.isEmpty() && windows.get(0).isKeyTyped(typedChar, keyCode) && !(this.mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode))){
+            super.keyTyped(typedChar, keyCode);
         }
-        super.keyTyped(typedChar, keyCode);
+        if(keyCode == 1){
+        	player.closeScreen();
+        }
+    }
+	
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException{
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        if(!windows.isEmpty()){
+        	windows.get(0).mouseClicked(mouseX, mouseY, mouseButton);
+        }
     }
 	
 	public void openWindow(String string){
@@ -226,14 +240,15 @@ public class ConstructorMainGUI extends GuiContainer {
 				windows.clear();
 			}
 			windows.forEach(window -> {
-				win.toggleButtonState(this, false);
+				window.toggleButtonState(this, false);
+				Print.debug(window.getTitle() + " > FALSE?");
 			});
-			windows.add(0, win);
-			win.addButtons(this, this.buttonList);
-			title = win.getTitle() == null ? title : win.getTitle();
 			if(args != null && args.length != 0){
 				win.applyArguments(this, args);
 			}
+			windows.add(0, win);
+			win.addButtons(this, this.buttonList);
+			title = win.getTitle() == null ? title : win.getTitle();
 			Print.debug(win.getId());
 			return;
 		}

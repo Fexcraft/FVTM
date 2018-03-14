@@ -4,7 +4,6 @@
     "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC2R2T1Wheel.class",
     "FullName": "C2R2T1 Wheel",
     "Category": [
-        "exchange_wheel",
         "right_front_wheel",
         "left_front_wheel",
         "right_back_wheel",
@@ -19,14 +18,8 @@
     "Removable": true,
     "Available": false,
     "Compatible": [
-        {
-            "Vehicle": "fvp:c2",
-            "Offset": {"x":0,"y":0,"z":0}
-        },
-        {
-            "Vehicle": "fvp:c8",
-            "Offset": {"x":0,"y":0,"z":0}
-        }
+        { "Vehicle": "fvp:c2", "x": 0, "y": 0, "z": 0 },
+        { "Vehicle": "fvp:c8", "x": 0, "y": 0, "z": 0 }
     ],
     "Recipes":[
         {

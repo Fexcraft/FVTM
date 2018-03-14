@@ -4,7 +4,6 @@
     "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8PHW.class",
     "FullName": "C8 Placeholder Wheel",
     "Category": [
-        "exchange_wheel",
         "right_front_wheel",
         "left_front_wheel",
         "right_back_wheel",

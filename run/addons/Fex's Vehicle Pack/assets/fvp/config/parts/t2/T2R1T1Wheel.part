@@ -4,7 +4,6 @@
     "Addon": "fvtm:fvp",
     "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT2W.class",
     "Category": [
-        "exchange_wheel",
         "right_front_wheel",
         "left_front_wheel",
         "right_back_wheel",

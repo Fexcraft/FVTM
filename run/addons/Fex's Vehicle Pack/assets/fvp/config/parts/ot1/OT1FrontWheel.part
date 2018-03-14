@@ -3,7 +3,6 @@
     "Addon": "fvtm:fvp",
     "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelOT1FW.class",
     "Category": [
-        "wheels",
         "right_front_wheel",
         "left_front_wheel"
     ],

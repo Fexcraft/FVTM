@@ -177,23 +177,25 @@ public class ConstructorController extends BlockContainer {
 				if(data == null){
 					return false;
 				}
-				if(!te.getVehicleData().getParts().containsKey(data.getPart().getCategory())){
+				if(data.getPart().getCategories().size() > 1){
 					if(data.getPart().canInstall(data.getPart().getCategory(), te.getVehicleData(), p)){
-						te.getVehicleData().installPart(data.getPart().getCategory(), data);
-						Print.chat(p, "Part installed. (" + data.getPart().getName() + ")");
+						te.setPartData(data);
+						Print.chat(p, "Part put into Constructor. (" + data.getPart().getName() + ")");
 						p.getHeldItem(hand).shrink(1);
 						te.sendUpdate(null);
 					}
 				}
 				else{
-					if(data.getPart().isAvailable()){
-						te.setPartData(data);
-						p.getHeldItem(hand).shrink(1);
-						te.sendUpdate(null);
-						Print.chat(p, "Part put into Contructor. You can access it via the part menu.");
+					if(!te.getVehicleData().getParts().containsKey(data.getPart().getCategory())){
+						if(data.getPart().canInstall(data.getPart().getCategory(), te.getVehicleData(), p)){
+							te.getVehicleData().installPart(data.getPart().getCategory(), data);
+							Print.chat(p, "Part installed. (" + data.getPart().getName() + ")");
+							p.getHeldItem(hand).shrink(1);
+							te.sendUpdate(null);
+						}
 					}
 					else{
-						Print.chat(p, "Part of that category is already installed, additionally this part isn't available for editement in the Constructor.");
+						Print.chat(p, "Part of that category is already installed.");
 					}
 				}
 				return true;
@@ -323,6 +325,22 @@ public class ConstructorController extends BlockContainer {
 			i++;
 		}
 		return i;
+	}
+	
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState state){
+		ConstructorControllerEntity conte = (ConstructorControllerEntity)world.getTileEntity(pos);
+		if(conte.vehicledata != null){
+			ItemStack stack = conte.vehicledata.getVehicle().getItemStack(conte.vehicledata);
+			EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);
+			world.spawnEntity(entity);
+		}
+		if(conte.partdata != null){
+			ItemStack stack = conte.partdata.getPart().getItemStack(conte.partdata);
+			EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);
+			world.spawnEntity(entity);
+		}
+		super.breakBlock(world, pos, state);
 	}
 	
 }

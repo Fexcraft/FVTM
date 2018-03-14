@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.windows.ConnectionStatus;
 import net.fexcraft.mod.fvtm.gui.windows.ConstructorStatus;
 import net.fexcraft.mod.fvtm.gui.windows.PartManagerInstalled;
+import net.fexcraft.mod.fvtm.gui.windows.PartManagerNew;
 import net.fexcraft.mod.fvtm.gui.windows.SprayingTool;
 import net.fexcraft.mod.fvtm.gui.windows.TextureTool;
 import net.fexcraft.mod.fvtm.gui.windows.Window;
@@ -35,6 +36,7 @@ public class ConstructorMainGUI extends GuiContainer {
 		WINDOWPOOL.put("rgb_painter", new SprayingTool());
 		WINDOWPOOL.put("texture_tool", new TextureTool());
 		WINDOWPOOL.put("part_manager_list", new PartManagerInstalled());
+		WINDOWPOOL.put("part_manager_new", new PartManagerNew());
 	}
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000.png");
 	public EntityPlayer player;
@@ -112,7 +114,7 @@ public class ConstructorMainGUI extends GuiContainer {
 		this.buttonList.add(menub2 = new MenuButton(8, i + 12, j + 138, "Spraying Tool"));
 		this.buttonList.add(menub3 = new MenuButton(9, i + 12, j + 148, "Texture Tool"));
 		this.buttonList.add(menub4 = new MenuButton(10, i + 12, j + 158, "Part Manager"));
-		this.buttonList.add(menub5 = new MenuButton(11, i + 12, j + 168, "Shutdown"));
+		this.buttonList.add(menub5 = new MenuButton(11, i + 12, j + 168, "Part Installer"));
 		menub0.visible = menu; menub1.visible = menu; menub2.visible = menu;
 		menub3.visible = menu; menub4.visible = menu; menub5.visible = menu;
 	}
@@ -178,7 +180,8 @@ public class ConstructorMainGUI extends GuiContainer {
 					return;
 				}
 				case 11:{
-					player.closeScreen();
+					openWindow("part_manager_new");
+					//player.closeScreen();
 					break;
 				}
 				default: return;

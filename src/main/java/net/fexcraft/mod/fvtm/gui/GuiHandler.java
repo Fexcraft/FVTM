@@ -17,6 +17,7 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -242,6 +243,47 @@ public class GuiHandler implements IGuiHandler {
 								item.setPosition(serv.getPos().getX() + 0.5, serv.getPos().getY() + 1.5, serv.getPos().getZ() + 0.5);
 								serv.getWorld().spawnEntity(item);
 								serv.sendUpdate("vehicle");
+								break;
+							}
+							case "part_install":{
+								if(serv.partdata == null){
+									return;
+								}
+								if(packet.nbt.getBoolean("drop")){
+									ItemStack stack = serv.partdata.getPart().getItemStack(serv.partdata);
+									EntityItem entity = new EntityItem(serv.getWorld(), serv.getPos().getX() + 0.5, serv.getPos().getY() + 1.5f, serv.getPos().getZ() + 0.5, stack);
+									serv.getWorld().spawnEntity(entity);
+									serv.partdata = null;
+									serv.sendUpdate(null);
+									return;
+								}
+								else{
+									if(packet.nbt.getBoolean("auto")){
+										for(String str : serv.partdata.getPart().getCategories()){
+											if(serv.vehicledata.getPart(str) == null && serv.partdata.getPart().canInstall(str, serv.getVehicleData(), player)){
+												serv.getVehicleData().installPart(str, serv.partdata);
+												Print.chat(player, "Part processed. (" + serv.partdata.getPart().getName() + ")");
+												serv.partdata = null;
+												serv.sendUpdate(null);
+											}
+											else continue;
+										}
+									}
+									else{
+										String cat = packet.nbt.getString("category");
+										if(serv.vehicledata.getPart(cat) != null){
+											Print.chat(player, "There is already a part installed in that category.");
+											return;
+										}
+										if(serv.partdata.getPart().canInstall(cat, serv.getVehicleData(), player)){
+											serv.getVehicleData().installPart(cat, serv.partdata);
+											Print.chat(player, "Part processed. (" + serv.partdata.getPart().getName() + ")");
+											serv.partdata = null;
+											serv.sendUpdate(null);
+										}
+										else return;
+									}
+								}
 								break;
 							}
 						}

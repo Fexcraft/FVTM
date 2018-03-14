@@ -21,8 +21,7 @@ import net.minecraft.util.ResourceLocation;
 public class PartManagerInstalled implements Window {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000_part_manager_list.png");
-	private static GenericGuiButton close;
-	private static final int color = 16777120;
+	private static GenericGuiButton close, b0, b1, b2;
 	private static int scroll, fields = 11;
 	private static ARB up, down;
 	private static ArrayList<String> missing = new ArrayList<String>();
@@ -38,11 +37,7 @@ public class PartManagerInstalled implements Window {
 	public void drawWindow(ConstructorMainGUI gui, Minecraft mc, int i, int j, int mouseX, int mouseY, float partialTicks){
 		mc.getTextureManager().bindTexture(texture);
 		gui.drawTexturedModalRect(i + 1, j + 1, 1, 1, 254, 176);
-		if(gui.tile.vehicledata == null){
-			mc.fontRenderer.drawString("No Vehicle", (i + 5), (j + 3), gui.COLOR, false);
-			return;
-		}
-		mc.fontRenderer.drawString("Overview", (i + 3), (j + 3), gui.COLOR, false);
+		//mc.fontRenderer.drawString("Overview", (i + 3), (j + 3), gui.COLOR, false);
 		//
 		//TreeMap<String, PartData> parts = gui.tile.vehicledata.getParts();
 		Object[] parts = gui.tile.vehicledata.getParts().entrySet().toArray();
@@ -70,9 +65,9 @@ public class PartManagerInstalled implements Window {
 				continue;
 			}
 			Entry<String, PartData> entry = (Entry<String, PartData>)parts[l];
-			mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(entry.getValue().getPart().getName(), 145), i + 5, j + 15 + (k * 14), color, false);
+			mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(entry.getValue().getPart().getName(), 145), i + 5, j + 15 + (k * 14), gui.COLOR, false);
 			GL11.glScalef(0.5f, 0.5f, 0.5f);
-			mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(entry.getKey(), 116), (i + 153) * 2, (j + 15 + (k * 14)) * 2, color, false);
+			mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(entry.getKey(), 116), (i + 153) * 2, (j + 15 + (k * 14)) * 2, gui.COLOR, false);
 			GL11.glScalef(2, 2, 2);
 			//
 			buttons[k].enabled = entry.getValue().getPart().isAvailable();
@@ -134,6 +129,9 @@ public class PartManagerInstalled implements Window {
 		for(StateButton state : buttons){
 			gui.getButtonList().remove(state);
 		}
+		gui.getButtonList().remove(b0);
+		gui.getButtonList().remove(b1);
+		gui.getButtonList().remove(b2);
 	}
 	
 	private void sendUpdate(ConstructorMainGUI gui, String str){
@@ -151,6 +149,24 @@ public class PartManagerInstalled implements Window {
 		else if(button.id == 13 || button.id == 14){
 			scroll += button.id == 13 ? -4 : 4;
 			scroll = scroll < 0 ? 0 : scroll;
+			return;
+		}
+		else if(button.id >= 37 && button.id <= 39){
+			switch(button.id){
+				case 37:{
+					//Do nothing, it's this gui.
+					break;
+				}
+				case 38:{
+					gui.openWindow("part_manager_new");
+					break;
+				}
+				case 39:{
+					gui.openWindow("part_manager_edit");
+					break;
+				}
+			}
+			return;
 		}
 		else if(button instanceof StateButton){
 			int i = button.id - 15;
@@ -161,6 +177,7 @@ public class PartManagerInstalled implements Window {
 				gui.closeWindow(this.getId());
 				gui.openWindow("part_manager_edit");
 			}
+			return;
 		}
 		else return;
 	}
@@ -178,6 +195,21 @@ public class PartManagerInstalled implements Window {
 			buttonList.add(buttons[i] = new StateButton(15 + i, gui.getGuiLeft() + 214, gui.getGuiTop() + 13 + (i * 14), true));
 			buttonList.add(buttons[i + fields] = new StateButton(15 + i + fields, gui.getGuiLeft() + 228, gui.getGuiTop() + 13 + (i * 14), false));
 		}
+		//
+		b0 = new GenericGuiButton(37, gui.getGuiLeft() + 2, gui.getGuiTop() + 2, 74, 8, "Overview");
+		b0.setTexture(texture); b0.setTexturePos(0, 2, 2); b0.setTexturePos(1, 2, 2);
+		b0.setTextPos(gui.getGuiLeft() + 4, gui.getGuiTop() + 3);
+		buttonList.add(b0);
+		//
+		b1 = new GenericGuiButton(38, gui.getGuiLeft() + 77, gui.getGuiTop() + 2, 74, 8, "Install New");
+		b1.setTexture(texture); b1.setTexturePos(0, 77, 2); b1.setTexturePos(1, 77, 2);
+		b1.setTextPos(gui.getGuiLeft() + 79, gui.getGuiTop() + 3);
+		buttonList.add(b1);
+		//
+		b2 = new GenericGuiButton(39, gui.getGuiLeft() + 152, gui.getGuiTop() + 2, 74, 8, "Edit Part");
+		b2.setTexture(texture); b2.setTexturePos(0, 152, 2); b2.setTexturePos(1, 152, 2);
+		b2.setTextPos(gui.getGuiLeft() + 154, gui.getGuiTop() + 3);
+		buttonList.add(b2);
 	}
 
 	@Override
@@ -188,6 +220,7 @@ public class PartManagerInstalled implements Window {
 		for(StateButton button : buttons){
 			button.visible = visible;
 		}
+		b0.visible = b1.visible = b2.visible = visible;
 	}
 
 	@Override

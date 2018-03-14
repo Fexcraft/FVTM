@@ -168,5 +168,18 @@ public class DisplayBlock extends BlockContainer {
 	protected BlockStateContainer createBlockState(){
 		return new BlockStateContainer(this, new IProperty[] {ROTATION});
 	}
+	
+
+	
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState state){
+		DisplayBlockEntity conte = (DisplayBlockEntity)world.getTileEntity(pos);
+		if(conte.getVehicleData() != null){
+			ItemStack stack = conte.getVehicleData().getVehicle().getItemStack(conte.getVehicleData());
+			EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);
+			world.spawnEntity(entity);
+		}
+		super.breakBlock(world, pos, state);
+	}
 
 }

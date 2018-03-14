@@ -21,7 +21,7 @@ public class DisplayBlockEntity extends TileEntity implements IPacketReceiver<Pa
 	private Vehicle.VehicleData data;
 
 	public DisplayBlockEntity(){
-		this.data= null;
+		this.data = null;
 	}
 
 	public final void sendUpdate(){

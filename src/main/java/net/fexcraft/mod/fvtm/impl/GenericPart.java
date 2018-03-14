@@ -88,7 +88,7 @@ public class GenericPart implements Part {
 		//this.attributes = JsonUtil.jsonArrayToStringArray(JsonUtil.getIfExists(obj, "Attributes", new JsonArray()).getAsJsonArray()).toArray(new String[]{});
 		
 		this.removable = JsonUtil.getIfExists(obj, "Removable", true);
-		this.available = JsonUtil.getIfExists(obj, "Avaible", true);
+		this.available = JsonUtil.getIfExists(obj, "Available", true);
 		this.adjustable = JsonUtil.getIfExists(obj, "Adjustable", false);
 		if(Static.side().isClient()){
 			this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), PartModel.class, NullModel.get());

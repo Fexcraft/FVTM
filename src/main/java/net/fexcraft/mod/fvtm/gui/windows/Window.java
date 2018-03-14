@@ -31,5 +31,7 @@ public interface Window {
 	}
 
 	public default void mouseClicked(int mouseX, int mouseY, int mouseButton){}
+
+	public default void handleMouseInput(){}
 	
 }

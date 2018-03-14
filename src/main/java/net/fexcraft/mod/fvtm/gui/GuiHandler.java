@@ -14,6 +14,7 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -227,8 +228,32 @@ public class GuiHandler implements IGuiHandler {
 								serv.sendUpdate("vehicle");
 								break;
 							}
+							case "part_remove":{
+								if(serv.vehicledata == null){
+									return;
+								}
+								PartData data = serv.vehicledata.getParts().remove(packet.nbt.getString("part"));
+								if(data == null || !data.getPart().isRemovable()){
+									Print.chat(player, data == null ? "Part not found in Server Instance." : "Part is marked as non-remove on Server Instance!");
+									return;
+								}
+								EntityItem item = new EntityItem(serv.getWorld());
+								item.setItem(data.getPart().getItemStack(data));
+								item.setPosition(serv.getPos().getX() + 0.5, serv.getPos().getY() + 1.5, serv.getPos().getZ() + 0.5);
+								serv.getWorld().spawnEntity(item);
+								serv.sendUpdate("vehicle");
+								break;
+							}
 						}
 					}
+					break;
+				}
+				case "constructor_9000_recycle":{
+					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+					EntityPlayer player = (EntityPlayer)objs[0];
+					ConstructorControllerEntity serv = (ConstructorControllerEntity)player.world.getTileEntity(pos);
+					player.closeScreen();
+					serv.recycleVehicle();
 					break;
 				}
 			}

@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.windows.ConnectionStatus;
 import net.fexcraft.mod.fvtm.gui.windows.ConstructorStatus;
+import net.fexcraft.mod.fvtm.gui.windows.PartManagerInstalled;
 import net.fexcraft.mod.fvtm.gui.windows.SprayingTool;
 import net.fexcraft.mod.fvtm.gui.windows.TextureTool;
 import net.fexcraft.mod.fvtm.gui.windows.Window;
@@ -33,6 +34,7 @@ public class ConstructorMainGUI extends GuiContainer {
 		WINDOWPOOL.put("status", new ConstructorStatus());
 		WINDOWPOOL.put("rgb_painter", new SprayingTool());
 		WINDOWPOOL.put("texture_tool", new TextureTool());
+		WINDOWPOOL.put("part_manager_list", new PartManagerInstalled());
 	}
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000.png");
 	public EntityPlayer player;
@@ -148,12 +150,15 @@ public class ConstructorMainGUI extends GuiContainer {
 					break;
 				}
 				case 5:{
-					NBTTagCompound nbt = getPacketNBT("constructor_9000_recycle");
-					sendPacket(nbt);
+					sendPacket(getPacketNBT("constructor_9000_recycle"));
 					break;
 				}
 				case 6:{
 					openWindow("status");
+					return;
+				}
+				case 7:{
+					openWindow("vehicle_data");
 					return;
 				}
 				case 8:{
@@ -166,6 +171,10 @@ public class ConstructorMainGUI extends GuiContainer {
 						return;
 					}
 					openWindow("texture_tool", new String[]{"type:vehicle"});
+					return;
+				}
+				case 10:{
+					openWindow("part_manager_list");
 					return;
 				}
 				case 11:{
@@ -368,6 +377,14 @@ public class ConstructorMainGUI extends GuiContainer {
 	
 	public List<GuiButton> getButtonList(){
 		return this.buttonList;
+	}
+	
+	@Override
+	public void handleMouseInput() throws IOException{
+		super.handleMouseInput();
+		if(!windows.isEmpty()){
+			windows.get(0).handleMouseInput();
+		}
 	}
 	
 }

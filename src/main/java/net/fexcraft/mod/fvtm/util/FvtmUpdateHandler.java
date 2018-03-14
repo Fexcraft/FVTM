@@ -50,7 +50,7 @@ public class FvtmUpdateHandler {
 			}
 		}
 		else{
-			Static.stop();
+			//Static.stop();
 		}
 		if(jsn != null){
 			try{
@@ -91,7 +91,7 @@ public class FvtmUpdateHandler {
 				Print.chat(event.player, elm.getAsString());
 			}
 		}
-		if(!newversion.equals(FVTM.VERSION)){
+		if(newversion != null && !newversion.equals(FVTM.VERSION)){
 			Print.chat(event.player, FVTM.PREFIX + "Update available! (" + newversion + ")");
 			Print.debug(newversion + " || " + FVTM.VERSION);
 		}

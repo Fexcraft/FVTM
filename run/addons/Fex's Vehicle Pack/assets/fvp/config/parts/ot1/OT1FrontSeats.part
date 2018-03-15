@@ -12,7 +12,7 @@
         "fvp:textures/entities/skin_vehicle_t1p.png"
     ],
     "Removable": false,
-    "Available": false,
+    "Available": true,
     "AttributeData":{
         "FM-Seats":[
             { "x": 29, "y": 8, "z": -8, "driver": true },

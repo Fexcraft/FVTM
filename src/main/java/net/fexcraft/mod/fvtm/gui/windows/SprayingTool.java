@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 public class SprayingTool implements Window {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000_rgb_painter.png");
-	private static GenericGuiButton close;
+	private static GenericGuiButton close, white;//black
 	private static String[] groups = new String[]{"primary", "secondary"};//trimary, etc.
 	private static byte brush = 1, group = 0;
 	private static ARB[] buttons = new ARB[10];
@@ -107,6 +107,7 @@ public class SprayingTool implements Window {
 			gui.getButtonList().remove(button);
 		}
 		gui.getButtonList().remove(palette);
+		gui.getButtonList().remove(white);
 	}
 
 	@Override
@@ -174,6 +175,10 @@ public class SprayingTool implements Window {
 			RGB rgb = getByPos(k, l);
 			sendUpdate(gui, rgb);
 		}
+		else if(button.id == 255){
+			sendUpdate(gui, RGB.WHITE);
+			return;
+		}
 		else return;
 	}
 	
@@ -204,6 +209,12 @@ public class SprayingTool implements Window {
 		buttonList.add(buttons[8] = new ARB(21, i + 230, j + 149, true));
 		buttonList.add(buttons[9] = new ARB(22, i + 242, j + 149, false));
 		buttonList.add(palette = new Palette(23, i + 8, j + 50));
+		white = new GenericGuiButton(255, i + 122, j + 164, 64, 10, "Set WHITE");
+		white.setTexture(texture);
+		white.setTexturePos(0, 122, 164);
+		white.setTexturePos(1, 122, 164);
+		white.setTextPos(i + 124,  j + 166);
+		buttonList.add(white);
 	}
 
 	@Override
@@ -213,6 +224,7 @@ public class SprayingTool implements Window {
 			button.visible = visible;
 		}
 		palette.visible = visible;
+		white.visible = visible;
 		Print.debug("buttons " + (visible ? "enabled" : "disabled"));
 	}
 

@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.windows.ConnectionStatus;
 import net.fexcraft.mod.fvtm.gui.windows.ConstructorStatus;
+import net.fexcraft.mod.fvtm.gui.windows.PartManagerEdit;
 import net.fexcraft.mod.fvtm.gui.windows.PartManagerInstalled;
 import net.fexcraft.mod.fvtm.gui.windows.PartManagerNew;
 import net.fexcraft.mod.fvtm.gui.windows.SprayingTool;
@@ -37,6 +38,7 @@ public class ConstructorMainGUI extends GuiContainer {
 		WINDOWPOOL.put("texture_tool", new TextureTool());
 		WINDOWPOOL.put("part_manager_list", new PartManagerInstalled());
 		WINDOWPOOL.put("part_manager_new", new PartManagerNew());
+		WINDOWPOOL.put("part_manager_edit", new PartManagerEdit());
 	}
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000.png");
 	public EntityPlayer player;
@@ -172,7 +174,7 @@ public class ConstructorMainGUI extends GuiContainer {
 						title = "no vehicle";
 						return;
 					}
-					openWindow("texture_tool", new String[]{"type:vehicle"});
+					openWindow("texture_tool", "type:vehicle");
 					return;
 				}
 				case 10:{
@@ -211,10 +213,10 @@ public class ConstructorMainGUI extends GuiContainer {
     }
 	
 	public void openWindow(String string){
-		openWindow(string, null);
+		openWindow(string, (String[])null);
 	}
 	
-	public void openWindow(String string, String[] args){
+	public void openWindow(String string, String... args){
 		menu = false;
 		menub0.visible = menub0.enabled = menu;
 		menub1.visible = menub1.enabled = menu;

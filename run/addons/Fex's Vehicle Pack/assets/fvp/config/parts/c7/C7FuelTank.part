@@ -13,7 +13,7 @@
         "fvtm:textures/entities/null_texture.png"
     ],
     "Removable": true,
-    "Available": false,
+    "Available": true,
     "Compatible": [],
     "AttributeData":{
         "Fuel-TankSize": 450

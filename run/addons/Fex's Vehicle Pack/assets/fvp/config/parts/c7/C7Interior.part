@@ -16,7 +16,7 @@
         }
     ],
     "Removable": true,
-    "Available": false,
+    "Available": true,
     "Recipes":[
         {
             "Type": "Blueprint",

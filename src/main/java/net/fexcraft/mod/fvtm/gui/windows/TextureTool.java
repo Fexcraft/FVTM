@@ -252,15 +252,16 @@ public class TextureTool implements Window {
 
 	@Override
 	public void applyArguments(ConstructorMainGUI gui, String[] args){
+		vehicle = false;
 		if(args.length >= 1 && args[0].startsWith("type")){
 			vehicle = args[0].equals("type:vehicle");
 		}
 		if(!vehicle){
-			part = args[1];
-			if(part == null){
+			if(args.length < 2 || args[1] == null){
 				Print.chat(gui.player, "Set as editing part, but no part specified! Closing Window.");
 				gui.closeWindow(getId());
 			}
+			part = args[1];
 		}
 		//
 	}

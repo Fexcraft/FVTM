@@ -18,6 +18,5 @@
     "Compatible": [
         { "Vehicle": "fvp:c8", "x": 0, "y": 0, "z": 0 }
     ],
-    "Removable": true,
-    "Available": false
+    "Removable": true
 }

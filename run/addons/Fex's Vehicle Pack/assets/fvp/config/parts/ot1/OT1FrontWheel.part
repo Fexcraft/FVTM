@@ -10,7 +10,7 @@
         "fvp:textures/entities/skin_vehicle_ot1.png"
     ],
     "Removable": false,
-    "Available": false,
+    "Available": true,
     "Compatible": [
         { "Vehicle": "fvp:ot1", "x": 0, "y": 0, "z": 0 }
     ],

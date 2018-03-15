@@ -7,11 +7,12 @@
         "doors"
     ],
     "Textures": [
-        "fvp:textures/entities/skin_vehicle_ab1b.png"
+        "fvp:textures/entities/skin_vehicle_ab1b.png",
+        "fvp:textures/entities/skin_vehicle_ab1c.png",
+        "fvp:textures/entities/skin_vehicle_ab1d.png"
     ],
     "Compatible": [
         { "Vehicle": "fvp:ab1", "x": 0, "y": 0, "z": 0 }
     ],
-    "Removable": true,
-    "Available": false
+    "Removable": true
 }

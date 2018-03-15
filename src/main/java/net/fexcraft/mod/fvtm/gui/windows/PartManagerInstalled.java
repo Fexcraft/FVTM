@@ -175,7 +175,7 @@ public class PartManagerInstalled implements Window {
 			}
 			else{//"edit/adjust"
 				gui.closeWindow(this.getId());
-				gui.openWindow("part_manager_edit");
+				gui.openWindow("part_manager_edit", getAt(gui, i));
 			}
 			return;
 		}

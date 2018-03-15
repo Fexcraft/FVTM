@@ -9,7 +9,9 @@
         "seat"
     ],
     "Textures": [
-        "fvp:textures/entities/skin_vehicle_ab1b.png"
+        "fvp:textures/entities/skin_vehicle_ab1b.png",
+        "fvp:textures/entities/skin_vehicle_ab1c.png",
+        "fvp:textures/entities/skin_vehicle_ab1d.png"
     ],
     "Removable": true,
     "Available": true,

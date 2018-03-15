@@ -10,7 +10,6 @@
         "fvp:textures/entities/skin_vehicle_c8.png"
     ],
     "Removable": true,
-    "Avaiable": true,
     "Compatible": [
         {
             "Vehicle": "fvp:c8",

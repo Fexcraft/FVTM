@@ -13,7 +13,6 @@
         "fvp:textures/entities/skin_vehicle_c8.png"
     ],
     "Removable": false,
-    "Available": false,
     "AttributeData":{
         "FM-Seats":[
             { "x":   6, "y": 0, "z": -11, "driver": true },

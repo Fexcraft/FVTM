@@ -13,7 +13,7 @@
         "fvp:textures/entities/skin_vehicle_c4z1.png"
     ],
     "Removable": true,
-    "Available": false,
+    "Available": true,
     "Compatible": [
         {
             "Vehicle": "fvp:c4z1",

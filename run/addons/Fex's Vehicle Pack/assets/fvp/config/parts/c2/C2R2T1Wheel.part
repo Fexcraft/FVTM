@@ -16,7 +16,7 @@
         "fvp:textures/entities/skin_vehicle_c2r2t1_wheel.png"
     ],
     "Removable": true,
-    "Available": false,
+    "Available": true,
     "Compatible": [
         { "Vehicle": "fvp:c2", "x": 0, "y": 0, "z": 0 },
         { "Vehicle": "fvp:c8", "x": 0, "y": 0, "z": 0 }

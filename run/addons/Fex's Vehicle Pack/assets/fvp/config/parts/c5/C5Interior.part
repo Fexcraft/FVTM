@@ -11,5 +11,5 @@
     ],
     "Compatible": [{ "Vehicle": "fvp:c5", "x": 0, "y": 0, "z": 0 }],
     "Removable": false,
-    "Available": false
+    "Available": true
 }

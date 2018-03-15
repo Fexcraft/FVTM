@@ -209,8 +209,8 @@ public class GuiHandler implements IGuiHandler {
 											serv.vehicledata.setSelectedTexture(i);
 										}
 										else{
-											int i = part.getSelectedTexture() - 1;
-											i = i < 0 ? 0 : i;
+											int i = part.getSelectedTexture() + 1;
+											i = i >= part.getPart().getTextures().size() ? part.getPart().getTextures().size() - 1 : i;
 											part.setSelectedTexture(i);
 										}
 									}

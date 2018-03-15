@@ -13,7 +13,7 @@
         "fvp:textures/entities/c7i4.png"
     ],
     "Removable": true,
-    "Available": false,
+    "Available": true,
     "Compatible": [
         {
             "Vehicle": "fvp:c7",

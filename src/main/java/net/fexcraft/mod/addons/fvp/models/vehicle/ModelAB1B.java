@@ -755,7 +755,7 @@ public class ModelAB1B extends VehicleModel<VehicleData> {
 		bodyColoredPrimary[45].addShapeBox(0F, 0F, 0F, 5, 2, 45, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 140
 		bodyColoredPrimary[45].setRotationPoint(93F, -47F, -22.5F);
 
-		bodyColoredPrimary[46].addShapeBox(0F, 0F, 0F, 28, 11, 1, 0F, 0F, 0F, 0F, 0F, -5F, 0F, 0F, -5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 148
+		bodyColoredPrimary[46].addShapeBox(0F, 0F, 0F, 28, 5, 1, 0F, 0F, 0F, 0F, 0F, -4.9F, 0F, 0F, -4.9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 148
 		bodyColoredPrimary[46].setRotationPoint(54F, -26F, -31.5F);
 
 		bodyColoredPrimary[47].addBox(0F, 0F, 0F, 186, 1, 61, 0F); // Box 149

@@ -47,26 +47,6 @@ public class ConstructorController extends BlockContainer {
 		//
 		//FVTM.getRegisterer().addBlock("constructor_controller", this, null, 1, null);
 		//GameRegistry.registerTileEntity(ConstructorControllerEntity.class, this.getRegistryName().toString());
-		//
-		/*ConstructorScreen.addScreen("main", new MainScreen());
-		ConstructorScreen.addScreen("info", new InfoScreen());
-		ConstructorScreen.addScreen("colour_menu", new ColorMenuScreen());
-		ConstructorScreen.addScreen("colour_unavailable", new ColorUnavailableScreen());
-		ConstructorScreen.addScreen("crash", new CrashScreen());
-		ConstructorScreen.addScreens(new String[]{"colour_edit_primary", "colour_edit_secondary"}, new ColorEditScreen());
-		ConstructorScreen.addScreen("part_menu", new PartMenuScreen());
-		ConstructorScreen.addScreen("part_add_new", new PartAddNewScreen());
-		ConstructorScreen.addScreen("part_view_cache", new PartViewCacheScreen());
-		ConstructorScreen.addScreen("part_cache_install", new PartCacheInstallScreen());
-		ConstructorScreen.addScreen("part_view_required", new PartViewRequiredScreen());
-		ConstructorScreen.addScreen("part_view_installed", new PartViewInstalledScreen());
-		ConstructorScreen.addScreen("part_view_selected", new PartViewSelectedScreen());
-		ConstructorScreen.addScreen("constructor_menu", new ConstructorMenuScreen());
-		ConstructorScreen.addScreen("constructor_connect_center", new ConstructorConnectCenterScreen());
-		ConstructorScreen.addScreen("part_selected_edit_texture", new PartSelectedEditTextureScreen());
-		ConstructorScreen.addScreen("vehicle_menu", new VehicleMenuScreen());
-		ConstructorScreen.addScreen("vehicle_edit_texture", new VehicleEditTextureScreen());
-		ConstructorScreen.addScreen("spawn_as", new SpawnAsScreen());*/
 	}
 
 	@Override

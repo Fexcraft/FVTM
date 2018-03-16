@@ -92,7 +92,7 @@ public class FvtmUpdateHandler {
 			}
 		}
 		if(newversion != null && !newversion.equals(FVTM.VERSION)){
-			Print.chat(event.player, FVTM.PREFIX + "Update available! (" + newversion + ")");
+			Print.chat(event.player, FVTM.PREFIX + "Mod update available! (" + newversion + ")");
 			Print.debug(newversion + " || " + FVTM.VERSION);
 		}
 	}

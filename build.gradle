@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 version = "1.12.x"
-def modversion = "2.3-b21"
+def modversion = "2.4.b22"
 group = "net.fexcraft.mod.fvtm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "FVTM-ALL"
 
@@ -77,7 +77,7 @@ task def_parts_pack(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
     from 'run/addons/General Essentials Pack'
     baseName = 'General Essentials Pack'
-    appendix = '1.5.4'
+    appendix = '1.5.5'
 }
 task zmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}

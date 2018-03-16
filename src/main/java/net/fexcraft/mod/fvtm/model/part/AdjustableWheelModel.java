@@ -29,13 +29,13 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
 			case "left_front_wheel":
 			case "left_back_wheel":
 			default:
-				GL11.glRotated( 180, 0, 1, 0);
 				render(wheels);
-				GL11.glRotated(-180, 0, 1, 0);
 				break;
 			case "right_front_wheel":
 			case "right_back_wheel":
+				GL11.glRotated( 180, 0, 1, 0);
 				render(wheels);
+				GL11.glRotated(-180, 0, 1, 0);
 				break;
 		}
 		pos.translateR();
@@ -74,7 +74,7 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
 				break;
 			}
 		}
-		if(!mir){
+		if(mir){
 			GL11.glRotated( 180, 0, 1, 0);
 		}
 		for(ModelRendererTurbo element : wheels){
@@ -85,7 +85,7 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
 			element.render();
 			element.rotateAngleY = 0;
 		}
-		if(!mir){
+		if(mir){
 			GL11.glRotated(-180, 0, 1, 0);
 		}
 		pos.translateR();
@@ -124,11 +124,11 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
 					break;
 				}
 			}
-			if(!mir){
+			if(mir){
 				GL11.glRotated( 180, 0, 1, 0);
 			}
 			this.def_renderWheelWithRotations(wheels, ent, str);
-			if(!mir){
+			if(mir){
 				GL11.glRotated(-180, 0, 1, 0);
 			}
 			pos.translateR();

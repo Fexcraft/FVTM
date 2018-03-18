@@ -187,7 +187,7 @@ public class GuiVehicleController extends GuiScreen {
 	}
 	
 	public boolean isKeyDown(int keycode){
-		return keycode < 0 ? Mouse.isButtonDown(keycode + 100) : Keyboard.isKeyDown(keycode);
+		return keycode < 0 ? Mouse.isButtonDown(keycode + 100) : keycode > 255 ? /** invalid code - PASS */ false : Keyboard.isKeyDown(keycode);
 	}
 	   
 	@Override

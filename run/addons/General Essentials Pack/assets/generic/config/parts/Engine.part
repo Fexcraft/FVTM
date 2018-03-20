@@ -20,6 +20,21 @@
         "Fuel-Consumption": 0.7,
         "Fuel-Type": "diesel"
     },
+    "Sounds":[
+    	{
+    		"event": "engine_start",
+    		"sound": "minecraft:block.dispenser.dispense"
+    	},
+    	{
+    		"event": "engine_stop",
+    		"sound": "minecraft:block.dispenser.fail"
+    	},
+    	{
+    		"event": "engine_running",
+    		"sound": "minecraft:entity.minecart.riding",
+    		"volume": 0.2
+    	}
+    ],
     "Recipes":[
         {
             "Type": "Blueprint",

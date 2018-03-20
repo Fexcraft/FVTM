@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.impl.EngineLoopSound;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.VehicleAxes;
@@ -35,6 +36,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -69,6 +71,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 	public float wheelsAngle;
 	public int doorToggleTimer = 0;
 	public VehicleEntity trailer;
+	public EngineLoopSound engineloop;
 	
 	public LandVehicleEntity(World world){
 		super(world);
@@ -1029,13 +1032,24 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 						break;
 					}
 					lr = Time.getDate();
-					pkt.nbt.setBoolean("engine_toggle_result", vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).toggle());
+					boolean on = false, nf = false;
+					pkt.nbt.setBoolean("engine_toggle_result", on = vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).toggle());
 					if(vehicledata.getFuelTankContent() == 0 || vehicledata.getFuelTankContent() < 0.1){
-						pkt.nbt.setBoolean("engine_toggle_result", false);
-						pkt.nbt.setBoolean("no_fuel", true);
+						pkt.nbt.setBoolean("engine_toggle_result", on = false);
+						pkt.nbt.setBoolean("no_fuel", nf = true);
 					}
 					ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
 					throttle = 0;
+					//
+					SoundEvent event = vehicledata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
+					if(event != null){
+						this.playSound(event, 0.5f, 1f);
+			            //this.world.playSound(null, this.posX, this.posY, this.posZ, event, this.getSoundCategory(), 1f, 1f);
+			            Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop")  + " -> Playing!");
+					}
+					else{
+						Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop")  + " -> Not found.");
+					}
 					break;
 				}
 			}
@@ -1061,6 +1075,17 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 						}
 					}
 					throttle = 0;
+					if(vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).isOn() && this.engineloop == null){
+						SoundEvent event = vehicledata.getPart("engine").getPart().getSound("engine_running");
+						if(event != null){
+							this.engineloop = new EngineLoopSound(event, SoundCategory.NEUTRAL, this);
+							net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
+						    Print.debug("engine_running -> Playing! (LOOP)");
+						}
+						else{
+							Print.debug("engine_running -> Not found.");
+						}
+					}
 					break;
 				}
 				case "update_vehicledata":{

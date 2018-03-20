@@ -91,20 +91,22 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	public float getFMTurnRightModifier();
 
 	public DriveType getDriveType();
-	
-	public Collection<ResourceLocation> getSounds();
-	
-	public SoundEvent getSound(String event);
-
-	public void setSound(ResourceLocation sound, SoundEvent soundevent);
-	
-	public int getFMSoundLength(String event);
 
 	public boolean isTrailerOrWagon();
 
 	public ResourceLocation getDefaultKey();
 	
 	public TreeMap<String, Pos> getWheelPositions();
+	
+	public Collection<ResourceLocation> getSounds();
+	
+	public SoundEvent getSound(String event);
+
+	public void setSoundEvent(SoundEvent soundevent);
+	
+	public float getSoundVolume(String event);
+	
+	public float getSoundPitch(String event);
 	
 	//<-- VEHICLE DATA -->//
 	public static interface VehicleData {

@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.render.entity;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.pro.GenericLandVehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.util.math.Pos;

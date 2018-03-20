@@ -74,9 +74,11 @@ public interface Part extends IForgeRegistryEntry<Part> {
 	
 	public SoundEvent getSound(String event);
 
-	public void setSound(ResourceLocation sound, SoundEvent soundevent);
+	public void setSoundEvent(SoundEvent soundevent);
 	
-	public int getFMSoundLength(String event);
+	public float getSoundVolume(String event);
+	
+	public float getSoundPitch(String event);
 	
 	//<-- PART DATA -->//
 	public static interface PartData {

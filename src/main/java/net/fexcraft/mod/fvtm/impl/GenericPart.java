@@ -50,7 +50,8 @@ public class GenericPart implements Part {
 	//Sound
 	private TreeMap<String, ResourceLocation> sounds = new TreeMap<String, ResourceLocation>();
 	private TreeMap<ResourceLocation, SoundEvent> soundevents = new TreeMap<ResourceLocation, SoundEvent>();
-	private TreeMap<String, Integer> soundlenghts = new TreeMap<String, Integer>();
+	private TreeMap<String, Float> soundvolumes = new TreeMap<String, Float>();
+	private TreeMap<String, Float> soundpitch = new TreeMap<String, Float>();
 	
 	@SuppressWarnings("unchecked")
 	public GenericPart(JsonObject obj){
@@ -135,8 +136,14 @@ public class GenericPart implements Part {
 		if(obj.has("Sounds")){
 			for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
 				JsonObject jsn = elm.getAsJsonObject();
-				this.sounds.put(jsn.get("event").getAsString(), new ResourceLocation(jsn.get("sound").getAsString()));
-				this.soundlenghts.put(jsn.get("event").getAsString(), JsonUtil.getIfExists(jsn, "length", 0).intValue());
+				String event = jsn.get("event").getAsString();
+				this.sounds.put(event, new ResourceLocation(jsn.get("sound").getAsString()));
+				if(jsn.has("volume")){
+					this.soundvolumes.put(event, jsn.get("volume").getAsFloat());
+				}
+				if(jsn.has("pitch")){
+					this.soundpitch.put(event, jsn.get("pitch").getAsFloat());
+				}
 			}
 		}
 	}
@@ -285,19 +292,23 @@ public class GenericPart implements Part {
 
 	@Override
 	public SoundEvent getSound(String event){
-		ResourceLocation loc = this.sounds.get(event);
+		ResourceLocation loc = sounds.get(event);
 		return loc == null ? null : this.soundevents.get(loc);
 	}
 
 	@Override
-	public void setSound(ResourceLocation sound, SoundEvent soundevent){
-		Print.debug(sound, soundevent.getRegistryName());
-		this.soundevents.put(sound, soundevent);
+	public void setSoundEvent(SoundEvent soundevent){
+		this.soundevents.put(soundevent.getRegistryName(), soundevent);
 	}
 
 	@Override
-	public int getFMSoundLength(String event){
-		return this.soundlenghts.get(event);
+	public float getSoundVolume(String event){
+		return soundvolumes.get(event) == null ? 0.5f : soundvolumes.get(event);
+	}
+
+	@Override
+	public float getSoundPitch(String event){
+		return soundpitch.get(event) == null ? 1.0f : soundpitch.get(event);
 	}
 	
 }

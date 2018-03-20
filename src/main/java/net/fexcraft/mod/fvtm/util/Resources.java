@@ -468,26 +468,32 @@ public class Resources {
 		}
 		VEHICLES.getValues().forEach((vehicle) -> {
 			vehicle.getSounds().forEach((soundloc) -> {
+				if(event.getRegistry().containsKey(soundloc)){
+					SOUNDS.put(soundloc, event.getRegistry().getValue(soundloc));
+				}
 				if(SOUNDS.containsKey(soundloc)){
-					vehicle.setSound(soundloc, SOUNDS.get(soundloc));
+					vehicle.setSoundEvent(SOUNDS.get(soundloc));
 				}
 				else{
 					SoundEvent soundevent = new SoundEvent(soundloc).setRegistryName(soundloc);
 					event.getRegistry().register(soundevent);
-					vehicle.setSound(soundloc, soundevent);
+					vehicle.setSoundEvent(soundevent);
 					SOUNDS.put(soundloc, soundevent);
 				}
 			});
 		});
 		PARTS.getValues().forEach((part) -> {
 			part.getSounds().forEach((soundloc) -> {
+				if(event.getRegistry().containsKey(soundloc)){
+					SOUNDS.put(soundloc, event.getRegistry().getValue(soundloc));
+				}
 				if(SOUNDS.containsKey(soundloc)){
-					part.setSound(soundloc, SOUNDS.get(soundloc));
+					part.setSoundEvent(SOUNDS.get(soundloc));
 				}
 				else{
 					SoundEvent soundevent = new SoundEvent(soundloc).setRegistryName(soundloc);
 					event.getRegistry().register(soundevent);
-					part.setSound(soundloc, soundevent);
+					part.setSoundEvent(soundevent);
 					SOUNDS.put(soundloc, soundevent);
 				}
 			});

@@ -17,7 +17,7 @@
     "Compatible": [
         {
             "Vehicle": "fvp:c1r1",
-            "Offset": {"x":0,"y":0,"z":0}
+            "x": 0, "y": 0, "z": 0
         }
     ]
 }

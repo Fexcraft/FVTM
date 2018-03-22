@@ -427,7 +427,7 @@ public class LandVehicleTrailer extends Entity implements VehicleEntity, IEntity
 		this.ticksExisted++;
 		if(this.ticksExisted > Integer.MAX_VALUE){ this.ticksExisted = 0; }
 		//
-		boolean drivenByPlayer = world.isRemote && parent.getSeats()[0] != null && parent.getSeats()[0].getControllingPassenger() instanceof EntityPlayer;
+		boolean drivenByPlayer = world.isRemote && parent != null && parent.getSeats()[0] != null && parent.getSeats()[0].getControllingPassenger() instanceof EntityPlayer;
 		//
 		if(world.isRemote && !drivenByPlayer){
 			if(serverPositionTransitionTicker > 0){

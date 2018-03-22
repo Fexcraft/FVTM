@@ -12,7 +12,7 @@ package net.fexcraft.mod.fvtm.model.part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.minecraft.entity.Entity;
 
-public class NullModel extends PartModel {
+public class NullModel extends PartModel<VehicleData> {
 	
 	int textureX = 512;
 	int textureY = 512;
@@ -74,7 +74,7 @@ public class NullModel extends PartModel {
 		return;
 	}
 
-	public static PartModel get(){
+	public static PartModel<VehicleData> get(){
 		return nullmodel;
 	}
 	

@@ -45,6 +45,10 @@
         {
             "as": "passenger_seats",
             "part": "fvp:t1_front_seats"
+        },
+        {
+        	"as": "front_window",
+        	"part": "fvp:t1_front_window"
         }
     ],
     "DriveType": "front",

@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fme.blocks;
 
 import net.fexcraft.mod.fme.FME;
-import net.fexcraft.mod.fme.overlay.SelectedPolygon;
-import net.fexcraft.mod.fme.overlay.SelectedPolygon.PolygonType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
@@ -112,10 +110,11 @@ public class EditorBlock extends Block implements ITileEntityProvider {
 		}
 		else{
 			if(Static.getServer().isSinglePlayer()){
-				SelectedPolygon.toggleVisibility(!SelectedPolygon.isVisible(), pos);
+				/*SelectedPolygon.toggleVisibility(!SelectedPolygon.isVisible(), pos);
 				if(SelectedPolygon.isVisible()){
 					SelectedPolygon.selectNew(PolygonType.BOX, "body", 0);//TODO temporary
-				}
+				}*/
+				p.openGui(FME.INSTANCE, 0, w, pos.getX(), pos.getY(), pos.getZ());
 			}
 			else{
 				Print.debug("... this block shouldn't even exists in multiplayer.");

@@ -53,6 +53,12 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 	public ModelRendererTurbo reverse_lights[] = new ModelRendererTurbo[0];
 	public ModelRendererTurbo fog_lights[] = new ModelRendererTurbo[0];
 	//
+	public ModelRendererTurbo windows[] = new ModelRendererTurbo[0];
+	public ModelRendererTurbo windowsDoorOpen[] = new ModelRendererTurbo[0];
+	public ModelRendererTurbo windowsDoorClose[] = new ModelRendererTurbo[0];
+	//
+	private RGB windowcolor = new RGB(0x00, 0x72, 0x08, 0.3f);
+	//
 	public ArrayList<String> creators = new ArrayList<String>();
 	
 	private int tx, ty;
@@ -83,6 +89,16 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		wheel_back_left = JsonToTMT.parse(this, "wheel_back_left", obj, tx, ty);
 		wheel_front_right = JsonToTMT.parse(this, "wheel_front_right", obj, tx, ty);
 		wheel_back_right = JsonToTMT.parse(this, "wheel_back_right", obj, tx, ty);
+		//
+		lights = JsonToTMT.parse(this, "lights", obj, tx, ty);
+		front_lights = JsonToTMT.parse(this, "front_lights", obj, tx, ty);
+		back_lights = JsonToTMT.parse(this, "back_lights", obj, tx, ty);
+		reverse_lights = JsonToTMT.parse(this, "reverse_lights", obj, tx, ty);
+		fog_lights = JsonToTMT.parse(this, "fog_lights", obj, tx, ty);
+		//
+		windows = JsonToTMT.parse(this, "windows", obj, tx, ty);
+		windowsDoorOpen = JsonToTMT.parse(this, "windows_door_open", obj, tx, ty);
+		windowsDoorClose = JsonToTMT.parse(this, "windows_door_close", obj, tx, ty);
 	}
 	
 	@Override
@@ -149,6 +165,20 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		render(back_lights);
 		render(reverse_lights);
 		render(fog_lights);
+		//
+		if(rq(windows, windowsDoorOpen, windowsDoorClose)){
+			GlStateManager.enableBlend();
+			windowcolor.glColorApply();
+			render(windows);
+			if(data.doorsOpen()){
+				render(windowsDoorOpen);
+			}
+			else{
+				render(windowsDoorOpen);
+			}
+			RGB.glColorReset();
+	        GlStateManager.disableBlend();
+		}
 	}
 	
 	public void render(VehicleData data, String usedAS, Entity vehicle){
@@ -267,6 +297,20 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 				render(reverse_lights);
 				if(sr){ lightOn(vehicle); }
 			}
+		}
+		//
+		if(rq(windows, windowsDoorOpen, windowsDoorClose)){
+			GlStateManager.enableBlend();
+			windowcolor.glColorApply();
+			render(windows);
+			if(data.doorsOpen()){
+				render(windowsDoorOpen);
+			}
+			else{
+				render(windowsDoorOpen);
+			}
+			RGB.glColorReset();
+	        GlStateManager.disableBlend();
 		}
 		//
 		//Particles

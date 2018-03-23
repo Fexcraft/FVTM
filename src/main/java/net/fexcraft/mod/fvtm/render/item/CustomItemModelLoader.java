@@ -49,6 +49,10 @@ public class CustomItemModelLoader implements ICustomModelLoader {
 	public void onResourceManagerReload(IResourceManager resourceManager){
 		//
 	}
+	
+	public static final ICustomModelLoader getInstance(){
+		return INSTANCE;
+	}
 
 	@Override
 	public boolean accepts(ResourceLocation modelloc){

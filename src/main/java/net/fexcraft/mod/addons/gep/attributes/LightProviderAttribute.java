@@ -8,9 +8,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Attribute;
-import net.fexcraft.mod.lib.tmt.ModelBase;
+import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.render.RGB;
@@ -100,7 +101,7 @@ public class LightProviderAttribute implements Attribute {
 		@SideOnly(Side.CLIENT)
 		private ModelRendererTurbo main, send;
 		@SideOnly(Side.CLIENT)
-		private ModelBase placeholder = new ModelBase();
+		private Model<?> placeholder;
 
 		public LightData(JsonObject obj){
 			pos = Pos.fromJSON(obj.get("pos").getAsJsonObject());
@@ -115,6 +116,9 @@ public class LightProviderAttribute implements Attribute {
 			rotx = JsonUtil.getIfExists(obj, "rot_x", 0).floatValue();
 			roty = JsonUtil.getIfExists(obj, "rot_y", 0).floatValue();
 			rotz = JsonUtil.getIfExists(obj, "rot_z", 0).floatValue();
+			if(Static.side().isClient()){
+				placeholder = Model.EMPTY;
+			}
 		}
 		
 		@SideOnly(Side.CLIENT)

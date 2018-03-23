@@ -1056,6 +1056,7 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void processClientPacket(PacketEntityUpdate pkt){
 		if(pkt.nbt.hasKey("ScriptId")){

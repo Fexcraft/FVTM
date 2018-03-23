@@ -27,6 +27,7 @@ public class FME {
 	
 	@Mod.Instance(MODID)
 	public static FME INSTANCE;
+	
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
 		autoreg = new AutoRegisterer(MODID);

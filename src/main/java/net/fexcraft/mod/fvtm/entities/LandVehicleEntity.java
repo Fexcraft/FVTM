@@ -1100,6 +1100,11 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			}
 		}
 	}
+	
+	@SideOnly(Side.CLIENT) @Override
+	public boolean isInRangeToRenderDist(double dist){
+		return Config.RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
+	}
 
 	@Override
 	public VehicleData getVehicleData(){

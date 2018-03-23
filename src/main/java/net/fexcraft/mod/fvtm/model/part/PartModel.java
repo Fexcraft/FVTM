@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.model.part;
 
 import java.util.ArrayList;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
@@ -116,23 +118,13 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		
 		//Vehicle Body
 		render(body);
-		if(data.doorsOpen()){
-			render(bodyDoorOpen);
-		}
-		else{
-			render(bodyDoorClose);
-		}
+		render(data.doorsOpen() ? bodyDoorOpen : bodyDoorClose);
 		
 		//Render Primary Color Things
 		if(rq(bodyColoredPrimary, bodyDoorCloseColoredPrimary, bodyDoorOpenColoredPrimary)){
 			data.getPrimaryColor().glColorApply();
 			render(bodyColoredPrimary);
-			if(data.doorsOpen()){
-				render(bodyDoorOpenColoredPrimary);
-			}
-			else{
-				render(bodyDoorCloseColoredPrimary);
-			}
+			render(data.doorsOpen() ? bodyDoorOpenColoredPrimary : bodyDoorCloseColoredPrimary);
 			RGB.glColorReset();
 		}
 		
@@ -167,17 +159,18 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		render(fog_lights);
 		//
 		if(rq(windows, windowsDoorOpen, windowsDoorClose)){
-			GlStateManager.enableBlend();
+			GlStateManager.pushMatrix();
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glDepthMask(false);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
 			windowcolor.glColorApply();
 			render(windows);
-			if(data.doorsOpen()){
-				render(windowsDoorOpen);
-			}
-			else{
-				render(windowsDoorOpen);
-			}
+			render(data.doorsOpen() ? windowsDoorOpen : windowsDoorOpen);
 			RGB.glColorReset();
-	        GlStateManager.disableBlend();
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			GL11.glDepthMask(true);
+			GL11.glDisable(GL11.GL_BLEND);
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -185,23 +178,13 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		VehicleEntity ent = (VehicleEntity)vehicle;
 		//Vehicle Body
 		render(body);
-		if(data.doorsOpen()){
-			render(bodyDoorOpen);
-		}
-		else{
-			render(bodyDoorClose);
-		}
+		render(data.doorsOpen() ? bodyDoorOpen : bodyDoorClose);
 		
 		//Render Primary Color Things
 		if(rq(bodyColoredPrimary, bodyDoorCloseColoredPrimary, bodyDoorOpenColoredPrimary)){
 			data.getPrimaryColor().glColorApply();
 			render(bodyColoredPrimary);
-			if(data.doorsOpen()){
-				render(bodyDoorOpenColoredPrimary);
-			}
-			else{
-				render(bodyDoorCloseColoredPrimary);
-			}
+			render(data.doorsOpen() ? bodyDoorOpenColoredPrimary : bodyDoorCloseColoredPrimary);
 			RGB.glColorReset();
 		}
 		
@@ -300,17 +283,18 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		}
 		//
 		if(rq(windows, windowsDoorOpen, windowsDoorClose)){
-			GlStateManager.enableBlend();
+			GlStateManager.pushMatrix();
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glDepthMask(false);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
 			windowcolor.glColorApply();
 			render(windows);
-			if(data.doorsOpen()){
-				render(windowsDoorOpen);
-			}
-			else{
-				render(windowsDoorOpen);
-			}
+			render(data.doorsOpen() ? windowsDoorOpen : windowsDoorOpen);
 			RGB.glColorReset();
-	        GlStateManager.disableBlend();
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			GL11.glDepthMask(true);
+			GL11.glDisable(GL11.GL_BLEND);
+			GlStateManager.popMatrix();
 		}
 		//
 		//Particles
@@ -401,6 +385,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
 	}
+	//TODO shorten/clear both
 	protected void lightOff(Entity ent){
 		//GL11.glPushMatrix();
 		//GL11.glDisable(GL11.GL_LIGHTING);

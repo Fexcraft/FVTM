@@ -12,7 +12,6 @@ import net.fexcraft.mod.lib.tmt.ModelConverter;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.render.RGB;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
@@ -94,7 +93,6 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 			        GlStateManager.depthMask(false);
 			        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 50f, 50f);
 			        //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
-			        Minecraft.getMinecraft().entityRenderer.setupFogColor(true);
 			        vehicle.getVehicleData().getParts().values().forEach(part -> {
 			        	if(part.getPart().getAttribute(LightProviderAttribute.class) != null){
 			        		LightProviderAttribute attr = part.getPart().getAttribute(LightProviderAttribute.class);
@@ -122,7 +120,6 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 			        		}
 			        	}
 			        });
-					Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
 			        int i = vehicle.getBrightnessForRender();
 			        int j = i % 65536;
 			        int k = i / 65536;

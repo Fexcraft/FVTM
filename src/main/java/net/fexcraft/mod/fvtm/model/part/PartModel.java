@@ -20,7 +20,6 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.render.RGB;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -370,39 +369,19 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		return new Vec3d(vehicle.posX + rel.x, vehicle.posY + rel.y, vehicle.posZ + rel.z);
 	}*/
 	
-	/**
-	 * > "based on" spider eyes
-	 * */
 	protected void lightOn(Entity ent){
-		//GL11.glEnable(GL11.GL_LIGHTING);
-		//GL11.glPopMatrix();
-		//
-		Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
-        int i = ent.getBrightnessForRender();
-        int j = i % 65536;
-        int k = i / 65536;
+        int i = ent.getBrightnessForRender(), j = i % 65536, k = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
 	}
-	//TODO shorten/clear both
 	protected void lightOff(Entity ent){
-		//GL11.glPushMatrix();
-		//GL11.glDisable(GL11.GL_LIGHTING);
-		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
-		//
 		GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-        if(ent.isInvisible()){
-            GlStateManager.depthMask(false);
-        }
-        else{
-            GlStateManager.depthMask(true);
-        }
+        GlStateManager.depthMask(true);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        Minecraft.getMinecraft().entityRenderer.setupFogColor(true);
 	}
 	
 	public void rotate(ModelRendererTurbo[] part, float x, float y, float z, boolean mode){

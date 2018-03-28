@@ -2,7 +2,6 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;

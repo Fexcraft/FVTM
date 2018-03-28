@@ -23,6 +23,7 @@ import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.GenericGuiButton;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
@@ -125,7 +126,12 @@ public class VehicleInventoryGui {
 				case 0:{
 					this.mc.getTextureManager().bindTexture(maintex);
 					this.drawTexturedModalRect(i, j, 0, 0, this.xSize + 12, this.ySize);
-					this.fontRenderer.drawString(data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
+					if(!Static.dev()){
+						this.fontRenderer.drawString(data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
+					}
+					else{
+						this.fontRenderer.drawString(ent.getEntity().getEntityId() + " | " + data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
+					}
 					break;
 				}
 				case 1:{

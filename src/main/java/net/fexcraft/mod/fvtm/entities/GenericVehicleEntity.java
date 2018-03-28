@@ -5,19 +5,18 @@ import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeDat
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class WaterVehicleEntity extends UnboundVehicleEntity {
+public class GenericVehicleEntity extends UnboundVehicleEntity {
 
-	public WaterVehicleEntity(World world){
+	public GenericVehicleEntity(World world){
 		super(world);
 	}
 
-	public WaterVehicleEntity(World world, double x, double y, double z, EntityPlayer player, VehicleData data){
+	public GenericVehicleEntity(World world, double x, double y, double z, EntityPlayer player, VehicleData data){
 		super(world, x, y, z, player, data);
 	}
 
@@ -27,7 +26,7 @@ public class WaterVehicleEntity extends UnboundVehicleEntity {
 		boolean canThrustCreatively = !Config.VEHICLE_NEEDS_FUEL || (seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
 		boolean consumed = false;
 		Part.PartData enginepart = vehicledata.getPart("engine");
-		if(enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
+		if(!canThrustCreatively && enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
 			double d = (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
 			consumed = vehicledata.consumeFuel(d > 0 ? d : (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() / 320));
 		}
@@ -35,8 +34,8 @@ public class WaterVehicleEntity extends UnboundVehicleEntity {
 			if(wheel == null){
 				continue;
 			}
-			onGround = false;
-			wheel.onGround = false;
+			onGround = true;
+			wheel.onGround = true;
 			wheel.rotationYaw = axes.getYaw();
 			if(!vehicledata.getVehicle().getDriveType().hasTracks() && (wheel.wheelid == 2 || wheel.wheelid == 3)){
 				wheel.rotationYaw += wheelsYaw;
@@ -78,19 +77,19 @@ public class WaterVehicleEntity extends UnboundVehicleEntity {
 					}
 				}
 			}
-			if(world.containsAnyLiquid(wheel.getEntityBoundingBox())){//.isAnyLiquid(wheel.getEntityBoundingBox())){
-				wheel.motionY += vehicledata.getVehicle().getBuoyancy();
-			}
 			wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 			//pull wheels back to car
-			Pos pos = vehicledata.getWheelPos().get(wheel.wheelid);
-			Vec3d targetpos = axes.getRelativeVector(new Vec3d(pos.to16FloatX(), pos.to16FloatY(), pos.to16FloatZ()));
+			Vec3d targetpos = axes.getRelativeVector(vehicledata.getWheelPos().get(wheel.wheelid).to16Double());
 			Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
 			Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMWheelSpringStrength());
 			if(despos.lengthSquared() > 0.001F){
 				wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
 				despos.scale(0.5F);
 				atmc = atmc.subtract(despos);
+			}
+			//
+			if(this.getEntityAtRear() != null){
+				this.getEntityAtRear().moveTrailer();
 			}
 		}
 		move(MoverType.SELF, atmc.x, atmc.y, atmc.z);

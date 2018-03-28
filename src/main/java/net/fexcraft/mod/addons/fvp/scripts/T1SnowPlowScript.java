@@ -5,7 +5,6 @@ import java.util.TreeMap;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.block.BlockSnow;
 import net.minecraft.block.material.Material;
@@ -73,32 +72,32 @@ public class T1SnowPlowScript implements VehicleScript {
 
 	@Override
 	public void onUpdate(Entity entity, VehicleData data){
-		LandVehicleEntity vehicle = (LandVehicleEntity) entity;
-		if(!vehicle.world.isRemote){
+		VehicleEntity vehicle = (VehicleEntity)entity;
+		if(!entity.world.isRemote){
 			if(on){
 				Vec3d[] pos = new Vec3d[6];
-				pos[0] = calculate(vehicle,  2);
-				pos[1] = calculate(vehicle,  1);
-				pos[2] = calculate(vehicle,  0);
-				pos[3] = calculate(vehicle, -1);
-				pos[4] = calculate(vehicle, -2);
-				pos[5] = calculate(vehicle,  3);
+				pos[0] = calculate(vehicle, entity, 2);
+				pos[1] = calculate(vehicle, entity,  1);
+				pos[2] = calculate(vehicle, entity,  0);
+				pos[3] = calculate(vehicle, entity, -1);
+				pos[4] = calculate(vehicle, entity, -2);
+				pos[5] = calculate(vehicle, entity,  3);
 				IBlockState[] states = new IBlockState[6];
 				int j = 0;
 				for(int i = 0; i < 6; i++){
 					BlockPos poss = new BlockPos(new Vec3d(pos[i].x, pos[i].y, pos[i].z));
-					states[i] = vehicle.world.getBlockState(poss);
+					states[i] = entity.world.getBlockState(poss);
 					if(i < 5){
 						if(states[i].getMaterial() == Material.SNOW){
-							vehicle.world.setBlockState(new BlockPos(poss), Blocks.AIR.getDefaultState(), 2);
+							entity.world.setBlockState(new BlockPos(poss), Blocks.AIR.getDefaultState(), 2);
 							j++;
 						}
 						else if(states[i].getMaterial().isReplaceable() || states[i].getMaterial() == Material.CACTUS || states[i].getMaterial() == Material.CIRCUITS){
-							vehicle.world.setBlockState(new BlockPos(poss), Blocks.AIR.getDefaultState(), 2);
+							entity.world.setBlockState(new BlockPos(poss), Blocks.AIR.getDefaultState(), 2);
 						}
 					}
 					if(i == 5 && j > 0 && states[i].getMaterial().isReplaceable()){
-						vehicle.world.setBlockState(poss, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, j), 2);
+						entity.world.setBlockState(poss, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, j), 2);
 					}
 				}
 			}
@@ -108,10 +107,10 @@ public class T1SnowPlowScript implements VehicleScript {
 		}
 	}
 	
-	private static final Vec3d calculate(LandVehicleEntity vehicle, int i){
+	private static final Vec3d calculate(VehicleEntity vehicle, Entity ent,  int i){
 		Pos pos = new Pos(70, 4, i * 16);
 		Vec3d rel = vehicle.getAxes().getRelativeVector(pos.to16Double());
-		return new Vec3d(vehicle.posX + rel.x, vehicle.posY + rel.y, vehicle.posZ + rel.z);
+		return new Vec3d(ent.posX + rel.x, ent.posY + rel.y, ent.posZ + rel.z);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities;
+package net.fexcraft.mod.fvtm.entities.deprecated;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
@@ -9,6 +9,9 @@ import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.*;
+import net.fexcraft.mod.fvtm.entities.CameraEntity;
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.EngineLoopSound;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
@@ -1008,10 +1011,6 @@ public class LandVehicleEntity extends Entity implements VehicleEntity, IEntityA
 			return null;
 		}
 		return camera;
-	}
-
-	public VehicleData getData(){
-		return vehicledata;
 	}
 	
 	private long lr = -1;

@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.addons.gep.attributes.LightProviderAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.tmt.Model;
@@ -19,9 +19,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
-public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRenderFactory<LandVehicleEntity> {
+public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implements IRenderFactory<UnboundVehicleEntity> {
 	
-	public RenderLandVehicle(RenderManager renderManager){
+	public RenderGenericVehicle(RenderManager renderManager){
 		super(renderManager);
 		shadowSize = 0.5F;
 		/*if(!reg){
@@ -30,7 +30,7 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 		}*/
 	}
 
-	public void bindTexture(LandVehicleEntity ent){
+	public void bindTexture(UnboundVehicleEntity ent){
 		super.bindEntityTexture(ent);
 	}
 	
@@ -48,7 +48,7 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 	}
 	
 	@Override
-    public void doRender(LandVehicleEntity vehicle, double x, double y, double z, float entity_yaw, float ticks){
+    public void doRender(UnboundVehicleEntity vehicle, double x, double y, double z, float entity_yaw, float ticks){
     	if(vehicle.getVehicleData() == null){
     		return;
     	}
@@ -134,7 +134,7 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(LandVehicleEntity entity){
+	protected ResourceLocation getEntityTexture(UnboundVehicleEntity entity){
 		return entity.getVehicleData().getTexture();
 	}
 	
@@ -181,8 +181,8 @@ public class RenderLandVehicle extends Render<LandVehicleEntity> implements IRen
 	}*/
 
 	@Override
-	public Render<LandVehicleEntity> createRenderFor(RenderManager manager){
-		return new RenderLandVehicle(manager);
+	public Render<UnboundVehicleEntity> createRenderFor(RenderManager manager){
+		return new RenderGenericVehicle(manager);
 	}
 	
 }

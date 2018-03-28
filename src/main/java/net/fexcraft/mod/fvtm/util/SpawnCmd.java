@@ -11,7 +11,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.lib.FCL;
 import net.fexcraft.mod.lib.api.common.fCommand;
 import net.fexcraft.mod.lib.perms.PermManager;
@@ -101,7 +101,7 @@ public class SpawnCmd extends CommandBase {
         		}
         		else{
         			Vec3d vec = sender.getPositionVector().addVector(0, 2, 0);
-        			sender.getEntityWorld().spawnEntity(new LandVehicleEntity(sender.getEntityWorld(), vec.x, vec.y, vec.z, (EntityPlayer)sender, data));
+        			sender.getEntityWorld().spawnEntity(new GenericVehicleEntity(sender.getEntityWorld(), vec.x, vec.y, vec.z, (EntityPlayer)sender, data));
         			Print.chat(sender, "Entity Spawned.");
         		}
         	}
@@ -163,7 +163,7 @@ public class SpawnCmd extends CommandBase {
         			return;
         		}
         		Vec3d vec = sender.getPositionVector().addVector(0, 2, 0);
-        		sender.getEntityWorld().spawnEntity(new LandVehicleEntity(sender.getEntityWorld(), vec.x, vec.y, vec.z, (EntityPlayer)sender, vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle)));
+        		sender.getEntityWorld().spawnEntity(new GenericVehicleEntity(sender.getEntityWorld(), vec.x, vec.y, vec.z, (EntityPlayer)sender, vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle)));
         	}
         	catch(Exception e){
         		Print.chat(sender, e.getLocalizedMessage());

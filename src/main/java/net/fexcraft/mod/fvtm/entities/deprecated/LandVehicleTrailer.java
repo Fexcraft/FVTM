@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities;
+package net.fexcraft.mod.fvtm.entities.deprecated;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
@@ -11,6 +11,8 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;

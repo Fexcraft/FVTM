@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
-import net.fexcraft.mod.fvtm.entities.LandVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.SpawnCmd;
@@ -234,7 +234,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 						return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 					}
 					if(!world.isRemote){
-						world.spawnEntity(new LandVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
+						world.spawnEntity(new GenericVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
 					}
 					break;
 				}

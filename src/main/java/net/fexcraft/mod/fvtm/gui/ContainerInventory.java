@@ -71,7 +71,7 @@ public class ContainerInventory implements IInventory {
 
 	@Override
 	public ItemStack removeStackFromSlot(int index){
-		return can(index) ?  coninv.set(index, ItemStack.EMPTY) : ItemStack.EMPTY;
+		return can(index) ? coninv.set(index, ItemStack.EMPTY) : ItemStack.EMPTY;
 	}
 
 	@Override

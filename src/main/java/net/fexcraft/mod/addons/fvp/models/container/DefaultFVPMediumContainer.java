@@ -526,6 +526,12 @@ public class DefaultFVPMediumContainer extends ContainerModel<ContainerData> {
 	}
 	
 	@Override
+	public void render(ContainerData data){
+		render(lock);
+		render(body);
+	}
+	
+	@Override
 	public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos){
 		render(lock);
 		vehdata.getSecondaryColor().glColorApply();

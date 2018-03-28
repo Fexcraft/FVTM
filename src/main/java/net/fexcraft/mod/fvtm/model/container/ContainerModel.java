@@ -42,19 +42,25 @@ public class ContainerModel<T extends ContainerData> extends Model<ContainerData
 	
 	@Override
 	public void render(){
-		//cannot render without providing vehicledata;
+		//
+	}
+	
+	/** From Block/TileEntity */
+	public void render(ContainerData data){
+		render(body);
 	}
 
 	@Override
-	public void render(ContainerData type, Entity ent){
-		//render(type, ContainerPosition.MEDIUM_SINGLE, ent);
-	}
-
-	public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos){
-		render(body);
-		
+	public void render(ContainerData data, Entity ent){
+		//
 	}
 	
+	/** From Constructor */
+	public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos){
+		render(body);
+	}
+	
+	/** From Entity/Vehicle */
 	public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos, Entity vehicle){
 		render(body);
 	}

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -8,16 +9,24 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
+import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.common.Print;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -114,6 +123,46 @@ public class GenericContainerItem extends Item implements ContainerItem {
 			return Resources.getContainerData(stack.getTagCompound());
 		}
 		return null;
+	}
+	
+	@Override
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
+		if(world.isRemote || !(facing == EnumFacing.UP)){
+			return EnumActionResult.PASS;
+		}
+		ContainerData data = Resources.getContainerData(player.getHeldItem(hand).getTagCompound());
+		BlockPos core = pos.add(0, 1, 0);
+		if(isValidPostitionForContainer(world, player, core, player.getHorizontalFacing(), data)){
+			ItemStack stack = player.getHeldItem(hand);
+			stack.getTagCompound().setLong("PlacedPos", core.toLong());
+			ContainerBlock.getPositions(data, core, player.getHorizontalFacing()).forEach(blkpos -> {
+				IBlockState state = ContainerBlock.INSTANCE.getDefaultState();
+				state.getBlock().onBlockPlacedBy(world, blkpos, state.withProperty(ContainerBlock.FACING, player.getHorizontalFacing()), player, stack);
+			});
+			stack.shrink(64);
+			return EnumActionResult.SUCCESS;
+        }
+		return EnumActionResult.PASS;
+    }
+
+	private boolean isValidPostitionForContainer(World world, EntityPlayer player, BlockPos pos, EnumFacing opposite, ContainerData data){
+		ArrayList<BlockPos> list = ContainerBlock.getPositions(data, pos, opposite);
+		BlockPos obstacle = null;
+		IBlockState state = null;
+		for(BlockPos blkpos : list){
+			state = world.getBlockState(blkpos);
+			if(!state.getBlock().isReplaceable(world, blkpos)){
+				obstacle = blkpos;
+				break;
+			}
+		}
+		if(obstacle != null){
+			Print.bar(player, String.format("Obstacle at position: %sx, %sy, %sz!", obstacle.getX(), obstacle.getY(), obstacle.getZ()));
+			return false;
+		}
+		else{
+			return true;
+		}
 	}
 	
 }

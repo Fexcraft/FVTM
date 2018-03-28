@@ -35,6 +35,16 @@ public class GenericContainerModel extends ContainerModel<ContainerData> {
 	}
 	
 	@Override
+	public void render(ContainerData data){
+		if(data.getContainer().isLargeContainer()){
+			body[0].render();
+		}
+		else{
+			body[3].render();
+		}
+	}
+	
+	@Override
 	public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos){
 		switch(pos){
 			case LARGE_SINGLE:

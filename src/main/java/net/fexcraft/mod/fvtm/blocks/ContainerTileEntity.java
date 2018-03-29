@@ -93,7 +93,7 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 		}
 	}
 	
-	private ContainerTileEntity getCore(){
+	ContainerTileEntity getCore(){
 		return core ? this : coretile == null ? coretile = corepos == null ? null : (ContainerTileEntity)world.getTileEntity(corepos) : coretile;
 	}
 
@@ -189,14 +189,14 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 	@Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            return getCore() != null && getCore().container != null && getCore().container.getInventory().size() > 0;
+            return !this.isLocked() && getCore() != null && getCore().container != null && getCore().container.getInventory().size() > 0;
         }
         return super.hasCapability(capability, facing);
     }
 
     @SuppressWarnings("unchecked") @Override @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
-        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing.getAxis().isVertical()){
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing.getAxis().isVertical() && !this.isLocked()){
         	if(itemStackHandler == null){
         		itemStackHandler = new ItemStackHandler(getCore().container.getInventory());
         	}

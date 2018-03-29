@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.api.item.KeyItem;
@@ -30,6 +31,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -159,7 +161,12 @@ public class ContainerBlock extends BlockContainer {
 				return true;
 			}
 			if(stack.isEmpty()){
-				//TODO open GUI
+				if(te.getCore() == null){
+					Print.chat(player, "Container Core couldn't be found.");
+					return true;
+				}
+				BlockPos corepos = te.getCore().getPos();
+				player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_INVENTORY, world, corepos.getX(), corepos.getY(), corepos.getZ());
 				return true;
 			}
 			else if(Static.dev()){
@@ -199,5 +206,19 @@ public class ContainerBlock extends BlockContainer {
 			default: return null;
 		}
 	}
+	
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
+		if(world.getTileEntity(pos) != null){
+			try{
+				ContainerTileEntity tile = (ContainerTileEntity)world.getTileEntity(pos);
+				return tile.getContainerData().getContainer().getItemStack(tile.getContainerData());
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+        return ItemStack.EMPTY;
+    }
 	
 }

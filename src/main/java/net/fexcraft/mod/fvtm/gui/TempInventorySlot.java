@@ -29,7 +29,7 @@ public class TempInventorySlot extends Slot {
 				return false;
 			}
 		}
-        return partdata.getPart().getAttribute(InventoryAttribute.class).isItemValid(stack);
+        return partdata == null ? true : partdata.getPart().getAttribute(InventoryAttribute.class).isItemValid(stack);
     }
 	
 }

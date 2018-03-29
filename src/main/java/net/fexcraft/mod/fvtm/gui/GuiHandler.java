@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.gui.ContainerInventoryGui.Server;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketListener;
@@ -30,6 +31,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int ADDON_MANAGER = 55;
 	public static final int VEHICLE_INVENTORY = 9910;
 	public static final int CONSTRUCTOR = 9000;//92110;
+	public static final int CONTAINER_INVENTORY = 9210;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
@@ -39,8 +41,10 @@ public class GuiHandler implements IGuiHandler {
 				return new GenericPlaceholderContainer();
 			case 9910:
 				return new VehicleInventoryGui.Server(player, world, x, y, z);
+			case 9210:
+				return new ContainerInventoryGui.Server(player, world, x, y, z);
 		}
-		if(ID >= CONSTRUCTOR && ID < VEHICLE_INVENTORY){
+		if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
 			return new GenericPlaceholderContainer();
 		}
 		return null;
@@ -55,8 +59,10 @@ public class GuiHandler implements IGuiHandler {
 				return new AddonManagerGui(x, y, z);
 			case 9910:
 				return new VehicleInventoryGui.Client(player, world, x, y, z);
+			case 9210:
+				return new ContainerInventoryGui.Client(player, world, x, y, z);
 		}
-		if(ID >= CONSTRUCTOR && ID < VEHICLE_INVENTORY){
+		if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
 			Print.debug("CREATING GUI!");
 			return new ConstructorMainGUI(ID, player, world, x, y, z);
 		}
@@ -296,6 +302,11 @@ public class GuiHandler implements IGuiHandler {
 					ConstructorControllerEntity serv = (ConstructorControllerEntity)player.world.getTileEntity(pos);
 					player.closeScreen();
 					serv.recycleVehicle();
+					break;
+				}
+				case "container_gui_scroll":{
+					ContainerInventoryGui.Server container = (Server)((EntityPlayer)objs[0]).openContainer;
+					container.refresh(packet.nbt.getInteger("scroll"));
 					break;
 				}
 			}

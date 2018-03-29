@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.common.LockableObject;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
-import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.state.IBlockState;
@@ -19,6 +18,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -29,9 +29,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class ContainerTileEntity extends TileEntity implements IInventory, IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
 	
+	private ItemStackHandler itemStackHandler;
 	private boolean core, setup;
 	private ContainerData container;
 	private BlockPos corepos;
@@ -54,6 +56,11 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 	public NBTTagCompound getUpdateTag(){
 		return this.writeToNBT(new NBTTagCompound());
 	}
+	
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
+		this.readFromNBT(pkt.getNbtCompound());
+    }
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
@@ -182,7 +189,7 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 	@Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            return getCore().container != null && getCore().container.getInventory().size() > 0;
+            return getCore() != null && getCore().container != null && getCore().container.getInventory().size() > 0;
         }
         return super.hasCapability(capability, facing);
     }
@@ -190,7 +197,10 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
     @SuppressWarnings("unchecked") @Override @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing.getAxis().isVertical()){
-            return (T)getCore().container.getInventory();
+        	if(itemStackHandler == null){
+        		itemStackHandler = new ItemStackHandler(getCore().container.getInventory());
+        	}
+            return (T)itemStackHandler;
         }
         return getCapability(capability, facing);
     }
@@ -214,19 +224,7 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 			this.corepos = core;
 		}
 		this.setup = true;
-		if(!world.isRemote && container != null){
-			PacketHandler.getInstance().sendToAll(new PacketTileEntityUpdate(world.provider.getDimension(), pos, container.writeToNBT(new NBTTagCompound())));
-		}
 		Print.debug("CONTESETUP: " + this.pos.toString() + " OK;");
-	}
-	
-	@Override
-	public void processClientPacket(PacketTileEntityUpdate pkt){
-		Print.debug("PKT: " + pkt.nbt.toString());
-		if(pkt.nbt.hasKey(ContainerItem.NBTKEY)){
-			container = Resources.getContainerData(pkt.nbt);
-			core = true; setup = true;
-		}
 	}
 
 	public void notifyBreak(World world, BlockPos pos, IBlockState state){

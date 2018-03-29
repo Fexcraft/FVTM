@@ -9,12 +9,12 @@ import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -119,7 +120,7 @@ public class ContainerBlock extends BlockContainer {
 	
 	@Override
     protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[] {FACING});
+        return new BlockStateContainer(this, FACING);
     }
 	
 	@Override
@@ -160,6 +161,9 @@ public class ContainerBlock extends BlockContainer {
 			if(stack.isEmpty()){
 				//TODO open GUI
 				return true;
+			}
+			else if(Static.dev()){
+				Print.debug(te.getContainerData() == null ? "No Container." : te.getContainerData().writeToNBT(new NBTTagCompound()).toString());
 			}
 		}
 		return false;

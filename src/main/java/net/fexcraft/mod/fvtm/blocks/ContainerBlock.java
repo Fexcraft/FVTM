@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.block.fBlock;
+import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -18,8 +21,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -27,7 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "container_block", tileentity = ContainerTileEntity.class)
+@fBlock(modid = FVTM.MODID, name = "container_block", item = ContainerBlock.ITB.class, tileentity = ContainerTileEntity.class)
 public class ContainerBlock extends BlockContainer {
 	
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -44,6 +49,17 @@ public class ContainerBlock extends BlockContainer {
         this.setResistance(280.0F);
         //
         INSTANCE = this;
+	}
+	
+	public static class ITB extends ItemBlock {
+
+		public ITB(Block block){ super(block); }
+		
+		@Override
+		public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
+			return EnumActionResult.PASS;
+	    }
+		
 	}
 
 	@Override
@@ -84,7 +100,7 @@ public class ContainerBlock extends BlockContainer {
 	@Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
         world.setBlockState(pos, state, 2);
-        ((ContainerTileEntity)world.getTileEntity(pos)).setUp(placer, stack);
+        ((ContainerTileEntity)world.getTileEntity(pos)).setUp(stack);
     }
     
 	@Override
@@ -128,7 +144,23 @@ public class ContainerBlock extends BlockContainer {
 				world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 				return true;
 			}
-			//TODO open GUI
+			ItemStack stack = player.getHeldItem(hand);
+			if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof MaterialItem ? ((MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
+				if(te.isLocked()){
+					te.unlock(world, player, stack, (KeyItem)stack.getItem());
+				}
+				else{
+					te.lock(world, player, stack, (KeyItem)stack.getItem());
+				}
+			}
+			if(te.isLocked()){
+				Print.chat(player, "Container is Locked.");
+				return true;
+			}
+			if(stack.isEmpty()){
+				//TODO open GUI
+				return true;
+			}
 		}
 		return false;
 	}
@@ -137,12 +169,14 @@ public class ContainerBlock extends BlockContainer {
 		ArrayList<BlockPos> list = new ArrayList<BlockPos>();
 		facing = rotate90(facing);
 		BlockPos core = new BlockPos(pos);
-		int length = data.getContainer().isLargeContainer() ? 12 : 6;
-		int xhl = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? 1 : length / 2;
-		int zhl = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? length / 2 : 1;
-		for(int x = -xhl; x < xhl * 2; x++){
+		boolean m = !data.getContainer().isLargeContainer();
+		int xil = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? -1 : m ? -3 : -6;
+		int xal = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ?  2 : m ?  3 :  6;
+		int zil = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? m ? -3 : -6 : -1;
+		int zal = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? m ?  3 :  6 :  2;
+		for(int x = xil; x < xal; x++){
 			for(int y = 0; y < 3; y++){
-				for(int z = -zhl; z < zhl * 2; z++){
+				for(int z = zil; z < zal; z++){
 					list.add(core.add(x, y, z));
 				}
 			}

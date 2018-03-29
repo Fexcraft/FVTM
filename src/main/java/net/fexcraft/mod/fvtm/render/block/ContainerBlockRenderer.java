@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
 import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.Model;
+import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
@@ -21,14 +22,13 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerT
 		Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
 		GL11.glPushMatrix();
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		double d = 60;
 		switch(te.getBlockMetadata()){
-			case 2: d = 0; break;
-			case 3: d = -180d; break;
-			case 4: d = -90; break;
-			case 5: d = -270d; break;
+			case 2:{ GL11.glTranslated(0.5D, 0, 0); GL11.glRotated(    0, 0, 1D, 0); break; }
+			case 3:{ GL11.glTranslated(0.5D, 0, 0); GL11.glRotated( 180D, 0, 1D, 0); break; }
+			case 4:{ GL11.glTranslated(0, 0, -0.5D); GL11.glRotated( -90D, 0, 1D, 0); break; }
+			case 5:{ GL11.glTranslated(0, 0, -0.5D); GL11.glRotated(-270D, 0, 1D, 0); break; }
+			default:{ GL11.glTranslated(0, -0.5D, 0); GL11.glRotated(Time.getSecond() * 6, 0, 1D, 0); break; }
 		}
-		GL11.glRotated(  d, 0, 1D, 0);
 		GL11.glRotated(180, 0, 1D, 0);
 		ContainerData condata = te.getContainerData();
 		if(condata != null){

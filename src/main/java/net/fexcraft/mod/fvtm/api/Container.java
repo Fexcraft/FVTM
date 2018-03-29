@@ -83,6 +83,16 @@ public interface Container extends IForgeRegistryEntry<Container> {
 		
 		public NonNullList<ItemStack> getInventory();
 		
+		public boolean isLocked();
+		
+		public boolean setLocked(@Nullable Boolean lock);
+
+		public String getLockCode();
+
+		public default boolean allowsLocking(){
+			return true;
+		}
+		
 	}
 	
 	public static interface ContainerItem {

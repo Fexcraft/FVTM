@@ -5,12 +5,14 @@ import javax.annotation.Nullable;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.lib.api.common.LockableObject;
+import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -28,7 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class ContainerTileEntity extends TileEntity implements IInventory, IPacketReceiver<PacketTileEntityUpdate> {
+public class ContainerTileEntity extends TileEntity implements IInventory, IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
 	
 	private boolean core, setup;
 	private ContainerData container;
@@ -201,7 +203,7 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 		return corepos;
 	}
 
-	public void setUp(EntityLivingBase placer, ItemStack stack){
+	public void setUp(ItemStack stack){
 		BlockPos core = BlockPos.fromLong(stack.getTagCompound().getLong("PlacedPos"));
 		this.core = pos.equals(core);
 		if(this.core){
@@ -223,15 +225,20 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 		Print.debug("PKT: " + pkt.nbt.toString());
 		if(pkt.nbt.hasKey(ContainerItem.NBTKEY)){
 			container = Resources.getContainerData(pkt.nbt);
-			core = true;
+			core = true; setup = true;
 		}
 	}
 
 	public void notifyBreak(World world, BlockPos pos, IBlockState state){
-		if(getCore() == null){
-			return;
-		}
-		ContainerBlock.getPositions(getCore().getContainerData(), getCore().getPos(), state.getValue(ContainerBlock.FACING)).forEach(blkpos -> {
+		if(getCore() == null){ return; }
+		ContainerTileEntity core = getCore();
+		ContainerBlock.getPositions(core.container, core.pos, state.getValue(ContainerBlock.FACING)).forEach(blkpos -> {
+			if(this.core && blkpos.equals(core.pos)){
+				EntityItem ent = new EntityItem(world);
+				ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
+				ent.setItem(core.container.getContainer().getItemStack(core.container));
+				world.spawnEntity(ent);
+			}
 			if(!blkpos.equals(pos)){
 				world.setBlockState(blkpos, Blocks.AIR.getDefaultState(), 2);
 			}
@@ -252,5 +259,104 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
     public boolean canRenderBreaking(){
         return true;
     }
+
+	@Override
+	public boolean isLocked(){
+		return getContainerData().isLocked();
+	}
+	
+	@Override
+	public boolean unlock(World world, EntityPlayer entity, ItemStack stack, KeyItem item){
+		if(!stack.hasTagCompound()){
+			Print.chat(entity, "[ERROR] Key don't has a NBT Tag Compound!");
+			return false;
+		}
+		else{
+			ContainerData data = getContainerData();
+			switch(item.getType(stack)){
+				case PRIVATE:
+					if(entity.getGameProfile().getId().toString().equals(item.getCreator(stack).toString())){
+						Print.chat(entity, "This key can only be used by the Owner;");
+						return false;
+					}
+					else{
+						if(item.getCode(stack).equals(data.getLockCode())){
+							data.setLocked(false);
+							Print.chat(entity, "Container is now unlocked.");
+							return true;
+						}
+						else{
+							Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
+							return false;
+						}
+					}
+				case COMMON:
+					if(item.getCode(stack).equals(data.getLockCode())){
+						data.setLocked(false);
+						Print.chat(entity, "Container is now unlocked.");
+						return true;
+					}
+					else{
+						Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
+						return false;
+					}
+				case ADMIN:
+					data.setLocked(false);
+					Print.chat(entity, "[SU] Container is now unlocked.");
+					return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean lock(World world, EntityPlayer entity, ItemStack stack, KeyItem item){
+		ContainerData data = getContainerData();
+		if(!data.allowsLocking()){
+			Print.chat(entity, "This vehicle doesn't allow locking.");
+			return false;
+		}
+		else{
+			if(!stack.hasTagCompound()){
+				Print.chat(entity, "[ERROR] Key don't has a NBT Tag Compound!");
+				return false;
+			}
+			else{
+				switch(item.getType(stack)){
+					case PRIVATE:
+						if(entity.getGameProfile().getId().toString().equals(item.getCreator(stack).toString())){
+							Print.chat(entity, "This key can only be used by the Owner;");
+							return false;
+						}
+						else{
+							if(item.getCode(stack).equals(data.getLockCode())){
+								data.setLocked(true);
+								Print.chat(entity, "Container is now locked.");
+								return true;
+							}
+							else{
+								Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
+								return false;
+							}
+						}
+					case COMMON:
+						if(item.getCode(stack).equals(data.getLockCode())){
+							data.setLocked(true);
+							Print.chat(entity, "Container is now locked.");
+							return true;
+						}
+						else{
+							Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
+							return false;
+						}
+					case ADMIN:
+						data.setLocked(true);
+						Print.chat(entity, "[SU] Container is now locked.");
+						return true;
+				}
+			}
+		}
+		return false;
+	}
     
 }

@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
+import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -15,9 +16,9 @@ public class GenericContainerData implements ContainerData {
 	
 	private Container container;
 	private int sel;
-	private String url;
+	private String url, lockcode;
 	private ResourceLocation custom;
-	private boolean isexternal;
+	private boolean isexternal, locked;
 	private NonNullList<ItemStack> stacks;
 	
 	public GenericContainerData(Container container){
@@ -42,6 +43,8 @@ public class GenericContainerData implements ContainerData {
 		compound.setInteger("SelectedTexture", sel);
 		compound.setString("CustomTexture", isexternal ? url == null ? "" : url : custom == null ? "minecraft:stone" : custom.toString());
 		compound.setBoolean("IsTextureExternal", isexternal);
+		compound.setBoolean("Locked", locked);
+		compound.setString("LockCode", lockcode == null ? KeyItem.getNewKeyCode() : lockcode);
 		compound = ItemStackHelper.saveAllItems(compound, stacks);
 		//
 		tagcompound.setTag(FVTM.MODID + "_container", compound);
@@ -55,6 +58,8 @@ public class GenericContainerData implements ContainerData {
 		isexternal = compound.getBoolean("IsTextureExternal");
 		url = isexternal ? compound.getString("CustomTexture") : null;
 		custom = isexternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
+		locked = compound.getBoolean("Locked");
+		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : KeyItem.getNewKeyCode();
 		ItemStackHelper.loadAllItems(compound, stacks);
 		//
 		return this;
@@ -90,6 +95,21 @@ public class GenericContainerData implements ContainerData {
 	@Override
 	public NonNullList<ItemStack> getInventory(){
 		return stacks;
+	}
+
+	@Override
+	public boolean isLocked(){
+		return locked;
+	}
+
+	@Override
+	public boolean setLocked(Boolean lock){
+		return lock == null ? (locked = !locked) : (locked = lock);
+	}
+
+	@Override
+	public String getLockCode(){
+		return lockcode;
 	}
 	
 }

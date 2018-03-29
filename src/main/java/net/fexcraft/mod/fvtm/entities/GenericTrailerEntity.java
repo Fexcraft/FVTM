@@ -78,6 +78,9 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
 		//Print.debug(yaw, grs, axes.getYaw(), grr);
 		//
 		//
+		if(wheels == null || wheels[0] == null || wheels[1] == null){
+			return;
+		}
 		Vec3d front = new Vec3d((parent.getWheels()[0].posX + parent.getWheels()[1].posX) / 2F, (parent.getWheels()[0].posY + parent.getWheels()[1].posY) / 2F, (parent.getWheels()[0].posZ + parent.getWheels()[1].posZ) / 2F);
 		Vec3d back  = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
 		Vec3d left = new Vec3d((wheels[0].posX + parent.getWheels()[0].posX) / 2F, (wheels[0].posY + parent.getWheels()[0].posY) / 2F, (wheels[0].posZ + parent.getWheels()[0].posZ) / 2F);

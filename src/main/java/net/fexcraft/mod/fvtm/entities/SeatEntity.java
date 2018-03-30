@@ -230,7 +230,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 		passenger.setPosition(pass_x, pass_y, pass_z);
 	}
 
-	/*public void processServerPacket(PacketEntityUpdate pkt){
+	public void processServerPacket(PacketEntityUpdate pkt){
 		if(pkt.nbt.hasKey("request")){
 			switch(pkt.nbt.getString("request")){
 				case "sync":{
@@ -266,7 +266,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 						this.vehicle.getSeats()[seatid] = this;
 					}
 					else{
-						Print.debug("VEHICLE SEATS NULL? ", seatid, vehicle);
+						Print.debug("VEHICLE SEATS NULL? ", seatid, vehicle, vehicleid, world.getEntityByID(vehicleid));
+						Print.debug(world.loadedEntityList);
 						BlockPos pos = BlockPos.fromLong(pkt.nbt.getLong("pos"));
 						setPosition(pos.getX(), pos.getY(), pos.getZ());
 						return;
@@ -283,7 +284,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 				}
 			}
 		}
-	}*/
+	}
 	
 	public void updatePassenger(){
 		this.updatePassenger(passenger);
@@ -410,11 +411,11 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 
 	public boolean onKeyPress(int key, EntityPlayer player){
 		//Print.debug("S: " + key + " " + seatid + " " + player.getName() + " [" + Time.getDate() + "];");
-		if(key < 0){
-			this.vehicle.getVehicleData().getScripts().forEach((script) -> script.onKeyInput(key, this.seatid, this.vehicle));
-			return false;
-		}
 		if(vehicle != null){
+			if(key < 0){
+				this.vehicle.getVehicleData().getScripts().forEach((script) -> script.onKeyInput(key, this.seatid, this.vehicle));
+				return false;
+			}
 			/*if(world.isRemote){
 				PacketHandler.getInstance().sendToServer(new PacketVehicleKeyPress(key));
 				return false;

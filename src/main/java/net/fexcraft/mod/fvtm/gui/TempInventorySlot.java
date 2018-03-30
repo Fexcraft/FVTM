@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -21,6 +22,9 @@ public class TempInventorySlot extends Slot {
 	@Override
 	public boolean isItemValid(ItemStack stack){
 		if(stack.getItem() instanceof VehicleItem){
+			return false;
+		}
+		if(stack.getItem() instanceof ContainerItem){
 			return false;
 		}
 		if(stack.getItem() instanceof PartItem){

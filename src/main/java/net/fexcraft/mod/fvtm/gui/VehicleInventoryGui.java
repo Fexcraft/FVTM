@@ -476,7 +476,7 @@ public class VehicleInventoryGui {
 	public static class Server extends Container {
 		
 		private EntityPlayer player;
-		//private int x, y, z;
+		private int x/*, y, z*/;
 		private TempInventory temp = null;
 		private VehicleData data;
 		//
@@ -485,7 +485,7 @@ public class VehicleInventoryGui {
 		
 		public Server(EntityPlayer player, World world, int x, int y, int z){
 			this.player = player;
-			//this.x = x; this.y = y; this.z = z;
+			this.x = x; /*this.y = y; this.z = z;*/
 			data = ((SeatEntity)player.getRidingEntity()).getVehicle().getVehicleData();
 			switch(x){
 				case 0:{
@@ -550,6 +550,35 @@ public class VehicleInventoryGui {
 				}
 			}
 		}
+		
+		@Override
+		public ItemStack transferStackInSlot(EntityPlayer player, int index){
+			if(x != 1){
+				return super.transferStackInSlot(player, index);
+			}
+			int slots = 60;
+			ItemStack itemstack = ItemStack.EMPTY;
+	        Slot slot = this.inventorySlots.get(index);
+	        if(slot != null && slot.getHasStack()){
+	            ItemStack itemstack1 = slot.getStack();
+	            itemstack = itemstack1.copy();
+	            if(index < slots){
+	                if(!this.mergeItemStack(itemstack1, slots, this.inventorySlots.size(), true)){
+	                    return ItemStack.EMPTY;
+	                }
+	            }
+	            else if(!this.mergeItemStack(itemstack1, 0, slots, false)){
+	                return ItemStack.EMPTY;
+	            }
+	            if(itemstack1.isEmpty()){
+	                slot.putStack(ItemStack.EMPTY);
+	            }
+	            else{
+	                slot.onSlotChanged();
+	            }
+	        }
+	        return itemstack;
+	    }
 
 		public boolean hasFuel(){
 			return fuelinv == null ? false : fuelinv.getStackInSlot(0).isEmpty() ? false : true;

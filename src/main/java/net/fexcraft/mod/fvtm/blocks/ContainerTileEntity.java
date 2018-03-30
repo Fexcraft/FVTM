@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.api.common.LockableObject;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
@@ -236,6 +237,18 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 				ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
 				ent.setItem(core.container.getContainer().getItemStack(core.container));
 				world.spawnEntity(ent);
+				//
+				if(Config.DROP_ITEMS_ON_BREAK && !world.isRemote){
+					for(ItemStack stack : getContainerData().getInventory()){
+						if(!stack.isEmpty()){
+							EntityItem entity = new EntityItem(world);
+							entity.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 2.5, blkpos.getZ() + 0.5);
+							entity.setItem(stack);
+							world.spawnEntity(ent);
+						}
+					}
+					getContainerData().getInventory().clear();
+				}
 			}
 			if(!blkpos.equals(pos)){
 				world.setBlockState(blkpos, Blocks.AIR.getDefaultState(), 2);

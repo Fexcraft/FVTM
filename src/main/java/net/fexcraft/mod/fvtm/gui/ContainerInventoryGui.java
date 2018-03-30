@@ -119,7 +119,7 @@ public class ContainerInventoryGui {
 		
 		private EntityPlayer player;
 		private ContainerTileEntity tile;
-		public static int scroll;
+		public static int scroll, slots = 60;
 		
 		public Server(EntityPlayer player, World world, int x, int y, int z){
 			this.player = player;
@@ -166,6 +166,31 @@ public class ContainerInventoryGui {
 		public void detectAndSendChanges(){
 			super.detectAndSendChanges();
 		}
+		
+		@Override
+		public ItemStack transferStackInSlot(EntityPlayer player, int index){
+			ItemStack itemstack = ItemStack.EMPTY;
+	        Slot slot = this.inventorySlots.get(index);
+	        if(slot != null && slot.getHasStack()){
+	            ItemStack itemstack1 = slot.getStack();
+	            itemstack = itemstack1.copy();
+	            if(index < slots){
+	                if(!this.mergeItemStack(itemstack1, slots, this.inventorySlots.size(), true)){
+	                    return ItemStack.EMPTY;
+	                }
+	            }
+	            else if(!this.mergeItemStack(itemstack1, 0, slots, false)){
+	                return ItemStack.EMPTY;
+	            }
+	            if(itemstack1.isEmpty()){
+	                slot.putStack(ItemStack.EMPTY);
+	            }
+	            else{
+	                slot.onSlotChanged();
+	            }
+	        }
+	        return itemstack;
+	    }
 		
 	}
 	

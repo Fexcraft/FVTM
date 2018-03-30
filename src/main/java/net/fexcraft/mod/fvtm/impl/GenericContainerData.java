@@ -52,8 +52,8 @@ public class GenericContainerData implements ContainerData {
 	}
 
 	@Override
-	public ContainerData readFromNBT(NBTTagCompound compound){
-		compound = compound.getCompoundTag(FVTM.MODID + "_container");
+	public ContainerData readFromNBT(NBTTagCompound tagcompound){
+		NBTTagCompound compound = tagcompound.getCompoundTag(FVTM.MODID + "_container");
 		sel = compound.getInteger("SelectedTexture");
 		isexternal = compound.getBoolean("IsTextureExternal");
 		url = isexternal ? compound.getString("CustomTexture") : null;

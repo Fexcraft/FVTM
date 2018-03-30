@@ -30,10 +30,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import com.google.common.collect.Lists;
 
-public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*/ IPacketReceiver<PacketEntityUpdate> {
+import io.netty.buffer.ByteBuf;
+
+public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 	
 	private int vehicleid;
 	private int seatid;
@@ -58,9 +62,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		passlooking = new VehicleAxes();
 		prevpasslooking = new VehicleAxes();
         this.passenger = null;
-        if(world.isRemote){
-        	rqSync();
-        }
+        //if(world.isRemote){ rqSync(); }
 	}
 	
 	public SeatEntity(World world, VehicleEntity veh, int id){
@@ -75,6 +77,44 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
 		prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
         this.passenger = null;
+	}
+	
+	@Override
+	public void writeSpawnData(ByteBuf buffer){
+		NBTTagCompound compound = new NBTTagCompound();
+		seatdata.write(compound);
+		compound.setInteger("id", seatid);
+		compound.setInteger("vid", vehicleid = vehicle.getEntity().getEntityId());
+		compound.setLong("pos", this.getPosition().toLong());
+		ByteBufUtils.writeTag(buffer, compound);
+	}
+
+	@Override
+	public void readSpawnData(ByteBuf buffer){
+		NBTTagCompound compound = ByteBufUtils.readTag(buffer);
+		this.seatdata = new FMSeat(compound);
+		this.seatid = compound.getInteger("id");
+		this.vehicleid = compound.getInteger("vid");
+		this.vehicle = (VehicleEntity)world.getEntityByID(vehicleid);
+		this.driver = seatid == 0;
+		if(vehicle != null && vehicle.getSeats() != null){
+			this.vehicle.getSeats()[seatid] = this;
+		}
+		else{
+			Print.debug("VEHICLE SEATS NULL? ", seatid, vehicle, vehicleid, world.getEntityByID(vehicleid));
+			Print.debug(world.loadedEntityList);
+			BlockPos pos = BlockPos.fromLong(compound.getLong("pos"));
+			setPosition(pos.getX(), pos.getY(), pos.getZ());
+			return;
+		}
+		//
+		looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
+		prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
+		Vec3d relpos = vehicle.getAxes().getRelativeVector(seatdata.getPos().to16Double());
+		pass_x = prev_pass_x = prevPosX = posX = vehicle.getEntity().posX + relpos.x;
+		pass_y = prev_pass_y = prevPosY = posY = vehicle.getEntity().posY + relpos.y;
+		pass_z = prev_pass_z = prevPosZ = posZ = vehicle.getEntity().posZ + relpos.z;
+		setPosition(posX, posY, posZ);
 	}
 	
 	@Nullable
@@ -190,7 +230,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		passenger.setPosition(pass_x, pass_y, pass_z);
 	}
 
-	public void processServerPacket(PacketEntityUpdate pkt){
+	/*public void processServerPacket(PacketEntityUpdate pkt){
 		if(pkt.nbt.hasKey("request")){
 			switch(pkt.nbt.getString("request")){
 				case "sync":{
@@ -243,7 +283,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 				}
 			}
 		}
-	}
+	}*/
 	
 	public void updatePassenger(){
 		this.updatePassenger(passenger);

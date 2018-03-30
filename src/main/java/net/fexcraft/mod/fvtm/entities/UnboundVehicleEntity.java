@@ -152,14 +152,6 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 	protected void initVeh(VehicleData type, boolean remote){
 		seats = new SeatEntity[type.getSeats().size()];
 		wheels = new WheelEntity[type.getWheelPos().size()];
-		if(!remote){
-			for(int i = 0; i < type.getSeats().size(); i++){
-				world.spawnEntity(seats[i] = new SeatEntity(world, this, i));
-			}
-			for(int i = 0; i < wheels.length; i++){
-				world.spawnEntity(wheels[i] = new WheelEntity(world, this, i));
-			}
-		}
 		stepHeight = type.getVehicle().getFMWheelStepHeight();
 		vehicledata.getScripts().forEach((script) -> script.onCreated(this, vehicledata));
 	}
@@ -231,7 +223,9 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 	@Override
 	public void writeSpawnData(ByteBuf buffer){
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setUniqueId("ParentId", parent == null ? parentid : parent.getEntity().getUniqueID());
+		if(parent != null){
+			compound.setUniqueId("ParentId", parent.getEntity().getUniqueID());
+		}
 		ByteBufUtils.writeTag(buffer, axes.write(this, vehicledata.writeToNBT(compound)));
 	}
 

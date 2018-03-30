@@ -41,7 +41,8 @@ public class RenderCustomItem {
 	private void render(TransformType type, ItemStack item, ContainerData data, EntityLivingBase entity) {
 		ContainerModel<ContainerData> model = data.getContainer().getModel();
 		if(model == null){ return; }
-		float[] scal = new float[]{ 0.125f, 0.125f, 0.125f };
+		float[] scal = new float[]{ model.gui_scale_x, model.gui_scale_y, model.gui_scale_z };
+		//
 		GL11.glPushMatrix();
 		{
 			switch(type){
@@ -71,14 +72,13 @@ public class RenderCustomItem {
 					break;
 				}
 				case GUI:{
-					GL11.glTranslatef(model.gui_translate_x, model.gui_translate_y, model.gui_translate_z);
 					GL11.glRotatef(-135, 0, 1, 0);
 					GL11.glRotatef(-30, 1, 0, 0);
 					GL11.glRotatef(-30, 0, 0, 1);
 					//
-					scal[0] = model.gui_scale_x;
+					/*scal[0] = model.gui_scale_x;
 					scal[1] = model.gui_scale_y;
-					scal[2] = model.gui_scale_z;
+					scal[2] = model.gui_scale_z;*/
 					break;
 				}
 				case HEAD:{
@@ -103,6 +103,7 @@ public class RenderCustomItem {
 				//
 				GL11.glPopMatrix();
 			}
+			GL11.glScalef(-scal[0], -scal[1], -scal[2]);
 		}
 		GL11.glPopMatrix();
 	}
@@ -110,7 +111,8 @@ public class RenderCustomItem {
 	private void render(TransformType type, ItemStack item, VehicleData data, EntityLivingBase entity){
 		VehicleModel<VehicleData> model = data.getVehicle().getModel();
 		if(model == null){ return; }
-		float[] scal = new float[]{ 0.125f, 0.125f, 0.125f };
+		float[] scal = new float[]{ model.gui_scale_x, model.gui_scale_y, model.gui_scale_z };
+		//
 		GL11.glPushMatrix();
 		{
 			switch(type){
@@ -150,9 +152,9 @@ public class RenderCustomItem {
 					GL11.glRotatef(-30, 1, 0, 0);
 					GL11.glRotatef(-30, 0, 0, 1);
 					//
-					scal[0] = model.gui_scale_x;
+					/*scal[0] = model.gui_scale_x;
 					scal[1] = model.gui_scale_y;
-					scal[2] = model.gui_scale_z;
+					scal[2] = model.gui_scale_z;*/
 					break;
 				}
 				case HEAD:{
@@ -177,6 +179,7 @@ public class RenderCustomItem {
 				Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
 				GL11.glPopMatrix();
 			}
+			GL11.glScalef(-scal[0], -scal[1], -scal[2]);
 		}
 		GL11.glPopMatrix();
 	}

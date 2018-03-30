@@ -869,10 +869,11 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 	public abstract void onUpdateMovement();
 	
 	public boolean attackEntityFrom(DamageSource damagesource, float i){
+		Print.debug(damagesource.damageType, damagesource.getImmediateSource().toString());
 		if(world.isRemote || isDead){
 			return true;
 		}
-		if(damagesource.damageType.equals("player") && damagesource.getImmediateSource().onGround && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
+		if(damagesource.damageType.equals("player") && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
 			if(vehicledata.isLocked()){
 				Print.chat(damagesource.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
 				return false;

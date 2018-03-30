@@ -569,6 +569,9 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		ContainerAttribute conattr;
 		if((conattr = partdata.getPart().getAttribute(ContainerAttribute.class)) != null){
 			conattr.getContainerOffset().translate();
+			if(conattr.getContainerRotation() != 0F){
+				GL11.glRotatef(conattr.getContainerRotation(), 0, 1, 0);
+			}
 			ContainerAttributeData condata = partdata.getAttributeData(ContainerAttributeData.class);
 			ContainerData container;
 			if(conattr.getContainerType() == ContainerType.LARGE){
@@ -599,6 +602,9 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 			else {
 				//No other types supported yet.
 			}
+			if(conattr.getContainerRotation() != 0F){
+				GL11.glRotatef(-conattr.getContainerRotation(), 0, 1, 0);
+			}
 			conattr.getContainerOffset().translateR();
 		}
 	}
@@ -611,6 +617,9 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		ContainerAttribute conattr = partdata.getPart().getAttribute(ContainerAttribute.class);
 		if(conattr != null){
 			conattr.getContainerOffset().translate();
+			if(conattr.getContainerRotation() != 0F){
+				GL11.glRotatef(conattr.getContainerRotation(), 0, 1, 0);
+			}
 			ContainerAttributeData condata = partdata.getAttributeData(ContainerAttributeData.class);
 			ContainerData container;
 			if(conattr.getContainerType() == ContainerType.LARGE){
@@ -640,6 +649,9 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 			}
 			else {
 				//No other types supported yet.
+			}
+			if(conattr.getContainerRotation() != 0F){
+				GL11.glRotatef(-conattr.getContainerRotation(), 0, 1, 0);
 			}
 			conattr.getContainerOffset().translateR();
 		}

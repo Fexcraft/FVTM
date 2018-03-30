@@ -22,6 +22,7 @@ public class ContainerAttribute implements Attribute {
 	
 	private static final ResourceLocation regname = new ResourceLocation("container");
 	private ContainerType type;
+	private float rotation;
 	private Pos offset;
 
 	@Override
@@ -33,6 +34,7 @@ public class ContainerAttribute implements Attribute {
 	public void load(JsonObject obj){
 		type = ContainerType.valueOf(JsonUtil.getIfExists(obj, "Container-Type", ContainerType.MEDIUM.name()).toUpperCase());
 		offset = Pos.fromJSON(JsonUtil.getIfExists(obj, "Container-Offset", new JsonObject()).getAsJsonObject());
+		rotation = JsonUtil.getIfExists(obj, "Container-Rotation", 0f).floatValue();
 	}
 
 	@Override
@@ -59,6 +61,10 @@ public class ContainerAttribute implements Attribute {
 	public Pos getContainerOffset(){
 		return offset;
 	}
+	
+	public float getContainerRotation(){
+		return rotation;
+	}
 
 	public ContainerType getContainerType(){
 		return type;
@@ -66,7 +72,7 @@ public class ContainerAttribute implements Attribute {
 	
 	public static class ContainerAttributeData implements AttributeData {
 		
-		private  Attribute root;
+		private Attribute root;
 		public ContainerData main, second;
 		
 		public ContainerAttributeData(PartData data, Attribute attr){

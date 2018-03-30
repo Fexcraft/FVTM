@@ -1,10 +1,14 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.lwjgl.input.Mouse;
+
 import java.util.TreeMap;
 
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
@@ -78,6 +82,7 @@ public class VehicleInventoryGui {
 					this.xSize = 168;
 					this.ySize = 153;
 					parts = new GenericGuiButton[9];
+					scroll = z;
 					break;
 				}
 				case 1:{
@@ -192,6 +197,44 @@ public class VehicleInventoryGui {
 			}
 		}
 		
+		@Override
+		public void handleMouseInput() throws IOException {
+			super.handleMouseInput();
+			try{
+				int e = Mouse.getEventDWheel();
+				if(e == 0){
+					return;
+				}
+				int both = data.getInventoryContainers().size() + data.getContainerHolders().size();
+				int am = e > 0 ? -9 : 9;
+				scroll += am;
+				if(scroll < 0){ scroll = 0; }
+				if(scroll + 9 > both){ scroll = both - 9; }
+				arrowUp.enabled = scroll > 0;
+				arrowDown.enabled = scroll + 9 < both;
+				for(int i = 0; i < 9; i++){
+					int j = i + scroll, k = j - data.getInventoryContainers().size();
+					parts[i].displayString = j >= data.getInventoryContainers().size() ? ( k >= data.getContainerHolders().size() ? "" : Formatter.format("&5" + j + "&e| &r" + data.getContainerHolders().get(k).getPart().getName())) : Formatter.format("&6" + j + "&e| &r" + data.getInventoryContainers().get(j).getPart().getName());
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+		protected void keyTyped(char typedChar, int keyCode) throws IOException {
+			if(x == 4 && keyCode == 1){
+				NBTTagCompound nbt = new NBTTagCompound();
+				nbt.setString("target_listener", "fvtm");
+				nbt.setString("task", "open_gui");
+				nbt.setInteger("gui", GuiHandler.VEHICLE_INVENTORY);
+				nbt.setIntArray("args", new int[]{0, 0, z});
+				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
+			}
+			else super.keyTyped(typedChar, keyCode);
+	    }
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void actionPerformed(GuiButton button){
@@ -199,6 +242,7 @@ public class VehicleInventoryGui {
 				case 0:{
 					switch(button.id){
 						case 0: case 1:{
+							int both = data.getInventoryContainers().size() + data.getContainerHolders().size();
 							if(button.id == 0){
 								scroll--;
 								if(scroll < 0){
@@ -208,15 +252,15 @@ public class VehicleInventoryGui {
 							}
 							else{
 								scroll++;
-								if(scroll + 9 > data.getInventoryContainers().size()){
-									scroll = data.getInventoryContainers().size() - 9;
+								if(scroll + 9 > both){
+									scroll = both - 9;
 								}
 							}
 							arrowUp.enabled = scroll > 0;
-							arrowDown.enabled = scroll + 9 < data.getInventoryContainers().size();
+							arrowDown.enabled = scroll + 9 < both;
 							for(int i = 0; i < 9; i++){
-								int j = i + scroll;
-								parts[i].displayString = j >= data.getInventoryContainers().size() ? "" : Formatter.format("&6" + j + "&e| &r" + data.getInventoryContainers().get(j).getPart().getName());
+								int j = i + scroll, k = j - data.getInventoryContainers().size();
+								parts[i].displayString = j >= data.getInventoryContainers().size() ? ( k >= data.getContainerHolders().size() ? "" : Formatter.format("&5" + j + "&e| &r" + data.getContainerHolders().get(k).getPart().getName())) : Formatter.format("&6" + j + "&e| &r" + data.getInventoryContainers().get(j).getPart().getName());
 							}
 							break;
 						}
@@ -229,10 +273,10 @@ public class VehicleInventoryGui {
 							nbt.setString("task", "open_gui");
 							nbt.setInteger("gui", GuiHandler.VEHICLE_INVENTORY);
 							if(y >= data.getInventoryContainers().size()){
-								nbt.setIntArray("args", new int[]{4, y - data.getInventoryContainers().size(), 0});
+								nbt.setIntArray("args", new int[]{4, y - data.getInventoryContainers().size(), scroll});
 							}
 							else{
-								nbt.setIntArray("args", new int[]{1, y, 0});
+								nbt.setIntArray("args", new int[]{1, y, scroll});
 							}
 							PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
 							break;
@@ -359,11 +403,12 @@ public class VehicleInventoryGui {
 					arrowDown.setTexturePos(2, 210, 56);
 					arrowDown.setTexturePos(3, 201, 56);
 					arrowDown.setTexture(maintex);
-					arrowDown.enabled = scroll + 9 < data.getInventoryContainers().size();
+					arrowDown.enabled = scroll + 9 < (data.getInventoryContainers().size() + data.getContainerHolders().size());
 					//
 					for(int k = 0; k < 9; k++){
-						int l = k - data.getInventoryContainers().size();
-						String name = k >= data.getInventoryContainers().size() ? ( l >= data.getContainerHolders().size() ? "" : Formatter.format("&5" + l + "&e| &r" + data.getContainerHolders().get(l).getPart().getName())) : Formatter.format("&6" + k + "&e| &r" + data.getInventoryContainers().get(k).getPart().getName());
+						int m = k + scroll;
+						int l = m - data.getInventoryContainers().size();
+						String name = m >= data.getInventoryContainers().size() ? ( l >= data.getContainerHolders().size() ? "" : Formatter.format("&5" + l + "&e| &r" + data.getContainerHolders().get(l).getPart().getName())) : Formatter.format("&6" + m + "&e| &r" + data.getInventoryContainers().get(m).getPart().getName());
 						this.buttonList.add(parts[k] = new GenericGuiButton(k + 2, 5 + i, (19 + (k * 14)) + j, 158, 12, name));
 						parts[k].setTexture(maintex);
 						parts[k].setTexturePos(0, 0, 232);

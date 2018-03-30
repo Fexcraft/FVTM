@@ -81,9 +81,9 @@ task def_parts_pack(type: Jar){
 }
 task zmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}
-    from 'run/addons/Zackyboy18\'s Pack'
+    from 'run/addons/Zack\'s Pack'
     baseName = 'ZMP'
-    appendix = 'V1'
+    appendix = 'V1.1'
 }
 
 build {

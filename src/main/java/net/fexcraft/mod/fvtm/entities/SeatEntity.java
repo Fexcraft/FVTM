@@ -27,6 +27,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -198,6 +199,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 						nbt = seatdata.write(nbt);
 						nbt.setString("task", "sync");
 						nbt.setInteger("id", seatid);
+						nbt.setLong("pos", this.getPosition().toLong());
 						nbt.setInteger("vid", vehicle.getEntity().getEntityId());
 						ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
 					}
@@ -211,7 +213,7 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 		}
 	}
 
-	public void processClientPacket(PacketEntityUpdate pkt){
+	public void processClientPacket(PacketEntityUpdate pkt) {
 		if(pkt.nbt.hasKey("task")){
 			switch(pkt.nbt.getString("task")){
 				case "sync":{
@@ -220,9 +222,16 @@ public class SeatEntity extends Entity implements /*IEntityAdditionalSpawnData,*
 					this.vehicleid = pkt.nbt.getInteger("vid");
 					this.vehicle = (VehicleEntity)world.getEntityByID(vehicleid);
 					this.driver = seatid == 0;
-					this.vehicle.getSeats()[seatid] = this;
+					if(vehicle != null && vehicle.getSeats() != null){
+						this.vehicle.getSeats()[seatid] = this;
+					}
+					else{
+						Print.debug("VEHICLE SEATS NULL? ", seatid, vehicle);
+						BlockPos pos = BlockPos.fromLong(pkt.nbt.getLong("pos"));
+						setPosition(pos.getX(), pos.getY(), pos.getZ());
+						return;
+					}
 					//
-					Print.debug(seatdata.getPos().toString());
 					looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
 					prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
 					Vec3d relpos = vehicle.getAxes().getRelativeVector(seatdata.getPos().to16Double());

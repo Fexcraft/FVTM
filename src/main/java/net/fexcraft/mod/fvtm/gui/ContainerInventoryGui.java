@@ -54,10 +54,10 @@ public class ContainerInventoryGui {
 			this.drawTexturedModalRect(i, j, 0, 0, this.xSize + 16, this.ySize);
 			this.fontRenderer.drawString(tile.getContainerData().getContainer().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
 			//
-			String curr = "&a" + ((scroll * 60) + 1) + "&c-&a" + ((scroll * 60 + 60) > tile.getSizeInventory() ? tile.getSizeInventory() : (scroll * 60 + 60));
+			String curr = "&a" + ((scroll * 60) + 1) + "&c-&a" + ((scroll * 60 + 60) > tile.getContainerData().getContainer().getInventorySize() ? tile.getContainerData().getContainer().getInventorySize() : (scroll * 60 + 60));
 			this.fontRenderer.drawString(scroll + "", i + 171, j + 118, MapColor.SNOW.colorValue);
 			this.fontRenderer.drawString(Formatter.format(curr), i + 171, j + 146, MapColor.SNOW.colorValue);
-			this.fontRenderer.drawString(Formatter.format("&6" + tile.getSizeInventory() + " max"), i + 171, j + 160, MapColor.SNOW.colorValue);
+			this.fontRenderer.drawString(Formatter.format("&6" + tile.getContainerData().getContainer().getInventorySize() + " max"), i + 171, j + 160, MapColor.SNOW.colorValue);
 		}
 		
 		@Override
@@ -70,12 +70,12 @@ public class ContainerInventoryGui {
 				}
 			}
 			else{
-				if((scroll + 1) * 60 <= tile.getSizeInventory()){
+				if((scroll + 1) * 60 <= tile.getContainerData().getContainer().getInventorySize()){
 					scroll++;
 				}
 			}
 			arrowUp.enabled = scroll > 0;
-			arrowDown.enabled = (scroll + 1) * 60 < tile.getSizeInventory();
+			arrowDown.enabled = (scroll + 1) * 60 < tile.getContainerData().getContainer().getInventorySize();
 			if(scroll != oldscroll){
 				NBTTagCompound nbt = new NBTTagCompound();
 				nbt.setString("target_listener", "fvtm");
@@ -105,7 +105,7 @@ public class ContainerInventoryGui {
 			arrowDown.setTexturePos(2, 0, 226);
 			arrowDown.setTexturePos(3, 0, 241);
 			arrowDown.setTexture(invtex);
-			arrowDown.enabled = (scroll + 1) * 60 < tile.getSizeInventory();
+			arrowDown.enabled = (scroll + 1) * 60 < tile.getContainerData().getContainer().getInventorySize();
 		}
 		
 		@Override
@@ -120,10 +120,12 @@ public class ContainerInventoryGui {
 		private EntityPlayer player;
 		private ContainerTileEntity tile;
 		public static int scroll, slots = 60;
+		private TempContainerTileInventory container;
 		
 		public Server(EntityPlayer player, World world, int x, int y, int z){
 			this.player = player;
 			tile = (ContainerTileEntity) world.getTileEntity(new BlockPos(x, y, z));
+			container = new TempContainerTileInventory(tile);
 			refresh(scroll = 0);
 		}
 		
@@ -135,10 +137,10 @@ public class ContainerInventoryGui {
 			for(int row = 0; row < 5; row++){
 				for(int col = 0; col < 12; col++){
 					int index = (col + row * 12) + (scroll * 60);
-					if(index >= tile.getSizeInventory()){
+					if(index >= tile.getContainerData().getContainer().getInventorySize()){
 						break;
 					}
-					addSlotToContainer(new TempInventorySlot(tile, index, 6 + col * 18, 20 + row * 18, null));
+					addSlotToContainer(new TempInventorySlot(container, index, 6 + col * 18, 20 + row * 18, null));
 				}
 			}
 			//

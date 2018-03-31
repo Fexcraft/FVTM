@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
+import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
 import net.minecraft.inventory.ItemStackHelper;
@@ -11,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class GenericContainerData implements ContainerData {
 	
@@ -20,10 +23,24 @@ public class GenericContainerData implements ContainerData {
 	private ResourceLocation custom;
 	private boolean isexternal, locked;
 	private NonNullList<ItemStack> stacks;
+	private FluidTank fluidtank;
 	
 	public GenericContainerData(Container container){
 		this.container = container;
-		stacks = NonNullList.<ItemStack>withSize(container.getInventorySize(), ItemStack.EMPTY);
+		switch(container.getInventoryType()){
+			case ENERGY:
+				break;
+			case FLUID:
+				fluidtank = container.getFluidType() == null ? new FluidTank(container.getInventorySize()) : new FluidTank(container.getFluidType(), 0, container.getInventorySize());
+				break;
+			case FUEL:
+				break;
+			case ITEM:
+				stacks = NonNullList.<ItemStack>withSize(container.getInventorySize(), ItemStack.EMPTY);
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override
@@ -45,7 +62,12 @@ public class GenericContainerData implements ContainerData {
 		compound.setBoolean("IsTextureExternal", isexternal);
 		compound.setBoolean("Locked", locked);
 		compound.setString("LockCode", lockcode == null ? KeyItem.getNewKeyCode() : lockcode);
-		compound = ItemStackHelper.saveAllItems(compound, stacks);
+		if(container.getInventoryType() == InventoryType.ITEM){
+			compound = ItemStackHelper.saveAllItems(compound, stacks);
+		}
+		else if(container.getInventoryType() == InventoryType.FLUID){
+			fluidtank.writeToNBT(compound);
+		}
 		//
 		tagcompound.setTag(FVTM.MODID + "_container", compound);
 		return tagcompound;
@@ -60,7 +82,12 @@ public class GenericContainerData implements ContainerData {
 		custom = isexternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 		locked = compound.getBoolean("Locked");
 		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : KeyItem.getNewKeyCode();
-		ItemStackHelper.loadAllItems(compound, stacks);
+		if(container.getInventoryType() == InventoryType.ITEM){
+			ItemStackHelper.loadAllItems(compound, stacks);
+		}
+		else if(container.getInventoryType() == InventoryType.FLUID){
+			fluidtank.readFromNBT(compound);
+		}
 		//
 		return this;
 	}
@@ -110,6 +137,11 @@ public class GenericContainerData implements ContainerData {
 	@Override
 	public String getLockCode(){
 		return lockcode;
+	}
+
+	@Override
+	public IFluidHandler getFluidHandler(){
+		return fluidtank;
 	}
 	
 }

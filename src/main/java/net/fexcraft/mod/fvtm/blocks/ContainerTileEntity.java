@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
+import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
+import net.fexcraft.mod.fvtm.util.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.api.common.LockableObject;
@@ -15,24 +17,22 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.TileFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
-public class ContainerTileEntity extends TileEntity implements IInventory, IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
+public class ContainerTileEntity extends TileFluidHandler implements IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
 	
 	private ItemStackHandler itemStackHandler;
 	private boolean core, setup;
@@ -98,90 +98,7 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 		return core ? this : coretile == null ? coretile = corepos == null ? null : (ContainerTileEntity)world.getTileEntity(corepos) : coretile;
 	}
 
-	@Override
-	public String getName(){
-		return "container_block";
-	}
-
-	@Override
-	public boolean hasCustomName(){
-		return false;
-	}
-
-	@Override
-	public int getSizeInventory(){
-		return getCore().container.getInventory().size();
-	}
-
-	@Override
-	public boolean isEmpty(){
-		return getCore().container.getInventory().isEmpty();
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int index){
-		return getCore().container.getInventory().get(index);
-	}
-
-	@Override
-	public ItemStack decrStackSize(int index, int count){
-		return !getStackInSlot(index).isEmpty() ? ItemStackHelper.getAndSplit(getCore().container.getInventory(), index, count) : ItemStack.EMPTY;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int index){
-		return getCore().container.getInventory().set(index, ItemStack.EMPTY);
-	}
-
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack){
-		getCore().container.getInventory().set(index, stack);
-	}
-
-	@Override
-	public int getInventoryStackLimit(){
-		return 64;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player){
-		return player != null && !player.isDead;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player){
-		//
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player){
-		//
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack){
-		return getCore().container.getContainer().isItemValid(stack);
-	}
-
-	@Override
-	public int getField(int id){
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value){
-		//
-	}
-
-	@Override
-	public int getFieldCount(){
-		return 0;
-	}
-
-	@Override
-	public void clear(){
-		getCore().container.getInventory().clear();
-	}
+	
 	
 	public ContainerData getContainerData(){
 		return getCore().container;
@@ -190,7 +107,10 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
 	@Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            return !this.isLocked() && getCore() != null && getCore().container != null && getCore().container.getInventory().size() > 0;
+            return facing.getAxis().isVertical() && !this.isLocked() && getCore() != null && getCore().container != null && getCore().container.getContainer().getInventoryType() == InventoryType.ITEM && getCore().container.getInventory().size() > 0;
+        }
+        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        	return facing.getAxis().isVertical() && !this.isLocked() && getCore() != null && getCore().container != null && getCore().container.getContainer().getInventoryType() == InventoryType.FLUID;
         }
         return super.hasCapability(capability, facing);
     }
@@ -203,7 +123,10 @@ public class ContainerTileEntity extends TileEntity implements IInventory, IPack
         	}
             return (T)itemStackHandler;
         }
-        return getCapability(capability, facing);
+        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        	return (T)getCore().container.getFluidHandler();
+        }
+        return super.getCapability(capability, facing);
     }
 
 	public boolean isCore(){

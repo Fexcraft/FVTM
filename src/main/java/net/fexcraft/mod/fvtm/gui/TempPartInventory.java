@@ -10,11 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
-public class TempInventory implements IInventory {
+public class TempPartInventory implements IInventory {
 	
 	private PartData partdata;
 	
-	public TempInventory(PartData data){
+	public TempPartInventory(PartData data){
 		this.partdata = data;
 	}
 

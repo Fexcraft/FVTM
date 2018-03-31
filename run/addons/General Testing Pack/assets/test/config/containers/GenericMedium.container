@@ -1,0 +1,12 @@
+{
+	"RegistryName": "test:container_medium",
+	"Addon": "fvtm:test",
+	"ContainerType": "MEDIUM",
+	"ModelFile": "net.fexcraft.mod.addons.gep.models.containers.GenericContainerModel.class",
+	"FullName": "Fluid Medium Container",
+	"Textures":[
+		"test:textures/other/genericcontainer.png"
+	],
+	"InventorySize": 1600,
+	"InventoryType": "fluid"
+}

@@ -19,6 +19,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,6 +29,7 @@ public class GenericContainer implements Container {
 	private ResourceLocation registryname;
 	private ContainerType type;
 	private Addon addon;
+	private Fluid fluid;
 	@SideOnly(Side.CLIENT) private ContainerModel<ContainerData> model;
 	private List<ResourceLocation> textures;
 	private String[] description;
@@ -49,6 +52,9 @@ public class GenericContainer implements Container {
 		this.description = DataUtil.getDescription(obj);
 		this.inventory = JsonUtil.getIfExists(obj, "InventorySize", 4).intValue();
 		this.invtype = InventoryType.fromString(JsonUtil.getIfExists(obj, "InventoryType", "item"));
+		if(obj.has("FluidType")){
+			fluid = FluidRegistry.getFluid(obj.get("FluidType").getAsString());
+		}
 		//
 		if(obj.has("InventoryWhitelist")){
 			obj.get("InventoryWhitelist").getAsJsonArray().forEach((elm) -> {
@@ -169,6 +175,11 @@ public class GenericContainer implements Container {
 		}
 		stack.setTagCompound(nbt);
 		return stack;
+	}
+
+	@Override
+	public Fluid getFluidType(){
+		return fluid;
 	}
 	
 }

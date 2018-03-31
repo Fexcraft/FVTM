@@ -522,7 +522,7 @@ public class VehicleInventoryGui {
 		
 		private EntityPlayer player;
 		private int x/*, y, z*/;
-		private TempInventory temp = null;
+		private TempPartInventory temp = null;
 		private VehicleData data;
 		//
 		FuelInventory fuelinv;
@@ -538,7 +538,7 @@ public class VehicleInventoryGui {
 					break;
 				}
 				case 1:{
-					temp = new TempInventory(data.getInventoryContainers().get(y));
+					temp = new TempPartInventory(data.getInventoryContainers().get(y));
 					for(int row = 0; row < 5; row++){
 						for(int col = 0; col < 12; col++){
 							int index = (col + row * 12) + (z * 60);

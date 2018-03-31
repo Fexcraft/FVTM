@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -52,6 +54,8 @@ public interface Container extends IForgeRegistryEntry<Container> {
 	
 	public InventoryType getInventoryType();
 	
+	public @Nullable Fluid getFluidType();
+	
 	public static enum ContainerType {
 		
 		TINY,//unused
@@ -92,6 +96,8 @@ public interface Container extends IForgeRegistryEntry<Container> {
 		public default boolean allowsLocking(){
 			return true;
 		}
+
+		public IFluidHandler getFluidHandler();
 		
 	}
 	

@@ -125,10 +125,10 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicledata == null){
-			vehicledata = Resources.getVehicleData(compound, world.isRemote);
+			vehicledata = Resources.getVehicleData(compound);
 		}
 		else{
-			vehicledata.readFromNBT(compound, world.isRemote);
+			vehicledata.readFromNBT(compound);
 		}
 		prevRotationYaw = compound.getFloat("RotationYaw");
 		prevRotationPitch = compound.getFloat("RotationPitch");
@@ -233,7 +233,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 	public void readSpawnData(ByteBuf buffer){
 		try{
 			NBTTagCompound compound = ByteBufUtils.readTag(buffer);
-			vehicledata = Resources.getVehicleData(compound, world.isRemote);
+			vehicledata = Resources.getVehicleData(compound);
 			axes = VehicleAxes.read(this, compound);
 			prevRotationYaw = axes.getYaw();
 			prevRotationPitch = axes.getPitch();
@@ -1006,7 +1006,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 					break;
 				}
 				case "update_vehicledata":{
-					this.vehicledata.readFromNBT(pkt.nbt, world.isRemote);
+					this.vehicledata.readFromNBT(pkt.nbt);
 					break;
 				}
 				case "lights_toggle":{

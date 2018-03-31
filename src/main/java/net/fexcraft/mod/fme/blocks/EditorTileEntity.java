@@ -31,7 +31,7 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
 			this.vehicledata = null;
 		}
 		if(pkt.nbt.hasKey("vehicledata")){
-			this.vehicledata = Resources.getVehicleData(pkt.nbt.getCompoundTag("vehicledata"), world.isRemote);
+			this.vehicledata = Resources.getVehicleData(pkt.nbt.getCompoundTag("vehicledata"));
 		}
 	}
 	
@@ -62,7 +62,7 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
-		vehicledata = Resources.getVehicleData(compound, world == null ? true : world.isRemote);
+		vehicledata = Resources.getVehicleData(compound);
 	}
 
 	public TempModel getModel(){

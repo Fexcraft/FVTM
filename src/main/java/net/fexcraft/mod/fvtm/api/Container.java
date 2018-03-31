@@ -1,22 +1,24 @@
 package net.fexcraft.mod.fvtm.api;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
+import net.fexcraft.mod.fvtm.api.root.Colorable;
+import net.fexcraft.mod.fvtm.api.root.Colorable.ColorHolder;
+import net.fexcraft.mod.fvtm.api.root.Lockable;
+import net.fexcraft.mod.fvtm.api.root.Saveloadable;
+import net.fexcraft.mod.fvtm.api.root.Textureable;
+import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface Container extends IForgeRegistryEntry<Container> {
+public interface Container extends IForgeRegistryEntry<Container>, TextureHolder, ColorHolder {
 
 	@Override
 	public default Class<Container> getRegistryType(){
@@ -46,8 +48,6 @@ public interface Container extends IForgeRegistryEntry<Container> {
 	
 	public Class<? extends ContainerData> getDataClass();
 	
-	public List<ResourceLocation> getTextures();
-	
 	public int getInventorySize();
 	
 	public boolean isItemValid(ItemStack stack);
@@ -65,37 +65,11 @@ public interface Container extends IForgeRegistryEntry<Container> {
 		
 	}
 	
-	public static interface ContainerData {
+	public static interface ContainerData extends Lockable, Colorable, Saveloadable<ContainerData>, Textureable {
 		
 		public Container getContainer();
 		
-		public int getSelectedTexture();
-		
-		public void setSelectedTexture(int i);
-		
-		public ResourceLocation getCustomTexture();
-		
-		public void setCustomTexture(String string, boolean external);
-		
-		public boolean isTextureExternal();
-		
-		public ResourceLocation getTexture();
-		
-		public NBTTagCompound writeToNBT(NBTTagCompound compound);
-		
-		public ContainerData readFromNBT(NBTTagCompound compound);
-		
 		public NonNullList<ItemStack> getInventory();
-		
-		public boolean isLocked();
-		
-		public boolean setLocked(@Nullable Boolean lock);
-
-		public String getLockCode();
-
-		public default boolean allowsLocking(){
-			return true;
-		}
 
 		public IFluidHandler getFluidHandler();
 		

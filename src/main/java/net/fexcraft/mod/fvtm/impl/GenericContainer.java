@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,6 +39,7 @@ public class GenericContainer implements Container {
 	private InventoryType invtype;
 	private ArrayList<ItemStack> whitelist = new ArrayList<ItemStack>();
 	private ArrayList<ItemStack> blacklist = new ArrayList<ItemStack>();
+	private RGB primary, secondary;
 
 	@SuppressWarnings("unchecked")
 	public GenericContainer(JsonObject obj){
@@ -50,6 +52,8 @@ public class GenericContainer implements Container {
 		this.name = JsonUtil.getIfExists(obj, "FullName", this.getRegistryName().toString());
 		this.textures = DataUtil.getTextures(obj, registryname, "CONTAINER");;
 		this.description = DataUtil.getDescription(obj);
+		this.primary = DataUtil.getRGB(obj, "PrimaryColor");
+		this.secondary = DataUtil.getRGB(obj, "SecondaryColor");
 		this.inventory = JsonUtil.getIfExists(obj, "InventorySize", 4).intValue();
 		this.invtype = InventoryType.fromString(JsonUtil.getIfExists(obj, "InventoryType", "item"));
 		if(obj.has("FluidType")){
@@ -180,6 +184,16 @@ public class GenericContainer implements Container {
 	@Override
 	public Fluid getFluidType(){
 		return fluid;
+	}
+
+	@Override
+	public RGB getDefPrimaryColor(){
+		return primary;
+	}
+
+	@Override
+	public RGB getDefSecondaryolor(){
+		return secondary;
 	}
 	
 }

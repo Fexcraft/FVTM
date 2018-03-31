@@ -338,7 +338,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		}*/
 	}
 	
-	private boolean rq(ModelRendererTurbo[]... turbos){
+	public static boolean rq(ModelRendererTurbo[]... turbos){
 		for(ModelRendererTurbo[] turbo : turbos){
 			if(turbo != null && turbo.length > 0){
 				return true;

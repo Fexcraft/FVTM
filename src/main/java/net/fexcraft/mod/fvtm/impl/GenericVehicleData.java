@@ -20,13 +20,10 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
+import net.fexcraft.mod.fvtm.impl.root.GenericColorable;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.lang.ArrayList;
 import net.fexcraft.mod.lib.util.math.Pos;
-import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,32 +31,26 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public class GenericVehicleData implements VehicleData {
+public class GenericVehicleData extends GenericColorable<VehicleData, Vehicle> implements VehicleData {
 	
-	private Vehicle vehicle;
-	private int sel, keys, lights;
+	private int keys, lights;
 	//private double tank;
-	private String url, lockcode;
-	private ResourceLocation custom;
 	private TreeMap<String, PartData> parts = new TreeMap<String, PartData>();
 	private List<Pos> wheelpos;
-	private RGB primary, secondary;
-	private boolean doors, isexternal, locked, remote;
+	private boolean doors;
 	private Map<Class<?>, VehicleScript> scripts = new HashMap<Class<?>, VehicleScript>();
 	private ArrayList<FMSeat> seats = new ArrayList<FMSeat>();
 	private Pos frontConnector, rearConnector;
 	
 	public GenericVehicleData(Vehicle veh){
-		this.vehicle = veh;
+		super(veh);
 		//
 		this.lights = 0;
-		this.primary = new RGB(RGB.WHITE);
-		this.secondary = new RGB(RGB.WHITE);
 	}
 	
 	@Override
 	public Vehicle getVehicle(){
-		return this.vehicle;
+		return root;
 	}
 
 	@Override
@@ -69,16 +60,15 @@ public class GenericVehicleData implements VehicleData {
 
 	@Override
 	public List<Pos> getWheelPos(){
-		return wheelpos == null ? vehicle.getDefaultWheelPos() : wheelpos;
+		return wheelpos == null ? root.getDefaultWheelPos() : wheelpos;
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagcompound){
-		tagcompound.setString(VehicleItem.NBTKEY, vehicle.getRegistryName().toString());
+		tagcompound.setString(VehicleItem.NBTKEY, root.getRegistryName().toString());
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setInteger("SelectedTexture", sel);
-		compound.setString("CustomTexture", isexternal ? url == null ? "" : url : custom == null ? "minecraft:stone" : custom.toString());
-		compound.setBoolean("IsTextureExternal", isexternal);
+		super.writeToNBT(compound);
+		//
 		compound.setInteger("LightsState", lights);
 		//compound.setDouble("FuelTank", tank);
 		if(parts.size() > 0){
@@ -97,22 +87,7 @@ public class GenericVehicleData implements VehicleData {
 			}
 			compound.setTag("WheelPos", wlist);
 		}
-		if(this.primary != null){
-			/*compound.setByte("PrimaryRed", this.primary.red);
-			compound.setByte("PrimaryGreen", this.primary.green);
-			compound.setByte("PrimaryBlue", this.primary.blue);*/
-			compound.setInteger("PrimaryRGB", this.primary.packed);
-		}
-		if(this.secondary != null){
-			/*compound.setByte("SecondaryRed", this.secondary.red);
-			compound.setByte("SecondaryGreen", this.secondary.green);
-			compound.setByte("SecondaryBlue", this.secondary.blue);*/
-			compound.setInteger("SecondaryRGB", this.secondary.packed);
-		}
 		compound.setBoolean("DoorsOpen", doors);
-		//FM
-		compound.setBoolean("Locked", locked);
-		compound.setString("LockCode", lockcode == null ? KeyItem.getNewKeyCode() : lockcode);
 		compound.setInteger("SpawnedKeys", keys);
 		//
 		scripts.forEach((clazz, script) -> {
@@ -124,13 +99,8 @@ public class GenericVehicleData implements VehicleData {
 	}
 
 	@Override
-	public VehicleData readFromNBT(NBTTagCompound compound, boolean isRemote){
-		this.remote = isRemote;
+	public VehicleData readFromNBT(NBTTagCompound compound){
 		compound = compound.hasKey(FVTM.MODID + "_landvehicle") ? compound.getCompoundTag(FVTM.MODID + "_landvehicle") : compound.getCompoundTag(FVTM.MODID + "_vehicle");
-		this.sel = compound.getInteger("SelectedTexture");
-		isexternal = compound.getBoolean("IsTextureExternal");
-		url = isexternal ? compound.getString("CustomTexture") : null;
-		custom = isexternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 		lights = compound.getInteger("LightsState");
 		//this.tank = compound.getDouble("FuelTank");
 		if(compound.hasKey("Parts")){
@@ -146,7 +116,7 @@ public class GenericVehicleData implements VehicleData {
 			this.updatePartDependantData();
 		}
 		else{
-			vehicle.getPreinstalledParts().forEach((key, rs) -> {
+			root.getPreinstalledParts().forEach((key, rs) -> {
 				PartData data = Resources.getPartData((ResourceLocation)rs);
 				if(data != null){
 					this.parts.put(key, data);
@@ -163,12 +133,7 @@ public class GenericVehicleData implements VehicleData {
 				}
 			}
 		}
-		this.primary = compound.hasKey("PrimaryRed") ? new RGB(compound.getByte("PrimaryRed"), compound.getByte("PrimaryGreen"), compound.getByte("PrimaryBlue")) : (compound.hasKey("PrimaryRGB") ? new RGB(compound.getInteger("PrimaryRGB")) : new RGB(vehicle.getDefPrimaryColor()));
-		this.secondary = compound.hasKey("SecondaryRed") ? new RGB(compound.getByte("SecondaryRed"), compound.getByte("SecondaryGreen"), compound.getByte("SecondaryBlue")) : (compound.hasKey("SecondaryRGB") ? new RGB(compound.getInteger("SecondaryRGB")) : new RGB(vehicle.getDefSecondaryolor()));
 		this.doors = compound.getBoolean("DoorsOpen");
-		//FM
-		this.locked = compound.getBoolean("Locked");
-		this.lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : KeyItem.getNewKeyCode();
 		this.keys = compound.getInteger("SpawnedKeys");
 		//
 		this.scripts.clear();
@@ -177,9 +142,7 @@ public class GenericVehicleData implements VehicleData {
 			data.getPart().getScripts().forEach((clazz) -> {
 				try{
 					VehicleScript script = clazz.newInstance();
-					if(script.isOn(Static.side(remote))){
-						this.scripts.put(clazz, script.readFromNBT(nbt[0], remote));
-					}
+					this.scripts.put(clazz, script.readFromNBT(nbt[0]));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -191,19 +154,9 @@ public class GenericVehicleData implements VehicleData {
 	}
 
 	@Override
-	public RGB getPrimaryColor(){
-		return primary;
-	}
-
-	@Override
-	public RGB getSecondaryColor(){
-		return secondary;
-	}
-
-	@Override
 	public boolean readyToSpawn(){
 		boolean result = true;
-		for(String rs : vehicle.getRequiredParts()){
+		for(String rs : root.getRequiredParts()){
 			if(!this.parts.containsKey(rs)){
 				result = false;
 				break;
@@ -224,38 +177,6 @@ public class GenericVehicleData implements VehicleData {
 	}
 
 	@Override
-	public int getSelectedTexture(){
-		return sel;
-	}
-
-	@Override
-	public void setSelectedTexture(int i){
-		this.sel = i;
-	}
-
-	@Override
-	public ResourceLocation getCustomTexture(){
-		return isexternal ? ExternalTextureHelper.get(url) : custom;
-	}
-
-	@Override
-	public void setCustomTexture(String string, boolean external){
-		url = external ? string : null;
-		custom = external ? null : new ResourceLocation(string);
-		isexternal = external;
-	}
-
-	@Override
-	public boolean isTextureExternal(){
-		return this.isexternal;
-	}
-
-	@Override
-	public ResourceLocation getTexture(){
-		return sel >= 0 ? vehicle.getTextures().get(sel) : this.getCustomTexture();
-	}
-
-	@Override
 	public void toggleDoors(Boolean doors){
 		this.doors = doors == null ? !this.doors : doors;
 	}
@@ -263,21 +184,6 @@ public class GenericVehicleData implements VehicleData {
 	@Override
 	public PartData getPart(String string){
 		return parts.get(string);
-	}
-
-	@Override
-	public boolean isLocked(){
-		return locked;
-	}
-
-	@Override
-	public boolean setLocked(Boolean lock){
-		return lock == null ? (locked = !locked) : (locked = lock);
-	}
-
-	@Override
-	public String getLockCode(){
-		return lockcode;
 	}
 
 	@Override
@@ -327,11 +233,6 @@ public class GenericVehicleData implements VehicleData {
 				}
 			}
 		});
-	}
-
-	@Override
-	public boolean isRemote(){
-		return remote;
 	}
 
 	@SuppressWarnings("unchecked")

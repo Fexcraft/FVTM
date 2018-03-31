@@ -26,18 +26,13 @@ public class T1_2Script implements Vehicle.VehicleScript {
 	}
 
 	@Override
-	public boolean isOn(Side side){
-		return true;//works on both sides.
-	}
-
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound){
 		compound.setBoolean("Out", out);
 		return compound;
 	}
 
 	@Override
-	public VehicleScript readFromNBT(NBTTagCompound compound, boolean isRemote){
+	public VehicleScript readFromNBT(NBTTagCompound compound){
 		if(compound.hasKey("Out")){
 			out = compound.getBoolean("Out");
 		}

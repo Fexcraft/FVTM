@@ -613,13 +613,13 @@ public class Resources {
 		return ModelType.NONE;
 	}
 	
-	public static final VehicleData getVehicleData(NBTTagCompound compound, boolean remote){
+	public static final VehicleData getVehicleData(NBTTagCompound compound){
 		if(compound == null){ return null; }
 		if(compound.hasKey(VehicleItem.NBTKEY) || compound.hasKey(VehicleItem.OLDNBTKEY)){
 			Vehicle vehicle = VEHICLES.getValue(new ResourceLocation(compound.hasKey(VehicleItem.NBTKEY) ? compound.getString(VehicleItem.NBTKEY) : compound.getString(VehicleItem.OLDNBTKEY)));
 			if(vehicle != null){
 				try{
-					return vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle).readFromNBT(compound, remote);
+					return vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle).readFromNBT(compound);
 				}
 				catch(Exception e){
 					e.printStackTrace();

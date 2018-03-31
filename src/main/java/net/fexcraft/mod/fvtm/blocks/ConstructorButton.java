@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.api;
+package net.fexcraft.mod.fvtm.blocks;
 
 import net.minecraft.util.EnumFacing;
 

@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.blocks;
 
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.api.ConstructorButton;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;

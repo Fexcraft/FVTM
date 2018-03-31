@@ -11,6 +11,12 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
+import net.fexcraft.mod.fvtm.api.root.Colorable;
+import net.fexcraft.mod.fvtm.api.root.Colorable.ColorHolder;
+import net.fexcraft.mod.fvtm.api.root.Lockable;
+import net.fexcraft.mod.fvtm.api.root.Saveloadable;
+import net.fexcraft.mod.fvtm.api.root.Textureable;
+import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
@@ -19,7 +25,6 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,7 +39,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
+public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, ColorHolder {
 	
 	public Addon getAddon();
 	
@@ -61,13 +66,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	
 	public int getConstructionLength();
 	
-	public List<ResourceLocation> getTextures();
-	
 	public List<Pos> getDefaultWheelPos();
-	
-	public RGB getDefPrimaryColor();
-	
-	public RGB getDefSecondaryolor();
 	
 	@SideOnly(Side.CLIENT)
 	public VehicleModel<VehicleData> getModel();
@@ -109,21 +108,9 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 	public float getSoundPitch(String event);
 	
 	//<-- VEHICLE DATA -->//
-	public static interface VehicleData {
+	public static interface VehicleData extends Colorable, Lockable, Saveloadable<VehicleData>, Textureable {
 		
 		public Vehicle getVehicle();
-		
-		public int getSelectedTexture();
-		
-		public void setSelectedTexture(int i);
-		
-		public ResourceLocation getCustomTexture();
-		
-		public void setCustomTexture(String string, boolean external);
-		
-		public boolean isTextureExternal();
-		
-		public ResourceLocation getTexture();
 		
 		public double getFuelTankContent();
 
@@ -137,14 +124,6 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		
 		public List<Pos> getWheelPos();
 		
-		public RGB getPrimaryColor();
-		
-		public RGB getSecondaryColor();
-		
-		public NBTTagCompound writeToNBT(NBTTagCompound compound);
-		
-		public VehicleData readFromNBT(NBTTagCompound compound, boolean isRemote);
-		
 		public boolean readyToSpawn();
 
 		public boolean doorsOpen();
@@ -152,12 +131,6 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		public void toggleDoors(@Nullable Boolean doors);
 
 		public void installPart(String as, PartData data);
-		
-		public boolean isLocked();
-		
-		public boolean setLocked(@Nullable Boolean lock);
-
-		public String getLockCode();
 		
 		public Collection<VehicleScript> getScripts();
 		
@@ -168,12 +141,6 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		public void setSpawnedKeysAmount(@Nullable Integer i);
 
 		public List<FMSeat> getSeats();
-
-		public default boolean allowsLocking(){
-			return true;
-		}
-
-		public boolean isRemote();
 		
 		public int getMaxInventorySize();
 		
@@ -212,15 +179,9 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle> {
 		
 	}
 	
-	public static interface VehicleScript {
+	public static interface VehicleScript extends Saveloadable<VehicleScript> {
 		
 		public ResourceLocation getId();
-		
-		public boolean isOn(Side side);
-		
-		public NBTTagCompound writeToNBT(NBTTagCompound compound);
-		
-		public VehicleScript readFromNBT(NBTTagCompound compound, boolean isRemote);
 		
 		public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side);
 

@@ -92,7 +92,7 @@ public class SpawnCmd extends CommandBase {
         			Print.chat(sender, "&7&o" + file.toString());
         			return;
         		}
-        		VehicleData data = Resources.getVehicleData(JsonToNBT.getTagFromJson(quickFix(JsonUtil.get(file)).toString()), sender.getEntityWorld().isRemote);
+        		VehicleData data = Resources.getVehicleData(JsonToNBT.getTagFromJson(quickFix(JsonUtil.get(file)).toString()));
     			Print.debug(data.writeToNBT(new NBTTagCompound()));
         		if(args.length >= 3 && args[2].equals("item")){
         			ItemStack stack = data.getVehicle().getItemStack(data);

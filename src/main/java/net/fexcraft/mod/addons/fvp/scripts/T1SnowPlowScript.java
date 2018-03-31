@@ -32,18 +32,13 @@ public class T1SnowPlowScript implements VehicleScript {
 	}
 
 	@Override
-	public boolean isOn(Side side){
-		return true;//is on both sides active
-	}
-
-	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
 		compound.setBoolean(this.getId().toString() + "_On", on);
 		return compound;
 	}
 
 	@Override
-	public VehicleScript readFromNBT(NBTTagCompound compound, boolean isRemote) {
+	public VehicleScript readFromNBT(NBTTagCompound compound){
 		if(compound.hasKey(this.getId().toString() + "_On")){
 			on = compound.getBoolean(this.getId().toString() + "_On");
 		}
@@ -51,7 +46,7 @@ public class T1SnowPlowScript implements VehicleScript {
 	}
 
 	@Override
-	public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side) {
+	public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side){
 		if(side.isServer()){
 			this.sendPacketToAllAround(entity, compound);
 		}

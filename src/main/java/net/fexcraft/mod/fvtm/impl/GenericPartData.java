@@ -8,36 +8,24 @@ import net.fexcraft.mod.fvtm.api.Attribute.AttributeData;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
+import net.fexcraft.mod.fvtm.impl.root.GenericTextureable;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.math.Pos;
-import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
-public class GenericPartData implements PartData {
+public class GenericPartData extends GenericTextureable<PartData, Part> implements PartData {
 	
-	private Part part;
-	private int sel;
 	private Pos offset;
-	private String url;
-	private ResourceLocation custom;
-	private boolean isexternal;
 	private HashMap<Class<?>, AttributeData> attributes = new HashMap<Class<?>, AttributeData>();
 	
 	public GenericPartData(Part part){
-		this.part = part;
+		super(part);
 	}
 
 	@Override
 	public Part getPart(){
-		return part;
+		return root;
 	}
-
-	@Override
-	public int getSelectedTexture(){
-		return sel;
-	}
-
 	@Override
 	public Pos getCurrentOffset(){
 		return offset;
@@ -45,13 +33,12 @@ public class GenericPartData implements PartData {
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagcompound){
-		tagcompound.setString(PartItem.NBTKEY, part.getRegistryName().toString());
+		tagcompound.setString(PartItem.NBTKEY, root.getRegistryName().toString());
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setInteger("SelectedTexture", sel);
-		compound.setString("CustomTexture", isexternal ? url == null ? "" : url : custom == null ? "minecraft:stone" : custom.toString());
-		compound.setBoolean("IsTextureExternal", isexternal);
-		part.getAttributeClasses().forEach((clazz) -> {
-			Attribute attr = part.getAttribute(clazz);
+		super.readFromNBT(compound);
+		//
+		root.getAttributeClasses().forEach((clazz) -> {
+			Attribute attr = root.getAttribute(clazz);
 			if(attr.hasDataClass()){
 				AttributeData data = this.attributes.get(attr.getDataClass());
 				if(data != null){
@@ -66,52 +53,21 @@ public class GenericPartData implements PartData {
 	@Override
 	public PartData readFromNBT(NBTTagCompound compound){
 		compound = compound.getCompoundTag(FVTM.MODID + "_part");
-		sel = compound.getInteger("SelectedTexture");
 		offset = Pos.fromNBT("Offset", compound);
-		isexternal = compound.getBoolean("IsTextureExternal");
-		url = isexternal ? compound.getString("CustomTexture") : null;
-		custom = isexternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 		NBTTagCompound[] tagc = new NBTTagCompound[]{compound};
-		part.getAttributeClasses().forEach((clazz) -> {
-			Attribute attr = part.getAttribute(clazz);
+		root.getAttributeClasses().forEach((clazz) -> {
+			Attribute attr = root.getAttribute(clazz);
 			if(attr.hasDataClass()){
 				try{
 					this.attributes.put(attr.getDataClass(), attr.getDataClass().getConstructor(PartData.class, Attribute.class).newInstance(this, attr).readFromNBT(this, tagc[0]));
 				}
 				catch(Exception e){
-					Print.debug(part.getRegistryName().toString(), clazz);
+					Print.debug(root.getRegistryName().toString(), clazz);
 					e.printStackTrace();
 				}
 			}
 		});
 		return this;
-	}
-
-	@Override
-	public ResourceLocation getCustomTexture(){
-		return isexternal ? ExternalTextureHelper.get(url) : this.custom;
-	}
-
-	@Override
-	public void setCustomTexture(String string, boolean external){
-		this.url = external ? string : null;
-		this.custom = external ? null : new ResourceLocation(string);
-		this.isexternal = external;
-	}
-
-	@Override
-	public void setSelectedTexture(int i){
-		this.sel = i;
-	}
-
-	@Override
-	public boolean isTextureExternal(){
-		return isexternal;
-	}
-
-	@Override
-	public ResourceLocation getTexture(){
-		return sel >= 0 ? part.getTextures().get(sel) : this.getCustomTexture();
 	}
 
 	@SuppressWarnings("unchecked")

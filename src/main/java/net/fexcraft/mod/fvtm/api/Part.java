@@ -10,18 +10,20 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Attribute.AttributeData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.api.root.Saveloadable;
+import net.fexcraft.mod.fvtm.api.root.Textureable;
+import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface Part extends IForgeRegistryEntry<Part> {
+public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
 	
 	public Addon getAddon();
 	
@@ -39,8 +41,6 @@ public interface Part extends IForgeRegistryEntry<Part> {
 	public List<ResourceLocation> getCompatibleVehicles();
 	
 	public Pos getOffsetFor(ResourceLocation vehicle);
-	
-	public List<ResourceLocation> getTextures();
 	
 	public List<String> getCategories();
 	
@@ -81,27 +81,11 @@ public interface Part extends IForgeRegistryEntry<Part> {
 	public float getSoundPitch(String event);
 	
 	//<-- PART DATA -->//
-	public static interface PartData {
+	public static interface PartData extends Saveloadable<PartData>, Textureable {
 		
 		public Part getPart();
 		
-		public int getSelectedTexture();
-		
-		public void setSelectedTexture(int i);
-		
-		public ResourceLocation getCustomTexture();
-		
-		public void setCustomTexture(String string, boolean external);
-		
-		public boolean isTextureExternal();
-		
-		public ResourceLocation getTexture();
-		
 		public Pos getCurrentOffset();
-		
-		public NBTTagCompound writeToNBT(NBTTagCompound compound);
-		
-		public PartData readFromNBT(NBTTagCompound compound);
 		
 		@Nullable
 		public <T extends AttributeData> T getAttributeData(Class<T> clazz);

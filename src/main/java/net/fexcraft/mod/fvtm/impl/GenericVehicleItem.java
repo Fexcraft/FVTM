@@ -73,7 +73,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
 		if(stack.hasTagCompound() && (stack.getTagCompound().hasKey(NBTKEY) || stack.getTagCompound().hasKey(OLDNBTKEY))){
-			VehicleData veh = Resources.getVehicleData(stack.getTagCompound(), worldIn == null ? false/*true?*/ : worldIn.isRemote);
+			VehicleData veh = Resources.getVehicleData(stack.getTagCompound());
 			if(veh == null){
 				return;
 			}
@@ -126,6 +126,15 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 	
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
+		if(tab == CreativeTabs.SEARCH){
+			for(Vehicle veh : Resources.VEHICLES.getValues()){
+				ItemStack stack = new ItemStack(this);
+				NBTTagCompound nbt = new NBTTagCompound();
+				nbt.setString(NBTKEY, veh.getRegistryName().toString());
+				stack.setTagCompound(nbt);
+				items.add(stack);
+			}
+		}
 		if(tab == Tabs.LANDVEHICLES){
 			for(Vehicle veh : Resources.getVehiclesByType(VehicleType.LAND)){
 				ItemStack stack = new ItemStack(this);
@@ -162,7 +171,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 				items.add(stack);
 			}
 		}
-		if(tab == Tabs.VEHICLE_PRESETS){
+		if(tab == Tabs.VEHICLE_PRESETS || tab == CreativeTabs.SEARCH){
 			for(Entry<String, JsonObject> entry : Resources.PRESETS.entrySet()){
 				try{
 					NBTTagCompound nbt = JsonToNBT.getTagFromJson(SpawnCmd.quickFix(entry.getValue()).toString());
@@ -189,7 +198,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 	@Override
 	public VehicleData getVehicle(ItemStack stack){
 		if(stack.hasTagCompound() && stack.getTagCompound().hasKey(NBTKEY)){
-			return Resources.getVehicleData(stack.getTagCompound(), false);
+			return Resources.getVehicleData(stack.getTagCompound());
 		}
 		return null;
 	}

@@ -124,7 +124,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 	public void readSpawnData(ByteBuf buffer){
 		try{
 			NBTTagCompound compound = ByteBufUtils.readTag(buffer);
-			vehicledata = Resources.getVehicleData(compound, world.isRemote);
+			vehicledata = Resources.getVehicleData(compound);
 			axes = VehicleAxes.read(this, compound);
 			prevRotationYaw = axes.getYaw();
 			prevRotationPitch = axes.getPitch();
@@ -171,10 +171,10 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound tag){
 		if(vehicledata == null){
-			vehicledata = Resources.getVehicleData(tag, world.isRemote);
+			vehicledata = Resources.getVehicleData(tag);
 		}
 		else{
-			vehicledata.readFromNBT(tag, world.isRemote);
+			vehicledata.readFromNBT(tag);
 		}
 		prevRotationYaw = tag.getFloat("RotationYaw");
 		prevRotationPitch = tag.getFloat("RotationPitch");
@@ -1060,7 +1060,7 @@ public class WaterVehicleEntity extends Entity implements VehicleEntity, IEntity
 					break;
 				}
 				case "update_vehicledata":{
-					this.vehicledata.readFromNBT(pkt.nbt, world.isRemote);
+					this.vehicledata.readFromNBT(pkt.nbt);
 					break;
 				}
 				case "lights_toggle":{

@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.blocks;
 
 import java.util.ArrayList;
 
-import net.fexcraft.mod.fvtm.api.ConstructorButton;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -110,7 +109,7 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 			NBTTagCompound com = pkt.nbt;
 			lift = com.hasKey("lift") ? com.getByte("lift") : lift;
 			liftstate = com.hasKey("liftstate") ? com.getDouble("liftstate") : liftstate;
-			VehicleData data = Resources.getVehicleData(com, world.isRemote);
+			VehicleData data = Resources.getVehicleData(com);
 			if(data != null){
 				vehicledata = data;
 			}
@@ -161,7 +160,7 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
 	public void readFromNBT(NBTTagCompound compound){
 		Print.debug(compound);
 		super.readFromNBT(compound);
-		this.vehicledata = Resources.getVehicleData(compound, world == null ? true : world.isRemote);
+		this.vehicledata = Resources.getVehicleData(compound);
 		this.liftstate = compound.getFloat("LiftState");
 		this.center = compound.hasKey("Center") ? BlockPos.fromLong(compound.getLong("Center")) : null;
 		this.partdata = Resources.getPartData(compound);

@@ -61,7 +61,7 @@ public class DisplayBlockEntity extends TileEntity implements IPacketReceiver<Pa
 	@Override
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
-		data = Resources.getVehicleData(compound, world.isRemote);
+		data = Resources.getVehicleData(compound);
 		Print.debug(compound.toString(), data == null);
 	}
 

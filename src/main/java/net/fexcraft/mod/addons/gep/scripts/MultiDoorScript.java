@@ -15,7 +15,6 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class MultiDoorScript implements Vehicle.VehicleScript {
 
-	
 	public boolean hood, trunk, front_left, front_right, back_left, back_right;
 	public static final String setting_hood = "Hood/Front";
 	public static final String setting_back = "Trunk/Back";
@@ -26,11 +25,6 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 	@Override
 	public ResourceLocation getId(){
 		return new ResourceLocation("generic:multidoor");
-	}
-
-	@Override
-	public boolean isOn(Side side){
-		return true;//on both sides
 	}
 
 	@Override
@@ -45,7 +39,7 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 	}
 
 	@Override
-	public VehicleScript readFromNBT(NBTTagCompound compound, boolean isRemote){
+	public VehicleScript readFromNBT(NBTTagCompound compound){
 		this.hood = compound.getBoolean("MultiDoor-Hood");
 		this.trunk = compound.getBoolean("MultiDoor-Trunk");
 		this.front_left = compound.getBoolean("MultiDoor-FrontLeft");

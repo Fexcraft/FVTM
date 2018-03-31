@@ -443,13 +443,13 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 				EntityLiving mob = (EntityLiving)this.getControllingPassenger();
 				this.getControllingPassenger().dismountRidingEntity();
 				Print.spam(1, "PASSENGER != ENTITYPLAYER >>> DISMOUNTING");
-				mob.setLeashedToEntity(entityplayer, true);
+				mob.setLeashHolder(entityplayer, true);
 				return true;
 			}
 			double checkRange = 10;
 			List<EntityLiving> nearbyMobs = world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(posX - checkRange, posY - checkRange, posZ - checkRange, posX + checkRange, posY + checkRange, posZ + checkRange));
 			for(EntityLiving entity : nearbyMobs){
-				if(entity.getLeashed() && entity.getLeashedToEntity() == entityplayer){
+				if(entity.getLeashed() && entity.getLeashHolder() == entityplayer){
 					entity.startRiding(this);
 					looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
 					entity.clearLeashed(true, !entityplayer.capabilities.isCreativeMode);

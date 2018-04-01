@@ -2,9 +2,11 @@ package net.fexcraft.mod.fvtm.render.block;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenterEntity;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
+import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.Model;
@@ -42,8 +44,8 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 		}
 		GL11.glRotated(d, 0, 1, 0);
 		GL11.glRotated(90 , 0, 1D, 0);
-		VehicleData vehicledata = te.getVehicleData();
-		if(vehicledata != null){
+		if(te.getVehicleData() != null){
+			VehicleData vehicledata = te.getVehicleData();
 			VehicleModel<VehicleData> modvec = vehicledata.getVehicle().getModel();
 			if(modvec != null){
 				Model.bindTexture(vehicledata.getTexture());
@@ -58,8 +60,14 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 				GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * -0.0625f) + te.getLiftState(), 0);
 				Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
 			}
-			else{
-				//Static.exception(4, "Model is null.");
+		}
+		else if(te.getContainerData() != null){
+			GL11.glTranslated(0, 1.5F, 0);
+			ContainerModel<ContainerData> model = te.getContainerData().getContainer().getModel();
+			if(model != null){
+				Model.bindTexture(te.getContainerData().getTexture());
+				model.render(te.getContainerData());
+				Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
 			}
 		}
 		else{
@@ -68,27 +76,29 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 			}
 		}
 		//
-		GL11.glTranslatef(0, 0, te.getRenderOffset());
-		renderLP(te, vehicledata, model.bodyModel);
-		GL11.glTranslatef(0, 0, -(te.getRenderOffset() * 2));
-		GL11.glRotated(180, 0, 1, 0);
-		renderLP(te, vehicledata, model.bodyModel);
+		if(te.getContainerData() == null){
+			GL11.glTranslatef(0, 0, te.getRenderOffset());
+			renderLP(te, model.bodyModel);
+			GL11.glTranslatef(0, 0, -(te.getRenderOffset() * 2));
+			GL11.glRotated(180, 0, 1, 0);
+			renderLP(te, model.bodyModel);
+		}
 		//
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
     }
 	
-	private static final void renderLP(ConstructorCenterEntity te, VehicleData data, ModelRendererTurbo[] turbo){
-		if(data != null){
+	private static final void renderLP(ConstructorCenterEntity te, ModelRendererTurbo[] turbo){
+		if(te.getVehicleData() != null){
 			for(int i = 0; i < 5; i++){
 				turbo[0].render();
 				turbo[1].render();
 				turbo[2].render();
-				data.getSecondaryColor().glColorApply();
+				te.getVehicleData().getSecondaryColor().glColorApply();
 				turbo[3].render();
 				turbo[4].render();
 				RGB.glColorReset();
-				data.getPrimaryColor().glColorApply();
+				te.getVehicleData().getPrimaryColor().glColorApply();
 				turbo[5].render();
 				RGB.glColorReset();
 				if(i != 4){
@@ -97,11 +107,11 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 			}
 			GL11.glTranslated(0, 4, 0);
 		}
-		if(data != null && data.getVehicle().getType().isWaterVehicle()){
+		if(te.getVehicleData() != null && te.getVehicleData().getVehicle().getType().isWaterVehicle()){
 			return;
 		}
 		GL11.glTranslated(0, -te.getLiftState(), 0);
-		if(data != null){
+		if(te.getVehicleData() != null){
 			model.render(model.trailerModel);
 		}
 		GL11.glTranslatef(te.getLength() + 1, 0, 0);

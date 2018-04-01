@@ -25,5 +25,7 @@ public interface Textureable {
 		public List<ResourceLocation> getTextures();
 		
 	}
+
+	public TextureHolder getTextureHolder();
 	
 }

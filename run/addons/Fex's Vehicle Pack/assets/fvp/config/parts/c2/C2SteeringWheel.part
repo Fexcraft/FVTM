@@ -7,7 +7,7 @@
         "steering_wheel"
     ],
     "Textures": [
-        "fvm:textures/entities/skin_vehicle_c2.png"
+        "fvp:textures/entities/skin_vehicle_c2.png"
     ],
     "Removable": false,
     "Avaiable": true,

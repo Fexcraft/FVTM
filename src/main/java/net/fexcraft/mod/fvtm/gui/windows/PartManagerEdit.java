@@ -37,7 +37,7 @@ public class PartManagerEdit implements Window {
 		if(cat == null){
 			return;
 		}
-		PartData data = gui.tile.vehicledata == null ? null : gui.tile.vehicledata.getPart(cat);
+		PartData data = gui.tile.getVehicleData() == null ? null : gui.tile.getVehicleData().getPart(cat);
 		mc.fontRenderer.drawString("Installable as:", (i + 6), (j + 57), gui.COLOR, false);
 		mc.fontRenderer.drawString("Compatible with:", (i + 132), (j + 57), gui.COLOR, false);
 		mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth("Part: " + (data == null ? "no part selected" : data.getPart().getName()), 176), (i + 6), (j + 15), gui.COLOR, false);
@@ -61,7 +61,7 @@ public class PartManagerEdit implements Window {
 				continue;
 			}
 			mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(list.get(l), 106 - 4), (i + 6 + 4), (j + 71) + (k * 14), gui.COLOR, false);
-			buttons[k].enabled = gui.tile.vehicledata.getPart(list.get(l)) == null;
+			buttons[k].enabled = gui.tile.getVehicleData().getPart(list.get(l)) == null;
 			buttons[k].displayString = " ";
 			//
 			int m = k + scrollr;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
-import net.fexcraft.mod.fvtm.api.Part.PartData;
+import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.gui.ConstructorMainGUI;
 import net.fexcraft.mod.lib.util.common.GenericGuiButton;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -22,6 +22,7 @@ public class TextureTool implements Window {
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000_texture_tool.png");
 	private static GenericGuiButton close;
 	private static boolean vehicle = false;
+	private static Textureable textureable;
 	private static String part = null;
 	private GuiTextField ifield, efield;
 	private ARB[] arbs = new ARB[4];
@@ -36,10 +37,11 @@ public class TextureTool implements Window {
 		mc.getTextureManager().bindTexture(texture);
 		gui.drawTexturedModalRect(i + 1, j + 1, 1, 1, 254, 176);
 		//
-		if(gui.tile.vehicledata == null){
+		if(gui.tile.getTextureable() == null){
 			return;
 		}
-		int k = getTextureMode(gui);
+		textureable = vehicle ? gui.tile.getTextureable() : gui.tile.getVehicleData().getPart(part);
+		int k = textureable.getSelectedTexture() >= 0 ? 0 : textureable.isTextureExternal() ? 2 : 1;
 		RGB rgb = k == 0 ? RGB.GREEN : RGB.RED;
 		rgb.glColorApply();
 		gui.drawTexturedModalRect(i + 245, j + 12, 245, 12, 8, 53);
@@ -58,9 +60,9 @@ public class TextureTool implements Window {
 		mc.fontRenderer.drawString("Texture Type: SUPPLIED", i +  7, j +  53, gui.COLOR, false);
 		mc.fontRenderer.drawString("Texture Type: INTERNAL", i +  7, j + 108, gui.COLOR, false);
 		mc.fontRenderer.drawString("Texture Type: EXTERNAL", i +  7, j + 163, gui.COLOR, false);
-		mc.fontRenderer.drawString(getSelectedTextureText(gui), i + 7, j + 30, gui.COLOR, false);
+		mc.fontRenderer.drawString("Selected nr. '" + (textureable.getSelectedTexture() + 1) + "' out of " + textureable.getTextureHolder().getTextures().size() + ".", i + 7, j + 30, gui.COLOR, false);
 		//
-		mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(getSelectedTexture(gui), 184, true), i +  7, j +   16, MapColor.GRAY.colorValue, false);
+		mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(textureable.getSelectedTexture() == -1 ? "none" : textureable.getTextureHolder().getTextures().get(textureable.getSelectedTexture()).toString(), 184, true), i +  7, j +   16, MapColor.GRAY.colorValue, false);
 		//mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(getCustomTexture(gui)  , 184, true), i +  7, j +   71, MapColor.GRAY.colorValue, false);
 		//mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(getExternalTexture(gui), 184, true), i +  7, j +  126, MapColor.GRAY.colorValue, false);
 		//
@@ -68,90 +70,6 @@ public class TextureTool implements Window {
         GlStateManager.disableBlend();
         ifield.drawTextBox();
         efield.drawTextBox();
-	}
-
-	private String getSelectedTextureText(ConstructorMainGUI gui){
-		if(vehicle){
-			return "Selected nr. '" + (gui.tile.vehicledata.getSelectedTexture() + 1) + "' out of " + gui.tile.vehicledata.getVehicle().getTextures().size() + ".";
-		}
-		else{
-			PartData data = gui.tile.vehicledata.getPart(part);
-			return "Selected nr. '" + (data.getSelectedTexture() + 1) + "' out of " + data.getPart().getTextures().size() + ".";
-		}
-	}
-
-	private String getExternalTexture(ConstructorMainGUI gui){
-		if(vehicle){
-			if(!gui.tile.vehicledata.isTextureExternal()){
-				return "none";
-			}
-			else{
-				String str = gui.tile.vehicledata.getCustomTexture().toString();
-				return str.equals("minecraft:") ? "none" : str;
-			}
-		}
-		else{
-			PartData data = gui.tile.vehicledata.getPart(part);
-			if(!data.isTextureExternal()){
-				return "none";
-			}
-			else{
-				String str = data.getCustomTexture().toString();
-				return str.equals("minecraft:") ? "none" : str;
-			}
-		}
-	}
-
-	private String getCustomTexture(ConstructorMainGUI gui){
-		if(vehicle){
-			if(gui.tile.vehicledata.isTextureExternal()){
-				return "none";
-			}
-			else{
-				String str = gui.tile.vehicledata.getCustomTexture().toString();
-				return str.equals("minecraft:") ? "none" : str;
-			}
-		}
-		else{
-			PartData data = gui.tile.vehicledata.getPart(part);
-			if(data.isTextureExternal()){
-				return "none";
-			}
-			else{
-				String str = data.getCustomTexture().toString();
-				return str.equals("minecraft:") ? "none" : str;
-			}
-		}
-	}
-
-	private String getSelectedTexture(ConstructorMainGUI gui){
-		if(vehicle){
-			if(gui.tile.vehicledata.getSelectedTexture() == -1){
-				return "none";
-			}
-			else{
-				return gui.tile.vehicledata.getVehicle().getTextures().get(gui.tile.vehicledata.getSelectedTexture()).toString();
-			}
-		}
-		else{
-			PartData data = gui.tile.vehicledata.getPart(part);
-			if(data.getSelectedTexture() == -1){
-				return "none";
-			}
-			else{
-				return data.getPart().getTextures().get(data.getSelectedTexture()).toString();
-			}
-		}
-	}
-
-	private int getTextureMode(ConstructorMainGUI gui){
-		if(vehicle){
-			return gui.tile.vehicledata.getSelectedTexture() >= 0 ? 0 : gui.tile.vehicledata.isTextureExternal() ? 2 : 1;
-		}
-		else{
-			PartData data = gui.tile.vehicledata.getPart(part);
-			return data.getSelectedTexture() >= 0 ? 0 : data.isTextureExternal() ? 2 : 1;
-		}
 	}
 
 	@Override
@@ -167,6 +85,7 @@ public class TextureTool implements Window {
 		}
         Keyboard.enableRepeatEvents(false);
 		//
+        textureable = null;
 	}
 
 	@Override
@@ -207,6 +126,16 @@ public class TextureTool implements Window {
 		gui.sendPacket(compound);
 	}
 
+	private String getCEQTexture(ConstructorMainGUI gui, boolean external){
+		if(external == textureable.isTextureExternal()){
+			return "none";
+		}
+		else{
+			String str = textureable.getCustomTexture().toString();
+			return str.equals("minecraft:") ? "none" : str;
+		}
+	}
+
 	@Override
 	public void addButtons(ConstructorMainGUI gui, List<GuiButton> buttonList){
 		int i = gui.getGuiLeft(), j = gui.getGuiTop();
@@ -218,14 +147,14 @@ public class TextureTool implements Window {
 		//
         Keyboard.enableRepeatEvents(true);
 		ifield = new GuiTextField(13, gui.mc.fontRenderer, i + 7, j + 71, 184, 8);
-		ifield.setText(getCustomTexture(gui));
+		ifield.setText(getCEQTexture(gui, false));
 		ifield.setTextColor(gui.COLOR);
         ifield.setDisabledTextColour(MapColor.RED.colorValue);
         ifield.setEnableBackgroundDrawing(false);
         ifield.setMaxStringLength(1024);
         //
         efield = new GuiTextField(14, gui.mc.fontRenderer, i + 7, j + 126, 184, 8);
-		efield.setText(getExternalTexture(gui));
+		efield.setText(getCEQTexture(gui, true));
 		efield.setTextColor(gui.COLOR);
         efield.setDisabledTextColour(MapColor.RED.colorValue);
         efield.setEnableBackgroundDrawing(false);
@@ -264,6 +193,7 @@ public class TextureTool implements Window {
 			part = args[1];
 		}
 		//
+		textureable = vehicle ? gui.tile.getTextureable() : gui.tile.getVehicleData().getPart(part);
 	}
 
 	@Override

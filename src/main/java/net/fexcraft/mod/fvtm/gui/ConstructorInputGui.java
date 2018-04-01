@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
+@SuppressWarnings("unused")
 public class ConstructorInputGui extends GuiContainer {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructorinputgui.png");

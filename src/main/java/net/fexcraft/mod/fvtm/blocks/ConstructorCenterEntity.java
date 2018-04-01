@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.blocks;
 
+import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
@@ -55,22 +56,22 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 	}
 	
 	public int getLength(){
-		if(link != null && link.vehicledata != null){
-			return link.vehicledata.getVehicle().getConstructionLength();
+		if(link != null && link.getVehicleData() != null){
+			return link.getVehicleData().getVehicle().getConstructionLength();
 		}
 		return length;
 	}
 	
 	public int getRenderLength(){
-		if(link != null && link.vehicledata != null){
-			return (link.vehicledata.getVehicle().getConstructionLength() * 2) + 1;
+		if(link != null && link.getVehicleData() != null){
+			return (link.getVehicleData().getVehicle().getConstructionLength() * 2) + 1;
 		}
 		return (length * 2) + 1;
 	}
 	
 	public float getRenderOffset(){
-		if(link != null && link.vehicledata != null){
-			return link.vehicledata.getVehicle().getWheelConstructorOffset() * 0.0625f;
+		if(link != null && link.getVehicleData() != null){
+			return link.getVehicleData().getVehicle().getWheelConstructorOffset() * 0.0625f;
 		}
 		return offset * 0.0625f;
 	}
@@ -84,7 +85,11 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 	}
 
 	public VehicleData getVehicleData(){
-		return link == null ? null : link.vehicledata == null ? null : link.vehicledata;
+		return link == null ? null : link.getVehicleData() == null ? null : link.getVehicleData();
+	}
+
+	public ContainerData getContainerData(){
+		return link == null ? null : link.getContainerData() == null ? null : link.getContainerData();
 	}
 
 	public BlockPos getConstructor(){

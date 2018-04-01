@@ -22,6 +22,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+@SuppressWarnings("unused")
 public class AddonManagerGui extends GuiContainer {
 	
 	//MAIN

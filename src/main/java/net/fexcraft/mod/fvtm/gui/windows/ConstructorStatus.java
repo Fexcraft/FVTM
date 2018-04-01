@@ -34,7 +34,12 @@ public class ConstructorStatus implements Window {
 		mc.fontRenderer.drawString("Connected: " + ConstructorMainGUI.connected, i + 3, j + 76, color, false);
 		mc.fontRenderer.drawString("Paint Module: " + (ConstructorMainGUI.paint ? "connected" : "unavailable"), i + 3, j + 86, color, false);
 		ConstructorControllerEntity cl = (ConstructorControllerEntity)ConstructorMainGUI.world.getTileEntity(gui.pos);
-		mc.fontRenderer.drawString("Loaded Vehicle: " + (cl.vehicledata == null ? "none" : cl.vehicledata.getVehicle().getRegistryName().toString()), i + 3, j + 96, color, false);
+		if(cl.getContainerData() == null){
+			mc.fontRenderer.drawString("Loaded Vehicle: " + (cl.getVehicleData() == null ? "none" : cl.getVehicleData().getVehicle().getRegistryName().toString()), i + 3, j + 96, color, false);
+		}
+		else{
+			mc.fontRenderer.drawString("Loaded Container: " + cl.getContainerData().getContainer().getRegistryName().toString(), i + 3, j + 96, color, false);
+		}
 	}
 
 	@Override

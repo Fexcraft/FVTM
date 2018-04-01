@@ -40,7 +40,10 @@ public class PartManagerInstalled implements Window {
 		//mc.fontRenderer.drawString("Overview", (i + 3), (j + 3), gui.COLOR, false);
 		//
 		//TreeMap<String, PartData> parts = gui.tile.vehicledata.getParts();
-		Object[] parts = gui.tile.vehicledata.getParts().entrySet().toArray();
+		if(gui.tile.getVehicleData() == null){
+			return;
+		}
+		Object[] parts = gui.tile.getVehicleData().getParts().entrySet().toArray();
 		refreshMissingParts(gui);
 		for(int k = 0; k < fields; k++){
 			int l = k + scroll;
@@ -97,20 +100,20 @@ public class PartManagerInstalled implements Window {
 	
 	@SuppressWarnings("unchecked")
 	public String getAt(ConstructorMainGUI gui, int k){
-		Object[] parts = gui.tile.vehicledata.getParts().entrySet().toArray();
+		Object[] parts = gui.tile.getVehicleData().getParts().entrySet().toArray();
 		return ((Entry<String, PartData>)parts[k]).getKey();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public PartData getPartAt(ConstructorMainGUI gui, int k){
-		Object[] parts = gui.tile.vehicledata.getParts().entrySet().toArray();
+		Object[] parts = gui.tile.getVehicleData().getParts().entrySet().toArray();
 		return ((Entry<String, PartData>)parts[k]).getValue();
 	}
 
 	private void refreshMissingParts(ConstructorMainGUI gui){
 		missing.clear();
-		for(String string : gui.tile.vehicledata.getVehicle().getRequiredParts()){
-			if(gui.tile.vehicledata.getPart(string) == null){
+		for(String string : gui.tile.getVehicleData().getVehicle().getRequiredParts()){
+			if(gui.tile.getVehicleData().getPart(string) == null){
 				missing.add(string);
 			}
 		}

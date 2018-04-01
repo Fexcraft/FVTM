@@ -170,7 +170,7 @@ public class ConstructorMainGUI extends GuiContainer {
 					return;
 				}
 				case 9:{
-					if(tile.vehicledata == null){
+					if(tile.getTextureable() == null){
 						title = "no vehicle";
 						return;
 					}

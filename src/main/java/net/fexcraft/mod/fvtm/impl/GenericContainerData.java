@@ -50,7 +50,7 @@ public class GenericContainerData extends GenericColorable<ContainerData, Contai
 	public NBTTagCompound writeToNBT(NBTTagCompound tagcompound){
 		tagcompound.setString(ContainerItem.NBTKEY, root.getRegistryName().toString());
 		NBTTagCompound compound = new NBTTagCompound();
-		super.readFromNBT(compound);
+		super.writeToNBT(compound);
 		//
 		if(root.getInventoryType() == InventoryType.ITEM){
 			compound = ItemStackHelper.saveAllItems(compound, stacks);

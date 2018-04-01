@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.blocks;
 
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
@@ -111,6 +113,41 @@ public class ConstructorController extends BlockContainer {
 	
 	//<-- VANILLA END -->//
 	
+	private void remOld(World world, BlockPos pos, ConstructorControllerEntity te){
+		ItemStack istack = null;
+		if(te.getVehicleData() != null){
+			istack = te.getVehicleData().getVehicle().getItemStack(te.getVehicleData());
+		}
+		if(te.getContainerData() != null){
+			istack = te.getContainerData().getContainer().getItemStack(te.getContainerData());
+		}
+		if(istack != null){
+			EntityItem item = new EntityItem(world);
+			item.setItem(istack);
+			item.setPosition(pos.getX() + 0.5f, pos.getY() + 1.5d, pos.getZ() + 0.5f);
+			world.spawnEntity(item);
+		}
+	}
+	
+	private boolean isLocked(EntityPlayer player, ConstructorControllerEntity te){
+		if(te.getVehicleData() == null && te.getContainerData() == null){
+			return false;
+		}
+		else if(te.getVehicleData() != null){
+			if(te.getVehicleData().isLocked()){
+				Print.chat(player, "Current VehicleData is locked.");
+			}
+			return te.getVehicleData().isLocked();
+		}
+		else if(te.getContainerData() != null){
+			if(te.getContainerData().isLocked()){
+				Print.chat(player, "Current ContainerData is locked.");
+			}
+			return te.getContainerData().isLocked();
+		}
+		else return false;
+	}
+	
 	@Override
     public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
 		if(w.isRemote/* || hand == EnumHand.OFF_HAND*/){
@@ -129,27 +166,29 @@ public class ConstructorController extends BlockContainer {
 		}
 		if(!p.getHeldItem(hand).isEmpty()){
 			ItemStack stack = p.getHeldItem(hand);
-			if(stack.getItem() instanceof VehicleItem){
-				if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
-					Print.chat(p, "Current VehicleData is locked.");
+			if(stack.getItem() instanceof VehicleItem || stack.getItem() instanceof ContainerItem){
+				boolean vehicle = stack.getItem() instanceof VehicleItem;
+				if(isLocked(p, te)){
 					return true;
 				}
-				if(te.getVehicleData() != null){
-					ItemStack istack = te.getVehicleData().getVehicle().getItemStack(te.getVehicleData());
-					EntityItem item = new EntityItem(w);
-					item.setItem(istack);
-					item.setPosition(pos.getX() + 0.5f, pos.getY() + 1.5d, pos.getZ() + 0.5f);
-					w.spawnEntity(item);
+				remOld(w, pos, te);
+				te.setData(stack);
+				if(vehicle){
+					Print.chat(p, "Vehicle: " + te.getVehicleData().getVehicle().getName());
 				}
-				te.setData((VehicleItem)stack.getItem(), stack);
-				Print.chat(p, "Vehicle: " + te.getVehicleData().getVehicle().getName());
+				else{
+					Print.chat(p, "Container: " + te.getContainerData().getContainer().getName());
+				};
 				p.getHeldItem(hand).shrink(64);
 				te.sendUpdate(null);
 				return true;
 			}
 			else if(stack.getItem() instanceof PartItem){
-				if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
-					Print.chat(p, "VehicleData is locked.");
+				if(isLocked(p, te)){
+					return true;
+				}
+				if(te.getVehicleData() == null){
+					Print.chat(p, te.getContainerData() == null ? "No Vehicle in Constructor." : "Containers do not hold parts.");
 					return true;
 				}
 				PartData data = ((PartItem)stack.getItem()).getPart(stack);
@@ -180,76 +219,75 @@ public class ConstructorController extends BlockContainer {
 				return true;
 			}
 			else if(stack.getItem() instanceof PaintItem){
-				if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
-					Print.chat(p, "VehicleData is locked.");
+				if(isLocked(p, te)){
 					return true;
 				}
-				if(te.getVehicleData() == null){
-					Print.chat(p, "No VehicleData.");
+				if(te.getColorable() == null){
+					Print.chat(p, "No Colorable Objects.");
 					return true;
 				}
 				if(hand == EnumHand.OFF_HAND){
-					te.getVehicleData().getSecondaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
+					te.getColorable().getSecondaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
 				}
 				else{
-					te.getVehicleData().getPrimaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
+					te.getColorable().getPrimaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
 				}
-				te.sendUpdate(null);
+				te.sendUpdate("rgb");
 				Print.chat(p, "Colour updated.");
 				return true;
 			}
 			else if(stack.getItem() instanceof ItemDye){
-				if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
-					Print.chat(p, "VehicleData is locked.");
+				if(isLocked(p, te)){
 					return true;
 				}
-				if(te.getVehicleData() == null){
-					Print.chat(p, "No VehicleData.");
+				if(te.getColorable() == null){
+					Print.chat(p, "No Colorable Objects.");
 					return true;
 				}
 				EnumDyeColor dyecolor = EnumDyeColor.byDyeDamage(stack.getMetadata());
 				if(hand == EnumHand.OFF_HAND){
-					te.getVehicleData().getSecondaryColor().packed = RGB.fromDyeColor(dyecolor).packed;
+					te.getColorable().getSecondaryColor().packed = RGB.fromDyeColor(dyecolor).packed;
 				}
 				else{
-					te.getVehicleData().getPrimaryColor().packed = RGB.fromDyeColor(dyecolor).packed;
+					te.getColorable().getPrimaryColor().packed = RGB.fromDyeColor(dyecolor).packed;
 				}
 				stack.shrink(1);
 				te.sendUpdate("rgb");
 			}
 			else if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof MaterialItem ? ((MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
-				if(te.getVehicleData() == null){
-					Print.bar(p, "No VehicleData.");
+				if(te.getLockable() == null){
+					Print.bar(p, "No Lockable Objects.");
 				}
 				else{
+					boolean veh = te.getLockable() instanceof VehicleData;
 					KeyItem item = (KeyItem)stack.getItem();
-					if(!te.getVehicleData().isLocked()){
-						if(item.getCode(stack).equals(te.getVehicleData().getLockCode())){
-							te.getVehicleData().setLocked(true);
+					if(!te.getLockable().isLocked()){
+						if(item.getCode(stack).equals(te.getLockable().getLockCode())){
+							te.getLockable().setLocked(true);
 							Print.chat(p, "VehicleData locked.");
 						}
 						else if(item.getType(stack) == KeyItem.KeyType.ADMIN){
-							te.getVehicleData().setLocked(true);
-							Print.chat(p, "&8[&aAO&8] &7VehicleData locked.");
+							te.getLockable().setLocked(true);
+							Print.chat(p, "&8[&aAO&8] &7" + (veh ? "Vehicle" : "Container") + "Data locked.");
 						}
 						else{
 							Print.chat(p, "Invalid code!");
-							Print.chat(p, item.getCode(stack) + " != " + te.getVehicleData().getLockCode());
+							Print.chat(p, item.getCode(stack) + " != " + te.getLockable().getLockCode());
 						}
-						Print.debug(te.getVehicleData().isLocked());
+						Print.debug(te.getLockable().isLocked());
 					}
 					else{
-						if(item.getCode(stack).equals(te.getVehicleData().getLockCode())){
-							te.getVehicleData().setLocked(false);
-							Print.chat(p, "VehicleData unlocked.");
+						if(item.getCode(stack).equals(te.getLockable().getLockCode())){
+							te.getLockable().setLocked(false);
+							Print.chat(p, (veh ? "Vehicle" : "Container") + "Data unlocked.");
 						}
 						else if(item.getType(stack) == KeyItem.KeyType.ADMIN){
-							te.getVehicleData().setLocked(false);
-							Print.chat(p, "&8[&aAO&8] &7VehicleData unlocked.");
+							te.getLockable().setLocked(false);
+							Print.chat(p, "&8[&aAO&8] &7" + (veh ? "Vehicle" : "Container") + "Data unlocked.");
 						}
 						else{
 							Print.chat(p, "Invalid code!");
-							Print.chat(p, item.getCode(stack) + " != " + te.getVehicleData().getLockCode());
+							Print.chat(p, item.getCode(stack) + " != " + te.getLockable().getLockCode());
 						}
 					}
 					te.sendUpdate(null);
@@ -258,8 +296,8 @@ public class ConstructorController extends BlockContainer {
 			}
 		}
 		else{
-			if(te.getVehicleData() != null && te.getVehicleData().isLocked()){
-				Print.bar(p, "&cLOCKED");
+			if(isLocked(p, te)){
+				return true;
 			}
 			if(hand != EnumHand.OFF_HAND){
 				if(!findAndPressButton(te, w, pos, state, p, side, hitX, hitY, hitZ)){
@@ -309,13 +347,18 @@ public class ConstructorController extends BlockContainer {
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state){
 		ConstructorControllerEntity conte = (ConstructorControllerEntity)world.getTileEntity(pos);
-		if(conte.vehicledata != null){
-			ItemStack stack = conte.vehicledata.getVehicle().getItemStack(conte.vehicledata);
+		if(conte.getVehicleData() != null){
+			ItemStack stack = conte.getVehicleData().getVehicle().getItemStack(conte.getVehicleData());
 			EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);
 			world.spawnEntity(entity);
 		}
-		if(conte.partdata != null){
-			ItemStack stack = conte.partdata.getPart().getItemStack(conte.partdata);
+		if(conte.getContainerData() != null){
+			ItemStack stack = conte.getContainerData().getContainer().getItemStack(conte.getContainerData());
+			EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);
+			world.spawnEntity(entity);
+		}
+		if(conte.getPartData() != null){
+			ItemStack stack = conte.getPartData().getPart().getItemStack(conte.getPartData());
 			EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);
 			world.spawnEntity(entity);
 		}

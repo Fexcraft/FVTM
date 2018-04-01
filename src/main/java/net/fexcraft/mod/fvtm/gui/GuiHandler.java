@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.ContainerInventoryGui.Server;
@@ -18,7 +19,6 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -76,6 +76,7 @@ public class GuiHandler implements IGuiHandler {
 			return "fvtm";
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public void process(PacketNBTTagCompound packet, Object[] objs){
 			if(!packet.nbt.hasKey("task")){
@@ -172,74 +173,56 @@ public class GuiHandler implements IGuiHandler {
 								break;
 							}
 							case "rgb_update":{
-								if(serv.vehicledata == null){
+								if(serv.getColorable() == null){
 									return;
 								}
 								String group = packet.nbt.getString("group");
 								int rgb = packet.nbt.getInteger("rgb");
 								if(group.equals("primary")){
-									serv.vehicledata.getPrimaryColor().packed = rgb;
+									serv.getColorable().getPrimaryColor().packed = rgb;
 								}
 								else if(group.equals("secondary")){
-									serv.vehicledata.getSecondaryColor().packed = rgb;
+									serv.getColorable().getSecondaryColor().packed = rgb;
 								}
 								else return;
 								serv.sendUpdate("rgb");
 								break;
 							}
 							case "texture_update":{
-								if(serv.vehicledata == null){
+								if(serv.getTextureable() == null){
 									return;
 								}
-								boolean vehicle = packet.nbt.getString("type").equals("vehicle");
-								PartData part = vehicle ? null : serv.vehicledata.getPart(packet.nbt.getString("type").split(":")[1]);
+								Textureable textureable = packet.nbt.getString("type").equals("vehicle") ? serv.getTextureable() : serv.getVehicleData() == null ? null : serv.getVehicleData().getPart(packet.nbt.getString("type").split(":")[1]);
+								if(textureable == null){
+									return;
+								}
 								int cat = packet.nbt.getInteger("category");
 								String data = packet.nbt.getString("data");
 								if(cat == 0){
 									if(data.equals("prev")){
-										if(vehicle){
-											int i = serv.vehicledata.getSelectedTexture() - 1;
-											i = i < 0 ? 0 : i;
-											serv.vehicledata.setSelectedTexture(i);
-										}
-										else{
-											int i = part.getSelectedTexture() - 1;
-											i = i < 0 ? 0 : i;
-											part.setSelectedTexture(i);
-										}
+										int i = textureable.getSelectedTexture() - 1;
+										i = i < 0 ? 0 : i;
+										textureable.setSelectedTexture(i);
 									}
 									else if(data.equals("next")){
-										if(vehicle){
-											int i = serv.vehicledata.getSelectedTexture() + 1;
-											i = i >= serv.vehicledata.getVehicle().getTextures().size() ? serv.vehicledata.getVehicle().getTextures().size() - 1 : i;
-											serv.vehicledata.setSelectedTexture(i);
-										}
-										else{
-											int i = part.getSelectedTexture() + 1;
-											i = i >= part.getPart().getTextures().size() ? part.getPart().getTextures().size() - 1 : i;
-											part.setSelectedTexture(i);
-										}
+										int i = textureable.getSelectedTexture() + 1;
+										i = i >= textureable.getTextureHolder().getTextures().size() ? textureable.getTextureHolder().getTextures().size() - 1 : i;
+										textureable.setSelectedTexture(i);
 									}
 									else return;
 								}
 								else{
-									if(vehicle){
-										serv.vehicledata.setSelectedTexture(-1);
-										serv.vehicledata.setCustomTexture(data, cat == 2);
-									}
-									else{
-										part.setSelectedTexture(-1);
-										part.setCustomTexture(data, cat == 2);
-									}
+									textureable.setSelectedTexture(-1);
+									textureable.setCustomTexture(data, cat == 2);
 								}
-								serv.sendUpdate("vehicle");
+								serv.sendUpdate(serv.getVehicleData() == null ? "container" : "vehicle");
 								break;
 							}
 							case "part_remove":{
-								if(serv.vehicledata == null){
+								if(serv.getVehicleData() == null){
 									return;
 								}
-								PartData data = serv.vehicledata.getParts().remove(packet.nbt.getString("part"));
+								PartData data = serv.getVehicleData().getParts().remove(packet.nbt.getString("part"));
 								if(data == null || !data.getPart().isRemovable()){
 									Print.chat(player, data == null ? "Part not found in Server Instance." : "Part is marked as non-remove on Server Instance!");
 									return;
@@ -252,24 +235,21 @@ public class GuiHandler implements IGuiHandler {
 								break;
 							}
 							case "part_install":{
-								if(serv.partdata == null){
+								if(serv.getPartData() == null){
 									return;
 								}
 								if(packet.nbt.getBoolean("drop")){
-									ItemStack stack = serv.partdata.getPart().getItemStack(serv.partdata);
-									EntityItem entity = new EntityItem(serv.getWorld(), serv.getPos().getX() + 0.5, serv.getPos().getY() + 1.5f, serv.getPos().getZ() + 0.5, stack);
-									serv.getWorld().spawnEntity(entity);
-									serv.partdata = null;
+									serv.setPartData(null, true);
 									serv.sendUpdate(null);
 									return;
 								}
 								else{
 									if(packet.nbt.getBoolean("auto")){
-										for(String str : serv.partdata.getPart().getCategories()){
-											if(serv.vehicledata.getPart(str) == null && serv.partdata.getPart().canInstall(str, serv.getVehicleData(), player)){
-												serv.getVehicleData().installPart(str, serv.partdata);
-												Print.chat(player, "Part processed. (" + serv.partdata.getPart().getName() + ")");
-												serv.partdata = null;
+										for(String str : serv.getPartData().getPart().getCategories()){
+											if(serv.getVehicleData().getPart(str) == null && serv.getPartData().getPart().canInstall(str, serv.getVehicleData(), player)){
+												serv.getVehicleData().installPart(str, serv.getPartData());
+												Print.chat(player, "Part processed. (" + serv.getPartData().getPart().getName() + ")");
+												serv.setPartData(null);
 												serv.sendUpdate(null);
 											}
 											else continue;
@@ -277,14 +257,14 @@ public class GuiHandler implements IGuiHandler {
 									}
 									else{
 										String cat = packet.nbt.getString("category");
-										if(serv.vehicledata.getPart(cat) != null){
+										if(serv.getVehicleData().getPart(cat) != null){
 											Print.chat(player, "There is already a part installed in that category.");
 											return;
 										}
-										if(serv.partdata.getPart().canInstall(cat, serv.getVehicleData(), player)){
-											serv.getVehicleData().installPart(cat, serv.partdata);
-											Print.chat(player, "Part processed. (" + serv.partdata.getPart().getName() + ")");
-											serv.partdata = null;
+										if(serv.getPartData().getPart().canInstall(cat, serv.getVehicleData(), player)){
+											serv.getVehicleData().installPart(cat, serv.getPartData());
+											Print.chat(player, "Part processed. (" + serv.getPartData().getPart().getName() + ")");
+											serv.setPartData(null);
 											serv.sendUpdate(null);
 										}
 										else return;

@@ -32,7 +32,7 @@ public class SprayingTool implements Window {
 		mc.getTextureManager().bindTexture(texture);
 		gui.drawTexturedModalRect(i + 1, j + 1, 1, 1, 254, 176);
 		//
-		RGB rgb = gui.tile.vehicledata == null ? RGB.WHITE : (group == 0 ? gui.tile.vehicledata.getPrimaryColor() : gui.tile.vehicledata.getSecondaryColor());
+		RGB rgb = gui.tile.getColorable() == null ? RGB.WHITE : (group == 0 ? gui.tile.getColorable().getPrimaryColor() : gui.tile.getColorable().getSecondaryColor());
 		rgb.glColorApply();
 		gui.drawTexturedModalRect(i + 172, j + 15, 172, 15, 78, 30);
 		RGB.glColorReset();
@@ -50,7 +50,7 @@ public class SprayingTool implements Window {
 				RGB.glColorReset();
 			}
 		}
-		rgb = gui.tile.vehicledata == null ? RGB.WHITE : (group == 0 ? gui.tile.vehicledata.getPrimaryColor() : gui.tile.vehicledata.getSecondaryColor());
+		rgb = gui.tile.getColorable() == null ? RGB.WHITE : (group == 0 ? gui.tile.getColorable().getPrimaryColor() : gui.tile.getColorable().getSecondaryColor());
 		//
 		arr = rgb.toByteArray();
 		mc.fontRenderer.drawString("ColorGroup: " + groups[group], i + 6, j + 150, MapColor.GRAY.colorValue, false);
@@ -116,10 +116,10 @@ public class SprayingTool implements Window {
 			gui.closeWindow(getId());
 		}
 		else if(button instanceof ARB){
-			if(gui.tile.vehicledata == null){
+			if(gui.tile.getColorable() == null){
 				return;
 			}
-			RGB ORG = group == 0 ? gui.tile.vehicledata.getPrimaryColor() : gui.tile.vehicledata.getSecondaryColor();
+			RGB ORG = group == 0 ? gui.tile.getColorable().getPrimaryColor() : gui.tile.getColorable().getSecondaryColor();
 			int i = button.id - 12;
 			switch(i){
 				case 1:
@@ -161,7 +161,7 @@ public class SprayingTool implements Window {
 			gui.tile.sendUpdate("rgb");
 		}
 		else if(button instanceof Palette){
-			if(gui.tile.vehicledata == null){
+			if(gui.tile.getColorable() == null){
 				return;
 			}
 			if(palette.xx == 0 && palette.yy == 0){

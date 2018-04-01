@@ -66,5 +66,10 @@ public class GenericTextureable<T, B> implements Textureable, Saveloadable<T> {
 		custom = isexternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 		return null;
 	}
+
+	@Override
+	public TextureHolder getTextureHolder(){
+		return (TextureHolder)root;
+	}
 	
 }

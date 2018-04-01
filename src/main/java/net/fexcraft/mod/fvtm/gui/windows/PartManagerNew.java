@@ -34,19 +34,19 @@ public class PartManagerNew implements Window {
 		//
 		mc.fontRenderer.drawString("Installable as:", (i + 6), (j + 57), gui.COLOR, false);
 		mc.fontRenderer.drawString("Compatible with:", (i + 132), (j + 57), gui.COLOR, false);
-		mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth("Part: " + (gui.tile.partdata == null ? "no part in constructor" : gui.tile.partdata.getPart().getName()), 176), (i + 6), (j + 15), gui.COLOR, false);
-		mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth("RSLC: " + (gui.tile.partdata == null ? "no part in constructor" : gui.tile.partdata.getPart().getRegistryName().toString()), 176), (i + 6), (j + 29), gui.COLOR, false);
+		mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth("Part: " + (gui.tile.getPartData() == null ? "no part in constructor" : gui.tile.getPartData().getPart().getName()), 176), (i + 6), (j + 15), gui.COLOR, false);
+		mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth("RSLC: " + (gui.tile.getPartData() == null ? "no part in constructor" : gui.tile.getPartData().getPart().getRegistryName().toString()), 176), (i + 6), (j + 29), gui.COLOR, false);
 		//
 		GL11.glScalef(0.5f, 0.5f, 0.5f);
 		mc.fontRenderer.drawString("Scroll: " + scrolll, (i + 6) * 2, (j + 168) * 2, MapColor.GREEN_STAINED_HARDENED_CLAY.colorValue, false);
 		mc.fontRenderer.drawString("Scroll: " + scrollr, (i + 132) * 2, (j + 168) * 2, MapColor.GREEN_STAINED_HARDENED_CLAY.colorValue, false);
 		GL11.glScalef(2, 2, 2);
-		if(gui.tile.partdata == null || gui.tile.vehicledata == null){
+		if(gui.tile.getPartData() == null || gui.tile.getVehicleData() == null){
 			return;
 		}
 		//
-		List<String> list = gui.tile.partdata.getPart().getCategories();
-		List<ResourceLocation> rss = gui.tile.partdata.getPart().getCompatibleVehicles();
+		List<String> list = gui.tile.getPartData().getPart().getCategories();
+		List<ResourceLocation> rss = gui.tile.getPartData().getPart().getCompatibleVehicles();
 		for(int k = 0; k < fields; k++){
 			int l = k + scrolll;
 			if(l >= list.size()){
@@ -55,7 +55,7 @@ public class PartManagerNew implements Window {
 				continue;
 			}
 			mc.fontRenderer.drawString(mc.fontRenderer.trimStringToWidth(list.get(l), 106 - 4), (i + 6 + 4), (j + 71) + (k * 14), gui.COLOR, false);
-			buttons[k].enabled = gui.tile.vehicledata.getPart(list.get(l)) == null;
+			buttons[k].enabled = gui.tile.getVehicleData().getPart(list.get(l)) == null;
 			buttons[k].displayString = " ";
 			//
 			int m = k + scrollr;
@@ -146,10 +146,10 @@ public class PartManagerNew implements Window {
 			int i = button.id - 40;
 			if(!(i >= fields)){
 				i += scrolll;
-				if(gui.tile.partdata == null || i >= gui.tile.partdata.getPart().getCategories().size()){
+				if(gui.tile.getPartData() == null || i >= gui.tile.getPartData().getPart().getCategories().size()){
 					return;
 				}
-				sendUpdate(gui, gui.tile.partdata.getPart().getCategories().get(i), false, false);
+				sendUpdate(gui, gui.tile.getPartData().getPart().getCategories().get(i), false, false);
 			}
 			return;
 		}

@@ -207,14 +207,16 @@ public class VehicleInventoryGui {
 					this.mc.getTextureManager().bindTexture(fluidtex);
 					this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 					InventoryAttributeData invattr = data.getInventoryContainers().get(y).getAttributeData(InventoryAttributeData.class);
-					int perducenti = (int)(((float)invattr.getFluidTank().getFluidAmount() / invattr.getFluidTank().getCapacity()) * 200);
+					int con = invattr.getFluidTank().getFluid() == null ? 0 : invattr.getFluidTank().getFluidAmount();
+					int perducenti = (int)(((float)con / invattr.getFluidTank().getCapacity()) * 200);
 					this.drawTexturedModalRect(i + 6, j + 25, 0, 242, perducenti, 14);
 					//
 					this.fontRenderer.drawString(data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
 					this.fontRenderer.drawString(Formatter.format("&a" + server.getFluidItemAmount()), i + 171, j + 91, MapColor.SNOW.colorValue);
 					this.fontRenderer.drawString(Formatter.format("&6" + server.getFluidItemCapacity()), i + 171, j + 77, MapColor.SNOW.colorValue);
 					//this.fontRenderer.drawString((invattr.getFluidTank().getFluidAmount() / 1000) + " / " + (invattr.getFluidTank().getCapacity() / 1000), i + 9, j + 28, MapColor.SNOW.colorValue);
-					Renderer.drawTextOutlined(fontRenderer, (invattr.getFluidTank().getFluidAmount() / 1000) + " / " + (invattr.getFluidTank().getCapacity() / 1000) + " (" + invattr.getFluidTank().getFluid().getLocalizedName() + ")", i + 9, j + 28, MapColor.SNOW.colorValue);
+					String fill = invattr.getFluidTank().getFluid() == null ? "empty" : invattr.getFluidTank().getFluid().getLocalizedName();
+					Renderer.drawTextOutlined(fontRenderer, (con / 1000) + " / " + (invattr.getFluidTank().getCapacity() / 1000) + " (" + fill + ")", i + 9, j + 28, MapColor.SNOW.colorValue);
 					break;
 				}
 			}
@@ -762,6 +764,7 @@ public class VehicleInventoryGui {
 			if((fluidinv != null && !fluidinv.isEmpty()) && date + 50 <= Time.getDate()){
 				date = Time.getDate();
 				ItemStack stack = fluidinv.getStackInSlot(0);
+				boolean wasempty = invattr.getFluidTank().getFluid() == null;
 				IFluidHandlerItem item = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 				if(fluidinv.isnew){
 					fluidinv.isnew = false;
@@ -788,6 +791,7 @@ public class VehicleInventoryGui {
 					NBTTagCompound nbt = new NBTTagCompound();
 					nbt.setString("target_listener", "fvtm");
 					nbt.setString("cargo", "update_fluid_tank");
+					nbt.setBoolean("wasempty", wasempty);
 					nbt.setInteger("state", invattr.getFluidTank().getFluidAmount());
 					nbt.setInteger("tank", y);
 					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(nbt), (EntityPlayerMP)player);

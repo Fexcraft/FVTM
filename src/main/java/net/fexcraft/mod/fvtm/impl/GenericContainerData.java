@@ -87,5 +87,10 @@ public class GenericContainerData extends GenericColorable<ContainerData, Contai
 	public IFluidHandler getFluidHandler(){
 		return fluidtank;
 	}
+
+	@Override
+	public FluidTank getFluidTank(){
+		return fluidtank;
+	}
 	
 }

@@ -134,7 +134,7 @@ public class ContainerTileEntity extends TileFluidHandler implements IPacketRece
 	}
 
 	public BlockPos getCorePos(){
-		return corepos;
+		return core ? this.pos : corepos;
 	}
 
 	public void setUp(ItemStack stack){
@@ -291,6 +291,27 @@ public class ContainerTileEntity extends TileFluidHandler implements IPacketRece
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public void processClientPacket(PacketTileEntityUpdate packet){
+		if(packet.nbt.hasKey("from") && packet.nbt.getString("from").equals("gui")){
+			switch(packet.nbt.getString("task")){
+				case "update_container_fluid_tank":{
+					if(this.getContainerData().getContainer().getInventoryType() != InventoryType.FLUID){
+						return;
+					}
+					if(this.getContainerData().getFluidTank().getFluid() == null){
+						return;
+					}
+					this.getContainerData().getFluidTank().getFluid().amount = packet.nbt.getInteger("state");
+					break;
+				}
+			}
+		}
+		else{
+			this.readFromNBT(packet.nbt);
+		}
 	}
     
 }

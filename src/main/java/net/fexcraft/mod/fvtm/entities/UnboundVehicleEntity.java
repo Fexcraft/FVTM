@@ -968,6 +968,11 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 					}
 					break;
 				}
+				case "resync":{
+					NBTTagCompound nbt = this.vehicledata.writeToNBT(new NBTTagCompound());
+					nbt.setString("task", "update_vehicledata");
+					ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+				}
 			}
 		}
 	}
@@ -1005,6 +1010,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 					}
 					break;
 				}
+				case "resync":
 				case "update_vehicledata":{
 					this.vehicledata.readFromNBT(pkt.nbt);
 					break;

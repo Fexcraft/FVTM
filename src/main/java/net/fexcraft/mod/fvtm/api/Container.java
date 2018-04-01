@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -72,6 +73,8 @@ public interface Container extends IForgeRegistryEntry<Container>, TextureHolder
 		public NonNullList<ItemStack> getInventory();
 
 		public IFluidHandler getFluidHandler();
+		
+		public @Nullable FluidTank getFluidTank();
 		
 	}
 	

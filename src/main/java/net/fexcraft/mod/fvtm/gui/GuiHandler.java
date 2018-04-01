@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketListener;
 import net.fexcraft.mod.lib.network.PacketHandler;
+import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -33,6 +34,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int VEHICLE_INVENTORY = 9910;
 	public static final int CONSTRUCTOR = 9000;//92110;
 	public static final int CONTAINER_INVENTORY = 9210;
+	public static final int CONTAINER_FLUID_INVENTORY = 9211;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
@@ -44,6 +46,8 @@ public class GuiHandler implements IGuiHandler {
 				return new VehicleInventoryGui.Server(player, world, x, y, z);
 			case 9210:
 				return new ContainerInventoryGui.Server(player, world, x, y, z);
+			case 9211:
+				return new ContainerFluidGui.Server(player, world, x, y, z);
 		}
 		if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
 			return new GenericPlaceholderContainer();
@@ -62,6 +66,8 @@ public class GuiHandler implements IGuiHandler {
 				return new VehicleInventoryGui.Client(player, world, x, y, z);
 			case 9210:
 				return new ContainerInventoryGui.Client(player, world, x, y, z);
+			case 9211:
+				return new ContainerFluidGui.Client(player, world, x, y, z);
 		}
 		if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
 			Print.debug("CREATING GUI!");
@@ -349,8 +355,17 @@ public class GuiHandler implements IGuiHandler {
 				case "update_fluid_tank":{
 					VehicleData data = ((SeatEntity)((EntityPlayer)objs[0]).getRidingEntity()).getVehicle().getVehicleData();
 					PartData part = data.getInventoryContainers().get(packet.nbt.getInteger("tank"));
-					InventoryAttributeData attr = part.getAttributeData(InventoryAttributeData.class);
-					attr.getFluidTank().getFluid().amount = packet.nbt.getInteger("state");
+					if(packet.nbt.getBoolean("wasempty")){
+						NBTTagCompound nbt = new NBTTagCompound();
+						nbt.setString("task", "resync");
+						PacketHandler.getInstance().sendToServer(new PacketEntityUpdate(((SeatEntity)((EntityPlayer)objs[0]).getRidingEntity()).getVehicle().getEntity(), nbt));
+					}
+					else{
+						InventoryAttributeData attr = part.getAttributeData(InventoryAttributeData.class);
+						if(attr.getFluidTank().getFluid() != null){
+							attr.getFluidTank().getFluid().amount = packet.nbt.getInteger("state");
+						}
+					}
 					break;
 				}
 			}

@@ -7,6 +7,6 @@
 	"Textures":[
 		"test:textures/other/genericcontainer.png"
 	],
-	"InventorySize": 1600,
+	"InventorySize": 160000,
 	"InventoryType": "fluid"
 }

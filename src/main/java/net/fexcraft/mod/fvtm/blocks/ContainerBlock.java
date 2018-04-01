@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
+import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.block.fBlock;
@@ -166,7 +167,15 @@ public class ContainerBlock extends BlockContainer {
 					return true;
 				}
 				BlockPos corepos = te.getCore().getPos();
-				player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_INVENTORY, world, corepos.getX(), corepos.getY(), corepos.getZ());
+				if(te.getContainerData().getContainer().getInventoryType() == InventoryType.ITEM){
+					player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_INVENTORY, world, corepos.getX(), corepos.getY(), corepos.getZ());
+				}
+				else if(te.getContainerData().getContainer().getInventoryType() == InventoryType.FLUID){
+					player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_FLUID_INVENTORY, world, corepos.getX(), corepos.getY(), corepos.getZ());
+				}
+				else {
+					Print.chat(player, "Unknown Inventory Type.");
+				}
 				return true;
 			}
 			else if(Static.dev()){

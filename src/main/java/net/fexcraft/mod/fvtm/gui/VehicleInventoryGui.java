@@ -21,7 +21,9 @@ import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.render.Renderer;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Formatter;
@@ -41,6 +43,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class VehicleInventoryGui {
 	
@@ -50,6 +56,7 @@ public class VehicleInventoryGui {
 	//x 3 = status view
 	//x 4 = container view
 	//x 5 = scripts view
+	//x 6 = pfi view
 	
 	//y n = part id
 	
@@ -60,6 +67,7 @@ public class VehicleInventoryGui {
 	private static final ResourceLocation fueltex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_fuel.png");
 	private static final ResourceLocation contex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_container.png");
 	private static final ResourceLocation scrtex = new ResourceLocation("fvtm:textures/guis/vehicle_scripts.png");
+	private static final ResourceLocation fluidtex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_fluid.png");
 	
 	public static class Client extends GuiContainer {
 		
@@ -91,7 +99,8 @@ public class VehicleInventoryGui {
 					this.scroll = z;
 					break;
 				}
-				case 2:{
+				case 2:
+				case 6:{
 					this.xSize = 210;
 					this.ySize = 126;
 					break;
@@ -194,6 +203,20 @@ public class VehicleInventoryGui {
 					}
 					break;
 				}
+				case 6:{
+					this.mc.getTextureManager().bindTexture(fluidtex);
+					this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+					InventoryAttributeData invattr = data.getInventoryContainers().get(y).getAttributeData(InventoryAttributeData.class);
+					int perducenti = (int)(((float)invattr.getFluidTank().getFluidAmount() / invattr.getFluidTank().getCapacity()) * 200);
+					this.drawTexturedModalRect(i + 6, j + 25, 0, 242, perducenti, 14);
+					//
+					this.fontRenderer.drawString(data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
+					this.fontRenderer.drawString(Formatter.format("&a" + server.getFluidItemAmount()), i + 171, j + 91, MapColor.SNOW.colorValue);
+					this.fontRenderer.drawString(Formatter.format("&6" + server.getFluidItemCapacity()), i + 171, j + 77, MapColor.SNOW.colorValue);
+					//this.fontRenderer.drawString((invattr.getFluidTank().getFluidAmount() / 1000) + " / " + (invattr.getFluidTank().getCapacity() / 1000), i + 9, j + 28, MapColor.SNOW.colorValue);
+					Renderer.drawTextOutlined(fontRenderer, (invattr.getFluidTank().getFluidAmount() / 1000) + " / " + (invattr.getFluidTank().getCapacity() / 1000) + " (" + invattr.getFluidTank().getFluid().getLocalizedName() + ")", i + 9, j + 28, MapColor.SNOW.colorValue);
+					break;
+				}
 			}
 		}
 		
@@ -276,7 +299,8 @@ public class VehicleInventoryGui {
 								nbt.setIntArray("args", new int[]{4, y - data.getInventoryContainers().size(), scroll});
 							}
 							else{
-								nbt.setIntArray("args", new int[]{1, y, scroll});
+								InventoryAttribute attr = data.getInventoryContainers().get(y).getPart().getAttribute(InventoryAttribute.class);
+								nbt.setIntArray("args", new int[]{attr.getType() == InventoryType.ITEM ? 1 : 6, y, scroll});
 							}
 							PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
 							break;
@@ -521,16 +545,18 @@ public class VehicleInventoryGui {
 	public static class Server extends Container {
 		
 		private EntityPlayer player;
-		private int x/*, y, z*/;
+		private int x, y/*, z*/;
 		private TempPartInventory temp = null;
 		private VehicleData data;
 		//
 		FuelInventory fuelinv;
 		ContainerInventory coninv;
+		FluidInventory fluidinv;
+		InventoryAttributeData invattr;
 		
 		public Server(EntityPlayer player, World world, int x, int y, int z){
 			this.player = player;
-			this.x = x; /*this.y = y; this.z = z;*/
+			this.x = x; this.y = y; /*this.z = z;*/
 			data = ((SeatEntity)player.getRidingEntity()).getVehicle().getVehicleData();
 			switch(x){
 				case 0:{
@@ -560,7 +586,7 @@ public class VehicleInventoryGui {
 					break;
 				}
 				case 2:{
-					addSlotToContainer(new FuelSlot(fuelinv = new FuelInventory(), 0, 179, 50, data));
+					addSlotToContainer(new FuelInventory.FuelSlot(fuelinv = new FuelInventory(), 0, 179, 50, data));
 					//
 					for(int row = 0; row < 3; row++){
 						for(int col = 0; col < 9; col++){
@@ -593,9 +619,39 @@ public class VehicleInventoryGui {
 					//TODO
 					break;
 				}
+				case 6:{
+					invattr = data.getInventoryContainers().get(y).getAttributeData(InventoryAttributeData.class);
+					addSlotToContainer(new FluidInventory.FluidSlot(fluidinv = new FluidInventory(), 0, 179, 50, data.getInventoryContainers().get(y)));
+					//
+					for(int row = 0; row < 3; row++){
+						for(int col = 0; col < 9; col++){
+							addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 6 + col * 18, 48 + row * 18));
+						}
+					}
+					for(int col = 0; col < 9; col++){
+						addSlotToContainer(new Slot(player.inventory, col, 6 + col * 18, 104));
+					}
+					break;
+				}
 			}
 		}
 		
+		public String getFluidItemCapacity(){
+			if(!fluidinv.getStackInSlot(0).isEmpty()){
+				IFluidHandlerItem item = fluidinv.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+				return item.getTankProperties()[0].getContents() == null ? "0" : "" + (item.getTankProperties()[0].getCapacity() / 1000);
+			}
+			return " - - - ";
+		}
+
+		public String getFluidItemAmount(){
+			if(!fluidinv.getStackInSlot(0).isEmpty()){
+				IFluidHandlerItem item = fluidinv.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+				return item.getTankProperties()[0].getContents() == null ? "0" : "" + (item.getTankProperties()[0].getContents().amount / 1000);
+			}
+			return " - - - ";
+		}
+
 		@Override
 		public ItemStack transferStackInSlot(EntityPlayer player, int index){
 			if(x != 1){
@@ -652,6 +708,9 @@ public class VehicleInventoryGui {
 			if(coninv != null){
 				coninv.closeInventory(player);
 			}
+			if(fluidinv != null){
+				fluidinv.closeInventory(player);
+			}
 		}
 		
 		private long date = -1;
@@ -699,6 +758,42 @@ public class VehicleInventoryGui {
 					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(nbt), (EntityPlayerMP)player);
 				}
 			}
+			//
+			if((fluidinv != null && !fluidinv.isEmpty()) && date + 50 <= Time.getDate()){
+				date = Time.getDate();
+				ItemStack stack = fluidinv.getStackInSlot(0);
+				IFluidHandlerItem item = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+				if(fluidinv.isnew){
+					fluidinv.isnew = false;
+					fluidinv.lastaction = item.getTankProperties()[0].getContents() == null ? 1 : -1;
+				}
+				if(item.getTankProperties().length > 0){
+					if(fluidinv.lastaction == -1 && item.getTankProperties()[0].getContents() != null && item.getTankProperties()[0].getContents().amount > 0){
+						FluidActionResult result = FluidUtil.tryEmptyContainer(stack, invattr.getFluidTank(), 1000, player, true);
+						if(result.success){
+							fluidinv.setInventorySlotContents(0, result.getResult() == null ? ItemStack.EMPTY : result.getResult());
+						}
+					}
+					else if(fluidinv.lastaction == 1){
+						FluidActionResult result = FluidUtil.tryFillContainer(stack, invattr.getFluidTank(), 1000, player, true);
+						if(result.success){
+							fluidinv.setInventorySlotContents(0, result.getResult() == null ? ItemStack.EMPTY : result.getResult());
+						}
+					}
+					else{
+						//
+					}
+				}
+				if(!player.world.isRemote){
+					NBTTagCompound nbt = new NBTTagCompound();
+					nbt.setString("target_listener", "fvtm");
+					nbt.setString("cargo", "update_fluid_tank");
+					nbt.setInteger("state", invattr.getFluidTank().getFluidAmount());
+					nbt.setInteger("tank", y);
+					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(nbt), (EntityPlayerMP)player);
+				}
+			}
+			//
 		}
 		
 	}

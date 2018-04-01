@@ -4,7 +4,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
-import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
+import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.impl.root.GenericColorable;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;

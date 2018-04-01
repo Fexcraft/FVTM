@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
+import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
@@ -343,6 +344,13 @@ public class GuiHandler implements IGuiHandler {
 				}
 				case "constructor_9000_init":{
 					ConstructorMainGUI.processInitResponse(packet.nbt);
+					break;
+				}
+				case "update_fluid_tank":{
+					VehicleData data = ((SeatEntity)((EntityPlayer)objs[0]).getRidingEntity()).getVehicle().getVehicleData();
+					PartData part = data.getInventoryContainers().get(packet.nbt.getInteger("tank"));
+					InventoryAttributeData attr = part.getAttributeData(InventoryAttributeData.class);
+					attr.getFluidTank().getFluid().amount = packet.nbt.getInteger("state");
 					break;
 				}
 			}

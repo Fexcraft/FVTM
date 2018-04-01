@@ -2,9 +2,9 @@ package net.fexcraft.mod.fvtm.api;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
 import net.fexcraft.mod.fvtm.api.root.Colorable.ColorHolder;
+import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.api.root.Lockable;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.Textureable;

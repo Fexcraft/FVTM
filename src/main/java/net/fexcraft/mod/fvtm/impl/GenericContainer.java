@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.addons.gep.models.containers.GenericContainerModel;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Container;
-import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
+import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;

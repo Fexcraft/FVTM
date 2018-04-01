@@ -3,11 +3,13 @@ package net.fexcraft.mod.addons.gep.attributes;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
-import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
+import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
@@ -19,6 +21,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class InventoryAttribute implements Attribute {
 
@@ -27,6 +33,7 @@ public class InventoryAttribute implements Attribute {
 	private ArrayList<ItemStack> whitelist = new ArrayList<ItemStack>();
 	private ArrayList<ItemStack> blacklist = new ArrayList<ItemStack>();
 	private InventoryType type = InventoryType.ITEM;
+	private Fluid fluid = null;
 	
 	@Override
 	public ResourceLocation getRegistryName(){
@@ -59,6 +66,7 @@ public class InventoryAttribute implements Attribute {
 			});
 		}
 		type = InventoryType.fromString(JsonUtil.getIfExists(obj, "Inventory-Type", "item"));
+		fluid = obj.has("Inventory-FluidType") ? FluidRegistry.getFluid(obj.get("Inventory-FluidType").getAsString()) : null;
 	}
 
 	@Override
@@ -84,24 +92,50 @@ public class InventoryAttribute implements Attribute {
 	
 	public static class InventoryAttributeData implements AttributeData {
 		
+		private InventoryAttribute root;
 		private NonNullList<ItemStack> stacks;
+		private FluidTank fluidtank;
 		
 		public InventoryAttributeData(PartData data, Attribute attr){
-			stacks = NonNullList.<ItemStack>withSize(((InventoryAttribute)attr).size, ItemStack.EMPTY);
+			root = (InventoryAttribute)attr;
+			switch(root.type){
+				case ENERGY:
+					break;
+				case FLUID:
+					fluidtank = root.getFluidType() == null ? new FluidTank(root.size) : new FluidTank(root.getFluidType(), 0, root.size);
+					break;
+				case FUEL:
+					break;
+				case ITEM:
+					stacks = NonNullList.<ItemStack>withSize(root.size, ItemStack.EMPTY);
+					break;
+				default:
+					break;
+			}
 		}
 
 		@Override
 		public NBTTagCompound writeToNBT(PartData data, NBTTagCompound compound){
-			compound.setTag("inventory", ItemStackHelper.saveAllItems(new NBTTagCompound(), stacks));
+			if(root.type == InventoryType.ITEM){
+				compound.setTag("inventory", ItemStackHelper.saveAllItems(new NBTTagCompound(), stacks));
+			}
+			else if(root.type == InventoryType.FLUID){
+				compound.setTag("inventory", fluidtank.writeToNBT(new NBTTagCompound()));
+			}
 			return compound;
 		}
 
 		@Override
 		public AttributeData readFromNBT(PartData data, NBTTagCompound compound){
-			if(stacks == null){
-				stacks = NonNullList.<ItemStack>withSize(data.getPart().getAttribute(InventoryAttribute.class).getSize(), ItemStack.EMPTY);
+			if(root.type == InventoryType.ITEM){
+				if(stacks == null){
+					stacks = NonNullList.<ItemStack>withSize(data.getPart().getAttribute(InventoryAttribute.class).getSize(), ItemStack.EMPTY);
+				}
+				ItemStackHelper.loadAllItems(compound.getCompoundTag("inventory"), stacks);
 			}
-			ItemStackHelper.loadAllItems(compound.getCompoundTag("inventory"), stacks);
+			else if(root.type == InventoryType.FLUID){
+				fluidtank.readFromNBT(compound.getCompoundTag("inventory"));
+			}
 			return this;
 		}
 
@@ -117,6 +151,14 @@ public class InventoryAttribute implements Attribute {
 				}
 			}
 			return i == 0;
+		}
+		
+		public IFluidHandler getFluidHandler(){
+			return fluidtank;
+		}
+		
+		public FluidTank getFluidTank(){
+			return fluidtank;
 		}
 		
 	}
@@ -162,6 +204,10 @@ public class InventoryAttribute implements Attribute {
 	
 	public InventoryType getType(){
 		return type;
+	}
+	
+	public @Nullable Fluid getFluidType(){
+		return fluid;
 	}
 	
 }

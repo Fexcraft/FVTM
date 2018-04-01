@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
-import net.fexcraft.mod.fvtm.api.compatibility.InventoryType;
+import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.util.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;

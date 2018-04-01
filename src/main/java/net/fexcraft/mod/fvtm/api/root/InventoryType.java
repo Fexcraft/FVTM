@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.api.compatibility;
+package net.fexcraft.mod.fvtm.api.root;
 
 public enum InventoryType {
 	

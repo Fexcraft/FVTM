@@ -101,6 +101,8 @@ public class GenericVehicleData extends GenericColorable<VehicleData, Vehicle> i
 	@Override
 	public VehicleData readFromNBT(NBTTagCompound compound){
 		compound = compound.hasKey(FVTM.MODID + "_landvehicle") ? compound.getCompoundTag(FVTM.MODID + "_landvehicle") : compound.getCompoundTag(FVTM.MODID + "_vehicle");
+		super.readFromNBT(compound);
+		//
 		lights = compound.getInteger("LightsState");
 		//this.tank = compound.getDouble("FuelTank");
 		if(compound.hasKey("Parts")){

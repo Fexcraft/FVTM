@@ -35,9 +35,16 @@ public class GenericColorable<T, B> extends GenericLockable<T, B> implements Col
 	@Override
 	public T readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
-		this.primary = compound.hasKey("PrimaryRGB") ? new RGB(compound.getInteger("PrimaryRGB")) : new RGB(((ColorHolder)root).getDefPrimaryColor());
-		this.secondary = compound.hasKey("SecondaryRGB") ? new RGB(compound.getInteger("SecondaryRGB")) : new RGB(((ColorHolder)root).getDefSecondaryolor());
+		this.primary = compound.hasKey("PrimaryRGB") ? new RGB(compound.getInteger("PrimaryRGB")) : getColor(compound, "Primary");
+		this.secondary = compound.hasKey("SecondaryRGB") ? new RGB(compound.getInteger("SecondaryRGB")) : getColor(compound, "Secondary");
 		return null;
+	}
+
+	private RGB getColor(NBTTagCompound compound, String string){
+		if(compound.hasKey(string + "Red")){
+			return new RGB(compound.getByte(string + "Red"), compound.getByte(string + "Green"), compound.getByte(string + "Blue"));
+		}
+		return string.equals("Primary") ? new RGB(((ColorHolder)root).getDefPrimaryColor()) : new RGB(((ColorHolder)root).getDefSecondaryolor());
 	}
 
 	@Override

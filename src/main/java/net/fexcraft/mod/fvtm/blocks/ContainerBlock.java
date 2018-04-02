@@ -10,8 +10,6 @@ import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.Block;
@@ -24,7 +22,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -174,7 +171,7 @@ public class ContainerBlock extends BlockContainer {
 					player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_INVENTORY, world, corepos.getX(), corepos.getY(), corepos.getZ());
 				}
 				else if(te.getContainerData().getContainer().getInventoryType() == InventoryType.FLUID){
-					PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(te.getWorld().provider.getDimension(), pos, te.writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+					te.sendFluidTankUpdate(player);
 					player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_FLUID_INVENTORY, world, corepos.getX(), corepos.getY(), corepos.getZ());
 				}
 				else{

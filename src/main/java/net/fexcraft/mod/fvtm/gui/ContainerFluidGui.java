@@ -3,18 +3,14 @@ package net.fexcraft.mod.fvtm.gui;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
 import net.fexcraft.mod.fvtm.render.Renderer;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -61,7 +57,7 @@ public class ContainerFluidGui {
 			this.fontRenderer.drawString(Formatter.format("&6" + server.getFluidItemCapacity()), i + 171, j + 77, MapColor.SNOW.colorValue);
 			//this.fontRenderer.drawString((invattr.getFluidTank().getFluidAmount() / 1000) + " / " + (invattr.getFluidTank().getCapacity() / 1000), i + 9, j + 28, MapColor.SNOW.colorValue);
 			String fill = data.getFluidTank().getFluid() == null ? "empty" : data.getFluidTank().getFluid().getLocalizedName();
-			Renderer.drawTextOutlined(fontRenderer, (con / 1000) + " / " + (data.getFluidTank().getCapacity() / 1000) + " (" + fill + ")", i + 9, j + 28, MapColor.SNOW.colorValue);
+			Renderer.drawTextOutlined(fontRenderer, con + "mB / " + data.getFluidTank().getCapacity() + "mB (" + fill + ")", i + 9, j + 28, MapColor.SNOW.colorValue);
 		}
 		
 	}
@@ -102,7 +98,7 @@ public class ContainerFluidGui {
 		public String getFluidItemCapacity(){
 			if(!fluidinv.getStackInSlot(0).isEmpty()){
 				IFluidHandlerItem item = fluidinv.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-				return item.getTankProperties()[0].getContents() == null ? "0" : "" + (item.getTankProperties()[0].getCapacity() / 1000);
+				return item.getTankProperties()[0].getContents() == null ? "0" : "" + item.getTankProperties()[0].getCapacity();
 			}
 			return " - - - ";
 		}
@@ -110,7 +106,7 @@ public class ContainerFluidGui {
 		public String getFluidItemAmount(){
 			if(!fluidinv.getStackInSlot(0).isEmpty()){
 				IFluidHandlerItem item = fluidinv.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-				return item.getTankProperties()[0].getContents() == null ? "0" : "" + (item.getTankProperties()[0].getContents().amount / 1000);
+				return item.getTankProperties()[0].getContents() == null ? "0" : "" + item.getTankProperties()[0].getContents().amount;
 			}
 			return " - - - ";
 		}
@@ -123,7 +119,7 @@ public class ContainerFluidGui {
 			if((fluidinv != null && !fluidinv.isEmpty()) && date + 50 <= Time.getDate()){
 				date = Time.getDate();
 				ItemStack stack = fluidinv.getStackInSlot(0);
-				boolean wasempty = tile.getContainerData().getFluidTank().getFluid() == null;
+				//boolean wasempty = tile.getContainerData().getFluidTank().getFluid() == null;
 				IFluidHandlerItem item = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 				if(fluidinv.isnew){
 					fluidinv.isnew = false;
@@ -147,21 +143,13 @@ public class ContainerFluidGui {
 					}
 				}
 				if(!player.world.isRemote){
-					if(wasempty){
-						PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, tile.getPos(), tile.getUpdateTag()), (EntityPlayerMP)player);
-					}
-					else{
-						try{
-							NBTTagCompound nbt = new NBTTagCompound();
-							nbt.setString("from", "gui");
-							nbt.setString("task", "update_container_fluid_tank");
-							nbt.setInteger("state", tile.getContainerData().getFluidHandler().getTankProperties()[0].getContents() != null ? tile.getContainerData().getFluidHandler().getTankProperties()[0].getContents().amount : 0);
-							PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, tile.getPos(), nbt), (EntityPlayerMP)player);
-						}
-						catch(Exception e){
-							//
-						}
-					}
+					tile.sendFluidTankUpdate(player);
+				}
+			}
+			else{
+				if(date + 50 <= Time.getDate()){
+					date = Time.getDate();
+					tile.sendFluidTankUpdate(player);
 				}
 			}
 		}

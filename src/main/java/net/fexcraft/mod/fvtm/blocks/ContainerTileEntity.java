@@ -11,11 +11,13 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.api.common.LockableObject;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
+import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -295,16 +297,13 @@ public class ContainerTileEntity extends TileFluidHandler implements IPacketRece
 	
 	@Override
 	public void processClientPacket(PacketTileEntityUpdate packet){
-		if(packet.nbt.hasKey("from") && packet.nbt.getString("from").equals("gui")){
+		if(packet.nbt.hasKey("task")){
 			switch(packet.nbt.getString("task")){
 				case "update_container_fluid_tank":{
 					if(this.getContainerData().getContainer().getInventoryType() != InventoryType.FLUID){
 						return;
 					}
-					if(this.getContainerData().getFluidTank().getFluid() == null){
-						return;
-					}
-					this.getContainerData().getFluidTank().getFluid().amount = packet.nbt.getInteger("state");
+					this.getContainerData().getFluidTank().readFromNBT(packet.nbt.getCompoundTag("state"));
 					break;
 				}
 			}
@@ -312,6 +311,16 @@ public class ContainerTileEntity extends TileFluidHandler implements IPacketRece
 		else{
 			this.readFromNBT(packet.nbt);
 		}
+	}
+
+	public void sendFluidTankUpdate(EntityPlayer player){
+		if(player == null){
+			return;
+		}
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setString("task", "update_container_fluid_tank");
+		nbt.setTag("state", this.getContainerData().getFluidTank().writeToNBT(new NBTTagCompound()));
+		PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
 	}
     
 }

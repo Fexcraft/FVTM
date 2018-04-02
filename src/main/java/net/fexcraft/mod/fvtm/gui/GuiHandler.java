@@ -362,8 +362,8 @@ public class GuiHandler implements IGuiHandler {
 					}
 					else{
 						InventoryAttributeData attr = part.getAttributeData(InventoryAttributeData.class);
-						if(attr.getFluidTank().getFluid() != null){
-							attr.getFluidTank().getFluid().amount = packet.nbt.getInteger("state");
+						if(attr.getFluidTank() != null){
+							attr.getFluidTank().readFromNBT(packet.nbt.getCompoundTag("state"));
 						}
 					}
 					break;

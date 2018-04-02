@@ -216,7 +216,7 @@ public class VehicleInventoryGui {
 					this.fontRenderer.drawString(Formatter.format("&6" + server.getFluidItemCapacity()), i + 171, j + 77, MapColor.SNOW.colorValue);
 					//this.fontRenderer.drawString((invattr.getFluidTank().getFluidAmount() / 1000) + " / " + (invattr.getFluidTank().getCapacity() / 1000), i + 9, j + 28, MapColor.SNOW.colorValue);
 					String fill = invattr.getFluidTank().getFluid() == null ? "empty" : invattr.getFluidTank().getFluid().getLocalizedName();
-					Renderer.drawTextOutlined(fontRenderer, (con / 1000) + " / " + (invattr.getFluidTank().getCapacity() / 1000) + " (" + fill + ")", i + 9, j + 28, MapColor.SNOW.colorValue);
+					Renderer.drawTextOutlined(fontRenderer, con + "mB / " + invattr.getFluidTank().getCapacity() + "mB (" + fill + ")", i + 9, j + 28, MapColor.SNOW.colorValue);
 					break;
 				}
 			}
@@ -641,7 +641,7 @@ public class VehicleInventoryGui {
 		public String getFluidItemCapacity(){
 			if(!fluidinv.getStackInSlot(0).isEmpty()){
 				IFluidHandlerItem item = fluidinv.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-				return item.getTankProperties()[0].getContents() == null ? "0" : "" + (item.getTankProperties()[0].getCapacity() / 1000);
+				return item.getTankProperties()[0].getContents() == null ? "0" : "" + item.getTankProperties()[0].getCapacity();
 			}
 			return " - - - ";
 		}
@@ -649,7 +649,7 @@ public class VehicleInventoryGui {
 		public String getFluidItemAmount(){
 			if(!fluidinv.getStackInSlot(0).isEmpty()){
 				IFluidHandlerItem item = fluidinv.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-				return item.getTankProperties()[0].getContents() == null ? "0" : "" + (item.getTankProperties()[0].getContents().amount / 1000);
+				return item.getTankProperties()[0].getContents() == null ? "0" : "" + item.getTankProperties()[0].getContents().amount;
 			}
 			return " - - - ";
 		}
@@ -792,7 +792,7 @@ public class VehicleInventoryGui {
 					nbt.setString("target_listener", "fvtm");
 					nbt.setString("cargo", "update_fluid_tank");
 					nbt.setBoolean("wasempty", wasempty);
-					nbt.setInteger("state", invattr.getFluidTank().getFluidAmount());
+					nbt.setTag("state", invattr.getFluidTank().writeToNBT(new NBTTagCompound()));
 					nbt.setInteger("tank", y);
 					PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(nbt), (EntityPlayerMP)player);
 				}

@@ -1,0 +1,12 @@
+{
+	"RegistryName": "hcp:medium_fluid",
+	"Addon": "fvtm:hcp",
+	"ContainerType": "MEDIUM",
+	"ModelFile": "net.fexcraft.mod.addons.hcp.models.container.StandardFluidContainer.class",
+	"FullName": "Standard Medium Fluid Container",
+	"Textures":[
+		"hcp:textures/containers/standard_fluid.png"
+	],
+	"InventorySize": 864000,
+	"InventoryType": "fluid"
+}

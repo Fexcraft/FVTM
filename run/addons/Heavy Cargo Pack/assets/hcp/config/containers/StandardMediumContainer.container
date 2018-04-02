@@ -1,11 +1,11 @@
 {
-	"RegistryName": "hcp:container_medium",
+	"RegistryName": "hcp:medium",
 	"Addon": "fvtm:hcp",
 	"ContainerType": "MEDIUM",
 	"ModelFile": "net.fexcraft.mod.addons.hcp.models.container.StandardMediumContainer.class",
 	"FullName": "Standard Medium Container",
 	"Textures":[
-		"hcp:textures/containers/default_container.png"
+		"hcp:textures/containers/standard_medium.png"
 	],
 	"InventorySize": 729,
 	"InventoryType": "item"

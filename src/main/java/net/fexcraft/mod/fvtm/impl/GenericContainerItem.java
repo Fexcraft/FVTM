@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -14,6 +15,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -76,7 +78,12 @@ public class GenericContainerItem extends Item implements ContainerItem {
 				tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
 				tooltip.add(Formatter.format("&6Model by:"));
 				for(String string : con.getContainer().getModel().creators){
-					tooltip.add(Formatter.format("&7- &3" + string));
+					try{
+						tooltip.add(Formatter.format("&7- &3" + Static.getPlayerNameByUUID(UUID.fromString(string))));
+					}
+					catch(Exception e){
+						tooltip.add(Formatter.format("&7- &3" + string));
+					}
 				}
 			}
 		}

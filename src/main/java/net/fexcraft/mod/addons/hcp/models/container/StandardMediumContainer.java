@@ -18,6 +18,7 @@ public class StandardMediumContainer extends ContainerModel<ContainerData> {
 	int textureY = 512;
 
 	public StandardMediumContainer(){
+		this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
 		bodyColoredPrimary = new ModelRendererTurbo[91];
 		bodyColoredPrimary[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
 		bodyColoredPrimary[1] = new ModelRendererTurbo(this, 57, 1, textureX, textureY); // Box 1

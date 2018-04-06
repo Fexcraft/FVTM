@@ -119,13 +119,13 @@ public class ContainerTileEntity extends TileFluidHandler implements IPacketRece
 
     @SuppressWarnings("unchecked") @Override @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
-        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing.getAxis().isVertical() && !this.isLocked()){
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
         	if(itemStackHandler == null){
         		itemStackHandler = new ItemStackHandler(getCore().container.getInventory());
         	}
             return (T)itemStackHandler;
         }
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
         	return (T)getCore().container.getFluidHandler();
         }
         return super.getCapability(capability, facing);

@@ -9,6 +9,7 @@ import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -128,6 +129,11 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 	@SideOnly(Side.CLIENT)
     public double getMaxRenderDistanceSquared(){
         return 512D;
+    }
+	
+	@SideOnly(Side.CLIENT) @Override
+    public AxisAlignedBB getRenderBoundingBox(){
+        return INFINITE_EXTENT_AABB;
     }
 	
 }

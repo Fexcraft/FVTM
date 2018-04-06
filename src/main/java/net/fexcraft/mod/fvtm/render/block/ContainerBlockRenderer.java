@@ -9,10 +9,9 @@ import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
-public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerTileEntity> {
+public class ContainerBlockRenderer extends TESRBase<ContainerTileEntity> {
 	
 	@Override
 	public void render(ContainerTileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){

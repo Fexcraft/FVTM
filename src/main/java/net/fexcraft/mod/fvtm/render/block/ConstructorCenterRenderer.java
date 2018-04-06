@@ -13,10 +13,9 @@ import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
-public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstructorCenterEntity> {
+public class ConstructorCenterRenderer extends TESRBase<ConstructorCenterEntity> {
 	
 	private static final ModelConstructorCenter model = new ModelConstructorCenter();
 	

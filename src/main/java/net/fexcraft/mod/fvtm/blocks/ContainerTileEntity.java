@@ -121,7 +121,7 @@ public class ContainerTileEntity extends TileFluidHandler implements IPacketRece
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
         	if(itemStackHandler == null){
-        		itemStackHandler = new ItemStackHandler(getCore().container.getInventory());
+        		itemStackHandler = new ItemStackHandler(getCore().container.getContainer(), getCore().container.getInventory());
         	}
             return (T)itemStackHandler;
         }

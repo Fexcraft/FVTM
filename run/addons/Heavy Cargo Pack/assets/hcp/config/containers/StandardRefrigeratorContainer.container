@@ -1,0 +1,13 @@
+{
+	"RegistryName": "hcp:medium_refrigerator",
+	"Addon": "fvtm:hcp",
+	"ContainerType": "MEDIUM",
+	"ModelFile": "net.fexcraft.mod.addons.hcp.models.container.StandardRefrigeratorContainer.class",
+	"FullName": "Standard Medium Refrigerator Container",
+	"Textures":[
+		"hcp:textures/containers/standard_medium_refrigerator.png"
+	],
+	"InventorySize": 600,
+	"InventoryType": "item",
+	"InventoryContentType": "food"
+}

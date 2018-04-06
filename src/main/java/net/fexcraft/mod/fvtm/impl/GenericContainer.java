@@ -43,7 +43,8 @@ public class GenericContainer implements Container {
 	@SideOnly(Side.CLIENT) private ContainerModel<ContainerData> model;
 	private List<ResourceLocation> textures;
 	private String[] description;
-	private String name, contenttype;
+	private String name;
+	public String contenttype;
 	private int inventory;
 	private InventoryType invtype;
 	private ArrayList<ItemStack> whitelist = new ArrayList<ItemStack>();

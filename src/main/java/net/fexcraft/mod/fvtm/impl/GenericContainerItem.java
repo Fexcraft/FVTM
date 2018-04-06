@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
+import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
@@ -71,8 +72,11 @@ public class GenericContainerItem extends Item implements ContainerItem {
 			for(String s : con.getContainer().getDescription()){
 				tooltip.add(Formatter.format(s));
 			}
-			tooltip.add(Formatter.format("&9Capacity: &7" + (con.getContainer().getInventorySize() / 1000) + " " + con.getContainer().getInventoryType().getUnitsName()));
-			tooltip.add(Formatter.format("&9Content: &7" + (con.getFluidTank() == null || con.getFluidTank().getFluid() == null ? "empty" : con.getFluidTank().getFluidAmount() + "mB " + con.getFluidTank().getFluid().getLocalizedName())));
+			tooltip.add(Formatter.format("&9Capacity: &7" + (con.getContainer().getInventoryType() == InventoryType.FLUID ? con.getContainer().getInventorySize() / 1000 : con.getContainer().getInventorySize()) + " " + con.getContainer().getInventoryType().getUnitsName()));
+			tooltip.add(Formatter.format("&9Content: &7" + (con.getFluidTank() == null || con.getFluidTank().getFluid() == null ? con.getInventory() == null ? "empty" : con.getInventory().stream().filter(is -> is != null && !is.isEmpty()).count() : con.getFluidTank().getFluidAmount() + "mB " + con.getFluidTank().getFluid().getLocalizedName())));
+			if(con.getContainer() instanceof GenericContainer && ((GenericContainer)con.getContainer()).contenttype != null){
+				tooltip.add(Formatter.format("&9Content Group: &7" + ((GenericContainer)con.getContainer()).contenttype));
+			}
 			//tooltip.add(Formatter.format("&9LoadType: &7" + con.getContainer().getInventoryType().getName()));
 			tooltip.add(Formatter.format("&9Selected Texture: &7" + con.getSelectedTexture()));
 			if(con.getContainer().getModel() != null && con.getContainer().getModel().creators.size() > 0){

@@ -20,6 +20,7 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -369,13 +370,13 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
 		return new Vec3d(vehicle.posX + rel.x, vehicle.posY + rel.y, vehicle.posZ + rel.z);
 	}*/
 	
-	protected void lightOn(Entity ent){
-        int i = ent.getBrightnessForRender(), j = i % 65536, k = i / 65536;
+	public static void lightOn(Entity ent){
+        int i = ent == null ? MapColor.WHITE_STAINED_HARDENED_CLAY.colorValue : ent.getBrightnessForRender(), j = i % 65536, k = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
 	}
-	protected void lightOff(Entity ent){
+	public static void lightOff(Entity ent){
 		GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);

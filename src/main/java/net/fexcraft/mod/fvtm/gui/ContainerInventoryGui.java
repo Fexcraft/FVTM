@@ -140,7 +140,7 @@ public class ContainerInventoryGui {
 					if(index >= tile.getContainerData().getContainer().getInventorySize()){
 						break;
 					}
-					addSlotToContainer(new TempInventorySlot(container, index, 6 + col * 18, 20 + row * 18, null));
+					addSlotToContainer(new TempInventorySlot(container, index, 6 + col * 18, 20 + row * 18, null, tile.getContainerData()));
 				}
 			}
 			//

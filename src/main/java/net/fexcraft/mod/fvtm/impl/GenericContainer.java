@@ -16,8 +16,17 @@ import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemArrow;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
@@ -34,7 +43,7 @@ public class GenericContainer implements Container {
 	@SideOnly(Side.CLIENT) private ContainerModel<ContainerData> model;
 	private List<ResourceLocation> textures;
 	private String[] description;
-	private String name;
+	private String name, contenttype;
 	private int inventory;
 	private InventoryType invtype;
 	private ArrayList<ItemStack> whitelist = new ArrayList<ItemStack>();
@@ -81,6 +90,9 @@ public class GenericContainer implements Container {
 					e.printStackTrace();
 				}
 			});
+		}
+		if(obj.has("InventoryContentType")){
+			contenttype = obj.get("InventoryContentType").getAsString();
 		}
 		//
 	}
@@ -140,9 +152,54 @@ public class GenericContainer implements Container {
 	public boolean isItemValid(ItemStack stack){
 		Print.debug("CHECKING");
 		Print.debug(stack.toString());
+		if(contenttype != null){
+			switch(contenttype){
+				case "food":{
+					return stack.getItem() instanceof ItemFood;
+				}
+				case "wood": case "planks":{
+					if(stack.getItem() instanceof ItemBlock){
+						@SuppressWarnings("deprecation")
+						IBlockState block = ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getMetadata());
+						return block.getMaterial() == Material.WOOD;
+					}
+					return false;
+				}
+				case "iron": case "anvil":{
+					if(stack.getItem() instanceof ItemBlock){
+						@SuppressWarnings("deprecation")
+						IBlockState block = ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getMetadata());
+						return block.getMaterial() == Material.ANVIL || block.getMaterial() == Material.IRON;
+					}
+					return false;
+				}
+				case "plants":{
+					if(stack.getItem() instanceof ItemBlock){
+						@SuppressWarnings("deprecation")
+						IBlockState block = ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getMetadata());
+						return block.getMaterial() == Material.CACTUS || block.getMaterial() == Material.CORAL || block.getMaterial() == Material.GRASS || block.getMaterial() == Material.LEAVES || block.getMaterial() == Material.PLANTS || block.getMaterial() == Material.SPONGE || block.getMaterial() == Material.VINE;
+					}
+					return false;
+				}
+				case "tools": case "swords": case "weapons": case "armor": {
+					return stack.getItem() instanceof ItemTool || stack.getItem() instanceof ItemSword || stack.getItem() instanceof ItemBow || stack.getItem() instanceof ItemArrow || stack.getItem() instanceof ItemArmor;
+				}
+				case "rocks": case "sand": {
+					if(stack.getItem() instanceof ItemBlock){
+						@SuppressWarnings("deprecation")
+						IBlockState block = ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getMetadata());
+						return block.getMaterial() == Material.GROUND || block.getMaterial() == Material.ROCK || block.getMaterial() == Material.SAND || block.getMaterial() == Material.TNT;
+					}
+					return false;
+				}
+				default:{
+					return false;
+				}
+			}
+		}
 		for(ItemStack itemstack : blacklist){
 			if(stack.getItem().getRegistryName().equals(itemstack.getItem().getRegistryName())){
-				if(itemstack.getMetadata() == 0 || stack.getItemDamage() == itemstack.getItemDamage()){
+				if(ItemStack.areItemStacksEqual(itemstack, stack)){
 					return false;
 				}
 			}
@@ -152,7 +209,7 @@ public class GenericContainer implements Container {
 			boolean found = false;
 			for(ItemStack itemstack : whitelist){
 				if(stack.getItem().getRegistryName().equals(itemstack.getItem().getRegistryName())){
-					if(itemstack.getMetadata() == 0 || stack.getItemDamage() == itemstack.getItemDamage()){
+					if(ItemStack.areItemStacksEqual(itemstack, stack) /*itemstack.getMetadata() == 0 || stack.getItemDamage() == itemstack.getItemDamage()*/){
 						found = true;
 						break;
 					}

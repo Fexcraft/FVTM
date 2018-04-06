@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
@@ -12,11 +13,13 @@ import net.minecraft.item.ItemStack;
 
 public class TempInventorySlot extends Slot {
 	
+	private ContainerData containerdata;
 	private PartData partdata;
 
-	public TempInventorySlot(IInventory inventory, int index, int xPosition, int yPosition, PartData data){
+	public TempInventorySlot(IInventory inventory, int index, int xPosition, int yPosition, PartData data, ContainerData condata){
 		super(inventory, index, xPosition, yPosition);
 		this.partdata = data;
+		this.containerdata = condata;
 	}
 	
 	@Override
@@ -33,7 +36,7 @@ public class TempInventorySlot extends Slot {
 				return false;
 			}
 		}
-        return partdata == null ? true : partdata.getPart().getAttribute(InventoryAttribute.class).isItemValid(stack);
+        return partdata == null ? containerdata == null ? true : containerdata.getContainer().isItemValid(stack) : partdata.getPart().getAttribute(InventoryAttribute.class).isItemValid(stack);
     }
 	
 }

@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
@@ -902,7 +903,7 @@ public class StandardRefrigeratorContainer extends ContainerModel<ContainerData>
 		flipAll();
 	}
 	
-	private static RGB color = new RGB(128, 128, 128, 0.45f);
+	private static RGB color = new RGB(128, 128, 128, 0.67f);
 	
 	@Override
 	public void render(ContainerData data){
@@ -933,9 +934,9 @@ public class StandardRefrigeratorContainer extends ContainerModel<ContainerData>
 			GlStateManager.popMatrix();
 		}
 		//
-		//PartModel.lightOff(null);
+		PartModel.lightOff(null);
 		render(glow);
-		//PartModel.lightOn(null);
+		PartModel.lightOn(null);
 	}
 	
 }

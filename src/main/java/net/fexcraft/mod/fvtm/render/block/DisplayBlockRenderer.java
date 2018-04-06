@@ -9,10 +9,12 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+
 import org.lwjgl.opengl.GL11;
 
 @fTESR
-public class DisplayBlockRenderer extends TESRBase<DisplayBlockEntity> {
+public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayBlockEntity> {
 	
 	@Override
 	public void render(DisplayBlockEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){

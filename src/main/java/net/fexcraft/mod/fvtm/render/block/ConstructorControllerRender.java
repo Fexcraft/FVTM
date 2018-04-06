@@ -8,9 +8,10 @@ import net.fexcraft.mod.fvtm.model.block.ModelConstructorController;
 import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
-public class ConstructorControllerRender extends TESRBase<ConstructorControllerEntity> {
+public class ConstructorControllerRender extends TileEntitySpecialRenderer<ConstructorControllerEntity> {
 	
 	private static final ModelConstructorController model = new ModelConstructorController();
 	private static final RGB green = new RGB(161, 212, 144), orange = new RGB(224, 152, 36);

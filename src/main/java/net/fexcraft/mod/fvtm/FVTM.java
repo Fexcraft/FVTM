@@ -8,6 +8,8 @@ import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packets.*;
+import net.fexcraft.mod.fvtm.util.rail.RailMap;
+import net.fexcraft.mod.fvtm.util.rail.RailMapCapability;
 import net.fexcraft.mod.lib.crafting.RecipeRegistry;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
@@ -19,6 +21,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -102,6 +105,8 @@ public class FVTM {
 		//check if addons have updates
 		RESOURCES.checkForUpdates();
 		FvtmPermissions.register();
+		//
+		CapabilityManager.INSTANCE.register(RailMapCapability.class, new RailMap.Storage(), new RailMap.Callable());
 	}
 	
 	@Mod.EventHandler

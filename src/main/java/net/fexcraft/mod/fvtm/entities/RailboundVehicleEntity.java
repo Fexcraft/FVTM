@@ -18,12 +18,12 @@ public class RailboundVehicleEntity extends Entity {
 	}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound compound) {
+	protected void readEntityFromNBT(NBTTagCompound compound){
 		//TODO
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound compound) {
+	protected void writeEntityToNBT(NBTTagCompound compound){
 		//TODO
 	}
 	

@@ -2,11 +2,11 @@ package net.fexcraft.mod.fvtm.util.rail;
 
 import java.util.TreeMap;
 
+import net.fexcraft.mod.fvtm.blocks.RailTileEntity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -95,7 +95,7 @@ public class RailMap implements ICapabilitySerializable<NBTBase> {
 	
 	public static class Implementation implements RailMapCapability {
 		
-		private TreeMap<BlockPos, RailPiece> railmap = new TreeMap<BlockPos, RailPiece>();
+		private TreeMap<Vec3d, RailPiece> railmap = new TreeMap<Vec3d, RailPiece>();
 		private World world;
 
 		@Override
@@ -120,16 +120,33 @@ public class RailMap implements ICapabilitySerializable<NBTBase> {
 		}
 
 		@Override
-		public Vec3d getNearestRailPosition(Vec3d vehpos){
-			// TODO Auto-generated method stub
+		public RailPiece getNearestRailPosition(Vec3d vehpos){
+			for(RailPiece rail : railmap.values()){
+				if((vehpos.x <= rail.own.x + 0.2 || vehpos.x >= rail.own.x - 0.2)
+					&& (vehpos.y <= rail.own.y + 0.2 || vehpos.y >= rail.own.y - 0.2)
+					&& (vehpos.z <= rail.own.z + 0.2 || vehpos.z >= rail.own.z - 0.2)){
+					return rail;
+				}
+			}
 			return null;
 		}
 
 		@Override
-		public Vec3d getSupposedPosition(Vec3d vehpos, double expected_distance, boolean direction){
-			// TODO Auto-generated method stub
-			return null;
+		public RailPiece getNextRailPosition(RailPiece curr, RailPiece prev){
+			return railmap.get(curr.next.equals(prev.own) ? curr.prev : curr.next);
 		}
+
+		@Override
+		public RailPiece getRailPositionAt(Vec3d pos){
+			return railmap.get(pos);
+		}
+
+		@Override
+		public void updateRailPositions(RailTileEntity railte){
+			railmap.entrySet().removeIf(entry -> entry.getKey().equals(railte.asVec3d()));
+			railte.getRailPositions().forEach(rail -> railmap.put(railte.asVec3d(), rail));
+		}
+		
 		
 	}
 	

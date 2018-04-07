@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util.rail;
 
+import net.fexcraft.mod.fvtm.blocks.RailTileEntity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
@@ -16,8 +17,12 @@ public interface RailMapCapability {
 	
 	public World getWorld();
 	
-	public Vec3d getNearestRailPosition(Vec3d vehpos);
+	public RailPiece getNearestRailPosition(Vec3d vehpos);
 	
-	public Vec3d getSupposedPosition(Vec3d vehpos, double expected_distance, boolean direction);
+	public RailPiece getNextRailPosition(RailPiece curr, RailPiece prev);
+
+	public RailPiece getRailPositionAt(Vec3d prev);
+
+	public void updateRailPositions(RailTileEntity railte);
 	
 }

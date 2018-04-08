@@ -82,7 +82,7 @@ public class ContainerStatusListener implements SignCapability.Listener {
 					tileentity.signText[1] = new TextComponentString(data.getFluidTank().getFluid() != null ? "F: " + data.getFluidTank().getFluid().getLocalizedName() : "no fluid");
 				}
 				tileentity.signText[2] = new TextComponentString(data.getFluidTank() == null || data.getFluidTank().getFluid() == null ? data.getInventory() == null ? "empty" : data.getInventory().stream().filter(is -> is != null && !is.isEmpty()).count() + " stacks" : data.getFluidTank().getFluidAmount() + "mB");
-				tileentity.signText[3] = new TextComponentString("Capacity: " + (data.getContainer().getInventoryType() == InventoryType.FLUID ? (data.getContainer().getInventorySize() / 1000) + "B" : data.getContainer().getInventorySize()));
+				tileentity.signText[3] = new TextComponentString("Capacity: " + (data.getContainer().getInventoryType() == InventoryType.FLUID ? (data.getContainer().getInventorySize() / 1000) + "b" : data.getContainer().getInventorySize()));
 			}
 		}
 		else{

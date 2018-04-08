@@ -116,6 +116,9 @@ public class ContainerFluidGui {
 		@Override
 		public void detectAndSendChanges(){
 			super.detectAndSendChanges();
+			if(tile.getWorld().isRemote){
+				return;
+			}
 			if((fluidinv != null && !fluidinv.isEmpty()) && date + 50 <= Time.getDate()){
 				date = Time.getDate();
 				ItemStack stack = fluidinv.getStackInSlot(0);

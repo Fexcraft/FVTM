@@ -36,6 +36,9 @@ public class ContainerStatusListener implements SignCapability.Listener {
 
 	@Override
 	public boolean onPlayerInteract(SignCapability cap, PlayerInteractEvent event, IBlockState state, TileEntitySign tileentity){
+		if(event.getWorld().isRemote){
+			return false;
+		}
 		if(!active){
 			if(tileentity.signText[0].getUnformattedText().equals("[fvtm-container]")){
 				TileEntity te = event.getWorld().getTileEntity(getPosAtBack(state, tileentity));

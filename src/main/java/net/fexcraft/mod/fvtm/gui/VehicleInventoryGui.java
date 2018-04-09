@@ -656,10 +656,13 @@ public class VehicleInventoryGui {
 
 		@Override
 		public ItemStack transferStackInSlot(EntityPlayer player, int index){
-			if(x != 1){
-				return super.transferStackInSlot(player, index);
+			int slots = 0;
+			switch(x){
+				case 1:{ slots = 60; break; }
+				case 2:{ slots =  1; break; }
+				case 4:{ slots =  2; break; }
+				case 6:{ slots =  1; break; }
 			}
-			int slots = 60;
 			ItemStack itemstack = ItemStack.EMPTY;
 	        Slot slot = this.inventorySlots.get(index);
 	        if(slot != null && slot.getHasStack()){

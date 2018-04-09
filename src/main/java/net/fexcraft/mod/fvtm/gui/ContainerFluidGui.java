@@ -113,6 +113,33 @@ public class ContainerFluidGui {
 		
 		private long date = 0;
 		
+
+		
+		@Override
+		public ItemStack transferStackInSlot(EntityPlayer player, int index){
+			ItemStack itemstack = ItemStack.EMPTY;
+	        Slot slot = this.inventorySlots.get(index);
+	        if(slot != null && slot.getHasStack()){
+	            ItemStack itemstack1 = slot.getStack();
+	            itemstack = itemstack1.copy();
+	            if(index < 1){
+	                if(!this.mergeItemStack(itemstack1, 1, this.inventorySlots.size(), true)){
+	                    return ItemStack.EMPTY;
+	                }
+	            }
+	            else if(!this.mergeItemStack(itemstack1, 0, 1, false)){
+	                return ItemStack.EMPTY;
+	            }
+	            if(itemstack1.isEmpty()){
+	                slot.putStack(ItemStack.EMPTY);
+	            }
+	            else{
+	                slot.onSlotChanged();
+	            }
+	        }
+	        return itemstack;
+	    }
+		
 		@Override
 		public void detectAndSendChanges(){
 			super.detectAndSendChanges();

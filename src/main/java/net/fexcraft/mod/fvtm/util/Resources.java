@@ -550,7 +550,7 @@ public class Resources {
 					}
 				}
 				else{
-					JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/parts/", ".container");
+					JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/containers/", ".container");
 					for(JsonElement elm : array){
 						GenericContainer con = new GenericContainer(elm.getAsJsonObject());
 						event.getRegistry().register(con);

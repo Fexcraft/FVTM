@@ -16,6 +16,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -30,10 +31,12 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 	private FluidTank tank;
 	public Axis axis = null;
 	
-	public PipeTileEntity(){
+	public PipeTileEntity(World world, int meta){
+		this.world = world;
 		for(int i = 0; i < conn.length; i++){
 			conn[i] = false; mode[i] = false;
 		}
+		tank = new FluidTank(PipeType.byMetadata(meta).getTankSize());
 	}
 	
 	@Override
@@ -56,7 +59,8 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		super.writeToNBT(compound);
 		BitList list = new BitList(conn);
 		list.integrate(mode, 6);
-		compound.setInteger("state", list.toInt());
+		compound.setInteger("State", list.toInt());
+		compound.setTag("FluidTank", tank.writeToNBT(new NBTTagCompound()));
 		return compound;
 	}
 	
@@ -64,10 +68,11 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 	public void readFromNBT(NBTTagCompound compound){
 		super.readFromNBT(compound);
 		BitList list = new BitList();
-		list.set(compound.getInteger("state"));
+		list.set(compound.getInteger("State"));
 		conn = list.shorten(6, 0);
 		mode = list.shorten(6, 6);
 		checkForAxis();
+		tank.readFromNBT(compound.getCompoundTag("FluidTank"));
 	}
 
 	private void checkForAxis(){
@@ -159,9 +164,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 
 	@Override
 	public void update(){
-		if(tank == null){
-			tank = new FluidTank(PipeType.byMetadata(getBlockMetadata()).getTankSize());
-		}
+		if(world.isRemote){ return; }
 		int transferred = 0, filled = 0;
 		PipeType type = PipeType.byMetadata(getBlockMetadata());
 		for(int i : order){
@@ -172,21 +175,26 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 				if(filled >= type.getTPS() || handler.getTankProperties().length == 0 || !handler.getTankProperties()[0].canDrain() || handler.getTankProperties()[0].getContents() == null || (tank.getFluid() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid())){ continue; }
 				int atd = type.getTPS() - filled;
 				if(atd == 0){ continue; }
-				FluidStack drained = handler.drain(atd, true);
-				filled += drained.amount;
+				FluidStack drained = handler.drain(atd, false);
+				if(drained == null || drained.amount == 0){
+					continue;
+				}
+				filled += handler.drain(drained, true).amount;
 				tank.fill(drained, true);
 			}
 			else{
-				if(transferred >= type.getTPS() || handler.getTankProperties().length == 0){ continue; }
-				if(!handler.getTankProperties()[0].canFill() || tank.getFluid() == null){ continue; }
-				if(handler.getTankProperties()[0].getContents() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid()){ continue; }
+				if(transferred >= type.getTPS() || handler.getTankProperties().length == 0 || !handler.getTankProperties()[0].canFill() || tank.getFluid() == null || handler.getTankProperties()[0].getContents() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid()){ continue; }
 				int atf = type.getTPS() - transferred;
 				if(atf == 0){ continue; }
-				int fill = handler.fill(tank.drain(atf, false), true);
+				FluidStack drain = tank.drain(atf, false);
+				if(drain == null){ continue; }
+				int fill = handler.fill(drain, true);
 				FluidStack act = tank.drain(fill, true);
 				transferred += act == null ? 0 : act.amount;
 			}
 		}
+		//Debug-Only sync
+		//ApiUtil.sendTileEntityUpdatePacket(this, writeToNBT(new NBTTagCompound()), 256);
 	}
 
 	public FluidTank getTank(){

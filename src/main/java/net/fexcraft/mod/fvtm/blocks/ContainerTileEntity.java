@@ -108,10 +108,10 @@ public class ContainerTileEntity extends TileFluidHandler implements IPacketRece
 	
 	@Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
-        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
+        if(facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
             return facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked() && getCore().container.getContainer().getInventoryType() == InventoryType.ITEM && getCore().container.getInventory().size() > 0;
         }
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        if(facing != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
         	return facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked() && getCore().container.getContainer().getInventoryType() == InventoryType.FLUID;
         }
         return super.hasCapability(capability, facing);

@@ -53,8 +53,8 @@ public class PipeBlock extends BlockContainer {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta){
-		return new PipeTileEntity();
+	public TileEntity createNewTileEntity(World world, int meta){
+		return new PipeTileEntity(world, meta);
 	}
 	
     @Override
@@ -119,7 +119,7 @@ public class PipeBlock extends BlockContainer {
     
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-		if(!world.isRemote || hand == EnumHand.OFF_HAND){
+		if(!world.isRemote && hand != EnumHand.OFF_HAND){
 			PipeTileEntity te = (PipeTileEntity)world.getTileEntity(pos);
 			if(te == null){
 				Print.chat(player, "No TileEntity.");

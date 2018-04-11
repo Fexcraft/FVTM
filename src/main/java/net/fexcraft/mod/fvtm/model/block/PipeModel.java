@@ -118,7 +118,6 @@ public class PipeModel extends Model<PipeTileEntity> {
 					north.render();
 					south.render();
 					break;
-				default: return;
 			}
 		}
 		else{

@@ -16,16 +16,17 @@ public class PipeModel extends Model<PipeTileEntity> {
 	private ModelRendererTurbo[] array;
 	
 	//cause people are skeptic about round things.
-	private static final int segments = 8;
+	private static final int segments = 16;//TODO add config option for this;
 	private static final int tx = 16, ty = 16;
+	private static final float sl = 1f, rd = 2.4f, lg = 1f;
 	private final RGB blue;
 	private final RGB red;
 
 	public PipeModel(){
 		blue = new RGB(RGB.BLUE);
-		blue.alpha = 0.5f;
+		blue.alpha = 0.18f;
 		red = new RGB(RGB.RED);
-		red.alpha = 0.5f;
+		red.alpha = 0.18f;
 		//
 		bottom = new ModelRendererTurbo(this, 0, 0, tx, ty);
 		 bottom.addCylinder(0, -8F, 0, 2, 8, segments, 1f, 1f, ModelRendererTurbo.MR_BOTTOM);
@@ -61,14 +62,33 @@ public class PipeModel extends Model<PipeTileEntity> {
 		  core.setRotationPoint(-2, -2, -2);
 		//
 		bottom_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
-		 bottom_.addCylinder(0, -1, 0, 3, 1, segments, 1f, 1f, ModelRendererTurbo.MR_BOTTOM);
+		 bottom_.addCylinder(0, -1, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_BOTTOM);
 		  bottom_.setRotationPoint(0, 0, 0);
 		//
 		top_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
-		 top_.addCylinder(0, -16, 0, 3, 1, segments, 1f, 1f, ModelRendererTurbo.MR_BOTTOM);
+		 top_.addCylinder(0, -16, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_BOTTOM);
 		  top_.setRotationPoint(0, 0, 0);
 		//
-		array = new ModelRendererTurbo[]{bottom, top, north, south, west, east, bottom_, top_, north_, south_, west_, east_};
+		north_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
+		 north_.flip = true;
+		  north_.addCylinder(0, -8F, -8F, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_FRONT);
+		   north_.setRotationPoint(0, 0, 0);
+		//
+		south_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
+		 south_.flip = true;
+		  south_.addCylinder(0, -8F, 7F, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_FRONT);
+		   south_.setRotationPoint(0, 0, 0);
+		//
+		east_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
+		 east_.addCylinder(8F, -8F, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_LEFT);
+		  east_.setRotationPoint(0, 0, 0);
+		    east_.rotateAngleY = Static.rad180;
+		//
+		west_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
+		 west_.addCylinder(8F, -8F, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_LEFT);
+		  west_.setRotationPoint(0, 0, 0);
+		//
+		array = new ModelRendererTurbo[]{ bottom, top, north, south, west, east, bottom_, top_, north_, south_, west_, east_ };
 	}
 
 	@Override

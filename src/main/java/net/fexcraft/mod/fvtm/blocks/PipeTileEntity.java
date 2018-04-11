@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.blocks;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.blocks.PipeBlock.PipeType;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
@@ -12,17 +13,21 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class PipeTileEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>{
+public class PipeTileEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, ITickable {
 	
 	public boolean[] conn = new boolean[6];
 	public boolean[] mode = new boolean[6];
-	private FluidTank tank = new FluidTank(4);
+	public static final int[] order = new int[]{ 1, 2, 5, 3, 4, 0 };
+	private FluidTank tank;
 	public Axis axis = null;
 	
 	public PipeTileEntity(){
@@ -84,7 +89,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		BlockPos change = pos.offset(facing);
 		TileEntity tile = world.getTileEntity(change);
 		if(facing != null){
-			conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
+			conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()) && samePipeType(tile);
 			mode[facing.getIndex()] = false;
 			ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
 			//
@@ -94,12 +99,23 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		}
 	}
 
+	private boolean samePipeType(TileEntity tile){
+		if(tile instanceof PipeTileEntity){
+			return this.getPipeType().canConnect(PipeType.byMetadata(tile.getBlockMetadata()));
+		}
+		return true;
+	}
+
+	private PipeType getPipeType(){
+		return PipeType.byMetadata(getBlockMetadata());
+	}
+
 	public void removeConnection(BlockPos pos, BlockPos change){
 		if(this.world != null && this.world.isRemote){ return; }
 		EnumFacing facing = fromPos(pos, change);
 		TileEntity tile = world.getTileEntity(change);
 		if(facing != null){
-			conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
+			conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()) && samePipeType(tile);
 			mode[facing.getIndex()] = false;
 			ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
 		}
@@ -140,5 +156,41 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
         }
         return super.getCapability(capability, facing);
     }
+
+	@Override
+	public void update(){
+		if(tank == null){
+			tank = new FluidTank(PipeType.byMetadata(getBlockMetadata()).getTankSize());
+		}
+		int transferred = 0, filled = 0;
+		PipeType type = PipeType.byMetadata(getBlockMetadata());
+		for(int i : order){
+			if(!conn[i] || world.getTileEntity(pos.offset(EnumFacing.getFront(i))) == null){ continue; }
+			IFluidHandler handler = world.getTileEntity(pos.offset(EnumFacing.getFront(i))).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+			if(handler == null){ continue; }
+			if(mode[i]){
+				if(filled >= type.getTPS() || handler.getTankProperties().length == 0 || !handler.getTankProperties()[0].canDrain() || handler.getTankProperties()[0].getContents() == null || (tank.getFluid() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid())){ continue; }
+				int atd = type.getTPS() - filled;
+				if(atd == 0){ continue; }
+				FluidStack drained = handler.drain(atd, true);
+				filled += drained.amount;
+				tank.fill(drained, true);
+			}
+			else{
+				if(transferred >= type.getTPS() || handler.getTankProperties().length == 0){ continue; }
+				if(!handler.getTankProperties()[0].canFill() || tank.getFluid() == null){ continue; }
+				if(handler.getTankProperties()[0].getContents() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid()){ continue; }
+				int atf = type.getTPS() - transferred;
+				if(atf == 0){ continue; }
+				int fill = handler.fill(tank.drain(atf, false), true);
+				FluidStack act = tank.drain(fill, true);
+				transferred += act == null ? 0 : act.amount;
+			}
+		}
+	}
+
+	public FluidTank getTank(){
+		return tank;
+	}
 
 }

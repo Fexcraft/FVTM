@@ -117,6 +117,21 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		}
 	}
 
+	public void updateConnections(boolean fromother){
+		for(EnumFacing facing : EnumFacing.VALUES){
+			TileEntity tile = world.getTileEntity(pos.offset(facing));
+			if(tile != null){
+				conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()) && samePipeType(tile);
+				mode[facing.getIndex()] = tile instanceof PipeTileEntity ? !((PipeTileEntity)tile).mode[facing.getOpposite().getIndex()] : false;
+				ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
+				//
+				if(!fromother && tile instanceof PipeTileEntity){
+					((PipeTileEntity)tile).updateConnections(true);
+				}
+			}
+		}
+	}
+
 	private boolean samePipeType(TileEntity tile){
 		if(tile instanceof PipeTileEntity){
 			return this.getPipeType().canConnect(PipeType.byMetadata(tile.getBlockMetadata()));
@@ -189,8 +204,21 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 			if(handler == null){ continue; }
 			if(mode[i]){
 				if(tile instanceof PipeTileEntity){ continue; }
-				/*if(filled >= type.getTPS() || handler.getTankProperties().length == 0 || !handler.getTankProperties()[0].canDrain() || handler.getTankProperties()[0].getContents() == null || (tank.getFluid() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid())){ continue; }
+				if(filled >= type.getTPS()){ continue; }
+				if(!canDrain(handler)){ continue; }
 				int atd = type.getTPS() - filled;
+				if(atd > (tank.getCapacity() - tank.getFluidAmount())){
+					atd = tank.getCapacity() - tank.getFluidAmount();
+				}
+				if(atd == 0){ continue; }
+				FluidStack drained = handler.drain(atd, false);
+				if(drained == null || drained.amount <= 0){ continue; }
+				drained = handler.drain(atd, true);
+				filled = drained.amount;
+				tank.fill(drained, true);
+				//TODO needs testing.
+				/*if(filled >= type.getTPS() || handler.getTankProperties().length == 0 || !handler.getTankProperties()[0].canDrain() || handler.getTankProperties()[0].getContents() == null || (tank.getFluid() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid())){ continue; }
+				
 				if(atd == 0){ continue; }
 				FluidStack drained = handler.drain(atd, false);
 				if(drained == null || drained.amount == 0){
@@ -210,10 +238,25 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 				FluidStack act = tank.drain(fill, true);
 				transferred += act == null ? 0 : act.amount;
 			}
-			//Print.debug(transferred, facing, pos.toString(), pos.offset(facing).toString(), handler, handler.getTankProperties().length > 0 ? handler.getTankProperties()[0].getContents() == null ? "no fluid" : handler.getTankProperties()[0].getContents().getLocalizedName() : "null");
 		}
 		//Debug-Only sync
 		//ApiUtil.sendTileEntityUpdatePacket(this, writeToNBT(new NBTTagCompound()), 256);
+	}
+
+	private boolean canDrain(IFluidHandler handler){
+		if(handler.getTankProperties().length <= 0){
+			return false;
+		}
+		if(handler.getTankProperties()[0] != null){
+			if(handler.getTankProperties()[0].getContents() == null){
+				return false;
+			}
+			if(tank.getFluid() != null && !handler.getTankProperties()[0].getContents().isFluidEqual(tank.getFluid())){
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	private boolean canFill(IFluidHandler handler){
@@ -234,6 +277,16 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 
 	public FluidTank getTank(){
 		return tank;
+	}
+
+	public void switchIO(EnumFacing side){
+		this.mode[side.getIndex()] = !this.mode[side.getIndex()];
+		ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
+	}
+
+	public void toggleConnection(EnumFacing side){
+		this.conn[side.getIndex()] = !this.conn[side.getIndex()];
+		ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
 	}
 
 }

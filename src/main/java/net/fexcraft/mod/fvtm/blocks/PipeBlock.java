@@ -25,12 +25,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -125,12 +127,35 @@ public class PipeBlock extends BlockContainer {
 				Print.chat(player, "No TileEntity.");
 			}
 			else{
-				Print.chat(player, te.getTank().getFluidAmount() + " mB (" + (te.getTank().getFluid() == null ? "empty" : te.getTank().getFluid().getLocalizedName()) + ")");
+				Print.bar(player, "&9" + te.getTank().getFluidAmount() + " mB &7(" + (te.getTank().getFluid() == null ? "empty" : te.getTank().getFluid().getLocalizedName()) + ")");
+			}
+			if(!player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() instanceof ItemTool){
+				te.switchIO(side);
+				Print.bar(player, "&7Switched I/O at side &2" + (side) + "&7!");
+				return true;
+			}
+			if(!player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() instanceof PipeItemBlock && player.getHeldItem(hand).getMetadata() != te.getBlockMetadata() && player.getHeldItem(hand).getMetadata() != PipeType.CONCRETE.getMetadata()){
+				te.switchIO(side = side.getOpposite());
+				Print.bar(player, "&7Switched I/O at side &2" + (side) + "&7!");
+				return true;
 			}
 		}
 		return false;
     }
 	
+	public static final AxisAlignedBB AABB = new AxisAlignedBB(0.375D, 0.375D, 0.375D, 0.625D, 0.625D, 0.625D);
+	public static final AxisAlignedBB SELAABB = new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
+	
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
+        return AABB;
+    }
+
+	@Override
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
+        return SELAABB.offset(pos);
+    }
+
 	public static enum PipeType implements IStringSerializable {
 		
 		WOOD_OAK("wood_oak",           0, 1, 10, "minecraft:textures/blocks/planks_oak"),

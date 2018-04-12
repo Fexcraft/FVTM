@@ -23,18 +23,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.TileFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class ContainerTileEntity extends TileFluidHandler implements IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
+public class ContainerTileEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
 	
 	private ItemStackHandler itemStackHandler;
 	private boolean core, setup;
@@ -108,12 +108,14 @@ public class ContainerTileEntity extends TileFluidHandler implements IPacketRece
 	
 	@Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
-        if(facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            return facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked() && getCore().container.getContainer().getInventoryType() == InventoryType.ITEM && getCore().container.getInventory().size() > 0;
-        }
-        if(facing != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-        	return facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked() && getCore().container.getContainer().getInventoryType() == InventoryType.FLUID;
-        }
+		if(facing != null && facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked()){
+	        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
+	            return getCore().container.getContainer().getInventoryType() == InventoryType.ITEM && getCore().container.getInventory().size() > 0;
+	        }
+	        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+	        	return getCore().container.getContainer().getInventoryType() == InventoryType.FLUID;
+	        }
+		}
         return super.hasCapability(capability, facing);
     }
 

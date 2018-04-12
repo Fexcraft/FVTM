@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.blocks.PipeBlock.PipeType;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.lang.BitList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -28,8 +29,15 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 	public boolean[] conn = new boolean[6];
 	public boolean[] mode = new boolean[6];
 	public static final int[] order = new int[]{ 1, 2, 5, 3, 4, 0 };
+	private int meta = -1;
 	private FluidTank tank;
 	public Axis axis = null;
+	
+	public PipeTileEntity(){
+		for(int i = 0; i < conn.length; i++){
+			conn[i] = false; mode[i] = false;
+		}
+	}
 	
 	public PipeTileEntity(World world, int meta){
 		this.world = world;
@@ -61,6 +69,8 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		list.integrate(mode, 6);
 		compound.setInteger("State", list.toInt());
 		compound.setTag("FluidTank", tank.writeToNBT(new NBTTagCompound()));
+		meta = this.getBlockMetadata();
+		compound.setInteger("MetaCache", meta);
 		return compound;
 	}
 	
@@ -72,6 +82,9 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		conn = list.shorten(6, 0);
 		mode = list.shorten(6, 6);
 		checkForAxis();
+		if(compound.hasKey("MetaCache") && tank == null){
+			tank = new FluidTank(PipeType.byMetadata(meta = compound.getInteger("Meta")).getTankSize());
+		}
 		tank.readFromNBT(compound.getCompoundTag("FluidTank"));
 	}
 
@@ -95,7 +108,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		TileEntity tile = world.getTileEntity(change);
 		if(facing != null){
 			conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()) && samePipeType(tile);
-			mode[facing.getIndex()] = false;
+			mode[facing.getIndex()] = tile instanceof PipeTileEntity ? !((PipeTileEntity)tile).mode[facing.getOpposite().getIndex()] : false;
 			ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
 			//
 			if(!fromother && tile instanceof PipeTileEntity){
@@ -156,7 +169,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 
     @SuppressWarnings("unchecked") @Override @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
+        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && conn[facing.getIndex()]){
         	return (T)tank;
         }
         return super.getCapability(capability, facing);
@@ -164,15 +177,19 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 
 	@Override
 	public void update(){
-		if(world.isRemote){ return; }
+		if(world.isRemote || tank == null){ return; }
 		int transferred = 0, filled = 0;
 		PipeType type = PipeType.byMetadata(getBlockMetadata());
 		for(int i : order){
-			if(!conn[i] || world.getTileEntity(pos.offset(EnumFacing.getFront(i))) == null){ continue; }
-			IFluidHandler handler = world.getTileEntity(pos.offset(EnumFacing.getFront(i))).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+			if(!conn[i]){ continue; }
+			EnumFacing facing = EnumFacing.getFront(i);
+			TileEntity tile = world.getTileEntity(pos.offset(facing));
+			if(tile == null){ continue; }
+			IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
 			if(handler == null){ continue; }
 			if(mode[i]){
-				if(filled >= type.getTPS() || handler.getTankProperties().length == 0 || !handler.getTankProperties()[0].canDrain() || handler.getTankProperties()[0].getContents() == null || (tank.getFluid() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid())){ continue; }
+				if(tile instanceof PipeTileEntity){ continue; }
+				/*if(filled >= type.getTPS() || handler.getTankProperties().length == 0 || !handler.getTankProperties()[0].canDrain() || handler.getTankProperties()[0].getContents() == null || (tank.getFluid() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid())){ continue; }
 				int atd = type.getTPS() - filled;
 				if(atd == 0){ continue; }
 				FluidStack drained = handler.drain(atd, false);
@@ -180,21 +197,39 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 					continue;
 				}
 				filled += handler.drain(drained, true).amount;
-				tank.fill(drained, true);
+				tank.fill(drained, true);*/
 			}
 			else{
-				if(transferred >= type.getTPS() || handler.getTankProperties().length == 0 || !handler.getTankProperties()[0].canFill() || tank.getFluid() == null || handler.getTankProperties()[0].getContents() != null && handler.getTankProperties()[0].getContents().getFluid() != tank.getFluid().getFluid()){ continue; }
+				if(transferred >= type.getTPS()){ continue; }
+				if(!canFill(handler)){ continue; }
 				int atf = type.getTPS() - transferred;
-				if(atf == 0){ continue; }
+				if(atf == 0){ Print.debug("atf == null"); continue; }
 				FluidStack drain = tank.drain(atf, false);
-				if(drain == null){ continue; }
+				if(drain == null){ Print.debug("drain == null"); continue; }
 				int fill = handler.fill(drain, true);
 				FluidStack act = tank.drain(fill, true);
 				transferred += act == null ? 0 : act.amount;
 			}
+			//Print.debug(transferred, facing, pos.toString(), pos.offset(facing).toString(), handler, handler.getTankProperties().length > 0 ? handler.getTankProperties()[0].getContents() == null ? "no fluid" : handler.getTankProperties()[0].getContents().getLocalizedName() : "null");
 		}
 		//Debug-Only sync
 		//ApiUtil.sendTileEntityUpdatePacket(this, writeToNBT(new NBTTagCompound()), 256);
+	}
+
+	private boolean canFill(IFluidHandler handler){
+		if(tank.getFluid() == null){
+			return false;
+		}
+		if(handler.getTankProperties().length > 0){
+			if(!handler.getTankProperties()[0].canFill()){
+				return false;
+			}
+			if(handler.getTankProperties()[0].getContents() == null){
+				return true;
+			}
+			return handler.getTankProperties()[0].getContents().isFluidEqual(tank.getFluid());
+		}
+		return true;
 	}
 
 	public FluidTank getTank(){

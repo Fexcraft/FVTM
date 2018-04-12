@@ -80,12 +80,12 @@ public class PipeModel extends Model<PipeTileEntity> {
 		   south_.setRotationPoint(0, 0, 0);
 		//
 		east_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
-		 east_.addCylinder(8F, -8F, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_LEFT);
+		 east_.addCylinder(7F, -8F, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_LEFT);
 		  east_.setRotationPoint(0, 0, 0);
 		    east_.rotateAngleY = Static.rad180;
 		//
 		west_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
-		 west_.addCylinder(8F, -8F, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_LEFT);
+		 west_.addCylinder(7F, -8F, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_LEFT);
 		  west_.setRotationPoint(0, 0, 0);
 		//
 		array = new ModelRendererTurbo[]{ bottom, top, north, south, west, east, bottom_, top_, north_, south_, west_, east_ };

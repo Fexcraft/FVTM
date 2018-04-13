@@ -9,7 +9,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
-import net.fexcraft.mod.fvtm.gui.ContainerInventoryGui.Server;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketListener;
@@ -48,6 +47,8 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerInventoryGui.Server(player, world, x, y, z);
 			case 9211:
 				return new ContainerFluidGui.Server(player, world, x, y, z);
+			case 9212:
+				return new PipeGui.Server(player, world, x, y, z);
 		}
 		if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
 			return new GenericPlaceholderContainer();
@@ -68,6 +69,8 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerInventoryGui.Client(player, world, x, y, z);
 			case 9211:
 				return new ContainerFluidGui.Client(player, world, x, y, z);
+			case 9212:
+				return new PipeGui.Client(player, world, x, y, z);
 		}
 		if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
 			Print.debug("CREATING GUI!");
@@ -292,7 +295,7 @@ public class GuiHandler implements IGuiHandler {
 					break;
 				}
 				case "container_gui_scroll":{
-					ContainerInventoryGui.Server container = (Server)((EntityPlayer)objs[0]).openContainer;
+					ContainerInventoryGui.Server container = (ContainerInventoryGui.Server)((EntityPlayer)objs[0]).openContainer;
 					container.refresh(packet.nbt.getInteger("scroll"));
 					break;
 				}

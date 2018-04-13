@@ -32,6 +32,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 	private int meta = -1;
 	private FluidTank tank;
 	public Axis axis = null;
+	private EnumFacing direction;
 	
 	public PipeTileEntity(){
 		for(int i = 0; i < conn.length; i++){
@@ -69,6 +70,9 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		list.integrate(mode, 6);
 		compound.setInteger("State", list.toInt());
 		compound.setTag("FluidTank", tank.writeToNBT(new NBTTagCompound()));
+		if(direction != null){
+			compound.setByte("Direction", (byte)direction.getIndex());
+		}
 		meta = this.getBlockMetadata();
 		compound.setInteger("MetaCache", meta);
 		return compound;
@@ -82,6 +86,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		conn = list.shorten(6, 0);
 		mode = list.shorten(6, 6);
 		checkForAxis();
+		direction = compound.hasKey("Direction") ? EnumFacing.getFront(compound.getByte("Direction")) : null;
 		if(compound.hasKey("MetaCache") && tank == null){
 			tank = new FluidTank(PipeType.byMetadata(meta = compound.getInteger("Meta")).getTankSize());
 		}
@@ -109,7 +114,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		if(facing != null){
 			conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()) && samePipeType(tile);
 			mode[facing.getIndex()] = tile instanceof PipeTileEntity ? !((PipeTileEntity)tile).mode[facing.getOpposite().getIndex()] : false;
-			ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
+			this.sendUpdate();
 			//
 			if(!fromother && tile instanceof PipeTileEntity){
 				((PipeTileEntity)tile).updateConnections(world, change, facing.getOpposite(), true);
@@ -123,7 +128,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 			if(tile != null){
 				conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()) && samePipeType(tile);
 				mode[facing.getIndex()] = tile instanceof PipeTileEntity ? !((PipeTileEntity)tile).mode[facing.getOpposite().getIndex()] : false;
-				ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
+				this.sendUpdate();
 				//
 				if(!fromother && tile instanceof PipeTileEntity){
 					((PipeTileEntity)tile).updateConnections(true);
@@ -150,7 +155,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 		if(facing != null){
 			conn[facing.getIndex()] = tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()) && samePipeType(tile);
 			mode[facing.getIndex()] = false;
-			ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
+			this.sendUpdate();
 		}
 	}
 
@@ -281,12 +286,20 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 
 	public void switchIO(EnumFacing side){
 		this.mode[side.getIndex()] = !this.mode[side.getIndex()];
-		ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
+		this.sendUpdate();
 	}
 
 	public void toggleConnection(EnumFacing side){
 		this.conn[side.getIndex()] = !this.conn[side.getIndex()];
+		this.sendUpdate();
+	}
+
+	public void sendUpdate(){
 		ApiUtil.sendTileEntityUpdatePacket(this, this.writeToNBT(new NBTTagCompound()), 256);
+	}
+	
+	public EnumFacing getFlowDirection(){
+		return direction;
 	}
 
 }

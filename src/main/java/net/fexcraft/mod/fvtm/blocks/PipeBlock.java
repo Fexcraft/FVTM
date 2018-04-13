@@ -134,9 +134,9 @@ public class PipeBlock extends BlockContainer {
 				Print.bar(player, "&7Switched I/O at side &2" + (side) + "&7!");
 				return true;
 			}
-			if(!player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() instanceof PipeItemBlock && player.getHeldItem(hand).getMetadata() != te.getBlockMetadata() && player.getHeldItem(hand).getMetadata() != PipeType.CONCRETE.getMetadata()){
-				te.switchIO(side = side.getOpposite());
-				Print.bar(player, "&7Switched I/O at side &2" + (side) + "&7!");
+			if(player.getHeldItem(hand).isEmpty()){
+				te.sendUpdate();
+				player.openGui(FVTM.getInstance(), 9212, world, pos.getX(), pos.getY(), pos.getZ());
 				return true;
 			}
 		}
@@ -144,7 +144,7 @@ public class PipeBlock extends BlockContainer {
     }
 	
 	public static final AxisAlignedBB AABB = new AxisAlignedBB(0.375D, 0.375D, 0.375D, 0.625D, 0.625D, 0.625D);
-	public static final AxisAlignedBB SELAABB = new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
+	//public static final AxisAlignedBB SELAABB = new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
@@ -153,7 +153,7 @@ public class PipeBlock extends BlockContainer {
 
 	@Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
-        return SELAABB.offset(pos);
+        return AABB.offset(pos);
     }
 
 	public static enum PipeType implements IStringSerializable {

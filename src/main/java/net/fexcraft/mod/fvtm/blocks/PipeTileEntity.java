@@ -32,7 +32,7 @@ public class PipeTileEntity extends TileEntity implements IPacketReceiver<Packet
 	private int meta = -1;
 	private FluidTank tank;
 	public Axis axis = null;
-	private EnumFacing direction;
+	public EnumFacing direction;
 	
 	public PipeTileEntity(){
 		for(int i = 0; i < conn.length; i++){

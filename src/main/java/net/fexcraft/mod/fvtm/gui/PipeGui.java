@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
+import net.fexcraft.mod.lib.network.PacketHandler;
+import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.block.material.MapColor;
@@ -9,6 +11,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -79,6 +82,16 @@ public class PipeGui {
 		@Override
 		public void actionPerformed(GuiButton button){
 			Print.debug(button.id);
+			int f = button.id / 3;
+			EnumFacing facing = EnumFacing.getFront(PipeTileEntity.order[f]);
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("target_listener", "fvtm");
+			compound.setString("task", "set_pipe_state");
+			compound.setLong("pos", tile.getPos().toLong());
+			compound.setInteger("facing", facing.getIndex());
+			compound.setString("iod", button.id % 3 == 0 ? "red" : button.id % 3 == 1 ? "blue" : "green");
+			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
+			Print.debug(compound.toString());
 		}
 		
 	}

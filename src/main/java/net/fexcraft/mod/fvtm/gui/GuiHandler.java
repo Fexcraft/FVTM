@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
+import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -22,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -297,6 +299,29 @@ public class GuiHandler implements IGuiHandler {
 				case "container_gui_scroll":{
 					ContainerInventoryGui.Server container = (ContainerInventoryGui.Server)((EntityPlayer)objs[0]).openContainer;
 					container.refresh(packet.nbt.getInteger("scroll"));
+					break;
+				}
+				case "set_pipe_state":{
+					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+					EnumFacing facing = EnumFacing.getFront(packet.nbt.getInteger("facing"));
+					EntityPlayer player = (EntityPlayer)objs[0];
+					PipeTileEntity tile = (PipeTileEntity)player.world.getTileEntity(pos);
+					if(!tile.conn[facing.getIndex()]){ return; }
+					switch(packet.nbt.getString("iod")){
+						case "red":{
+							tile.mode[facing.getIndex()] = true;
+							break;
+						}
+						case "blue":{
+							tile.mode[facing.getIndex()] = false;
+							break;
+						}
+						case "green":{
+							tile.direction = facing;
+							break;
+						}
+					}
+					tile.sendUpdate();
 					break;
 				}
 			}

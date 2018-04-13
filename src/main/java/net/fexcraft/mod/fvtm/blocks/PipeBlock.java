@@ -130,8 +130,9 @@ public class PipeBlock extends BlockContainer {
 				Print.bar(player, "&9" + te.getTank().getFluidAmount() + " mB &7(" + (te.getTank().getFluid() == null ? "empty" : te.getTank().getFluid().getLocalizedName()) + ")");
 			}
 			if(!player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() instanceof ItemTool){
-				te.switchIO(side);
-				Print.bar(player, "&7Switched I/O at side &2" + (side) + "&7!");
+				//te.switchIO(side);
+				//Print.bar(player, "&7Switched I/O at side &2" + (side) + "&7!");
+				te.updateConnections(false);
 				return true;
 			}
 			if(player.getHeldItem(hand).isEmpty()){

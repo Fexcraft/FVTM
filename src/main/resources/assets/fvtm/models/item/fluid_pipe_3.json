@@ -1,0 +1,7 @@
+{
+    "parent": "fvtm:item/fluid_pipe",
+    "textures": {
+        "particle": "minecraft:blocks/planks_jungle",
+		"texture": "minecraft:blocks/planks_jungle"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "variants": {
+        "normal": { "model": "fcl:placeholder" },
+        "type=wood_oak": { "model": "fcl:placeholder" },
+        "type=wood_spruce": { "model": "fcl:placeholder" },
+        "type=wood_birch": { "model": "fcl:placeholder" },
+        "type=wood_jungle": { "model": "fcl:placeholder" },
+        "type=wood_acacia": { "model": "fcl:placeholder" },
+        "type=wood_dark_oak": { "model": "fcl:placeholder" },
+        "type=iron": { "model": "fcl:placeholder" },
+        "type=clay": { "model": "fcl:placeholder" },
+        "type=sandstone": { "model": "fcl:placeholder" },
+        "type=red_sandstone": { "model": "fcl:placeholder" },
+        "type=granite": { "model": "fcl:placeholder" },
+        "type=diorite": { "model": "fcl:placeholder" },
+        "type=andesite": { "model": "fcl:placeholder" },
+        "type=quartz": { "model": "fcl:placeholder" },
+        "type=concrete": { "model": "fcl:placeholder" },
+        "type=diamond": { "model": "fcl:placeholder" }
+    }
+}

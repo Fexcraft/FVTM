@@ -1,0 +1,7 @@
+{
+    "parent": "fvtm:item/fluid_pipe",
+    "textures": {
+        "particle": "minecraft:blocks/concrete_silver",
+		"texture": "minecraft:blocks/concrete_silver"
+    }
+}

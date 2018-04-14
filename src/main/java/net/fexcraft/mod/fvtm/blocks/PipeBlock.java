@@ -39,7 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@fBlock(modid = FVTM.MODID, name = "pipe", tileentity = PipeTileEntity.class, item = PipeBlock.PipeItemBlock.class)
+@fBlock(modid = FVTM.MODID, name = "fluid_pipe", tileentity = PipeTileEntity.class, item = PipeBlock.PipeItemBlock.class, variants = 16)
 public class PipeBlock extends BlockContainer {
 	
 	public static final PropertyEnum<PipeBlock.PipeType> TYPE = PropertyEnum.<PipeBlock.PipeType>create("type", PipeBlock.PipeType.class);

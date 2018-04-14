@@ -1,0 +1,16 @@
+## Addon(fvp) Lang File
+
+##Contributors:
+#> FEX___96
+#>
+#>
+#>
+
+#Containers
+item.hcp:medium.name=Medium Generic Container
+item.hcp:medium_fluid.name=Medium Fluid Container
+item.hcp:medium_refrigerator.name=Medium Refrigerator Container
+
+
+
+

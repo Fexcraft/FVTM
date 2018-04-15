@@ -5,6 +5,7 @@ import java.io.File;
 import net.fexcraft.mod.addons.gep.attributes.*;
 import net.fexcraft.mod.addons.gep.fuels.*;
 import net.fexcraft.mod.fvtm.api.Attribute;
+import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Fuel;
 import net.fexcraft.mod.fvtm.api.Material;
@@ -68,6 +69,11 @@ public class GeneralEssentials extends HybridAddon {
 
 	@Override
 	public void regContainers(Register<Container> event){
+		//
+	}
+
+	@Override
+	public void regConsumables(Register<Consumable> event){
 		//
 	}
 	

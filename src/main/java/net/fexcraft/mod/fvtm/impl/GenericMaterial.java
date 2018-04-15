@@ -27,8 +27,8 @@ public class GenericMaterial implements Material {
 	private Fuel fueltype;
 	
 	public GenericMaterial(JsonObject obj){
-		this.registryname = DataUtil.getRegistryName(obj, "ADDON");
-		this.addon = DataUtil.getAddon(registryname, obj, "ADDON");
+		this.registryname = DataUtil.getRegistryName(obj, "MATERIAL");
+		this.addon = DataUtil.getAddon(registryname, obj, "MATERIAL");
 		this.name = JsonUtil.getIfExists(obj, "FullName", this.registryname.toString());
 		this.description = DataUtil.getDescription(obj);
 		this.isFuelContainer = obj.has("FuelType");

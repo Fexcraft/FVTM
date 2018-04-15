@@ -59,8 +59,8 @@ public class GenericVehicle implements Vehicle {
 	
 	@SuppressWarnings("unchecked")
 	public GenericVehicle(JsonObject obj){
-		this.registryname = DataUtil.getRegistryName(obj, "LANDVEHICLE");
-		this.addon = DataUtil.getAddon(registryname, obj, "LANDVEHICLE");
+		this.registryname = DataUtil.getRegistryName(obj, "VEHICLE");
+		this.addon = DataUtil.getAddon(registryname, obj, "VEHICLE");
 		this.name = JsonUtil.getIfExists(obj, "FullName", registryname);
 		this.description = DataUtil.getDescription(obj);
 		this.textures = DataUtil.getTextures(obj, registryname, "LANDVEHICLE");

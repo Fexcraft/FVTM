@@ -61,6 +61,7 @@ itemGroup.fvtm_parts=FVTM - Parts
 itemGroup.fvtm_materials=FVTM - Materials
 itemGroup.fvtm_blocks=FVTM - Blocks
 itemGroup.fvtm_vehiclepresets=FVTM - Vehicle Presets
+itemGroup.fvtm_consumables=FVTM - Consumables
 
 #Blocks
 tile.fvtm:constructor_controller.name=Constructor Controller

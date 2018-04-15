@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Attribute;
+import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
@@ -32,6 +33,8 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
+import net.fexcraft.mod.fvtm.impl.GenericConsumable;
+import net.fexcraft.mod.fvtm.impl.GenericConsumableItem;
 import net.fexcraft.mod.fvtm.impl.GenericContainer;
 import net.fexcraft.mod.fvtm.impl.GenericContainerItem;
 import net.fexcraft.mod.fvtm.impl.GenericVehicle;
@@ -75,6 +78,7 @@ public class Resources {
 	public static IForgeRegistry<Part> PARTS;// = (IForgeRegistry<Part>)new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
 	public static IForgeRegistry<Vehicle> VEHICLES;// = (IForgeRegistry<LandVehicle>)new RegistryBuilder<LandVehicle>().setName(new ResourceLocation("fvtm:landvehicles")).setType(LandVehicle.class).create();
 	public static IForgeRegistry<Container> CONTAINERS;
+	public static IForgeRegistry<Consumable> CONSUMABLES;
 	public static TreeMap<String, Object> MODELS = new TreeMap<String, Object>();
 	public static TreeMap<ResourceLocation, SoundEvent> SOUNDS = new TreeMap<ResourceLocation, SoundEvent>();
 	public static TreeMap<String, JsonObject> PRESETS = new TreeMap<String, JsonObject>();
@@ -98,6 +102,7 @@ public class Resources {
 		VEHICLES = (IForgeRegistry<Vehicle>)new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		PARTATTRIBUTES = (IForgeRegistry<Attribute>)new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
 		CONTAINERS = (IForgeRegistry<Container>)new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
+		CONSUMABLES = (IForgeRegistry<Consumable>)new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
 	}
 
 	public void updateAddonConfig() {
@@ -146,7 +151,7 @@ public class Resources {
 		event.getRegistry().register(GenericPartItem.INSTANCE);
 		event.getRegistry().register(GenericVehicleItem.INSTANCE);
 		event.getRegistry().register(GenericContainerItem.INSTANCE);
-		
+		event.getRegistry().register(GenericConsumableItem.INSTANCE);
 		//
 	}
 	
@@ -156,6 +161,7 @@ public class Resources {
 		net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(GenericPartItem.INSTANCE, new GenericPartItem.ItemMeshDef());
 		net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(GenericVehicleItem.INSTANCE, new GenericVehicleItem.ItemMeshDef());
 		net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(GenericContainerItem.INSTANCE, new GenericContainerItem.ItemMeshDef());
+		net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(GenericConsumableItem.INSTANCE, new GenericConsumableItem.ItemMeshDef());
 	}
 	
 	@SubscribeEvent
@@ -556,6 +562,65 @@ public class Resources {
 						event.getRegistry().register(con);
 						if(Static.side().isClient()){
 							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
+						}
+						Print.debug(con.getRegistryName());
+					}
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void regConsumables(RegistryEvent.Register<Consumable> event){
+		for(Addon addon : ADDONS.getValues()){
+			if(addon instanceof GenericAddon){
+				if(((GenericAddon)addon).isHybrid()){
+					((HybridAddon)addon).regConsumables(event);
+					if(((HybridAddon)addon).skipDefaultRegistryMethods()){
+						continue;
+					}
+				}
+			}
+			else{
+				continue;
+			}
+			Print.debug(addon.getRegistryName());
+			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+				if(addon.getFile().isDirectory()){
+					File matfol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/consumables/");
+					Print.debug(matfol.getPath());
+					if(!matfol.exists()){ matfol.mkdirs();}
+					for(File file : matfol.listFiles()){
+						if(!file.isDirectory() && file.getName().endsWith(".consumable")){
+							GenericConsumable con = new GenericConsumable(JsonUtil.get(file));
+							event.getRegistry().register(con);
+							if(Static.side().isClient()){
+								net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericConsumableItem.INSTANCE, con.getRegistryName());
+							}
+							Print.debug(con.getRegistryName());
+						}
+						else if(file.isDirectory()){
+							for(File fl : file.listFiles()){
+								if(fl.getName().endsWith(".consumable")){
+									GenericConsumable con = new GenericConsumable(JsonUtil.get(fl));
+									event.getRegistry().register(con);
+									if(Static.side().isClient()){
+										net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericConsumableItem.INSTANCE, con.getRegistryName());
+									}
+									Print.debug(con.getRegistryName());
+								}
+							}
+						}
+						Print.debug(file.getPath());
+					}
+				}
+				else{
+					JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/consumables/", ".consumable");
+					for(JsonElement elm : array){
+						GenericConsumable con = new GenericConsumable(elm.getAsJsonObject());
+						event.getRegistry().register(con);
+						if(Static.side().isClient()){
+							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericConsumableItem.INSTANCE, con.getRegistryName());
 						}
 						Print.debug(con.getRegistryName());
 					}

@@ -1,0 +1,11 @@
+{
+    "RegistryName": "test:butterbrot",
+    "Addon": "fvtm:test",
+    "FullName": "Butter mit Brot",
+    "Description": [
+        "Or was it the other way around?"
+    ],
+    "Saturation": 0.2,
+    "UseDuration": 16,
+    "AlwaysEdible": true
+}

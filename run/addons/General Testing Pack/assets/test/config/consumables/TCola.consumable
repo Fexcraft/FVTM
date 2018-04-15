@@ -1,0 +1,14 @@
+{
+    "RegistryName": "test:cola",
+    "Addon": "fvtm:test",
+    "FullName": "Test Cola :tm:",
+    "Description": [
+        "&oA true Tester's Cola!"
+    ],
+    "HealAmount": 2,
+    "Saturation": 0.4,
+    "UseDuration": 20,
+    "WolfMeat": false,
+    "Drinkable": true,
+    "AlwaysEdible": true
+}

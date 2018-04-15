@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util;
 
 import java.util.List;
 
+import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle;
@@ -18,6 +19,7 @@ public class Tabs {
 	
 	private static int sec = -1;
 	private static int mat_id = 0;
+	private static int con_id = 0;
 	private static int part_id = 0;
 	private static int l_veh_id = 0;
 	private static int a_veh_id = 0;
@@ -109,12 +111,27 @@ public class Tabs {
 		}
 	};
 	
+	public static final CreativeTabs CONSUMABLES = new CreativeTabs("fvtm_consumables"){		
+		@Override
+		public ItemStack getTabIconItem(){
+			return null;
+		}
+		@Override
+		public ItemStack getIconItemStack(){
+			return Resources.CONSUMABLES.getEntries().size() > 0 ? ((Consumable)Resources.CONSUMABLES.getValues().toArray()[con_id]).getItemStack() : new ItemStack(Items.APPLE);
+		}
+	};
+	
 	public static final void update(){
 		if(sec != Time.getSecond()){
 			sec = Time.getSecond();
 			mat_id++;
 			if(mat_id >= Resources.MATERIALS.getEntries().size()){
 				mat_id = 0;
+			}
+			con_id++;
+			if(con_id >= Resources.CONSUMABLES.getEntries().size()){
+				con_id = 0;
 			}
 			part_id++;
 			if(part_id >= Resources.PARTS.getEntries().size()){

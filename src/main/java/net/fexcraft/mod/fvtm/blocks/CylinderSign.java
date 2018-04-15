@@ -74,8 +74,12 @@ public class CylinderSign extends BlockContainer {
     	stack.setTagCompound(new NBTTagCompound());
         stack.getTagCompound().setString(CylSignItem.NBT, ((CylinderSignEntity)world.getTileEntity(pos)).getTexture().toString());
         if(world.isRemote){
-        	stack.getTagCompound().setString(CylSignItem.NBT,  stack.getTagCompound().getString(CylSignItem.NBT).replace("fcl:remote/", ""));
+        	stack.getTagCompound().setString(CylSignItem.NBT, stack.getTagCompound().getString(CylSignItem.NBT).replace("fcl:remote/", ""));
         }
+        //
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString(CylSignItem.NBT, stack.getTagCompound().getString(CylSignItem.NBT));
+        stack.getTagCompound().setTag("BlockEntityTag", nbt);
         return stack;
     }
 	

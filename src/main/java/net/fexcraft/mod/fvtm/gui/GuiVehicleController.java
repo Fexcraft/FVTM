@@ -193,7 +193,7 @@ public class GuiVehicleController extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks){
 		mc.renderEngine.bindTexture(texture);
-		drawTexturedModalRect(0, 0, 0, 0, 206, 36);//238
+		drawTexturedModalRect(0, 0, 0, 0, 126, 50);//238
 		//
 		VehicleEntity ent = seat.getVehicle();
 		if(ent == null){
@@ -203,8 +203,9 @@ public class GuiVehicleController extends GuiScreen {
 			mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff);
 			return;
 		}
-		mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity()) + " ck/m  || Throttle: " + throttleColour(ent.getThrottle()) + pc(ent.getThrottle()) + "%"), 7, 7, 0xffffff);
-		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getFuelTankContent()) + "&f/&b" + ent.getVehicleData().getFuelTankSize()), 7, 21, 0xffffff);
+		mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity()) + " ck/m"), 7, 7, 0xffffff);
+		mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.getThrottle()) + pc(ent.getThrottle()) + "%"), 7, 21, 0xffffff);
+		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getFuelTankContent()) + "&f/&b" + ent.getVehicleData().getFuelTankSize()), 7, 35, 0xffffff);
 	}
 	
 	private String fuelColour(VehicleData data){

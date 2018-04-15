@@ -76,6 +76,9 @@ public class AdjustableSign extends BlockContainer {
         if(world.isRemote){
         	stack.getTagCompound().setString(AdjSignItem.NBT,  stack.getTagCompound().getString(AdjSignItem.NBT).replace("fcl:remote/", ""));
         }
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString(AdjSignItem.NBT, stack.getTagCompound().getString(AdjSignItem.NBT));
+        stack.getTagCompound().setTag("BlockEntityTag", nbt);
         return stack;
     }
 	

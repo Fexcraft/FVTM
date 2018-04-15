@@ -59,7 +59,7 @@ public class ConstructorCenter extends BlockContainer {
         return false;
     }
 	
-	public static final AxisAlignedBB PILLAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 5.0D, 0.75D);
+	public static final AxisAlignedBB PILLAR_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 1.0D, 0.875D);
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
@@ -68,7 +68,7 @@ public class ConstructorCenter extends BlockContainer {
 
 	@Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
-        return FULL_BLOCK_AABB;
+        return PILLAR_AABB.offset(pos);
     }
 	
 	@Override

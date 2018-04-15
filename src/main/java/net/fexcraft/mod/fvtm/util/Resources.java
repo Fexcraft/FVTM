@@ -357,6 +357,9 @@ public class Resources {
 							GenericVehicle veh = new GenericVehicle(JsonUtil.get(file));
 							event.getRegistry().register(veh);
 							if(Static.side().isClient()){
+								if(Config.RENDER_IN_GUI){
+									net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), veh.getModel());
+								}
 								net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
 							}
 							Print.debug(veh.getRegistryName());
@@ -367,6 +370,9 @@ public class Resources {
 									GenericVehicle veh = new GenericVehicle(JsonUtil.get(fl));
 									event.getRegistry().register(veh);
 									if(Static.side().isClient()){
+										if(Config.RENDER_IN_GUI){
+											net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), veh.getModel());
+										}
 										net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
 									}
 								}
@@ -408,6 +414,9 @@ public class Resources {
 						GenericVehicle veh = new GenericVehicle(elm.getAsJsonObject());
 						event.getRegistry().register(veh);
 						if(Static.side().isClient()){
+							if(Config.RENDER_IN_GUI){
+								net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), veh.getModel());
+							}
 							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
 						}
 						Print.debug(veh.getRegistryName());
@@ -535,6 +544,9 @@ public class Resources {
 							GenericContainer con = new GenericContainer(JsonUtil.get(file));
 							event.getRegistry().register(con);
 							if(Static.side().isClient()){
+								if(Config.RENDER_IN_GUI){
+									net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), con.getModel());
+								}
 								net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
 							}
 							Print.debug(con.getRegistryName());
@@ -545,6 +557,9 @@ public class Resources {
 									GenericContainer con = new GenericContainer(JsonUtil.get(fl));
 									event.getRegistry().register(con);
 									if(Static.side().isClient()){
+										if(Config.RENDER_IN_GUI){
+											net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), con.getModel());
+										}
 										net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
 									}
 									Print.debug(con.getRegistryName());
@@ -561,6 +576,9 @@ public class Resources {
 						GenericContainer con = new GenericContainer(elm.getAsJsonObject());
 						event.getRegistry().register(con);
 						if(Static.side().isClient()){
+							if(Config.RENDER_IN_GUI){
+								net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), con.getModel());
+							}
 							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
 						}
 						Print.debug(con.getRegistryName());

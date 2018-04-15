@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.lib.tmt.JsonToTMT;
+import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;

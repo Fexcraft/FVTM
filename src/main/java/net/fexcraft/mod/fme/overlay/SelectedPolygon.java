@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fme.blocks.EditorTileEntity;
 import net.fexcraft.mod.fme.util.TempModel;
-import net.fexcraft.mod.lib.tmt.JsonToTMT;
+import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;

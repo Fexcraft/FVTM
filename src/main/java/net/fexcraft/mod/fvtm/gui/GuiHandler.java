@@ -51,6 +51,8 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerFluidGui.Server(player, world, x, y, z);
 			case 9212:
 				return new PipeGui.Server(player, world, x, y, z);
+			case 9213:
+				return new AdjSignGui.Server(player, world, x, y, z);
 		}
 		if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
 			return new GenericPlaceholderContainer();
@@ -73,6 +75,8 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerFluidGui.Client(player, world, x, y, z);
 			case 9212:
 				return new PipeGui.Client(player, world, x, y, z);
+			case 9213:
+				return new AdjSignGui.Client(player, world, x, y, z);
 		}
 		if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
 			Print.debug("CREATING GUI!");

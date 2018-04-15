@@ -1,17 +1,14 @@
 package net.fexcraft.mod.fvtm.blocks;
 
-import net.fexcraft.mod.fvtm.blocks.CylinderSign.CylSignItem;
 import net.fexcraft.mod.fvtm.model.block.CylSignModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.registry.UCResourceLocation;
 import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -29,8 +26,7 @@ public class CylinderSignEntity extends TileEntity implements IPacketReceiver<Pa
 	private CylSignModel model;
 	
 	public CylinderSignEntity(){
-		segments = 8;
-		scale = 10;
+		segments = 8; scale = 10;
 		if(Static.side().isClient()){
 			model = CylSignModel.getModel(segments, scale);
 		}
@@ -52,36 +48,34 @@ public class CylinderSignEntity extends TileEntity implements IPacketReceiver<Pa
 		return this.scale;
 	}
 	
-	public void enlarge(){
-		this.scale += 1;
-		if(scale > 80){
-			scale = 80;
-		}
+	public void rescale(int i){
+		this.scale = (byte)i;
+		if(scale > 80){ scale = 80; }
+		if(scale < 10){ scale = 10; }
 		this.sendUpdate();
 	}
 
-	public void addSegment(){
-		this.segments += 1;
-		if(segments > 64){
-			segments = 64;
-		}
+	public void segments(int i){
+		this.segments = (byte)i;
+		if(segments > 64){ segments = 64; }
+		if(segments < 8){ segments = 8; }
 		this.sendUpdate();
 	}
 
-	public void setTexture(ItemStack stack, EntityPlayer player){
-		if(stack == null){
+	public void setTexture(String string, EntityPlayer player){
+		if(string == null){
 			this.texture = new UCResourceLocation(Resources.NULL_TEXTURE);
-			Print.chat(player, "Resseting texture.");
+			//Print.chat(player, "Resseting texture.");
 		}
-		if(stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(CylSignItem.NBT)){
-			this.texture = new UCResourceLocation("", stack.getTagCompound().getString(CylSignItem.NBT));
-			Print.chat(player, "Texture set to: " + this.texture.getResourcePath());
+		if(string != null){
+			this.texture = new UCResourceLocation("", string);
+			//Print.chat(player, "Texture set to: " + this.texture.getResourcePath());
 		}
 		this.sendUpdate();
 	}
 
 	public final void sendUpdate(){
-		ApiUtil.sendTileEntityUpdatePacket(world, pos, this.getUpdateTag());
+		ApiUtil.sendTileEntityUpdatePacket(this, this.getUpdateTag(), 256);
 	}
 	
 	@Override

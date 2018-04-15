@@ -1,17 +1,14 @@
 package net.fexcraft.mod.fvtm.blocks;
 
-import net.fexcraft.mod.fvtm.blocks.AdjustableSign.AdjSignItem;
 import net.fexcraft.mod.fvtm.model.block.AdjSignModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.registry.UCResourceLocation;
 import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -30,8 +27,7 @@ public class AdjustableSignEntity extends TileEntity implements IPacketReceiver<
 	private AdjSignModel model;
 	
 	public AdjustableSignEntity(){
-		width = 1;
-		height = 1;
+		width = 1; height = 1;
 		if(Static.side().isClient()){
 			model = AdjSignModel.getModel(width, height);
 		}
@@ -53,25 +49,28 @@ public class AdjustableSignEntity extends TileEntity implements IPacketReceiver<
 		return this.height;
 	}
 
-	public void enlarge(EnumFacing facing, int i){
-		facing = facing.getOpposite();//heh...
-		if(facing == EnumFacing.UP){
-			this.height += 1;
+	public void resize(EnumFacing.Plane plane, int i){
+		if(plane == EnumFacing.Plane.HORIZONTAL){
+			this.width = (byte)i;
+			if(width > 16){ width = 16; }
+			if(width <  1){ width =  1; }
 		}
-		else if(facing == EnumFacing.DOWN){
-			this.width += 1;
+		else if(plane == EnumFacing.Plane.VERTICAL){
+			this.height = (byte)i;
+			if(height > 16){ height = 16; }
+			if(height <  1){ height =  1; }
 		}
 		this.sendUpdate();
 	}
 
-	public void setTexture(ItemStack stack, EntityPlayer player){
-		if(stack == null){
+	public void setTexture(String string, EntityPlayer player){
+		if(string == null){
 			this.texture = new UCResourceLocation(Resources.NULL_TEXTURE);
-			Print.chat(player, "Resseting texture.");
+			//Print.chat(player, "Resseting texture.");
 		}
-		if(stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(AdjSignItem.NBT)){
-			this.texture = new UCResourceLocation("", stack.getTagCompound().getString(AdjSignItem.NBT));
-			Print.chat(player, "Texture set to: " + this.texture.getResourcePath());
+		if(string != null){
+			this.texture = new UCResourceLocation("", string);
+			//Print.chat(player, "Texture set to: " + this.texture.getResourcePath());
 		}
 		this.sendUpdate();
 	}

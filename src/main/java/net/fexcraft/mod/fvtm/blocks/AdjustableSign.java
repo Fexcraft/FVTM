@@ -84,27 +84,12 @@ public class AdjustableSign extends BlockContainer {
 	
 	@Override
     public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-		if(w.isRemote){
-			return false;
-		}
+		if(w.isRemote){ return false; }
 		AdjustableSignEntity ent = (AdjustableSignEntity)w.getTileEntity(pos);
-		if(ent == null){
-			return false;
-		}
-		ItemStack stack = null;
-		if(!(stack = player.getHeldItem(hand)).isEmpty()){
-			if(stack.getItem() instanceof AdjSignItem){
-				if(hitY > 0.75){
-					ent.enlarge(EnumFacing.UP, 1);
-				}
-				else if(hitY < 0.25){
-					ent.enlarge(EnumFacing.DOWN, 1);
-				}
-				else{
-					ent.setTexture(stack, player);
-				}
-				return true;
-			}
+		if(ent == null){ return false; }
+		if(player.getHeldItem(hand).isEmpty()){
+			player.openGui(FVTM.getInstance(), 9213, w, pos.getX(), pos.getY(), pos.getZ());
+			return true;
 		}
 		return false;
     }

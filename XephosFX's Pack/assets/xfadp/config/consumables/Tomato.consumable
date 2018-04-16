@@ -1,0 +1,14 @@
+{
+    "RegistryName": "xfadp:tomato",
+    "Addon": "fvtm:xfadp",
+    "FullName": "Tomato",
+    "Description": [
+        "Tomato is a vegetable"
+    ],
+    "HealAmount": 2,
+    "Saturation": 0.2,
+    "UseDuration": 16,
+    "WolfMeat": false,
+    "Drinkable": false,
+    "AlwaysEdible": false
+}

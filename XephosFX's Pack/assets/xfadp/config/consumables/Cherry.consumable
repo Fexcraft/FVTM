@@ -1,0 +1,14 @@
+{
+    "RegistryName": "xfadp:cherry",
+    "Addon": "fvtm:xfadp",
+    "FullName": "Cherry",
+    "Description": [
+        "The Cherry is a Fruit"
+    ],
+    "HealAmount": 2,
+    "Saturation": 0.2,
+    "UseDuration": 16,
+    "WolfMeat": true,
+    "Drinkable": false,
+    "AlwaysEdible": false
+}

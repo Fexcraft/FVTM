@@ -60,6 +60,7 @@ task fvtm(type: Jar) {
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version
         include 'LICENSE.txt'
+        include 'pack.mcmeta'
     }
     baseName = 'FVTM'
     appendix = modversion

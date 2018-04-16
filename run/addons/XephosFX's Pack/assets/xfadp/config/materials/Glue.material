@@ -1,0 +1,10 @@
+{
+    "RegistryName": "test:glue",
+    "Addon": "fvtm:test",
+    "FullName": "Testing Glue",
+    "Description": [
+        "Holds Ages!",
+        "",
+        "&oThrows no Exceptions!"
+    ]
+}

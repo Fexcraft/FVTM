@@ -1,0 +1,19 @@
+{
+    "RegistryName": "test:inventory",
+    "Addon": "fvtm:test",
+    "ModelFile": "null",
+    "FullName": "Test Inventory",
+    "Category": [
+        "test_inventory_0", "test_inventory_1", "test_inventory_2", "test_inventory_3",
+        "test_inventory_4", "test_inventory_5", "test_inventory_6", "test_inventory_7",
+        "test_inventory_8", "test_inventory_9", "test_inventory_10", "test_inventory_11",
+        "test_inventory_12", "test_inventory_13", "test_inventory_14", "test_inventory_15"
+    ],
+    "Attributes":[ "inventory" ],
+    "Textures": [ "fvtm:textures/entities/null_texture.png" ],
+    "Removable": true,
+    "Available": true,
+    "AttributeData":{
+        "Inventory-Size": 99
+    }
+}

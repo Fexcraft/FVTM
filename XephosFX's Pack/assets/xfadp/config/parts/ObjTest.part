@@ -1,0 +1,10 @@
+{
+    "RegistryName": "test:obj",
+    "Addon": "fvtm:test",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelObjTest.class",
+    "FullName": "ObjTest",
+    "Category": [ "objtest" ],
+    "Textures": [ "fvp:textures/entities/skin_vehicle_t1p.png" ],
+    "Removable": true,
+    "Available": true
+}

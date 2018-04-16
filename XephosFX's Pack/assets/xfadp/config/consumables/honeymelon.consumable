@@ -1,0 +1,14 @@
+{
+    "RegistryName": "xfadp:honeymelon",
+    "Addon": "fvtm:xfadp",
+    "FullName": "honeymelon",
+    "Description": [
+        "The Honey Melon is a Fruit"
+    ],
+    "HealAmount": 3,
+    "Saturation": 0.4,
+    "UseDuration": 22,
+    "WolfMeat": true,
+    "Drinkable": false,
+    "AlwaysEdible": false
+}

@@ -1,0 +1,11 @@
+{
+  "id": "fvtm:xfadp",
+  "name": "XephosFX Food and Drink Pack",
+  "url": "http://fexcraft.net/",
+  "updateid": "addon-xfadp",
+  "dependencies": ["fvtm:generic"],
+  "license": "https://fexcraft.net/license?id=mods",
+  "authors": [
+    "01e4af9b-2a30-471e-addf-f6338ffce04b"
+  ]
+}

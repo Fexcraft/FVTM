@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -65,10 +66,15 @@ public class DisplayBlockEntity extends TileEntity implements IPacketReceiver<Pa
 		Print.debug(compound.toString(), data == null);
 	}
 
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared(){
-		return 512D;
-	}
+	@SideOnly(Side.CLIENT) @Override
+    public double getMaxRenderDistanceSquared(){
+        return super.getMaxRenderDistanceSquared() * 8;
+    }
+	
+	@SideOnly(Side.CLIENT) @Override
+    public AxisAlignedBB getRenderBoundingBox(){
+        return INFINITE_EXTENT_AABB;
+    }
 
 	public Vehicle.VehicleData setVehicleData(Vehicle.VehicleData newdata){
 		Vehicle.VehicleData data = this.data;

@@ -35,7 +35,7 @@ public class GenericPartData extends GenericTextureable<PartData, Part> implemen
 	public NBTTagCompound writeToNBT(NBTTagCompound tagcompound){
 		tagcompound.setString(PartItem.NBTKEY, root.getRegistryName().toString());
 		NBTTagCompound compound = new NBTTagCompound();
-		super.readFromNBT(compound);
+		super.writeToNBT(compound);
 		//
 		root.getAttributeClasses().forEach((clazz) -> {
 			Attribute attr = root.getAttribute(clazz);
@@ -53,6 +53,7 @@ public class GenericPartData extends GenericTextureable<PartData, Part> implemen
 	@Override
 	public PartData readFromNBT(NBTTagCompound compound){
 		compound = compound.getCompoundTag(FVTM.MODID + "_part");
+		super.readFromNBT(compound);
 		offset = Pos.fromNBT("Offset", compound);
 		NBTTagCompound[] tagc = new NBTTagCompound[]{compound};
 		root.getAttributeClasses().forEach((clazz) -> {

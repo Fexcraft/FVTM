@@ -22,7 +22,7 @@ public class TextureTool implements Window {
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/constructor_9000_texture_tool.png");
 	private static GenericGuiButton close;
 	private static boolean vehicle = false;
-	private static Textureable textureable;
+	private Textureable textureable;
 	private static String part = null;
 	private GuiTextField ifield, efield;
 	private ARB[] arbs = new ARB[4];
@@ -131,7 +131,7 @@ public class TextureTool implements Window {
 			return "none";
 		}
 		else{
-			String str = textureable.getCustomTexture().toString();
+			String str = textureable.getCustomTexture() == null ? "none" : textureable.getCustomTexture().toString();
 			return str.equals("minecraft:") ? "none" : str;
 		}
 	}

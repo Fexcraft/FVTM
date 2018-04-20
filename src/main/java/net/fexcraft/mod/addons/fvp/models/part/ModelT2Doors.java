@@ -74,7 +74,11 @@ public class ModelT2Doors extends PartModel<VehicleData> {
 	@Override
 	public void render(VehicleData data, String us){
 		data.getPrimaryColor().glColorApply();
+		rotate(this.front_left,  0, 0, 0, true);
+		front_left[4].rotateAngleZ = Static.rad180;
 		render(this.front_left);
+		rotate(this.front_right, 0, 0, 0, true);
+		front_right[4].rotateAngleZ = Static.rad180;
 		render(this.front_right);
 		RGB.glColorReset();
 	}

@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
 import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.util.math.Time;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
@@ -19,7 +18,7 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerT
 		if(!te.isCore()){ return; }
     	GL11.glPushMatrix();
 		GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
-		Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
+		Model.bindTexture(ModelConstructorCenter.getTexture());
 		GL11.glPushMatrix();
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		switch(te.getBlockMetadata()){

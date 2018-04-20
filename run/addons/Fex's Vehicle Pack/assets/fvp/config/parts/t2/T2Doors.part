@@ -10,7 +10,8 @@
         "doors"
     ],
     "Textures": [
-        "fvp:textures/entities/skin_vehicle_t2p.png"
+        "fvp:textures/entities/skin_vehicle_t2p.png",
+        "fvp:textures/entities/skin_vehicle_t2p_l0.png"
     ],
     "Scripts":[
         "net.fexcraft.mod.addons.gep.scripts.MultiDoorScript.class"

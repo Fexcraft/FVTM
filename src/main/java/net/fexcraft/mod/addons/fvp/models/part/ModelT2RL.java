@@ -20,7 +20,7 @@ public class ModelT2RL extends PartModel<VehicleData>{
 
 	public ModelT2RL(){
 		this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
-		back_lights = new ModelRendererTurbo[1];
+		body = new ModelRendererTurbo[1];
 		body[0] = new ModelRendererTurbo(this, 17, 177, textureX, textureY); // Box 136
 		body[0].addShapeBox(0F, 0F, 0F, 2, 2, 48, 0F, 0F, 0F, 0F, 0F, 0F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -8F, 0F, 0F, -8F, 0F, 0F, 0F); // Box 136
 		body[0].setRotationPoint(-63F, -12F, -24F);

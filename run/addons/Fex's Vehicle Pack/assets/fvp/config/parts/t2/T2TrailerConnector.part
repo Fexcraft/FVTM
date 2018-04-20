@@ -1,0 +1,24 @@
+{
+    "RegistryName": "fvp:t2_trailer_connector",
+    "Addon": "fvtm:fvp",
+    "FullName": "Trailer Connection Point",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT2TC.class",
+    "Category": [
+        "rear_connector"
+    ],
+    "Attributes":[
+        "connector"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t2p.png"
+    ],
+    "Compatible": [ { "Vehicle": "fvp:t2", "x": 0, "y": 0, "z": 0 } ],
+    "Removable": true,
+    "AttributeData":{
+        "Rear-Connector":[
+	        {
+	        	"x": -32, "y": -16, "z": 0
+	        }
+	    ]
+    }
+}

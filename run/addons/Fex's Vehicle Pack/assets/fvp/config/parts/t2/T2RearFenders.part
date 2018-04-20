@@ -1,0 +1,15 @@
+{
+    "RegistryName": "fvp:t2_rear_fender",
+    "Addon": "fvtm:fvp",
+    "FullName": "T2 Rear Fenders",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT2RF.class",
+    "Category": [
+        "rear_fender_left",
+        "rear_fender_right"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t2p.png"
+    ],
+    "Compatible": [{ "Vehicle": "fvp:t2", "x": 0, "y": 0, "z": 0 }],
+    "Removable": true
+}

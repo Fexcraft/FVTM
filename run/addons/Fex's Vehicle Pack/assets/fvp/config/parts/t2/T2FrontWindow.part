@@ -1,0 +1,13 @@
+{
+    "RegistryName": "fvp:t2_front_window",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "fvp:models/parts/t2fw.jtmt",
+    "Category": [
+        "front_window"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t2p.png"
+    ],
+    "Removable": true,
+    "Compatible": [{ "Vehicle": "fvp:t2", "x": 0,  "y": 0, "z": 0 }]
+}

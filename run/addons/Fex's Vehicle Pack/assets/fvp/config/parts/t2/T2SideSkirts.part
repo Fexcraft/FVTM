@@ -1,0 +1,16 @@
+{
+    "RegistryName": "fvp:t2_side_skirts",
+    "Addon": "fvtm:fvp",
+    "FullName": "T2 Side Skirts",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT2SK.class",
+    "Category": [
+        "sides",
+        "side_left",
+        "side_right"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t2p.png"
+    ],
+    "Compatible": [{ "Vehicle": "fvp:t2", "x": 0, "y": 0, "z": 0 }],
+    "Removable": true
+}

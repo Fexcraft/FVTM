@@ -143,8 +143,14 @@ public class GenericVehicleData extends GenericColorable<VehicleData, Vehicle> i
 		parts.forEach((key, data) ->{
 			data.getPart().getScripts().forEach((clazz) -> {
 				try{
-					VehicleScript script = clazz.newInstance();
-					this.scripts.put(clazz, script.readFromNBT(nbt[0]));
+					boolean duplicate = false;
+					for(Class<?> script : scripts.keySet()){
+						if(script.equals(clazz)){ duplicate = true; break; }
+					}
+					if(!duplicate){
+						VehicleScript script = clazz.newInstance();
+						this.scripts.put(clazz, script.readFromNBT(nbt[0]));
+					}
 				}
 				catch(Exception e){
 					e.printStackTrace();

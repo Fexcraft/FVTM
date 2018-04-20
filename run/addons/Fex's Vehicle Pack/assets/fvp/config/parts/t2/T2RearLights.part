@@ -1,0 +1,14 @@
+{
+    "RegistryName": "fvp:t2_rear_lights",
+    "Addon": "fvtm:fvp",
+    "FullName": "T2 Rear Lights",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT2RL.class",
+    "Category": [
+        "rear_lights"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t2p.png"
+    ],
+    "Compatible": [{ "Vehicle": "fvp:t2", "x": 0, "y": 0, "z": 0 }],
+    "Removable": true
+}

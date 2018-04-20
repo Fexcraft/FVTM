@@ -54,6 +54,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
 				vehicledata.getParts().forEach((key, partdata) -> {
 					Model.bindTexture(partdata.getTexture());
 					partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translate();
+					//Print.debug(key, partdata, partdata.getPart().getModel());
 					partdata.getPart().getModel().render(vehicledata, key);
 					partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translateR();
 				});

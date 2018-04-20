@@ -1,0 +1,22 @@
+{
+    "RegistryName": "fvp:t2_doors",
+    "Addon": "fvtm:fvp",
+    "FullName": "T2 Front Doors",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT2Doors.class",
+    "Description": [
+        "&7Use the &c`G`&7 key to open settings."
+    ],
+    "Category": [
+        "doors"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_t2p.png"
+    ],
+    "Scripts":[
+        "net.fexcraft.mod.addons.gep.scripts.MultiDoorScript.class"
+    ],
+    "Compatible": [
+        { "Vehicle": "fvp:t2", "x": 0, "y": 0, "z": 0 }
+    ],
+    "Removable": true
+}

@@ -10,5 +10,10 @@
     "UseDuration": 20,
     "WolfMeat": false,
     "Drinkable": true,
-    "AlwaysEdible": true
+    "AlwaysEdible": true,
+    "ToughAsNails":{
+    	"Thirst": 2,
+    	"Hydration": 0.5,
+    	"PoisonChanse": 0.1
+    }
 }

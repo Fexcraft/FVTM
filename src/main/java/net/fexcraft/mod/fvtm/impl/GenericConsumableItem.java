@@ -5,15 +5,18 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Consumable.ConsumableItem;
+import net.fexcraft.mod.fvtm.util.APIs;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -67,8 +70,16 @@ public class GenericConsumableItem extends ConsumableItem {
 			if(con.isWolfMeat()){
 				tooltip.add(Formatter.format("&9&oLiked by wolves."));
 			}
+			if(con.isDrinkable() && con.getTANData() != null){
+				tooltip.add(Formatter.format("&3TAN Modifiers: "));
+				tooltip.add(Formatter.format("-> &9Thirst: &7" + con.getTANData().getThirst()));
+				tooltip.add(Formatter.format("-> &9Hydration: &7" + con.getTANData().getHydration()));
+				if(con.getTANData().getPoisonChance() > 0){
+					tooltip.add(Formatter.format("-> &9PoisonChanse: &7" + (con.getTANData().getPoisonChance() * 100) + "%"));
+				}
+			}
 			if(con.alwaysEdible()){
-				tooltip.add(Formatter.format("&8&oAlways edible."));
+				tooltip.add(Formatter.format("&8&oAlways " + (con.isDrinkable() ? "drinkable" : "edible") + "."));
 			}
 		}
     }
@@ -130,13 +141,49 @@ public class GenericConsumableItem extends ConsumableItem {
 	@Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
         ItemStack itemstack = player.getHeldItem(hand);
-        if(player.canEat(getConsumable(player.getHeldItem(hand)).alwaysEdible())){
-            player.setActiveHand(hand);
-            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+        Consumable con = getConsumable(player.getHeldItem(hand));
+        if(con.isDrinkable() && APIs.INSTANCE.TOUGHASNAILS){
+        	if(((toughasnails.thirst.ThirstHandler)toughasnails.api.thirst.ThirstHelper.getThirstData(player)).isThirsty() || con.alwaysEdible()){
+        		player.setActiveHand(hand);
+            	return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+        	}
+            else{
+                return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
+            }
         }
         else{
-            return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
+            if(player.canEat(con.alwaysEdible())){
+                player.setActiveHand(hand);
+                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+            }
+            else{
+                return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
+            }
         }
+    }
+	
+    @Override
+    public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entity){
+    	if(world.isRemote || entity instanceof EntityPlayer == false){ return stack; }
+        Consumable con = getConsumable(stack);
+        if(con.isDrinkable() && APIs.INSTANCE.TOUGHASNAILS){
+        	EntityPlayer player = (EntityPlayer)entity;
+            toughasnails.api.stat.capability.IThirst thirst = toughasnails.api.thirst.ThirstHelper.getThirstData(player);
+            thirst.addStats(con.getTANData().getThirst(), con.getTANData().getHydration());
+            //
+            if(player.world.rand.nextFloat() < con.getTANData().getPoisonChance() && toughasnails.api.config.SyncedConfig.getBooleanValue(toughasnails.api.config.GameplayOption.ENABLE_THIRST)){
+                player.addPotionEffect(new PotionEffect(toughasnails.api.TANPotions.thirst, 600));
+            }
+            //
+            if(con.getContainerItemStack() == null){
+            	stack.shrink(1);
+            }
+            else{
+            	return con.getContainerItemStack().copy();
+            }
+            return stack;
+        }
+        else return super.onItemUseFinish(stack, world, entity);
     }
 	
 }

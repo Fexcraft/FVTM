@@ -76,6 +76,8 @@ public class FVTM {
 			//
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
 		}
+		//
+		new APIs();
 	}
 	
 	@Mod.EventHandler

@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Consumable;
+import net.fexcraft.mod.fvtm.api.compatibility.TANItemData;
+import net.fexcraft.mod.fvtm.util.APIs;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.item.ItemStack;
@@ -20,6 +22,9 @@ public class GenericConsumable implements Consumable {
 	private int healamount, useduration;
 	private float saturation;
 	private boolean wolfmeat, drinkable, alwaysedible;
+	//
+	private TANItemData tandata;
+	private ItemStack container;
 	
 	public GenericConsumable(JsonObject obj){
 		this.registryname = DataUtil.getRegistryName(obj, "CONSUMABLE");
@@ -33,6 +38,9 @@ public class GenericConsumable implements Consumable {
 		this.wolfmeat = JsonUtil.getIfExists(obj, "WolfMeat", false);
 		this.drinkable = JsonUtil.getIfExists(obj, "Drinkable", false);
 		this.alwaysedible = JsonUtil.getIfExists(obj, "AlwaysEdible", false);
+		if(this.drinkable && APIs.INSTANCE.TOUGHASNAILS){
+			this.tandata = obj.has("ToughAsNails") ? new TANDataImpl(obj.get("ToughAsNails").getAsJsonObject()) : null;
+		}
 	}
 
 	@Override
@@ -98,6 +106,44 @@ public class GenericConsumable implements Consumable {
 	@Override
 	public boolean alwaysEdible(){
 		return alwaysedible;
+	}
+
+	@Override
+	public TANItemData getTANData(){
+		return this.isDrinkable() ? tandata : null;
+	}
+	
+	private static class TANDataImpl implements TANItemData {
+		
+		private int thirst;
+		private float hydration, poisonchanse;
+
+		public TANDataImpl(JsonObject obj){
+			thirst = JsonUtil.getIfExists(obj, "Thirst", 0).intValue();
+			hydration = JsonUtil.getIfExists(obj, "Hydration", 0).floatValue();
+			poisonchanse = JsonUtil.getIfExists(obj, "PoisonChanse", 0).floatValue();
+		}
+
+		@Override
+		public int getThirst(){
+			return thirst;
+		}
+
+		@Override
+		public float getHydration(){
+			return hydration;
+		}
+
+		@Override
+		public float getPoisonChance(){
+			return poisonchanse;
+		}
+		
+	}
+
+	@Override
+	public ItemStack getContainerItemStack(){
+		return container;
 	}
 	
 }

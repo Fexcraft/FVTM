@@ -129,6 +129,7 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
 			}
 			this.def_renderWheelWithRotations(wheels, ent, str);
 			if(mir){
+				//for(ModelRendererTurbo turbo : wheels){ turbo.rotateAngleZ = -turbo.rotateAngleZ; }
 				GL11.glRotated(-180, 0, 1, 0);
 			}
 			pos.translateR();

@@ -31,14 +31,17 @@ public class VehicleControlPacketHandler {
 	public static class Client implements IMessageHandler<PacketVehicleControl, IMessage>{
 		@Override
 		public IMessage onMessage(final PacketVehicleControl packet, final MessageContext ctx){
-			Minecraft.getMinecraft().addScheduledTask(() -> {
-				for(Entity ent : Minecraft.getMinecraft().world.getLoadedEntityList()){
+			Minecraft.getMinecraft().addScheduledTask(new Runnable(){
+                            @Override
+                            public void run() {
+                                for(Entity ent : Minecraft.getMinecraft().world.getLoadedEntityList()){
 					if(ent.getEntityId() == packet.entityId){
 						updatevehicle(ent, packet);
 						return;
 					}
 				}
 				return;
+                            }
 			});
 			return null;
 		}

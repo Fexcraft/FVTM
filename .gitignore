@@ -13,6 +13,9 @@ out
 *.iml
 .idea
 
+# Netbeans
+.nb-gradle
+
 # Gradle
 build
 .gradle

@@ -5,23 +5,24 @@ import net.fexcraft.mod.lib.api.network.IPacket;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketSeatDismount implements IPacket, IMessage {
-	
-	public int id;
-	
-	public PacketSeatDismount(){}
-	
-	public PacketSeatDismount(int id){
-		this.id = id;
-	}
 
-	@Override
-	public void toBytes(ByteBuf bbuf){
-		bbuf.writeInt(id);
-	}
+    public int id;
 
-	@Override
-	public void fromBytes(ByteBuf bbuf){
-		id = bbuf.readInt();
-	}
-	
+    public PacketSeatDismount(){
+    }
+
+    public PacketSeatDismount(int id){
+        this.id = id;
+    }
+
+    @Override
+    public void toBytes(ByteBuf bbuf){
+        bbuf.writeInt(id);
+    }
+
+    @Override
+    public void fromBytes(ByteBuf bbuf){
+        id = bbuf.readInt();
+    }
+
 }

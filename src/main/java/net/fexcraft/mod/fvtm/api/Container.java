@@ -21,76 +21,78 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Container extends IForgeRegistryEntry<Container>, TextureHolder, ColorHolder {
 
-	@Override
-	public default Class<Container> getRegistryType(){
-		return Container.class;
-	}
-	
-	public ItemStack getItemStack(@Nullable ContainerData data);
-	
-	public default boolean isMediumContainer(){
-		return this.getType() == ContainerType.MEDIUM;
-	}
-	
-	public default boolean isLargeContainer(){
-		return this.getType() == ContainerType.LARGE;
-	}
-	
-	public Addon getAddon();
+    @Override
+    public default Class<Container> getRegistryType(){
+        return Container.class;
+    }
 
-	public String getName();
-	
-	public ContainerType getType();
+    public ItemStack getItemStack(@Nullable ContainerData data);
 
-	public String[] getDescription();
-	
-	@SideOnly(Side.CLIENT)
-	public ContainerModel<ContainerData> getModel();
-	
-	public Class<? extends ContainerData> getDataClass();
-	
-	public int getInventorySize();
-	
-	public boolean isItemValid(ItemStack stack);
-	
-	public InventoryType getInventoryType();
-	
-	public @Nullable Fluid getFluidType();
-	
-	public static enum ContainerType {
-		
-		TINY,//unused
-		SMALL,//unused
-		MEDIUM,
-		LARGE;
-		
-	}
-	
-	public static interface ContainerData extends Lockable, Colorable, Saveloadable<ContainerData>, Textureable {
-		
-		public Container getContainer();
-		
-		public NonNullList<ItemStack> getInventory();
+    public default boolean isMediumContainer(){
+        return this.getType() == ContainerType.MEDIUM;
+    }
 
-		public IFluidHandler getFluidHandler();
-		
-		public @Nullable FluidTank getFluidTank();
-		
-	}
-	
-	public static interface ContainerItem {
-		
-		public static final String NBTKEY = "FVTM:Container";
-		
-		public ContainerData getContainer(ItemStack stack);
-		
-	}
-	
-	public static enum ContainerPosition {
-		LARGE_SINGLE,
-		MEDIUM_DUAL1,
-		MEDIUM_DUAL2,
-		MEDIUM_SINGLE;
-	}
-	
+    public default boolean isLargeContainer(){
+        return this.getType() == ContainerType.LARGE;
+    }
+
+    public Addon getAddon();
+
+    public String getName();
+
+    public ContainerType getType();
+
+    public String[] getDescription();
+
+    @SideOnly(Side.CLIENT)
+    public ContainerModel<ContainerData> getModel();
+
+    public Class<? extends ContainerData> getDataClass();
+
+    public int getInventorySize();
+
+    public boolean isItemValid(ItemStack stack);
+
+    public InventoryType getInventoryType();
+
+    public @Nullable
+    Fluid getFluidType();
+
+    public static enum ContainerType {
+
+        TINY,//unused
+        SMALL,//unused
+        MEDIUM,
+        LARGE;
+
+    }
+
+    public static interface ContainerData extends Lockable, Colorable, Saveloadable<ContainerData>, Textureable {
+
+        public Container getContainer();
+
+        public NonNullList<ItemStack> getInventory();
+
+        public IFluidHandler getFluidHandler();
+
+        public @Nullable
+        FluidTank getFluidTank();
+
+    }
+
+    public static interface ContainerItem {
+
+        public static final String NBTKEY = "FVTM:Container";
+
+        public ContainerData getContainer(ItemStack stack);
+
+    }
+
+    public static enum ContainerPosition {
+        LARGE_SINGLE,
+        MEDIUM_DUAL1,
+        MEDIUM_DUAL2,
+        MEDIUM_SINGLE;
+    }
+
 }

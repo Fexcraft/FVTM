@@ -6,13 +6,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class Renderer {
-	
-	public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking){
+
+    public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking){
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((float)(isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
         //GlStateManager.scale(-0.025F, -0.025F, 0.025F);
         GL11.glScaled(0.005, 0.005, 0.005);
         GlStateManager.disableLighting();
@@ -37,7 +37,8 @@ public class Renderer {
         GlStateManager.enableTexture2D();*/
         //
         if(!isSneaking){
-            fontRendererIn.drawString(str, 0/*-fontRendererIn.getStringWidth(str) / 2*/, verticalShift, 0x000000); /*553648127*/
+            fontRendererIn.drawString(str, 0/*-fontRendererIn.getStringWidth(str) / 2*/, verticalShift, 0x000000);
+            /*553648127*/
             GlStateManager.enableDepth();
         }
         //
@@ -48,18 +49,20 @@ public class Renderer {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
     }
-	
-	/** got this from <b>ebf</b>*/
-	public static void drawTextOutlined(FontRenderer font, String string, int x, int y, int color){
+
+    /**
+     * got this from <b>ebf</b>
+     */
+    public static void drawTextOutlined(FontRenderer font, String string, int x, int y, int color){
         font.drawString(string, x - 1, y + 1, 0);
-        font.drawString(string, x    , y + 1, 0);
+        font.drawString(string, x, y + 1, 0);
         font.drawString(string, x + 1, y + 1, 0);
-        font.drawString(string, x - 1, y    , 0);
-        font.drawString(string, x + 1, y    , 0);
+        font.drawString(string, x - 1, y, 0);
+        font.drawString(string, x + 1, y, 0);
         font.drawString(string, x - 1, y - 1, 0);
-        font.drawString(string, x    , y - 1, 0);
+        font.drawString(string, x, y - 1, 0);
         font.drawString(string, x + 1, y - 1, 0);
-        font.drawString(string,x,y,color);
+        font.drawString(string, x, y, color);
     }
-	
+
 }

@@ -20,126 +20,134 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implements IRenderFactory<UnboundVehicleEntity> {
-	
-	public RenderGenericVehicle(RenderManager renderManager){
-		super(renderManager);
-		shadowSize = 0.5F;
-		/*if(!reg){
+
+    public RenderGenericVehicle(RenderManager renderManager){
+        super(renderManager);
+        shadowSize = 0.5F;
+        /*if(!reg){
 			MinecraftForge.EVENT_BUS.register(this);
 			reg = true;
 		}*/
-	}
+    }
 
-	public void bindTexture(UnboundVehicleEntity ent){
-		super.bindEntityTexture(ent);
-	}
-	
-	public void bindTexture(ResourceLocation rs){
-		super.bindTexture(rs);
-	}
-	
-	private static final ModelRendererTurbo light = new ModelRendererTurbo(new ModelConverter());
-	private static final ModelRendererTurbo light2 = new ModelRendererTurbo(new ModelConverter());
-	static {
-		//light.flip = true;
-		light.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
-		light2.flip = true;
-		light2.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
-	}
-	
-	@Override
+    public void bindTexture(UnboundVehicleEntity ent){
+        super.bindEntityTexture(ent);
+    }
+
+    public void bindTexture(ResourceLocation rs){
+        super.bindTexture(rs);
+    }
+
+    private static final ModelRendererTurbo light = new ModelRendererTurbo(new ModelConverter());
+    private static final ModelRendererTurbo light2 = new ModelRendererTurbo(new ModelConverter());
+
+    static{
+        //light.flip = true;
+        light.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
+        light2.flip = true;
+        light2.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
+    }
+
+    @Override
     public void doRender(UnboundVehicleEntity vehicle, double x, double y, double z, float entity_yaw, float ticks){
-    	if(vehicle.getVehicleData() == null){
-    		return;
-    	}
-        GL11.glPushMatrix();{
-		    GL11.glTranslated(x, y, z);
-		    float yaw   =  (vehicle.axes.getYaw()   - vehicle.prevRotationYaw  );
-		    for(; yaw   >   180F; yaw   -= 360F){}
-		    for(; yaw   <= -180F; yaw   += 360F){}
-		    float pitch =  (vehicle.axes.getPitch() - vehicle.prevRotationPitch);
-		    for(; pitch >   180F; pitch -= 360F){}
-		    for(; pitch <= -180F; pitch += 360F){}
-		    float roll  =  (vehicle.axes.getRoll()  - vehicle.prevRotationRoll );
-		    for(; roll  >   180F; roll  -= 360F){}
-		    for(; roll  <= -180F; roll  += 360F){}
-		    GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
-		    GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
-        	GL11.glRotatef(180f, 0f, 0f, 1f);
-			GL11.glPushMatrix();
-			VehicleModel<VehicleData> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
-			if(modVehicle != null){
-				this.bindTexture(vehicle.getVehicleData().getTexture());
-				modVehicle.render(vehicle.getVehicleData(), vehicle, -1);
-				if(vehicle.getVehicleData().getParts().size() > 0){
-					vehicle.getVehicleData().getParts().forEach((key, partdata) ->{
-						this.bindTexture(partdata.getTexture());
-						Pos pos = partdata.getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
-						pos.translate();
-						partdata.getPart().getModel().render(vehicle.getVehicleData(), key, vehicle);
-						pos.translateR();
-					});
-				}
-			}
-			GL11.glPopMatrix();
-			//
-			if(vehicle.getVehicleData().getLightsState() > 0){
-				GL11.glPushMatrix();
-					Model.bindTexture(Resources.NULL_TEXTURE);
-					GlStateManager.enableBlend();
-			        GlStateManager.disableAlpha();
-			        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-			        GlStateManager.depthMask(false);
-			        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 50f, 50f);
-			        //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
-			        vehicle.getVehicleData().getParts().values().forEach(part -> {
-			        	if(part.getPart().getAttribute(LightProviderAttribute.class) != null){
-			        		LightProviderAttribute attr = part.getPart().getAttribute(LightProviderAttribute.class);
-			        		attr.getLightsOfType("normal").forEach(light -> {
-			        			light.render();
-			        		});
-			        		attr.getLightsOfType("rear").forEach(light -> {
-			        			light.updateColorIfMissing(RGB.RED);
-			        			light.render();
-			        		});
-			        		if(vehicle.getVehicleData().getLightsState() == 1){
-				        		attr.getLightsOfType("front").forEach(light -> {
-				        			light.render();
-				        		});
-			        		}
-			        		if(vehicle.getVehicleData().getLightsState() == 2){
-			        			attr.getLightsOfType("long").forEach(light -> {
-				        			light.render();
-				        		});
-			        		}
-			        		if(vehicle.getVehicleData().getLightsState() == 3){
-			        			attr.getLightsOfType("fog").forEach(light -> {
-				        			light.render();
-				        		});
-			        		}
-			        	}
-			        });
-			        int i = vehicle.getBrightnessForRender();
-			        int j = i % 65536;
-			        int k = i / 65536;
-			        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
-			        GlStateManager.depthMask(true);
-			        GlStateManager.disableBlend();
-			        GlStateManager.enableAlpha();
-				GL11.glPopMatrix();
-			}
-		}
-		GL11.glPopMatrix();
-	}
+        if(vehicle.getVehicleData() == null){
+            return;
+        }
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslated(x, y, z);
+            float yaw = (vehicle.axes.getYaw() - vehicle.prevRotationYaw);
+            for(; yaw > 180F; yaw -= 360F){
+            }
+            for(; yaw <= -180F; yaw += 360F){
+            }
+            float pitch = (vehicle.axes.getPitch() - vehicle.prevRotationPitch);
+            for(; pitch > 180F; pitch -= 360F){
+            }
+            for(; pitch <= -180F; pitch += 360F){
+            }
+            float roll = (vehicle.axes.getRoll() - vehicle.prevRotationRoll);
+            for(; roll > 180F; roll -= 360F){
+            }
+            for(; roll <= -180F; roll += 360F){
+            }
+            GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
+            GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(180f, 0f, 0f, 1f);
+            GL11.glPushMatrix();
+            VehicleModel<VehicleData> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
+            if(modVehicle != null){
+                this.bindTexture(vehicle.getVehicleData().getTexture());
+                modVehicle.render(vehicle.getVehicleData(), vehicle, -1);
+                if(vehicle.getVehicleData().getParts().size() > 0){
+                    vehicle.getVehicleData().getParts().forEach((key, partdata) -> {
+                        this.bindTexture(partdata.getTexture());
+                        Pos pos = partdata.getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
+                        pos.translate();
+                        partdata.getPart().getModel().render(vehicle.getVehicleData(), key, vehicle);
+                        pos.translateR();
+                    });
+                }
+            }
+            GL11.glPopMatrix();
+            //
+            if(vehicle.getVehicleData().getLightsState() > 0){
+                GL11.glPushMatrix();
+                Model.bindTexture(Resources.NULL_TEXTURE);
+                GlStateManager.enableBlend();
+                GlStateManager.disableAlpha();
+                GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+                GlStateManager.depthMask(false);
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 50f, 50f);
+                //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
+                vehicle.getVehicleData().getParts().values().forEach(part -> {
+                    if(part.getPart().getAttribute(LightProviderAttribute.class) != null){
+                        LightProviderAttribute attr = part.getPart().getAttribute(LightProviderAttribute.class);
+                        attr.getLightsOfType("normal").forEach(light -> {
+                            light.render();
+                        });
+                        attr.getLightsOfType("rear").forEach(light -> {
+                            light.updateColorIfMissing(RGB.RED);
+                            light.render();
+                        });
+                        if(vehicle.getVehicleData().getLightsState() == 1){
+                            attr.getLightsOfType("front").forEach(light -> {
+                                light.render();
+                            });
+                        }
+                        if(vehicle.getVehicleData().getLightsState() == 2){
+                            attr.getLightsOfType("long").forEach(light -> {
+                                light.render();
+                            });
+                        }
+                        if(vehicle.getVehicleData().getLightsState() == 3){
+                            attr.getLightsOfType("fog").forEach(light -> {
+                                light.render();
+                            });
+                        }
+                    }
+                });
+                int i = vehicle.getBrightnessForRender();
+                int j = i % 65536;
+                int k = i / 65536;
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
+                GlStateManager.depthMask(true);
+                GlStateManager.disableBlend();
+                GlStateManager.enableAlpha();
+                GL11.glPopMatrix();
+            }
+        }
+        GL11.glPopMatrix();
+    }
 
-	@Override
-	protected ResourceLocation getEntityTexture(UnboundVehicleEntity entity){
-		return entity.getVehicleData().getTexture();
-	}
-	
-	//@SubscribeEvent
-	/*public void renderWorld(RenderWorldLastEvent event){
+    @Override
+    protected ResourceLocation getEntityTexture(UnboundVehicleEntity entity){
+        return entity.getVehicleData().getTexture();
+    }
+
+    //@SubscribeEvent
+    /*public void renderWorld(RenderWorldLastEvent event){
 		World world = Minecraft.getMinecraft().world;
 		if(world == null){
 			return;
@@ -179,10 +187,9 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 	}*/
+    @Override
+    public Render<UnboundVehicleEntity> createRenderFor(RenderManager manager){
+        return new RenderGenericVehicle(manager);
+    }
 
-	@Override
-	public Render<UnboundVehicleEntity> createRenderFor(RenderManager manager){
-		return new RenderGenericVehicle(manager);
-	}
-	
 }

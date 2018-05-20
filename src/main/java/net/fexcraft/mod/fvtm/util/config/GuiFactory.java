@@ -13,39 +13,39 @@ import java.util.Set;
 
 public class GuiFactory implements IModGuiFactory {
 
-	@Override
-	public void initialize(Minecraft mcinst){
-		//
-	}
+    @Override
+    public void initialize(Minecraft mcinst){
+        //
+    }
 
-	@Override
-	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories(){
-		return null;
-	}
-	
-	public static class ConfigGui extends GuiConfig {
+    @Override
+    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories(){
+        return null;
+    }
 
-		public ConfigGui(GuiScreen parent){
-			super(parent, getList(), FVTM.MODID, false, false, "FVTM Configuration");
-			titleLine2 = Config.getConfig().getConfigFile().getAbsolutePath();
-		}
-		
-		public static List<IConfigElement> getList(){
-			List<IConfigElement> list = new ArrayList<IConfigElement>();
-			Config.add(list);
-			return list;
-		}
-		
-	}
+    public static class ConfigGui extends GuiConfig {
 
-	@Override
-	public boolean hasConfigGui(){
-		return true;
-	}
+        public ConfigGui(GuiScreen parent){
+            super(parent, getList(), FVTM.MODID, false, false, "FVTM Configuration");
+            titleLine2 = Config.getConfig().getConfigFile().getAbsolutePath();
+        }
 
-	@Override
-	public GuiScreen createConfigGui(GuiScreen parentScreen){
-		return new ConfigGui(parentScreen);
-	}
-	
+        public static List<IConfigElement> getList(){
+            List<IConfigElement> list = new ArrayList<IConfigElement>();
+            Config.add(list);
+            return list;
+        }
+
+    }
+
+    @Override
+    public boolean hasConfigGui(){
+        return true;
+    }
+
+    @Override
+    public GuiScreen createConfigGui(GuiScreen parentScreen){
+        return new ConfigGui(parentScreen);
+    }
+
 }

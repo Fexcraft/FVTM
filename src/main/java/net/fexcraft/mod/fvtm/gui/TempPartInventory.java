@@ -11,110 +11,110 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
 public class TempPartInventory implements IInventory {
-	
-	private PartData partdata;
-	
-	public TempPartInventory(PartData data){
-		this.partdata = data;
-	}
 
-	@Override
-	public String getName(){
-		return partdata.getPart().getRegistryName().toString();
-	}
+    private PartData partdata;
 
-	@Override
-	public boolean hasCustomName(){
-		return true;
-	}
+    public TempPartInventory(PartData data){
+        this.partdata = data;
+    }
 
-	@Override
-	public ITextComponent getDisplayName(){
-		return new TextComponentString(partdata.getPart().getName());
-	}
+    @Override
+    public String getName(){
+        return partdata.getPart().getRegistryName().toString();
+    }
 
-	@Override
-	public int getSizeInventory(){
-		return partdata.getPart().getAttribute(InventoryAttribute.class).getSize();
-	}
+    @Override
+    public boolean hasCustomName(){
+        return true;
+    }
 
-	@Override
-	public boolean isEmpty(){
-		return partdata.getAttributeData(InventoryAttributeData.class).isEmpty();
-	}
+    @Override
+    public ITextComponent getDisplayName(){
+        return new TextComponentString(partdata.getPart().getName());
+    }
 
-	@Override
-	public ItemStack getStackInSlot(int index){
-		return partdata.getAttributeData(InventoryAttributeData.class).getInventory().get(index);
-	}
+    @Override
+    public int getSizeInventory(){
+        return partdata.getPart().getAttribute(InventoryAttribute.class).getSize();
+    }
 
-	@Override
-	public ItemStack decrStackSize(int index, int count){
-		return !getStackInSlot(index).isEmpty() ? ItemStackHelper.getAndSplit(partdata.getAttributeData(InventoryAttributeData.class).getInventory(), index, count) : ItemStack.EMPTY;
-	}
+    @Override
+    public boolean isEmpty(){
+        return partdata.getAttributeData(InventoryAttributeData.class).isEmpty();
+    }
 
-	@Override
-	public ItemStack removeStackFromSlot(int index){
-		return partdata.getAttributeData(InventoryAttributeData.class).getInventory().set(index, ItemStack.EMPTY);
-	}
+    @Override
+    public ItemStack getStackInSlot(int index){
+        return partdata.getAttributeData(InventoryAttributeData.class).getInventory().get(index);
+    }
 
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack){
-		partdata.getAttributeData(InventoryAttributeData.class).getInventory().set(index, stack);
-	}
+    @Override
+    public ItemStack decrStackSize(int index, int count){
+        return !getStackInSlot(index).isEmpty() ? ItemStackHelper.getAndSplit(partdata.getAttributeData(InventoryAttributeData.class).getInventory(), index, count) : ItemStack.EMPTY;
+    }
 
-	@Override
-	public int getInventoryStackLimit(){
-		return 64;
-	}
+    @Override
+    public ItemStack removeStackFromSlot(int index){
+        return partdata.getAttributeData(InventoryAttributeData.class).getInventory().set(index, ItemStack.EMPTY);
+    }
 
-	@Override
-	public void markDirty(){
-		// ?
-	}
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack){
+        partdata.getAttributeData(InventoryAttributeData.class).getInventory().set(index, stack);
+    }
 
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player){
-		return true;//TODO perm/lock check maybe?
-	}
+    @Override
+    public int getInventoryStackLimit(){
+        return 64;
+    }
 
-	@Override
-	public void openInventory(EntityPlayer player){
-		//
-	}
+    @Override
+    public void markDirty(){
+        // ?
+    }
 
-	@Override
-	public void closeInventory(EntityPlayer player){
-		//
-	}
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player){
+        return true;//TODO perm/lock check maybe?
+    }
 
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack){
-		return partdata.getPart().getAttribute(InventoryAttribute.class).isItemValid(stack);
-	}
+    @Override
+    public void openInventory(EntityPlayer player){
+        //
+    }
 
-	@Override
-	public int getField(int id){
-		return 0;
-	}
+    @Override
+    public void closeInventory(EntityPlayer player){
+        //
+    }
 
-	@Override
-	public void setField(int id, int value){
-		//
-	}
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack){
+        return partdata.getPart().getAttribute(InventoryAttribute.class).isItemValid(stack);
+    }
 
-	@Override
-	public int getFieldCount(){
-		return 0;
-	}
+    @Override
+    public int getField(int id){
+        return 0;
+    }
 
-	@Override
-	public void clear(){
-		partdata.getAttributeData(InventoryAttributeData.class).getInventory().clear();
-	}
+    @Override
+    public void setField(int id, int value){
+        //
+    }
 
-	public PartData getData(){
-		return this.partdata;
-	}
-	
+    @Override
+    public int getFieldCount(){
+        return 0;
+    }
+
+    @Override
+    public void clear(){
+        partdata.getAttributeData(InventoryAttributeData.class).getInventory().clear();
+    }
+
+    public PartData getData(){
+        return this.partdata;
+    }
+
 }

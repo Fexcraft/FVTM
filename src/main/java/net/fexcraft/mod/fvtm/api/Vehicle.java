@@ -40,282 +40,283 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, ColorHolder {
-	
-	public Addon getAddon();
-	
-	public String getName();
-	
-	public String[] getDescription();
-	
-	@Override
-	public default Class<Vehicle> getRegistryType(){
-		return Vehicle.class;
-	}
-	
-	public VehicleType getType();
-	
-	public ItemStack getItemStack(@Nullable VehicleData data);
-	
-	public Map<String, ResourceLocation> getPreinstalledParts();
-	
-	public List<String> getRequiredParts();
-	
-	public float getYAxisConstructorOffset();
-	
-	public float getWheelConstructorOffset();
-	
-	public int getConstructionLength();
-	
-	public List<Pos> getDefaultWheelPos();
-	
-	@SideOnly(Side.CLIENT)
-	public VehicleModel<VehicleData> getModel();
-	
-	public Class<? extends VehicleData> getDataClass();
-	
-	public boolean canSpawnAs(EntityType type);
 
-	public float getFMCameraDistance();//5f
+    public Addon getAddon();
 
-	public float getFMWheelStepHeight();//1f
+    public String getName();
 
-	public float getFMWheelSpringStrength();//0.5f
+    public String[] getDescription();
 
-	public float getFMMaxNegativeThrottle();
-	
-	public float getFMMaxPositiveThrottle();
+    @Override
+    public default Class<Vehicle> getRegistryType(){
+        return Vehicle.class;
+    }
 
-	public float getFMTurnLeftModifier();
+    public VehicleType getType();
 
-	public float getFMTurnRightModifier();
+    public ItemStack getItemStack(@Nullable VehicleData data);
 
-	public DriveType getDriveType();
+    public Map<String, ResourceLocation> getPreinstalledParts();
 
-	public boolean isTrailerOrWagon();
+    public List<String> getRequiredParts();
 
-	public ResourceLocation getDefaultKey();
-	
-	public TreeMap<String, Pos> getWheelPositions();
-	
-	public Collection<ResourceLocation> getSounds();
-	
-	public SoundEvent getSound(String event);
+    public float getYAxisConstructorOffset();
 
-	public void setSoundEvent(SoundEvent soundevent);
-	
-	public float getSoundVolume(String event);
-	
-	public float getSoundPitch(String event);
-	
-	//<-- VEHICLE DATA -->//
-	public static interface VehicleData extends Colorable, Lockable, Saveloadable<VehicleData>, Textureable {
-		
-		public Vehicle getVehicle();
-		
-		public double getFuelTankContent();
+    public float getWheelConstructorOffset();
 
-		public boolean consumeFuel(double d);
-		
-		public int getFuelTankSize();
-		
-		public TreeMap<String, PartData> getParts();
+    public int getConstructionLength();
 
-		public PartData getPart(String string);
-		
-		public List<Pos> getWheelPos();
-		
-		public boolean readyToSpawn();
+    public List<Pos> getDefaultWheelPos();
 
-		public boolean doorsOpen();
+    @SideOnly(Side.CLIENT)
+    public VehicleModel<VehicleData> getModel();
 
-		public void toggleDoors(@Nullable Boolean doors);
+    public Class<? extends VehicleData> getDataClass();
 
-		public void installPart(String as, PartData data);
-		
-		public Collection<VehicleScript> getScripts();
-		
-		public <T extends VehicleScript> T getScript(Class<T> clazz);
+    public boolean canSpawnAs(EntityType type);
 
-		public int getSpawnedKeysAmount();
+    public float getFMCameraDistance();//5f
 
-		public void setSpawnedKeysAmount(@Nullable Integer i);
+    public float getFMWheelStepHeight();//1f
 
-		public List<FMSeat> getSeats();
-		
-		public int getMaxInventorySize();
-		
-		/** Prefferably don't edit stuff in this one, do any processing in the specific part attribute. */
-		public NonNullList<ItemStack> getAllInventoryContents();
+    public float getFMWheelSpringStrength();//0.5f
 
-		public List<PartData> getInventoryContainers();
+    public float getFMMaxNegativeThrottle();
 
-		public List<PartData> getContainerHolders();
-		
-		@Nullable
-		public Pos getFrontConnector();
-		
-		@Nullable
-		public Pos getRearConnector();
-		
-		/**
-		 * 0 = off
-		 * 1 = on
-		 * 2 = long (?)
-		 * 3 = fog lights (?)
-		 * */
-		public int getLightsState();
-		
-		public void setLightsState(int i);
-		
-	}
-	
-	//<-- VEHICLE ITEM -->//
-	public static interface VehicleItem {
-		
-		public static final String NBTKEY = "FVTM:Vehicle";
-		public static final String OLDNBTKEY = "FVTM:LandVehicle";
-		
-		public VehicleData getVehicle(ItemStack stack);
-		
-	}
-	
-	public static interface VehicleScript extends Saveloadable<VehicleScript> {
-		
-		public ResourceLocation getId();
-		
-		public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side);
+    public float getFMMaxPositiveThrottle();
 
-		public void onCreated(Entity entity, VehicleData data);
+    public float getFMTurnLeftModifier();
 
-		public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player);
+    public float getFMTurnRightModifier();
 
-		public void onUpdate(Entity entity, VehicleData data);
+    public DriveType getDriveType();
 
-		public void onRemove(Entity entity, VehicleData data);
-		
-		public default void sendPacketToClient(Entity ent, EntityPlayer player, NBTTagCompound nbt){
-			nbt.setString("ScriptId", getId().toString());
-			PacketHandler.getInstance().sendTo(new PacketEntityUpdate(ent, nbt), (EntityPlayerMP)player);
-		}
-		
-		public default void sendPacketToAll(Entity ent, NBTTagCompound nbt){
-			nbt.setString("ScriptId", getId().toString());
-			PacketHandler.getInstance().sendToAll(new PacketEntityUpdate(ent, nbt));
-		}
-		
-		public default void sendPacketToAllAround(Entity ent, NBTTagCompound nbt){
-			nbt.setString("ScriptId", getId().toString());
-			PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(ent, nbt), new TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, 256));
-		}
-		
-		public default void sendPacketToServer(Entity ent, NBTTagCompound nbt){
-			nbt.setString("ScriptId", getId().toString());
-			PacketHandler.getInstance().sendToServer(new PacketEntityUpdate(ent, nbt));
-		}
+    public boolean isTrailerOrWagon();
 
-		public default void onKeyInput(int key, int seatid, VehicleEntity vehicle){
-			return;
-		}
+    public ResourceLocation getDefaultKey();
 
-		public TreeMap<String, String> getSettingKeys(int seat);
-		
-		public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value);
-		
-		public Object getSettingValue(int seat, String setting);
-		
-	}
-	
-	//<-- VEHICLE ENTITY -->//
-	public static interface VehicleEntity {
-		
-		public VehicleData getVehicleData();
-		
-		public VehicleType getVehicleType();
-		
-		public Entity getEntity();
+    public TreeMap<String, Pos> getWheelPositions();
 
-		public VehicleAxes getAxes();
+    public Collection<ResourceLocation> getSounds();
 
-		public WheelEntity[] getWheels();
+    public SoundEvent getSound(String event);
 
-		public SeatEntity[] getSeats();
+    public void setSoundEvent(SoundEvent soundevent);
 
-		public boolean onKeyPress(int key, int seat, EntityPlayer player);
+    public float getSoundVolume(String event);
 
-		public Entity getCamera();
+    public float getSoundPitch(String event);
 
-		public double getThrottle();
+    //<-- VEHICLE DATA -->//
+    public static interface VehicleData extends Colorable, Lockable, Saveloadable<VehicleData>, Textureable {
 
-		public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw);
-		
-		public VehicleEntity getEntityAtFront();
-		
-		public VehicleEntity getEntityAtRear();
+        public Vehicle getVehicle();
 
-		public Vec3d getAngularVelocity();
+        public double getFuelTankContent();
 
-		public float getWheelsAngle();
+        public boolean consumeFuel(double d);
 
-		public float getWheelsYaw();
+        public int getFuelTankSize();
 
-		public default void syncVehicleData(){
-			NBTTagCompound nbt = this.getVehicleData().writeToNBT(new NBTTagCompound());
-			nbt.setString("task", "update_vehicledata");
-			ApiUtil.sendEntityUpdatePacketToAllAround(this.getEntity(), nbt);
-		}
-		
-		public default void moveTrailer(){
-			//TO BE OVERRIDEN BY A TRAILER
-		}
-		
-	}
-	
-	//<-- VEHICLE  -->//
-	public static enum VehicleType {
-		
-		LAND, AIR, WATER, RAIL, NULL;
-		
-		VehicleType(){
-			//
-		}
-		
-		public static VehicleType fromString(String string){
-			for(VehicleType type : values()){
-				if(type.name().equalsIgnoreCase(string)){
-					return type;
-				}
-			}
-			return LAND;
-		}
+        public TreeMap<String, PartData> getParts();
 
-		public static VehicleType fromJson(JsonObject obj){
-			if(obj.has("VehicleType")){
-				return fromString(obj.get("VehicleType").getAsString());
-			}
-			if(obj.has("Type")){
-				return fromString(obj.get("Type").getAsString());
-			}
-			return LAND;
-		}
+        public PartData getPart(String string);
 
-		public boolean isLandVehicle(){
-			return this == LAND;
-		}
+        public List<Pos> getWheelPos();
 
-		public boolean isWaterVehicle(){
-			return this == WATER;
-		}
+        public boolean readyToSpawn();
 
-		public boolean isAirVehicle(){
-			return this == AIR;
-		}
+        public boolean doorsOpen();
 
-		public boolean isRailVehicle(){
-			return this == LAND;
-		}
-		
-	}
+        public void toggleDoors(@Nullable Boolean doors);
 
-	public double getBuoyancy();
-	
+        public void installPart(String as, PartData data);
+
+        public Collection<VehicleScript> getScripts();
+
+        public <T extends VehicleScript> T getScript(Class<T> clazz);
+
+        public int getSpawnedKeysAmount();
+
+        public void setSpawnedKeysAmount(@Nullable Integer i);
+
+        public List<FMSeat> getSeats();
+
+        public int getMaxInventorySize();
+
+        /**
+         * Prefferably don't edit stuff in this one, do any processing in the
+         * specific part attribute.
+         */
+        public NonNullList<ItemStack> getAllInventoryContents();
+
+        public List<PartData> getInventoryContainers();
+
+        public List<PartData> getContainerHolders();
+
+        @Nullable
+        public Pos getFrontConnector();
+
+        @Nullable
+        public Pos getRearConnector();
+
+        /**
+         * 0 = off 1 = on 2 = long (?) 3 = fog lights (?)
+         *
+         */
+        public int getLightsState();
+
+        public void setLightsState(int i);
+
+    }
+
+    //<-- VEHICLE ITEM -->//
+    public static interface VehicleItem {
+
+        public static final String NBTKEY = "FVTM:Vehicle";
+        public static final String OLDNBTKEY = "FVTM:LandVehicle";
+
+        public VehicleData getVehicle(ItemStack stack);
+
+    }
+
+    public static interface VehicleScript extends Saveloadable<VehicleScript> {
+
+        public ResourceLocation getId();
+
+        public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side);
+
+        public void onCreated(Entity entity, VehicleData data);
+
+        public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player);
+
+        public void onUpdate(Entity entity, VehicleData data);
+
+        public void onRemove(Entity entity, VehicleData data);
+
+        public default void sendPacketToClient(Entity ent, EntityPlayer player, NBTTagCompound nbt){
+            nbt.setString("ScriptId", getId().toString());
+            PacketHandler.getInstance().sendTo(new PacketEntityUpdate(ent, nbt), (EntityPlayerMP) player);
+        }
+
+        public default void sendPacketToAll(Entity ent, NBTTagCompound nbt){
+            nbt.setString("ScriptId", getId().toString());
+            PacketHandler.getInstance().sendToAll(new PacketEntityUpdate(ent, nbt));
+        }
+
+        public default void sendPacketToAllAround(Entity ent, NBTTagCompound nbt){
+            nbt.setString("ScriptId", getId().toString());
+            PacketHandler.getInstance().sendToAllAround(new PacketEntityUpdate(ent, nbt), new TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, 256));
+        }
+
+        public default void sendPacketToServer(Entity ent, NBTTagCompound nbt){
+            nbt.setString("ScriptId", getId().toString());
+            PacketHandler.getInstance().sendToServer(new PacketEntityUpdate(ent, nbt));
+        }
+
+        public default void onKeyInput(int key, int seatid, VehicleEntity vehicle){
+            return;
+        }
+
+        public TreeMap<String, String> getSettingKeys(int seat);
+
+        public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value);
+
+        public Object getSettingValue(int seat, String setting);
+
+    }
+
+    //<-- VEHICLE ENTITY -->//
+    public static interface VehicleEntity {
+
+        public VehicleData getVehicleData();
+
+        public VehicleType getVehicleType();
+
+        public Entity getEntity();
+
+        public VehicleAxes getAxes();
+
+        public WheelEntity[] getWheels();
+
+        public SeatEntity[] getSeats();
+
+        public boolean onKeyPress(int key, int seat, EntityPlayer player);
+
+        public Entity getCamera();
+
+        public double getThrottle();
+
+        public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw);
+
+        public VehicleEntity getEntityAtFront();
+
+        public VehicleEntity getEntityAtRear();
+
+        public Vec3d getAngularVelocity();
+
+        public float getWheelsAngle();
+
+        public float getWheelsYaw();
+
+        public default void syncVehicleData(){
+            NBTTagCompound nbt = this.getVehicleData().writeToNBT(new NBTTagCompound());
+            nbt.setString("task", "update_vehicledata");
+            ApiUtil.sendEntityUpdatePacketToAllAround(this.getEntity(), nbt);
+        }
+
+        public default void moveTrailer(){
+            //TO BE OVERRIDEN BY A TRAILER
+        }
+
+    }
+
+    //<-- VEHICLE  -->//
+    public static enum VehicleType {
+
+        LAND, AIR, WATER, RAIL, NULL;
+
+        VehicleType(){
+            //
+        }
+
+        public static VehicleType fromString(String string){
+            for(VehicleType type : values()){
+                if(type.name().equalsIgnoreCase(string)){
+                    return type;
+                }
+            }
+            return LAND;
+        }
+
+        public static VehicleType fromJson(JsonObject obj){
+            if(obj.has("VehicleType")){
+                return fromString(obj.get("VehicleType").getAsString());
+            }
+            if(obj.has("Type")){
+                return fromString(obj.get("Type").getAsString());
+            }
+            return LAND;
+        }
+
+        public boolean isLandVehicle(){
+            return this == LAND;
+        }
+
+        public boolean isWaterVehicle(){
+            return this == WATER;
+        }
+
+        public boolean isAirVehicle(){
+            return this == AIR;
+        }
+
+        public boolean isRailVehicle(){
+            return this == LAND;
+        }
+
+    }
+
+    public double getBuoyancy();
+
 }

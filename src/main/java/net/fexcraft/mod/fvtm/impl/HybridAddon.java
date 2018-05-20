@@ -14,29 +14,36 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.Register;
 
 public abstract class HybridAddon extends GenericAddon {
-	
-	public HybridAddon(File file){
-		super(file);
-		hybrid = true;
-	}
 
-	public void regFuels(Register<Fuel> event){}
-	
-	public abstract void regMaterials(RegistryEvent.Register<Material> event);
+    public HybridAddon(File file){
+        super(file);
+        hybrid = true;
+    }
 
-	public void regAttributes(RegistryEvent.Register<Attribute> event){}
-	
-	public abstract void regParts(RegistryEvent.Register<Part> event);
-	
-	public abstract void regVehicles(RegistryEvent.Register<Vehicle> event);
-	
-	public abstract void regContainers(Register<Container> event);
+    public void regFuels(Register<Fuel> event){
+    }
 
-	public void regSounds(Register<SoundEvent> event){}
-	
-	/** Set `true` if you want to skip default JSON config search and parsing for this addon. */
-	public abstract boolean skipDefaultRegistryMethods();
+    public abstract void regMaterials(RegistryEvent.Register<Material> event);
 
-	public void regConsumables(Register<Consumable> event){}
-	
+    public void regAttributes(RegistryEvent.Register<Attribute> event){
+    }
+
+    public abstract void regParts(RegistryEvent.Register<Part> event);
+
+    public abstract void regVehicles(RegistryEvent.Register<Vehicle> event);
+
+    public abstract void regContainers(Register<Container> event);
+
+    public void regSounds(Register<SoundEvent> event){
+    }
+
+    /**
+     * Set `true` if you want to skip default JSON config search and parsing for
+     * this addon.
+     */
+    public abstract boolean skipDefaultRegistryMethods();
+
+    public void regConsumables(Register<Consumable> event){
+    }
+
 }

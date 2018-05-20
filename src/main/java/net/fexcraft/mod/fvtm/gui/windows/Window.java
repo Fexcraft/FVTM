@@ -7,31 +7,33 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
 public interface Window {
-	
-	public String getId();
 
-	public void drawWindow(ConstructorMainGUI gui, Minecraft mc, int i, int j, int mouseX, int mouseY, float partialTicks);
-	
-	public boolean closesOther();
-	
-	public void close(ConstructorMainGUI gui, String rqFrom);
+    public String getId();
 
-	public void actionPerformed(ConstructorMainGUI gui, GuiButton button);
+    public void drawWindow(ConstructorMainGUI gui, Minecraft mc, int i, int j, int mouseX, int mouseY, float partialTicks);
 
-	public void addButtons(ConstructorMainGUI gui, List<GuiButton> buttonList);
+    public boolean closesOther();
 
-	public void toggleButtonState(ConstructorMainGUI gui, boolean visible);
+    public void close(ConstructorMainGUI gui, String rqFrom);
 
-	public String getTitle();
+    public void actionPerformed(ConstructorMainGUI gui, GuiButton button);
 
-	public void applyArguments(ConstructorMainGUI gui, String[] args);
+    public void addButtons(ConstructorMainGUI gui, List<GuiButton> buttonList);
 
-	public default boolean isKeyTyped(char typedChar, int keyCode){
-		return true;
-	}
+    public void toggleButtonState(ConstructorMainGUI gui, boolean visible);
 
-	public default void mouseClicked(int mouseX, int mouseY, int mouseButton){}
+    public String getTitle();
 
-	public default void handleMouseInput(){}
-	
+    public void applyArguments(ConstructorMainGUI gui, String[] args);
+
+    public default boolean isKeyTyped(char typedChar, int keyCode){
+        return true;
+    }
+
+    public default void mouseClicked(int mouseX, int mouseY, int mouseButton){
+    }
+
+    public default void handleMouseInput(){
+    }
+
 }

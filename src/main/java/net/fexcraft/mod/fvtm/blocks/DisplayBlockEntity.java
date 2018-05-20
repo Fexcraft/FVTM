@@ -19,76 +19,78 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class DisplayBlockEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 
-	private Vehicle.VehicleData data;
+    private Vehicle.VehicleData data;
 
-	public DisplayBlockEntity(){
-		this.data = null;
-	}
+    public DisplayBlockEntity(){
+        this.data = null;
+    }
 
-	public final void sendUpdate(){
-		ApiUtil.sendTileEntityUpdatePacket(world, pos, this.getUpdateTag());
-	}
+    public final void sendUpdate(){
+        ApiUtil.sendTileEntityUpdatePacket(world, pos, this.getUpdateTag());
+    }
 
-	@Override
-	public final void processClientPacket(PacketTileEntityUpdate pkt){
-		this.readFromNBT(pkt.nbt);
-	}
+    @Override
+    public final void processClientPacket(PacketTileEntityUpdate pkt){
+        this.readFromNBT(pkt.nbt);
+    }
 
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket(){
-		return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
-	}
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket(){
+        return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
+    }
 
-	@Override
-	public NBTTagCompound getUpdateTag(){
-		return this.writeToNBT(new NBTTagCompound());
-	}
+    @Override
+    public NBTTagCompound getUpdateTag(){
+        return this.writeToNBT(new NBTTagCompound());
+    }
 
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
-		super.readFromNBT(pkt.getNbtCompound());
-		this.readFromNBT(pkt.getNbtCompound());
-	}
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
+        super.readFromNBT(pkt.getNbtCompound());
+        this.readFromNBT(pkt.getNbtCompound());
+    }
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
-		super.writeToNBT(compound);
-		if(data != null){
-			data.writeToNBT(compound);
-		}
-		return compound;
-	}
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound){
+        super.writeToNBT(compound);
+        if(data != null){
+            data.writeToNBT(compound);
+        }
+        return compound;
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound compound){
-		super.readFromNBT(compound);
-		data = Resources.getVehicleData(compound);
-		Print.debug(compound.toString(), data == null);
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound compound){
+        super.readFromNBT(compound);
+        data = Resources.getVehicleData(compound);
+        Print.debug(compound.toString(), data == null);
+    }
 
-	@SideOnly(Side.CLIENT) @Override
+    @SideOnly(Side.CLIENT)
+    @Override
     public double getMaxRenderDistanceSquared(){
         return super.getMaxRenderDistanceSquared() * 8;
     }
-	
-	@SideOnly(Side.CLIENT) @Override
+
+    @SideOnly(Side.CLIENT)
+    @Override
     public AxisAlignedBB getRenderBoundingBox(){
         return INFINITE_EXTENT_AABB;
     }
 
-	public Vehicle.VehicleData setVehicleData(Vehicle.VehicleData newdata){
-		Vehicle.VehicleData data = this.data;
-		this.data = newdata;
-		return data;
-	}
+    public Vehicle.VehicleData setVehicleData(Vehicle.VehicleData newdata){
+        Vehicle.VehicleData data = this.data;
+        this.data = newdata;
+        return data;
+    }
 
-	public Vehicle.VehicleData getVehicleData(){
-		return data;
-	}
+    public Vehicle.VehicleData getVehicleData(){
+        return data;
+    }
 
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState){
-		return oldState.getBlock() != newState.getBlock();
-	}
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState){
+        return oldState.getBlock() != newState.getBlock();
+    }
 
 }

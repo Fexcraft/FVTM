@@ -35,8 +35,9 @@ package net.fexcraft.mod.fvtm.util.vector;
  * @author foo
  */
 public interface ReadableVector3f extends ReadableVector2f {
-	/**
-	 * @return z
-	 */
-	float getZ();
+
+    /**
+     * @return z
+     */
+    float getZ();
 }

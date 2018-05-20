@@ -19,126 +19,130 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class T1SnowPlowScript implements VehicleScript {
-	
-	private static final TreeMap<String, String> SETTINGS = new TreeMap<String, String>();
-	static { SETTINGS.put("T1 Snow Plow", "boolean"); }
-	public boolean on = false;
-	
-	public T1SnowPlowScript(){}
 
-	@Override
-	public ResourceLocation getId(){
-		return new ResourceLocation("fvp:t1snowplowscript");
-	}
+    private static final TreeMap<String, String> SETTINGS = new TreeMap<String, String>();
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
-		compound.setBoolean(this.getId().toString() + "_On", on);
-		return compound;
-	}
+    static{
+        SETTINGS.put("T1 Snow Plow", "boolean");
+    }
+    public boolean on = false;
 
-	@Override
-	public VehicleScript readFromNBT(NBTTagCompound compound){
-		if(compound.hasKey(this.getId().toString() + "_On")){
-			on = compound.getBoolean(this.getId().toString() + "_On");
-		}
-		return this;
-	}
+    public T1SnowPlowScript(){
+    }
 
-	@Override
-	public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side){
-		if(side.isServer()){
-			this.sendPacketToAllAround(entity, compound);
-		}
-		if(compound.hasKey("On")){
-			on = compound.getBoolean("On");
-		}
-	}
+    @Override
+    public ResourceLocation getId(){
+        return new ResourceLocation("fvp:t1snowplowscript");
+    }
 
-	@Override
-	public void onCreated(Entity entity, VehicleData data){
-		return;
-	}
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound){
+        compound.setBoolean(this.getId().toString() + "_On", on);
+        return compound;
+    }
 
-	@Override
-	public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player){
-		return false;
-	}
+    @Override
+    public VehicleScript readFromNBT(NBTTagCompound compound){
+        if(compound.hasKey(this.getId().toString() + "_On")){
+            on = compound.getBoolean(this.getId().toString() + "_On");
+        }
+        return this;
+    }
 
-	@Override
-	public void onUpdate(Entity entity, VehicleData data){
-		VehicleEntity vehicle = (VehicleEntity)entity;
-		if(!entity.world.isRemote){
-			if(on){
-				Vec3d[] pos = new Vec3d[6];
-				pos[0] = calculate(vehicle, entity, 2);
-				pos[1] = calculate(vehicle, entity,  1);
-				pos[2] = calculate(vehicle, entity,  0);
-				pos[3] = calculate(vehicle, entity, -1);
-				pos[4] = calculate(vehicle, entity, -2);
-				pos[5] = calculate(vehicle, entity,  3);
-				IBlockState[] states = new IBlockState[6];
-				int j = 0;
-				for(int i = 0; i < 6; i++){
-					BlockPos poss = new BlockPos(new Vec3d(pos[i].x, pos[i].y, pos[i].z));
-					states[i] = entity.world.getBlockState(poss);
-					if(i < 5){
-						if(states[i].getMaterial() == Material.SNOW){
-							entity.world.setBlockState(new BlockPos(poss), Blocks.AIR.getDefaultState(), 2);
-							j++;
-						}
-						else if(states[i].getMaterial().isReplaceable() || states[i].getMaterial() == Material.CACTUS || states[i].getMaterial() == Material.CIRCUITS){
-							entity.world.setBlockState(new BlockPos(poss), Blocks.AIR.getDefaultState(), 2);
-						}
-					}
-					if(i == 5 && j > 0 && states[i].getMaterial().isReplaceable()){
-						entity.world.setBlockState(poss, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, j), 2);
-					}
-				}
-			}
-			else{
-				//
-			}
-		}
-	}
-	
-	private static final Vec3d calculate(VehicleEntity vehicle, Entity ent,  int i){
-		Pos pos = new Pos(70, 4, i * 16);
-		Vec3d rel = vehicle.getAxes().getRelativeVector(pos.to16Double());
-		return new Vec3d(ent.posX + rel.x, ent.posY + rel.y, ent.posZ + rel.z);
-	}
+    @Override
+    public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side){
+        if(side.isServer()){
+            this.sendPacketToAllAround(entity, compound);
+        }
+        if(compound.hasKey("On")){
+            on = compound.getBoolean("On");
+        }
+    }
 
-	@Override
-	public void onRemove(Entity entity, VehicleData data){
-		//
-	}
-	
-	@Override
-	public void onKeyInput(int key, int seat, VehicleEntity ent){
-		//
-	}
+    @Override
+    public void onCreated(Entity entity, VehicleData data){
+        return;
+    }
 
-	@Override
-	public TreeMap<String, String> getSettingKeys(int seat){
-		return seat == 0 ? SETTINGS : new TreeMap<String, String>();
-	}
+    @Override
+    public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player){
+        return false;
+    }
 
-	@Override
-	public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value){
-		if(setting.equals(SETTINGS.keySet().toArray()[0]) && seat == 0){
-			on = value == null ? !on : (boolean)value;
-			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setBoolean("On", on);
-			this.sendPacketToServer(ent.getEntity(), nbt);
-		}
-	}
+    @Override
+    public void onUpdate(Entity entity, VehicleData data){
+        VehicleEntity vehicle = (VehicleEntity) entity;
+        if(!entity.world.isRemote){
+            if(on){
+                Vec3d[] pos = new Vec3d[6];
+                pos[0] = calculate(vehicle, entity, 2);
+                pos[1] = calculate(vehicle, entity, 1);
+                pos[2] = calculate(vehicle, entity, 0);
+                pos[3] = calculate(vehicle, entity, -1);
+                pos[4] = calculate(vehicle, entity, -2);
+                pos[5] = calculate(vehicle, entity, 3);
+                IBlockState[] states = new IBlockState[6];
+                int j = 0;
+                for(int i = 0; i < 6; i++){
+                    BlockPos poss = new BlockPos(new Vec3d(pos[i].x, pos[i].y, pos[i].z));
+                    states[i] = entity.world.getBlockState(poss);
+                    if(i < 5){
+                        if(states[i].getMaterial() == Material.SNOW){
+                            entity.world.setBlockState(new BlockPos(poss), Blocks.AIR.getDefaultState(), 2);
+                            j++;
+                        }
+                        else if(states[i].getMaterial().isReplaceable() || states[i].getMaterial() == Material.CACTUS || states[i].getMaterial() == Material.CIRCUITS){
+                            entity.world.setBlockState(new BlockPos(poss), Blocks.AIR.getDefaultState(), 2);
+                        }
+                    }
+                    if(i == 5 && j > 0 && states[i].getMaterial().isReplaceable()){
+                        entity.world.setBlockState(poss, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, j), 2);
+                    }
+                }
+            }
+            else{
+                //
+            }
+        }
+    }
 
-	@Override
-	public Object getSettingValue(int seat, String setting){
-		if(setting.equals(SETTINGS.keySet().toArray()[0])){
-			return on;
-		}
-		return null;
-	}
-	
+    private static final Vec3d calculate(VehicleEntity vehicle, Entity ent, int i){
+        Pos pos = new Pos(70, 4, i * 16);
+        Vec3d rel = vehicle.getAxes().getRelativeVector(pos.to16Double());
+        return new Vec3d(ent.posX + rel.x, ent.posY + rel.y, ent.posZ + rel.z);
+    }
+
+    @Override
+    public void onRemove(Entity entity, VehicleData data){
+        //
+    }
+
+    @Override
+    public void onKeyInput(int key, int seat, VehicleEntity ent){
+        //
+    }
+
+    @Override
+    public TreeMap<String, String> getSettingKeys(int seat){
+        return seat == 0 ? SETTINGS : new TreeMap<String, String>();
+    }
+
+    @Override
+    public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value){
+        if(setting.equals(SETTINGS.keySet().toArray()[0]) && seat == 0){
+            on = value == null ? !on : (boolean) value;
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setBoolean("On", on);
+            this.sendPacketToServer(ent.getEntity(), nbt);
+        }
+    }
+
+    @Override
+    public Object getSettingValue(int seat, String setting){
+        if(setting.equals(SETTINGS.keySet().toArray()[0])){
+            return on;
+        }
+        return null;
+    }
+
 }

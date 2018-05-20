@@ -8,69 +8,78 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-/** `set` calls set a value, but don't send updates, while `update` calls send an update to the Client*/
+/**
+ * `set` calls set a value, but don't send updates, while `update` calls send an
+ * update to the Client
+ */
 public interface ConstructorEntity {
-	
-	@Nullable
-	public VehicleData getVehicleData();
 
-	public void updateVehicleData(VehicleData data);
+    @Nullable
+    public VehicleData getVehicleData();
 
-	public void setVehicleData(VehicleData data);
+    public void updateVehicleData(VehicleData data);
 
-	public int getSelection();
+    public void setVehicleData(VehicleData data);
 
-	public void setSelection(int i);
+    public int getSelection();
 
-	public default void updateSelection(int i){ this.updateSelection(i, false); }
+    public void setSelection(int i);
 
-	public void updateSelection(int i, boolean b);
+    public default void updateSelection(int i){
+        this.updateSelection(i, false);
+    }
 
-	public String getScreenId();
+    public void updateSelection(int i, boolean b);
 
-	public default void updateScreenId(String string){
-		this.updateScreenId(string, true);
-	}
+    public String getScreenId();
 
-	public void updateScreenId(String string, boolean ressel);
+    public default void updateScreenId(String string){
+        this.updateScreenId(string, true);
+    }
 
-	public void recycleVehicle();
+    public void updateScreenId(String string, boolean ressel);
 
-	public default int getRows(){
-		return 8;
-	}
+    public void recycleVehicle();
 
-	public byte getBrush();
+    public default int getRows(){
+        return 8;
+    }
 
-	public void setBrush(byte b);
+    public byte getBrush();
 
-	public default void setBrush(int i){
-		if(i > Byte.MAX_VALUE){ i = Byte.MAX_VALUE; }
-		if(i < Byte.MIN_VALUE){ i = Byte.MIN_VALUE; }
-		this.setBrush((byte)i);
-	}
+    public void setBrush(byte b);
 
-	public void updateColour(String str, RGB rgb);
+    public default void setBrush(int i){
+        if(i > Byte.MAX_VALUE){
+            i = Byte.MAX_VALUE;
+        }
+        if(i < Byte.MIN_VALUE){
+            i = Byte.MIN_VALUE;
+        }
+        this.setBrush((byte) i);
+    }
 
-	public PartData getPartData();
+    public void updateColour(String str, RGB rgb);
 
-	public void setPartData(PartData part);
+    public PartData getPartData();
 
-	public World getWorld();
+    public void setPartData(PartData part);
 
-	public BlockPos getPos();
+    public World getWorld();
 
-	public int getSelPart();
+    public BlockPos getPos();
 
-	public void setSelPart(int i);
+    public int getSelPart();
 
-	public int getScroll();
+    public void setSelPart(int i);
 
-	public void setScroll(int i);
+    public int getScroll();
 
-	public BlockPos getCenterPos();
+    public void setScroll(int i);
 
-	public void setCenterPos(BlockPos o);
+    public BlockPos getCenterPos();
 
-	public void openInputGui(EntityPlayer player);
+    public void setCenterPos(BlockPos o);
+
+    public void openInputGui(EntityPlayer player);
 }

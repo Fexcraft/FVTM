@@ -16,47 +16,47 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class FMSeatAttribute implements Attribute {
-	
-	private static final ResourceLocation regname = new ResourceLocation("seat");
-	private FMSeat[] seats;
 
-	@Override
-	public ResourceLocation getRegistryName(){
-		return regname;
-	}
+    private static final ResourceLocation regname = new ResourceLocation("seat");
+    private FMSeat[] seats;
 
-	@Override
-	public void load(JsonObject obj){
-		JsonArray array = obj.has("FM-Seats") ? obj.get("FM-Seats").getAsJsonArray() : new JsonArray();
-		seats = new FMSeat[array.size()];
-		for(int i = 0; i < seats.length; i++){
-			seats[i] = new FMSeat(array.get(i).getAsJsonObject());
-		}
-	}
+    @Override
+    public ResourceLocation getRegistryName(){
+        return regname;
+    }
 
-	@Override
-	public String getName(){
-		return "FM Seat";
-	}
+    @Override
+    public void load(JsonObject obj){
+        JsonArray array = obj.has("FM-Seats") ? obj.get("FM-Seats").getAsJsonArray() : new JsonArray();
+        seats = new FMSeat[array.size()];
+        for(int i = 0; i < seats.length; i++){
+            seats[i] = new FMSeat(array.get(i).getAsJsonObject());
+        }
+    }
 
-	@Override
-	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag){
-		tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
-		tooltip.add(Formatter.format("&9Seats: &7" + seats.length));
-	}
+    @Override
+    public String getName(){
+        return "FM Seat";
+    }
 
-	public Collection<FMSeat> getSeats(){
-		return Arrays.asList(seats);
-	}
+    @Override
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag){
+        tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
+        tooltip.add(Formatter.format("&9Seats: &7" + seats.length));
+    }
 
-	@Override
-	public boolean hasDataClass(){
-		return false;
-	}
+    public Collection<FMSeat> getSeats(){
+        return Arrays.asList(seats);
+    }
 
-	@Override
-	public Class<? extends AttributeData> getDataClass(){
-		return null;
-	}
-	
+    @Override
+    public boolean hasDataClass(){
+        return false;
+    }
+
+    @Override
+    public Class<? extends AttributeData> getDataClass(){
+        return null;
+    }
+
 }

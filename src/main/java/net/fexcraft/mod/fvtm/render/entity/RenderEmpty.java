@@ -10,25 +10,26 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderEmpty extends Render<Entity> implements IRenderFactory<Entity> {
 
-	public RenderEmpty(RenderManager renderManager){
-		super(renderManager);
-		shadowSize = 0.125F;
-	}
-	@Override
-	public void doRender(Entity entity, double x, double y, double z, float yaw, float partialticks){
-		return;
-	}
+    public RenderEmpty(RenderManager renderManager){
+        super(renderManager);
+        shadowSize = 0.125F;
+    }
 
-	@Override
-	protected ResourceLocation getEntityTexture(Entity entity){
-		return Resources.NULL_TEXTURE;
-	}
-	
-	protected ModelBase model;
+    @Override
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialticks){
+        return;
+    }
 
-	@Override
-	public Render<Entity> createRenderFor(RenderManager manager){
-		return new RenderEmpty(manager);
-	}
-	
+    @Override
+    protected ResourceLocation getEntityTexture(Entity entity){
+        return Resources.NULL_TEXTURE;
+    }
+
+    protected ModelBase model;
+
+    @Override
+    public Render<Entity> createRenderFor(RenderManager manager){
+        return new RenderEmpty(manager);
+    }
+
 }

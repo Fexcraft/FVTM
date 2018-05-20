@@ -23,81 +23,81 @@ import net.minecraft.world.World;
 
 @fBlock(modid = FVTM.MODID, name = "constructor_center", tileentity = ConstructorCenterEntity.class)
 public class ConstructorCenter extends BlockContainer {
-	
-	public static ConstructorCenter INSTANCE;
-	
-	public ConstructorCenter(){
-		super(Material.ANVIL, MapColor.OBSIDIAN);
-		if(INSTANCE != null){
-			Print.log("VEHICLE CONSTRUCTOR CENTER WAS INITIALIZED TWICE, THIS IS NOT ALLOWED.");
-			Static.halt();
-		}
-    	this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
-		this.setCreativeTab(Tabs.BLOCKS);
-		INSTANCE = this;
-	}
 
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta){
-		return new ConstructorCenterEntity();
-	}
-	
-	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static ConstructorCenter INSTANCE;
+
+    public ConstructorCenter(){
+        super(Material.ANVIL, MapColor.OBSIDIAN);
+        if(INSTANCE != null){
+            Print.log("VEHICLE CONSTRUCTOR CENTER WAS INITIALIZED TWICE, THIS IS NOT ALLOWED.");
+            Static.halt();
+        }
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        this.setCreativeTab(Tabs.BLOCKS);
+        INSTANCE = this;
+    }
 
     @Override
-	public boolean isFullBlock(IBlockState state){
-		return false;
-	}
-	
-	@Override
-	public boolean isFullCube(IBlockState state){
+    public TileEntity createNewTileEntity(World world, int meta){
+        return new ConstructorCenterEntity();
+    }
+
+    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
+    @Override
+    public boolean isFullBlock(IBlockState state){
         return false;
     }
-	
-	@Override
-	public boolean isOpaqueCube(IBlockState state){
+
+    @Override
+    public boolean isFullCube(IBlockState state){
         return false;
     }
-	
-	public static final AxisAlignedBB PILLAR_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 1.0D, 0.875D);
-	
-	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state){
+        return false;
+    }
+
+    public static final AxisAlignedBB PILLAR_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 1.0D, 0.875D);
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
         return PILLAR_AABB;
     }
 
-	@Override
+    @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
         return PILLAR_AABB.offset(pos);
     }
-	
-	@Override
+
+    @Override
     public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
-	@Override
+    @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
         worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
     }
-    
-	@Override
+
+    @Override
     public IBlockState getStateFromMeta(int meta){
         EnumFacing enumfacing = EnumFacing.getFront(meta);
-        if (enumfacing.getAxis() == EnumFacing.Axis.Y){
+        if(enumfacing.getAxis() == EnumFacing.Axis.Y){
             enumfacing = EnumFacing.NORTH;
         }
         return this.getDefaultState().withProperty(FACING, enumfacing);
     }
-	
-	@Override
+
+    @Override
     public int getMetaFromState(IBlockState state){
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
+        return ((EnumFacing) state.getValue(FACING)).getIndex();
     }
-	
-	@Override
+
+    @Override
     protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[] {FACING});
+        return new BlockStateContainer(this, new IProperty[]{FACING});
     }
-	
+
 }

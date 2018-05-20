@@ -25,63 +25,63 @@ import net.minecraft.world.World;
 
 @fItem(modid = FVTM.MODID, name = "constructor_remote")
 public class ConstructorRemote extends Item {
-	
-	public static final String NBTKEY = "ConstructorControllerPos";
-	public static ConstructorRemote INSTANCE;
-	
-	public ConstructorRemote(){
-		this.setMaxStackSize(1);
-		this.setCreativeTab(Tabs.BLOCKS);
-		INSTANCE = this;
-	}
-	
-	@Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-		if(stack.hasTagCompound()){
-			if(stack.getTagCompound().hasKey(NBTKEY)){
-				BlockPos pos = BlockPos.fromLong(stack.getTagCompound().getLong(NBTKEY));
-				tooltip.add(Formatter.format("&9Controller: &7" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "."));
-			}
-			else{
-				tooltip.add("No Controller connected.");
-			}
-		}
-		else{
-			tooltip.add("No Tag.");
-		}
-	}
-	
-	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-		if(world.isRemote){
-			return EnumActionResult.PASS;
-		}
-		else{
-			ItemStack stack = player.getHeldItem(hand);
-			IBlockState state = world.getBlockState(pos);
-			if(state.getBlock() instanceof ConstructorController){
-				if(!stack.hasTagCompound()){
-					stack.setTagCompound(new NBTTagCompound());
-				}
-				stack.getTagCompound().setLong(NBTKEY, pos.toLong());
-				Print.chat(player, "Coordinates saved.");
-			}
-			else{
-				return EnumActionResult.PASS;
-			}
-			return EnumActionResult.SUCCESS;
-		}
+
+    public static final String NBTKEY = "ConstructorControllerPos";
+    public static ConstructorRemote INSTANCE;
+
+    public ConstructorRemote(){
+        this.setMaxStackSize(1);
+        this.setCreativeTab(Tabs.BLOCKS);
+        INSTANCE = this;
     }
-	
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
-		ItemStack stack = player.getHeldItem(hand);
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey(NBTKEY)){
-			BlockPos pos = BlockPos.fromLong(stack.getTagCompound().getLong(NBTKEY));
-			player.openGui(FVTM.getInstance(), GuiHandler.CONSTRUCTOR, world, pos.getX(), pos.getY(), pos.getZ());
-			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-		}
-		return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
-	}
-	
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
+        if(stack.hasTagCompound()){
+            if(stack.getTagCompound().hasKey(NBTKEY)){
+                BlockPos pos = BlockPos.fromLong(stack.getTagCompound().getLong(NBTKEY));
+                tooltip.add(Formatter.format("&9Controller: &7" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "."));
+            }
+            else{
+                tooltip.add("No Controller connected.");
+            }
+        }
+        else{
+            tooltip.add("No Tag.");
+        }
+    }
+
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
+        if(world.isRemote){
+            return EnumActionResult.PASS;
+        }
+        else{
+            ItemStack stack = player.getHeldItem(hand);
+            IBlockState state = world.getBlockState(pos);
+            if(state.getBlock() instanceof ConstructorController){
+                if(!stack.hasTagCompound()){
+                    stack.setTagCompound(new NBTTagCompound());
+                }
+                stack.getTagCompound().setLong(NBTKEY, pos.toLong());
+                Print.chat(player, "Coordinates saved.");
+            }
+            else{
+                return EnumActionResult.PASS;
+            }
+            return EnumActionResult.SUCCESS;
+        }
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
+        ItemStack stack = player.getHeldItem(hand);
+        if(stack.hasTagCompound() && stack.getTagCompound().hasKey(NBTKEY)){
+            BlockPos pos = BlockPos.fromLong(stack.getTagCompound().getLong(NBTKEY));
+            player.openGui(FVTM.getInstance(), GuiHandler.CONSTRUCTOR, world, pos.getX(), pos.getY(), pos.getZ());
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+        }
+        return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
+    }
+
 }

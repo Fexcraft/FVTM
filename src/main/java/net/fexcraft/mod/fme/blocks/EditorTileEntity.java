@@ -16,57 +16,57 @@ import net.minecraft.tileentity.TileEntity;
 
 public class EditorTileEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 
-	public VehicleData vehicledata;
-	public TempModel model;
-	
-	public EditorTileEntity(){
-		model = new TempModel(new File(new File("."), "/models/unnamed.fme"));
-		//temp
-		model.groups.put("body", new ArrayList<ModelRendererTurbo>(new ModelRendererTurbo[]{ new ModelRendererTurbo(model)}));
-	}
-	
-	@Override
-	public void processClientPacket(PacketTileEntityUpdate pkt){
-		if(pkt.nbt.hasKey("novehicle") && pkt.nbt.getBoolean("novehicle")){
-			this.vehicledata = null;
-		}
-		if(pkt.nbt.hasKey("vehicledata")){
-			this.vehicledata = Resources.getVehicleData(pkt.nbt.getCompoundTag("vehicledata"));
-		}
-	}
-	
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket(){
-		return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
-	}
-	
-	@Override
-	public NBTTagCompound getUpdateTag(){
-		return this.writeToNBT(new NBTTagCompound());
-	}
-	
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
-		this.readFromNBT(pkt.getNbtCompound());
+    public VehicleData vehicledata;
+    public TempModel model;
+
+    public EditorTileEntity(){
+        model = new TempModel(new File(new File("."), "/models/unnamed.fme"));
+        //temp
+        model.groups.put("body", new ArrayList<ModelRendererTurbo>(new ModelRendererTurbo[]{new ModelRendererTurbo(model)}));
     }
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
-		super.writeToNBT(compound);
-		if(vehicledata != null){
-			compound = vehicledata.writeToNBT(compound);
-		}
-		return compound;
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound){
-		super.readFromNBT(compound);
-		vehicledata = Resources.getVehicleData(compound);
-	}
+    @Override
+    public void processClientPacket(PacketTileEntityUpdate pkt){
+        if(pkt.nbt.hasKey("novehicle") && pkt.nbt.getBoolean("novehicle")){
+            this.vehicledata = null;
+        }
+        if(pkt.nbt.hasKey("vehicledata")){
+            this.vehicledata = Resources.getVehicleData(pkt.nbt.getCompoundTag("vehicledata"));
+        }
+    }
 
-	public TempModel getModel(){
-		return model;
-	}
-	
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket(){
+        return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag(){
+        return this.writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
+        this.readFromNBT(pkt.getNbtCompound());
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound){
+        super.writeToNBT(compound);
+        if(vehicledata != null){
+            compound = vehicledata.writeToNBT(compound);
+        }
+        return compound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound){
+        super.readFromNBT(compound);
+        vehicledata = Resources.getVehicleData(compound);
+    }
+
+    public TempModel getModel(){
+        return model;
+    }
+
 }

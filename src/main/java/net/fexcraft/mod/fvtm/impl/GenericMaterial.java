@@ -16,98 +16,100 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class GenericMaterial implements Material {
-	
-	private ResourceLocation registryname;
-	private Addon addon;
-	private String name;
-	private String[] description;
-	//
-	private boolean isFuelContainer, isKey;
-	private Integer maxcapacity;
-	private Fuel fueltype;
-	
-	public GenericMaterial(JsonObject obj){
-		this.registryname = DataUtil.getRegistryName(obj, "MATERIAL");
-		this.addon = DataUtil.getAddon(registryname, obj, "MATERIAL");
-		this.name = JsonUtil.getIfExists(obj, "FullName", this.registryname.toString());
-		this.description = DataUtil.getDescription(obj);
-		this.isFuelContainer = obj.has("FuelType");
-		if(this.isFuelContainer){
-			this.fueltype = Resources.FUELS.getValue(new ResourceLocation(JsonUtil.getIfExists(obj, "FuelType", "minecraft:stone")));
-			this.maxcapacity = JsonUtil.getIfExists(obj, "MaxCapacity", 100).intValue();
-		}
-		this.isKey = JsonUtil.getIfExists(obj, "VehicleKey", false);
-		if(obj.has("Recipes")){
-			obj.get("Recipes").getAsJsonArray().forEach((elm) -> {
-				try{
-					RecipeObject.parse(this.getItemStack(), elm.getAsJsonObject(), "FVTM:Materials");
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			});
-		}
-	}
 
-	@Override
-	public Material setRegistryName(ResourceLocation name){
-		this.registryname = name;
-		return this;
-	}
+    private ResourceLocation registryname;
+    private Addon addon;
+    private String name;
+    private String[] description;
+    //
+    private boolean isFuelContainer, isKey;
+    private Integer maxcapacity;
+    private Fuel fueltype;
 
-	@Override
-	public ResourceLocation getRegistryName(){
-		return this.registryname;
-	}
+    public GenericMaterial(JsonObject obj){
+        this.registryname = DataUtil.getRegistryName(obj, "MATERIAL");
+        this.addon = DataUtil.getAddon(registryname, obj, "MATERIAL");
+        this.name = JsonUtil.getIfExists(obj, "FullName", this.registryname.toString());
+        this.description = DataUtil.getDescription(obj);
+        this.isFuelContainer = obj.has("FuelType");
+        if(this.isFuelContainer){
+            this.fueltype = Resources.FUELS.getValue(new ResourceLocation(JsonUtil.getIfExists(obj, "FuelType", "minecraft:stone")));
+            this.maxcapacity = JsonUtil.getIfExists(obj, "MaxCapacity", 100).intValue();
+        }
+        this.isKey = JsonUtil.getIfExists(obj, "VehicleKey", false);
+        if(obj.has("Recipes")){
+            obj.get("Recipes").getAsJsonArray().forEach((elm) -> {
+                try{
+                    RecipeObject.parse(this.getItemStack(), elm.getAsJsonObject(), "FVTM:Materials");
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
 
-	@Override
-	public Addon getAddon(){
-		return addon;
-	}
+    @Override
+    public Material setRegistryName(ResourceLocation name){
+        this.registryname = name;
+        return this;
+    }
 
-	@Override
-	public String getName(){
-		return name;
-	}
+    @Override
+    public ResourceLocation getRegistryName(){
+        return this.registryname;
+    }
 
-	@Override
-	public String[] getDescription(){
-		return description;
-	}
+    @Override
+    public Addon getAddon(){
+        return addon;
+    }
 
-	@Override
-	public ItemStack getItemStack(){
-		ItemStack stack = new ItemStack(GenericMaterialItem.INSTANCE);
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setString(MaterialItem.NBTKEY, this.getRegistryName().toString());
-		if(this.isFuelContainer){
-			nbt.setDouble("FuelContent", 0);
-		}
-		if(this.isKey){
-			nbt.setBoolean("VehicleKeyType", false);
-			nbt.setString("VehicleKeyCode", KeyItem.getNewKeyCode());
-			nbt.setString("VehicleKeyCreator", Static.NULL_UUID_STRING);
-		}
-		stack.setTagCompound(nbt);
-		return stack;
-	}
+    @Override
+    public String getName(){
+        return name;
+    }
 
-	@Override
-	public boolean isFuelContainer(){
-		return this.isFuelContainer;
-	}
+    @Override
+    public String[] getDescription(){
+        return description;
+    }
 
-	@Override
-	public int maxCapacity(){
-		return maxcapacity == null ? 0 : maxcapacity;
-	}
+    @Override
+    public ItemStack getItemStack(){
+        ItemStack stack = new ItemStack(GenericMaterialItem.INSTANCE);
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString(MaterialItem.NBTKEY, this.getRegistryName().toString());
+        if(this.isFuelContainer){
+            nbt.setDouble("FuelContent", 0);
+        }
+        if(this.isKey){
+            nbt.setBoolean("VehicleKeyType", false);
+            nbt.setString("VehicleKeyCode", KeyItem.getNewKeyCode());
+            nbt.setString("VehicleKeyCreator", Static.NULL_UUID_STRING);
+        }
+        stack.setTagCompound(nbt);
+        return stack;
+    }
 
-	@Override
-	public boolean isVehicleKey(){ return isKey; }
+    @Override
+    public boolean isFuelContainer(){
+        return this.isFuelContainer;
+    }
 
-	@Override
-	public Fuel getFuelType(){
-		return fueltype;
-	}
-	
+    @Override
+    public int maxCapacity(){
+        return maxcapacity == null ? 0 : maxcapacity;
+    }
+
+    @Override
+    public boolean isVehicleKey(){
+        return isKey;
+    }
+
+    @Override
+    public Fuel getFuelType(){
+        return fueltype;
+    }
+
 }

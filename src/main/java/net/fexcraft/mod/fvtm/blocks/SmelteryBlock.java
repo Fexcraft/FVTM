@@ -15,37 +15,37 @@ import net.minecraft.world.World;
 @fBlock(modid = FVTM.MODID, name = "smeltery", tileentity = SmelteryTileEntity.class)
 public class SmelteryBlock extends BlockContainer {
 
-	public SmelteryBlock(){
-		super(Material.ANVIL);
-		this.setCreativeTab(Tabs.BLOCKS);
-	}
+    public SmelteryBlock(){
+        super(Material.ANVIL);
+        this.setCreativeTab(Tabs.BLOCKS);
+    }
 
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta){
-		return new SmelteryTileEntity();
-	}
-	
     @Override
-	public boolean isFullBlock(IBlockState state){
-		return true;
-	}
-	
-	@Override
-	public boolean isFullCube(IBlockState state){
+    public TileEntity createNewTileEntity(World world, int meta){
+        return new SmelteryTileEntity();
+    }
+
+    @Override
+    public boolean isFullBlock(IBlockState state){
+        return true;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state){
         return false;
     }
-	
-	@Override
-	public boolean isOpaqueCube(IBlockState state){
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state){
         return false;
     }
-	
-	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
         return FULL_BLOCK_AABB;
     }
 
-	@Override
+    @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
         return FULL_BLOCK_AABB.offset(pos);
     }

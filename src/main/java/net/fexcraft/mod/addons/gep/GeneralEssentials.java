@@ -17,64 +17,64 @@ import net.minecraftforge.event.RegistryEvent.Register;
 
 public class GeneralEssentials extends HybridAddon {
 
-	public GeneralEssentials(File file){
-		super(file);
-	}
+    public GeneralEssentials(File file){
+        super(file);
+    }
 
-	@Override
-	public void regFuels(Register<Fuel> event){
-		event.getRegistry().registerAll(
-			new Gasoline(),
-			new Diesel()
-		);
-	}
+    @Override
+    public void regFuels(Register<Fuel> event){
+        event.getRegistry().registerAll(
+                new Gasoline(),
+                new Diesel()
+        );
+    }
 
-	@Override
-	public void regMaterials(Register<Material> event){
-		//
-	}
+    @Override
+    public void regMaterials(Register<Material> event){
+        //
+    }
 
-	@Override
-	public void regAttributes(Register<Attribute> event){
-		event.getRegistry().registerAll(
-			new EngineAttribute(),
-			new FuelTankExtensionAttribute(),
-			new FMSeatAttribute(),
-			new InventoryAttribute(),
-			new ConnectorAttribute(),
-			new ContainerAttribute(),
-			new LightProviderAttribute()
-		);
-	}
+    @Override
+    public void regAttributes(Register<Attribute> event){
+        event.getRegistry().registerAll(
+                new EngineAttribute(),
+                new FuelTankExtensionAttribute(),
+                new FMSeatAttribute(),
+                new InventoryAttribute(),
+                new ConnectorAttribute(),
+                new ContainerAttribute(),
+                new LightProviderAttribute()
+        );
+    }
 
-	@Override
-	public void regParts(Register<Part> event){
-		//
-	}
+    @Override
+    public void regParts(Register<Part> event){
+        //
+    }
 
-	@Override
-	public void regVehicles(Register<Vehicle> event){
-		//
-	}
+    @Override
+    public void regVehicles(Register<Vehicle> event){
+        //
+    }
 
-	@Override
-	public boolean skipDefaultRegistryMethods(){
-		return false;
-	}
+    @Override
+    public boolean skipDefaultRegistryMethods(){
+        return false;
+    }
 
-	@Override
-	public void regSounds(Register<SoundEvent> event){
-		//
-	}
+    @Override
+    public void regSounds(Register<SoundEvent> event){
+        //
+    }
 
-	@Override
-	public void regContainers(Register<Container> event){
-		//
-	}
+    @Override
+    public void regContainers(Register<Container> event){
+        //
+    }
 
-	@Override
-	public void regConsumables(Register<Consumable> event){
-		//
-	}
-	
+    @Override
+    public void regConsumables(Register<Consumable> event){
+        //
+    }
+
 }

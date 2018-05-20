@@ -5,31 +5,31 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class Diesel implements Fuel {
-	
-	private static final ResourceLocation registryname = new ResourceLocation(/*"fvtm:*/"diesel");
 
-	@Override
-	public Fuel setRegistryName(ResourceLocation name){
-		return this;
-	}
+    private static final ResourceLocation registryname = new ResourceLocation(/*"fvtm:*/"diesel");
 
-	@Override
-	public ResourceLocation getRegistryName(){
-		return registryname;
-	}
+    @Override
+    public Fuel setRegistryName(ResourceLocation name){
+        return this;
+    }
 
-	@Override
-	public String getName(){
-		return "Diesel (GAS)";
-	}
+    @Override
+    public ResourceLocation getRegistryName(){
+        return registryname;
+    }
 
-	@Override
-	public boolean isValidFuelContainer(ItemStack stack){
-		if(stack.getItem() instanceof FuelItem){
-			FuelItem item = (FuelItem)stack.getItem();
-			return item.getFuel(stack) == this;
-		}
-		return false;
-	}
-	
+    @Override
+    public String getName(){
+        return "Diesel (GAS)";
+    }
+
+    @Override
+    public boolean isValidFuelContainer(ItemStack stack){
+        if(stack.getItem() instanceof FuelItem){
+            FuelItem item = (FuelItem) stack.getItem();
+            return item.getFuel(stack) == this;
+        }
+        return false;
+    }
+
 }

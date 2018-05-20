@@ -6,25 +6,25 @@ import net.minecraft.world.World;
 
 public class RailboundVehicleEntity extends Entity {
 
-	public RailboundVehicleEntity(World worldIn){
-		super(worldIn);
-		
-		//TODO
-	}
+    public RailboundVehicleEntity(World worldIn){
+        super(worldIn);
 
-	@Override
-	protected void entityInit(){
-		//
-	}
+        //TODO
+    }
 
-	@Override
-	protected void readEntityFromNBT(NBTTagCompound compound){
-		//TODO
-	}
+    @Override
+    protected void entityInit(){
+        //
+    }
 
-	@Override
-	protected void writeEntityToNBT(NBTTagCompound compound){
-		//TODO
-	}
-	
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound compound){
+        //TODO
+    }
+
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound compound){
+        //TODO
+    }
+
 }

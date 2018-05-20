@@ -35,294 +35,298 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class ContainerTileEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
-	
-	private ItemStackHandler itemStackHandler;
-	private boolean core, setup;
-	private ContainerData container;
-	private BlockPos corepos;
-	private ContainerTileEntity coretile;
-	
-	public ContainerTileEntity(){
-		core = false;
-		container = null;
-		corepos = null;
-		coretile = null;
-		setup = false;
-	}
-	
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket(){
-		return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
-	}
-	
-	@Override
-	public NBTTagCompound getUpdateTag(){
-		return this.writeToNBT(new NBTTagCompound());
-	}
-	
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
-		this.readFromNBT(pkt.getNbtCompound());
+
+    private ItemStackHandler itemStackHandler;
+    private boolean core, setup;
+    private ContainerData container;
+    private BlockPos corepos;
+    private ContainerTileEntity coretile;
+
+    public ContainerTileEntity(){
+        core = false;
+        container = null;
+        corepos = null;
+        coretile = null;
+        setup = false;
     }
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
-		super.writeToNBT(compound);
-		compound.setBoolean("Core", core);
-		if(core && container != null){
-			container.writeToNBT(compound);
-		}
-		if(!core && corepos != null){
-			compound.setLong("CorePos", corepos.toLong());
-		}
-		compound.setBoolean("SetUp", setup);
-		return compound;
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound){
-		super.readFromNBT(compound);
-		core = compound.getBoolean("Core");
-		if(core && compound.hasKey(ContainerItem.NBTKEY)){
-			container = Resources.getContainerData(compound);
-		}
-		if(!core){
-			corepos = BlockPos.fromLong(compound.getLong("CorePos"));
-		}
-		setup = compound.getBoolean("SetUp");
-		//
-		if(!core && setup && corepos == null){
-			world.setBlockState(pos, Blocks.AIR.getDefaultState());
-		}
-	}
-	
-	ContainerTileEntity getCore(){
-		return core ? this : coretile == null ? coretile = corepos == null ? null : (ContainerTileEntity)world.getTileEntity(corepos) : coretile;
-	}
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket(){
+        return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
+    }
 
-	
-	
-	public ContainerData getContainerData(){
-		return getCore().container;
-	}
-	
-	@Override
+    @Override
+    public NBTTagCompound getUpdateTag(){
+        return this.writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
+        this.readFromNBT(pkt.getNbtCompound());
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound){
+        super.writeToNBT(compound);
+        compound.setBoolean("Core", core);
+        if(core && container != null){
+            container.writeToNBT(compound);
+        }
+        if(!core && corepos != null){
+            compound.setLong("CorePos", corepos.toLong());
+        }
+        compound.setBoolean("SetUp", setup);
+        return compound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound){
+        super.readFromNBT(compound);
+        core = compound.getBoolean("Core");
+        if(core && compound.hasKey(ContainerItem.NBTKEY)){
+            container = Resources.getContainerData(compound);
+        }
+        if(!core){
+            corepos = BlockPos.fromLong(compound.getLong("CorePos"));
+        }
+        setup = compound.getBoolean("SetUp");
+        //
+        if(!core && setup && corepos == null){
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+        }
+    }
+
+    ContainerTileEntity getCore(){
+        return core ? this : coretile == null ? coretile = corepos == null ? null : (ContainerTileEntity) world.getTileEntity(corepos) : coretile;
+    }
+
+    public ContainerData getContainerData(){
+        return getCore().container;
+    }
+
+    @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
-		if(facing != null && facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked()){
-	        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-	            return getCore().container.getContainer().getInventoryType() == InventoryType.ITEM && getCore().container.getInventory().size() > 0;
-	        }
-	        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-	        	return getCore().container.getContainer().getInventoryType() == InventoryType.FLUID;
-	        }
-		}
+        if(facing != null && facing.getAxis().isVertical() && getCore() != null && getCore().container != null && !this.isLocked()){
+            if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
+                return getCore().container.getContainer().getInventoryType() == InventoryType.ITEM && getCore().container.getInventory().size() > 0;
+            }
+            if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+                return getCore().container.getContainer().getInventoryType() == InventoryType.FLUID;
+            }
+        }
         return super.hasCapability(capability, facing);
     }
 
-    @SuppressWarnings("unchecked") @Override @Nullable
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-        	if(itemStackHandler == null){
-        		itemStackHandler = new ItemStackHandler(getCore().container.getContainer(), getCore().container.getInventory());
-        	}
-            return (T)itemStackHandler;
+            if(itemStackHandler == null){
+                itemStackHandler = new ItemStackHandler(getCore().container.getContainer(), getCore().container.getInventory());
+            }
+            return (T) itemStackHandler;
         }
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-        	return (T)getCore().container.getFluidHandler();
+            return (T) getCore().container.getFluidHandler();
         }
         return super.getCapability(capability, facing);
     }
 
-	public boolean isCore(){
-		return core;
-	}
+    public boolean isCore(){
+        return core;
+    }
 
-	public BlockPos getCorePos(){
-		return core ? this.pos : corepos;
-	}
+    public BlockPos getCorePos(){
+        return core ? this.pos : corepos;
+    }
 
-	public void setUp(ItemStack stack){
-		BlockPos core = BlockPos.fromLong(stack.getTagCompound().getLong("PlacedPos"));
-		this.core = pos.equals(core);
-		if(this.core){
-			container = Resources.getContainerData(stack.getTagCompound());
-			Print.debug(container.writeToNBT(new NBTTagCompound()).toString());
-		}
-		else{
-			this.corepos = core;
-		}
-		this.setup = true;
-		Print.debug("CONTESETUP: " + this.pos.toString() + " OK;");
-	}
+    public void setUp(ItemStack stack){
+        BlockPos core = BlockPos.fromLong(stack.getTagCompound().getLong("PlacedPos"));
+        this.core = pos.equals(core);
+        if(this.core){
+            container = Resources.getContainerData(stack.getTagCompound());
+            Print.debug(container.writeToNBT(new NBTTagCompound()).toString());
+        }
+        else{
+            this.corepos = core;
+        }
+        this.setup = true;
+        Print.debug("CONTESETUP: " + this.pos.toString() + " OK;");
+    }
 
-	public void notifyBreak(World world, BlockPos pos, IBlockState state){
-		if(getCore() == null){ return; }
-		ContainerTileEntity core = getCore();
-		ContainerBlock.getPositions(core.container, core.pos, state.getValue(ContainerBlock.FACING)).forEach(blkpos -> {
-			if(this.core && blkpos.equals(core.pos)){
-				EntityItem ent = new EntityItem(world);
-				ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
-				ent.setItem(core.container.getContainer().getItemStack(core.container));
-				world.spawnEntity(ent);
-				//
-				if(Config.DROP_ITEMS_ON_BREAK && !world.isRemote){
-					for(ItemStack stack : getContainerData().getInventory()){
-						if(!stack.isEmpty()){
-							EntityItem entity = new EntityItem(world);
-							entity.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 2.5, blkpos.getZ() + 0.5);
-							entity.setItem(stack);
-							world.spawnEntity(ent);
-						}
-					}
-					getContainerData().getInventory().clear();
-				}
-			}
-			if(!blkpos.equals(pos)){
-				world.setBlockState(blkpos, Blocks.AIR.getDefaultState(), 2);
-			}
-		});
-	}
-	
-	@SideOnly(Side.CLIENT) @Override
+    public void notifyBreak(World world, BlockPos pos, IBlockState state){
+        if(getCore() == null){
+            return;
+        }
+        ContainerTileEntity core = getCore();
+        ContainerBlock.getPositions(core.container, core.pos, state.getValue(ContainerBlock.FACING)).forEach(blkpos -> {
+            if(this.core && blkpos.equals(core.pos)){
+                EntityItem ent = new EntityItem(world);
+                ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
+                ent.setItem(core.container.getContainer().getItemStack(core.container));
+                world.spawnEntity(ent);
+                //
+                if(Config.DROP_ITEMS_ON_BREAK && !world.isRemote){
+                    for(ItemStack stack : getContainerData().getInventory()){
+                        if(!stack.isEmpty()){
+                            EntityItem entity = new EntityItem(world);
+                            entity.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 2.5, blkpos.getZ() + 0.5);
+                            entity.setItem(stack);
+                            world.spawnEntity(ent);
+                        }
+                    }
+                    getContainerData().getInventory().clear();
+                }
+            }
+            if(!blkpos.equals(pos)){
+                world.setBlockState(blkpos, Blocks.AIR.getDefaultState(), 2);
+            }
+        });
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
     public double getMaxRenderDistanceSquared(){
         return super.getMaxRenderDistanceSquared() * 8;
     }
-	
-	@SideOnly(Side.CLIENT) @Override
+
+    @SideOnly(Side.CLIENT)
+    @Override
     public AxisAlignedBB getRenderBoundingBox(){
         return INFINITE_EXTENT_AABB;
     }
-	
-	@Override
+
+    @Override
     public boolean canRenderBreaking(){
         return true;
     }
 
-	@Override
-	public boolean isLocked(){
-		return getContainerData().isLocked();
-	}
-	
-	@Override
-	public boolean unlock(World world, EntityPlayer entity, ItemStack stack, KeyItem item){
-		if(!stack.hasTagCompound()){
-			Print.chat(entity, "[ERROR] Key don't has a NBT Tag Compound!");
-			return false;
-		}
-		else{
-			ContainerData data = getContainerData();
-			switch(item.getType(stack)){
-				case PRIVATE:
-					if(entity.getGameProfile().getId().toString().equals(item.getCreator(stack).toString())){
-						Print.chat(entity, "This key can only be used by the Owner;");
-						return false;
-					}
-					else{
-						if(item.getCode(stack).equals(data.getLockCode())){
-							data.setLocked(false);
-							Print.chat(entity, "Container is now unlocked.");
-							return true;
-						}
-						else{
-							Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
-							return false;
-						}
-					}
-				case COMMON:
-					if(item.getCode(stack).equals(data.getLockCode())){
-						data.setLocked(false);
-						Print.chat(entity, "Container is now unlocked.");
-						return true;
-					}
-					else{
-						Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
-						return false;
-					}
-				case ADMIN:
-					data.setLocked(false);
-					Print.chat(entity, "[SU] Container is now unlocked.");
-					return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean isLocked(){
+        return getContainerData().isLocked();
+    }
 
-	@Override
-	public boolean lock(World world, EntityPlayer entity, ItemStack stack, KeyItem item){
-		ContainerData data = getContainerData();
-		if(!data.allowsLocking()){
-			Print.chat(entity, "This vehicle doesn't allow locking.");
-			return false;
-		}
-		else{
-			if(!stack.hasTagCompound()){
-				Print.chat(entity, "[ERROR] Key don't has a NBT Tag Compound!");
-				return false;
-			}
-			else{
-				switch(item.getType(stack)){
-					case PRIVATE:
-						if(entity.getGameProfile().getId().toString().equals(item.getCreator(stack).toString())){
-							Print.chat(entity, "This key can only be used by the Owner;");
-							return false;
-						}
-						else{
-							if(item.getCode(stack).equals(data.getLockCode())){
-								data.setLocked(true);
-								Print.chat(entity, "Container is now locked.");
-								return true;
-							}
-							else{
-								Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
-								return false;
-							}
-						}
-					case COMMON:
-						if(item.getCode(stack).equals(data.getLockCode())){
-							data.setLocked(true);
-							Print.chat(entity, "Container is now locked.");
-							return true;
-						}
-						else{
-							Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
-							return false;
-						}
-					case ADMIN:
-						data.setLocked(true);
-						Print.chat(entity, "[SU] Container is now locked.");
-						return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	@Override
-	public void processClientPacket(PacketTileEntityUpdate packet){
-		if(packet.nbt.hasKey("task")){
-			switch(packet.nbt.getString("task")){
-				case "update_container_fluid_tank":{
-					if(this.getContainerData().getContainer().getInventoryType() != InventoryType.FLUID){
-						return;
-					}
-					this.getContainerData().getFluidTank().readFromNBT(packet.nbt.getCompoundTag("state"));
-					break;
-				}
-			}
-		}
-		else{
-			this.readFromNBT(packet.nbt);
-		}
-	}
+    @Override
+    public boolean unlock(World world, EntityPlayer entity, ItemStack stack, KeyItem item){
+        if(!stack.hasTagCompound()){
+            Print.chat(entity, "[ERROR] Key don't has a NBT Tag Compound!");
+            return false;
+        }
+        else{
+            ContainerData data = getContainerData();
+            switch(item.getType(stack)){
+                case PRIVATE:
+                    if(entity.getGameProfile().getId().toString().equals(item.getCreator(stack).toString())){
+                        Print.chat(entity, "This key can only be used by the Owner;");
+                        return false;
+                    }
+                    else{
+                        if(item.getCode(stack).equals(data.getLockCode())){
+                            data.setLocked(false);
+                            Print.chat(entity, "Container is now unlocked.");
+                            return true;
+                        }
+                        else{
+                            Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
+                            return false;
+                        }
+                    }
+                case COMMON:
+                    if(item.getCode(stack).equals(data.getLockCode())){
+                        data.setLocked(false);
+                        Print.chat(entity, "Container is now unlocked.");
+                        return true;
+                    }
+                    else{
+                        Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
+                        return false;
+                    }
+                case ADMIN:
+                    data.setLocked(false);
+                    Print.chat(entity, "[SU] Container is now unlocked.");
+                    return true;
+            }
+        }
+        return false;
+    }
 
-	public void sendFluidTankUpdate(EntityPlayer player){
-		if(player == null){
-			return;
-		}
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setString("task", "update_container_fluid_tank");
-		nbt.setTag("state", this.getContainerData().getFluidTank().writeToNBT(new NBTTagCompound()));
-		PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
-	}
-    
+    @Override
+    public boolean lock(World world, EntityPlayer entity, ItemStack stack, KeyItem item){
+        ContainerData data = getContainerData();
+        if(!data.allowsLocking()){
+            Print.chat(entity, "This vehicle doesn't allow locking.");
+            return false;
+        }
+        else{
+            if(!stack.hasTagCompound()){
+                Print.chat(entity, "[ERROR] Key don't has a NBT Tag Compound!");
+                return false;
+            }
+            else{
+                switch(item.getType(stack)){
+                    case PRIVATE:
+                        if(entity.getGameProfile().getId().toString().equals(item.getCreator(stack).toString())){
+                            Print.chat(entity, "This key can only be used by the Owner;");
+                            return false;
+                        }
+                        else{
+                            if(item.getCode(stack).equals(data.getLockCode())){
+                                data.setLocked(true);
+                                Print.chat(entity, "Container is now locked.");
+                                return true;
+                            }
+                            else{
+                                Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
+                                return false;
+                            }
+                        }
+                    case COMMON:
+                        if(item.getCode(stack).equals(data.getLockCode())){
+                            data.setLocked(true);
+                            Print.chat(entity, "Container is now locked.");
+                            return true;
+                        }
+                        else{
+                            Print.chat(entity, "Wrong key.\n[V:" + data.getLockCode().toUpperCase() + "] != [K:" + item.getCode(stack).toUpperCase() + "]");
+                            return false;
+                        }
+                    case ADMIN:
+                        data.setLocked(true);
+                        Print.chat(entity, "[SU] Container is now locked.");
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void processClientPacket(PacketTileEntityUpdate packet){
+        if(packet.nbt.hasKey("task")){
+            switch(packet.nbt.getString("task")){
+                case "update_container_fluid_tank": {
+                    if(this.getContainerData().getContainer().getInventoryType() != InventoryType.FLUID){
+                        return;
+                    }
+                    this.getContainerData().getFluidTank().readFromNBT(packet.nbt.getCompoundTag("state"));
+                    break;
+                }
+            }
+        }
+        else{
+            this.readFromNBT(packet.nbt);
+        }
+    }
+
+    public void sendFluidTankUpdate(EntityPlayer player){
+        if(player == null){
+            return;
+        }
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("task", "update_container_fluid_tank");
+        nbt.setTag("state", this.getContainerData().getFluidTank().writeToNBT(new NBTTagCompound()));
+        PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP) player);
+    }
+
 }

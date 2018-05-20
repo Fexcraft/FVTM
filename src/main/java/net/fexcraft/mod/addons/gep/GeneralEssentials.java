@@ -43,7 +43,8 @@ public class GeneralEssentials extends HybridAddon {
                 new InventoryAttribute(),
                 new ConnectorAttribute(),
                 new ContainerAttribute(),
-                new LightProviderAttribute()
+                new LightProviderAttribute(),
+                new FontRendererAttribute()
         );
     }
 

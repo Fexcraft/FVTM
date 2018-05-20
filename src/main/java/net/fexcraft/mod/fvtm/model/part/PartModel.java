@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
+import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontRendererAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
@@ -314,46 +315,9 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
             GlStateManager.popMatrix();
         }
         //
-        //Particles
-        /*if(vehicle.throttle != 0 && data.parts.get(usedAS).pspawners != null){
-			PartType part = data.parts.get(usedAS);
-			for(int i = 0; i < part.pspawners.length; i++){
-				if(FvmTickHandler.getClientTick() % part.pspawners[i].freq == 0){
-					Vec3d vec = calculatePos(vehicle, part.pspawners[i].pos);
-					vehicle.world.spawnParticle(part.pspawners[i].type, vec.xCoord, vec.yCoord, vec.zCoord, part.pspawners[i].sx, part.pspawners[i].sy, part.pspawners[i].sz);
-				}
-			}
-		}
-		//CargoPos
-		if(data.getContainer().getSizeInventory() > 0 && data.parts.get(usedAS).cargopos.size() > 0){
-			PartType part = data.parts.get(usedAS);
-            net.minecraft.client.Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-			for(int i = 0; i < data.container.getSizeInventory(); i++){
-				if(i >= part.cargopos.size()){
-					break;
-				}
-				CargoRenderPos pos = part.cargopos.get(i);
-				if(!pos.renderAlways && data.parts.containsKey("cargo")){
-					continue;
-				}
-				IBlockState state = getBlockToRender(i, data);
-				if(state.getRenderType() != EnumBlockRenderType.INVISIBLE){;
-					pos.pos.translate();
-		            /*GlStateManager.pushMatrix();
-		            if(pos.scale != 1f){
-		            	GL11.glScalef(pos.scale, pos.scale, pos.scale);
-		            }*//*
-		            GlStateManager.pushMatrix();
-	            	//GL11.glRotatef( 180, 0, 0, 1);
-		            Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(state, vehicle.getBrightness(Minecraft.getMinecraft().getRenderPartialTicks()));
-	            	//GL11.glRotatef(-180, 0, 0, 1);
-		            GlStateManager.popMatrix();
-		            //GlStateManager.popMatrix();
-		            pos.pos.translateR();
-		        }
-			}
-            part.bindTexture();
-		}*/
+        if(data.getPart(usedAS).getAttributeData(FontRendererAttributeData.class) != null){
+            data.getPart(usedAS).getAttributeData(FontRendererAttributeData.class).getLocations().values().forEach(loc -> loc.render(ent));
+        }
     }
 
     public static boolean rq(ModelRendererTurbo[]... turbos){
@@ -364,27 +328,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
         }
         return false;
     }
-
-    /*protected static IBlockState getBlockToRender(int index, VehicleData data){
-		if(data.container.getStackInSlot(index).isEmpty()){
-			return Blocks.AIR.getDefaultState();
-		}
-		else if(data.container.getStackInSlot(index).getItem() instanceof ItemBlock == false){
-			return Blocks.CHEST.getDefaultState();//TODO add crate block
-		}
-		else if(data.container.getStackInSlot(index).getItem() instanceof fItem){
-			return Blocks.BEDROCK.getDefaultState();
-		}
-		else{
-			ItemStack stack = data.container.getStackInSlot(index);
-			return ((ItemBlock)stack.getItem()).block.getStateFromMeta(stack.getMetadata());
-		}//TODO
-	}*/
- /*protected static Vec3d calculatePos(com.flansmod.fvm.LandVehicle vehicle, Pos pos){
-		com.flansmod.common.vector.Vector3f loc = new com.flansmod.common.vector.Vector3f(pos.to16FloatX(), pos.to16FloatY(), pos.to16FloatZ());
-		com.flansmod.common.vector.Vector3f rel = vehicle.axes.findLocalVectorGlobally(loc);
-		return new Vec3d(vehicle.posX + rel.x, vehicle.posY + rel.y, vehicle.posZ + rel.z);
-	}*/
+    
     public static void lightOn(Entity ent){
         int i = ent == null ? MapColor.WHITE_STAINED_HARDENED_CLAY.colorValue : ent.getBrightnessForRender(), j = i % 65536, k = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);

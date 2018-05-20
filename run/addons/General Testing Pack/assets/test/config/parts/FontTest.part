@@ -1,0 +1,27 @@
+{
+    "RegistryName": "test:fontrender",
+    "Addon": "fvtm:test",
+    "ModelFile": "null",
+    "FullName": "Test FontRenderer",
+    "Category": [
+        "font_renderer"
+    ],
+    "Attributes":[ "font_renderer" ],
+    "Textures": [ "fvtm:textures/entities/null_texture.png" ],
+    "Removable": true,
+    "Available": true,
+    "AttributeData":{
+        "Font-Renderers": [
+            {
+                "id": "generic",
+                "x": 0, "y": -32, "z": 0,
+                "editable": true,
+                "string": "test text added via config",
+                "rot_x": 0, "rot_y": 0, "rot_z": 0,
+                "glow": true,
+                "color": "#c9c9c9",
+                "scale": 2.5
+            }
+        ]
+    }
+}

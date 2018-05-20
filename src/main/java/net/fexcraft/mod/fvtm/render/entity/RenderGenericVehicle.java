@@ -24,10 +24,7 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
     public RenderGenericVehicle(RenderManager renderManager){
         super(renderManager);
         shadowSize = 0.5F;
-        /*if(!reg){
-			MinecraftForge.EVENT_BUS.register(this);
-			reg = true;
-		}*/
+        /*if(!reg){ MinecraftForge.EVENT_BUS.register(this); reg = true; }*/
     }
 
     public void bindTexture(UnboundVehicleEntity ent){
@@ -139,6 +136,7 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
             }
         }
         GL11.glPopMatrix();
+        //Renderer.drawString(vehicle.getVehicleData().getVehicle().getName(), x, y + 2, z, vehicle.axes.getYaw(), vehicle.axes.getPitch(), vehicle.axes.getRoll(), false, MapColor.GOLD.colorValue);
     }
 
     @Override

@@ -61,7 +61,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
     //
     private RGB windowcolor = new RGB(0x00, 0x72, 0x08, 0.3f);
     //
-    public ArrayList<String> creators = new ArrayList<String>();
+    public ArrayList<String> creators = new ArrayList<>();
 
     private int tx, ty;
 

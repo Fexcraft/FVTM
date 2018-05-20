@@ -167,7 +167,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     protected void initVeh(VehicleData type, boolean remote){
         seats = new SeatEntity[type.getSeats().size()];
         wheels = new WheelEntity[type.getWheelPos().size()];
-        stepHeight = type.getVehicle().getFMWheelStepHeight();
+        stepHeight = type.getVehicle().getFMAttribute("wheel_step_height");
         vehicledata.getScripts().forEach((script) -> script.onCreated(this, vehicledata));
     }
 
@@ -331,7 +331,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 if(throttle < -1F){
                     throttle = -1F;
                 }
-                if(throttle < 0F && vehicledata.getVehicle().getFMMaxNegativeThrottle() == 0F){
+                if(throttle < 0F && vehicledata.getVehicle().getFMAttribute("max_negative_throttle") == 0F){
                     throttle = 0F;
                 }
                 return true;
@@ -849,7 +849,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 wheelsAngle += throttle * 0.2F;
             }
             //
-            if((seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || vehicledata.getFuelTankContent() > 0) && vehicledata.getVehicle().getFMMaxPositiveThrottle() != 0 && vehicledata.getVehicle().getFMMaxPositiveThrottle() != 0){
+            if((seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || vehicledata.getFuelTankContent() > 0) && vehicledata.getVehicle().getFMAttribute("max_positive_throttle") != 0){
                 throttle *= 0.98F;
             }
             this.onUpdateMovement();

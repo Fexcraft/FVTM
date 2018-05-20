@@ -124,7 +124,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
             //
             Vec3d targetpos = axes.getRelativeVector(vehicledata.getWheelPos().get(i).to16Double());
             Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMWheelSpringStrength());
+            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMAttribute("wheel_spring_strength"));
             if(despos.lengthSquared() > 0.001F){
                 wheel.move(MoverType.SELF, despos.x, (despos.y - (0.98F / 20F)), despos.z);
             }

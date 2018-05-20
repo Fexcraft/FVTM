@@ -74,20 +74,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
     public Class<? extends VehicleData> getDataClass();
 
     public boolean canSpawnAs(EntityType type);
-
-    public float getFMCameraDistance();//5f
-
-    public float getFMWheelStepHeight();//1f
-
-    public float getFMWheelSpringStrength();//0.5f
-
-    public float getFMMaxNegativeThrottle();
-
-    public float getFMMaxPositiveThrottle();
-
-    public float getFMTurnLeftModifier();
-
-    public float getFMTurnRightModifier();
+    
+    public float getFMAttribute(String attr);
 
     public DriveType getDriveType();
 
@@ -145,7 +133,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         public int getMaxInventorySize();
 
         /**
-         * Prefferably don't edit stuff in this one, do any processing in the
+         * Preferably don't edit stuff in this one, do any processing in the
          * specific part attribute.
          */
         public NonNullList<ItemStack> getAllInventoryContents();
@@ -162,7 +150,6 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
         /**
          * 0 = off 1 = on 2 = long (?) 3 = fog lights (?)
-         *
          */
         public int getLightsState();
 
@@ -271,7 +258,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
     }
 
-    //<-- VEHICLE  -->//
+    //<-- VEHICLE TYPE -->//
     public static enum VehicleType {
 
         LAND, AIR, WATER, RAIL, NULL;

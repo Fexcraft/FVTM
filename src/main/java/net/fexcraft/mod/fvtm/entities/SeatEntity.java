@@ -604,7 +604,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     }
 
     public float getCameraDistance(){
-        return vehicle != null && seatid == 0 ? vehicle.getVehicleData().getVehicle().getFMCameraDistance() : 5F;
+        return vehicle != null && seatid == 0 ? vehicle.getVehicleData().getVehicle().getFMAttribute("camera_distance") : 5F;
     }
 
     @Override

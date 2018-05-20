@@ -55,19 +55,19 @@ public class WaterVehicleEntity extends UnboundVehicleEntity {
                         wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
                         wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
                         //
-                        velocityScale = 0.04F * (throttle > 0 ? vehicledata.getVehicle().getFMMaxPositiveThrottle() : vehicledata.getVehicle().getFMMaxNegativeThrottle()) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
-                        float steeringScale = 0.1F * (wheelsYaw > 0 ? vehicledata.getVehicle().getFMTurnLeftModifier() : vehicledata.getVehicle().getFMTurnRightModifier());
+                        velocityScale = 0.04F * (throttle > 0 ? vehicledata.getVehicle().getFMAttribute("max_positive_throttle") : vehicledata.getVehicle().getFMAttribute("max_negative_throttle")) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
+                        float steeringScale = 0.1F * (wheelsYaw > 0 ? vehicledata.getVehicle().getFMAttribute("turn_left_modifier") : vehicledata.getVehicle().getFMAttribute("turn_right_modifier"));
                         double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
                         wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
                         wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
                     }
                     else{
-                        velocityScale = 0.1F * throttle * (throttle > 0 ? vehicledata.getVehicle().getFMMaxPositiveThrottle() : vehicledata.getVehicle().getFMMaxNegativeThrottle()) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
+                        velocityScale = 0.1F * throttle * (throttle > 0 ? vehicledata.getVehicle().getFMAttribute("max_positive_throttle") : vehicledata.getVehicle().getFMAttribute("max_negative_throttle")) * vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
                         wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
                         wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
                         //
                         if(wheel.wheelid == 2 || wheel.wheelid == 3){
-                            velocityScale = 0.01F * (wheelsYaw > 0 ? vehicledata.getVehicle().getFMTurnLeftModifier() : vehicledata.getVehicle().getFMTurnRightModifier()) * (throttle > 0 ? 1 : -1);
+                            velocityScale = 0.01F * (wheelsYaw > 0 ? vehicledata.getVehicle().getFMAttribute("turn_left_modifier") : vehicledata.getVehicle().getFMAttribute("turn_right_modifier")) * (throttle > 0 ? 1 : -1);
                             wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
                             wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
                         }
@@ -86,7 +86,7 @@ public class WaterVehicleEntity extends UnboundVehicleEntity {
             Pos pos = vehicledata.getWheelPos().get(wheel.wheelid);
             Vec3d targetpos = axes.getRelativeVector(new Vec3d(pos.to16FloatX(), pos.to16FloatY(), pos.to16FloatZ()));
             Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMWheelSpringStrength());
+            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMAttribute("wheel_spring_strength"));
             if(despos.lengthSquared() > 0.001F){
                 wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
                 despos.scale(0.5F);

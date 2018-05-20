@@ -256,41 +256,6 @@ public class GenericVehicle implements Vehicle {
     }
 
     @Override
-    public float getFMCameraDistance(){
-        return this.cameradis;
-    }
-
-    @Override
-    public float getFMWheelStepHeight(){
-        return this.wheelstepheight;
-    }
-
-    @Override
-    public float getFMMaxNegativeThrottle(){
-        return this.maxnegthrottle;
-    }
-
-    @Override
-    public float getFMMaxPositiveThrottle(){
-        return this.maxposthrottle;
-    }
-
-    @Override
-    public float getFMTurnLeftModifier(){
-        return this.turnleftmod;
-    }
-
-    @Override
-    public float getFMTurnRightModifier(){
-        return this.turnrightmod;
-    }
-
-    @Override
-    public float getFMWheelSpringStrength(){
-        return this.wheelspringstrength;
-    }
-
-    @Override
     public boolean canSpawnAs(EntityType type){
         return this.accentmods.contains(type);
     }
@@ -344,6 +309,20 @@ public class GenericVehicle implements Vehicle {
     @Override
     public TreeMap<String, Pos> getWheelPositions(){
         return wheel_coords;
+    }
+
+    @Override
+    public float getFMAttribute(String attr){
+        switch(attr){
+            case "camera_distance": return cameradis;
+            case "wheel_step_height": return wheelstepheight;
+            case "max_negative_throttle": return maxnegthrottle;
+            case "max_positive_throttle": return maxposthrottle;
+            case "turn_left_modifier": return turnleftmod;
+            case "turn_right_modifier": return turnrightmod;
+            case "wheel_spring_strength": return wheelspringstrength;
+        }
+        return 0f;
     }
 
 }

@@ -8,11 +8,12 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
-import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontRendererAttributeData;
+import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
+import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
@@ -315,8 +316,8 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
             GlStateManager.popMatrix();
         }
         //
-        if(data.getPart(usedAS).getAttributeData(FontRendererAttributeData.class) != null){
-            data.getPart(usedAS).getAttributeData(FontRendererAttributeData.class).getLocations().values().forEach(loc -> loc.render(ent));
+        if(data.getPart(usedAS).getAttributeData(FontRendererAttribute.FontRendererAttributeData.class) != null){
+            data.getPart(usedAS).getAttributeData(FontRendererAttribute.FontRendererAttributeData.class).getLocations().values().forEach(loc -> loc.render((Vehicle.VehicleEntity) vehicle));
         }
     }
 
@@ -328,7 +329,7 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
         }
         return false;
     }
-    
+
     public static void lightOn(Entity ent){
         int i = ent == null ? MapColor.WHITE_STAINED_HARDENED_CLAY.colorValue : ent.getBrightnessForRender(), j = i % 65536, k = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);

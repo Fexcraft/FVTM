@@ -20,31 +20,32 @@ public class VehicleAxes {
     public VehicleAxes(float yaw, float pitch, float roll){
         setAngles(yaw, pitch, roll);
     }
+    
+    @Override
+    public String toString(){
+        return "[ " + yaw + "y, " + pitch + "p, " + roll + "r ]"; 
+    }
 
-    /**
-     * Degrees
-     */
+    /** Degrees **/
     //TODO clean up this whole degree/radian stuff;
     private double yaw, pitch, roll;
     private Matrix4f matrix;
 
     public Vec3d getRelativeVector(Vec3d vec){
         Matrix4f mat = new Matrix4f();
-        mat.m00 = (float) vec.x;
-        mat.m10 = (float) vec.y;
-        mat.m20 = (float) vec.z;
-        Matrix4f.rotate((float) (roll * 3.14159265F / 180D), new Vector3f(1, 0, 0), mat, mat);
-        Matrix4f.rotate((float) (pitch * 3.14159265F / 180D), new Vector3f(0, 0F, 1), mat, mat);
-        Matrix4f.rotate((float) (yaw * 3.14159265F / 180D), new Vector3f(0, 1F, 0), mat, mat);
+        mat.m00 = (float)vec.x; mat.m10 = (float)vec.y; mat.m20 = (float)vec.z;
+        Matrix4f.rotate((float)(roll  * 3.14159265F / 180D), new Vector3f(1F, 0F, 0F), mat, mat);
+        Matrix4f.rotate((float)(pitch * 3.14159265F / 180D), new Vector3f(0F, 0F, 1F), mat, mat);
+        Matrix4f.rotate((float)(yaw   * 3.14159265F / 180D), new Vector3f(0F, 1F, 0F), mat, mat);
         return new Vec3d(mat.m00, mat.m10, mat.m20);
     }
 
     public VehicleAxes getRelativeVector(VehicleAxes axes){
         Matrix4f mat = new Matrix4f();
         mat.load(axes.getMatrix());
-        mat.rotate((float) (roll * 3.14159265F / 180F), new Vector3f(1F, 0F, 0F));
-        mat.rotate((float) (pitch * 3.14159265F / 180F), new Vector3f(0F, 0F, 1F));
-        mat.rotate((float) (yaw * 3.14159265F / 180F), new Vector3f(0F, 1F, 0F));
+        mat.rotate((float)(roll  * 3.14159265F / 180F), new Vector3f(1F, 0F, 0F));
+        mat.rotate((float)(pitch * 3.14159265F / 180F), new Vector3f(0F, 0F, 1F));
+        mat.rotate((float)(yaw   * 3.14159265F / 180F), new Vector3f(0F, 1F, 0F));
         return new VehicleAxes(mat);
     }
 
@@ -81,7 +82,7 @@ public class VehicleAxes {
     }
 
     public float getYaw(){
-        return (float) yaw;
+        return (float)yaw;
     }
 
     public double getRadianYaw(){
@@ -89,7 +90,7 @@ public class VehicleAxes {
     }
 
     public float getPitch(){
-        return (float) pitch;
+        return (float)pitch;
     }
 
     public double getRadianPitch(){
@@ -97,7 +98,7 @@ public class VehicleAxes {
     }
 
     public float getRoll(){
-        return (float) roll;
+        return (float)roll;
     }
 
     public double getRadianRoll(){

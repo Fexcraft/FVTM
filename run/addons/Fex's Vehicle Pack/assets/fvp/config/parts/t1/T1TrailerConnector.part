@@ -6,7 +6,7 @@
     "Category": [
         "rear_connector"
     ],
-    "Attributes":[
+    "Attributes": [
         "connector"
     ],
     "Textures": [
@@ -15,30 +15,38 @@
     "Compatible": [
         {
             "Vehicle": "fvp:t1",
-            "x": 0, "y": 0, "z": 0
+            "x": 0,
+            "y": 0,
+            "z": 0
         },
         {
             "Vehicle": "fvp:ot1",
-            "x": 25, "y": 0, "z": 0
+            "x": 25,
+            "y": 0,
+            "z": 0
         }
     ],
     "Removable": true,
     "Available": true,
-    "AttributeData":{
-        "Rear-Connector":[
-	        {
-	        	"x": -105.5, "y": 2, "z": 0.5
-	        },
-	        {
-	        	"Vehicle": "fvp:ot1",
-	        	"x": -80.5, "y": 2, "z": 0.5
-	        }
-	    ]
+    "AttributeData": {
+        "Rear-Connector": [
+            {
+                "x": -105.5,
+                "y": 2,
+                "z": 0.5
+            },
+            {
+                "Vehicle": "fvp:ot1",
+                "x": -80.5,
+                "y": 2,
+                "z": 0.5
+            }
+        ]
     },
-     "Recipes":[
+    "Recipes": [
         {
             "Type": "Blueprint",
-            "Components":[
+            "Components": [
                 {
                     "Item": "minecraft:iron_ingot",
                     "Amount": 12

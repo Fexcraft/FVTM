@@ -35,7 +35,7 @@ public class NullModel extends PartModel<VehicleData> {
     @Override
     public void render(VehicleData data, String usedAS, Entity vehicle){
         if(data.getPart(usedAS).getAttributeData(FontRendererAttribute.FontRendererAttributeData.class) != null){
-            data.getPart(usedAS).getAttributeData(FontRendererAttribute.FontRendererAttributeData.class).getLocations().values().forEach(loc -> loc.render((Vehicle.VehicleEntity)vehicle));
+            data.getPart(usedAS).getAttributeData(FontRendererAttribute.FontRendererAttributeData.class).getLocations().values().forEach(loc -> loc.render((Vehicle.VehicleEntity) vehicle));
         }
     }
 

@@ -9,9 +9,10 @@ import java.util.Map.Entry;
 
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Part;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.client.util.ITooltipFlag;
@@ -71,14 +72,14 @@ public class FontRendererAttribute implements Attribute {
 
     public static class FontData {
         
-        private Pos pos;
+        private Vec3d pos;
         private int color;
         private String str, id;
-        private boolean editable, glow;
+        private boolean editable, glow, ondoor;
         private float rotX, rotY, rotZ, scale;
 
         private FontData(JsonObject obj){
-            pos = Pos.fromJSON(obj);
+            pos = Pos.fromJSON(obj).to16Double();
             if(!obj.has("id")){
                 throw new UnsupportedOperationException("Tried to instantiate Data for Font Renderer, but no ID specified!");
             }
@@ -91,6 +92,7 @@ public class FontRendererAttribute implements Attribute {
             glow = JsonUtil.getIfExists(obj, "glow", false);
             color = Integer.decode(JsonUtil.getIfExists(obj, "color", "#ffffff"));
             scale = JsonUtil.getIfExists(obj, "scale", 1f).floatValue();
+            ondoor = JsonUtil.getIfExists(obj, "ondoor", false);
         }
         
         public boolean isEditable(){
@@ -111,12 +113,11 @@ public class FontRendererAttribute implements Attribute {
         
         @SideOnly(Side.CLIENT)
         public void render(VehicleEntity ent){
-            Vec3d vec = ent.getAxes().getRelativeVector(pos.to16Double());
-            float x = ent.getAxes().getYaw() + rotX + 180F;//- 90F;
-            float y = ent.getAxes().getPitch() + rotY + 180F;
-            float z = ent.getAxes().getRoll() + rotZ;
-            net.fexcraft.mod.fvtm.render.Renderer.drawString(str, vec.x, vec.y, vec.z, x, y, z, glow, scale, color);
-            //TODO adjust rotation
+            if(ondoor && ent.getVehicleData().doorsOpen()){ return; }
+            float x = (float)(ent.getAxes().getRadianYaw())   + rotX - 90F;
+            float y = (float)(ent.getAxes().getRadianPitch()) + rotY + 180F;
+            float z = (float)(ent.getAxes().getRadianRoll())  + rotZ;
+            net.fexcraft.mod.fvtm.render.Renderer.drawString(str, pos.x, pos.y, pos.z, x, y, z, glow, scale, color);
         }
 
     }

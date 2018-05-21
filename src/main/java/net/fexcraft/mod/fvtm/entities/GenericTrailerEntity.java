@@ -114,9 +114,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
 
     private final void alignWheels(){
         for(int i = 0; i < wheels.length; i++){
-            if(wheels[i] == null){
-                continue;
-            }
+            if(wheels[i] == null){ continue; }
             WheelEntity wheel = wheels[i];
             onGround = true;
             wheel.onGround = true;

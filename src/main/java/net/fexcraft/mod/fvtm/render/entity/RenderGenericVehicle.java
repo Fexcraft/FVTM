@@ -1,8 +1,10 @@
 package net.fexcraft.mod.fvtm.render.entity;
 
+import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.addons.gep.attributes.LightProviderAttribute;
+import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;

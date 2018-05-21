@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.mod.fvtm.model.ModelHitbox;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
@@ -12,7 +13,7 @@ public class Renderer {
         FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
-        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+        //GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(viewerPitch, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(viewerRoll, 0.0F, 0.0F, 1.0F);
@@ -25,7 +26,7 @@ public class Renderer {
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.depthMask(true);
-        fontRenderer.drawString(str, -fontRenderer.getStringWidth(str) / 2, 0, color);
+        fontRenderer.drawString(str, -fontRenderer.getStringWidth(str) / 2, 0, color);ModelHitbox.instance().render();
         if(glow){
             GlStateManager.enableLighting();
         }

@@ -1,0 +1,33 @@
+{
+    "RegistryName": "hcp:tr1",
+    "Addon": "fvtm:hcp",
+    "FullName": "Trailer Base",
+    "ModelFile": "net.fexcraft.mod.addons.hcp.models.trailer.ModelTR1.class",
+    "Textures": [ "hcp:textures/trailers/tr1_base.png" ],
+    "WheelPos":[
+        { "x": -184, "y": -10, "z": -23 },
+        { "x": -184, "y": -10, "z":  23 }
+    ],
+    "WheelCoords":[
+        { "x": -126.5, "y": -2, "z":  18, "id": "left_1row" },
+        { "x": -126.5, "y": -2, "z": -18, "id": "right_1row" },
+        { "x": -155.5, "y": -2, "z":  18, "id": "left_2row" },
+        { "x": -155.5, "y": -2, "z": -18, "id": "right_2row" },
+        { "x": -184.5, "y": -2, "z":  18, "id": "left_3row" },
+        { "x": -184.5, "y": -2, "z": -18, "id": "right_3row" }
+    ],
+    "PreInstalled":[
+        {
+            "as": "license_plate",
+            "part": "hcp:tr1_license_plate"
+        },
+        {
+            "as": "lights",
+            "part": "hcp:tr1_lights"
+        }
+    ],
+    "ConstructionLength": 12,
+    "ConstructionYOffSet": 14,
+    "ConstructionWheelOffset": 21,
+    "Trailer": true
+}

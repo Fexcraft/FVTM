@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.entities;
 
-import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -77,11 +76,10 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     protected double throttle;
     protected float wheelsAngle, wheelsYaw;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
-    protected VehicleEntity parent, trailer;
+    protected VehicleEntity parentent, trailer;
     public Vec3d angularVelocity = new Vec3d(0F, 0F, 0F);
     protected byte doorToggleTimer = 0;
     public EngineLoopSound engineloop;
-    protected UUID parentid;
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
@@ -149,7 +147,6 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         prevRotationPitch = compound.getFloat("RotationPitch");
         prevRotationRoll = compound.getFloat("RotationRoll");
         axes = VehicleAxes.read(this, compound);
-        parentid = compound.getUniqueId("ParentId");
         initVeh(vehicledata, false);
         Print.debug(compound.toString());
     }
@@ -157,9 +154,6 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound){
         compound = vehicledata.writeToNBT(compound);
-        if(parent != null){
-            compound.setUniqueId("ParentId", parent == null ? parentid : parent.getEntity().getUniqueID());
-        }
         axes.write(this, compound);
         Print.debug(compound.toString());
     }
@@ -241,7 +235,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 
     public boolean isDrivenByPlayer(){
         if(vehicledata.getVehicle().isTrailerOrWagon()){
-            return parent != null && parent.getSeats()[0] != null && parent.getSeats()[0].getControllingPassenger() instanceof EntityPlayer;
+            return getParent() != null && getParent().getSeats()[0] != null && getParent().getSeats()[0].getControllingPassenger() instanceof EntityPlayer;
         }
         else{
             return seats[0] != null && seats[0].isPassengerThePlayer();
@@ -252,8 +246,8 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     @Override
     public void writeSpawnData(ByteBuf buffer){
         NBTTagCompound compound = new NBTTagCompound();
-        if(parent != null){
-            compound.setUniqueId("ParentId", parent.getEntity().getUniqueID());
+        if(getParent() != null){
+            compound.setInteger("ParentId", getParent().getEntity().getEntityId());
         }
         ByteBufUtils.writeTag(buffer, axes.write(this, vehicledata.writeToNBT(compound)));
     }
@@ -267,7 +261,6 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             prevRotationYaw = axes.getYaw();
             prevRotationPitch = axes.getPitch();
             prevRotationRoll = axes.getRoll();
-            parentid = compound.getUniqueId("ParentId");
             initVeh(vehicledata, true);
         }
         catch(Exception e){
@@ -404,8 +397,8 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                     if(doorToggleTimer <= 0){
                         int i = vehicledata.getLightsState();
                         vehicledata.setLightsState(++i > 3 ? 0 : i < 0 ? 0 : i);
-                        if(this.trailer != null){
-                            this.trailer.getVehicleData().setLightsState(vehicledata.getLightsState());
+                        if(this.getEntityAtRear() != null){
+                            this.getEntityAtRear().getVehicleData().setLightsState(vehicledata.getLightsState());
                         }
                         switch(vehicledata.getLightsState()){
                             case 0: {
@@ -482,12 +475,12 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 
     @Override
     public VehicleEntity getEntityAtFront(){
-        return vehicledata.getVehicle().isTrailerOrWagon() ? parent : null;
+        return vehicledata.getVehicle().isTrailerOrWagon() ? getParent() : null;
     }
 
     @Override
     public VehicleEntity getEntityAtRear(){
-        return trailer;
+        return trailer == null ? this.getPassengers().isEmpty() ? null : this.getPassengers().get(0) instanceof VehicleEntity ? (VehicleEntity)this.getPassengers().get(0) : null : trailer;
     }
 
     @Override
@@ -669,6 +662,10 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             }
         }
         vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
+        if(this.getEntityAtRear() != null){
+            this.getEntityAtRear().getEntity().dismountRidingEntity();
+            ((UnboundVehicleEntity)this.getEntityAtRear()).parentent = null;
+        }
     }
 
     @Override
@@ -899,6 +896,13 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     }
 
     public abstract void onUpdateMovement();
+    
+    @Override
+    public void updatePassenger(Entity passenger){
+        if(passenger instanceof GenericTrailerEntity){
+            ((VehicleEntity)passenger).moveTrailer();
+        }
+    }
 
     public boolean attackEntityFrom(DamageSource damagesource, float i){
         Print.debug(damagesource.damageType, damagesource.getImmediateSource().toString());
@@ -920,19 +924,23 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 PlayerPerms pp = PermManager.getPlayerPerms((EntityPlayer) damagesource.getImmediateSource());
                 boolean brk = pp.hasPermission(FvtmPermissions.LAND_VEHICLE_BREAK) ? pp.hasPermission(FvtmPermissions.permBreak(stack)) : false;
                 if(brk){
-                    entityDropItem(stack, 0.5F);
-                    setDead();
-                    Print.debug(stack.toString());
-                    //
                     if(this.getEntityAtRear() != null){
                         Entity ent = this.getEntityAtRear().getEntity();
-                        VehicleData rear = this.getEntityAtRear().getVehicleData();
+                        /*VehicleData rear = this.getEntityAtRear().getVehicleData();
                         rear.getScripts().forEach((script) -> script.onRemove(ent, rear));
                         ItemStack trailerstack = rear.getVehicle().getItemStack(rear);
                         ent.entityDropItem(trailerstack, 0.5F);
                         ent.setDead();
-                        Print.debug(trailerstack.toString());
+                        Print.debug(trailerstack.toString());*/
+                        if(ent instanceof UnboundVehicleEntity){
+                            ((UnboundVehicleEntity)this.getEntityAtRear()).parentent = null;
+                        }
+                        ent.dismountRidingEntity();
                     }
+                    //
+                    entityDropItem(stack, 0.5F);
+                    setDead();
+                    Print.debug(stack.toString());
                     return true;
                 }
                 else{
@@ -1055,6 +1063,9 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 }
                 case "lights_toggle": {
                     this.vehicledata.setLightsState(pkt.nbt.getInteger("lightsstate"));
+                    if(this.getEntityAtRear() != null){
+                        this.getEntityAtRear().getVehicleData().setLightsState(pkt.nbt.getInteger("lightsstate"));
+                    }
                     break;
                 }
             }
@@ -1090,6 +1101,16 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             return (T) this.vehicledata.getInventoryContainers().get(0).getAttributeData(InventoryAttributeData.class).getFluidHandler();
         }
         return super.getCapability(capability, facing);
+    }
+
+    protected VehicleEntity getParent(){
+        if(parentent == null){
+            if(this.isRiding()){
+                parentent = (VehicleEntity)this.getRidingEntity();
+            }
+            return null;
+        }
+        return parentent;
     }
 
 }

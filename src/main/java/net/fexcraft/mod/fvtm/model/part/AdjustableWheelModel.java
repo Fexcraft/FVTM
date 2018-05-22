@@ -25,18 +25,13 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
         Pos pos = data.getVehicle().getWheelPositions().get(us);
         pos = pos == null ? new Pos(0, 0, 0) : pos;
         pos.translate();
-        switch(us){
-            case "left_front_wheel":
-            case "left_back_wheel":
-            default:
-                render(wheels);
-                break;
-            case "right_front_wheel":
-            case "right_back_wheel":
-                GL11.glRotated(180, 0, 1, 0);
-                render(wheels);
-                GL11.glRotated(-180, 0, 1, 0);
-                break;
+        if(us.contains("left")){
+            render(wheels);
+        }
+        else if(us.contains("right")){
+            GL11.glRotated(180, 0, 1, 0);
+            render(wheels);
+            GL11.glRotated(-180, 0, 1, 0);
         }
         pos.translateR();
     }
@@ -70,7 +65,7 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
             }
             default: {
                 str = false;
-                mir = false;
+                mir = us.contains("right");
                 break;
             }
         }
@@ -120,7 +115,7 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
                 }
                 default: {
                     str = false;
-                    mir = false;
+                    mir = us.contains("right");
                     break;
                 }
             }

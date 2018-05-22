@@ -88,9 +88,9 @@ public class GenericVehicleEntity extends UnboundVehicleEntity {
                 atmc = atmc.subtract(despos);
             }
             //
-            if(this.getEntityAtRear() != null){
+            /*if(this.getEntityAtRear() != null){
                 this.getEntityAtRear().moveTrailer();
-            }
+            }*/
         }
         move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
     }

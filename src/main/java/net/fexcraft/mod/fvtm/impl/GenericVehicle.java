@@ -57,6 +57,8 @@ public class GenericVehicle implements Vehicle {
     private TreeMap<String, Float> soundpitch = new TreeMap<String, Float>();
     //FM
     private float cameradis, maxposthrottle, maxnegthrottle, turnleftmod, turnrightmod, wheelspringstrength, wheelstepheight, bouyancy;
+    //
+    private float trailer_adjustment_axe;
 
     @SuppressWarnings("unchecked")
     public GenericVehicle(JsonObject obj){
@@ -106,6 +108,7 @@ public class GenericVehicle implements Vehicle {
         this.turnrightmod = JsonUtil.getIfExists(obj, "FM-TurnRightModifier", 1f).floatValue();
         this.wheelspringstrength = JsonUtil.getIfExists(obj, "FM-WheelSpringStrength", 0.25f).floatValue();
         this.wheelstepheight = JsonUtil.getIfExists(obj, "FM-WheelStepHeight", 1f).floatValue();
+        this.trailer_adjustment_axe = JsonUtil.getIfExists(obj, "FVTM-TrailerAdjustmentAxe", 1f).floatValue();
         if(obj.has("Recipes")){
             obj.get("Recipes").getAsJsonArray().forEach((elm) -> {
                 try{
@@ -321,6 +324,7 @@ public class GenericVehicle implements Vehicle {
             case "turn_left_modifier": return turnleftmod;
             case "turn_right_modifier": return turnrightmod;
             case "wheel_spring_strength": return wheelspringstrength;
+            case "trailer_adjustment_axe": return trailer_adjustment_axe;
         }
         return 0f;
     }

@@ -1,0 +1,207 @@
+{
+  "FVTM:Vehicle": "fvp:t2",
+  "fvtm_vehicle": {
+    "CustomTexture": "minecraft:",
+    "DoorsOpen": "0b",
+    "IsTextureExternal": "0b",
+    "LightsState": "0",
+    "Locked": "0b",
+    "MultiDoor-BackLeft": "0b",
+    "MultiDoor-BackRight": "0b",
+    "MultiDoor-FrontLeft": "0b",
+    "MultiDoor-FrontRight": "0b",
+    "MultiDoor-Hood": "0b",
+    "MultiDoor-Trunk": "0b",
+    "Parts": [
+      {
+        "FVTM:Part": "fvp:t2_doors",
+        "UsedAs": "doors",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "generic:engine",
+        "UsedAs": "engine",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "EngineOn": "0b",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2_front_lights",
+        "UsedAs": "front_lights",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:c7_fuel_tank",
+        "UsedAs": "fuel_tank",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "FuelTankContent": "0.0d",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2_interior",
+        "UsedAs": "interior",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2r1t1_wheel",
+        "UsedAs": "left_back_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2r1t1_wheel",
+        "UsedAs": "left_front_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2_trailer_connector",
+        "UsedAs": "rear_connector",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2_rear_fender",
+        "UsedAs": "rear_fender_left",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2_rear_fender",
+        "UsedAs": "rear_fender_right",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2_rear_lights",
+        "UsedAs": "rear_lights",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2r1t1_wheel",
+        "UsedAs": "right_back_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2r1t1_wheel",
+        "UsedAs": "right_front_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2_side_skirts",
+        "UsedAs": "sides",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
+        "FVTM:Part": "fvp:t2_steering_wheel",
+        "UsedAs": "steering_wheel",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      }
+    ],
+    "PrimaryRGB": "1059344",
+    "SecondaryRGB": "102",
+    "SelectedTexture": "0",
+    "SpawnedKeys": "0"
+  },
+  "PresetCreator": "FEX___96",
+  "PresetCreatorUUID": "01e4af9b-2a30-471e-addf-f6338ffce04b",
+  "PresetCreated": 1526908899457
+}

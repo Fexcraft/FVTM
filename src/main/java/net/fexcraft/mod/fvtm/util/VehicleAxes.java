@@ -194,7 +194,7 @@ public class VehicleAxes {
     }
 
     public void setRotation(double yaw, double pitch, double roll){
-        setRotation((float) yaw, (float) pitch, (float) roll);
+        setRotation((float)yaw, (float)pitch, (float)roll);
     }
 
 }

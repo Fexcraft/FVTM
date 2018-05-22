@@ -18,9 +18,9 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
         super(world, data);
         Vec3d vec = parent.getAxes().getRelativeVector(parent.getVehicleData().getRearConnector().to16Double());
         setPosition(parent.getEntity().posX + vec.x, parent.getEntity().posY + vec.y, parent.getEntity().posZ + vec.z);
-        this.parentid = parent.getEntity().getUniqueID();
         this.axes = parent.getAxes().clone();
         initVeh(data, false);
+        this.startRiding(parent.getEntity());
         Print.debug("SPAWNING TRAILER");
     }
 
@@ -31,7 +31,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
 
     @Override
     public void onUpdate(){
-        if(parent == null){
+        /*if(getParent() == null){
             try{
                 Entity ent = null;
                 for(Entity e : world.loadedEntityList){
@@ -55,7 +55,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
             catch(Exception e){
                 e.printStackTrace();
             }
-        }
+        }*/
         super.onUpdate();
     }
 
@@ -64,13 +64,13 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
-        if(parent == null || wheels.length > 2){
+        if(getParent() == null || wheels.length > 2){
             //TODO add alternative code for 4 wheeled trailers
             return;
         }
         //
-        Vec3d conn = parent.getAxes().getRelativeVector(parent.getVehicleData().getRearConnector().to16Double());
-        this.setPosition(parent.getEntity().posX + conn.x, parent.getEntity().posY + conn.y, parent.getEntity().posZ + conn.z);
+        Vec3d conn = getParent().getAxes().getRelativeVector(getParent().getVehicleData().getRearConnector().to16Double());
+        this.setPosition(getParent().getEntity().posX + conn.x, getParent().getEntity().posY + conn.y, getParent().getEntity().posZ + conn.z);
         //
         alignWheels();
         //
@@ -81,13 +81,15 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
         //Print.debug(yaw, grs, axes.getYaw(), grr);
         //
         //
-        if(wheels == null || wheels[0] == null || wheels[1] == null){
+        if(wheels == null || wheels[0] == null || wheels[1] == null || getParent().getWheels() == null || getParent().getWheels()[0] == null || getParent().getWheels()[1] == null){
             return;
         }
-        Vec3d front = new Vec3d((parent.getWheels()[0].posX + parent.getWheels()[1].posX) / 2F, (parent.getWheels()[0].posY + parent.getWheels()[1].posY) / 2F, (parent.getWheels()[0].posZ + parent.getWheels()[1].posZ) / 2F);
+        int lw = this.getParent().getVehicleData().getVehicle().getFMAttribute("trailer_adjustment_axe") < 0 ? 3 : 0;
+        int rw = lw == 3 ? 2 : 1;
+        Vec3d front = new Vec3d((getParent().getWheels()[lw].posX + getParent().getWheels()[rw].posX) / 2F, (getParent().getWheels()[lw].posY + getParent().getWheels()[rw].posY) / 2F, (getParent().getWheels()[lw].posZ + getParent().getWheels()[rw].posZ) / 2F);
         Vec3d back = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
-        Vec3d left = new Vec3d((wheels[0].posX + parent.getWheels()[0].posX) / 2F, (wheels[0].posY + parent.getWheels()[0].posY) / 2F, (wheels[0].posZ + parent.getWheels()[0].posZ) / 2F);
-        Vec3d right = new Vec3d((wheels[1].posX + parent.getWheels()[1].posX) / 2F, (wheels[1].posY + parent.getWheels()[1].posY) / 2F, (wheels[1].posZ + parent.getWheels()[1].posZ) / 2F);
+        Vec3d left = new Vec3d((wheels[0].posX + getParent().getWheels()[lw].posX) / 2F, (wheels[0].posY + getParent().getWheels()[lw].posY) / 2F, (wheels[0].posZ + getParent().getWheels()[lw].posZ) / 2F);
+        Vec3d right = new Vec3d((wheels[1].posX + getParent().getWheels()[rw].posX) / 2F, (wheels[1].posY + getParent().getWheels()[rw].posY) / 2F, (wheels[1].posZ + getParent().getWheels()[rw].posZ) / 2F);
         //
         double dx = front.x - back.x, dy = front.y - back.y, dz = front.z - back.z;
         double drx = left.x - right.x, dry = left.y - right.y, drz = left.z - right.z;
@@ -96,17 +98,17 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
         //
         double yaw = Math.atan2(dz, dx);
         double pitch = -Math.atan2(dy, dxz);
-        double roll = 0F;
-        roll = -(float) Math.atan2(dry, drxz);
+        double roll = -(float) Math.atan2(dry, drxz);
         //
         if(vehicledata.getVehicle().getDriveType().hasTracks()){
-            yaw = (float) Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
+            yaw = (float)Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
         }
         //Print.debug(axes.getYaw(), axes.getRadianYaw());
-        double thrt = parent.getThrottle() > 0 ? parent.getThrottle() : -parent.getThrottle();
+        double thrt = getParent().getThrottle() > 0 ? getParent().getThrottle() : -getParent().getThrottle();
         double rawy = Math.toDegrees(yaw) - axes.getYaw();
         double diff = rawy * thrt * 0.2;
-        diff = rawy > 0 ? diff > rawy ? rawy : diff : diff < rawy ? rawy : diff;
+        //Print.debug(rawy, diff);
+        diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
         axes.setRotation(axes.getRadianYaw() + Math.toRadians(diff), pitch, roll);
         //Print.debug(axes.getYaw(), axes.getRadianYaw());
         //alignWheels();
@@ -138,9 +140,6 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
     @Override
     public void setDead(){
         super.setDead();
-        if(this.parent != null && parent instanceof UnboundVehicleEntity){
-            ((UnboundVehicleEntity) parent).trailer = null;
-        }
     }
 
     @Override
@@ -151,12 +150,12 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
 
     @Override
     public float getWheelsYaw(){
-        return parent == null ? 0 : parent.getWheelsYaw();
+        return getParent() == null ? 0 : getParent().getWheelsYaw();
     }
 
     @Override
     public float getWheelsAngle(){
-        return parent == null ? 0 : parent.getWheelsAngle();
+        return getParent() == null ? 0 : getParent().getWheelsAngle();
     }
 
 }

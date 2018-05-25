@@ -81,11 +81,11 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
         //Print.debug(yaw, grs, axes.getYaw(), grr);
         //
         //
-        if(wheels == null || wheels[0] == null || wheels[1] == null || getParent().getWheels() == null || getParent().getWheels()[0] == null || getParent().getWheels()[1] == null){
-            return;
-        }
         int lw = this.getParent().getVehicleData().getVehicle().getFMAttribute("trailer_adjustment_axe") < 0 ? 3 : 0;
         int rw = lw == 3 ? 2 : 1;
+        if(wheels == null || wheels[0] == null || wheels[1] == null || getParent().getWheels() == null || getParent().getWheels()[lw] == null || getParent().getWheels()[rw] == null){
+            return;
+        }
         Vec3d front = new Vec3d((getParent().getWheels()[lw].posX + getParent().getWheels()[rw].posX) / 2F, (getParent().getWheels()[lw].posY + getParent().getWheels()[rw].posY) / 2F, (getParent().getWheels()[lw].posZ + getParent().getWheels()[rw].posZ) / 2F);
         Vec3d back = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
         Vec3d left = new Vec3d((wheels[0].posX + getParent().getWheels()[lw].posX) / 2F, (wheels[0].posY + getParent().getWheels()[lw].posY) / 2F, (wheels[0].posZ + getParent().getWheels()[lw].posZ) / 2F);

@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 
 /**
  *
@@ -4229,12 +4230,18 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
 
         turret[131].addShapeBox(0F, 0F, 0F, 4, 3, 2, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 927
         turret[131].setRotationPoint(-49F, -68F, 15F);
-        translateAll(0F, 24F, 0F);
+        translateAll(8F, 16F, 0F);
         flipAll();
     }
 
     @Override
     public void render(VehicleData data, @Nullable Entity entity, int meta){
+        GL11.glTranslatef(-10, 0, 0);
+        for(int i = 0; i < 21; i++){
+            render(wheels_import);
+            GL11.glTranslatef(1, 0, 0);
+        }
+        GL11.glTranslatef(-10, 0, 0);
         super.render(data, entity, meta);
     }
 

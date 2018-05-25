@@ -98,7 +98,7 @@ public class GenericPartItem extends Item implements PartItem {
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
-        if(this.isInCreativeTab(tab)){
+        if(tab == CreativeTabs.SEARCH){
             for(Part part : Resources.PARTS.getValues()){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();

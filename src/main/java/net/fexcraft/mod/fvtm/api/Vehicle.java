@@ -234,6 +234,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
         public double getThrottle();
 
+        public void setThrottle(double newthr);
+
         public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw);
 
         public VehicleEntity getEntityAtFront();

@@ -535,13 +535,13 @@ public class VehicleInventoryGui {
                         Object obj = map.get(entry.getKey()).getSettingValue(y, entry.getKey());
                         switch(type){
                             case "boolean": {
-                                boolean b = (boolean) obj;
+                                boolean b = (boolean)obj;
                                 settings[k].enabled = k >= 9 ? b == true : b == false;
                                 break;
                             }
                             case "integer": {
-                                int n = (int) obj;
-                                settings[k].enabled = k >= 9 ? n > 0 : n < 10000;
+                                int n = (int)obj;
+                                settings[k].enabled = k >= 9 ? n > -10000 : n < 10000;
                             }
                         }
                     }

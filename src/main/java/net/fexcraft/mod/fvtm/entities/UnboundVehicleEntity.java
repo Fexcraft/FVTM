@@ -443,6 +443,11 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     public double getThrottle(){
         return throttle;
     }
+    
+    @Override
+    public void setThrottle(double newthr){
+        this.throttle = newthr;
+    }
 
     @Override
     public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw){

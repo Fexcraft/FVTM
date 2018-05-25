@@ -81,7 +81,7 @@ public class GenericMaterialItem extends MaterialItem implements FuelItem {
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
-        if(this.isInCreativeTab(tab)){
+        if(tab == CreativeTabs.SEARCH){
             for(Material material : Resources.MATERIALS.getValues()){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();

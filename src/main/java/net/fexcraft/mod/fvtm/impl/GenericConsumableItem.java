@@ -89,7 +89,7 @@ public class GenericConsumableItem extends ConsumableItem {
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
-        if(this.isInCreativeTab(tab)){
+        if(tab == CreativeTabs.SEARCH){
             for(Consumable material : Resources.CONSUMABLES.getValues()){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();

@@ -1,0 +1,26 @@
+{
+    "RegistryName": "hcp:container_crane",
+    "Addon": "fvtm:hcp",
+    "FullName": "Container Crane V1",
+    "ModelFile": "net.fexcraft.mod.addons.hcp.models.vehicle.ContainerCrane.class",
+    "Textures": [
+        "hcp:textures/vehicles/container_crane.png",
+        "hcp:textures/vehicles/container_crane_noise.png"
+    ],
+    "WheelPos":[
+        { "x": -44, "y": -14, "z": -112 },
+        { "x": -44, "y": -14, "z":  112 },
+        { "x":  44, "y": -14, "z":  112 },
+        { "x":  44, "y": -14, "z": -112 }
+    ],
+    "PreInstalled":[
+        {
+            "as": "cabin",
+            "part": "hcp:container_crane_controller"
+        }
+    ],
+    "ConstructionLength": 4,
+    "ConstructionYOffSet": -2,
+    "ConstructionWheelOffset": 21,
+    "Trailer": false
+}

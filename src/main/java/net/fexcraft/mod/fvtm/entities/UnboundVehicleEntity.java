@@ -387,7 +387,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             }
             case 11: {
                 if(!world.isRemote){
-                    player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 5, seat, 0);
+                    player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_SCRIPTSGUI, world, this.getEntityId(), seat, 0);
                     //open scripts gui
                 }
                 return true;
@@ -732,7 +732,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         }
         if(!vehicledata.getScripts().isEmpty()){
             for(VehicleScript script : vehicledata.getScripts()){
-                if(script.onInteract(this, vehicledata, player)){
+                if(script.onInteract(this, vehicledata, player, hand)){
                     return true;
                 }
             }
@@ -881,6 +881,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         else{
             //
         }
+        vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
         checkForCollisions();
         for(SeatEntity seat : seats){
             if(seat != null){
@@ -897,7 +898,6 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         if(!world.isRemote && ticksExisted % 5 == 0){
             PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
         }
-        vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
     }
 
     public abstract void onUpdateMovement();

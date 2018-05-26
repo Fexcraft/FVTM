@@ -11,6 +11,16 @@ item.hcp:medium.name=Medium Generic Container
 item.hcp:medium_fluid.name=Medium Fluid Container
 item.hcp:medium_refrigerator.name=Medium Refrigerator Container
 
+#Scripts
+script.hcp:container_crane.trycatch="Try Catch"
+script.hcp:container_crane.release="Try Release"
+script.hcp:container_crane.x-move=Move X-Axis
+script.hcp:container_crane.y-move=Move Y-Axis
+script.hcp:container_crane.z-move=Move Z-Axis
+script.hcp:container_crane.x-direction=X-Axis Direction
+script.hcp:container_crane.y-direction=Y-Axis Direction
+script.hcp:container_crane.z-direction=Z-Axis Direction
+
 
 
 

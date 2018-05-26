@@ -1,7 +1,5 @@
 package net.fexcraft.mod.addons.fvp.scripts;
 
-import java.util.TreeMap;
-
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
@@ -9,16 +7,12 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class T1_2Script implements Vehicle.VehicleScript {
 
-    private static final TreeMap<String, String> SETTINGS = new TreeMap<String, String>();
-
-    static{
-        SETTINGS.put("T1 Type2", "boolean");
-    }
     public boolean out = false;
 
     public T1_2Script(){
@@ -62,7 +56,7 @@ public class T1_2Script implements Vehicle.VehicleScript {
     }
 
     @Override
-    public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player){
+    public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand){
         return false;
     }
 
@@ -76,27 +70,24 @@ public class T1_2Script implements Vehicle.VehicleScript {
         //
     }
 
-    @Override
-    public TreeMap<String, String> getSettingKeys(int seat){
-        return seat == 0 ? SETTINGS : new TreeMap<String, String>();
-    }
+	@Override
+	public ScriptSetting<?>[] getSettings(int seat){
+		return seat == 0 ? new ScriptSetting<?>[]{
+			new ScriptSetting<T1_2Script>(this, "out", ScriptSetting.Type.BOOLEAN){
+				@Override
+				public void onChange(EntityPlayer player, Entity ent, int i){
+					out = i == 0 ? false : i == 1 ? true : out;
+		            NBTTagCompound nbt = new NBTTagCompound();
+		            nbt.setBoolean("Out", out);
+		            script.sendPacketToServer(ent, nbt);
+				}
+			}
+		} : null;
+	}
 
-    @Override
-    public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value){
-        if(setting.equals(SETTINGS.keySet().toArray()[0]) && seat == 0){
-            out = value == null ? !out : (boolean) value;
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setBoolean("Out", out);
-            this.sendPacketToServer(ent.getEntity(), nbt);
-        }
-    }
-
-    @Override
-    public Object getSettingValue(int seat, String setting){
-        if(setting.equals(SETTINGS.keySet().toArray()[0])){
-            return out;
-        }
-        return null;
-    }
+	@Override
+	public Object getSettingsValue(String setting){
+		return setting.equals("out") ? out : "";
+	}
 
 }

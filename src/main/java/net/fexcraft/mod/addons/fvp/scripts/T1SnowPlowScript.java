@@ -1,7 +1,5 @@
 package net.fexcraft.mod.addons.fvp.scripts;
 
-import java.util.TreeMap;
-
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
@@ -13,18 +11,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class T1SnowPlowScript implements VehicleScript {
-
-    private static final TreeMap<String, String> SETTINGS = new TreeMap<String, String>();
-
-    static{
-        SETTINGS.put("T1 Snow Plow", "boolean");
-    }
+	
     public boolean on = false;
 
     public T1SnowPlowScript(){
@@ -65,7 +59,7 @@ public class T1SnowPlowScript implements VehicleScript {
     }
 
     @Override
-    public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player){
+    public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand){
         return false;
     }
 
@@ -122,27 +116,24 @@ public class T1SnowPlowScript implements VehicleScript {
         //
     }
 
-    @Override
-    public TreeMap<String, String> getSettingKeys(int seat){
-        return seat == 0 ? SETTINGS : new TreeMap<String, String>();
-    }
+	@Override
+	public ScriptSetting<?>[] getSettings(int seat){
+		return seat == 0 ? new ScriptSetting<?>[]{
+			new ScriptSetting<T1SnowPlowScript>(this, "snow_plow", ScriptSetting.Type.BOOLEAN){
+				@Override
+				public void onChange(EntityPlayer player, Entity entity, int i){
+					on = i == 0 ? false : i == 1 ? true : on;
+		            NBTTagCompound nbt = new NBTTagCompound();
+		            nbt.setBoolean("On", on);
+		            script.sendPacketToServer(entity, nbt);
+				}
+			}
+		} : null;
+	}
 
-    @Override
-    public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value){
-        if(setting.equals(SETTINGS.keySet().toArray()[0]) && seat == 0){
-            on = value == null ? !on : (boolean) value;
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setBoolean("On", on);
-            this.sendPacketToServer(ent.getEntity(), nbt);
-        }
-    }
-
-    @Override
-    public Object getSettingValue(int seat, String setting){
-        if(setting.equals(SETTINGS.keySet().toArray()[0])){
-            return on;
-        }
-        return null;
-    }
+	@Override
+	public Object getSettingsValue(String setting){
+		return setting.equals("snow_plow") ? on : "null";
+	}
 
 }

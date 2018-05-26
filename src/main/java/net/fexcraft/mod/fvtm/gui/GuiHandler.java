@@ -6,6 +6,9 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript.ScriptSetting;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
@@ -18,6 +21,7 @@ import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -36,6 +40,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int CONSTRUCTOR = 9000;//92110;
     public static final int CONTAINER_INVENTORY = 9210;
     public static final int CONTAINER_FLUID_INVENTORY = 9211;
+	public static final int VEHICLE_SCRIPTSGUI = 9214;
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
@@ -53,6 +58,8 @@ public class GuiHandler implements IGuiHandler {
                 return new PipeGui.Server(player, world, x, y, z);
             case 9213:
                 return new AdjSignGui.Server(player, world, x, y, z);
+            case 9214:
+            	return new GenericPlaceholderContainer();
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             return new GenericPlaceholderContainer();
@@ -77,6 +84,8 @@ public class GuiHandler implements IGuiHandler {
                 return new PipeGui.Client(player, world, x, y, z);
             case 9213:
                 return new AdjSignGui.Client(player, world, x, y, z);
+            case 9214:
+            	return new VehicleScriptGui(player, world, x, y, z);
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             Print.debug("CREATING GUI!");
@@ -337,6 +346,30 @@ public class GuiHandler implements IGuiHandler {
                     }
                     tile.sendUpdate();
                     break;
+                }
+                case "script_setting":{
+                	Print.debug(packet.nbt);
+                    EntityPlayer player = (EntityPlayer)objs[0];
+                	Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
+                	if(ent == null || ent instanceof VehicleEntity == false){ return; }
+                	VehicleEntity vehicle = (VehicleEntity)ent;
+                	VehicleScript script = null;
+                	for(VehicleScript scr : vehicle.getVehicleData().getScripts()){
+                		if(scr.getId().toString().equals(packet.nbt.getString("script"))){
+                			script = scr; break;
+                		}
+                	}
+                	if(script == null){ return; }
+                	ScriptSetting<?> setting = null;
+                	for(ScriptSetting<?> sett : script.getSettings(packet.nbt.getInteger("seat"))){
+                		if(sett.getId().equals(packet.nbt.getString("script_setting"))){
+                			setting = sett; break;
+                		}
+                	}
+                	if(setting != null){
+                		setting.onChange(player, ent, packet.nbt.getInteger("payload"));
+                	}
+                	else return;
                 }
             }
         }

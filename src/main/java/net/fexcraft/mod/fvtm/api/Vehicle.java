@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -175,7 +176,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
         public void onCreated(Entity entity, VehicleData data);
 
-        public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player);
+        public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand);
 
         public void onUpdate(Entity entity, VehicleData data);
 
@@ -205,11 +206,43 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
             return;
         }
 
-        public TreeMap<String, String> getSettingKeys(int seat);
+        public @Nullable ScriptSetting<?>[] getSettings(int seat);
+        
+        public Object getSettingsValue(String setting);
+        
+        public static abstract class ScriptSetting<T extends VehicleScript> {
+        	
+        	protected T script;
+        	private String id;
+        	private Type type;
+        	
+        	public ScriptSetting(T parent, String id, Type type){
+        		this.id = id; this.script = parent; this.type = type;
+        	}
+        	
+        	public final String getId(){
+        		return id;
+        	}
 
-        public void onSettingsUpdate(VehicleEntity ent, int seat, String setting, Object value);
+			public Type getType(){
+				return type;
+			}
+        	
+        	public static enum Type {
+        		INTEGER, BOOLEAN, STRING, BUTTON
+        	}
+        	
+        	public abstract void onChange(EntityPlayer player, Entity entity, int i);
+        	
+        	public final String getValue(){
+        		return String.valueOf(script.getSettingsValue(id));
+        	}
 
-        public Object getSettingValue(int seat, String setting);
+			public T getScript(){
+				return script;
+			}
+        	
+        }
 
     }
 

@@ -8,14 +8,14 @@
         "hcp:textures/vehicles/container_crane_noise.png"
     ],
     "WheelPos":[
-        { "x": -44, "y": -14, "z": -112 },
-        { "x": -44, "y": -14, "z":  112 },
-        { "x":  44, "y": -14, "z":  112 },
-        { "x":  44, "y": -14, "z": -112 }
+        { "x": -44, "y": -14, "z": -224 },
+        { "x": -44, "y": -14, "z":  224 },
+        { "x":  44, "y": -14, "z":  224 },
+        { "x":  44, "y": -14, "z": -224 }
     ],
     "PreInstalled":[
         {
-            "as": "cabin",
+            "as": "controller",
             "part": "hcp:container_crane_controller"
         }
     ],

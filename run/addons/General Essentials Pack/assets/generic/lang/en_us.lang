@@ -24,6 +24,14 @@ item.generic:goldkey.name=Key
 item.generic:container_large.name=Large Container
 item.generic:container_medium.name=Medium Container
 
+#Scripts
+script.generic:multidoor.hood=Hood
+script.generic:multidoor.trunk=Trunk
+script.generic:multidoor.front_left=Front Left
+script.generic:multidoor.front_right=Front Right
+script.generic:multidoor.back_left=Back Left
+script.generic:multidoor.back_right=Back Right
+
 
 
 

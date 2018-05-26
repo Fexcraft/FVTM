@@ -3,13 +3,9 @@ package net.fexcraft.mod.fvtm.gui;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.lwjgl.input.Mouse;
-
-import java.util.TreeMap;
 
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute;
@@ -20,7 +16,6 @@ import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.render.Renderer;
@@ -63,7 +58,7 @@ public class VehicleInventoryGui {
     private static final ResourceLocation invtex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory.png");
     private static final ResourceLocation fueltex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_fuel.png");
     private static final ResourceLocation contex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_container.png");
-    private static final ResourceLocation scrtex = new ResourceLocation("fvtm:textures/guis/vehicle_scripts.png");
+    //private static final ResourceLocation scrtex = new ResourceLocation("fvtm:textures/guis/vehicle_scripts.png");
     private static final ResourceLocation fluidtex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_fluid.png");
 
     public static class Client extends GuiContainer {
@@ -72,9 +67,8 @@ public class VehicleInventoryGui {
         private VehicleData data;
         private int x, y, z;
         private GenericGuiButton arrowUp, arrowDown, fuel, info;
-        private GenericGuiButton[] parts, settings;
+        private GenericGuiButton[] parts;
         private int scroll;
-        private TreeMap<String, VehicleScript> map;
         private static Server server;
 
         public Client(EntityPlayer player, World world, int x, int y, int z){
@@ -113,7 +107,7 @@ public class VehicleInventoryGui {
                     this.ySize = 103;
                     break;
                 }
-                case 5: {
+                /*case 5: {
                     this.xSize = 168;
                     this.ySize = 153;
                     //
@@ -121,7 +115,7 @@ public class VehicleInventoryGui {
                     data.getScripts().forEach(vehscr -> vehscr.getSettingKeys(y).keySet().forEach(entry -> map.put(entry, vehscr)));
                     settings = new GenericGuiButton[18];
                     break;
-                }
+                }*/
             }
         }
 
@@ -182,7 +176,7 @@ public class VehicleInventoryGui {
                     this.fontRenderer.drawString(data.getContainerHolders().get(y).getPart().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
                     break;
                 }
-                case 5: {
+                /*case 5: {
                     this.mc.getTextureManager().bindTexture(scrtex);
                     this.drawTexturedModalRect(i, j, 0, 0, this.xSize + 12, this.ySize);
                     this.fontRenderer.drawString(data.getVehicle().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
@@ -190,7 +184,7 @@ public class VehicleInventoryGui {
                     TreeMap<String, VehicleScript> map = new TreeMap<String, VehicleScript>();
                     list.forEach(vehscr -> vehscr.getSettingKeys(y).keySet().forEach(entry -> map.put(entry, vehscr)));
                     for(int k = 0; k < 9; k++){
-                        String str = (k + z) >= map.size() /*|| (k + z) < 0*/ ? null : (String) map.keySet().toArray()[k + z];
+                        String str = (k + z) >= map.size() /*|| (k + z) < 0*//* ? null : (String) map.keySet().toArray()[k + z];
                         this.fontRenderer.drawString(str == null ? "" : str, i + 8, j + 22 + (k * 14), MapColor.BLACK_STAINED_HARDENED_CLAY.colorValue);
                         if(str == null){
                             this.fontRenderer.drawString(this.fontRenderer.trimStringToWidth("", 32), i + 120, j + 22 + (k * 14), MapColor.GREEN_STAINED_HARDENED_CLAY.colorValue);
@@ -201,7 +195,7 @@ public class VehicleInventoryGui {
                         }
                     }
                     break;
-                }
+                }*/
                 case 6: {
                     this.mc.getTextureManager().bindTexture(fluidtex);
                     this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
@@ -264,8 +258,7 @@ public class VehicleInventoryGui {
                 super.keyTyped(typedChar, keyCode);
             }
         }
-
-        @SuppressWarnings("unchecked")
+        
         @Override
         protected void actionPerformed(GuiButton button){
             switch(x){
@@ -373,7 +366,7 @@ public class VehicleInventoryGui {
                     //TODO
                     break;
                 }
-                case 5: {
+                /*case 5: {
                     if(button.id == 0 || button.id == 1){
                         scroll = button.id == 0 ? scroll - 1 : scroll + 1;
                         scroll = scroll < 0 ? 0 : scroll + 9 > map.size() ? map.size() - 9 : scroll;
@@ -417,11 +410,10 @@ public class VehicleInventoryGui {
                     nbt.setInteger("gui", GuiHandler.VEHICLE_INVENTORY);
                     nbt.setIntArray("args", new int[]{5, y, scroll});
                     PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
-                }
+                }*/
             }
         }
-
-        @SuppressWarnings("unchecked")
+        
         @Override
         public void initGui(){
             super.initGui();
@@ -502,7 +494,7 @@ public class VehicleInventoryGui {
                     //TODO
                     break;
                 }
-                case 5: {
+                /*case 5: {
                     //
                     this.buttonList.add(arrowUp = new GenericGuiButton(0, 167 + i, 5 + j, 9, 12, ""));
                     arrowUp.setTexturePos(0, 220, 0);
@@ -547,7 +539,7 @@ public class VehicleInventoryGui {
                     }
                     //
                     break;
-                }
+                }*/
             }
         }
 

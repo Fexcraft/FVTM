@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript.ScriptSetting;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
+import net.fexcraft.mod.lib.util.common.GenericGuiButton;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -25,9 +26,10 @@ public class VehicleScriptGui extends GuiContainer {
     private static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/guis/vehicle_scripts.png");
     //private EntityPlayer player;
     //private World world;
-    private int seat, vehicle, scroll;
+    private int seat, vehicle, scroll, size;
     private VehicleEntity entity;
     private ArrayList<ScriptSetting<?>> settings = new ArrayList<ScriptSetting<?>>();
+    private GenericGuiButton button_up, button_down;
 	
 	public VehicleScriptGui(EntityPlayer player, World world, int x, int y, int z){
 		super(new GenericPlaceholderContainer());
@@ -43,6 +45,7 @@ public class VehicleScriptGui extends GuiContainer {
 			if(i + scroll >= list.size()){ break; }
 			settings.add(list.get(i));
 		}
+		size = list.size();
 		list.clear();
 	}
 	
@@ -92,6 +95,9 @@ public class VehicleScriptGui extends GuiContainer {
 				case STRING: break;
         	}
         }
+        //
+        button_up.enabled = scroll > 0;
+        button_down.enabled = scroll + 8 < size;
 	}
 	
 	@Override
@@ -131,7 +137,12 @@ public class VehicleScriptGui extends GuiContainer {
             PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
 		}
 		if(button.id == 16 || button.id == 17){
-			
+			NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setString("target_listener", "fvtm");
+            nbt.setString("task", "open_gui");
+            nbt.setInteger("gui", GuiHandler.VEHICLE_INVENTORY);
+            nbt.setIntArray("args", new int[]{vehicle, seat, scroll + (button.id == 16 ? -1 : 1)});
+            PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
 		}
 		return;
 	}
@@ -154,6 +165,23 @@ public class VehicleScriptGui extends GuiContainer {
 			this.buttonList.add(new Button(buttonList.size(), guiLeft + 118, guiTop + 19 + (i * 16), settings.get(i), true));
 			this.buttonList.add(new Button(buttonList.size(), guiLeft + 118, guiTop + 26 + (i * 16), settings.get(i), false));
 		}
+		//
+		button_up = new GenericGuiButton(16, 166 + guiLeft, 5 + guiTop, 9, 12, "");
+		button_up.setTexturePos(0, 220, 0);
+        button_up.setTexturePos(1, 229, 0);
+        button_up.setTexturePos(2, 238, 0);
+        button_up.setTexturePos(3, 247, 0);
+        button_up.setTexture(TEXTURE);
+		this.buttonList.add(button_up);
+        //
+		button_down = new GenericGuiButton(17, 166 + guiLeft, 23 + guiTop, 9, 12, "");
+		button_down.setTexturePos(0, 220, 12);
+        button_down.setTexturePos(1, 229, 12);
+        button_down.setTexturePos(2, 238, 12);
+        button_down.setTexturePos(3, 247, 12);
+        button_down.setTexture(TEXTURE);
+        this.buttonList.add(button_down);
+        //
 	}
 	
 	public static class Button extends GuiButton {

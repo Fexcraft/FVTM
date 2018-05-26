@@ -43,7 +43,7 @@ public class VehicleScriptGui extends GuiContainer {
 		entity.getVehicleData().getScripts().forEach(scr -> { ScriptSetting<?>[] arr = scr.getSettings(seat); if(arr != null){ list.addAll(Arrays.asList(arr)); } });
 		for(int i = 0; i < 8; i++){
 			if(i + scroll >= list.size()){ break; }
-			settings.add(list.get(i));
+			settings.add(list.get(i + scroll));
 		}
 		size = list.size();
 		list.clear();
@@ -61,8 +61,8 @@ public class VehicleScriptGui extends GuiContainer {
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, 168 + 12, 150);
         //
         for(int i = 0; i < 8; i++){
-        	if(i + scroll >= settings.size()){ break; }
-        	ScriptSetting<?> setting = settings.get(i + scroll);
+        	if(i >= settings.size()){ break; }
+        	ScriptSetting<?> setting = settings.get(i);
         	String str = this.fontRenderer.trimStringToWidth(I18n.format("script." + setting.getScript().getId() + "." + setting.getId(), new Object[0]), 105);
     		this.fontRenderer.drawString(str, guiLeft +   8, guiTop + 23 + (i * 16), MapColor.GRAY.colorValue);
     		str = this.fontRenderer.trimStringToWidth(setting.getValue(), 105);
@@ -140,7 +140,7 @@ public class VehicleScriptGui extends GuiContainer {
 			NBTTagCompound nbt = new NBTTagCompound();
             nbt.setString("target_listener", "fvtm");
             nbt.setString("task", "open_gui");
-            nbt.setInteger("gui", GuiHandler.VEHICLE_INVENTORY);
+            nbt.setInteger("gui", GuiHandler.VEHICLE_SCRIPTSGUI);
             nbt.setIntArray("args", new int[]{vehicle, seat, scroll + (button.id == 16 ? -1 : 1)});
             PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
 		}

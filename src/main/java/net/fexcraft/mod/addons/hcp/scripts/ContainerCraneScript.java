@@ -78,8 +78,8 @@ public class ContainerCraneScript implements VehicleScript {
         	}
         	else{
         		xpos += xdir * speed;
-            	if(xpos > 10000){ xpos = 10000; }
-            	if(xpos < -10000){ xpos = -10000; }
+            	if(xpos > 10000){ xpos = 10000; xmove = false; }
+            	if(xpos < -10000){ xpos = -10000; xmove = false; }
             	moved = true;
             	if(xpos % 1000 == 0 && stepwise){
         			xsteptime = 40;
@@ -92,8 +92,8 @@ public class ContainerCraneScript implements VehicleScript {
         	}
         	else{
 	        	ypos += ydir * speed;
-	        	if(ypos > 0){ ypos = 0; }
-	        	if(ypos < -6000){ ypos = -6000; }
+	        	if(ypos > 0){ ypos = 0; ymove = false; }
+	        	if(ypos < -6000){ ypos = -6000; ymove = false; }
 	        	moved = true;
             	if(ypos % 1000 == 0 && stepwise){
         			ysteptime = 40;
@@ -106,8 +106,8 @@ public class ContainerCraneScript implements VehicleScript {
         	}
         	else{
 	        	zpos += zdir * speed;
-	        	if(zpos > 4000){ zpos = 4000; }
-	        	if(zpos < -4000){ zpos = -4000; }
+	        	if(zpos > 4000){ zpos = 4000; zmove = false; }
+	        	if(zpos < -4000){ zpos = -4000; zmove = false; }
 	        	moved = true;
             	if(zpos % 1000 == 0 && stepwise){
         			zsteptime = 40;

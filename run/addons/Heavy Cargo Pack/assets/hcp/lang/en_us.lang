@@ -20,6 +20,8 @@ script.hcp:container_crane.z-move=Move Z-Axis
 script.hcp:container_crane.x-direction=X-Axis Direction
 script.hcp:container_crane.y-direction=Y-Axis Direction
 script.hcp:container_crane.z-direction=Z-Axis Direction
+script.hcp:container_crane.speed=Movement Speed
+script.hcp:container_crane.stepwise=Stepwise Movement
 
 
 

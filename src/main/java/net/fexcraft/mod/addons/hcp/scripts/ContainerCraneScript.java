@@ -33,7 +33,7 @@ public class ContainerCraneScript implements VehicleScript {
 	
     private ContainerData data;
     private boolean xmove, ymove, zmove, stepwise;
-    private int xdir, ydir, zdir;
+    private int xdir, ydir, zdir, xsteptime, ysteptime, zsteptime;
 	public int xpos, ypos, zpos;
 	private int speed = 5;
 
@@ -73,22 +73,46 @@ public class ContainerCraneScript implements VehicleScript {
     	}
     	boolean moved = false;
         if(xmove && xdir != 0){
-        	xpos += xdir * speed;
-        	if(xpos > 10000){ xpos = 10000; }
-        	if(xpos < -10000){ xpos = -10000; }
-        	moved = true;
+        	if(stepwise && xsteptime > 0){
+        		xsteptime--;
+        	}
+        	else{
+        		xpos += xdir * speed;
+            	if(xpos > 10000){ xpos = 10000; }
+            	if(xpos < -10000){ xpos = -10000; }
+            	moved = true;
+            	if(xpos % 1000 == 0 && stepwise){
+        			xsteptime = 40;
+            	}
+        	}
         }
         if(ymove && ydir != 0){
-        	ypos += ydir * speed;
-        	if(ypos > 0){ ypos = 0; }
-        	if(ypos < -6000){ ypos = -6000; }
-        	moved = true;
+        	if(stepwise && ysteptime > 0){
+        		ysteptime--;
+        	}
+        	else{
+	        	ypos += ydir * speed;
+	        	if(ypos > 0){ ypos = 0; }
+	        	if(ypos < -6000){ ypos = -6000; }
+	        	moved = true;
+            	if(ypos % 1000 == 0 && stepwise){
+        			ysteptime = 40;
+            	}
+        	}
         }
         if(zmove && zdir != 0){
-        	zpos += zdir * speed;
-        	if(zpos > 4000){ zpos = 4000; }
-        	if(zpos < -4000){ zpos = -4000; }
-        	moved = true;
+        	if(stepwise && zsteptime > 0){
+        		zsteptime--;
+        	}
+        	else{
+	        	zpos += zdir * speed;
+	        	if(zpos > 4000){ zpos = 4000; }
+	        	if(zpos < -4000){ zpos = -4000; }
+	        	moved = true;
+            	if(zpos % 1000 == 0 && stepwise){
+        			zsteptime = 40;
+            	}
+        	}
         }
         //
         FontRendererAttributeData attr = data.getPart("controller") == null ? null : data.getPart("controller").getAttributeData(FontRendererAttributeData.class);
@@ -150,6 +174,9 @@ public class ContainerCraneScript implements VehicleScript {
         compound.setInteger("xpos", xpos);
         compound.setInteger("ypos", ypos);
         compound.setInteger("zpos", zpos);
+        compound.setInteger("speed", speed);
+        compound.setBoolean("stepwise", stepwise);
+        compound.setIntArray("steptime", new int[]{ xsteptime, ysteptime, zsteptime });
         return compound;
     }
 
@@ -170,6 +197,12 @@ public class ContainerCraneScript implements VehicleScript {
         xpos = compound.getInteger("xpos");
         ypos = compound.getInteger("ypos");
         zpos = compound.getInteger("zpos");
+        speed = compound.getInteger("speed");
+        stepwise = compound.getBoolean("stepwise");
+        int[] steptime = compound.getIntArray("steptime");
+        if(steptime != null && steptime.length >= 3){
+        	xsteptime = steptime[0]; ysteptime = steptime[1]; zsteptime = steptime[2];
+        }
         return this;
     }
 
@@ -184,6 +217,8 @@ public class ContainerCraneScript implements VehicleScript {
 			case "z-direction": return zdir;
 			case "trycatch": return "> > > >";
 			case "release": return "< < < <";
+			case "speed": return speed;
+			case "stepwise": return stepwise;
 		}
 		return "";
 	}
@@ -253,6 +288,35 @@ public class ContainerCraneScript implements VehicleScript {
 					if(script.zdir < -1){ script.zdir = -1; }
 					script.updateClient(player, ent);
 				}
+			},
+			new ScriptSetting<ContainerCraneScript>(this, "speed", ScriptSetting.Type.INTEGER){
+				@Override
+				public void onChange(EntityPlayer player, Entity entity, int i){
+					if(i > 0){
+						switch(speed){
+							case  0: speed = 10; break;
+							case 10: speed = 20; break;
+							case 20: speed = 50; break;
+							default: speed = 50; break;
+						}
+					}
+					else{
+						switch(speed){
+							case 10: speed =  0; break;
+							case 20: speed = 10; break;
+							case 50: speed = 20; break;
+							default: speed =  0; break;
+						}
+					}
+					script.updateClient(player, entity);
+				}
+			},
+			new ScriptSetting<ContainerCraneScript>(this, "stepwise", ScriptSetting.Type.BOOLEAN){
+				@Override
+				public void onChange(EntityPlayer player, Entity entity, int i){
+					stepwise = i == 0 ? false : i == 1 ? true : stepwise;
+					script.updateClient(player, entity);
+				}
 			}
 		};
 	}
@@ -262,11 +326,13 @@ public class ContainerCraneScript implements VehicleScript {
 	}
 
 	protected void tryRelease(EntityPlayer player){
+		xmove = ymove = zmove = false;
 		Print.chat(player, "//TODO");
 		return;
 	}
 
 	protected void tryCatch(EntityPlayer player){
+		xmove = ymove = zmove = false;
 		Print.chat(player, "//TODO");
 		return;
 	}

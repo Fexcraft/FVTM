@@ -572,7 +572,7 @@ public class VehicleInventoryGui {
             this.x = x;
             this.y = y;
             /*this.z = z;*/
-            data = ((SeatEntity) player.getRidingEntity()).getVehicle().getVehicleData();
+            data = ((SeatEntity)player.getRidingEntity()).getVehicle().getVehicleData();
             switch(x){
                 case 0: {
                     //do nothing

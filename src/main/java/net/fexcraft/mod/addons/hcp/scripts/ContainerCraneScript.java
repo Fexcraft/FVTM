@@ -327,7 +327,7 @@ public class ContainerCraneScript implements VehicleScript {
 
 	protected void tryRelease(EntityPlayer player){
 		xmove = ymove = zmove = false;
-		Print.chat(player, "//TODO");
+		
 		return;
 	}
 

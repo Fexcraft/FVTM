@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
@@ -86,6 +87,18 @@ public interface Container extends IForgeRegistryEntry<Container>, TextureHolder
 
         public ContainerData getContainer(ItemStack stack);
 
+    }
+    
+    public static interface ContainerEntity {
+    	
+    	public @Nullable ContainerData getContainerData();
+    	
+    	public void setContainerData(@Nullable ContainerData data);
+    	
+    	public ContainerType getContainerType();
+    	
+    	public Entity getEntity();
+    	
     }
 
     public static enum ContainerPosition {

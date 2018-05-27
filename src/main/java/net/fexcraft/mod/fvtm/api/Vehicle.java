@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
@@ -290,6 +291,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         public default void moveTrailer(){
             //TO BE OVERRIDEN BY A TRAILER
         }
+
+		public @Nullable TreeMap<String, ContainerEntity> getContainers();
 
     }
 

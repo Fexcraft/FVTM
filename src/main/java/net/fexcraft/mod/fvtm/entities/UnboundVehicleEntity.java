@@ -1,9 +1,12 @@
 package net.fexcraft.mod.fvtm.entities;
 
 
+import java.util.TreeMap;
+
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
@@ -11,7 +14,10 @@ import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttrib
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
+import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
+import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -73,6 +79,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     protected VehicleAxes prevAxes;
     protected WheelEntity[] wheels;
     protected SeatEntity[] seats;
+    protected TreeMap<String, ContainerEntity> containers;
     protected double throttle;
     protected float wheelsAngle, wheelsYaw;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
@@ -83,7 +90,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
-    public int serverPositionTransitionTicker;
+    public int serverPositionTransitionTicker, consize = -1;
 
     /**
      * Generic Constructor, Client/Load from NBT
@@ -163,6 +170,20 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         wheels = new WheelEntity[type.getWheelPos().size()];
         stepHeight = type.getVehicle().getFMAttribute("wheel_step_height");
         vehicledata.getScripts().forEach((script) -> script.onCreated(this, vehicledata));
+        if(vehicledata.getContainerHolders().size() > 0){
+        	containers = new TreeMap<>();
+        	consize = 0;
+        	for(PartData data : vehicledata.getContainerHolders()){
+        		if(data.getAttributeData(ContainerAttributeData.class) != null){
+        			if(data.getAttributeData(ContainerAttributeData.class).getAttribute().getContainerType() == ContainerType.LARGE){
+        				consize += 3;
+        			}
+        			else{
+        				consize++;
+        			}
+        		}
+        	}
+        }
     }
 
     public Vec3d rotate(Vec3d inVec){
@@ -666,6 +687,13 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 wheel.setDead();
             }
         }
+        if(containers != null){
+        	containers.values().forEach(con -> {
+        		con.getEntity().setDead();
+        	});
+        	containers.clear();
+        	containers = null;
+        }
         vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
         if(this.getEntityAtRear() != null){
             this.getEntityAtRear().getEntity().dismountRidingEntity();
@@ -795,6 +823,29 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                     wheels[i] = new WheelEntity(world, this, i);
                     world.spawnEntity(wheels[i]);
                 }
+            }
+            if(containers != null && containers.size() < consize){
+            	vehicledata.getParts().forEach((key, part) -> {
+            		if(part.getAttributeData(ContainerAttributeData.class) != null){
+            			ContainerAttributeData condata = part.getAttributeData(ContainerAttributeData.class);
+            			if(condata.getAttribute().getContainerType() == ContainerType.LARGE){
+            				if(!containers.containsKey(key + "_0")){
+            					containers.put(key, new GenericContainerEntity(world, this, key, 0));
+            				}
+            				if(!containers.containsKey(key + "_1")){
+            					containers.put(key, new GenericContainerEntity(world, this, key, 1));
+            				}
+            				if(!containers.containsKey(key)){
+            					containers.put(key, new GenericContainerEntity(world, this, key, -1));
+            				}
+            			}
+            			else{
+            				if(!containers.containsKey(key)){
+            					containers.put(key, new GenericContainerEntity(world, this, key, -1));
+            				}
+            			}
+            		}
+            	});
             }
         }
         prevRotationYaw = axes.getYaw();
@@ -1116,6 +1167,11 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             return null;
         }
         return parentent;
+    }
+    
+    @Override
+    public TreeMap<String, ContainerEntity> getContainers(){
+    	return containers;
     }
 
 }

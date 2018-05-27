@@ -6,18 +6,35 @@ import net.minecraftforge.fml.common.Loader;
 
 public class APIs {
 
-    public final boolean TOUGHASNAILS;
+    public static boolean TOUGHASNAILS;
+    private static boolean loaded = false;
 
-    public static APIs INSTANCE;
-
-    public APIs(){
-        if(INSTANCE != null){
-            Print.log("[FVTM] APIs INSTANCE ALREADY LOADED!");
-            Static.halt();
-        }
-        INSTANCE = this;
-        //
+    public static void load(){
+    	if(loaded){
+    		Print.log("[FVTM-API] Already loaded!");
+    		Static.halt();
+    	}
         TOUGHASNAILS = Loader.isModLoaded("toughasnails");
     }
+
+	public static boolean getBooleanValue(String string){
+		return Detached.getBooleanValue(string);
+	}
+	
+	public static class Detached {
+		
+		public static boolean getBooleanValue(String string){
+			try{
+				if(string.equals("thoughasnails.enable_thirst")){
+					return toughasnails.api.config.SyncedConfig.getBooleanValue(toughasnails.api.config.GameplayOption.ENABLE_THIRST);
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return false;
+		}
+		
+	}
 
 }

@@ -38,7 +38,7 @@ public class GenericConsumable implements Consumable {
         this.wolfmeat = JsonUtil.getIfExists(obj, "WolfMeat", false);
         this.drinkable = JsonUtil.getIfExists(obj, "Drinkable", false);
         this.alwaysedible = JsonUtil.getIfExists(obj, "AlwaysEdible", false);
-        if(this.drinkable && APIs.INSTANCE.TOUGHASNAILS){
+        if(this.drinkable && APIs.TOUGHASNAILS){
             this.tandata = obj.has("ToughAsNails") ? new TANDataImpl(obj.get("ToughAsNails").getAsJsonObject()) : null;
         }
     }

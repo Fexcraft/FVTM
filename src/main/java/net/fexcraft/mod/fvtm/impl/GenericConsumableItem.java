@@ -10,7 +10,6 @@ import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Consumable.ConsumableItem;
 import net.fexcraft.mod.fvtm.util.APIs;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -156,7 +155,7 @@ public class GenericConsumableItem extends ConsumableItem {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
         ItemStack itemstack = player.getHeldItem(hand);
         Consumable con = getConsumable(player.getHeldItem(hand));
-        if(con.isDrinkable() && APIs.INSTANCE.TOUGHASNAILS){
+        if(con.isDrinkable() && APIs.TOUGHASNAILS){
             if(((toughasnails.thirst.ThirstHandler) toughasnails.api.thirst.ThirstHelper.getThirstData(player)).isThirsty() || con.alwaysEdible()){
                 player.setActiveHand(hand);
                 return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
@@ -182,12 +181,12 @@ public class GenericConsumableItem extends ConsumableItem {
             return stack;
         }
         Consumable con = getConsumable(stack);
-        if(con.isDrinkable() && APIs.INSTANCE.TOUGHASNAILS){
+        if(con.isDrinkable() && APIs.TOUGHASNAILS){
             EntityPlayer player = (EntityPlayer) entity;
             toughasnails.api.stat.capability.IThirst thirst = toughasnails.api.thirst.ThirstHelper.getThirstData(player);
             thirst.addStats(con.getTANData().getThirst(), con.getTANData().getHydration());
             //
-            if(player.world.rand.nextFloat() < con.getTANData().getPoisonChance() && toughasnails.api.config.SyncedConfig.getBooleanValue(toughasnails.api.config.GameplayOption.ENABLE_THIRST)){
+            if(player.world.rand.nextFloat() < con.getTANData().getPoisonChance() && APIs.getBooleanValue("toughasnals.enable_thirst")){
                 player.addPotionEffect(new PotionEffect(toughasnails.api.TANPotions.thirst, 600));
             }
             //

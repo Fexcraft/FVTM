@@ -81,8 +81,6 @@ public class FVTM {
             //
             MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
         }
-        //
-        new APIs();
     }
 
     @Mod.EventHandler
@@ -112,6 +110,8 @@ public class FVTM {
         FvtmPermissions.register();
         //
         SignCapabilityUtil.addListener(ContainerStatusListener.class);
+        //
+        APIs.load();
     }
 
     @Mod.EventHandler

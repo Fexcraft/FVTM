@@ -4219,6 +4219,10 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
         turret[131].setRotationPoint(-49F, -68F, 15F);
         translateAll(-8F, 16F, 112F);
         flipAll();
+        //
+        this.gui_scale_x = this.gui_scale_x / 2;
+        this.gui_scale_y = this.gui_scale_y / 2;
+        this.gui_scale_z = this.gui_scale_z / 2;
     }
 
     @Override

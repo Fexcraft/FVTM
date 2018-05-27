@@ -7,8 +7,6 @@
 // Last changed on: 20.01.2016 - 22:15:40
 package net.fexcraft.mod.fvtm.model.part;
 
-import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute;
-import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.minecraft.entity.Entity;
 
@@ -34,9 +32,7 @@ public class NullModel extends PartModel<VehicleData> {
 
     @Override
     public void render(VehicleData data, String usedAS, Entity vehicle){
-        if(data.getPart(usedAS).getAttributeData(FontRendererAttribute.FontRendererAttributeData.class) != null){
-            data.getPart(usedAS).getAttributeData(FontRendererAttribute.FontRendererAttributeData.class).getLocations().values().forEach(loc -> loc.render((Vehicle.VehicleEntity) vehicle));
-        }
+        //
     }
 
     public static PartModel<VehicleData> get(){

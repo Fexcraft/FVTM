@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -367,7 +368,15 @@ public class GuiHandler implements IGuiHandler {
                 		}
                 	}
                 	if(setting != null){
-                		setting.onChange(player, ent, packet.nbt.getInteger("payload"));
+                		Object[] objects = null;
+                		if(packet.nbt.hasKey("objs")){
+                			NBTTagList list = (NBTTagList)packet.nbt.getTag("objs");
+                			objects = new Object[list.tagCount()];
+                			for(int i = 0; i < objects.length; i++){
+                				objects[i] = ((NBTTagString)list.get(i)).getString();
+                			}
+                		}
+                		setting.onChange(player, ent, packet.nbt.getInteger("payload"), objects);
                 	}
                 	else return;
                 }

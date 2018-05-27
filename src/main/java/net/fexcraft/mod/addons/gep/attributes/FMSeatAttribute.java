@@ -59,4 +59,9 @@ public class FMSeatAttribute implements Attribute {
         return null;
     }
 
+	@Override
+	public boolean hasRenderData(){
+		return false;
+	}
+
 }

@@ -134,4 +134,9 @@ public class EngineAttribute implements Attribute {
         }
     }
 
+	@Override
+	public boolean hasRenderData(){
+		return false;
+	}
+
 }

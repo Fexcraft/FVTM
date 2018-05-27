@@ -215,8 +215,8 @@ public class GenericPart implements Part {
     }
 
     @Override
-    public List<String> getAttributes(){
-        return Arrays.asList(categories);
+    public Collection<Attribute> getAttributes(){
+    	return attributes.values();
     }
 
     @Override

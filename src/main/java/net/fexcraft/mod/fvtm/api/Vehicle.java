@@ -232,7 +232,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         		INTEGER, BOOLEAN, STRING, BUTTON
         	}
         	
-        	public abstract void onChange(EntityPlayer player, Entity entity, int i);
+        	public abstract void onChange(EntityPlayer player, Entity entity, int i, @Nullable Object... objs);
         	
         	public final String getValue(){
         		return String.valueOf(script.getSettingsValue(id));

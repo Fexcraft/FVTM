@@ -107,4 +107,9 @@ public class FuelTankExtensionAttribute implements Attribute {
 
     }
 
+	@Override
+	public boolean hasRenderData(){
+		return false;
+	}
+
 }

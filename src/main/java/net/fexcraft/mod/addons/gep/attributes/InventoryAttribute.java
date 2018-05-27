@@ -211,4 +211,9 @@ public class InventoryAttribute implements Attribute {
         return fluid;
     }
 
+	@Override
+	public boolean hasRenderData(){
+		return true;
+	}
+
 }

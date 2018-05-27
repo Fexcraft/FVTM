@@ -121,7 +121,7 @@ public class T1SnowPlowScript implements VehicleScript {
 		return seat == 0 ? new ScriptSetting<?>[]{
 			new ScriptSetting<T1SnowPlowScript>(this, "snow_plow", ScriptSetting.Type.BOOLEAN){
 				@Override
-				public void onChange(EntityPlayer player, Entity entity, int i){
+				public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 					on = i == 0 ? false : i == 1 ? true : on;
 		            NBTTagCompound nbt = new NBTTagCompound();
 		            nbt.setBoolean("On", on);

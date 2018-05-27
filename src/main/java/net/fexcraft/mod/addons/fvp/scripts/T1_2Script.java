@@ -75,7 +75,7 @@ public class T1_2Script implements Vehicle.VehicleScript {
 		return seat == 0 ? new ScriptSetting<?>[]{
 			new ScriptSetting<T1_2Script>(this, "out", ScriptSetting.Type.BOOLEAN){
 				@Override
-				public void onChange(EntityPlayer player, Entity ent, int i){
+				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
 					out = i == 0 ? false : i == 1 ? true : out;
 		            NBTTagCompound nbt = new NBTTagCompound();
 		            nbt.setBoolean("Out", out);

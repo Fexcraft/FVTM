@@ -110,4 +110,9 @@ public class ConnectorAttribute implements Attribute {
         return rearAlt.containsKey(rs.toString()) ? rearAlt.get(rs.toString()) : rear;
     }
 
+	@Override
+	public boolean hasRenderData(){
+		return false;
+	}
+
 }

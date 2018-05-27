@@ -115,21 +115,21 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 			case 0:{
 				settings[0] = new ScriptSetting<MultiDoorScript>(this, "hood", ScriptSetting.Type.BOOLEAN){
 					@Override
-					public void onChange(EntityPlayer player, Entity entity, int i){
+					public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 			            hood = i == 0 ? false : i == 1 ? true : hood;
 			            sendDoorPacket(entity);
 					}
 				};
 				settings[1] = new ScriptSetting<MultiDoorScript>(this, "trunk", ScriptSetting.Type.BOOLEAN){
 					@Override
-					public void onChange(EntityPlayer player, Entity entity, int i){
+					public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 			            trunk = i == 0 ? false : i == 1 ? true : trunk;
 			            sendDoorPacket(entity);
 					}
 				};
 				settings[2] = new ScriptSetting<MultiDoorScript>(this, "front_left", ScriptSetting.Type.BOOLEAN){
 					@Override
-					public void onChange(EntityPlayer player, Entity entity, int i){
+					public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 						front_left = i == 0 ? false : i == 1 ? true : front_left;
 			            sendDoorPacket(entity);
 					}
@@ -139,7 +139,7 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 			case 1:{
 				settings[0] = new ScriptSetting<MultiDoorScript>(this, "front_right", ScriptSetting.Type.BOOLEAN){
 					@Override
-					public void onChange(EntityPlayer player, Entity entity, int i){
+					public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 						front_right = i == 0 ? false : i == 1 ? true : front_right;
 			            sendDoorPacket(entity);
 					}
@@ -149,7 +149,7 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 			case 2:{
 				settings[0] = new ScriptSetting<MultiDoorScript>(this, "back_left", ScriptSetting.Type.BOOLEAN){
 					@Override
-					public void onChange(EntityPlayer player, Entity entity, int i){
+					public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 						back_left = i == 0 ? false : i == 1 ? true : back_left;
 			            sendDoorPacket(entity);
 					}
@@ -159,7 +159,7 @@ public class MultiDoorScript implements Vehicle.VehicleScript {
 			case 3:{
 				settings[0] = new ScriptSetting<MultiDoorScript>(this, "back_right", ScriptSetting.Type.BOOLEAN){
 					@Override
-					public void onChange(EntityPlayer player, Entity entity, int i){
+					public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 						back_right = i == 0 ? false : i == 1 ? true : back_right;
 			            sendDoorPacket(entity);
 					}

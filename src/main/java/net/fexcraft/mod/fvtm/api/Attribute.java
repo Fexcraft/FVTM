@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.api;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Part.PartData;
@@ -34,6 +36,14 @@ public interface Attribute extends IForgeRegistryEntry<Attribute> {
     public boolean hasDataClass();
 
     public Class<? extends AttributeData> getDataClass();
+    
+    public default boolean hasRenderData(){
+    	return false;
+    }
+    
+    public default void render(@Nullable net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity entity, PartData data, String usedas){
+    	return;
+    }
 
     public static interface AttributeData {
 

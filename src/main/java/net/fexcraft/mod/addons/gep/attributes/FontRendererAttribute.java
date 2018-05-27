@@ -12,7 +12,6 @@ import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class FontRendererAttribute implements Attribute {
 
     private static final ResourceLocation regname = new ResourceLocation("font_renderer");
-    private TreeMap<String, FontData> list;
+    private TreeMap<String, FontData> rawlist;
 
     @Override
     public ResourceLocation getRegistryName(){
@@ -36,12 +35,12 @@ public class FontRendererAttribute implements Attribute {
 
     @Override
     public void load(JsonObject obj){
-        list = new TreeMap<String, FontData>();
+    	rawlist = new TreeMap<String, FontData>();
         JsonArray array = obj.has("Font-Renderers") ? obj.get("Font-Renderers").getAsJsonArray() : null;
         if(array != null){
             array.forEach(elm -> {
                 FontData data = new FontData(elm.getAsJsonObject());
-                list.put(data.getId(), data);
+                rawlist.put(data.getId(), data);
             });
         }
     }
@@ -53,7 +52,7 @@ public class FontRendererAttribute implements Attribute {
 
     @Override
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag){
-        tooltip.add(Formatter.format("&9Font Renderers: &7" + list.size()));
+        tooltip.add(Formatter.format("&9Font Renderers: &7" + rawlist.size()));
     }
 
     @Override
@@ -67,7 +66,7 @@ public class FontRendererAttribute implements Attribute {
     }
 
     public TreeMap<String, FontData> getLocations(){
-        return list;
+        return rawlist;
     }
 
     public static class FontData {
@@ -77,7 +76,9 @@ public class FontRendererAttribute implements Attribute {
         private String str, id;
         private boolean editable, glow, ondoor;
         private float rotX, rotY, rotZ, scale;
-
+        
+        private FontData(){}
+        
         private FontData(JsonObject obj){
             pos = Pos.fromJSON(obj).to16Double();
             if(!obj.has("id")){
@@ -120,11 +121,23 @@ public class FontRendererAttribute implements Attribute {
             net.fexcraft.mod.fvtm.render.Renderer.drawString(str, pos.x, pos.y, pos.z, x, y, z, glow, scale, color);
         }
 
+		public FontData copy() {
+			FontData data = new FontData();
+			data.pos = new Vec3d(pos.x, pos.y, pos.z);
+			data.id = id; data.editable = editable;
+			data.str = str; data.glow = glow;
+			data.rotX = rotX; data.rotY = rotY; data.rotZ = rotZ;
+			data.color = color; data.scale = scale;
+			data.ondoor = ondoor;
+			return data;
+		}
+
     }
     
     public static class FontRendererAttributeData implements AttributeData {
         
         private FontRendererAttribute attr;
+        private TreeMap<String, FontData> list;
         
         public FontRendererAttributeData(Part.PartData data, Attribute attr){
             this.attr = (FontRendererAttribute)attr;
@@ -133,7 +146,7 @@ public class FontRendererAttribute implements Attribute {
         @Override
         public NBTTagCompound writeToNBT(Part.PartData data, NBTTagCompound compound){
             NBTTagCompound com = new NBTTagCompound();
-            for(Entry<String, FontData> entry : data.getPart().getAttribute(FontRendererAttribute.class).getLocations().entrySet()){
+            for(Entry<String, FontData> entry : getLocations().entrySet()){
                if(entry.getValue().editable){
                    compound.setString(entry.getKey(), entry.getValue().getId());
                }
@@ -148,7 +161,7 @@ public class FontRendererAttribute implements Attribute {
         public AttributeData readFromNBT(Part.PartData data, NBTTagCompound compound){
             NBTTagCompound com = compound.getCompoundTag("FontRendererData");
             if(com != null){
-                for(Entry<String, FontData> entry : data.getPart().getAttribute(FontRendererAttribute.class).getLocations().entrySet()){
+                for(Entry<String, FontData> entry : getLocations().entrySet()){
                    if(entry.getValue().editable && com.hasKey(entry.getKey())){
                        entry.getValue().setString(com.getString(entry.getKey()));
                    }
@@ -158,9 +171,33 @@ public class FontRendererAttribute implements Attribute {
         }
 
         public TreeMap<String, FontData> getLocations(){
-        return attr.getLocations();
+        	if(list == null){
+        		list = new TreeMap<>();
+        		attr.getLocations().forEach((key, data) -> { list.put(key, data.copy()); });
+        	}
+        	return list;
         }
         
     }
+
+	@Override
+	public boolean hasRenderData(){
+		return true;
+	}
+
+	@Override
+	public void render(VehicleEntity entity, PartData data, String key){
+		FontRendererAttributeData attrdata = (FontRendererAttributeData)data.getAttributeData(this.getDataClass());
+		if(attrdata == null){
+			this.getLocations().forEach((id, fontdata) -> {
+				fontdata.render(entity);
+			});
+		}
+		else{
+			attrdata.getLocations().forEach((id, fontdata) -> {
+				fontdata.render(entity);
+			});
+		}
+	}
 
 }

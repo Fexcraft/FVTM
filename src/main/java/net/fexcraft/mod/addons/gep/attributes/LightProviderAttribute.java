@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Attribute;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Formatter;
@@ -15,6 +20,8 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -156,5 +163,59 @@ public class LightProviderAttribute implements Attribute {
         }
 
     }
+
+	@Override
+	public boolean hasRenderData(){
+		return true;
+	}
+	
+	@Override
+	public void render(VehicleEntity entity, PartData data, String key){
+		if(entity.getVehicleData().getLightsState() > 0){
+            GL11.glPushMatrix();
+            Model.bindTexture(Resources.NULL_TEXTURE);
+            GlStateManager.enableBlend();
+            GlStateManager.disableAlpha();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+            GlStateManager.depthMask(false);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 50f, 50f);
+            //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
+            entity.getVehicleData().getParts().values().forEach(part -> {
+                if(part.getPart().getAttribute(LightProviderAttribute.class) != null){
+                    LightProviderAttribute attr = part.getPart().getAttribute(LightProviderAttribute.class);
+                    attr.getLightsOfType("normal").forEach(light -> {
+                        light.render();
+                    });
+                    attr.getLightsOfType("rear").forEach(light -> {
+                        light.updateColorIfMissing(RGB.RED);
+                        light.render();
+                    });
+                    if(entity.getVehicleData().getLightsState() == 1){
+                        attr.getLightsOfType("front").forEach(light -> {
+                            light.render();
+                        });
+                    }
+                    if(entity.getVehicleData().getLightsState() == 2){
+                        attr.getLightsOfType("long").forEach(light -> {
+                            light.render();
+                        });
+                    }
+                    if(entity.getVehicleData().getLightsState() == 3){
+                        attr.getLightsOfType("fog").forEach(light -> {
+                            light.render();
+                        });
+                    }
+                }
+            });
+            int i = entity.getEntity().getBrightnessForRender();
+            int j = i % 65536;
+            int k = i / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
+            GlStateManager.depthMask(true);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GL11.glPopMatrix();
+        }
+	}
 
 }

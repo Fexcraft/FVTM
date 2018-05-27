@@ -107,4 +107,9 @@ public class ContainerAttribute implements Attribute {
 
     }
 
+	@Override
+	public boolean hasRenderData(){
+		return false;
+	}
+
 }

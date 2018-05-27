@@ -1,21 +1,13 @@
 package net.fexcraft.mod.fvtm.render.entity;
 
-import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute;
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.mod.addons.gep.attributes.LightProviderAttribute;
-import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.tmt.Model;
 import net.fexcraft.mod.lib.tmt.ModelConverter;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.math.Pos;
-import net.fexcraft.mod.lib.util.render.RGB;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -85,57 +77,12 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
                         Pos pos = partdata.getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
                         pos.translate();
                         partdata.getPart().getModel().render(vehicle.getVehicleData(), key, vehicle);
+                        partdata.getPart().getAttributes().forEach(attr -> { if(attr.hasRenderData()){ attr.render(vehicle, partdata, key); } });
                         pos.translateR();
                     });
                 }
             }
             GL11.glPopMatrix();
-            //
-            if(vehicle.getVehicleData().getLightsState() > 0){
-                GL11.glPushMatrix();
-                Model.bindTexture(Resources.NULL_TEXTURE);
-                GlStateManager.enableBlend();
-                GlStateManager.disableAlpha();
-                GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-                GlStateManager.depthMask(false);
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 50f, 50f);
-                //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
-                vehicle.getVehicleData().getParts().values().forEach(part -> {
-                    if(part.getPart().getAttribute(LightProviderAttribute.class) != null){
-                        LightProviderAttribute attr = part.getPart().getAttribute(LightProviderAttribute.class);
-                        attr.getLightsOfType("normal").forEach(light -> {
-                            light.render();
-                        });
-                        attr.getLightsOfType("rear").forEach(light -> {
-                            light.updateColorIfMissing(RGB.RED);
-                            light.render();
-                        });
-                        if(vehicle.getVehicleData().getLightsState() == 1){
-                            attr.getLightsOfType("front").forEach(light -> {
-                                light.render();
-                            });
-                        }
-                        if(vehicle.getVehicleData().getLightsState() == 2){
-                            attr.getLightsOfType("long").forEach(light -> {
-                                light.render();
-                            });
-                        }
-                        if(vehicle.getVehicleData().getLightsState() == 3){
-                            attr.getLightsOfType("fog").forEach(light -> {
-                                light.render();
-                            });
-                        }
-                    }
-                });
-                int i = vehicle.getBrightnessForRender();
-                int j = i % 65536;
-                int k = i / 65536;
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
-                GlStateManager.depthMask(true);
-                GlStateManager.disableBlend();
-                GlStateManager.enableAlpha();
-                GL11.glPopMatrix();
-            }
         }
         GL11.glPopMatrix();
         //Renderer.drawString(vehicle.getVehicleData().getVehicle().getName(), x, y + 2, z, vehicle.axes.getYaw(), vehicle.axes.getPitch(), vehicle.axes.getRoll(), false, MapColor.GOLD.colorValue);

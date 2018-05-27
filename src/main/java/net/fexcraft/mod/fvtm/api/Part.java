@@ -46,7 +46,7 @@ public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
 
     public String getCategory();
 
-    public List<String> getAttributes();
+    public Collection<Attribute> getAttributes();
 
     public boolean isRemovable();
 

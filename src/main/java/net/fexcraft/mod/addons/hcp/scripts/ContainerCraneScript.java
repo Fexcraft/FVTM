@@ -35,7 +35,7 @@ public class ContainerCraneScript implements VehicleScript {
     private boolean xmove, ymove, zmove, stepwise;
     private int xdir, ydir, zdir, xsteptime, ysteptime, zsteptime;
 	public int xpos, ypos, zpos;
-	private int speed = 5;
+	private int speed = 10;
 
     @Override
     public ResourceLocation getId(){
@@ -78,8 +78,8 @@ public class ContainerCraneScript implements VehicleScript {
         	}
         	else{
         		xpos += xdir * speed;
-            	if(xpos > 10000){ xpos = 10000; xmove = false; }
-            	if(xpos < -10000){ xpos = -10000; xmove = false; }
+            	if(xpos > 12000){ xpos = 12000; xmove = false; }
+            	if(xpos < -12000){ xpos = -12000; xmove = false; }
             	moved = true;
             	if(xpos % 1000 == 0 && stepwise){
         			xsteptime = 40;

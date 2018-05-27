@@ -22,6 +22,7 @@ script.hcp:container_crane.y-direction=Y-Axis Direction
 script.hcp:container_crane.z-direction=Z-Axis Direction
 script.hcp:container_crane.speed=Movement Speed
 script.hcp:container_crane.stepwise=Stepwise Movement
+script.hcp:container_crane.searchbox=Toggle Searchbox
 
 
 

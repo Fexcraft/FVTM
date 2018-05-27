@@ -4223,6 +4223,12 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
         this.gui_scale_x = this.gui_scale_x / 2;
         this.gui_scale_y = this.gui_scale_y / 2;
         this.gui_scale_z = this.gui_scale_z / 2;
+        //
+		box = new ModelRendererTurbo[1];
+		box[0] = new ModelRendererTurbo(this, 332, 215, textureX, textureY); // Box 1062
+		box[0].addBox(0F, 0F, 0F, 16, 16, 16, 0F); // Box 1062
+		box[0].setRotationPoint(-8F, -16F, -8F);
+		translate(box, -16F, 16F, 112F);
     }
 
     @Override
@@ -4247,12 +4253,15 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
         	if(rope != null){ render(rope); }
         	GL11.glTranslated(0, script.ypos * 0.001, 0);
         	render(turret);
+        	if(script.searchbox){
+        		render(box);
+        	}
         	GL11.glPopMatrix();
         }
     }
     
     private TreeMap<Integer, ModelRendererTurbo[]> ropes = new TreeMap<Integer, ModelRendererTurbo[]>();
-    private ModelRendererTurbo[] rope;
+    private ModelRendererTurbo[] rope, box;
 
 	private final ModelRendererTurbo[] getRopes(int ypos){
 		int i = 101 + (ypos / 60);

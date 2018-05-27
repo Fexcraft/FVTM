@@ -80,7 +80,7 @@ public class FVTM {
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
             //net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WaterVehicleEntity.class, RenderWaterVehicle::new);
-            //net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(GenericContainerEntity.class, RenderEmpty::new);
+            net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(GenericContainerEntity.class, RenderEmpty::new);
             //
             MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
         }

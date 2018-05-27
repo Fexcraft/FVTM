@@ -702,7 +702,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     }
 
     @Override
-    public void onCollideWithPlayer(EntityPlayer par1EntityPlayer){
+    public void onCollideWithPlayer(EntityPlayer player){
         //
     }
 
@@ -828,20 +828,25 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             	vehicledata.getParts().forEach((key, part) -> {
             		if(part.getAttributeData(ContainerAttributeData.class) != null){
             			ContainerAttributeData condata = part.getAttributeData(ContainerAttributeData.class);
+            			GenericContainerEntity ent = null;
             			if(condata.getAttribute().getContainerType() == ContainerType.LARGE){
             				if(!containers.containsKey(key + "_0")){
-            					containers.put(key, new GenericContainerEntity(world, this, key, 0));
+            					containers.put(key, ent = new GenericContainerEntity(world, this, key, 0));
+            					world.spawnEntity(ent);
             				}
             				if(!containers.containsKey(key + "_1")){
-            					containers.put(key, new GenericContainerEntity(world, this, key, 1));
+            					containers.put(key, ent = new GenericContainerEntity(world, this, key, 1));
+            					world.spawnEntity(ent);
             				}
             				if(!containers.containsKey(key)){
-            					containers.put(key, new GenericContainerEntity(world, this, key, -1));
+            					containers.put(key, ent = new GenericContainerEntity(world, this, key, -1));
+            					world.spawnEntity(ent);
             				}
             			}
             			else{
             				if(!containers.containsKey(key)){
-            					containers.put(key, new GenericContainerEntity(world, this, key, -1));
+            					containers.put(key, ent = new GenericContainerEntity(world, this, key, -1));
+            					world.spawnEntity(ent);
             				}
             			}
             		}
@@ -959,7 +964,8 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             ((VehicleEntity)passenger).moveTrailer();
         }
     }
-
+    
+    @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i){
         //Print.debug(damagesource.damageType, damagesource.getImmediateSource().toString());
         if(world.isRemote || isDead){

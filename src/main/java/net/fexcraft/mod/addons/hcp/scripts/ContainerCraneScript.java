@@ -20,9 +20,12 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -33,6 +36,7 @@ public class ContainerCraneScript implements VehicleScript {
 	
     private ContainerData data;
     private boolean xmove, ymove, zmove, stepwise;
+	public boolean searchbox;
     private int xdir, ydir, zdir, xsteptime, ysteptime, zsteptime;
 	public int xpos, ypos, zpos;
 	private int speed = 10;
@@ -177,6 +181,7 @@ public class ContainerCraneScript implements VehicleScript {
         compound.setInteger("speed", speed);
         compound.setBoolean("stepwise", stepwise);
         compound.setIntArray("steptime", new int[]{ xsteptime, ysteptime, zsteptime });
+        compound.setBoolean("searchbox", searchbox);
         return compound;
     }
 
@@ -203,6 +208,7 @@ public class ContainerCraneScript implements VehicleScript {
         if(steptime != null && steptime.length >= 3){
         	xsteptime = steptime[0]; ysteptime = steptime[1]; zsteptime = steptime[2];
         }
+        searchbox = compound.getBoolean("searchbox");
         return this;
     }
 
@@ -219,6 +225,7 @@ public class ContainerCraneScript implements VehicleScript {
 			case "release": return "< < < <";
 			case "speed": return speed;
 			case "stepwise": return stepwise;
+			case "searchbox": return searchbox;
 		}
 		return "";
 	}
@@ -230,14 +237,14 @@ public class ContainerCraneScript implements VehicleScript {
 			new ScriptSetting<ContainerCraneScript>(this, "trycatch", ScriptSetting.Type.BUTTON){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.tryCatch(player);
+					script.tryCatch(player, (VehicleEntity)ent);
 					script.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "release", ScriptSetting.Type.BUTTON){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.tryRelease(player);
+					script.tryRelease(player, (VehicleEntity)ent);
 					script.updateClient(player, ent);
 				}
 			},
@@ -317,6 +324,13 @@ public class ContainerCraneScript implements VehicleScript {
 					stepwise = i == 0 ? false : i == 1 ? true : stepwise;
 					script.updateClient(player, entity);
 				}
+			},
+			new ScriptSetting<ContainerCraneScript>(this, "searchbox", ScriptSetting.Type.BOOLEAN){
+				@Override
+				public void onChange(EntityPlayer player, Entity entity, int i, Object... objs) {
+					script.searchbox = i == 0 ? false : i == 1 ? true : script.searchbox;
+					script.updateClient(player, entity);
+				}
 			}
 		};
 	}
@@ -325,16 +339,30 @@ public class ContainerCraneScript implements VehicleScript {
 		this.sendPacketToClient(ent, player, this.writeToNBT(null));
 	}
 
-	protected void tryRelease(EntityPlayer player){
+	protected void tryRelease(EntityPlayer player, VehicleEntity ent){
 		xmove = ymove = zmove = false;
 		
 		return;
 	}
 
-	protected void tryCatch(EntityPlayer player){
+	protected void tryCatch(EntityPlayer player, VehicleEntity ent){
 		xmove = ymove = zmove = false;
-		Print.chat(player, "//TODO");
+		Vec3d pos = ent.getAxes().getRelativeVector(getSearchPosition());
+		pos = new Vec3d(ent.getEntity().posX + pos.x, ent.getEntity().posY + pos.y, ent.getEntity().posZ + pos.z);
+		if((xpos % 1000 == 0) && (ypos % 1000 == 0) && (zpos % 1000 == 0)){
+			
+		}
+		else{
+			
+		}
+		BlockPos blkpos = new BlockPos(pos);
+		ent.getEntity().world.setBlockState(blkpos, Blocks.ANVIL.getDefaultState(), 2);
+		Print.debug(pos, blkpos);
 		return;
+	}
+
+	private Vec3d getSearchPosition(){
+		return new Vec3d(0.5 + (xpos / 1000D), -(ypos / 1000D), -7 - (zpos / 1000D));
 	}
     
 }

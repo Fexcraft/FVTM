@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.entities;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
@@ -12,9 +13,10 @@ import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -29,7 +31,7 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
 
     public GenericContainerEntity(World world){
         super(world);
-        setSize(0.8F, 0.8F);
+        setSize(1.0F, 1.0F);
     }
 
     public GenericContainerEntity(World world, VehicleEntity veh, String holder, int i){
@@ -38,7 +40,7 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
         setPosition(veh.getEntity().posX, veh.getEntity().posY, veh.getEntity().posZ);
         this.holder = holder; this.holderid = i;
         this.setRelPos();
-        Print.debug(this, world.isRemote, holderid, holder, vehicle);
+        //Print.debug(this, world.isRemote, holderid, holder, vehicle);
     }
 
     @Override
@@ -72,12 +74,36 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     }
     
     private Vec3d getRelPos(){
-    	return new Vec3d(0, 1, 0);
+    	Vec3d pos = vehicle.getVehicleData().getPart(holder).getPart().getAttribute(ContainerAttribute.class).getContainerOffset().to16Double();
+		ContainerAttributeData condata = vehicle.getVehicleData().getPart(holder).getAttributeData(ContainerAttributeData.class);
+		pos = new Vec3d(pos.x, -pos.y, pos.z);
+		if(condata == null){ return pos; }
+		switch(condata.getAttribute().getContainerType()){
+			case LARGE:
+				switch(this.holderid){
+					case -1: return pos;
+					case 0: case 1:{
+						boolean x = false;
+						if(condata.getAttribute().getContainerRotation() == 90 || condata.getAttribute().getContainerRotation() == -270
+							|| condata.getAttribute().getContainerRotation() == 270 || condata.getAttribute().getContainerRotation() == -90){
+							x = true;
+						}
+						if(x){
+							pos.addVector(holderid == 0 ? 3 : -3, 0, 0);
+						}
+						else{
+							pos.addVector(0, 0, holderid == 0 ? 3 : -3);
+						}
+					}
+				}
+				break;
+			case MEDIUM: default: return pos;
+		}
+    	return pos;
     }
     
     private void setRelPos(){
         if(world.isRemote && vehicle == null){ rqSync(); return; }
-        Print.debug(this, world.isRemote, "relpos");
         Vec3d relpos = vehicle.getAxes().getRelativeVector(getRelPos());
         setPosition(vehicle.getEntity().posX + relpos.x, vehicle.getEntity().posY + relpos.y, vehicle.getEntity().posZ + relpos.z);
         this.lastTickPosX = this.prevPosX = posX; this.lastTickPosY = this.prevPosY = posY; this.lastTickPosZ = this.prevPosZ = posZ;
@@ -95,22 +121,14 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int partialticks, boolean b){
-        super.setPositionAndRotationDirect(x, y, z, yaw, pitch, partialticks, b);//TODO check
-    }
-
-    @Override
     public void onUpdate(){
         super.onUpdate();
         this.setRelPos();
     }
-
+    
     @Override
-    public void updatePassenger(Entity passenger){
-        super.updatePassenger(passenger);
-    }
-
     public void processServerPacket(PacketEntityUpdate pkt){
+    	Print.debug(pkt.nbt + "_SR");
         if(pkt.nbt.hasKey("request")){
             switch(pkt.nbt.getString("request")){
                 case "sync": {
@@ -132,8 +150,10 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
             }
         }
     }
-
+    
+    @Override
     public void processClientPacket(PacketEntityUpdate pkt){
+    	Print.debug(pkt.nbt + "_CL");
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "sync": {
@@ -160,18 +180,13 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public boolean canBeCollidedWith(){
-        return !isDead;
-    }
-
-    @Override
     protected void entityInit(){
         //
     }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound tags){
-        //
+    	this.setDead();
     }
 
     @Override
@@ -180,22 +195,12 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public boolean writeToNBTOptional(NBTTagCompound tags){
-        return false;
-    }
-
-    @Override
     public void applyEntityCollision(Entity entity){
         return;
     }
 
     @Override
-    public AxisAlignedBB getCollisionBox(Entity entity){
-        return null;//entity.getEntityBoundingBox();
-    }
-
-    @Override
-    public boolean canBePushed(){
+    public boolean canBeCollidedWith(){
         return false;
     }
 
@@ -257,6 +262,14 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     public void setDead(){
     	Print.debug(this, holder, vehicle);
     	super.setDead();
+    }
+    
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target){
+    	if(getContainerData() == null){
+    		return ItemStack.EMPTY;
+    	}
+        return getContainerData().getContainer().getItemStack(getContainerData());
     }
 
 }

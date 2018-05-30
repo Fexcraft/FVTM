@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.addons.hcp.scripts.ContainerCraneScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
@@ -4233,17 +4234,18 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
 
     @Override
     public void render(VehicleData data, @Nullable Entity entity, int meta){
-        GL11.glTranslatef(-15, 0, 0);
-        for(int i = 0; i < 31; i++){
-            render(wheels_import);
-            GL11.glTranslatef(1, 0, 0);
-        }
-        GL11.glTranslatef(-15, 0, 0);
         ContainerCraneScript script = data.getScript(ContainerCraneScript.class);
         if(script == null){
             super.render(data, entity, meta);
         }
         else{
+        	GL11.glTranslatef(-script.length + 1, 0, 0);
+        	int len = (script.length * 2) + 1;
+            for(int i = 0; i < len; i++){
+                render(wheels_import);
+                GL11.glTranslatef(1, 0, 0);
+            }
+            GL11.glTranslatef(-script.length - 1, 0, 0);
         	GL11.glPushMatrix();
         	GL11.glTranslated(script.xpos * 0.001, 0, 0);
         	render(chassis);
@@ -4254,7 +4256,14 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
         	GL11.glTranslated(0, script.ypos * 0.001, 0);
         	render(turret);
         	if(script.searchbox){
+        		PartModel.lightOff(entity);
         		render(box);
+        		PartModel.lightOn(entity);
+        	}
+        	if(script.getContainerData() != null){
+        		GL11.glTranslatef(-0.5f, 1, 7);
+        		bindTexture(script.getContainerData().getTexture());
+        		script.getContainerData().getContainer().getModel().render(script.getContainerData());
         	}
         	GL11.glPopMatrix();
         }

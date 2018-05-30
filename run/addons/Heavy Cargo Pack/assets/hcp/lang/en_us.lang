@@ -11,6 +11,16 @@ item.hcp:medium.name=Medium Generic Container
 item.hcp:medium_fluid.name=Medium Fluid Container
 item.hcp:medium_refrigerator.name=Medium Refrigerator Container
 
+#Vehicles
+item.hcp:tr1.name=TR1
+item.hcp:container_crane.name=Container Crane
+
+#Parts
+item.hcp:tr1_lights.name=TR1 Lights
+item.hcp:tr1_fenders.name=TR1 Fenders
+item.hcp:tr1_license_plate.name=TR1 License Plate
+item.hcp:container_crane_controller.name=Container Crane Controller
+
 #Scripts
 script.hcp:container_crane.trycatch="Try Catch"
 script.hcp:container_crane.release="Try Release"
@@ -23,6 +33,7 @@ script.hcp:container_crane.z-direction=Z-Axis Direction
 script.hcp:container_crane.speed=Movement Speed
 script.hcp:container_crane.stepwise=Stepwise Movement
 script.hcp:container_crane.searchbox=Toggle Searchbox
+script.hcp:container_crane.length=Rail Length
 
 
 

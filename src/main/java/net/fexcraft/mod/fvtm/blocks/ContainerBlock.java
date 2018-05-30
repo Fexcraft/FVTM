@@ -130,9 +130,9 @@ public class ContainerBlock extends BlockContainer {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
-        if(!world.isRemote){
-            ContainerTileEntity tile = (ContainerTileEntity) world.getTileEntity(pos);
-            tile.notifyBreak(world, pos, state);
+    	if(!world.isRemote){
+            ContainerTileEntity tile = (ContainerTileEntity)world.getTileEntity(pos);
+            tile.notifyBreak(world, pos, state, true);
         }
         super.breakBlock(world, pos, state);
     }
@@ -228,15 +228,15 @@ public class ContainerBlock extends BlockContainer {
 
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
-        if(world.getTileEntity(pos) != null){
+        /*if(world.getTileEntity(pos) != null){
             try{
-                ContainerTileEntity tile = (ContainerTileEntity) world.getTileEntity(pos);
+                ContainerTileEntity tile = (ContainerTileEntity)world.getTileEntity(pos);
                 return tile.getContainerData().getContainer().getItemStack(tile.getContainerData());
             }
             catch(Exception e){
                 e.printStackTrace();
             }
-        }
+        }*/
         return ItemStack.EMPTY;
     }
 

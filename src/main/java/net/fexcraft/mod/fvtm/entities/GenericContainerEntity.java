@@ -25,20 +25,19 @@ import io.netty.buffer.ByteBuf;
 
 public class GenericContainerEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, Container.ContainerEntity {
 
-    private int vehicleid, holderid;
+    private int vehicleid = -1, holderid;
     private String holder;
     private VehicleEntity vehicle;
 
     public GenericContainerEntity(World world){
-        super(world);
-        setSize(1.0F, 1.0F);
+        super(world); setSize(1.0F, 1.0F);
     }
 
-    public GenericContainerEntity(World world, VehicleEntity veh, String holder, int i){
-        this(world);
+    public GenericContainerEntity(World world, VehicleEntity veh, String holder, int id){
+        super(world); setSize(1.0F, 1.0F);
         vehicle = veh; vehicleid = veh.getEntity().getEntityId();
         setPosition(veh.getEntity().posX, veh.getEntity().posY, veh.getEntity().posZ);
-        this.holder = holder; this.holderid = i;
+        this.holder = holder; this.holderid = id;
         this.setRelPos();
         //Print.debug(this, world.isRemote, holderid, holder, vehicle);
     }
@@ -59,7 +58,7 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
         this.holderid = compound.getInteger("holderid");
         this.holder = compound.getString("holderpart");
         this.vehicleid = compound.getInteger("vid");
-        this.vehicle = (VehicleEntity) world.getEntityByID(vehicleid);
+        this.vehicle = (VehicleEntity)world.getEntityByID(vehicleid);
         if(vehicle != null && vehicle.getContainers() != null){
             this.vehicle.getContainers().put(holder, this);
         }
@@ -74,7 +73,7 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     }
     
     private Vec3d getRelPos(){
-    	Vec3d pos = vehicle.getVehicleData().getPart(holder).getPart().getAttribute(ContainerAttribute.class).getContainerOffset().to16Double();
+    	Vec3d pos = vehicle.getVehicleData().getPart(holderid != -1 ? holder.replace("_" + holderid, "") : holder).getPart().getAttribute(ContainerAttribute.class).getContainerOffset().to16Double();
 		ContainerAttributeData condata = vehicle.getVehicleData().getPart(holder).getAttributeData(ContainerAttributeData.class);
 		pos = new Vec3d(pos.x, -pos.y, pos.z);
 		if(condata == null){ return pos; }
@@ -111,6 +110,10 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
 
     @Nullable
     public VehicleEntity getVehicle(){
+    	if(vehicle == null && vehicleid >= 0){
+    		vehicle = (VehicleEntity)world.getEntityByID(vehicleid);
+    	}
+    	Print.debug(vehicle, vehicleid);
         return vehicle;
     }
 
@@ -124,6 +127,9 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     public void onUpdate(){
         super.onUpdate();
         this.setRelPos();
+        if(this.vehicle != null && vehicle.getEntity().isDead){
+        	this.setDead();
+        }
     }
     
     @Override
@@ -157,10 +163,10 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "sync": {
-                    this.holderid = pkt.nbt.getInteger("id");
+                    this.holderid = pkt.nbt.getInteger("holderid");
                     this.holder = pkt.nbt.getString("holderpart");
                     this.vehicleid = pkt.nbt.getInteger("vid");
-                    this.vehicle = (VehicleEntity) world.getEntityByID(vehicleid);
+                    this.vehicle = (VehicleEntity)world.getEntityByID(vehicleid);
                     if(vehicle != null && vehicle.getContainers() != null){
                         vehicle.getContainers().put(holder, this);
                     }
@@ -206,24 +212,40 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
 
 	@Override
 	public ContainerData getContainerData(){
-		if(vehicle == null || vehicle.getVehicleData().isLocked()){
+		if(getVehicle() == null /*|| vehicle.getVehicleData().isLocked()*/){
 			return null;
 		}
-		ContainerAttributeData condata = vehicle.getVehicleData().getPart(holder).getAttributeData(ContainerAttributeData.class);
-		return condata == null ? null : holderid == 0 ? condata.main : condata.second;
+		ContainerAttributeData condata = vehicle.getVehicleData().getPart(holderid > -1 ? holder.replace("_" + holderid, "") : holder).getAttributeData(ContainerAttributeData.class);
+		return condata == null ? null : holderid <= 0 ? condata.main : condata.second;
 	}
 
 	@Override
-	public void setContainerData(ContainerData data){
-		if(vehicle == null || vehicle.getVehicleData().isLocked()){ return; }
+	public boolean setContainerData(ContainerData data){
+		if(world.isRemote || getVehicle() == null /*|| vehicle.getVehicleData().isLocked()*/){
+			return false;
+		}
 		ContainerAttributeData condata = vehicle.getVehicleData().getPart(holder).getAttributeData(ContainerAttributeData.class);
-		if(holderid == 0){
+		if(holderid == 0 || holderid == -1){
 			condata.main = data;
 		}
 		else{
 			condata.second = data;
 		}
-		if(!world.isRemote){ rqSync(); }
+		if(!world.isRemote){
+			NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setString("task", "sync");
+            nbt.setInteger("holderid", holderid);
+            nbt.setString("holderpart", holder);
+            nbt.setLong("pos", this.getPosition().toLong());
+            nbt.setInteger("vid", vehicle.getEntity().getEntityId());
+            ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+            //
+    		nbt = vehicle.getVehicleData().writeToNBT(new NBTTagCompound());
+            nbt.setString("task", "update_vehicledata");
+            ApiUtil.sendEntityUpdatePacketToAllAround(vehicle.getEntity(), nbt);
+		}
+		Print.debug(data);
+		return true;
 	}
 
 	@Override
@@ -233,7 +255,7 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
 
 	@Override
 	public ContainerType getContainerType(){
-		if(vehicle == null || vehicle.getVehicleData().isLocked()){
+		if(vehicle == null){
 			return null;
 		}
 		ContainerAttributeData condata = vehicle.getVehicleData().getPart(holder).getAttributeData(ContainerAttributeData.class);
@@ -270,6 +292,11 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     		return ItemStack.EMPTY;
     	}
         return getContainerData().getContainer().getItemStack(getContainerData());
+    }
+    
+    @Override
+    public String toString(){
+    	return super.toString() + "\n" + vehicle;
     }
 
 }

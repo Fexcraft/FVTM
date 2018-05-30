@@ -8,6 +8,7 @@ package net.fexcraft.mod.addons.hcp.scripts;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontData;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontRendererAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
@@ -15,15 +16,21 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
+import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.impl.GenericContainerItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -38,7 +45,7 @@ public class ContainerCraneScript implements VehicleScript {
     private boolean xmove, ymove, zmove, stepwise;
 	public boolean searchbox;
     private int xdir, ydir, zdir, xsteptime, ysteptime, zsteptime;
-	public int xpos, ypos, zpos;
+	public int xpos, ypos, zpos, length = 15;
 	private int speed = 10;
 
     @Override
@@ -81,9 +88,10 @@ public class ContainerCraneScript implements VehicleScript {
         		xsteptime--;
         	}
         	else{
+        		int leng = (length * 1000) - 5000;
         		xpos += xdir * speed;
-            	if(xpos > 12000){ xpos = 12000; xmove = false; }
-            	if(xpos < -12000){ xpos = -12000; xmove = false; }
+            	if(xpos > leng){ xpos = leng; xmove = false; }
+            	if(xpos < -leng){ xpos = -leng; xmove = false; }
             	moved = true;
             	if(xpos % 1000 == 0 && stepwise){
         			xsteptime = 40;
@@ -165,10 +173,13 @@ public class ContainerCraneScript implements VehicleScript {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
-        if(compound != null && data != null){
+        compound = compound == null ? new NBTTagCompound() : compound;
+        if(data != null){
             data.writeToNBT(compound);
         }
-        compound = compound == null ? new NBTTagCompound() : compound;
+        else{
+        	compound.setBoolean("reset_container", true);
+        }
         compound.setBoolean("xmove", xmove);
         compound.setBoolean("ymove", ymove);
         compound.setBoolean("zmove", zmove);
@@ -182,6 +193,7 @@ public class ContainerCraneScript implements VehicleScript {
         compound.setBoolean("stepwise", stepwise);
         compound.setIntArray("steptime", new int[]{ xsteptime, ysteptime, zsteptime });
         compound.setBoolean("searchbox", searchbox);
+        compound.setInteger("length", length);
         return compound;
     }
 
@@ -209,6 +221,8 @@ public class ContainerCraneScript implements VehicleScript {
         	xsteptime = steptime[0]; ysteptime = steptime[1]; zsteptime = steptime[2];
         }
         searchbox = compound.getBoolean("searchbox");
+        length = compound.getInteger("length");
+        if(length == 0){ length = 15; }
         return this;
     }
 
@@ -226,6 +240,7 @@ public class ContainerCraneScript implements VehicleScript {
 			case "speed": return speed;
 			case "stepwise": return stepwise;
 			case "searchbox": return searchbox;
+			case "length": return length;
 		}
 		return "";
 	}
@@ -331,6 +346,15 @@ public class ContainerCraneScript implements VehicleScript {
 					script.searchbox = i == 0 ? false : i == 1 ? true : script.searchbox;
 					script.updateClient(player, entity);
 				}
+			},
+			new ScriptSetting<ContainerCraneScript>(this, "length", ScriptSetting.Type.INTEGER){
+				@Override
+				public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
+					script.length += i;
+					if(script.length < 8){ script.length = 8; }
+					if(script.length > 64){ script.length = 64; }
+					script.updateClient(player, entity);
+				}
 			}
 		};
 	}
@@ -341,28 +365,127 @@ public class ContainerCraneScript implements VehicleScript {
 
 	protected void tryRelease(EntityPlayer player, VehicleEntity ent){
 		xmove = ymove = zmove = false;
-		
+		if(data == null){
+			Print.chat(player, "Not holding a Container.");
+			return;
+		}
+		Vec3d pos = getSearchPosition(ent);
+		BlockPos blkpos = new BlockPos(pos);
+		if((xpos % 1000 == 0) && (ypos % 1000 == 0) && (zpos % 1000 == 0)){
+			EnumFacing facing = EnumFacing.fromAngle(ent.getAxes().getRadianYaw() + 90);
+			//IBlockState state = ent.getEntity().world.getBlockState(blkpos);
+			if(GenericContainerItem.isValidPostitionForContainer(ent.getEntity().world, player, blkpos, facing, data)){
+				try{
+					ItemStack stack = data.getContainer().getItemStack(data);
+		            stack.getTagCompound().setLong("PlacedPos", blkpos.toLong());
+		            ContainerBlock.getPositions(data, blkpos, facing).forEach(bp -> {
+		                IBlockState state = ContainerBlock.INSTANCE.getDefaultState();
+		                state.getBlock().onBlockPlacedBy(ent.getEntity().world, bp, state.withProperty(ContainerBlock.FACING, facing), player, stack);
+		            });
+		            this.data = null;
+		            Print.chat(player, "Container Placed.");
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					Print.chat(player, "ERROR: See Console/Log.");
+				}
+			}
+			else{
+				Print.chat(player, "Invalid position for a container.");
+			}
+		}
+		else{
+			ContainerEntity entity = null;
+			AxisAlignedBB aabb = new AxisAlignedBB(blkpos);
+			for(Entity e : ent.getEntity().world.loadedEntityList){
+				if(e instanceof ContainerEntity && e.getEntityBoundingBox().intersects(aabb)){
+					entity = (ContainerEntity)e;
+					break;
+				}
+			}
+			if(entity != null){
+				if(entity.getContainerData() != null){
+					Print.chat(player, "Vehicle's Container isn't empty.");
+				}
+				if(entity.setContainerData(data)){
+					data = null;
+					Print.chat(player, "Container loaded into vehicle.");
+				}
+				else{
+					Print.chat(player, "Vehicle didn't agree to take Container.");
+				}
+			}
+			else{
+				Print.chat(player, "No Container Holder Entity found at position.");
+			}
+		}
 		return;
 	}
 
 	protected void tryCatch(EntityPlayer player, VehicleEntity ent){
 		xmove = ymove = zmove = false;
-		Vec3d pos = ent.getAxes().getRelativeVector(getSearchPosition());
-		pos = new Vec3d(ent.getEntity().posX + pos.x, ent.getEntity().posY + pos.y, ent.getEntity().posZ + pos.z);
+		if(data != null){
+			Print.chat(player, "Already holding a Container.");
+			return;
+		}
+		Vec3d pos = getSearchPosition(ent);
+		BlockPos blkpos = new BlockPos(pos);
 		if((xpos % 1000 == 0) && (ypos % 1000 == 0) && (zpos % 1000 == 0)){
-			
+			IBlockState state = ent.getEntity().world.getBlockState(blkpos);
+			if(state.getBlock() instanceof ContainerBlock){
+				ContainerTileEntity te = (ContainerTileEntity)ent.getEntity().world.getTileEntity(blkpos);
+				if(te.isCore()){
+					this.data = te.getContainerData();
+					te.notifyBreak(ent.getEntity().world, blkpos, state, false);
+					Print.chat(player, "Container: " + data.getContainer().getName());
+				}
+				else{
+					Print.chat(player, "Not the Container core.");
+				}
+			}
+			else{
+				Print.chat(player, "No Container at position found.");
+			}
 		}
 		else{
-			
+			ContainerEntity entity = null;
+			AxisAlignedBB aabb = new AxisAlignedBB(blkpos);
+			for(Entity e : ent.getEntity().world.loadedEntityList){
+				if(e instanceof ContainerEntity && e.getEntityBoundingBox().intersects(aabb)){
+					entity = (ContainerEntity)e;
+					break;
+				}
+			}
+			if(entity != null){
+				ContainerData condata = entity.getContainerData();
+				if(condata == null){
+					Print.chat(player, "No container in Vehicle at position.");
+					return;
+				}
+				if(entity.setContainerData(null)){
+					this.data = condata;
+					Print.chat(player, "Container: " + data.getContainer().getName());
+				}
+				else{
+					Print.chat(player, "Vehicle didn't agree to give the Container.");
+				}
+			}
+			else{
+				Print.chat(player, "No Container Entity found at position.");
+			}
 		}
-		BlockPos blkpos = new BlockPos(pos);
-		ent.getEntity().world.setBlockState(blkpos, Blocks.ANVIL.getDefaultState(), 2);
+		//ent.getEntity().world.setBlockState(blkpos, Blocks.ANVIL.getDefaultState(), 2);
 		Print.debug(pos, blkpos);
 		return;
 	}
 
-	private Vec3d getSearchPosition(){
-		return new Vec3d(0.5 + (xpos / 1000D), -(ypos / 1000D), -7 - (zpos / 1000D));
+	private Vec3d getSearchPosition(VehicleEntity ent){
+		Vec3d pos = ent.getAxes().getRelativeVector(new Vec3d(0.5 + (xpos / 1000D), -(ypos / 1000D), -7 - (zpos / 1000D)));
+		return new Vec3d(ent.getEntity().posX + pos.x, ent.getEntity().posY + pos.y, ent.getEntity().posZ + pos.z);
+	}
+
+	public ContainerData getContainerData(){
+		return data;
 	}
     
 }

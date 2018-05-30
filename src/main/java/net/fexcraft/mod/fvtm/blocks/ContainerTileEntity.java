@@ -155,17 +155,20 @@ public class ContainerTileEntity extends TileEntity implements IPacketReceiver<P
         Print.debug("CONTESETUP: " + this.pos.toString() + " OK;");
     }
 
-    public void notifyBreak(World world, BlockPos pos, IBlockState state){
-        if(getCore() == null){
-            return;
-        }
+    public void notifyBreak(World world, BlockPos pos, IBlockState state, boolean asplayer){
+        if(getCore() == null){ return; }
         ContainerTileEntity core = getCore();
+        if(core.container == null){ return; }
         ContainerBlock.getPositions(core.container, core.pos, state.getValue(ContainerBlock.FACING)).forEach(blkpos -> {
-            if(this.core && blkpos.equals(core.pos)){
-                EntityItem ent = new EntityItem(world);
-                ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
-                ent.setItem(core.container.getContainer().getItemStack(core.container));
-                world.spawnEntity(ent);
+        	if(!asplayer){ core.container = null; }
+        	if(this.core && blkpos.equals(core.pos) && asplayer){
+            	if(core.container != null){
+                	EntityItem ent = new EntityItem(world);
+                    ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
+                    ent.setItem(core.container.getContainer().getItemStack(core.container));
+                    world.spawnEntity(ent);
+                    core.container = null;
+            	}
                 //
                 if(Config.DROP_ITEMS_ON_BREAK && !world.isRemote){
                     for(ItemStack stack : getContainerData().getInventory()){
@@ -173,13 +176,13 @@ public class ContainerTileEntity extends TileEntity implements IPacketReceiver<P
                             EntityItem entity = new EntityItem(world);
                             entity.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 2.5, blkpos.getZ() + 0.5);
                             entity.setItem(stack);
-                            world.spawnEntity(ent);
+                            world.spawnEntity(entity);
                         }
                     }
                     getContainerData().getInventory().clear();
                 }
             }
-            if(!blkpos.equals(pos)){
+            if(asplayer ? !blkpos.equals(pos) : true){
                 world.setBlockState(blkpos, Blocks.AIR.getDefaultState(), 2);
             }
         });

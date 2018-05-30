@@ -85,11 +85,16 @@ public class VehicleScriptGui extends GuiContainer {
 					button.enabled = !button.setting.getValue().equals("");
 					break;
 				case INTEGER:
-					if(button.upper){
-						button.enabled = Integer.parseInt(button.setting.getValue()) > -10000;
+					try{
+						if(button.upper){
+							button.enabled = Integer.parseInt(button.setting.getValue()) > -10000;
+						}
+						else{
+							button.enabled = Integer.parseInt(button.setting.getValue()) < 10000;
+						}
 					}
-					else{
-						button.enabled = Integer.parseInt(button.setting.getValue()) < 10000;
+					catch(Exception e){
+						button.enabled = true;
 					}
 					break;
 				case STRING: break;

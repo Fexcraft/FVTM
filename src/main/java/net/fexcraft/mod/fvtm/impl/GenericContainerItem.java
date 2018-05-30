@@ -185,7 +185,7 @@ public class GenericContainerItem extends Item implements ContainerItem {
         return EnumActionResult.PASS;
     }
 
-    private boolean isValidPostitionForContainer(World world, EntityPlayer player, BlockPos pos, EnumFacing opposite, ContainerData data){
+    public static boolean isValidPostitionForContainer(World world, EntityPlayer player, BlockPos pos, EnumFacing opposite, ContainerData data){
         ArrayList<BlockPos> list = ContainerBlock.getPositions(data, pos, opposite);
         BlockPos obstacle = null;
         IBlockState state = null;

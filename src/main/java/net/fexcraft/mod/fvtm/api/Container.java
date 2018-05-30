@@ -93,7 +93,7 @@ public interface Container extends IForgeRegistryEntry<Container>, TextureHolder
     	
     	public @Nullable ContainerData getContainerData();
     	
-    	public void setContainerData(@Nullable ContainerData data);
+    	public boolean setContainerData(@Nullable ContainerData data);
     	
     	public ContainerType getContainerType();
     	

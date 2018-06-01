@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript.ScriptSetting;
+import net.fexcraft.mod.fvtm.api.root.SettingHolder.ScriptSetting;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.GenericGuiButton;
@@ -63,7 +63,7 @@ public class VehicleScriptGui extends GuiContainer {
         for(int i = 0; i < 8; i++){
         	if(i >= settings.size()){ break; }
         	ScriptSetting<?> setting = settings.get(i);
-        	String str = this.fontRenderer.trimStringToWidth(I18n.format("script." + setting.getScript().getId() + "." + setting.getId(), new Object[0]), 105);
+        	String str = this.fontRenderer.trimStringToWidth(I18n.format("script." + setting.getHolder().getSettingHolderId() + "." + setting.getId(), new Object[0]), 105);
     		this.fontRenderer.drawString(str, guiLeft +   8, guiTop + 23 + (i * 16), MapColor.GRAY.colorValue);
     		str = this.fontRenderer.trimStringToWidth(setting.getValue(), 105);
     		this.fontRenderer.drawString(str, guiLeft + 128, guiTop + 23 + (i * 16), MapColor.GRAY.colorValue);
@@ -135,7 +135,7 @@ public class VehicleScriptGui extends GuiContainer {
 			}
             compound.setString("target_listener", "fvtm");
             compound.setString("task", "script_setting");
-            compound.setString("script", setting.getScript().getId().toString());
+            compound.setString("script", setting.getHolder().getSettingHolderId());
             compound.setString("script_setting", setting.getId());
             compound.setInteger("seat", seat);
             compound.setInteger("entity", entity.getEntity().getEntityId());

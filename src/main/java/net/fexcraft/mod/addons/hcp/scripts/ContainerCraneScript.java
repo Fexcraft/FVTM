@@ -252,63 +252,63 @@ public class ContainerCraneScript implements VehicleScript {
 			new ScriptSetting<ContainerCraneScript>(this, "trycatch", ScriptSetting.Type.BUTTON){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.tryCatch(player, (VehicleEntity)ent);
-					script.updateClient(player, ent);
+					holder.tryCatch(player, (VehicleEntity)ent);
+					holder.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "release", ScriptSetting.Type.BUTTON){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.tryRelease(player, (VehicleEntity)ent);
-					script.updateClient(player, ent);
+					holder.tryRelease(player, (VehicleEntity)ent);
+					holder.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "x-move", ScriptSetting.Type.BOOLEAN){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.xmove = i == 0 ? false : i == 1 ? true : script.xmove;
-					script.updateClient(player, ent);
+					holder.xmove = i == 0 ? false : i == 1 ? true : holder.xmove;
+					holder.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "y-move", ScriptSetting.Type.BOOLEAN){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.ymove = i == 0 ? false : i == 1 ? true : script.ymove;
-					script.updateClient(player, ent);
+					holder.ymove = i == 0 ? false : i == 1 ? true : holder.ymove;
+					holder.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "z-move", ScriptSetting.Type.BOOLEAN){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.zmove = i == 0 ? false : i == 1 ? true : script.zmove;
-					script.updateClient(player, ent);
+					holder.zmove = i == 0 ? false : i == 1 ? true : holder.zmove;
+					holder.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "x-direction", ScriptSetting.Type.INTEGER){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.xdir += i;
-					if(script.xdir > 1){ script.xdir = 1; }
-					if(script.xdir < -1){ script.xdir = -1; }
-					script.updateClient(player, ent);
+					holder.xdir += i;
+					if(holder.xdir > 1){ holder.xdir = 1; }
+					if(holder.xdir < -1){ holder.xdir = -1; }
+					holder.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "y-direction", ScriptSetting.Type.INTEGER){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.ydir += i;
-					if(script.ydir > 1){ script.ydir = 1; }
-					if(script.ydir < -1){ script.ydir = -1; }
-					script.updateClient(player, ent);
+					holder.ydir += i;
+					if(holder.ydir > 1){ holder.ydir = 1; }
+					if(holder.ydir < -1){ holder.ydir = -1; }
+					holder.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "z-direction", ScriptSetting.Type.INTEGER){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
-					script.zdir += i;
-					if(script.zdir > 1){ script.zdir = 1; }
-					if(script.zdir < -1){ script.zdir = -1; }
-					script.updateClient(player, ent);
+					holder.zdir += i;
+					if(holder.zdir > 1){ holder.zdir = 1; }
+					if(holder.zdir < -1){ holder.zdir = -1; }
+					holder.updateClient(player, ent);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "speed", ScriptSetting.Type.INTEGER){
@@ -330,30 +330,30 @@ public class ContainerCraneScript implements VehicleScript {
 							default: speed =  0; break;
 						}
 					}
-					script.updateClient(player, entity);
+					holder.updateClient(player, entity);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "stepwise", ScriptSetting.Type.BOOLEAN){
 				@Override
 				public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 					stepwise = i == 0 ? false : i == 1 ? true : stepwise;
-					script.updateClient(player, entity);
+					holder.updateClient(player, entity);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "searchbox", ScriptSetting.Type.BOOLEAN){
 				@Override
 				public void onChange(EntityPlayer player, Entity entity, int i, Object... objs) {
-					script.searchbox = i == 0 ? false : i == 1 ? true : script.searchbox;
-					script.updateClient(player, entity);
+					holder.searchbox = i == 0 ? false : i == 1 ? true : holder.searchbox;
+					holder.updateClient(player, entity);
 				}
 			},
 			new ScriptSetting<ContainerCraneScript>(this, "length", ScriptSetting.Type.INTEGER){
 				@Override
 				public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
-					script.length += i;
-					if(script.length < 8){ script.length = 8; }
-					if(script.length > 64){ script.length = 64; }
-					script.updateClient(player, entity);
+					holder.length += i;
+					if(holder.length < 8){ holder.length = 8; }
+					if(holder.length > 64){ holder.length = 64; }
+					holder.updateClient(player, entity);
 				}
 			}
 		};

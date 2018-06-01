@@ -95,7 +95,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
             tooltip.add(Formatter.format("&9Fuel Tank: &7" + RGB.format(veh.getFuelTankContent()) + "&8/&e" + veh.getFuelTankSize()));
             tooltip.add(Formatter.format("&9Fuel Type: &7" + (veh.getPart("engine") == null ? "unknown / no engine" : veh.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelType().getName())));
             if(veh.getVehicle().getType().isWaterVehicle()){
-                tooltip.add(Formatter.format("&9Bouyancy: &r" + veh.getVehicle().getBuoyancy()));
+                tooltip.add(Formatter.format("&9Bouyancy: &r" + veh.getVehicle().getFMAttribute("bouyancy")));
             }
             if(veh.getParts().size() > 0){
                 tooltip.add(Formatter.format("&3Installed Parts:"));

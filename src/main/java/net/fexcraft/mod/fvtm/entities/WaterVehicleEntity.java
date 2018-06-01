@@ -79,7 +79,7 @@ public class WaterVehicleEntity extends UnboundVehicleEntity {
                 }
             }
             if(world.containsAnyLiquid(wheel.getEntityBoundingBox())){//.isAnyLiquid(wheel.getEntityBoundingBox())){
-                wheel.motionY += vehicledata.getVehicle().getBuoyancy();
+                wheel.motionY += vehicledata.getVehicle().getFMAttribute("bouyancy");
             }
             wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
             //pull wheels back to car

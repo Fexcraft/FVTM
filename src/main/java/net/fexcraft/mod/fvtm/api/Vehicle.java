@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.api.root.Colorable;
 import net.fexcraft.mod.fvtm.api.root.Colorable.ColorHolder;
 import net.fexcraft.mod.fvtm.api.root.Lockable;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
+import net.fexcraft.mod.fvtm.api.root.SettingHolder;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
@@ -169,7 +170,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
     }
 
-    public static interface VehicleScript extends Saveloadable<VehicleScript> {
+    public static interface VehicleScript extends Saveloadable<VehicleScript>, SettingHolder {
 
         public ResourceLocation getId();
 
@@ -206,43 +207,10 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         public default void onKeyInput(int key, int seatid, VehicleEntity vehicle){
             return;
         }
-
-        public @Nullable ScriptSetting<?>[] getSettings(int seat);
         
-        public Object getSettingsValue(String setting);
-        
-        public static abstract class ScriptSetting<T extends VehicleScript> {
-        	
-        	protected T script;
-        	private String id;
-        	private Type type;
-        	
-        	public ScriptSetting(T parent, String id, Type type){
-        		this.id = id; this.script = parent; this.type = type;
-        	}
-        	
-        	public final String getId(){
-        		return id;
-        	}
-
-			public Type getType(){
-				return type;
-			}
-        	
-        	public static enum Type {
-        		INTEGER, BOOLEAN, STRING, BUTTON
-        	}
-        	
-        	public abstract void onChange(EntityPlayer player, Entity entity, int i, @Nullable Object... objs);
-        	
-        	public final String getValue(){
-        		return String.valueOf(script.getSettingsValue(id));
-        	}
-
-			public T getScript(){
-				return script;
-			}
-        	
+        @Override
+        public default String getSettingHolderId(){
+        	return getId().toString();
         }
 
     }
@@ -341,7 +309,5 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         }
 
     }
-
-    public double getBuoyancy();
 
 }

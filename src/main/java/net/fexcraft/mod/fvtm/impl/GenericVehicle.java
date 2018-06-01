@@ -305,11 +305,6 @@ public class GenericVehicle implements Vehicle {
     }
 
     @Override
-    public double getBuoyancy(){
-        return bouyancy;
-    }
-
-    @Override
     public TreeMap<String, Pos> getWheelPositions(){
         return wheel_coords;
     }
@@ -325,6 +320,7 @@ public class GenericVehicle implements Vehicle {
             case "turn_right_modifier": return turnrightmod;
             case "wheel_spring_strength": return wheelspringstrength;
             case "trailer_adjustment_axe": return trailer_adjustment_axe;
+            case "bouyancy": return bouyancy;
         }
         return 0f;
     }

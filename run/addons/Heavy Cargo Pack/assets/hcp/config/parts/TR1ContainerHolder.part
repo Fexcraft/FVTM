@@ -1,0 +1,22 @@
+{
+    "RegistryName": "hcp:tr1_container_holder",
+    "Addon": "fvtm:hcp",
+    "ModelFile": "net.fexcraft.mod.addons.hcp.models.part.TR1ContainerHolder.class",
+    "FullName": "TR1 Container Holder",
+    "Category": [
+        "cargo"
+    ],
+    "Attributes":[
+        "container", "seat"
+    ],
+    "Textures": [
+        "hcp:textures/trailers/tr1_base.png"
+    ],
+    "Compatible": [{ "Vehicle": "hcp:tr1", "x": 0, "y": 0, "z": 0 }],
+    "Removable": true,
+    "AttributeData":{
+        "Container-Type": "LARGE",
+        "Container-Offset": { "x": -112, "y": -24, "z": 0 },
+        "FM-Seats":[ { "driver": true, "x": 8, "y": 24, "z": 0 } ]
+    }
+}

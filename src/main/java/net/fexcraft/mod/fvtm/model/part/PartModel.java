@@ -534,13 +534,17 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
             if(conattr.getContainerType() == ContainerType.LARGE){
                 if(condata.getContainer(ContainerPosition.MEDIUM_DUAL2) != null){
                     if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL1)) != null){
+                    	GL11.glTranslatef( 3, 0, 0);
                         Model.bindTexture(container.getTexture());
                         container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_DUAL1);
+                    	GL11.glTranslatef(-3, 0, 0);
                     }
                     //
                     if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL2)) != null){
+                    	GL11.glTranslatef(-3, 0, 0);
                         Model.bindTexture(container.getTexture());
                         container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_DUAL2);
+                    	GL11.glTranslatef( 3, 0, 0);
                     }
                 }
                 else{
@@ -582,13 +586,17 @@ public class PartModel<T extends VehicleData> extends Model<VehicleData> {
             if(conattr.getContainerType() == ContainerType.LARGE){
                 if(condata.getContainer(ContainerPosition.MEDIUM_DUAL2) != null){
                     if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL1)) != null){
+                    	GL11.glTranslatef( 3, 0, 0);
                         Model.bindTexture(container.getTexture());
                         container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_DUAL1, ent);
+                    	GL11.glTranslatef(-3, 0, 0);
                     }
                     //
                     if((container = condata.getContainer(ContainerPosition.MEDIUM_DUAL2)) != null){
+                    	GL11.glTranslatef(-3, 0, 0);
                         Model.bindTexture(container.getTexture());
                         container.getContainer().getModel().render(type, us, container, ContainerPosition.MEDIUM_DUAL2, ent);
+                    	GL11.glTranslatef( 3, 0, 0);
                     }
                 }
                 else{

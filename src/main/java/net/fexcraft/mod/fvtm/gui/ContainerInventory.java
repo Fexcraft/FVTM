@@ -30,7 +30,7 @@ public class ContainerInventory implements IInventory {
             coninv.set(0, condata.main.getContainer().getItemStack(condata.main));
         }
         if(condata.second != null){
-            coninv.set(0, condata.main.getContainer().getItemStack(condata.main));
+            coninv.set(1, condata.main.getContainer().getItemStack(condata.second));
         }
     }
 
@@ -136,7 +136,7 @@ public class ContainerInventory implements IInventory {
     }
 
     private boolean can(int i){
-        return i == 1 ? !(coninv.get(1).getItem() instanceof ItemBlock) && !(((ItemBlock) coninv.get(1).getItem()).getBlock() == Blocks.BARRIER) : true;
+        return i == 1 ? coninv.get(1).getItem() instanceof ItemBlock ? !(((ItemBlock) coninv.get(1).getItem()).getBlock() == Blocks.BARRIER) : true : true;
     }
 
     private ContainerData get(ItemStack stack){

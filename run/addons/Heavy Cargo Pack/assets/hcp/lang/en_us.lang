@@ -20,6 +20,7 @@ item.hcp:tr1_lights.name=TR1 Lights
 item.hcp:tr1_fenders.name=TR1 Fenders
 item.hcp:tr1_license_plate.name=TR1 License Plate
 item.hcp:container_crane_controller.name=Container Crane Controller
+item.hcp:tr1_container_holder.name=TR1 Container Upgrade
 
 #Scripts
 script.hcp:container_crane.trycatch="Try Catch"

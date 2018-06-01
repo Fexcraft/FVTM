@@ -1,13 +1,11 @@
 package net.fexcraft.mod.addons.hcp.models.trailer;
 
 import javax.annotation.Nullable;
-import net.fexcraft.mod.addons.zmp.models.trailer.*;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
 public class ModelTR1 extends VehicleModel<VehicleData> {

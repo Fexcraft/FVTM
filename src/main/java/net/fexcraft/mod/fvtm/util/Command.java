@@ -1,9 +1,14 @@
 package net.fexcraft.mod.fvtm.util;
 
+import java.util.stream.Collectors;
+
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Vehicle;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -46,6 +51,7 @@ public class Command extends CommandBase {
                 Print.chat(sender, trs("commands.fvtm.main_help_addons"));
                 Print.chat(sender, trs("commands.fvtm.main_help_version"));
                 Print.chat(sender, trs("commands.fvtm.main_help_key_help"));
+                Print.chat(sender, "/fvtm entities");
                 break;
             }
             case "addons": {
@@ -199,6 +205,14 @@ public class Command extends CommandBase {
                     }
                 }
                 break;
+            }
+            case "entities":{
+            	Print.chat(sender, "&8- - - - &9- &6- &9- &8- - - -");
+            	Print.chat(sender, "&9Vehicles: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof VehicleEntity).collect(Collectors.toList()).size());
+            	Print.chat(sender, "&9Wheels: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof WheelEntity).collect(Collectors.toList()).size());
+            	Print.chat(sender, "&9Seats: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof SeatEntity).collect(Collectors.toList()).size());
+            	Print.chat(sender, "&9Container Holders: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof ContainerEntity).collect(Collectors.toList()).size());
+            	break;
             }
             default: {
                 Print.chat(sender, "null [0]");

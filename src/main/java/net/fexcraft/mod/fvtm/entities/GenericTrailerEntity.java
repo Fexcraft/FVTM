@@ -3,8 +3,9 @@ package net.fexcraft.mod.fvtm.entities;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.util.common.Print;
-import net.minecraft.entity.Entity;
+import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -12,6 +13,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
 
     public GenericTrailerEntity(World world){
         super(world);
+        Print.debug("SPAWNING TRAILER");
     }
 
     public GenericTrailerEntity(World world, VehicleData data, VehicleEntity parent){
@@ -24,72 +26,72 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
         Print.debug("SPAWNING TRAILER");
     }
 
-    @Override
+    public GenericTrailerEntity(World world, float x, float y, float z, EntityPlayer player, VehicleData data){
+    	super(world, x, y, z, player, data);
+	}
+
+	@Override
     public void onUpdateMovement(){
+		Vec3d atmc = new Vec3d(0, 0, 0);
+		int wheelid = 0;
+        for(WheelEntity wheel : wheels){
+            if(wheel == null){ continue; }
+            onGround = true;
+            wheel.onGround = true;
+            wheel.rotationYaw = axes.getYaw();
+            if(!vehicledata.getVehicle().getDriveType().hasTracks() && (wheel.wheelid == 2 || wheel.wheelid == 3)){
+                wheel.rotationYaw += wheelsYaw;
+            }
+            wheel.motionX *= 0.9F;
+            wheel.motionY *= 0.9F;
+            wheel.motionZ *= 0.9F;
+            wheel.motionY -= 0.98F / 20F;//Gravity
+            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
+            Pos s = null;
+        	if(wheelid >= this.getVehicleData().getWheelPos().size() && this.getVehicleData().getVehicle().isTrailerOrWagon()){
+        		s = this.getVehicleData().getWheelPos().get(wheelid == 2 ? 1 : 0);
+        		s = new Pos(0, s.y, s.z);
+        	}
+        	else{
+        		s = this.getVehicleData().getWheelPos().get(wheelid);
+        	}
+            Vec3d targetpos = axes.getRelativeVector(s.to16Double());
+            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMAttribute("wheel_spring_strength"));
+            if(despos.lengthSquared() > 0.001F){
+                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
+                despos.scale(0.5F);
+                atmc = atmc.subtract(despos);
+            }
+            wheelid++;
+        }
+        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
         return;
     }
 
     @Override
     public void onUpdate(){
-        /*if(getParent() == null){
-            try{
-                Entity ent = null;
-                for(Entity e : world.loadedEntityList){
-                    if(e.getUniqueID().equals(parentid)){
-                        ent = e;
-                        break;
-                    }
-                }
-                if(ent instanceof VehicleEntity == false){
-                    Print.debug(String.format("Tried to connect to %s (%s) but that's not a Vehicle!", ent == null ? "NULL" : ent.toString(), parentid));
-                    return;
-                }
-                parent = (VehicleEntity) ent;
-                ((UnboundVehicleEntity) parent).trailer = this;//TODO
-                //
-                this.posX = parent.getEntity().posX;
-                this.posY = parent.getEntity().posY;
-                this.posZ = parent.getEntity().posZ;
-                Print.debug("Found vehicle. ");
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }
-        }*/
         super.onUpdate();
     }
 
     @Override
     public void moveTrailer(){
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
-        if(getParent() == null || wheels.length > 2){
-            //TODO add alternative code for 4 wheeled trailers
-            return;
+        prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
+        if(wheels == null || wheels[0] == null || wheels[1] == null || getParent() == null){
+        	return;
         }
-        //
         Vec3d conn = getParent().getAxes().getRelativeVector(getParent().getVehicleData().getRearConnector().to16Double());
         this.setPosition(getParent().getEntity().posX + conn.x, getParent().getEntity().posY + conn.y, getParent().getEntity().posZ + conn.z);
         //
-        alignWheels();
-        //
-        //Vec3d axle = new Vec3d((wheels[0].posX + wheels[1].posX) * 0.5, (wheels[0].posY + wheels[1].posY) * 0.5, (wheels[0].posZ + wheels[1].posZ) * 0.5);
-        //double grr = Math.atan2(conn.z - axle.z, conn.x - axle.x);
-        //double yaw = axes.getYaw(), grs = grr;
-        //axes.setAngles((grr = (float)(grr * 180 / Math.PI)) > Static.rad1 || grr < -Static.rad1 ? grr : 0, 0, 0);
-        //Print.debug(yaw, grs, axes.getYaw(), grr);
-        //
-        //
         int lw = this.getParent().getVehicleData().getVehicle().getFMAttribute("trailer_adjustment_axe") < 0 ? 3 : 0;
         int rw = lw == 3 ? 2 : 1;
-        if(wheels == null || wheels[0] == null || wheels[1] == null || getParent().getWheels() == null || getParent().getWheels()[lw] == null || getParent().getWheels()[rw] == null){
-            return;
+        if(parentent.getWheels() == null || !this.isRiding() || parentent.getWheels()[lw] == null || parentent.getWheels()[rw] == null){
+        	return;
         }
         Vec3d front = new Vec3d((getParent().getWheels()[lw].posX + getParent().getWheels()[rw].posX) / 2F, (getParent().getWheels()[lw].posY + getParent().getWheels()[rw].posY) / 2F, (getParent().getWheels()[lw].posZ + getParent().getWheels()[rw].posZ) / 2F);
-        Vec3d back = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
-        Vec3d left = new Vec3d((wheels[0].posX + getParent().getWheels()[lw].posX) / 2F, (wheels[0].posY + getParent().getWheels()[lw].posY) / 2F, (wheels[0].posZ + getParent().getWheels()[lw].posZ) / 2F);
-        Vec3d right = new Vec3d((wheels[1].posX + getParent().getWheels()[rw].posX) / 2F, (wheels[1].posY + getParent().getWheels()[rw].posY) / 2F, (wheels[1].posZ + getParent().getWheels()[rw].posZ) / 2F);
+    	Vec3d back = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
+    	Vec3d left = new Vec3d((wheels[0].posX + getParent().getWheels()[lw].posX) / 2F, (wheels[0].posY + getParent().getWheels()[lw].posY) / 2F, (wheels[0].posZ + getParent().getWheels()[lw].posZ) / 2F);
+    	Vec3d right = new Vec3d((wheels[1].posX + getParent().getWheels()[rw].posX) / 2F, (wheels[1].posY + getParent().getWheels()[rw].posY) / 2F, (wheels[1].posZ + getParent().getWheels()[rw].posZ) / 2F);
         //
         double dx = front.x - back.x, dy = front.y - back.y, dz = front.z - back.z;
         double drx = left.x - right.x, dry = left.y - right.y, drz = left.z - right.z;
@@ -103,26 +105,32 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
         if(vehicledata.getVehicle().getDriveType().hasTracks()){
             yaw = (float)Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
         }
-        //Print.debug(axes.getYaw(), axes.getRadianYaw());
+        //
         double thrt = getParent().getThrottle() > 0 ? getParent().getThrottle() : -getParent().getThrottle();
         double rawy = Math.toDegrees(yaw) - axes.getYaw();
         double diff = rawy * thrt * 0.2;
         //Print.debug(rawy, diff);
         diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
         axes.setRotation(axes.getRadianYaw() + Math.toRadians(diff), pitch, roll);
-        //Print.debug(axes.getYaw(), axes.getRadianYaw());
-        //alignWheels();
+        //
+        alignWheels();
     }
 
     private final void alignWheels(){
         for(int i = 0; i < wheels.length; i++){
-            if(wheels[i] == null){ continue; }
+            if(wheels[i] == null ){ continue; }
             WheelEntity wheel = wheels[i];
             onGround = true;
             wheel.onGround = true;
             wheel.rotationYaw = axes.getYaw();
             //
-            Vec3d targetpos = axes.getRelativeVector(vehicledata.getWheelPos().get(i).to16Double());
+            Pos s = null;
+        	if(i >= this.getVehicleData().getWheelPos().size() && this.getVehicleData().getVehicle().isTrailerOrWagon()){
+        		s = this.getVehicleData().getWheelPos().get(i == 2 ? 1 : 0);
+        		s = new Pos(0, s.y, s.z);
+        	}
+        	else{ s = this.getVehicleData().getWheelPos().get(i); }
+            Vec3d targetpos = axes.getRelativeVector(s.to16Double());
             Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
             Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(vehicledata.getVehicle().getFMAttribute("wheel_spring_strength"));
             if(despos.lengthSquared() > 0.001F){
@@ -150,12 +158,12 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
 
     @Override
     public float getWheelsYaw(){
-        return getParent() == null ? 0 : getParent().getWheelsYaw();
+        return getParent() == null ? wheelsYaw : getParent().getWheelsYaw();
     }
 
     @Override
     public float getWheelsAngle(){
-        return getParent() == null ? 0 : getParent().getWheelsAngle();
+        return getParent() == null ? wheelsAngle : getParent().getWheelsAngle();
     }
 
 }

@@ -17,7 +17,7 @@ public class KeyHandler {
     public static KeyBinding openInventory;
     public static KeyBinding leftMouse;
     public static KeyBinding rightMouse;
-    public static KeyBinding doorToggle, scriptsGUI, lightsToggle;
+    public static KeyBinding doorToggle, scriptsGUI, lightsToggle, trailerToggle;
     public static final String category = "FVTM Controls";
 
     public KeyHandler(){
@@ -29,6 +29,7 @@ public class KeyHandler {
         ClientRegistry.registerKeyBinding(doorToggle = new KeyBinding("Doors", Keyboard.KEY_K, category));
         ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("Scripts GUI", Keyboard.KEY_G, category));
         ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("Lights", Keyboard.KEY_L, category));
+        ClientRegistry.registerKeyBinding(trailerToggle = new KeyBinding("Trailer", Keyboard.KEY_0, category));
     }
 
     //TODO sunscribe keyinput event

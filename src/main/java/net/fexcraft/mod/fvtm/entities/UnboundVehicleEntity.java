@@ -54,6 +54,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -448,11 +449,99 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 }
                 return true;
             }
+            case 13: {
+            	if(!world.isRemote){
+            		if(throttle > 0 || throttle < 0){
+            			Print.chat(player, "Please stop the vehicle first!");
+            			return true;
+            		}
+            		if(this.vehicledata.getRearConnector() == null){
+            			Print.chat(player, "This vehicle does not have a rear connector installed.");
+            			return true;
+            		}
+                    if(doorToggleTimer <= 0){
+                    	if(this.getEntityAtRear() == null){
+                    		this.tryAttach(player);
+                    	}
+                    	else{
+                    		this.tryDetach(player);
+                    	}
+                        doorToggleTimer = 10;
+                    }
+            	}
+            	return true;
+            }
         }
         return false;
     }
 
-    @Override
+	private void tryAttach(EntityPlayer player){
+		if(this.getEntityAtRear() != null){
+			Print.chat(player, "Trailer already Connected.");
+		}
+		VehicleEntity trailer = null;
+		AxisAlignedBB aabb = new AxisAlignedBB(new BlockPos(this.getPositionVector().add(axes.getRelativeVector(vehicledata.getRearConnector().to16Double()))));
+		for(Entity e : world.loadedEntityList){
+			if(e instanceof VehicleEntity && e.getEntityBoundingBox().intersects(aabb)){
+				VehicleEntity ent = (VehicleEntity)e;
+				if(ent.getVehicleData().getVehicle().isTrailerOrWagon() && ent.getEntityAtFront() == null && !ent.getEntity().isRiding()){
+					trailer = ent;
+					break;
+				}
+			}
+		}
+		if(trailer != null){
+			try{
+				if(trailer instanceof GenericTrailerEntity){
+					GenericTrailerEntity ent = (GenericTrailerEntity)trailer;
+					ent.parentent = this;
+		            NBTTagCompound nbt = new NBTTagCompound();
+		            nbt.setString("task", "update_connection");
+		            nbt.setInteger("entity", this.getEntityId());
+		            ApiUtil.sendEntityUpdatePacketToAllAround(ent, nbt);
+		            //
+		            nbt = new NBTTagCompound();
+		            nbt.setString("task", "update_trailer");
+		            nbt.setInteger("entity", ent.getEntityId());
+		            ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+				}
+				trailer.getEntity().startRiding(this);
+				Print.chat(player, "Trailer attached.");
+			}
+			catch(Exception e){
+				Print.chat(player, "ERROR! See console for info.");
+				e.printStackTrace();
+			}
+		}
+		else{
+			Print.chat(player, "No Trailer Entity found at connector position.");
+		}
+	}
+
+    private void tryDetach(EntityPlayer player){
+		if(this.getEntityAtRear() == null){
+			Print.chat(player, "No Trailer Connected!");
+		}
+		VehicleEntity rear = this.getEntityAtRear();
+		rear.getEntity().dismountRidingEntity();
+		if(rear instanceof UnboundVehicleEntity){
+			((UnboundVehicleEntity)rear).parentent = null;
+		}
+		this.trailer = null;
+		Print.chat(player, "Trailer detached.");
+		//
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("task", "update_connection");
+        nbt.setInteger("entity", -1);
+        ApiUtil.sendEntityUpdatePacketToAllAround(rear.getEntity(), nbt);
+        //
+        nbt = new NBTTagCompound();
+        nbt.setString("task", "update_trailer");
+        nbt.setInteger("entity", -1);
+        ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+	}
+
+	@Override
     public Entity getCamera(){
         if(Static.side().isClient()){
             return null;
@@ -824,6 +913,28 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                     world.spawnEntity(wheels[i]);
                 }
             }
+            if(vehicledata.getVehicle().isTrailerOrWagon()){
+            	if(getParent() == null){
+                	if(wheels.length == 2){
+                		wheels = new WheelEntity[]{ wheels[0], wheels[1], null, null };
+                	}
+                	if(wheels[2] == null || !wheels[2].addedToChunk){
+                        wheels[2] = new WheelEntity(world, this, 2);
+                        world.spawnEntity(wheels[2]);
+                    }
+                	if(wheels[3] == null || !wheels[3].addedToChunk){
+                        wheels[3] = new WheelEntity(world, this, 2);
+                        world.spawnEntity(wheels[3]);
+                    }
+            	}
+            	else{
+            		if(wheels.length > 2){
+            			if(wheels[2] != null){ wheels[2].setDead(); }
+            			if(wheels[3] != null){ wheels[3].setDead(); }
+            			wheels = new WheelEntity[]{ wheels[0], wheels[1] };
+            		}
+            	}
+            }
             if(containers != null && containers.size() < consize){
             	vehicledata.getParts().forEach((key, part) -> {
             		if(part.getAttributeData(ContainerAttributeData.class) != null){
@@ -831,11 +942,11 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             			GenericContainerEntity ent = null;
             			if(condata.getAttribute().getContainerType() == ContainerType.LARGE){
             				if(!containers.containsKey(key + "_0")){
-            					containers.put(key, ent = new GenericContainerEntity(world, this, key, 0));
+            					containers.put(key + "_0", ent = new GenericContainerEntity(world, this, key, 0));
             					world.spawnEntity(ent);
             				}
             				if(!containers.containsKey(key + "_1")){
-            					containers.put(key, ent = new GenericContainerEntity(world, this, key, 1));
+            					containers.put(key + "_1", ent = new GenericContainerEntity(world, this, key, 1));
             					world.spawnEntity(ent);
             				}
             				if(!containers.containsKey(key)){
@@ -851,6 +962,20 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             			}
             		}
             	});
+            }
+        }
+        else{
+            if(vehicledata.getVehicle().isTrailerOrWagon()){
+            	if(getParent() == null){
+                	if(wheels.length == 2){
+                		wheels = new WheelEntity[]{ wheels[0], wheels[1], null, null };
+                	}
+            	}
+            	else{
+            		if(wheels.length > 2){
+            			wheels = new WheelEntity[]{ wheels[0], wheels[1] };
+            		}
+            	}
             }
         }
         prevRotationYaw = axes.getYaw();
@@ -902,7 +1027,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 wheel.prevPosZ = wheel.posZ;
             }
         }
-        if(!this.vehicledata.getVehicle().isTrailerOrWagon()){
+        if(this.vehicledata.getVehicle().isTrailerOrWagon() ? this.wheels.length > 2 : true){
             if(hasEnoughFuel()){
                 wheelsAngle += throttle * 0.2F;
             }
@@ -935,7 +1060,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             }
         }
         else{
-            //
+        	
         }
         vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
         checkForCollisions();
@@ -1129,6 +1254,40 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                         this.getEntityAtRear().getVehicleData().setLightsState(pkt.nbt.getInteger("lightsstate"));
                     }
                     break;
+                }
+                case "update_connection":{
+                	int ent = pkt.nbt.getInteger("entity");
+                	if(ent == -1){
+                		trailer = null;
+                	}
+                	else{
+                		trailer = (VehicleEntity)world.getEntityByID(ent);
+                	}
+                	break;
+                }
+                case "update_trailer":{
+                	int ent = pkt.nbt.getInteger("entity");
+                	if(ent == -1){
+                		VehicleEntity rear = this.getEntityAtRear();
+                		if(rear != null){
+                			rear.getEntity().dismountRidingEntity();
+                			if(rear instanceof UnboundVehicleEntity){
+                				((UnboundVehicleEntity)rear).parentent = null;
+                			}
+                			this.trailer = null;
+                		}
+                	}
+                	else{
+                		Entity trailer = world.getEntityByID(ent);
+                		if(trailer instanceof VehicleEntity == false){
+                			break;
+                		}
+                		if(trailer instanceof UnboundVehicleEntity){
+                			((UnboundVehicleEntity)trailer).parentent = this;
+                		}
+                		trailer.startRiding(this);
+                	}
+                	break;
                 }
             }
         }

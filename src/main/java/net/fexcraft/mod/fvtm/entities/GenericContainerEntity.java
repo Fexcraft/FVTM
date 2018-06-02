@@ -6,8 +6,10 @@ import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
@@ -60,7 +62,8 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
         this.vehicleid = compound.getInteger("vid");
         this.vehicle = (VehicleEntity)world.getEntityByID(vehicleid);
         if(vehicle != null && vehicle.getContainers() != null){
-            this.vehicle.getContainers().put(holder, this);
+            ContainerEntity ent = this.vehicle.getContainers().put(holderid == -1 ? holder : holder + "_" + holderid, this);
+            if(ent != null){ ent.getEntity().setDead(); }
         }
         else{
             Print.debug("VEHICLE CONTAINER HOLDER NULL? ", holder, holderid, vehicle, vehicleid, world.getEntityByID(vehicleid));
@@ -72,6 +75,8 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
         this.setRelPos();
     }
     
+    private VehicleAxes conrot;
+    
     private Vec3d getRelPos(){
     	Vec3d pos = vehicle.getVehicleData().getPart(holderid != -1 ? holder.replace("_" + holderid, "") : holder).getPart().getAttribute(ContainerAttribute.class).getContainerOffset().to16Double();
 		ContainerAttributeData condata = vehicle.getVehicleData().getPart(holder).getAttributeData(ContainerAttributeData.class);
@@ -82,17 +87,11 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
 				switch(this.holderid){
 					case -1: return pos;
 					case 0: case 1:{
-						boolean x = false;
-						if(condata.getAttribute().getContainerRotation() == 90 || condata.getAttribute().getContainerRotation() == -270
-							|| condata.getAttribute().getContainerRotation() == 270 || condata.getAttribute().getContainerRotation() == -90){
-							x = true;
+						if(conrot == null){
+							conrot = new VehicleAxes(condata.getAttribute().getContainerRotation(), 0, 0);
 						}
-						if(x){
-							pos.addVector(holderid == 0 ? 3 : -3, 0, 0);
-						}
-						else{
-							pos.addVector(0, 0, holderid == 0 ? 3 : -3);
-						}
+						pos = pos.addVector(holderid == 0 ? 3 : -3, 0, 0);
+						pos = conrot.getRelativeVector(pos);
 					}
 				}
 				break;
@@ -282,7 +281,7 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     
     @Override
     public void setDead(){
-    	Print.debug(this, holder, vehicle);
+    	//Print.debug(this, holder, vehicle);
     	super.setDead();
     }
     
@@ -292,11 +291,6 @@ public class GenericContainerEntity extends Entity implements IEntityAdditionalS
     		return ItemStack.EMPTY;
     	}
         return getContainerData().getContainer().getItemStack(getContainerData());
-    }
-    
-    @Override
-    public String toString(){
-    	return super.toString() + "\n" + vehicle;
     }
 
 }

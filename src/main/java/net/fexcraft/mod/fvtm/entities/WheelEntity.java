@@ -53,7 +53,14 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public void initPosition(){
-        Pos s = vehicle.getVehicleData().getWheelPos().get(wheelid);
+    	Pos s = null;
+    	if(wheelid >= vehicle.getVehicleData().getWheelPos().size() && vehicle.getVehicleData().getVehicle().isTrailerOrWagon()){
+    		s = vehicle.getVehicleData().getWheelPos().get(wheelid == 2 ? 1 : 0);
+    		s = new Pos(0, s.y, s.z);
+    	}
+    	else{
+    		s = vehicle.getVehicleData().getWheelPos().get(wheelid);
+    	}
         Vec3d vec = vehicle.getAxes().getRelativeVector(s.to16Double());
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         stepHeight = vehicle.getVehicleData().getVehicle().getFMAttribute("wheel_step_height");

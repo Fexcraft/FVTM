@@ -176,8 +176,8 @@ public class InventoryAttribute implements Attribute {
     }
 
     public boolean isItemValid(ItemStack stack){
-        Print.debug("CHECKING");
-        Print.debug(stack.toString());
+        //Print.debug("CHECKING");
+        //Print.debug(stack.toString());
         for(ItemStack itemstack : blacklist){
             if(stack.getItem().getRegistryName().equals(itemstack.getItem().getRegistryName())){
                 if(itemstack.getMetadata() == 0 || stack.getItemDamage() == itemstack.getItemDamage()){

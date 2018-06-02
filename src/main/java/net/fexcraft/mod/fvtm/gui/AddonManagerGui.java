@@ -190,7 +190,7 @@ public class AddonManagerGui extends GuiContainer {
         //
         this.fontRenderer.drawSplitString(addon.getName(), i + k, j + p0, l, m);
         this.fontRenderer.drawSplitString("ID: " + addon.getRegistryName().toString() + " || " + trs(addon.isEnabled() ? "view_all_state_enabled" : "view_all_state_disabled") + " || MD: " + (addon.hasMissingDependencies() ? 1 : 0), i + k, j + p1, l, m);
-        this.fontRenderer.drawSplitString(addon.getURL(), i + k, j + p2, l, m);
+        this.fontRenderer.drawString(fontRenderer.trimStringToWidth(addon.getURL(), 216, true), i + k, j + p2, m);
     }
 
     @Override

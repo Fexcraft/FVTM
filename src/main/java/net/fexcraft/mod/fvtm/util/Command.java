@@ -18,10 +18,13 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 public class Command extends CommandBase {
 
@@ -214,11 +217,25 @@ public class Command extends CommandBase {
             	Print.chat(sender, "&9Container Holders: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof ContainerEntity).collect(Collectors.toList()).size());
             	break;
             }
+            case "spam":{
+            	if(!server.isSinglePlayer()){
+            		Print.chat(sender, "Not usable on server.");
+            		return;
+            	}
+            	ItemStack stack = new ItemStack(Blocks.STONE, 64, args.length > 1 ? Integer.parseInt(args[1]) : 0);
+            	Vec3d vec = sender.getPositionVector();
+            	for(int i = 0; i < 64; i++){
+            		sender.getEntityWorld().spawnEntity(new EntityItem(sender.getEntityWorld(), vec.x, vec.y - 1.5, vec.z, stack.copy()));
+            	}
+            	Print.chat(sender, "Spawned 64 EntityItems of selected type.");
+            	break;
+            }
             default: {
                 Print.chat(sender, "null [0]");
                 break;
             }
         }
+        
     }
 
 }

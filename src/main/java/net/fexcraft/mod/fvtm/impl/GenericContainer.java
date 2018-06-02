@@ -152,8 +152,8 @@ public class GenericContainer implements Container {
 
     @Override
     public boolean isItemValid(ItemStack stack){
-        Print.debug("CHECKING");
-        Print.debug(stack.toString());
+        //Print.debug("CHECKING");
+        //Print.debug(stack.toString());
         if(contenttype != null){
             switch(contenttype){
                 case "food": {

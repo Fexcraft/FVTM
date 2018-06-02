@@ -248,7 +248,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     }
 
     protected boolean isDriverInGM1(){
-        return seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode;
+        return seats != null && seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode;
     }
 
     public boolean hasEnoughFuel(){
@@ -1032,7 +1032,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 wheelsAngle += throttle * 0.2F;
             }
             //
-            if((seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || vehicledata.getFuelTankContent() > 0) && vehicledata.getVehicle().getFMAttribute("max_positive_throttle") != 0){
+            if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || vehicledata.getFuelTankContent() > 0) && vehicledata.getVehicle().getFMAttribute("max_positive_throttle") != 0){
                 throttle *= 0.98F;
             }
             this.onUpdateMovement();

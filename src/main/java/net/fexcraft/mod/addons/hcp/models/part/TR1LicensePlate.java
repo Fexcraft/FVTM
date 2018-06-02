@@ -26,7 +26,6 @@ public class TR1LicensePlate extends PartModel<VehicleData> {
         body[1].setRotationPoint(-236F, -20.5F, -7F);
         lights[0].addBox(0F, 0F, 0F, 1, 1, 12, 0F); // Box 117
         lights[0].setRotationPoint(-235.7F, -20.2F, -6F);
-
     }
 
 }

@@ -788,6 +788,9 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             this.getEntityAtRear().getEntity().dismountRidingEntity();
             ((UnboundVehicleEntity)this.getEntityAtRear()).parentent = null;
         }
+        if(world.isRemote){
+        	net.fexcraft.mod.fvtm.util.RenderCache.removeEntity(this);
+        }
     }
 
     @Override

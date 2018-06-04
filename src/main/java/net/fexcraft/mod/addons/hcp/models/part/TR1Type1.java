@@ -2,6 +2,7 @@ package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
@@ -338,14 +339,12 @@ public class TR1Type1 extends PartModel<VehicleData> {
         render(door_left_lights);
         render(door_right_lights);
     }
-    
-    private int doortoggle;
 
     @Override
     public void render(VehicleData data, String us, Entity ent){
     	render(body);
-    	doortoggle += data.doorsOpen() ? 1 : -1;
-    	doortoggle = doortoggle > 100 ? 100 : doortoggle < 0 ? 0 : doortoggle;
+    	float doortoggle = RenderCache.getData(ent, "tr1_type1_door", 0) + (data.doorsOpen() ? 1 : -1);
+    	RenderCache.updateData(ent, "tr1_type1_door", doortoggle = doortoggle > 100 ? 100 : doortoggle < 0 ? 0 : doortoggle);
     	rotate(door_left, 0, Static.rad1 * -doortoggle, 0);
         render(door_left);
     	rotate(door_left, 0, Static.rad1 * doortoggle, 0);

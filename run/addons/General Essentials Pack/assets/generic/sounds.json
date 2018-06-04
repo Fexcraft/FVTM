@@ -2,6 +2,6 @@
   "engine_running": {
     "category": "block",
     "subtitle": "generic.subtitle.engine_running",
-    "sounds": [ "flansmod:engine" ]
+    "sounds": [ "generic:engine" ]
   }
 }

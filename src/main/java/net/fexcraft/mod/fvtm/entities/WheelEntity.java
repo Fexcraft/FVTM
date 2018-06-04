@@ -98,6 +98,10 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
             }
             vehicle = (VehicleEntity) world.getEntityByID(vehicleid);
             foundveh = true;
+            if(vehicle.getWheels().length <= wheelid){
+            	this.setDead();
+            	return;
+            }
             vehicle.getWheels()[wheelid] = this;
         }
         if(vehicle == null){

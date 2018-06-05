@@ -3,13 +3,12 @@ package net.fexcraft.mod.fvtm.render.block;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenterEntity;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
-import net.fexcraft.mod.fvtm.model.container.ContainerModel;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.api.render.fTESR;
-import net.fexcraft.mod.lib.tmt.Model;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.Minecraft;
@@ -46,13 +45,13 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
         GL11.glRotated(90, 0, 1D, 0);
         if(te.getVehicleData() != null){
             VehicleData vehicledata = te.getVehicleData();
-            VehicleModel<VehicleData> modvec = vehicledata.getVehicle().getModel();
+            Model<VehicleData, Object> modvec = vehicledata.getVehicle().getModel();
             if(modvec != null){
-                Model.bindTexture(vehicledata.getTexture());
+                ModelBase.bindTexture(vehicledata.getTexture());
                 GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * 0.0625f) - te.getLiftState(), 0);
-                modvec.render(vehicledata, null, te.getBlockMetadata());
+                modvec.render(vehicledata, null, null, te.getBlockMetadata());
                 vehicledata.getParts().forEach((key, partdata) -> {
-                    Model.bindTexture(partdata.getTexture());
+                    ModelBase.bindTexture(partdata.getTexture());
                     partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translate();
                     //Print.debug(key, partdata, partdata.getPart().getModel());
                     partdata.getPart().getModel().render(vehicledata, key);
@@ -64,10 +63,10 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
         }
         else if(te.getContainerData() != null){
             GL11.glTranslated(0, 1.5F, 0);
-            ContainerModel<ContainerData> model = te.getContainerData().getContainer().getModel();
+            Model<ContainerData, Object> model = te.getContainerData().getContainer().getModel();
             if(model != null){
-                Model.bindTexture(te.getContainerData().getTexture());
-                model.render(te.getContainerData());
+                ModelBase.bindTexture(te.getContainerData().getTexture());
+                model.render(te.getContainerData(), null);
                 Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
             }
         }

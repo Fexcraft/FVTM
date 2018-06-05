@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Fuel;
 import net.fexcraft.mod.fvtm.api.Material;
+import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
@@ -45,6 +46,8 @@ import net.fexcraft.mod.fvtm.impl.GenericMaterialItem;
 import net.fexcraft.mod.fvtm.impl.GenericPart;
 import net.fexcraft.mod.fvtm.impl.GenericPartItem;
 import net.fexcraft.mod.fvtm.impl.HybridAddon;
+import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleBaseModel;
 import net.fexcraft.mod.lib.FCL;
 import net.fexcraft.mod.lib.network.Network;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -80,7 +83,7 @@ public class Resources {
     public static IForgeRegistry<Vehicle> VEHICLES;// = (IForgeRegistry<LandVehicle>)new RegistryBuilder<LandVehicle>().setName(new ResourceLocation("fvtm:landvehicles")).setType(LandVehicle.class).create();
     public static IForgeRegistry<Container> CONTAINERS;
     public static IForgeRegistry<Consumable> CONSUMABLES;
-    public static TreeMap<String, Object> MODELS = new TreeMap<String, Object>();
+    public static TreeMap<String, Model<?, ?>> MODELS = new TreeMap<String, Model<?, ?>>();
     public static TreeMap<ResourceLocation, SoundEvent> SOUNDS = new TreeMap<ResourceLocation, SoundEvent>();
     public static TreeMap<String, JsonObject> PRESETS = new TreeMap<String, JsonObject>();
     public static IForgeRegistry<Attribute> PARTATTRIBUTES;// = (IForgeRegistry<Attribute>)new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
@@ -369,7 +372,7 @@ public class Resources {
                             event.getRegistry().register(veh);
                             if(Static.side().isClient()){
                                 if(Config.RENDER_IN_GUI){
-                                    net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), veh.getModel());
+                                    net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
                                 }
                                 net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
                             }
@@ -382,7 +385,7 @@ public class Resources {
                                     event.getRegistry().register(veh);
                                     if(Static.side().isClient()){
                                         if(Config.RENDER_IN_GUI){
-                                            net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), veh.getModel());
+                                            net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
                                         }
                                         net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
                                     }
@@ -428,7 +431,7 @@ public class Resources {
                         event.getRegistry().register(veh);
                         if(Static.side().isClient()){
                             if(Config.RENDER_IN_GUI){
-                                net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), veh.getModel());
+                                net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
                             }
                             net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
                         }
@@ -666,31 +669,32 @@ public class Resources {
 
     @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
-    public static <T> T getModel(String name, Class<T> clazz, T def){
+    public static <T, K> Model<T, K> getModel(String name, Class<T> dataclazz, Class<K> keyclazz, Class<? extends Model<T, K>> clazz){
         if(name == null || name.equals("") || name.equals("null")){
-            return def;
+            return (Model<T, K>)GenericModel.EMPTY;
         }
         if(MODELS.containsKey(name)){
-            return (T) MODELS.get(name);
+            return (Model<T, K>)MODELS.get(name);
         }
         ModelType type = getModelType(name);
-        T model = null;
+        Model<T, K> model = null;
         try{
             switch(type){
                 case JAVA:
                 case TMT:
                     Class<?> clasz = Class.forName(name.replace(".class", ""));
-                    model = (T) clasz.newInstance();
+                    model = (Model<T, K>)clasz.newInstance();
                     break;
                 case JTMT:
                     JsonObject obj = JsonUtil.getObjectFromInputStream(net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(name)).getInputStream());
-                    model = (T) clazz.getConstructor(JsonObject.class).newInstance(obj);
+                    model = clazz.getConstructor(JsonObject.class).newInstance(obj);
                     break;
                 case JSON:
-                    //TODO
+                    //TODO create a wrapper.
                     break;
                 case NONE:
                 case OBJ:
+                	//Use MRT's OBJ methods instead / or create a wrapper.
                 default:
                     break;
             }

@@ -2,9 +2,9 @@ package net.fexcraft.mod.fvtm.render.entity;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelConverter;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.math.Pos;
@@ -67,16 +67,16 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
             GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(180f, 0f, 0f, 1f);
             GL11.glPushMatrix();
-            VehicleModel<VehicleData> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
+            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
             if(modVehicle != null){
                 this.bindTexture(vehicle.getVehicleData().getTexture());
-                modVehicle.render(vehicle.getVehicleData(), vehicle, -1);
+                modVehicle.render(vehicle.getVehicleData(), null, vehicle, -1);
                 if(vehicle.getVehicleData().getParts().size() > 0){
                     vehicle.getVehicleData().getParts().forEach((key, partdata) -> {
                         this.bindTexture(partdata.getTexture());
                         Pos pos = partdata.getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
                         pos.translate();
-                        partdata.getPart().getModel().render(vehicle.getVehicleData(), key, vehicle);
+                        partdata.getPart().getModel().render(vehicle.getVehicleData(), key, vehicle, -1);
                         partdata.getPart().getAttributes().forEach(attr -> { if(attr.hasRenderData()){ attr.render(vehicle, partdata, key); } });
                         pos.translateR();
                     });

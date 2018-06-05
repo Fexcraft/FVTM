@@ -13,9 +13,9 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.DriveType;
 import net.fexcraft.mod.fvtm.api.EntityType;
+import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle;
-import net.fexcraft.mod.fvtm.model.vehicle.EmptyVehicleModel;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleBaseModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.RecipeObject;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -42,7 +42,7 @@ public class GenericVehicle implements Vehicle {
     private TreeMap<String, Pos> wheel_coords = new TreeMap<>();
     private List<String> required;
     @SideOnly(Side.CLIENT)
-    private VehicleModel<VehicleData> model;
+    private Model<VehicleData, Object> model;
     private List<Pos> wheelpos;
     private RGB primary, secondary;
     private int constructionlength;
@@ -60,7 +60,6 @@ public class GenericVehicle implements Vehicle {
     //
     private float trailer_adjustment_axe;
 
-    @SuppressWarnings("unchecked")
     public GenericVehicle(JsonObject obj){
         this.registryname = DataUtil.getRegistryName(obj, "VEHICLE");
         this.addon = DataUtil.getAddon(registryname, obj, "VEHICLE");
@@ -80,7 +79,7 @@ public class GenericVehicle implements Vehicle {
         }
         this.required = JsonUtil.jsonArrayToStringArray(JsonUtil.getIfExists(obj, "RequiredParts", new JsonArray()).getAsJsonArray());
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleModel.class, EmptyVehicleModel.INSTANCE);//TODO
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleData.class, Object.class, VehicleBaseModel.class);
         }
         this.wheelpos = new ArrayList<Pos>();
         if(obj.has("WheelPos")){
@@ -219,7 +218,7 @@ public class GenericVehicle implements Vehicle {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public VehicleModel<VehicleData> getModel(){
+    public Model<VehicleData, Object> getModel(){
         return model;
     }
 

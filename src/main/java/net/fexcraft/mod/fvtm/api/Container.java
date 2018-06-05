@@ -9,15 +9,12 @@ import net.fexcraft.mod.fvtm.api.root.Lockable;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
-import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Container extends IForgeRegistryEntry<Container>, TextureHolder, ColorHolder {
@@ -45,8 +42,7 @@ public interface Container extends IForgeRegistryEntry<Container>, TextureHolder
 
     public String[] getDescription();
 
-    @SideOnly(Side.CLIENT)
-    public ContainerModel<ContainerData> getModel();
+    public Model<ContainerData, Object> getModel();
 
     public Class<? extends ContainerData> getDataClass();
 

@@ -5,6 +5,7 @@
         "Ferdinand (FEX___96)"
     ],
     "type": "jtmt",
+    "model":{
     	"windows": [
         	{
 	            "texture_x": 425,
@@ -25,6 +26,7 @@
 	            "pos_x": 64.50,
 	            "pos_y": -52,
 	            "pos_z": -21
-        }
-    ]
+        	}
+    	]
+    }
 }

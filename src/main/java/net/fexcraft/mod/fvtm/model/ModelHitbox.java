@@ -1,9 +1,9 @@
 package net.fexcraft.mod.fvtm.model;
 
-import net.fexcraft.mod.lib.tmt.ModelBase;
+import net.fexcraft.mod.lib.tmt.EmptyModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelHitbox extends ModelBase {
+public class ModelHitbox extends EmptyModelBase {
 
     private static final ModelHitbox instance = new ModelHitbox();
     public ModelRendererTurbo hitbox;

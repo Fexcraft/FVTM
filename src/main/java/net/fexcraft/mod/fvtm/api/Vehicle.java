@@ -21,7 +21,6 @@ import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.entities.WheelEntity;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
@@ -39,7 +38,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, ColorHolder {
@@ -71,8 +69,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
     public List<Pos> getDefaultWheelPos();
 
-    @SideOnly(Side.CLIENT)
-    public VehicleModel<VehicleData> getModel();
+    public Model<VehicleData, Object> getModel();
 
     public Class<? extends VehicleData> getDataClass();
 

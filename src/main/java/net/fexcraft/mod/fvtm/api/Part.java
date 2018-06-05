@@ -13,14 +13,11 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
@@ -63,8 +60,7 @@ public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
 
     public boolean canInstall(String as, VehicleData data, EntityPlayer player);
 
-    @SideOnly(Side.CLIENT)
-    public PartModel<VehicleData> getModel();
+    public Model<VehicleData, String> getModel();
 
     public Class<? extends PartData> getDataClass();
 

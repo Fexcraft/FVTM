@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.api;
 
+import java.util.Collection;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
@@ -28,5 +30,7 @@ public interface Model<T, K> {
 	 * @param meta - optional metadata if rendering from blocks
 	 */
 	public void render(T data, @Nullable K key, @Nullable Entity ent, int meta);
+	
+	public Collection<String> getCreators();
 	
 }

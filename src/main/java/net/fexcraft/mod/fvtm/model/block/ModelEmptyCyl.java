@@ -19,4 +19,14 @@ public class ModelEmptyCyl extends ModelBase {
         core.render();
     }
 
+	@Override
+	public void translateAll(float x, float y, float z){
+		//
+	}
+
+	@Override
+	public void rotateAll(float x, float y, float z) {
+		//
+	}
+
 }

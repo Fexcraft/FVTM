@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Attribute;
+import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
@@ -30,8 +31,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GenericPart implements Part {
 
@@ -43,8 +42,7 @@ public class GenericPart implements Part {
     private TreeMap<ResourceLocation, ArrayList<ResourceLocation>> incompatible = new TreeMap<ResourceLocation, ArrayList<ResourceLocation>>();
     private ArrayList<ResourceLocation> textures;
     private boolean removable, available, adjustable;
-    @SideOnly(Side.CLIENT)
-    private PartModel<VehicleData> model;
+    private Model<VehicleData, String> model;
     private JsonObject attributedata;
     private HashMap<Class<? extends Attribute>, Attribute> attributes = new HashMap<Class<? extends Attribute>, Attribute>();
     private ArrayList<Class<? extends VehicleScript>> scripts = new ArrayList<Class<? extends VehicleScript>>();
@@ -93,7 +91,7 @@ public class GenericPart implements Part {
         this.available = JsonUtil.getIfExists(obj, "Available", true);
         this.adjustable = JsonUtil.getIfExists(obj, "Adjustable", false);
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), PartModel.class, NullModel.get());
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), PartModel.class, String.class, NullModel.get());
         }
         this.attributedata = JsonUtil.getIfExists(obj, "AttributeData", new JsonObject()).getAsJsonObject();
 
@@ -235,8 +233,7 @@ public class GenericPart implements Part {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public PartModel<VehicleData> getModel(){
+    public Model<VehicleData, String> getModel(){
         return model;
     }
 

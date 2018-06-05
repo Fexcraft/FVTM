@@ -27,8 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GenericVehicle implements Vehicle {
 
@@ -41,7 +39,6 @@ public class GenericVehicle implements Vehicle {
     private TreeMap<String, ResourceLocation> preinstalled = new TreeMap<String, ResourceLocation>();
     private TreeMap<String, Pos> wheel_coords = new TreeMap<>();
     private List<String> required;
-    @SideOnly(Side.CLIENT)
     private Model<VehicleData, Object> model;
     private List<Pos> wheelpos;
     private RGB primary, secondary;
@@ -217,7 +214,6 @@ public class GenericVehicle implements Vehicle {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
     public Model<VehicleData, Object> getModel(){
         return model;
     }

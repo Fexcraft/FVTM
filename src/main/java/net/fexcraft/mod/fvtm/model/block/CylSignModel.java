@@ -3,12 +3,11 @@ package net.fexcraft.mod.fvtm.model.block;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import net.fexcraft.mod.lib.tmt.Model;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
-import net.minecraft.entity.Entity;
 
-public class CylSignModel extends Model<Object> {
+public class CylSignModel extends ModelBase {
 
     private static Table<Integer, Integer, CylSignModel> models = HashBasedTable.create();
     private ModelRendererTurbo body;
@@ -38,11 +37,6 @@ public class CylSignModel extends Model<Object> {
         if(body != null){
             body.render();
         }
-    }
-
-    @Override
-    public void render(Object type, Entity entity){
-        render();
     }
 
     @Override

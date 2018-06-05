@@ -1,13 +1,12 @@
 package net.fexcraft.mod.fvtm.model.block;
 
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
-import net.fexcraft.mod.lib.tmt.Model;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
-import net.minecraft.entity.Entity;
 
-public class PipeModel extends Model<PipeTileEntity> {
+public class PipeModel extends ModelBase {
 
     public static final PipeModel INSTANCE = new PipeModel();
 
@@ -102,8 +101,7 @@ public class PipeModel extends Model<PipeTileEntity> {
         core.render();
     }
 
-    @Override
-    public void render(PipeTileEntity type, Entity entity){
+    public void render(PipeTileEntity type){
         if(type.axis != null){
             switch(type.axis){
                 case X:

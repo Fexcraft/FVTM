@@ -109,10 +109,10 @@ public class GenericVehicleItem extends Item implements VehicleItem {
                     });
                 }
             }
-            if(veh.getVehicle().getModel() != null && veh.getVehicle().getModel().creators.size() > 0){
+            if(veh.getVehicle().getModel() != null && veh.getVehicle().getModel().getCreators().size() > 0){
                 tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
                 tooltip.add(Formatter.format("&6Model by:"));
-                for(String string : veh.getVehicle().getModel().creators){
+                for(String string : veh.getVehicle().getModel().getCreators()){
                     try{
                         tooltip.add(Formatter.format("&7- &3" + Static.getPlayerNameByUUID(UUID.fromString(string))));
                     }

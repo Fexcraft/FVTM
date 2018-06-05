@@ -3,11 +3,10 @@ package net.fexcraft.mod.fvtm.model.block;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import net.fexcraft.mod.lib.tmt.Model;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.minecraft.entity.Entity;
 
-public class AdjSignModel extends Model<Object> {
+public class AdjSignModel extends ModelBase {
 
     private static Table<Integer, Integer, AdjSignModel> models = HashBasedTable.create();
     private ModelRendererTurbo body;
@@ -25,11 +24,6 @@ public class AdjSignModel extends Model<Object> {
         if(body != null){
             body.render();
         }
-    }
-
-    @Override
-    public void render(Object type, Entity entity){
-        render();
     }
 
     @Override

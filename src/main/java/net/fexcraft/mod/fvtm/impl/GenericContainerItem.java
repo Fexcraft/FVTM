@@ -82,10 +82,10 @@ public class GenericContainerItem extends Item implements ContainerItem {
             }
             //tooltip.add(Formatter.format("&9LoadType: &7" + con.getContainer().getInventoryType().getName()));
             tooltip.add(Formatter.format("&9Selected Texture: &7" + con.getSelectedTexture()));
-            if(con.getContainer().getModel() != null && con.getContainer().getModel().creators.size() > 0){
+            if(con.getContainer().getModel() != null && con.getContainer().getModel().getCreators().size() > 0){
                 tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
                 tooltip.add(Formatter.format("&6Model by:"));
-                for(String string : con.getContainer().getModel().creators){
+                for(String string : con.getContainer().getModel().getCreators()){
                     try{
                         tooltip.add(Formatter.format("&7- &3" + Static.getPlayerNameByUUID(UUID.fromString(string))));
                     }

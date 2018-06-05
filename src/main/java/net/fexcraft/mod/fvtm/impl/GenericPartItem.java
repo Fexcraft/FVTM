@@ -12,7 +12,6 @@ import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.util.ITooltipFlag;
@@ -70,10 +69,10 @@ public class GenericPartItem extends Item implements PartItem {
             for(Class clazz : part.getPart().getAttributeClasses()){
                 part.getPart().getAttribute(clazz).addInformation(stack, world, tooltip, flag);
             }
-            if(part.getPart().getModel() != null && part.getPart().getModel().creators.size() > 0){
+            if(part.getPart().getModel() != null && part.getPart().getModel().getCreators().size() > 0){
                 tooltip.add(Formatter.format("&9- - - &7-&9 - - -"));
                 tooltip.add(Formatter.format("&6Model by:"));
-                for(String string : part.getPart().getModel().creators){
+                for(String string : part.getPart().getModel().getCreators()){
                     try{
                         tooltip.add(Formatter.format("&7- &3" + Static.getPlayerNameByUUID(UUID.fromString(string))));
                     }

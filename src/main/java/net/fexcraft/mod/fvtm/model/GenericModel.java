@@ -57,7 +57,8 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
 		return submodels.get(id);
 	}
 	
-	public final ArrayList<String> getCreators(){
+	@Override
+	public final java.util.Collection<String> getCreators(){
 		return creators;
 	}
 

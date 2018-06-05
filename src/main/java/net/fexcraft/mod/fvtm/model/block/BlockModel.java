@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
-import net.fexcraft.mod.lib.tmt.Model;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.client.Minecraft;
@@ -21,7 +21,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public class BlockModel<T extends BlockData> extends Model<BlockData> implements TMTItemModel {
+public class BlockModel<T extends BlockData> extends ModelBase implements TMTItemModel {
 
     public ModelRendererTurbo body[] = new ModelRendererTurbo[0];
     public ArrayList<String> creators = new ArrayList<String>();
@@ -55,11 +55,6 @@ public class BlockModel<T extends BlockData> extends Model<BlockData> implements
 
     public void render(BlockData data){
         render(data, null, 0);
-    }
-
-    @Override
-    public void render(BlockData data, Entity entity){
-        render(data, entity, 0);
     }
 
     public void render(BlockData data, @Nullable Entity entity, int meta){

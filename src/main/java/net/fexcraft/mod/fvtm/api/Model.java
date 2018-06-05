@@ -31,6 +31,10 @@ public interface Model<T, K> {
 	 */
 	public void render(T data, @Nullable K key, @Nullable Entity ent, int meta);
 	
+	/** Collection containing either name or UUID of the creator/s of the model.**/
 	public Collection<String> getCreators();
+	
+	/** Only use on Model init/instantiation. **/
+	public boolean addToCreators(String str);
 	
 }

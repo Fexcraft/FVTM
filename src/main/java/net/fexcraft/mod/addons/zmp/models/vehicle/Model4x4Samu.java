@@ -1,17 +1,14 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class Model4x4Samu extends VehicleModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class Model4x4Samu extends VehicleModel {
 
     public Model4x4Samu(){
-        this.creators.add("zackyboy18");
-        this.creators.add("FEX___96");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
+        this.addToCreators("FEX___96");
         body = new ModelRendererTurbo[278];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 1
@@ -1133,38 +1130,38 @@ public class Model4x4Samu extends VehicleModel<VehicleData> {
         body[277].addShapeBox(0F, 0F, 0F, 1, 2, 1, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 380
         body[277].setRotationPoint(35F, 11F, -3.5F);
 
-        bodyDoorClose = new ModelRendererTurbo[8];
-        bodyDoorClose[0] = new ModelRendererTurbo(this, 401, 73, textureX, textureY); // Box 230
-        bodyDoorClose[1] = new ModelRendererTurbo(this, 441, 73, textureX, textureY); // Box 231
-        bodyDoorClose[2] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 232
-        bodyDoorClose[3] = new ModelRendererTurbo(this, 41, 1, textureX, textureY); // Box 233
-        bodyDoorClose[4] = new ModelRendererTurbo(this, 321, 105, textureX, textureY); // Box 267
-        bodyDoorClose[5] = new ModelRendererTurbo(this, 129, 1, textureX, textureY); // Box 268
-        bodyDoorClose[6] = new ModelRendererTurbo(this, 361, 105, textureX, textureY); // Box 269
-        bodyDoorClose[7] = new ModelRendererTurbo(this, 153, 1, textureX, textureY); // Box 270
+        body_door_close = new ModelRendererTurbo[8];
+        body_door_close[0] = new ModelRendererTurbo(this, 401, 73, textureX, textureY); // Box 230
+        body_door_close[1] = new ModelRendererTurbo(this, 441, 73, textureX, textureY); // Box 231
+        body_door_close[2] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 232
+        body_door_close[3] = new ModelRendererTurbo(this, 41, 1, textureX, textureY); // Box 233
+        body_door_close[4] = new ModelRendererTurbo(this, 321, 105, textureX, textureY); // Box 267
+        body_door_close[5] = new ModelRendererTurbo(this, 129, 1, textureX, textureY); // Box 268
+        body_door_close[6] = new ModelRendererTurbo(this, 361, 105, textureX, textureY); // Box 269
+        body_door_close[7] = new ModelRendererTurbo(this, 153, 1, textureX, textureY); // Box 270
 
-        bodyDoorClose[0].addBox(0F, 0F, 34F, 17, 11, 2, 0F); // Box 230
-        bodyDoorClose[0].setRotationPoint(-15F, -5F, -17F);
+        body_door_close[0].addBox(0F, 0F, 34F, 17, 11, 2, 0F); // Box 230
+        body_door_close[0].setRotationPoint(-15F, -5F, -17F);
 
-        bodyDoorClose[1].addBox(0F, 0F, 34F, 17, 11, 2, 0F); // Box 231
-        bodyDoorClose[1].setRotationPoint(-15F, -5F, -53F);
+        body_door_close[1].addBox(0F, 0F, 34F, 17, 11, 2, 0F); // Box 231
+        body_door_close[1].setRotationPoint(-15F, -5F, -53F);
 
-        bodyDoorClose[2].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 232
-        bodyDoorClose[2].setRotationPoint(-13F, -3F, 18.5F);
+        body_door_close[2].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 232
+        body_door_close[2].setRotationPoint(-13F, -3F, 18.5F);
 
-        bodyDoorClose[3].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 233
-        bodyDoorClose[3].setRotationPoint(-13F, -3F, -19.5F);
+        body_door_close[3].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 233
+        body_door_close[3].setRotationPoint(-13F, -3F, -19.5F);
 
-        bodyDoorClose[4].addBox(0F, 0F, 34F, 16, 11, 2, 0F); // Box 267
-        bodyDoorClose[4].setRotationPoint(6F, -5F, -53F);
+        body_door_close[4].addBox(0F, 0F, 34F, 16, 11, 2, 0F); // Box 267
+        body_door_close[4].setRotationPoint(6F, -5F, -53F);
 
-        bodyDoorClose[5].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 268
-        bodyDoorClose[5].setRotationPoint(8F, -3F, 18.5F);
+        body_door_close[5].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 268
+        body_door_close[5].setRotationPoint(8F, -3F, 18.5F);
 
-        bodyDoorClose[6].addBox(0F, 0F, 34F, 16, 11, 2, 0F); // Box 269
-        bodyDoorClose[6].setRotationPoint(6F, -5F, -17F);
+        body_door_close[6].addBox(0F, 0F, 34F, 16, 11, 2, 0F); // Box 269
+        body_door_close[6].setRotationPoint(6F, -5F, -17F);
 
-        bodyDoorClose[7].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 270
+        body_door_close[7].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 270
 
         translateAll(0F, -12F, 0F);
         flipAll();

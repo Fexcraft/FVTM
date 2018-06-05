@@ -12,11 +12,9 @@ public class ModelOT1LogTransportUpgrade extends PartModel {
 
     public ModelRendererTurbo cargo[] = new ModelRendererTurbo[0];
 
-    int textureX = 512;
-    int textureY = 512;
-
     public ModelOT1LogTransportUpgrade(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("Ferdinand (FEX___96)");
         body = new ModelRendererTurbo[39];
         body[0] = new ModelRendererTurbo(this, 1, 249, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 201, 249, textureX, textureY); // Box 1
@@ -288,8 +286,8 @@ public class ModelOT1LogTransportUpgrade extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
-        super.render(data, us, vehicle);
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
+        super.render(data, us, vehicle, meta);
         NonNullList<ItemStack> stacks = data.getPart(us).getAttributeData(InventoryAttributeData.class).getInventory();
         int j = 0;
         for(int i = 0; i < cargo.length; i++){

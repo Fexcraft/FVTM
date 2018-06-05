@@ -14,11 +14,9 @@ import net.minecraft.entity.Entity;
 
 public class ModelOT1FW extends PartModel {
 
-    int textureX = 512;
-    int textureY = 512;
-
     public ModelOT1FW(){
-        creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        addToCreators("Ferdinand (FEX___96)");
         wheel_front_left = new ModelRendererTurbo[51];
         wheel_front_left[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 01
         wheel_front_left[1] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 02
@@ -441,7 +439,7 @@ public class ModelOT1FW extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         this.def_renderWheels4(data, us, vehicle);
     }
 

@@ -1,16 +1,13 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelFoodvanTrailer extends VehicleModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelFoodvanTrailer extends VehicleModel {
 
     public ModelFoodvanTrailer(){
-        this.creators.add("zackyboy18");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
         body = new ModelRendererTurbo[265];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 209, 1, textureX, textureY); // Box 1

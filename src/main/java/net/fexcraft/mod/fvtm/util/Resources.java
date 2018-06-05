@@ -46,7 +46,7 @@ import net.fexcraft.mod.fvtm.impl.GenericMaterialItem;
 import net.fexcraft.mod.fvtm.impl.GenericPart;
 import net.fexcraft.mod.fvtm.impl.GenericPartItem;
 import net.fexcraft.mod.fvtm.impl.HybridAddon;
-import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.EmptyModel;
 import net.fexcraft.mod.fvtm.model.container.ContainerBaseModel;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleBaseModel;
 import net.fexcraft.mod.lib.FCL;
@@ -672,7 +672,7 @@ public class Resources {
     @SideOnly(Side.CLIENT)
     public static <T, K> Model<T, K> getModel(String name, Class<T> dataclazz, Class<K> keyclazz, Class<? extends Model<T, K>> clazz){
         if(name == null || name.equals("") || name.equals("null")){
-            return (Model<T, K>)GenericModel.EMPTY;
+            return (Model<T, K>)EmptyModel.INSTANCE;
         }
         if(MODELS.containsKey(name)){
             return (Model<T, K>)MODELS.get(name);
@@ -685,23 +685,27 @@ public class Resources {
                 case TMT:
                     Class<?> clasz = Class.forName(name.replace(".class", ""));
                     model = (Model<T, K>)clasz.newInstance();
+                    //if(model instanceof GenericModel){ ((GenericModel<T, K>)model).importSubModels(); }
                     break;
                 case JTMT:
                     JsonObject obj = JsonUtil.getObjectFromInputStream(net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(name)).getInputStream());
                     model = clazz.getConstructor(JsonObject.class).newInstance(obj);
+                    //if(model instanceof GenericModel){ ((GenericModel<T, K>)model).importSubModels(); }
                     break;
                 case JSON:
                     //TODO create a wrapper.
                     break;
-                case NONE:
                 case OBJ:
                 	//Use MRT's OBJ methods instead / or create a wrapper.
-                default:
-                    break;
+                	break;
+                case NONE:
+                default: return (Model<T, K>)EmptyModel.INSTANCE;
             }
         }
         catch(Exception e){
+        	Print.log("Failed to find/parse model with adress '" + name + "'!");
             e.printStackTrace();
+            Static.stop();
         }
         MODELS.put(name, model);
         return model;

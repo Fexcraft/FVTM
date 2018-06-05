@@ -11,7 +11,7 @@ import net.minecraft.entity.Entity;
 
 public class AdjustableWheelModel extends PartBaseModel {
 	
-	private ModelRendererTurbo[] wheel = new ModelRendererTurbo[0];
+	public ModelRendererTurbo[] wheel = new ModelRendererTurbo[0];
 
     @Override
     public void render(VehicleData data, String us){

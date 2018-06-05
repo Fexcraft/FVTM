@@ -1,17 +1,15 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelCargoShipSteeringWheel extends PartModel<VehicleData> {
+public class ModelCargoShipSteeringWheel extends PartModel {
 
-    int textureX = 4096;
-    int textureY = 4096;
 
     public ModelCargoShipSteeringWheel(){
-        this.creators.add("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
+    	super(); textureX = 4096; textureY = 4096;
+        this.addToCreators("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
+        this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         steering = new ModelRendererTurbo[8];
         steering[0] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 229
         steering[1] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 230

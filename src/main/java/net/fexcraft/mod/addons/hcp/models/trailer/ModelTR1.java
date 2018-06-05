@@ -8,13 +8,11 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 
-public class ModelTR1 extends VehicleModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelTR1 extends VehicleModel {
 
     public ModelTR1(){
-        this.creators.add("FEX___96");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("FEX___96");
         body = new ModelRendererTurbo[30];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 221
         body[1] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
@@ -161,7 +159,7 @@ public class ModelTR1 extends VehicleModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, @Nullable Entity entity, int meta){
+    public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
         render(body);
         for(ModelRendererTurbo turbo : chassis){
             turbo.rotateAngleZ = entity == null || ((VehicleEntity)entity).getEntityAtFront() == null ? 0 : Static.rad90;

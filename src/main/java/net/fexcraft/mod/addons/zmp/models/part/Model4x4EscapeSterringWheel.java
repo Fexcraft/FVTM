@@ -1,17 +1,14 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class Model4x4EscapeSterringWheel extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class Model4x4EscapeSterringWheel extends PartModel {
 
     public Model4x4EscapeSterringWheel(){
-        this.creators.add("zackyboy18");
-        this.creators.add("FEX___96");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
+        this.addToCreators("FEX___96");
         steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 505, 33, textureX, textureY); // Box 261
         steering[1] = new ModelRendererTurbo(this, 145, 41, textureX, textureY); // Box 262

@@ -15,7 +15,7 @@ import net.fexcraft.mod.fvtm.api.DriveType;
 import net.fexcraft.mod.fvtm.api.EntityType;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleBaseModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.RecipeObject;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -76,7 +76,7 @@ public class GenericVehicle implements Vehicle {
         }
         this.required = JsonUtil.jsonArrayToStringArray(JsonUtil.getIfExists(obj, "RequiredParts", new JsonArray()).getAsJsonArray());
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleData.class, Object.class, VehicleBaseModel.class);
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleData.class, Object.class, VehicleModel.class);
         }
         this.wheelpos = new ArrayList<Pos>();
         if(obj.has("WheelPos")){

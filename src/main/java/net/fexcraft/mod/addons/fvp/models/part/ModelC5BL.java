@@ -1,16 +1,13 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelC5BL extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelC5BL extends PartModel {
 
     public ModelC5BL(){
-        creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        addToCreators("Ferdinand (FEX___96)");
         back_lights = new ModelRendererTurbo[4];
         back_lights[0] = new ModelRendererTurbo(this, 233, 1, textureX, textureY); // Box 138
         back_lights[1] = new ModelRendererTurbo(this, 305, 81, textureX, textureY); // Box 139
@@ -38,7 +35,8 @@ public class ModelC5BL extends PartModel<VehicleData> {
 	}
 	
 	@Override
-	public void render(VehicleData data, String us, Entity vehicle){
+	public void render(VehicleData data, String us, Entity vehicle, int meta){
 		render(back_lights);
 	}*/
+    
 }

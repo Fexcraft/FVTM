@@ -7,10 +7,9 @@ import net.minecraft.entity.Entity;
 
 public class ModelC4Z1I4E extends PartModel {
 
-    private static final int textureX = 1024, textureY = 1024;
-
     public ModelC4Z1I4E(){
-        this.creators.add("zackyboy18");
+    	super(); textureX = 1024; textureY = 1024;
+        this.addToCreators("zackyboy18");
         body = new ModelRendererTurbo[132];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 244
         body[1] = new ModelRendererTurbo(this, 537, 9, textureX, textureY); // Box 165
@@ -575,7 +574,7 @@ public class ModelC4Z1I4E extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         /*switch(data.getVehicle().getRegistryName().toString()){
 			case "fvp:c7":{
 				render(c7_var);

@@ -5,18 +5,14 @@
 // Model Creator: FEX___96
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelT2SW extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelT2SW extends PartModel {
 
     public ModelT2SW(){
-        creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
-
+    	super(); textureX = 512; textureY = 512;
+        addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 153, 49, textureX, textureY); // Box 263
         steering[1] = new ModelRendererTurbo(this, 449, 89, textureX, textureY); // Box 264

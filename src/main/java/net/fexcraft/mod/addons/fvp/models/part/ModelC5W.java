@@ -7,10 +7,9 @@ import net.minecraft.entity.Entity;
 
 public class ModelC5W extends PartModel {
 
-    private static final int textureX = 512, textureY = 512;
-
     public ModelC5W(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("Ferdinand (FEX___96)");
         wheel_front_left = new ModelRendererTurbo[42];
         wheel_front_left[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         wheel_front_left[1] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 10
@@ -699,7 +698,7 @@ public class ModelC5W extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         super.def_renderWheels4(data, us, vehicle);
     }
 

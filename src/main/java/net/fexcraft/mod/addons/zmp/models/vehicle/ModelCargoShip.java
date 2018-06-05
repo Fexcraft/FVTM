@@ -7,13 +7,11 @@ import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelCargoShip extends VehicleModel<VehicleData> {
-
-    private int textureX = 4096;
-    private int textureY = 4096;
+public class ModelCargoShip extends VehicleModel {
 
     public ModelCargoShip(){
-        this.creators.add("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
+    	super(); textureX = 4096; textureY = 4096;
+        this.addToCreators("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
         this.gui_scale_x = this.gui_scale_y = this.gui_scale_z = 0.015f;
         body = new ModelRendererTurbo[133];
         body[0] = new ModelRendererTurbo(this, 1, 913, textureX, textureY); // Box 82
@@ -904,7 +902,7 @@ public class ModelCargoShip extends VehicleModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, @Nullable Entity entity, int meta){
+    public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
         render(body);
     }
 

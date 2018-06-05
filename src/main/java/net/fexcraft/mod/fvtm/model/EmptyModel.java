@@ -32,5 +32,10 @@ public class EmptyModel implements Model<Object, Object>{
 	public Collection<String> getCreators(){
 		return list;
 	}
+
+	@Override
+	public boolean addToCreators(String str){
+		return false;
+	}
 	
 }

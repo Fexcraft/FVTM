@@ -1,16 +1,13 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelAB1PS extends PartModel<VehicleData> {
-
-    int textureX = 1024;
-    int textureY = 1024;
+public class ModelAB1PS extends PartModel {
 
     public ModelAB1PS(){
-        creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 1024; textureY = 1024;
+        addToCreators("Ferdinand (FEX___96)");
         body = new ModelRendererTurbo[78];
         body[0] = new ModelRendererTurbo(this, 825, 1, textureX, textureY); // Box 118
         body[1] = new ModelRendererTurbo(this, 905, 1, textureX, textureY); // Box 119

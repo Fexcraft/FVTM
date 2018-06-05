@@ -3,14 +3,14 @@ package net.fexcraft.mod.addons.fvp.models.part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
 public class ModelC7Seats extends PartModel {
 
-    private static final int textureX = 512, textureY = 512;
-
     public ModelC7Seats(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("Ferdinand (FEX___96)");
         body = new ModelRendererTurbo[30];
         body[0] = new ModelRendererTurbo(this, 297, 105, textureX, textureY); // Box 210
         body[1] = new ModelRendererTurbo(this, 265, 121, textureX, textureY); // Box 211
@@ -156,14 +156,14 @@ public class ModelC7Seats extends PartModel {
     public void render(VehicleData data, String us){
         data.getSecondaryColor().glColorApply();
         render(body);
-        data.getSecondaryColor().glColorReset();
+        RGB.glColorReset();
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         data.getSecondaryColor().glColorApply();
         render(body);
-        data.getSecondaryColor().glColorReset();
+        RGB.glColorReset();
     }
 
 }

@@ -12,13 +12,11 @@ import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelT1FW extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelT1FW extends PartModel {
 
     public ModelT1FW(){
-        creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        addToCreators("Ferdinand (FEX___96)");
         wheel_front_left = new ModelRendererTurbo[99];
         wheel_front_left[0] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 12
         wheel_front_left[1] = new ModelRendererTurbo(this, 89, 9, textureX, textureY); // Box 13
@@ -822,7 +820,7 @@ public class ModelT1FW extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         this.def_renderWheels4(data, us, vehicle);
     }
 

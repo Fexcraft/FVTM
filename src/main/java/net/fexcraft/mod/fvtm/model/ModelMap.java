@@ -8,11 +8,12 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 public class ModelMap extends TreeMap<String, ModelRendererTurbo[]> {
 	
 	private static final ModelRendererTurbo[] empty_arr = new ModelRendererTurbo[]{};
+	private static ModelRendererTurbo[] temp;
 	
 	@Override
 	public ModelRendererTurbo[] get(Object key){
-		ModelRendererTurbo[] mrt = super.get(key);
-		return mrt == null ? empty_arr : mrt;
+		temp = super.get(key);
+		return temp == null ? empty_arr : temp;
 	}
 	
 }

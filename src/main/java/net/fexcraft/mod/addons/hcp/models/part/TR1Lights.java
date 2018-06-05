@@ -1,6 +1,5 @@
 package net.fexcraft.mod.addons.hcp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
@@ -8,13 +7,11 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Lights extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class TR1Lights extends PartModel {
 
     public TR1Lights(){
-        this.creators.add("FEX___96");
+    	super(); this.addToCreators("FEX___96");
+        textureX = 512; textureY = 512;
         back_lights = new ModelRendererTurbo[2];
         back_lights[0] = new ModelRendererTurbo(this, 1, 97, textureX, textureY); // Box 119
         back_lights[1] = new ModelRendererTurbo(this, 361, 161, textureX, textureY); // Box 123

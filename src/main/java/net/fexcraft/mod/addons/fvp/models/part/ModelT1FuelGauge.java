@@ -12,13 +12,11 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 
-public class ModelT1FuelGauge extends PartModel<VehicleData> {
-
-    int textureX = 32;
-    int textureY = 32;
+public class ModelT1FuelGauge extends PartModel {
 
     public ModelT1FuelGauge(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 32; textureY = 32;
+        addToCreators("Ferdinand (FEX___96)");
         body = new ModelRendererTurbo[3];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 9, 1, textureX, textureY); // Box 1
@@ -44,7 +42,7 @@ public class ModelT1FuelGauge extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         //double per = (data.getFuelTankContent() / data.getFuelTankSize()) * 100;
         double rad = (data.getFuelTankContent() / data.getFuelTankSize()) * 90;
         body[1].rotateAngleX = (float) (Static.rad1 * (rad + 135));

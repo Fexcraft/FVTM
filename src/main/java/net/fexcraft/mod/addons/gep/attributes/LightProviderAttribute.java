@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.tmt.Model;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -108,7 +108,7 @@ public class LightProviderAttribute implements Attribute {
         @SideOnly(Side.CLIENT)
         private ModelRendererTurbo main, send;
         @SideOnly(Side.CLIENT)
-        private Model<?> placeholder;
+        private ModelBase placeholder;
 
         public LightData(JsonObject obj){
             pos = Pos.fromJSON(obj.get("pos").getAsJsonObject());
@@ -124,7 +124,7 @@ public class LightProviderAttribute implements Attribute {
             roty = JsonUtil.getIfExists(obj, "rot_y", 0).floatValue();
             rotz = JsonUtil.getIfExists(obj, "rot_z", 0).floatValue();
             if(Static.side().isClient()){
-                placeholder = Model.EMPTY;
+                placeholder = ModelBase.EMPTY;
             }
         }
 
@@ -173,7 +173,7 @@ public class LightProviderAttribute implements Attribute {
 	public void render(VehicleEntity entity, PartData data, String key){
 		if(entity.getVehicleData().getLightsState() > 0){
             GL11.glPushMatrix();
-            Model.bindTexture(Resources.NULL_TEXTURE);
+            ModelBase.bindTexture(Resources.NULL_TEXTURE);
             GlStateManager.enableBlend();
             GlStateManager.disableAlpha();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);

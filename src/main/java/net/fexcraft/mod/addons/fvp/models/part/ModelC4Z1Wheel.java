@@ -13,12 +13,10 @@ import net.minecraft.entity.Entity;
 
 public class ModelC4Z1Wheel extends PartModel {
 
-    private int textureX = 1024;
-    private int textureY = 1024;
-
     public ModelC4Z1Wheel(){
-        this.creators.add("zackyboy18");
-        this.creators.add("FEX___96");
+    	super(); textureX = 1024; textureY = 1024;
+        this.addToCreators("zackyboy18");
+        this.addToCreators("FEX___96");
         wheel_front_left = new ModelRendererTurbo[20];
         wheel_front_left[0] = new ModelRendererTurbo(this, 1001, 169, textureX, textureY); // Import WBL1
         wheel_front_left[1] = new ModelRendererTurbo(this, 217, 177, textureX, textureY); // Import WBL2
@@ -354,7 +352,7 @@ public class ModelC4Z1Wheel extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity veh){
+    public void render(VehicleData data, String us, Entity veh, int meta){
         super.def_renderWheels4(data, us, veh);
     }
 

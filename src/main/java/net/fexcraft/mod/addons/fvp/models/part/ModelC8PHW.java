@@ -7,12 +7,11 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.tmt.Shape2D;
 import net.minecraft.entity.Entity;
 
-public class ModelC8PHW extends PartModel<VehicleData> {
-
-    private static final int textureX = 512, textureY = 512;
+public class ModelC8PHW extends PartModel {
 
     public ModelC8PHW(){
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         wheel_front_left = new ModelRendererTurbo[1];
         wheel_front_left[0] = new ModelRendererTurbo(this, 265, 1, textureX, textureY); // Shape 11
         wheel_front_left[0].addShape3D(8F, -8F, -4F, new Shape2D(new Coord2D[]{new Coord2D(8, 0, 8, 0), new Coord2D(14, 2, 14, 2), new Coord2D(16, 8, 16, 8), new Coord2D(14, 14, 14, 14), new Coord2D(8, 16, 8, 16), new Coord2D(2, 14, 2, 14), new Coord2D(0, 8, 0, 8), new Coord2D(2, 2, 2, 2)}), 4, 16, 16, 56, 4, ModelRendererTurbo.MR_FRONT, new float[]{7, 7, 7, 7, 7, 7, 7, 7}); // Shape 11
@@ -43,7 +42,7 @@ public class ModelC8PHW extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         super.def_renderWheels4(data, us, vehicle);
     }
 

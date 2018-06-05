@@ -16,10 +16,7 @@ import org.lwjgl.opengl.GL11;
  *
  * @author Ferdinand (FEX___96)
  */
-public class ContainerCrane extends VehicleModel<VehicleData> {
-
-    private int textureX = 1024;
-    private int textureY = 1024;
+public class ContainerCrane extends VehicleModel {
 
     private final void initChassis(){
         chassis = new ModelRendererTurbo[502];
@@ -2034,8 +2031,9 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
     }
 
     public ContainerCrane(){
-        this.creators.add("FEX___96");
-        this.creators.add("GolddolphinSKB");
+    	super(); textureX = 1024; textureY = 1024;
+        this.addToCreators("FEX___96");
+        this.addToCreators("GolddolphinSKB");
         this.initChassis();
         body = new ModelRendererTurbo[396];
         body[0] = new ModelRendererTurbo(this, 617, 1, textureX, textureY); // Box 633
@@ -4233,10 +4231,10 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, @Nullable Entity entity, int meta){
+    public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
         ContainerCraneScript script = data.getScript(ContainerCraneScript.class);
         if(script == null){
-            super.render(data, entity, meta);
+            super.render(data, obj, entity, meta);
         }
         else{
         	GL11.glTranslatef(-script.length + 1, 0, 0);
@@ -4263,7 +4261,7 @@ public class ContainerCrane extends VehicleModel<VehicleData> {
         	if(script.getContainerData() != null){
         		GL11.glTranslatef(-0.5f, 1, 7);
         		bindTexture(script.getContainerData().getTexture());
-        		script.getContainerData().getContainer().getModel().render(script.getContainerData());
+        		script.getContainerData().getContainer().getModel().render(script.getContainerData(), obj);
         	}
         	GL11.glPopMatrix();
         }

@@ -7,17 +7,14 @@
 // Last changed on: 04.04.2018
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelT2RL extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelT2RL extends PartModel {
 
     public ModelT2RL(){
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         body = new ModelRendererTurbo[1];
         body[0] = new ModelRendererTurbo(this, 17, 177, textureX, textureY); // Box 136
         body[0].addShapeBox(0F, 0F, 0F, 2, 2, 48, 0F, 0F, 0F, 0F, 0F, 0F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -8F, 0F, 0F, -8F, 0F, 0F, 0F); // Box 136

@@ -1,16 +1,13 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelCargoShipInterior extends PartModel<VehicleData> {
-
-    int textureX = 4096;
-    int textureY = 4096;
-
+public class ModelCargoShipInterior extends PartModel {
+	
     public ModelCargoShipInterior(){
-        this.creators.add("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
+    	super(); textureX = 4096; textureY = 4096;
+        this.addToCreators("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
         body = new ModelRendererTurbo[41];
         body[0] = new ModelRendererTurbo(this, 3273, 1, textureX, textureY); // Box 169
         body[1] = new ModelRendererTurbo(this, 3457, 1, textureX, textureY); // Box 170

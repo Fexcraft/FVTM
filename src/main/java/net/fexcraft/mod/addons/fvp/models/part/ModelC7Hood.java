@@ -5,14 +5,14 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
 public class ModelC7Hood extends PartModel {
 
-    private static final int textureX = 512, textureY = 512;
-
     public ModelC7Hood(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("Ferdinand (FEX___96)");
         body = new ModelRendererTurbo[4];
         body[0] = new ModelRendererTurbo(this, 57, 41, textureX, textureY); // Box 58
         body[1] = new ModelRendererTurbo(this, 305, 49, textureX, textureY); // Box 59
@@ -32,16 +32,16 @@ public class ModelC7Hood extends PartModel {
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
         render(body);
-        data.getPrimaryColor().glColorReset();
+        RGB.glColorReset();
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         data.getPrimaryColor().glColorApply();
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
         rotate(body, 0, 0, script == null ? data.doorsOpen() ? -Static.rad60 : 0 : script.hood ? -Static.rad60 : 0, true);
         render(body);
-        data.getPrimaryColor().glColorReset();
+        RGB.glColorReset();
     }
 
 }

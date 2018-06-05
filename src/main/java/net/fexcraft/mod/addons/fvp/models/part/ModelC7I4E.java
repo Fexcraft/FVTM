@@ -7,10 +7,9 @@ import net.minecraft.entity.Entity;
 
 public class ModelC7I4E extends PartModel {
 
-    private static final int textureX = 512, textureY = 512;
-
     public ModelC7I4E(){
-        this.creators.add("zackyboy18");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
         body = new ModelRendererTurbo[130];
         body[0] = new ModelRendererTurbo(this, 33, 169, textureX, textureY); // Box 294
         body[1] = new ModelRendererTurbo(this, 185, 169, textureX, textureY); // Box 295
@@ -556,7 +555,7 @@ public class ModelC7I4E extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         render(body);
     }
 

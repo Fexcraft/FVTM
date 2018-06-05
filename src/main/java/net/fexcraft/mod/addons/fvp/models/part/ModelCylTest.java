@@ -6,14 +6,13 @@
 // Last changed on: 31.03.2017 - 14:38:29
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelCylTest extends PartModel<VehicleData> {
+public class ModelCylTest extends PartModel {
 
     public ModelCylTest(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); this.addToCreators("Ferdinand (FEX___96)");
         body = new ModelRendererTurbo[4];
         //
         body[0] = new ModelRendererTurbo(this, 0, 0, 512, 512);

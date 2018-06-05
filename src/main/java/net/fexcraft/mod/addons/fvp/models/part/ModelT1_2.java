@@ -17,12 +17,10 @@ public class ModelT1_2 extends PartModel {
 
     private ModelRendererTurbo[] out, in;
 
-    int textureX = 512;
-    int textureY = 512;
-
     public ModelT1_2(){
-        this.creators.add("Ferdinand (FEX___96)");
-
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("Ferdinand (FEX___96)");
+        //
         body = new ModelRendererTurbo[79];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 65, 1, textureX, textureY); // Box 1
@@ -387,31 +385,31 @@ public class ModelT1_2 extends PartModel {
         in[5].addShapeBox(0F, 0F, 0F, 1, 2, 6, 0F, -0.2F, 0F, -0.5F, -0.2F, 0F, -0.5F, -0.2F, 0F, -0.5F, -0.2F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 95
         in[5].setRotationPoint(-102F, -16F, -21F);
 
-        bodyColoredSecondary = new ModelRendererTurbo[4];
-        bodyColoredSecondary[0] = new ModelRendererTurbo(this, 169, 97, textureX, textureY); // Box 32
-        bodyColoredSecondary[1] = new ModelRendererTurbo(this, 1, 193, textureX, textureY); // Box 35
-        bodyColoredSecondary[2] = new ModelRendererTurbo(this, 217, 17, textureX, textureY); // Box 63
-        bodyColoredSecondary[3] = new ModelRendererTurbo(this, 313, 17, textureX, textureY); // Box 64
+        body_colored_secondary = new ModelRendererTurbo[4];
+        body_colored_secondary[0] = new ModelRendererTurbo(this, 169, 97, textureX, textureY); // Box 32
+        body_colored_secondary[1] = new ModelRendererTurbo(this, 1, 193, textureX, textureY); // Box 35
+        body_colored_secondary[2] = new ModelRendererTurbo(this, 217, 17, textureX, textureY); // Box 63
+        body_colored_secondary[3] = new ModelRendererTurbo(this, 313, 17, textureX, textureY); // Box 64
 
-        bodyColoredSecondary[0].addShapeBox(0F, 0F, 0F, 110, 5, 2, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 32
-        bodyColoredSecondary[0].setRotationPoint(-99F, -19F, -27F);
+        body_colored_secondary[0].addShapeBox(0F, 0F, 0F, 110, 5, 2, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 32
+        body_colored_secondary[0].setRotationPoint(-99F, -19F, -27F);
 
-        bodyColoredSecondary[1].addShapeBox(0F, 0F, 0F, 110, 5, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 35
-        bodyColoredSecondary[1].setRotationPoint(-99F, -19F, 25F);
+        body_colored_secondary[1].addShapeBox(0F, 0F, 0F, 110, 5, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 35
+        body_colored_secondary[1].setRotationPoint(-99F, -19F, 25F);
 
-        bodyColoredSecondary[2].addShapeBox(0F, 0F, 0F, 30, 8, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F); // Box 63
-        bodyColoredSecondary[2].setRotationPoint(-22F, -11F, 13F);
+        body_colored_secondary[2].addShapeBox(0F, 0F, 0F, 30, 8, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F); // Box 63
+        body_colored_secondary[2].setRotationPoint(-22F, -11F, 13F);
 
-        bodyColoredSecondary[3].addShapeBox(0F, 0F, 0F, 30, 8, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F); // Box 64
-        bodyColoredSecondary[3].setRotationPoint(-54F, -11F, 13F);
+        body_colored_secondary[3].addShapeBox(0F, 0F, 0F, 30, 8, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F); // Box 64
+        body_colored_secondary[3].setRotationPoint(-54F, -11F, 13F);
 
         translateAll(0F, 0F, 0F);
 
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
-        super.render(data, us, vehicle);
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
+        super.render(data, us, vehicle, meta);
         T1_2Script scr = data.getScript(T1_2Script.class);
         if(scr != null){
             render(scr.out ? out : in);

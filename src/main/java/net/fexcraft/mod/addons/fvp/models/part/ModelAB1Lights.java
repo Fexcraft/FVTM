@@ -1,17 +1,16 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.part.PartBaseModel;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelAB1Lights extends PartModel<VehicleData> {
-
-    int textureX = 1024;
-    int textureY = 1024;
+public class ModelAB1Lights extends PartModel {
 
     public ModelAB1Lights(){
-        creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 1024; textureY = 1024;
+        addToCreators("Ferdinand (FEX___96)");
         lights = new ModelRendererTurbo[4];
         lights[0] = new ModelRendererTurbo(this, 57, 161, textureX, textureY); // Box 306
         lights[1] = new ModelRendererTurbo(this, 81, 161, textureX, textureY); // Box 307
@@ -35,15 +34,11 @@ public class ModelAB1Lights extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         boolean b = data.getLightsState() > 0;
-        if(b){
-            this.lightOff(vehicle);
-        }
+        if(b){ PartBaseModel.lightOff(vehicle); }
         render(lights);
-        if(b){
-            this.lightOn(vehicle);
-        }
+        if(b){ PartBaseModel.lightOn(vehicle); }
     }
 
 }

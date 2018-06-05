@@ -11,11 +11,9 @@ public class ModelT1_FT1 extends PartModel {
 
     private ModelRendererTurbo[] snowplow;
 
-    int textureX = 512;
-    int textureY = 128;
-
     public ModelT1_FT1(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 128;
+        addToCreators("Ferdinand (FEX___96)");
         body = new ModelRendererTurbo[1];
         body[0] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 9
 
@@ -88,7 +86,7 @@ public class ModelT1_FT1 extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         render(body);
         T1SnowPlowScript sps = data.getScript(T1SnowPlowScript.class);
         rotate(snowplow, 0, 0, sps == null ? 0 : sps.on ? 0 : -Static.rad20, true);

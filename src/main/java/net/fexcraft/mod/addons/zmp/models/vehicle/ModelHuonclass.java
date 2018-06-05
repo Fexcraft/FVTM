@@ -1,16 +1,13 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelHuonclass extends VehicleModel<VehicleData> {
-
-    private int textureX = 512;
-    private int textureY = 512;
+public class ModelHuonclass extends VehicleModel {
 
     public ModelHuonclass(){
-        this.creators.add("zackyboy18");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
         body = new ModelRendererTurbo[207];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 89, 1, textureX, textureY); // Box 1

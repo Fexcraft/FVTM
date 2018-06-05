@@ -5,13 +5,12 @@ import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class Model4x4EscapeBackSeats extends PartModel<VehicleData> {
-
-    private static final int textureX = 512, textureY = 512;
+public class Model4x4EscapeBackSeats extends PartModel {
 
     public Model4x4EscapeBackSeats(){
-        this.creators.add("zackyboy18");
-        this.creators.add("FEX___96");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
+        this.addToCreators("FEX___96");
         body = new ModelRendererTurbo[18];
         body[0] = new ModelRendererTurbo(this, 121, 113, textureX, textureY); // Box 272
         body[1] = new ModelRendererTurbo(this, 161, 113, textureX, textureY); // Box 273
@@ -99,7 +98,7 @@ public class Model4x4EscapeBackSeats extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         render(body);
     }
 

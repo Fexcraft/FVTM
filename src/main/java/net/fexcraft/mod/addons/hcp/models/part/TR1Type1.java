@@ -11,15 +11,13 @@ import net.minecraft.entity.Entity;
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Type1 extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class TR1Type1 extends PartModel {
     
     private ModelRendererTurbo[] door_left, door_right, door_left_lights, door_right_lights;
 
     public TR1Type1(){
-        this.creators.add("FEX___96");
+    	super(); this.addToCreators("FEX___96");
+        textureX = 512; textureY = 512;
         body = new ModelRendererTurbo[13];
 		body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
 		body[1] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 1
@@ -341,7 +339,7 @@ public class TR1Type1 extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity ent){
+    public void render(VehicleData data, String us, Entity ent, int meta){
     	render(body);
     	float doortoggle = RenderCache.getData(ent, "tr1_type1_door", 0) + (data.doorsOpen() ? 1 : -1);
     	RenderCache.updateData(ent, "tr1_type1_door", doortoggle = doortoggle > 100 ? 100 : doortoggle < 0 ? 0 : doortoggle);

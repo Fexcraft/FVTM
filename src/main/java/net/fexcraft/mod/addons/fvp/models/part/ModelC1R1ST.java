@@ -7,17 +7,14 @@
 // Last changed on: 04.04.2018
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelC1R1ST extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelC1R1ST extends PartModel {
 
     public ModelC1R1ST(){
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         steering = new ModelRendererTurbo[18];
         steering[0] = new ModelRendererTurbo(this, 177, 113, textureX, textureY); // Box 711
         steering[1] = new ModelRendererTurbo(this, 217, 113, textureX, textureY); // Box 712

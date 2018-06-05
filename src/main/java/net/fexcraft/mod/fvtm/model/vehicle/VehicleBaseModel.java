@@ -8,14 +8,12 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public class VehicleBaseModel extends GenericModel<VehicleData, Object> implements TMTItemModel {
+public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object> implements TMTItemModel {
 
 	public float gui_translate_x = 0;
 	public float gui_translate_y = 0;
@@ -33,49 +31,6 @@ public class VehicleBaseModel extends GenericModel<VehicleData, Object> implemen
 		//invalid render call for vehicle model
     	render(submodels.get("body")); render(submodels.get("chassis"));
     	render(submodels.get("wheels_import")); render(submodels.get("turret"));
-	}
-
-	@Override
-	public void render(VehicleData data, Object key){
-		render(data, key, null, -2);
-	}
-
-	@Override
-	public void render(VehicleData data, Object key, Entity ent, int meta){
-		//General
-		render(submodels.get("chassis"));
-        render(submodels.get("body"));
-        if(data.doorsOpen()){
-            render(submodels.get("body_door_open"));
-        }
-        else{
-            render(submodels.get("body_door_close"));
-        }
-
-        //Primary Color
-        data.getPrimaryColor().glColorApply();
-        render(submodels.get("body_colored_primary"));
-        if(data.doorsOpen()){
-            render(submodels.get("body_door_open_colored_primary"));
-        }
-        else{
-            render(submodels.get("body_door_close_colored_primary"));
-        }
-        RGB.glColorReset();
-
-        //Secondary Color
-        data.getSecondaryColor().glColorApply();
-        render(submodels.get("body_colored_secondary"));
-        RGB.glColorReset();
-
-        //Legacy render call
-        render(submodels.get("turret"));
-
-        //TODO animation, although it's still better if people ad it as part.
-        render(submodels.get("steering"));
-
-        //In case someone didn't add them as part.
-        render(submodels.get("whhels_import"));
 	}
 
 	@Override

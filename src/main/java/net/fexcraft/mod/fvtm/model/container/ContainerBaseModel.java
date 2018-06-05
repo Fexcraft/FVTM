@@ -6,17 +6,13 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public class ContainerBaseModel extends GenericModel<ContainerData, Object> implements TMTItemModel {
+public abstract class ContainerBaseModel extends GenericModel<ContainerData, Object> implements TMTItemModel {
 	
     public float gui_translate_x = 0;
     public float gui_translate_y = 0;
@@ -28,31 +24,6 @@ public class ContainerBaseModel extends GenericModel<ContainerData, Object> impl
 	public ContainerBaseModel(){ super(); }
 	
 	public ContainerBaseModel(JsonObject obj){ super(obj); }
-	
-	@Override
-	public void render(ContainerData data, Object key){
-		render(data, key, null, -2);
-	}
-
-	@Override
-	public void render(ContainerData data, Object key, Entity ent, int meta){
-		render(submodels.get("body"));
-        //
-        if(PartModel.rq(submodels.get("body_colored_primary"), submodels.get("body_door_close_colored_primary"), submodels.get("body_door_open_colored_primary"))){
-            data.getPrimaryColor().glColorApply();
-            render(submodels.get("bodyColoredPrimary"));
-            render((key instanceof VehicleData ? ((VehicleData)key).doorsOpen() : false) ? submodels.get("body_door_open_colored_primary") : submodels.get("body_door_close_colored_primary"));
-            RGB.glColorReset();
-        }
-        //
-        if(PartModel.rq(submodels.get("body_colored_secondary"))){
-            data.getSecondaryColor().glColorApply();
-            render(submodels.get("body_colored_secondary"));
-            RGB.glColorReset();
-        }
-        //
-        render(submodels.get("other"));
-	}
 
 	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity) {

@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.model;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import com.google.gson.JsonElement;
@@ -8,7 +7,6 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 
@@ -18,24 +16,34 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
 	protected ModelMap submodels = new ModelMap();
 	private ArrayList<String> creators = new ArrayList<>();
 	
-	public GenericModel(){
-		//import declared fields
-		Field[] fields = this.getClass().getDeclaredFields();
+	public GenericModel(){}
+	
+	/*public final void importSubModels(){
+		searchFields(this.getClass().getDeclaredFields());
+		Class<?> clazz = null;
+		while((clazz = clazz == null ? this.getClass().getSuperclass() : clazz.getSuperclass()) != GenericModel.class){
+			searchFields(clazz.getDeclaredFields());
+		}
+	}
+	
+	private void searchFields(Field[] fields){
 		for(Field field : fields){
-			if(field.getType() == ModelRendererTurbo.class && field.getType().isArray()){
+			if(field.getType().getSimpleName().equals("ModelRendererTurbo[]") && field.getType().isArray()){
 				try{
 					boolean access = field.isAccessible();
 					if(!access){ field.setAccessible(!access); }
 					submodels.put(field.getName(), (ModelRendererTurbo[])field.get(this));
 					if(!access){ field.setAccessible( access); }
+					//Print.debug(field.getName(), submodels.get(field.getName()).length);
 				}
 				catch(IllegalArgumentException | IllegalAccessException e){
 					e.printStackTrace();
+					Static.stop();
 				}
 			}
 		}
-	}
-	
+	}*/
+
 	public GenericModel(JsonObject obj){
 		this(); if(obj == null){ return; }
         creators = JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray());
@@ -43,13 +51,17 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
         textureY = obj.get("texture_size_y").getAsInt();
         JsonObject modelobj = obj.get("model").getAsJsonObject();
         for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-        	submodels.put(entry.getKey(), JsonToTMT.parse(this, entry.getKey(), entry.getValue().getAsJsonObject(), textureX, textureY));
+        	submodels.put(entry.getKey(), JsonToTMT.parse(this, entry.getValue().getAsJsonArray(), textureX, textureY));
         }
 	}
 	
 	@Override
 	public final java.util.Collection<String> getCreators(){
 		return creators;
+	}
+	
+	public boolean addToCreators(String str){
+		return creators.add(str);
 	}
 
 	@Override

@@ -12,11 +12,9 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class ModelC5ST extends PartModel {
 
-    int textureX = 512;
-    int textureY = 512;
-
     public ModelC5ST(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("Ferdinand (FEX___96)");
         steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 345, 1, textureX, textureY); // Box 277
         steering[1] = new ModelRendererTurbo(this, 97, 1, textureX, textureY); // Box 278

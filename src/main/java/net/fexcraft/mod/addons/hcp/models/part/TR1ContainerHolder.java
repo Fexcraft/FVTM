@@ -9,13 +9,11 @@ import net.minecraft.entity.Entity;
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1ContainerHolder extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class TR1ContainerHolder extends PartModel {
 
     public TR1ContainerHolder(){
-        this.creators.add("FEX___96");
+    	super(); this.addToCreators("FEX___96");
+        textureX = 512; textureY = 512;
 		body = new ModelRendererTurbo[21];
 		body[0] = new ModelRendererTurbo(this, 409, 185, textureX, textureY); // Box 131
 		body[1] = new ModelRendererTurbo(this, 449, 185, textureX, textureY); // Box 132
@@ -110,7 +108,7 @@ public class TR1ContainerHolder extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity ent){
+    public void render(VehicleData data, String us, Entity ent, int meta){
         render(body);
         super.def_renderContainer(data, us, ent);
     }

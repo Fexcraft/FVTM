@@ -9,13 +9,11 @@ import net.minecraft.entity.Entity;
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Fenders extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class TR1Fenders extends PartModel {
 
     public TR1Fenders(){
-        this.creators.add("FEX___96");
+    	super(); this.addToCreators("FEX___96");
+        textureX = 512; textureY = 512;
         track_wheels_left = new ModelRendererTurbo[21];
         track_wheels_left[0] = new ModelRendererTurbo(this, 145, 169, textureX, textureY); // Box 58
         track_wheels_left[1] = new ModelRendererTurbo(this, 457, 145, textureX, textureY); // Box 59
@@ -187,7 +185,6 @@ public class TR1Fenders extends PartModel<VehicleData> {
 
         track_wheels_right[20].addBox(0F, 0F, 0F, 2, 8, 14, 0F); // Box 57
         track_wheels_right[20].setRotationPoint(-199F, -6F, -26F);
-
     }
     
         @Override
@@ -209,7 +206,7 @@ public class TR1Fenders extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         this.render(data, us);
     }
 

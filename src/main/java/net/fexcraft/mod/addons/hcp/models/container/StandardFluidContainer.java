@@ -6,154 +6,152 @@
 // Last changed on: 31.03.2018 - 16:18:53
 package net.fexcraft.mod.addons.hcp.models.container;
 
-import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class StandardFluidContainer extends ContainerModel<ContainerData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class StandardFluidContainer extends ContainerModel {
 
     public StandardFluidContainer(){
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        bodyColoredPrimary = new ModelRendererTurbo[32];
-        bodyColoredPrimary[0] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 13
-        bodyColoredPrimary[1] = new ModelRendererTurbo(this, 273, 65, textureX, textureY); // Box 15
-        bodyColoredPrimary[2] = new ModelRendererTurbo(this, 1, 113, textureX, textureY); // Box 16
-        bodyColoredPrimary[3] = new ModelRendererTurbo(this, 209, 121, textureX, textureY); // Box 17
-        bodyColoredPrimary[4] = new ModelRendererTurbo(this, 1, 145, textureX, textureY); // Box 18
-        bodyColoredPrimary[5] = new ModelRendererTurbo(this, 209, 153, textureX, textureY); // Box 19
-        bodyColoredPrimary[6] = new ModelRendererTurbo(this, 1, 177, textureX, textureY); // Box 20
-        bodyColoredPrimary[7] = new ModelRendererTurbo(this, 209, 185, textureX, textureY); // Box 21
-        bodyColoredPrimary[8] = new ModelRendererTurbo(this, 1, 209, textureX, textureY); // Box 22
-        bodyColoredPrimary[9] = new ModelRendererTurbo(this, 209, 217, textureX, textureY); // Box 23
-        bodyColoredPrimary[10] = new ModelRendererTurbo(this, 97, 1, textureX, textureY); // Box 24
-        bodyColoredPrimary[11] = new ModelRendererTurbo(this, 441, 1, textureX, textureY); // Box 25
-        bodyColoredPrimary[12] = new ModelRendererTurbo(this, 433, 89, textureX, textureY); // Box 26
-        bodyColoredPrimary[13] = new ModelRendererTurbo(this, 385, 1, textureX, textureY); // Box 27
-        bodyColoredPrimary[14] = new ModelRendererTurbo(this, 417, 129, textureX, textureY); // Box 28
-        bodyColoredPrimary[15] = new ModelRendererTurbo(this, 433, 169, textureX, textureY); // Box 29
-        bodyColoredPrimary[16] = new ModelRendererTurbo(this, 129, 9, textureX, textureY); // Box 30
-        bodyColoredPrimary[17] = new ModelRendererTurbo(this, 97, 25, textureX, textureY); // Box 31
-        bodyColoredPrimary[18] = new ModelRendererTurbo(this, 433, 209, textureX, textureY); // Box 32
-        bodyColoredPrimary[19] = new ModelRendererTurbo(this, 1, 241, textureX, textureY); // Box 33
-        bodyColoredPrimary[20] = new ModelRendererTurbo(this, 73, 241, textureX, textureY); // Box 34
-        bodyColoredPrimary[21] = new ModelRendererTurbo(this, 385, 25, textureX, textureY); // Box 35
-        bodyColoredPrimary[22] = new ModelRendererTurbo(this, 145, 241, textureX, textureY); // Box 36
-        bodyColoredPrimary[23] = new ModelRendererTurbo(this, 217, 33, textureX, textureY); // Box 37
-        bodyColoredPrimary[24] = new ModelRendererTurbo(this, 185, 249, textureX, textureY); // Box 38
-        bodyColoredPrimary[25] = new ModelRendererTurbo(this, 265, 33, textureX, textureY); // Box 39
-        bodyColoredPrimary[26] = new ModelRendererTurbo(this, 257, 249, textureX, textureY); // Box 40
-        bodyColoredPrimary[27] = new ModelRendererTurbo(this, 297, 41, textureX, textureY); // Box 41
-        bodyColoredPrimary[28] = new ModelRendererTurbo(this, 329, 249, textureX, textureY); // Box 42
-        bodyColoredPrimary[29] = new ModelRendererTurbo(this, 401, 249, textureX, textureY); // Box 43
-        bodyColoredPrimary[30] = new ModelRendererTurbo(this, 441, 257, textureX, textureY); // Box 44
-        bodyColoredPrimary[31] = new ModelRendererTurbo(this, 1, 281, textureX, textureY); // Box 45
+    	super();
+        this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
+        textureX = 512; textureY = 512;
+        body_colored_primary = new ModelRendererTurbo[32];
+        body_colored_primary[0] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 13
+        body_colored_primary[1] = new ModelRendererTurbo(this, 273, 65, textureX, textureY); // Box 15
+        body_colored_primary[2] = new ModelRendererTurbo(this, 1, 113, textureX, textureY); // Box 16
+        body_colored_primary[3] = new ModelRendererTurbo(this, 209, 121, textureX, textureY); // Box 17
+        body_colored_primary[4] = new ModelRendererTurbo(this, 1, 145, textureX, textureY); // Box 18
+        body_colored_primary[5] = new ModelRendererTurbo(this, 209, 153, textureX, textureY); // Box 19
+        body_colored_primary[6] = new ModelRendererTurbo(this, 1, 177, textureX, textureY); // Box 20
+        body_colored_primary[7] = new ModelRendererTurbo(this, 209, 185, textureX, textureY); // Box 21
+        body_colored_primary[8] = new ModelRendererTurbo(this, 1, 209, textureX, textureY); // Box 22
+        body_colored_primary[9] = new ModelRendererTurbo(this, 209, 217, textureX, textureY); // Box 23
+        body_colored_primary[10] = new ModelRendererTurbo(this, 97, 1, textureX, textureY); // Box 24
+        body_colored_primary[11] = new ModelRendererTurbo(this, 441, 1, textureX, textureY); // Box 25
+        body_colored_primary[12] = new ModelRendererTurbo(this, 433, 89, textureX, textureY); // Box 26
+        body_colored_primary[13] = new ModelRendererTurbo(this, 385, 1, textureX, textureY); // Box 27
+        body_colored_primary[14] = new ModelRendererTurbo(this, 417, 129, textureX, textureY); // Box 28
+        body_colored_primary[15] = new ModelRendererTurbo(this, 433, 169, textureX, textureY); // Box 29
+        body_colored_primary[16] = new ModelRendererTurbo(this, 129, 9, textureX, textureY); // Box 30
+        body_colored_primary[17] = new ModelRendererTurbo(this, 97, 25, textureX, textureY); // Box 31
+        body_colored_primary[18] = new ModelRendererTurbo(this, 433, 209, textureX, textureY); // Box 32
+        body_colored_primary[19] = new ModelRendererTurbo(this, 1, 241, textureX, textureY); // Box 33
+        body_colored_primary[20] = new ModelRendererTurbo(this, 73, 241, textureX, textureY); // Box 34
+        body_colored_primary[21] = new ModelRendererTurbo(this, 385, 25, textureX, textureY); // Box 35
+        body_colored_primary[22] = new ModelRendererTurbo(this, 145, 241, textureX, textureY); // Box 36
+        body_colored_primary[23] = new ModelRendererTurbo(this, 217, 33, textureX, textureY); // Box 37
+        body_colored_primary[24] = new ModelRendererTurbo(this, 185, 249, textureX, textureY); // Box 38
+        body_colored_primary[25] = new ModelRendererTurbo(this, 265, 33, textureX, textureY); // Box 39
+        body_colored_primary[26] = new ModelRendererTurbo(this, 257, 249, textureX, textureY); // Box 40
+        body_colored_primary[27] = new ModelRendererTurbo(this, 297, 41, textureX, textureY); // Box 41
+        body_colored_primary[28] = new ModelRendererTurbo(this, 329, 249, textureX, textureY); // Box 42
+        body_colored_primary[29] = new ModelRendererTurbo(this, 401, 249, textureX, textureY); // Box 43
+        body_colored_primary[30] = new ModelRendererTurbo(this, 441, 257, textureX, textureY); // Box 44
+        body_colored_primary[31] = new ModelRendererTurbo(this, 1, 281, textureX, textureY); // Box 45
 
-        bodyColoredPrimary[0].addBox(0F, 0F, 0F, 90, 4, 44, 0F); // Box 13
-        bodyColoredPrimary[0].setRotationPoint(-45F, -26F, -22F);
+        body_colored_primary[0].addBox(0F, 0F, 0F, 90, 4, 44, 0F); // Box 13
+        body_colored_primary[0].setRotationPoint(-45F, -26F, -22F);
 
-        bodyColoredPrimary[1].addBox(0F, 0F, 0F, 90, 44, 4, 0F); // Box 15
-        bodyColoredPrimary[1].setRotationPoint(-45F, -46F, -2F);
+        body_colored_primary[1].addBox(0F, 0F, 0F, 90, 44, 4, 0F); // Box 15
+        body_colored_primary[1].setRotationPoint(-45F, -46F, -2F);
 
-        bodyColoredPrimary[2].addShapeBox(0F, 0F, 0F, 90, 20, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -14F, 4F, 0F, -14F, 4F); // Box 16
-        bodyColoredPrimary[2].setRotationPoint(-45F, -46F, 2F);
+        body_colored_primary[2].addShapeBox(0F, 0F, 0F, 90, 20, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -14F, 4F, 0F, -14F, 4F); // Box 16
+        body_colored_primary[2].setRotationPoint(-45F, -46F, 2F);
 
-        bodyColoredPrimary[3].addShapeBox(0F, 0F, 0F, 90, 10, 20, 0F, 0F, 4F, -14F, 0F, 4F, -14F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 17
-        bodyColoredPrimary[3].setRotationPoint(-45F, -36F, 2F);
+        body_colored_primary[3].addShapeBox(0F, 0F, 0F, 90, 10, 20, 0F, 0F, 4F, -14F, 0F, 4F, -14F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 17
+        body_colored_primary[3].setRotationPoint(-45F, -36F, 2F);
 
-        bodyColoredPrimary[4].addShapeBox(0F, 0F, 0F, 90, 20, 10, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -14F, 4F, 0F, -14F, 4F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 18
-        bodyColoredPrimary[4].setRotationPoint(-45F, -46F, -12F);
+        body_colored_primary[4].addShapeBox(0F, 0F, 0F, 90, 20, 10, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -14F, 4F, 0F, -14F, 4F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 18
+        body_colored_primary[4].setRotationPoint(-45F, -46F, -12F);
 
-        bodyColoredPrimary[5].addShapeBox(0F, 0F, 0F, 90, 10, 20, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 4F, -14F, 0F, 4F, -14F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 19
-        bodyColoredPrimary[5].setRotationPoint(-45F, -36F, -22F);
+        body_colored_primary[5].addShapeBox(0F, 0F, 0F, 90, 10, 20, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 4F, -14F, 0F, 4F, -14F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 19
+        body_colored_primary[5].setRotationPoint(-45F, -36F, -22F);
 
-        bodyColoredPrimary[6].addShapeBox(0F, 0F, 0F, 90, 20, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -14F, 4F, 0F, -14F, 4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, 0F, -2F, -2F); // Box 20
-        bodyColoredPrimary[6].setRotationPoint(-45F, -22F, 2F);
+        body_colored_primary[6].addShapeBox(0F, 0F, 0F, 90, 20, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -14F, 4F, 0F, -14F, 4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, 0F, -2F, -2F); // Box 20
+        body_colored_primary[6].setRotationPoint(-45F, -22F, 2F);
 
-        bodyColoredPrimary[7].addShapeBox(0F, 0F, 0F, 90, 10, 20, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 4F, -14F, 0F, 4F, -14F, 0F, -2F, -2F, 0F, -2F, -2F); // Box 21
-        bodyColoredPrimary[7].setRotationPoint(-45F, -22F, 2F);
+        body_colored_primary[7].addShapeBox(0F, 0F, 0F, 90, 10, 20, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 4F, -14F, 0F, 4F, -14F, 0F, -2F, -2F, 0F, -2F, -2F); // Box 21
+        body_colored_primary[7].setRotationPoint(-45F, -22F, 2F);
 
-        bodyColoredPrimary[8].addShapeBox(0F, 0F, 0F, 90, 20, 10, 0F, 0F, -14F, 4F, 0F, -14F, 4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 22
-        bodyColoredPrimary[8].setRotationPoint(-45F, -22F, -12F);
+        body_colored_primary[8].addShapeBox(0F, 0F, 0F, 90, 20, 10, 0F, 0F, -14F, 4F, 0F, -14F, 4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 22
+        body_colored_primary[8].setRotationPoint(-45F, -22F, -12F);
 
-        bodyColoredPrimary[9].addShapeBox(0F, 0F, 0F, 90, 10, 20, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 4F, -14F, 0F, 4F, -14F); // Box 23
-        bodyColoredPrimary[9].setRotationPoint(-45F, -22F, -22F);
+        body_colored_primary[9].addShapeBox(0F, 0F, 0F, 90, 10, 20, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, 4F, -14F, 0F, 4F, -14F); // Box 23
+        body_colored_primary[9].setRotationPoint(-45F, -22F, -22F);
 
-        bodyColoredPrimary[10].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F); // Box 24
-        bodyColoredPrimary[10].setRotationPoint(-47F, -46F, -10F);
+        body_colored_primary[10].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F); // Box 24
+        body_colored_primary[10].setRotationPoint(-47F, -46F, -10F);
 
-        bodyColoredPrimary[11].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F); // Box 25
-        bodyColoredPrimary[11].setRotationPoint(-47F, -44F, -16F);
+        body_colored_primary[11].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F); // Box 25
+        body_colored_primary[11].setRotationPoint(-47F, -44F, -16F);
 
-        bodyColoredPrimary[12].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, -6F, 0.5F, -0.5F, -7F); // Box 26
-        bodyColoredPrimary[12].setRotationPoint(-47F, -8F, -16F);
+        body_colored_primary[12].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, -6F, 0.5F, -0.5F, -7F); // Box 26
+        body_colored_primary[12].setRotationPoint(-47F, -8F, -16F);
 
-        bodyColoredPrimary[13].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, -8F, 0.5F, -1F, -8F); // Box 27
-        bodyColoredPrimary[13].setRotationPoint(-47F, -4F, -10F);
+        body_colored_primary[13].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, -8F, 0.5F, -1F, -8F); // Box 27
+        body_colored_primary[13].setRotationPoint(-47F, -4F, -10F);
 
-        bodyColoredPrimary[14].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, -6F, 0.5F, -0.5F, -7F); // Box 28
-        bodyColoredPrimary[14].setRotationPoint(-47F, -40F, -16F);
-        bodyColoredPrimary[14].rotateAngleX = -1.57079633F;
+        body_colored_primary[14].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, -6F, 0.5F, -0.5F, -7F); // Box 28
+        body_colored_primary[14].setRotationPoint(-47F, -40F, -16F);
+        body_colored_primary[14].rotateAngleX = -1.57079633F;
 
-        bodyColoredPrimary[15].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F); // Box 29
-        bodyColoredPrimary[15].setRotationPoint(-47F, -40F, 20F);
-        bodyColoredPrimary[15].rotateAngleX = -1.57079633F;
+        body_colored_primary[15].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F); // Box 29
+        body_colored_primary[15].setRotationPoint(-47F, -40F, 20F);
+        body_colored_primary[15].rotateAngleX = -1.57079633F;
 
-        bodyColoredPrimary[16].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F); // Box 30
-        bodyColoredPrimary[16].setRotationPoint(-47F, -14F, -22F);
-        bodyColoredPrimary[16].rotateAngleX = 1.57079633F;
+        body_colored_primary[16].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F); // Box 30
+        body_colored_primary[16].setRotationPoint(-47F, -14F, -22F);
+        body_colored_primary[16].rotateAngleX = 1.57079633F;
 
-        bodyColoredPrimary[17].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, -8F, 0.5F, -1F, -8F); // Box 31
-        bodyColoredPrimary[17].setRotationPoint(-47F, -14F, 20F);
-        bodyColoredPrimary[17].rotateAngleX = 1.57079633F;
+        body_colored_primary[17].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, -8F, 0.5F, -1F, -8F); // Box 31
+        body_colored_primary[17].setRotationPoint(-47F, -14F, 20F);
+        body_colored_primary[17].rotateAngleX = 1.57079633F;
 
-        bodyColoredPrimary[18].addShapeBox(0F, 0F, 0F, 2, 1, 32, 0F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F); // Box 32
-        bodyColoredPrimary[18].setRotationPoint(-47F, -40F, -16F);
+        body_colored_primary[18].addShapeBox(0F, 0F, 0F, 2, 1, 32, 0F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F); // Box 32
+        body_colored_primary[18].setRotationPoint(-47F, -40F, -16F);
 
-        bodyColoredPrimary[19].addShapeBox(0F, 0F, 0F, 2, 1, 32, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F); // Box 33
-        bodyColoredPrimary[19].setRotationPoint(-47F, -9F, -16F);
+        body_colored_primary[19].addShapeBox(0F, 0F, 0F, 2, 1, 32, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F); // Box 33
+        body_colored_primary[19].setRotationPoint(-47F, -9F, -16F);
 
-        bodyColoredPrimary[20].addShapeBox(0F, 0F, 0F, 2, 30, 32, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F); // Box 34
-        bodyColoredPrimary[20].setRotationPoint(-47F, -39F, -16F);
+        body_colored_primary[20].addShapeBox(0F, 0F, 0F, 2, 30, 32, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F); // Box 34
+        body_colored_primary[20].setRotationPoint(-47F, -39F, -16F);
 
-        bodyColoredPrimary[21].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, 0.5F, -1F, 0F, 0F, 0F); // Box 35
-        bodyColoredPrimary[21].setRotationPoint(45F, -46F, -10F);
+        body_colored_primary[21].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, 0.5F, -1F, 0F, 0F, 0F); // Box 35
+        body_colored_primary[21].setRotationPoint(45F, -46F, -10F);
 
-        bodyColoredPrimary[22].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F); // Box 36
-        bodyColoredPrimary[22].setRotationPoint(45F, -44F, -16F);
+        body_colored_primary[22].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F); // Box 36
+        body_colored_primary[22].setRotationPoint(45F, -44F, -16F);
 
-        bodyColoredPrimary[23].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, -1F, -8F, 0F, 0F, -8F); // Box 37
-        bodyColoredPrimary[23].setRotationPoint(45F, -4F, -10F);
+        body_colored_primary[23].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, -1F, -8F, 0F, 0F, -8F); // Box 37
+        body_colored_primary[23].setRotationPoint(45F, -4F, -10F);
 
-        bodyColoredPrimary[24].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, -0.5F, -7F, 0F, 0F, -6F); // Box 38
-        bodyColoredPrimary[24].setRotationPoint(45F, -8F, -16F);
+        body_colored_primary[24].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, -0.5F, -7F, 0F, 0F, -6F); // Box 38
+        body_colored_primary[24].setRotationPoint(45F, -8F, -16F);
 
-        bodyColoredPrimary[25].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, 0.5F, -1F, 0F, 0F, 0F); // Box 39
-        bodyColoredPrimary[25].setRotationPoint(45F, -14F, -22F);
-        bodyColoredPrimary[25].rotateAngleX = 1.57079633F;
+        body_colored_primary[25].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, -1F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, 0.5F, -1F, 0F, 0F, 0F); // Box 39
+        body_colored_primary[25].setRotationPoint(45F, -14F, -22F);
+        body_colored_primary[25].rotateAngleX = 1.57079633F;
 
-        bodyColoredPrimary[26].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, -0.5F, -7F, 0F, 0F, -6F); // Box 40
-        bodyColoredPrimary[26].setRotationPoint(45F, -40F, -16F);
-        bodyColoredPrimary[26].rotateAngleX = -1.57079633F;
+        body_colored_primary[26].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, -0.5F, -7F, 0F, 0F, -6F); // Box 40
+        body_colored_primary[26].setRotationPoint(45F, -40F, -16F);
+        body_colored_primary[26].rotateAngleX = -1.57079633F;
 
-        bodyColoredPrimary[27].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, -1F, -8F, 0F, 0F, -8F); // Box 41
-        bodyColoredPrimary[27].setRotationPoint(45F, -14F, 20F);
-        bodyColoredPrimary[27].rotateAngleX = 1.57079633F;
+        body_colored_primary[27].addShapeBox(0F, 0F, 0F, 2, 2, 20, 0F, 0F, 0F, 0F, 0.5F, 0.5F, -1F, 0.5F, 0.5F, -1F, 0F, 0F, 0F, 0F, 0F, -8F, 0.5F, -1F, -8F, 0.5F, -1F, -8F, 0F, 0F, -8F); // Box 41
+        body_colored_primary[27].setRotationPoint(45F, -14F, 20F);
+        body_colored_primary[27].rotateAngleX = 1.57079633F;
 
-        bodyColoredPrimary[28].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F); // Box 42
-        bodyColoredPrimary[28].setRotationPoint(45F, -40F, 20F);
-        bodyColoredPrimary[28].rotateAngleX = -1.57079633F;
+        body_colored_primary[28].addShapeBox(0F, 0F, 0F, 2, 4, 32, 0F, 0F, 0F, -6F, 0.5F, -0.5F, -7F, 0.5F, -0.5F, -7F, 0F, 0F, -6F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F); // Box 42
+        body_colored_primary[28].setRotationPoint(45F, -40F, 20F);
+        body_colored_primary[28].rotateAngleX = -1.57079633F;
 
-        bodyColoredPrimary[29].addShapeBox(0F, 0F, 0F, 2, 1, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F); // Box 43
-        bodyColoredPrimary[29].setRotationPoint(45F, -40F, -16F);
+        body_colored_primary[29].addShapeBox(0F, 0F, 0F, 2, 1, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F); // Box 43
+        body_colored_primary[29].setRotationPoint(45F, -40F, -16F);
 
-        bodyColoredPrimary[30].addShapeBox(0F, 0F, 0F, 2, 1, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F); // Box 44
-        bodyColoredPrimary[30].setRotationPoint(45F, -9F, -16F);
+        body_colored_primary[30].addShapeBox(0F, 0F, 0F, 2, 1, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -1F, 0.5F, 0F, -1F, 0F, 0F, 0F); // Box 44
+        body_colored_primary[30].setRotationPoint(45F, -9F, -16F);
 
-        bodyColoredPrimary[31].addShapeBox(0F, 0F, 0F, 2, 30, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F); // Box 45
-        bodyColoredPrimary[31].setRotationPoint(45F, -39F, -16F);
+        body_colored_primary[31].addShapeBox(0F, 0F, 0F, 2, 30, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F); // Box 45
+        body_colored_primary[31].setRotationPoint(45F, -39F, -16F);
 
         other = new ModelRendererTurbo[36];
         other[0] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 50
@@ -301,55 +299,55 @@ public class StandardFluidContainer extends ContainerModel<ContainerData> {
         other[35].addBox(0F, 0F, 0F, 1, 42, 1, 0F); // Box 85
         other[35].setRotationPoint(-43F, -45F, -23F);
 
-        bodyColoredSecondary = new ModelRendererTurbo[12];
-        bodyColoredSecondary[0] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 1
-        bodyColoredSecondary[1] = new ModelRendererTurbo(this, 129, 1, textureX, textureY); // Box 2
-        bodyColoredSecondary[2] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 3
-        bodyColoredSecondary[3] = new ModelRendererTurbo(this, 185, 9, textureX, textureY); // Box 4
-        bodyColoredSecondary[4] = new ModelRendererTurbo(this, 329, 1, textureX, textureY); // Box 5
-        bodyColoredSecondary[5] = new ModelRendererTurbo(this, 385, 9, textureX, textureY); // Box 6
-        bodyColoredSecondary[6] = new ModelRendererTurbo(this, 185, 17, textureX, textureY); // Box 7
-        bodyColoredSecondary[7] = new ModelRendererTurbo(this, 185, 25, textureX, textureY); // Box 8
-        bodyColoredSecondary[8] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 9
-        bodyColoredSecondary[9] = new ModelRendererTurbo(this, 41, 1, textureX, textureY); // Box 10
-        bodyColoredSecondary[10] = new ModelRendererTurbo(this, 57, 1, textureX, textureY); // Box 11
-        bodyColoredSecondary[11] = new ModelRendererTurbo(this, 81, 1, textureX, textureY); // Box 12
+        body_colored_secondary = new ModelRendererTurbo[12];
+        body_colored_secondary[0] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 1
+        body_colored_secondary[1] = new ModelRendererTurbo(this, 129, 1, textureX, textureY); // Box 2
+        body_colored_secondary[2] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 3
+        body_colored_secondary[3] = new ModelRendererTurbo(this, 185, 9, textureX, textureY); // Box 4
+        body_colored_secondary[4] = new ModelRendererTurbo(this, 329, 1, textureX, textureY); // Box 5
+        body_colored_secondary[5] = new ModelRendererTurbo(this, 385, 9, textureX, textureY); // Box 6
+        body_colored_secondary[6] = new ModelRendererTurbo(this, 185, 17, textureX, textureY); // Box 7
+        body_colored_secondary[7] = new ModelRendererTurbo(this, 185, 25, textureX, textureY); // Box 8
+        body_colored_secondary[8] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 9
+        body_colored_secondary[9] = new ModelRendererTurbo(this, 41, 1, textureX, textureY); // Box 10
+        body_colored_secondary[10] = new ModelRendererTurbo(this, 57, 1, textureX, textureY); // Box 11
+        body_colored_secondary[11] = new ModelRendererTurbo(this, 81, 1, textureX, textureY); // Box 12
 
-        bodyColoredSecondary[0].addBox(0F, 0F, 0F, 3, 3, 48, 0F); // Box 1
-        bodyColoredSecondary[0].setRotationPoint(-48F, -3F, -24F);
+        body_colored_secondary[0].addBox(0F, 0F, 0F, 3, 3, 48, 0F); // Box 1
+        body_colored_secondary[0].setRotationPoint(-48F, -3F, -24F);
 
-        bodyColoredSecondary[1].addBox(-3F, 0F, 0F, 3, 3, 48, 0F); // Box 2
-        bodyColoredSecondary[1].setRotationPoint(48F, -3F, -24F);
+        body_colored_secondary[1].addBox(-3F, 0F, 0F, 3, 3, 48, 0F); // Box 2
+        body_colored_secondary[1].setRotationPoint(48F, -3F, -24F);
 
-        bodyColoredSecondary[2].addBox(0F, 0F, 0F, 90, 3, 3, 0F); // Box 3
-        bodyColoredSecondary[2].setRotationPoint(-45F, -3F, 21F);
+        body_colored_secondary[2].addBox(0F, 0F, 0F, 90, 3, 3, 0F); // Box 3
+        body_colored_secondary[2].setRotationPoint(-45F, -3F, 21F);
 
-        bodyColoredSecondary[3].addBox(0F, 0F, 0F, 90, 3, 3, 0F); // Box 4
-        bodyColoredSecondary[3].setRotationPoint(-45F, -3F, -24F);
+        body_colored_secondary[3].addBox(0F, 0F, 0F, 90, 3, 3, 0F); // Box 4
+        body_colored_secondary[3].setRotationPoint(-45F, -3F, -24F);
 
-        bodyColoredSecondary[4].addBox(0F, 0F, 0F, 3, 3, 48, 0F); // Box 5
-        bodyColoredSecondary[4].setRotationPoint(-48F, -48F, -24F);
+        body_colored_secondary[4].addBox(0F, 0F, 0F, 3, 3, 48, 0F); // Box 5
+        body_colored_secondary[4].setRotationPoint(-48F, -48F, -24F);
 
-        bodyColoredSecondary[5].addBox(-3F, 0F, 0F, 3, 3, 48, 0F); // Box 6
-        bodyColoredSecondary[5].setRotationPoint(48F, -48F, -24F);
+        body_colored_secondary[5].addBox(-3F, 0F, 0F, 3, 3, 48, 0F); // Box 6
+        body_colored_secondary[5].setRotationPoint(48F, -48F, -24F);
 
-        bodyColoredSecondary[6].addBox(0F, 0F, 0F, 90, 3, 3, 0F); // Box 7
-        bodyColoredSecondary[6].setRotationPoint(-45F, -48F, 21F);
+        body_colored_secondary[6].addBox(0F, 0F, 0F, 90, 3, 3, 0F); // Box 7
+        body_colored_secondary[6].setRotationPoint(-45F, -48F, 21F);
 
-        bodyColoredSecondary[7].addBox(0F, 0F, 0F, 90, 3, 3, 0F); // Box 8
-        bodyColoredSecondary[7].setRotationPoint(-45F, -48F, -24F);
+        body_colored_secondary[7].addBox(0F, 0F, 0F, 90, 3, 3, 0F); // Box 8
+        body_colored_secondary[7].setRotationPoint(-45F, -48F, -24F);
 
-        bodyColoredSecondary[8].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 9
-        bodyColoredSecondary[8].setRotationPoint(-48F, -45F, 21F);
+        body_colored_secondary[8].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 9
+        body_colored_secondary[8].setRotationPoint(-48F, -45F, 21F);
 
-        bodyColoredSecondary[9].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F); // Box 10
-        bodyColoredSecondary[9].setRotationPoint(-48F, -45F, -24F);
+        body_colored_secondary[9].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F); // Box 10
+        body_colored_secondary[9].setRotationPoint(-48F, -45F, -24F);
 
-        bodyColoredSecondary[10].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 11
-        bodyColoredSecondary[10].setRotationPoint(45F, -45F, 21F);
+        body_colored_secondary[10].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 11
+        body_colored_secondary[10].setRotationPoint(45F, -45F, 21F);
 
-        bodyColoredSecondary[11].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F); // Box 12
-        bodyColoredSecondary[11].setRotationPoint(45F, -45F, -24F);
+        body_colored_secondary[11].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F); // Box 12
+        body_colored_secondary[11].setRotationPoint(45F, -45F, -24F);
 
         body = new ModelRendererTurbo[5];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0

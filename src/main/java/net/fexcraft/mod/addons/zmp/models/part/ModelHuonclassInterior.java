@@ -1,16 +1,13 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelHuonclassInterior extends PartModel<VehicleData> {
-
-    private int textureX = 512;
-    private int textureY = 512;
+public class ModelHuonclassInterior extends PartModel {
 
     public ModelHuonclassInterior(){
-        this.creators.add("zackyboy18");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
         body = new ModelRendererTurbo[13];
         body[0] = new ModelRendererTurbo(this, 353, 25, textureX, textureY); // Box 243
         body[1] = new ModelRendererTurbo(this, 393, 25, textureX, textureY); // Box 18
@@ -125,4 +122,5 @@ public class ModelHuonclassInterior extends PartModel<VehicleData> {
         translateAll(0F, 0F, 0F);
         flipAll();
     }
+    
 }

@@ -9,13 +9,13 @@ import net.fexcraft.mod.lib.util.lang.ArrayList;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 
-public class ModelCargoShipCargo extends PartModel<VehicleData> {
+public class ModelCargoShipCargo extends PartModel {
 
     private static final ArrayList<Pos> offsets = new ArrayList<Pos>();
     private static final TreeMap<String, Pos> positions = new TreeMap<String, Pos>();
 
     public ModelCargoShipCargo(){
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
+    	super(); this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         try{
             if(offsets.size() == 0){
                 for(int j = 0; j < 20; j++){
@@ -59,7 +59,7 @@ public class ModelCargoShipCargo extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String usedAS, Entity vehicle){
+    public void render(VehicleData data, String usedAS, Entity vehicle, int meta){
         positions.get(usedAS).translate();
         super.def_renderContainer(data, usedAS, vehicle);
         positions.get(usedAS).translateR();

@@ -8,9 +8,8 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
-public class ModelC7Doors extends PartModel<VehicleData> {
-
-    private static final int textureX = 512, textureY = 512;
+public class ModelC7Doors extends PartModel {
+	
     public ModelRendererTurbo[] trunkn, trunkc;
     public ModelRendererTurbo[] front_right;
     public ModelRendererTurbo[] front_left;
@@ -18,7 +17,8 @@ public class ModelC7Doors extends PartModel<VehicleData> {
     public ModelRendererTurbo[] back_right;
 
     public ModelC7Doors(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("Ferdinand (FEX___96)");
         //
         front_left = new ModelRendererTurbo[3];
         front_left[0] = new ModelRendererTurbo(this, 57, 145, textureX, textureY); // Box 242
@@ -97,7 +97,7 @@ public class ModelC7Doors extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
         if(script == null){
             data.getPrimaryColor().glColorApply();

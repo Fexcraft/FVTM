@@ -1,16 +1,13 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelBoxTrailer extends VehicleModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelBoxTrailer extends VehicleModel {
 
     public ModelBoxTrailer(){
-        this.creators.add("zackyboy18");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
         body = new ModelRendererTurbo[198];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 298
         body[1] = new ModelRendererTurbo(this, 9, 1, textureX, textureY); // Box 299
@@ -995,15 +992,15 @@ public class ModelBoxTrailer extends VehicleModel<VehicleData> {
         body[197].addBox(0F, 0F, 0F, 1, 1, 1, 0F); // Box 200
         body[197].setRotationPoint(-29F, -24F, 11F);
         //
-        bodyDoorOpen = new ModelRendererTurbo[1];
-        bodyDoorOpen[0] = new ModelRendererTurbo(this, 321, 33, textureX, textureY); // Box 140
-        bodyDoorOpen[0].addShapeBox(0F, 0F, 0F, 1, 7, 28, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 3F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 3F, 0F, 0F); // Box 140
-        bodyDoorOpen[0].setRotationPoint(-67F, -4F, -14F);
+        body_door_open = new ModelRendererTurbo[1];
+        body_door_open[0] = new ModelRendererTurbo(this, 321, 33, textureX, textureY); // Box 140
+        body_door_open[0].addShapeBox(0F, 0F, 0F, 1, 7, 28, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 3F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 3F, 0F, 0F); // Box 140
+        body_door_open[0].setRotationPoint(-67F, -4F, -14F);
         //
-        bodyDoorClose = new ModelRendererTurbo[1];
-        bodyDoorClose[0] = new ModelRendererTurbo(this, 257, 33, textureX, textureY); // Box 139
-        bodyDoorClose[0].addBox(0F, 0F, 0F, 1, 7, 28, 0F); // Box 139
-        bodyDoorClose[0].setRotationPoint(-67F, -11F, -14F);
+        body_door_close = new ModelRendererTurbo[1];
+        body_door_close[0] = new ModelRendererTurbo(this, 257, 33, textureX, textureY); // Box 139
+        body_door_close[0].addBox(0F, 0F, 0F, 1, 7, 28, 0F); // Box 139
+        body_door_close[0].setRotationPoint(-67F, -11F, -14F);
         //
         translateAll(0, 2, 0);
         flipAll();

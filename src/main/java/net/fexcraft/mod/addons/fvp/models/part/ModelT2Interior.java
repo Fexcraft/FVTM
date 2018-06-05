@@ -5,17 +5,14 @@
 // Model Creator: FEX___96
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelT2Interior extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelT2Interior extends PartModel {
 
     public ModelT2Interior(){
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         body = new ModelRendererTurbo[70];
         body[0] = new ModelRendererTurbo(this, 25, 361, textureX, textureY); // Box 176
         body[1] = new ModelRendererTurbo(this, 1, 233, textureX, textureY); // Box 240

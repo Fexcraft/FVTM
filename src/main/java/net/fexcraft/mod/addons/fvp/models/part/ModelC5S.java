@@ -1,16 +1,13 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.minecraft.entity.Entity;
 
 public class ModelC5S extends PartModel {
 
-    private static final int textureX = 512, textureY = 512;
-
     public ModelC5S(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("Ferdinand (FEX___96)");
         body = new ModelRendererTurbo[28];
         body[0] = new ModelRendererTurbo(this, 233, 65, textureX, textureY); // Box 218
         body[1] = new ModelRendererTurbo(this, 449, 121, textureX, textureY); // Box 219

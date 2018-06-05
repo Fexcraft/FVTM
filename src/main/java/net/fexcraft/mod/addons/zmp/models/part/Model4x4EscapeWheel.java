@@ -5,13 +5,12 @@ import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class Model4x4EscapeWheel extends PartModel<VehicleData> {
-
-    private static final int textureX = 512, textureY = 512;
+public class Model4x4EscapeWheel extends PartModel {
 
     public Model4x4EscapeWheel(){
-        this.creators.add("zackyboy18");
-        this.creators.add("FEX___96");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("zackyboy18");
+        this.addToCreators("FEX___96");
         wheel_front_left = new ModelRendererTurbo[17];
         wheel_front_left[0] = new ModelRendererTurbo(this, 193, 217, textureX, textureY); // Box 555
         wheel_front_left[1] = new ModelRendererTurbo(this, 217, 217, textureX, textureY); // Box 556
@@ -301,7 +300,7 @@ public class Model4x4EscapeWheel extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         super.def_renderWheels4(data, us, vehicle);
     }
 

@@ -6,12 +6,11 @@ import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelC4Z1SW extends PartModel<VehicleData> {
-
-    private static final int textureX = 1024, textureY = 1024;
+public class ModelC4Z1SW extends PartModel {
 
     public ModelC4Z1SW(){
-        this.creators.add("Ferdinand (FEX___96)");
+    	super(); textureX = 1024; textureY = 1024;
+        this.addToCreators("Ferdinand (FEX___96)");
         steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 873, 17, textureX, textureY); // Box 261
         steering[1] = new ModelRendererTurbo(this, 817, 105, textureX, textureY); // Box 262
@@ -73,7 +72,7 @@ public class ModelC4Z1SW extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         VehicleEntity ent = (VehicleEntity) vehicle;
         for(ModelRendererTurbo submodel : steering){
             submodel.rotateAngleX = ent.getWheelsYaw() * 3.14159265F / 180F * 3F;

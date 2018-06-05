@@ -1,8 +1,15 @@
 package net.fexcraft.mod.fvtm.model.part;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
 
 public class PartModel extends PartBaseModel {
 
@@ -35,8 +42,8 @@ public class PartModel extends PartBaseModel {
     public ModelRendererTurbo fog_lights[] = new ModelRendererTurbo[0];
     //
     public ModelRendererTurbo windows[] = new ModelRendererTurbo[0];
-    public ModelRendererTurbo windowsDoorOpen[] = new ModelRendererTurbo[0];
-    public ModelRendererTurbo windowsDoorClose[] = new ModelRendererTurbo[0];
+    public ModelRendererTurbo windows_door_open[] = new ModelRendererTurbo[0];
+    public ModelRendererTurbo windows_door_close[] = new ModelRendererTurbo[0];
     
     public PartModel(){ super(); }
 
@@ -67,9 +74,195 @@ public class PartModel extends PartBaseModel {
         fog_lights = submodels.get("fog_lights");
         //
         windows = submodels.get("windows");
-        windowsDoorOpen = submodels.get("windows_door_open");
-        windowsDoorClose = submodels.get("windows_door_close");
+        windows_door_open = submodels.get("windows_door_open");
+        windows_door_close = submodels.get("windows_door_close");
     }
+
+	@Override
+	public void render(VehicleData data, String key){
+        //Body/Chassis
+        render(body);
+        render(data.doorsOpen() ? body_door_open : body_door_close);
+        
+        //Primary Color
+        if(rq(body_colored_primary, body_door_open_colored_primary, body_door_close_colored_primary)){
+            data.getPrimaryColor().glColorApply();
+            render(body_colored_primary);
+            render(data.doorsOpen() ? body_door_open_colored_primary : body_door_close_colored_primary);
+            RGB.glColorReset();
+        }
+        
+        //Secondary Color
+        if(rq(body_colored_secondary)){
+            data.getSecondaryColor().glColorApply();
+            render(body_colored_secondary);
+            RGB.glColorReset();
+        }
+
+        //Other
+        render(turret);
+        render(steering);
+
+        //Wheels
+        render(wheels);
+        render(wheel_front);
+        render(wheel_back);
+        render(wheel_front_right);
+        render(wheel_back_right);
+        render(wheel_front_left);
+        render(wheel_back_left);
+        //
+        render(track_wheels);
+        render(track_wheels_right);
+        render(track_wheels_left);
+        //
+        render(lights);
+        render(front_lights);
+        render(back_lights);
+        render(reverse_lights);
+        render(fog_lights);
+        //
+        if(rq(windows, windows_door_open, windows_door_close)){
+            GlStateManager.pushMatrix();
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glDepthMask(false);
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
+            windowcolor.glColorApply();
+            render(windows);
+            render(data.doorsOpen() ? windows_door_open : windows_door_close);
+            RGB.glColorReset();
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glDepthMask(true);
+            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.popMatrix();
+        }
+	}
+
+	@Override
+	public void render(VehicleData data, String key, Entity ent, int meta){
+		VehicleEntity vehicle = (VehicleEntity)ent;
+		
+        //Body/Chassis
+        render(body);
+        render(data.doorsOpen() ? body_door_open : body_door_close);
+
+        //Primary Color
+        if(rq(body_colored_primary, body_door_open_colored_primary, body_door_close_colored_primary)){
+            data.getPrimaryColor().glColorApply();
+            render(body_colored_primary);
+            render(data.doorsOpen() ? body_door_open_colored_primary : body_door_close_colored_primary);
+            RGB.glColorReset();
+        }
+        
+        //Secondary Color
+        if(rq(body_colored_secondary)){
+            data.getSecondaryColor().glColorApply();
+            render(body_colored_secondary);
+            RGB.glColorReset();
+        }
+
+        //Render Turret
+        render(turret);
+
+        //Render Steering
+        float steerangle = vehicle.getWheelsYaw() * 3.14159265F / 180F * 3F;
+        for(ModelRendererTurbo elm : steering){
+        	elm.rotateAngleX = steerangle; elm.render();
+        }
+
+        //Render Wheels
+        for(ModelRendererTurbo element : wheel_back_left){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.render();
+        }
+        for(ModelRendererTurbo element : wheel_back_right){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.render();
+        }
+        for(ModelRendererTurbo element : wheel_back){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.render();
+        }
+        for(ModelRendererTurbo element : wheel_front_left){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.rotateAngleY = steerangle;
+            element.render();
+        }
+        for(ModelRendererTurbo element : wheel_front_right){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.rotateAngleY = steerangle;
+            element.render();
+        }
+        for(ModelRendererTurbo element : wheel_front){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.rotateAngleY = steerangle;
+            element.render();
+        }
+        for(ModelRendererTurbo element : wheels){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.render();
+        }
+        for(ModelRendererTurbo element : track_wheels){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.render();
+        }
+        for(ModelRendererTurbo element : track_wheels_right){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.render();
+        }
+        for(ModelRendererTurbo element : track_wheels_left){
+            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.render();
+        }
+        //
+        boolean s1 = data.getLightsState() > 0, s3 = data.getLightsState() > 2, sr = vehicle.getThrottle() < -0.01;
+        {
+            if(rq(lights, front_lights)){
+                if(s1){ lightOff(ent); }
+                render(lights);
+                render(front_lights);
+                //render(back_lights);
+                if(s1){ lightOn(ent); }
+            }
+        }
+        {
+            if(rq(back_lights)){
+                if(s1 || sr){ lightOff(ent); }
+                render(back_lights);
+                if(s1 || sr){ lightOn(ent); }
+            }
+        }
+        {
+            if(rq(fog_lights)){
+                if(s3){ lightOff(ent); }
+                render(fog_lights);
+                if(s3){ lightOn(ent); }
+            }
+        }
+        {
+            if(rq(reverse_lights)){
+                if(sr){ lightOff(ent); }
+                //render(back_lights);
+                render(reverse_lights);
+                if(sr){ lightOn(ent); }
+            }
+        }
+        //
+        if(rq(windows, windows_door_open, windows_door_close)){
+            GlStateManager.pushMatrix();
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glDepthMask(false);
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
+            windowcolor.glColorApply();
+            render(windows);
+            render(data.doorsOpen() ? windows_door_open : windows_door_close);
+            RGB.glColorReset();
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glDepthMask(true);
+            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.popMatrix();
+        }
+	}
 
     @Override
     public void rotateAll(float x, float y, float z){

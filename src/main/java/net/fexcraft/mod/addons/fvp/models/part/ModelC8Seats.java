@@ -1,15 +1,13 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelC8Seats extends PartModel<VehicleData> {
-
-    private static final int textureX = 512, textureY = 512;
+public class ModelC8Seats extends PartModel {
 
     public ModelC8Seats(){
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         body = new ModelRendererTurbo[14];
         body[0] = new ModelRendererTurbo(this, 257, 209, textureX, textureY); // Box 136
         body[1] = new ModelRendererTurbo(this, 153, 217, textureX, textureY); // Box 137

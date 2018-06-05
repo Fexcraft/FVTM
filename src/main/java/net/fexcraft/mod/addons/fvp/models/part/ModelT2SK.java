@@ -10,13 +10,11 @@ import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelT2SK extends PartModel<VehicleData> {
-
-    int textureX = 512;
-    int textureY = 512;
+public class ModelT2SK extends PartModel {
 
     public ModelT2SK(){
-        this.creators.add("01e4af9b-2a30-471e-addf-f6338ffce04b");
+    	super(); textureX = 512; textureY = 512;
+        this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         body = new ModelRendererTurbo[4];
         body[0] = new ModelRendererTurbo(this, 361, 241, textureX, textureY); // Box 150
         body[1] = new ModelRendererTurbo(this, 225, 249, textureX, textureY); // Box 151
@@ -61,7 +59,7 @@ public class ModelT2SK extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle){
+    public void render(VehicleData data, String us, Entity vehicle, int meta){
         this.render(data, us);
     }
 

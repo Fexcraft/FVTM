@@ -1,19 +1,17 @@
 package net.fexcraft.mod.addons.gep.models.containers;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class GenericContainerModel extends ContainerModel<ContainerData> {
+public class GenericContainerModel extends ContainerModel {
 
     private static final GenericContainerModel INSTANCE = new GenericContainerModel();
     private static final int textureSize = 512;
 
     public GenericContainerModel(){
-        body = new ModelRendererTurbo[4];
+    	super(); body = new ModelRendererTurbo[4];
         //
         body[0] = new ModelRendererTurbo(this, 1, 1, textureSize, textureSize); // Box 0
         body[0].addBox(0F, 0F, 0F, 192, 48, 48, 0F); // Box 0
@@ -33,10 +31,10 @@ public class GenericContainerModel extends ContainerModel<ContainerData> {
         //
         flipAll();
     }
-
+    
     @Override
-    public void render(ContainerData data){
-        if(data.getContainer().isLargeContainer()){
+    public void render(ContainerData data, Object obj){
+    	if(data.getContainer().isLargeContainer()){
             body[0].render();
         }
         else{
@@ -45,28 +43,8 @@ public class GenericContainerModel extends ContainerModel<ContainerData> {
     }
 
     @Override
-    public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos){
-        switch(pos){
-            case LARGE_SINGLE:
-                body[0].render();
-                break;
-            case MEDIUM_DUAL1:
-                body[1].render();
-                break;
-            case MEDIUM_DUAL2:
-                body[2].render();
-                break;
-            case MEDIUM_SINGLE:
-                body[3].render();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void render(VehicleData vehdata, String part, ContainerData data, ContainerPosition pos, Entity vehicle){
-        render(vehdata, part, data, pos);
+    public void render(ContainerData data, Object obj, Entity vehicle, int meta){
+        render(data, obj);
     }
 
     public static GenericContainerModel get(){

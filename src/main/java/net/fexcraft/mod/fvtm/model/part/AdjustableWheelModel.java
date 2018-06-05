@@ -9,7 +9,9 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 
-public class AdjustableWheelModel extends PartModel<VehicleData> {
+public class AdjustableWheelModel extends PartBaseModel {
+	
+	private ModelRendererTurbo[] wheel = new ModelRendererTurbo[0];
 
     @Override
     public void render(VehicleData data, String us){
@@ -17,7 +19,7 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity veh){
+    public void render(VehicleData data, String us, Entity veh, int meta){
         this.def_renderAdjustableWheels4(data, us, veh, true);
     }
 
@@ -26,11 +28,11 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
         pos = pos == null ? new Pos(0, 0, 0) : pos;
         pos.translate();
         if(us.contains("left")){
-            render(wheels);
+            render(wheel);
         }
         else if(us.contains("right")){
             GL11.glRotated(180, 0, 1, 0);
-            render(wheels);
+            render(wheel);
             GL11.glRotated(-180, 0, 1, 0);
         }
         pos.translateR();
@@ -72,7 +74,7 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
         if(mir){
             GL11.glRotated(180, 0, 1, 0);
         }
-        for(ModelRendererTurbo element : wheels){
+        for(ModelRendererTurbo element : wheel){
             element.rotateAngleZ = vehicle.getWheelsAngle();
             if(str){
                 element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
@@ -122,7 +124,7 @@ public class AdjustableWheelModel extends PartModel<VehicleData> {
             if(mir){
                 GL11.glRotated(180, 0, 1, 0);
             }
-            this.def_renderWheelWithRotations(wheels, ent, str);
+            this.def_renderWheelWithRotations(wheel, ent, str);
             if(mir){
                 //for(ModelRendererTurbo turbo : wheels){ turbo.rotateAngleZ = -turbo.rotateAngleZ; }
                 GL11.glRotated(-180, 0, 1, 0);

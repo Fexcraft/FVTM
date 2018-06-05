@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.model;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -16,12 +15,10 @@ import net.fexcraft.mod.lib.util.json.JsonUtil;
 public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K> {
 	
 	protected int textureX, textureY;
-	protected TreeMap<String, ModelRendererTurbo[]> submodels;
+	protected ModelMap submodels = new ModelMap();
 	private ArrayList<String> creators = new ArrayList<>();
-	private static final ModelRendererTurbo[] empty_arr = new ModelRendererTurbo[]{};
 	
 	public GenericModel(){
-		submodels = new TreeMap<>();
 		//import declared fields
 		Field[] fields = this.getClass().getDeclaredFields();
 		for(Field field : fields){
@@ -48,13 +45,6 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
         for(Entry<String, JsonElement> entry : modelobj.entrySet()){
         	submodels.put(entry.getKey(), JsonToTMT.parse(this, entry.getKey(), entry.getValue().getAsJsonObject(), textureX, textureY));
         }
-	}
-	
-	/** Mostly null-safe, do not use directly in rendering. **/
-	public ModelRendererTurbo[] getSubModel(String id){
-		if(submodels == null){ return empty_arr; }
-		if(!submodels.containsKey(id)){ return empty_arr; }
-		return submodels.get(id);
 	}
 	
 	@Override

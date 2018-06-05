@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
 import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.Minecraft;
@@ -137,7 +136,7 @@ public class VehicleBaseModel extends GenericModel<VehicleData, Object> implemen
 		{
 			GL11.glPushMatrix();
 			GL11.glRotated(180d, 1, 0, 0);
-			Minecraft.getMinecraft().renderEngine.bindTexture(data.getTexture());
+			bindTexture(data.getTexture());
 			model.render(data, null, null, 0);
 			data.getParts().forEach((key, partdata) -> {
 				Minecraft.getMinecraft().renderEngine.bindTexture(partdata.getTexture());
@@ -145,7 +144,6 @@ public class VehicleBaseModel extends GenericModel<VehicleData, Object> implemen
 				partdata.getPart().getModel().render(data, key);
 				partdata.getPart().getOffsetFor(data.getVehicle().getRegistryName()).translateR();
 			});
-			Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
 			GL11.glPopMatrix();
 		}
 		GL11.glScalef(-scal[0], -scal[1], -scal[2]);

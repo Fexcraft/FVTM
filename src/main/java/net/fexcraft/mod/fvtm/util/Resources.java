@@ -47,6 +47,7 @@ import net.fexcraft.mod.fvtm.impl.GenericPart;
 import net.fexcraft.mod.fvtm.impl.GenericPartItem;
 import net.fexcraft.mod.fvtm.impl.HybridAddon;
 import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.container.ContainerBaseModel;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleBaseModel;
 import net.fexcraft.mod.lib.FCL;
 import net.fexcraft.mod.lib.network.Network;
@@ -563,7 +564,7 @@ public class Resources {
                             event.getRegistry().register(con);
                             if(Static.side().isClient()){
                                 if(Config.RENDER_IN_GUI){
-                                    net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), con.getModel());
+                                    net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
                                 }
                                 net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
                             }
@@ -576,7 +577,7 @@ public class Resources {
                                     event.getRegistry().register(con);
                                     if(Static.side().isClient()){
                                         if(Config.RENDER_IN_GUI){
-                                            net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), con.getModel());
+                                            net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
                                         }
                                         net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
                                     }
@@ -595,7 +596,7 @@ public class Resources {
                         event.getRegistry().register(con);
                         if(Static.side().isClient()){
                             if(Config.RENDER_IN_GUI){
-                                net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), con.getModel());
+                                net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
                             }
                             net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
                         }

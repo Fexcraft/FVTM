@@ -5,12 +5,11 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.mod.addons.gep.models.containers.GenericContainerModel;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
-import net.fexcraft.mod.fvtm.model.container.ContainerModel;
+import net.fexcraft.mod.fvtm.model.container.ContainerBaseModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -50,13 +49,12 @@ public class GenericContainer implements Container {
     private ArrayList<ItemStack> blacklist = new ArrayList<ItemStack>();
     private RGB primary, secondary;
 
-    @SuppressWarnings("unchecked")
     public GenericContainer(JsonObject obj){
         this.registryname = DataUtil.getRegistryName(obj, "CONTAINER");
         this.addon = DataUtil.getAddon(registryname, obj, "CONTAINER");
         this.type = ContainerType.valueOf(obj.has("Type") ? obj.get("Type").getAsString().toUpperCase() : obj.has("ContainerType") ? obj.get("ContainerType").getAsString().toUpperCase() : Container.ContainerType.MEDIUM.name());
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), ContainerModel.class, Object.class, GenericContainerModel.get());
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), ContainerData.class, Object.class, ContainerBaseModel.class);
         }
         this.name = JsonUtil.getIfExists(obj, "FullName", this.getRegistryName().toString());
         this.textures = DataUtil.getTextures(obj, registryname, "CONTAINER");;

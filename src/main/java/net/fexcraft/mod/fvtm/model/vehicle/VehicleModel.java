@@ -22,16 +22,16 @@ public class VehicleModel extends VehicleBaseModel {
 
     public VehicleModel(JsonObject obj){
     	super(obj);
-        chassis = this.getSubModel("chassis");
-        body = this.getSubModel("body");
-        bodyColoredPrimary = this.getSubModel("body_colored_primary");
-        bodyColoredSecondary = this.getSubModel("body_colored_secondary");
-        bodyDoorOpen = this.getSubModel("body_door_open");
-        bodyDoorClose = this.getSubModel("body_door_close");
-        bodyDoorOpenColoredPrimary = this.getSubModel("body_door_open_colored_primary");
-        bodyDoorCloseColoredPrimary = this.getSubModel("body_door_close_colored_primary");
-        turret = this.getSubModel("turret");
-        wheels_import = this.getSubModel("wheels_import");
+        chassis = submodels.get("chassis");
+        body = submodels.get("body");
+        bodyColoredPrimary = submodels.get("body_colored_primary");
+        bodyColoredSecondary = submodels.get("body_colored_secondary");
+        bodyDoorOpen = submodels.get("body_door_open");
+        bodyDoorClose = submodels.get("body_door_close");
+        bodyDoorOpenColoredPrimary = submodels.get("body_door_open_colored_primary");
+        bodyDoorCloseColoredPrimary = submodels.get("body_door_close_colored_primary");
+        turret = submodels.get("turret");
+        wheels_import = submodels.get("wheels_import");
     }
 
     @Override

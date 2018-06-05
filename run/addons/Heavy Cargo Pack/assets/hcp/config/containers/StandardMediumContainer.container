@@ -7,6 +7,6 @@
 	"Textures":[
 		"hcp:textures/containers/standard_medium.png"
 	],
-	"InventorySize": 729,
+	"InventorySize": 1458,
 	"InventoryType": "item"
 }

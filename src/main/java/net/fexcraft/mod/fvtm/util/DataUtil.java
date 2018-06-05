@@ -10,6 +10,10 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 public class DataUtil {
@@ -101,4 +105,35 @@ public class DataUtil {
 				return null;
 		}
 	}*/
+    
+    /** Let's not be limited by just 256 **/
+    public static void loadAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks){
+        NBTTagList list = tag.getTagList("Items", 10);
+        for(int i = 0; i < list.tagCount(); ++i){
+            NBTTagCompound compound = list.getCompoundTagAt(i);
+            int j = compound.getShort("Slot");
+            if(j >= 0 && j < stacks.size()){
+                stacks.set(j, new ItemStack(compound));
+            }
+        }
+    }
+    
+    /** Let's not be limited by just 256 **/
+    public static NBTTagCompound saveAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks, boolean saveEmpty){
+        NBTTagList list = new NBTTagList();
+        for(int i = 0; i < stacks.size(); ++i){
+            ItemStack stack = stacks.get(i);
+            if(!stack.isEmpty()){
+                NBTTagCompound compound = new NBTTagCompound();
+                compound.setShort("Slot", (short)i);
+                stack.writeToNBT(compound);
+                list.appendTag(compound);
+            }
+        }
+        if(!list.hasNoTags() || saveEmpty){
+            tag.setTag("Items", list);
+        }
+        return tag;
+    }
+    
 }

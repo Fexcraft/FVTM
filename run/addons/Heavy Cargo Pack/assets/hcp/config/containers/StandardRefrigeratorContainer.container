@@ -7,7 +7,7 @@
 	"Textures":[
 		"hcp:textures/containers/standard_medium_refrigerator.png"
 	],
-	"InventorySize": 600,
+	"InventorySize": 1200,
 	"InventoryType": "item",
 	"InventoryContentType": "food"
 }

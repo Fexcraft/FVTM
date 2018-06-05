@@ -6,7 +6,7 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.impl.root.GenericColorable;
-import net.minecraft.inventory.ItemStackHelper;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -53,7 +53,7 @@ public class GenericContainerData extends GenericColorable<ContainerData, Contai
         super.writeToNBT(compound);
         //
         if(root.getInventoryType() == InventoryType.ITEM){
-            compound = ItemStackHelper.saveAllItems(compound, stacks);
+            compound = DataUtil.saveAllItems(compound, stacks, true);
         }
         else if(root.getInventoryType() == InventoryType.FLUID){
             fluidtank.writeToNBT(compound);
@@ -69,7 +69,7 @@ public class GenericContainerData extends GenericColorable<ContainerData, Contai
         super.readFromNBT(compound);
         //
         if(root.getInventoryType() == InventoryType.ITEM){
-            ItemStackHelper.loadAllItems(compound, stacks);
+            DataUtil.loadAllItems(compound, stacks);
         }
         else if(root.getInventoryType() == InventoryType.FLUID){
             fluidtank.readFromNBT(compound);

@@ -9,7 +9,6 @@ import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.SettingHolder;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
-import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
@@ -22,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,13 +49,11 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
     public ItemStack getItemStack(@Nullable BlockData data);
 
     @SideOnly(Side.CLIENT)
-    public BlockModel<BlockData> getModel();
+    public Model<BlockData, BlockTileEntity> getModel();
 
     public Class<? extends BlockData> getDataClass();
-
-    public ResourceLocation getDefaultKey();
     
-    public @Nullable Class<? extends BlockScript<?>> getScript();
+    public @Nullable Class<? extends BlockScript<?>> getScriptClass();
 
     //<-- BLOCK DATA -->//
     public static interface BlockData extends Colorable, Lockable, Saveloadable<BlockData>, Textureable {
@@ -74,6 +70,8 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
         public TileEntity getTileEntity();
         
         public IBlockState getBlockState();
+        
+        public BlockData getBlockData();
 
     }
 

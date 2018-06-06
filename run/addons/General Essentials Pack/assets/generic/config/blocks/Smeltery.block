@@ -1,0 +1,10 @@
+{
+	"RegistryName": "generic:smeltery",
+	"Addon": "fvtm:generic",
+	"ModelFile": "net.fexcraft.mod.addons.gep.models.blocks.SmelteryModel.class",
+	"FullName": "3x3 Universal Smeltery",
+	"Textures":[
+		"generic:textures/blocks/smeltery.png"
+	],
+	"Functional": true
+}

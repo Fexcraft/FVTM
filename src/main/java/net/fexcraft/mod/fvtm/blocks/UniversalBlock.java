@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.blocks;
 
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -12,17 +10,21 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "smeltery", tileentity = SmelteryTileEntity.class)
-public class SmelteryBlock extends BlockContainer {
+//@fBlock(modid = "fvtm", name = "block", tileentity = UniversalTileEntity.class)
+public class UniversalBlock extends BlockContainer {
 
-    public SmelteryBlock(){
+    public static UniversalBlock INSTANCE = new UniversalBlock();
+
+	public UniversalBlock(){
         super(Material.ANVIL);
         this.setCreativeTab(Tabs.BLOCKS);
+        this.setRegistryName("fvtm", "block");
+        this.setUnlocalizedName(this.getRegistryName().toString());
     }
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta){
-        return new SmelteryTileEntity();
+        return new UniversalTileEntity();
     }
 
     @Override

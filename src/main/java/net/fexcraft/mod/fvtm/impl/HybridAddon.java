@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.impl;
 import java.io.File;
 
 import net.fexcraft.mod.fvtm.api.Attribute;
+import net.fexcraft.mod.fvtm.api.Block;
 import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Fuel;
@@ -20,13 +21,11 @@ public abstract class HybridAddon extends GenericAddon {
         hybrid = true;
     }
 
-    public void regFuels(Register<Fuel> event){
-    }
+    public void regFuels(Register<Fuel> event){ }
 
     public abstract void regMaterials(RegistryEvent.Register<Material> event);
 
-    public void regAttributes(RegistryEvent.Register<Attribute> event){
-    }
+    public void regAttributes(RegistryEvent.Register<Attribute> event){ }
 
     public abstract void regParts(RegistryEvent.Register<Part> event);
 
@@ -34,8 +33,7 @@ public abstract class HybridAddon extends GenericAddon {
 
     public abstract void regContainers(Register<Container> event);
 
-    public void regSounds(Register<SoundEvent> event){
-    }
+    public void regSounds(Register<SoundEvent> event){ }
 
     /**
      * Set `true` if you want to skip default JSON config search and parsing for
@@ -43,7 +41,8 @@ public abstract class HybridAddon extends GenericAddon {
      */
     public abstract boolean skipDefaultRegistryMethods();
 
-    public void regConsumables(Register<Consumable> event){
-    }
+    public void regConsumables(Register<Consumable> event){ }
+
+	public void regBlocks(Register<Block> event){ }
 
 }

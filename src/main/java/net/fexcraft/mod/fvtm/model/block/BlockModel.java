@@ -2,31 +2,32 @@ package net.fexcraft.mod.fvtm.model.block;
 
 import java.util.ArrayList;
 
-import javax.annotation.Nullable;
-
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
+import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
+import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
-import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
 import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
-import net.fexcraft.mod.lib.tmt.ModelBase;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public class BlockModel<T extends BlockData> extends ModelBase implements TMTItemModel {
+public class BlockModel extends GenericModel<BlockData, BlockTileEntity> implements TMTItemModel {
 
     public ModelRendererTurbo body[] = new ModelRendererTurbo[0];
+    public ModelRendererTurbo body_colored_primary[] = new ModelRendererTurbo[0];
+    public ModelRendererTurbo body_colored_secondary[] = new ModelRendererTurbo[0];
+    public ModelRendererTurbo glow[] = new ModelRendererTurbo[0];
     public ArrayList<String> creators = new ArrayList<String>();
-
-    private int tx, ty;
+    
     public float gui_translate_x = 0;
     public float gui_translate_y = 0;
     public float gui_translate_z = 0;
@@ -34,32 +35,46 @@ public class BlockModel<T extends BlockData> extends ModelBase implements TMTIte
     public float gui_scale_y = 0.250f;
     public float gui_scale_z = 0.250f;
 
-    public BlockModel(){
-    	//
-    }
+    public BlockModel(){ super(); }
 
     public BlockModel(JsonObject obj){
-        if(obj == null || (obj.has("type") && obj.get("type").getAsString().equals("class"))){
-            return;
-        }
-        creators = JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray());
-        tx = obj.get("texture_size_x").getAsInt();
-        ty = obj.get("texture_size_y").getAsInt();
-        body = JsonToTMT.parse(this, "body", obj, tx, ty);
+        super(obj);
+        body = submodels.get("body");
+        body_colored_primary = submodels.get("body_colored_primary");
+        body_colored_secondary = submodels.get("body_colored_secondary");
+        glow = submodels.get("glow");
     }
 
     @Override
     public void render(){
         //cannot render without providing vehicledata;
+    	render(body);
     }
 
-    public void render(BlockData data){
-        render(data, null, 0);
-    }
+	@Override
+	public void render(BlockData data, BlockTileEntity key){
+		render(data, key, null, -2);
+	}
 
-    public void render(BlockData data, @Nullable Entity entity, int meta){
-        render(body);
-    }
+	@Override
+	public void render(BlockData data, BlockTileEntity key, Entity ent, int meta){
+		render(body);
+		if(PartModel.rq(body_colored_primary)){
+			data.getPrimaryColor().glColorApply();
+			render(body_colored_primary);
+			RGB.glColorReset();
+		}
+		if(PartModel.rq(body_colored_secondary)){
+			data.getSecondaryColor().glColorApply();
+			render(body_colored_secondary);
+			RGB.glColorReset();
+		}
+		if(PartModel.rq(glow)){
+			PartModel.lightOff(ent);
+			render(glow);
+			PartModel.lightOn(ent);
+		}
+	}
 
     @Override
     public void rotate(ModelRendererTurbo[] mod, float d, float d1, float d2){
@@ -79,14 +94,6 @@ public class BlockModel<T extends BlockData> extends ModelBase implements TMTIte
         translate(body, x, y, z);
     }
 
-    public void flip(ModelRendererTurbo[] mod){
-        /*for(ModelRendererTurbo sub : mod){
-			sub.doMirror(false, true, true);
-			sub.setRotationPoint(sub.rotationPointX, - sub.rotationPointY, - sub.rotationPointZ);
-		}*/
-        this.fixRotations(mod);
-    }
-
     public void flipAll(){
         flip(body);
     }
@@ -94,13 +101,9 @@ public class BlockModel<T extends BlockData> extends ModelBase implements TMTIte
     @Override
     public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
         BlockData data = ((BlockItem)item.getItem()).getBlock(item);
-        if(data == null){
-            return;
-        }
-        BlockModel<BlockData> model = data.getBlock().getModel();
-        if(model == null){
-            return;
-        }
+        if(data == null){ return; }
+        BlockModel model = (BlockModel)data.getBlock().getModel();
+        if(model == null){ return; }
         float[] scal = new float[]{model.gui_scale_x, model.gui_scale_y, model.gui_scale_z};
         //
         GL11.glPushMatrix();
@@ -117,7 +120,7 @@ public class BlockModel<T extends BlockData> extends ModelBase implements TMTIte
                 case THIRD_PERSON_RIGHT_HAND:
                 case THIRD_PERSON_LEFT_HAND: {
                     GL11.glRotatef(90F, 0F, 1F, 0F);
-                    GL11.glTranslatef(0F, 0/*-0.15F*/, 0F);
+                    GL11.glTranslatef(0F, 0, 0F);
                     GL11.glTranslatef(0, 0, 0);
                     break;
                 }
@@ -134,10 +137,6 @@ public class BlockModel<T extends BlockData> extends ModelBase implements TMTIte
                     GL11.glRotatef(-135, 0, 1, 0);
                     GL11.glRotatef(-30, 1, 0, 0);
                     GL11.glRotatef(-30, 0, 0, 1);
-                    //
-                    /*scal[0] = model.gui_scale_x;
-					scal[1] = model.gui_scale_y;
-					scal[2] = model.gui_scale_z;*/
                     break;
                 }
                 case HEAD: {
@@ -153,7 +152,7 @@ public class BlockModel<T extends BlockData> extends ModelBase implements TMTIte
                 GL11.glPushMatrix();
                 GL11.glRotated(180d, 1, 0, 0);
                 Minecraft.getMinecraft().renderEngine.bindTexture(data.getTexture());
-                model.render(data, null, 0);
+                model.render(data, null, null, -1);
                 GL11.glPopMatrix();
             }
             GL11.glScalef(-scal[0], -scal[1], -scal[2]);

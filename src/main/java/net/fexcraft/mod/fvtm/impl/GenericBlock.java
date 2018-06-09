@@ -38,13 +38,13 @@ public class GenericBlock implements Block {
 
     @SuppressWarnings("unchecked")
 	public GenericBlock(JsonObject obj){
-        this.registryname = DataUtil.getRegistryName(obj, "CONTAINER");
-        this.addon = DataUtil.getAddon(registryname, obj, "CONTAINER");
+        this.registryname = DataUtil.getRegistryName(obj, "BLOCK");
+        this.addon = DataUtil.getAddon(registryname, obj, "BLOCK");
         if(Static.side().isClient()){
             this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), BlockData.class, BlockTileEntity.class, BlockModel.class);
         }
         this.name = JsonUtil.getIfExists(obj, "FullName", this.getRegistryName().toString());
-        this.textures = DataUtil.getTextures(obj, registryname, "CONTAINER");;
+        this.textures = DataUtil.getTextures(obj, registryname, "BLOCK");;
         this.description = DataUtil.getDescription(obj);
         this.primary = DataUtil.getRGB(obj, "PrimaryColor");
         this.secondary = DataUtil.getRGB(obj, "SecondaryColor");
@@ -88,7 +88,7 @@ public class GenericBlock implements Block {
     	if(obj.has("Containers") || obj.has("Inventories")){
     		inventories = new TreeMap<String, Integer>();
     		obj.get(obj.has("Containers") ? "Containers" : "Inventories").getAsJsonArray().forEach(elm -> {
-    			tanks.put(elm.getAsJsonObject().get("name").getAsString(), elm.getAsJsonObject().get("capacity").getAsInt());
+    			inventories.put(elm.getAsJsonObject().get("name").getAsString(), elm.getAsJsonObject().get("capacity").getAsInt());
     		});
     	}
     }

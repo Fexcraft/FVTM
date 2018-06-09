@@ -3,9 +3,11 @@ package net.fexcraft.mod.fvtm.blocks;
 import java.util.Random;
 import java.util.TreeMap;
 
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockIOT;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -139,11 +141,11 @@ public class UniversalBlock extends BlockContainer {
         	if(facing != EnumFacing.EAST){
         		switch(facing){
         			case NORTH:{
-        				map.put(pos, new BlockPos(-pos.getX(), pos.getY(),  pos.getZ()).add(core));
+        				map.put(pos, new BlockPos( pos.getZ(), pos.getY(), -pos.getX()).add(core));
         				break;
         			}
         			case SOUTH:{
-        				map.put(pos, new BlockPos( pos.getX(), pos.getY(), -pos.getZ()).add(core));
+        				map.put(pos, new BlockPos(-pos.getZ(), pos.getY(),  pos.getX()).add(core));
         				break;
         			}
         			case WEST:{
@@ -162,7 +164,7 @@ public class UniversalBlock extends BlockContainer {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-        if(!world.isRemote){
+        if(!world.isRemote && hand == EnumHand.MAIN_HAND){
         	UniversalTileEntity tile = (UniversalTileEntity) world.getTileEntity(pos);
             if(tile == null){
                 Print.chat(player, "No TileEntity at position found.");
@@ -193,9 +195,20 @@ public class UniversalBlock extends BlockContainer {
                 }
                 BlockData data = tile.getBlockData();
                 BlockIOT biot = data.getBlock().getSubBlocks().get(tile.getRelPos());
-                switch(biot.getGuiType(tile.getRelFacing(side))){
+                String str = biot.getGuiType(tile.getRelFacing(side));
+                if(str == null){ return false; }
+                String[] arr = str.split(":");
+                switch(arr[0]){
                 	case "tank":{
-                		
+                		if(data.getFluidTanks().get(arr[1]) == null){
+                			Print.chat(player, "Tank with ID " + arr[1] + " not found!");
+                		}
+                		else{
+                			if(Static.side().isClient()){
+                				net.fexcraft.mod.fvtm.gui.UniversalBlockFluidGui.lastside = side;
+                			}
+                			player.openGui(FVTM.getInstance(), GuiHandler.BLOCK_FLUID_INVENTORY, world, pos.getX(), pos.getY(), pos.getZ());
+                		}
                 		break;
                 	}
                 	case "inventory":{
@@ -206,11 +219,16 @@ public class UniversalBlock extends BlockContainer {
                 		
                 		break;
                 	}
-                	//TODO
+                	case "button":{
+                		
+                		break;
+                	}
                 	default:{
-                		Print.debug(tile.getRelFacing(side), biot.getGuiType(tile.getRelFacing(side)));
+                		Print.debug(tile.getRelFacing(side), str);
+                		break;
                 	}
                 }
+        		Print.debug(tile.getRelFacing(side), str);
                 return true;
             }
             else if(Static.dev()){

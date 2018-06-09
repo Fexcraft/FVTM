@@ -257,7 +257,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 
     public boolean isDrivenByPlayer(){
         if(vehicledata.getVehicle().isTrailerOrWagon()){
-            return getParent() != null && getParent().getSeats()[0] != null && getParent().getSeats()[0].getControllingPassenger() instanceof EntityPlayer;
+            return getParent() != null && getParent().getSeats()[0] != null && getParent().getSeats()[0].isPassengerThePlayer();
         }
         else{
             return seats[0] != null && seats[0].isPassengerThePlayer();

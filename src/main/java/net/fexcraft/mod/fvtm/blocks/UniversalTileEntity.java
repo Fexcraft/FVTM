@@ -12,11 +12,13 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.api.common.LockableObject;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
+import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +30,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -120,7 +124,15 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
     @Override
     public void processClientPacket(PacketTileEntityUpdate packet){
         if(packet.nbt.hasKey("task")){
-            //
+            switch(packet.nbt.getString("task")){
+	            case "update_fluid_tank": {
+	            	IFluidHandler handler = this.getBlockData().getFluidTanks().get(packet.nbt.getString("tankid"));
+	            	if(handler != null){
+	            		((FluidTank)handler).readFromNBT(packet.nbt.getCompoundTag("state"));
+	            	}
+	                break;
+	            }
+            }
         }
         else{
             this.readFromNBT(packet.nbt);
@@ -358,5 +370,14 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
         }
         return false;
     }
+
+	public void sendFluidTankUpdate(EntityPlayer player, String tank){
+        if(player == null){ return; }
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("task", "update_fluid_tank");
+        nbt.setTag("state", ((FluidTank)this.getBlockData().getFluidTanks().get(tank)).writeToNBT(new NBTTagCompound()));
+        nbt.setString("tankid", tank);
+        PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
+	}
 
 }

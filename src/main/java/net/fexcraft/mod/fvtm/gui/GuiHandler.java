@@ -41,6 +41,8 @@ public class GuiHandler implements IGuiHandler {
     public static final int CONSTRUCTOR = 9000;//92110;
     public static final int CONTAINER_INVENTORY = 9210;
     public static final int CONTAINER_FLUID_INVENTORY = 9211;
+    public static final int BLOCK_INVENTORY = 9310;
+    public static final int BLOCK_FLUID_INVENTORY = 9311;
 	public static final int VEHICLE_SCRIPTSGUI = 9214;
 
     @Override
@@ -61,6 +63,10 @@ public class GuiHandler implements IGuiHandler {
                 return new AdjSignGui.Server(player, world, x, y, z);
             case 9214:
             	return new GenericPlaceholderContainer();
+            case 9310:
+            	return null;//TODO
+            case 9311:
+            	return new UniversalBlockFluidGui.Server(player, world, x, y, z);
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             return new GenericPlaceholderContainer();
@@ -87,6 +93,10 @@ public class GuiHandler implements IGuiHandler {
                 return new AdjSignGui.Client(player, world, x, y, z);
             case 9214:
             	return new VehicleScriptGui(player, world, x, y, z);
+            case 9310:
+            	return null;//TODO
+            case 9311:
+            	return new UniversalBlockFluidGui.Client(player, world, x, y, z);
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             Print.debug("CREATING GUI!");
@@ -379,6 +389,13 @@ public class GuiHandler implements IGuiHandler {
                 		setting.onChange(player, ent, packet.nbt.getInteger("payload"), objects);
                 	}
                 	else return;
+                }
+                case "block_fluid_tank_set":{
+                    EntityPlayer player = (EntityPlayer)objs[0];
+                    if(player.openContainer instanceof UniversalBlockFluidGui.Server){
+                    	((UniversalBlockFluidGui.Server)player.openContainer).init(packet.nbt.getString("string"));
+                    }
+                	return;
                 }
             }
         }

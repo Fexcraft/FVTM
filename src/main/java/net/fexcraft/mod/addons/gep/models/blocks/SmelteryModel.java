@@ -1,9 +1,15 @@
 package net.fexcraft.mod.addons.gep.models.blocks;
 
+import net.fexcraft.mod.fvtm.api.Block.BlockData;
+import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.minecraft.entity.Entity;
 
 public class SmelteryModel extends BlockModel {
+	
+	private ModelRendererTurbo[] left = new ModelRendererTurbo[2];
+	private ModelRendererTurbo[] right = new ModelRendererTurbo[2];
 
     public SmelteryModel(){
         textureX = 512; textureY = 256;
@@ -214,36 +220,37 @@ public class SmelteryModel extends BlockModel {
         turretModel[6].setRotationPoint(-6F, -15F, -38F);
 
         turretModel[7].addBox(0F, 0F, 0F, 4, 2, 2, 0F); // Box 48
-        turretModel[7].setRotationPoint(2F, -15F, -38F);
+        turretModel[7].setRotationPoint(2F, -15F, -38F);*/
 
-        barrelModel = new ModelRendererTurbo[1];
-        barrelModel[0] = new ModelRendererTurbo(this, 0, 0, textureX, textureY); // Box 55
+        right = new ModelRendererTurbo[2];
+        right[0] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 33
+        right[1] = new ModelRendererTurbo(this, 489, 1, textureX, textureY); // Box 34
 
-        barrelModel[0].addBox(0F, 0F, 0F, 16, 16, 16, 0F); // Box 55
-        barrelModel[0].setRotationPoint(-8F, 0F, -8F);
+        right[0].addShapeBox(0F, 0F, -21F, 12, 12, 1, 0F, 0F, 0F, 0F, 0F, 0F, -4F, 0F, 0F, 4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -4F, 0F, 0F, 4F, 0F, 0F, 0F); // Box 33
+        right[0].setRotationPoint(0F, -32F, 0F);
 
-        trailerModel = new ModelRendererTurbo[2];
-        trailerModel[0] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 33
-        trailerModel[1] = new ModelRendererTurbo(this, 489, 1, textureX, textureY); // Box 34
+        right[1].addShapeBox(12F, 0F, -17F, 9, 12, 1, 0F, 0F, 0F, 0F, 0F, 0F, -9F, 0F, 0F, 9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -9F, 0F, 0F, 9F, 0F, 0F, 0F); // Box 34
+        right[1].setRotationPoint(0F, -32F, 0F);
 
-        trailerModel[0].addShapeBox(0F, 0F, -21F, 12, 12, 1, 0F, 0F, 0F, 0F, 0F, 0F, -4F, 0F, 0F, 4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -4F, 0F, 0F, 4F, 0F, 0F, 0F); // Box 33
-        trailerModel[0].setRotationPoint(0F, -32F, 0F);
+        left = new ModelRendererTurbo[2];
+        left[0] = new ModelRendererTurbo(this, 1, 73, textureX, textureY); // Box 38
+        left[1] = new ModelRendererTurbo(this, 25, 25, textureX, textureY); // Box 39
 
-        trailerModel[1].addShapeBox(12F, 0F, -17F, 9, 12, 1, 0F, 0F, 0F, 0F, 0F, 0F, -9F, 0F, 0F, 9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -9F, 0F, 0F, 9F, 0F, 0F, 0F); // Box 34
-        trailerModel[1].setRotationPoint(0F, -32F, 0F);
+        left[0].addShapeBox(-12F, 0F, -21F, 12, 12, 1, 0F, 0F, 0F, -4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 4F, 0F, 0F, -4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 4F); // Box 38
+        left[0].setRotationPoint(0F, -32F, 0F);
 
-        barrelModel = new ModelRendererTurbo[2];
-        barrelModel[0] = new ModelRendererTurbo(this, 1, 73, textureX, textureY); // Box 38
-        barrelModel[1] = new ModelRendererTurbo(this, 25, 25, textureX, textureY); // Box 39
-
-        barrelModel[0].addShapeBox(-12F, 0F, -21F, 12, 12, 1, 0F, 0F, 0F, -4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 4F, 0F, 0F, -4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 4F); // Box 38
-        barrelModel[0].setRotationPoint(0F, -32F, 0F);
-
-        barrelModel[1].addShapeBox(-21F, 0F, -17F, 9, 12, 1, 0F, 0F, 0F, -9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 9F, 0F, 0F, -9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 9F); // Box 39
-        barrelModel[1].setRotationPoint(0F, -32F, 0F);*/
+        left[1].addShapeBox(-21F, 0F, -17F, 9, 12, 1, 0F, 0F, 0F, -9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 9F, 0F, 0F, -9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 9F); // Box 39
+        left[1].setRotationPoint(0F, -32F, 0F);
 
         translateAll(0F, 0F, 0F);
         flipAll();
     }
+    
+	@Override
+	public void render(BlockData data, BlockTileEntity key, Entity ent, int meta){
+		render(body);
+		render(right);
+		render(left);
+	}
 
 }

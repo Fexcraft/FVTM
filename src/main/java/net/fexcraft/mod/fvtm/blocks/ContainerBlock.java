@@ -237,7 +237,7 @@ public class ContainerBlock extends BlockContainer {
                 return tile.getContainerData().getContainer().getItemStack(tile.getContainerData());
             }
             catch(Exception e){
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         return ItemStack.EMPTY;

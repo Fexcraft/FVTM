@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.api;
 
+import java.util.Map;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.root.Colorable;
@@ -20,11 +21,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorHolder {
@@ -54,6 +59,29 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
     public Class<? extends BlockData> getDataClass();
     
     public @Nullable Class<? extends BlockScript<?>> getScriptClass();
+    
+    public Map<BlockPos, BlockIOT> getSubBlocks();
+    
+    public Map<String, Integer> getFluidTanks();
+    
+    public Map<String, Integer> getInventories();
+    
+	//<-- BLOCK IN/OUT Type-->//
+    public static interface BlockIOT {
+    	
+    	public boolean hasGui(EnumFacing facing);
+    	
+    	public String getGuiType(EnumFacing facing);
+    	
+    	public boolean hasFluidTank(EnumFacing facing);
+    	
+    	public IFluidHandler getFluidTank(BlockData data, EnumFacing facing);
+    	
+    	public boolean hasInventory(EnumFacing facing);
+    	
+    	public IItemHandler getInventory(BlockData data, EnumFacing facing);
+    	
+    }
 
     //<-- BLOCK DATA -->//
     public static interface BlockData extends Colorable, Lockable, Saveloadable<BlockData>, Textureable {
@@ -61,6 +89,12 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
         public Block getBlock();
 
         public @Nullable <T extends BlockScript<?>> T getScript();
+        
+        public Map<String, IFluidHandler> getFluidTanks();
+        
+        public Map<String, IItemHandler> getInventories();
+        
+        public Map<String, NonNullList<ItemStack>> getItemStacks();
 
     }
 

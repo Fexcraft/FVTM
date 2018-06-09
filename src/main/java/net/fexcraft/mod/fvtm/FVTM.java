@@ -5,6 +5,8 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.ContainerStatusListener;
+import net.fexcraft.mod.fvtm.impl.caps.BlockChunk;
+import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
 import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -21,6 +23,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -28,7 +31,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
- * Fex's Vehicle and Transportation Mod A Modification adding a custom add-on
+ * Fex's Vehicle and Transportation Mod - A Modification adding a custom add-on
  * part system to create customizable vehicles and, <i>more</i>.
  * <br>
  * License:
@@ -113,13 +116,14 @@ public class FVTM {
         FvtmPermissions.register();
         //
         SignCapabilityUtil.addListener(ContainerStatusListener.class);
+        CapabilityManager.INSTANCE.register(BlockChunk.class, new BlockChunkUtil.Storage(), new BlockChunkUtil.Callable());
         //
         APIs.load();
     }
 
     @Mod.EventHandler
     public void onStart(FMLServerAboutToStartEvent event){
-        //THREADMANAGER.launch();
+        //
     }
 
     @Mod.EventHandler
@@ -130,7 +134,7 @@ public class FVTM {
 
     @Mod.EventHandler
     public void onStop(FMLServerStoppingEvent event){
-        //THREADMANAGER.clear();
+        //
     }
 
     public static Resources getResources(){

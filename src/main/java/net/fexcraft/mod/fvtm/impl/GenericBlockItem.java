@@ -11,27 +11,36 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Block;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
+import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.blocks.UniversalBlock;
+import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.registry.ItemBlock16;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GenericBlockItem extends ItemBlock16 implements BlockItem {
+public class GenericBlockItem extends Item implements BlockItem {
 
     public static GenericBlockItem INSTANCE = new GenericBlockItem();
 
     public GenericBlockItem(){
-    	super(UniversalBlock.INSTANCE);
+    	//super(UniversalBlock.INSTANCE);
     	INSTANCE = this;
         //this.setCreativeTab(Tabs.BLOCKS);
         this.setHasSubtypes(true);
@@ -120,5 +129,47 @@ public class GenericBlockItem extends ItemBlock16 implements BlockItem {
         }
         return null;
 	}
+	
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
+        if(world.isRemote || !(facing == EnumFacing.UP)){
+            return EnumActionResult.PASS;
+        }
+        BlockData data = Resources.getBlockData(player.getHeldItem(hand).getTagCompound());
+        BlockPos core = pos.add(0, 1, 0);
+        if(isValidPostitionForBlock(world, player, core, player.getHorizontalFacing(), data)){
+            ItemStack stack = player.getHeldItem(hand);
+            stack.getTagCompound().setLong("PlacedPos", core.toLong());
+            UniversalBlock.getPositions(data, core, player.getHorizontalFacing()).forEach((relpos, blkpos) -> {
+                IBlockState state = UniversalBlock.INSTANCE.getDefaultState();
+                stack.getTagCompound().setLong("RelativePos", relpos.toLong());
+                state.getBlock().onBlockPlacedBy(world, blkpos, state.withProperty(ContainerBlock.FACING, player.getHorizontalFacing()), player, stack);
+            });
+            world.getChunkFromBlockCoords(core).getCapability(BlockChunkUtil.CAPABILITY, null).setBlockAt(data, core);
+            stack.shrink(64);
+            return EnumActionResult.SUCCESS;
+        }
+        return EnumActionResult.PASS;
+    }
+
+    public static boolean isValidPostitionForBlock(World world, EntityPlayer player, BlockPos pos, EnumFacing opposite, BlockData data){
+        Collection<BlockPos> list = UniversalBlock.getPositions(data, pos, opposite).values();
+        BlockPos obstacle = null;
+        IBlockState state = null;
+        for(BlockPos blkpos : list){
+            state = world.getBlockState(blkpos);
+            if(!state.getBlock().isReplaceable(world, blkpos)){
+                obstacle = blkpos;
+                break;
+            }
+        }
+        if(obstacle != null){
+            Print.bar(player, String.format("Obstacle at position: %sx, %sy, %sz!", obstacle.getX(), obstacle.getY(), obstacle.getZ()));
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
 }

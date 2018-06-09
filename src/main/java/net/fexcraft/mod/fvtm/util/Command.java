@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -215,6 +216,8 @@ public class Command extends CommandBase {
             	Print.chat(sender, "&9Wheels: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof WheelEntity).collect(Collectors.toList()).size());
             	Print.chat(sender, "&9Seats: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof SeatEntity).collect(Collectors.toList()).size());
             	Print.chat(sender, "&9Container Holders: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof ContainerEntity).collect(Collectors.toList()).size());
+            	Print.chat(sender, "&8- - - - &9- &6- &9- &8- - - -");
+            	Print.chat(sender, "&9BlockData (in Chunk): &7" + sender.getEntityWorld().getChunkFromBlockCoords(sender.getPosition()).getCapability(BlockChunkUtil.CAPABILITY, null).getAllBlockData().size());
             	break;
             }
             case "spam":{

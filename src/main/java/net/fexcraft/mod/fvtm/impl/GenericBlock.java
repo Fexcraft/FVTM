@@ -1,7 +1,11 @@
 package net.fexcraft.mod.fvtm.impl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Addon;
@@ -16,6 +20,7 @@ import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 
 public class GenericBlock implements Block {
 
@@ -28,6 +33,8 @@ public class GenericBlock implements Block {
     private RGB primary, secondary;
     private boolean functional;
     private Class<? extends BlockScript<?>> clazz;
+    private Map<String, Integer> tanks, inventories;
+    private Map<BlockPos, BlockIOT> subblocks = new TreeMap<>();
 
     @SuppressWarnings("unchecked")
 	public GenericBlock(JsonObject obj){
@@ -50,6 +57,40 @@ public class GenericBlock implements Block {
 				e.printStackTrace();
 			}
         }
+		if(obj.has("Positions")){
+			JsonArray array = obj.get("Positions").getAsJsonArray();
+			if(array.size() == 0){
+				subblocks.put(new BlockPos(0, 0, 0), GenericBlockIOT.EMPTY);
+			}
+			else{
+				array.forEach(elm -> {
+					try{
+						JsonObject jsn = elm.getAsJsonObject();
+						BlockPos pos = new BlockPos(jsn.get("x").getAsInt(), jsn.get("y").getAsInt(), jsn.get("z").getAsInt());
+						subblocks.put(pos, GenericBlockIOT.fromJson(jsn));
+					}
+					catch(Exception e){
+						e.printStackTrace();
+						Static.stop();
+					}
+				});
+			}
+		}
+		else{
+			subblocks.put(new BlockPos(0, 0, 0), GenericBlockIOT.EMPTY);
+		}
+    	if(obj.has("Tanks") || obj.has("FluidTanks")){
+    		tanks = new TreeMap<String, Integer>();
+    		obj.get(obj.has("Tanks") ? "Tanks" : "FluidTanks").getAsJsonArray().forEach(elm -> {
+    			tanks.put(elm.getAsJsonObject().get("name").getAsString(), elm.getAsJsonObject().get("capacity").getAsInt());
+    		});
+    	}
+    	if(obj.has("Containers") || obj.has("Inventories")){
+    		inventories = new TreeMap<String, Integer>();
+    		obj.get(obj.has("Containers") ? "Containers" : "Inventories").getAsJsonArray().forEach(elm -> {
+    			tanks.put(elm.getAsJsonObject().get("name").getAsString(), elm.getAsJsonObject().get("capacity").getAsInt());
+    		});
+    	}
     }
 
     @Override
@@ -123,6 +164,21 @@ public class GenericBlock implements Block {
 	@Override
 	public Class<? extends BlockScript<?>> getScriptClass(){
 		return clazz;
+	}
+
+	@Override
+	public Map<String, Integer> getFluidTanks(){
+		return tanks == null ? Collections.emptyMap() : tanks;
+	}
+
+	@Override
+	public Map<String, Integer> getInventories(){
+		return inventories == null ? Collections.emptyMap() : inventories;
+	}
+
+	@Override
+	public Map<BlockPos, BlockIOT> getSubBlocks(){
+		return subblocks;
 	}
 
 }

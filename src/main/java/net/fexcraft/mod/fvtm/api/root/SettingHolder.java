@@ -2,18 +2,17 @@ package net.fexcraft.mod.fvtm.api.root;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 public interface SettingHolder {
 	
 	public String getSettingHolderId();
 	
-    public @Nullable ScriptSetting<?>[] getSettings(int seat);
+    public @Nullable ScriptSetting<?, ?>[] getSettings(int seat);
     
     public Object getSettingsValue(String setting);
     
-    public static abstract class ScriptSetting<T extends SettingHolder> {
+    public static abstract class ScriptSetting<T extends SettingHolder, E> {
     	
     	protected T holder;
     	private String id;
@@ -35,7 +34,7 @@ public interface SettingHolder {
     		INTEGER, BOOLEAN, STRING, BUTTON
     	}
     	
-    	public abstract void onChange(EntityPlayer player, Entity entity, int i, @Nullable Object... objs);
+    	public abstract void onChange(EntityPlayer player, E ent, int i, @Nullable Object... objs);
     	
     	public final String getValue(){
     		return String.valueOf(holder.getSettingsValue(id));

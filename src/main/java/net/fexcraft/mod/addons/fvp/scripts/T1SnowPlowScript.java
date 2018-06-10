@@ -117,9 +117,9 @@ public class T1SnowPlowScript implements VehicleScript {
     }
 
 	@Override
-	public ScriptSetting<?>[] getSettings(int seat){
-		return seat == 0 ? new ScriptSetting<?>[]{
-			new ScriptSetting<T1SnowPlowScript>(this, "snow_plow", ScriptSetting.Type.BOOLEAN){
+	public ScriptSetting<?, ?>[] getSettings(int seat){
+		return seat == 0 ? new ScriptSetting<?, ?>[]{
+			new ScriptSetting<T1SnowPlowScript, Entity>(this, "snow_plow", ScriptSetting.Type.BOOLEAN){
 				@Override
 				public void onChange(EntityPlayer player, Entity entity, int i, Object... objects){
 					on = i == 0 ? false : i == 1 ? true : on;

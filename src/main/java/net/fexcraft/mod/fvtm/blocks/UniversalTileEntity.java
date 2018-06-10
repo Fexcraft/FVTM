@@ -40,6 +40,7 @@ import static net.minecraft.util.EnumFacing.*;
 
 public class UniversalTileEntity extends TileEntity implements BlockTileEntity, IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
 	
+	private Long longpos;
 	private boolean core;
 	private BlockPos corepos, relpos;
 
@@ -183,9 +184,9 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
         if(!this.core){
             this.corepos = core;
         }
-        if(this.core && this.getBlockData().getScript() != null){
+        /*if(this.core && this.getBlockData().getScript() != null){
         	this.getBlockData().getScript().onPlace(this, this.getBlockData());
-        }
+        }*/
         Print.debug("BLKTESETUP: " + this.pos.toString() + " OK;");
 	}
 
@@ -198,9 +199,9 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
         	if(!asp){ chunk.setBlockAt(null, getCorePos()); }
         	if(this.core && blkpos.equals(this.pos) && asp){
             	if(data != null){
-            		if(data.getScript() != null){
+            		/*if(data.getScript() != null){
             			data.getScript().onBreak(this, data);
-            		}
+            		}*/
             		//
                 	EntityItem ent = new EntityItem(world);
                     ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
@@ -239,6 +240,9 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
     public EnumFacing getRelFacing(EnumFacing facing){
     	EnumFacing local = EnumFacing.getFront(getBlockMetadata());
 		if(local != EAST && local.getAxis() != EnumFacing.Axis.Y){
+			if(facing.getAxis() == EnumFacing.Axis.Y){
+				return facing;
+			}
 			switch(local){
 				case NORTH:{
 					switch(facing){
@@ -404,6 +408,12 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
         nbt.setTag("state", ((FluidTank)this.getBlockData().getFluidTanks().get(tank)).writeToNBT(new NBTTagCompound()));
         nbt.setString("tankid", tank);
         PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
+	}
+
+	@Override
+	public long getLongPos(){
+		if(longpos == null){ longpos = pos.toLong(); }
+		return longpos;
 	}
 
 }

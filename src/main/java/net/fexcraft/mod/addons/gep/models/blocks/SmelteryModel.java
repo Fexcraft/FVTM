@@ -1,9 +1,12 @@
 package net.fexcraft.mod.addons.gep.models.blocks;
 
+import net.fexcraft.mod.addons.gep.scripts.SmelteryScript;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
+import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 
 public class SmelteryModel extends BlockModel {
@@ -246,11 +249,26 @@ public class SmelteryModel extends BlockModel {
         flipAll();
     }
     
+    private float quarterrad = Static.rad1 / 4;
+    
 	@Override
 	public void render(BlockData data, BlockTileEntity key, Entity ent, int meta){
 		render(body);
-		render(right);
-		render(left);
+		if(data.getScript() != null && key != null){
+	    	float angle = RenderCache.getData(key.getLongPos(), "openstate", 0) + (data.getScript(SmelteryScript.class).open ? 1 : -1);
+	    	RenderCache.updateData(key.getLongPos(), "openstate", angle = angle > 160 ? 160 : angle < 0 ? 0 : angle);
+	    	//
+	    	rotate(left, 0, quarterrad * angle, 0);
+	        render(left);
+	    	rotate(left, 0, quarterrad * -angle, 0);
+	    	rotate(right, 0, quarterrad * -angle, 0);
+	        render(right);
+	    	rotate(right, 0, quarterrad * angle, 0);
+		}
+		else{
+			render(right);
+			render(left);
+		}
 	}
 
 }

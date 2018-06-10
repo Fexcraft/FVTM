@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -46,6 +47,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int BLOCK_INVENTORY = 9310;
     public static final int BLOCK_FLUID_INVENTORY = 9311;
     public static final int BLOCK_SCRIPTSGUI = 9312;
+    public static final int BLOCK_CRAFTERSCRIPT = 9313;
 	public static final int VEHICLE_SCRIPTSGUI = 9214;
 
     @Override
@@ -72,6 +74,8 @@ public class GuiHandler implements IGuiHandler {
             	return new UniversalBlockFluidGui.Server(player, world, x, y, z);
             case 9312:
             	return new GenericPlaceholderContainer();
+            case 9313:
+            	return new CrafterBlockScriptGui.Client(player, world, x, y, z);
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             return new GenericPlaceholderContainer();
@@ -104,6 +108,8 @@ public class GuiHandler implements IGuiHandler {
             	return new UniversalBlockFluidGui.Client(player, world, x, y, z);
             case 9312:
             	return new UniversalBlockScriptGui(player, world, x, y, z);
+            case 9313:
+            	return new CrafterBlockScriptGui.Server(player, world, x, y, z);
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             Print.debug("CREATING GUI!");
@@ -119,7 +125,7 @@ public class GuiHandler implements IGuiHandler {
             return "fvtm";
         }
 
-        @SuppressWarnings("deprecation")
+        @SuppressWarnings({ "deprecation", "unchecked" })
         @Override
         public void process(PacketNBTTagCompound packet, Object[] objs){
             if(!packet.nbt.hasKey("task")){
@@ -378,10 +384,10 @@ public class GuiHandler implements IGuiHandler {
                 		}
                 	}
                 	if(script == null){ return; }
-                	ScriptSetting<?> setting = null;
-                	for(ScriptSetting<?> sett : script.getSettings(packet.nbt.getInteger("seat"))){
+                	ScriptSetting<? extends VehicleScript, Entity> setting = null;
+                	for(ScriptSetting<?, ?> sett : script.getSettings(packet.nbt.getInteger("seat"))){
                 		if(sett.getId().equals(packet.nbt.getString("script_setting"))){
-                			setting = sett; break;
+                			setting = (ScriptSetting<? extends VehicleScript, Entity>) sett; break;
                 		}
                 	}
                 	if(setting != null){
@@ -422,10 +428,10 @@ public class GuiHandler implements IGuiHandler {
                     UniversalTileEntity tile = (UniversalTileEntity)player.world.getTileEntity(BlockPos.fromLong(packet.nbt.getLong("tile")));
                 	if(tile == null || tile.getBlockData() == null || tile.getBlockData().getScript() == null){ return; }
                 	BlockScript script = tile.getBlockData().getScript();
-                	ScriptSetting<?> setting = null;
-                	for(ScriptSetting<?> sett : script.getSettings(packet.nbt.getInteger("seat"))){
+                	ScriptSetting<? extends BlockScript, TileEntity> setting = null;
+                	for(ScriptSetting<?, ?> sett : script.getSettings(packet.nbt.getInteger("seat"))){
                 		if(sett.getId().equals(packet.nbt.getString("script_setting"))){
-                			setting = sett; break;
+                			setting = (ScriptSetting<? extends BlockScript, TileEntity>)sett; break;
                 		}
                 	}
                 	if(setting != null){
@@ -437,7 +443,7 @@ public class GuiHandler implements IGuiHandler {
                 				objects[i] = ((NBTTagString)list.get(i)).getString();
                 			}
                 		}
-                		setting.onChange(player, null, packet.nbt.getInteger("payload"), objects);
+                		setting.onChange(player, tile, packet.nbt.getInteger("payload"), objects);
                 	}
                 	else return;
                 }

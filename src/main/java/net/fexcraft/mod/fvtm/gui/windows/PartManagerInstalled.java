@@ -101,7 +101,7 @@ public class PartManagerInstalled implements Window {
     @SuppressWarnings("unchecked")
     public String getAt(ConstructorMainGUI gui, int k){
         Object[] parts = gui.tile.getVehicleData().getParts().entrySet().toArray();
-        return ((Entry<String, PartData>) parts[k]).getKey();
+        return ((Entry<String, PartData>)parts[k]).getKey();
     }
 
     @SuppressWarnings("unchecked")

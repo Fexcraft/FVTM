@@ -11,11 +11,9 @@ import net.fexcraft.mod.fvtm.api.root.SettingHolder;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
 import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -89,6 +87,8 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
         public Block getBlock();
 
         public @Nullable BlockScript getScript();
+
+        public @Nullable <T extends BlockScript> T getScript(Class<T> clazz);
         
         public Map<String, IFluidHandler> getFluidTanks();
         
@@ -106,6 +106,8 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
         public IBlockState getBlockState();
         
         public BlockData getBlockData();
+        
+        public long getLongPos();
 
     }
 
@@ -121,18 +123,18 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
 
     public static interface BlockScript extends Saveloadable<BlockScript>, SettingHolder {
 
-        public void onDataPacket(TileEntity tile, BlockData data, NBTTagCompound compound, Side side);
+        public default void onDataPacket(TileEntity tile, BlockData data, NBTTagCompound compound, Side side){}
 
-        public void onPlace(TileEntity tile, BlockData data);
+        public default void onPlace(TileEntity tile, BlockData data){}
 
-        public void onBreak(TileEntity tile, BlockData data);
+        public default void onBreak(TileEntity tile, BlockData data){}
 
-        public boolean onInteract(TileEntity tile, BlockData data, EntityPlayer player, EnumHand hand);
+        public default boolean onInteract(TileEntity tile, BlockData data, EntityPlayer player, EnumHand hand){ return false; }
 
         public void onUpdate(TileEntity tile, BlockData data);
         
         @SideOnly(Side.CLIENT)
-        public void onGuiRender(TileEntity tile, EntityPlayer player, GuiContainer container);
+        public default void onGuiRender(TileEntity tile, EntityPlayer player, GuiContainer container){}
 
         public default void sendPacketToClient(TileEntity tile, EntityPlayer player, NBTTagCompound nbt){
             nbt.setBoolean("ScriptPacket", true);
@@ -151,9 +153,9 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
             PacketHandler.getInstance().sendToAllAround(new PacketTileEntityUpdate(dim, tile.getPos(), nbt), new TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), 256));
         }
 
-        public default void sendPacketToServer(Entity ent, NBTTagCompound nbt){
+        public default void sendPacketToServer(TileEntity tile, NBTTagCompound nbt){
             nbt.setBoolean("ScriptPacket", true);
-            PacketHandler.getInstance().sendToServer(new PacketEntityUpdate(ent, nbt));
+            PacketHandler.getInstance().sendToServer(new PacketTileEntityUpdate(tile.getWorld().provider.getDimension(), tile.getPos(), nbt));
         }
         
         @Override

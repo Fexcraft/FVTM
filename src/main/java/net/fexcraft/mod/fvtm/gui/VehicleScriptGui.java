@@ -28,7 +28,7 @@ public class VehicleScriptGui extends GuiContainer {
     //private World world;
     private int seat, vehicle, scroll, size;
     private VehicleEntity entity;
-    private ArrayList<ScriptSetting<?>> settings = new ArrayList<ScriptSetting<?>>();
+    private ArrayList<ScriptSetting<?, ?>> settings = new ArrayList<ScriptSetting<?, ?>>();
     private GenericGuiButton button_up, button_down;
 	
 	public VehicleScriptGui(EntityPlayer player, World world, int x, int y, int z){
@@ -39,8 +39,8 @@ public class VehicleScriptGui extends GuiContainer {
 			exit(); return;
 		}
 		this.entity = (VehicleEntity)ent;
-		ArrayList<ScriptSetting<?>> list = new ArrayList<>();
-		entity.getVehicleData().getScripts().forEach(scr -> { ScriptSetting<?>[] arr = scr.getSettings(seat); if(arr != null){ list.addAll(Arrays.asList(arr)); } });
+		ArrayList<ScriptSetting<?, ?>> list = new ArrayList<>();
+		entity.getVehicleData().getScripts().forEach(scr -> { ScriptSetting<?, ?>[] arr = scr.getSettings(seat); if(arr != null){ list.addAll(Arrays.asList(arr)); } });
 		for(int i = 0; i < 8; i++){
 			if(i + scroll >= list.size()){ break; }
 			settings.add(list.get(i + scroll));
@@ -62,7 +62,7 @@ public class VehicleScriptGui extends GuiContainer {
         //
         for(int i = 0; i < 8; i++){
         	if(i >= settings.size()){ break; }
-        	ScriptSetting<?> setting = settings.get(i);
+        	ScriptSetting<?, ?> setting = settings.get(i);
         	String str = this.fontRenderer.trimStringToWidth(I18n.format("script." + setting.getHolder().getSettingHolderId() + "." + setting.getId(), new Object[0]), 105);
     		this.fontRenderer.drawString(str, guiLeft +   8, guiTop + 23 + (i * 16), MapColor.GRAY.colorValue);
     		str = this.fontRenderer.trimStringToWidth(setting.getValue(), 105);
@@ -109,7 +109,7 @@ public class VehicleScriptGui extends GuiContainer {
 	public void actionPerformed(GuiButton button){
 		if(button.id < 16){
 			NBTTagCompound compound = new NBTTagCompound();
-			ScriptSetting<?> setting = button instanceof Button ? ((Button)button).setting : null;
+			ScriptSetting<?, ?> setting = button instanceof Button ? ((Button)button).setting : null;
 			if(setting == null){ return; }
 			boolean positive = ((Button)button).upper;
 			switch(setting.getType()){
@@ -192,9 +192,9 @@ public class VehicleScriptGui extends GuiContainer {
 	public static class Button extends GuiButton {
 		
 		private boolean upper;
-		private ScriptSetting<?> setting;
+		private ScriptSetting<?, ?> setting;
 
-		public Button(int id, int x, int y, ScriptSetting<?> setting, boolean upper){
+		public Button(int id, int x, int y, ScriptSetting<?, ?> setting, boolean upper){
 			super(id, x, y, 9, 7, "");
 			this.setting = setting;
 			this.upper = upper;

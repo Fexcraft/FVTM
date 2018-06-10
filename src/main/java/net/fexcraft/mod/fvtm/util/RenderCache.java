@@ -8,13 +8,13 @@ import net.minecraft.entity.Entity;
 public class RenderCache {
 	
 	//I tried a Guava Table, but it was relatively unreliable, somehow.
-	private static final TreeMap<Integer, TreeMap<String, Float>> cache = new TreeMap<>();
+	private static final TreeMap<Long, TreeMap<String, Float>> cache = new TreeMap<>();
 
 	public static void removeEntity(Entity ent){
 		removeEntity(ent.getEntityId());
 	}
 	
-	public static void removeEntity(int ent){
+	public static void removeEntity(long ent){
 		Print.debug(cache);
 		cache.remove(ent);
 		Print.debug(cache);
@@ -24,7 +24,7 @@ public class RenderCache {
 		return getData(ent.getEntityId(), id, def);
 	}
 
-	public static final float getData(int ent, String id, float def){
+	public static final float getData(long ent, String id, float def){
 		if(!cache.containsKey(ent)){
 			cache.put(ent, new TreeMap<>());
 		}
@@ -38,7 +38,7 @@ public class RenderCache {
 		return updateData(ent.getEntityId(), id, data);
 	}
 	
-	public static final float updateData(int ent, String id, float data){
+	public static final float updateData(long ent, String id, float data){
 		if(!cache.containsKey(ent)){
 			cache.put(ent, new TreeMap<>());
 		}

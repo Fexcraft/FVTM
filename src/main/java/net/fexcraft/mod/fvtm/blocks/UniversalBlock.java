@@ -163,10 +163,11 @@ public class UniversalBlock extends BlockContainer {
         return map;
 	}
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         if(!world.isRemote && hand == EnumHand.MAIN_HAND){
-        	UniversalTileEntity tile = (UniversalTileEntity) world.getTileEntity(pos);
+        	UniversalTileEntity tile = (UniversalTileEntity)world.getTileEntity(pos);
             if(tile == null){
                 Print.chat(player, "No TileEntity at position found.");
                 return true;
@@ -177,7 +178,7 @@ public class UniversalBlock extends BlockContainer {
                 return true;
             }
             ItemStack stack = player.getHeldItem(hand);
-            if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof MaterialItem ? ((MaterialItem) stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
+            if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof MaterialItem ? ((MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
                 if(tile.isLocked()){
                     tile.unlock(world, player, stack, (KeyItem) stack.getItem());
                 }
@@ -229,7 +230,7 @@ public class UniversalBlock extends BlockContainer {
                 		break;
                 	}
                 	case "script":{
-                		if(data.getScript() != null){
+                		if(data.getScript() == null){
                 			Print.chat(player, "Block has no script.");
                 		}
                 		else{
@@ -242,15 +243,15 @@ public class UniversalBlock extends BlockContainer {
                 			Print.chat(player, "Block has no buttons script.");
                 		}
                 		else{
-                			ScriptSetting<?>[] test = data.getScript().getSettings(0);
-                			for(ScriptSetting<?> sett : test){
+                			ScriptSetting<?, TileEntity>[] test = (ScriptSetting<?, TileEntity>[])data.getScript().getSettings(0);
+                			for(ScriptSetting<?, TileEntity> sett : test){
                 				if(sett.getId().equals(arr[1])){
                 					switch(sett.getType()){
 										case BOOLEAN:
-											sett.onChange(player, null, sett.getValue().equals("true") ? 0 : 1, new Object[0]);
+											sett.onChange(player, tile, sett.getValue().equals("true") ? 0 : 1, new Object[0]);
 											break;
 										case BUTTON:
-											sett.onChange(player, null, 0, new Object[0]);
+											sett.onChange(player, tile, 0, new Object[0]);
 											break;
 										case INTEGER: case STRING: default:
 											Print.chat(player, "Selected Script setting is not a Button/Bool!");

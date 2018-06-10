@@ -16,6 +16,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -115,6 +116,16 @@ public class FvtmUpdateHandler {
     	BlockChunkImplementation.ALLBLOCKS.forEach((key, value) -> {
     		if(value.getScript() != null){
     			value.getScript().onUpdate(event.world.getTileEntity(key), value);
+    		}
+    	});
+    }
+    
+    @SubscribeEvent
+    public void onTick(TickEvent.PlayerTickEvent event){
+    	if(event.phase == Phase.END || !event.player.world.isRemote){ return; }
+    	BlockChunkImplementation.ALLBLOCKS.forEach((key, value) -> {
+    		if(value.getScript() != null){
+    			value.getScript().onUpdate(event.player.world.getTileEntity(key), value);
     		}
     	});
     }

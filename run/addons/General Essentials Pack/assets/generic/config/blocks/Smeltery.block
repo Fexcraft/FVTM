@@ -25,7 +25,7 @@
 		{ "x": -1, "y": 1, "z":  0, "Sides":[ { "side": "west", "gui": "tank:smeltery_tank" } ] },
 		{ "x":  1, "y": 1, "z":  1 },
 		{ "x":  0, "y": 1, "z":  1, "Sides":[ { "side": "south", "tank": "smeltery_tank" } ] },
-		{ "x": -1, "y": 1, "z":  1, "Sides":[ { "side": "west", "gui": "settings" } ] },
+		{ "x": -1, "y": 1, "z":  1, "Sides":[ { "side": "west", "gui": "button:open" } ] },
 		{ "x":  1, "y": 2, "z": -1 },
 		{ "x":  0, "y": 2, "z": -1 },
 		{ "x": -1, "y": 2, "z": -1 },
@@ -37,7 +37,7 @@
 		{ "x": -1, "y": 2, "z":  1 },
 		{ "x":  0, "y": 3, "z":  0 },
 		{ "x":  0, "y": 4, "z":  0 },
-		{ "x": -2, "y": 0, "z":  0, "Sides":[ { "side": "all", "gui": "inventory:smeltery_out", "inventory": "smeltery_out" } ] }
+		{ "x": -2, "y": 0, "z":  0, "Sides":[ { "side": "all", "gui": "inventory:smeltery_out", "inventory": "smeltery_out" }, { "side": "up", "gui":"script" } ] }
 	],
 	"FluidTanks":[
 		{
@@ -54,5 +54,6 @@
 			"name": "smeltery_queue",
 			"capacity": 32
 		}
-	]
+	],
+	"Script": "net.fexcraft.mod.addons.gep.scripts.SmelteryScript.class"
 }

@@ -24,16 +24,16 @@ public class UniversalBlockScriptGui extends GuiContainer {
     private static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/guis/vehicle_scripts.png");
     private int scroll, size;
     private UniversalTileEntity tile;
-    private ArrayList<ScriptSetting<?>> settings = new ArrayList<ScriptSetting<?>>();
+    private ArrayList<ScriptSetting<?, ?>> settings = new ArrayList<ScriptSetting<?, ?>>();
     private GenericGuiButton button_up, button_down;
 	
 	public UniversalBlockScriptGui(EntityPlayer player, World world, int x, int y, int z){
 		super(new GenericPlaceholderContainer());
 		this.tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		if(tile == null){ exit(); return; }
-		ArrayList<ScriptSetting<?>> list = new ArrayList<>();
+		ArrayList<ScriptSetting<?, ?>> list = new ArrayList<>();
 		if(tile.getBlockData().getScript() != null){
-			for(ScriptSetting<?> setting : tile.getBlockData().getScript().getSettings(0)){
+			for(ScriptSetting<?, ?> setting : tile.getBlockData().getScript().getSettings(0)){
 				list.add(setting);
 			}
 		}
@@ -58,7 +58,7 @@ public class UniversalBlockScriptGui extends GuiContainer {
         //
         for(int i = 0; i < 8; i++){
         	if(i >= settings.size()){ break; }
-        	ScriptSetting<?> setting = settings.get(i);
+        	ScriptSetting<?, ?> setting = settings.get(i);
         	String str = this.fontRenderer.trimStringToWidth(I18n.format("script." + setting.getHolder().getSettingHolderId() + "." + setting.getId(), new Object[0]), 105);
     		this.fontRenderer.drawString(str, guiLeft +   8, guiTop + 23 + (i * 16), MapColor.GRAY.colorValue);
     		str = this.fontRenderer.trimStringToWidth(setting.getValue(), 105);
@@ -105,7 +105,7 @@ public class UniversalBlockScriptGui extends GuiContainer {
 	public void actionPerformed(GuiButton button){
 		if(button.id < 16){
 			NBTTagCompound compound = new NBTTagCompound();
-			ScriptSetting<?> setting = button instanceof Button ? ((Button)button).setting : null;
+			ScriptSetting<?, ?> setting = button instanceof Button ? ((Button)button).setting : null;
 			if(setting == null){ return; }
 			boolean positive = ((Button)button).upper;
 			switch(setting.getType()){
@@ -190,9 +190,9 @@ public class UniversalBlockScriptGui extends GuiContainer {
 	public static class Button extends GuiButton {
 		
 		private boolean upper;
-		private ScriptSetting<?> setting;
+		private ScriptSetting<?, ?> setting;
 
-		public Button(int id, int x, int y, ScriptSetting<?> setting, boolean upper){
+		public Button(int id, int x, int y, ScriptSetting<?, ?> setting, boolean upper){
 			super(id, x, y, 9, 7, "");
 			this.setting = setting;
 			this.upper = upper;

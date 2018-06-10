@@ -117,6 +117,12 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
 	public BlockScript getScript(){
 		return script;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends BlockScript> T getScript(Class<T> clazz){
+		return (T)script;
+	}
 	
 	@Override
 	public String toString(){

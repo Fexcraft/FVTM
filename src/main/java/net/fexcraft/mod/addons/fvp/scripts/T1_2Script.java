@@ -71,9 +71,9 @@ public class T1_2Script implements Vehicle.VehicleScript {
     }
 
 	@Override
-	public ScriptSetting<?>[] getSettings(int seat){
-		return seat == 0 ? new ScriptSetting<?>[]{
-			new ScriptSetting<T1_2Script>(this, "out", ScriptSetting.Type.BOOLEAN){
+	public ScriptSetting<?, ?>[] getSettings(int seat){
+		return seat == 0 ? new ScriptSetting<?, ?>[]{
+			new ScriptSetting<T1_2Script, Entity>(this, "out", ScriptSetting.Type.BOOLEAN){
 				@Override
 				public void onChange(EntityPlayer player, Entity ent, int i, Object... objects){
 					out = i == 0 ? false : i == 1 ? true : out;

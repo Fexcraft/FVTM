@@ -71,7 +71,7 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
         });
         this.getInventories().forEach((key, value) -> {
         	NBTTagCompound tag = DataUtil.saveAllItems(new NBTTagCompound(), stacks.get(key), false);
-        	if(tag != null){
+        	if(tag != null && !tag.hasNoTags()){
         		compound.setTag("ItemStacks_" + key, tag);
         	}
         });

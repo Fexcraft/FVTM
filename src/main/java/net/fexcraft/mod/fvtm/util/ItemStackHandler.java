@@ -39,7 +39,7 @@ public class ItemStackHandler extends net.minecraftforge.items.ItemStackHandler 
         return container == null ? true : container.isItemValid(stack);
     }
 
-    private boolean isContainerPart(ItemStack stack){
+    public static boolean isContainerPart(ItemStack stack){
         if(stack.getItem() instanceof PartItem){
             PartData data = ((PartItem) stack.getItem()).getPart(stack);
             if(data.getPart().getAttribute(InventoryAttribute.class) != null || data.getPart().getAttribute(ContainerAttribute.class) != null){

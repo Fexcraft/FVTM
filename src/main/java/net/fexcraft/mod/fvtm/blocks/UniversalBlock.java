@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockIOT;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
+import net.fexcraft.mod.fvtm.api.root.SettingHolder.ScriptSetting;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.item.KeyItem;
@@ -212,15 +213,45 @@ public class UniversalBlock extends BlockContainer {
                 		break;
                 	}
                 	case "inventory":{
-                		
+                		if(data.getInventories().get(arr[1]) == null){
+                			Print.chat(player, "Inventory with ID " + arr[1] + " not found!");
+                		}
+                		else{
+                			if(Static.side().isClient()){
+                				net.fexcraft.mod.fvtm.gui.UniversalBlockInventoryGui.lastside = side;
+                			}
+                			player.openGui(FVTM.getInstance(), GuiHandler.BLOCK_INVENTORY, world, pos.getX(), pos.getY(), pos.getZ());
+                		}
                 		break;
                 	}
-                	case "gui": case "general": case "generic":{
-                		
+                	case "settings":{
+                		player.openGui(FVTM.getInstance(), GuiHandler.BLOCK_SCRIPTSGUI, world, pos.getX(), pos.getY(), pos.getZ());
                 		break;
                 	}
                 	case "button":{
-                		
+                		if(data.getScript() == null){
+                			Print.chat(player, "Block has no buttons script.");
+                		}
+                		else{
+                			ScriptSetting<?>[] test = data.getScript().getSettings(0);
+                			for(ScriptSetting<?> sett : test){
+                				if(sett.getId().equals(arr[1])){
+                					switch(sett.getType()){
+										case BOOLEAN:
+											sett.onChange(player, null, sett.getValue().equals("true") ? 0 : 1, new Object[0]);
+											break;
+										case BUTTON:
+											sett.onChange(player, null, 0, new Object[0]);
+											break;
+										case INTEGER: case STRING: default:
+											Print.chat(player, "Selected Script setting is not a Button/Bool!");
+											break;
+                					}
+                					return true;
+                				}
+                			}
+                			Print.chat(player, "Button/Function with ID '" + arr[1] + "' not found!");
+                		}
                 		break;
                 	}
                 	default:{

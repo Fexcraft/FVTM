@@ -4,6 +4,7 @@ import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTan
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
+import net.fexcraft.mod.fvtm.api.Block.BlockScript;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
@@ -12,6 +13,7 @@ import net.fexcraft.mod.fvtm.api.root.SettingHolder.ScriptSetting;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
+import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -43,6 +45,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int CONTAINER_FLUID_INVENTORY = 9211;
     public static final int BLOCK_INVENTORY = 9310;
     public static final int BLOCK_FLUID_INVENTORY = 9311;
+    public static final int BLOCK_SCRIPTSGUI = 9312;
 	public static final int VEHICLE_SCRIPTSGUI = 9214;
 
     @Override
@@ -64,9 +67,11 @@ public class GuiHandler implements IGuiHandler {
             case 9214:
             	return new GenericPlaceholderContainer();
             case 9310:
-            	return null;//TODO
+            	return new UniversalBlockInventoryGui.Server(player, world, x, y, z);
             case 9311:
             	return new UniversalBlockFluidGui.Server(player, world, x, y, z);
+            case 9312:
+            	return new GenericPlaceholderContainer();
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             return new GenericPlaceholderContainer();
@@ -94,9 +99,11 @@ public class GuiHandler implements IGuiHandler {
             case 9214:
             	return new VehicleScriptGui(player, world, x, y, z);
             case 9310:
-            	return null;//TODO
+            	return new UniversalBlockInventoryGui.Client(player, world, x, y, z);
             case 9311:
             	return new UniversalBlockFluidGui.Client(player, world, x, y, z);
+            case 9312:
+            	return new UniversalBlockScriptGui(player, world, x, y, z);
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             Print.debug("CREATING GUI!");
@@ -396,6 +403,43 @@ public class GuiHandler implements IGuiHandler {
                     	((UniversalBlockFluidGui.Server)player.openContainer).init(packet.nbt.getString("string"));
                     }
                 	return;
+                }
+                case "block_inventory_handler_set":{
+                    EntityPlayer player = (EntityPlayer)objs[0];
+                    if(player.openContainer instanceof UniversalBlockInventoryGui.Server){
+                    	((UniversalBlockInventoryGui.Server)player.openContainer).refresh(null, packet.nbt.getString("string"));
+                    }
+                	return;
+                }
+                case "block_inventory_handler_scroll": {
+                	UniversalBlockInventoryGui.Server container = (UniversalBlockInventoryGui.Server)((EntityPlayer) objs[0]).openContainer;
+                    container.refresh(packet.nbt.getInteger("scroll"), null);
+                    break;
+                }
+                case "block_script_setting":{
+                	Print.debug(packet.nbt);
+                    EntityPlayer player = (EntityPlayer)objs[0];
+                    UniversalTileEntity tile = (UniversalTileEntity)player.world.getTileEntity(BlockPos.fromLong(packet.nbt.getLong("tile")));
+                	if(tile == null || tile.getBlockData() == null || tile.getBlockData().getScript() == null){ return; }
+                	BlockScript<?> script = tile.getBlockData().getScript();
+                	ScriptSetting<?> setting = null;
+                	for(ScriptSetting<?> sett : script.getSettings(packet.nbt.getInteger("seat"))){
+                		if(sett.getId().equals(packet.nbt.getString("script_setting"))){
+                			setting = sett; break;
+                		}
+                	}
+                	if(setting != null){
+                		Object[] objects = null;
+                		if(packet.nbt.hasKey("objs")){
+                			NBTTagList list = (NBTTagList)packet.nbt.getTag("objs");
+                			objects = new Object[list.tagCount()];
+                			for(int i = 0; i < objects.length; i++){
+                				objects[i] = ((NBTTagString)list.get(i)).getString();
+                			}
+                		}
+                		setting.onChange(player, null, packet.nbt.getInteger("payload"), objects);
+                	}
+                	else return;
                 }
             }
         }

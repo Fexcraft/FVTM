@@ -246,7 +246,7 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
     	BlockData data = world.getChunkFromBlockCoords(getCorePos()).getCapability(BlockChunkUtil.CAPABILITY, null).getBlockDataFor(getCorePos());
-        if(facing != null && facing.getAxis().isVertical() && data != null && !data.isLocked()){
+        if(facing != null && data != null && !data.isLocked()){
             if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
                 return data.getBlock().getSubBlocks().get(relpos).hasInventory(getRelFacing(facing));
             }

@@ -19,6 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class BlockChunkImplementation implements BlockChunk {
 	
+	public static final TreeMap<BlockPos, BlockData> ALLBLOCKS = new TreeMap<>();
 	private TreeMap<BlockPos, BlockData> blocks = new TreeMap<>();
 	private Chunk chunk;
 
@@ -79,11 +80,11 @@ public class BlockChunkImplementation implements BlockChunk {
 	public void setBlockAt(@Nullable BlockData data, BlockPos pos){
 		if(data == null){
 			Print.debug("Removing block data for " + pos.toString() + "!");
-			blocks.remove(pos);
+			blocks.remove(pos); ALLBLOCKS.remove(pos);
 		}
 		else{
 			Print.debug("Setting block data for " + pos.toString() + "!", data);
-			blocks.put(pos, data);
+			blocks.put(pos, data); ALLBLOCKS.put(pos, data);
 		}
 	}
 

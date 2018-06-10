@@ -122,6 +122,19 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
     }
 
     @Override
+    public void processServerPacket(PacketTileEntityUpdate packet){
+        if(packet.nbt.hasKey("task")){
+            //
+        }
+        else if(packet.nbt.hasKey("ScriptPacket") && packet.nbt.getBoolean("ScriptPacket")){
+        	BlockData data = this.getBlockData();
+        	if(data != null && data.getScript() != null){
+        		data.getScript().onDataPacket(this, data, packet.nbt, Side.SERVER);
+        	}
+        }
+    }
+
+    @Override
     public void processClientPacket(PacketTileEntityUpdate packet){
         if(packet.nbt.hasKey("task")){
             switch(packet.nbt.getString("task")){
@@ -133,6 +146,12 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 	                break;
 	            }
             }
+        }
+        else if(packet.nbt.hasKey("ScriptPacket") && packet.nbt.getBoolean("ScriptPacket")){
+        	BlockData data = this.getBlockData();
+        	if(data != null && data.getScript() != null){
+        		data.getScript().onDataPacket(this, data, packet.nbt, Side.CLIENT);
+        	}
         }
         else{
             this.readFromNBT(packet.nbt);
@@ -164,6 +183,9 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
         if(!this.core){
             this.corepos = core;
         }
+        if(this.core && this.getBlockData().getScript() != null){
+        	this.getBlockData().getScript().onPlace(this, this.getBlockData());
+        }
         Print.debug("BLKTESETUP: " + this.pos.toString() + " OK;");
 	}
 
@@ -176,6 +198,10 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
         	if(!asp){ chunk.setBlockAt(null, getCorePos()); }
         	if(this.core && blkpos.equals(this.pos) && asp){
             	if(data != null){
+            		if(data.getScript() != null){
+            			data.getScript().onBreak(this, data);
+            		}
+            		//
                 	EntityItem ent = new EntityItem(world);
                     ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
                     ent.setItem(data.getBlock().getItemStack(data));

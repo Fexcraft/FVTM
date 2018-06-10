@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.impl.caps.BlockChunkImplementation;
 import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
 import net.fexcraft.mod.lib.FCL;
 import net.fexcraft.mod.lib.network.Network;
@@ -14,6 +15,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -106,6 +108,15 @@ public class FvtmUpdateHandler {
     @SubscribeEvent
     public void onChunk(AttachCapabilitiesEvent<Chunk> event){
     	event.addCapability(BlockChunkUtil.REGISTRY_NAME, new BlockChunkUtil(event.getObject()));
+    }
+    
+    @SubscribeEvent
+    public void onTick(TickEvent.WorldTickEvent event){
+    	BlockChunkImplementation.ALLBLOCKS.forEach((key, value) -> {
+    		if(value.getScript() != null){
+    			value.getScript().onUpdate(event.world.getTileEntity(key), value);
+    		}
+    	});
     }
 
 }

@@ -228,6 +228,15 @@ public class UniversalBlock extends BlockContainer {
                 		player.openGui(FVTM.getInstance(), GuiHandler.BLOCK_SCRIPTSGUI, world, pos.getX(), pos.getY(), pos.getZ());
                 		break;
                 	}
+                	case "script":{
+                		if(data.getScript() != null){
+                			Print.chat(player, "Block has no script.");
+                		}
+                		else{
+                			data.getScript().onInteract(tile, data, player, hand);
+                		}
+                		break;
+                	}
                 	case "button":{
                 		if(data.getScript() == null){
                 			Print.chat(player, "Block has no buttons script.");

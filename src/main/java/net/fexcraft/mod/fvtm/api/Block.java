@@ -58,7 +58,7 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
 
     public Class<? extends BlockData> getDataClass();
     
-    public @Nullable Class<? extends BlockScript<?>> getScriptClass();
+    public @Nullable Class<? extends BlockScript> getScriptClass();
     
     public Map<BlockPos, BlockIOT> getSubBlocks();
     
@@ -88,7 +88,7 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
 
         public Block getBlock();
 
-        public @Nullable <T extends BlockScript<?>> T getScript();
+        public @Nullable BlockScript getScript();
         
         public Map<String, IFluidHandler> getFluidTanks();
         
@@ -119,41 +119,46 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
 
     }
 
-    public static interface BlockScript<T extends BlockTileEntity> extends Saveloadable<BlockScript<?>>, SettingHolder {
+    public static interface BlockScript extends Saveloadable<BlockScript>, SettingHolder {
 
-        public void onDataPacket(T tile, BlockData data, NBTTagCompound compound, Side side);
+        public void onDataPacket(TileEntity tile, BlockData data, NBTTagCompound compound, Side side);
 
-        public void onPlace(T tile, BlockData data);
+        public void onPlace(TileEntity tile, BlockData data);
 
-        public void onBreak(T tile, BlockData data);
+        public void onBreak(TileEntity tile, BlockData data);
 
-        public boolean onInteract(T tile, BlockData data, EntityPlayer player, EnumHand hand);
+        public boolean onInteract(TileEntity tile, BlockData data, EntityPlayer player, EnumHand hand);
 
-        public void onUpdate(T tile, BlockData data);
+        public void onUpdate(TileEntity tile, BlockData data);
         
         @SideOnly(Side.CLIENT)
-        public void onGuiRender(BlockTileEntity tile, EntityPlayer player, GuiContainer container);
+        public void onGuiRender(TileEntity tile, EntityPlayer player, GuiContainer container);
 
-        public default void sendPacketToClient(T tile, EntityPlayer player, NBTTagCompound nbt){
+        public default void sendPacketToClient(TileEntity tile, EntityPlayer player, NBTTagCompound nbt){
             nbt.setBoolean("ScriptPacket", true);
-            PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(tile.getTileEntity().getWorld().provider.getDimension(), tile.getTileEntity().getPos(), nbt), (EntityPlayerMP)player);
+            PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(tile.getWorld().provider.getDimension(), tile.getPos(), nbt), (EntityPlayerMP)player);
         }
 
-        public default void sendPacketToAll(T tile, NBTTagCompound nbt){
+        public default void sendPacketToAll(TileEntity tile, NBTTagCompound nbt){
             nbt.setBoolean("ScriptPacket", true);
-            PacketHandler.getInstance().sendToAll(new PacketTileEntityUpdate(tile.getTileEntity().getWorld().provider.getDimension(), tile.getTileEntity().getPos(), nbt));
+            PacketHandler.getInstance().sendToAll(new PacketTileEntityUpdate(tile.getWorld().provider.getDimension(), tile.getPos(), nbt));
         }
 
-        public default void sendPacketToAllAround(T tile, NBTTagCompound nbt){
+        public default void sendPacketToAllAround(TileEntity tile, NBTTagCompound nbt){
             nbt.setBoolean("ScriptPacket", true);
-            int dim = tile.getTileEntity().getWorld().provider.getDimension();
-            BlockPos pos = tile.getTileEntity().getPos();
-            PacketHandler.getInstance().sendToAllAround(new PacketTileEntityUpdate(dim, tile.getTileEntity().getPos(), nbt), new TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), 256));
+            int dim = tile.getWorld().provider.getDimension();
+            BlockPos pos = tile.getPos();
+            PacketHandler.getInstance().sendToAllAround(new PacketTileEntityUpdate(dim, tile.getPos(), nbt), new TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), 256));
         }
 
         public default void sendPacketToServer(Entity ent, NBTTagCompound nbt){
             nbt.setBoolean("ScriptPacket", true);
             PacketHandler.getInstance().sendToServer(new PacketEntityUpdate(ent, nbt));
+        }
+        
+        @Override
+        public default String getSettingHolderId(){
+        	return "fvtm:block_script";
         }
 
     }

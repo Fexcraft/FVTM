@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.ContainerStatusListener;
 import net.fexcraft.mod.fvtm.impl.caps.BlockChunk;
+import net.fexcraft.mod.fvtm.impl.caps.BlockChunkImplementation;
 import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
 import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
@@ -17,6 +18,7 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -134,7 +136,8 @@ public class FVTM {
 
     @Mod.EventHandler
     public void onStop(FMLServerStoppingEvent event){
-        //
+        Print.debug("Clearing BLOCKDATA Cache.");
+        BlockChunkImplementation.ALLBLOCKS.clear();
     }
 
     public static Resources getResources(){

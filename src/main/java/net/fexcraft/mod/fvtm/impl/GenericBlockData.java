@@ -21,7 +21,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class GenericBlockData extends GenericColorable<BlockData, Block> implements BlockData {
 	
-	private BlockScript<?> script;
+	private BlockScript script;
 	private TreeMap<String, IFluidHandler> tanks;
 	private TreeMap<String, IItemHandler> inventories;
 	private TreeMap<String, NonNullList<ItemStack>> stacks;
@@ -75,6 +75,9 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
         		compound.setTag("ItemStacks_" + key, tag);
         	}
         });
+        if(script != null){
+        	script.writeToNBT(compound);
+        }
         tagcompound.setTag(FVTM.MODID + "_block", compound);
         return tagcompound;
     }
@@ -99,6 +102,9 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
 				}
         	}
         });
+        if(script != null){
+        	script.readFromNBT(compound);
+        }
         return this;
     }
 
@@ -107,10 +113,9 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
 		return root;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends BlockScript<?>> T getScript(){
-		return (T)script;
+	public BlockScript getScript(){
+		return script;
 	}
 	
 	@Override

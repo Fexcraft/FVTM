@@ -32,7 +32,7 @@ public class GenericBlock implements Block {
     private String name;
     private RGB primary, secondary;
     private boolean functional;
-    private Class<? extends BlockScript<?>> clazz;
+    private Class<? extends BlockScript> clazz;
     private Map<String, Integer> tanks, inventories;
     private Map<BlockPos, BlockIOT> subblocks = new TreeMap<>();
 
@@ -51,7 +51,7 @@ public class GenericBlock implements Block {
         this.functional = JsonUtil.getIfExists(obj, "Functional", false);
         if(obj.has("Script")){
         	try{
-        		clazz = (Class<? extends BlockScript<?>>)Class.forName(obj.get("Script").getAsString().replace(".class", ""));
+        		clazz = (Class<? extends BlockScript>)Class.forName(obj.get("Script").getAsString().replace(".class", ""));
         	}
         	catch(Exception e){
 				e.printStackTrace();
@@ -162,7 +162,7 @@ public class GenericBlock implements Block {
 	}
 
 	@Override
-	public Class<? extends BlockScript<?>> getScriptClass(){
+	public Class<? extends BlockScript> getScriptClass(){
 		return clazz;
 	}
 

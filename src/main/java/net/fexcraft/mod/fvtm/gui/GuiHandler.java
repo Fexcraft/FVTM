@@ -421,7 +421,7 @@ public class GuiHandler implements IGuiHandler {
                     EntityPlayer player = (EntityPlayer)objs[0];
                     UniversalTileEntity tile = (UniversalTileEntity)player.world.getTileEntity(BlockPos.fromLong(packet.nbt.getLong("tile")));
                 	if(tile == null || tile.getBlockData() == null || tile.getBlockData().getScript() == null){ return; }
-                	BlockScript<?> script = tile.getBlockData().getScript();
+                	BlockScript script = tile.getBlockData().getScript();
                 	ScriptSetting<?> setting = null;
                 	for(ScriptSetting<?> sett : script.getSettings(packet.nbt.getInteger("seat"))){
                 		if(sett.getId().equals(packet.nbt.getString("script_setting"))){

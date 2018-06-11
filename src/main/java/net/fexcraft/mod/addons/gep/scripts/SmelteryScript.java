@@ -3,7 +3,6 @@ package net.fexcraft.mod.addons.gep.scripts;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockScript;
 import net.fexcraft.mod.fvtm.impl.CrafterBlockScriptBase;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -13,6 +12,10 @@ import net.minecraftforge.fml.relauncher.Side;
 public class SmelteryScript extends CrafterBlockScriptBase {
 	
 	public boolean open;
+	
+	public SmelteryScript(){
+		super();
+	}
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
@@ -63,16 +66,28 @@ public class SmelteryScript extends CrafterBlockScriptBase {
 	
 	@Override
 	public void onUpdate(TileEntity tile, BlockData data){
-		super.onUpdate(tile, data);
 		if(tile.getWorld().isRemote){
 			EnumParticleTypes type = open ? EnumParticleTypes.SMOKE_LARGE : EnumParticleTypes.SMOKE_NORMAL;
 			float x = tile.getPos().getX() + 0.5f, y = tile.getPos().getY() + 4, z = tile.getPos().getZ() + 0.5f;
-			tile.getWorld().spawnParticle(type, x      , y, z      , 0.0D, 0.07D, 0.0D);
-			tile.getWorld().spawnParticle(type, x + 0.1, y, z + 0.1, 0.0D, 0.11D, 0.0D);
-			tile.getWorld().spawnParticle(type, x - 0.1, y, z + 0.1, 0.0D, 0.15D, 0.0D);
-			tile.getWorld().spawnParticle(type, x - 0.1, y, z - 0.1, 0.0D, 0.08D, 0.0D);
-			tile.getWorld().spawnParticle(type, x + 0.1, y, z - 0.1, 0.0D, 0.22D, 0.0D);
+			if(!open){
+				for(float f = -0.2f; f < 0.3f; f += 0.1f){
+					for(float g = -0.2f; g < 0.3f; g += 0.1f){
+						float h = tile.getWorld().rand.nextFloat(); h = h > 0.3 ? h / 10 : h;
+						tile.getWorld().spawnParticle(type, x + f, y, z + g, 0.001D, h, 0.001D);
+					}
+				}
+			}
+			else{
+				tile.getWorld().spawnParticle(type, x      , y, z      , 0.0D, 0.07D, 0.0D);
+				tile.getWorld().spawnParticle(type, x + 0.1, y, z + 0.1, 0.0D, 0.11D, 0.0D);
+				tile.getWorld().spawnParticle(type, x - 0.1, y, z + 0.1, 0.0D, 0.15D, 0.0D);
+				tile.getWorld().spawnParticle(type, x - 0.1, y, z - 0.1, 0.0D, 0.08D, 0.0D);
+				tile.getWorld().spawnParticle(type, x + 0.1, y, z - 0.1, 0.0D, 0.22D, 0.0D);
+			}
+			progress++;
+			progress = progress > 100 ? 0 : progress;
 		}
+		//
 	}
 
 	@Override
@@ -81,36 +96,33 @@ public class SmelteryScript extends CrafterBlockScriptBase {
 	}
 
 	@Override
-	public String getOutput(){
-		return "smeltery";
-	}
-	
-	private String[] arr = new String[]{ "fluid:smeltery_tank"};
-
-	@Override
-	public String[] getInput(){
-		return arr;
+	protected void validateRecipes(){
+		//
 	}
 
 	@Override
-	public boolean[] semiProducts(){
-		return new boolean[]{ false, true, false };
+	public int getProgressPercentage(){
+		return progress;
 	}
 
 	@Override
-	public int maxRecipeSize(){
-		return 3;
+	public String getInputInventoryForGui(){
+		return "inventory:smeltery_queue";
 	}
 
 	@Override
-	public boolean coolingType(){
-		return true;
+	public String getOutputInventoryForGui(){
+		return "inventory:smeltery_out";
 	}
 
 	@Override
-	public boolean consumeTick(){
-		//TODO
-		return false;
+	public String getSettingHolderId(){
+		return "generic:smeltery";
+	}
+
+	@Override
+	public String[] getSubproducts(){
+		return new String[]{ null, null, null };
 	}
 	
 }

@@ -75,7 +75,7 @@ public class GuiHandler implements IGuiHandler {
             case 9312:
             	return new GenericPlaceholderContainer();
             case 9313:
-            	return new CrafterBlockScriptGui.Client(player, world, x, y, z);
+            	return new CrafterBlockScriptGui.Server(player, world, x, y, z);
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             return new GenericPlaceholderContainer();
@@ -109,7 +109,7 @@ public class GuiHandler implements IGuiHandler {
             case 9312:
             	return new UniversalBlockScriptGui(player, world, x, y, z);
             case 9313:
-            	return new CrafterBlockScriptGui.Server(player, world, x, y, z);
+            	return new CrafterBlockScriptGui.Client(player, world, x, y, z);
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             Print.debug("CREATING GUI!");

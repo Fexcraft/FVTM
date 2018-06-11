@@ -157,11 +157,6 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
             nbt.setBoolean("ScriptPacket", true);
             PacketHandler.getInstance().sendToServer(new PacketTileEntityUpdate(tile.getWorld().provider.getDimension(), tile.getPos(), nbt));
         }
-        
-        @Override
-        public default String getSettingHolderId(){
-        	return "fvtm:block_script";
-        }
 
     }
 

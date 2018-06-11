@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
+import net.fexcraft.mod.fvtm.impl.CrafterBlockScriptBase;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -19,6 +20,7 @@ public class CrafterBlockScriptGui {
     public static class Client extends GuiContainer {
 
         private UniversalTileEntity tile;
+        private CrafterBlockScriptBase script;
         private static Server server;
 
         public Client(EntityPlayer player, World world, int x, int y, int z){
@@ -26,6 +28,7 @@ public class CrafterBlockScriptGui {
             this.tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
             this.xSize = 226;
             this.ySize = 159;
+            script = (CrafterBlockScriptBase)tile.getBlockData().getScript();
         }
 
         @Override
@@ -39,8 +42,15 @@ public class CrafterBlockScriptGui {
         protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY){
             int i = this.guiLeft, j = this.guiTop;
             this.mc.getTextureManager().bindTexture(invtex);
-            this.drawTexturedModalRect(i, j, 0, 0, this.xSize + 16, this.ySize);
+            this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+            this.drawTexturedModalRect(i + 73, j + 20, 176, 204, getProgress(), 16);
+            this.drawTexturedModalRect(i + 73, j + 56, 176, 240, getProgress(), 16);
+            //
             this.fontRenderer.drawString(tile.getBlockData().getBlock().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
+        }
+        
+        private int getProgress(){
+        	return (int)((80f / 100f) * script.getProgressPercentage());
         }
 
         @Override

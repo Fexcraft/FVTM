@@ -31,6 +31,7 @@ script.generic:multidoor.front_left=Front Left
 script.generic:multidoor.front_right=Front Right
 script.generic:multidoor.back_left=Back Left
 script.generic:multidoor.back_right=Back Right
+script.generic:smeltery.open=Open / Close
 
 
 

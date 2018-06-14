@@ -247,20 +247,20 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 			switch(local){
 				case NORTH:{
 					switch(facing){
-						case EAST: return NORTH;
-						case WEST: return SOUTH;
-						case NORTH: return WEST;
-						case SOUTH: return EAST;
+						case EAST: return SOUTH;
+						case WEST: return NORTH;
+						case NORTH: return EAST;
+						case SOUTH: return WEST;
 						default: break;
 					}
 					break;
 				}
 				case SOUTH:{
 					switch(facing){
-						case EAST: return SOUTH;
-						case WEST: return NORTH;
-						case NORTH: return EAST;
-						case SOUTH: return WEST;
+						case EAST: return NORTH;
+						case WEST: return SOUTH;
+						case NORTH: return WEST;
+						case SOUTH: return EAST;
 						default: break;
 					}
 					break;

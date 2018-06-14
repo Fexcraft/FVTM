@@ -79,7 +79,7 @@ public class T1_2Script implements Vehicle.VehicleScript {
 					out = i == 0 ? false : i == 1 ? true : out;
 		            NBTTagCompound nbt = new NBTTagCompound();
 		            nbt.setBoolean("Out", out);
-		            holder.sendPacketToServer(ent, nbt);
+		            holder.sendPacketToAllAround(ent, nbt);
 				}
 			}
 		} : null;

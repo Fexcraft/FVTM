@@ -1,0 +1,23 @@
+{
+	"Type": "generic:smeltery",
+	"Ingredients":[
+		{
+			"type":"item",
+			"id": "minecraft:log",
+			"amount": 64
+		}
+	],
+	"Output":[
+		{
+			"type": "item",
+			"id": "minecraft:coal",
+			"amount": 8,
+			"meta": 1
+		},
+		{
+			"type": "fluid",
+			"id": "lava",
+			"amount": 16000
+		}
+	]
+}

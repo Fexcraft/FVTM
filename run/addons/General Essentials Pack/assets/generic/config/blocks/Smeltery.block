@@ -55,5 +55,34 @@
 			"capacity": 32
 		}
 	],
-	"Script": "net.fexcraft.mod.addons.gep.scripts.SmelteryScript.class"
+	"Script": "net.fexcraft.mod.addons.gep.scripts.SmelteryScript.class",
+	"Recipes":[
+		{
+			"Type": "Blueprint",
+			"Category": "General Essentials Pack Machines",
+			"Components": [
+				{
+					"Item": "minecraft:stonebrick",
+					"Amount": 9
+				},
+				{
+					"Item": "minecraft:iron_block",
+					"Amount": 2
+				},
+				{
+					"Item": "minecraft:brick_block",
+					"Amount": 28
+				},
+				{
+					"Item": "minecraft:iron_ingot",
+					"Amount": 2
+				},
+				{
+					"Item": "minecraft:stone",
+					"Amount": 2
+				}
+			],
+			"Output": 1
+		}
+	]
 }

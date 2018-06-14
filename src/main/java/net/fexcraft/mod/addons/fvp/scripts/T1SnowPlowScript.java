@@ -125,7 +125,7 @@ public class T1SnowPlowScript implements VehicleScript {
 					on = i == 0 ? false : i == 1 ? true : on;
 		            NBTTagCompound nbt = new NBTTagCompound();
 		            nbt.setBoolean("On", on);
-		            holder.sendPacketToServer(entity, nbt);
+		            holder.sendPacketToAllAround(entity, nbt);
 				}
 			}
 		} : null;

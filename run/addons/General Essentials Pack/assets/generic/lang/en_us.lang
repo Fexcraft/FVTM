@@ -6,6 +6,10 @@
 #>
 #>
 
+#Blocks
+item.generic:smeltery.name=3x3 Universal Smeltery
+
+#Items
 item.generic:engine.name=Engine (C)
 item.generic:engine2.name=Engine (C+)
 item.generic:fuel_tank.name=Fuel Tank (C)

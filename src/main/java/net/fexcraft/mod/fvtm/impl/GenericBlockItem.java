@@ -13,7 +13,6 @@ import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.blocks.UniversalBlock;
-import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -145,7 +144,6 @@ public class GenericBlockItem extends Item implements BlockItem {
                 stack.getTagCompound().setLong("RelativePos", relpos.toLong());
                 state.getBlock().onBlockPlacedBy(world, blkpos, state.withProperty(ContainerBlock.FACING, player.getHorizontalFacing()), player, stack);
             });
-            world.getChunkFromBlockCoords(core).getCapability(BlockChunkUtil.CAPABILITY, null).setBlockAt(data, core);
             stack.shrink(64);
             return EnumActionResult.SUCCESS;
         }

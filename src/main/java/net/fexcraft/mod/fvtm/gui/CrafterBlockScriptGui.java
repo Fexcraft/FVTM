@@ -1,131 +1,68 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import java.util.List;
+
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.impl.CrafterBlockScriptBase;
 import net.minecraft.block.material.MapColor;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class CrafterBlockScriptGui {
+public class CrafterBlockScriptGui extends GuiContainer {
 
-	private static final ResourceLocation invtex = new ResourceLocation("fvtm:textures/guis/universal_block_io.png");
+	private static final ResourceLocation invtex = new ResourceLocation("fvtm:textures/guis/crafter_block_stats.png");
 
-    public static class Client extends GuiContainer {
+	private UniversalTileEntity tile;
+    private CrafterBlockScriptBase script;
 
-        private UniversalTileEntity tile;
-        private CrafterBlockScriptBase script;
-        private static Server server;
-
-        public Client(EntityPlayer player, World world, int x, int y, int z){
-            super(server = new Server(player, world, x, y, z));
-            this.tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
-            this.xSize = 226;
-            this.ySize = 159;
-            script = (CrafterBlockScriptBase)tile.getBlockData().getScript();
-        }
-
-        @Override
-        public void drawScreen(int mouseX, int mouseY, float partialTicks){
-            this.drawDefaultBackground();
-            super.drawScreen(mouseX, mouseY, partialTicks);
-            this.renderHoveredToolTip(mouseX, mouseY);
-        }
-
-        @Override
-        protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY){
-            int i = this.guiLeft, j = this.guiTop;
-            this.mc.getTextureManager().bindTexture(invtex);
-            this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
-            this.drawTexturedModalRect(i + 73, j + 20, 176, 204, getProgress(), 16);
-            this.drawTexturedModalRect(i + 73, j + 56, 176, 240, getProgress(), 16);
-            //
-            this.fontRenderer.drawString(tile.getBlockData().getBlock().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
-        }
-        
-        private int getProgress(){
-        	return (int)((80f / 100f) * script.getProgressPercentage());
-        }
-
-        @Override
-        protected void actionPerformed(GuiButton button){
-            //
-        }
-
-        @Override
-        public void initGui(){
-            super.initGui();
-            this.buttonList.clear();
-            int i = this.guiLeft;
-            int j = this.guiTop;
-            //TODO
-        }
-
-        @Override
-        public void onGuiClosed(){
-            //TODO
-        }
-
+    public CrafterBlockScriptGui(EntityPlayer player, World world, int x, int y, int z){
+        super(new GenericPlaceholderContainer());
+        this.tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
+        this.xSize = 256;
+        this.ySize = 40;
+        script = (CrafterBlockScriptBase)tile.getBlockData().getScript();
     }
 
-    public static class Server extends Container {
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks){
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
 
-        private EntityPlayer player;
-        private UniversalTileEntity tile;
-        private int slots = 9;
-
-        public Server(EntityPlayer player, World world, int x, int y, int z){
-            this.player = player;
-            tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
-            //refresh(scroll = 0);
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY){
+        int i = this.guiLeft, j = this.guiTop;
+        this.mc.getTextureManager().bindTexture(invtex);
+        List<String> list = script.getStatus(tile.getBlockData());
+        if(list == null || list.isEmpty()){
+            this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+            this.fontRenderer.drawString(tile.getBlockData().getBlock().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
+            this.fontRenderer.drawString("No Data.", i + 7, j + 21, MapColor.SNOW.colorValue);
         }
-
-        @Override
-        public boolean canInteractWith(EntityPlayer player){
-            return player != null && !player.isDead;
-        }
-
-        @Override
-        public void onContainerClosed(EntityPlayer player){
-            super.onContainerClosed(player);
-        }
-
-        @Override
-        public void detectAndSendChanges(){
-            super.detectAndSendChanges();
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer player, int index){
-            ItemStack itemstack = ItemStack.EMPTY;
-            Slot slot = this.inventorySlots.get(index);
-            if(slot != null && slot.getHasStack()){
-                ItemStack itemstack1 = slot.getStack();
-                itemstack = itemstack1.copy();
-                if(index < slots){
-                    if(!this.mergeItemStack(itemstack1, slots, this.inventorySlots.size(), true)){
-                        return ItemStack.EMPTY;
-                    }
-                }
-                else if(!this.mergeItemStack(itemstack1, 0, slots, false)){
-                    return ItemStack.EMPTY;
-                }
-                if(itemstack1.isEmpty()){
-                    slot.putStack(ItemStack.EMPTY);
-                }
-                else{
-                    slot.onSlotChanged();
-                }
+        else{
+        	j = this.guiTop = (this.height - (40 + (list.size() * 14))) / 2;
+            this.drawTexturedModalRect(i, j, 0, 0, this.xSize, 19);
+        	int l = 19;
+            for(int k = 0; k < list.size(); k++){
+            	l = 19 + (k * 14);
+                this.drawTexturedModalRect(i, j + l, 0, 19, this.xSize, 14);
             }
-            return itemstack;
+            l = l == 19 ? l : l + 14;
+            this.drawTexturedModalRect(i, j + l, 0, 33, this.xSize, 7);
+            this.drawTexturedModalRect(i + 6, j + l, 0, 252, getProgress(), 2);
+            //
+            for(int k = 0; k < list.size(); k++){
+                this.fontRenderer.drawString(list.get(k), i + 7, (j + 21) + (k * 14), MapColor.GRAY.colorValue);
+            }
         }
-
+    }
+    
+    private int getProgress(){
+    	return (int)((244f / 100f) * script.getProgressPercentage());
     }
 
 }

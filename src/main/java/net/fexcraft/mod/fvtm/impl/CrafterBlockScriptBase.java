@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.FVTM;
@@ -35,15 +36,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 public abstract class CrafterBlockScriptBase implements BlockScript {
 	
 	public CrafterBlockScriptBase(){
-		validateRecipes();
+		validateRecipes(RECIPES.get(this.getSettingHolderId()));
 	}
 
 	@Override
@@ -76,11 +79,9 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 	/** Return number between 0 and 100, inclusive. **/
 	public abstract int getProgressPercentage();
 	
-	public abstract String getInputInventoryForGui();
+	public abstract List<String> getStatus(BlockData data);
 	
-	public abstract String getOutputInventoryForGui();
-	
-	public abstract String[] getSubproducts();
+	public abstract Recipe findNextRecipe(BlockData data);
 	
 	///--- RECIPES ---///
 	
@@ -90,9 +91,9 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 	
 	public static class Recipe {
 		
-		private Object[] ingredients;
-		private Object[] subproducts;
-		private Object[] output;
+		public Object[] ingredients;
+		//public Object[] subproducts;
+		public Object[] output;
 
 		public boolean isValid(){
 			for(Object obj : ingredients){
@@ -107,23 +108,6 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		public static Recipe fromSave(NBTTagCompound compound){
 			Recipe recipe = new Recipe();
 			recipe.ingredients = new Object[0];
-			recipe.subproducts = new Object[3];
-			if(compound.hasKey("Subproducts")){
-				int i = 0;
-				NBTTagList list = (NBTTagList)compound.getTag("Subproducts");
-				for(NBTBase nbt : list){
-					NBTTagCompound tag = (NBTTagCompound)nbt;
-					if(tag.hasNoTags()){
-						recipe.subproducts[i] = null;
-					}
-					else if(tag.hasKey("FluidName")){
-						recipe.subproducts[i] = FluidStack.loadFluidStackFromNBT(tag);
-					}
-					else{
-						recipe.subproducts[i] = new ItemStack(tag);
-					} i++;
-				}
-			}
 			if(compound.hasKey("Output")){
 				int i = 0; NBTTagList list = (NBTTagList)compound.getTag("Output");
 				recipe.output = new Object[list.tagCount()];
@@ -147,18 +131,6 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		public NBTTagCompound save(){
 			NBTTagCompound compound = new NBTTagCompound();
 			NBTTagList list = new NBTTagList();
-			for(Object obj : subproducts){
-				if(obj != null){
-					list.appendTag(obj instanceof ItemStack ? ((ItemStack)obj).writeToNBT(new NBTTagCompound()) : ((FluidStack)obj).writeToNBT(new NBTTagCompound()));
-				}
-				else {
-					list.appendTag(new NBTTagCompound());
-				}
-			}
-			if(!list.hasNoTags()){
-				compound.setTag("Subproducts", list);
-				list = new NBTTagList();
-			}
 			for(Object obj : output){
 				list.appendTag(obj instanceof ItemStack ? ((ItemStack)obj).writeToNBT(new NBTTagCompound()) : ((FluidStack)obj).writeToNBT(new NBTTagCompound()));
 			}
@@ -166,6 +138,18 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 			return compound;
 		}
 		
+	}
+	
+	public static void registerRecipes(JsonElement elm, @Nullable ItemStack stack){
+		if(elm.isJsonArray()){
+			elm.getAsJsonArray().forEach(obj -> {
+				registerRecipe(obj.getAsJsonObject(), stack);
+			});
+		}
+		else if(elm.isJsonObject()){
+			registerRecipe(elm.getAsJsonObject(), stack);
+		}
+		else return;
 	}
 	
 	public static void registerRecipe(JsonObject obj, @Nullable ItemStack stack){
@@ -190,6 +174,7 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		}
 		if(Resources.BLOCKS.getValue((new ResourceLocation(type))) == null){
 			Print.debug("Crafter block for Recipe not found!\n" + obj.toString());
+			Static.stop();
 			return;
 		}
 		//Proper parsing now.
@@ -198,11 +183,6 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		recipe.ingredients = new Object[array.size()];
 		for(int i = 0; i < recipe.ingredients.length; i++){
 			recipe.ingredients[i] = parseObject(array.get(i).getAsJsonObject());
-		}
-		array = obj.get("Subproducts").getAsJsonArray();
-		recipe.subproducts = new Object[3];
-		for(int i = 0; i < 3; i++){
-			recipe.subproducts[i] = parseObject(array.get(i).getAsJsonObject());
 		}
 		array = obj.get("Output").getAsJsonArray();
 		recipe.output = new Object[array.size()];
@@ -214,6 +194,9 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 				RECIPES.put(type, new ArrayList<>());
 			}
 			RECIPES.get(type).add(recipe);
+		}
+		else{
+			Print.debug(obj); Static.stop();
 		}
 	}
 	
@@ -370,7 +353,124 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		}
 		return aln ? null : new NBTTagCompound();
 	}
+	
+	/** Remove from list whichever are invalid for this block. **/
+	protected abstract void validateRecipes(List<Recipe> list);
+	
+	public boolean insert(NonNullList<ItemStack> list, ItemStack stack){
+		for(int i = 0; i < list.size(); i++){
+			if(list.get(i).isEmpty()){
+				list.set(i, stack.copy());
+				return true;
+			}
+			else if(canMerge(list.get(i), stack, false)){
+				list.get(i).grow(stack.getCount());
+				return true;
+			}
+			else if(canMerge(list.get(i), stack, true)){
+				ItemStack is = list.get(i);
+				int j = (is.getMaxStackSize() > 64 ? 64 : is.getMaxStackSize()) - is.getCount();
+				stack.shrink(j); is.grow(j);
+			}
+		}
+		return stack.isEmpty();
+	}
+	
+	private boolean canMerge(ItemStack stack, ItemStack compare, boolean part){
+		if(part && stack.getCount() >= stack.getMaxStackSize()){
+			return false;
+		}
+		else if(!part && stack.getCount() + compare.getCount() > stack.getMaxStackSize()){
+			return false;
+		}
+        else if(stack.getItem() != compare.getItem()){
+            return false;
+        }
+        else if(stack.getItemDamage() != compare.getItemDamage()){
+            return false;
+        }
+        else if(stack.getTagCompound() == null && compare.getTagCompound() != null){
+            return false;
+        }
+        else{
+            return (stack.getTagCompound() == null || stack.getTagCompound().equals(compare.getTagCompound())) && stack.areCapsCompatible(compare);
+        }
+	}
+	
+	protected boolean canFit(NonNullList<ItemStack> out, ItemStack obj){
+		boolean found = false;
+		ItemStack mer = obj.copy();
+		for(ItemStack stack : out){
+			if(stack.isEmpty() || canMerge(stack, mer, false)){
+				found = true; break;
+			}
+			else if(canMerge(stack, mer, true)){
+				mer.shrink(stack.getCount());
+				if(mer.isEmpty()){
+					return true;
+				}
+			}
+		}
+		return found;
+	}
 
-	protected abstract void validateRecipes();
+	public boolean extract(NonNullList<ItemStack> list, ItemStack stack){
+		ItemStack extr = stack.copy();
+		for(int i = 0; i < list.size(); i++){
+			if(isEqualOrValid(list.get(i), extr)){
+				ItemStack is = list.get(i);
+				if(is.getCount() == extr.getCount()){
+					list.set(i, ItemStack.EMPTY);
+					return true;
+				}
+				else if(is.getCount() > extr.getCount()){
+					list.get(i).shrink(extr.getCount());
+					return true;
+				}
+				else if(is.getCount() < extr.getCount()){
+					extr.shrink(is.getCount());
+					list.set(i, ItemStack.EMPTY);
+				}
+			}
+		}
+		return extr.isEmpty();
+	}
+	
+	public boolean containsItemStack(NonNullList<ItemStack> list, ItemStack stack){
+		for(int i = 0; i < list.size(); i++){
+			if(isEqualOrValid(list.get(i), stack)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean isEqualOrValid(ItemStack stack, ItemStack compare){
+		if(stack.getCount() < compare.getCount()){
+            return false;
+        }
+        else if(stack.getItem() != compare.getItem()){
+            return false;
+        }
+        else if(stack.getItemDamage() != compare.getItemDamage()){
+            return false;
+        }
+        else if(stack.getTagCompound() == null && compare.getTagCompound() != null){
+            return false;
+        }
+        else{
+            return (stack.getTagCompound() == null || stack.getTagCompound().equals(compare.getTagCompound())) && stack.areCapsCompatible(compare);
+        }
+	}
+	
+	public boolean fill(FluidTank handler, FluidStack stack){
+		//TODO
+		return false;
+	}
+	
+	public boolean drain(FluidTank handler, FluidStack stack){
+		//TODO
+		return false;
+	}
 	
 }

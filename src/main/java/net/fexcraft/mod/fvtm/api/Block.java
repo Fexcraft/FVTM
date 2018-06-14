@@ -147,9 +147,7 @@ public interface Block extends IForgeRegistryEntry<Block>, TextureHolder, ColorH
         }
 
         public default void sendPacketToAllAround(TileEntity tile, NBTTagCompound nbt){
-            nbt.setBoolean("ScriptPacket", true);
-            int dim = tile.getWorld().provider.getDimension();
-            BlockPos pos = tile.getPos();
+            nbt.setBoolean("ScriptPacket", true); int dim = tile.getWorld().provider.getDimension(); BlockPos pos = tile.getPos();
             PacketHandler.getInstance().sendToAllAround(new PacketTileEntityUpdate(dim, tile.getPos(), nbt), new TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), 256));
         }
 

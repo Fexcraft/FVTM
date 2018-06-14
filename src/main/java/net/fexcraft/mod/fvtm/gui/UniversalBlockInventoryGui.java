@@ -12,12 +12,12 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.GenericGuiButton;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,8 +46,7 @@ public class UniversalBlockInventoryGui {
             this.xSize = 226;
             this.ySize = 195;
             sel = tile.getBlockData().getBlock().getSubBlocks().get(tile.getRelPos()).getGuiType(tile.getRelFacing(lastside)).split(":")[1];
-            size = tile.getBlockData().getInventories().get(sel).getSlots();
-            Print.debug(size, sel);
+            size = tile.getBlockData().getItemStacks().get(sel).size();
             server.refresh(0, sel);
             //
     		NBTTagCompound compound = new NBTTagCompound();
@@ -137,7 +136,7 @@ public class UniversalBlockInventoryGui {
         private EntityPlayer player;
         private UniversalTileEntity tile;
         public static int scroll, slots = 60;
-        private TempUTInventory container;
+        private TempUTInventory inv;
         private String sel;
 
         public Server(EntityPlayer player, World world, int x, int y, int z){
@@ -149,17 +148,17 @@ public class UniversalBlockInventoryGui {
         public void refresh(Integer i, String s){
         	if(s == null && this.sel == null){ return; }
             scroll = i == null ? scroll : i; sel = s == null ? sel : s;
-            container = new TempUTInventory(tile.getBlockData().getItemStacks().get(sel), sel);
+            inv = new TempUTInventory(tile.getBlockData().getItemStacks().get(sel), sel);
             this.inventorySlots = Lists.<Slot>newArrayList();
             this.inventoryItemStacks = NonNullList.<ItemStack>create();
             this.onContainerClosed(player);
             for(int row = 0; row < 5; row++){
                 for(int col = 0; col < 12; col++){
                     int index = (col + row * 12) + (scroll * 60);
-                    if(index >= tile.getBlockData().getInventories().get(sel).getSlots()){
+                    if(index >= tile.getBlockData().getItemStacks().get(sel).size()){
                         break;
                     }
-                    addSlotToContainer(new Slot(container, index, 6 + col * 18, 20 + row * 18){
+                    addSlotToContainer(new Slot(inv, index, 6 + col * 18, 20 + row * 18){
                         @Override
                         public boolean isItemValid(ItemStack stack){
                         	if(sel.endsWith("_out")){ return false; }
@@ -185,6 +184,15 @@ public class UniversalBlockInventoryGui {
             for(int col = 0; col < 9; col++){
                 addSlotToContainer(new Slot(player.inventory, col, 6 + col * 18, 173));
             }
+            //
+            if(!tile.getWorld().isRemote){
+                //Force-Resync everything.
+                for(int k = 0; k < this.inventorySlots.size(); ++k){
+                    for(IContainerListener listener : this.listeners){
+                        listener.sendSlotContents(this, k, this.inventoryItemStacks.get(k));
+                    }
+                }
+            }
         }
 
         @Override
@@ -194,13 +202,13 @@ public class UniversalBlockInventoryGui {
 
         @Override
         public void onContainerClosed(EntityPlayer player){
-        	if(container == null){ return; }
+        	if(inv == null){ return; }
             super.onContainerClosed(player);
         }
 
         @Override
         public void detectAndSendChanges(){
-        	if(container == null){ return; }
+        	if(inv == null){ return; }
             super.detectAndSendChanges();
         }
 

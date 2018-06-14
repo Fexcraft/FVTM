@@ -3,18 +3,15 @@ package net.fexcraft.mod.fvtm.blocks;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
-import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
-import net.fexcraft.mod.fvtm.impl.caps.BlockChunk;
-import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.api.common.LockableObject;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +23,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -43,6 +41,7 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 	private Long longpos;
 	private boolean core;
 	private BlockPos corepos, relpos;
+	private BlockData data;
 
 	public UniversalTileEntity(){
         core = false; corepos = null;
@@ -60,8 +59,7 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 
 	@Override
 	public BlockData getBlockData(){
-		if(getCorePos() == null){ return null; }
-        return world.getChunkFromBlockCoords(getCorePos()).getCapability(BlockChunkUtil.CAPABILITY, null).getBlockDataFor(getCorePos());
+        return core ? data : corepos == null ? null : ((UniversalTileEntity)world.getTileEntity(corepos)).data;
 	}
 	
     @Override
@@ -71,12 +69,6 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 
     @Override
     public NBTTagCompound getUpdateTag(){
-    	if(this.core){
-        	BlockData data = getBlockData();
-        	if(data != null){
-            	return data.writeToNBT(this.writeToNBT(new NBTTagCompound()));
-        	}
-    	}
         return this.writeToNBT(new NBTTagCompound());
     }
 
@@ -92,7 +84,10 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
         if(!core && corepos != null){
             compound.setLong("CorePos", corepos.toLong());
         }
-        compound.setLong("RelativePos", relpos.toLong());
+    	compound.setLong("RelativePos", relpos.toLong());
+        if(core){
+        	data.writeToNBT(compound);
+        }
         //Print.debug(compound);
         return compound;
     }
@@ -111,15 +106,7 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
         //
-        if(compound.hasKey(BlockItem.NBTKEY)){
-        	if(this.getBlockData() == null){
-            	BlockData data = Resources.getBlockData(compound);
-            	world.getChunkFromBlockCoords(getCorePos()).getCapability(BlockChunkUtil.CAPABILITY, null).setBlockAt(data, getCorePos());
-        	}
-        	else{
-        		this.getBlockData().readFromNBT(compound);
-        	}
-        }
+    	data = data == null ? Resources.getBlockData(compound) : data.readFromNBT(compound);
     }
 
     @Override
@@ -177,42 +164,55 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
     }
 
 	public void setUp(ItemStack stack){
-        BlockPos core = BlockPos.fromLong(stack.getTagCompound().getLong("PlacedPos"));
-        this.core = pos.equals(core);
-        Print.debug(core, pos, this.core);
+		this.corepos = BlockPos.fromLong(stack.getTagCompound().getLong("PlacedPos"));
         this.relpos = BlockPos.fromLong(stack.getTagCompound().getLong("RelativePos"));
-        if(!this.core){
-            this.corepos = core;
+        this.core = pos.equals(corepos);
+        Print.debug(corepos, pos, relpos, this.core, stack.getTagCompound());
+        if(this.core){
+        	this.data = Resources.getBlockData(stack.getTagCompound());
+        	if(data != null && data.getScript() != null){
+        		this.getBlockData().getScript().onPlace(this, this.getBlockData());
+        	}
+        	if(data == null){
+        		Print.debug(stack.getTagCompound());
+        		Static.stop();
+        	}
         }
-        /*if(this.core && this.getBlockData().getScript() != null){
-        	this.getBlockData().getScript().onPlace(this, this.getBlockData());
-        }*/
         Print.debug("BLKTESETUP: " + this.pos.toString() + " OK;");
 	}
 
 	public void notifyBreak(World world, BlockPos pos, IBlockState state, boolean asp){
         if(world.getTileEntity(getCorePos()) == null){ return; }
-        BlockChunk chunk = world.getChunkFromBlockCoords(getCorePos()).getCapability(BlockChunkUtil.CAPABILITY, null);
-        BlockData data = chunk.getBlockDataFor(getCorePos());
+        BlockData data = this.getBlockData();
         if(data == null){ return; }
         UniversalBlock.getPositions(data, getCorePos(), state.getValue(UniversalBlock.FACING)).forEach((relpos, blkpos) -> {
-        	if(!asp){ chunk.setBlockAt(null, getCorePos()); }
+        	if(!asp && core){ this.data = null; }
         	if(this.core && blkpos.equals(this.pos) && asp){
             	if(data != null){
-            		/*if(data.getScript() != null){
+            		if(data.getScript() != null){
             			data.getScript().onBreak(this, data);
-            		}*/
+            		}
+                    //
+                    if(!world.isRemote){
+                    	for(NonNullList<ItemStack> list : data.getItemStacks().values()){
+                    		for(ItemStack is : list){
+                            	EntityItem ent = new EntityItem(world);
+                                ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.2, blkpos.getZ() + 0.5);
+                                ent.setItem(is); world.spawnEntity(ent);
+                    		}
+                    		list.clear();
+                    	}
+                    }
             		//
                 	EntityItem ent = new EntityItem(world);
                     ent.setPosition(blkpos.getX() + 0.5, blkpos.getY() + 1.5, blkpos.getZ() + 0.5);
                     ent.setItem(data.getBlock().getItemStack(data));
                     world.spawnEntity(ent);
-                    chunk.setBlockAt(null, this.pos);
+                    if(data.getScript() != null){
+                    	data.getScript().onBreak(this, data);
+                    }
+                    this.data = null;
             	}
-                //
-                if(Config.DROP_ITEMS_ON_BREAK && !world.isRemote){
-                    //TODO
-                }
             }
             if(asp ? !blkpos.equals(pos) : true){
                 world.setBlockState(blkpos, Blocks.AIR.getDefaultState(), 2);
@@ -275,7 +275,7 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
     
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
-    	BlockData data = world.getChunkFromBlockCoords(getCorePos()).getCapability(BlockChunkUtil.CAPABILITY, null).getBlockDataFor(getCorePos());
+    	BlockData data = getBlockData();
         if(facing != null && data != null && !data.isLocked()){
             if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
                 return data.getBlock().getSubBlocks().get(relpos).hasInventory(getRelFacing(facing));
@@ -292,11 +292,11 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-        	BlockData data = world.getChunkFromBlockCoords(getCorePos()).getCapability(BlockChunkUtil.CAPABILITY, null).getBlockDataFor(getCorePos());
+        	BlockData data = getBlockData();
             return (T)data.getBlock().getSubBlocks().get(relpos).getInventory(data, getRelFacing(facing));
         }
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-        	BlockData data = world.getChunkFromBlockCoords(getCorePos()).getCapability(BlockChunkUtil.CAPABILITY, null).getBlockDataFor(getCorePos());
+        	BlockData data = getBlockData();
             return (T)data.getBlock().getSubBlocks().get(relpos).getFluidTank(data, getRelFacing(facing));
         }
         return super.getCapability(capability, facing);

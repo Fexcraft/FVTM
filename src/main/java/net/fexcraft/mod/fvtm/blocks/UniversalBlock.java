@@ -187,15 +187,20 @@ public class UniversalBlock extends BlockContainer {
                 }
             }
             if(tile.isLocked()){
-                Print.chat(player, "Container is Locked.");
+                Print.chat(player, "Block is Locked.");
                 return true;
             }
             if(stack.isEmpty()){
                 if(tile.getCorePos() == null){
-                    Print.chat(player, "Container Core Position is NULL.");
+                    Print.chat(player, "Block Core Position is NULL.");
                     return true;
                 }
                 BlockData data = tile.getBlockData();
+                if(data == null){
+                	Print.chat(player, "BlockData not found.");
+                	Print.debug(tile.getRelPos(), tile.getCorePos());
+                	return true;
+                }
                 BlockIOT biot = data.getBlock().getSubBlocks().get(tile.getRelPos());
                 String str = biot.getGuiType(tile.getRelFacing(side));
                 if(str == null){ return false; }
@@ -214,7 +219,7 @@ public class UniversalBlock extends BlockContainer {
                 		break;
                 	}
                 	case "inventory":{
-                		if(data.getInventories().get(arr[1]) == null){
+                		if(data.getItemStacks().get(arr[1]) == null){
                 			Print.chat(player, "Inventory with ID " + arr[1] + " not found!");
                 		}
                 		else{

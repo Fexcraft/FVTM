@@ -5,15 +5,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.impl.caps.BlockChunkImplementation;
-import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
+import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.lib.FCL;
 import net.fexcraft.mod.lib.network.Network;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -106,16 +103,19 @@ public class FvtmUpdateHandler {
         }
     }
     
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onChunk(AttachCapabilitiesEvent<Chunk> event){
     	event.addCapability(BlockChunkUtil.REGISTRY_NAME, new BlockChunkUtil(event.getObject()));
-    }
+    }*/
     
     @SubscribeEvent
     public void onTick(TickEvent.WorldTickEvent event){
-    	BlockChunkImplementation.ALLBLOCKS.forEach((key, value) -> {
-    		if(value.getScript() != null){
-    			value.getScript().onUpdate(event.world.getTileEntity(key), value);
+    	event.world.loadedTileEntityList.forEach(tile -> {
+    		if(tile instanceof UniversalTileEntity && ((UniversalTileEntity)tile).isCore()){
+    			UniversalTileEntity unte = (UniversalTileEntity)tile;
+    			if(unte.getBlockData() != null && unte.getWorld() != null && unte.getBlockData().getScript() != null){
+    				unte.getBlockData().getScript().onUpdate(tile, unte.getBlockData());
+    			}
     		}
     	});
     }
@@ -123,9 +123,12 @@ public class FvtmUpdateHandler {
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event){
     	if(event.phase == Phase.END || !event.player.world.isRemote){ return; }
-    	BlockChunkImplementation.ALLBLOCKS.forEach((key, value) -> {
-    		if(value.getScript() != null){
-    			value.getScript().onUpdate(event.player.world.getTileEntity(key), value);
+    	event.player.world.loadedTileEntityList.forEach(tile -> {
+    		if(tile instanceof UniversalTileEntity && ((UniversalTileEntity)tile).isCore()){
+    			UniversalTileEntity unte = (UniversalTileEntity)tile;
+    			if(unte.getBlockData() != null && unte.getWorld() != null && unte.getBlockData().getScript() != null){
+    				unte.getBlockData().getScript().onUpdate(tile, unte.getBlockData());
+    			}
     		}
     	});
     }

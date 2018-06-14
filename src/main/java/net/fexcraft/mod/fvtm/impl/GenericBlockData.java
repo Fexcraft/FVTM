@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.api.Block.BlockScript;
 import net.fexcraft.mod.fvtm.impl.root.GenericColorable;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.ItemStackHandler;
+import net.fexcraft.mod.fvtm.util.ItemStackHandler2;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -23,7 +24,7 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
 	
 	private BlockScript script;
 	private TreeMap<String, IFluidHandler> tanks;
-	private TreeMap<String, IItemHandler> inventories;
+	private TreeMap<String, IItemHandler> handlers;
 	private TreeMap<String, NonNullList<ItemStack>> stacks;
 
 	public GenericBlockData(Block block){
@@ -43,17 +44,14 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
 			});
 		}
 		if(block.getInventories().size() > 0){
-			inventories = new TreeMap<>();
 			stacks = new TreeMap<>();
 			block.getInventories().forEach((key, value) -> {
-				NonNullList<ItemStack> list = NonNullList.withSize(value, ItemStack.EMPTY);
-				stacks.put(key, list);
-				if(key.endsWith("_out")){
-					inventories.put(key, new net.minecraftforge.items.ItemStackHandler(list));
-				}
-				else{
-					inventories.put(key, new ItemStackHandler(list));
-				}
+				stacks.put(key, NonNullList.withSize(value, ItemStack.EMPTY));
+			});
+			//
+			handlers = new TreeMap<>();
+			stacks.forEach((key, value) -> {
+				handlers.put(key, key.endsWith("_out") ? new ItemStackHandler2(value) : new ItemStackHandler(value));
 			});
 		}
 	}
@@ -69,11 +67,8 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
         		compound.setTag("FluidTank_" + key, tag);
         	}
         });
-        this.getInventories().forEach((key, value) -> {
-        	NBTTagCompound tag = DataUtil.saveAllItems(new NBTTagCompound(), stacks.get(key), false);
-        	if(tag != null && !tag.hasNoTags()){
-        		compound.setTag("ItemStacks_" + key, tag);
-        	}
+        this.getItemStacks().forEach((key, value) -> {
+    		compound.setTag("ItemStacks_" + key, DataUtil.saveAllItems(new NBTTagCompound(), stacks.get(key), false));
         });
         if(script != null){
         	script.writeToNBT(compound);
@@ -86,20 +81,15 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
     public BlockData readFromNBT(NBTTagCompound tagcompound){
         NBTTagCompound compound = tagcompound.getCompoundTag(FVTM.MODID + "_block");
         super.readFromNBT(compound);
-        this.getFluidTanks().forEach((key, value) -> {
+        this.getBlock().getFluidTanks().keySet().forEach(key -> {
         	if(compound.hasKey("FluidTank_" + key)){
         		((FluidTank)this.tanks.get(key)).readFromNBT(compound.getCompoundTag("FluidTank_" + key));
         	}
         });
-        this.getInventories().forEach((key, value) -> {
+        this.getBlock().getInventories().keySet().forEach(key -> {
         	if(compound.hasKey("ItemStacks_" + key)){
         		DataUtil.loadAllItems(compound.getCompoundTag("ItemStacks_" + key), this.stacks.get(key));
-				if(key.endsWith("_out")){
-					inventories.put(key, new net.minecraftforge.items.ItemStackHandler(this.stacks.get(key)));
-				}
-				else{
-					inventories.put(key, new ItemStackHandler(this.stacks.get(key)));
-				}
+				handlers.put(key, key.endsWith("_out") ? new ItemStackHandler2(this.stacks.get(key)) : new ItemStackHandler(this.stacks.get(key)));
         	}
         });
         if(script != null){
@@ -135,13 +125,13 @@ public class GenericBlockData extends GenericColorable<BlockData, Block> impleme
 	}
 
 	@Override
-	public Map<String, IItemHandler> getInventories(){
-		return inventories == null ? Collections.emptyMap() : inventories;
+	public Map<String, NonNullList<ItemStack>> getItemStacks(){
+		return stacks == null ? Collections.emptyMap() : stacks;
 	}
 
 	@Override
-	public Map<String, NonNullList<ItemStack>> getItemStacks(){
-		return stacks;
+	public Map<String, IItemHandler> getInventories(){
+		return handlers == null ? Collections.emptyMap() : handlers;
 	}
 	
 }

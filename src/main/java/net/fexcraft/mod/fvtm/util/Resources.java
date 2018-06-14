@@ -37,6 +37,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.UniversalBlock;
+import net.fexcraft.mod.fvtm.impl.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.impl.GenericBlock;
 import net.fexcraft.mod.fvtm.impl.GenericBlockItem;
@@ -65,6 +66,7 @@ import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.render.ModelType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -743,6 +745,55 @@ public class Resources {
                             net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
                         }
                         Print.debug(block.getRegistryName());
+                    }
+                }
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    public void regRecipes(RegistryEvent.Register<IRecipe> event){
+        for(Addon addon : ADDONS.getValues()){
+            if(addon instanceof GenericAddon){
+                if(((GenericAddon) addon).isHybrid()){
+                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
+                        continue;
+                    }
+                }
+            }
+            else{
+                continue;
+            }
+            Print.debug(addon.getRegistryName());
+            if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+                if(addon.getFile().isDirectory()){
+                    File matfol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/");
+                    Print.debug(matfol.getPath());
+                    if(!matfol.exists()){
+                        matfol.mkdirs();
+                    }
+                    for(File file : matfol.listFiles()){
+                        if(!file.isDirectory() && (file.getName().endsWith(".recipe") || file.getName().endsWith(".recipes"))){
+                        	CrafterBlockScriptBase.registerRecipes(JsonUtil.read(file, false), null);
+                        }
+                        else if(file.isDirectory()){
+                            for(File fl : file.listFiles()){
+                                if(file.getName().endsWith(".recipe") || file.getName().endsWith(".recipes")){
+                                	CrafterBlockScriptBase.registerRecipes(JsonUtil.read(file, false), null);
+                                }
+                            }
+                        }
+                        Print.debug(file.getPath());
+                    }
+                }
+                else{
+                    JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipe");
+                    for(JsonElement elm : array){
+                    	CrafterBlockScriptBase.registerRecipes(elm, null);
+                    }
+                    array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipes");
+                    for(JsonElement elm : array){
+                    	CrafterBlockScriptBase.registerRecipes(elm, null);
                     }
                 }
             }

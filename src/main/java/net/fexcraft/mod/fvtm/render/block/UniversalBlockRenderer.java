@@ -11,7 +11,7 @@ public class UniversalBlockRenderer extends TileEntitySpecialRenderer<UniversalT
 
     @Override
     public void render(UniversalTileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
-        if(te.getBlockData() == null || !te.isCore()){ return; }
+        if(!te.isCore() || te.getBlockData() == null){ return; }
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         Minecraft.getMinecraft().renderEngine.bindTexture(te.getBlockData().getTexture());

@@ -5,9 +5,6 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.ContainerStatusListener;
-import net.fexcraft.mod.fvtm.impl.caps.BlockChunk;
-import net.fexcraft.mod.fvtm.impl.caps.BlockChunkImplementation;
-import net.fexcraft.mod.fvtm.impl.caps.BlockChunkUtil;
 import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -18,14 +15,12 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -118,7 +113,7 @@ public class FVTM {
         FvtmPermissions.register();
         //
         SignCapabilityUtil.addListener(ContainerStatusListener.class);
-        CapabilityManager.INSTANCE.register(BlockChunk.class, new BlockChunkUtil.Storage(), new BlockChunkUtil.Callable());
+        //CapabilityManager.INSTANCE.register(BlockChunk.class, new BlockChunkUtil.Storage(), new BlockChunkUtil.Callable());
         //
         APIs.load();
     }
@@ -136,8 +131,8 @@ public class FVTM {
 
     @Mod.EventHandler
     public void onStop(FMLServerStoppingEvent event){
-        Print.debug("Clearing BLOCKDATA Cache.");
-        BlockChunkImplementation.ALLBLOCKS.clear();
+        //Print.debug("Clearing BLOCKDATA Cache.");
+        //BlockChunkImplementation.ALLBLOCKS.clear();
     }
 
     public static Resources getResources(){

@@ -19,7 +19,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.RecipeObject;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -123,15 +122,14 @@ public class GenericPart implements Part {
         this.scripts.addAll(list);
         //
         if(obj.has("Recipes")){
-            obj.get("Recipes").getAsJsonArray().forEach((elm) -> {
-                try{
-                    RecipeObject.parse(this.getItemStack(this.getDataClass().getConstructor(Part.class).newInstance(this)), elm.getAsJsonObject(), "FVTM:Parts");
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                    Static.stop();
-                }
-            });
+            try{
+            	ItemStack stack = this.getItemStack(this.getDataClass().getConstructor(Part.class).newInstance(this));
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                Static.stop();
+            }
         }
         if(obj.has("Sounds")){
             for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){

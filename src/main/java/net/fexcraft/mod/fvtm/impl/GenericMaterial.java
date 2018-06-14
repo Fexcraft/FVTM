@@ -6,7 +6,6 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Fuel;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.RecipeObject;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -38,14 +37,13 @@ public class GenericMaterial implements Material {
         }
         this.isKey = JsonUtil.getIfExists(obj, "VehicleKey", false);
         if(obj.has("Recipes")){
-            obj.get("Recipes").getAsJsonArray().forEach((elm) -> {
-                try{
-                    RecipeObject.parse(this.getItemStack(), elm.getAsJsonObject(), "FVTM:Materials");
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
-            });
+            try{
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), this.getItemStack());
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                Static.stop();
+            }
         }
     }
 

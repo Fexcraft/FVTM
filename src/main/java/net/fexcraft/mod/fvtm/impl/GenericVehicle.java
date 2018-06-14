@@ -17,7 +17,6 @@ import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.RecipeObject;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
@@ -106,15 +105,14 @@ public class GenericVehicle implements Vehicle {
         this.wheelstepheight = JsonUtil.getIfExists(obj, "FM-WheelStepHeight", 1f).floatValue();
         this.trailer_adjustment_axe = JsonUtil.getIfExists(obj, "FVTM-TrailerAdjustmentAxe", 1f).floatValue();
         if(obj.has("Recipes")){
-            obj.get("Recipes").getAsJsonArray().forEach((elm) -> {
-                try{
-                    RecipeObject.parse(this.getItemStack(this.getDataClass().getConstructor(Vehicle.class).newInstance(this)), elm.getAsJsonObject(), "FVTM:Vehicles");
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                    Static.stop();
-                }
-            });
+            try{
+            	ItemStack stack = this.getItemStack(this.getDataClass().getConstructor(Vehicle.class).newInstance(this));
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                Static.stop();
+            }
         }
         if(obj.has("Sounds")){
             for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){

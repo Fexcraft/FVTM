@@ -91,6 +91,16 @@ public class GenericBlock implements Block {
     			inventories.put(elm.getAsJsonObject().get("name").getAsString(), elm.getAsJsonObject().get("capacity").getAsInt());
     		});
     	}
+        if(obj.has("Recipes")){
+            try{
+            	ItemStack stack = this.getItemStack(this.getDataClass().getConstructor(Block.class).newInstance(this));
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                Static.stop();
+            }
+        }
     }
 
     @Override

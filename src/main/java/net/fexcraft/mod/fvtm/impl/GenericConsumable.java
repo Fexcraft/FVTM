@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.compatibility.TANItemData;
 import net.fexcraft.mod.fvtm.util.APIs;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,6 +41,15 @@ public class GenericConsumable implements Consumable {
         this.alwaysedible = JsonUtil.getIfExists(obj, "AlwaysEdible", false);
         if(this.drinkable && APIs.TOUGHASNAILS){
             this.tandata = obj.has("ToughAsNails") ? new TANDataImpl(obj.get("ToughAsNails").getAsJsonObject()) : null;
+        }
+        if(obj.has("Recipes")){
+            try{
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), this.getItemStack());
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                Static.stop();
+            }
         }
     }
 

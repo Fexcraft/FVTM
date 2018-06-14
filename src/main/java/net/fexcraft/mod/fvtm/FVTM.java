@@ -15,6 +15,7 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.util.common.Formatter;
+import net.fexcraft.mod.lib.util.registry.RegistryUtil;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -93,8 +94,8 @@ public class FVTM {
         PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new GuiHandler.CReceiver());
         //
         RecipeObject.registerRecipes();
-        RecipeRegistry.addBluePrintRecipe("FVTM:Blocks", new ItemStack(ConstructorController.INSTANCE, 1, 0), new ItemStack(Blocks.IRON_BLOCK, 2), new ItemStack(Items.REDSTONE, 8), new ItemStack(Items.GOLD_INGOT, 3));
-        RecipeRegistry.addBluePrintRecipe("FVTM:Blocks", new ItemStack(ConstructorCenter.INSTANCE, 1, 0), new ItemStack(Blocks.IRON_BLOCK, 1), new ItemStack(Items.REDSTONE, 4), new ItemStack(Items.GOLD_INGOT, 2), new ItemStack(Blocks.PLANKS, 4), new ItemStack(Items.STICK, 4), new ItemStack(Blocks.LOG, 2));
+        RecipeRegistry.addBluePrintRecipe("FVTM (B)", new ItemStack(RegistryUtil.getBlock("fvtm:constructor_controller"), 1, 0), new ItemStack(Blocks.IRON_BLOCK, 2), new ItemStack(Items.REDSTONE, 8), new ItemStack(Items.GOLD_INGOT, 3));
+        RecipeRegistry.addBluePrintRecipe("FVTM (B)", new ItemStack(ConstructorCenter.INSTANCE, 1, 0), new ItemStack(Blocks.IRON_BLOCK, 1), new ItemStack(Items.REDSTONE, 4), new ItemStack(Items.GOLD_INGOT, 2), new ItemStack(Blocks.PLANKS, 4), new ItemStack(Items.STICK, 4), new ItemStack(Blocks.LOG, 2));
         //
         PacketHandler.getInstance().registerMessage(VehicleControlPacketHandler.Client.class, PacketVehicleControl.class, 9910, Side.CLIENT);
         PacketHandler.getInstance().registerMessage(VehicleControlPacketHandler.Server.class, PacketVehicleControl.class, 9911, Side.SERVER);

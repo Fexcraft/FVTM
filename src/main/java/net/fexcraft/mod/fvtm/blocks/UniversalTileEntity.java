@@ -23,6 +23,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +37,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import static net.minecraft.util.EnumFacing.*;
 
-public class UniversalTileEntity extends TileEntity implements BlockTileEntity, IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
+public class UniversalTileEntity extends TileEntity implements BlockTileEntity, IPacketReceiver<PacketTileEntityUpdate>, LockableObject, ITickable {
 	
 	private Long longpos;
 	private boolean core;
@@ -414,6 +415,13 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 	public long getLongPos(){
 		if(longpos == null){ longpos = pos.toLong(); }
 		return longpos;
+	}
+
+	@Override
+	public void update(){
+		if(core && data != null && data.getScript() != null){
+			data.getScript().onUpdate(this, data);
+		}
 	}
 
 }

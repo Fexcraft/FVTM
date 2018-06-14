@@ -104,16 +104,6 @@ public class GenericVehicle implements Vehicle {
         this.wheelspringstrength = JsonUtil.getIfExists(obj, "FM-WheelSpringStrength", 0.25f).floatValue();
         this.wheelstepheight = JsonUtil.getIfExists(obj, "FM-WheelStepHeight", 1f).floatValue();
         this.trailer_adjustment_axe = JsonUtil.getIfExists(obj, "FVTM-TrailerAdjustmentAxe", 1f).floatValue();
-        if(obj.has("Recipes")){
-            try{
-            	ItemStack stack = this.getItemStack(this.getDataClass().getConstructor(Vehicle.class).newInstance(this));
-            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack);
-            }
-            catch(Exception e){
-                e.printStackTrace();
-                Static.stop();
-            }
-        }
         if(obj.has("Sounds")){
             for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
                 JsonObject jsn = elm.getAsJsonObject();
@@ -150,6 +140,17 @@ public class GenericVehicle implements Vehicle {
         {
             accentmods.add(EntityType.INTERNAL);
             accentmods.add(EntityType.PROTOTYPE);
+        }
+        //
+        if(obj.has("Recipes")){
+            try{
+            	ItemStack stack = this.getItemStack(this.getDataClass().getConstructor(Vehicle.class).newInstance(this));
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack, "FVTM - Vehicles");
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                Static.stop();
+            }
         }
     }
 

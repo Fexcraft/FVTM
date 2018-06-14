@@ -1090,7 +1090,7 @@ public class CrusherModel extends BlockModel {
 		}
 		//
 		if(data.getScript() != null){
-			GL11.glTranslated(0, data.getScript(CrusherScript.class).state * 0.065, 0);
+			GL11.glTranslated(0, data.getScript(CrusherScript.class).state * -0.065, 0);
 			render(state);
 		}
 		else{

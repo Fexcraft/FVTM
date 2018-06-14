@@ -124,7 +124,7 @@ public class GenericPart implements Part {
         if(obj.has("Recipes")){
             try{
             	ItemStack stack = this.getItemStack(this.getDataClass().getConstructor(Part.class).newInstance(this));
-            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack);
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack, "FVTM - Parts");
             }
             catch(Exception e){
                 e.printStackTrace();

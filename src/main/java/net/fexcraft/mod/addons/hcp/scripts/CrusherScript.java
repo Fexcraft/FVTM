@@ -22,6 +22,7 @@ public class CrusherScript extends CrafterBlockScriptBase {
 	public CrusherScript(){ super(); }
 	
 	public int state = 0;
+	private int duration = 400;
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
@@ -63,7 +64,7 @@ public class CrusherScript extends CrafterBlockScriptBase {
 			}
 			else{
 				progress++;
-				progress = progress > 400 ? 0 : progress;
+				progress = progress > duration ? 0 : progress;
 				//
 				if(((ItemStack)current_recipe.output[0]).getItem() instanceof ItemBlock == false){
 					return;
@@ -102,7 +103,7 @@ public class CrusherScript extends CrafterBlockScriptBase {
 				}
 			}
 			else{
-				if(progress >= 400){
+				if(progress >= duration){
 					for(Object obj : current_recipe.output){
 						insert(data.getItemStacks().get("crusher_out"), (ItemStack)obj);
 					}
@@ -121,7 +122,7 @@ public class CrusherScript extends CrafterBlockScriptBase {
 
 	private int countOutput(BlockData data){
 		long i = data.getItemStacks().get("crusher_out").stream().filter(pre -> !pre.isEmpty()).count();
-		return (int)(i / 16);
+		return (int)(i / 8);
 	}
 
 	@Override

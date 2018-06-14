@@ -282,7 +282,8 @@ public class UniversalBlock extends BlockContainer {
             	//TODO
             }
             else if(Static.dev()){
-                Print.debug(tile.getBlockData() == null ? "No Container." : tile.getBlockData().writeToNBT(new NBTTagCompound()).toString());
+                Print.debug(tile.getBlockData() == null ? "No BlockData." : tile.getBlockData().writeToNBT(new NBTTagCompound()).toString());
+                Print.debug(tile.getBlockData() == null ? "No BlockIOT" : tile.getBlockData().getBlock().getSubBlocks());
             }
         }
         return false;

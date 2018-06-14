@@ -774,12 +774,12 @@ public class Resources {
                     }
                     for(File file : matfol.listFiles()){
                         if(!file.isDirectory() && (file.getName().endsWith(".recipe") || file.getName().endsWith(".recipes"))){
-                        	CrafterBlockScriptBase.registerRecipes(JsonUtil.read(file, false), null);
+                        	CrafterBlockScriptBase.registerRecipes(JsonUtil.read(file, false), null, null);
                         }
                         else if(file.isDirectory()){
                             for(File fl : file.listFiles()){
                                 if(file.getName().endsWith(".recipe") || file.getName().endsWith(".recipes")){
-                                	CrafterBlockScriptBase.registerRecipes(JsonUtil.read(file, false), null);
+                                	CrafterBlockScriptBase.registerRecipes(JsonUtil.read(file, false), null, null);
                                 }
                             }
                         }
@@ -789,11 +789,11 @@ public class Resources {
                 else{
                     JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipe");
                     for(JsonElement elm : array){
-                    	CrafterBlockScriptBase.registerRecipes(elm, null);
+                    	CrafterBlockScriptBase.registerRecipes(elm, null, null);
                     }
                     array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipes");
                     for(JsonElement elm : array){
-                    	CrafterBlockScriptBase.registerRecipes(elm, null);
+                    	CrafterBlockScriptBase.registerRecipes(elm, null, null);
                     }
                 }
             }

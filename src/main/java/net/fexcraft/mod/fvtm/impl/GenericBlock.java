@@ -94,7 +94,7 @@ public class GenericBlock implements Block {
         if(obj.has("Recipes")){
             try{
             	ItemStack stack = this.getItemStack(this.getDataClass().getConstructor(Block.class).newInstance(this));
-            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack);
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack, "FVTM - Blocks");
             }
             catch(Exception e){
                 e.printStackTrace();

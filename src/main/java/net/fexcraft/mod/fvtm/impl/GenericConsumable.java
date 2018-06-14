@@ -44,7 +44,7 @@ public class GenericConsumable implements Consumable {
         }
         if(obj.has("Recipes")){
             try{
-            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), this.getItemStack());
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), this.getItemStack(), "FVTM - Consumables");
             }
             catch(Exception e){
                 e.printStackTrace();

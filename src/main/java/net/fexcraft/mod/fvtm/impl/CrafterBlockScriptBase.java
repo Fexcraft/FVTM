@@ -140,27 +140,31 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		
 	}
 	
-	public static void registerRecipes(JsonElement elm, @Nullable ItemStack stack){
+	public static void registerRecipes(JsonElement elm, @Nullable ItemStack stack, @Nullable String category){
 		if(elm.isJsonArray()){
 			elm.getAsJsonArray().forEach(obj -> {
-				registerRecipe(obj.getAsJsonObject(), stack);
+				registerRecipe(obj.getAsJsonObject(), stack, category);
 			});
 		}
 		else if(elm.isJsonObject()){
-			registerRecipe(elm.getAsJsonObject(), stack);
+			registerRecipe(elm.getAsJsonObject(), stack, category);
 		}
 		else return;
 	}
 	
-	public static void registerRecipe(JsonObject obj, @Nullable ItemStack stack){
+	public static void registerRecipe(JsonObject obj, @Nullable ItemStack stack, @Nullable String category){
 		String type = JsonUtil.getIfExists(obj, "Type", "null");
 		if(type.equals("null")){ return; }
 		switch(type){
-			case "minecraft_shaped": return;//TODO
-			case "fcl:bpt": case "fcl:blueprinttable": case "Blueprint":{
+			case "minecraft_shaped":
+			case "minecraft_shapeless":
+			case "minecraft_smelting":
+			case "fcl:bpt": case "fcl:blueprinttable":
+			case "smelting": case "Smelting":
+			case "blueprint": case "Blueprint":{
 				try{
-					String category = JsonUtil.getIfExists(obj, "Category", "FVTM:NoCategory");
-					RecipeObject.parse(stack, obj, category);
+					String cat = JsonUtil.getIfExists(obj, "Category", category == null ? "FVTM:NoCategory" : category);
+					RecipeObject.parse(stack, obj, cat);
 					//TODO parse from json if stack null;
 				}
 				catch(Exception e){
@@ -169,8 +173,6 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 				}
 				return;
 			}
-			case "minecraft_shapeless": return;//TODO
-			case "minecraft_smelting": return;//TODO
 		}
 		if(Resources.BLOCKS.getValue((new ResourceLocation(type))) == null){
 			Print.debug("Crafter block for Recipe not found!\n" + obj.toString());

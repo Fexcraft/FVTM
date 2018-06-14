@@ -38,7 +38,7 @@ public class GenericMaterial implements Material {
         this.isKey = JsonUtil.getIfExists(obj, "VehicleKey", false);
         if(obj.has("Recipes")){
             try{
-            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), this.getItemStack());
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), this.getItemStack(), "FVTM - Materials");
             }
             catch(Exception e){
                 e.printStackTrace();

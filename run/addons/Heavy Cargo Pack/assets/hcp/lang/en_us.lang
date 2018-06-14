@@ -6,6 +6,9 @@
 #>
 #>
 
+#Blocks
+item.hcp:crusher.name=3³ Rock Crusher
+
 #Containers
 item.hcp:medium.name=Medium Generic Container
 item.hcp:medium_fluid.name=Medium Fluid Container

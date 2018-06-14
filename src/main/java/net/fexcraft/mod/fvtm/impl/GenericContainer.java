@@ -95,7 +95,7 @@ public class GenericContainer implements Container {
         if(obj.has("Recipes")){
             try{
             	ItemStack stack = this.getItemStack(this.getDataClass().getConstructor(Container.class).newInstance(this));
-            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack);
+            	CrafterBlockScriptBase.registerRecipes(obj.get("Recipes").getAsJsonArray(), stack, "FVTM - Containers");
             }
             catch(Exception e){
                 e.printStackTrace();

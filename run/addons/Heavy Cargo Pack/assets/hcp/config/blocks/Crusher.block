@@ -8,15 +8,15 @@
 	],
 	"Functional": true,
 	"Positions":[
-		{ "x":  1, "y": 0, "z": -1, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
-		{ "x":  0, "y": 0, "z": -1, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
-		{ "x": -1, "y": 0, "z": -1, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
-		{ "x":  1, "y": 0, "z":  0, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
-		{ "x":  0, "y": 0, "z":  0, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
-		{ "x": -1, "y": 0, "z":  0, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
-		{ "x":  1, "y": 0, "z":  1, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
-		{ "x":  0, "y": 0, "z":  1, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
-		{ "x": -1, "y": 0, "z":  1, "Sides":[ { "side": "all", "inventory": "crusher_out" }, { "side": "all", "gui": "inventory:crusher_out" } ] },
+		{ "x":  1, "y": 0, "z": -1, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
+		{ "x":  0, "y": 0, "z": -1, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
+		{ "x": -1, "y": 0, "z": -1, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
+		{ "x":  1, "y": 0, "z":  0, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
+		{ "x":  0, "y": 0, "z":  0, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
+		{ "x": -1, "y": 0, "z":  0, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
+		{ "x":  1, "y": 0, "z":  1, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
+		{ "x":  0, "y": 0, "z":  1, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
+		{ "x": -1, "y": 0, "z":  1, "Sides":[ { "side": "all", "inventory": "crusher_out", "gui": "inventory:crusher_out" } ] },
 		{ "x":  0, "y": 1, "z":  0, "Sides":[ { "side": "all", "gui": "script" } ] },
 		{ "x":  1, "y": 2, "z": -1, "Sides":[ { "side": "up", "inventory": "crusher_in" }, { "side": "all", "gui": "inventory:crusher_in" } ] },
 		{ "x":  0, "y": 2, "z": -1, "Sides":[ { "side": "up", "inventory": "crusher_in" }, { "side": "all", "gui": "inventory:crusher_in" } ] },
@@ -38,5 +38,30 @@
 			"capacity": 96
 		}
 	],
-	"Script": "net.fexcraft.mod.addons.hcp.scripts.CrusherScript.class"
+	"Script": "net.fexcraft.mod.addons.hcp.scripts.CrusherScript.class",
+	"Recipes":[
+		{
+			"Type": "Blueprint",
+			"Category": "Heavy Cargo Pack",
+			"Components": [
+				{
+					"Item": "minecraft:iron_block",
+					"Amount": 1
+				},
+				{
+					"Item": "minecraft:planks",
+					"Amount": 8
+				},
+				{
+					"Item": "minecraft:log",
+					"Amount": 2
+				},
+				{
+					"Item": "minecraft:diamond",
+					"Amount": 2
+				}
+			],
+			"Output": 1
+		}
+	]
 }

@@ -5,15 +5,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.lib.FCL;
 import net.fexcraft.mod.lib.network.Network;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -107,30 +104,5 @@ public class FvtmUpdateHandler {
     public void onChunk(AttachCapabilitiesEvent<Chunk> event){
     	event.addCapability(BlockChunkUtil.REGISTRY_NAME, new BlockChunkUtil(event.getObject()));
     }*/
-    
-    @SubscribeEvent
-    public void onTick(TickEvent.WorldTickEvent event){
-    	event.world.loadedTileEntityList.forEach(tile -> {
-    		if(tile instanceof UniversalTileEntity && ((UniversalTileEntity)tile).isCore()){
-    			UniversalTileEntity unte = (UniversalTileEntity)tile;
-    			if(unte.getBlockData() != null && unte.getWorld() != null && unte.getBlockData().getScript() != null){
-    				unte.getBlockData().getScript().onUpdate(tile, unte.getBlockData());
-    			}
-    		}
-    	});
-    }
-    
-    @SubscribeEvent
-    public void onTick(TickEvent.PlayerTickEvent event){
-    	if(event.phase == Phase.END || !event.player.world.isRemote){ return; }
-    	event.player.world.loadedTileEntityList.forEach(tile -> {
-    		if(tile instanceof UniversalTileEntity && ((UniversalTileEntity)tile).isCore()){
-    			UniversalTileEntity unte = (UniversalTileEntity)tile;
-    			if(unte.getBlockData() != null && unte.getWorld() != null && unte.getBlockData().getScript() != null){
-    				unte.getBlockData().getScript().onUpdate(tile, unte.getBlockData());
-    			}
-    		}
-    	});
-    }
 
 }

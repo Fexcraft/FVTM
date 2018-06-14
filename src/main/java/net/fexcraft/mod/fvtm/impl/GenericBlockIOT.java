@@ -18,24 +18,39 @@ public class GenericBlockIOT implements Block.BlockIOT {
 	private GenericBlockIOT(){ empty = true; }
 	
 	public static BlockIOT fromJson(JsonObject obj){
-		if(!obj.has("Sides")){
-			return EMPTY;
-		}
+		if(!obj.has("Sides")){ return EMPTY; }
 		GenericBlockIOT blk = new GenericBlockIOT();
 		obj.get("Sides").getAsJsonArray().forEach(elm -> {
 			JsonObject jsn = elm.getAsJsonObject();
-			EnumFacing facing = EnumFacing.byName(jsn.get("side").getAsString());
+			EnumFacing facing = null;
+			switch(jsn.get("side").getAsString().toLowerCase()){
+				case "top": case "up": facing = EnumFacing.UP; break;
+				case "bottom": case "down": facing = EnumFacing.DOWN; break;
+				case "west": facing = EnumFacing.WEST; break;
+				case "east": facing = EnumFacing.EAST; break;
+				case "north": facing = EnumFacing.NORTH; break;
+				case "south": facing = EnumFacing.SOUTH; break;
+				default: break;
+			}
 			if(facing != null){
-				blk.guitypes[facing.getIndex()] = jsn.has("gui") ? jsn.get("gui").getAsString() : null;
-				blk.tanks[facing.getIndex()] = jsn.has("tank") ? jsn.get("tank").getAsString() : null;
-				blk.stacks[facing.getIndex()] = jsn.has("inventory") ? jsn.get("inventory").getAsString() : null;
+				if(jsn.has("gui")){
+					blk.guitypes[facing.getIndex()] = jsn.get("gui").getAsString();
+				}
+				if(jsn.has("tank")){
+					blk.tanks[facing.getIndex()] = jsn.get("tank").getAsString();
+				}
+				if(jsn.has("inventory")){
+					blk.stacks[facing.getIndex()] = jsn.get("inventory").getAsString();
+				}
 			}
 			else{
 				String gui = jsn.has("gui") ? jsn.get("gui").getAsString() : null;
 				String tank = jsn.has("tank") ? jsn.get("tank").getAsString() : null;
 				String inv = jsn.has("inventory") ? jsn.get("inventory").getAsString() : null;
 				for(int i = 0; i < 6; i++){
-					blk.guitypes[i] = gui; blk.tanks[i] = tank; blk.stacks[i] = inv;
+					if(blk.guitypes[i] == null){ blk.guitypes[i] = gui; }
+					if(blk.tanks[i] == null){ blk.tanks[i] = tank; }
+					if(blk.stacks[i] == null){ blk.stacks[i] = inv; }
 				}
 			}
 		});
@@ -70,6 +85,11 @@ public class GenericBlockIOT implements Block.BlockIOT {
 	@Override
 	public IItemHandler getInventory(BlockData data, EnumFacing facing){
 		return data.getInventories().get(stacks[facing.getIndex()]);
+	}
+	
+	@Override
+	public String toString(){
+		return "GBIOT " + (empty ? "EMPTY" : guitypes + " " + tanks + " " + stacks) + ";";
 	}
 	
 }

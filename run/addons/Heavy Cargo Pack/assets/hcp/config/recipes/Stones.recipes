@@ -41,7 +41,7 @@
 			{ "type": "block", "id": "minecraft:stone", "meta": 1 }
 		],
 		"Output":[
-			{ "type": "block", "id": "minecraft:cobblestone" }
+			{ "type": "block", "id": "minecraft:gravel" }
 		]
 	},
 	{
@@ -50,7 +50,7 @@
 			{ "type": "block", "id": "minecraft:stone", "meta": 3 }
 		],
 		"Output":[
-			{ "type": "block", "id": "minecraft:cobblestone" }
+			{ "type": "block", "id": "minecraft:gravel" }
 		]
 	},
 	{
@@ -59,7 +59,16 @@
 			{ "type": "block", "id": "minecraft:stone", "meta": 5 }
 		],
 		"Output":[
-			{ "type": "block", "id": "minecraft:cobblestone" }
+			{ "type": "block", "id": "minecraft:gravel" }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:gravel" }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:sand" }
 		]
 	},
 	{

@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -276,6 +277,9 @@ public class UniversalBlock extends BlockContainer {
                 }
         		Print.debug(tile.getRelFacing(side), str);
                 return true;
+            }
+            else if(stack.getItem() instanceof ItemDye){
+            	//TODO
             }
             else if(Static.dev()){
                 Print.debug(tile.getBlockData() == null ? "No Container." : tile.getBlockData().writeToNBT(new NBTTagCompound()).toString());

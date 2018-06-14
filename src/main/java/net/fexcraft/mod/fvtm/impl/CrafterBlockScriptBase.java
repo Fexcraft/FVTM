@@ -157,7 +157,7 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		if(type.equals("null")){ return; }
 		switch(type){
 			case "minecraft_shaped": return;//TODO
-			case "fcl:bpt": case "fcl:blueprinttable":{
+			case "fcl:bpt": case "fcl:blueprinttable": case "Blueprint":{
 				try{
 					String category = JsonUtil.getIfExists(obj, "Category", "FVTM:NoCategory");
 					RecipeObject.parse(stack, obj, category);

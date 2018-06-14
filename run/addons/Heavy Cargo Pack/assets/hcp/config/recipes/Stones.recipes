@@ -1,0 +1,83 @@
+[
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 6 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 5 }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 4 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 3 }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 2 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 1 }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 0 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:cobblestone" }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 1 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:cobblestone" }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 3 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:cobblestone" }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:stone", "meta": 5 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:cobblestone" }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:cobblestone" }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:sand", "amount": 2 }
+		]
+	},
+	{
+		"Type": "hcp:crusher",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:sandstone" }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:sand", amount: 4 }
+		]
+	}
+]

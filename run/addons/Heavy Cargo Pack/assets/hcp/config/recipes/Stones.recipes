@@ -86,7 +86,7 @@
 			{ "type": "block", "id": "minecraft:sandstone" }
 		],
 		"Output":[
-			{ "type": "block", "id": "minecraft:sand", amount: 4 }
+			{ "type": "block", "id": "minecraft:sand", "amount": 4 }
 		]
 	}
 ]

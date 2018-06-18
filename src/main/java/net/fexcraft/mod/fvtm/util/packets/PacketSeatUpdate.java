@@ -7,14 +7,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketSeatUpdate implements IPacket, IMessage {
 
-    public int entity, seat;
+	public long entid0, entid1;
     public float yaw, pitch;
+    public int seat;
 
-    public PacketSeatUpdate(){
-    }
+    public PacketSeatUpdate(){}
 
     public PacketSeatUpdate(SeatEntity ent){
-        entity = ent.getVehicle().getEntity().getEntityId();
+    	entid0 = ent.getVehicle().getEntity().getPersistentID().getMostSignificantBits();
+        entid1 = ent.getVehicle().getEntity().getPersistentID().getLeastSignificantBits();
         seat = ent.getSeatId();
         yaw = ent.looking.getYaw();
         pitch = ent.looking.getPitch();
@@ -22,7 +23,8 @@ public class PacketSeatUpdate implements IPacket, IMessage {
 
     @Override
     public void toBytes(ByteBuf buf){
-        buf.writeInt(entity);
+        buf.writeLong(entid0);
+        buf.writeLong(entid1);
         buf.writeInt(seat);
         buf.writeFloat(yaw);
         buf.writeFloat(pitch);
@@ -30,7 +32,8 @@ public class PacketSeatUpdate implements IPacket, IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf){
-        entity = buf.readInt();
+        entid0 = buf.readLong();
+        entid1 = buf.readLong();
         seat = buf.readInt();
         yaw = buf.readFloat();
         pitch = buf.readFloat();

@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketVehicleControl implements IPacket, IMessage {
 
-    public int entityId;
+    public long entId0, entId1;
     public double posX, posY, posZ;
     public float yaw, pitch, roll;
     public double motX, motY, motZ;
@@ -23,7 +23,8 @@ public class PacketVehicleControl implements IPacket, IMessage {
 
     public PacketVehicleControl(VehicleEntity vehicle){
         Entity ent = vehicle.getEntity();
-        entityId = ent.getEntityId();
+        entId0 = ent.getPersistentID().getMostSignificantBits();
+        entId1 = ent.getPersistentID().getLeastSignificantBits();
         posX = ent.posX;
         posY = ent.posY;
         posZ = ent.posZ;
@@ -44,7 +45,8 @@ public class PacketVehicleControl implements IPacket, IMessage {
 
     @Override
     public void toBytes(ByteBuf buf){
-        buf.writeInt(entityId);
+        buf.writeLong(entId0);
+        buf.writeLong(entId1);
         buf.writeDouble(posX);
         buf.writeDouble(posY);
         buf.writeDouble(posZ);
@@ -64,7 +66,8 @@ public class PacketVehicleControl implements IPacket, IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf){
-        entityId = buf.readInt();
+    	entId0 = buf.readLong();
+    	entId1 = buf.readLong();
         posX = buf.readDouble();
         posY = buf.readDouble();
         posZ = buf.readDouble();

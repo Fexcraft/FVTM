@@ -585,7 +585,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
             Print.debug("RM => " + Time.getDate() + " " + seatid + " [CLIENT] OK");
         }
         else{
-            PacketHandler.getInstance().sendToAllAround(new PacketSeatDismount(passenger.getEntityId()), Resources.getTargetPoint(this));
+            PacketHandler.getInstance().sendToAllAround(new PacketSeatDismount(passenger.getPersistentID()), Resources.getTargetPoint(this));
             passenger = null;
             Print.debug("RM => " + Time.getDate() + " " + seatid + " [SERVER]");
         }

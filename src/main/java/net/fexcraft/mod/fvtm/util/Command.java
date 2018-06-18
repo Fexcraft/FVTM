@@ -25,6 +25,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class Command extends CommandBase {
@@ -41,6 +42,11 @@ public class Command extends CommandBase {
 
     public String trs(String string){
         return I18n.format(string, new Object[0]);
+    }
+    
+    @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender){
+        return true;
     }
 
     @Override
@@ -231,6 +237,16 @@ public class Command extends CommandBase {
             		sender.getEntityWorld().spawnEntity(new EntityItem(sender.getEntityWorld(), vec.x, vec.y - 1.5, vec.z, stack.copy()));
             	}
             	Print.chat(sender, "Spawned 64 EntityItems of selected type.");
+            	break;
+            }
+            case "testgui":{
+            	if(!server.isSinglePlayer() || !Static.dev()){
+            		Print.chat(sender, "Feature not available.");
+            		return;
+            	}
+            	BlockPos vec = sender.getPosition();
+            	GuiHandler.EventHandler.QUEUE.put(((EntityPlayer)sender).getGameProfile().getId(), new String[]{ "static_command", "null", "mill"});
+            	((EntityPlayer)sender).openGui(FVTM.getInstance(), 200, sender.getEntityWorld(), vec.getX(), vec.getY(), vec.getZ());
             	break;
             }
             default: {

@@ -212,9 +212,7 @@ public class UniversalBlock extends BlockContainer {
                 			Print.chat(player, "Tank with ID " + arr[1] + " not found!");
                 		}
                 		else{
-                			if(Static.side().isClient()){
-                				net.fexcraft.mod.fvtm.gui.UniversalBlockFluidGui.lastside = side;
-                			}
+                			if(Static.side().isClient()){ GuiHandler.lastside = side; }
                 			player.openGui(FVTM.getInstance(), GuiHandler.BLOCK_FLUID_INVENTORY, world, pos.getX(), pos.getY(), pos.getZ());
                 		}
                 		break;
@@ -224,9 +222,7 @@ public class UniversalBlock extends BlockContainer {
                 			Print.chat(player, "Inventory with ID " + arr[1] + " not found!");
                 		}
                 		else{
-                			if(Static.side().isClient()){
-                				net.fexcraft.mod.fvtm.gui.UniversalBlockInventoryGui.lastside = side;
-                			}
+                			if(Static.side().isClient()){ GuiHandler.lastside = side; }
                 			player.openGui(FVTM.getInstance(), GuiHandler.BLOCK_INVENTORY, world, pos.getX(), pos.getY(), pos.getZ());
                 		}
                 		break;

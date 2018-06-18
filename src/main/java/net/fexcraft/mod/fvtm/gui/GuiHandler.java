@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -35,11 +38,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler {
 
     public static final int ADDON_MANAGER = 55;
+    public static final int GENERIC_INVENTORY = 200;
     public static final int VEHICLE_INVENTORY = 9910;
     public static final int CONSTRUCTOR = 9000;//92110;
     public static final int CONTAINER_INVENTORY = 9210;
@@ -49,6 +55,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int BLOCK_SCRIPTSGUI = 9312;
     public static final int BLOCK_CRAFTERSCRIPT = 9313;
 	public static final int VEHICLE_SCRIPTSGUI = 9214;
+	public static EnumFacing lastside = EnumFacing.UP;
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
@@ -56,6 +63,8 @@ public class GuiHandler implements IGuiHandler {
         switch(ID){
             case 55:
                 return new GenericPlaceholderContainer();
+            case 200:
+            	return new GenericAdjustableInventory.Container(world, player, x, y, z);
             case 9910:
                 return new VehicleInventoryGui.Server(player, world, x, y, z);
             case 9210:
@@ -88,8 +97,9 @@ public class GuiHandler implements IGuiHandler {
         Print.debug("REQUEST " + ID + " | " + x + ", " + y + ", " + z + ";");
         switch(ID){
             case 55:
-                Print.debug("CREATING GUI!;");
                 return new AddonManagerGui(x, y, z);
+            case 200:
+            	return new GenericAdjustableInventory.Gui(world, player, x, y, z);
             case 9910:
                 return new VehicleInventoryGui.Client(player, world, x, y, z);
             case 9210:
@@ -447,6 +457,11 @@ public class GuiHandler implements IGuiHandler {
                 	}
                 	else return;
                 }
+                case "generic_adjustable_inventory_data":{
+                	//TODO
+                	Print.debug(packet.nbt);
+                	return;
+                }
             }
         }
 
@@ -491,7 +506,7 @@ public class GuiHandler implements IGuiHandler {
                 }
                 case "update_fuel_tanks": {
                     Print.debug(packet.nbt.toString());
-                    VehicleData data = ((SeatEntity) ((EntityPlayer) objs[0]).getRidingEntity()).getVehicle().getVehicleData();
+                    VehicleData data = ((SeatEntity)((EntityPlayer)objs[0]).getRidingEntity()).getVehicle().getVehicleData();
                     NBTTagList list = (NBTTagList) packet.nbt.getTag("parts");
                     list.forEach((nbtbase) -> {
                         NBTTagCompound compound = (NBTTagCompound) nbtbase;
@@ -504,7 +519,7 @@ public class GuiHandler implements IGuiHandler {
                     break;
                 }
                 case "update_fluid_tank": {
-                    VehicleData data = ((SeatEntity) ((EntityPlayer) objs[0]).getRidingEntity()).getVehicle().getVehicleData();
+                    VehicleData data = ((SeatEntity)((EntityPlayer)objs[0]).getRidingEntity()).getVehicle().getVehicleData();
                     PartData part = data.getInventoryContainers().get(packet.nbt.getInteger("tank"));
                     if(packet.nbt.getBoolean("wasempty")){
                         NBTTagCompound nbt = new NBTTagCompound();
@@ -519,9 +534,34 @@ public class GuiHandler implements IGuiHandler {
                     }
                     break;
                 }
+                case "generic_adjustable_inventory_data":{
+                	String[] data = packet.nbt.getString("data").split("|");
+                	EntityPlayer player = (EntityPlayer)objs[0];
+                	if(player.openContainer != null && player.openContainer instanceof GenericAdjustableInventory.Container){
+                		((GenericAdjustableInventory.Container)player.openContainer).setup(player, data);
+                		Print.debug("OK", player, data, player.openContainer);
+                	}
+                	else{
+                		Print.debug("NO", player, data, player.openContainer);
+                	}
+                	break;
+                }
             }
         }
 
+    }
+    
+    public static class EventHandler {
+    	
+    	public static HashMap<UUID, String[]> QUEUE = new HashMap<>();
+    	
+    	@SubscribeEvent
+    	public void onContainerOpen(PlayerContainerEvent.Open event){
+    		if(!event.getEntityPlayer().world.isRemote && event.getContainer() instanceof GenericAdjustableInventory.Container && QUEUE.containsKey(event.getEntityPlayer().getGameProfile().getId())){
+    			((GenericAdjustableInventory.Container)event.getContainer()).setup(event.getEntityPlayer(), QUEUE.remove(event.getEntityPlayer().getGameProfile().getId()));
+    		}
+    	}
+    	
     }
 
 }

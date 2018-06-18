@@ -26,7 +26,7 @@ public class SeatUpdatePacketHandler {
                     EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
                     VehicleEntity vehicle = null;
                     for(Entity obj : player.world.loadedEntityList){
-                        if(obj instanceof VehicleEntity && obj.getEntityId() == packet.entity){
+                        if(obj instanceof VehicleEntity && obj.getPersistentID().getMostSignificantBits() == packet.entid0 && obj.getPersistentID().getLeastSignificantBits() == packet.entid1){
                             vehicle = (VehicleEntity) obj;
                             break;
                         }
@@ -53,7 +53,7 @@ public class SeatUpdatePacketHandler {
                     EntityPlayer player = Minecraft.getMinecraft().player;
                     VehicleEntity vehicle = null;
                     for(Entity obj : player.world.loadedEntityList){
-                        if(obj instanceof VehicleEntity && obj.getEntityId() == packet.entity){
+                        if(obj instanceof VehicleEntity && obj.getPersistentID().getMostSignificantBits() == packet.entid0 && obj.getPersistentID().getLeastSignificantBits() == packet.entid1){
                             vehicle = (VehicleEntity) obj;
                             break;
                         }

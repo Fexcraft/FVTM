@@ -15,8 +15,6 @@ public class KeyHandler {
     private final Minecraft minecraft;
     public static KeyBinding engineToggle;
     public static KeyBinding openInventory;
-    public static KeyBinding leftMouse;
-    public static KeyBinding rightMouse;
     public static KeyBinding doorToggle, scriptsGUI, lightsToggle, trailerToggle;
     public static final String category = "FVTM Controls";
 
@@ -24,8 +22,6 @@ public class KeyHandler {
         this.minecraft = Minecraft.getMinecraft();
         ClientRegistry.registerKeyBinding(engineToggle = new KeyBinding("Engine", Keyboard.KEY_LCONTROL, category));
         ClientRegistry.registerKeyBinding(openInventory = new KeyBinding("Inventory", Keyboard.KEY_R, category));
-        ClientRegistry.registerKeyBinding(leftMouse = new KeyBinding("Prototype LM", Keyboard.KEY_8, category));
-        ClientRegistry.registerKeyBinding(rightMouse = new KeyBinding("Prototype RM", Keyboard.KEY_9, category));
         ClientRegistry.registerKeyBinding(doorToggle = new KeyBinding("Doors", Keyboard.KEY_K, category));
         ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("Scripts GUI", Keyboard.KEY_G, category));
         ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("Lights", Keyboard.KEY_L, category));

@@ -12,6 +12,7 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.GenericGuiButton;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -21,7 +22,6 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +30,6 @@ import net.minecraft.world.World;
 public class UniversalBlockInventoryGui {
 	
 	private static final ResourceLocation invtex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory.png");
-	public static EnumFacing lastside; //Client Only - Temporary use.
 
     public static class Client extends GuiContainer {
 
@@ -45,8 +44,16 @@ public class UniversalBlockInventoryGui {
             this.tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
             this.xSize = 226;
             this.ySize = 195;
-            sel = tile.getBlockData().getBlock().getSubBlocks().get(tile.getRelPos()).getGuiType(tile.getRelFacing(lastside)).split(":")[1];
-            size = tile.getBlockData().getItemStacks().get(sel).size();
+            try{
+                String str = tile.getBlockData().getBlock().getSubBlocks().get(tile.getRelPos()).getGuiType(tile.getRelFacing(GuiHandler.lastside));
+                sel = str.contains(":") ? str.split(":")[1] : str;
+                size = tile.getBlockData().getItemStacks().get(sel).size();
+            }
+            catch(Exception e){
+            	e.printStackTrace();
+            	Print.log(tile.getBlockData().getBlock().getSubBlocks().get(tile.getRelPos()).getGuiType(tile.getRelFacing(GuiHandler.lastside)));
+            	Print.log(tile.getBlockData().getBlock().getSubBlocks().get(tile.getRelPos()));
+            }
             server.refresh(0, sel);
             //
     		NBTTagCompound compound = new NBTTagCompound();

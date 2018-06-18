@@ -13,7 +13,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,7 +25,6 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 public class UniversalBlockFluidGui {
 
     private static final ResourceLocation fluidtex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory_fluid.png");
-    public static EnumFacing lastside; //Client Only - Temporary use.
 
     public static class Client extends GuiContainer {
 
@@ -39,7 +37,7 @@ public class UniversalBlockFluidGui {
             this.tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
             this.xSize = 210;
             this.ySize = 126;
-            String sel = tile.getBlockData().getBlock().getSubBlocks().get(tile.getRelPos()).getGuiType(tile.getRelFacing(lastside)).split(":")[1];
+            String sel = tile.getBlockData().getBlock().getSubBlocks().get(tile.getRelPos()).getGuiType(tile.getRelFacing(GuiHandler.lastside)).split(":")[1];
             tank = (FluidTank)tile.getBlockData().getFluidTanks().get(sel);
             //
     		NBTTagCompound compound = new NBTTagCompound();

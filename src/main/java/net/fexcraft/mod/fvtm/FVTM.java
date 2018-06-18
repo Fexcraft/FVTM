@@ -90,6 +90,7 @@ public class FVTM {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
         NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
+        MinecraftForge.EVENT_BUS.register(new GuiHandler.EventHandler());
         PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new GuiHandler.SReceiver());
         PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new GuiHandler.CReceiver());
         //

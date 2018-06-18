@@ -18,7 +18,7 @@ public class VehicleControlPacketHandler {
             Static.getServer().addScheduledTask(() -> {
                 EntityPlayerMP player = Static.getServer().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
                 for(Entity ent : player.world.loadedEntityList){
-                    if(ent.getEntityId() == packet.entityId){
+                    if(ent.getUniqueID().getMostSignificantBits() == packet.entId0 && ent.getUniqueID().getLeastSignificantBits() == packet.entId1){
                         updatevehicle(ent, packet);
                         return;
                     }
@@ -37,7 +37,7 @@ public class VehicleControlPacketHandler {
                 @Override
                 public void run(){
                     for(Entity ent : Minecraft.getMinecraft().world.getLoadedEntityList()){
-                        if(ent.getEntityId() == packet.entityId){
+                        if(ent.getUniqueID().getMostSignificantBits() == packet.entId0 && ent.getUniqueID().getLeastSignificantBits() == packet.entId1){
                             updatevehicle(ent, packet);
                             return;
                         }
@@ -50,10 +50,8 @@ public class VehicleControlPacketHandler {
     }
 
     private static void updatevehicle(Entity entity, PacketVehicleControl pkt){
-        if(entity == null){
-            return;
-        }
-        VehicleEntity vehicle = (VehicleEntity) entity;
+        if(entity == null || entity instanceof VehicleEntity == false){ return; }
+        VehicleEntity vehicle = (VehicleEntity)entity;
         vehicle.setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll, pkt.motX, pkt.motY, pkt.motZ, pkt.avelx, pkt.avely, pkt.avelz, pkt.throttle, pkt.steeringYaw);
         vehicle.getVehicleData().toggleDoors(pkt.doors);
         if(vehicle.getEntityAtRear() != null){

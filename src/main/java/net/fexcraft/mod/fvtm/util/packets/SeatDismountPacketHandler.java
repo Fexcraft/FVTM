@@ -20,7 +20,7 @@ public class SeatDismountPacketHandler {
                 public void run(){
                     World world = Minecraft.getMinecraft().world;
                     for(Entity ent : world.loadedEntityList){
-                        if(ent.getEntityId() == packet.id){
+                        if(ent.getPersistentID().getMostSignificantBits() == packet.id0 && ent.getPersistentID().getLeastSignificantBits() == packet.id1){
                             ent.dismountRidingEntity();
                             break;
                         }

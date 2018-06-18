@@ -163,12 +163,8 @@ public class GuiVehicleController extends GuiScreen {
             if(isKeyDown(KeyHandler.openInventory.getKeyCode())){
                 seat.onKeyPress(7, player);
             }
-            if(isKeyDown(KeyHandler.leftMouse.getKeyCode())){
-                seat.onKeyPress(8, player);
-            }
-            if(isKeyDown(KeyHandler.rightMouse.getKeyCode())){
-                seat.onKeyPress(9, player);
-            }
+            //if(isKeyDown(KeyHandler.leftMouse.getKeyCode())){ seat.onKeyPress(8, player); }
+            //if(isKeyDown(KeyHandler.rightMouse.getKeyCode())){ seat.onKeyPress(9, player); }
             if(isKeyDown(KeyHandler.doorToggle.getKeyCode())){
                 seat.onKeyPress(10, player);
             }

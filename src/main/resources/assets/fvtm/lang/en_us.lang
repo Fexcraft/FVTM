@@ -74,6 +74,8 @@ tile.fvtm:cyl_sign.name=Cylinder/Round Sign
 tile.fvtm:display_block.name=Display Block
 tile.fvtm:container_block.name=Container Block
 tile.fvtm:fluid_pipe.name=Generic FVTM Fluid Pipe
+tile.fvtm:streetpost.name=Streetpost
+
 #Items
 item.fvtm:constructor_remote.name=Constructor Remote Controller
 

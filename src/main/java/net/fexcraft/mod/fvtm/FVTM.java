@@ -66,6 +66,7 @@ public class FVTM {
         }
         //
         PermManager.setEnabled(MODID);
+        EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSignEntity.class, "fvtm:streetsign", 1991, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:seat"), SeatEntity.class, "fvtm:seat", 1993, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), GenericVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 1, false);

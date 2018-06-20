@@ -78,6 +78,7 @@ tile.fvtm:streetpost.name=Streetpost
 
 #Items
 item.fvtm:constructor_remote.name=Constructor Remote Controller
+item.fvtm:streetsign.name=Street Sign
 
 
 

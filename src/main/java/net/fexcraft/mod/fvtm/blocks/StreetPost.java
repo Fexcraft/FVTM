@@ -4,8 +4,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.entities.StreetSignEntity;
+import net.fexcraft.mod.fvtm.entities.StreetSignEntity.StreetSignItem;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.block.fBlock;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.MapColor;
@@ -16,7 +19,11 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemLead;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -163,6 +170,39 @@ public class StreetPost extends BlockFence {
     @Override
     protected BlockStateContainer createBlockState(){
         return new BlockStateContainer(this, new IProperty[] { NORTH, EAST, WEST, SOUTH, UP, DOWN, BASE });
+    }
+    
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
+        if(!world.isRemote && hand == EnumHand.MAIN_HAND){
+            ItemStack stack = player.getHeldItemMainhand();
+            if(stack.getItem() instanceof ItemLead){
+            	ItemLead.attachToFence(player, world, pos);
+            	return true;
+            }
+            else if(stack.getItem() instanceof StreetSignItem){
+    			AxisAlignedBB aabb = new AxisAlignedBB(pos);
+    			boolean found = false;
+    			for(Entity e : world.loadedEntityList){
+    				if(e instanceof StreetSignEntity && e.getEntityBoundingBox().intersects(aabb)){
+    					found = true; break;
+    				}
+    			}
+            	if(!found){
+            		StreetSignEntity ent = new StreetSignEntity(world, player.getHorizontalFacing().getOpposite());
+            		ent.setPosition(pos.getX() + 0.5, pos.getY() + 0.125, pos.getZ() + 0.5);
+            		world.spawnEntity(ent);
+            	}
+            	else{
+            		Print.bar(player, "entity/sign at position");
+            	}
+            	return true;
+            }
+            else return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
+        }
+        else{
+            return true;
+        }
     }
 
 }

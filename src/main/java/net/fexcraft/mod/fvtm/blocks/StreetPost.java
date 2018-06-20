@@ -190,7 +190,7 @@ public class StreetPost extends BlockFence {
     			}
             	if(!found){
             		StreetSignEntity ent = new StreetSignEntity(world, player.getHorizontalFacing().getOpposite());
-            		ent.setPosition(pos.getX() + 0.5, pos.getY() + 0.125, pos.getZ() + 0.5);
+            		ent.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             		world.spawnEntity(ent);
             	}
             	else{

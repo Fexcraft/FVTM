@@ -20,12 +20,12 @@ public class KeyHandler {
 
     public KeyHandler(){
         this.minecraft = Minecraft.getMinecraft();
-        ClientRegistry.registerKeyBinding(engineToggle = new KeyBinding("Engine", Keyboard.KEY_LCONTROL, category));
-        ClientRegistry.registerKeyBinding(openInventory = new KeyBinding("Inventory", Keyboard.KEY_R, category));
-        ClientRegistry.registerKeyBinding(doorToggle = new KeyBinding("Doors", Keyboard.KEY_K, category));
-        ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("Scripts GUI", Keyboard.KEY_G, category));
-        ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("Lights", Keyboard.KEY_L, category));
-        ClientRegistry.registerKeyBinding(trailerToggle = new KeyBinding("Trailer", Keyboard.KEY_0, category));
+        ClientRegistry.registerKeyBinding(engineToggle = new KeyBinding("fvtm:engine", Keyboard.KEY_LCONTROL, category));
+        ClientRegistry.registerKeyBinding(openInventory = new KeyBinding("fvtm:vehicle_inventory", Keyboard.KEY_R, category));
+        ClientRegistry.registerKeyBinding(doorToggle = new KeyBinding("fvtm:vehicle_doors", Keyboard.KEY_K, category));
+        ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("fvtm:vehicle_scripts", Keyboard.KEY_G, category));
+        ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("fvtm:vehicle_lights", Keyboard.KEY_L, category));
+        ClientRegistry.registerKeyBinding(trailerToggle = new KeyBinding("fvtm:vehicle_trailer", Keyboard.KEY_0, category));
     }
 
     //TODO sunscribe keyinput event

@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 public class Renderer {
 
     public static void drawString(String str, double x, double y, double z, float viewerYaw, float viewerPitch, float viewerRoll, boolean glow, float scale, int color){
-        FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
+        //FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         //GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
@@ -36,7 +36,7 @@ public class Renderer {
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.depthMask(true);
-        fontRenderer.drawString(str, -fontRenderer.getStringWidth(str) / 2, 0, color);
+        SIGN_FONT_RENDERER.drawString(str, -SIGN_FONT_RENDERER.getStringWidth(str) / 2, 0, color);
         if(glow){
             GlStateManager.enableLighting();
         }

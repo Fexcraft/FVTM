@@ -16,21 +16,49 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class StreetSignEntity extends Entity implements IEntityAdditionalSpawnData, LockableObject {
 	
+	//Common
 	private static Item ITEM;
-    private EnumFacing facing;
     private boolean locked;
+    //private String lockcode;
+    private static final ResourceLocation[] textures = new ResourceLocation[]{
+    	new ResourceLocation("fvtm:textures/blocks/streetsign_0.png"),
+    	new ResourceLocation("fvtm:textures/blocks/streetsign_1.png"),
+    	new ResourceLocation("fvtm:textures/blocks/streetsign_2.png"),
+    	new ResourceLocation("fvtm:textures/blocks/streetsign_3.png"),
+    	new ResourceLocation("fvtm:textures/blocks/streetsign_4.png"),
+    	new ResourceLocation("fvtm:textures/blocks/streetsign_5.png"),
+    	new ResourceLocation("fvtm:textures/blocks/streetsign_6.png"),
+    	new ResourceLocation("fvtm:textures/blocks/streetsign_7.png")
+    };
+    //To Sync
+    public EnumFacing facing;
+    public String[] text = new String[4];
+    public boolean[] sides = new boolean[4];
+    public boolean[] corners = new boolean[4];
+    public boolean[] panels = new boolean[4];
+    public int texture = 1;
+    //Client Cache
+    /*private int rot;
+    private float tx, tz;
+    private int[] rendersides;*/
 
     public StreetSignEntity(World world){
         super(world);
         stepHeight = 0;
         setSize(0.75f, 0.75f);
         locked = false;
+        //
+        text[0] = "line0" + ((char)206);
+        text[1] = "line1" + ((char)208);
+        text[2] = "line2" + ((char)204);
+        text[3] = "line3" + ((char)185);
     }
 
     public StreetSignEntity(World world, EnumFacing facing){
@@ -171,5 +199,9 @@ public class StreetSignEntity extends Entity implements IEntityAdditionalSpawnDa
     	}
     	
     }
+
+	public ResourceLocation getSelectedTexture(){
+		return textures[texture >= textures.length ? 0 : texture];
+	}
 
 }

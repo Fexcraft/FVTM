@@ -105,6 +105,9 @@ public class FVTM {
         PacketHandler.getInstance().registerMessage(SeatUpdatePacketHandler.Client.class, PacketSeatUpdate.class, 9913, Side.CLIENT);
         PacketHandler.getInstance().registerMessage(SeatUpdatePacketHandler.Server.class, PacketSeatUpdate.class, 9914, Side.SERVER);
         PacketHandler.getInstance().registerMessage(SeatDismountPacketHandler.Client.class, PacketSeatDismount.class, 9915, Side.CLIENT);
+        if(event.getSide().isClient()){
+            net.fexcraft.mod.fvtm.render.Renderer.initFontRenderer();
+        }
     }
 
     @Mod.EventHandler

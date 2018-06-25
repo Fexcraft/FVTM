@@ -787,11 +787,11 @@ public class Resources {
                     }
                 }
                 else{
-                    JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipe");
+                    JsonArray array = ZipUtil.getJsonElementsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipe");
                     for(JsonElement elm : array){
                     	CrafterBlockScriptBase.registerRecipes(elm, null, null);
                     }
-                    array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipes");
+                    array = ZipUtil.getJsonElementsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipes");
                     for(JsonElement elm : array){
                     	CrafterBlockScriptBase.registerRecipes(elm, null, null);
                     }

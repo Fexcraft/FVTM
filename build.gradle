@@ -76,7 +76,7 @@ task fvp_fvtm(type: Jar){
     appendix = '1.15.3'
 }
 
-task def_parts_pack(type: Jar){
+task gep_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
     from 'run/addons/General Essentials Pack'
     baseName = 'General Essentials Pack'
@@ -94,11 +94,18 @@ task hcp_fvtm(type: Jar){
     baseName = 'Heavy Cargo Pack'
     appendix = '1.4'
 }
+task gmp_fvtm(type: Jar){
+    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gmp/'}
+    from 'run/addons/Generic Machines Pack'
+    baseName = 'Generic Machines Pack'
+    appendix = '1.0'
+}
 
 build {
     dependsOn fvtm
-    dependsOn def_parts_pack
+    dependsOn gep_fvtm
     dependsOn fvp_fvtm
     dependsOn zmp_fvtm
     dependsOn hcp_fvtm
+    dependsOn gmp_fvtm
 }

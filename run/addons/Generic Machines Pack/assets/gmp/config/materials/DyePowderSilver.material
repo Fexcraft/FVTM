@@ -1,0 +1,7 @@
+{
+    "RegistryName": "gmp:dye_powder_silver",
+    "Addon": "fvtm:gmp",
+    "FullName": "Dye Powder (SILVER)",
+    "OreDictionary": "dyeSilver",
+    "DyeColor": "silver"
+}

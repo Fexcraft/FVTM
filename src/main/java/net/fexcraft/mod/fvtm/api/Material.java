@@ -32,8 +32,6 @@ public interface Material extends IForgeRegistryEntry<Material> {
 
     public boolean isVehicleKey();
     
-    public @Nullable String[] getOreDictionaryEntries();
-    
     public @Nullable EnumDyeColor getDyeColor();
 
     //<--- ITEM --->//

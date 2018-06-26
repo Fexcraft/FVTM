@@ -1,0 +1,7 @@
+{
+    "RegistryName": "gmp:dye_powder_gray",
+    "Addon": "fvtm:gmp",
+    "FullName": "Dye Powder (GRAY)",
+    "OreDictionary": "dyeGray",
+    "DyeColor": "gray"
+}

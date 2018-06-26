@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Addon;
@@ -16,14 +14,13 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class GenericMaterial implements Material {
 
     private ResourceLocation registryname;
     private Addon addon;
     private String name;
-    private String[] description, ores;
+    private String[] description;
     //
     private boolean isFuelContainer, isKey;
     private Integer maxcapacity;
@@ -50,7 +47,7 @@ public class GenericMaterial implements Material {
                 Static.stop();
             }
         }
-        if(obj.has("OreDictionary")){
+        /*if(obj.has("OreDictionary")){
         	JsonElement elm = obj.get("OreDictionary");
         	if(elm.isJsonArray()){
         		JsonArray array = elm.getAsJsonArray();
@@ -75,7 +72,7 @@ public class GenericMaterial implements Material {
         	else{
         		ores = null;
         	}
-        }
+        }*/
         if(obj.has("DyeColor")){
         	color = EnumDyeColor.valueOf(obj.get("DyeColor").getAsString().toUpperCase());
         }
@@ -143,11 +140,6 @@ public class GenericMaterial implements Material {
     public Fuel getFuelType(){
         return fueltype;
     }
-
-	@Override
-	public String[] getOreDictionaryEntries(){
-		return ores;
-	}
 
 	@Override
 	public EnumDyeColor getDyeColor(){

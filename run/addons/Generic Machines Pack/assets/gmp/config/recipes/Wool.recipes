@@ -1,0 +1,152 @@
+[
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 1 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_orange" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 2 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_magenta" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 3 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_light_blue" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 4 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_yellow" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 5 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_lime" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 6 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_pink" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 7 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_gray" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 8 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_silver" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 9 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_cyan" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 10 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_purple" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 11 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_blue" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 12 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_brown" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 13 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_green" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 14 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_red" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 15 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:wool", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_black" }
+		]
+	}
+]

@@ -1,0 +1,7 @@
+{
+    "RegistryName": "gmp:dye_powder_green",
+    "Addon": "fvtm:gmp",
+    "FullName": "Dye Powder (GREEN)",
+    "OreDictionary": "dyeGreen",
+    "DyeColor": "green"
+}

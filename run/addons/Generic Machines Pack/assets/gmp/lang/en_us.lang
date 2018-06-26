@@ -8,5 +8,22 @@
 
 #Blocks
 item.gmp:color_extractor.name=Color Extractor
+item.gmp:dye_powder_white.name=White Dye Powder
+item.gmp:dye_powder_orange.name=Orange Dye Powder
+item.gmp:dye_powder_magenta.name=Magenta Dye Powder
+item.gmp:dye_powder_light_blue.name=Light Blue Dye Powder
+item.gmp:dye_powder_yellow.name=Yellow Dye Powder
+item.gmp:dye_powder_lime.name=Lime Dye Powder
+item.gmp:dye_powder_pink.name=Pink Dye Powder
+item.gmp:dye_powder_gray.name=Gray Dye Powder
+item.gmp:dye_powder_silver.name=Silver Dye Powder
+item.gmp:dye_powder_Cyan.name=Cyan Dye Powder
+item.gmp:dye_powder_purple.name=Purple Dye Powder
+item.gmp:dye_powder_blue.name=Blue Dye Powder
+item.gmp:dye_powder_brown.name=Brown Dye Powder
+item.gmp:dye_powder_green.name=Green Dye Powder
+item.gmp:dye_powder_red.name=Red Dye Powder
+item.gmp:dye_powder_black.name=Black Dye Powder
+
 
 #Materials

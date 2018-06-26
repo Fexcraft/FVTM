@@ -25,7 +25,7 @@ public class ColorExtractorScript extends CrafterBlockScriptBase {
 	public ColorExtractorScript(){ super(); }
 	
 	public int state = 0;
-	private int duration = 800;
+	private int duration = Static.dev() ? 100 : 800, div = Static.dev() ? 1 : 8;
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
@@ -73,17 +73,13 @@ public class ColorExtractorScript extends CrafterBlockScriptBase {
 					return;
 				}
 				int i = Block.getStateId(((ItemBlock)((ItemStack)current_recipe.output[0]).getItem()).getBlock().getDefaultState());
-				float x = tile.getPos().getX() + 0.5f, y = tile.getPos().getY() + 2.1f, z = tile.getPos().getZ() + 0.5f;
-				for(float f = -0.2f; f < 0.3f; f += 0.1f){
+				float x = tile.getPos().getX() + 0.5f, y = tile.getPos().getY() + 1.5f, z = tile.getPos().getZ() + 0.5f;
+				for(float f = -0.15f; f < 0.2f; f += 0.05f){
 					for(float g = -0.2f; g < 0.3f; g += 0.1f){
-						float h = tile.getWorld().rand.nextFloat(); h = h > 0.3 ? h / 10 : h;
+						float h = tile.getWorld().rand.nextFloat(); h = h > 0.2 ? h / 10 : h;
 						tile.getWorld().spawnParticle(EnumParticleTypes.BLOCK_DUST, x + f, y, z + g, 0.001D, h, 0.001D, i);
 					}
 				}
-                double d0 = (double)((float)tile.getPos().getX() + tile.getWorld().rand.nextFloat());
-                double d1 = (double)tile.getPos().getY() - 0.05D + 1d;
-                double d2 = (double)((float)tile.getPos().getZ() + tile.getWorld().rand.nextFloat());
-                tile.getWorld().spawnParticle(EnumParticleTypes.FALLING_DUST, d0, d1, d2, 0.0D, 0.0D, 0.0D, i);
 			}
 		}
 		else{
@@ -98,6 +94,7 @@ public class ColorExtractorScript extends CrafterBlockScriptBase {
 					for(Object obj : current_recipe.ingredients){
 						extract(data.getItemStacks().get("extractor_in"), (ItemStack)obj);
 					}
+					Print.debug(recipe);
 					//
 			        NBTTagCompound nbt = new NBTTagCompound();
 			        nbt.setTag("new_recipe", current_recipe.save());
@@ -130,18 +127,18 @@ public class ColorExtractorScript extends CrafterBlockScriptBase {
 	}
 
 	private int countOutput(BlockData data){
-		long i = data.getItemStacks().get("crusher_out").stream().filter(pre -> !pre.isEmpty()).count();
-		return (int)(i / 8);
+		long i = data.getItemStacks().get("extractor_out").stream().filter(pre -> !pre.isEmpty()).count();
+		return (int)(i / div);
 	}
 
 	@Override
 	public int getProgressPercentage(){
-		return progress / 8;
+		return progress / div;
 	}
 
 	@Override
 	public String getSettingHolderId(){
-		return "hcp:crusher";
+		return "gmp:color_extractor";
 	}
 	
 	private ArrayList<String> list = new ArrayList<>();

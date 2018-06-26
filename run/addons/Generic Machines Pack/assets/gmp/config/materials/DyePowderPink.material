@@ -1,0 +1,7 @@
+{
+    "RegistryName": "gmp:dye_powder_pink",
+    "Addon": "fvtm:gmp",
+    "FullName": "Dye Powder (PINK)",
+    "OreDictionary": "dyePink",
+    "DyeColor": "pink"
+}

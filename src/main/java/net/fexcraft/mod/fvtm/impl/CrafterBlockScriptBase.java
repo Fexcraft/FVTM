@@ -76,6 +76,11 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		return false;
 	}
 	
+	@Override
+	public void onBreak(TileEntity tile, BlockData data){
+		current_recipe = null; progress = 0;
+	}
+	
 	/** Return number between 0 and 100, inclusive. **/
 	public abstract int getProgressPercentage();
 	
@@ -138,6 +143,19 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 			return compound;
 		}
 		
+		@Override
+		public String toString(){
+			String in = "I: [";
+			for(Object obj : ingredients){
+				in += obj.toString();
+			}
+			in += "]; || O:[";
+			for(Object obj : output){
+				in += obj.toString();
+			}
+			return in += "];";
+		}
+		
 	}
 	
 	public static void registerRecipes(JsonElement elm, @Nullable ItemStack stack, @Nullable String category){
@@ -185,6 +203,9 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		recipe.ingredients = new Object[array.size()];
 		for(int i = 0; i < recipe.ingredients.length; i++){
 			recipe.ingredients[i] = parseObject(array.get(i).getAsJsonObject());
+			if(recipe.ingredients[i] instanceof ItemStack && ((ItemStack)recipe.ingredients[i]).getItem().getUnlocalizedName().equals("tile.air")){
+				recipe.ingredients[i] = null;
+			}
 		}
 		array = obj.get("Output").getAsJsonArray();
 		recipe.output = new Object[array.size()];

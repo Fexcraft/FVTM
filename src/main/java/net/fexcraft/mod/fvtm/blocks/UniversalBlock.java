@@ -281,11 +281,19 @@ public class UniversalBlock extends BlockContainer {
             	EnumDyeColor color = EnumDyeColor.byDyeDamage(stack.getMetadata());
             	tile.onPaintItemUse(RGB.fromDyeColor(color), color, stack, player, pos, world);
             	stack.shrink(1);
+            	return true;
+            }
+            else if(stack.getItem() instanceof MaterialItem){
+            	EnumDyeColor color = ((MaterialItem)stack.getItem()).getMaterial(stack).getDyeColor();
+            	tile.onPaintItemUse(RGB.fromDyeColor(color), color, stack, player, pos, world);
+            	stack.shrink(1);
+            	return true;
             }
             else if(stack.getItem() instanceof PaintItem){
             	PaintItem item = (PaintItem)stack.getItem();
             	tile.onPaintItemUse(item.getRGBColor(), item.getColor(), stack, player, pos, world);
             	stack.shrink(1);
+            	return true;
             }
             else if(Static.dev()){
                 Print.debug(tile.getBlockData() == null ? "No BlockData." : tile.getBlockData().writeToNBT(new NBTTagCompound()).toString());

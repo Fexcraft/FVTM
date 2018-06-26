@@ -1,0 +1,7 @@
+{
+    "RegistryName": "gmp:dye_powder_magenta",
+    "Addon": "fvtm:gmp",
+    "FullName": "Dye Powder (MAGENTA)",
+    "OreDictionary": "dyeMagenta",
+    "DyeColor": "magenta"
+}

@@ -1,0 +1,324 @@
+[
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 1 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_orange" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 2 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_magenta" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 3 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_light_blue" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 4 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_yellow" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 5 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_lime" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 6 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_pink" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 7 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_gray" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 8 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_silver" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 9 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_cyan" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 10 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_purple" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 11 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_blue" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 12 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_brown" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 13 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_green" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 14 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_red" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 15 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_black" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 1 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_orange" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 2 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_magenta" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 3 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_light_blue" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 4 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_yellow" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 5 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_lime" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 6 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_pink" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 7 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_gray" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 8 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_silver" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 9 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_cyan" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 10 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_purple" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 11 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_blue" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 12 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_brown" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 13 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_green" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 14 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_red" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 15 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_black" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete_powder", "meta": 0 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:sand", "amount": 4 },
+			{ "type": "block", "id": "minecraft:gravel", "amount": 4 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_white" }
+		]
+	},
+	{
+		"Type": "gmp:color_extractor",
+		"Ingredients":[
+			{ "type": "block", "id": "minecraft:concrete", "meta": 0 }
+		],
+		"Output":[
+			{ "type": "block", "id": "minecraft:sand", "amount": 4 },
+			{ "type": "block", "id": "minecraft:gravel", "amount": 4 },
+			{ "type": "fvtm:material", "id": "gmp:dye_powder_white" }
+		]
+	}
+]

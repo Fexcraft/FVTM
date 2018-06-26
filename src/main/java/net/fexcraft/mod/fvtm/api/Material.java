@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.api;
 
 import net.fexcraft.mod.lib.api.item.KeyItem;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -32,6 +33,8 @@ public interface Material extends IForgeRegistryEntry<Material> {
     public boolean isVehicleKey();
     
     public @Nullable String[] getOreDictionaryEntries();
+    
+    public @Nullable EnumDyeColor getDyeColor();
 
     //<--- ITEM --->//
     public static abstract class MaterialItem extends KeyItem {

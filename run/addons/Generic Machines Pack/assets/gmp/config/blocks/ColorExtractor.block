@@ -9,7 +9,7 @@
 	"Functional": true,
 	"Positions":[
 		{ "x": 0, "y": 1, "z":  0, "Sides":[ { "side": "all", "inventory": "extractor_in", "gui": "inventory:extractor_in" } ] },
-		{ "x": 0, "y": 0, "z":  0, "Sides":[ { "side": "all", "gui": "settings" } ] },
+		{ "x": 0, "y": 0, "z":  0, "Sides":[ { "side": "all", "gui": "script" } ] },
 		{ "x": 0, "y": 0, "z": -1, "Sides":[ { "side": "all", "inventory": "extractor_color_out", "gui": "inventory:extractor_color_out" } ] },
 		{ "x": 0, "y": 0, "z":  1, "Sides":[ { "side": "all", "inventory": "extractor_out", "gui": "inventory:extractor_out" } ] }
 	],

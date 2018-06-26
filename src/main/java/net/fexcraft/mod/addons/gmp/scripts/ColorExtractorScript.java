@@ -3,16 +3,16 @@ package net.fexcraft.mod.addons.gmp.scripts;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fexcraft.mod.addons.gmp.impl.GenericDyePowderMaterial;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockScript;
-import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.impl.CrafterBlockScriptBase;
+import net.fexcraft.mod.lib.api.item.PaintItem;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -96,7 +96,7 @@ public class ColorExtractorScript extends CrafterBlockScriptBase {
 				else{
 					current_recipe = recipe;
 					for(Object obj : current_recipe.ingredients){
-						extract(data.getItemStacks().get("crusher_in"), (ItemStack)obj);
+						extract(data.getItemStacks().get("extractor_in"), (ItemStack)obj);
 					}
 					//
 			        NBTTagCompound nbt = new NBTTagCompound();
@@ -108,7 +108,13 @@ public class ColorExtractorScript extends CrafterBlockScriptBase {
 			else{
 				if(progress >= duration){
 					for(Object obj : current_recipe.output){
-						insert(data.getItemStacks().get("crusher_out"), (ItemStack)obj);
+						ItemStack stack = (ItemStack)obj;
+						if(isColorHolder(stack)){
+							insert(data.getItemStacks().get("extractor_color_out"), stack);
+						}
+						else{
+							insert(data.getItemStacks().get("extractor_out"), stack);
+						}
 					}
 					current_recipe = null;
 					//
@@ -198,7 +204,7 @@ public class ColorExtractorScript extends CrafterBlockScriptBase {
 				NonNullList<ItemStack> cout = data.getItemStacks().get("extractor_color_out");
 				for(Object obj : recipe.output){
 					ItemStack stack = (ItemStack)obj;
-					if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getMaterial(stack) instanceof GenericDyePowderMaterial){
+					if(isColorHolder(stack)){
 						if(!canFit(cout, stack)){
 							missing = true; break;
 						}
@@ -213,6 +219,11 @@ public class ColorExtractorScript extends CrafterBlockScriptBase {
 			}
 		}
 		return null;
+	}
+	
+	public boolean isColorHolder(ItemStack stack){
+		return stack.getItem() instanceof ItemDye || stack.getItem() instanceof PaintItem ||
+			(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getMaterial(stack).getDyeColor() != null);
 	}
 
 	@Override

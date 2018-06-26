@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -27,6 +28,7 @@ public class GenericMaterial implements Material {
     private boolean isFuelContainer, isKey;
     private Integer maxcapacity;
     private Fuel fueltype;
+    private EnumDyeColor color;
 
     public GenericMaterial(JsonObject obj){
         this.registryname = DataUtil.getRegistryName(obj, "MATERIAL");
@@ -73,6 +75,9 @@ public class GenericMaterial implements Material {
         	else{
         		ores = null;
         	}
+        }
+        if(obj.has("DyeColor")){
+        	color = EnumDyeColor.valueOf(obj.get("DyeColor").getAsString().toUpperCase());
         }
     }
 
@@ -142,6 +147,11 @@ public class GenericMaterial implements Material {
 	@Override
 	public String[] getOreDictionaryEntries(){
 		return ores;
+	}
+
+	@Override
+	public EnumDyeColor getDyeColor(){
+		return color;
 	}
 
 }

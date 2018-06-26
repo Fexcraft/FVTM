@@ -6,17 +6,21 @@ import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.common.LockableObject;
+import net.fexcraft.mod.lib.api.common.PaintableObject;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
+import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -37,7 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import static net.minecraft.util.EnumFacing.*;
 
-public class UniversalTileEntity extends TileEntity implements BlockTileEntity, IPacketReceiver<PacketTileEntityUpdate>, LockableObject, ITickable {
+public class UniversalTileEntity extends TileEntity implements BlockTileEntity, IPacketReceiver<PacketTileEntityUpdate>, LockableObject, ITickable, PaintableObject {
 	
 	private Long longpos;
 	private boolean core;
@@ -133,6 +137,16 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 	            		((FluidTank)handler).readFromNBT(packet.nbt.getCompoundTag("state"));
 	            	}
 	                break;
+	            }
+	            case "update_primary_color":{
+	            	if(this.getBlockData() == null){ break; }
+	            	this.getBlockData().getPrimaryColor().readFromNBT(packet.nbt, null);
+	            	break;
+	            }
+	            case "update_secondary_color":{
+	            	if(this.getBlockData() == null){ break; }
+	            	this.getBlockData().getSecondaryColor().readFromNBT(packet.nbt, null);
+	            	break;
 	            }
             }
         }
@@ -422,6 +436,20 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 		if(core && data != null && data.getScript() != null){
 			data.getScript().onUpdate(this, data);
 		}
+	}
+
+	@Override
+	public void onPaintItemUse(RGB color, EnumDyeColor dye, ItemStack stack, EntityPlayer player, BlockPos pos, World world){
+		if(this.isLocked() || this.getBlockData() == null){ return; }
+		this.getBlockData().getPrimaryColor().packed = color.packed;
+		this.getBlockData().getPrimaryColor().alpha = color.alpha;
+		ApiUtil.sendTileEntityUpdatePacket(world, pos, this.writeToNBT(new NBTTagCompound()));
+		Print.bar(player, this.getBlockData().getPrimaryColor().toString());
+		//
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("task", "update_primary_color");
+        this.getBlockData().getPrimaryColor().writeToNBT(nbt, null);
+        PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
 	}
 
 }

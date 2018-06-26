@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
 public class CrusherModel extends BlockModel {
@@ -1075,7 +1076,10 @@ public class CrusherModel extends BlockModel {
 	
 	@Override
 	public void render(BlockData data, BlockTileEntity tile, Entity ent, int meta){
-		super.render(data, tile, ent, meta);
+		render(body);
+		data.getPrimaryColor().glColorApply();
+		render(body_colored_primary);
+		RGB.glColorReset();
 		if(tile == null){
 			render(rot);
 		}

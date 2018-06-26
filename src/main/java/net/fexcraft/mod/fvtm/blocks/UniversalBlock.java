@@ -11,8 +11,10 @@ import net.fexcraft.mod.fvtm.api.root.SettingHolder.ScriptSetting;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.item.KeyItem;
+import net.fexcraft.mod.lib.api.item.PaintItem;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -22,6 +24,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
@@ -275,7 +278,12 @@ public class UniversalBlock extends BlockContainer {
                 return true;
             }
             else if(stack.getItem() instanceof ItemDye){
-            	//TODO
+            	EnumDyeColor color = EnumDyeColor.byDyeDamage(stack.getMetadata());
+            	tile.onPaintItemUse(RGB.fromDyeColor(color), color, stack, player, pos, world);
+            }
+            else if(stack.getItem() instanceof PaintItem){
+            	PaintItem item = (PaintItem)stack.getItem();
+            	tile.onPaintItemUse(item.getRGBColor(), item.getColor(), stack, player, pos, world);
             }
             else if(Static.dev()){
                 Print.debug(tile.getBlockData() == null ? "No BlockData." : tile.getBlockData().writeToNBT(new NBTTagCompound()).toString());

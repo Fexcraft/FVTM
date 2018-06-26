@@ -329,7 +329,7 @@ public class ContainerTileEntity extends TileEntity implements IPacketReceiver<P
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("task", "update_container_fluid_tank");
         nbt.setTag("state", this.getContainerData().getFluidTank().writeToNBT(new NBTTagCompound()));
-        PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP) player);
+        PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
     }
 
 }

@@ -35,6 +35,7 @@ public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object>
 
 	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
+		if(item.getItem() instanceof VehicleItem == false){ return; }
 		VehicleData data = ((VehicleItem)item.getItem()).getVehicle(item);
 		if(data == null){ return; }
 		VehicleBaseModel model = (VehicleBaseModel)data.getVehicle().getModel();

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Addon;
@@ -13,13 +15,14 @@ import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class GenericMaterial implements Material {
 
     private ResourceLocation registryname;
     private Addon addon;
     private String name;
-    private String[] description;
+    private String[] description, ores;
     //
     private boolean isFuelContainer, isKey;
     private Integer maxcapacity;
@@ -44,6 +47,32 @@ public class GenericMaterial implements Material {
                 e.printStackTrace();
                 Static.stop();
             }
+        }
+        if(obj.has("OreDictionary")){
+        	JsonElement elm = obj.get("OreDictionary");
+        	if(elm.isJsonArray()){
+        		JsonArray array = elm.getAsJsonArray();
+        		ores = new String[array.size()];
+        		for(int i = 0; i < ores.length; i++){
+        			ores[i] = array.get(i).getAsString();
+        		}
+        	}
+        	else if(elm.isJsonPrimitive()){
+        		ores = new String[]{ elm.getAsJsonPrimitive().getAsString() };
+        	}
+        	else{
+        		//TODO error message
+        		Static.stop();
+        	}
+        	//
+        	if(ores != null && ores.length > 0){
+        		for(String str: ores){
+        			OreDictionary.registerOre(str, getItemStack());
+        		}
+        	}
+        	else{
+        		ores = null;
+        	}
         }
     }
 
@@ -109,5 +138,10 @@ public class GenericMaterial implements Material {
     public Fuel getFuelType(){
         return fueltype;
     }
+
+	@Override
+	public String[] getOreDictionaryEntries(){
+		return ores;
+	}
 
 }

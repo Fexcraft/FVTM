@@ -6,5 +6,6 @@
         "Holds Ages!",
         "",
         "&oThrows no Exceptions!"
-    ]
+    ],
+    "OreDictionary": "dyeWhite"
 }

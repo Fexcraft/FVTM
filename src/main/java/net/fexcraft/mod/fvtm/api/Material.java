@@ -6,6 +6,8 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 public interface Material extends IForgeRegistryEntry<Material> {
 
     public Addon getAddon();
@@ -28,6 +30,8 @@ public interface Material extends IForgeRegistryEntry<Material> {
     public int maxCapacity();
 
     public boolean isVehicleKey();
+    
+    public @Nullable String[] getOreDictionaryEntries();
 
     //<--- ITEM --->//
     public static abstract class MaterialItem extends KeyItem {

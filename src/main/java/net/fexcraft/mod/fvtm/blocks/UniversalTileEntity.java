@@ -86,7 +86,7 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
             compound.setLong("CorePos", corepos.toLong());
         }
     	compound.setLong("RelativePos", relpos.toLong());
-        if(core){
+        if(core && data != null){
         	data.writeToNBT(compound);
         }
         //Print.debug(compound);

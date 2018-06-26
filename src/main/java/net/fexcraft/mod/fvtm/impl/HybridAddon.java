@@ -23,15 +23,15 @@ public abstract class HybridAddon extends GenericAddon {
 
     public void regFuels(Register<Fuel> event){ }
 
-    public abstract void regMaterials(RegistryEvent.Register<Material> event);
+    public void regMaterials(RegistryEvent.Register<Material> event){ }
 
     public void regAttributes(RegistryEvent.Register<Attribute> event){ }
 
-    public abstract void regParts(RegistryEvent.Register<Part> event);
+    public void regParts(RegistryEvent.Register<Part> event){ }
 
-    public abstract void regVehicles(RegistryEvent.Register<Vehicle> event);
+    public void regVehicles(RegistryEvent.Register<Vehicle> event){ }
 
-    public abstract void regContainers(Register<Container> event);
+    public void regContainers(Register<Container> event){ }
 
     public void regSounds(Register<SoundEvent> event){ }
 
@@ -39,7 +39,7 @@ public abstract class HybridAddon extends GenericAddon {
      * Set `true` if you want to skip default JSON config search and parsing for
      * this addon.
      */
-    public abstract boolean skipDefaultRegistryMethods();
+    public boolean skipDefaultRegistryMethods(){ return false; }
 
     public void regConsumables(Register<Consumable> event){ }
 

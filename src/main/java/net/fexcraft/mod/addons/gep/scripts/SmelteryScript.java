@@ -124,12 +124,10 @@ public class SmelteryScript extends CrafterBlockScriptBase {
 				}
 				if(tank.getFluidAmount() > 0){
 					tank.drainInternal(1, true);
-					progress++;
-					progress = progress > (open ? 200 : 300) ? 0 : progress;
+					progress = ++progress > (open ? 200 : 300) ? 0 : progress;
 				}
 				else{
-					progress--;
-					progress = progress < 0 ? 0 : progress;
+					progress = --progress < 0 ? 0 : progress;
 				}
 			}
 		}
@@ -171,7 +169,7 @@ public class SmelteryScript extends CrafterBlockScriptBase {
 			        nbt.setBoolean("recipe_done", true);
 			        nbt.setInteger("tank", tank.getFluidAmount());
 			        sendPacketToAllAround(tile, nbt);
-					progress = 0;
+			        progress = 0;
 				}
 				if(tank.getFluidAmount() > 0){
 					progress++; tank.drainInternal(1, true);

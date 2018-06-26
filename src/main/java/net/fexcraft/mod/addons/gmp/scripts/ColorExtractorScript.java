@@ -1,10 +1,13 @@
-package net.fexcraft.mod.addons.hcp.scripts;
+package net.fexcraft.mod.addons.gmp.scripts;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fexcraft.mod.addons.gmp.impl.GenericDyePowderMaterial;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockScript;
+import net.fexcraft.mod.fvtm.api.Material;
+import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.impl.CrafterBlockScriptBase;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -17,12 +20,12 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class CrusherScript extends CrafterBlockScriptBase {
+public class ColorExtractorScript extends CrafterBlockScriptBase {
 	
-	public CrusherScript(){ super(); }
+	public ColorExtractorScript(){ super(); }
 	
 	public int state = 0;
-	private int duration = 400;
+	private int duration = 800;
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
@@ -127,7 +130,7 @@ public class CrusherScript extends CrafterBlockScriptBase {
 
 	@Override
 	public int getProgressPercentage(){
-		return progress / 4;
+		return progress / 8;
 	}
 
 	@Override
@@ -143,7 +146,7 @@ public class CrusherScript extends CrafterBlockScriptBase {
 			list.add("status");
 			list.add("crafting");
 		}
-		list.set(0, current_recipe == null ? "Status: Idle/Waiting" : "Status: Working/Crushing");
+		list.set(0, current_recipe == null ? "Status: Idle/Waiting" : "Status: Working/Extracting");
 		list.set(1, current_recipe == null ? " . . . " : "Crushing: " + ((ItemStack)current_recipe.output[0]).getDisplayName());
 		return list;
 	}
@@ -160,10 +163,10 @@ public class CrusherScript extends CrafterBlockScriptBase {
 		Recipe recipe;
 		for(int i = 0; i < list.size(); i++){
 			recipe = list.get(i);
-			if(recipe.ingredients.length > 3){
+			if(recipe.ingredients.length > 4){
 				list.remove(i); continue;
 			}
-			if(recipe.output.length > 3){
+			if(recipe.output.length > 4){
 				list.remove(i); continue;
 			}
 			for(Object obj : recipe.ingredients){
@@ -182,7 +185,7 @@ public class CrusherScript extends CrafterBlockScriptBase {
 
 	@Override
 	public Recipe findNextRecipe(BlockData data){
-		NonNullList<ItemStack> list = data.getItemStacks().get("crusher_in");
+		NonNullList<ItemStack> list = data.getItemStacks().get("extractor_in");
 		for(Recipe recipe : RECIPES.get(getSettingHolderId())){
 			boolean missing = false;
 			for(Object obj : recipe.ingredients){
@@ -191,9 +194,16 @@ public class CrusherScript extends CrafterBlockScriptBase {
 				}
 			}
 			if(!missing){
-				NonNullList<ItemStack> out = data.getItemStacks().get("crusher_out");
+				NonNullList<ItemStack> out = data.getItemStacks().get("extractor_out");
+				NonNullList<ItemStack> cout = data.getItemStacks().get("extractor_color_out");
 				for(Object obj : recipe.output){
-					if(!canFit(out, (ItemStack)obj)){
+					ItemStack stack = (ItemStack)obj;
+					if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getMaterial(stack) instanceof GenericDyePowderMaterial){
+						if(!canFit(cout, stack)){
+							missing = true; break;
+						}
+					}
+					else if(!canFit(out, stack)){
 						missing = true; break;
 					}
 				}

@@ -474,5 +474,9 @@ public abstract class CrafterBlockScriptBase implements BlockScript {
 		//TODO
 		return false;
 	}
+
+	public int getProgress(){
+		return progress;
+	}
 	
 }

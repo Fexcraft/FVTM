@@ -75,7 +75,7 @@ public class UniversalBlockInventoryGui {
             int i = this.guiLeft, j = this.guiTop;
             this.mc.getTextureManager().bindTexture(invtex);
             this.drawTexturedModalRect(i, j, 0, 0, this.xSize + 16, this.ySize);
-            this.fontRenderer.drawString(tile.getBlockData().getBlock().getName(), i + 7, j + 7, MapColor.SNOW.colorValue);
+            this.fontRenderer.drawString("Inventory: " + server.sel, i + 7, j + 7, MapColor.SNOW.colorValue);
             //
             String curr = "&a" + ((scroll * 60) + 1) + "&c-&a" + ((scroll * 60 + 60) > size ? size : (scroll * 60 + 60));
             this.fontRenderer.drawString(scroll + "", i + 171, j + 118, MapColor.SNOW.colorValue);

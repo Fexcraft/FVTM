@@ -33,8 +33,11 @@ public class UniversalBlockScriptGui extends GuiContainer {
 		if(tile == null){ exit(); return; }
 		ArrayList<ScriptSetting<?, ?>> list = new ArrayList<>();
 		if(tile.getBlockData().getScript() != null){
-			for(ScriptSetting<?, ?> setting : tile.getBlockData().getScript().getSettings(0)){
-				list.add(setting);
+			ScriptSetting<?, ?>[] settings = tile.getBlockData().getScript().getSettings(0);
+			if(settings != null){
+				for(ScriptSetting<?, ?> setting : settings){
+					list.add(setting);
+				}
 			}
 		}
 		for(int i = 0; i < 8; i++){

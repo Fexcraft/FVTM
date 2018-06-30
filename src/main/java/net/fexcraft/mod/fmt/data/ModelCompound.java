@@ -11,6 +11,11 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.fexcraft.mod.lib.util.json.NBTToJson;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,17 +29,19 @@ public class ModelCompound {
 	public String name;
 	
 	public ModelCompound(JsonObject obj){
-		creators = JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray());
+		creators = obj.has("creators") ? JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray()) : new ArrayList<>();
 		texture_size_x = JsonUtil.getIfExists(obj, "texture_size_x", 512).intValue();
 		texture_size_y = JsonUtil.getIfExists(obj, "texture_size_y", 512).intValue();
-        JsonObject modelobj = obj.get("model").getAsJsonObject();
-        for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-        	ArrayList<Polygon> list = new ArrayList<>();
-        	entry.getValue().getAsJsonArray().forEach(elm -> {
-        		list.add(new Polygon(this, elm.getAsJsonObject()));
-        	});
-        	polygons.put(entry.getKey(), list);
-        }
+		if(obj.has("model")){
+	        JsonObject modelobj = obj.get("model").getAsJsonObject();
+	        for(Entry<String, JsonElement> entry : modelobj.entrySet()){
+	        	ArrayList<Polygon> list = new ArrayList<>();
+	        	entry.getValue().getAsJsonArray().forEach(elm -> {
+	        		list.add(new Polygon(this, elm.getAsJsonObject()));
+	        	});
+	        	polygons.put(entry.getKey(), list);
+	        }
+		}
         name = JsonUtil.getIfExists(obj, "name", "unnamed");
         if(Static.side().isClient()){
         	refreshTMT();
@@ -49,6 +56,13 @@ public class ModelCompound {
 			value.forEach(elm -> { list.add(elm.toTMT()); });
 			models.put(key, list);
 		});
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void refreshTMT(String group, int selected){
+		//Polygon polygon = polygons.get(group).get(selected);
+		//models.get(group).set(selected, polygon.toTMT());//TODO find error cause
+		refreshTMT();
 	}
 	
 	public JsonObject toJTMT(){
@@ -75,6 +89,21 @@ public class ModelCompound {
 	@Override
 	public String toString(){
 		return toJTMT().toString();
+	}
+
+	public NBTBase toNBTTagCompound(){
+		try{
+			return JsonToNBT.getTagFromJson(this.toJTMT().toString());
+		}
+		catch(NBTException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static ModelCompound fromNBTTagCompound(NBTTagCompound compound){
+		JsonObject obj = NBTToJson.getJsonFromTag(compound);
+		return new ModelCompound(obj == null ? new JsonObject() : obj);
 	}
 	
 }

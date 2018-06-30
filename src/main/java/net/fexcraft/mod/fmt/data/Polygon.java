@@ -15,23 +15,23 @@ public class Polygon {
 	
 	//BOX/BASE
 	private String boxname;
-	private Pos offset = new Pos(0, 0, 0), rotationangle = new Pos(0, 0, 0), rotationpoint = new Pos(0, 0, 0);
-	private float height, width, depth, expansion;
-	private int texturex, texturey;
-	private PolygonType type = PolygonType.BOX;
+	public Pos offset = new Pos(0, 0, 0), rotationangle = new Pos(0, 0, 0), rotationpoint = new Pos(0, 0, 0);
+	public float height, width, depth, expansion;
+	public int texturex, texturey;
+	public PolygonType type = PolygonType.BOX;
 	//
-	private boolean oldrot, mirror, flip;
+	public boolean oldrot, mirror, flip;
 	
 	//SHAPEBOX
-	private float scale;
-	private Pos[] corners = new Pos[]{
+	public float scale;
+	public Pos[] corners = new Pos[]{
 		new Pos(0, 0, 0), new Pos(0, 0, 0), new Pos(0, 0, 0), new Pos(0, 0, 0),
 		new Pos(0, 0, 0), new Pos(0, 0, 0), new Pos(0, 0, 0), new Pos(0, 0, 0),
 	};
 	
 	//CYLINDER/CONE
-	private float radius, length, basescale, topscale;
-	private int segments, direction;
+	public float radius, length, basescale, topscale;
+	public int segments, direction;
 	
 	public Polygon(ModelCompound model, JsonObject obj){
 		this.model = model;
@@ -84,6 +84,29 @@ public class Polygon {
 		rotationpoint.z = JsonToTMT.get(JsonToTMT.posz, obj, JsonToTMT.def);
 	}
 	
+	public Polygon(ModelCompound model){
+		this.model = model;
+		type = PolygonType.BOX;
+		texturex = texturey = 0;
+		//
+		offset.x = offset.y = offset.z = 0;
+		width = height = depth = 1;
+		//
+		expansion = 0f;
+		for(int i = 0; i < 8; i++){
+			corners[i].x = corners[i].y = corners[i].z = 0;
+		}
+		radius = 1; length = 1; segments = 8;
+		basescale = 1f; topscale = 1f; direction = 0;
+		//
+		oldrot = mirror = flip = false;
+		//
+		rotationangle.x = rotationangle.y = rotationangle.z = 0;
+		//
+		boxname = null;
+		rotationpoint.x = rotationpoint.y = rotationpoint.z = 0;
+	}
+
 	public JsonObject toJTMT(){
 		JsonObject obj = new JsonObject();
 		if(boxname != null){
@@ -181,6 +204,19 @@ public class Polygon {
 		public String getTypeString(){
 			return string;
 		}
+
+		public boolean isCylinder(){
+			return this == CYLINDER;
+		}
+
+		public boolean isShapebox(){
+			return this == SHAPEBOX;
+		}
+
+		public boolean isBox(){
+			return this == BOX;
+		}
+		
 	}
 	
 	@SideOnly(Side.CLIENT)

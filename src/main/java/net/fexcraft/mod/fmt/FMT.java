@@ -1,8 +1,39 @@
 package net.fexcraft.mod.fmt;
 
+import net.fexcraft.mod.fmt.capabilities.EPDCCU;
+import net.fexcraft.mod.fmt.capabilities.EditorPlayerDataContainerCapability;
+import net.fexcraft.mod.fmt.capabilities.UselessEditorStorageUnit;
+import net.fexcraft.mod.fmt.various.GenericClientEventHandler;
+import net.fexcraft.mod.fmt.various.GenericEventHandler;
+import net.fexcraft.mod.fmt.various.GenericReceiver;
+import net.fexcraft.mod.lib.network.PacketHandler;
+import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
+import net.fexcraft.mod.lib.util.registry.RegistryUtil;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = "fmt", name = "Fex's Modelling Tool")
+@Mod(modid = FMT.MODID, name = "Fex's Modelling Tool", dependencies = "required-after:fcl")
 public class FMT {
+	
+	public static final String MODID = "fmt";
+	
+	@Mod.EventHandler
+	public void preInit(FMLPreInitializationEvent event){
+		RegistryUtil.newAutoRegistry(MODID);
+	}
+	
+	@Mod.EventHandler
+	public void postInit(FMLPostInitializationEvent event){
+		CapabilityManager.INSTANCE.register(EditorPlayerDataContainerCapability.class, new UselessEditorStorageUnit(), new EPDCCU.Callable());
+		MinecraftForge.EVENT_BUS.register(new GenericEventHandler());
+		if(event.getSide().isClient()){
+			MinecraftForge.EVENT_BUS.register(new GenericClientEventHandler());
+		}
+		PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new GenericReceiver());
+	}
 	
 }

@@ -13,7 +13,6 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.json.NBTToJson;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
@@ -91,12 +90,13 @@ public class ModelCompound {
 		return toJTMT().toString();
 	}
 
-	public NBTBase toNBTTagCompound(){
+	public NBTTagCompound toNBTTagCompound(){
 		try{
 			return JsonToNBT.getTagFromJson(this.toJTMT().toString());
 		}
 		catch(NBTException e){
 			e.printStackTrace();
+			Static.stop();
 			return null;
 		}
 	}

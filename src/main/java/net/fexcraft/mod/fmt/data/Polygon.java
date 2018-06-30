@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fmt.data;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -34,6 +35,15 @@ public class Polygon {
 	public int segments, direction;
 	
 	public Polygon(ModelCompound model, JsonObject obj){
+		/* fix for from-nbt errors */
+		obj.entrySet().forEach(entry -> {
+			if(entry.getValue().isJsonPrimitive()){
+				if(entry.getValue().getAsString().endsWith(".0d")){
+					entry.setValue(new JsonPrimitive(entry.getValue().getAsString().replace(".0d", "")));
+				}
+			}
+		});
+		//
 		this.model = model;
 		type = PolygonType.fromString(obj.get("type").getAsString());
 		texturex = JsonToTMT.get(JsonToTMT.texturex, obj, JsonToTMT.idef);
@@ -42,9 +52,14 @@ public class Polygon {
 		offset.x = JsonToTMT.get(JsonToTMT.offx, obj, JsonToTMT.def);
 		offset.y = JsonToTMT.get(JsonToTMT.offy, obj, JsonToTMT.def);
 		offset.z = JsonToTMT.get(JsonToTMT.offz, obj, JsonToTMT.def);
-		width  = JsonToTMT.get(JsonToTMT.width,  obj, JsonToTMT.idef);
-		height = JsonToTMT.get(JsonToTMT.height, obj, JsonToTMT.idef);
-		depth  = JsonToTMT.get(JsonToTMT.depth,  obj, JsonToTMT.idef);
+		try{
+			width  = JsonToTMT.get(JsonToTMT.width,  obj, JsonToTMT.idef);
+			height = JsonToTMT.get(JsonToTMT.height, obj, JsonToTMT.idef);
+			depth  = JsonToTMT.get(JsonToTMT.depth,  obj, JsonToTMT.idef);
+		}
+		catch (Exception e) {
+			e.printStackTrace(); Static.stop();
+		}
 		//
 		switch(type){
 			case BOX:{

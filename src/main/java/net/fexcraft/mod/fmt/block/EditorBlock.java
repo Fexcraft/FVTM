@@ -25,7 +25,7 @@ public class EditorBlock extends BlockContainer {
 
 	public EditorBlock(){
 		super(Material.BARRIER);
-		this.setCreativeTab(CreativeTabs.MISC);
+		this.setCreativeTab(CreativeTabs.TOOLS);
 	}
 
 	@Override

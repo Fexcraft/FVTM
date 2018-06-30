@@ -66,8 +66,12 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
     @Override
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
-        if(compound.hasKey("ModelCompound")){
+        try{
         	modeldata = ModelCompound.fromNBTTagCompound(compound.getCompoundTag("ModelCompound"));
+        }
+        catch(Exception e){
+        	e.printStackTrace();
+        	Static.stop();
         }
     }
 

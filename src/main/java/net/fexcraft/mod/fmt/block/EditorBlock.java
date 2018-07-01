@@ -48,7 +48,7 @@ public class EditorBlock extends BlockContainer {
 			EditorPlayerDataContainerCapability data = player.getCapability(EPDCCU.CAPABILITY, null);
 			if(data != null && world.getTileEntity(pos) instanceof EditorTileEntity){
 				data.setEditorTileEntity((EditorTileEntity)world.getTileEntity(pos));
-				Print.chat(player, "Updating selected Editor...");
+				Print.bar(player, "Updating selected Editor...");
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("target_listener", "fmt:main");
 				compound.setString("task", "editor_pos_update");

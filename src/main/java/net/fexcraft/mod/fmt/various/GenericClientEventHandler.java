@@ -10,9 +10,12 @@ import net.fexcraft.mod.fmt.capabilities.EPDCCU;
 import net.fexcraft.mod.fmt.capabilities.EditorPlayerDataContainerCapability;
 import net.fexcraft.mod.fmt.data.EditorInput;
 import net.fexcraft.mod.fmt.data.Polygon;
+import net.fexcraft.mod.lib.network.PacketHandler;
+import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -43,6 +46,8 @@ public class GenericClientEventHandler {
 		listeners.add(new Listener(Keyboard.KEY_ADD, EditorInput.NEW));
 		listeners.add(new Listener(Keyboard.KEY_MINUS, EditorInput.DEL));
 		listeners.add(new Listener(Keyboard.KEY_DELETE, EditorInput.DEL));
+		//
+		listeners.add(new Listener(Keyboard.KEY_NUMPAD5, EditorInput.GUIBUTTON));
 	}
 	private static boolean enabled;
 	
@@ -58,7 +63,15 @@ public class GenericClientEventHandler {
 		if(enabled){
 			listeners.forEach(lis -> {
 				if(Keyboard.isKeyDown(lis.key)){
-					cap.geEditorTileEntity().onKeyPress(lis.input, true);
+					if(lis.input == EditorInput.GUIBUTTON){
+				    	NBTTagCompound compound = new NBTTagCompound();
+				    	compound.setString("task", "open_gui");
+				    	compound.setString("player", mc.player.getGameProfile().getId().toString());//TODO send in some other way
+						PacketHandler.getInstance().sendToServer(new PacketTileEntityUpdate(mc.world.provider.getDimension(), cap.geEditorTileEntity().getPos(), compound));
+					}
+					else{
+						cap.geEditorTileEntity().onKeyPress(lis.input, true);
+					}
 				}
 			});
 		}
@@ -76,7 +89,7 @@ public class GenericClientEventHandler {
 	}
 	
 	@SubscribeEvent
-	public void displayLocationUpdate(RenderGameOverlayEvent event){
+	public void renderEditorStatus(RenderGameOverlayEvent event){
 		if(event.getType() == ElementType.HOTBAR && enabled && cap.isEditorActive()){
 			EditorTileEntity tile = cap.geEditorTileEntity();
 			Polygon pol = tile.getPolygon();

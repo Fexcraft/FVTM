@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fmt.block;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fmt.FMT;
 import net.fexcraft.mod.fmt.data.EditorInput;
 import net.fexcraft.mod.fmt.data.ModelCompound;
 import net.fexcraft.mod.fmt.data.Polygon;
@@ -14,6 +16,7 @@ import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -81,6 +84,17 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
             switch(packet.nbt.getString("task")){
 	            case "input":{
 	            	this.onKeyPress(EditorInput.valueOf(packet.nbt.getString("input")), false);
+	            	break;
+	            }
+	            case "open_gui":{
+	            	EntityPlayer player = Static.getServer().getPlayerList().getPlayerByUUID(UUID.fromString(packet.nbt.getString("player")));
+	            	int i = 0;
+	            	for(int j = 0; j < modes.length; j++){
+	            		if(modes[j].equals(mode)){ i = j; }
+	            	}
+	            	if(player != null){
+	            		player.openGui(FMT.INSTANCE, i, world, pos.getX(), pos.getY(), pos.getZ());
+	            	}
 	            	break;
 	            }
 			}
@@ -196,7 +210,8 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
 				break;
 		}
 	}
-	public String[] modes = new String[]{ "move", "offset", "resize", "rotation", "texture", "type", "bools", "cylinder", "cylinder2",
+	
+	public static final String[] modes = new String[]{ "move", "offset", "resize", "rotation", "texture", "type", "bools", "cylinder", "cylinder2",
 		"shapebox_corner_0", "shapebox_corner_1", "shapebox_corner_2", "shapebox_corner_3",
 		"shapebox_corner_4", "shapebox_corner_5", "shapebox_corner_6", "shapebox_corner_7"};
 
@@ -268,24 +283,35 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
 				}
 				case "shapebox_corner_0":{
 					mode = bool ? "bools" : "shapebox_corner_1";
+					break;
+				}
+				case "shapebox_corner_1":{
+					mode = bool ? "shapebox_corner_0" : "shapebox_corner_2";
+					break;
 				}
 				case "shapebox_corner_2":{
 					mode = bool ? "shapebox_corner_1" : "shapebox_corner_3";
+					break;
 				}
 				case "shapebox_corner_3":{
 					mode = bool ? "shapebox_corner_2" : "shapebox_corner_4";
+					break;
 				}
 				case "shapebox_corner_4":{
 					mode = bool ? "shapebox_corner_3" : "shapebox_corner_5";
+					break;
 				}
 				case "shapebox_corner_5":{
 					mode = bool ? "shapebox_corner_4" : "shapebox_corner_6";
+					break;
 				}
 				case "shapebox_corner_6":{
 					mode = bool ? "shapebox_corner_5" : "shapebox_corner_7";
+					break;
 				}
 				case "shapebox_corner_7":{
 					mode = bool ? "shapebox_corner_6" : "move";
+					break;
 				}
 			}
 			NBTTagCompound compound = new NBTTagCompound();
@@ -301,68 +327,87 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
 
 	public String getModeLine(int i, Polygon pol){
 		String a = i == 0 ? "X" : i == 1 ? "Y" : i == 2 ? "Z" : "XYZ";
+		String s = getModeValue(i, pol).toString();
 		switch(mode){
 			case "move":{
-				return "Pos-" + a + ": " + (i == 0 ? pol.rotationpoint.x : i == 1 ? pol.rotationpoint.y : pol.rotationpoint.z);
+				return "Pos-" + a + ": " + s;
 			}
 			case "offset":{
-				return "Offset-" + a + ": " + (i == 0 ? pol.offset.x : i == 1 ? pol.offset.y : pol.offset.z);
+				return "Offset-" + a + ": " + s;
 			}
 			case "rotation":{
-				float f = i == 0 ? pol.rotationangle.x : i == 1 ? pol.rotationangle.y : pol.rotationangle.z;
+				float f = Float.parseFloat(s);
 				return "Rotation-" + a + ": " + f + "rad (" + (int)Math.toDegrees(f) + "deg)";
 			}
 			case "resize":{
-				switch(i){
-					case 0:{
-						return "Width: " + pol.width;
-					}
-					case 1:{
-						return "Height: " + pol.height;
-					}
-					case 2:{
-						return "Depth: " + pol.depth;
-					}
-				}
+				switch(i){ case 0:{ return "Width: " + s; } case 1:{ return "Height: " + s; } case 2:{ return "Depth: " + s; } }
 			}
 			case "texture":{
-				return "Texture-" + a + ": " + (i == 0 ? pol.texturex : i == 1 ? pol.texturey : "-");
+				return "Texture-" + a + ": " + (i < 2 ? s : "-");
 			}
 			case "type":{
-				return i == 0 ? "Type: " + pol.type.name() : i == 2 ? "Scale: " + pol.scale : " - - - ";
+				return i == 0 ? "Type: " + s : i == 2 ? "Scale: " + s : "Name: " + s;
 			}
 			case "bools":{
-				switch(i){
-					case 0:{ return "LegOldRot: " + pol.oldrot; }
-					case 1:{ return "Mirror: " + pol.mirror; }
-					case 2:{ return "Flip: " + pol.flip; }
-				}
+				switch(i){ case 0:{ return "LegOldRot: " + s; } case 1:{ return "Mirror: " + s; } case 2:{ return "Flip: " + s; } }
 				break;
 			}
 			case "cylinder":{
-				switch(i){
-					case 0:{ return "Radius: " + pol.radius; }
-					case 1:{ return "Length: " + pol.length; }
-					case 2:{ return "Segments: " + pol.segments; }
-				}
+				switch(i){ case 0:{ return "Radius: " + s; } case 1:{ return "Length: " + s; } case 2:{ return "Segments: " + s; } }
 				break;
 			}
 			case "cylinder2":{
-				switch(i){
-					case 0:{ return "Direction: " + pol.direction; }
-					case 1:{ return "TopScale: " + pol.topscale; }
-					case 2:{ return "BaseScale: " + pol.basescale; }
-				}
+				switch(i){ case 0:{ return "Direction: " + s; } case 1:{ return "TopScale: " + s; } case 2:{ return "BaseScale: " + s; } }
 				break;
 			}
 		}
 		if(mode.startsWith("shapebox_corner")){
 			int j = Integer.parseInt(mode.replace("shapebox_corner_", ""));
 			switch(i){
-				case 0: { return "Corner " + j + "X: " + pol.corners[j].x; }
-				case 1: { return "Corner " + j + "Y: " + pol.corners[j].y; }
-				case 2: { return "Corner " + j + "Z: " + pol.corners[j].z; }
+				case 0: { return "Corner " + j + "X: " + s; }
+				case 1: { return "Corner " + j + "Y: " + s; }
+				case 2: { return "Corner " + j + "Z: " + s; }
 			}
+		}
+		return null;
+	}
+	
+	public Object getModeValue(int i, Polygon pol){
+		switch(mode){
+			case "move":{
+				return i == 0 ? pol.rotationpoint.x : i == 1 ? pol.rotationpoint.y : pol.rotationpoint.z;
+			}
+			case "offset":{
+				return i == 0 ? pol.offset.x : i == 1 ? pol.offset.y : pol.offset.z;
+			}
+			case "rotation":{
+				return i == 0 ? pol.rotationangle.x : i == 1 ? pol.rotationangle.y : pol.rotationangle.z;
+			}
+			case "resize":{
+				switch(i){ case 0:{ return pol.width; } case 1:{ return pol.height; } case 2:{ return pol.depth; } }
+			}
+			case "texture":{
+				return i == 0 ? pol.texturex : i == 1 ? pol.texturey : "-";
+			}
+			case "type":{
+				return i == 0 ? pol.type.name() : i == 2 ? pol.scale : pol.boxname == null ? "" : pol.boxname;
+			}
+			case "bools":{
+				switch(i){ case 0:{ return pol.oldrot; } case 1:{ return pol.mirror; } case 2:{ return pol.flip; } }
+				break;
+			}
+			case "cylinder":{
+				switch(i){ case 0:{ return pol.radius; } case 1:{ return pol.length; } case 2:{ return pol.segments; } }
+				break;
+			}
+			case "cylinder2":{
+				switch(i){ case 0:{ return pol.direction; } case 1:{ return pol.topscale; } case 2:{ return pol.basescale; } }
+				break;
+			}
+		}
+		if(mode.startsWith("shapebox_corner")){
+			int j = Integer.parseInt(mode.replace("shapebox_corner_", ""));
+			switch(i){ case 0: { return pol.corners[j].x; } case 1: { return pol.corners[j].y; } case 2: { return pol.corners[j].z; } }
 		}
 		return null;
 	}
@@ -472,7 +517,7 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
 		return modeldata.polygons.get(group).get(selected);
 	}
 
-	private void sendUpdate(String string, String group, int selected, JsonObject polygon){
+	public void sendUpdate(String string, String group, int selected, JsonObject polygon){
 		if(string.equals("all")){
 			ApiUtil.sendTileEntityUpdatePacket(world, pos, this.writeToNBT(new NBTTagCompound()));
 			return;

@@ -23,7 +23,7 @@ public class ModelCompound {
 	public int texture_size_x = 512, texture_size_y = 512;
 	public TreeMap<String, List<Polygon>> polygons = new TreeMap<>();
 	@SideOnly(Side.CLIENT)
-	public TreeMap<String, List<net.fexcraft.mod.lib.tmt.ModelRendererTurbo>> models = new TreeMap<>();
+	public TreeMap<String, List<net.fexcraft.mod.lib.tmt.ModelRendererTurbo>> models;
 	public ArrayList<String> creators = new ArrayList<>();
 	public String name;
 	
@@ -49,6 +49,7 @@ public class ModelCompound {
 	
 	@SideOnly(Side.CLIENT)
 	public void refreshTMT(){
+		if(models == null){ models = new TreeMap<>(); }
 		models.clear();
 		polygons.forEach((key, value) -> {
 			ArrayList<net.fexcraft.mod.lib.tmt.ModelRendererTurbo> list = new ArrayList<>();

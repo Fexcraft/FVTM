@@ -245,7 +245,7 @@ public class VehicleInventoryGui {
         }
 
         @Override
-        protected void keyTyped(char typedChar, int keyCode) throws IOException{
+        protected void keyTyped(char typedChar, int keyCode) throws IOException {
             if(x == 4 && keyCode == 1){
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setString("target_listener", "fvtm");

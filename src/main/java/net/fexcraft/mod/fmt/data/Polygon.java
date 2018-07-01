@@ -15,7 +15,7 @@ public class Polygon {
 	private ModelCompound model;
 	
 	//BOX/BASE
-	private String boxname;
+	public String boxname;
 	public Pos offset = new Pos(0, 0, 0), rotationangle = new Pos(0, 0, 0), rotationpoint = new Pos(0, 0, 0);
 	public float height, width, depth, expansion;
 	public int texturex, texturey;
@@ -207,7 +207,7 @@ public class Polygon {
 		}
 
 		public static PolygonType fromString(String string){
-			switch(string){
+			switch(string.toLowerCase()){
 				case "box": case "cube": case "b": return BOX;
 				case "shapebox": case "sbox": case "sb": return SHAPEBOX;
 				case "cylinder": case "cyl": case "c": return CYLINDER;

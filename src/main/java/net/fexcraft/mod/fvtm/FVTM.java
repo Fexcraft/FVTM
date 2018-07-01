@@ -13,7 +13,6 @@ import net.fexcraft.mod.lib.capabilities.sign.SignCapabilityUtil;
 import net.fexcraft.mod.lib.crafting.RecipeRegistry;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
-import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil;
 import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
@@ -65,7 +64,6 @@ public class FVTM {
             e.printStackTrace();
         }
         //
-        PermManager.setEnabled(MODID);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSignEntity.class, "fvtm:streetsign", 1991, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:seat"), SeatEntity.class, "fvtm:seat", 1993, this, 256, 1, false);

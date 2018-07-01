@@ -38,8 +38,6 @@ import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
-import net.fexcraft.mod.lib.perms.PermManager;
-import net.fexcraft.mod.lib.perms.player.PlayerPerms;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -67,6 +65,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 public abstract class UnboundVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
 
@@ -1111,9 +1110,8 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
                 ItemStack stack = vehicledata.getVehicle().getItemStack(vehicledata);
                 //
-                PlayerPerms pp = PermManager.getPlayerPerms((EntityPlayer) damagesource.getImmediateSource());
-                boolean brk = pp.hasPermission(FvtmPermissions.LAND_VEHICLE_BREAK) ? pp.hasPermission(FvtmPermissions.permBreak(stack)) : false;
-                if(brk){
+                if(PermissionAPI.hasPermission((EntityPlayer)damagesource.getImmediateSource(), FvtmPermissions.VEHICLE_BREAK)
+                	|| PermissionAPI.hasPermission((EntityPlayer)damagesource.getImmediateSource(), FvtmPermissions.permBreak(stack))){
                     if(this.getEntityAtRear() != null){
                         Entity ent = this.getEntityAtRear().getEntity();
                         /*VehicleData rear = this.getEntityAtRear().getVehicleData();

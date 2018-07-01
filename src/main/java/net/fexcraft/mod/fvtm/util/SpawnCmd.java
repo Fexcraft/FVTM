@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.lib.FCL;
 import net.fexcraft.mod.lib.api.common.fCommand;
-import net.fexcraft.mod.lib.perms.PermManager;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.json.NBTToJson;
@@ -30,6 +29,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 @fCommand
 public class SpawnCmd extends CommandBase {
@@ -47,7 +47,7 @@ public class SpawnCmd extends CommandBase {
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender){
         if(sender instanceof EntityPlayer){
-            return server.isSinglePlayer() ? true : PermManager.getPlayerPerms((EntityPlayer) sender).hasPermission(FvtmPermissions.SPAWN_CMD);
+            return server.isSinglePlayer() ? true : PermissionAPI.hasPermission((EntityPlayer)sender, FvtmPermissions.SPAWN_CMD);
         }
         Print.chat(sender, "Only executable by a player IN-GAME.");
         return false;

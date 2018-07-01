@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
+import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.SpawnCmd;
 import net.fexcraft.mod.fvtm.util.Tabs;
@@ -44,6 +45,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 public class GenericVehicleItem extends Item implements VehicleItem {
 
@@ -180,6 +182,10 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
+    	if(!PermissionAPI.hasPermission(player, FvtmPermissions.VEHICLE_PLACE) || !PermissionAPI.hasPermission(player, FvtmPermissions.permPlace(player.getHeldItem(hand)))){
+    		Print.chat(player, "&c&oYou do not have permission to place/spawn this vehicle.");
+            return new ActionResult<ItemStack>(EnumActionResult.FAIL, player.getHeldItem(hand));
+    	}
         float cosYaw = MathHelper.cos(-player.rotationYaw * 0.01745329F - 3.141593F);
         float sinYaw = MathHelper.sin(-player.rotationYaw * 0.01745329F - 3.141593F);
         float cosPitch = -MathHelper.cos(-player.rotationPitch * 0.01745329F);

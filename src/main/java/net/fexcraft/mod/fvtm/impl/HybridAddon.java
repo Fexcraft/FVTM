@@ -11,8 +11,11 @@ import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.minecraft.util.SoundEvent;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.Register;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public abstract class HybridAddon extends GenericAddon {
 
@@ -44,5 +47,9 @@ public abstract class HybridAddon extends GenericAddon {
     public void regConsumables(Register<Consumable> event){ }
 
 	public void regBlocks(Register<Block> event){ }
+	
+	public void onAttachCapabilities(AttachCapabilitiesEvent<PartData> event){}
+	
+	public void onPreInit(FMLPreInitializationEvent event){}
 
 }

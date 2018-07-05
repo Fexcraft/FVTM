@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.blocks.UniversalBlock;
+import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -65,7 +66,7 @@ public class GenericBlockItem extends Item implements BlockItem {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey(NBTKEY)){
-            BlockData con = Resources.getBlockData(stack.getTagCompound());
+            BlockData con = stack.getCapability(VAPDataCache.CAPABILITY, null).getBlockData();
             if(con == null){ return; }
         	this.setMaxStackSize(con.getBlock().isFunctional() ? 1 : 64);
             tooltip.add(Formatter.format("&9Name: &7" + con.getBlock().getName()));

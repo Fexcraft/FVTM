@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.ContainerStatusListener;
+import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -21,6 +22,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -54,8 +57,10 @@ public class FVTM {
     @Mod.EventHandler
     public void initPre(FMLPreInitializationEvent event){
         Config.initalize(event, event.getSuggestedConfigurationFile());
+        FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
+        CapabilityManager.INSTANCE.register(VAPDataCache.VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
         //
-        MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources());
+        MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
         REGISTERER = new AutoRegisterer(MODID);
         try{
             new ConstructorController();

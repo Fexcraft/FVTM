@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ import net.fexcraft.mod.fvtm.impl.GenericMaterialItem;
 import net.fexcraft.mod.fvtm.impl.GenericPart;
 import net.fexcraft.mod.fvtm.impl.GenericPartItem;
 import net.fexcraft.mod.fvtm.impl.HybridAddon;
+import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.model.EmptyModel;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.model.container.ContainerBaseModel;
@@ -64,17 +66,27 @@ import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.common.ZipUtil;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.render.ModelType;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLModContainer;
+import net.minecraftforge.fml.common.ICrashCallable;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.MetadataCollection;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.discovery.ModCandidate;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -103,7 +115,7 @@ public class Resources {
     private final File configpath, addonconfig;
     private Method method;
 
-    public Resources(){
+    public Resources(FMLPreInitializationEvent event){
         configpath = new File(FCL.getInstance().getConfigDirectory().getParentFile(), "/fvtm/");
         if(!configpath.exists()){
             configpath.mkdirs();
@@ -119,9 +131,59 @@ public class Resources {
         CONTAINERS = (IForgeRegistry<Container>) new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
         CONSUMABLES = (IForgeRegistry<Consumable>) new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
         BLOCKS = (IForgeRegistry<Block>) new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
+        //
+        loadAddons(event);
     }
 
-    public void updateAddonConfig(){
+    private void loadAddons(FMLPreInitializationEvent event){
+    	 ClassLoader cl = net.minecraft.server.MinecraftServer.class.getClassLoader();
+         try{
+             method = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", java.net.URL.class);
+             method.setAccessible(true);
+         }
+         catch(Exception e){
+             Print.log("Failed to get class loader. All content loading may fail badly.");
+             e.printStackTrace();
+         }
+         File addonfolder = new File(event.getModConfigurationDirectory().getParentFile(), "/addons/");
+         if(!addonfolder.exists()){
+             addonfolder.mkdirs();
+         }
+         for(File file : addonfolder.listFiles()){
+             if(Addon.isAddonContainer(file)){
+                 try{
+                     method.invoke(cl, file.toURI().toURL());
+                     Addon addon = GenericAddon.isHybrid(file) ? HybridAddon.getClass(file).getConstructor(File.class).newInstance(file) : new GenericAddon(file);
+                     ADDONS.register(addon);
+                 }
+                 catch(Exception e){
+                     e.printStackTrace();
+                 }
+             }
+         }
+         for(Addon addon : ADDONS.getValues()){
+             Print.log("Registering Addonpack into Forge/Minecraft resources... (" + addon.getName() + ")");
+             HashMap<String, Object> map = new HashMap<String, Object>();
+             map.put("modid", addon.getRegistryName().getResourcePath());
+             map.put("name", "[FVTM]: " + addon.getName());
+             map.put("version", addon.getVersion());
+             String clazz = addon instanceof HybridAddon ? "net.fexcraft.mod.fvtm.impl.HybridAddon" : "net.fexcraft.mod.fvtm.impl.GenericAddon";
+             FMLModContainer container = new FMLModContainer(clazz, new ModCandidate(addon.getFile(), addon.getFile(), addon.getFile().isDirectory() ? ContainerType.DIR : ContainerType.JAR), map);
+             container.bindMetadata(new MetadataCollection());
+             FMLCommonHandler.instance().addModToResourcePack(container);
+             //
+             new GenericCreativeTab(addon);
+             //
+             if(addon instanceof HybridAddon){
+            	 ((HybridAddon)addon).onPreInit(event);
+             }
+         }
+         if(Static.side().isClient() && ADDONS.getEntries().size() > 0){
+             net.minecraft.client.Minecraft.getMinecraft().refreshResources();
+         }
+	}
+
+	public void updateAddonConfig(){
         JsonArray array = new JsonArray();
         for(Addon addon : ADDONS.getValues()){
             JsonObject obj = new JsonObject();
@@ -191,50 +253,7 @@ public class Resources {
 
     @SubscribeEvent
     public void regAddons(RegistryEvent.Register<Addon> event){
-        ClassLoader cl = net.minecraft.server.MinecraftServer.class.getClassLoader();
-        try{
-            method = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", java.net.URL.class);
-            method.setAccessible(true);
-        }
-        catch(Exception e){
-            Print.log("Failed to get class loader. All content loading will now fail.");
-            e.printStackTrace();
-        }
-
-        File addonfolder = new File(FCL.getInstance().getConfigDirectory().getParentFile().getParentFile(), "/addons/");
-        if(!addonfolder.exists()){
-            addonfolder.mkdirs();
-        }
-        for(File file : addonfolder.listFiles()){
-            if(Addon.isAddonContainer(file)){
-                try{
-                    method.invoke(cl, file.toURI().toURL());
-                    Addon addon = GenericAddon.isHybrid(file) ? HybridAddon.getClass(file).getConstructor(File.class).newInstance(file) : new GenericAddon(file);
-                    event.getRegistry().register(addon);
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
-        for(Addon addon : ADDONS.getValues()){
-            if(Static.side().isClient()){
-                Print.log("Registering Addonpack into Forge/Minecraft resources...");
-                HashMap<String, Object> map = new HashMap<String, Object>();
-                map.put("modid", addon.getRegistryName().getResourcePath());
-                map.put("name", "[FVTM]: " + addon.getName());
-                map.put("version", addon.getVersion());
-                FMLModContainer container = new FMLModContainer("net.fexcraft.mod.fvtm.FVTM", new ModCandidate(addon.getFile(), addon.getFile(), addon.getFile().isDirectory() ? ContainerType.DIR : ContainerType.JAR), map);
-                container.bindMetadata(MetadataCollection.from(null, ""));
-                net.minecraftforge.fml.client.FMLClientHandler.instance().addModAsResource(container);
-            }
-        }
-        if(Static.side().isClient() && ADDONS.getEntries().size() > 0){
-            net.minecraft.client.Minecraft.getMinecraft().refreshResources();
-        }
-        for(Addon addon : ADDONS.getValues()){
-            new GenericCreativeTab(addon);
-        }
+    	//
     }
 
     @SubscribeEvent
@@ -1046,4 +1065,24 @@ public class Resources {
 			}
 		}
 	}*/
+    
+    @SubscribeEvent
+    public void onAttachPartCapabilities(AttachCapabilitiesEvent<PartData> event){
+    	for(Addon addon : ADDONS){
+    		if(addon.isEnabled() && addon instanceof HybridAddon){
+    			((HybridAddon)addon).onAttachCapabilities(event);
+    		}
+    	}
+    	if(Static.dev()){
+    		Print.debug(event.getObject().writeToNBT(new NBTTagCompound()));
+    	}
+    }
+    
+    @SubscribeEvent
+    public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
+    	if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof BlockItem){
+    		event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
+    	}
+    }
+    
 }

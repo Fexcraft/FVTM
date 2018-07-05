@@ -44,6 +44,7 @@ public class GenericPart implements Part {
     private JsonObject attributedata;
     private HashMap<Class<? extends Attribute>, Attribute> attributes = new HashMap<Class<? extends Attribute>, Attribute>();
     private ArrayList<Class<? extends VehicleScript>> scripts = new ArrayList<Class<? extends VehicleScript>>();
+    private ArrayList<ResourceLocation> capabilities = new ArrayList<>();
     //Sound
     private TreeMap<String, ResourceLocation> sounds = new TreeMap<String, ResourceLocation>();
     private TreeMap<ResourceLocation, SoundEvent> soundevents = new TreeMap<ResourceLocation, SoundEvent>();
@@ -108,6 +109,7 @@ public class GenericPart implements Part {
                 e.printStackTrace();
             }
         }
+        capabilities = JsonUtil.jsonArrayToResourceLocationArray(atr_array);
         //
         ArrayList<Class<? extends VehicleScript>> list = new ArrayList<Class<? extends VehicleScript>>();
         ArrayList<String> json = JsonUtil.jsonArrayToStringArray(JsonUtil.getIfExists(obj, "Scripts", new JsonArray()).getAsJsonArray());
@@ -144,6 +146,7 @@ public class GenericPart implements Part {
                 }
             }
         }
+        //
     }
 
     @Override
@@ -308,5 +311,10 @@ public class GenericPart implements Part {
     public float getSoundPitch(String event){
         return soundpitch.get(event) == null ? 1.0f : soundpitch.get(event);
     }
+
+	@Override
+	public Collection<ResourceLocation> getCapabilities(){
+		return capabilities;
+	}
 
 }

@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
+import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.SpawnCmd;
@@ -76,7 +77,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
         if(stack.hasTagCompound() && (stack.getTagCompound().hasKey(NBTKEY) || stack.getTagCompound().hasKey(OLDNBTKEY))){
-            VehicleData veh = Resources.getVehicleData(stack.getTagCompound());
+            VehicleData veh = stack.getCapability(VAPDataCache.CAPABILITY, null).getVehicleData();
             if(veh == null){
                 return;
             }

@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -333,6 +334,79 @@ public class PartModel extends PartBaseModel {
         flip(track_wheels);
         flip(track_wheels_right);
         flip(track_wheels_left);
+    }
+
+    public void def_renderWheels4(VehicleData type, String us, Entity veh, boolean rot){
+        if(rot){
+            switch(us){
+                case "left_front_wheel":
+                    this.def_renderWheelWithRotations(submodels.get("wheel_front_left"), veh, true);
+                    break;
+                case "right_front_wheel":
+                    this.def_renderWheelWithRotations(submodels.get("wheel_front_right"), veh, true);
+                    break;
+                case "left_back_wheel":
+                    this.def_renderWheelWithRotations(submodels.get("wheel_back_left"), veh, false);
+                    break;
+                case "right_back_wheel":
+                    this.def_renderWheelWithRotations(submodels.get("wheel_back_right"), veh, false);
+                    break;
+            }
+        }
+        else{
+            def_renderWheels4(type, us, veh);
+        }
+    }
+
+    public void def_renderWheels4(VehicleData type, String us){
+        switch(us){
+            case "left_front_wheel":
+                render(submodels.get("wheel_front_left"));
+                break;
+            case "right_front_wheel":
+                render(submodels.get("wheel_front_right"));
+                break;
+            case "left_back_wheel":
+                render(submodels.get("wheel_back_left"));
+                break;
+            case "right_back_wheel":
+                render(submodels.get("wheel_back_right"));
+                break;
+        }
+    }
+
+    public void def_renderWheels4(VehicleData type, String us, Entity veh){
+        VehicleEntity vehicle = (VehicleEntity) veh;
+        switch(us){
+            case "left_front_wheel":
+                for(ModelRendererTurbo element : submodels.get("wheel_front_left")){
+                    element.rotateAngleZ = vehicle.getWheelsAngle();
+                    element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
+                    element.render();
+                    element.rotateAngleY = 0;
+                }
+                break;
+            case "right_front_wheel":
+                for(ModelRendererTurbo element : submodels.get("wheel_front_right")){
+                    element.rotateAngleZ = vehicle.getWheelsAngle();
+                    element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
+                    element.render();
+                    element.rotateAngleY = 0;
+                }
+                break;
+            case "left_back_wheel":
+                for(ModelRendererTurbo element : submodels.get("wheel_back_left")){
+                    element.rotateAngleZ = vehicle.getWheelsAngle();
+                    element.render();
+                }
+                break;
+            case "right_back_wheel":
+                for(ModelRendererTurbo element : submodels.get("wheel_back_right")){
+                    element.rotateAngleZ = vehicle.getWheelsYaw();
+                    element.render();
+                }
+                break;
+        }
     }
 
 }

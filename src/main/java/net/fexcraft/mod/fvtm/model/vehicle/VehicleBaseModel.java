@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
+import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
 import net.minecraft.client.Minecraft;
@@ -36,7 +37,7 @@ public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object>
 	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
 		if(item.getItem() instanceof VehicleItem == false){ return; }
-		VehicleData data = ((VehicleItem)item.getItem()).getVehicle(item);
+		VehicleData data = item.getCapability(VAPDataCache.CAPABILITY, null).getVehicleData();
 		if(data == null){ return; }
 		VehicleBaseModel model = (VehicleBaseModel)data.getVehicle().getModel();
 		if(model == null) { return; }

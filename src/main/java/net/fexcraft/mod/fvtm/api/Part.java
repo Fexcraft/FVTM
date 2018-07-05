@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
@@ -75,9 +76,11 @@ public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
     public float getSoundVolume(String event);
 
     public float getSoundPitch(String event);
+    
+    public Collection<ResourceLocation> getCapabilities();
 
     //<-- PART DATA -->//
-    public static interface PartData extends Saveloadable<PartData>, Textureable {
+    public static interface PartData extends Saveloadable<PartData>, Textureable, ICapabilityProvider {
 
         public Part getPart();
 

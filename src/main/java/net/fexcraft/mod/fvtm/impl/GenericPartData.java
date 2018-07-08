@@ -13,17 +13,14 @@ import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 
 public class GenericPartData extends GenericTextureable<PartData, Part> implements PartData {
 
     private Pos offset;
     private HashMap<Class<?>, AttributeData> attributes = new HashMap<Class<?>, AttributeData>();
-    private CapabilityDispatcher capabilities;
+    //private CapabilityDispatcher capabilities;
 
     public GenericPartData(Part part){
         super(part);
@@ -32,7 +29,7 @@ public class GenericPartData extends GenericTextureable<PartData, Part> implemen
         	Print.log("FATAL ERROR, CAPABILITY ATTACHMENT WAS CANCELLED, NOONE SHALL DO THIS, STOPPING!");
         	Static.stop();
         }
-        capabilities = new CapabilityDispatcher(event.getCapabilities(), this);
+        //capabilities = new CapabilityDispatcher(event.getCapabilities(), this);
     }
 
     @Override
@@ -60,7 +57,7 @@ public class GenericPartData extends GenericTextureable<PartData, Part> implemen
                 }
             }
         });
-        if(this.capabilities != null) compound.setTag("ForgeCaps", this.capabilities.serializeNBT());
+        //if(this.capabilities != null) compound.setTag("ForgeCaps", this.capabilities.serializeNBT());
         tagcompound.setTag(FVTM.MODID + "_part", offset == null ? compound : offset.toNBT("Offset", compound));
         return tagcompound;
     }
@@ -83,19 +80,19 @@ public class GenericPartData extends GenericTextureable<PartData, Part> implemen
                 }
             }
         });
-        if(this.capabilities != null && compound.hasKey("ForgeCaps")){
+        /*if(this.capabilities != null && compound.hasKey("ForgeCaps")){
         	this.capabilities.deserializeNBT(compound.getCompoundTag("ForgeCaps"));
-        }
+        }*/
         return this;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends AttributeData> T getAttributeData(Class<T> clazz){
-        return (T) attributes.get(clazz);
+        return (T)attributes.get(clazz);
     }
 
-	@Override
+	/*@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing){
 		return capabilities.hasCapability(capability, facing);
 	}
@@ -103,6 +100,6 @@ public class GenericPartData extends GenericTextureable<PartData, Part> implemen
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing){
 		return capabilities.getCapability(capability, facing);
-	}
+	}*/
 
 }

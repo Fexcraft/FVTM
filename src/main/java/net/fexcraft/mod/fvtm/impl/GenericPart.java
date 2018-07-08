@@ -249,7 +249,7 @@ public class GenericPart implements Part {
     }
 
     @Override
-    public boolean canInstall(String as, VehicleData data, EntityPlayer player){
+    public boolean installable(String as, VehicleData data, EntityPlayer player){
         if(this.compatible.containsKey(data.getVehicle().getRegistryName()) || this.compatible.containsKey(new ResourceLocation("all")) || this.compatible.isEmpty()){
             ArrayList<ResourceLocation> arr = this.incompatible.get(data.getVehicle().getRegistryName());
             if(arr == null){

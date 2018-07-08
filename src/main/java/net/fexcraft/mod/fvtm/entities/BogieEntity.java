@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WheelEntity extends MovementCalculationEntity implements IEntityAdditionalSpawnData {
+public class BogieEntity extends MovementCalculationEntity implements IEntityAdditionalSpawnData {
 
     public VehicleEntity vehicle;
 
@@ -21,13 +21,13 @@ public class WheelEntity extends MovementCalculationEntity implements IEntityAdd
     private int vehicleid;
     public int wheelid;
 
-    public WheelEntity(World world){
+    public BogieEntity(World world){
         super(world);
-        setSize(0.75F, 0.75F);
+        setSize(0.45F, 0.45F);
         stepHeight = 1.1F;
     }
 
-    public WheelEntity(World world, VehicleEntity entity, int i){
+    public BogieEntity(World world, VehicleEntity entity, int i){
         this(world);
         vehicle = entity;
         vehicleid = entity.getEntity().getEntityId();
@@ -124,12 +124,12 @@ public class WheelEntity extends MovementCalculationEntity implements IEntityAdd
 
     @Override
     public boolean canBePushed(){
-        return false;
+        return true;
     }
 
     @Override
     public boolean canBeCollidedWith(){
-        return false;//!isDead;
+        return !isDead;
     }
 
     @Override

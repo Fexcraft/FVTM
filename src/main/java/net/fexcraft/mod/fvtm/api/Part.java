@@ -16,10 +16,8 @@ import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
@@ -60,7 +58,7 @@ public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
 
     public Collection<Class<? extends Attribute>> getAttributeClasses();
 
-    public boolean canInstall(String as, VehicleData data, EntityPlayer player);
+    public boolean installable(String as, VehicleData data, EntityPlayer player);
 
     public Model<VehicleData, String> getModel();
 
@@ -81,7 +79,7 @@ public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
     public Collection<ResourceLocation> getCapabilities();
 
     //<-- PART DATA -->//
-    public static interface PartData extends Saveloadable<PartData>, Textureable, ICapabilityProvider {
+    public static interface PartData extends Saveloadable<PartData>, Textureable/*, ICapabilityProvider*/ {
 
         public Part getPart();
 

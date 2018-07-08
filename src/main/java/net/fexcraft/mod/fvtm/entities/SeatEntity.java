@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.api.Vehicle.PassengerHoldingEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -37,7 +38,7 @@ import com.google.common.collect.Lists;
 
 import io.netty.buffer.ByteBuf;
 
-public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
+public class SeatEntity extends PassengerHoldingEntity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
     private int vehicleid;
     private int seatid;
@@ -45,7 +46,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     //
     public boolean driver;
     public FMSeat seatdata;
-    public VehicleAxes looking, prevlooking, passlooking, prevpasslooking;
+    public VehicleAxes passlooking, prevpasslooking;
     //
     private double pass_x, pass_y, pass_z;
     private float pass_yaw, pass_pitch, pass_roll;
@@ -641,9 +642,9 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         return false;
     }
 
-    public boolean isPassengerThePlayer(){
-        if(world.isRemote){
-            return passenger == net.minecraft.client.Minecraft.getMinecraft().player;
+    public static final  boolean isPassengerThePlayer(SeatEntity ent){
+        if(ent.world.isRemote){
+            return ent.passenger == net.minecraft.client.Minecraft.getMinecraft().player;
         }
         else{
             return false;

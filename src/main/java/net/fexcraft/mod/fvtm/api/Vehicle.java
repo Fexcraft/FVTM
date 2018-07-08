@@ -19,8 +19,6 @@ import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.SettingHolder;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
-import net.fexcraft.mod.fvtm.entities.SeatEntity;
-import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
@@ -36,6 +34,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -223,9 +222,9 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
         public VehicleAxes getAxes();
 
-        public WheelEntity[] getWheels();
+        public MovementCalculationEntity[] getWheels();
 
-        public SeatEntity[] getSeats();
+        public PassengerHoldingEntity[] getSeats();
 
         public boolean onKeyPress(int key, int seat, EntityPlayer player);
 
@@ -306,5 +305,23 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         }
 
     }
+    
+    public static abstract class MovementCalculationEntity extends Entity {
+
+		public MovementCalculationEntity(World world){
+			super(world);
+		}
+		
+	}
+    
+    public static abstract class PassengerHoldingEntity extends Entity {
+
+		public PassengerHoldingEntity(World world){
+			super(world);
+		}
+		
+		public VehicleAxes looking, prevlooking;
+		
+	}
 
 }

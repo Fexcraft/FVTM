@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
+import net.fexcraft.mod.fvtm.api.Vehicle.MovementCalculationEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -256,10 +257,10 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 
     public boolean isDrivenByPlayer(){
         if(vehicledata.getVehicle().isTrailerOrWagon()){
-            return getParent() != null && getParent().getSeats()[0] != null && getParent().getSeats()[0].isPassengerThePlayer();
+            return getParent() != null && getParent().getSeats()[0] != null && SeatEntity.isPassengerThePlayer((SeatEntity)getParent().getSeats()[0]);
         }
         else{
-            return seats[0] != null && seats[0].isPassengerThePlayer();
+            return seats[0] != null && SeatEntity.isPassengerThePlayer((SeatEntity)seats[0]);
         }
     }
 
@@ -288,8 +289,8 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             e.printStackTrace();
             Print.debug("Failed to receive additional spawn data for this vehicle!");
         }
-        camera = new CameraEntity(world, this);
-        world.spawnEntity(camera);
+        //camera = new CameraEntity(world, this);
+        //world.spawnEntity(camera);
     }
 
     //--- IMPLEMENTATION ---//
@@ -314,7 +315,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     }
 
     @Override
-    public WheelEntity[] getWheels(){
+    public MovementCalculationEntity[] getWheels(){
         return wheels;
     }
 

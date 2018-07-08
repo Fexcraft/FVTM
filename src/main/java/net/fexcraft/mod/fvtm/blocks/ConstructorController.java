@@ -197,7 +197,7 @@ public class ConstructorController extends BlockContainer {
                     return false;
                 }
                 if(data.getPart().getCategories().size() > 1){
-                    if(data.getPart().canInstall(data.getPart().getCategory(), te.getVehicleData(), p)){
+                    if(data.getPart().installable(data.getPart().getCategory(), te.getVehicleData(), p)){
                         te.setPartData(data);
                         Print.chat(p, "Part put into Constructor. (" + data.getPart().getName() + ")");
                         p.getHeldItem(hand).shrink(1);
@@ -206,7 +206,7 @@ public class ConstructorController extends BlockContainer {
                 }
                 else{
                     if(!te.getVehicleData().getParts().containsKey(data.getPart().getCategory())){
-                        if(data.getPart().canInstall(data.getPart().getCategory(), te.getVehicleData(), p)){
+                        if(data.getPart().installable(data.getPart().getCategory(), te.getVehicleData(), p)){
                             te.getVehicleData().installPart(data.getPart().getCategory(), data);
                             Print.chat(p, "Part installed. (" + data.getPart().getName() + ")");
                             p.getHeldItem(hand).shrink(1);

@@ -309,7 +309,7 @@ public class GuiHandler implements IGuiHandler {
                                 else{
                                     if(packet.nbt.getBoolean("auto")){
                                         for(String str : serv.getPartData().getPart().getCategories()){
-                                            if(serv.getVehicleData().getPart(str) == null && serv.getPartData().getPart().canInstall(str, serv.getVehicleData(), player)){
+                                            if(serv.getVehicleData().getPart(str) == null && serv.getPartData().getPart().installable(str, serv.getVehicleData(), player)){
                                                 serv.getVehicleData().installPart(str, serv.getPartData());
                                                 Print.chat(player, "Part processed. (" + serv.getPartData().getPart().getName() + ")");
                                                 serv.setPartData(null);
@@ -326,7 +326,7 @@ public class GuiHandler implements IGuiHandler {
                                             Print.chat(player, "There is already a part installed in that category.");
                                             return;
                                         }
-                                        if(serv.getPartData().getPart().canInstall(cat, serv.getVehicleData(), player)){
+                                        if(serv.getPartData().getPart().installable(cat, serv.getVehicleData(), player)){
                                             serv.getVehicleData().installPart(cat, serv.getPartData());
                                             Print.chat(player, "Part processed. (" + serv.getPartData().getPart().getName() + ")");
                                             serv.setPartData(null);

@@ -340,16 +340,16 @@ public class PartModel extends PartBaseModel {
         if(rot){
             switch(us){
                 case "left_front_wheel":
-                    this.def_renderWheelWithRotations(submodels.get("wheel_front_left"), veh, true);
+                    this.def_renderWheelWithRotations(wheel_front_left, veh, true);
                     break;
                 case "right_front_wheel":
-                    this.def_renderWheelWithRotations(submodels.get("wheel_front_right"), veh, true);
+                    this.def_renderWheelWithRotations(wheel_front_right, veh, true);
                     break;
                 case "left_back_wheel":
-                    this.def_renderWheelWithRotations(submodels.get("wheel_back_left"), veh, false);
+                    this.def_renderWheelWithRotations(wheel_back_left, veh, false);
                     break;
                 case "right_back_wheel":
-                    this.def_renderWheelWithRotations(submodels.get("wheel_back_right"), veh, false);
+                    this.def_renderWheelWithRotations(wheel_back_right, veh, false);
                     break;
             }
         }
@@ -361,16 +361,16 @@ public class PartModel extends PartBaseModel {
     public void def_renderWheels4(VehicleData type, String us){
         switch(us){
             case "left_front_wheel":
-                render(submodels.get("wheel_front_left"));
+                render(wheel_front_left);
                 break;
             case "right_front_wheel":
-                render(submodels.get("wheel_front_right"));
+                render(wheel_front_right);
                 break;
             case "left_back_wheel":
-                render(submodels.get("wheel_back_left"));
+                render(wheel_back_left);
                 break;
             case "right_back_wheel":
-                render(submodels.get("wheel_back_right"));
+                render(wheel_back_right);
                 break;
         }
     }
@@ -379,7 +379,7 @@ public class PartModel extends PartBaseModel {
         VehicleEntity vehicle = (VehicleEntity) veh;
         switch(us){
             case "left_front_wheel":
-                for(ModelRendererTurbo element : submodels.get("wheel_front_left")){
+                for(ModelRendererTurbo element : wheel_front_left){
                     element.rotateAngleZ = vehicle.getWheelsAngle();
                     element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
                     element.render();
@@ -387,7 +387,7 @@ public class PartModel extends PartBaseModel {
                 }
                 break;
             case "right_front_wheel":
-                for(ModelRendererTurbo element : submodels.get("wheel_front_right")){
+                for(ModelRendererTurbo element : wheel_front_right){
                     element.rotateAngleZ = vehicle.getWheelsAngle();
                     element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
                     element.render();
@@ -395,13 +395,13 @@ public class PartModel extends PartBaseModel {
                 }
                 break;
             case "left_back_wheel":
-                for(ModelRendererTurbo element : submodels.get("wheel_back_left")){
+                for(ModelRendererTurbo element : wheel_back_left){
                     element.rotateAngleZ = vehicle.getWheelsAngle();
                     element.render();
                 }
                 break;
             case "right_back_wheel":
-                for(ModelRendererTurbo element : submodels.get("wheel_back_right")){
+                for(ModelRendererTurbo element : wheel_back_right){
                     element.rotateAngleZ = vehicle.getWheelsYaw();
                     element.render();
                 }

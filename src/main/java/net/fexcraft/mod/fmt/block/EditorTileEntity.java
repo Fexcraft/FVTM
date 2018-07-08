@@ -14,6 +14,7 @@ import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,8 +61,16 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
-        if(modeldata != null){
-        	compound.setTag("ModelCompound", modeldata.toNBTTagCompound());
+        try{
+            if(modeldata != null){
+            	compound.setTag("ModelCompound", modeldata.toNBTTagCompound());
+            }
+        }
+        catch(Exception e){
+			e.printStackTrace();
+		}
+        if(Static.dev()){
+            Print.log("WRITING " + compound.toString());
         }
         return compound;
     }
@@ -69,6 +78,9 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
     @Override
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
+        if(Static.dev()){
+        	Print.log("READING " + compound.toString());
+        }
         try{
         	modeldata = ModelCompound.fromNBTTagCompound(compound.getCompoundTag("ModelCompound"));
         }
@@ -84,6 +96,7 @@ public class EditorTileEntity extends TileEntity implements IPacketReceiver<Pack
             switch(packet.nbt.getString("task")){
 	            case "input":{
 	            	this.onKeyPress(EditorInput.valueOf(packet.nbt.getString("input")), false);
+	            	this.markDirty();
 	            	break;
 	            }
 	            case "open_gui":{

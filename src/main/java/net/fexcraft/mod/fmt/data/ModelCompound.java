@@ -11,10 +11,9 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
-import net.fexcraft.mod.lib.util.json.NBTToJson;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -92,19 +91,60 @@ public class ModelCompound {
 	}
 
 	public NBTTagCompound toNBTTagCompound(){
-		try{
-			return JsonToNBT.getTagFromJson(this.toJTMT().toString());
-		}
-		catch(NBTException e){
-			e.printStackTrace();
-			Static.stop();
-			return null;
-		}
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setInteger("format", 1);
+		compound.setString("name", name);
+		compound.setString("type", "jtmt");
+		compound.setInteger("texture_size_x", 512);
+		compound.setInteger("texture_size_y", 512);
+		NBTTagList creators = new NBTTagList();
+		this.creators.forEach(cr -> {
+			creators.appendTag(new NBTTagString(cr));
+		});
+		compound.setTag("creators", creators);
+		NBTTagCompound model = new NBTTagCompound();
+		this.polygons.forEach((key, value) -> {
+			NBTTagList list = new NBTTagList();
+			value.forEach(elm -> {
+				list.appendTag(elm.toNBT());
+			});
+			model.setTag(key, list);
+		});
+		compound.setTag("model", model);
+		return compound;
 	}
 
 	public static ModelCompound fromNBTTagCompound(NBTTagCompound compound){
-		JsonObject obj = NBTToJson.getJsonFromTag(compound);
-		return new ModelCompound(obj == null ? new JsonObject() : obj);
+		try{
+			ModelCompound mc = new ModelCompound(new JsonObject());
+			if(compound.hasKey("creators")){
+				NBTTagList list = (NBTTagList)compound.getTag("creators");
+				list.forEach(elm -> {
+					mc.creators.add(((NBTTagString)elm).getString());
+				});
+			}
+			mc.texture_size_x = compound.getInteger("texture_size_x");
+			mc.texture_size_y = compound.getInteger("texture_size_y");
+			if(compound.hasKey("model")){
+				NBTTagCompound model = compound.getCompoundTag("model");
+				for(String str : model.getKeySet()){
+		        	ArrayList<Polygon> list = new ArrayList<>();
+		        	((NBTTagList)model.getTag(str)).forEach(elm -> {
+		        		list.add(new Polygon(mc, (NBTTagCompound)elm));
+		        	});
+		        	mc.polygons.put(str, list);
+				}
+			}
+			mc.name = compound.getString("name");
+	        if(Static.side().isClient()){
+	        	mc.refreshTMT();
+	        }
+	        return mc;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return new ModelCompound(new JsonObject());
+		}
 	}
 	
 }

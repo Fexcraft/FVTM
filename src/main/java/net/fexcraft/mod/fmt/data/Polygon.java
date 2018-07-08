@@ -1,12 +1,11 @@
 package net.fexcraft.mod.fmt.data;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-
 import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,15 +34,6 @@ public class Polygon {
 	public int segments, direction;
 	
 	public Polygon(ModelCompound model, JsonObject obj){
-		/* fix for from-nbt errors */
-		obj.entrySet().forEach(entry -> {
-			if(entry.getValue().isJsonPrimitive()){
-				if(entry.getValue().getAsString().endsWith(".0d")){
-					entry.setValue(new JsonPrimitive(entry.getValue().getAsString().replace(".0d", "")));
-				}
-			}
-		});
-		//
 		this.model = model;
 		type = PolygonType.fromString(obj.get("type").getAsString());
 		texturex = JsonToTMT.get(JsonToTMT.texturex, obj, JsonToTMT.idef);
@@ -98,7 +88,94 @@ public class Polygon {
 		rotationpoint.y = JsonToTMT.get(JsonToTMT.posy, obj, JsonToTMT.def);
 		rotationpoint.z = JsonToTMT.get(JsonToTMT.posz, obj, JsonToTMT.def);
 	}
+
+	public Polygon(ModelCompound model, NBTTagCompound compound){
+		this.model = model;
+		type = PolygonType.fromString(compound.getString("type"));
+		texturex = get(JsonToTMT.texturex, compound, JsonToTMT.idef);
+		texturey = get(JsonToTMT.texturey, compound, JsonToTMT.idef);
+		//
+		offset.x = get(JsonToTMT.offx, compound, JsonToTMT.def);
+		offset.y = get(JsonToTMT.offy, compound, JsonToTMT.def);
+		offset.z = get(JsonToTMT.offz, compound, JsonToTMT.def);
+		try{
+			width  = get(JsonToTMT.width,  compound, JsonToTMT.idef);
+			height = get(JsonToTMT.height, compound, JsonToTMT.idef);
+			depth  = get(JsonToTMT.depth,  compound, JsonToTMT.idef);
+		}
+		catch (Exception e) {
+			e.printStackTrace(); Static.stop();
+		}
+		//
+		switch(type){
+			case BOX:{
+				expansion = get(JsonToTMT.expansion, compound, JsonToTMT.def);
+				break;
+			}
+			case SHAPEBOX:{
+				for(int i = 0; i < 8; i++){
+					corners[i].x = get("x" + i, compound, JsonToTMT.def);
+					corners[i].y = get("y" + i, compound, JsonToTMT.def);
+					corners[i].z = get("z" + i, compound, JsonToTMT.def);
+				}
+				break;
+			}
+			case CYLINDER:{
+				radius = get(JsonToTMT.radius, compound, JsonToTMT.def);
+				length = get(JsonToTMT.length, compound, JsonToTMT.def);
+				segments = get(JsonToTMT.segments, compound, JsonToTMT.idef);
+				basescale = get(JsonToTMT.basescale, compound, JsonToTMT.def);
+				topscale = get(JsonToTMT.topscale, compound, JsonToTMT.def);
+				direction = get(JsonToTMT.direction, compound, JsonToTMT.idef);
+				break;
+			}
+		}
+		//
+		oldrot = get(compound, JsonToTMT.oldrot, false);
+		mirror = get(compound, JsonToTMT.mirror, false);
+		flip = get(compound, JsonToTMT.flip, false);
+		//
+		rotationangle.x = get(JsonToTMT.rotx, compound, JsonToTMT.def);
+		rotationangle.y = get(JsonToTMT.roty, compound, JsonToTMT.def);
+		rotationangle.z = get(JsonToTMT.rotz, compound, JsonToTMT.def);
+		//
+		boxname = compound.hasKey("name") ? compound.getString("name") : null;
+		rotationpoint.x = get(JsonToTMT.posx, compound, JsonToTMT.def);
+		rotationpoint.y = get(JsonToTMT.posy, compound, JsonToTMT.def);
+		rotationpoint.z = get(JsonToTMT.posz, compound, JsonToTMT.def);
+	}
 	
+	private boolean get(NBTTagCompound compound, String[] arr, boolean def){
+		for(String str : arr){
+			if(compound.hasKey(str)){
+				return compound.getBoolean(str);
+			}
+		}
+		return def;
+	}
+
+	private float get(String string, NBTTagCompound compound, float def){
+		return compound.hasKey(string) ? compound.getFloat(string) : def;
+	}
+
+	private int get(String[] arr, NBTTagCompound compound, int idef){
+		for(String str : arr){
+			if(compound.hasKey(str)){
+				return compound.getInteger(str);
+			}
+		}
+		return idef;
+	}
+	
+	private float get(String[] arr, NBTTagCompound compound, float def){
+		for(String str : arr){
+			if(compound.hasKey(str)){
+				return compound.getFloat(str);
+			}
+		}
+		return def;
+	}
+
 	public Polygon(ModelCompound model){
 		this.model = model;
 		type = PolygonType.BOX;
@@ -190,6 +267,76 @@ public class Polygon {
 		obj.addProperty("y", rotationpoint.y);
 		obj.addProperty("z", rotationpoint.z);
 		return obj;
+	}
+
+	public NBTTagCompound toNBT(){
+		NBTTagCompound compound = new NBTTagCompound();
+		if(boxname != null){
+			compound.setString("name", boxname);
+		}
+		compound.setInteger("tx", texturex);
+		compound.setInteger("ty", texturey);
+		compound.setFloat("ox", offset.x);
+		compound.setFloat("oy", offset.y);
+		compound.setFloat("oz", offset.z);
+		compound.setFloat("width", width);
+		compound.setFloat("height", height);
+		compound.setFloat("depth", depth);
+		compound.setString("type", type.getTypeString());
+		switch(type){
+			case BOX:{
+				if(expansion != 0f){
+					compound.setFloat("e", expansion);
+				}
+				break;
+			}
+			case SHAPEBOX:{
+				if(scale != 0f){
+					compound.setFloat("scale", scale);
+				}
+				for(int i = 0; i < 8; i++){
+					if(corners[i].x != 0f){
+						compound.setFloat("x" + i, corners[i].x);
+					}
+					if(corners[i].y != 0f){
+						compound.setFloat("y" + i, corners[i].y);
+					}
+					if(corners[i].z != 0f){
+						compound.setFloat("z" + i, corners[i].z);
+					}
+				}
+				break;
+			}
+			case CYLINDER:{
+				compound.setFloat("radius", radius);
+				compound.setFloat("length", length);
+				compound.setInteger("segments", segments);
+				compound.setFloat("base_scale", basescale);
+				compound.setFloat("top_scale", topscale);
+				compound.setInteger("direction", direction);
+				break;
+			}
+			default:{
+				Static.stop();
+				break;
+			}
+		}
+		if(oldrot){
+			compound.setBoolean("oro", oldrot);
+		}
+		if(mirror){
+			compound.setBoolean("mirror", mirror);
+		}
+		if(flip){
+			compound.setBoolean("flip", flip);
+		}
+		compound.setFloat("rx", rotationangle.x);
+		compound.setFloat("ry", rotationangle.y);
+		compound.setFloat("rz", rotationangle.z);
+		compound.setFloat("x", rotationpoint.x);
+		compound.setFloat("y", rotationpoint.y);
+		compound.setFloat("z", rotationpoint.z);
+		return compound;
 	}
 	
 	@Override

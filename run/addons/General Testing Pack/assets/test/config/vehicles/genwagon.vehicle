@@ -1,0 +1,21 @@
+{
+    "RegistryName": "test:generic_wagon",
+    "Addon": "fvtm:test",
+    "FullName": "Generic Wagon",
+    "ModelFile": "net.fexcraft.mod.addons.test.models.GenericWagon.class",
+    "Textures": [
+        "test:textures/other/generic_wagon.png"
+    ],
+    "WheelPos":[
+        { "x": -52, "y": -10, "z": 0 },
+        { "x":  52, "y": -10, "z": 0 }
+    ],
+    "ConstructionLength": 4,
+    "ConstructionYOffSet": 12.5,
+    "ConstructionWheelOffset": 19.5,
+    "RequiredParts": [ ],
+    "PreInstalled":[
+		{ "part": "test:locoseats", "as": "seats" }
+	],
+	"VehicleType": "RAIL"
+}

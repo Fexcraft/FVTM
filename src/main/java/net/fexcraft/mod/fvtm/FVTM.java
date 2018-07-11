@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.ContainerStatusListener;
+import net.fexcraft.mod.fvtm.impl.caps.ChunkRailMap;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
@@ -59,6 +60,7 @@ public class FVTM {
         Config.initalize(event, event.getSuggestedConfigurationFile());
         FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
         CapabilityManager.INSTANCE.register(VAPDataCache.VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
+        CapabilityManager.INSTANCE.register(ChunkRailMap.CKRailMap.class, new ChunkRailMap.Storage(), new ChunkRailMap.Callable());
         //
         MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
         REGISTERER = new AutoRegisterer(MODID);
@@ -74,7 +76,7 @@ public class FVTM {
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:seat"), SeatEntity.class, "fvtm:seat", 1993, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), GenericVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicletrailer"), GenericTrailerEntity.class, "fvtm:landvehicletrailer", 1995, this, 256, 1, false);
-        //EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicleEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), GenericLocomotiveEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, false);
         //EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railwagon"), RailWagonEntity.class, "fvtm:railwagon", 1997, this, 256, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 1, false);
         //EntityRegistry.registerModEntity(new ResourceLocation("fvtm:airvehicle"), AirVehicleEntity.class, "fvtm:airvehicle", 1999, this, 256, 1, false);
@@ -88,6 +90,7 @@ public class FVTM {
             //net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WaterVehicleEntity.class, RenderWaterVehicle::new);
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(GenericContainerEntity.class, RenderEmpty::new);
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSignEntity.class, RenderStreetSign::new);
+            net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailboundVehicleEntity.class, RenderGenericRailed::new);
             //
             MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
         }

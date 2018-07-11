@@ -64,9 +64,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-public class RailboundVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
+public abstract class RailboundVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
 
-	private VehicleData vehicledata;
+	protected VehicleData vehicledata;
 	public VehicleAxes axes;
 	protected VehicleAxes prevaxes;
 	public BogieEntity[] bogies;
@@ -230,7 +230,7 @@ public class RailboundVehicleEntity extends Entity implements VehicleEntity, IEn
 
 	@Override
 	public boolean isLocked(){
-		return false;
+		return vehicledata.isLocked();
 	}
 
 	@Override
@@ -631,6 +631,10 @@ public class RailboundVehicleEntity extends Entity implements VehicleEntity, IEn
         }
     }
     
+    public boolean isDrivenByPlayer(){
+    	return seats[0] != null && SeatEntity.isPassengerThePlayer((SeatEntity)seats[0]);
+    }
+    
     @Override
     public void onUpdate(){
         super.onUpdate();
@@ -706,7 +710,7 @@ public class RailboundVehicleEntity extends Entity implements VehicleEntity, IEn
         	toggletimer--;
         }
         //
-        boolean drivenByPlayer = false;//TODO isDrivenByPlayer();
+        boolean drivenByPlayer = isDrivenByPlayer();
         if(world.isRemote && !drivenByPlayer){
             if(serverPositionTransitionTicker > 0){
                 double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
@@ -732,41 +736,27 @@ public class RailboundVehicleEntity extends Entity implements VehicleEntity, IEn
             }
         }
         //TODO
-        /*if(this.vehicledata.getVehicle().isTrailerOrWagon() ? this.wheels.length > 2 : true){
-            if(hasEnoughFuel()){
-                wheelsAngle += throttle * 0.2F;
-            }
-            //
-            if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || vehicledata.getFuelTankContent() > 0) && vehicledata.getVehicle().getFMAttribute("max_positive_throttle") != 0){
-                throttle *= 0.98F;
-            }
-            this.onUpdateMovement();
-            //
-            if(wheels[0] != null && wheels[1] != null && wheels[2] != null && wheels[3] != null){
-                Vec3d front = new Vec3d((wheels[2].posX + wheels[3].posX) / 2F, (wheels[2].posY + wheels[3].posY) / 2F, (wheels[2].posZ + wheels[3].posZ) / 2F);
-                Vec3d back = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
-                Vec3d left = new Vec3d((wheels[0].posX + wheels[3].posX) / 2F, (wheels[0].posY + wheels[3].posY) / 2F, (wheels[0].posZ + wheels[3].posZ) / 2F);
-                Vec3d right = new Vec3d((wheels[1].posX + wheels[2].posX) / 2F, (wheels[1].posY + wheels[2].posY) / 2F, (wheels[1].posZ + wheels[2].posZ) / 2F);
-                //
-                double dx = front.x - back.x, dy = front.y - back.y, dz = front.z - back.z;
-                double drx = left.x - right.x, dry = left.y - right.y, drz = left.z - right.z;
-                double dxz = Math.sqrt(dx * dx + dz * dz);
-                double drxz = Math.sqrt(drx * drx + drz * drz);
-                //
-                double yaw = Math.atan2(dz, dx);
-                double pitch = -Math.atan2(dy, dxz);
-                double roll = 0F;
-                roll = -(float) Math.atan2(dry, drxz);
-                //
-                if(vehicledata.getVehicle().getDriveType().hasTracks()){
-                    yaw = (float) Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
-                }
-                axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
-            }
+        /*if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }*/
+        //
+        if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || vehicledata.getFuelTankContent() > 0) && vehicledata.getVehicle().getFMAttribute("max_positive_throttle") != 0){
+            throttle *= 0.98F;
         }
-        else{
-        	
-        }*/
+        this.onUpdateMovement();
+        //
+        if(bogies[0] != null && bogies[1] != null){
+            Vec3d front = bogies[1].getPositionVector();
+            Vec3d back = bogies[0].getPositionVector();
+            //Vec3d lr = new Vec3d((bogies[0].posX + bogies[1].posX) / 2F, (bogies[0].posY + bogies[1].posY) / 2F, (bogies[0].posZ + bogies[1].posZ) / 2F);
+            //
+            double dx = front.x - back.x, dy = front.y - back.y, dz = front.z - back.z;
+            double dxz = Math.sqrt(dx * dx + dz * dz);
+            //
+            double yaw = Math.atan2(dz, dx);
+            double pitch = -Math.atan2(dy, dxz);
+            double roll = 0F;
+            axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+        }
+        //
         vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
         //checkForCollisions();
         for(SeatEntity seat : seats){
@@ -786,7 +776,11 @@ public class RailboundVehicleEntity extends Entity implements VehicleEntity, IEn
         }
     }
 
-    //public abstract void onUpdateMovement();
+    private boolean isDriverInGM1(){
+    	return seats != null && seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode;
+	}
+
+	public abstract void onUpdateMovement();
     
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i){

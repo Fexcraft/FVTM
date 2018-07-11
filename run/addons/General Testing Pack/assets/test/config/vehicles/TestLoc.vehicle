@@ -1,0 +1,21 @@
+{
+    "RegistryName": "test:locomotive",
+    "Addon": "fvtm:test",
+    "FullName": "Test Locomotive",
+    "ModelFile": "net.fexcraft.mod.addons.test.models.Locomotive.class",
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "WheelPos":[
+        { "x": -40, "y": -10, "z": 0 },
+        { "x":  40, "y": -10, "z": 0 }
+    ],
+    "ConstructionLength": 6,
+    "ConstructionYOffSet": 12.5,
+    "ConstructionWheelOffset": 19.5,
+    "RequiredParts": [ ],
+    "PreInstalled":[
+		{ "part": "test:seats", "as": "seats" }
+	],
+	"VehicleType": "RAIL"
+}

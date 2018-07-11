@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = FMT.MODID, name = "Fex's Modelling Tool", dependencies = "required-after:fcl")
+@Mod(modid = FMT.MODID, name = "Fex's Modelling Tool", dependencies = "required-after:fcl", version = "1.0")
 public class FMT {
 	
 	@Mod.Instance(FMT.MODID)

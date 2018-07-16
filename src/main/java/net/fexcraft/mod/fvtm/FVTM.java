@@ -5,7 +5,6 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.ContainerStatusListener;
-import net.fexcraft.mod.fvtm.impl.caps.ChunkRailMap;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
@@ -60,7 +59,6 @@ public class FVTM {
         Config.initalize(event, event.getSuggestedConfigurationFile());
         FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
         CapabilityManager.INSTANCE.register(VAPDataCache.VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
-        CapabilityManager.INSTANCE.register(ChunkRailMap.CKRailMap.class, new ChunkRailMap.Storage(), new ChunkRailMap.Callable());
         //
         MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
         REGISTERER = new AutoRegisterer(MODID);

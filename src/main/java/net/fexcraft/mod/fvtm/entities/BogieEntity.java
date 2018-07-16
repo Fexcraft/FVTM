@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -15,11 +16,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BogieEntity extends MovementCalculationEntity implements IEntityAdditionalSpawnData {
 
     public VehicleEntity vehicle;
-
     @SideOnly(Side.CLIENT)
     public boolean foundveh;
     private int vehicleid;
     public int wheelid;
+    //
+    BlockPos lpos, pos;
+    Vec3d dest;
 
     public BogieEntity(World world){
         super(world);
@@ -27,12 +30,18 @@ public class BogieEntity extends MovementCalculationEntity implements IEntityAdd
         stepHeight = 1.1F;
     }
 
-    public BogieEntity(World world, VehicleEntity entity, int i){
+    public BogieEntity(World world, VehicleEntity entity, int i, BlockPos pos){
         this(world);
         vehicle = entity;
         vehicleid = entity.getEntity().getEntityId();
         wheelid = i;
         initPosition();
+        if(pos != null){
+        	lpos = this.pos = pos;
+        }
+        else{
+        	lpos = this.pos = new BlockPos(posX, posY, posZ);
+        }
     }
 
     @Override
@@ -136,5 +145,10 @@ public class BogieEntity extends MovementCalculationEntity implements IEntityAdd
     public void applyEntityCollision(Entity entity){
         return;
     }
+
+	public double moveAlongRails(double amount){
+		//
+		return 0;
+	}
 
 }

@@ -763,7 +763,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         }
         //
         super.setDead();
-        if(world.isRemote){
+        if(world.isRemote && camera != null){
             camera.setDead();
         }
         for(SeatEntity seat : seats){

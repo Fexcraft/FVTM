@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.blocks;
 
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.entities.RailLink;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -33,7 +32,7 @@ public class RailConnection extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta){
-		return new RailConnTile();
+		return new RailConnTile(world);
 	}
 	
 	public static class Item extends ItemBlock {
@@ -50,6 +49,11 @@ public class RailConnection extends BlockContainer {
 	        }
 	        IBlockState state = world.getBlockState(pos); Block block = state.getBlock(); ItemStack stack = player.getHeldItem(hand);
 	        if(block instanceof RailConnection){
+        		RailConnTile rct = (RailConnTile)world.getTileEntity(pos);
+        		if(rct != null && rct.connections.length >= 4){
+        			Print.chat(player, "&cTileEntity reached max allowed connections.");
+        	        return EnumActionResult.FAIL;
+        		}
 	        	if(stack.getTagCompound() == null){
 	        		stack.setTagCompound(new NBTTagCompound());
 	        	}
@@ -58,18 +62,16 @@ public class RailConnection extends BlockContainer {
 	        		stack.getTagCompound().removeTag("fvtm:railconn");
 	        		//Print.chat(player, "&7&oTrying to connect rails...");
 	        		RailConnTile tile0 = (RailConnTile)world.getTileEntity(pos0);
-	        		//RailConnTile tile = (RailConnTile)world.getTileEntity(pos);
+	        		RailConnTile tile = (RailConnTile)world.getTileEntity(pos);
 	        		if(tile0 == null){
 	        			Print.chat(player, "&cTileEntity at first connection point is NULL.");
 	        	        return EnumActionResult.FAIL;
 	        		}
-	        		/*if(tile == null){
+	        		if(tile == null){
 	        			Print.chat(player, "&cTileEntity at second connection point is NULL.");
 	        	        return EnumActionResult.FAIL;
-	        		}*/
-	        		RailLink link = new RailLink(pos0, pos);
-	        		tile0.addLink(link);
-	        		//tile.addLink(link);
+	        		}
+	        		tile0.addLink(pos);
 	        		Print.bar(player, "&7Connected&9!");
 	        	}
 	        	else{
@@ -110,6 +112,18 @@ public class RailConnection extends BlockContainer {
     @Override
     public boolean isOpaqueCube(IBlockState state){
         return false;
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state){
+        RailConnTile rct = (RailConnTile)world.getTileEntity(pos);
+        if(rct != null && rct.connections.length > 0){
+            for(BlockPos blkpos : rct.connections){
+            	RailConnTile tile = (RailConnTile)world.getTileEntity(blkpos);
+            	if(tile != null){ tile.delLink(pos); }
+            }
+        }
+        super.breakBlock(world, pos, state);
     }
 	
 }

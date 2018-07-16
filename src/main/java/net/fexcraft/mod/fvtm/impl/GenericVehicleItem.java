@@ -13,6 +13,7 @@ import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
+import net.fexcraft.mod.fvtm.api.rail.IRailProvider;
 import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
 import net.fexcraft.mod.fvtm.entities.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
@@ -250,8 +251,8 @@ public class GenericVehicleItem extends Item implements VehicleItem {
                     return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
                 }
                 case RAIL: {
-                    if(world.getBlockState(pos).getBlock() instanceof BlockLiquid){
-                        Print.chat(player, "Vehicle not placeable on water!");
+                    if(world.getTileEntity(pos) instanceof IRailProvider == false){
+                        Print.chat(player, "Only placeable directly on rail pieces.");
                         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
                     }
                     if(!world.isRemote){
@@ -259,7 +260,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
                     		//world.spawnEntity(new GenericTrailerEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
                     	}
                     	else{
-                    		world.spawnEntity(new GenericLocomotiveEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
+                    		world.spawnEntity(new GenericLocomotiveEntity(world, pos, player, data));
                     	}
                     }
                     break;

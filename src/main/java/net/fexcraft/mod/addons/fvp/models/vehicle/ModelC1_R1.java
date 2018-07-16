@@ -1033,6 +1033,14 @@ public class ModelC1_R1 extends VehicleModel {
 
         translateAll(0F, 0F, 0F);
         flipAll();
+        
+        for(ModelRendererTurbo turbo : body_door_open){
+        	turbo.rotateAngleY = -turbo.rotateAngleY;
+        }
+        for(ModelRendererTurbo turbo : body_door_open_colored_primary){
+        	turbo.rotateAngleY = -turbo.rotateAngleY;
+        }
+        
     }
 
 }

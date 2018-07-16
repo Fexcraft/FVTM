@@ -50,6 +50,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -103,27 +104,27 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     /**
      * From Constructor (Item)
      */
-    public RailboundVehicleEntity(World world, double x, double y, double z, EntityPlayer placer, VehicleData vehicleData){
+    public RailboundVehicleEntity(World world, BlockPos pos, EntityPlayer placer, VehicleData vehicleData){
         this(world, vehicleData);
         stepHeight = 1.0F;
-        setPosition(x, y, z);
+        setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         rotateYaw(placer.rotationYaw + 90F);
-        initVeh(vehicleData, false);
+        initVeh(pos, vehicleData, false);
     }
 
     /**
      * From Constructor (Center)
      */
-    public RailboundVehicleEntity(World world, double x, double y, double z, int placer, VehicleData data){
+    public RailboundVehicleEntity(World world, BlockPos pos, int placer, VehicleData data){
         this(world, data);
         stepHeight = 1.0F;
-        setPosition(x, y, z);
+        setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         rotateYaw((placer * 90f) + 90F);
-        initVeh(data, false);
+        initVeh(pos, data, false);
         Print.debugChat("SPAWNING");
     }
 
-    protected void initVeh(VehicleData type, boolean remote){
+	protected void initVeh(BlockPos pos, VehicleData type, boolean remote){
         seats = new SeatEntity[type.getSeats().size()];
         bogies = new BogieEntity[2];
         stepHeight = type.getVehicle().getFMAttribute("wheel_step_height");
@@ -141,6 +142,15 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         			}
         		}
         	}
+        }
+        //
+        if(remote && pos != null){
+            for(int i = 0; i < vehicledata.getWheelPos().size(); i++){
+                if(bogies[i] == null || !bogies[i].addedToChunk){
+                	bogies[i] = new BogieEntity(world, this, i, pos);
+                    world.spawnEntity(bogies[i]);
+                }
+            }
         }
     }
 
@@ -217,7 +227,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         prevRotationPitch = compound.getFloat("RotationPitch");
         prevRotationRoll = compound.getFloat("RotationRoll");
         axes = VehicleAxes.read(this, compound);
-        initVeh(vehicledata, false);
+        initVeh(null, vehicledata, false);
         Print.debug(compound.toString());
     }
 
@@ -266,7 +276,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             prevRotationYaw = axes.getYaw();
             prevRotationPitch = axes.getPitch();
             prevRotationRoll = axes.getRoll();
-            initVeh(vehicledata, true);
+            initVeh(null, vehicledata, true);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -652,7 +662,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             }
             for(int i = 0; i < vehicledata.getWheelPos().size(); i++){
                 if(bogies[i] == null || !bogies[i].addedToChunk){
-                	bogies[i] = new BogieEntity(world, this, i);
+                	bogies[i] = new BogieEntity(world, this, i, null);
                     world.spawnEntity(bogies[i]);
                 }
             }

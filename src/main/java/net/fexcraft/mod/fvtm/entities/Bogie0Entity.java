@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.entities;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.fvtm.api.Vehicle.MovementCalculationEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.blocks.RailConnTile;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +14,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BogieEntity extends MovementCalculationEntity implements IEntityAdditionalSpawnData {
+public class Bogie0Entity extends MovementCalculationEntity implements IEntityAdditionalSpawnData {
 
     public VehicleEntity vehicle;
     @SideOnly(Side.CLIENT)
@@ -21,26 +22,23 @@ public class BogieEntity extends MovementCalculationEntity implements IEntityAdd
     private int vehicleid;
     public int wheelid;
     //
-    BlockPos lpos, pos;
+    Vec3d lpos, pos;
     Vec3d dest;
 
-    public BogieEntity(World world){
+    public Bogie0Entity(World world){
         super(world);
         setSize(0.45F, 0.45F);
         stepHeight = 1.1F;
     }
 
-    public BogieEntity(World world, VehicleEntity entity, int i, BlockPos pos){
+    public Bogie0Entity(World world, VehicleEntity entity, int i, BlockPos pos){
         this(world);
         vehicle = entity;
         vehicleid = entity.getEntity().getEntityId();
         wheelid = i;
         initPosition();
         if(pos != null){
-        	lpos = this.pos = pos;
-        }
-        else{
-        	lpos = this.pos = new BlockPos(posX, posY, posZ);
+        	lpos = this.pos = RailConnTile.newVector(pos);
         }
     }
 
@@ -145,10 +143,32 @@ public class BogieEntity extends MovementCalculationEntity implements IEntityAdd
     public void applyEntityCollision(Entity entity){
         return;
     }
+    
+    //private double passed;
 
-	public double moveAlongRails(double amount){
-		//
+	/*public double moveAlongRails(double amount){
+		if(pos == null){ pos = findRail(); }
+		if(pos == null){ return 0; }
+		if(passed != lpos.subtract(pos).lengthVector()){
+			Vec3d newpos = lpos.add(pos.subtract(lpos).scale(amount));
+			this.posX = newpos.x; this.posY = newpos.y; this.posZ = newpos.z;
+			passed = newpos.lengthVector();
+		}
 		return 0;
-	}
+	}*/
+
+	/*private Vec3d findRail(){
+		if(vehicle instanceof RailboundVehicleEntity){
+			RailboundVehicleEntity veh = (RailboundVehicleEntity)vehicle;
+			if(veh._front != null && this.wheelid == 0){
+				return RailConnTile.newVector(veh._front);
+			}
+			if(veh._back != null && this.wheelid == 1){
+				return RailConnTile.newVector(veh._back);
+			}
+			if(lpos == null){ lpos = RailConnTile.newVector(veh.firstpos); }
+		}
+		return null;
+	}*/
 
 }

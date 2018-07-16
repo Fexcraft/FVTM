@@ -16,9 +16,9 @@ public class EngineLoopSound extends PositionedSound implements ITickableSound {
     public EngineLoopSound(SoundEvent soundIn, SoundCategory categoryIn, VehicleEntity entity){
         super(soundIn, categoryIn);
         this.entity = entity;
-        this.xPosF = (float) entity.getEntity().getPositionVector().x;
-        this.yPosF = (float) entity.getEntity().getPositionVector().y;
-        this.zPosF = (float) entity.getEntity().getPositionVector().z;
+        this.xPosF = (float)entity.getEntity().getPositionVector().x;
+        this.yPosF = (float)entity.getEntity().getPositionVector().y;
+        this.zPosF = (float)entity.getEntity().getPositionVector().z;
         this.repeat = true;
         this.volume = entity.getVehicleData().getPart("engine").getPart().getSoundVolume("engine_running");
         this.pitch = entity.getVehicleData().getPart("engine").getPart().getSoundPitch("engine_running");
@@ -28,11 +28,11 @@ public class EngineLoopSound extends PositionedSound implements ITickableSound {
     public void update(){
         done = entity == null || entity.getEntity() == null || entity.getEntity().isDead ? true : !entity.getVehicleData().getPart("engine").getAttributeData(EngineAttribute.EngineAttributeData.class).isOn();
         if(done){
-            ((UnboundVehicleEntity) entity).engineloop = null;
+            ((UnboundVehicleEntity)entity).engineloop = null;
         }
-        this.xPosF = (float) entity.getEntity().getPositionVector().x;
-        this.yPosF = (float) entity.getEntity().getPositionVector().y;
-        this.zPosF = (float) entity.getEntity().getPositionVector().z;
+        this.xPosF = (float)entity.getEntity().getPositionVector().x;
+        this.yPosF = (float)entity.getEntity().getPositionVector().y;
+        this.zPosF = (float)entity.getEntity().getPositionVector().z;
     }
 
     @Override

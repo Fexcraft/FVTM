@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
+import net.fexcraft.mod.fvtm.blocks.RailConnTile;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.EngineLoopSound;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
@@ -70,7 +71,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	protected VehicleData vehicledata;
 	public VehicleAxes axes;
 	protected VehicleAxes prevaxes;
-	public BogieEntity[] bogies;
+	//public BogieEntity[] bogies;
 	public SeatEntity[] seats;
     protected TreeMap<String, ContainerEntity> containers;
     protected double throttle;
@@ -84,6 +85,9 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
     public int serverPositionTransitionTicker, consize = -1;
+    //
+    public BlockPos lastpos, currentpos;
+    public double passed;
     
 	
     public RailboundVehicleEntity(World worldIn){
@@ -126,7 +130,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 
 	protected void initVeh(BlockPos pos, VehicleData type, boolean remote){
         seats = new SeatEntity[type.getSeats().size()];
-        bogies = new BogieEntity[2];
+        //bogies = new BogieEntity[2];
         stepHeight = type.getVehicle().getFMAttribute("wheel_step_height");
         vehicledata.getScripts().forEach((script) -> script.onCreated(this, vehicledata));
         if(vehicledata.getContainerHolders().size() > 0){
@@ -143,14 +147,88 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         		}
         	}
         }
-        //
-        if(remote && pos != null){
-            for(int i = 0; i < vehicledata.getWheelPos().size(); i++){
-                if(bogies[i] == null || !bogies[i].addedToChunk){
-                	bogies[i] = new BogieEntity(world, this, i, pos);
-                    world.spawnEntity(bogies[i]);
-                }
-            }
+        if(pos == null){
+        	return;
+        }
+        lastpos = pos;
+        if(world.getTileEntity(pos) != null){
+        	RailConnTile tile = (RailConnTile)world.getTileEntity(pos);
+        	currentpos = tile.connections.length > 0 ? tile.connections[0] : pos;
+        }
+        else{
+        	currentpos = pos;
+        }
+    }
+
+	@Override
+    protected void readEntityFromNBT(NBTTagCompound compound){
+        if(vehicledata == null){
+            vehicledata = Resources.getVehicleData(compound);
+        }
+        else{
+            vehicledata.readFromNBT(compound);
+        }
+        prevRotationYaw = compound.getFloat("RotationYaw");
+        prevRotationPitch = compound.getFloat("RotationPitch");
+        prevRotationRoll = compound.getFloat("RotationRoll");
+        axes = VehicleAxes.read(this, compound);
+        lastpos = BlockPos.fromLong(compound.getLong("LastRail"));
+        currentpos = BlockPos.fromLong(compound.getLong("CurrentRail"));
+        passed = compound.getDouble("PassedDistance");
+        initVeh(null, vehicledata, false);
+        Print.debug(compound.toString());
+    }
+
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound compound){
+        compound = vehicledata.writeToNBT(compound);
+        axes.write(this, compound);
+        if(lastpos != null){
+        	compound.setLong("LastRail", lastpos.toLong());
+        }
+        if(currentpos != null){
+        	compound.setLong("CurrentRail", currentpos.toLong());
+        }
+        compound.setDouble("PassedDistance", passed);
+        Print.debug(compound.toString());
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer){
+        NBTTagCompound compound = new NBTTagCompound();
+        if(getEntityAtFront() != null){
+            compound.setInteger("FrontEntityId", getEntityAtFront().getEntity().getEntityId());
+        }
+        if(getEntityAtRear() != null){
+            compound.setInteger("RearEntityId", getEntityAtFront().getEntity().getEntityId());
+        }
+        if(lastpos != null){
+        	compound.setLong("LastRail", lastpos.toLong());
+        }
+        if(currentpos != null){
+        	compound.setLong("CurrentRail", currentpos.toLong());
+        }
+        compound.setDouble("PassedDistance", passed);
+        ByteBufUtils.writeTag(buffer, axes.write(this, vehicledata.writeToNBT(compound)));
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf buffer){
+        try{
+            NBTTagCompound compound = ByteBufUtils.readTag(buffer);
+            vehicledata = Resources.getVehicleData(compound);
+            axes = VehicleAxes.read(this, compound);
+            prevRotationYaw = axes.getYaw();
+            prevRotationPitch = axes.getPitch();
+            prevRotationRoll = axes.getRoll();
+            initVeh(null, vehicledata, true);
+            lastpos = BlockPos.fromLong(compound.getLong("LastRail"));
+            currentpos = BlockPos.fromLong(compound.getLong("CurrentRail"));
+            passed = compound.getDouble("PassedDistance");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            Print.debug("Failed to receive additional spawn data for this vehicle!");
         }
     }
 
@@ -215,29 +293,6 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         //
     }
 
-    @Override
-    protected void readEntityFromNBT(NBTTagCompound compound){
-        if(vehicledata == null){
-            vehicledata = Resources.getVehicleData(compound);
-        }
-        else{
-            vehicledata.readFromNBT(compound);
-        }
-        prevRotationYaw = compound.getFloat("RotationYaw");
-        prevRotationPitch = compound.getFloat("RotationPitch");
-        prevRotationRoll = compound.getFloat("RotationRoll");
-        axes = VehicleAxes.read(this, compound);
-        initVeh(null, vehicledata, false);
-        Print.debug(compound.toString());
-    }
-
-    @Override
-    protected void writeEntityToNBT(NBTTagCompound compound){
-        compound = vehicledata.writeToNBT(compound);
-        axes.write(this, compound);
-        Print.debug(compound.toString());
-    }
-
 	@Override
 	public boolean isLocked(){
 		return vehicledata.isLocked();
@@ -254,35 +309,6 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-    @Override
-    public void writeSpawnData(ByteBuf buffer){
-        NBTTagCompound compound = new NBTTagCompound();
-        if(getEntityAtFront() != null){
-            compound.setInteger("FrontEntityId", getEntityAtFront().getEntity().getEntityId());
-        }
-        if(getEntityAtRear() != null){
-            compound.setInteger("RearEntityId", getEntityAtFront().getEntity().getEntityId());
-        }
-        ByteBufUtils.writeTag(buffer, axes.write(this, vehicledata.writeToNBT(compound)));
-    }
-
-    @Override
-    public void readSpawnData(ByteBuf buffer){
-        try{
-            NBTTagCompound compound = ByteBufUtils.readTag(buffer);
-            vehicledata = Resources.getVehicleData(compound);
-            axes = VehicleAxes.read(this, compound);
-            prevRotationYaw = axes.getYaw();
-            prevRotationPitch = axes.getPitch();
-            prevRotationRoll = axes.getRoll();
-            initVeh(null, vehicledata, true);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            Print.debug("Failed to receive additional spawn data for this vehicle!");
-        }
-    }
 
 	@Override
 	public VehicleData getVehicleData(){
@@ -306,7 +332,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 
 	@Override
 	public MovementCalculationEntity[] getWheels(){
-		return bogies;
+		return null;//bogies;
 	}
 
 	@Override
@@ -319,20 +345,28 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         if(seat != 0 && key != 6 && key != 11){
             return false;
         }
-        if(world.isRemote && key >= 6){
+        if(world.isRemote && key != 5){
             PacketHandler.getInstance().sendToServer(new PacketVehicleKeyPress(key));
             return true;
         }
         switch(key){
             case 0: {//Accelerate;
-                throttle += 0.005F;
+            	if(toggletimer > 0){
+            		return true;
+            	}
+            	toggletimer = 4;
+                throttle += 0.05F;
                 if(throttle > 1F){
                     throttle = 1F;
                 }
                 return true;
             }
             case 1: {//Decelerate
-                throttle -= 0.005F;
+            	if(toggletimer > 0){
+            		return true;
+            	}
+            	toggletimer = 4;
+                throttle -= 0.05F;
                 if(throttle < -1F){
                     throttle = -1F;
                 }
@@ -350,6 +384,10 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 return true;
             }*/
             case 4: {//Brake
+            	if(toggletimer > 0){
+            		return true;
+            	}
+            	toggletimer = 4;
                 throttle *= 0.8F;
                 if(onGround){
                     motionX *= 0.8F;
@@ -480,9 +518,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         motionY = motY;
         motionZ = motZ;
         angvel = new Vec3d(avelx, avely, avelz);
-        if(!(seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer)){
-            this.throttle = throttle;
-        }
+        this.throttle = throttle;
         //
         //wheelsYaw = steeringYaw;
 	}
@@ -538,11 +574,11 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 seat.setDead();
             }
         }
-        for(BogieEntity wheel : bogies){
+        /*for(BogieEntity wheel : bogies){
             if(wheel != null){
                 wheel.setDead();
             }
-        }
+        }*/
         if(containers != null){
         	containers.values().forEach(con -> {
         		con.getEntity().setDead();
@@ -621,10 +657,10 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         if(ticksExisted > 1){
             return;
         }
-        if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
+        /*if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
             //
         }
-        else{
+        else{*/
             if(sync){
                 serverPositionTransitionTicker = posRotationIncrements + 5;
             }
@@ -638,7 +674,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             }
             serverPosX = x; serverPosY = y; serverPosZ = z;
             serverYaw = yaw; serverPitch = pitch;
-        }
+        /*}*/
     }
     
     public boolean isDrivenByPlayer(){
@@ -660,12 +696,12 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                     world.spawnEntity(seats[i]);
                 }
             }
-            for(int i = 0; i < vehicledata.getWheelPos().size(); i++){
+            /*for(int i = 0; i < vehicledata.getWheelPos().size(); i++){
                 if(bogies[i] == null || !bogies[i].addedToChunk){
-                	bogies[i] = new BogieEntity(world, this, i, null);
+                	bogies[i] = new BogieEntity(world, this, i, firstpos);
                     world.spawnEntity(bogies[i]);
                 }
-            }
+            }*/
             if(vehicledata.getVehicle().isTrailerOrWagon()){
             	//
             }
@@ -708,7 +744,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         prevRotationRoll = axes.getRoll();
         prevaxes = axes.clone();
         this.ticksExisted++;
-        if(this.ticksExisted > Integer.MAX_VALUE){
+        if(this.ticksExisted >= Integer.MAX_VALUE){
             this.ticksExisted = 0;
         }
         //
@@ -720,8 +756,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         	toggletimer--;
         }
         //
-        boolean drivenByPlayer = isDrivenByPlayer();
-        if(world.isRemote && !drivenByPlayer){
+        //boolean drivenByPlayer = isDrivenByPlayer();
+        if(world.isRemote/* && !drivenByPlayer*/){
             if(serverPositionTransitionTicker > 0){
                 double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
                 double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
@@ -738,27 +774,28 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 //return;
             }
         }
-        for(BogieEntity wheel : bogies){
+        /*for(BogieEntity wheel : bogies){
             if(wheel != null && world != null){
                 wheel.prevPosX = wheel.posX;
                 wheel.prevPosY = wheel.posY;
                 wheel.prevPosZ = wheel.posZ;
             }
-        }
+        }*/
         //TODO
         /*if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }*/
         //
-        if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || vehicledata.getFuelTankContent() > 0) && vehicledata.getVehicle().getFMAttribute("max_positive_throttle") != 0){
+        if((Config.VEHICLE_NEEDS_FUEL && vehicledata.getFuelTankContent() <= 0) || vehicledata.getVehicle().getFMAttribute("max_positive_throttle") <= 0){
             throttle *= 0.98F;
         }
-        this.onUpdateMovement();
+        if(!world.isRemote){
+        	this.onUpdateMovement();
+        }
         //
-        if(bogies[0] != null && bogies[1] != null){
-            Vec3d front = bogies[1].getPositionVector();
-            Vec3d back = bogies[0].getPositionVector();
-            //Vec3d lr = new Vec3d((bogies[0].posX + bogies[1].posX) / 2F, (bogies[0].posY + bogies[1].posY) / 2F, (bogies[0].posZ + bogies[1].posZ) / 2F);
-            //
-            double dx = front.x - back.x, dy = front.y - back.y, dz = front.z - back.z;
+        Vec3d thiz = this.getPositionVector();
+        _front = calcBogiePos(1, thiz);
+        _back = calcBogiePos(0, thiz);
+        if(_front != null && _back != null){
+            double dx = _front.x - _back.x, dy = _front.y - _back.y, dz = _front.z - _back.z;
             double dxz = Math.sqrt(dx * dx + dz * dz);
             //
             double yaw = Math.atan2(dz, dx);
@@ -774,23 +811,56 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 seat.updatePosition();
             }
         }
-        if(drivenByPlayer){
+        /*if(drivenByPlayer){
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
             serverPosX = posX;
             serverPosY = posY;
             serverPosZ = posZ;
             serverYaw = axes.getYaw();
-        }
+        }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
             PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
         }
     }
+    
+    //temp
+    public Vec3d _front, _back;
 
-    private boolean isDriverInGM1(){
-    	return seats != null && seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode;
+	private Vec3d calcBogiePos(int i, Vec3d own){
+		double rel = vehicledata.getWheelPos().get(i).to16FloatX();
+		Vec3d dest = getNextPos(rel, own, i == 1 ? currentpos : lastpos, i == 0 ? currentpos : lastpos);
+		return own.addVector((dest.x - own.x) * rel, (dest.y - own.y) * rel, (dest.z - own.z) * rel);
+	}
+	
+	public Vec3d getNextPos(double dis, Vec3d own, BlockPos curr, BlockPos last){
+		Vec3d dest = newVector(curr);
+		while(dis > own.distanceTo(dest)){
+			dis -= own.distanceTo(dest);
+			if(dis <= 0.001){
+				return dest;
+			}
+			else{
+				RailConnTile tile = (RailConnTile)world.getTileEntity(curr);
+				if(tile == null){ return dest; }
+				else{
+					BlockPos las = curr; curr = tile.getNext(curr, last);
+					if(curr.equals(las)){ return dest; }
+					last = las; dest = newVector(curr);
+				}
+			}
+		}
+		return dest;
 	}
 
 	public abstract void onUpdateMovement();
+	
+	private Vec3d newVector(BlockPos pos){
+		return RailConnTile.newVector(pos);
+	}
+
+	private boolean isDriverInGM1(){
+    	return seats != null && seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode;
+	}
     
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i){

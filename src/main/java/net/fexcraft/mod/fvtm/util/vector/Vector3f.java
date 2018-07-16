@@ -34,6 +34,8 @@ package net.fexcraft.mod.fvtm.util.vector;
 import java.io.Serializable;
 import java.nio.FloatBuffer;
 
+import net.minecraft.util.math.BlockPos;
+
 /**
  *
  * Holds a 3-tuple vector.
@@ -68,7 +70,15 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
         set(x, y, z);
     }
 
-    /* (non-Javadoc)
+    public Vector3f(BlockPos pos){
+    	this(pos, 0.5f);
+	}
+
+    public Vector3f(BlockPos pos, float off){
+    	set(pos.getX() + off, pos.getY() + off, pos.getZ() + off);
+	}
+
+	/* (non-Javadoc)
 	 * @see org.lwjgl.util.vector.WritableVector2f#set(float, float)
      */
     public void set(float x, float y){

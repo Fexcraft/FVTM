@@ -150,13 +150,13 @@ public class RailConnTile extends TileEntity implements IPacketReceiver<PacketTi
 		if(current == null){
 			return connections.length == 0 ? pos : connections[0];
 		}
+		if(connections.length == 2){
+			return connections[0].equals(previous) ? connections[1] : connections[0];
+		}
 		for(int i = 0; i < connections.length; i++){
 			if(!connections[i].equals(current)){
 				switch(connections.length){
 					case 1:{
-						return connections[i];
-					}
-					case 2:{
 						return connections[i];
 					}
 					case 3:{

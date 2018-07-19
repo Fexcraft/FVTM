@@ -100,10 +100,7 @@ public class RailConnTile extends TileEntity implements IPacketReceiver<PacketTi
 			links[i] = connections[i];
 		}
 		links[connections.length] = newlink; connections = links;
-		//
-		if(!world.isRemote){
-			ApiUtil.sendTileEntityUpdatePacket(world, pos, Print.debugR(this.writeToNBT(new NBTTagCompound())));
-		}
+		this.update();
 	}
 
 	public void delLink(BlockPos pos){
@@ -126,9 +123,7 @@ public class RailConnTile extends TileEntity implements IPacketReceiver<PacketTi
 				}
 				connections = arr;
 			}
-			if(!world.isRemote){
-				ApiUtil.sendTileEntityUpdatePacket(world, pos, Print.debugR(this.writeToNBT(new NBTTagCompound())));
-			}
+			this.update();
 		}
 	}
 	
@@ -150,42 +145,52 @@ public class RailConnTile extends TileEntity implements IPacketReceiver<PacketTi
 		if(current == null){
 			return connections.length == 0 ? pos : connections[0];
 		}
-		if(connections.length == 2){
-			return connections[0].equals(previous) ? connections[1] : connections[0];
-		}
-		for(int i = 0; i < connections.length; i++){
-			if(!connections[i].equals(current)){
-				switch(connections.length){
-					case 1:{
-						return connections[i];
-					}
-					case 3:{
-						if(i == 0 || (connections[1].equals(previous) && !connections[2].equals(previous))){
-							return connections[0];
-						}
-						else{
-							return world.isBlockPowered(pos) ? connections[2] : connections[1];
-						}
-					}
-					case 4:{
-						if(i == 0 && connections[1].equals(previous)){
-							return connections[0];
-						}
-						if(i == 1 && connections[0].equals(previous)){
-							return connections[1];
-						}
-						if(i == 2 && connections[3].equals(previous)){
-							return connections[2];
-						}
-						if(i == 3 && connections[2].equals(previous)){
-							return connections[3];
-						}
-						continue;
-					}
+		switch(connections.length){
+			case 0: { return pos; }
+			case 1: { return connections[0].equals(previous) ? pos : connections[0]; }
+			case 2: { return connections[0].equals(previous) ? connections[1] : connections[0]; }
+			case 3: {
+				if(connections[0].equals(previous)){
+					return world.isBlockPowered(pos) ? connections[2] : connections[1];
+				}
+				else{
+					return connections[0];
 				}
 			}
+			case 4: {
+				if(connections[0].equals(current) && connections[1].equals(previous)){
+					return connections[0];
+				}
+				if(connections[1].equals(current) && connections[0].equals(previous)){
+					return connections[1];
+				}
+				if(connections[2].equals(current)&& connections[3].equals(previous)){
+					return connections[2];
+				}
+				if(connections[3].equals(current) && connections[2].equals(previous)){
+					return connections[3];
+				}
+			}
+			default: return null;//This shouldn't happen usually, so let's cause a null-pointer.
 		}
-		return pos;
+	}
+
+	public void reset(){
+		RailConnTile tile = null;
+		for(BlockPos pos : connections){
+			if((tile = (RailConnTile)world.getTileEntity(pos)) != null){
+				tile.delLink(this.pos);
+				tile.update();
+			}
+		}
+		connections = new BlockPos[0];
+		this.update();
+	}
+
+	private void update(){
+		if(world != null && !world.isRemote){
+			ApiUtil.sendTileEntityUpdatePacket(world, pos, Print.debugR(this.writeToNBT(new NBTTagCompound())));
+		}
 	}
 
 }

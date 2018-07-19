@@ -69,10 +69,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 public abstract class UnboundVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
-
-    //Obsolete?
-    @SideOnly(Side.CLIENT)
-    public Entity camera;
+	
     protected boolean sync;
     //
     protected VehicleData vehicledata;
@@ -541,14 +538,6 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
 	}
 
-	@Override
-    public Entity getCamera(){
-        if(Static.side().isClient()){
-            return null;
-        }
-        return camera;
-    }
-
     @Override
     public double getThrottle(){
         return throttle;
@@ -763,9 +752,6 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         }
         //
         super.setDead();
-        if(world.isRemote && camera != null){
-            camera.setDead();
-        }
         for(SeatEntity seat : seats){
             if(seat != null){
                 seat.setDead();

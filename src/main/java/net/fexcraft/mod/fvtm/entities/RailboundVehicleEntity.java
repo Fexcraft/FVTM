@@ -87,6 +87,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     public int serverPositionTransitionTicker, consize = -1;
     //
     public BlockPos lastpos, currentpos;
+    public BlockPos llp, lcp;
     public double passed;
     
 	
@@ -482,11 +483,6 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	}
 
 	@Override
-	public Entity getCamera(){
-		return null;
-	}
-
-	@Override
 	public double getThrottle(){
 		return throttle;
 	}
@@ -521,6 +517,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         this.throttle = throttle;
         //
         //wheelsYaw = steeringYaw;
+        this.updateRotation();
 	}
 
 	@Override
@@ -789,19 +786,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         }
         if(!world.isRemote){
         	this.onUpdateMovement();
-        }
-        //
-        Vec3d thiz = this.getPositionVector();
-        _front = calcBogiePos(1, thiz);
-        _back = calcBogiePos(0, thiz);
-        if(_front != null && _back != null){
-            double dx = _front.x - _back.x, dy = _front.y - _back.y, dz = _front.z - _back.z;
-            double dxz = Math.sqrt(dx * dx + dz * dz);
-            //
-            double yaw = Math.atan2(dz, dx);
-            double pitch = -Math.atan2(dy, dxz);
-            double roll = 0F;
-            axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+        	this.updateRotation();
         }
         //
         vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
@@ -822,41 +807,65 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
         }
     }
+	
+	private void updateRotation(){
+        Vec3d thiz = this.getPositionVector();
+        _front = calcBogiePos(1, thiz);
+        _back = calcBogiePos(0, thiz);
+        if(_front != null && _back != null){
+            double dx = _front.x - _back.x, dy = _front.y - _back.y, dz = _front.z - _back.z;
+            double dxz = Math.sqrt(dx * dx + dz * dz);
+            //
+            double yaw = Math.atan2(dz, dx);
+            double pitch = -Math.atan2(dy, dxz);
+            double roll = 0F;
+            axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+        }
+	}
     
     //temp
     public Vec3d _front, _back;
 
 	private Vec3d calcBogiePos(int i, Vec3d own){
-		double rel = vehicledata.getWheelPos().get(i).to16FloatX();
-		Vec3d dest = getNextPos(rel, own, i == 1 ? currentpos : lastpos, i == 0 ? currentpos : lastpos);
-		return own.addVector((dest.x - own.x) * rel, (dest.y - own.y) * rel, (dest.z - own.z) * rel);
+		return getNextPos(vehicledata.getWheelPos().get(i).to16FloatX(), own, i == 1 ? currentpos : lastpos, i == 0 ? currentpos : lastpos);
 	}
 	
-	public Vec3d getNextPos(double dis, Vec3d own, BlockPos curr, BlockPos last){
-		Vec3d dest = newVector(curr);
-		while(dis > own.distanceTo(dest)){
-			dis -= own.distanceTo(dest);
-			if(dis <= 0.001){
-				return dest;
-			}
+	public Vec3d getNextPos(double dis, Vec3d core, BlockPos curr, BlockPos last){
+		dis = Math.abs(dis); Vec3d dest = newVector(curr), own = new Vec3d(core.x, core.y, core.z);
+		while(Double.compare(dis, distance(own, dest)) >= 0){
+			dis -= distance(own, dest);
+			if(dis <= 0.001){ break; }
 			else{
 				RailConnTile tile = (RailConnTile)world.getTileEntity(curr);
-				if(tile == null){ return dest; }
+				if(tile == null){ break; }
 				else{
-					BlockPos las = curr; curr = tile.getNext(curr, last);
-					if(curr.equals(las)){ return dest; }
-					last = las; dest = newVector(curr);
+					BlockPos las = new BlockPos(curr);
+					curr = tile.getNext(curr, last);
+					if(curr.equals(las)){ break; }
+					last = las; own = newVector(last); dest = newVector(curr);
 				}
 			}
 		}
-		return dest;
+    	dest = direction(dest.x - own.x, dest.y - own.y, dest.z - own.z);
+		return new Vec3d(own.x + (dest.x * dis), own.y + (dest.y * dis), own.z + (dest.z * dis));
 	}
 
 	public abstract void onUpdateMovement();
 	
-	private Vec3d newVector(BlockPos pos){
+	protected Vec3d newVector(BlockPos pos){
 		return RailConnTile.newVector(pos);
 	}
+	
+	/** GD-SO **/
+    public static double length(double x, double y, double z){
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+    public static double distance(Vec3d first, Vec3d second){
+        return length(second.x - first.x, second.y - first.y, second.z - first.z);
+    }
+    public static Vec3d direction(double x, double y, double z){
+    	double l = length(x, y, z); return new Vec3d(x / l, y / l, z / l);
+    }
 
 	private boolean isDriverInGM1(){
     	return seats != null && seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode;
@@ -1019,6 +1028,11 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                         this.getEntityAtRear().getVehicleData().setLightsState(pkt.nbt.getInteger("lightsstate"));
                     }
                     break;
+                }
+                case "direction_update":{
+                	lastpos = BlockPos.fromLong(pkt.nbt.getLong("last_pos"));
+                	currentpos = BlockPos.fromLong(pkt.nbt.getLong("current_pos"));
+                	break;
                 }
             }
         }

@@ -80,7 +80,7 @@ public class GuiVehicleController extends GuiScreen {
             case 63: {
                 mc.gameSettings.thirdPersonView = (mc.gameSettings.thirdPersonView + 1) % 3;
                 if(mc.gameSettings.thirdPersonView == 1){
-                    mc.setRenderViewEntity(seat.getVehicle().getCamera() == null ? mc.player : seat.getVehicle().getCamera());
+                    mc.setRenderViewEntity(mc.player);
                 }
                 else{
                     mc.setRenderViewEntity(mc.player);

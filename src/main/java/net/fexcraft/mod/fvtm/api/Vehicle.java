@@ -228,8 +228,6 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
         public boolean onKeyPress(int key, int seat, EntityPlayer player);
 
-        public Entity getCamera();
-
         public double getThrottle();
 
         public void setThrottle(double newthr);

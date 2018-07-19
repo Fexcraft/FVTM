@@ -50,6 +50,10 @@ public class RailConnection extends BlockContainer {
 	        IBlockState state = world.getBlockState(pos); Block block = state.getBlock(); ItemStack stack = player.getHeldItem(hand);
 	        if(block instanceof RailConnection){
         		RailConnTile rct = (RailConnTile)world.getTileEntity(pos);
+        		if(rct != null && player.isSneaking()){
+        			rct.reset(); Print.chat(player, "&cResetting...");
+        			return EnumActionResult.SUCCESS;
+        		}
         		if(rct != null && rct.connections.length >= 4){
         			Print.chat(player, "&cTileEntity reached max allowed connections.");
         	        return EnumActionResult.FAIL;

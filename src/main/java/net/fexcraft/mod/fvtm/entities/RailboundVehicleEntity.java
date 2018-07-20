@@ -749,12 +749,9 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             this.setDead();
             return;
         }
-        if(toggletimer > 0){
-        	toggletimer--;
-        }
+        if(toggletimer > 0){ toggletimer--; }
         //
-        //boolean drivenByPlayer = isDrivenByPlayer();
-        if(world.isRemote/* && !drivenByPlayer*/){
+        if(world.isRemote){
             if(serverPositionTransitionTicker > 0){
                 double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
                 double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
@@ -771,38 +768,32 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 //return;
             }
         }
-        /*for(BogieEntity wheel : bogies){
-            if(wheel != null && world != null){
-                wheel.prevPosX = wheel.posX;
-                wheel.prevPosY = wheel.posY;
-                wheel.prevPosZ = wheel.posZ;
-            }
-        }*/
-        //TODO
-        /*if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }*/
+        //TODO if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }
         //
         if((Config.VEHICLE_NEEDS_FUEL && vehicledata.getFuelTankContent() <= 0) || vehicledata.getVehicle().getFMAttribute("max_positive_throttle") <= 0){
             throttle *= 0.98F;
         }
         if(!world.isRemote){
-        	this.onUpdateMovement();
+        	this.onUpdateMovement(0f);
         	this.updateRotation();
+        	//
+            if(llp == null || lcp == null){ llp = lastpos; lcp = currentpos; }
+        	if(!llp.equals(lastpos) || !lcp.equals(currentpos)){
+        		NBTTagCompound compound = new NBTTagCompound();
+        		compound.setString("task", "direction_update");
+        		compound.setLong("last_pos", lastpos.toLong());
+        		compound.setLong("current_pos", currentpos.toLong());
+        		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
+        	}
         }
         //
         vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
-        //checkForCollisions();
+        //this.updateCollisions();
         for(SeatEntity seat : seats){
             if(seat != null){
                 seat.updatePosition();
             }
         }
-        /*if(drivenByPlayer){
-            PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
-            serverPosX = posX;
-            serverPosY = posY;
-            serverPosZ = posZ;
-            serverYaw = axes.getYaw();
-        }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
             PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
         }
@@ -850,7 +841,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 		return new Vec3d(own.x + (dest.x * dis), own.y + (dest.y * dis), own.z + (dest.z * dis));
 	}
 
-	public abstract void onUpdateMovement();
+	public abstract void onUpdateMovement(double f);
 	
 	protected Vec3d newVector(BlockPos pos){
 		return RailConnTile.newVector(pos);

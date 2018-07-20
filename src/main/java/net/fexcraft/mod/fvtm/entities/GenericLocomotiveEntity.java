@@ -6,9 +6,7 @@ import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.RailConnTile;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.lib.util.common.ApiUtil;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -24,7 +22,7 @@ public class GenericLocomotiveEntity extends RailboundVehicleEntity {
 	}
 
 	@Override
-	public void onUpdateMovement(){
+	public void onUpdateMovement(double amount){
         boolean canThrustCreatively = !Config.VEHICLE_NEEDS_FUEL || (seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode);
         boolean consumed = false;
         Part.PartData enginepart = vehicledata.getPart("engine");
@@ -63,14 +61,6 @@ public class GenericLocomotiveEntity extends RailboundVehicleEntity {
         	this.posX = dest.x; this.posY = dest.y; this.posZ = dest.z;
         	this.prevPosX = this.posX; this.prevPosY = this.posY; this.prevPosZ = this.posZ;
         }
-        if(llp == null || lcp == null){ llp = lastpos; lcp = currentpos; }
-    	if(!llp.equals(lastpos) || !lcp.equals(currentpos)){
-    		NBTTagCompound compound = new NBTTagCompound();
-    		compound.setString("task", "direction_update");
-    		compound.setLong("last_pos", lastpos.toLong());
-    		compound.setLong("current_pos", currentpos.toLong());
-    		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
-    	}
 	}
 	
 }

@@ -32,7 +32,6 @@ minecraft {
 
 dependencies {
     compile project(':FCL')
-    //runtime fileTree(dir: 'libs', include: 'ToughAsNails-1.12.2-3.1.0.115-universal.jar')
     compile "com.github.glitchfiend.biomesoplenty:ToughAsNails:1.12.2-3.1.0.116:deobf"
 }
 

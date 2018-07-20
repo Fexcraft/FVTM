@@ -75,7 +75,7 @@ public class FVTM {
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), GenericVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicletrailer"), GenericTrailerEntity.class, "fvtm:landvehicletrailer", 1995, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), GenericLocomotiveEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, false);
-        //EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railwagon"), RailWagonEntity.class, "fvtm:railwagon", 1997, this, 256, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railwagon"), GenericWagonEntity.class, "fvtm:railwagon", 1997, this, 256, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 1, false);
         //EntityRegistry.registerModEntity(new ResourceLocation("fvtm:airvehicle"), AirVehicleEntity.class, "fvtm:airvehicle", 1999, this, 256, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:containerholder"), GenericContainerEntity.class, "fvtm:containerholder", 2000, this, 256, 1, false);

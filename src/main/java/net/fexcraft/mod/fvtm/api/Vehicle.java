@@ -299,7 +299,7 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         }
 
         public boolean isRailVehicle(){
-            return this == LAND;
+            return this == RAIL;
         }
 
     }

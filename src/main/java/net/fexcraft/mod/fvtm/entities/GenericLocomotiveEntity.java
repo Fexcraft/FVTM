@@ -4,14 +4,12 @@ import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.blocks.RailConnTile;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class GenericLocomotiveEntity extends RailboundVehicleEntity {
+public class GenericLocomotiveEntity extends GenericWagonEntity {
 
 	public GenericLocomotiveEntity(World world){
 		super(world);
@@ -32,35 +30,11 @@ public class GenericLocomotiveEntity extends RailboundVehicleEntity {
         }
         double vel = 0d;
         if(enginepart != null && (canThrustCreatively || consumed)){//TODO multi-engine support
-        	vel = 0.2f * throttle * (throttle > 0 ? vehicledata.getVehicle().getFMAttribute("max_positive_throttle") : vehicledata.getVehicle().getFMAttribute("max_negative_throttle"));
+        	vel = /*0.2f **/ throttle * (throttle > 0 ? vehicledata.getVehicle().getFMAttribute("max_positive_throttle") : vehicledata.getVehicle().getFMAttribute("max_negative_throttle"));
         	vel *= vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
         }
-        if(vel != 0){
-        	BlockPos current = throttle > 0 ? currentpos : lastpos;
-        	BlockPos last    = throttle > 0 ? lastpos : currentpos;
-        	Vec3d own = this.getPositionVector(), dest = newVector(current);
-        	while(Double.compare(vel, distance(own, dest)) >= 0){
-        		vel -= distance(own, dest);
-        		if(vel < 0.001d){ break; }
-        		RailConnTile tile = (RailConnTile)world.getTileEntity(current);
-    			if(tile == null){ break; }
-    			else{
-    				BlockPos ls = new BlockPos(current);
-    				current = tile.getNext(current, last);
-    				if(current.equals(ls)){ break; }
-    				else{
-    					last = ls;
-    					lastpos = throttle > 0 ? last : current;
-    					currentpos = throttle > 0 ? current : last;
-    					own = newVector(last); dest = newVector(current);
-    				}
-    			}
-        	}
-        	dest = direction(dest.x - own.x, dest.y - own.y, dest.z - own.z);
-        	dest = new Vec3d(own.x + (dest.x * vel), own.y + (dest.y * vel), own.z + (dest.z * vel));
-        	this.posX = dest.x; this.posY = dest.y; this.posZ = dest.z;
-        	this.prevPosX = this.posX; this.prevPosY = this.posY; this.prevPosZ = this.posZ;
-        }
+        //TODO check if connected to another locomotive, etc.
+        super.onUpdateMovement(vel);
 	}
 	
 }

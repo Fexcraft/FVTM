@@ -75,7 +75,7 @@ public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object>
 				break;
 			}
 			case GUI: {
-				float f = data.getVehicle().isTrailerOrWagon() ? -0.375f : 0;
+				float f = data.getVehicle().isTrailerOrWagon() && !data.getVehicle().getType().isRailVehicle() ? -0.375f : 0;
 				GL11.glTranslatef(model.gui_translate_x + f, model.gui_translate_y + f, model.gui_translate_z);
 				GL11.glRotatef(-135, 0, 1, 0);
 				GL11.glRotatef(-30, 1, 0, 0);

@@ -17,5 +17,6 @@
     "PreInstalled":[
 		{ "part": "test:locoseats", "as": "seats" }
 	],
-	"VehicleType": "RAIL"
+	"VehicleType": "RAIL",
+    "Wagon": true
 }

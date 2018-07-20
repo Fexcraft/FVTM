@@ -158,20 +158,20 @@ public class RailConnTile extends TileEntity implements IPacketReceiver<PacketTi
 				}
 			}
 			case 4: {
-				if(connections[0].equals(current) && connections[1].equals(previous)){
+				if(connections[1].equals(previous)){
 					return connections[0];
 				}
-				if(connections[1].equals(current) && connections[0].equals(previous)){
+				if(connections[0].equals(previous)){
 					return connections[1];
 				}
-				if(connections[2].equals(current)&& connections[3].equals(previous)){
+				if(connections[3].equals(previous)){
 					return connections[2];
 				}
-				if(connections[3].equals(current) && connections[2].equals(previous)){
+				if(connections[2].equals(previous)){
 					return connections[3];
 				}
 			}
-			default: return null;//This shouldn't happen usually, so let's cause a null-pointer.
+			default: return pos;//
 		}
 	}
 

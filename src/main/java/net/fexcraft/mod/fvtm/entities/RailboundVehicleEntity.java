@@ -177,6 +177,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         axes = VehicleAxes.read(this, compound);
         lastpos = BlockPos.fromLong(compound.getLong("LastRail"));
         currentpos = BlockPos.fromLong(compound.getLong("CurrentRail"));
+        throttle = compound.getDouble("Throttle");
         initVeh(null, vehicledata, false);
         Print.debug(compound.toString());
     }
@@ -191,6 +192,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         if(currentpos != null){
         	compound.setLong("CurrentRail", currentpos.toLong());
         }
+        compound.setDouble("Throttle", throttle);
         Print.debug(compound.toString());
     }
 

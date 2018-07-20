@@ -10,7 +10,7 @@
     ],
     "AttributeData":{
         "FM-Seats":[
-            { "x": -42, "y": 8, "z": 0, "driver": true, "sitting": false }
+            { "x": -42, "y": 16, "z": 0, "driver": true, "sitting": false }
         ]    
     }
 }

@@ -21,15 +21,15 @@ public class GenericLocomotiveEntity extends GenericWagonEntity {
 
 	@Override
 	public void onUpdateMovement(double amount){
-        boolean canThrustCreatively = !Config.VEHICLE_NEEDS_FUEL || (seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode);
+        boolean creativemode = !Config.VEHICLE_NEEDS_FUEL || (seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode);
         boolean consumed = false;
         Part.PartData enginepart = vehicledata.getPart("engine");
-        if(!canThrustCreatively && enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
+        if(!creativemode && enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
             double d = (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
             consumed = vehicledata.consumeFuel(d > 0 ? d : (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() / 320));
         }
         double vel = 0d;
-        if(enginepart != null && (canThrustCreatively || consumed)){//TODO multi-engine support
+        if(enginepart != null && (creativemode || consumed)){//TODO multi-engine support
         	vel = /*0.2f **/ throttle * (throttle > 0 ? vehicledata.getVehicle().getFMAttribute("max_positive_throttle") : vehicledata.getVehicle().getFMAttribute("max_negative_throttle"));
         	vel *= vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
         }

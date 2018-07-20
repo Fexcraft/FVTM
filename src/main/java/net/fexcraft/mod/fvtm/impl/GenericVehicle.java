@@ -52,6 +52,7 @@ public class GenericVehicle implements Vehicle {
     private TreeMap<String, Float> soundvolumes = new TreeMap<String, Float>();
     private TreeMap<String, Float> soundpitch = new TreeMap<String, Float>();
     //FM
+    //private TreeMap<String, Float> floats;//TODO replace all the "physics related" float vars to entries of this, unless anyone can prove that's a bad idea.
     private float cameradis, maxposthrottle, maxnegthrottle, turnleftmod, turnrightmod, wheelspringstrength, wheelstepheight, bouyancy;
     //
     private float trailer_adjustment_axe;

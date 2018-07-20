@@ -1,8 +1,13 @@
 package net.fexcraft.mod.fvtm.blocks;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.api.block.fBlock;
+import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -10,6 +15,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -42,6 +48,13 @@ public class RailConnection extends BlockContainer {
 			this.setCreativeTab(Tabs.BLOCKS);
 		}
 		
+	    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
+	        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("fvtm:railconn")){
+	        	tooltip.add(Formatter.format("&9POS RAW: " + stack.getTagCompound().getLong("fvtm:railconn")));
+	        	tooltip.add(Formatter.format("&9POS BLK: " + BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railconn"))));
+	        }
+	    }
+		
 		@Override
 	    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
 	        if(world.isRemote){
@@ -54,10 +67,6 @@ public class RailConnection extends BlockContainer {
         			rct.reset(); Print.chat(player, "&cResetting...");
         			return EnumActionResult.SUCCESS;
         		}
-        		if(rct != null && rct.connections.length >= 4){
-        			Print.chat(player, "&cTileEntity reached max allowed connections.");
-        	        return EnumActionResult.FAIL;
-        		}
 	        	if(stack.getTagCompound() == null){
 	        		stack.setTagCompound(new NBTTagCompound());
 	        	}
@@ -66,21 +75,26 @@ public class RailConnection extends BlockContainer {
 	        		stack.getTagCompound().removeTag("fvtm:railconn");
 	        		//Print.chat(player, "&7&oTrying to connect rails...");
 	        		RailConnTile tile0 = (RailConnTile)world.getTileEntity(pos0);
-	        		RailConnTile tile = (RailConnTile)world.getTileEntity(pos);
 	        		if(tile0 == null){
 	        			Print.chat(player, "&cTileEntity at first connection point is NULL.");
 	        	        return EnumActionResult.FAIL;
 	        		}
-	        		if(tile == null){
+	        		if(rct == null){
 	        			Print.chat(player, "&cTileEntity at second connection point is NULL.");
 	        	        return EnumActionResult.FAIL;
 	        		}
 	        		tile0.addLink(pos);
 	        		Print.bar(player, "&7Connected&9!");
+		            return EnumActionResult.SUCCESS;
 	        	}
 	        	else{
+	        		if(rct != null && rct.connections.length >= 4){
+	        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + rct.connections.length + ";)");
+	        	        return EnumActionResult.FAIL;
+	        		}
 	        		stack.getTagCompound().setLong("fvtm:railconn", pos.toLong());
 	        		Print.bar(player, "&7&oFirst position cached (into itemstack).");
+		            return EnumActionResult.SUCCESS;
 	        	}
 	        }
 	        else{

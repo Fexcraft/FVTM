@@ -5,7 +5,6 @@ import net.fexcraft.mod.fvtm.blocks.RailConnTile;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class GenericWagonEntity extends RailboundVehicleEntity {

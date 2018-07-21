@@ -14,7 +14,8 @@ import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttrib
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
-import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
+import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
+import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
@@ -77,7 +78,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     protected VehicleAxes prevAxes;
     protected WheelEntity[] wheels;
     protected SeatEntity[] seats;
-    protected TreeMap<String, ContainerEntity> containers;
+    protected TreeMap<String, ContainerHolder> containers;
     protected double throttle;
     protected float wheelsAngle, wheelsYaw;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
@@ -763,9 +764,6 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             }
         }
         if(containers != null){
-        	containers.values().forEach(con -> {
-        		con.getEntity().setDead();
-        	});
         	containers.clear();
         	containers = null;
         }
@@ -928,25 +926,20 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             	vehicledata.getParts().forEach((key, part) -> {
             		if(part.getAttributeData(ContainerAttributeData.class) != null){
             			ContainerAttributeData condata = part.getAttributeData(ContainerAttributeData.class);
-            			GenericContainerEntity ent = null;
             			if(condata.getAttribute().getContainerType() == ContainerType.LARGE){
             				if(!containers.containsKey(key + "_0")){
-            					containers.put(key + "_0", ent = new GenericContainerEntity(world, this, key, 0));
-            					world.spawnEntity(ent);
+            					containers.put(key + "_0", new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_DUAL1));
             				}
             				if(!containers.containsKey(key + "_1")){
-            					containers.put(key + "_1", ent = new GenericContainerEntity(world, this, key, 1));
-            					world.spawnEntity(ent);
+            					containers.put(key + "_1", new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_DUAL2));
             				}
             				if(!containers.containsKey(key)){
-            					containers.put(key, ent = new GenericContainerEntity(world, this, key, -1));
-            					world.spawnEntity(ent);
+            					containers.put(key, new ContainerWrapper(this, condata, ContainerPosition.LARGE_SINGLE));
             				}
             			}
             			else{
             				if(!containers.containsKey(key)){
-            					containers.put(key, ent = new GenericContainerEntity(world, this, key, -1));
-            					world.spawnEntity(ent);
+            					containers.put(key, new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_SINGLE));
             				}
             			}
             		}
@@ -1323,7 +1316,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     }
     
     @Override
-    public TreeMap<String, ContainerEntity> getContainers(){
+    public TreeMap<String, ContainerHolder> getContainers(){
     	return containers;
     }
 

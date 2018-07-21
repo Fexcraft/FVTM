@@ -7,17 +7,15 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 
 public class ContainerWrapper implements ContainerHolder {
 	
 	private VehicleEntity entity;
 	private ContainerAttributeData attribute;
 	private ContainerPosition type;
-	private Vec3d position;
 	
-	public ContainerWrapper(VehicleEntity ent, ContainerAttributeData data, ContainerPosition pos, Vec3d offset){
-		entity = ent; attribute = data; type = pos; position = offset;
+	public ContainerWrapper(VehicleEntity ent, ContainerAttributeData data, ContainerPosition pos){
+		entity = ent; attribute = data; type = pos;
 	}
 
 	@Override

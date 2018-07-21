@@ -80,7 +80,7 @@ public class FVTM {
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railwagon"), GenericWagonEntity.class, "fvtm:railwagon", 1997, this, 256, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 1, false);
         //EntityRegistry.registerModEntity(new ResourceLocation("fvtm:airvehicle"), AirVehicleEntity.class, "fvtm:airvehicle", 1999, this, 256, 1, false);
-        EntityRegistry.registerModEntity(new ResourceLocation("fvtm:containerholder"), GenericContainerEntity.class, "fvtm:containerholder", 2000, this, 256, 1, false);
+        //EntityRegistry.registerModEntity(new ResourceLocation("fvtm:containerholder"), GenericContainerEntity.class, "fvtm:containerholder", 2000, this, 256, 1, false);
         //EntityRegistry.registerModEntity(new ResourceLocation("fvtm:bogie"), BogieEntity.class, "fvtm:bogie", 2001, this, 256, 1, false);
         if(event.getSide().isClient()){
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(UnboundVehicleEntity.class, RenderGenericVehicle::new);
@@ -88,7 +88,7 @@ public class FVTM {
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
             //net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WaterVehicleEntity.class, RenderWaterVehicle::new);
-            net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(GenericContainerEntity.class, RenderEmpty::new);
+            //net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(GenericContainerEntity.class, RenderEmpty::new);
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSignEntity.class, RenderStreetSign::new);
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailboundVehicleEntity.class, RenderGenericRailed::new);
             //

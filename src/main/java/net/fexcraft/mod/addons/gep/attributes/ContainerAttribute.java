@@ -102,7 +102,7 @@ public class ContainerAttribute implements Attribute {
         }
 
         public ContainerAttribute getAttribute(){
-            return (ContainerAttribute) root;
+            return (ContainerAttribute)root;
         }
 
     }

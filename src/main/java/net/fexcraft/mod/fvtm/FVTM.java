@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.ContainerStatusListener;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
+import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
 import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -59,6 +60,7 @@ public class FVTM {
         Config.initalize(event, event.getSuggestedConfigurationFile());
         FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
         CapabilityManager.INSTANCE.register(VAPDataCache.VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
+        CapabilityManager.INSTANCE.register(net.fexcraft.mod.fvtm.api.Resources.class, new WorldResourcesUtil.Storage(), new WorldResourcesUtil.Callable());
         //
         MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
         REGISTERER = new AutoRegisterer(MODID);

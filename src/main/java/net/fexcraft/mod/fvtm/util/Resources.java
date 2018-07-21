@@ -55,6 +55,7 @@ import net.fexcraft.mod.fvtm.impl.GenericPart;
 import net.fexcraft.mod.fvtm.impl.GenericPartItem;
 import net.fexcraft.mod.fvtm.impl.HybridAddon;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
+import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
 import net.fexcraft.mod.fvtm.model.EmptyModel;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.model.container.ContainerBaseModel;
@@ -75,6 +76,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -92,6 +94,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
+@SuppressWarnings("deprecation")
 public class Resources {
 
     public static final String DEFPACKCFGFILENAME = "addonpack.fvtm";
@@ -484,7 +487,7 @@ public class Resources {
         }
     }
 
-    @SubscribeEvent
+	@SubscribeEvent
     public void regPartAttributes(RegistryEvent.Register<Attribute> event){
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
@@ -794,7 +797,7 @@ public class Resources {
                         }
                         else if(file.isDirectory()){
                             for(File fl : file.listFiles()){
-                                if(file.getName().endsWith(".recipe") || file.getName().endsWith(".recipes")){
+                                if(fl.getName().endsWith(".recipe") || fl.getName().endsWith(".recipes")){
                                 	CrafterBlockScriptBase.registerRecipes(JsonUtil.read(file, false), null, null);
                                 }
                             }
@@ -1027,41 +1030,6 @@ public class Resources {
     public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
         return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.VEHICLE_UPDATE_RANGE);
     }
-
-    /*public static final TreeMap<ResourceLocation, Object> OLDREGNAMES = new TreeMap<ResourceLocation, Object>();
-
-	private void initMappings(){
-		if(OLDREGNAMES.isEmpty()){
-			OLDREGNAMES.put(new ResourceLocation("landvehicle_constructor_controller"), ConstructorController.INSTANCE);
-			OLDREGNAMES.put(new ResourceLocation("landvehicle_constructor_center"), ConstructorCenter.INSTANCE);
-		}
-	}
-
-	@SubscribeEvent
-	public void onMissingBlockMappings(RegistryEvent.MissingMappings<Block> event){
-		this.initMappings();
-		for(Mapping<Block> mapping : event.getMappings()){
-			if(OLDREGNAMES.containsKey(mapping.key)){
-				mapping.remap((Block)OLDREGNAMES.get(mapping.key));
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onMissingItemMappings(RegistryEvent.MissingMappings<Item> event){
-		this.initMappings();
-		for(Mapping<Item> mapping : event.getMappings()){
-			if(OLDREGNAMES.containsKey(mapping.key)){
-				Object obj = OLDREGNAMES.get(mapping.key);
-				if(obj instanceof Item){
-					mapping.remap((Item)obj);
-				}
-				else if(obj instanceof Block){
-					mapping.remap(RegistryUtil.getItem(((Block)obj).getRegistryName()));
-				}
-			}
-		}
-	}*/
     
     @SubscribeEvent
     public void onAttachPartCapabilities(AttachCapabilitiesEvent<PartData> event){
@@ -1077,6 +1045,11 @@ public class Resources {
     	if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof BlockItem){
     		event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
     	}
+    }
+    
+    @SubscribeEvent
+    public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
+    	event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
     }
     
     private static Field flightdata;

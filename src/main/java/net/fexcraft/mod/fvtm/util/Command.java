@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.util;
 import java.util.stream.Collectors;
 
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
@@ -221,7 +220,7 @@ public class Command extends CommandBase {
             	Print.chat(sender, "&9Vehicles: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof VehicleEntity).collect(Collectors.toList()).size());
             	Print.chat(sender, "&9Wheels: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof WheelEntity).collect(Collectors.toList()).size());
             	Print.chat(sender, "&9Seats: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof SeatEntity).collect(Collectors.toList()).size());
-            	Print.chat(sender, "&9Container Holders: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof ContainerEntity).collect(Collectors.toList()).size());
+            	//Print.chat(sender, "&9Container Holders: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof ContainerEntity).collect(Collectors.toList()).size());
             	Print.chat(sender, "&8- - - - &9- &6- &9- &8- - - -");
             	Print.chat(sender, "&9BlockData (UT): &7" + sender.getEntityWorld().loadedTileEntityList.stream().filter(pre -> pre instanceof UniversalTileEntity && ((UniversalTileEntity)pre).isCore()).count());
             	break;

@@ -838,14 +838,10 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 			dis -= Vector3D.distance(own, dest);
 			if(dis <= 0.001){ break; }
 			else{
-				RailConnTile tile = (RailConnTile)world.getTileEntity(curr);
-				if(tile == null){ break; }
-				else{
-					BlockPos las = new BlockPos(curr);
-					curr = tile.getNext(curr, last);
-					if(curr.equals(las)){ break; }
-					last = las; own = Vector3D.newVector(last); dest = Vector3D.newVector(curr);
-				}
+				BlockPos las = world.getCapability(net.fexcraft.mod.fvtm.api.Resources.CAPABILITY, null).getNextRailCoordinate(curr, last);
+				if(las == null){ break; }
+				if(curr.equals(las)){ break; }
+				last = curr; curr = las; own = Vector3D.newVector(last); dest = Vector3D.newVector(curr);
 			}
 		}
     	dest = Vector3D.direction(dest[0] - own[0], dest[1] - own[1], dest[2] - own[2]);

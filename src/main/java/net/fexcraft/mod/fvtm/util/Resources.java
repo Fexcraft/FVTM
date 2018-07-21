@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -66,10 +67,12 @@ import net.fexcraft.mod.lib.util.common.ZipUtil;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.render.ModelType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -83,6 +86,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -1074,5 +1078,33 @@ public class Resources {
     		event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
     	}
     }
+    
+    private static Field flightdata;
+    private static boolean flightdata_failed = false;
+    /** completely not seen something similar somewhere **/
+	public static void resetFlight(EntityPlayerMP passenger){
+		if(flightdata == null && !flightdata_failed){
+			try{
+				flightdata = ReflectionHelper.findField(NetHandlerPlayServer.class,  "floatingTickCount", "field_147365_f");
+			}
+			catch(Exception e){
+				Print.log("Failed to get field. [FLIGHTDATA:ERR:0]");
+			}
+		}
+		if(flightdata != null && !flightdata_failed){
+			try{
+				flightdata.setInt(passenger.connection, 0);
+			}
+			catch(IllegalArgumentException | IllegalAccessException e){
+				if(Static.dev()){
+					e.printStackTrace();
+				}
+				flightdata_failed = true;
+			}
+		}
+		/*passenger.lastTickPosX = passenger.prevPosX;
+		passenger.lastTickPosY = passenger.prevPosY;
+		passenger.lastTickPosZ = passenger.prevPosZ;*/
+	}
     
 }

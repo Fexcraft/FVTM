@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemLead;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -139,6 +140,10 @@ public class SeatEntity extends PassengerHoldingEntity implements IEntityAdditio
     @Override
     public void onUpdate(){
         super.onUpdate();
+        //
+        if(!world.isRemote && passenger instanceof EntityPlayerMP){
+        	Resources.resetFlight((EntityPlayerMP)passenger);
+        }
         //
         if(world.isRemote && vehicle == null){
             rqSync();

@@ -20,6 +20,7 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
 	@Override
 	public void onUpdateMovement(double amount){
         if(amount != 0){
+        	amount = Math.abs(amount);
         	BlockPos current = throttle > 0 ? currentpos : lastpos;
         	BlockPos last    = throttle > 0 ? lastpos : currentpos;
         	double[] own = new double[]{ posX, posY, posZ }, dest = Vector3D.newVector(current);

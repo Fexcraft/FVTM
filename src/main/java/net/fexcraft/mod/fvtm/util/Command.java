@@ -1,8 +1,10 @@
 package net.fexcraft.mod.fvtm.util;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
@@ -224,7 +226,8 @@ public class Command extends CommandBase {
             	long[] l = new long[]{ 0 };
             	sender.getEntityWorld().loadedEntityList.stream().forEach(ent -> {
             		if(ent instanceof VehicleEntity){
-            			l[0] += ((VehicleEntity)ent).getContainers().size();
+            			Map<String, ContainerHolder> map = ((VehicleEntity)ent).getContainers();
+            			if(map != null && map.size() > 0){ l[0] += map.size(); }
             		}
             	});
             	Print.chat(sender, "&9Container Holders: &7" + l[0]);

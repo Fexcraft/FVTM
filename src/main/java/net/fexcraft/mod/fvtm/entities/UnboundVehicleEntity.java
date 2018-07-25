@@ -928,18 +928,18 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             			ContainerAttributeData condata = part.getAttributeData(ContainerAttributeData.class);
             			if(condata.getAttribute().getContainerType() == ContainerType.LARGE){
             				if(!containers.containsKey(key + "_0")){
-            					containers.put(key + "_0", new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_DUAL1));
+            					containers.put(key + "_0", new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_DUAL1, 0));
             				}
             				if(!containers.containsKey(key + "_1")){
-            					containers.put(key + "_1", new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_DUAL2));
+            					containers.put(key + "_1", new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_DUAL2, 1));
             				}
             				if(!containers.containsKey(key)){
-            					containers.put(key, new ContainerWrapper(this, condata, ContainerPosition.LARGE_SINGLE));
+            					containers.put(key, new ContainerWrapper(this, condata, ContainerPosition.LARGE_SINGLE, -1));
             				}
             			}
             			else{
             				if(!containers.containsKey(key)){
-            					containers.put(key, new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_SINGLE));
+            					containers.put(key, new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_SINGLE, -1));
             				}
             			}
             		}

@@ -221,6 +221,13 @@ public class Command extends CommandBase {
             	Print.chat(sender, "&9Wheels: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof WheelEntity).collect(Collectors.toList()).size());
             	Print.chat(sender, "&9Seats: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof SeatEntity).collect(Collectors.toList()).size());
             	//Print.chat(sender, "&9Container Holders: &7" + sender.getEntityWorld().loadedEntityList.stream().filter(pre -> pre instanceof ContainerEntity).collect(Collectors.toList()).size());
+            	long[] l = new long[]{ 0 };
+            	sender.getEntityWorld().loadedEntityList.stream().forEach(ent -> {
+            		if(ent instanceof VehicleEntity){
+            			l[0] += ((VehicleEntity)ent).getContainers().size();
+            		}
+            	});
+            	Print.chat(sender, "&9Container Holders: &7" + l[0]);
             	Print.chat(sender, "&8- - - - &9- &6- &9- &8- - - -");
             	Print.chat(sender, "&9BlockData (UT): &7" + sender.getEntityWorld().loadedTileEntityList.stream().filter(pre -> pre instanceof UniversalTileEntity && ((UniversalTileEntity)pre).isCore()).count());
             	break;

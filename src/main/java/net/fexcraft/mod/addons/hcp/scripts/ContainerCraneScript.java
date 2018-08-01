@@ -8,7 +8,7 @@ package net.fexcraft.mod.addons.hcp.scripts;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontData;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontRendererAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.api.Container.ContainerEntity;
+import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
+import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.GenericContainerItem;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -395,19 +396,25 @@ public class ContainerCraneScript implements VehicleScript {
 			}
 		}
 		else{
-			ContainerEntity entity = null;
+			ContainerHolder holder = null;
 			AxisAlignedBB aabb = new AxisAlignedBB(blkpos);
 			for(Entity e : ent.getEntity().world.loadedEntityList){
-				if(e instanceof ContainerEntity && e.getEntityBoundingBox().intersects(aabb)){
-					entity = (ContainerEntity)e;
-					break;
+				if(e instanceof ContainerHolder && e.getEntityBoundingBox().intersects(aabb)){
+					holder = (ContainerHolder)e;
+				}
+				else if(e instanceof VehicleEntity){
+					for(ContainerHolder obj : ((VehicleEntity)e).getContainers().values()){
+						if(obj instanceof ContainerWrapper && ((ContainerWrapper)obj).intersects(aabb)){
+							holder = obj;
+						}
+					}
 				}
 			}
-			if(entity != null){
-				if(entity.getContainerData() != null){
+			if(holder != null){
+				if(holder.getContainerData() != null){
 					Print.chat(player, "Vehicle's Container isn't empty.");
 				}
-				if(entity.setContainerData(data)){
+				if(holder.setContainerData(data)){
 					data = null;
 					Print.chat(player, "Container loaded into vehicle.");
 				}
@@ -448,21 +455,27 @@ public class ContainerCraneScript implements VehicleScript {
 			}
 		}
 		else{
-			ContainerEntity entity = null;
+			ContainerHolder holder = null;
 			AxisAlignedBB aabb = new AxisAlignedBB(blkpos);
 			for(Entity e : ent.getEntity().world.loadedEntityList){
-				if(e instanceof ContainerEntity && e.getEntityBoundingBox().intersects(aabb)){
-					entity = (ContainerEntity)e;
-					break;
+				if(e instanceof ContainerHolder && e.getEntityBoundingBox().intersects(aabb)){
+					holder = (ContainerHolder)e;
+				}
+				else if(e instanceof VehicleEntity){
+					for(ContainerHolder obj : ((VehicleEntity)e).getContainers().values()){
+						if(obj instanceof ContainerWrapper && ((ContainerWrapper)obj).intersects(aabb)){
+							holder = obj;
+						}
+					}
 				}
 			}
-			if(entity != null){
-				ContainerData condata = entity.getContainerData();
+			if(holder != null){
+				ContainerData condata = holder.getContainerData();
 				if(condata == null){
 					Print.chat(player, "No container in Vehicle at position.");
 					return;
 				}
-				if(entity.setContainerData(null)){
+				if(holder.setContainerData(null)){
 					this.data = condata;
 					Print.chat(player, "Container: " + data.getContainer().getName());
 				}

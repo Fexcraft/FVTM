@@ -97,19 +97,18 @@ import net.minecraftforge.registries.RegistryBuilder;
 @SuppressWarnings("deprecation")
 public class Resources {
 
-    public static final String DEFPACKCFGFILENAME = "addonpack.fvtm";
-    public static IForgeRegistry<Addon> ADDONS;// = (IForgeRegistry<Addon>)new RegistryBuilder<Addon>().setName(new ResourceLocation("fvtm:addons")).setType(Addon.class).create();
-    public static IForgeRegistry<Fuel> FUELS;// = (IForgeRegistry<Fuel>)new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
-    public static IForgeRegistry<Material> MATERIALS;// = (IForgeRegistry<Material>)new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
-    public static IForgeRegistry<Part> PARTS;// = (IForgeRegistry<Part>)new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
-    public static IForgeRegistry<Vehicle> VEHICLES;// = (IForgeRegistry<LandVehicle>)new RegistryBuilder<LandVehicle>().setName(new ResourceLocation("fvtm:landvehicles")).setType(LandVehicle.class).create();
+    public static IForgeRegistry<Addon> ADDONS;
+    public static IForgeRegistry<Fuel> FUELS;
+    public static IForgeRegistry<Material> MATERIALS;
+    public static IForgeRegistry<Part> PARTS;
+    public static IForgeRegistry<Vehicle> VEHICLES;
     public static IForgeRegistry<Container> CONTAINERS;
     public static IForgeRegistry<Block> BLOCKS;
     public static IForgeRegistry<Consumable> CONSUMABLES;
     public static TreeMap<String, Model<?, ?>> MODELS = new TreeMap<String, Model<?, ?>>();
     public static TreeMap<ResourceLocation, SoundEvent> SOUNDS = new TreeMap<ResourceLocation, SoundEvent>();
     public static TreeMap<String, JsonObject> PRESETS = new TreeMap<String, JsonObject>();
-    public static IForgeRegistry<Attribute> PARTATTRIBUTES;// = (IForgeRegistry<Attribute>)new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
+    public static IForgeRegistry<Attribute> PARTATTRIBUTES;
     public static ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entities/null_texture.png");
     public static ResourceLocation TRANSPARENT_TEXTURE = new ResourceLocation("fvtm:textures/entities/transparent_texture.png");
     private final File configpath, addonconfig;
@@ -122,15 +121,15 @@ public class Resources {
         }
         addonconfig = new File(configpath, "/addonpacks.fex");
         //
-        ADDONS = (IForgeRegistry<Addon>) new RegistryBuilder<Addon>().setName(new ResourceLocation("fvtm:addons")).setType(Addon.class).create();
-        FUELS = (IForgeRegistry<Fuel>) new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
-        MATERIALS = (IForgeRegistry<Material>) new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
-        PARTS = (IForgeRegistry<Part>) new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
-        VEHICLES = (IForgeRegistry<Vehicle>) new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
-        PARTATTRIBUTES = (IForgeRegistry<Attribute>) new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
-        CONTAINERS = (IForgeRegistry<Container>) new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
-        CONSUMABLES = (IForgeRegistry<Consumable>) new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
-        BLOCKS = (IForgeRegistry<Block>) new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
+        ADDONS = new RegistryBuilder<Addon>().setName(new ResourceLocation("fvtm:addons")).setType(Addon.class).create();
+        FUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
+        MATERIALS = new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
+        PARTS = new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
+        VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
+        PARTATTRIBUTES = new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
+        CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
+        CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
+        BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
         //
         loadAddons(event);
     }
@@ -145,7 +144,7 @@ public class Resources {
              Print.log("Failed to get class loader. All content loading may fail badly.");
              e.printStackTrace();
          }
-         File addonfolder = new File(event.getModConfigurationDirectory().getParentFile(), "/addons/");
+         File addonfolder = new File(event.getModConfigurationDirectory().getParentFile(), "/" + Config.ADDONS_FOLDER + "/");
          if(!addonfolder.exists()){
              addonfolder.mkdirs();
          }

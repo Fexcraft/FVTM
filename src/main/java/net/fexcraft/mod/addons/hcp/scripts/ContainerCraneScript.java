@@ -61,7 +61,7 @@ public class ContainerCraneScript implements VehicleScript {
 
     @Override
     public void onCreated(Entity entity, Vehicle.VehicleData data){
-        
+        //
     }
 
     @Override
@@ -76,6 +76,8 @@ public class ContainerCraneScript implements VehicleScript {
         return false;
     }
 
+    private boolean moved;
+
     @Override
     public void onUpdate(Entity entity, Vehicle.VehicleData data){
     	VehicleEntity ent = (VehicleEntity)entity;
@@ -83,7 +85,7 @@ public class ContainerCraneScript implements VehicleScript {
     	if(ent.getAxes().getRadianYaw() % 90 != 0){
 			ent.getAxes().setRotation(Math.toRadians(round(ent.getAxes().getYaw())), ent.getAxes().getPitch(), ent.getAxes().getRoll());
     	}
-    	boolean moved = false;
+    	moved = false;
         if(xmove && xdir != 0){
         	if(stepwise && xsteptime > 0){
         		xsteptime--;
@@ -150,7 +152,7 @@ public class ContainerCraneScript implements VehicleScript {
         //TODO Y/Z
         //
         if(moved && !ent.getEntity().world.isRemote && ent.getEntity().ticksExisted % 10 == 0){
-        	this.sendPacketToAllAround(entity, this.writeToNBT(null));
+        	this.sendPacketToAllAround(entity, this.writeToNBT(null)); moved = false;
         }
     }
 
@@ -373,7 +375,7 @@ public class ContainerCraneScript implements VehicleScript {
 		Vec3d pos = getSearchPosition(ent);
 		BlockPos blkpos = new BlockPos(pos);
 		if((xpos % 1000 == 0) && (ypos % 1000 == 0) && (zpos % 1000 == 0)){
-			EnumFacing facing = EnumFacing.fromAngle(ent.getAxes().getRadianYaw() + 90);
+			EnumFacing facing = EnumFacing.fromAngle(ent.getAxes().getRadianYaw()/* + 90*/);
 			//IBlockState state = ent.getEntity().world.getBlockState(blkpos);
 			if(GenericContainerItem.isValidPostitionForContainer(ent.getEntity().world, player, blkpos, facing, data)){
 				try{

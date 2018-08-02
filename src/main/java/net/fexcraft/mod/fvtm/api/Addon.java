@@ -4,13 +4,14 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.ZipUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface Addon extends IForgeRegistryEntry<Addon> {
+	
+    public static final String DEFPACKCFGFILENAME = "addonpack.fvtm";
 
     /**
      * Internal use, can return null
@@ -62,7 +63,7 @@ public interface Addon extends IForgeRegistryEntry<Addon> {
      */
     public static boolean isAddonContainer(File file){
         if(file.isDirectory()){
-            File fl = new File(file, Resources.DEFPACKCFGFILENAME);
+            File fl = new File(file, DEFPACKCFGFILENAME);
             try{
                 return fl.exists();
             }
@@ -72,7 +73,7 @@ public interface Addon extends IForgeRegistryEntry<Addon> {
             }
         }
         if(file.getName().endsWith(".zip") || file.getName().endsWith(".jar")){
-            return ZipUtil.contains(file, Resources.DEFPACKCFGFILENAME);
+            return ZipUtil.contains(file, DEFPACKCFGFILENAME);
         }
         return false;
     }

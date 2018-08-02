@@ -10,7 +10,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Addon;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.common.ZipUtil;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
@@ -42,7 +41,7 @@ public class GenericAddon implements Addon {
     public GenericAddon(File file){
         this.enabled = true;
         this.file = file;
-        JsonObject obj = file.isDirectory() ? JsonUtil.get(new File(file, Resources.DEFPACKCFGFILENAME)) : ZipUtil.getJsonObject(file, Resources.DEFPACKCFGFILENAME);
+        JsonObject obj = file.isDirectory() ? JsonUtil.get(new File(file, DEFPACKCFGFILENAME)) : ZipUtil.getJsonObject(file, DEFPACKCFGFILENAME);
         try{
             this.registryname = new ResourceLocation(obj.get("id").getAsString());
         }
@@ -170,7 +169,7 @@ public class GenericAddon implements Addon {
     }
 
     public static boolean isHybrid(File file){
-        JsonObject obj = file.isDirectory() ? JsonUtil.get(new File(file, Resources.DEFPACKCFGFILENAME)) : ZipUtil.getJsonObject(file, Resources.DEFPACKCFGFILENAME);
+        JsonObject obj = file.isDirectory() ? JsonUtil.get(new File(file, DEFPACKCFGFILENAME)) : ZipUtil.getJsonObject(file, DEFPACKCFGFILENAME);
         return obj.has("class");
     }
 
@@ -183,7 +182,7 @@ public class GenericAddon implements Addon {
 
     @SuppressWarnings("unchecked")
     public static Class<Addon> getClass(File file) throws ClassNotFoundException{
-        JsonObject obj = file.isDirectory() ? JsonUtil.get(new File(file, Resources.DEFPACKCFGFILENAME)) : ZipUtil.getJsonObject(file, Resources.DEFPACKCFGFILENAME);
+        JsonObject obj = file.isDirectory() ? JsonUtil.get(new File(file, DEFPACKCFGFILENAME)) : ZipUtil.getJsonObject(file, DEFPACKCFGFILENAME);
         return (Class<Addon>) Class.forName(obj.get("class").getAsString());
     }
 

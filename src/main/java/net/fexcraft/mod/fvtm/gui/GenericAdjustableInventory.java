@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+@SuppressWarnings("unused")
 public class GenericAdjustableInventory {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/generic_adjustable_inventory.png");
@@ -52,8 +53,8 @@ public class GenericAdjustableInventory {
 	
 	public static class Container extends net.minecraft.inventory.Container {
 
-		private static NonNullList<ItemStack> stacks;
-		private static String[] arr;
+		private NonNullList<ItemStack> stacks;
+		private String[] arr;
 		private EntityPlayer player;
 		private int slots = 0, scroll = 0;
 		private BlockPos pos;

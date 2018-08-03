@@ -13,7 +13,7 @@ import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
-import net.fexcraft.mod.fvtm.api.rail.IRailProvider;
+import net.fexcraft.mod.fvtm.api.compatibility.IRailProvider;
 import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
 import net.fexcraft.mod.fvtm.entities.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
@@ -130,7 +130,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
         }
     }
 
-    @Override
+    @SuppressWarnings("deprecation") @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
         if(tab == CreativeTabs.SEARCH){
             for(Vehicle veh : Resources.VEHICLES.getValues()){

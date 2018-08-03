@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.blocks;
 
 import java.util.TreeMap;
 
-import net.fexcraft.mod.fvtm.api.rail.IRailProvider;
+import net.fexcraft.mod.fvtm.api.compatibility.IRailProvider;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.api.rail;
+package net.fexcraft.mod.fvtm.api.compatibility;
 
 import net.minecraft.util.math.BlockPos;
 

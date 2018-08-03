@@ -100,6 +100,7 @@ public class PartManagerInstalled implements Window {
 
     @SuppressWarnings("unchecked")
     public String getAt(ConstructorMainGUI gui, int k){
+    	if(gui.tile == null || gui.tile.getVehicleData() == null || gui.tile.getVehicleData().getParts() == null){ return null; }
         Object[] parts = gui.tile.getVehicleData().getParts().entrySet().toArray();
         return ((Entry<String, PartData>)parts[k]).getKey();
     }

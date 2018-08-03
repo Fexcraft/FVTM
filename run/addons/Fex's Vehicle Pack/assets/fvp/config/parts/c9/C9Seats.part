@@ -1,0 +1,27 @@
+{
+    "RegistryName": "fvp:c9_seats",
+    "FullName": "C9 Standard Seats",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.c9.ModelC9Seats.class",
+    "Category": [
+        "seats"
+    ],
+    "Attributes":[
+        "seat"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c9.png"
+    ],
+    "Scripts":[
+        "net.fexcraft.mod.addons.gep.scripts.MultiDoorScript.class"
+    ],
+    "Removable": false,
+    "AttributeData":{
+        "FM-Seats":[
+            { "x": -3, "y": -9, "z": -9, "driver": true },
+            { "x": -3, "y": -9, "z":  9 },
+            { "x": -20, "y": -9, "z": -9 },
+            { "x": -20, "y": -9, "z":  9 }
+        ]    
+    }
+}

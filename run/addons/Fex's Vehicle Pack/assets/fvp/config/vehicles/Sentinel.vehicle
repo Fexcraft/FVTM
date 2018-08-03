@@ -1,0 +1,50 @@
+{
+    "RegistryName": "fvp:sentinel",
+    "Addon": "fvtm:fvp",
+    "FullName": "Sentinel (C9)",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelSentinel.class",
+    "PrimaryColor": {
+        "Red": 168,
+        "Blue": 168,
+        "Green": 168
+    },
+    "SecondaryColor": {
+        "Red": 194,
+        "Blue": 194,
+        "Green": 194
+    },
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c9.png"
+    ],
+    "WheelPos":[
+        { "x": -33, "y": -14, "z": -16 },
+        { "x": -33, "y": -14, "z":  16 },
+        { "x":  33, "y": -14, "z":  16 },
+        { "x":  33, "y": -14, "z": -16 }
+    ],
+    "WheelCoords":[
+        { "x":  33, "y": 10, "z": -16, "id": "right_front_wheel" },
+        { "x":  33, "y": 10, "z":  16, "id": "left_front_wheel" },
+        { "x": -33, "y": 10, "z": -16, "id": "right_back_wheel" },
+        { "x": -33, "y": 10, "z":  16, "id": "left_back_wheel" }
+    ],
+    "ConstructionLength": 3,
+    "ConstructionYOffSet": 4.5,
+    "ConstructionWheelOffset": 16,
+    "RequiredParts": [
+        "right_front_wheel",
+        "left_front_wheel",
+        "right_back_wheel",
+        "left_back_wheel",
+        "steering_wheel",
+        "interior",
+        "seats",
+        "engine",
+        "fuel_tank"
+    ],
+    "DriveType": "fwd",
+    "FM-MaxPositiveThrottle": 1.98,
+    "FM-MaxNegativeThrottle": 0.89,
+    "FM-TurnLeftModifier": 1.35,
+    "FM-TurnRightModifier": 1.35
+}

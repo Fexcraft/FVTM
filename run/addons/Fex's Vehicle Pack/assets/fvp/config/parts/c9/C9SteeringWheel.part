@@ -1,0 +1,19 @@
+{
+    "RegistryName": "fvp:c9_steering_wheel",
+    "Addon": "fvtm:fvp",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.c9.ModelC9ST.class",
+    "FullName": "C9 Steering Wheel",
+    "Category": [
+        "steering_wheel"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c9.png"
+    ],
+    "Removable": true,
+    "Compatible": [
+        {
+            "Vehicle": "fvp:sentinel",
+            "x": 0, "y": 0, "z": 0
+        }
+    ]
+}

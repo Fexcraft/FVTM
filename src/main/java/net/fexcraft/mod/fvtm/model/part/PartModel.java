@@ -338,18 +338,19 @@ public class PartModel extends PartBaseModel {
 
     public void def_renderWheels4(VehicleData type, String us, Entity veh, boolean rot){
         if(rot){
+        	float ret = ((VehicleEntity)veh).getWheelsAngle();
             switch(us){
                 case "left_front_wheel":
-                    this.def_renderWheelWithRotations(wheel_front_left, veh, true);
+                    this.def_renderWheelWithRotations(wheel_front_left, veh, ret, true);
                     break;
                 case "right_front_wheel":
-                    this.def_renderWheelWithRotations(wheel_front_right, veh, true);
+                    this.def_renderWheelWithRotations(wheel_front_right, veh, ret, true);
                     break;
                 case "left_back_wheel":
-                    this.def_renderWheelWithRotations(wheel_back_left, veh, false);
+                    this.def_renderWheelWithRotations(wheel_back_left, veh, ret, false);
                     break;
                 case "right_back_wheel":
-                    this.def_renderWheelWithRotations(wheel_back_right, veh, false);
+                    this.def_renderWheelWithRotations(wheel_back_right, veh, ret, false);
                     break;
             }
         }

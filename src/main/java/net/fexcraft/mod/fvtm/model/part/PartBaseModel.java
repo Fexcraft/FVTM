@@ -74,12 +74,11 @@ public abstract class PartBaseModel extends GenericModel<VehicleData, String> {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public void def_renderWheelWithRotations(ModelRendererTurbo[] model, Entity ent, boolean steering){
+    public void def_renderWheelWithRotations(ModelRendererTurbo[] model, Entity ent, float amount, boolean steering){
         VehicleEntity vehicle = (VehicleEntity) ent;
-        float f = vehicle.getWheelsAngle();
-        if(f != model[0].rotateAngleZ){
-            f -= model[0].rotateAngleZ;
-            this.rotate(model, 0, 0, f, false);
+        if(amount != model[0].rotateAngleZ){
+            amount -= model[0].rotateAngleZ;
+            this.rotate(model, 0, 0, amount, false);
 
         }
         if(steering){

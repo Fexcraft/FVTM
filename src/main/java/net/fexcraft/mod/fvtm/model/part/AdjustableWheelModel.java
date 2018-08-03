@@ -74,8 +74,9 @@ public class AdjustableWheelModel extends PartBaseModel {
         if(mir){
             GL11.glRotated(180, 0, 1, 0);
         }
+        float wheelangl = mir ? -vehicle.getWheelsAngle() : vehicle.getWheelsAngle();
         for(ModelRendererTurbo element : wheel){
-            element.rotateAngleZ = vehicle.getWheelsAngle();
+            element.rotateAngleZ = wheelangl;
             if(str){
                 element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
             }
@@ -124,7 +125,7 @@ public class AdjustableWheelModel extends PartBaseModel {
             if(mir){
                 GL11.glRotated(180, 0, 1, 0);
             }
-            this.def_renderWheelWithRotations(wheel, ent, str);
+            this.def_renderWheelWithRotations(wheel, ent, mir ? -((VehicleEntity)ent).getWheelsAngle() : ((VehicleEntity)ent).getWheelsAngle(), str);
             if(mir){
                 //for(ModelRendererTurbo turbo : wheels){ turbo.rotateAngleZ = -turbo.rotateAngleZ; }
                 GL11.glRotated(-180, 0, 1, 0);

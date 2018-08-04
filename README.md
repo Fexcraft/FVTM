@@ -10,7 +10,7 @@ Fex's Vehicle and Transportation Mod
 http://fexcraft.net/license?id=mods
 
 ### Discord
-https://discord.gg/rMXcrsv
+https://discord.gg/AkMAzaA
 
 ### Wiki
 https://github.com/Fexcraft/FVTM/wiki

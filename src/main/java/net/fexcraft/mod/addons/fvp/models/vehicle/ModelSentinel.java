@@ -1194,7 +1194,7 @@ public class ModelSentinel extends VehicleModel {
 		body_colored_primary[292].addShapeBox(0F, -1F, 0F, 5, 4, 1, 0F, 0F, -0.5F, 0F, -1.2F, 0.5F, 0F, -1.2F, 0.5F, -0.9F, 0F, -0.5F, -0.8F, 4F, -0.4F, -1.5F, -4.4F, -0.4F, -1.5F, -4.4F, -0.4F, 1F, 4F, -0.4F, 1F); // Box 508
 		body_colored_primary[292].setRotationPoint(-29.8F, -8.4F, 14.9F);
 
-		chassis = new ModelRendererTurbo[65];
+		chassis = new ModelRendererTurbo[64];
 		chassis[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
 		chassis[1] = new ModelRendererTurbo(this, 137, 1, textureX, textureY); // Box 1
 		chassis[2] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 2
@@ -1244,22 +1244,21 @@ public class ModelSentinel extends VehicleModel {
 		chassis[46] = new ModelRendererTurbo(this, 169, 161, textureX, textureY); // Box 372
 		chassis[47] = new ModelRendererTurbo(this, 217, 161, textureX, textureY); // Box 373
 		chassis[48] = new ModelRendererTurbo(this, 241, 161, textureX, textureY); // Box 375
-		chassis[49] = new ModelRendererTurbo(this, 313, 185, textureX, textureY); // Box 407
-		chassis[50] = new ModelRendererTurbo(this, 129, 185, textureX, textureY); // Box 408
-		chassis[51] = new ModelRendererTurbo(this, 361, 185, textureX, textureY); // Box 409
-		chassis[52] = new ModelRendererTurbo(this, 433, 129, textureX, textureY); // Box 410
-		chassis[53] = new ModelRendererTurbo(this, 1, 137, textureX, textureY); // Box 411
-		chassis[54] = new ModelRendererTurbo(this, 329, 137, textureX, textureY); // Box 412
-		chassis[55] = new ModelRendererTurbo(this, 57, 153, textureX, textureY); // Box 413
-		chassis[56] = new ModelRendererTurbo(this, 497, 153, textureX, textureY); // Box 414
-		chassis[57] = new ModelRendererTurbo(this, 129, 169, textureX, textureY); // Box 415
-		chassis[58] = new ModelRendererTurbo(this, 161, 169, textureX, textureY); // Box 416
-		chassis[59] = new ModelRendererTurbo(this, 361, 169, textureX, textureY); // Box 417
-		chassis[60] = new ModelRendererTurbo(this, 57, 185, textureX, textureY); // Box 418
-		chassis[61] = new ModelRendererTurbo(this, 217, 185, textureX, textureY); // Box 419
-		chassis[62] = new ModelRendererTurbo(this, 265, 233, textureX, textureY); // Box 552
-		chassis[63] = new ModelRendererTurbo(this, 105, 241, textureX, textureY); // Box 553
-		chassis[64] = new ModelRendererTurbo(this, 105, 241, textureX, textureY); // Box 554
+		chassis[49] = new ModelRendererTurbo(this, 129, 185, textureX, textureY); // Box 408
+		chassis[50] = new ModelRendererTurbo(this, 361, 185, textureX, textureY); // Box 409
+		chassis[51] = new ModelRendererTurbo(this, 433, 129, textureX, textureY); // Box 410
+		chassis[52] = new ModelRendererTurbo(this, 1, 137, textureX, textureY); // Box 411
+		chassis[53] = new ModelRendererTurbo(this, 329, 137, textureX, textureY); // Box 412
+		chassis[54] = new ModelRendererTurbo(this, 57, 153, textureX, textureY); // Box 413
+		chassis[55] = new ModelRendererTurbo(this, 497, 153, textureX, textureY); // Box 414
+		chassis[56] = new ModelRendererTurbo(this, 129, 169, textureX, textureY); // Box 415
+		chassis[57] = new ModelRendererTurbo(this, 161, 169, textureX, textureY); // Box 416
+		chassis[58] = new ModelRendererTurbo(this, 361, 169, textureX, textureY); // Box 417
+		chassis[59] = new ModelRendererTurbo(this, 57, 185, textureX, textureY); // Box 418
+		chassis[60] = new ModelRendererTurbo(this, 217, 185, textureX, textureY); // Box 419
+		chassis[61] = new ModelRendererTurbo(this, 265, 233, textureX, textureY); // Box 552
+		chassis[62] = new ModelRendererTurbo(this, 105, 241, textureX, textureY); // Box 553
+		chassis[63] = new ModelRendererTurbo(this, 105, 241, textureX, textureY); // Box 554
 
 		chassis[0].addBox(0F, 0F, 0F, 48, 2, 37, 0F); // Box 0
 		chassis[0].setRotationPoint(-24.5F, 10F, -18.5F);
@@ -1417,53 +1416,50 @@ public class ModelSentinel extends VehicleModel {
 		chassis[48].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, 0F, 0F, 0F, 0.7F, 0F, 0F, 0.3F, 1F, -3F, 0.6F, 0.6F, 0F, 0F, 0F, 0F, 2F, 0F, 0F, 2F, 1F, -3F, 0.6F, 0.6F); // Box 375
 		chassis[48].setRotationPoint(9.3F, -3.9F, 15.5F);
 
-		chassis[49].addShapeBox(0F, 0F, 0F, 22, 14, 1, 0F, 0F, -0.5F, 0F, 0F, -3F, 1F, 0F, -3F, -1F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, -1F, 0F, 0F, 0F); // Box 407
-		chassis[49].setRotationPoint(23.5F, -4F, 11F);
+		chassis[49].addShapeBox(0F, 0F, 0F, 17, 9, 1, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 408
+		chassis[49].setRotationPoint(-41.5F, 1F, 13F);
 
-		chassis[50].addShapeBox(0F, 0F, 0F, 17, 9, 1, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 408
-		chassis[50].setRotationPoint(-41.5F, 1F, 13F);
+		chassis[50].addShapeBox(0F, 0F, 0F, 17, 9, 1, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 409
+		chassis[50].setRotationPoint(-41.5F, 1F, -14F);
 
-		chassis[51].addShapeBox(0F, 0F, 0F, 17, 9, 1, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 409
-		chassis[51].setRotationPoint(-41.5F, 1F, -14F);
+		chassis[51].addShapeBox(0F, 0F, 0F, 1, 5, 4, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.2F, 0F, 0F, 0.2F, 1.2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 1.2F, 0F, 0F); // Box 410
+		chassis[51].setRotationPoint(-40F, 4F, 14F);
 
-		chassis[52].addShapeBox(0F, 0F, 0F, 1, 5, 4, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.2F, 0F, 0F, 0.2F, 1.2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 1.2F, 0F, 0F); // Box 410
-		chassis[52].setRotationPoint(-40F, 4F, 14F);
+		chassis[52].addShapeBox(0F, 0F, 0F, 1, 5, 4, 0F, 0F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0F, 0F, 0F, 0F, 1.2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 1.2F, 0F, 0F); // Box 411
+		chassis[52].setRotationPoint(-40F, 4F, -18F);
 
-		chassis[53].addShapeBox(0F, 0F, 0F, 1, 5, 4, 0F, 0F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0F, 0F, 0F, 0F, 1.2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 1.2F, 0F, 0F); // Box 411
-		chassis[53].setRotationPoint(-40F, 4F, -18F);
+		chassis[53].addShapeBox(0F, 0F, 0F, 2, 3, 4, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.4F, -0.6F, 0F, 0.4F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0.2F, 0F, 0F, 0.2F); // Box 412
+		chassis[53].setRotationPoint(-40F, 1F, 14F);
 
-		chassis[54].addShapeBox(0F, 0F, 0F, 2, 3, 4, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.4F, -0.6F, 0F, 0.4F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0.2F, 0F, 0F, 0.2F); // Box 412
-		chassis[54].setRotationPoint(-40F, 1F, 14F);
+		chassis[54].addShapeBox(0F, 0F, 0F, 2, 3, 4, 0F, -0.6F, 0F, 0.4F, 0F, 0F, 0.4F, 0F, 0F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0.2F, -1F, 0F, 0.2F, -1F, 0F, 0F, 0F, 0F, 0F); // Box 413
+		chassis[54].setRotationPoint(-40F, 1F, -18F);
 
-		chassis[55].addShapeBox(0F, 0F, 0F, 2, 3, 4, 0F, -0.6F, 0F, 0.4F, 0F, 0F, 0.4F, 0F, 0F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0.2F, -1F, 0F, 0.2F, -1F, 0F, 0F, 0F, 0F, 0F); // Box 413
-		chassis[55].setRotationPoint(-40F, 1F, -18F);
+		chassis[55].addShapeBox(0F, 0F, 0F, 2, 4, 4, 0F, 0F, 0F, 0F, -0.6F, 0F, 0F, -0.6F, 0F, 0.4F, 0F, 0F, 0.4F, -1.8F, 0F, 0F, 0.8F, 0F, 0F, 0.8F, 0F, 0.2F, -1.8F, 0F, 0.2F); // Box 414
+		chassis[55].setRotationPoint(-28F, 1F, 14F);
 
-		chassis[56].addShapeBox(0F, 0F, 0F, 2, 4, 4, 0F, 0F, 0F, 0F, -0.6F, 0F, 0F, -0.6F, 0F, 0.4F, 0F, 0F, 0.4F, -1.8F, 0F, 0F, 0.8F, 0F, 0F, 0.8F, 0F, 0.2F, -1.8F, 0F, 0.2F); // Box 414
-		chassis[56].setRotationPoint(-28F, 1F, 14F);
+		chassis[56].addShapeBox(0F, 0F, 0F, 1, 5, 4, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1.2F, 0F, 0F, 1.2F, 0F, 0F, 1.2F, 0F, -0.7F, -1.2F, 0F, -0.7F); // Box 415
+		chassis[56].setRotationPoint(-26.2F, 5F, 14F);
 
-		chassis[57].addShapeBox(0F, 0F, 0F, 1, 5, 4, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1.2F, 0F, 0F, 1.2F, 0F, 0F, 1.2F, 0F, -0.7F, -1.2F, 0F, -0.7F); // Box 415
-		chassis[57].setRotationPoint(-26.2F, 5F, 14F);
+		chassis[57].addShapeBox(0F, 0F, 0F, 1, 5, 4, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1.2F, 0F, -0.7F, 1.2F, 0F, -0.7F, 1.2F, 0F, 0F, -1.2F, 0F, 0F); // Box 416
+		chassis[57].setRotationPoint(-26.2F, 5F, -18F);
 
-		chassis[58].addShapeBox(0F, 0F, 0F, 1, 5, 4, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1.2F, 0F, -0.7F, 1.2F, 0F, -0.7F, 1.2F, 0F, 0F, -1.2F, 0F, 0F); // Box 416
-		chassis[58].setRotationPoint(-26.2F, 5F, -18F);
+		chassis[58].addShapeBox(0F, 0F, 0F, 2, 4, 4, 0F, 0F, 0F, 0.4F, -0.6F, 0F, 0.4F, -0.6F, 0F, 0F, 0F, 0F, 0F, -1.8F, 0F, 0.2F, 0.8F, 0F, 0.2F, 0.8F, 0F, 0F, -1.8F, 0F, 0F); // Box 417
+		chassis[58].setRotationPoint(-28F, 1F, -18F);
 
-		chassis[59].addShapeBox(0F, 0F, 0F, 2, 4, 4, 0F, 0F, 0F, 0.4F, -0.6F, 0F, 0.4F, -0.6F, 0F, 0F, 0F, 0F, 0F, -1.8F, 0F, 0.2F, 0.8F, 0F, 0.2F, 0.8F, 0F, 0F, -1.8F, 0F, 0F); // Box 417
-		chassis[59].setRotationPoint(-28F, 1F, -18F);
+		chassis[59].addShapeBox(0F, 0F, 0F, 13, 1, 5, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 418
+		chassis[59].setRotationPoint(-39.5F, 0F, 13F);
 
-		chassis[60].addShapeBox(0F, 0F, 0F, 13, 1, 5, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 418
-		chassis[60].setRotationPoint(-39.5F, 0F, 13F);
+		chassis[60].addShapeBox(0F, 0F, 0F, 13, 1, 5, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 419
+		chassis[60].setRotationPoint(-39.5F, 0F, -18F);
 
-		chassis[61].addShapeBox(0F, 0F, 0F, 13, 1, 5, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 419
-		chassis[61].setRotationPoint(-39.5F, 0F, -18F);
+		chassis[61].addShapeBox(0F, 0F, 0F, 2, 2, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F); // Box 552
+		chassis[61].setRotationPoint(32F, 7F, -14F);
 
-		chassis[62].addShapeBox(0F, 0F, 0F, 2, 2, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F); // Box 552
-		chassis[62].setRotationPoint(32F, 7F, -14F);
+		chassis[62].addShapeBox(0F, 0F, 0F, 2, 2, 10, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 553
+		chassis[62].setRotationPoint(32F, 7F, 4F);
 
-		chassis[63].addShapeBox(0F, 0F, 0F, 2, 2, 10, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 553
-		chassis[63].setRotationPoint(32F, 7F, 4F);
-
-		chassis[64].addBox(0F, 0F, 0F, 2, 2, 32, 0F); // Box 554
-		chassis[64].setRotationPoint(-34F, 7F, -16F);
+		chassis[63].addBox(0F, 0F, 0F, 2, 2, 32, 0F); // Box 554
+		chassis[63].setRotationPoint(-34F, 7F, -16F);
 
 		translateAll(0F, 0F, 0F);
 		//flipAll();

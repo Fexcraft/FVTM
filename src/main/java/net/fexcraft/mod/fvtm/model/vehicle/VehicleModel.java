@@ -95,6 +95,7 @@ public class VehicleModel extends VehicleBaseModel {
     }
 
     public void translateAll(float x, float y, float z){
+    	if(x == 0 && y == 0 && z == 0){ return; }
         translate(chassis, x, y, z);
         translate(body, x, y, z);
         translate(body_colored_primary, x, y, z);

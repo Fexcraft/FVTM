@@ -41,6 +41,8 @@ public class PartModel extends PartBaseModel {
     public ModelRendererTurbo back_lights[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo reverse_lights[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo fog_lights[] = new ModelRendererTurbo[0];
+    public ModelRendererTurbo turn_signal_left[] = new ModelRendererTurbo[0];
+    public ModelRendererTurbo turn_signal_right[] = new ModelRendererTurbo[0];
     //
     public ModelRendererTurbo windows[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo windows_door_open[] = new ModelRendererTurbo[0];
@@ -289,6 +291,7 @@ public class PartModel extends PartBaseModel {
     }
 
     public void translateAll(float x, float y, float z){
+    	if(x == 0 && y == 0 && z == 0){ return; }
         translate(body, x, y, z);
         translate(body_colored_primary, x, y, z);
         translate(body_colored_secondary, x, y, z);

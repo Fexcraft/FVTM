@@ -1,0 +1,32 @@
+{
+    "RegistryName": "fvp:c9_trunk",
+    "Addon": "fvtm:fvp",
+    "FullName": "C9 Standard Trunk",
+    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.c9.ModelC9Trunk.class",
+    "Category": [
+        "trunk"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c9.png"
+    ],
+    "Compatible": [
+        {
+            "Vehicle": "fvp:sentinel",
+            "x": 0, "y": 0, "z": 0
+        }
+    ],
+    "Removable": true,
+    "Available": true,
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 6
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

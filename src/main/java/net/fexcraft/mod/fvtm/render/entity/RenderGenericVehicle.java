@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelConverter;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.math.Pos;
@@ -22,11 +23,11 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
     }
 
     public void bindTexture(UnboundVehicleEntity ent){
-        super.bindEntityTexture(ent);
+        ModelBase.bindTexture(this.getEntityTexture(ent));
     }
 
     public void bindTexture(ResourceLocation rs){
-        super.bindTexture(rs);
+        ModelBase.bindTexture(rs);
     }
 
     private static final ModelRendererTurbo light = new ModelRendererTurbo(new ModelConverter());

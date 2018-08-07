@@ -11,7 +11,6 @@ import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.render.RGB;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
@@ -23,7 +22,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
     public void render(ConstructorCenterEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY + 1.5F, posZ + 0.5F);
-        Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
+        ModelBase.bindTexture(ModelConstructorCenter.getTexture());
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         double d = 60;
@@ -58,7 +57,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
                     partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translateR();
                 });
                 GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * -0.0625f) + te.getLiftState(), 0);
-                Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
+                ModelBase.bindTexture(ModelConstructorCenter.getTexture());
             }
         }
         else if(te.getContainerData() != null){
@@ -67,7 +66,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
             if(model != null){
                 ModelBase.bindTexture(te.getContainerData().getTexture());
                 model.render(te.getContainerData(), null);
-                Minecraft.getMinecraft().renderEngine.bindTexture(ModelConstructorCenter.getTexture());
+                ModelBase.bindTexture(ModelConstructorCenter.getTexture());
             }
         }
         else{

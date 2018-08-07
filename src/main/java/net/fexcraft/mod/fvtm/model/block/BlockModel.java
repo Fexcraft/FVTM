@@ -11,10 +11,9 @@ import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
+import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
 import net.fexcraft.mod.lib.util.render.RGB;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -151,7 +150,7 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
             {
                 GL11.glPushMatrix();
                 GL11.glRotated(180d, 1, 0, 0);
-                Minecraft.getMinecraft().renderEngine.bindTexture(data.getTexture());
+                bindTexture(data.getTexture());
                 model.render(data, null, null, -1);
                 GL11.glPopMatrix();
             }

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.mod.fvtm.entities.StreetSignEntity;
 import net.fexcraft.mod.fvtm.model.block.StreetSignModel;
 import net.fexcraft.mod.fvtm.render.Renderer;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -18,7 +19,7 @@ public class RenderStreetSign extends Render<StreetSignEntity> implements IRende
     }
 
     public void bindTexture(ResourceLocation rs){
-        super.bindTexture(rs);
+        ModelBase.bindTexture(rs);
     }
     
     private static final StreetSignModel model = new StreetSignModel();
@@ -28,7 +29,7 @@ public class RenderStreetSign extends Render<StreetSignEntity> implements IRende
         GL11.glPushMatrix();
         {
         	float rot = 60;
-        	float xo = 0, zo = 0;
+        	//float xo = 0, zo = 0;
         	switch(entity.facing.getIndex()){
 	        	case 2:{
 	        		rot = 0;

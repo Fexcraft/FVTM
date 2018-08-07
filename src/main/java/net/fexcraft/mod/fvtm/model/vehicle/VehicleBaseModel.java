@@ -9,7 +9,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -96,7 +95,7 @@ public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object>
 			bindTexture(data.getTexture());
 			model.render(data, null, null, 0);
 			data.getParts().forEach((key, partdata) -> {
-				Minecraft.getMinecraft().renderEngine.bindTexture(partdata.getTexture());
+				bindTexture(partdata.getTexture());
 				partdata.getPart().getOffsetFor(data.getVehicle().getRegistryName()).translate();
 				partdata.getPart().getModel().render(data, key);
 				partdata.getPart().getOffsetFor(data.getVehicle().getRegistryName()).translateR();

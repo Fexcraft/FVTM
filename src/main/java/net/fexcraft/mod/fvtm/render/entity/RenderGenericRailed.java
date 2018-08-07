@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.RailboundVehicleEntity;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelConverter;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.math.Pos;
@@ -22,11 +23,11 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
     }
 
     public void bindTexture(RailboundVehicleEntity ent){
-        super.bindEntityTexture(ent);
+        ModelBase.bindTexture(this.getEntityTexture(ent));
     }
 
     public void bindTexture(ResourceLocation rs){
-        super.bindTexture(rs);
+        ModelBase.bindTexture(rs);
     }
 
     private static final ModelRendererTurbo light = new ModelRendererTurbo(new ModelConverter());
@@ -69,11 +70,11 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
             GL11.glPushMatrix();
             Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
             if(modVehicle != null){
-                this.bindTexture(vehicle.getVehicleData().getTexture());
+                ModelBase.bindTexture(vehicle.getVehicleData().getTexture());
                 modVehicle.render(vehicle.getVehicleData(), null, vehicle, -1);
                 if(vehicle.getVehicleData().getParts().size() > 0){
                     vehicle.getVehicleData().getParts().forEach((key, partdata) -> {
-                        this.bindTexture(partdata.getTexture());
+                    	ModelBase.bindTexture(partdata.getTexture());
                         Pos pos = partdata.getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
                         pos.translate();
                         partdata.getPart().getModel().render(vehicle.getVehicleData(), key, vehicle, -1);

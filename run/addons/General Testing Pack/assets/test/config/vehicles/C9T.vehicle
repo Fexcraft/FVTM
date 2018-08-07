@@ -1,0 +1,40 @@
+{
+    "RegistryName": "test:c9t",
+    "Addon": "fvtm:test",
+    "FullName": "C9 T",
+    "ModelFile": "net.fexcraft.mod.addons.test.models.ModelC9T.class",
+    "PrimaryColor": {
+        "Red": 168,
+        "Blue": 168,
+        "Green": 168
+    },
+    "SecondaryColor": {
+        "Red": 194,
+        "Blue": 194,
+        "Green": 194
+    },
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c9.png"
+    ],
+    "WheelPos":[
+        { "x": -33, "y": -18, "z": -16 },
+        { "x": -33, "y": -18, "z":  16 },
+        { "x":  33, "y": -18, "z":  16 },
+        { "x":  33, "y": -18, "z": -16 }
+    ],
+    "WheelCoords":[
+        { "x":  33, "y": 10, "z": -16, "id": "right_front_wheel" },
+        { "x":  33, "y": 10, "z":  16, "id": "left_front_wheel" },
+        { "x": -33, "y": 10, "z": -16, "id": "right_back_wheel" },
+        { "x": -33, "y": 10, "z":  16, "id": "left_back_wheel" }
+    ],
+    "ConstructionLength": 3,
+    "ConstructionYOffSet": 4.5,
+    "ConstructionWheelOffset": 16,
+    "RequiredParts": [],
+    "DriveType": "4wd",
+    "FM-MaxPositiveThrottle": 3,
+    "FM-MaxNegativeThrottle": 2,
+    "FM-TurnLeftModifier": 5,
+    "FM-TurnRightModifier": 5
+}

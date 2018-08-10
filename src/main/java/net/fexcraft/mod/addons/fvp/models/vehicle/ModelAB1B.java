@@ -3,12 +3,12 @@ package net.fexcraft.mod.addons.fvp.models.vehicle;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
-public class ModelAB1B extends VehicleModel {
+public class ModelAB1B extends VehicleModelTMT {
 
     public ModelAB1B(){
     	super(); textureX = 1024; textureY = 1024;

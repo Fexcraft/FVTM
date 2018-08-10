@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class Model4x4Samu extends VehicleModel {
+public class Model4x4Samu extends VehicleModelTMT {
 
     public Model4x4Samu(){
     	super(); textureX = 512; textureY = 512;

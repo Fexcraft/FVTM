@@ -7,10 +7,10 @@
 // Last changed on: 24.08.2015 - 16:52:34
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelC2 extends VehicleModel {
+public class ModelC2 extends VehicleModelTMT {
 
     public ModelC2(){
     	super(); textureX = 512; textureY = 512;

@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelHuonclass extends VehicleModel {
+public class ModelHuonclass extends VehicleModelTMT {
 
     public ModelHuonclass(){
     	super(); textureX = 512; textureY = 512;

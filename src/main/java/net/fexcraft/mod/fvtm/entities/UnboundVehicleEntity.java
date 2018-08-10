@@ -89,7 +89,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
-    public int serverPositionTransitionTicker, consize = -1;
+    public int serverPositionTransitionTicker, consize = -1, servtick = 5;
 
     /**
      * Generic Constructor, Client/Load from NBT
@@ -327,7 +327,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         if(seat != 0 && key != 6 && key != 11){
             return false;
         }
-        if(world.isRemote && key >= 6){
+        if(world.isRemote /*&& key >= 6*/){
             PacketHandler.getInstance().sendToServer(new PacketVehicleKeyPress(key));
             return true;
         }
@@ -558,7 +558,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             serverYaw = yaw;
             serverPitch = pitch;
             serverRoll = roll;
-            serverPositionTransitionTicker = 5;
+            serverPositionTransitionTicker = servtick;
         }
         else{
             setPosition(posX, posY, posZ);
@@ -571,9 +571,8 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         motionY = motY;
         motionZ = motZ;
         angularVelocity = new Vec3d(avelx, avely, avelz);
-        if(!(seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer)){
-            this.throttle = throttle;
-        }
+        //f(!(seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer))
+        	this.throttle = throttle;
         //
         wheelsYaw = steeringYaw;
     }
@@ -859,7 +858,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         }
         else{
             if(sync){
-                serverPositionTransitionTicker = posRotationIncrements + 5;
+                serverPositionTransitionTicker = posRotationIncrements + servtick;
             }
             else{
                 double var10 = x - posX;
@@ -869,7 +868,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 if(var16 <= 1.0D){
                     return;
                 }
-                serverPositionTransitionTicker = 3;
+                serverPositionTransitionTicker = servtick / 2;
             }
             serverPosX = x;
             serverPosY = y;
@@ -977,7 +976,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             doorToggleTimer--;
         }
         //
-        boolean drivenByPlayer = isDrivenByPlayer();
+        //boolean drivenByPlayer = isDrivenByPlayer();
         wheelsYaw *= 0.9F;
         if(wheelsYaw > 20){
             wheelsYaw = 20;
@@ -985,7 +984,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         if(wheelsYaw < -20){
             wheelsYaw = -20;
         }
-        if(world.isRemote && !drivenByPlayer){
+        if(world.isRemote /*&& !drivenByPlayer*/){
             if(serverPositionTransitionTicker > 0){
                 double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
                 double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
@@ -1009,7 +1008,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 wheel.prevPosZ = wheel.posZ;
             }
         }
-        if(this.vehicledata.getVehicle().isTrailerOrWagon() ? this.wheels.length > 2 : true){
+        if(!world.isRemote && this.vehicledata.getVehicle().isTrailerOrWagon() ? this.wheels.length > 2 : true){
             if(hasEnoughFuel()){
                 wheelsAngle += throttle * 0.2F;
             }
@@ -1051,13 +1050,13 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 seat.updatePosition();
             }
         }
-        if(drivenByPlayer){
+        /*if(drivenByPlayer){
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
             serverPosX = posX;
             serverPosY = posY;
             serverPosZ = posZ;
             serverYaw = axes.getYaw();
-        }
+        }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
             PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
         }

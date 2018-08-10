@@ -11,5 +11,42 @@
     ],
     "Compatible": [{ "Vehicle": "fvp:sentinel", "x": 0, "y": 0, "z": 0 }],
     "Removable": true,
-    "Available": true
+    "Available": true,
+	"Attributes": [
+    	"light_provider"
+    ],
+    "AttributeData":{
+    	"Light-Providers": [
+    		{
+    			"type": "front",
+    			"lights":[
+    				{
+    					"pos": { "x": 48, "y": 1, "z": 11 },
+    					"radius": 16, "length": 200, "segments": 8,
+    					"base": 0.125, "top": 3, "rot_z": 6, "rot_x": 45
+    				},
+    				{
+    					"pos": { "x": 48, "y": 1, "z": -11 },
+    					"radius": 16, "length": 200, "segments": 8,
+    					"base": 0.125, "top": 3, "rot_z": 6, "rot_x": 45
+    				}
+    			]
+    		},
+    		{
+    			"type": "long",
+    			"lights":[
+    				{
+    					"pos": { "x": 48, "y": 1, "z": 11 },
+    					"radius": 16, "length": 400, "segments": 16,
+    					"base": 0.14, "top": 4, "rot_z": 3, "rot_x": 45
+    				},
+    				{
+    					"pos": { "x": 48, "y": 1, "z": -11 },
+    					"radius": 16, "length": 400, "segments": 16,
+    					"base": 0.14, "top": 4, "rot_z": 3, "rot_x": 45
+    				}
+    			]
+    		}
+    	]
+    }
 }

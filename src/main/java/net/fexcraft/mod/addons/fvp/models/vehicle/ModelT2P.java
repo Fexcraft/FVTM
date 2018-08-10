@@ -7,12 +7,12 @@
 // Last changed on: 20.01.2016 - 22:15:40
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.Coord2D;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.tmt.Shape2D;
 
-public class ModelT2P extends VehicleModel {
+public class ModelT2P extends VehicleModelTMT {
 
     public ModelT2P(){
     	super(); addToCreators("Ferdinand (FEX___96)");

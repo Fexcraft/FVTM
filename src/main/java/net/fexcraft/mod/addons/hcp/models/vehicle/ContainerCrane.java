@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.mod.addons.hcp.scripts.ContainerCraneScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
  *
  * @author Ferdinand (FEX___96)
  */
-public class ContainerCrane extends VehicleModel {
+public class ContainerCrane extends VehicleModelTMT {
 
     private final void initChassis(){
         chassis = new ModelRendererTurbo[502];

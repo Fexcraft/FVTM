@@ -1,6 +1,6 @@
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 // This File was created with the Minecraft-SMP Modelling Toolbox 2.3.0.0
@@ -11,7 +11,7 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 // Created on: 18.03.2018 - 20:37:49
 // Last changed on: 03.08.2018
 
-public class ModelSentinel extends VehicleModel {
+public class ModelSentinel extends VehicleModelTMT {
 
 	public ModelSentinel(){
 		textureX = textureY = 512;

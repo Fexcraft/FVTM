@@ -16,9 +16,9 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.fexcraft.mod.lib.util.math.Pos;
+import net.fexcraft.mod.lib.util.math.Vec3f;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -100,18 +100,16 @@ public class LightProviderAttribute implements Attribute {
 
     public static class LightData {
 
-        private Pos pos;
+        private Vec3f pos;
         private RGB color;
         private int segments;
         private float radius, length, base, top, rotx, roty, rotz;
 
         @SideOnly(Side.CLIENT)
         private ModelRendererTurbo main, send;
-        @SideOnly(Side.CLIENT)
-        private ModelBase placeholder;
 
         public LightData(JsonObject obj){
-            pos = Pos.fromJSON(obj.get("pos").getAsJsonObject());
+            pos = Pos.fromJSON(obj.get("pos").getAsJsonObject()).to16Float();
             radius = JsonUtil.getIfExists(obj, "radius", 16).floatValue();
             length = JsonUtil.getIfExists(obj, "length", 128).floatValue();
             segments = JsonUtil.getIfExists(obj, "segments", 32).intValue();
@@ -123,21 +121,18 @@ public class LightProviderAttribute implements Attribute {
             rotx = JsonUtil.getIfExists(obj, "rot_x", 0).floatValue();
             roty = JsonUtil.getIfExists(obj, "rot_y", 0).floatValue();
             rotz = JsonUtil.getIfExists(obj, "rot_z", 0).floatValue();
-            if(Static.side().isClient()){
-                placeholder = ModelBase.EMPTY;
-            }
         }
 
         @SideOnly(Side.CLIENT)
         public void render(){
             if(main == null || send == null){
-                main = new ModelRendererTurbo(placeholder);
-                send = new ModelRendererTurbo(placeholder);
+                main = new ModelRendererTurbo(null);
+                send = new ModelRendererTurbo(null);
                 main.addCylinder(0, 0, 0, radius, length, segments, base, top, 3);
-                main.setRotationPoint(pos.x, pos.y, pos.z);
+                main.setRotationPoint(pos.xCoord, pos.yCoord, pos.zCoord);
                 send.flip = true;
                 send.addCylinder(0, 0, 0, radius, length, segments, base, top, 3);
-                send.setRotationPoint(pos.x, pos.y, pos.z);
+                send.setRotationPoint(pos.xCoord, pos.yCoord, pos.zCoord);
                 //
                 main.rotateAngleX = rotx == 0 ? 0 : (float) Math.toRadians(rotx);
                 main.rotateAngleY = roty == 0 ? 0 : (float) Math.toRadians(roty);

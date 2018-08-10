@@ -7,7 +7,7 @@ import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
-public class VehicleModel extends VehicleBaseModel {
+public class VehicleModelTMT extends VehicleBaseModel {
 
     public ModelRendererTurbo chassis[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo body[] = new ModelRendererTurbo[0];
@@ -21,9 +21,9 @@ public class VehicleModel extends VehicleBaseModel {
     public ModelRendererTurbo steering[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo wheels_import[] = new ModelRendererTurbo[0];
 
-    public VehicleModel(){ super(); }
+    public VehicleModelTMT(){ super(); }
 
-    public VehicleModel(JsonObject obj){
+    public VehicleModelTMT(JsonObject obj){
     	super(obj);
         chassis = submodels.get("chassis");
         body = submodels.get("body");

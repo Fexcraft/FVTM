@@ -6,14 +6,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Model;
+import net.fexcraft.mod.lib.fmr.ModelCompound;
 import net.fexcraft.mod.lib.tmt.ModelBase;
+import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
 
 public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K> {
 	
 	protected int textureX, textureY;
-	protected ModelMap submodels = new ModelMap();
+	protected ModelMap<ModelRendererTurbo[]> submodels = new ModelMap<ModelRendererTurbo[]>(false);
+	protected ModelMap<ModelCompound> fmrmodels = new ModelMap<ModelCompound>(true);
 	private ArrayList<String> creators = new ArrayList<>();
 	
 	public GenericModel(){}
@@ -78,6 +81,11 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
 				translate(sub, x, y, z);
 			});
 		}
+		if(fmrmodels != null){
+			fmrmodels.values().forEach(elm -> {
+				elm.translate(x, y, z);
+			});
+		}
 	}
 
 	@Override
@@ -85,6 +93,11 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
 		if(submodels != null){
 			submodels.values().forEach(sub -> {
 				rotate(sub, x, y, z);
+			});
+		}
+		if(fmrmodels != null){
+			fmrmodels.values().forEach(elm -> {
+				elm.rotate(x, y, z);
 			});
 		}
 	}

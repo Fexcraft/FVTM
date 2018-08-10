@@ -3,11 +3,11 @@ package net.fexcraft.mod.addons.zmp.models.vehicle;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelCargoShip extends VehicleModel {
+public class ModelCargoShip extends VehicleModelTMT {
 
     public ModelCargoShip(){
     	super(); textureX = 4096; textureY = 4096;

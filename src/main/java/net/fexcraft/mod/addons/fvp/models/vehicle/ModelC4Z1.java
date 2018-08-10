@@ -3,12 +3,12 @@ package net.fexcraft.mod.addons.fvp.models.vehicle;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
-public class ModelC4Z1 extends VehicleModel {
+public class ModelC4Z1 extends VehicleModelTMT {
 
     private static final int texture = 1024;
 

@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelHorseFloat extends VehicleModel {
+public class ModelHorseFloat extends VehicleModelTMT {
 
     public ModelHorseFloat(){
     	super(); textureX = 512; textureY = 512;

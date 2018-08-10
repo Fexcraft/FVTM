@@ -3,12 +3,12 @@ package net.fexcraft.mod.addons.hcp.models.trailer;
 import javax.annotation.Nullable;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 
-public class ModelTR1 extends VehicleModel {
+public class ModelTR1 extends VehicleModelTMT {
 
     public ModelTR1(){
     	super(); textureX = 512; textureY = 512;

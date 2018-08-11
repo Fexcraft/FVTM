@@ -30,7 +30,7 @@ public class ContainerModelFMR extends ContainerBaseModel {
         body_door_close = fmrmodels.get("body_door_close");
         body_door_open_colored_primary = fmrmodels.get("body_door_open_colored_primary");
         body_door_close_colored_primary = fmrmodels.get("body_door_close_colored_primary");
-        other = fmrmodels.get("body");
+        other = fmrmodels.get("other");
     }
     
 	@Override

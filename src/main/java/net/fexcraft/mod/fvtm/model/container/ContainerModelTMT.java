@@ -31,7 +31,7 @@ public class ContainerModelTMT extends ContainerBaseModel {
         body_door_close = submodels.get("body_door_close");
         body_door_open_colored_primary = submodels.get("body_door_open_colored_primary");
         body_door_close_colored_primary = submodels.get("body_door_close_colored_primary");
-        other = submodels.get("body");
+        other = submodels.get("other");
     }
     
 	@Override

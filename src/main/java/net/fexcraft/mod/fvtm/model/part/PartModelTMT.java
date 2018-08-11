@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
@@ -314,7 +315,7 @@ public class PartModelTMT extends PartBaseModel {
     }
 
     public void flip(ModelRendererTurbo[] model){
-        this.fixRotations(model);
+        ModelBase.fixRotations(model);
     }
 
     public void flipAll(){

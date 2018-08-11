@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model.vehicle;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
@@ -110,7 +111,7 @@ public class VehicleModelTMT extends VehicleBaseModel {
     }
 
     public void flip(ModelRendererTurbo[] mod){
-        this.fixRotations(mod);
+        ModelBase.fixRotations(mod);
     }
 
     public void flipAll(){

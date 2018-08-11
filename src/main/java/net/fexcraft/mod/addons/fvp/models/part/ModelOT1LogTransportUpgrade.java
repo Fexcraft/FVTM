@@ -2,13 +2,13 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class ModelOT1LogTransportUpgrade extends PartModel {
+public class ModelOT1LogTransportUpgrade extends PartModelTMT {
 
     public ModelRendererTurbo cargo[] = new ModelRendererTurbo[0];
 

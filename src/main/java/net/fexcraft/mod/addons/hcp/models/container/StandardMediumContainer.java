@@ -6,10 +6,10 @@
 // Last changed on: 05.12.2017 - 18:43:59
 package net.fexcraft.mod.addons.hcp.models.container;
 
-import net.fexcraft.mod.fvtm.model.container.ContainerModel;
+import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class StandardMediumContainer extends ContainerModel {
+public class StandardMediumContainer extends ContainerModelTMT {
 
     public StandardMediumContainer(){
     	super(); textureX = 512; textureY = 512;

@@ -9,14 +9,14 @@ package net.fexcraft.mod.addons.hcp.models.container;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.model.container.ContainerModel;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class StandardRefrigeratorContainer extends ContainerModel {
+public class StandardRefrigeratorContainer extends ContainerModelTMT {
 
     public ModelRendererTurbo rot[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo glow[] = new ModelRendererTurbo[0];
@@ -926,9 +926,9 @@ public class StandardRefrigeratorContainer extends ContainerModel {
             GlStateManager.popMatrix();
         }
         //
-        PartModel.lightOff(null);
+        PartModelTMT.lightOff(null);
         render(glow);
-        PartModel.lightOn(null);
+        PartModelTMT.lightOn(null);
     }
 
 }

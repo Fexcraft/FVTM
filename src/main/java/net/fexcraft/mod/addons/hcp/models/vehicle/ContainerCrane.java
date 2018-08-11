@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.addons.hcp.scripts.ContainerCraneScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
@@ -4254,9 +4254,9 @@ public class ContainerCrane extends VehicleModelTMT {
         	GL11.glTranslated(0, script.ypos * 0.001, 0);
         	render(turret);
         	if(script.searchbox){
-        		PartModel.lightOff(entity);
+        		PartModelTMT.lightOff(entity);
         		render(box);
-        		PartModel.lightOn(entity);
+        		PartModelTMT.lightOn(entity);
         	}
         	if(script.getContainerData() != null){
         		GL11.glTranslatef(-0.5f, 1, 7);

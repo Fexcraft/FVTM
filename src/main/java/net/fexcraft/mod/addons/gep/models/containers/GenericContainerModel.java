@@ -1,11 +1,11 @@
 package net.fexcraft.mod.addons.gep.models.containers;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.model.container.ContainerModel;
+import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class GenericContainerModel extends ContainerModel {
+public class GenericContainerModel extends ContainerModelTMT {
 
     private static final GenericContainerModel INSTANCE = new GenericContainerModel();
     private static final int textureSize = 512;

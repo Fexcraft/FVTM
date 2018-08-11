@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
@@ -90,7 +90,7 @@ public class GenericPart implements Part {
         this.available = JsonUtil.getIfExists(obj, "Available", true);
         this.adjustable = JsonUtil.getIfExists(obj, "Adjustable", false);
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleData.class, String.class, PartModel.class);
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleData.class, String.class, PartModelTMT.class);
         }
         this.attributedata = JsonUtil.getIfExists(obj, "AttributeData", new JsonObject()).getAsJsonObject();
 

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -11,7 +11,7 @@ import net.minecraft.entity.Entity;
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Type1 extends PartModel {
+public class TR1Type1 extends PartModelTMT {
     
     private ModelRendererTurbo[] door_left, door_right, door_left_lights, door_right_lights;
 

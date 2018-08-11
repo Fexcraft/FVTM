@@ -5,10 +5,10 @@
 // Model Creator: FEX___96
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelT2SW extends PartModel {
+public class ModelT2SW extends PartModelTMT {
 
     public ModelT2SW(){
     	super(); textureX = 512; textureY = 512;

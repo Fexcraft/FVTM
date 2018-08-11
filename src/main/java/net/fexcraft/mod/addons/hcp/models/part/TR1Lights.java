@@ -1,13 +1,13 @@
 package net.fexcraft.mod.addons.hcp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 /**
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Lights extends PartModel {
+public class TR1Lights extends PartModelTMT {
 
     public TR1Lights(){
     	super(); this.addToCreators("FEX___96");

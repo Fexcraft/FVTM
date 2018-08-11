@@ -9,17 +9,17 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
+import net.fexcraft.mod.lib.fmr.FCLItemModel;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public class BlockModel extends GenericModel<BlockData, BlockTileEntity> implements TMTItemModel {
+public class BlockModel extends GenericModel<BlockData, BlockTileEntity> implements FCLItemModel {
 
     public ModelRendererTurbo body[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo body_colored_primary[] = new ModelRendererTurbo[0];
@@ -58,20 +58,20 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
 	@Override
 	public void render(BlockData data, BlockTileEntity key, Entity ent, int meta){
 		render(body);
-		if(PartModel.rq(body_colored_primary)){
+		if(PartModelTMT.rq(body_colored_primary)){
 			data.getPrimaryColor().glColorApply();
 			render(body_colored_primary);
 			RGB.glColorReset();
 		}
-		if(PartModel.rq(body_colored_secondary)){
+		if(PartModelTMT.rq(body_colored_secondary)){
 			data.getSecondaryColor().glColorApply();
 			render(body_colored_secondary);
 			RGB.glColorReset();
 		}
-		if(PartModel.rq(glow)){
-			PartModel.lightOff(ent);
+		if(PartModelTMT.rq(glow)){
+			PartModelTMT.lightOff(ent);
 			render(glow);
-			PartModel.lightOn(ent);
+			PartModelTMT.lightOn(ent);
 		}
 	}
 

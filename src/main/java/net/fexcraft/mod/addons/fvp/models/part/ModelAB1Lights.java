@@ -2,11 +2,11 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartBaseModel;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelAB1Lights extends PartModel {
+public class ModelAB1Lights extends PartModelTMT {
 
     public ModelAB1Lights(){
     	super(); textureX = 1024; textureY = 1024;

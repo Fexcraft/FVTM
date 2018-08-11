@@ -7,12 +7,12 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
+import net.fexcraft.mod.lib.fmr.FCLItemModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerBaseModel extends GenericModel<ContainerData, Object> implements TMTItemModel {
+public abstract class ContainerBaseModel extends GenericModel<ContainerData, Object> implements FCLItemModel {
 	
     public float gui_translate_x = 0;
     public float gui_translate_y = 0;

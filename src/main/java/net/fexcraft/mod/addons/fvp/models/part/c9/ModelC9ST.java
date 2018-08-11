@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.fvp.models.part.c9;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelC9ST extends PartModel {
+public class ModelC9ST extends PartModelTMT {
 
     public ModelC9ST(){
     	super(); textureX = 512; textureY = 512;

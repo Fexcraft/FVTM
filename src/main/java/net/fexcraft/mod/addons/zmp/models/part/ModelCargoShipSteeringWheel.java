@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelCargoShipSteeringWheel extends PartModel {
+public class ModelCargoShipSteeringWheel extends PartModelTMT {
 
 
     public ModelCargoShipSteeringWheel(){

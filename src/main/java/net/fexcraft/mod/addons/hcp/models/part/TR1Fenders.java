@@ -1,7 +1,7 @@
 package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
@@ -9,7 +9,7 @@ import net.minecraft.entity.Entity;
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Fenders extends PartModel {
+public class TR1Fenders extends PartModelTMT {
 
     public TR1Fenders(){
     	super(); this.addToCreators("FEX___96");

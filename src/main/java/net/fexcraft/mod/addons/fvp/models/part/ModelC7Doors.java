@@ -2,13 +2,13 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
-public class ModelC7Doors extends PartModel {
+public class ModelC7Doors extends PartModelTMT {
 	
     public ModelRendererTurbo[] trunkn, trunkc;
     public ModelRendererTurbo[] front_right;

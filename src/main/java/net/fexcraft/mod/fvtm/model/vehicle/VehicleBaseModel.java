@@ -8,12 +8,12 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
+import net.fexcraft.mod.lib.fmr.FCLItemModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object> implements TMTItemModel {
+public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object> implements FCLItemModel {
 
 	public float gui_translate_x = 0;
 	public float gui_translate_y = 0;

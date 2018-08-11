@@ -1,11 +1,11 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class Model4x4EscapeFrontSeats extends PartModel {
+public class Model4x4EscapeFrontSeats extends PartModelTMT {
 
     public Model4x4EscapeFrontSeats(){
     	super(); textureX = 512; textureY = 512;

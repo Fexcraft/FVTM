@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelC8Seats extends PartModel {
+public class ModelC8Seats extends PartModelTMT {
 
     public ModelC8Seats(){
     	super(); textureX = 512; textureY = 512;

@@ -3,13 +3,13 @@ package net.fexcraft.mod.addons.zmp.models.part;
 import java.util.TreeMap;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.lang.ArrayList;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 
-public class ModelCargoShipCargo extends PartModel {
+public class ModelCargoShipCargo extends PartModelTMT {
 
     private static final ArrayList<Pos> offsets = new ArrayList<Pos>();
     private static final TreeMap<String, Pos> positions = new TreeMap<String, Pos>();

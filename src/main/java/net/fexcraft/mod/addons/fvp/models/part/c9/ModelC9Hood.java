@@ -2,14 +2,14 @@ package net.fexcraft.mod.addons.fvp.models.part.c9;
 
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
-public class ModelC9Hood extends PartModel {
+public class ModelC9Hood extends PartModelTMT {
 
     public ModelC9Hood(){
     	super(); textureX = 512; textureY = 512;

@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class Model4x4EscapeTrailerHitch extends PartModel {
+public class Model4x4EscapeTrailerHitch extends PartModelTMT {
 
     public Model4x4EscapeTrailerHitch(){
     	super(); textureX = 512; textureY = 512;

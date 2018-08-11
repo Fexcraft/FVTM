@@ -7,10 +7,10 @@
 // Last changed on: 04.04.2018
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelT2FL extends PartModel {
+public class ModelT2FL extends PartModelTMT {
 
     public ModelT2FL(){
     	super(); textureX = 512; textureY = 512;

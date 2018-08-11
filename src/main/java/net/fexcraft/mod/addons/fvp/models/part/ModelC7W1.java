@@ -1,11 +1,11 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelC7W1 extends PartModel {
+public class ModelC7W1 extends PartModelTMT {
 
     public ModelC7W1(){
     	super(); textureX = 512; textureY = 512;

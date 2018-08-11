@@ -7,10 +7,10 @@
 // Last changed on: 20.01.2016 - 22:15:40
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelAB1SW extends PartModel {
+public class ModelAB1SW extends PartModelTMT {
 
     public ModelAB1SW(){
     	super(); textureX = 1024; textureY = 1024;

@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelObjTest extends PartModel {
+public class ModelObjTest extends PartModelTMT {
 
     public ModelObjTest(){
     	super(); this.addToCreators("Ferdinand (FEX___96)");

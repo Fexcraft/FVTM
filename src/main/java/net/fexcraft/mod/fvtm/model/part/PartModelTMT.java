@@ -12,7 +12,7 @@ import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
-public class PartModel extends PartBaseModel {
+public class PartModelTMT extends PartBaseModel {
 
     public ModelRendererTurbo body[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo body_colored_primary[] = new ModelRendererTurbo[0];
@@ -48,9 +48,9 @@ public class PartModel extends PartBaseModel {
     public ModelRendererTurbo windows_door_open[] = new ModelRendererTurbo[0];
     public ModelRendererTurbo windows_door_close[] = new ModelRendererTurbo[0];
     
-    public PartModel(){ super(); }
+    public PartModelTMT(){ super(); }
 
-    public PartModel(JsonObject obj){
+    public PartModelTMT(JsonObject obj){
         super(obj);
         body = submodels.get("body");
         body_colored_primary = submodels.get("body_colored_primary");

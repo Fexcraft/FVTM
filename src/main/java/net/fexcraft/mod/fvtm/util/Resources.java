@@ -410,7 +410,7 @@ public class Resources {
                             event.getRegistry().register(veh);
                             if(Static.side().isClient()){
                                 if(Config.RENDER_IN_GUI){
-                                    net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
+                                    net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
                                 }
                                 net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
                             }
@@ -423,7 +423,7 @@ public class Resources {
                                     event.getRegistry().register(veh);
                                     if(Static.side().isClient()){
                                         if(Config.RENDER_IN_GUI){
-                                            net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
+                                            net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
                                         }
                                         net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
                                     }
@@ -469,7 +469,7 @@ public class Resources {
                         event.getRegistry().register(veh);
                         if(Static.side().isClient()){
                             if(Config.RENDER_IN_GUI){
-                                net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
+                                net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
                             }
                             net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
                         }
@@ -601,7 +601,7 @@ public class Resources {
                             event.getRegistry().register(con);
                             if(Static.side().isClient()){
                                 if(Config.RENDER_IN_GUI){
-                                    net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
+                                    net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
                                 }
                                 net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
                             }
@@ -614,7 +614,7 @@ public class Resources {
                                     event.getRegistry().register(con);
                                     if(Static.side().isClient()){
                                         if(Config.RENDER_IN_GUI){
-                                            net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
+                                            net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
                                         }
                                         net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
                                     }
@@ -633,7 +633,7 @@ public class Resources {
                         event.getRegistry().register(con);
                         if(Static.side().isClient()){
                             if(Config.RENDER_IN_GUI){
-                                net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
+                                net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
                             }
                             net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
                         }
@@ -733,7 +733,7 @@ public class Resources {
                             event.getRegistry().register(block);
                             if(Static.side().isClient()){
                                 net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericBlockItem.INSTANCE, block.getRegistryName());
-                                net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
+                                net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
                             }
                             Print.debug(block.getRegistryName());
                         }
@@ -744,7 +744,7 @@ public class Resources {
                                     event.getRegistry().register(block);
                                     if(Static.side().isClient()){
                                         net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericConsumableItem.INSTANCE, block.getRegistryName());
-                                        net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
+                                        net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
                                     }
                                     Print.debug(block.getRegistryName());
                                 }
@@ -760,7 +760,7 @@ public class Resources {
                         event.getRegistry().register(block);
                         if(Static.side().isClient()){
                             net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericConsumableItem.INSTANCE, block.getRegistryName());
-                            net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
+                            net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
                         }
                         Print.debug(block.getRegistryName());
                     }

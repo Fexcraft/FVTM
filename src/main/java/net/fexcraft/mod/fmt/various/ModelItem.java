@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fmt.various;
 
 import net.fexcraft.mod.fmt.FMT;
-import net.fexcraft.mod.lib.tmt.util.TMTItemModel;
-import net.fexcraft.mod.lib.tmt.util.TMTItemModelLoader;
+import net.fexcraft.mod.lib.fmr.FCLItemModel;
+import net.fexcraft.mod.lib.fmr.FCLItemModelLoader;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,10 +15,10 @@ public class ModelItem extends Item {
 	
 	public ModelItem(){
 		this.setCreativeTab(CreativeTabs.TOOLS);
-		TMTItemModelLoader.addItemModel(new ResourceLocation(FMT.MODID, "modelitem"), new ModelImpl());
+		FCLItemModelLoader.addItemModel(new ResourceLocation(FMT.MODID, "modelitem"), new ModelImpl());
 	}
 	
-	public static class ModelImpl implements TMTItemModel {
+	public static class ModelImpl implements FCLItemModel {
 
 		@Override
 		public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){

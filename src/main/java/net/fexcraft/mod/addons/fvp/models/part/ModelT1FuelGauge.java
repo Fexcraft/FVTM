@@ -7,12 +7,12 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 
-public class ModelT1FuelGauge extends PartModel {
+public class ModelT1FuelGauge extends PartModelTMT {
 
     public ModelT1FuelGauge(){
     	super(); textureX = 32; textureY = 32;

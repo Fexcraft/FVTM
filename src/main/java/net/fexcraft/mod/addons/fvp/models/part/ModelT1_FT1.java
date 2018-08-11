@@ -2,12 +2,12 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.addons.fvp.scripts.T1SnowPlowScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 
-public class ModelT1_FT1 extends PartModel {
+public class ModelT1_FT1 extends PartModelTMT {
 
     private ModelRendererTurbo[] snowplow;
 

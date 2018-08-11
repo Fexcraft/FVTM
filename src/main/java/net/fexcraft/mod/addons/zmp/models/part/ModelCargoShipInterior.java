@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelCargoShipInterior extends PartModel {
+public class ModelCargoShipInterior extends PartModelTMT {
 	
     public ModelCargoShipInterior(){
     	super(); textureX = 4096; textureY = 4096;

@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
-public class ModelHuonclassInterior extends PartModel {
+public class ModelHuonclassInterior extends PartModelTMT {
 
     public ModelHuonclassInterior(){
     	super(); textureX = 512; textureY = 512;

@@ -9,11 +9,11 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.mod.addons.fvp.scripts.T1_2Script;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModel;
+import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
-public class ModelT1_2 extends PartModel {
+public class ModelT1_2 extends PartModelTMT {
 
     private ModelRendererTurbo[] out, in;
 

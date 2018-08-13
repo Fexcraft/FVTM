@@ -153,6 +153,7 @@ public class Renderer {
         GL11.glPushMatrix();
         {
             GlStateManager.disableBlend(); GlStateManager.enableAlpha();
+            GL11.glTranslated((bpos.getX() + 0.5) - player.posX, bpos.getY() - data.getWheelPos().get(0).to16FloatY() - player.posY, (bpos.getZ() + 0.5) - player.posZ);
             float yaw = (player.rotationYaw - player.prevRotationYaw); for(; yaw > 180F; yaw -= 360F); for(; yaw <= -180F; yaw += 360F);
             GL11.glRotatef(180F - player.prevRotationYaw - yaw, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(180f, 0f, 0f, 1f); GL11.glRotatef(90f, 0f, 1f, 0f);

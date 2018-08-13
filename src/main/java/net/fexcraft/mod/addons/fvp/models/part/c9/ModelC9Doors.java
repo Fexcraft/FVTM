@@ -389,6 +389,12 @@ public class ModelC9Doors extends PartModelTMT {
     }
 
 	private float[] get(VehicleData data, String us, Entity ent, int meta){
+		if(ent  == null){
+			return new float[]{
+				data.doorsOpen() ? 45 : 0, data.doorsOpen() ? 45 : 0,
+				data.doorsOpen() ? 45 : 0, data.doorsOpen() ? 45 : 0,	
+			};
+		}
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
         if(script == null){
     		return new float[]{

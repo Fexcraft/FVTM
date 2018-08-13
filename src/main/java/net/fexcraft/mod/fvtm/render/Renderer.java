@@ -1,5 +1,11 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.mod.fvtm.api.Model;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
+import net.fexcraft.mod.fvtm.impl.GenericVehicleItem;
+import net.fexcraft.mod.lib.tmt.ModelBase;
+import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.client.Minecraft;
 
 import java.awt.image.BufferedImage;
@@ -15,7 +21,13 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class Renderer {
 
@@ -122,5 +134,47 @@ public class Renderer {
 	    }
     	
     }
+    
+    private static ItemStack stack;
+    
+    @SubscribeEvent
+    public void preview(DrawBlockHighlightEvent event){
+    	stack = event.getPlayer().getHeldItemMainhand();
+    	if(stack.isEmpty()) return;
+    	else if(stack.getItem() instanceof GenericVehicleItem && event.getTarget() != null && event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK){
+            BlockPos pos = event.getTarget().getBlockPos();
+            VehicleData data = ((VehicleItem)stack.getItem()).getVehicle(stack);
+            if(data == null || !data.readyToSpawn()) return;
+        	render(event.getPlayer(), data, pos);
+    	}
+    }
+
+	private static void render(EntityPlayer player, VehicleData data, BlockPos bpos){
+        GL11.glPushMatrix();
+        {
+            GlStateManager.disableBlend(); GlStateManager.enableAlpha();
+            float yaw = (player.rotationYaw - player.prevRotationYaw); for(; yaw > 180F; yaw -= 360F); for(; yaw <= -180F; yaw += 360F);
+            GL11.glRotatef(180F - player.prevRotationYaw - yaw, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(180f, 0f, 0f, 1f); GL11.glRotatef(90f, 0f, 1f, 0f);
+            GL11.glPushMatrix();
+            Model<VehicleData, Object> modVehicle = data.getVehicle().getModel();
+            if(modVehicle != null){
+                ModelBase.bindTexture(data.getTexture());
+                modVehicle.render(data, null);
+                if(data.getParts().size() > 0){
+                    data.getParts().forEach((key, partdata) -> {
+                        ModelBase.bindTexture(partdata.getTexture());
+                        Pos pos = partdata.getPart().getOffsetFor(data.getVehicle().getRegistryName());
+                        pos.translate();
+                        partdata.getPart().getModel().render(data, key);
+                        partdata.getPart().getAttributes().forEach(attr -> { if(attr.hasRenderData()){ attr.render(null, partdata, key); } });
+                        pos.translateR();
+                    });
+                }
+            }
+            GL11.glPopMatrix();
+        }
+        GL11.glPopMatrix();
+	}
 
 }

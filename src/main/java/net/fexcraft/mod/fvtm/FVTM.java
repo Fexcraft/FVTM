@@ -93,6 +93,7 @@ public class FVTM {
             net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailboundVehicleEntity.class, RenderGenericRailed::new);
             //
             MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
+            MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.render.Renderer());
         }
     }
 

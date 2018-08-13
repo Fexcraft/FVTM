@@ -64,8 +64,8 @@ public class ModelC9Trunk extends PartModelTMT {
     public void render(VehicleData data, String us, Entity ent, int meta){
         data.getPrimaryColor().glColorApply();
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
-    	float state = RenderCache.getData(ent, "c9_trunk", 0) + ((script == null ? data.doorsOpen() : script.trunk) ? 1 : -1);
-    	RenderCache.updateData(ent, "c9_trunk", state = state > 75 ? 75 : state < 0 ? 0 : state);
+    	float state = ent == null ? data.doorsOpen() ? 75 : 0 : RenderCache.getData(ent, "c9_trunk", 0) + ((script == null || ent == null? data.doorsOpen() : script.trunk) ? 1 : -1);
+    	if(ent != null) RenderCache.updateData(ent, "c9_trunk", state = state > 75 ? 75 : state < 0 ? 0 : state);
         rotate(body_colored_primary, 0, 0, state * Static.rad1, true);
         render(body_colored_primary);
         rotate(body_colored_primary, 0, 0, 0, true);

@@ -166,6 +166,7 @@ public class LightProviderAttribute implements Attribute {
 	
 	@Override
 	public void render(VehicleEntity entity, PartData data, String key){
+		if(entity == null) return;
 		if(entity.getVehicleData().getLightsState() > 0){
             GL11.glPushMatrix();
             ModelBase.bindTexture(Resources.NULL_TEXTURE);

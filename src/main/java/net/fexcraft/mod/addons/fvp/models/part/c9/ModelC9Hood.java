@@ -121,8 +121,8 @@ public class ModelC9Hood extends PartModelTMT {
     public void render(VehicleData data, String us, Entity ent, int meta){
         data.getPrimaryColor().glColorApply();
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
-    	float state = RenderCache.getData(ent, "c9_hood", 0) + ((script == null ? data.doorsOpen() : script.hood) ? 1 : -1);
-    	RenderCache.updateData(ent, "c9_hood", state = state > 45 ? 45 : state < 0 ? 0 : state);
+    	float state = ent == null ? data.doorsOpen() ? 45 : 0 : RenderCache.getData(ent, "c9_hood", 0) + ((script == null ? data.doorsOpen() : script.hood) ? 1 : -1);
+    	if(ent != null) RenderCache.updateData(ent, "c9_hood", state = state > 45 ? 45 : state < 0 ? 0 : state);
         rotate(body_colored_primary, 0, 0, state * -Static.rad1, true);
         render(body_colored_primary);
         rotate(body_colored_primary, 0, 0, 0, true);

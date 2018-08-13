@@ -1,11 +1,13 @@
 package net.fexcraft.mod.fvtm.render;
 
+import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
-import net.fexcraft.mod.fvtm.impl.GenericVehicleItem;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.util.math.Pos;
+import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.client.Minecraft;
 
 import java.awt.image.BufferedImage;
@@ -141,40 +143,85 @@ public class Renderer {
     public void preview(DrawBlockHighlightEvent event){
     	stack = event.getPlayer().getHeldItemMainhand();
     	if(stack.isEmpty()) return;
-    	else if(stack.getItem() instanceof GenericVehicleItem && event.getTarget() != null && event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK){
-            BlockPos pos = event.getTarget().getBlockPos();
+    	else if(event.getTarget() == null || event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK) return;
+    	else if(stack.getItem() instanceof VehicleItem){
             VehicleData data = ((VehicleItem)stack.getItem()).getVehicle(stack);
             if(data == null || !data.readyToSpawn()) return;
-        	render(event.getPlayer(), data, pos);
+        	render(event.getPlayer(), data, event.getTarget().getBlockPos());
+    	}
+    	else if(stack.getItem() instanceof ContainerItem){
+    		ContainerData data = ((ContainerItem)stack.getItem()).getContainer(stack);
+    		if(data == null || data.isLocked()) return;
+    		render(event.getPlayer(), data, event.getTarget().getBlockPos());
     	}
     }
 
 	private static void render(EntityPlayer player, VehicleData data, BlockPos bpos){
         GL11.glPushMatrix();
-        {
-            GlStateManager.disableBlend(); GlStateManager.enableAlpha();
-            GL11.glTranslated((bpos.getX() + 0.5) - player.posX, bpos.getY() - data.getWheelPos().get(0).to16FloatY() - player.posY, (bpos.getZ() + 0.5) - player.posZ);
-            float yaw = (player.rotationYaw - player.prevRotationYaw); for(; yaw > 180F; yaw -= 360F); for(; yaw <= -180F; yaw += 360F);
-            GL11.glRotatef(180F - player.prevRotationYaw - yaw, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(180f, 0f, 0f, 1f); GL11.glRotatef(90f, 0f, 1f, 0f);
-            GL11.glPushMatrix();
-            Model<VehicleData, Object> modVehicle = data.getVehicle().getModel();
-            if(modVehicle != null){
-                ModelBase.bindTexture(data.getTexture());
-                modVehicle.render(data, null);
-                if(data.getParts().size() > 0){
-                    data.getParts().forEach((key, partdata) -> {
-                        ModelBase.bindTexture(partdata.getTexture());
-                        Pos pos = partdata.getPart().getOffsetFor(data.getVehicle().getRegistryName());
-                        pos.translate();
-                        partdata.getPart().getModel().render(data, key);
-                        partdata.getPart().getAttributes().forEach(attr -> { if(attr.hasRenderData()){ attr.render(null, partdata, key); } });
-                        pos.translateR();
-                    });
-                }
+        GlStateManager.disableBlend(); GlStateManager.enableAlpha();
+        GL11.glTranslated((bpos.getX() + 0.5) - player.posX, bpos.getY() - data.getWheelPos().get(0).to16FloatY() - player.posY, (bpos.getZ() + 0.5) - player.posZ);
+        float yaw = (player.rotationYaw - player.prevRotationYaw); for(; yaw > 180F; yaw -= 360F); for(; yaw <= -180F; yaw += 360F);
+        GL11.glRotatef(180F - player.prevRotationYaw - yaw, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(180f, 0f, 0f, 1f); GL11.glRotatef(90f, 0f, 1f, 0f);
+        GL11.glPushMatrix();
+        Model<VehicleData, Object> modVehicle = data.getVehicle().getModel();
+        if(modVehicle != null){
+            ModelBase.bindTexture(data.getTexture());
+            modVehicle.render(data, null);
+            if(data.getParts().size() > 0){
+                data.getParts().forEach((key, partdata) -> {
+                    ModelBase.bindTexture(partdata.getTexture());
+                    Pos pos = partdata.getPart().getOffsetFor(data.getVehicle().getRegistryName());
+                    pos.translate();
+                    partdata.getPart().getModel().render(data, key);
+                    partdata.getPart().getAttributes().forEach(attr -> { if(attr.hasRenderData()){ attr.render(null, partdata, key); } });
+                    pos.translateR();
+                });
             }
-            GL11.glPopMatrix();
         }
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
+	}
+
+	private void render(EntityPlayer player, ContainerData data, BlockPos bpos){
+		if(data.getContainer().getModel() == null) return;
+        GL11.glPushMatrix();
+        float off = player.world.getBlockState(bpos).getBlock().isReplaceable(player.world, bpos) ? 0 : 1;
+        GL11.glTranslated((bpos.getX() + 0.5) - player.posX, bpos.getY() - player.posY + off, (bpos.getZ() + 0.5) - player.posZ);
+        GlStateManager.disableBlend(); GlStateManager.enableAlpha();
+        GL11.glPushMatrix();
+        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+        switch(player.getHorizontalFacing().getIndex()){
+            case 2: {
+                GL11.glTranslated(0.5D, 0, 0);
+                GL11.glRotated(0, 0, 1D, 0);
+                break;
+            }
+            case 3: {
+                GL11.glTranslated(0.5D, 0, 0);
+                GL11.glRotated(180D, 0, 1D, 0);
+                break;
+            }
+            case 4: {
+                GL11.glTranslated(0, 0, -0.5D);
+                GL11.glRotated(-90D, 0, 1D, 0);
+                break;
+            }
+            case 5: {
+                GL11.glTranslated(0, 0, -0.5D);
+                GL11.glRotated(-270D, 0, 1D, 0);
+                break;
+            }
+            default: {
+                GL11.glTranslated(0, -0.5D, 0);
+                GL11.glRotated(Time.getSecond() * 6, 0, 1D, 0);
+                break;
+            }
+        }
+        GL11.glRotated(180, 0, 1D, 0);
+        ModelBase.bindTexture(data.getTexture());
+        data.getContainer().getModel().render(data, null);
+        GL11.glPopMatrix();
         GL11.glPopMatrix();
 	}
 

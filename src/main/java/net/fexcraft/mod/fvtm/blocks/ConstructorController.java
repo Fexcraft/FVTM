@@ -347,7 +347,7 @@ public class ConstructorController extends BlockContainer {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
-        ConstructorControllerEntity conte = (ConstructorControllerEntity) world.getTileEntity(pos);
+        ConstructorControllerEntity conte = (ConstructorControllerEntity)world.getTileEntity(pos);
         if(conte.getVehicleData() != null){
             ItemStack stack = conte.getVehicleData().getVehicle().getItemStack(conte.getVehicleData());
             EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);

@@ -254,8 +254,13 @@ public class ContainerBlock extends BlockContainer {
     }
     
     @Override
-    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state){
+    public ItemStack getItem(World world, BlockPos pos, IBlockState state){
         return new ItemStack(this);
+    }
+    
+    @Override
+    public boolean isReplaceable(IBlockAccess world, BlockPos pos){
+        return false;
     }
 
 }

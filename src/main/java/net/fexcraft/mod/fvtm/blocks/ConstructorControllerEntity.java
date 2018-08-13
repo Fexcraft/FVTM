@@ -333,7 +333,7 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
             if(stack != null){
                 EntityItem item = new EntityItem(world);
                 item.setItem(stack);
-                item.setPosition(this.pos.getX() + 0.5f, this.pos.getY(), this.pos.getZ() + 0.5f);
+                item.setPosition(this.pos.getX() + 0.5f, this.pos.getY() + 1.5f, this.pos.getZ() + 0.5f);
                 world.spawnEntity(item);
             }
             this.vehicledata = null;

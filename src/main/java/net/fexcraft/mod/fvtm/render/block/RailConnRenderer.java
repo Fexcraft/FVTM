@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 @fTESR
 public class RailConnRenderer extends TileEntitySpecialRenderer<RailConnTile> {
 	
-	private static final ModelRendererTurbo model;
+	protected static final ModelRendererTurbo model;
 	static {
         model = new ModelRendererTurbo(null, 0, 0, 32, 32);
         model.addCylinder(0, 0, 0, 2, 16, 32, 1, 1, ModelRendererTurbo.MR_TOP);

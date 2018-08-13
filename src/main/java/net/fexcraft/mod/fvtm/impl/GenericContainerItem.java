@@ -77,8 +77,8 @@ public class GenericContainerItem extends Item implements ContainerItem {
             }
             tooltip.add(Formatter.format("&9Capacity: &7" + (con.getContainer().getInventoryType() == InventoryType.FLUID ? con.getContainer().getInventorySize() / 1000 : con.getContainer().getInventorySize()) + " " + con.getContainer().getInventoryType().getUnitsName()));
             tooltip.add(Formatter.format("&9Content: &7" + (con.getFluidTank() == null || con.getFluidTank().getFluid() == null ? con.getInventory() == null ? "empty" : con.getInventory().stream().filter(is -> is != null && !is.isEmpty()).count() : con.getFluidTank().getFluidAmount() + "mB " + con.getFluidTank().getFluid().getLocalizedName())));
-            if(con.getContainer() instanceof GenericContainer && ((GenericContainer) con.getContainer()).contenttype != null){
-                tooltip.add(Formatter.format("&9Content Group: &7" + ((GenericContainer) con.getContainer()).contenttype));
+            if(con.getContainer() instanceof GenericContainer && ((GenericContainer)con.getContainer()).contenttype != null){
+                tooltip.add(Formatter.format("&9Content Group: &7" + ((GenericContainer)con.getContainer()).contenttype));
             }
             //tooltip.add(Formatter.format("&9LoadType: &7" + con.getContainer().getInventoryType().getName()));
             tooltip.add(Formatter.format("&9Selected Texture: &7" + con.getSelectedTexture()));
@@ -171,7 +171,7 @@ public class GenericContainerItem extends Item implements ContainerItem {
             return EnumActionResult.PASS;
         }
         ContainerData data = Resources.getContainerData(player.getHeldItem(hand).getTagCompound());
-        BlockPos core = pos.add(0, 1, 0);
+        BlockPos core = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.add(0, 1, 0);
         if(isValidPostitionForContainer(world, player, core, player.getHorizontalFacing(), data)){
             ItemStack stack = player.getHeldItem(hand);
             stack.getTagCompound().setLong("PlacedPos", core.toLong());

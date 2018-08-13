@@ -96,12 +96,14 @@ public class ContainerTileEntity extends TileEntity implements IPacketReceiver<P
         }
     }
 
-    ContainerTileEntity getCore(){
+    protected ContainerTileEntity getCore(){
         return core ? this : coretile == null ? coretile = corepos == null ? null : (ContainerTileEntity) world.getTileEntity(corepos) : coretile;
     }
+    
+    private ContainerTileEntity corr;
 
     public ContainerData getContainerData(){
-        return getCore().container;
+        return (corr = getCore()) == null ? null : corr.container;
     }
 
     @Override
@@ -309,7 +311,7 @@ public class ContainerTileEntity extends TileEntity implements IPacketReceiver<P
         if(packet.nbt.hasKey("task")){
             switch(packet.nbt.getString("task")){
                 case "update_container_fluid_tank": {
-                    if(this.getContainerData().getContainer().getInventoryType() != InventoryType.FLUID){
+                    if(this.getContainerData() != null && this.getContainerData().getContainer().getInventoryType() != InventoryType.FLUID){
                         return;
                     }
                     this.getContainerData().getFluidTank().readFromNBT(packet.nbt.getCompoundTag("state"));

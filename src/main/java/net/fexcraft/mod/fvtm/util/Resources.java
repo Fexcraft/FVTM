@@ -260,15 +260,9 @@ public class Resources {
         this.queryAddons();
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regMaterials(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
             Print.debug(addon.getRegistryName());
             if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
@@ -323,15 +317,9 @@ public class Resources {
         this.queryAddons();
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regParts(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
             Print.debug(addon.getRegistryName());
             if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
@@ -386,15 +374,9 @@ public class Resources {
         this.queryAddons();
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regVehicles(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
             Print.debug(addon.getRegistryName());
             if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
@@ -490,15 +472,9 @@ public class Resources {
     public void regPartAttributes(RegistryEvent.Register<Attribute> event){
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regAttributes(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
         }
     }
@@ -507,15 +483,9 @@ public class Resources {
     public void regFuels(RegistryEvent.Register<Fuel> event){
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regFuels(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
         }
     }
@@ -524,15 +494,9 @@ public class Resources {
     public void regSounds(RegistryEvent.Register<SoundEvent> event){
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regSounds(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
         }
         VEHICLES.getValues().forEach((vehicle) -> {
@@ -577,15 +541,9 @@ public class Resources {
     public void regContainers(RegistryEvent.Register<Container> event){
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regContainers(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
             Print.debug(addon.getRegistryName());
             if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
@@ -648,15 +606,9 @@ public class Resources {
     public void regConsumables(RegistryEvent.Register<Consumable> event){
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regConsumables(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
             Print.debug(addon.getRegistryName());
             if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
@@ -709,15 +661,9 @@ public class Resources {
     public void regBlocks(RegistryEvent.Register<Block> event){
         for(Addon addon : ADDONS.getValues()){
             if(addon instanceof GenericAddon){
-                if(((GenericAddon) addon).isHybrid()){
-                    ((HybridAddon) addon).regBlocks(event);
-                    if(((HybridAddon) addon).skipDefaultRegistryMethods()){
-                        continue;
-                    }
+                if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+                    continue;
                 }
-            }
-            else{
-                continue;
             }
             Print.debug(addon.getRegistryName());
             if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
@@ -1030,14 +976,14 @@ public class Resources {
         return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.VEHICLE_UPDATE_RANGE);
     }
     
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onAttachPartCapabilities(AttachCapabilitiesEvent<PartData> event){
     	for(Addon addon : ADDONS){
     		if(addon.isEnabled() && addon instanceof HybridAddon){
     			((HybridAddon)addon).onAttachCapabilities(event);
     		}
     	}
-    }
+    }*/
     
     @SubscribeEvent
     public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){

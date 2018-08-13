@@ -5,77 +5,48 @@ import java.io.File;
 import net.fexcraft.mod.addons.gep.attributes.*;
 import net.fexcraft.mod.addons.gep.fuels.*;
 import net.fexcraft.mod.fvtm.api.Attribute;
-import net.fexcraft.mod.fvtm.api.Consumable;
-import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Fuel;
-import net.fexcraft.mod.fvtm.api.Material;
-import net.fexcraft.mod.fvtm.api.Part;
-import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.impl.HybridAddon;
-import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent.Register;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class GeneralEssentials extends HybridAddon {
 
     public GeneralEssentials(File file){
         super(file);
     }
+    
+    public void onPreInit(FMLPreInitializationEvent event){
+    	MinecraftForge.EVENT_BUS.register(this);
+    }
 
-    @Override
+    @SubscribeEvent
     public void regFuels(Register<Fuel> event){
         event.getRegistry().registerAll(
-                new Gasoline(),
-                new Diesel()
+        	new Gasoline(),
+        	new Diesel()
         );
     }
 
-    @Override
-    public void regMaterials(Register<Material> event){
-        //
-    }
-
-    @Override
+    @SubscribeEvent
     public void regAttributes(Register<Attribute> event){
         event.getRegistry().registerAll(
-                new EngineAttribute(),
-                new FuelTankExtensionAttribute(),
-                new FMSeatAttribute(),
-                new InventoryAttribute(),
-                new ConnectorAttribute(),
-                new ContainerAttribute(),
-                new LightProviderAttribute(),
-                new FontRendererAttribute()
+        	new EngineAttribute(),
+        	new FuelTankExtensionAttribute(),
+        	new FMSeatAttribute(),
+        	new InventoryAttribute(),
+        	new ConnectorAttribute(),
+        	new ContainerAttribute(),
+        	new LightProviderAttribute(),
+        	new FontRendererAttribute()
         );
-    }
-
-    @Override
-    public void regParts(Register<Part> event){
-        //
-    }
-
-    @Override
-    public void regVehicles(Register<Vehicle> event){
-        //
     }
 
     @Override
     public boolean skipDefaultRegistryMethods(){
         return false;
-    }
-
-    @Override
-    public void regSounds(Register<SoundEvent> event){
-        //
-    }
-
-    @Override
-    public void regContainers(Register<Container> event){
-        //
-    }
-
-    @Override
-    public void regConsumables(Register<Consumable> event){
-        //
     }
 
 }

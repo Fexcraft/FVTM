@@ -51,7 +51,7 @@ public class RailConnRenderer extends TileEntitySpecialRenderer<RailConnTile> {
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
             Minecraft mc = Minecraft.getMinecraft();
-        	Vec3d pos = new Vec3d(posX + mc.player.posX, posY + mc.player.posY, posZ + mc.player.posZ);
+        	Vec3d pos = new Vec3d(posX + mc.player.prevPosX, posY + mc.player.prevPosY, posZ + mc.player.prevPosZ);
         	for(int i = 0; i < te.connections.length; i++){
             	Vec3d vec0 = RailConnTile.newVector(te.getPos()).subtract(pos);
         		Vec3d vec = RailConnTile.newVector(te.connections[i]).subtract(pos);

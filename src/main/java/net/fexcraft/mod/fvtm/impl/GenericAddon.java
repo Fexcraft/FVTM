@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Addon;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.common.ZipUtil;
 import net.fexcraft.mod.lib.util.json.JsonUtil;
@@ -26,14 +27,13 @@ public class GenericAddon implements Addon {
     private String name, version, website, license, fileaddr, updateid;
     private List<ResourceLocation> dependencies;
     private List<UUID> authors;
-    private boolean enabled, missingdeps;
+    private boolean enabled;
     protected boolean hybrid = false;
 
     /**
      * INTERNAL USE ONLY
      */
-    public GenericAddon(){
-    }
+    public GenericAddon(){}
 
     /**
      * MAIN CONSTRUCTOR
@@ -119,16 +119,6 @@ public class GenericAddon implements Addon {
         this.enabled = bool;
     }
 
-    @Override
-    public boolean hasMissingDependencies(){
-        return missingdeps;
-    }
-
-    @Override
-    public void setMissingDependencies(boolean bool){
-        this.missingdeps = bool;
-    }
-
     /**
      * To load temporary addon copies for GUI's *
      */
@@ -145,7 +135,7 @@ public class GenericAddon implements Addon {
         addon.website = nbt.getString("url");
         addon.license = nbt.getString("license");
         addon.enabled = nbt.getBoolean("enabled");
-        addon.missingdeps = nbt.getBoolean("missing_dependencies");
+        //addon.missingdeps = nbt.getBoolean("missing_dependencies");
         addon.fileaddr = nbt.getString("file");
         addon.version = nbt.getString("version");
         addon.updateid = nbt.getString("updateid");
@@ -161,7 +151,7 @@ public class GenericAddon implements Addon {
         nbt.setString("url", website);
         nbt.setString("license", license);
         nbt.setBoolean("enabled", enabled);
-        nbt.setBoolean("missing_depencencies", missingdeps);
+        //nbt.setBoolean("missing_depencencies", missingdeps);
         nbt.setString("file", fileaddr == null ? file.toString() : fileaddr);
         nbt.setString("version", version);
         nbt.setString("updateid", updateid);
@@ -190,5 +180,20 @@ public class GenericAddon implements Addon {
     public String getUpdateId(){
         return this.updateid;
     }
+    
+    private List<ResourceLocation> missingdeps;
+
+	@Override
+	public List<ResourceLocation> getMissingDependencies(){
+		if(missingdeps == null){
+			missingdeps = new ArrayList<>();
+			for(ResourceLocation dep : this.dependencies){
+				if(!Resources.ADDONS.containsKey(dep)){
+					missingdeps.add(dep);
+				}
+			}
+		}
+		return missingdeps;
+	}
 
 }

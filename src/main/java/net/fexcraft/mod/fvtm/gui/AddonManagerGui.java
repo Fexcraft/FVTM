@@ -145,7 +145,7 @@ public class AddonManagerGui extends GuiContainer {
         else if(mode == Modes.VIEW_ONE){
             this.fontRenderer.drawString(trim228(addon.getName()), i + 7, j + 7, MapColor.YELLOW.colorValue);
             this.fontRenderer.drawString("ID: " + addon.getRegistryName().toString(), i + 7, j + 26, MapColor.GRAY.colorValue);
-            this.fontRenderer.drawString(trs(addon.isEnabled() ? "view_all_state_enabled" : "view_all_state_disabled") + " || MD: " + (addon.hasMissingDependencies() ? 1 : 0), i + 7, j + 40, MapColor.GRAY.colorValue);
+            this.fontRenderer.drawString(trs(addon.isEnabled() ? "view_all_state_enabled" : "view_all_state_disabled") + " || MD: " + addon.getMissingDependencies().size(), i + 7, j + 40, MapColor.GRAY.colorValue);
             this.fontRenderer.drawString(trim228(addon.getURL()), i + 7, j + 68, MapColor.SNOW.colorValue);
             this.fontRenderer.drawString(trim228(addon.getLicense()), i + 7, j + 83, MapColor.SNOW.colorValue);
             this.fontRenderer.drawString(trim228(addon.getFileAddress()), i + 7, j + 98, MapColor.SNOW.colorValue);
@@ -168,8 +168,8 @@ public class AddonManagerGui extends GuiContainer {
             }
             this.fontRenderer.drawSplitString(trim(authors, 3 * 242), i + 7, j + 144, 242, MapColor.GRAY.colorValue);
 
-            this.buttonList.get(4).enabled = !addon.isEnabled() && !addon.hasMissingDependencies();
-            this.buttonList.get(5).enabled = addon.isEnabled() && !addon.hasMissingDependencies();
+            this.buttonList.get(4).enabled = !addon.isEnabled() && addon.getMissingDependencies().isEmpty();
+            this.buttonList.get(5).enabled = addon.isEnabled() && addon.getMissingDependencies().isEmpty();
         }
         else{
             Static.stop();
@@ -185,11 +185,11 @@ public class AddonManagerGui extends GuiContainer {
     }
 
     private void draw(Addon addon, int arr, int i, int j, int k, int l, int m, int p0, int p1, int p2){
-        listbuttons[arr][0].enabled = addon.isEnabled() && !addon.hasMissingDependencies();
+        listbuttons[arr][0].enabled = addon.isEnabled() && addon.getMissingDependencies().isEmpty();
         listbuttons[arr][1].enabled = !listbuttons[arr][0].enabled;
         //
         this.fontRenderer.drawSplitString(addon.getName(), i + k, j + p0, l, m);
-        this.fontRenderer.drawSplitString("ID: " + addon.getRegistryName().toString() + " || " + trs(addon.isEnabled() ? "view_all_state_enabled" : "view_all_state_disabled") + " || MD: " + (addon.hasMissingDependencies() ? 1 : 0), i + k, j + p1, l, m);
+        this.fontRenderer.drawSplitString("ID: " + addon.getRegistryName().toString() + " || " + trs(addon.isEnabled() ? "view_all_state_enabled" : "view_all_state_disabled") + " || MD: " + addon.getMissingDependencies().size(), i + k, j + p1, l, m);
         this.fontRenderer.drawString(fontRenderer.trimStringToWidth(addon.getURL(), 216, true), i + k, j + p2, m);
     }
 

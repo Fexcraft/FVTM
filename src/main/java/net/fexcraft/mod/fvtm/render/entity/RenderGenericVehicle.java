@@ -6,8 +6,6 @@ import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
 import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.tmt.ModelConverter;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -28,16 +26,6 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
 
     public void bindTexture(ResourceLocation rs){
         ModelBase.bindTexture(rs);
-    }
-
-    private static final ModelRendererTurbo light = new ModelRendererTurbo(new ModelConverter());
-    private static final ModelRendererTurbo light2 = new ModelRendererTurbo(new ModelConverter());
-
-    static{
-        //light.flip = true;
-        light.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
-        light2.flip = true;
-        light2.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
     }
 
     @Override

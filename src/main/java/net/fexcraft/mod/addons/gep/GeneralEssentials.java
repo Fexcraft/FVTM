@@ -9,17 +9,12 @@ import net.fexcraft.mod.fvtm.api.Fuel;
 import net.fexcraft.mod.fvtm.impl.HybridAddon;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent.Register;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class GeneralEssentials extends HybridAddon {
 
     public GeneralEssentials(File file){
-        super(file);
-    }
-    
-    public void onPreInit(FMLPreInitializationEvent event){
-    	MinecraftForge.EVENT_BUS.register(this);
+        super(file); MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent

@@ -4,9 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.Block;
@@ -31,7 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "road_line", item = GenericRoadLine.Item.class, tileentity = RoadLineTile.class)
+//@fBlock(modid = FVTM.MODID, name = "road_line", item = GenericRoadLine.Item.class, tileentity = RoadLineTile.class)
 public class GenericRoadLine extends BlockContainer {
 
 	public GenericRoadLine(){
@@ -94,7 +92,7 @@ public class GenericRoadLine extends BlockContainer {
 	        		arr[0] = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:roadconn0"));
 	        		arr[1] = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:roadconn1"));
 	        		arr[2] = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:roadconn2"));
-	        		arr[3] = pos;//BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:roadconn3"));
+	        		arr[3] = block.isReplaceable(world, pos) || block instanceof GenericRoadLine ? pos : pos.up();//BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:roadconn3"));
 	        		rct.addLink(arr); Print.bar(player, "&1Link/Connection created.");
 	        		stack.getTagCompound().removeTag("fvtm:roadconn");
 	        		stack.getTagCompound().removeTag("fvtm:roadconn0");

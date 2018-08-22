@@ -45,9 +45,7 @@ public interface Addon extends IForgeRegistryEntry<Addon> {
 
     public void setEnabled(boolean bool);
 
-    public boolean hasMissingDependencies();
-
-    public void setMissingDependencies(boolean bool);
+    public List<ResourceLocation> getMissingDependencies();
 
     public NBTTagCompound toNBT();
 
@@ -58,9 +56,7 @@ public interface Addon extends IForgeRegistryEntry<Addon> {
         return Addon.class;
     }
 
-    /**
-     * Internal use.
-     */
+    /** Internal use. **/
     public static boolean isAddonContainer(File file){
         if(file.isDirectory()){
             File fl = new File(file, DEFPACKCFGFILENAME);
@@ -72,10 +68,10 @@ public interface Addon extends IForgeRegistryEntry<Addon> {
                 return false;
             }
         }
-        if(file.getName().endsWith(".zip") || file.getName().endsWith(".jar")){
+        else if(file.getName().endsWith(".zip") || file.getName().endsWith(".jar")){
             return ZipUtil.contains(file, DEFPACKCFGFILENAME);
         }
-        return false;
+        else return false;
     }
 
 }

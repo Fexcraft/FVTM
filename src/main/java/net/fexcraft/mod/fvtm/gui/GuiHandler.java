@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
+import net.fexcraft.mod.fvtm.util.AddonList;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.api.network.IPacketListener;
 import net.fexcraft.mod.lib.network.PacketHandler;
@@ -155,10 +156,11 @@ public class GuiHandler implements IGuiHandler {
                 case "toggle_addon_state":
                     try{
                         Addon addon = Resources.ADDONS.getValue(new ResourceLocation(packet.nbt.getString("id")));
-                        if(addon != null && !addon.hasMissingDependencies()){
+                        if(addon != null && addon.getMissingDependencies().isEmpty()){
                             addon.setEnabled(!addon.isEnabled());
                         }
-                        FVTM.getResources().updateAddonConfig();
+                        AddonList.updateAddon(addon);
+                        AddonList.save();
                     }
                     catch(Exception e){
                         break;
@@ -179,10 +181,11 @@ public class GuiHandler implements IGuiHandler {
                     boolean success;
                     try{
                         Addon addon = Resources.ADDONS.getValue(new ResourceLocation(packet.nbt.getString("id")));
-                        if(addon != null && !addon.hasMissingDependencies()){
+                        if(addon != null && addon.getMissingDependencies().isEmpty()){
                             addon.setEnabled(packet.nbt.getBoolean("state"));
                         }
-                        FVTM.getResources().updateAddonConfig();
+                        AddonList.updateAddon(addon);
+                        AddonList.save();
                         success = true;
                     }
                     catch(Exception e){

@@ -20,6 +20,7 @@ public class RoadLineTile extends TileEntity implements IPacketReceiver<PacketTi
 	
 	public BlockPos[][] connections = new BlockPos[0][];
 	public Vec3f coords[][];
+	public float[][] lines;
 	public int segments;
 	
     public RoadLineTile(World world){

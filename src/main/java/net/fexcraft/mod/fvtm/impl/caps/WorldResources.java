@@ -150,7 +150,7 @@ public class WorldResources implements net.fexcraft.mod.fvtm.api.Resources {
 		else{
 			AxisAlignedBB aabb = new AxisAlignedBB(position);
 			for(Entity e : world.loadedEntityList){
-				if(holder != null){ break; }
+				if(holder != null) break;
 				if(e instanceof ContainerHolder && e.getEntityBoundingBox().intersects(aabb)){
 					holder = (ContainerHolder)e;
 					break;
@@ -164,6 +164,11 @@ public class WorldResources implements net.fexcraft.mod.fvtm.api.Resources {
 						if(conhol instanceof ContainerWrapper){
 							if(((ContainerWrapper)conhol).intersects(aabb)){
 								holder = conhol;
+							}
+						}
+						else if(conhol instanceof Entity){
+							if(((Entity)conhol).getEntityBoundingBox().intersects(aabb)){
+								holder = conhol; break;
 							}
 						}
 					}

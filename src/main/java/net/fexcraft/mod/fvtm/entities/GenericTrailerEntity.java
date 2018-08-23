@@ -137,6 +137,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
                 wheel.move(MoverType.SELF, despos.x, (despos.y - (0.98F / 20F)), despos.z);
             }
             //
+            if(wheel.getPositionVector().distanceTo(this.getPositionVector()) > 256){//1024
                 wheel.posX = despos.x;
                 wheel.posY = despos.y;
                 wheel.posZ = despos.z;

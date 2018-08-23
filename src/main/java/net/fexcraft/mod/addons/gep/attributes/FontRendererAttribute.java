@@ -114,6 +114,7 @@ public class FontRendererAttribute implements Attribute {
         
         @SideOnly(Side.CLIENT)
         public void render(VehicleEntity ent){
+        	if(ent == null || ent.getAxes() == null) return;
             if(ondoor && ent.getVehicleData().doorsOpen()){ return; }
             float x = (float)(ent.getAxes().getRadianYaw())   + rotX - 90F;
             float y = (float)(ent.getAxes().getRadianPitch()) + rotY + 180F;

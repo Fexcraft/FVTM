@@ -1018,7 +1018,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             }
             this.onUpdateMovement();
             //
-            if(wheels[0] != null && wheels[1] != null && wheels[2] != null && wheels[3] != null){
+            if(wheels[0] != null && wheels[1] != null && wheels.length > 2 && wheels[2] != null && wheels[3] != null){
                 Vec3d front = new Vec3d((wheels[2].posX + wheels[3].posX) / 2F, (wheels[2].posY + wheels[3].posY) / 2F, (wheels[2].posZ + wheels[3].posZ) / 2F);
                 Vec3d back = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
                 Vec3d left = new Vec3d((wheels[0].posX + wheels[3].posX) / 2F, (wheels[0].posY + wheels[3].posY) / 2F, (wheels[0].posZ + wheels[3].posZ) / 2F);

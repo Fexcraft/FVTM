@@ -106,7 +106,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
             yaw = (float)Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
         }
         //
-        double thrt = getParent().getThrottle() > 0 ? getParent().getThrottle() : -getParent().getThrottle();
+        double thrt = /*calculateSpeed(this.getParent().getEntity())*/ this.getParent().getThrottle() > 0 ? getParent().getThrottle() : -getParent().getThrottle();
         double rawy = Math.toDegrees(yaw) - axes.getYaw();
         double diff = rawy * thrt * 0.2;
         //Print.debug(rawy, diff);
@@ -137,7 +137,6 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
                 wheel.move(MoverType.SELF, despos.x, (despos.y - (0.98F / 20F)), despos.z);
             }
             //
-            if(wheel.getPositionVector().distanceTo(this.getPositionVector()) > 1024){
                 wheel.posX = despos.x;
                 wheel.posY = despos.y;
                 wheel.posZ = despos.z;

@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.fexcraft.mod.lib.util.math.Time;
@@ -144,7 +145,7 @@ public class Renderer {
     	stack = event.getPlayer().getHeldItemMainhand();
     	if(stack.isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK) return;
-    	else if(stack.getItem() instanceof VehicleItem){
+    	else if(stack.getItem() instanceof VehicleItem && Config.RENDER_VEHICLE_PREVIEW){
             VehicleData data = ((VehicleItem)stack.getItem()).getVehicle(stack);
             if(data == null || !data.readyToSpawn()) return;
         	render(event.getPlayer(), data, event.getTarget().getBlockPos());

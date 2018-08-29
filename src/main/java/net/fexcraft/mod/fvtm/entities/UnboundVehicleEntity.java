@@ -710,6 +710,11 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     public AxisAlignedBB getCollisionBox(Entity entity){
         return null;
     }
+    
+    @Override
+    public AxisAlignedBB getEntityBoundingBox(){
+    	return super.getEntityBoundingBox();
+    }
 
     @Override
     public boolean isNonBoss(){
@@ -788,6 +793,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 
     @Override
     public void applyEntityCollision(Entity entity){
+    	Print.debug(entity);
         return;
     }
 
@@ -1317,6 +1323,11 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     @Override
     public TreeMap<String, ContainerHolder> getContainers(){
     	return containers;
+    }
+    
+    @Nullable
+    public AxisAlignedBB getCollisionBoundingBox(){
+        return this.getCollisionBox(this);
     }
 
 }

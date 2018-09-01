@@ -145,6 +145,9 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
                 default:
                     break;
             }
+            if(PREVIEW){
+            	scal[0] *= 0.5f; scal[1] *= 0.5f; scal[2] *= 0.5f; PREVIEW = false;
+            }
             GL11.glScalef(scal[0], scal[1], scal[2]);
             //
             {
@@ -158,5 +161,7 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
         }
         GL11.glPopMatrix();
     }
+    
+    public static boolean PREVIEW = false;
 
 }

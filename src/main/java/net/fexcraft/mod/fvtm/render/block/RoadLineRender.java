@@ -2,7 +2,9 @@ package net.fexcraft.mod.fvtm.render.block;
 
 import net.fexcraft.mod.fvtm.blocks.RoadLineTile;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
+import net.fexcraft.mod.fvtm.util.Axe;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.util.math.Vec3f;
 import net.minecraft.client.Minecraft;
@@ -11,10 +13,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.EnumFacing;
+
 import org.lwjgl.opengl.GL11;
 
 /** @author Ferdinand Calo' (FEX___96) **/
-//@fTESR
+@fTESR
 public class RoadLineRender extends TileEntitySpecialRenderer<RoadLineTile> {
 
     @Override
@@ -51,7 +55,8 @@ public class RoadLineRender extends TileEntitySpecialRenderer<RoadLineTile> {
                     GlStateManager.disableTexture2D();
                     GlStateManager.depthMask(false);
         			for(int j = 0; j < te.coords[i].length - 1; j++){
-        				vec0 = te.coords[i][j].subtract(pos); vec1 = te.coords[i][j + 1].subtract(pos);//TODO replace with translate
+        				vec0 = te.coords[i][j].subtract(pos);
+        				vec1 = te.coords[i][j + 1].subtract(pos);//TODO replace with translate
                         float[] arr = getColor(j);
                         bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
                         bufferbuilder.pos(vec0.xCoord, vec0.yCoord, vec0.zCoord).color(arr[0], arr[1], arr[2], 1F).endVertex();
@@ -65,16 +70,17 @@ public class RoadLineRender extends TileEntitySpecialRenderer<RoadLineTile> {
         			//-//
                     GL11.glPushMatrix();
                     ModelBase.bindTexture(Resources.NULL_TEXTURE);
-        			int l = te.coords[i].length / 2 - 1;
-        			for(int m = 0; m < l; m++){ int k = m * 2;
+        			int l = te.coords[i].length / 4;
+        			for(int m = 0; m < l; m++){ int k = m * 4;
         				Vec3f[] arr = new Vec3f[]{ te.coords[i][k], te.coords[i][k + 1], te.coords[i][k + 2], te.coords[i][k + 3]};
         				GL11.glTranslatef(-pos.xCoord, -pos.yCoord, -pos.zCoord);
                         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
                         bufferbuilder.pos(arr[0].xCoord, arr[0].yCoord, arr[0].zCoord).tex(0 * 0.00390625F, 8 * 0.00390625F).endVertex();
-                        bufferbuilder.pos(arr[2].xCoord, arr[2].yCoord, arr[2].zCoord).tex(8 * 0.00390625F, 8 * 0.00390625F).endVertex();
-                        bufferbuilder.pos(arr[1].xCoord, arr[1].yCoord, arr[1].zCoord).tex(8 * 0.00390625F, 0 * 0.00390625F).endVertex();
+                        bufferbuilder.pos(arr[1].xCoord, arr[1].yCoord, arr[1].zCoord).tex(8 * 0.00390625F, 8 * 0.00390625F).endVertex();
+                        bufferbuilder.pos(arr[2].xCoord, arr[2].yCoord, arr[2].zCoord).tex(8 * 0.00390625F, 0 * 0.00390625F).endVertex();
                         bufferbuilder.pos(arr[3].xCoord, arr[3].yCoord, arr[3].zCoord).tex(0 * 0.00390625F, 0 * 0.00390625F).endVertex();
                         tessellator.draw();
+                        GL11.glTranslatef(pos.xCoord, pos.yCoord, pos.zCoord);
         			}
                     GL11.glPopMatrix();
         		}
@@ -93,9 +99,28 @@ public class RoadLineRender extends TileEntitySpecialRenderer<RoadLineTile> {
     		te.getVec3f(), new Vec3f(te.connections[conn][0], true), new Vec3f(te.connections[conn][1], true), new Vec3f(te.connections[conn][2], true)
     	};
     	//for(Vec3f vec : arr) vec.yCoord -= 0.48f;
-    	Vec3f[] res = new Vec3f[(arr.length * 2)];
+    	Vec3f[] res = new Vec3f[(arr.length * 4) - 4];
+    	float xrot = 0, yrot = 0; Axe ax = new Axe();
+    	EnumFacing facing = EnumFacing.getFront(te.getBlockMetadata());
+        float xx = facing.getAxis() == EnumFacing.Axis.X ? 0 : facing.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE ? 0.2f : -0.2f;
+        float zz = facing.getAxis() == EnumFacing.Axis.Z ? 0 : facing.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE ? 0.2f : -0.2f;;
     	for(int i = 0; i < arr.length; i++){
-    		Vec3f left = new Vec3f(), right = new Vec3f();
+    		if(i == (arr.length - 1)) break;
+            double x = arr[i].xCoord - arr[i + 1].xCoord, y = arr[i].yCoord - arr[i + 1].yCoord, z = arr[i].zCoord - arr[i + 1].zCoord;
+            double xz = Math.sqrt(x * x + z * z), yaw = Math.atan2(z, x), pitch = -Math.atan2(y, xz);
+			if(i == 0) ax.setRotation(yaw, pitch, 0);
+            res[i * 4    ] = arr[i].add(ax.getRelativeVector( xx, 0,  zz));
+			res[i * 4 + 1] = arr[i].add(ax.getRelativeVector(-xx, 0, -zz));
+            if(i != arr.length - 2) ax.setRotation(xrot += yaw, yrot += pitch, 0);
+			res[i * 4 + 2] = arr[i + 1].add(ax.getRelativeVector(-xx, 0, -zz));
+			res[i * 4 + 3] = arr[i + 1].add(ax.getRelativeVector( xx, 0,  zz));
+    		//
+			/*res[i * 4    ] = arr[i].distance(new Vec3f(-arr[i    ].zCoord, arr[i    ].yCoord,  arr[i    ].xCoord), 0.2f);
+			res[i * 4 + 1] = arr[i].distance(new Vec3f( arr[i    ].zCoord, arr[i    ].yCoord, -arr[i    ].xCoord), 0.2f);
+			res[i * 4 + 2] = arr[i].distance(new Vec3f(-arr[i + 1].zCoord, arr[i + 1].yCoord,  arr[i + 1].xCoord), 0.2f);
+			res[i * 4 + 3] = arr[i].distance(new Vec3f( arr[i + 1].zCoord, arr[i + 1].yCoord, -arr[i + 1].xCoord), 0.2f);*/
+			//
+    		/*Vec3f left = new Vec3f(), right = new Vec3f();
     		if(i < arr.length - 1){
     			left  = arr[i].distance(new Vec3f(-arr[i + 1].zCoord, arr[i + 1].yCoord,  arr[i + 1].xCoord), 0.2f);
     			right = arr[i].distance(new Vec3f( arr[i + 1].zCoord, arr[i + 1].yCoord, -arr[i + 1].xCoord), 0.2f);
@@ -105,7 +130,7 @@ public class RoadLineRender extends TileEntitySpecialRenderer<RoadLineTile> {
     			right = arr[i].distance(new Vec3f( arr[i - 1].zCoord, arr[i - 1].yCoord, -arr[i - 1].xCoord), 0.2f);
     		}
     		//
-    		res[i * 2] = left; res[(i * 2) + 1] = right;
+    		res[i * 2] = left; res[(i * 2) + 1] = right;*/
     		//
     		/*rev = i % 2 == 1 && i < arr.length - 1;
     		if(i == 0) ax.setRotation(0, 0, 0);
@@ -119,7 +144,7 @@ public class RoadLineRender extends TileEntitySpecialRenderer<RoadLineTile> {
     		//x = i == 0 ? -x : x; z = i == 0 ? -z : z;
     		res[i * 2] = arr[i].add(ax.getRelativeVector(new Vec3f(-x, 0, -z)));
     		res[(i * 2) + 1] = arr[i].add(ax.getRelativeVector(new Vec3f(x, 0, z)));*/
-    	}
+    	} //Print.debug(res);
     	return res;
 	}
 

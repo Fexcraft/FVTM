@@ -51,7 +51,7 @@ public class UniversalBlock extends BlockContainer {
         this.setUnlocalizedName(this.getRegistryName().toString());
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         //
-        GameRegistry.registerTileEntity(UniversalTileEntity.class, this.getRegistryName().toString());
+        GameRegistry.registerTileEntity(UniversalTileEntity.class, this.getRegistryName());
     }
 
     @Override

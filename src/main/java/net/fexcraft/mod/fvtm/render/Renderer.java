@@ -162,7 +162,7 @@ public class Renderer {
     		if(data == null || data.isLocked()) return;
     		render(event.getPlayer(), data, event.getTarget().getBlockPos());
     	}
-    	else if(stack.getItem() instanceof BlockItem){
+    	else if(stack.getItem() instanceof BlockItem && Config.RENDER_BLOCK_PREVIEW){
     		BlockData data = ((BlockItem)stack.getItem()).getBlock(stack);
     		if(data == null || data.isLocked()) return;
     		//if(bteq(data, event.getTarget().sideHit, event.getTarget().getBlockPos(), event.getPlayer().world)) return;

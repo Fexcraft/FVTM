@@ -4,7 +4,6 @@ import net.fexcraft.mod.fvtm.blocks.RoadLineTile;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
 import net.fexcraft.mod.fvtm.util.Axe;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.util.math.Vec3f;
 import net.minecraft.client.Minecraft;
@@ -18,7 +17,7 @@ import net.minecraft.util.EnumFacing;
 import org.lwjgl.opengl.GL11;
 
 /** @author Ferdinand Calo' (FEX___96) **/
-@fTESR
+//@fTESR
 public class RoadLineRender extends TileEntitySpecialRenderer<RoadLineTile> {
 
     @Override

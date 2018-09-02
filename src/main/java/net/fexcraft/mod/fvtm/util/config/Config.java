@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Config {
 
-    public static boolean TEST, DROP_ITEMS_ON_BREAK, ALTERNATIVE_SEAT_UPDATE, VEHICLE_NEEDS_FUEL, RENDER_IN_GUI, RENDER_VEHICLE_PREVIEW, RENDER_OUT_OF_VIEW;
+    public static boolean TEST, DROP_ITEMS_ON_BREAK, ALTERNATIVE_SEAT_UPDATE, VEHICLE_NEEDS_FUEL, RENDER_IN_GUI, RENDER_VEHICLE_PREVIEW, RENDER_BLOCK_PREVIEW, RENDER_OUT_OF_VIEW;
     public static int MAX_SPAWNED_VEHICLE_KEYS, VEHICLE_UPDATE_RANGE;
 	public static String ADDONS_FOLDER = "addons";
     //
@@ -31,6 +31,7 @@ public class Config {
     private static final String RENDER_OUT_OF_VIEW_ = "Render Vehicles out of default View range.";
 	private static final String ADDONS_FOLDER_ = "addons_folder";
     private static final String RENDER_VEHICLE_PREVIEW_ = "render_vehicle_preview";
+    private static final String RENDER_BLOCK_PREVIEW_ = "render_block_preview";
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
         config = new Configuration(file, FVTM.VERSION, true);
@@ -59,10 +60,11 @@ public class Config {
         ALTERNATIVE_SEAT_UPDATE = config.getBoolean(ALTERNATIVE_SEAT_UPDATE_, PROTOTYPING, false, "Should seats be updated in their own `onUpdate` method instead of being updated directly from the Vehicle?");
         VEHICLE_NEEDS_FUEL = config.getBoolean(VEHICLE_NEEDS_FUEL_, GENERAL, true, "Do vehicles need Fuel to run?");
         VEHICLE_UPDATE_RANGE = config.getInt(VEHICLE_UPDATE_RANGE_, GENERAL, 256, 16, 4096, "Range in which Update Packets are sent.");
-        RENDER_IN_GUI = config.getBoolean(RENDER_IN_GUI_, GENERAL, false, "Should Vehicles be rendered in GUI instead of their default plain Texture Icons?");
+        RENDER_IN_GUI = config.getBoolean(RENDER_IN_GUI_, GENERAL, true, "Should Vehicles be rendered in GUI instead of their default plain Texture Icons?");
         RENDER_OUT_OF_VIEW = config.getBoolean(RENDER_OUT_OF_VIEW_, GENERAL, true, "Turn off if vehicles out of view range cause issues.");
         ADDONS_FOLDER = config.getString(ADDONS_FOLDER_, GENERAL, "addons", "The folder in which there should be searched for Addons.");
         RENDER_VEHICLE_PREVIEW = config.getBoolean(RENDER_VEHICLE_PREVIEW_, GENERAL, false, "3D full size preview of to be placed vehicle, if the item is in hand.");
+        RENDER_BLOCK_PREVIEW = config.getBoolean(RENDER_BLOCK_PREVIEW_, GENERAL, true, "3D full size preview of to be placed block, if the item is in hand.");
     }
 
     public static void add(List<IConfigElement> list){

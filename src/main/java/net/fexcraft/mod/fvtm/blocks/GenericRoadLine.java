@@ -4,9 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.Block;
@@ -35,7 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "road_line", item = GenericRoadLine.Item.class, tileentity = RoadLineTile.class)
+//@fBlock(modid = FVTM.MODID, name = "road_line", item = GenericRoadLine.Item.class, tileentity = RoadLineTile.class)
 public class GenericRoadLine extends BlockContainer {
 
 	public GenericRoadLine(){

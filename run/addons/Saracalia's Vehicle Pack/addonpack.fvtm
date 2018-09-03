@@ -1,0 +1,13 @@
+{
+  "id": "fvtm:svm",
+  "name": "Saracalia's Vehicle Pack",
+  "url": "http://fexcraft.net/download?modid=addon-svm",
+  "updateid": "addon-svm",
+  "license": "http://fexcraft.net/license?id=mods",
+  "dependencies": ["fvtm:generic"],
+  "authors": [
+    "01e4af9b-2a30-471e-addf-f6338ffce04b",
+    "59febae8-2689-4379-a8b7-08f96c9ba57d"
+  ],
+  "version": "1.16.1"
+}

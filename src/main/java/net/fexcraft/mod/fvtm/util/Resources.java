@@ -180,16 +180,16 @@ public class Resources {
 		folders[1] = new File("./mods/" + FCL.getMinecraftVersion() + "/");
 		folders[0] = new File("./mods/");
 		ClassLoader cl = net.minecraft.server.MinecraftServer.class.getClassLoader();
-		ArrayList<ResourceLocation> defloaded = new ArrayList<>(); int defloadadd = 0;
+		ArrayList<ResourceLocation> defloaded = new ArrayList<>();
 		for(int folder = 0; folder < folders.length; folder++){
 			String parent = folder == 0 ? "/mods/" : folder == 1 ? "/mods/" + FCL.getMinecraftVersion() + "/" : "/" + Config.ADDONS_FOLDER + "/";
-			AddonList.checkFolder(folders[folder], parent);
+			AddonList.checkFolder(folders[folder], parent); if(!folders[folder].exists() || !folders[folder].isDirectory()) continue;
 			for(File file : folders[folder].listFiles()){
 				if(AddonList.isAddonContainer(parent, file)){
 					try{
-						if(folder == 2){ method.invoke(cl, file.toURI().toURL()); defloadadd++; }
+						if(folder == 2) method.invoke(cl, file.toURI().toURL());
 						Addon addon = GenericAddon.isHybrid(file) ? HybridAddon.getClass(file).getConstructor(File.class).newInstance(file) : new GenericAddon(file);
-						ADDONS.register(addon); defloaded.add(addon.getRegistryName());
+						ADDONS.register(addon); if(folder == 2) defloaded.add(addon.getRegistryName());
 					}
 					catch(Exception e){
 						e.printStackTrace();
@@ -200,7 +200,7 @@ public class Resources {
 		} AddonList.save();
 		for(ResourceLocation loc : defloaded){
 			Addon addon = ADDONS.getValue(loc); if(addon == null) continue;
-			Print.log("Registering Addonpack into Forge/Minecraft resources... (" + addon.getName() + ")");
+			Print.log("Registering Addonpack Manually into Forge/Minecraft resources... (" + addon.getName() + ")");
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("modid", addon.getRegistryName().getResourcePath());
 			map.put("name", "[FVTM]: " + addon.getName());
@@ -211,7 +211,7 @@ public class Resources {
 			FMLCommonHandler.instance().addModToResourcePack(container);
 		}
 		ADDONS.getValues().forEach(addon ->  new GenericCreativeTab(addon));
-		if(Static.side().isClient() && defloadadd > 0){
+		if(Static.side().isClient() && defloaded.size() > 0){
 			net.minecraft.client.Minecraft.getMinecraft().refreshResources();
 		}
 	}

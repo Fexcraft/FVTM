@@ -76,7 +76,7 @@ public class AddonList {
 	}
 
 	public static void checkFolder(File folder, String id){
-		if(!folder.isDirectory()) return;
+		if(!folder.exists() || !folder.isDirectory()) return;
 		if(instance == null) load();
 		Print.debug(folder, id);
 		Entry entry = null;

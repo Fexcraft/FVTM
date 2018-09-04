@@ -1,9 +1,9 @@
 {
     "variants": {
-        "normal": { "model": "frsm:placeholder" },
-        "facing=north": { "model": "frsm:placeholder" },
-        "facing=south": { "model": "frsm:placeholder" },
-        "facing=west":  { "model": "frsm:placeholder" },
-        "facing=east":  { "model": "frsm:placeholder" }
+        "normal": { "model": "fvtm:constructor_controller" },
+        "facing=north": { "model": "fvtm:constructor_controller", "y": 0 },
+        "facing=south": { "model": "fvtm:constructor_controller", "y": 180 },
+        "facing=west":  { "model": "fvtm:constructor_controller", "y": 270 },
+        "facing=east":  { "model": "fvtm:constructor_controller", "y": 90 }
     }
 }

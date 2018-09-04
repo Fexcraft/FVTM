@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.blocks;
 
+import javax.annotation.Nullable;
+
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
@@ -14,29 +16,36 @@ import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.fexcraft.mod.lib.api.item.PaintItem;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.render.RGB;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
 
 @fBlock(modid = FVTM.MODID, name = "constructor_controller", tileentity = ConstructorControllerEntity.class)
-public class ConstructorController extends BlockContainer {
+public class ConstructorController extends Block implements ITileEntityProvider {
 
     public static ConstructorController INSTANCE;
 
@@ -56,6 +65,11 @@ public class ConstructorController extends BlockContainer {
     }
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    
+    /*@Override
+    public EnumBlockRenderType getRenderType(IBlockState state){
+        return EnumBlockRenderType.MODEL;
+    }*/
 
     @Override
     public boolean isFullBlock(IBlockState state){
@@ -64,7 +78,7 @@ public class ConstructorController extends BlockContainer {
 
     @Override
     public boolean isFullCube(IBlockState state){
-        return false;
+        return true;
     }
 
     @Override
@@ -79,7 +93,7 @@ public class ConstructorController extends BlockContainer {
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
-        return FULL_BLOCK_AABB;
+        return FULL_BLOCK_AABB.offset(pos);
     }
 
     @Override
@@ -109,6 +123,30 @@ public class ConstructorController extends BlockContainer {
     @Override
     protected BlockStateContainer createBlockState(){
         return new BlockStateContainer(this, new IProperty[]{FACING});
+    }
+
+    @Override
+    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack){
+        if(te instanceof IWorldNameable && ((IWorldNameable)te).hasCustomName()){
+            player.addStat(StatList.getBlockStats(this));
+            player.addExhaustion(0.005F);
+            if(worldIn.isRemote){ return; }
+            int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
+            Item item = this.getItemDropped(state, worldIn.rand, i);
+            if(item == Items.AIR){ return; }
+            ItemStack itemstack = new ItemStack(item, this.quantityDropped(worldIn.rand));
+            itemstack.setStackDisplayName(((IWorldNameable)te).getName());
+            spawnAsEntity(worldIn, pos, itemstack);
+        }
+        else{
+            super.harvestBlock(worldIn, player, pos, state, (TileEntity)null, stack);
+        }
+    }
+    
+    @Override
+    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param){
+        /*super.eventReceived(state, worldIn, pos, id, param);*/ TileEntity tileentity = worldIn.getTileEntity(pos);
+        return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
     }
 
     //<-- VANILLA END -->//
@@ -363,7 +401,7 @@ public class ConstructorController extends BlockContainer {
             EntityItem entity = new EntityItem(world, conte.getPos().getX() + 0.5, conte.getPos().getY() + 1.5f, conte.getPos().getZ() + 0.5, stack);
             world.spawnEntity(entity);
         }
-        super.breakBlock(world, pos, state);
+        super.breakBlock(world, pos, state); //world.removeTileEntity(pos);
     }
 
 }

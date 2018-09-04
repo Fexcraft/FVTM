@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.re.CCGMain;
+import net.fexcraft.mod.fvtm.gui.re.CCGStatus;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.AddonList;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -43,20 +44,24 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class GuiHandler implements IGuiHandler {
 
     public static final int ADDON_MANAGER = 55;
     public static final int GENERIC_INVENTORY = 200;
     public static final int VEHICLE_INVENTORY = 9910;
-    public static final int CONSTRUCTOR = 9000;//92110;
-    public static final int CONTAINER_INVENTORY = 9210;
+    //public static final int CONSTRUCTOR = 9000;//92110;
+    //public static final int CONTAINER_INVENTORY = 9210;
     public static final int CONTAINER_FLUID_INVENTORY = 9211;
     public static final int BLOCK_INVENTORY = 9310;
     public static final int BLOCK_FLUID_INVENTORY = 9311;
     public static final int BLOCK_SCRIPTSGUI = 9312;
     public static final int BLOCK_CRAFTERSCRIPT = 9313;
 	public static final int VEHICLE_SCRIPTSGUI = 9214;
+	//
+	public static final int CCG_Main = 9000;
+	public static final int CCG_Status = 9001;
 	public static EnumFacing lastside = EnumFacing.UP;
 
     @Override
@@ -87,11 +92,13 @@ public class GuiHandler implements IGuiHandler {
             	return new GenericGuiContainer.DefImpl();
             case 9313:
             	return new GenericGuiContainer.DefImpl();
+            case 9000:
+            	return new CCGMain.Container();
+            case 9001:
+            	return new CCGStatus.Container(world, x, y, z);
+            default:
+            	return new GenericGuiContainer.DefImpl();
         }
-        if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
-            return new GenericGuiContainer.DefImpl();
-        }
-        return null;
     }
 
     @Override
@@ -122,12 +129,13 @@ public class GuiHandler implements IGuiHandler {
             	return new UniversalBlockScriptGui(player, world, x, y, z);
             case 9313:
             	return new CrafterBlockScriptGui(player, world, x, y, z);
+            //
+            case 9000:
+            	return new CCGMain(player, world, x, y, z);
+            case 9001:
+            	return new CCGStatus(player, world, x, y, z);
+            default: return null;
         }
-        if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
-            Print.debug("CREATING GUI!");
-            return new CCGMain(player, world, x, y, z);
-        }
-        return null;
     }
 
     public static class SReceiver implements IPacketListener<PacketNBTTagCompound> {
@@ -466,6 +474,15 @@ public class GuiHandler implements IGuiHandler {
                 	Print.debug(packet.nbt);
                 	return;
                 }
+                case "generic_gui":{
+                    EntityPlayer player = (EntityPlayer)objs[0];
+                    ((GenericGuiContainer)player.openContainer).packet(Side.SERVER, packet.nbt, player);
+                	return;
+                }
+                default:{
+                	Print.debug("unknown target", packet.nbt, objs[0]);
+                	return;
+                }
             }
         }
 
@@ -487,10 +504,9 @@ public class GuiHandler implements IGuiHandler {
 
         @Override
         public void process(PacketNBTTagCompound packet, Object[] objs){
-            if(!packet.nbt.hasKey("cargo")){
-                return;
-            }
-            switch(packet.nbt.getString("cargo")){
+            if(!packet.nbt.hasKey("cargo") && !packet.nbt.hasKey("task")) return;
+            String str = packet.nbt.hasKey("cargo") ? packet.nbt.getString("cargo") : packet.nbt.getString("task");
+            switch(str){
                 case "addon_list": {
                     AddonManagerGui.addons.clear();
                     int size = packet.nbt.getInteger("Size");
@@ -549,6 +565,15 @@ public class GuiHandler implements IGuiHandler {
                 		Print.debug("NO", player, data, player.openContainer);
                 	}
                 	break;
+                }
+                case "generic_gui":{
+                    EntityPlayer player = (EntityPlayer)objs[0];
+                    ((GenericGuiContainer)player.openContainer).packet(Side.CLIENT, packet.nbt, player);
+                	return;
+                }
+                default:{
+                	Print.debug("unknown target", packet.nbt, objs[0]);
+                	return;
                 }
             }
         }

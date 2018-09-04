@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -23,9 +24,9 @@ public abstract class GenericGuiContainer extends Container {
 		this.player = player;
 	}
 	
-	protected void send(Side side, NBTTagCompound packet){
-        packet.setString("target_listener", "fvtm"); packet.setString("task", "generic_gui");
-    	if(side.isClient()){
+	public void send(Side target, NBTTagCompound packet){
+        packet.setString("target_listener", "fvtm"); packet.setString("task", "generic_gui"); Print.debug(target, packet);
+    	if(target == Side.SERVER){
     		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
     	}
     	else{
@@ -39,7 +40,7 @@ public abstract class GenericGuiContainer extends Container {
 
 		@Override
 		protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
-			//
+			Print.debug("def, impl", side, packet, player);
 		}
 		
 	}

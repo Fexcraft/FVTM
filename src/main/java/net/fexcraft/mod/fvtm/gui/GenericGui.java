@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui;
 
 import java.io.IOException;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -12,7 +13,9 @@ import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -21,13 +24,17 @@ public abstract class GenericGui extends GuiContainer {
 	protected ResourceLocation texloc = null;
     protected TreeMap<String, BasicButton> buttons = new TreeMap<>();
     protected TreeMap<String, BasicText> texts = new TreeMap<>();
+    protected TreeMap<String, GuiTextField> fields = new TreeMap<>();
     protected GenericGuiContainer container;
+    protected boolean deftexrect = true;
+    protected boolean defbackground = true;
+    protected EntityPlayer player;
     
-    public GenericGui(ResourceLocation texture, @Nullable GenericGuiContainer container){
+    public GenericGui(ResourceLocation texture, @Nullable GenericGuiContainer container, EntityPlayer player){
     	super(container == null ? new GenericGuiContainer.DefImpl() : container);
     	this.texloc = texture == null ? Resources.NULL_TEXTURE : texture;
     	this.container = (GenericGuiContainer)this.inventorySlots;
-    	this.container.setPlayer(Minecraft.getMinecraft().player);
+    	this.container.setPlayer(this.player = player);
     }
 
     @Override
@@ -37,20 +44,22 @@ public abstract class GenericGui extends GuiContainer {
     
     @Override
     public void initGui(){
-        super.initGui(); buttons.clear(); texts.clear(); init();
+        super.initGui(); buttons.clear(); texts.clear(); fields.clear(); init();
     }
 
 	@Override
     protected void drawGuiContainerBackgroundLayer(float pticks, int mouseX, int mouseY){
+		if(defbackground) super.drawDefaultBackground();
     	predraw(pticks, mouseX, mouseY); this.mc.getTextureManager().bindTexture(texloc);
-        this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
+        if(deftexrect) this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     	drawbackground(pticks, mouseX, mouseY);
     	buttons.forEach((key, button) -> {
     		button.hovered(mouseX, mouseY); button.draw(this, pticks, mouseX, mouseY);
     	});
-    	texts.forEach((key, button) -> {
-            mc.fontRenderer.drawString(button.string, guiLeft + button.x, guiTop + button.y, button.color);
+    	texts.forEach((key, text) -> {
+            mc.fontRenderer.drawString(text.string, guiLeft + text.x, guiTop + text.y, text.color);
     	});
+    	fields.forEach((key, elm) -> elm.drawTextBox());
     }
     
     protected void openGui(int gui, int[] xyz){
@@ -81,6 +90,7 @@ public abstract class GenericGui extends GuiContainer {
         		}
         	}
         }
+        if(!fields.isEmpty()) fields.values().forEach(elm -> elm.mouseClicked(mouseX, mouseY, mouseButton));
     }
 
 	public static class BasicButton {
@@ -124,5 +134,24 @@ public abstract class GenericGui extends GuiContainer {
 			this.string = string; this.color = color == null ? MapColor.SNOW.colorValue : color;
 		}
 	}
+	
+	//---///----////----///---//
+	
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException{
+        if(!fields.isEmpty() && !(this.mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode))){
+        	boolean bool = false;
+        	for(Entry<String, GuiTextField> entry : fields.entrySet()){
+        		if(entry.getValue().textboxKeyTyped(typedChar, keyCode)) bool = true;
+        	}
+            if(bool) super.keyTyped(typedChar, keyCode);
+        }
+        if(keyCode == 1) player.closeScreen();
+    }
+    
+    @Override
+    public void handleMouseInput() throws IOException{
+        super.handleMouseInput();
+    }
 
 }

@@ -78,7 +78,7 @@ public class ConstructorRemote extends Item {
         ItemStack stack = player.getHeldItem(hand);
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey(NBTKEY)){
             BlockPos pos = BlockPos.fromLong(stack.getTagCompound().getLong(NBTKEY));
-            player.openGui(FVTM.getInstance(), GuiHandler.CONSTRUCTOR, world, pos.getX(), pos.getY(), pos.getZ());
+            player.openGui(FVTM.getInstance(), GuiHandler.CCG_Main, world, pos.getX(), pos.getY(), pos.getZ());
             return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
         }
         return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));

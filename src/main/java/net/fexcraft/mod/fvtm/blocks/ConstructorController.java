@@ -340,7 +340,7 @@ public class ConstructorController extends Block implements ITileEntityProvider 
             }
             if(hand != EnumHand.OFF_HAND){
                 if(!findAndPressButton(te, w, pos, state, p, side, hitX, hitY, hitZ)){
-                    p.openGui(FVTM.getInstance(), GuiHandler.CONSTRUCTOR, w, te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
+                    p.openGui(FVTM.getInstance(), GuiHandler.CCG_Main, w, te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
                 }
             }
             return true;

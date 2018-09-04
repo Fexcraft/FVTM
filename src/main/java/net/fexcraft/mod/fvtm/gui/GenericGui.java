@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
@@ -26,7 +27,7 @@ public abstract class GenericGui extends GuiContainer {
     	super(container == null ? new GenericGuiContainer.DefImpl() : container);
     	this.texloc = texture == null ? Resources.NULL_TEXTURE : texture;
     	this.container = (GenericGuiContainer)this.inventorySlots;
-    	container.setPlayer(Minecraft.getMinecraft().player);
+    	this.container.setPlayer(Minecraft.getMinecraft().player);
     }
 
     @Override
@@ -43,13 +44,13 @@ public abstract class GenericGui extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float pticks, int mouseX, int mouseY){
     	predraw(pticks, mouseX, mouseY); this.mc.getTextureManager().bindTexture(texloc);
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
+    	drawbackground(pticks, mouseX, mouseY);
     	buttons.forEach((key, button) -> {
     		button.hovered(mouseX, mouseY); button.draw(this, pticks, mouseX, mouseY);
     	});
     	texts.forEach((key, button) -> {
             mc.fontRenderer.drawString(button.string, guiLeft + button.x, guiTop + button.y, button.color);
     	});
-    	drawbackground(pticks, mouseX, mouseY);
     }
     
     protected void openGui(int gui, int[] xyz){
@@ -75,6 +76,7 @@ public abstract class GenericGui extends GuiContainer {
         	for(java.util.Map.Entry<String, BasicButton> entry : buttons.entrySet()){
         		if(entry.getValue().mousePressed(this.mc, mouseX, mouseY)){
         			//can't add the forge event as it needs a _GuiButton_, this isn't one.
+        			Print.debug("[GG] Button Pressed: " + entry.getKey());
         			buttonClicked(mouseX, mouseY, mouseButton, entry.getKey(), entry.getValue());
         		}
         	}
@@ -83,15 +85,16 @@ public abstract class GenericGui extends GuiContainer {
 
 	public static class BasicButton {
     	
-		protected int x, y, sizex, sizey;
-    	protected boolean enabled, visible = true, hovered;
-    	protected String name; private RGB rgb;
-    	protected RGB gray = new RGB(119, 119, 119);
-    	protected RGB yellow = new RGB(244, 215, 66);
+		public int x, y, tx, ty, sizex, sizey;
+		public boolean enabled, visible = true, hovered;
+    	public String name; private RGB rgb;
+    	public RGB gray = new RGB(119, 119, 119, 0.5f);
+    	public RGB white = new RGB(255, 255, 255, 0.5f);
+    	public RGB yellow = new RGB(244, 215,  66, 0.5f);
     	
-    	public BasicButton(String name, int x, int y, int sizex, int sizey, boolean enabled){
+    	public BasicButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, boolean enabled){
     		this.name = name; this.x = x; this.y = y; this.sizex = sizex; this.sizey = sizey;
-    		this.enabled = enabled;
+    		this.enabled = enabled; this.tx = tx; this.ty = ty;
     	}
 
 		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY){
@@ -104,15 +107,15 @@ public abstract class GenericGui extends GuiContainer {
 
 		public void draw(GenericGui gui, float pticks, int mouseX, int mouseY){
 			if(!visible) return;
-            rgb = hovered ? enabled ? rgb = gray : yellow : null; RGB.glColorReset();
-            rgb.glColorApply(); gui.drawTexturedModalRect(this.x, this.y,0, 0, sizex, sizey); RGB.glColorReset();
+            rgb = hovered ? enabled ? yellow : gray : white; RGB.glColorReset();
+            rgb.glColorApply(); gui.drawTexturedModalRect(x, y, tx, ty, sizex, sizey); RGB.glColorReset();
 		}
     	
     }
 	
 	public static class BasicText {
 		
-		protected int x, y, width, color;
+		public int x, y, width, color;
 		public String string;
 		public boolean visible = true;
 		

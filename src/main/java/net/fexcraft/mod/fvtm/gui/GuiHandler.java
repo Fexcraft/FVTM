@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.gui.re.CCGMain;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.AddonList;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -124,7 +125,7 @@ public class GuiHandler implements IGuiHandler {
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
             Print.debug("CREATING GUI!");
-            return new ConstructorMainGUI(ID, player, world, x, y, z);
+            return new CCGMain(player, world, x, y, z);
         }
         return null;
     }

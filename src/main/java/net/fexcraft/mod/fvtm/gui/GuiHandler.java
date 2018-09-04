@@ -63,7 +63,7 @@ public class GuiHandler implements IGuiHandler {
         Print.debug("REQUEST " + ID + " | " + x + ", " + y + ", " + z + ";");
         switch(ID){
             case 55:
-                return new GenericPlaceholderContainer();
+                return new GenericGuiContainer.DefImpl();
             case 200:
             	return new GenericAdjustableInventory.Container(world, player, x, y, z);
             case 9910:
@@ -77,18 +77,18 @@ public class GuiHandler implements IGuiHandler {
             case 9213:
                 return new AdjSignGui.Server(player, world, x, y, z);
             case 9214:
-            	return new GenericPlaceholderContainer();
+            	return new GenericGuiContainer.DefImpl();
             case 9310:
             	return new UniversalBlockInventoryGui.Server(player, world, x, y, z);
             case 9311:
             	return new UniversalBlockFluidGui.Server(player, world, x, y, z);
             case 9312:
-            	return new GenericPlaceholderContainer();
+            	return new GenericGuiContainer.DefImpl();
             case 9313:
-            	return new GenericPlaceholderContainer();
+            	return new GenericGuiContainer.DefImpl();
         }
         if(ID >= CONSTRUCTOR && ID < CONTAINER_INVENTORY){
-            return new GenericPlaceholderContainer();
+            return new GenericGuiContainer.DefImpl();
         }
         return null;
     }

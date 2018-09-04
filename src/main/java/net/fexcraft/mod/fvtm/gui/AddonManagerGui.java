@@ -38,7 +38,7 @@ public class AddonManagerGui extends GuiContainer {
     private Modes mode;
 
     public AddonManagerGui(int mode, int y, int z){
-        super(new GenericPlaceholderContainer());
+        super(new GenericGuiContainer.DefImpl());
         this.mode = Modes.fromInt(mode);
         switch(this.mode){
             case MAIN:

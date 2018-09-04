@@ -19,7 +19,7 @@ public class CrafterBlockScriptGui extends GuiContainer {
     private CrafterBlockScriptBase script;
 
     public CrafterBlockScriptGui(EntityPlayer player, World world, int x, int y, int z){
-        super(new GenericPlaceholderContainer());
+        super(new GenericGuiContainer.DefImpl());
         this.tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
         this.xSize = 256;
         this.ySize = 40;

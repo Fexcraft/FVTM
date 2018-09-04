@@ -28,7 +28,7 @@ public class UniversalBlockScriptGui extends GuiContainer {
     private GenericGuiButton button_up, button_down;
 	
 	public UniversalBlockScriptGui(EntityPlayer player, World world, int x, int y, int z){
-		super(new GenericPlaceholderContainer());
+		super(new GenericGuiContainer.DefImpl());
 		this.tile = (UniversalTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		if(tile == null){ exit(); return; }
 		ArrayList<ScriptSetting<?, ?>> list = new ArrayList<>();

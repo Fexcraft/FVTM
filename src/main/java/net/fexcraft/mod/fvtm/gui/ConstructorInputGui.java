@@ -28,7 +28,7 @@ public class ConstructorInputGui extends GuiContainer {
     private GuiTextField field;
 
     public ConstructorInputGui(EntityPlayer player, BlockPos pos){
-        super(new GenericPlaceholderContainer());
+        super(new GenericGuiContainer.DefImpl());
         window = "null";//((ConstructorControllerEntity)player.world.getTileEntity(pos)).window;
         this.xSize = 256;
         this.ySize = 32;

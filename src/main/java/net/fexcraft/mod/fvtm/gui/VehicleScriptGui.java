@@ -32,7 +32,7 @@ public class VehicleScriptGui extends GuiContainer {
     private GenericGuiButton button_up, button_down;
 	
 	public VehicleScriptGui(EntityPlayer player, World world, int x, int y, int z){
-		super(new GenericPlaceholderContainer());
+		super(new GenericGuiContainer.DefImpl());
 		/*this.player = player; this.world = world;*/ this.seat = y; this.vehicle = x; this.scroll = z;
 		Entity ent = world.getEntityByID(vehicle);
 		if(ent == null || ent instanceof VehicleEntity == false){

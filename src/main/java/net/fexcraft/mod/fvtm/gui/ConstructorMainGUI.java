@@ -56,7 +56,7 @@ public class ConstructorMainGUI extends GuiContainer {
     public static MenuButton menub0, menub1, menub2, menub3, menub4, menub5;
 
     public ConstructorMainGUI(int iD, EntityPlayer ply, World w, int x, int y, int z){
-        super(new GenericPlaceholderContainer());
+        super(new GenericGuiContainer.DefImpl());
         this.xSize = 256;
         this.ySize = 192;
         player = ply;

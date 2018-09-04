@@ -31,7 +31,7 @@ public class ConstructorRemoteGui extends GuiContainer {
     private static GenericGuiButton buttonRemove;
 
     public ConstructorRemoteGui(ConstructorControllerEntity ent, EntityPlayer entityplayer, BlockPos blockpos){
-        super(new GenericPlaceholderContainer());
+        super(new GenericGuiContainer.DefImpl());
         this.xSize = 158;
         this.ySize = 109;
         player = entityplayer;

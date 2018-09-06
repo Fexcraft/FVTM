@@ -1,0 +1,13 @@
+{
+    "RegistryName": "svm:admiral_license_plate",
+    "FullName": "Admiral Standard License Plate",
+    "Addon": "fvtm:svm",
+    "ModelFile": "net.fexcraft.mod.addons.svm.models.part.admiral.ModelAdmiralLicensePlates.class",
+    "Category": [
+        "license_plates"
+    ],
+    "Textures": [
+        "svm:textures/entities/admiral.png"
+    ],
+    "Compatible": [{ "Vehicle": "svm:admiral", "x": 0, "y": 0, "z": 0 }]
+}

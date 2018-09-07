@@ -226,15 +226,22 @@ public class ConstructorController extends Block implements ITileEntityProvider 
                 if(isLocked(p, te)){
                     return true;
                 }
-                if(te.getVehicleData() == null){
+                /*if(te.getVehicleData() == null){
                     Print.chat(p, te.getContainerData() == null ? "No Vehicle in Constructor." : "Containers do not hold parts.");
                     return true;
-                }
-                PartData data = ((PartItem) stack.getItem()).getPart(stack);
+                }*/
+                PartData data = ((PartItem)stack.getItem()).getPart(stack);
                 if(data == null){
                     return false;
                 }
-                if(data.getPart().getCategories().size() > 1){
+                if(te.getVehicleData() == null){
+                    te.setPartData(data);
+                    Print.chat(p, "Part put into Constructor. (" + data.getPart().getName() + ")");
+                    p.getHeldItem(hand).shrink(1);
+                    te.sendUpdate(null);
+                	return true;
+                }
+                if(data.getPart().getCategories().size() > 1 || (p.isSneaking() && !te.getVehicleData().getParts().containsKey(data.getPart().getCategory()))){
                     if(data.getPart().installable(data.getPart().getCategory(), te.getVehicleData(), p)){
                         te.setPartData(data);
                         Print.chat(p, "Part put into Constructor. (" + data.getPart().getName() + ")");

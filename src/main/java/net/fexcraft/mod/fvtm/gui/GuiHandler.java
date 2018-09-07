@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.re.CCGMain;
+import net.fexcraft.mod.fvtm.gui.re.CCGPartData;
 import net.fexcraft.mod.fvtm.gui.re.CCGStatus;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.AddonList;
@@ -62,6 +63,7 @@ public class GuiHandler implements IGuiHandler {
 	//
 	public static final int CCG_Main = 9000;
 	public static final int CCG_Status = 9001;
+	public static final int CCG_PartData = 9003;
 	public static EnumFacing lastside = EnumFacing.UP;
 
     @Override
@@ -96,6 +98,8 @@ public class GuiHandler implements IGuiHandler {
             	return new CCGMain.Container();
             case 9001:
             	return new CCGStatus.Container(world, x, y, z);
+            case 9003:
+            	return new CCGPartData.Container();
             default:
             	return new GenericGuiContainer.DefImpl();
         }
@@ -134,6 +138,8 @@ public class GuiHandler implements IGuiHandler {
             	return new CCGMain(player, world, x, y, z);
             case 9001:
             	return new CCGStatus(player, world, x, y, z);
+            case 9003:
+            	return new CCGPartData(player, world, x, y, z);
             default: return null;
         }
     }

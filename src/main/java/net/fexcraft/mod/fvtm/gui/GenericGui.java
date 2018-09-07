@@ -11,7 +11,6 @@ import net.fexcraft.mod.lib.network.PacketHandler;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.render.RGB;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -125,13 +124,14 @@ public abstract class GenericGui extends GuiContainer {
 	
 	public static class BasicText {
 		
+		private static final RGB defcolor = new RGB(128, 128, 128);
 		public int x, y, width, color;
 		public String string;
 		public boolean visible = true;
 		
 		public BasicText(int x, int y, int width, @Nullable Integer color, String string){
 			this.x = x; this.y = y; this.width = width;
-			this.string = string; this.color = color == null ? MapColor.SNOW.colorValue : color;
+			this.string = string; this.color = color == null ? defcolor.packed : color;
 		}
 	}
 	
@@ -150,7 +150,7 @@ public abstract class GenericGui extends GuiContainer {
     }
     
     @Override
-    public void handleMouseInput() throws IOException{
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
     }
 

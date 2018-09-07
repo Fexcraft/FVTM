@@ -59,10 +59,7 @@ public class CCGMain extends GenericGui {
 				
 				break;
 			}
-			case "row_2":{
-				
-				break;
-			}
+			case "row_2":{ this.openGui(GuiHandler.CCG_PartData, pos); break; }
 			case "row_3":{
 				
 				break;

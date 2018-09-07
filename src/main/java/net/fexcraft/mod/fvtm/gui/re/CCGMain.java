@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -56,14 +57,11 @@ public class CCGMain extends GenericGui {
 		switch(key){
 			case "row_0":{ this.openGui(GuiHandler.CCG_Status, pos); break; }
 			case "row_1":{
-				
+				Print.chat(mc.player, "Gui not available yet.");
 				break;
 			}
 			case "row_2":{ this.openGui(GuiHandler.CCG_PartData, pos); break; }
-			case "row_3":{
-				
-				break;
-			}
+			case "row_3":{ this.openGui(GuiHandler.CCG_PartManager, pos); break; }
 			case "row_4":{
 				
 				break;

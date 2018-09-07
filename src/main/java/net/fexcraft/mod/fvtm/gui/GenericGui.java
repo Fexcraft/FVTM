@@ -14,6 +14,7 @@ import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -52,6 +53,11 @@ public abstract class GenericGui extends GuiContainer {
     	predraw(pticks, mouseX, mouseY); this.mc.getTextureManager().bindTexture(texloc);
         if(deftexrect) this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     	drawbackground(pticks, mouseX, mouseY);
+    	//
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     	buttons.forEach((key, button) -> {
     		button.hovered(mouseX, mouseY); button.draw(this, pticks, mouseX, mouseY);
     	});
@@ -97,9 +103,9 @@ public abstract class GenericGui extends GuiContainer {
 		public int x, y, tx, ty, sizex, sizey;
 		public boolean enabled, visible = true, hovered;
     	public String name; private RGB rgb;
-    	public RGB gray = new RGB(119, 119, 119, 0.5f);
-    	public RGB white = new RGB(255, 255, 255, 0.5f);
-    	public RGB yellow = new RGB(244, 215,  66, 0.5f);
+    	public RGB rgb_disabled = new RGB(119, 119, 119, 0.5f);
+    	public RGB rgb_none = new RGB(255, 255, 255, 0.5f);
+    	public RGB rgb_hover = new RGB(244, 215,  66, 0.5f);
     	
     	public BasicButton(String name, int x, int y, int tx, int ty, int sizex, int sizey, boolean enabled){
     		this.name = name; this.x = x; this.y = y; this.sizex = sizex; this.sizey = sizey;
@@ -115,8 +121,7 @@ public abstract class GenericGui extends GuiContainer {
 		}
 
 		public void draw(GenericGui gui, float pticks, int mouseX, int mouseY){
-			if(!visible) return;
-            rgb = hovered ? enabled ? yellow : gray : white; RGB.glColorReset();
+			if(!visible) return; rgb = hovered ? enabled ? rgb_hover : rgb_disabled : rgb_none; RGB.glColorReset();
             rgb.glColorApply(); gui.drawTexturedModalRect(x, y, tx, ty, sizex, sizey); RGB.glColorReset();
 		}
     	

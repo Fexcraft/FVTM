@@ -100,7 +100,7 @@ public class GenericContainerItem extends Item implements ContainerItem {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
         if(this.isInCreativeTab(tab)){
-            for(Container con : Resources.CONTAINERS.getValues()){
+            for(Container con : Resources.CONTAINERS.getValuesCollection()){
                 if(con.getClass().equals(GenericContainer.class)){
                     for(int i = 0; i < con.getTextures().size(); i++){
                         ItemStack stack = new ItemStack(this);
@@ -124,7 +124,7 @@ public class GenericContainerItem extends Item implements ContainerItem {
         }
         if(tab instanceof GenericCreativeTab){
             Addon addon = ((GenericCreativeTab)tab).getAddon();
-            Collection<Container> coll = Resources.CONTAINERS.getValues().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
+            Collection<Container> coll = Resources.CONTAINERS.getValuesCollection().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
             for(Container con : coll){
                 if(con.getClass().equals(GenericContainer.class)){
                     for(int i = 0; i < con.getTextures().size(); i++){

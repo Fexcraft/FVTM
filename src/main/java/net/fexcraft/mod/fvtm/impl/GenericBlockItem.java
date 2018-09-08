@@ -93,7 +93,7 @@ public class GenericBlockItem extends Item implements BlockItem {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
         if(this.isInCreativeTab(tab)){
-            for(Block con : Resources.BLOCKS.getValues()){
+            for(Block con : Resources.BLOCKS.getValuesCollection()){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setString(NBTKEY, con.getRegistryName().toString());
@@ -103,7 +103,7 @@ public class GenericBlockItem extends Item implements BlockItem {
         }
         if(tab instanceof GenericCreativeTab){
             Addon addon = ((GenericCreativeTab)tab).getAddon();
-            Collection<Block> coll = Resources.BLOCKS.getValues().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
+            Collection<Block> coll = Resources.BLOCKS.getValuesCollection().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
             for(Block con : coll){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();

@@ -82,7 +82,7 @@ public class GenericMaterialItem extends MaterialItem implements FuelItem {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
         if(tab == CreativeTabs.SEARCH){
-            for(Material material : Resources.MATERIALS.getValues()){
+            for(Material material : Resources.MATERIALS.getValuesCollection()){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setString(NBTKEY, material.getRegistryName().toString());
@@ -105,7 +105,7 @@ public class GenericMaterialItem extends MaterialItem implements FuelItem {
         }
         if(tab instanceof GenericCreativeTab){
             Addon addon = ((GenericCreativeTab)tab).getAddon();
-            Collection<Material> coll = Resources.MATERIALS.getValues().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
+            Collection<Material> coll = Resources.MATERIALS.getValuesCollection().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
             for(Material material : coll){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();

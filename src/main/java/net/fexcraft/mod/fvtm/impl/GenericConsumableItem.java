@@ -89,7 +89,7 @@ public class GenericConsumableItem extends ConsumableItem {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
         if(tab == CreativeTabs.SEARCH){
-            for(Consumable material : Resources.CONSUMABLES.getValues()){
+            for(Consumable material : Resources.CONSUMABLES.getValuesCollection()){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setString(NBTKEY, material.getRegistryName().toString());
@@ -99,7 +99,7 @@ public class GenericConsumableItem extends ConsumableItem {
         }
         if(tab instanceof GenericCreativeTab){
             Addon addon = ((GenericCreativeTab)tab).getAddon();
-            Collection<Consumable> coll = Resources.CONSUMABLES.getValues().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
+            Collection<Consumable> coll = Resources.CONSUMABLES.getValuesCollection().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
             for(Consumable material : coll){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();

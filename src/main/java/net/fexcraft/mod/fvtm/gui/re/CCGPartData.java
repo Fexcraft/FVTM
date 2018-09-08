@@ -66,7 +66,7 @@ public class CCGPartData extends GenericGui {
 	}
 
 	private boolean check(List<ResourceLocation> list){ if(list.size() == 0) return true;
-		return list.get(1).getResourcePath().equals("all") || list.get(1).getResourcePath().equals("any") || list.get(1).getResourcePath().equals("*");
+		return list.get(0).getResourcePath().equals("all") || list.get(0).getResourcePath().equals("any") || list.get(0).getResourcePath().equals("*");
 	}
 
 	@Override

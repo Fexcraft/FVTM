@@ -99,7 +99,7 @@ public class GenericPartItem extends Item implements PartItem {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
         if(tab == CreativeTabs.SEARCH){
-            for(Part part : Resources.PARTS.getValues()){
+            for(Part part : Resources.PARTS.getValuesCollection()){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setString(NBTKEY, part.getRegistryName().toString());
@@ -109,7 +109,7 @@ public class GenericPartItem extends Item implements PartItem {
         }
         if(tab instanceof GenericCreativeTab){
             Addon addon = ((GenericCreativeTab)tab).getAddon();
-            Collection<Part> coll = Resources.PARTS.getValues().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
+            Collection<Part> coll = Resources.PARTS.getValuesCollection().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
             for(Part part : coll){
                 ItemStack stack = new ItemStack(this);
                 NBTTagCompound nbt = new NBTTagCompound();

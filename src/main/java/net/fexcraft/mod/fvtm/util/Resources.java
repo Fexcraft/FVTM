@@ -95,7 +95,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
-@SuppressWarnings("deprecation")
 public class Resources {
 
 	public static IForgeRegistry<Addon> ADDONS;
@@ -210,7 +209,7 @@ public class Resources {
 			container.bindMetadata(new MetadataCollection());
 			FMLCommonHandler.instance().addModToResourcePack(container);
 		}
-		ADDONS.getValues().forEach(addon ->  new GenericCreativeTab(addon));
+		ADDONS.getValuesCollection().forEach(addon ->  new GenericCreativeTab(addon));
 		if(Static.side().isClient() && defloaded.size() > 0){
 			net.minecraft.client.Minecraft.getMinecraft().refreshResources();
 		}
@@ -218,7 +217,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regMaterials(RegistryEvent.Register<Material> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
@@ -274,7 +273,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regParts(RegistryEvent.Register<Part> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
@@ -330,7 +329,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regVehicles(RegistryEvent.Register<Vehicle> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
@@ -428,7 +427,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regPartAttributes(RegistryEvent.Register<Attribute> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
@@ -439,7 +438,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regFuels(RegistryEvent.Register<Fuel> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
@@ -450,14 +449,14 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regSounds(RegistryEvent.Register<SoundEvent> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
 				}
 			}
 		}
-		VEHICLES.getValues().forEach((vehicle) -> {
+		VEHICLES.getValuesCollection().forEach((vehicle) -> {
 			vehicle.getSounds().forEach((soundloc) -> {
 				if(event.getRegistry().containsKey(soundloc)){
 					SOUNDS.put(soundloc, event.getRegistry().getValue(soundloc));
@@ -473,7 +472,7 @@ public class Resources {
 				}
 			});
 		});
-		PARTS.getValues().forEach((part) -> {
+		PARTS.getValuesCollection().forEach((part) -> {
 			part.getSounds().forEach((soundloc) -> {
 				if(event.getRegistry().containsKey(soundloc)){
 					SOUNDS.put(soundloc, event.getRegistry().getValue(soundloc));
@@ -497,7 +496,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regContainers(RegistryEvent.Register<Container> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
@@ -562,7 +561,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regConsumables(RegistryEvent.Register<Consumable> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
@@ -617,7 +616,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regBlocks(RegistryEvent.Register<Block> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
 					continue;
@@ -675,7 +674,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void regRecipes(RegistryEvent.Register<IRecipe> event){
-		for(Addon addon : ADDONS.getValues()){
+		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon) addon).isHybrid()){
 					if(((HybridAddon) addon).skipDefaultRegistryMethods()){
@@ -919,11 +918,11 @@ public class Resources {
 	}
 
 	public static final List<Vehicle> getVehiclesByType(VehicleType type){
-		return Resources.VEHICLES.getValues().stream().filter(p -> p.getType() == type).collect(Collectors.toList());
+		return Resources.VEHICLES.getValuesCollection().stream().filter(p -> p.getType() == type).collect(Collectors.toList());
 	}
 
 	public static final List<Vehicle> getVehiclesByAddon(Addon addon){
-		return Resources.VEHICLES.getValues().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
+		return Resources.VEHICLES.getValuesCollection().stream().filter(p -> p.getAddon().getRegistryName().equals(addon.getRegistryName())).collect(Collectors.toList());
 	}
 
 	public final File getConfigPath(){

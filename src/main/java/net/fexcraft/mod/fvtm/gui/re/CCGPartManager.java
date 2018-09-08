@@ -25,13 +25,13 @@ public class CCGPartManager extends GenericGui {
 
 	@Override
 	protected void init(){
-		this.texts.put("title", new BasicText(13, 4, 182, null, "0"));
+		this.texts.put("title", new BasicText(guiLeft + 13, guiTop + 4, 182, null, "0"));
 		//
 		this.buttons.put("+", new BasicButton("+", guiLeft + 3, guiTop + 151, 3, 151, 8, 10, false));
 		this.buttons.put("-", new BasicButton("-", guiLeft + 3, guiTop +  19, 3,  19, 8, 10, false));
 		//
 		for(int i = 0; i < 12; i++){
-			this.texts.put("row" + i, new BasicText(13, 20 + (i * 12), 181, null, i + ""));
+			this.texts.put("row" + i, new BasicText(guiLeft + 13, guiTop + 20 + (i * 12), 181, null, i + ""));
 			this.buttons.put("edit" + i, new BasicButton("e" + i, guiLeft + 175, guiTop + 19 + (i * 12), 175, 19, 10, 10, false));
 			this.buttons.put("rem" + i, new BasicButton("r" + i, guiLeft + 187, guiTop + 19 + (i * 12), 187, 19, 10, 10, false));
 		}
@@ -64,7 +64,7 @@ public class CCGPartManager extends GenericGui {
 	@Override
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		switch(key){
-			case "+": scroll = ++scroll > (tile.getPartData() == null ? 0 : tile.getPartData().getPart().getCompatibleVehicles().size()) ? --scroll : scroll; break;
+			case "+": scroll = ++scroll > (tile.getVehicleData() == null ? 0 : tile.getVehicleData().getParts().size()) ? --scroll : scroll; break;
 			case "-": scroll = --scroll < 0 ? 0 : scroll; break;
 			//
 		}

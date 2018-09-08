@@ -62,7 +62,7 @@ public abstract class GenericGui extends GuiContainer {
     		button.hovered(mouseX, mouseY); button.draw(this, pticks, mouseX, mouseY);
     	});
     	texts.forEach((key, text) -> {
-            mc.fontRenderer.drawString(text.string, guiLeft + text.x, guiTop + text.y, text.color);
+            mc.fontRenderer.drawString(text.string, text.x, text.y, text.color);
     	});
     	fields.forEach((key, elm) -> elm.drawTextBox());
     }

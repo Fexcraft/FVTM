@@ -67,13 +67,13 @@ public class CCGStatus extends GenericGui {
 
 	@Override
 	protected void init(){
-		this.texts.put("status", new BasicText(13, 4, 112, null, "---"));
+		this.texts.put("status", new BasicText(guiLeft + 13, guiTop + 4, 112, null, "---"));
 		this.fields.put("x", new GuiTextField(0, fontRenderer, 3 + guiLeft, 15 + guiTop, 122, 10));
 		this.fields.put("y", new GuiTextField(1, fontRenderer, 3 + guiLeft, 27 + guiTop, 122, 10));
 		this.fields.put("z", new GuiTextField(1, fontRenderer, 3 + guiLeft, 39 + guiTop, 122, 10));
-		this.texts.put("refresh", new BasicText(13, 52, 112, null, "Set Center Position"));
+		this.texts.put("refresh", new BasicText(guiLeft + 13, guiTop + 52, 112, null, "Set Center Position"));
 		this.buttons.put("refresh", new BasicButton(null, guiLeft + 11, guiTop + 51, 11, 51, 114, 10, true));
-		this.texts.put("auto", new BasicText(13, 68, 112, null, "Auto Connect"));
+		this.texts.put("auto", new BasicText(guiLeft + 13, guiTop + 68, 112, null, "Auto Connect"));
 		this.buttons.put("auto", new BasicButton(null, guiLeft + 11, guiTop + 67, 11, 67, 114, 10, true));
 	}
 

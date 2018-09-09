@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,10 +63,10 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 		switch(key){
 			case "prev": case "next": {
 				int i = container.textureable().getSelectedTexture() + (key.equals("next") ? 1 : -1);
-				i = i < 0 ? 0 : i >= container.textureable().getTextureHolder().getTextures().size() ? container.textureable().getTextureHolder().getTextures().size() : i;
+				i = i < 0 ? 0 : i >= container.textureable().getTextureHolder().getTextures().size() ? container.textureable().getTextureHolder().getTextures().size() - 1 : i;
 		        NBTTagCompound compound = new NBTTagCompound();
 		        compound.setIntArray("pos", pos);
-		        compound.setString("task", "supplied_set");
+		        compound.setString("cargo", "supplied_set");
 		        compound.setInteger("data", i);
 		        this.container.send(Side.SERVER, compound);
 		        break;
@@ -88,8 +87,8 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 		@Override
 		protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
 			if(side.isClient()) return;
-			if(!packet.hasKey("task")) return;
-			switch(packet.getString("task")){
+			if(!packet.hasKey("cargo")) return;
+			switch(packet.getString("cargo")){
 				case "supplied_set":{
 					textureable().setSelectedTexture(packet.getInteger("data"));
 					break;
@@ -100,11 +99,6 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 		
 		private Textureable textureable(){
 			return part != null ? tile.getVehicleData().getPart(part) : tile.getTextureable();
-		}
-		
-		@Override
-		public void onContainerClosed(EntityPlayer player){
-			Static.exception(new Exception(), false);
 		}
 		
 	}

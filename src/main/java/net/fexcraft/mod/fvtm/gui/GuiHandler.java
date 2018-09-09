@@ -3,8 +3,6 @@ package net.fexcraft.mod.fvtm.gui;
 import java.util.HashMap;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -38,12 +36,6 @@ import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
-import net.minecraft.client.gui.GuiGameOver;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiMultiplayer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,13 +47,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -514,7 +504,7 @@ public class GuiHandler implements IGuiHandler {
                 	return;
                 }
                 case "generic_gui":{
-                    EntityPlayerMP player = (EntityPlayerMP)objs[0]; Print.debug(player.openContainer);
+                    EntityPlayerMP player = (EntityPlayerMP)objs[0]; //Print.debug(player.openContainer);
                     ((GenericGuiContainer)player.openContainer).packet(Side.SERVER, packet.nbt, player);
                 	return;
                 }
@@ -623,14 +613,22 @@ public class GuiHandler implements IGuiHandler {
                 	return;
                 }
                 case "open_guicontainer":{
-                    EntityPlayer player = (EntityPlayer)objs[0];
-                	player.closeScreen(); int[] arr = packet.nbt.getIntArray("args");
+                    EntityPlayer player = (EntityPlayer)objs[0]; int[] arr = packet.nbt.getIntArray("args");
                 	NBTTagCompound compound = packet.nbt.getCompoundTag("data");
                 	GenericGui<?> gui = null;
                     switch(packet.nbt.getInteger("gui")){
 	                    case 9007: gui = new CCGTextureManager(player, arr, compound); break;
                     }
-                    net.minecraft.client.Minecraft.getMinecraft().displayGuiScreen(gui);
+                    net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
+                    mc.currentScreen = gui;
+                    if(gui != null){
+                        mc.setIngameNotInFocus(); net.minecraft.client.settings.KeyBinding.unPressAllKeys();
+                        while(Mouse.next()){ ; } while(Keyboard.next()){ ; }
+                        net.minecraft.client.gui.ScaledResolution sr = new net.minecraft.client.gui.ScaledResolution(mc);
+                        gui.setWorldAndResolution(mc, sr.getScaledWidth(), sr.getScaledHeight());
+                        mc.skipRenderWorld = false;
+                    }
+                    else{ mc.getSoundHandler().resumeSounds(); mc.setIngameFocus(); }
                     player.openContainer = gui.container;
                 	return;
                 }

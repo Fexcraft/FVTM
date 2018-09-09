@@ -28,7 +28,7 @@ public class CCGPartData extends GenericGui {
 	@Override
 	protected void init(){
 		this.texts.put("title", new BasicText(guiLeft + 13, guiTop + 4, 182, null, "0"));
-		this.texts.put("offset", new BasicText(guiLeft + 13, guiTop + 20, 64, null, "Offset:"));
+		//this.texts.put("offset", new BasicText(guiLeft + 13, guiTop + 20, 64, null, "Offset:"));
 		this.texts.put("subtitle", new BasicText(guiLeft + 13, guiTop + 38, 182, null, "Compatible with:"));
 		//
 		this.buttons.put("+", new BasicButton("+", guiLeft + 3, guiTop + 135, 3, 135, 8, 10, false));

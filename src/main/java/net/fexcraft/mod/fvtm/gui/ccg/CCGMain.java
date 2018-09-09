@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.gui.re;
+package net.fexcraft.mod.fvtm.gui.ccg;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorButton;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class CCGMain extends GenericGui {
+public class CCGMain extends GenericGui<CCGMain.Container> {
 	
 	private int[] pos;
 
@@ -65,7 +65,7 @@ public class CCGMain extends GenericGui {
 			case "row_4":{ /* //TODO */ break; }
 			case "row_5":{ this.openGui(GuiHandler.CCG_PartInstaller, pos); break; }
 			case "row_6":{
-				
+				this.openGenericGui(GuiHandler.CCG_TextureManager, pos, new NBTTagCompound());
 				break;
 			}
 			case "row_7":{

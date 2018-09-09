@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.gui.re;
+package net.fexcraft.mod.fvtm.gui.ccg;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class CCGPartInstaller extends GenericGui {
+public class CCGPartInstaller extends GenericGui<CCGPartInstaller.Container> {
 	
 	//private int[] pos;
 	private ConstructorControllerEntity tile;

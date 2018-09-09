@@ -3,6 +3,11 @@ package net.fexcraft.mod.fvtm.gui;
 import java.util.HashMap;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -18,11 +23,12 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
-import net.fexcraft.mod.fvtm.gui.re.CCGMain;
-import net.fexcraft.mod.fvtm.gui.re.CCGPartData;
-import net.fexcraft.mod.fvtm.gui.re.CCGPartInstaller;
-import net.fexcraft.mod.fvtm.gui.re.CCGPartManager;
-import net.fexcraft.mod.fvtm.gui.re.CCGStatus;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGMain;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGPartData;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGPartInstaller;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGPartManager;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGStatus;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGTextureManager;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.AddonList;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -32,6 +38,12 @@ import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
+import net.minecraft.client.gui.GuiGameOver;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,11 +55,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -113,6 +127,7 @@ public class GuiHandler implements IGuiHandler {
             	return new CCGPartManager.Container();
             case 9006:
             	return new CCGPartInstaller.Container();
+            //case 9007: return new CCGTextureManager.Container();
             default:
             	return new GenericGuiContainer.DefImpl();
         }
@@ -157,6 +172,7 @@ public class GuiHandler implements IGuiHandler {
             	return new CCGPartManager(player, world, x, y, z);
             case 9006:
             	return new CCGPartInstaller(player, world, x, y, z);
+            //case 9007: return new CCGTextureManager(player, world, x, y, z);
             default: return null;
         }
     }
@@ -498,9 +514,21 @@ public class GuiHandler implements IGuiHandler {
                 	return;
                 }
                 case "generic_gui":{
-                    EntityPlayer player = (EntityPlayer)objs[0];
+                    EntityPlayerMP player = (EntityPlayerMP)objs[0]; Print.debug(player.openContainer);
                     ((GenericGuiContainer)player.openContainer).packet(Side.SERVER, packet.nbt, player);
                 	return;
+                }
+                case "open_guicontainer":{
+                    EntityPlayerMP player = (EntityPlayerMP)objs[0];
+                    int[] err = packet.nbt.getIntArray("args");
+                    NBTTagCompound compound = packet.nbt.getCompoundTag("data");
+                    GenericGuiContainer container = null;
+                    switch(packet.nbt.getInteger("gui")){
+	                    case 9007: container = new CCGTextureManager.Container(player, err, compound); break;
+                    }
+                    player.openContainer = container;
+                    PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(packet.nbt), player);
+                    return;
                 }
                 default:{
                 	Print.debug("unknown target", packet.nbt, objs[0]);
@@ -592,6 +620,18 @@ public class GuiHandler implements IGuiHandler {
                 case "generic_gui":{
                     EntityPlayer player = (EntityPlayer)objs[0];
                     ((GenericGuiContainer)player.openContainer).packet(Side.CLIENT, packet.nbt, player);
+                	return;
+                }
+                case "open_guicontainer":{
+                    EntityPlayer player = (EntityPlayer)objs[0];
+                	player.closeScreen(); int[] arr = packet.nbt.getIntArray("args");
+                	NBTTagCompound compound = packet.nbt.getCompoundTag("data");
+                	GenericGui<?> gui = null;
+                    switch(packet.nbt.getInteger("gui")){
+	                    case 9007: gui = new CCGTextureManager(player, arr, compound); break;
+                    }
+                    net.minecraft.client.Minecraft.getMinecraft().displayGuiScreen(gui);
+                    player.openContainer = gui.container;
                 	return;
                 }
                 default:{

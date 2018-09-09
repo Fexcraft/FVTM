@@ -19,21 +19,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class GenericGui extends GuiContainer {
+public abstract class GenericGui<CONTAINER extends GenericGuiContainer> extends GuiContainer {
 
 	protected ResourceLocation texloc = null;
     protected TreeMap<String, BasicButton> buttons = new TreeMap<>();
     protected TreeMap<String, BasicText> texts = new TreeMap<>();
     protected TreeMap<String, GuiTextField> fields = new TreeMap<>();
-    protected GenericGuiContainer container;
+    protected CONTAINER container;
     protected boolean deftexrect = true;
     protected boolean defbackground = true;
     protected EntityPlayer player;
     
-    public GenericGui(ResourceLocation texture, @Nullable GenericGuiContainer container, EntityPlayer player){
+    @SuppressWarnings("unchecked")
+	public GenericGui(ResourceLocation texture, @Nullable GenericGuiContainer container, EntityPlayer player){
     	super(container == null ? new GenericGuiContainer.DefImpl() : container);
     	this.texloc = texture == null ? Resources.NULL_TEXTURE : texture;
-    	this.container = (GenericGuiContainer)this.inventorySlots;
+    	this.container = (CONTAINER)this.inventorySlots;
     	this.container.setPlayer(this.player = player);
     }
 
@@ -72,6 +73,15 @@ public abstract class GenericGui extends GuiContainer {
         compound.setString("target_listener", "fvtm");
         compound.setString("task", "open_gui");
         compound.setInteger("gui", gui);
+        if(xyz != null) compound.setIntArray("args", xyz);
+        PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
+    }
+    
+    protected void openGenericGui(int gui, int[] xyz, NBTTagCompound data){
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setString("target_listener", "fvtm");
+        compound.setString("task", "open_guicontainer");
+        compound.setInteger("gui", gui); compound.setTag("data", data);
         if(xyz != null) compound.setIntArray("args", xyz);
         PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
     }
@@ -120,7 +130,7 @@ public abstract class GenericGui extends GuiContainer {
 			return hovered = mouseX >= x && mouseY >= y && mouseX < x + sizex && mouseY < y + sizey;
 		}
 
-		public void draw(GenericGui gui, float pticks, int mouseX, int mouseY){
+		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
 			if(!visible) return; rgb = hovered ? enabled ? rgb_hover : rgb_disabled : rgb_none; RGB.glColorReset();
             rgb.glColorApply(); gui.drawTexturedModalRect(x, y, tx, ty, sizex, sizey); RGB.glColorReset();
 		}

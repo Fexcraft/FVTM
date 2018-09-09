@@ -22,6 +22,7 @@ import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGMain;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGPainter;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGPartData;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGPartInstaller;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGPartManager;
@@ -118,6 +119,8 @@ public class GuiHandler implements IGuiHandler {
             case 9006:
             	return new CCGPartInstaller.Container();
             //case 9007: return new CCGTextureManager.Container();
+            case 9008:
+            	return new CCGPainter.Container(world, x, y, z);
             default:
             	return new GenericGuiContainer.DefImpl();
         }
@@ -163,6 +166,8 @@ public class GuiHandler implements IGuiHandler {
             case 9006:
             	return new CCGPartInstaller(player, world, x, y, z);
             //case 9007: return new CCGTextureManager(player, world, x, y, z);
+            case 9008:
+            	return new CCGPainter(player, world, x, y, z);
             default: return null;
         }
     }

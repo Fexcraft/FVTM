@@ -68,10 +68,7 @@ public class CCGMain extends GenericGui<CCGMain.Container> {
 				this.openGenericGui(GuiHandler.CCG_TextureManager, pos, new NBTTagCompound());
 				break;
 			}
-			case "row_7":{
-				
-				break;
-			}
+			case "row_7":{ this.openGui(GuiHandler.CCG_PainterTool, pos);break; }
 			case "spawn":{
 		        NBTTagCompound compound = new NBTTagCompound();
 		        compound.setIntArray("pos", pos);

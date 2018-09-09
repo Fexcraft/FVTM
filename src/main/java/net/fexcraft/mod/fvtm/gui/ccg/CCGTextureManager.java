@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.ccg;
 
+import java.io.IOException;
+
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
@@ -7,6 +9,7 @@ import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -102,5 +105,11 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 		}
 		
 	}
+	
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if(keyCode == 1) this.openGui(GuiHandler.CCG_Main, pos);//TODO part manager/adjuster for parts
+        super.keyTyped(typedChar, keyCode);
+    }
 	
 }

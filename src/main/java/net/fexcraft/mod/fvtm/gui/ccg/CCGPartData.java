@@ -1,10 +1,12 @@
 package net.fexcraft.mod.fvtm.gui.ccg;
 
+import java.io.IOException;
 import java.util.List;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.lib.util.common.Formatter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,13 +17,13 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class CCGPartData extends GenericGui<CCGPartData.Container> {
 	
-	//private int[] pos;
+	private int[] pos;
 	private ConstructorControllerEntity tile;
 	private int scroll = 0;
 
 	public CCGPartData(EntityPlayer player, World world, int x, int y, int z){
 		super(new ResourceLocation("fvtm:textures/guis/ccg_part_data.png"), new Container(), player);
-		this.xSize = 200; this.ySize = 160; //this.pos = new int[]{ x, y, z };
+		this.xSize = 200; this.ySize = 160; this.pos = new int[]{ x, y, z };
 		tile = (ConstructorControllerEntity)world.getTileEntity(new BlockPos(x, y, z));
 	}
 
@@ -94,5 +96,11 @@ public class CCGPartData extends GenericGui<CCGPartData.Container> {
 		}
 		
 	}
+	
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if(keyCode == 1) this.openGui(GuiHandler.CCG_Main, pos);
+        super.keyTyped(typedChar, keyCode);
+    }
 	
 }

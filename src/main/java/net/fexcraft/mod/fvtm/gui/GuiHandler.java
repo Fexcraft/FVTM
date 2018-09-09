@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.re.CCGMain;
 import net.fexcraft.mod.fvtm.gui.re.CCGPartData;
+import net.fexcraft.mod.fvtm.gui.re.CCGPartInstaller;
 import net.fexcraft.mod.fvtm.gui.re.CCGPartManager;
 import net.fexcraft.mod.fvtm.gui.re.CCGStatus;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
@@ -65,7 +66,13 @@ public class GuiHandler implements IGuiHandler {
 	public static final int CCG_Main = 9000;
 	public static final int CCG_Status = 9001;
 	public static final int CCG_PartData = 9003;
+	public static final int CCG_VehicleData = 9002;
 	public static final int CCG_PartManager = 9004;
+	public static final int CCG_PartAdjuster = 9005;
+	public static final int CCG_PartInstaller = 9006;
+	public static final int CCG_TextureManager = 9007;
+	public static final int CCG_PainterTool = 9008;
+	
 	public static EnumFacing lastside = EnumFacing.UP;
 
     @Override
@@ -104,6 +111,8 @@ public class GuiHandler implements IGuiHandler {
             	return new CCGPartData.Container();
             case 9004:
             	return new CCGPartManager.Container();
+            case 9006:
+            	return new CCGPartInstaller.Container();
             default:
             	return new GenericGuiContainer.DefImpl();
         }
@@ -146,6 +155,8 @@ public class GuiHandler implements IGuiHandler {
             	return new CCGPartData(player, world, x, y, z);
             case 9004:
             	return new CCGPartManager(player, world, x, y, z);
+            case 9006:
+            	return new CCGPartInstaller(player, world, x, y, z);
             default: return null;
         }
     }

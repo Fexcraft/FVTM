@@ -62,14 +62,8 @@ public class CCGMain extends GenericGui {
 			}
 			case "row_2":{ this.openGui(GuiHandler.CCG_PartData, pos); break; }
 			case "row_3":{ this.openGui(GuiHandler.CCG_PartManager, pos); break; }
-			case "row_4":{
-				
-				break;
-			}
-			case "row_5":{
-				
-				break;
-			}
+			case "row_4":{ /* //TODO */ break; }
+			case "row_5":{ this.openGui(GuiHandler.CCG_PartInstaller, pos); break; }
 			case "row_6":{
 				
 				break;

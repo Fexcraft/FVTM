@@ -238,7 +238,7 @@ public class ConstructorController extends Block implements ITileEntityProvider 
                     te.setPartData(data);
                     Print.chat(p, "Part put into Constructor. (" + data.getPart().getName() + ")");
                     p.getHeldItem(hand).shrink(1);
-                    te.sendUpdate(null);
+                    te.sendUpdate(null); p.openGui(FVTM.getInstance(), GuiHandler.CCG_PartInstaller, w, pos.getX(), pos.getY(), pos.getZ());
                 	return true;
                 }
                 if(data.getPart().getCategories().size() > 1 || (p.isSneaking() && !te.getVehicleData().getParts().containsKey(data.getPart().getCategory()))){
@@ -246,7 +246,7 @@ public class ConstructorController extends Block implements ITileEntityProvider 
                         te.setPartData(data);
                         Print.chat(p, "Part put into Constructor. (" + data.getPart().getName() + ")");
                         p.getHeldItem(hand).shrink(1);
-                        te.sendUpdate(null);
+                        te.sendUpdate(null); p.openGui(FVTM.getInstance(), GuiHandler.CCG_PartInstaller, w, pos.getX(), pos.getY(), pos.getZ());
                     }
                 }
                 else{

@@ -116,9 +116,9 @@ public class GuiHandler implements IGuiHandler {
             case 9003:
             	return new CCGPartData.Container();
             case 9004:
-            	return new CCGPartManager.Container();
+            	return new CCGPartManager.Container(world, x, y, z);
             case 9006:
-            	return new CCGPartInstaller.Container();
+            	return new CCGPartInstaller.Container(world, x, y, z);
             //case 9007: return new CCGTextureManager.Container();
             case 9008:
             	return new CCGPainter.Container(world, x, y, z);

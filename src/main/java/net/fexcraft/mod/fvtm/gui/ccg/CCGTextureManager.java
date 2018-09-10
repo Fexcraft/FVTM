@@ -46,12 +46,13 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 		this.fields.put("supplied", new GuiTextField(0, fontRenderer, 11, 19, 162, 10));
 		this.fields.put("internal", new GuiTextField(1, fontRenderer, 11, 31, 162, 10));
 		this.fields.put("external", new GuiTextField(2, fontRenderer, 11, 43, 162, 10));
-		fields.get("supplied").setEnabled(false);
+		//fields.get("supplied").setEnabled(false);
+		fields.values().forEach(elm -> elm.setMaxStringLength(1024));
+		fields.get("supplied").setText(container.textureable().getSelectedTexture() >= 0 ? container.textureable().getTextureHolder().getTextures().get(container.textureable().getSelectedTexture()).toString() : "none");
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		fields.get("supplied").setText(container.textureable().getSelectedTexture() >= 0 ? container.textureable().getTextureHolder().getTextures().get(container.textureable().getSelectedTexture()).toString() : "none");
 		buttons.get("prev").enabled = container.textureable().getSelectedTexture() > 0;
 		buttons.get("next").enabled = container.textureable().getSelectedTexture() < container.textureable().getTextureHolder().getTextures().size();
 	}
@@ -67,6 +68,7 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 			case "prev": case "next": {
 				int i = container.textureable().getSelectedTexture() + (key.equals("next") ? 1 : -1);
 				i = i < 0 ? 0 : i >= container.textureable().getTextureHolder().getTextures().size() ? container.textureable().getTextureHolder().getTextures().size() - 1 : i;
+				fields.get("supplied").setText(container.textureable().getSelectedTexture() >= 0 ? container.textureable().getTextureHolder().getTextures().get(container.textureable().getSelectedTexture()).toString() : "none");
 		        NBTTagCompound compound = new NBTTagCompound();
 		        compound.setIntArray("pos", pos);
 		        compound.setString("cargo", "supplied_set");

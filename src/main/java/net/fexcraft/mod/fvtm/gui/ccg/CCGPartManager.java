@@ -6,6 +6,9 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.mod.lib.util.common.Static;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -16,13 +19,11 @@ import net.minecraftforge.fml.relauncher.Side;
 public class CCGPartManager extends GenericGui<CCGPartManager.Container> {
 	
 	private int[] pos;
-	private ConstructorControllerEntity tile;
 	private int scroll = 0;
 
 	public CCGPartManager(EntityPlayer player, World world, int x, int y, int z){
-		super(new ResourceLocation("fvtm:textures/guis/ccg_manager.png"), new Container(), player);
+		super(new ResourceLocation("fvtm:textures/guis/ccg_manager.png"), new Container(world, x, y, z), player);
 		this.xSize = 200; this.ySize = 176; this.pos = new int[]{ x, y, z };
-		tile = (ConstructorControllerEntity)world.getTileEntity(new BlockPos(x, y, z));
 	}
 
 	@Override
@@ -41,13 +42,13 @@ public class CCGPartManager extends GenericGui<CCGPartManager.Container> {
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		if(tile.getVehicleData() == null){
+		if(container.tile.getVehicleData() == null){
 			texts.get("title").string = "no vehicle";
 			buttons.get("+").enabled = false; buttons.get("-").enabled = false;
 		}
 		else{
-			texts.get("title").string = tile.getVehicleData().getVehicle().getName();
-			Part.PartData[] arr = tile.getVehicleData().getParts().values().toArray(new Part.PartData[]{});
+			texts.get("title").string = container.tile.getVehicleData().getVehicle().getName();
+			Part.PartData[] arr = container.tile.getVehicleData().getParts().values().toArray(new Part.PartData[]{});
 			buttons.get("+").enabled = scroll < arr.length; buttons.get("-").enabled = scroll > 0;
 			//
 			for(int j = 0; j < 12; j ++){
@@ -66,24 +67,53 @@ public class CCGPartManager extends GenericGui<CCGPartManager.Container> {
 	@Override
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		switch(key){
-			case "+": scroll = ++scroll > (tile.getVehicleData() == null ? 0 : tile.getVehicleData().getParts().size()) ? --scroll : scroll; break;
+			case "+": scroll = ++scroll > (container.tile.getVehicleData() == null ? 0 : container.tile.getVehicleData().getParts().size()) ? --scroll : scroll; break;
 			case "-": scroll = --scroll < 0 ? 0 : scroll; break;
 		}
 		if(key.startsWith("edit")){
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("part", tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("edit", ""))]);
+			compound.setString("part", container.tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("edit", ""))]);
 			this.openGenericGui(GuiHandler.CCG_PartAdjuster, pos, compound);
 		}
 		else if(key.startsWith("rem")){
-			
+	        NBTTagCompound compound = new NBTTagCompound();
+	        compound.setIntArray("pos", pos);
+	        compound.setString("cargo", "remove");
+	        compound.setString("part", container.tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("rem", ""))]);
+	        this.container.send(Side.SERVER, compound);
 		}
 	}
 	
 	public static class Container extends GenericGuiContainer {
+		
+		private ConstructorControllerEntity tile;
+		
+		public Container(World world, int x, int y, int z){
+			tile = (ConstructorControllerEntity)world.getTileEntity(new BlockPos(x, y, z));
+		}
 
 		@Override
 		protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
-			//
+			if(side.isClient() || !packet.hasKey("cargo")) return;
+			switch(packet.getString("cargo")){
+				case "remove":{
+					String part = !packet.hasKey("part") ? null : packet.getString("part");
+					if(part == null || tile.getVehicleData() == null) return;
+					Part.PartData data = tile.getVehicleData().getPart(part);
+                    if(data == null || !data.getPart().isRemovable()){
+                        Print.chat(player, data == null ? "Part not found in Server Instance." : "Part is marked as non-remove on Server Instance!");
+                        return;
+                    }
+                    data = tile.getVehicleData().getParts().remove(part);
+                    if(data == null){ Print.chat(player, "Error, see log for location.");Static.exception(new Exception(), false); }
+                    EntityItem item = new EntityItem(tile.getWorld());
+                    item.setItem(data.getPart().getItemStack(data));
+                    item.setPosition(tile.getPos().getX() + 0.5, tile.getPos().getY() + 1.5, tile.getPos().getZ() + 0.5);
+                    tile.getWorld().spawnEntity(item);
+                    tile.sendUpdate("vehicledata");
+					break;
+				}
+			}
 		}
 		
 	}

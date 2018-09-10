@@ -45,19 +45,24 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
         if(te.getVehicleData() != null){
             VehicleData vehicledata = te.getVehicleData();
             Model<VehicleData, Object> modvec = vehicledata.getVehicle().getModel();
-            if(modvec != null){
-                ModelBase.bindTexture(vehicledata.getTexture());
-                GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * 0.0625f) - te.getLiftState(), 0);
-                modvec.render(vehicledata, null, null, te.getBlockMetadata());
-                vehicledata.getParts().forEach((key, partdata) -> {
-                    ModelBase.bindTexture(partdata.getTexture());
-                    partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translate();
-                    //Print.debug(key, partdata, partdata.getPart().getModel());
-                    partdata.getPart().getModel().render(vehicledata, key);
-                    partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translateR();
-                });
-                GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * -0.0625f) + te.getLiftState(), 0);
-                ModelBase.bindTexture(ModelConstructorCenter.getTexture());
+            try{
+                if(modvec != null){
+                    ModelBase.bindTexture(vehicledata.getTexture());
+                    GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * 0.0625f) - te.getLiftState(), 0);
+                    modvec.render(vehicledata, null, null, te.getBlockMetadata());
+                    vehicledata.getParts().forEach((key, partdata) -> {
+                        ModelBase.bindTexture(partdata.getTexture());
+                        partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translate();
+                        //Print.debug(key, partdata, partdata.getPart().getModel());
+                        partdata.getPart().getModel().render(vehicledata, key);
+                        partdata.getPart().getOffsetFor(vehicledata.getVehicle().getRegistryName()).translateR();
+                    });
+                    GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * -0.0625f) + te.getLiftState(), 0);
+                    ModelBase.bindTexture(ModelConstructorCenter.getTexture());
+                }
+            }
+            catch(Exception e){
+            	e.printStackTrace();
             }
         }
         else if(te.getContainerData() != null){

@@ -47,7 +47,7 @@ public class GenericTextureable<T, B> implements Textureable, Saveloadable<T> {
 
     @Override
     public ResourceLocation getTexture(){
-        return sel >= 0 ? ((TextureHolder) root).getTextures().get(sel) : this.getCustomTexture();
+        return sel >= 0 ? ((TextureHolder)root).getTextures().get(sel) : this.getCustomTexture();
     }
 
     @Override

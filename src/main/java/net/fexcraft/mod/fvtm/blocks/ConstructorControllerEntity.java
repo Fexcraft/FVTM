@@ -87,7 +87,7 @@ public class ConstructorControllerEntity extends TileEntity implements IPacketRe
                 case "part":
                 case "partdata": {
                     if(partdata != null){
-                        partdata.writeToNBT(compound);
+                    	partdata.writeToNBT(compound);
                     }
                     break;
                 }

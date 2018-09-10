@@ -17,10 +17,12 @@ import net.minecraftforge.fml.relauncher.Side;
 public class CCGMain extends GenericGui<CCGMain.Container> {
 	
 	private int[] pos;
+	private ConstructorControllerEntity tile;
 
 	public CCGMain(EntityPlayer player, World world, int x, int y, int z){
 		super(new ResourceLocation("fvtm:textures/guis/ccg_main.png"), new Container(), player);
 		this.xSize = 128; this.ySize = 118; this.pos = new int[]{ x, y, z };
+		tile = (ConstructorControllerEntity)world.getTileEntity(new BlockPos(x, y, z));
 	}
 
 	@Override
@@ -54,6 +56,7 @@ public class CCGMain extends GenericGui<CCGMain.Container> {
 
 	@Override
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(tile == null){ Print.chat(player, "ERROR, Tile is Null.");return; }
 		switch(key){
 			case "row_0":{ this.openGui(GuiHandler.CCG_Status, pos); break; }
 			case "row_1":{

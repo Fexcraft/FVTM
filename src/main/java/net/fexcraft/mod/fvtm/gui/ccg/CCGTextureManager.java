@@ -36,30 +36,38 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 		this.buttons.put("prev", new BasicButton("prev", 175, 19, 175, 19, 10, 10, true));
 		this.buttons.put("next", new BasicButton("next", 187, 19, 187, 19, 10, 10, true));
 		//
-		this.buttons.put("in_apply", new BasicButton("ia", 175, 31, 175, 31, 10, 10, true));
-		this.buttons.put("in_reset", new BasicButton("ir", 187, 31, 187, 31, 10, 10, true));
+		this.buttons.put("in_apply", new BasicButton("ia", 187, 31, 187, 31, 10, 10, true));
+		this.buttons.put("in_reset", new BasicButton("ir", 175, 31, 175, 31, 10, 10, true));
 		//
-		this.buttons.put("ex_apply", new BasicButton("ea", 175, 43, 175, 43, 10, 10, true));
-		this.buttons.put("ex_reset", new BasicButton("er", 187, 43, 187, 43, 10, 10, true));
+		this.buttons.put("ex_apply", new BasicButton("ea", 187, 43, 187, 43, 10, 10, true));
+		this.buttons.put("ex_reset", new BasicButton("er", 175, 43, 175, 43, 10, 10, true));
 		this.buttons.values().forEach(button -> button.rgb_hover = new RGB(143, 244, 66));
 		//
 		this.fields.put("supplied", new GuiTextField(0, fontRenderer, 11, 19, 162, 10));
 		this.fields.put("internal", new GuiTextField(1, fontRenderer, 11, 31, 162, 10));
 		this.fields.put("external", new GuiTextField(2, fontRenderer, 11, 43, 162, 10));
 		//fields.get("supplied").setEnabled(false);
-		fields.values().forEach(elm -> elm.setMaxStringLength(1024));
-		fields.get("supplied").setText(container.textureable().getSelectedTexture() >= 0 ? container.textureable().getTextureHolder().getTextures().get(container.textureable().getSelectedTexture()).toString() : "none");
+		fields.values().forEach(elm -> elm.setMaxStringLength(1024)); this.updateTexts();
+		//
+		this.texts.put("status", new BasicText(13, 56, 83, null, "..."));
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
 		buttons.get("prev").enabled = container.textureable().getSelectedTexture() > 0;
 		buttons.get("next").enabled = container.textureable().getSelectedTexture() < container.textureable().getTextureHolder().getTextures().size();
+		texts.get("status").string = "CR: " + (container.textureable().getSelectedTexture() >= 0 ? (container.textureable().getSelectedTexture() + 1) + " / " + container.textureable().getTextureHolder().getTextures().size() : container.textureable().isTextureExternal() ? "external" : "internal");
 	}
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
 		this.drawTexturedModalRect(0, 0, 0, 0, this.xSize, this.ySize);
+	}
+	
+	private void updateTexts(){
+		fields.get("supplied").setText(container.textureable().getSelectedTexture() >= 0 ? container.textureable().getTextureHolder().getTextures().get(container.textureable().getSelectedTexture()).toString() : "none");
+		fields.get("internal").setText(container.textureable().isTextureExternal() ? "none" : container.textureable().getCustomTexture().toString());
+		fields.get("external").setText(container.textureable().isTextureExternal() ? container.textureable().getCustomTexture().toString() : "none");
 	}
 
 	@Override
@@ -68,15 +76,27 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 			case "prev": case "next": {
 				int i = container.textureable().getSelectedTexture() + (key.equals("next") ? 1 : -1);
 				i = i < 0 ? 0 : i >= container.textureable().getTextureHolder().getTextures().size() ? container.textureable().getTextureHolder().getTextures().size() - 1 : i;
-				fields.get("supplied").setText(container.textureable().getSelectedTexture() >= 0 ? container.textureable().getTextureHolder().getTextures().get(container.textureable().getSelectedTexture()).toString() : "none");
-		        NBTTagCompound compound = new NBTTagCompound();
+				NBTTagCompound compound = new NBTTagCompound();
 		        compound.setIntArray("pos", pos);
 		        compound.setString("cargo", "supplied_set");
 		        compound.setInteger("data", i);
 		        this.container.send(Side.SERVER, compound);
+		        container.textureable().setSelectedTexture(i);
 		        break;
 			}
+			case "in_reset": { fields.get("internal").setText(container.textureable().isTextureExternal() ? "none" : container.textureable().getCustomTexture().toString()); break; }
+			case "ex_reset": { fields.get("external").setText(container.textureable().isTextureExternal() ? container.textureable().getCustomTexture().toString() : "none"); break; }
+			case "in_apply": case "ex_apply": {
+		        NBTTagCompound compound = new NBTTagCompound();
+		        compound.setIntArray("pos", pos);
+		        compound.setString("cargo", "custom_set");
+		        compound.setBoolean("external", key.equals("ex_apply"));
+		        compound.setString("data", key.equals("in_apply") ? fields.get("internal").getText() : fields.get("external").getText());
+		        this.container.send(Side.SERVER, compound); container.textureable().setSelectedTexture(-1);
+				break;
+			}
 		}
+		this.updateTexts();
 	}
 	
 	public static class Container extends GenericGuiContainer {
@@ -98,12 +118,19 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 					textureable().setSelectedTexture(packet.getInteger("data"));
 					break;
 				}
+				case "custom_set":{
+					String data = packet.getString("data");
+					if(data.replace(" ", "").length() == 0) return;
+					textureable().setCustomTexture(data, packet.getBoolean("external"));
+					textureable().setSelectedTexture(-1);
+					break;
+				}
 			}
-			tile.sendUpdate("vehicledata");
+			tile.sendUpdate(part != null ? "partdata" : tile.getTextureable() instanceof ContainerData ? "containerdata" : "vehicledata");
 		}
 		
 		private Textureable textureable(){
-			return part != null ? tile.getVehicleData().getPart(part) : tile.getTextureable();
+			return part != null ? tile.getVehicleData() == null ? null : tile.getVehicleData().getPart(part) : tile.getTextureable();
 		}
 		
 	}

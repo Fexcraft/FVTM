@@ -521,9 +521,8 @@ public class GuiHandler implements IGuiHandler {
                     GenericGuiContainer container = null;
                     switch(packet.nbt.getInteger("gui")){
 	                    case 9007: container = new CCGTextureManager.Container(player, err, compound); break;
-	                    case 9005: container = new CCGPartAdjuster.Container(player, err, compound);
-                    }
-                    player.openContainer = container;
+	                    case 9005: container = new CCGPartAdjuster.Container(player, err, compound); break;
+                    } player.openContainer = container;
                     PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(packet.nbt), player);
                     return;
                 }

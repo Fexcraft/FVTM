@@ -31,7 +31,7 @@ public class CCGPartAdjuster extends GenericGui<CCGPartAdjuster.Container> {
 		this.fields.put("xpos", new GuiTextField(0, fontRenderer, 39, 20, 46, 10));
 		this.fields.put("ypos", new GuiTextField(1, fontRenderer, 95, 20, 46, 10));
 		this.fields.put("zpos", new GuiTextField(2, fontRenderer, 151, 20, 46, 10));
-		PartData part = container.tile.getPartData();
+		PartData part = container.partdata();
 		fields.get("xpos").setText(part == null ? "no part" : part.getCurrentOffset().x + "");
 		fields.get("ypos").setText(part == null ? "no part" : part.getCurrentOffset().y + "");
 		fields.get("zpos").setText(part == null ? "no part" : part.getCurrentOffset().z + "");
@@ -43,8 +43,15 @@ public class CCGPartAdjuster extends GenericGui<CCGPartAdjuster.Container> {
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		texts.get("title").string = container.part == null ? container.tile.getPartData() == null ? "no part in constructor" : container.tile.getPartData().getPart().getName() : container.tile.getVehicleData() == null ? "no vehicle" : container.tile.getVehicleData().getPart(container.part) == null ? "no such part in vehicle" : container.tile.getVehicleData().getPart(container.part).getPart().getName();
-		buttons.get("texture").enabled = container.part != null;
+		if(container.part == null){
+			buttons.get("texture").enabled = false;
+			texts.get("title").string = container.tile.getPartData() == null ? "no part in constructor" : container.tile.getPartData().getPart().getName();
+		}
+		else{
+			buttons.get("texture").enabled = true;
+			texts.get("title").string = container.tile.getVehicleData() == null ? "no vehicle" : container.tile.getVehicleData().getPart(container.part) == null ? "no such part in vehicle" : container.tile.getVehicleData().getPart(container.part).getPart().getName();
+			texts.get("title").string = "[" + container.part + "] " + texts.get("title").string;
+		}
 	}
 
 	@Override

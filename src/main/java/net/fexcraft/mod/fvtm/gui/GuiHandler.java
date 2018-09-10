@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGMain;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGPainter;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGPartAdjuster;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGPartData;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGPartInstaller;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGPartManager;
@@ -520,6 +521,7 @@ public class GuiHandler implements IGuiHandler {
                     GenericGuiContainer container = null;
                     switch(packet.nbt.getInteger("gui")){
 	                    case 9007: container = new CCGTextureManager.Container(player, err, compound); break;
+	                    case 9005: container = new CCGPartAdjuster.Container(player, err, compound);
                     }
                     player.openContainer = container;
                     PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(packet.nbt), player);
@@ -623,6 +625,7 @@ public class GuiHandler implements IGuiHandler {
                 	GenericGui<?> gui = null;
                     switch(packet.nbt.getInteger("gui")){
 	                    case 9007: gui = new CCGTextureManager(player, arr, compound); break;
+	                    case 9005: gui = new CCGPartAdjuster(player, arr, compound);
                     }
                     net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
                     mc.currentScreen = gui;

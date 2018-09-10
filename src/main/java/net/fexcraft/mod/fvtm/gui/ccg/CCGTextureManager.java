@@ -108,7 +108,15 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 	
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(keyCode == 1) this.openGui(GuiHandler.CCG_Main, pos);//TODO part manager/adjuster for parts
+        if(keyCode == 1){
+        	if(container.part == null){
+        		this.openGui(GuiHandler.CCG_Main, pos);
+        	}
+        	else{
+				NBTTagCompound compound = new NBTTagCompound(); compound.setString("part", container.part);
+				this.openGenericGui(GuiHandler.CCG_PartAdjuster, pos, compound);
+        	}
+        }
         super.keyTyped(typedChar, keyCode);
     }
 	

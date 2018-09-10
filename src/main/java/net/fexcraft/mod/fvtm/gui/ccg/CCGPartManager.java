@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.ccg;
 
 import java.io.IOException;
-
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
@@ -69,7 +68,14 @@ public class CCGPartManager extends GenericGui<CCGPartManager.Container> {
 		switch(key){
 			case "+": scroll = ++scroll > (tile.getVehicleData() == null ? 0 : tile.getVehicleData().getParts().size()) ? --scroll : scroll; break;
 			case "-": scroll = --scroll < 0 ? 0 : scroll; break;
-			//
+		}
+		if(key.startsWith("edit")){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("part", tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("edit", ""))]);
+			this.openGenericGui(GuiHandler.CCG_PartAdjuster, pos, compound);
+		}
+		else if(key.startsWith("rem")){
+			
 		}
 	}
 	

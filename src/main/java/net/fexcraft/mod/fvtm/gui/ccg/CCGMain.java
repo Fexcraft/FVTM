@@ -62,7 +62,9 @@ public class CCGMain extends GenericGui<CCGMain.Container> {
 			}
 			case "row_2":{ this.openGui(GuiHandler.CCG_PartData, pos); break; }
 			case "row_3":{ this.openGui(GuiHandler.CCG_PartManager, pos); break; }
-			case "row_4":{ /* //TODO */ break; }
+			case "row_4":{ 
+				this.openGenericGui(GuiHandler.CCG_PartAdjuster, pos, new NBTTagCompound());
+				break; }
 			case "row_5":{ this.openGui(GuiHandler.CCG_PartInstaller, pos); break; }
 			case "row_6":{
 				this.openGenericGui(GuiHandler.CCG_TextureManager, pos, new NBTTagCompound());

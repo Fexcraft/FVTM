@@ -43,7 +43,9 @@ import java.nio.FloatBuffer;
  */
 public abstract class Vector implements Serializable, ReadableVector {
 
-    /**
+    private static final long serialVersionUID = 1L;
+
+	/**
      * Constructor for Vector.
      */
     protected Vector(){

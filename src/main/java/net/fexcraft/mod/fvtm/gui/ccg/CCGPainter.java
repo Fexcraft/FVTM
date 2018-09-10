@@ -71,14 +71,7 @@ public class CCGPainter extends GenericGui<CCGPainter.Container> {
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		switch(key){
 			case "view":{ view = !view; break; }
-			case "apply":{
-		        NBTTagCompound compound = new NBTTagCompound();
-		        compound.setIntArray("pos", pos);
-		        compound.setByteArray("rgb", rgb.toByteArray());
-		        compound.setByte("which", prisec);
-		        this.container.send(Side.SERVER, compound);
-		        break;
-			}
+			case "apply":{ send(); break; }
 			case "primary":{
 				prisec = 1; refreshRGB();
 				break;
@@ -98,10 +91,18 @@ public class CCGPainter extends GenericGui<CCGPainter.Container> {
 				if(mx > 63) mx = 63; if(my > 63) my = 63; if(mx < 0) mx = 0; if(my < 0) my = 0;
 				int x = 0, y = 0; while((mx -= pb.dav) > 0) x++; while((my -= pb.dav) > 0) y++;
 				Print.debug(mx, my, x, y, mouseX - button.x, mouseY - button.y);
-				this.rgb = pb.palette[x * pb.div + y];
+				this.rgb = pb.palette[x * pb.div + y]; send();
 				break;
 			}
 		}
+	}
+	
+	private final void send(){
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setIntArray("pos", pos);
+        compound.setByteArray("rgb", rgb.toByteArray());
+        compound.setByte("which", prisec);
+        this.container.send(Side.SERVER, compound);
 	}
 	
 	private void refreshRGB(){

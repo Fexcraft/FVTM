@@ -82,7 +82,7 @@ public class CCGPainter extends GenericGui<CCGPainter.Container> {
 	@Override
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		switch(key){
-			case "view":{ view = !view; break; }
+			case "view":{ if(container.tile.getVehicleData() == null && container.tile.getContainerData() == null) return; view = !view; break; }
 			case "apply":{ send(); break; }
 			case "primary":{
 				prisec = 1; refreshRGB();

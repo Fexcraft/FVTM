@@ -72,14 +72,14 @@ public class CCGPartManager extends GenericGui<CCGPartManager.Container> {
 		}
 		if(key.startsWith("edit")){
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("part", container.tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("edit", ""))]);
+			compound.setString("part", container.tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("edit", "")) + scroll]);
 			this.openGenericGui(GuiHandler.CCG_PartAdjuster, pos, compound);
 		}
 		else if(key.startsWith("rem")){
 	        NBTTagCompound compound = new NBTTagCompound();
 	        compound.setIntArray("pos", pos);
 	        compound.setString("cargo", "remove");
-	        compound.setString("part", container.tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("rem", ""))]);
+	        compound.setString("part", container.tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("rem", "")) + scroll]);
 	        this.container.send(Side.SERVER, compound);
 		}
 	}

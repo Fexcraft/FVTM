@@ -45,9 +45,9 @@ public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
 
     public Collection<Attribute> getAttributes();
 
-    public boolean isRemovable();
+    public boolean isEditable();
 
-    public boolean isAvailable();
+    public boolean isRemovable();
 
     public boolean isAdjustable();
 

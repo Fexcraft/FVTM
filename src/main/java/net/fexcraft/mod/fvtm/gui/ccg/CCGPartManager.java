@@ -53,7 +53,7 @@ public class CCGPartManager extends GenericGui<CCGPartManager.Container> {
 			//
 			for(int j = 0; j < 12; j ++){
 				int k = scroll + j; texts.get("row" + j).string = k >= arr.length ? "" : arr[k].getPart().getName();
-				buttons.get("edit" + j).enabled = k >= arr.length ? false : arr[k].getPart().isAvailable();//TODO
+				buttons.get("edit" + j).enabled = k >= arr.length ? false : arr[k].getPart().isAdjustable();//TODO
 				buttons.get("rem" + j).enabled = k >= arr.length ? false : arr[k].getPart().isRemovable();//TODO
 			}
 		}

@@ -39,7 +39,7 @@ public class GenericPart implements Part {
     private TreeMap<ResourceLocation, Pos> compatible = new TreeMap<ResourceLocation, Pos>();
     private TreeMap<ResourceLocation, ArrayList<ResourceLocation>> incompatible = new TreeMap<ResourceLocation, ArrayList<ResourceLocation>>();
     private ArrayList<ResourceLocation> textures;
-    private boolean removable, available, adjustable;
+    private boolean editable, removable, adjustable;
     private Model<VehicleData, String> model;
     private JsonObject attributedata;
     private HashMap<Class<? extends Attribute>, Attribute> attributes = new HashMap<Class<? extends Attribute>, Attribute>();
@@ -87,7 +87,7 @@ public class GenericPart implements Part {
         //this.attributes = JsonUtil.jsonArrayToStringArray(JsonUtil.getIfExists(obj, "Attributes", new JsonArray()).getAsJsonArray()).toArray(new String[]{});
 
         this.removable = JsonUtil.getIfExists(obj, "Removable", true);
-        this.available = JsonUtil.getIfExists(obj, "Available", true);
+        this.editable = JsonUtil.getIfExists(obj, "Editable", true);
         this.adjustable = JsonUtil.getIfExists(obj, "Adjustable", false);
         if(Static.side().isClient()){
             this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleData.class, String.class, PartModelTMT.class);
@@ -223,8 +223,8 @@ public class GenericPart implements Part {
     }
 
     @Override
-    public boolean isAvailable(){
-        return available;
+    public boolean isEditable(){
+        return editable;
     }
 
     @Override

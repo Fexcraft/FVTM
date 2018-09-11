@@ -56,13 +56,10 @@ public class CCGMain extends GenericGui<CCGMain.Container> {
 
 	@Override
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(tile == null){ Print.chat(player, "ERROR, Tile is Null.");return; }
+		if(tile == null){ Print.chat(player, "ERROR, Tile is Null."); return; }
 		switch(key){
 			case "row_0":{ this.openGui(GuiHandler.CCG_Status, pos); break; }
-			case "row_1":{
-				Print.chat(mc.player, "Gui not available yet.");
-				break;
-			}
+			case "row_1":{ this.openGui(GuiHandler.CCG_VehicleData, pos); break; }
 			case "row_2":{ this.openGui(GuiHandler.CCG_PartData, pos); break; }
 			case "row_3":{ this.openGui(GuiHandler.CCG_PartManager, pos); break; }
 			case "row_4":{ 
@@ -70,6 +67,7 @@ public class CCGMain extends GenericGui<CCGMain.Container> {
 				break; }
 			case "row_5":{ this.openGui(GuiHandler.CCG_PartInstaller, pos); break; }
 			case "row_6":{
+				if(tile.getVehicleData() == null){ Print.chat(mc.player, "No Vehicle in Constructor.");return; }
 				this.openGenericGui(GuiHandler.CCG_TextureManager, pos, new NBTTagCompound());
 				break;
 			}

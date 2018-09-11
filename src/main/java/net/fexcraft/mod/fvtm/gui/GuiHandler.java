@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.gui.ccg.CCGPartInstaller;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGPartManager;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGStatus;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGTextureManager;
+import net.fexcraft.mod.fvtm.gui.ccg.CCGVehicleData;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.AddonList;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -111,6 +112,8 @@ public class GuiHandler implements IGuiHandler {
             	return new CCGMain.Container();
             case 9001:
             	return new CCGStatus.Container(world, x, y, z);
+            case 9002:
+            	return new CCGVehicleData.Container(world, x, y, z);
             case 9003:
             	return new CCGPartData.Container();
             case 9004:
@@ -158,6 +161,8 @@ public class GuiHandler implements IGuiHandler {
             	return new CCGMain(player, world, x, y, z);
             case 9001:
             	return new CCGStatus(player, world, x, y, z);
+            case 9002:
+            	return new CCGVehicleData(player, world, x, y, z);
             case 9003:
             	return new CCGPartData(player, world, x, y, z);
             case 9004:

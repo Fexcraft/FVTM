@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.render.RGB;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,6 +46,9 @@ public class CCGPainter extends GenericGui<CCGPainter.Container> {
 		this.fields.put("green", new GuiTextField(1, fontRenderer, 67, 19, 46, 10));
 		this.fields.put("blue", new GuiTextField(2, fontRenderer, 123, 19, 46, 10));
 		//
+		this.texts.put("r", new BasicText(74, 86, 30, MapColor.SNOW.colorValue, "r"));
+		this.texts.put("g", new BasicText(74, 96, 30, MapColor.SNOW.colorValue, "g"));
+		this.texts.put("b", new BasicText(74, 106, 30, MapColor.SNOW.colorValue, "b"));
 		this.refreshRGB();
 	}
 
@@ -52,6 +56,13 @@ public class CCGPainter extends GenericGui<CCGPainter.Container> {
 	protected void predraw(float pticks, int mouseX, int mouseY){
 		texts.get("title").string = container.tile.getColorable() == null ? "nothing in constructor" : container.tile.getColorable() instanceof VehicleData ? container.tile.getVehicleData().getVehicle().getName() : container.tile.getContainerData().getContainer().getName();
 		buttons.get("spectrum").visible = buttons.get("palette").visible = view;
+		texts.get("r").visible = texts.get("g").visible = texts.get("b").visible = view;
+		if(view){
+			byte[] arr = rgb.toByteArray();
+			texts.get("r").string = (arr[0] + 128) + "";
+			texts.get("g").string = (arr[1] + 128) + "";
+			texts.get("b").string = (arr[2] + 128) + "";
+		}
 	}
 
 	@Override
@@ -64,6 +75,7 @@ public class CCGPainter extends GenericGui<CCGPainter.Container> {
 			rgb.glColorApply();
 			this.drawTexturedModalRect(73, 50, 73, 50, 32, 32);
 			RGB.glColorReset();
+			this.drawTexturedModalRect(70, 84, 70, 84, 25, 31);
 		}
 	}
 
@@ -233,36 +245,19 @@ public class CCGPainter extends GenericGui<CCGPainter.Container> {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if(keyCode == 1) this.openGui(GuiHandler.CCG_Main, pos);
-        if(keyCode == 28){
-        	if(fields.get("red").isFocused()){
-        		try{
-        			byte[] arr = rgb.toByteArray();
-        			rgb = new RGB(Integer.parseInt(fields.get("red").getText()), arr[1] + 128, arr[2] + 128);
-        		}
-        		catch(Exception e){
-        			e.printStackTrace(); Print.chat(mc.player, "Error while parsing number [RGB-R]");
-        		}
-        	}
-        	else if(fields.get("green").isFocused()){
-        		try{
-        			byte[] arr = rgb.toByteArray();
-        			rgb = new RGB(arr[0] + 128, Integer.parseInt(fields.get("green").getText()), arr[2] + 128);
-        		}
-        		catch(Exception e){
-        			e.printStackTrace(); Print.chat(mc.player, "Error while parsing number [RGB-G]");
-        		}
-            }
-        	else if(fields.get("blue").isFocused()){
-        		try{
-        			byte[] arr = rgb.toByteArray();
-        			rgb = new RGB(arr[0] + 128, arr[1] + 128, Integer.parseInt(fields.get("blue").getText()));
-        		}
-        		catch(Exception e){
-        			e.printStackTrace(); Print.chat(mc.player, "Error while parsing number [RGB-B]");
-        		}
-        	}
+        if(keyCode == 28 && (fields.get("red").isFocused() || fields.get("green").isFocused() || fields.get("blue").isFocused())){
+    		readjustrgb(); refreshRGB();
         }
         super.keyTyped(typedChar, keyCode);
     }
+
+	private void readjustrgb(){
+		try{
+			rgb = new RGB(Integer.parseInt(fields.get("red").getText()), Integer.parseInt(fields.get("green").getText()), Integer.parseInt(fields.get("blue").getText()));
+		}
+		catch(Exception e){
+			e.printStackTrace(); Print.chat(mc.player, "Error while parsing number [RGB]");
+		}
+	}
 	
 }

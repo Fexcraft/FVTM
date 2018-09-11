@@ -92,7 +92,10 @@ public class CCGTextureManager extends GenericGui<CCGTextureManager.Container> {
 		        compound.setString("cargo", "custom_set");
 		        compound.setBoolean("external", key.equals("ex_apply"));
 		        compound.setString("data", key.equals("in_apply") ? fields.get("internal").getText() : fields.get("external").getText());
-		        this.container.send(Side.SERVER, compound); container.textureable().setSelectedTexture(-1);
+		        this.container.send(Side.SERVER, compound);
+		        //
+		        container.textureable().setSelectedTexture(-1);
+		        container.textureable().setCustomTexture(key.equals("in_apply") ? fields.get("internal").getText() : fields.get("external").getText(), key.equals("ex_apply"));
 				break;
 			}
 		}

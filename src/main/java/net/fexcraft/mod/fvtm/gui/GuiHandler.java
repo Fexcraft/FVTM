@@ -16,7 +16,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.root.SettingHolder.ScriptSetting;
-import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
@@ -39,7 +38,6 @@ import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -61,7 +59,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int GENERIC_INVENTORY = 200;
     public static final int VEHICLE_INVENTORY = 9910;
     //public static final int CONSTRUCTOR = 9000;//92110;
-    //public static final int CONTAINER_INVENTORY = 9210;
+    public static final int CONTAINER_INVENTORY = 9210;
     public static final int CONTAINER_FLUID_INVENTORY = 9211;
     public static final int BLOCK_INVENTORY = 9310;
     public static final int BLOCK_FLUID_INVENTORY = 9311;
@@ -253,143 +251,6 @@ public class GuiHandler implements IGuiHandler {
                     player.openGui(FVTM.getInstance(), gui, player.world, args.length >= 1 ? args[0] : 0, args.length >= 2 ? args[1] : 0, args.length >= 3 ? args[2] : 0);
                     break;
                 }
-                case "constructor_9000_init": {
-                    BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
-                    EntityPlayer player = (EntityPlayer) objs[0];
-                    ConstructorControllerEntity serv = (ConstructorControllerEntity) player.world.getTileEntity(pos);
-                    NBTTagCompound com = getPacketCompound("constructor_9000_init");
-                    com.setBoolean("connected", serv.center != null);
-                    com.setBoolean("paint", true);//TODO
-                    PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP) player);
-                    break;
-                }
-                case "constructor_9000": {
-                    if(packet.nbt.hasKey("payload")){
-                        BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
-                        EntityPlayer player = (EntityPlayer) objs[0];
-                        ConstructorControllerEntity serv = (ConstructorControllerEntity) player.world.getTileEntity(pos);
-                        switch(packet.nbt.getString("payload")){
-                            case "auto_connect": {
-                                if(serv.center == null){
-                                    serv.scanAndConnect(player);
-                                    NBTTagCompound com = getPacketCompound("constructor_9000_init");
-                                    com.setBoolean("connected", serv.center != null);
-                                    PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP) player);
-                                }
-                                break;
-                            }
-                            case "rgb_update": {
-                                if(serv.getColorable() == null){
-                                    return;
-                                }
-                                String group = packet.nbt.getString("group");
-                                int rgb = packet.nbt.getInteger("rgb");
-                                if(group.equals("primary")){
-                                    serv.getColorable().getPrimaryColor().packed = rgb;
-                                }
-                                else if(group.equals("secondary")){
-                                    serv.getColorable().getSecondaryColor().packed = rgb;
-                                }
-                                else{
-                                    return;
-                                }
-                                serv.sendUpdate("rgb");
-                                break;
-                            }
-                            case "texture_update": {
-                                if(serv.getTextureable() == null){
-                                    return;
-                                }
-                                Textureable textureable = packet.nbt.getString("type").equals("vehicle") ? serv.getTextureable() : serv.getVehicleData() == null ? null : serv.getVehicleData().getPart(packet.nbt.getString("type").split(":")[1]);
-                                if(textureable == null){
-                                    return;
-                                }
-                                int cat = packet.nbt.getInteger("category");
-                                String data = packet.nbt.getString("data");
-                                if(cat == 0){
-                                    if(data.equals("prev")){
-                                        int i = textureable.getSelectedTexture() - 1;
-                                        i = i < 0 ? 0 : i;
-                                        textureable.setSelectedTexture(i);
-                                    }
-                                    else if(data.equals("next")){
-                                        int i = textureable.getSelectedTexture() + 1;
-                                        i = i >= textureable.getTextureHolder().getTextures().size() ? textureable.getTextureHolder().getTextures().size() - 1 : i;
-                                        textureable.setSelectedTexture(i);
-                                    }
-                                    else{
-                                        return;
-                                    }
-                                }
-                                else{
-                                    textureable.setSelectedTexture(-1);
-                                    textureable.setCustomTexture(data, cat == 2);
-                                }
-                                serv.sendUpdate(serv.getVehicleData() == null ? "container" : "vehicle");
-                                break;
-                            }
-                            case "part_remove": {
-                                if(serv.getVehicleData() == null){
-                                    return;
-                                }
-                                PartData data = serv.getVehicleData().getParts().remove(packet.nbt.getString("part"));
-                                if(data == null || !data.getPart().isRemovable()){
-                                    Print.chat(player, data == null ? "Part not found in Server Instance." : "Part is marked as non-remove on Server Instance!");
-                                    return;
-                                }
-                                EntityItem item = new EntityItem(serv.getWorld());
-                                item.setItem(data.getPart().getItemStack(data));
-                                item.setPosition(serv.getPos().getX() + 0.5, serv.getPos().getY() + 1.5, serv.getPos().getZ() + 0.5);
-                                serv.getWorld().spawnEntity(item);
-                                serv.sendUpdate("vehicle");
-                                break;
-                            }
-                            case "part_install": {
-                                if(serv.getPartData() == null){
-                                    return;
-                                }
-                                if(packet.nbt.getBoolean("drop")){
-                                    serv.setPartData(null, true);
-                                    serv.sendUpdate(null);
-                                    return;
-                                }
-                                else{
-                                    if(packet.nbt.getBoolean("auto")){
-                                        for(String str : serv.getPartData().getPart().getCategories()){
-                                            if(serv.getVehicleData().getPart(str) == null && serv.getPartData().getPart().installable(str, serv.getVehicleData(), player)){
-                                                serv.getVehicleData().installPart(str, serv.getPartData());
-                                                Print.chat(player, "Part processed. (" + serv.getPartData().getPart().getName() + ")");
-                                                serv.setPartData(null);
-                                                serv.sendUpdate(null);
-                                            }
-                                            else{
-                                                continue;
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        String cat = packet.nbt.getString("category");
-                                        if(serv.getVehicleData().getPart(cat) != null){
-                                            Print.chat(player, "There is already a part installed in that category.");
-                                            return;
-                                        }
-                                        if(serv.getPartData().getPart().installable(cat, serv.getVehicleData(), player)){
-                                            serv.getVehicleData().installPart(cat, serv.getPartData());
-                                            Print.chat(player, "Part processed. (" + serv.getPartData().getPart().getName() + ")");
-                                            serv.setPartData(null);
-                                            serv.sendUpdate(null);
-                                        }
-                                        else{
-                                            return;
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
                 case "constructor_9000_recycle": {
                     BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
                     EntityPlayer player = (EntityPlayer) objs[0];
@@ -579,10 +440,6 @@ public class GuiHandler implements IGuiHandler {
                         NBTTagCompound compound = (NBTTagCompound) nbtbase;
                         data.getPart(compound.getString("part")).getAttributeData(FuelTankExtensionAttributeData.class).setContent(compound.getDouble("amount"));
                     });
-                    break;
-                }
-                case "constructor_9000_init": {
-                    ConstructorMainGUI.processInitResponse(packet.nbt);
                     break;
                 }
                 case "update_fluid_tank": {

@@ -11,8 +11,7 @@
         { "x":  40, "y": -10, "z": 0 }
     ],
     "ConstructionLength": 6,
-    "ConstructionYOffSet": 12.5,
-    "ConstructionWheelOffset": 19.5,
+    "ConstructionYOffSet": 16,
     "RequiredParts": [ ],
     "PreInstalled":[
 		{ "part": "test:seats", "as": "seats" }

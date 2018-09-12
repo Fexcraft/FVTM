@@ -26,7 +26,9 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 @fBlock(modid = FVTM.MODID, name = "rail", item = RailConnection.Item.class, tileentity = RailConnTile.class)
@@ -130,6 +132,18 @@ public class RailConnection extends BlockContainer {
     @Override
     public boolean isOpaqueCube(IBlockState state){
         return false;
+    }
+    
+    public static final AxisAlignedBB AABB = new AxisAlignedBB(0D, 0D, 0D, 1D, 0.25D, 1D);
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
+        return AABB;
+    }
+
+    @Override
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos){
+        return AABB.offset(pos);
     }
 
     @Override

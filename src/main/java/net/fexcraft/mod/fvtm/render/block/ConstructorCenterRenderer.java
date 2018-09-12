@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenterEntity;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
+import net.fexcraft.mod.fvtm.model.block.ModelRailSTD125;
 import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
@@ -81,11 +82,22 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
         }
         //
         if(te.getContainerData() == null){
-            GL11.glTranslatef(0, 0, te.getRenderOffset());
-            renderLP(te, model.bodyModel);
-            GL11.glTranslatef(0, 0, -(te.getRenderOffset() * 2));
-            GL11.glRotated(180, 0, 1, 0);
-            renderLP(te, model.bodyModel);
+            if(te.getVehicleData() == null || te.getVehicleData().getVehicle().getType().isLandVehicle()){
+                GL11.glTranslatef(0, 0, te.getRenderOffset());
+                renderLP(te, model.bodyModel);
+                GL11.glTranslatef(0, 0, -(te.getRenderOffset() * 2));
+                GL11.glRotated(180, 0, 1, 0);
+                renderLP(te, model.bodyModel);
+            }
+            else if(te.getVehicleData().getVehicle().getType().isRailVehicle()){
+            	int l = te.getVehicleData().getVehicle().getConstructionLength();
+            	ModelRailSTD125.bindTexture();
+            	GL11.glTranslatef(-l, 1.5f, 0);
+            	for(int i = l * 2 + 1; i > 0; i--){
+            		ModelRailSTD125.INSTANCE.render();
+            		GL11.glTranslatef(1, 0, 0);
+            	}
+            }
         }
         //
         GL11.glPopMatrix();

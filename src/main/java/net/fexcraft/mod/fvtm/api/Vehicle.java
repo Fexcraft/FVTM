@@ -244,6 +244,8 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
 
         public float getWheelsYaw();
 
+        public float[] getBogieYaw();
+
         public default void syncVehicleData(){
             NBTTagCompound nbt = this.getVehicleData().writeToNBT(new NBTTagCompound());
             nbt.setString("task", "update_vehicledata");

@@ -1330,4 +1330,9 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         return this.getCollisionBox(this);
     }
 
+	@Override
+	public float[] getBogieYaw(){
+		return new float[]{ 0, 0, 0, 0, 0, 0, 0, 0 };
+	}
+
 }

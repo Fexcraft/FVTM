@@ -41,17 +41,10 @@ public class RailConnRenderer extends TileEntitySpecialRenderer<RailConnTile> {
 			vec = new Vec3d((vec1.x + vec.x) * 0.5, (vec1.y + vec.y) * 0.5, (vec1.z + vec.z) * 0.5);
 			ModelRailSTD125Half.bindTexture(); double dis = vec1.distanceTo(vec);
 			while(dis > 0.5){ dis -= 0.5;
-				double angle = Math.toDegrees(Math.atan2(vec1.z - vec.z, vec1.x - vec.x));
-				double[] dest = new double[]{ vec.x, vec.y, vec.z };
-				dest = Vector3D.direction(dest[0] - vec1.x, dest[1] - vec1.y, dest[2] - vec1.z);
-				dest = Vector3D.newVector(vec1.x + (dest[0] * dis), vec1.y + (dest[1] * dis), vec1.z + (dest[2] * dis));
-				GL11.glTranslated( dest[0],  dest[1],  dest[2]);
-				GL11.glRotated( 180, 0, 0, 1);
-				GL11.glRotated( angle, 0, 1, 0);
-				ModelRailSTD125Half.INSTANCE.render();
-				GL11.glRotated(-angle, 0, 1, 0);
-				GL11.glRotated(-180, 0, 0, 1);
-				GL11.glTranslated(-dest[0], -dest[1], -dest[2]);
+				renderpiece(vec1, vec, dis);
+			}
+			if(dis > 0.1){
+				renderpiece(vec1, vec, dis);
 			}
 		}
 		GL11.glPopMatrix();
@@ -85,6 +78,20 @@ public class RailConnRenderer extends TileEntitySpecialRenderer<RailConnTile> {
 			GL11.glPopMatrix();
 			GL11.glPopMatrix();
 		}*/
+	}
+
+	private void renderpiece(Vec3d vec1, Vec3d vec, double dis){
+		double angle = Math.toDegrees(Math.atan2(vec1.z - vec.z, vec1.x - vec.x));
+		double[] dest = new double[]{ vec.x, vec.y, vec.z };
+		dest = Vector3D.direction(dest[0] - vec1.x, dest[1] - vec1.y, dest[2] - vec1.z);
+		dest = Vector3D.newVector(vec1.x + (dest[0] * dis), vec1.y + (dest[1] * dis), vec1.z + (dest[2] * dis));
+		GL11.glTranslated( dest[0],  dest[1],  dest[2]);
+		GL11.glRotated( 180, 0, 0, 1);
+		GL11.glRotated( angle, 0, 1, 0);
+		ModelRailSTD125Half.INSTANCE.render();
+		GL11.glRotated(-angle, 0, 1, 0);
+		GL11.glRotated(-180, 0, 0, 1);
+		GL11.glTranslated(-dest[0], -dest[1], -dest[2]);
 	}
 	
 	/*private float[] getColor(World world, BlockPos pos, int length, int i){

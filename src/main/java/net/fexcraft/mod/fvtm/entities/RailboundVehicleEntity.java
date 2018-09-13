@@ -805,6 +805,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	
 	private void updateRotation(){
         Vec3d thiz = this.getPositionVector();
+        double[] oldf = _front; double[] oldb = _back;
         _front = calcBogiePos(1, thiz);
         _back = calcBogiePos(0, thiz);
         if(_front != null && _back != null){
@@ -815,6 +816,12 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             double pitch = -Math.atan2(dy, dxz);
             double roll = 0F;
             axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+        }
+        if(oldf != null && _front != null){
+        	bogierot[0] = (float)Math.toDegrees(Math.atan2(oldf[2] - _front[2], oldf[0] - _front[0]));
+        }
+        if(oldb != null &&  _back != null){
+        	bogierot[1] = (float)Math.toDegrees(Math.atan2(oldb[2] -  _back[2], oldb[0] -  _back[0]));
         }
 	}
     
@@ -839,6 +846,13 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 		}
     	dest = Vector3D.direction(dest[0] - own[0], dest[1] - own[1], dest[2] - own[2]);
 		return Vector3D.newVector(own[0] + (dest[0] * dis), own[1] + (dest[1] * dis), own[2] + (dest[2] * dis));
+	}
+	
+	private float[] bogierot = new float[]{ 0, 0 };
+
+	@Override
+	public float[] getBogieYaw(){
+		return bogierot;
 	}
 
     private void tryAttach(EntityPlayer player, ItemStack stack, VehicleData data){

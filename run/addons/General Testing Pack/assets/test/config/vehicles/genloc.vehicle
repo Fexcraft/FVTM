@@ -16,5 +16,9 @@
     "PreInstalled":[
 		{ "part": "test:locoseats", "as": "seats" }
 	],
-	"VehicleType": "RAIL"
+	"VehicleType": "RAIL",
+    "WheelCoords":[
+        { "x": -52, "y": 8, "z": 0, "id": "bogie_front" },
+        { "x":  52, "y": 8, "z": 0, "id": "bogie_back" }
+    ]
 }

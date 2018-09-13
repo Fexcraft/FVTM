@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -156,6 +157,11 @@ public class RailConnection extends BlockContainer {
             }
         }
         super.breakBlock(world, pos, state);
+    }
+    
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state){
+        return EnumBlockRenderType.INVISIBLE;
     }
 	
 }

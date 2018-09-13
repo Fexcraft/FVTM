@@ -1,2 +1,4 @@
 include ':FCL'
 project(':FCL').projectDir = new File(settingsDir, '../FCL')
+include ':TrackAPI'
+project(':TrackAPI').projectDir = new File(settingsDir, '../TrackAPI')

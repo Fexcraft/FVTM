@@ -154,10 +154,10 @@ public class ModelBogieST1 extends AdjustableBogieModel {
 		chassis[30].setRotationPoint(18F, -18F, -19.2F);
 
 		chassis[31].addBox(0F, 0F, 0F, 4, 4, 3, 0F); // Box 180
-		chassis[31].setRotationPoint(14F, -18F, -19.9F);
+		chassis[31].setRotationPoint(14F, -18F, -19.5F);
 
 		chassis[32].addBox(0F, 0F, 0F, 4, 4, 3, 0F); // Box 181
-		chassis[32].setRotationPoint(-18F, -18F, -19.9F);
+		chassis[32].setRotationPoint(-18F, -18F, -19.5F);
 
 		chassis[33].addShapeBox(0F, 0F, 0F, 3, 2, 2, 0F, -0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.5F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 182
 		chassis[33].setRotationPoint(-19F, -20F, -19.2F);
@@ -188,7 +188,7 @@ public class ModelBogieST1 extends AdjustableBogieModel {
 
 		chassis[42].addShapeBox(-3F, 0F, 1.5F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -0.5F, -1.5F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -0.5F, -1.5F, 0F, 0.5F); // Box 191
 		chassis[42].setRotationPoint(0F, -20.5F, 0F);
-		
+
 
 		axle0 = new ModelRendererTurbo[67];
 		axle0[0] = new ModelRendererTurbo(this, 233, 1, textureX, textureY); // Box 0

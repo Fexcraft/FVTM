@@ -9,11 +9,16 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import trackapi.lib.ITrack;
 
+/** @author Ferdinand Calo' (FEX___96) **/
 @Optional.Interface(iface = "trackapi.lib.ITrack", modid = "trackapi")
 public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiver<PacketTileEntityUpdate> {
 	
@@ -97,7 +102,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 		for(int i = 0; i < connections.length; i++) conns[i] = connections[i];
 		conns[connections.length] = connection; connections = conns;
 		//
-		if(connection.opposite) return; ((TrackTileEntity)world.getTileEntity(connection.getDestination())).addConnection(connection.opposite(pos));
+		if(connection.opposite) return; ((TrackTileEntity)world.getTileEntity(connection.getDestination())).addConnection(connection.opposite());
 		this.sendUpdate();
 	}
 	
@@ -106,7 +111,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 			if(connections[j].getDestination().equals(conn.getDestination())){ i = j; break; }
 		} if(i >= 0) remConnection(i); //else throw/log error
 		if(conn.opposite) return;
-		((TrackTileEntity)world.getTileEntity(conn.getDestination())).delConnection(conn.opposite(pos));
+		((TrackTileEntity)world.getTileEntity(conn.getDestination())).delConnection(conn.opposite());
 	}
 
 	private void remConnection(int i){
@@ -115,5 +120,56 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 			if(k != i){ conns[j] = connections[k]; j++; }
 		} connections = conns; this.sendUpdate();
 	}
+	
+    @SideOnly(Side.CLIENT)
+    @Override
+    public double getMaxRenderDistanceSquared(){
+        return super.getMaxRenderDistanceSquared() * 8;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public AxisAlignedBB getRenderBoundingBox(){
+        return INFINITE_EXTENT_AABB;
+    }
+    
+    /*
+	 * IF2/4: 1-2 / 3-4
+	 * IF3: 2-3 depending on redstone, or 1 (opposite/reverse)
+	 */
+	public BlockPos getNext(BlockPos current, BlockPos previous){
+		if(current == null){
+			return connections.length == 0 ? pos : connections[0].getDestination();
+		}
+		switch(connections.length){
+			case 0: { return pos; }
+			case 1: { return connections[0].getDestination().equals(previous) ? pos : connections[0].getDestination(); }
+			case 2: { return connections[0].getDestination().equals(previous) ? connections[1].getDestination() : connections[0].getDestination(); }
+			case 3: {
+				if(connections[0].getDestination().equals(previous)){
+					return world.isBlockPowered(pos) ? connections[2].getDestination() : connections[1].getDestination();
+				}
+				else{
+					return connections[0].getDestination();
+				}
+			}
+			case 4: {
+				if(connections[1].getDestination().equals(previous)){
+					return connections[0].getDestination();
+				}
+				if(connections[0].getDestination().equals(previous)){
+					return connections[1].getDestination();
+				}
+				if(connections[3].getDestination().equals(previous)){
+					return connections[2].getDestination();
+				}
+				if(connections[2].getDestination().equals(previous)){
+					return connections[3].getDestination();
+				}
+			}
+			default: return pos;//
+		}
+	}
+
 	
 }

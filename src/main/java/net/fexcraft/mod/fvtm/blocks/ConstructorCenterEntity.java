@@ -125,10 +125,11 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
             this.constructor = BlockPos.fromLong(compound.getLong("Constructor"));
         }
     }
-
+    
     @SideOnly(Side.CLIENT)
+    @Override
     public double getMaxRenderDistanceSquared(){
-        return 512D;
+        return super.getMaxRenderDistanceSquared() * 8;
     }
 
     @SideOnly(Side.CLIENT)
@@ -136,5 +137,6 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
     public AxisAlignedBB getRenderBoundingBox(){
         return INFINITE_EXTENT_AABB;
     }
+
 
 }

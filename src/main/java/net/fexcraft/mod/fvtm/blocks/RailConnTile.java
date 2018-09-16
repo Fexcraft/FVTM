@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@Deprecated
 public class RailConnTile extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, IRailProvider {
 	
 	public BlockPos[] connections = new BlockPos[0];

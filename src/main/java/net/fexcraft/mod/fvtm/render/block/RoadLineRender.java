@@ -17,7 +17,8 @@ import net.minecraft.util.EnumFacing;
 import org.lwjgl.opengl.GL11;
 
 /** @author Ferdinand Calo' (FEX___96) **/
-//@fTESR
+//@fTESR @Deprecated
+@SuppressWarnings("deprecation")
 public class RoadLineRender extends TileEntitySpecialRenderer<RoadLineTile> {
 
     @Override

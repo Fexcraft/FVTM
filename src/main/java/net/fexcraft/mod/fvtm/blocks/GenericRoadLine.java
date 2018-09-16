@@ -33,6 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+@Deprecated
 //@fBlock(modid = FVTM.MODID, name = "road_line", item = GenericRoadLine.Item.class, tileentity = RoadLineTile.class)
 public class GenericRoadLine extends BlockContainer {
 

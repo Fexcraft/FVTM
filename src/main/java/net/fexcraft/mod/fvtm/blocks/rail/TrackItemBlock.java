@@ -30,9 +30,17 @@ public class TrackItemBlock extends ItemBlock16 {
 	
 	@Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("fvtm:railconn")){
-        	tooltip.add(Formatter.format("&9POS RAW: " + stack.getTagCompound().getLong("fvtm:railconn")));
-        	tooltip.add(Formatter.format("&9POS BLK: " + BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railconn"))));
+        if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railtrackstart")){
+        	tooltip.add(Formatter.format("&9STR BLK: " + BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackstart"))));
+        	if(stack.getTagCompound().hasKey("fvtm:railtrackpoints")){
+        		int i = stack.getTagCompound().getInteger("fvtm:railtrackpoints");
+        		for(int k = 0; k < i; k++){
+                	tooltip.add(Formatter.format("&9PT" + k + " BLK: " + BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackpoint" + k))));
+        		}
+        	}
+        }
+        else{
+        	tooltip.add("No data.");
         }
     }
 	
@@ -51,25 +59,19 @@ public class TrackItemBlock extends ItemBlock16 {
     		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
         	if(stack.getTagCompound().hasKey("fvtm:railtrackstart")){
         		BlockPos pos0 = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackstart"));
-        		int i = stack.getTagCompound().getInteger("fvtm:railtrackpoints");
+        		TrackTileEntity tile0 = (TrackTileEntity)world.getTileEntity(pos0);
+        		if(tile0 == null){ Print.chat(player, "&cTileEntity at first connection point is NULL."); return EnumActionResult.FAIL; }
+        		if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
+        		BlockPos[] arr = new BlockPos[stack.getTagCompound().getInteger("fvtm:railtrackpoints")];
+        		for(int j = 0; j < arr.length; j++){
+        			arr[j] = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackpoint" + j));
+        		}
+        		tile0.addConnection(new Connection(pos0, pos, false, arr));
+        		Print.bar(player, "&7Connected&9!");
+        		//
         		stack.getTagCompound().removeTag("fvtm:railtrackstart");
         		stack.getTagCompound().removeTag("fvtm:railtrackpoints");
-        		TrackTileEntity tile0 = (TrackTileEntity)world.getTileEntity(pos0);
-        		if(tile0 == null){
-        			Print.chat(player, "&cTileEntity at first connection point is NULL.");
-        	        return EnumActionResult.FAIL;
-        		}
-        		if(tte == null){
-        			Print.chat(player, "&cTileEntity at second connection point is NULL.");
-        	        return EnumActionResult.FAIL;
-        		}
-        		BlockPos[] arr = new BlockPos[i];
-        		for(int j = 0; j < i; j++){
-        			arr[j] = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackpoint" + i));
-        			stack.getTagCompound().removeTag("fvtm:railtrackpoint" + i);
-        		}
-        		tile0.addConnection(new Connection(pos, false, arr));
-        		Print.bar(player, "&7Connected&9!");
+        		for(int k = 0; k < arr.length; k++) stack.getTagCompound().removeTag("fvtm:railtrackpoint" + k);
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
@@ -78,7 +80,7 @@ public class TrackItemBlock extends ItemBlock16 {
         	        return EnumActionResult.FAIL;
         		}
         		stack.getTagCompound().setLong("fvtm:railtrackstart", pos.toLong());
-        		stack.getTagCompound().setLong("fvtm:railtrackpoints", 0);
+        		stack.getTagCompound().setByte("fvtm:railtrackpoints", (byte)0);
         		Print.bar(player, "&7&oFirst position cached (into itemstack).");
 	            return EnumActionResult.SUCCESS;
         	}
@@ -94,8 +96,9 @@ public class TrackItemBlock extends ItemBlock16 {
         			Print.bar(player, "Subpoint limit reached."); return EnumActionResult.FAIL;
         		}
         		stack.getTagCompound().setLong("fvtm:railtrackpoint" + i, pos.toLong());
-        		stack.getTagCompound().setLong("fvtm:railtrackpoints", i + 1);
-        		Print.bar(player, "&o&2" + i + " &7position cached (into itemstack).");
+        		stack.getTagCompound().setByte("fvtm:railtrackpoints", (byte)++i);
+        		Print.bar(player, "&o&2" + i + " &7subposition cached (into itemstack).");
+        		Print.debug(stack.getTagCompound());
 	            return EnumActionResult.SUCCESS;
         	}
         	else{

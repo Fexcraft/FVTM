@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-@fTESR
+@fTESR @Deprecated
 public class RailConnRenderer extends TileEntitySpecialRenderer<RailConnTile> {
 	
 	protected static final ModelRendererTurbo model;

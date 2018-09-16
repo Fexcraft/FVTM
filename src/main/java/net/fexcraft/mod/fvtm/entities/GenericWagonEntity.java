@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.entities;
 
-import net.fexcraft.mod.fvtm.api.Resources;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.util.Vector3D;
+import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class GenericWagonEntity extends RailboundVehicleEntity {
@@ -19,27 +19,11 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
 
 	@Override
 	public void onUpdateMovement(double amount){
-        if(amount != 0){
-        	amount = Math.abs(amount);
-        	BlockPos current = throttle > 0 ? currentpos : lastpos;
-        	BlockPos last    = throttle > 0 ? lastpos : currentpos;
-        	double[] own = new double[]{ posX, posY, posZ }, dest = Vector3D.newVector(current);
-        	while(Double.compare(amount, Vector3D.distance(own, dest)) >= 0){
-        		amount -= Vector3D.distance(own, dest);
-        		if(amount < 0.001d){ break; }
-        		BlockPos ls = world.getCapability(Resources.CAPABILITY, null).getNextRailCoordinate(current, last);
-        		if(ls == null){ break; }
-        		if(current.equals(ls)){ break; }
-        		last = current; current = ls;
-        		//
-				lastpos = throttle > 0 ? last : current;
-				currentpos = throttle > 0 ? current : last;
-				own = Vector3D.newVector(last); dest = Vector3D.newVector(current);
-        	}
-        	dest = Vector3D.direction(dest[0] - own[0], dest[1] - own[1], dest[2] - own[2]);
-        	dest = Vector3D.newVector(own[0] + (dest[0] * amount), own[1] + (dest[1] * amount), own[2] + (dest[2] * amount));
-        	this.posX = dest[0]; this.posY = dest[1]; this.posZ = dest[2];
+        if(amount != 0){ amount = Math.abs(amount);
+        	RailUtil.Return arr = RailUtil.move(world, new Vec3d(posX, posY, posZ), currentpos, lastpos, connection, throttle > 0 ? amount : -amount);
+        	this.posX = arr.dest.x; this.posY = arr.dest.y; this.posZ = arr.dest.z;
         	this.prevPosX = this.posX; this.prevPosY = this.posY; this.prevPosZ = this.posZ;
+        	this.currentpos = arr.curr; this.lastpos = arr.last; this.connection = arr.connection;
         }
 	}
 	

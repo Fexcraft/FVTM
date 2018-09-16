@@ -133,42 +133,48 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
         return INFINITE_EXTENT_AABB;
     }
     
+    private Connection thisConn(){
+    	return new Connection(pos, pos);
+    }
+    
     /*
 	 * IF2/4: 1-2 / 3-4
 	 * IF3: 2-3 depending on redstone, or 1 (opposite/reverse)
 	 */
-	public BlockPos getNext(BlockPos current, BlockPos previous){
+	public Connection getNext(BlockPos current, BlockPos previous){
 		if(current == null){
-			return connections.length == 0 ? pos : connections[0].getDestination();
+			return connections.length == 0 ? thisConn() : connections[0];
 		}
 		switch(connections.length){
-			case 0: { return pos; }
-			case 1: { return connections[0].getDestination().equals(previous) ? pos : connections[0].getDestination(); }
-			case 2: { return connections[0].getDestination().equals(previous) ? connections[1].getDestination() : connections[0].getDestination(); }
+			case 0: { return thisConn(); }
+			case 1: { return connections[0].getDestination().equals(previous) ? thisConn() : connections[0]; }
+			case 2: { return connections[0].getDestination().equals(previous) ? connections[1] : connections[0];}
 			case 3: {
 				if(connections[0].getDestination().equals(previous)){
-					return world.isBlockPowered(pos) ? connections[2].getDestination() : connections[1].getDestination();
+					return world.isBlockPowered(pos) ? connections[2] : connections[1];
 				}
 				else{
-					return connections[0].getDestination();
+					return connections[0];
 				}
 			}
 			case 4: {
 				if(connections[1].getDestination().equals(previous)){
-					return connections[0].getDestination();
+					return connections[0];
 				}
 				if(connections[0].getDestination().equals(previous)){
-					return connections[1].getDestination();
+					return connections[1];
 				}
 				if(connections[3].getDestination().equals(previous)){
-					return connections[2].getDestination();
+					return connections[2];
 				}
 				if(connections[2].getDestination().equals(previous)){
-					return connections[3].getDestination();
+					return connections[3];
 				}
+				break;
 			}
-			default: return pos;//
+			default: return thisConn();
 		}
+		return null;
 	}
 
 	

@@ -2,9 +2,12 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 
 import java.util.TreeMap;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public class Connection {
 	
@@ -81,6 +84,30 @@ public class Connection {
 
 	public Vec3d getVecpoint(int k){
 		return vecpoints[k];
+	}
+
+	@Nullable
+	public Object[] getNext(World world, Vec3d subp, Vec3d last){
+		if(subp.equals(vecpoints[0])){
+			return last.equals(vecpoints[1]) ? findConn(world, beginning) : new Object[]{ vecpoints[1], this };
+		}
+		else if(subp.equals(vecpoints[vecpoints.length - 1])){
+			return last.equals(vecpoints[vecpoints.length - 2]) ? findConn(world, destination) : vecpoints.length == 2 ? findConn(world, beginning) : new Object[]{ vecpoints[vecpoints.length - 3], this };
+		}
+		else{
+			for(int i = 1; i < vecpoints.length - 1; i++){
+				if(subp.equals(vecpoints[i])){
+					return new Object[]{ vecpoints[i - 1].equals(last) ? vecpoints[i + 1] : vecpoints[i - 1], this };
+				}
+			}
+		}
+		return null;
+	}
+
+	private Object[] findConn(World world, BlockPos pos){
+		TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(pos);
+		Connection conn = tile == null ? null : tile.getNext(pos, pos.equals(beginning) ? destination : beginning);
+		return new Object[]{ conn, pos.equals(beginning) ? conn.getDestination() : conn.beginning };
 	}
 	
 }

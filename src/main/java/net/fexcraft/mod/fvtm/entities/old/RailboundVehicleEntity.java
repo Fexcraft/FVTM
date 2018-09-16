@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities;
+package net.fexcraft.mod.fvtm.entities.old;
 
 import java.util.TreeMap;
 
@@ -25,9 +25,10 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
-import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
+import net.fexcraft.mod.fvtm.blocks.RailConnTile;
+import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.EngineLoopSound;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
@@ -91,9 +92,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     public double serverYaw, serverPitch, serverRoll;
     public int serverPositionTransitionTicker, consize = -1;
     //
-    public Vec3d lastpos, currentpos;
-    public Vec3d llp, lcp;
-    public Connection connection;
+    public BlockPos lastpos, currentpos;
+    public BlockPos llp, lcp;
     //public double passed;
     
 	
@@ -120,7 +120,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         stepHeight = 1.0F;
         setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         rotateYaw(placer.rotationYaw + 90F);
-        initVeh(Connection.newVector(pos), vehicleData, false);
+        initVeh(pos, vehicleData, false);
     }
 
     /**
@@ -131,11 +131,11 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         stepHeight = 1.0F;
         setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         rotateYaw((placer * 90f) + 90F);
-        initVeh(Connection.newVector(pos), data, false);
+        initVeh(pos, data, false);
         Print.debugChat("SPAWNING");
     }
 
-	protected void initVeh(Vec3d pos, VehicleData type, boolean remote){
+	protected void initVeh(BlockPos pos, VehicleData type, boolean remote){
         seats = new SeatEntity[type.getSeats().size()];
         //bogies = new BogieEntity[2];
         stepHeight = type.getVehicle().getFMAttribute("wheel_step_height");
@@ -154,15 +154,17 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         		}
         	}
         }
-        lastpos = currentpos = pos;
-        if(world.getTileEntity(new BlockPos(pos)) != null){
-        	TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(new BlockPos(pos));
-        	connection = tile.getNext(new BlockPos(currentpos), new BlockPos(lastpos));
+        if(pos == null){
+        	return;
+        }
+        lastpos = pos;
+        if(world.getTileEntity(pos) != null){
+        	RailConnTile tile = (RailConnTile)world.getTileEntity(pos);
+        	currentpos = tile.connections.length > 0 ? tile.connections[0] : pos;
         }
         else{
-        	connection = new Connection(new BlockPos(currentpos), new BlockPos(lastpos));
+        	currentpos = pos;
         }
-    	currentpos = currentpos == null ? Connection.newVector(connection.getDestination()) : currentpos;
     }
 
 	@Override
@@ -177,10 +179,10 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         prevRotationPitch = compound.getFloat("RotationPitch");
         prevRotationRoll = compound.getFloat("RotationRoll");
         axes = VehicleAxes.read(this, compound);
-        lastpos = new Vec3d(compound.getDouble("LR_0"), compound.getDouble("LR_1"), compound.getDouble("LR_2"));
-        currentpos = new Vec3d(compound.getDouble("CR_0"), compound.getDouble("CR_1"), compound.getDouble("CR_2"));
+        lastpos = BlockPos.fromLong(compound.getLong("LastRail"));
+        currentpos = BlockPos.fromLong(compound.getLong("CurrentRail"));
         throttle = compound.getDouble("Throttle");
-        initVeh(lastpos, vehicledata, false);
+        initVeh(null, vehicledata, false);
         Print.debug(compound.toString());
     }
 
@@ -189,14 +191,10 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         compound = vehicledata.writeToNBT(compound);
         axes.write(this, compound);
         if(lastpos != null){
-        	compound.setDouble("LR_0", lastpos.x);
-        	compound.setDouble("LR_1", lastpos.y);
-        	compound.setDouble("LR_2", lastpos.z);
+        	compound.setLong("LastRail", lastpos.toLong());
         }
         if(currentpos != null){
-        	compound.setDouble("CR_0", currentpos.x);
-        	compound.setDouble("CR_1", currentpos.y);
-        	compound.setDouble("CR_2", currentpos.z);
+        	compound.setLong("CurrentRail", currentpos.toLong());
         }
         compound.setDouble("Throttle", throttle);
         Print.debug(compound.toString());
@@ -212,14 +210,10 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             compound.setInteger("RearEntityId", getEntityAtFront().getEntity().getEntityId());
         }
         if(lastpos != null){
-        	compound.setDouble("LR_0", lastpos.x);
-        	compound.setDouble("LR_1", lastpos.y);
-        	compound.setDouble("LR_2", lastpos.z);
+        	compound.setLong("LastRail", lastpos.toLong());
         }
         if(currentpos != null){
-        	compound.setDouble("CR_0", currentpos.x);
-        	compound.setDouble("CR_1", currentpos.y);
-        	compound.setDouble("CR_2", currentpos.z);
+        	compound.setLong("CurrentRail", currentpos.toLong());
         }
         ByteBufUtils.writeTag(buffer, axes.write(this, vehicledata.writeToNBT(compound)));
     }
@@ -233,9 +227,9 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             prevRotationYaw = axes.getYaw();
             prevRotationPitch = axes.getPitch();
             prevRotationRoll = axes.getRoll();
-            lastpos = new Vec3d(compound.getDouble("LR_0"), compound.getDouble("LR_1"), compound.getDouble("LR_2"));
-            currentpos = new Vec3d(compound.getDouble("CR_0"), compound.getDouble("CR_1"), compound.getDouble("CR_2"));
-            initVeh(lastpos, vehicledata, true);
+            initVeh(null, vehicledata, true);
+            lastpos = BlockPos.fromLong(compound.getLong("LastRail"));
+            currentpos = BlockPos.fromLong(compound.getLong("CurrentRail"));
         }
         catch(Exception e){
             e.printStackTrace();
@@ -794,12 +788,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         	if(!llp.equals(lastpos) || !lcp.equals(currentpos)){
         		NBTTagCompound compound = new NBTTagCompound();
         		compound.setString("task", "direction_update");
-            	compound.setDouble("LR_0", lastpos.x);
-            	compound.setDouble("LR_1", lastpos.y);
-            	compound.setDouble("LR_2", lastpos.z);
-            	compound.setDouble("CR_0", currentpos.x);
-            	compound.setDouble("CR_1", currentpos.y);
-            	compound.setDouble("CR_2", currentpos.z);
+        		compound.setLong("last_pos", lastpos.toLong());
+        		compound.setLong("current_pos", currentpos.toLong());
         		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
         	}
         }
@@ -842,10 +832,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     public double[] _front, _back;
 
 	private double[] calcBogiePos(int i, Vec3d own){
-		double amount = Math.abs(vehicledata.getWheelPos().get(i).to16FloatX());
-		RailUtil.Return arr = RailUtil.findNext(world, new Vec3d(posX, posY, posZ), currentpos, lastpos, connection, amount);
-		return new double[]{ arr.dest.x, arr.dest.y, arr.dest.z };
-		//return getNextBogiePos(vehicledata.getWheelPos().get(i).to16FloatX(), own, i == 1 ? currentpos : lastpos, i == 0 ? currentpos : lastpos);
+		return getNextBogiePos(vehicledata.getWheelPos().get(i).to16FloatX(), own, i == 1 ? currentpos : lastpos, i == 0 ? currentpos : lastpos);
 	}
 	
 	public double[] getNextBogiePos(double dis, Vec3d core, BlockPos curr, BlockPos last){
@@ -1036,8 +1023,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                     break;
                 }
                 case "direction_update":{
-                    lastpos = new Vec3d(pkt.nbt.getDouble("LR_0"), pkt.nbt.getDouble("LR_1"), pkt.nbt.getDouble("LR_2"));
-                    currentpos = new Vec3d(pkt.nbt.getDouble("CR_0"), pkt.nbt.getDouble("CR_1"), pkt.nbt.getDouble("CR_2"));
+                	lastpos = BlockPos.fromLong(pkt.nbt.getLong("last_pos"));
+                	currentpos = BlockPos.fromLong(pkt.nbt.getLong("current_pos"));
                 	break;
                 }
             }

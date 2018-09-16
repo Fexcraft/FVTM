@@ -13,8 +13,8 @@ import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
-import net.fexcraft.mod.fvtm.api.compatibility.IRailProvider;
 import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
+import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.fexcraft.mod.fvtm.entities.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
@@ -251,7 +251,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
                     return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
                 }
                 case RAIL: {
-                    if(world.getTileEntity(pos) instanceof IRailProvider == false){
+                    if(world.getTileEntity(pos) instanceof TrackTileEntity == false){
                         Print.chat(player, "Only placeable directly on rail pieces.");
                         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
                     }

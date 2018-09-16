@@ -82,7 +82,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     protected double throttle;
     protected float wheelsAngle, wheelsYaw;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
-    protected VehicleEntity parentent, trailer;
+    public VehicleEntity parentent, trailer;
     public Vec3d angularVelocity = new Vec3d(0F, 0F, 0F);
     protected byte doorToggleTimer = 0;
     public EngineLoopSound engineloop;

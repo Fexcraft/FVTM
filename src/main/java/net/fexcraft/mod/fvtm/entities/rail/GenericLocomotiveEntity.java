@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities;
+package net.fexcraft.mod.fvtm.entities.rail;
 
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;

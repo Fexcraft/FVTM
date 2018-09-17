@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.entities.RailboundVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelConverter;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;

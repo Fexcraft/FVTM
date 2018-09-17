@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities.old;
+package net.fexcraft.mod.fvtm.entities.rail;
 
 import java.util.TreeMap;
 
@@ -25,7 +25,8 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
-import net.fexcraft.mod.fvtm.blocks.RailConnTile;
+import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
+import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
@@ -34,7 +35,6 @@ import net.fexcraft.mod.fvtm.impl.EngineLoopSound;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packets.PacketVehicleControl;
@@ -159,8 +159,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         }
         lastpos = pos;
         if(world.getTileEntity(pos) != null){
-        	RailConnTile tile = (RailConnTile)world.getTileEntity(pos);
-        	currentpos = tile.connections.length > 0 ? tile.connections[0] : pos;
+        	TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(pos);
+        	currentpos = tile.connections.length > 0 ? tile.connections[0].getDestination() : pos;
         }
         else{
         	currentpos = pos;
@@ -827,11 +827,15 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         	bogierot[1] = (float)Math.toDegrees(Math.atan2(oldb[2] -  _back[2], oldb[0] -  _back[0]));
         }
 	}
-    
-    //temp
-    public double[] _front, _back;
 
-	private double[] calcBogiePos(int i, Vec3d own){
+	//temp
+    public double[] _front, _back;
+    
+    private double[] calcBogiePos(int i, Vec3d thiz){
+		return RailUtil.getExpectedPosition(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, vehicledata.getWheelPos().get(i).to16FloatX()).dest;
+	}
+
+	/*private double[] calcBogiePos(int i, Vec3d own){
 		return getNextBogiePos(vehicledata.getWheelPos().get(i).to16FloatX(), own, i == 1 ? currentpos : lastpos, i == 0 ? currentpos : lastpos);
 	}
 	
@@ -849,7 +853,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 		}
     	dest = Vector3D.direction(dest[0] - own[0], dest[1] - own[1], dest[2] - own[2]);
 		return Vector3D.newVector(own[0] + (dest[0] * dis), own[1] + (dest[1] * dis), own[2] + (dest[2] * dis));
-	}
+	}*/
 	
 	private float[] bogierot = new float[]{ 0, 0 };
 

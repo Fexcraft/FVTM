@@ -21,7 +21,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.blocks.RailConnTile;
 import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Formatter;
@@ -136,9 +135,9 @@ public class WorldResources implements net.fexcraft.mod.fvtm.api.Resources {
 
 	@Override
 	public BlockPos getNextRailCoordinate(BlockPos current_dest, BlockPos last_dest){
-		if(world == null){ return null; }
-		RailConnTile tile = (RailConnTile)world.getTileEntity(current_dest);
-		return tile == null ? null : tile.getNext(current_dest, last_dest);
+		/*if(world == null){ return null; } RailConnTile tile = (RailConnTile)world.getTileEntity(current_dest);
+		return tile == null ? null : tile.getNext(current_dest, last_dest);*/
+		return null;
 	}
 
 	@Override

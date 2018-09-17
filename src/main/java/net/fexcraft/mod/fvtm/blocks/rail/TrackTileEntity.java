@@ -26,7 +26,6 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 
 	public TrackTileEntity(World world){
 		if(this.world == null) this.world = world;
-		
 	}
 	
 	public TrackTileEntity(){}
@@ -85,6 +84,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
         		connections[i] = new Connection().read(list.getCompoundTagAt(i));
         	}
         }
+        if(world == null || !world.isRemote) RailUtil.attach(this);
     }
 
 	public void reset(){
@@ -103,7 +103,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 		conns[connections.length] = connection; connections = conns;
 		//
 		if(connection.opposite) return; ((TrackTileEntity)world.getTileEntity(connection.getDestination())).addConnection(connection.opposite());
-		this.sendUpdate();
+		this.sendUpdate(); RailUtil.update(this, true);
 	}
 	
 	public void delConnection(Connection conn){
@@ -119,6 +119,12 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 		for(int k = 0; k < connections.length; k++){
 			if(k != i){ conns[j] = connections[k]; j++; }
 		} connections = conns; this.sendUpdate();
+		RailUtil.update(this, false);
+	}
+	
+	@Override
+	public void invalidate(){
+		RailUtil.detach(this);
 	}
 	
     @SideOnly(Side.CLIENT)
@@ -133,48 +139,44 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
         return INFINITE_EXTENT_AABB;
     }
     
-    private Connection thisConn(){
-    	return new Connection(pos, pos);
-    }
-    
     /*
 	 * IF2/4: 1-2 / 3-4
 	 * IF3: 2-3 depending on redstone, or 1 (opposite/reverse)
 	 */
-	public Connection getNext(BlockPos current, BlockPos previous){
+	public BlockPos getNext(BlockPos current, BlockPos previous){
 		if(current == null){
-			return connections.length == 0 ? thisConn() : connections[0];
+			return connections.length == 0 ? pos : connections[0].getDestination();
 		}
 		switch(connections.length){
-			case 0: { return thisConn(); }
-			case 1: { return connections[0].getDestination().equals(previous) ? thisConn() : connections[0]; }
-			case 2: { return connections[0].getDestination().equals(previous) ? connections[1] : connections[0];}
+			case 0: { return pos; }
+			case 1: { return connections[0].getDestination().equals(previous) ? pos : connections[0].getDestination(); }
+			case 2: { return connections[0].getDestination().equals(previous) ? connections[1].getDestination() : connections[0].getDestination();}
 			case 3: {
 				if(connections[0].getDestination().equals(previous)){
-					return world.isBlockPowered(pos) ? connections[2] : connections[1];
+					return world.isBlockPowered(pos) ? connections[2].getDestination() : connections[1].getDestination();
 				}
 				else{
-					return connections[0];
+					return connections[0].getDestination();
 				}
 			}
 			case 4: {
 				if(connections[1].getDestination().equals(previous)){
-					return connections[0];
+					return connections[0].getDestination();
 				}
 				if(connections[0].getDestination().equals(previous)){
-					return connections[1];
+					return connections[1].getDestination();
 				}
 				if(connections[3].getDestination().equals(previous)){
-					return connections[2];
+					return connections[2].getDestination();
 				}
 				if(connections[2].getDestination().equals(previous)){
-					return connections[3];
+					return connections[3].getDestination();
 				}
 				break;
 			}
-			default: return thisConn();
+			default: return pos;
 		}
-		return null;
+		return pos;
 	}
 
 	

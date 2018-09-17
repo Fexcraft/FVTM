@@ -72,7 +72,7 @@ public interface Resources {
 	
 	//
 	
-	public @Nullable BlockPos getNextRailCoordinate(BlockPos current_dest, BlockPos previous_dest);
+	@Deprecated public @Nullable BlockPos getNextRailCoordinate(BlockPos current_dest, BlockPos previous_dest);
 	
 	public @Nullable ContainerHolder getContainerAt(@Nullable ICommandSender receiver, BlockPos pos);
 	

@@ -62,6 +62,7 @@ public class TrackItemBlock extends ItemBlock16 {
         		TrackTileEntity tile0 = (TrackTileEntity)world.getTileEntity(pos0);
         		if(tile0 == null){ Print.chat(player, "&cTileEntity at first connection point is NULL."); return EnumActionResult.FAIL; }
         		if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
+        		if(stack.getTagCompound().getInteger("fvtm:railtrackpoints") <= 1){ Print.chat(player, "&cAt least 2 subpoints are needed."); return EnumActionResult.FAIL; }
         		BlockPos[] arr = new BlockPos[stack.getTagCompound().getInteger("fvtm:railtrackpoints")];
         		for(int j = 0; j < arr.length; j++){
         			arr[j] = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackpoint" + j));

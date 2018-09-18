@@ -47,6 +47,7 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 		GL11.glPushMatrix();
 		GL11.glTranslated(posX, posY - 0.5, posZ);
 		GL11.glPushMatrix();
+		boolean b = false;
 		ModelRailSTD125Half.bindTexture();
 		for(int i = 0; i < te.connections.length; i++){
 			if(te.connections[i].opposite) continue;
@@ -57,15 +58,14 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 			for(int k = 0; k < te.connections[i].vecpoints.length - 1; k++){
 				Vec3d vec1 = te.connections[i].getVecpoint(k).subtract(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
 				Vec3d vec = te.connections[i].getVecpoint(k + 1).subtract(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
-				if(i > 2) GL11.glTranslated(0, -0.01, 0);
+				if(i > 2) GL11.glTranslated(0, -0.02, 0);
 				double dis = vec1.distanceTo(vec);
-				/*renderpiece(vec1, vec, dis);
-				while(dis > 0.5){ dis -= 0.5;
-					renderpiece(vec1, vec, dis);
-				} if(dis > 0) renderpiece(vec1, vec, dis);*/
+				/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
+				if(b = !b) GL11.glTranslated(0, -0.02, 0);
 				while(dis > 0){
 					renderpiece(vec1, vec, dis); dis -= 0.5;
 				}
+				if(b) GL11.glTranslated(0, 0.02, 0);
 				if(Command.DEBUG && k == 0){
 					GL11.glPushMatrix();
 					GL11.glTranslated( 0.5,  0.5,  0.5);
@@ -76,6 +76,7 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 					GL11.glTranslated(-0.5, -0.5, -0.5);
 					GL11.glPopMatrix();
 				}
+				if(i > 2) GL11.glTranslated(0, 0.02, 0);
 			}
 			if(Command.DEBUG) GL11.glColor4f(1f, 1f, 1f, 1f);
 		}

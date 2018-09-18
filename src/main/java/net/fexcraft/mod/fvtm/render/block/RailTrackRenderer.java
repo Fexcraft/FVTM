@@ -3,12 +3,12 @@ package net.fexcraft.mod.fvtm.render.block;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
 import net.fexcraft.mod.fvtm.model.block.ModelRailSTD125Half;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.fexcraft.mod.lib.api.render.fTESR;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -20,8 +20,15 @@ import org.lwjgl.opengl.GL11;
 @fTESR
 public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity> {
 	
-	protected static final ModelRendererTurbo model;
-	static{ model = new ModelRendererTurbo(null, 0, 0, 32, 32); model.addCylinder(0, 0, 0, 3, 5, 32, 1, 1, ModelRendererTurbo.MR_TOP); model.setRotationPoint(0, -5, 0); }
+	protected static final ModelRendererTurbo model, model0;
+	static{
+		model = new ModelRendererTurbo(null, 0, 0, 32, 32);
+		model.addCylinder(0, 0, 0, 3, 5, 32, 1, 1, ModelRendererTurbo.MR_TOP);
+		model.setRotationPoint(0, -5, 0);
+		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32);
+		model0.addCylinder(-12, 0, 0, 4, 16, 6, 1.2f, 1, ModelRendererTurbo.MR_TOP);
+		model0.setRotationPoint(0, 0, 0);
+	}
 
 	@Override
 	public void render(TrackTileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
@@ -42,7 +49,7 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 		GL11.glPushMatrix();
 		for(int i = 0; i < te.connections.length; i++){
 			if(te.connections[i].opposite) continue;
-			if(Minecraft.getMinecraft().gameSettings.showDebugInfo){
+			if(Command.DEBUG){
 				float[] colr = getColor(te.getWorld(), te.getPos(), te.connections.length, i);
 				GL11.glColor4f(colr[0], colr[1], colr[2], 0.25f);
 			}
@@ -57,8 +64,18 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 				if(dis > 0.1){
 					renderpiece(vec1, vec, dis);
 				}
+				if(Command.DEBUG && k == 0){
+					GL11.glPushMatrix();
+					GL11.glTranslated( 0.5,  0.5,  0.5);
+					double angle = Math.toDegrees(Math.atan2(vec1.z - vec.z, vec1.x - vec.x));
+					GL11.glRotated(-angle, 0, 1, 0);
+					ModelBase.bindTexture(Resources.NULL_TEXTURE); model0.render();
+					GL11.glRotated( angle, 0, 1, 0);
+					GL11.glTranslated(-0.5, -0.5, -0.5);
+					GL11.glPopMatrix();
+				}
 			}
-			if(Minecraft.getMinecraft().gameSettings.showDebugInfo)GL11.glColor4f(1f, 1f, 1f, 1f);
+			if(Command.DEBUG) GL11.glColor4f(1f, 1f, 1f, 1f);
 		}
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
@@ -81,7 +98,7 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 	private float[] getColor(World world, BlockPos pos, int length, int i){
 		switch(length){
 			case 1:{
-				return new float[]{ 0, 1, 0.5f };
+				return new float[]{ 0, 0, 1 };
 			}
 			case 2:{
 				return new float[]{ 0, 1, 0 };

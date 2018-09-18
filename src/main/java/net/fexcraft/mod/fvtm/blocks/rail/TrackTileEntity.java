@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.blocks.rail;
 
 import net.fexcraft.mod.fvtm.api.StaticValues;
+import net.fexcraft.mod.fvtm.api.compatibility.IRailProvider;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
@@ -20,7 +21,7 @@ import trackapi.lib.ITrack;
 
 /** @author Ferdinand Calo' (FEX___96) **/
 @Optional.Interface(iface = "trackapi.lib.ITrack", modid = "trackapi")
-public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiver<PacketTileEntityUpdate> {
+public class TrackTileEntity extends TileEntity implements ITrack, IRailProvider, IPacketReceiver<PacketTileEntityUpdate> {
 	
 	public Connection[] connections = new Connection[0];
 
@@ -88,7 +89,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
     }
 
 	public void reset(){
-		this.connections = new Connection[0];
+		for(Connection conn : connections) delConnection(conn, false);
 		this.sendUpdate();
 	}
 	
@@ -97,21 +98,24 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 		ApiUtil.sendTileEntityUpdatePacket(world, pos, this.writeToNBT(new NBTTagCompound()));
 	}
 
-	public void addConnection(Connection connection){
+	public void addConnection(Connection connection, boolean copy){
 		Connection[] conns = new Connection[connections.length + 1];
 		for(int i = 0; i < connections.length; i++) conns[i] = connections[i];
 		conns[connections.length] = connection; connections = conns;
 		//
-		if(connection.opposite) return; ((TrackTileEntity)world.getTileEntity(connection.getDestination())).addConnection(connection.opposite());
+		if(copy) return;
+		TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(connection.getDestination());
+		if(tile != null) tile.addConnection(connection.opposite(), true);
 		this.sendUpdate(); RailUtil.update(this, true);
 	}
 	
-	public void delConnection(Connection conn){
+	public void delConnection(Connection conn, boolean copy){
 		int i = -1; for(int j = 0; j < connections.length; j++){
 			if(connections[j].getDestination().equals(conn.getDestination())){ i = j; break; }
 		} if(i >= 0) remConnection(i); //else throw/log error
-		if(conn.opposite) return;
-		((TrackTileEntity)world.getTileEntity(conn.getDestination())).delConnection(conn.opposite());
+		if(copy) return;
+		TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(conn.getDestination());
+		if(tile != null) tile.delConnection(conn.opposite(), true);
 	}
 
 	private void remConnection(int i){
@@ -149,28 +153,32 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 		}
 		switch(connections.length){
 			case 0: { return pos; }
-			case 1: { return connections[0].getDestination().equals(previous) ? pos : connections[0].getDestination(); }
-			case 2: { return connections[0].getDestination().equals(previous) ? connections[1].getDestination() : connections[0].getDestination();}
+			case 1: {
+				return connections[0].equalsDestOrFirst(previous) ? pos : connections[0].getFirstTowardsDest();
+			}
+			case 2: {
+				return connections[0].equalsDestOrFirst(previous) ? connections[1].getFirstTowardsDest() : connections[0].getFirstTowardsDest();
+			}
 			case 3: {
-				if(connections[0].getDestination().equals(previous)){
-					return world.isBlockPowered(pos) ? connections[2].getDestination() : connections[1].getDestination();
+				if(connections[0].equalsDestOrFirst(previous)){
+					return world.isBlockPowered(pos) ? connections[2].getFirstTowardsDest() : connections[1].getFirstTowardsDest();
 				}
 				else{
-					return connections[0].getDestination();
+					return connections[0].getFirstTowardsDest();
 				}
 			}
 			case 4: {
-				if(connections[1].getDestination().equals(previous)){
-					return connections[0].getDestination();
+				if(connections[1].equalsDestOrFirst(previous)){
+					return connections[0].getFirstTowardsDest();
 				}
-				if(connections[0].getDestination().equals(previous)){
-					return connections[1].getDestination();
+				if(connections[0].equalsDestOrFirst(previous)){
+					return connections[1].getFirstTowardsDest();
 				}
-				if(connections[3].getDestination().equals(previous)){
-					return connections[2].getDestination();
+				if(connections[3].equalsDestOrFirst(previous)){
+					return connections[2].getFirstTowardsDest();
 				}
-				if(connections[2].getDestination().equals(previous)){
-					return connections[3].getDestination();
+				if(connections[2].equalsDestOrFirst(previous)){
+					return connections[3].getFirstTowardsDest();
 				}
 				break;
 			}

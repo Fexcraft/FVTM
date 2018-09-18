@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+/** @author Ferdinand Calo' (FEX___96) **/
 public class Connection {
 	
 	private BlockPos destination, beginning;
@@ -96,6 +97,14 @@ public class Connection {
 
 	public BlockPos[] getPoints(){
 		return points;
+	}
+
+	public BlockPos getFirstTowardsDest(){
+		return points.length > 0 ? points[0] : destination;
+	}
+
+	public boolean equalsDestOrFirst(BlockPos previous){
+		return points.length > 0 ? points[0].equals(previous) : destination.equals(previous);
 	}
 	
 }

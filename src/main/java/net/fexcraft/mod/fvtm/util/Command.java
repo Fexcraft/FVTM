@@ -30,6 +30,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class Command extends CommandBase {
+	
+	public static boolean DEBUG;
 
     @Override
     public String getName(){
@@ -80,6 +82,10 @@ public class Command extends CommandBase {
                     Print.chat(sender, "TEST:STATE: " + Config.TEST);
                 }
                 break;
+            }
+            case "debug":{
+            	Print.chat(sender, "&7Debug: " + ((DEBUG = !DEBUG) ? "&cenabled" : "&adisabled") + "&7.");
+            	break;
             }
             case "key": {
                 if(args.length <= 1){

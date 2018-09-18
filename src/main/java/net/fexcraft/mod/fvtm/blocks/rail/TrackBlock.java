@@ -62,7 +62,8 @@ public class TrackBlock extends Block implements ITileEntityProvider {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
-    	//TODO notify connected
+    	TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(pos);
+    	if(tile != null){ tile.reset(); }
         super.breakBlock(world, pos, state);
     }
 	

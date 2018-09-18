@@ -86,7 +86,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     protected byte toggletimer;
     public EngineLoopSound engineloop;
     //
-    protected boolean sync;
+    protected boolean sync, reverse;
     protected Vec3d angvel = new Vec3d(0, 0, 0);
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
@@ -160,7 +160,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         lastpos = pos;
         if(world.getTileEntity(pos) != null){
         	TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(pos);
-        	currentpos = tile.connections.length > 0 ? tile.connections[0].getDestination() : pos;
+        	currentpos = tile.connections.length > 0 ? tile.connections[0].getFirstTowardsDest() : pos;
         }
         else{
         	currentpos = pos;
@@ -182,6 +182,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         lastpos = BlockPos.fromLong(compound.getLong("LastRail"));
         currentpos = BlockPos.fromLong(compound.getLong("CurrentRail"));
         throttle = compound.getDouble("Throttle");
+        reverse = compound.getBoolean("Reverse");
         initVeh(null, vehicledata, false);
         Print.debug(compound.toString());
     }
@@ -197,6 +198,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         	compound.setLong("CurrentRail", currentpos.toLong());
         }
         compound.setDouble("Throttle", throttle);
+        compound.setBoolean("Reverse", reverse);
         Print.debug(compound.toString());
     }
 
@@ -358,8 +360,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             case 0: {//Accelerate;
             	if(toggletimer > 0){
             		return true;
-            	}
-            	toggletimer = 4;
+            	} toggletimer = 4;
                 throttle += 0.05F;
                 if(throttle > 1F){
                     throttle = 1F;
@@ -369,25 +370,21 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             case 1: {//Decelerate
             	if(toggletimer > 0){
             		return true;
-            	}
-            	toggletimer = 4;
+            	} toggletimer = 4;
                 throttle -= 0.05F;
-                if(throttle < -1F){
-                    throttle = -1F;
-                }
-                if(throttle < 0F && vehicledata.getVehicle().getFMAttribute("max_negative_throttle") == 0F){
+                if(throttle < 0F){
                     throttle = 0F;
                 }
                 return true;
             }
-            /*case 2: {//Left
-                wheelsYaw -= 1F;
+            case 2: {//Left
+                reverse = false;
                 return true;
             }
             case 3: {//Right
-                wheelsYaw += 1F;
+                reverse = true;
                 return true;
-            }*/
+            }
             case 4: {//Brake
             	if(toggletimer > 0){
             		return true;
@@ -788,8 +785,9 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         	if(!llp.equals(lastpos) || !lcp.equals(currentpos)){
         		NBTTagCompound compound = new NBTTagCompound();
         		compound.setString("task", "direction_update");
-        		compound.setLong("last_pos", lastpos.toLong());
-        		compound.setLong("current_pos", currentpos.toLong());
+        		compound.setLong("last_pos", (llp = lastpos).toLong());
+        		compound.setLong("current_pos", (lcp = currentpos).toLong());
+        		compound.setBoolean("reverse", reverse);
         		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
         	}
         }
@@ -805,12 +803,14 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
         }
     }
+
+	//temp
+    public double[] _front, _back;
 	
 	private void updateRotation(){
         Vec3d thiz = this.getPositionVector();
-        double[] oldf = _front; double[] oldb = _back;
-        _front = calcBogiePos(1, thiz);
-        _back = calcBogiePos(0, thiz);
+        _front = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX()).dest;
+        _back = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX()).dest;
         if(_front != null && _back != null){
             double dx = _front[0] - _back[0], dy = _front[1] - _back[1], dz = _front[2] - _back[2];
             double dxz = Math.sqrt(dx * dx + dz * dz);
@@ -819,20 +819,21 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             double pitch = -Math.atan2(dy, dxz);
             double roll = 0F;
             axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+            //
+            /*double[] fr0 = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX() - 0.125).dest;
+            double[] fr1 = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX() + 0.125).dest;
+            double[] bk0 = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX() - 0.125).dest;
+            double[] bk1 = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX() + 0.125).dest;
+            bogierot[0] = -(float)(Math.toDegrees(Math.atan2(fr0[2] - fr1[2], fr0[0] - fr1[0]) + axes.getRadianYaw()));
+            bogierot[1] = -(float)(Math.toDegrees(Math.atan2(bk0[2] - bk1[2], bk0[0] - bk1[0]) + axes.getRadianYaw()));*/
+            //TODO
+            /*if(oldf != null && _front != null){
+            	bogierot[0] = (float)Math.toDegrees(Math.atan2(oldf[2] - _front[2], oldf[0] - _front[0]));
+            }
+            if(oldb != null &&  _back != null){
+            	bogierot[1] = (float)Math.toDegrees(Math.atan2(oldb[2] -  _back[2], oldb[0] -  _back[0]));
+            }*/
         }
-        if(oldf != null && _front != null){
-        	bogierot[0] = (float)Math.toDegrees(Math.atan2(oldf[2] - _front[2], oldf[0] - _front[0]));
-        }
-        if(oldb != null &&  _back != null){
-        	bogierot[1] = (float)Math.toDegrees(Math.atan2(oldb[2] -  _back[2], oldb[0] -  _back[0]));
-        }
-	}
-
-	//temp
-    public double[] _front, _back;
-    
-    private double[] calcBogiePos(int i, Vec3d thiz){
-		return RailUtil.getExpectedPosition(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, vehicledata.getWheelPos().get(i).to16FloatX()).dest;
 	}
 
 	/*private double[] calcBogiePos(int i, Vec3d own){
@@ -1029,6 +1030,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 case "direction_update":{
                 	lastpos = BlockPos.fromLong(pkt.nbt.getLong("last_pos"));
                 	currentpos = BlockPos.fromLong(pkt.nbt.getLong("current_pos"));
+                	reverse = pkt.nbt.getBoolean("reverse");
+                	Print.debug("PACKET CL RC", currentpos, lastpos);
                 	break;
                 }
             }

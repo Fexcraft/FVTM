@@ -62,9 +62,7 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 				double dis = vec1.distanceTo(vec);
 				/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
 				if(b = !b) GL11.glTranslated(0, -0.02, 0);
-				while(dis > 0){
-					renderpiece(vec1, vec, dis); dis -= 0.5;
-				}
+				while(dis > 0){ renderpiece(vec1, vec, dis); dis -= 0.5; }
 				if(b) GL11.glTranslated(0, 0.02, 0);
 				if(Command.DEBUG && k == 0){
 					GL11.glPushMatrix();

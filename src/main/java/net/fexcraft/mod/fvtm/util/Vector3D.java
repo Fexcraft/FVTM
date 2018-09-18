@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -15,6 +16,10 @@ public class Vector3D {
 
 	public static double[] newVector(double x, double y, double z){
 		return new double[]{ x, y, z };
+	}
+
+	public static double[] newVector(Vec3d vec){
+		return new double[]{ vec.x, vec.y, vec.z };
 	}
 	
 	/** Array of 3 values expected. **/

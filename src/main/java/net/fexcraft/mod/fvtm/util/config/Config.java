@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Config {
 
-    public static boolean TEST, DROP_ITEMS_ON_BREAK, ALTERNATIVE_SEAT_UPDATE, VEHICLE_NEEDS_FUEL, RENDER_IN_GUI, RENDER_VEHICLE_PREVIEW, RENDER_BLOCK_PREVIEW, RENDER_OUT_OF_VIEW;
+    public static boolean TEST, DROP_ITEMS_ON_BREAK, ALTERNATIVE_SEAT_UPDATE, VEHICLE_NEEDS_FUEL, RENDER_IN_GUI, RENDER_VEHICLE_PREVIEW, RENDER_BLOCK_PREVIEW, RENDER_OUT_OF_VIEW, ROUND_RAIL_TRACKS;
     public static int MAX_SPAWNED_VEHICLE_KEYS, VEHICLE_UPDATE_RANGE;
 	public static String ADDONS_FOLDER = "addons";
     //
@@ -32,6 +32,7 @@ public class Config {
 	private static final String ADDONS_FOLDER_ = "addons_folder";
     private static final String RENDER_VEHICLE_PREVIEW_ = "render_vehicle_preview";
     private static final String RENDER_BLOCK_PREVIEW_ = "render_block_preview";
+    private static final String ROUND_RAIL_TRACKS_ = "round_rail_tracks";
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
         config = new Configuration(file, FVTM.VERSION, true);
@@ -65,6 +66,7 @@ public class Config {
         ADDONS_FOLDER = config.getString(ADDONS_FOLDER_, GENERAL, "addons", "The folder in which there should be searched for Addons.");
         RENDER_VEHICLE_PREVIEW = config.getBoolean(RENDER_VEHICLE_PREVIEW_, GENERAL, false, "3D full size preview of to be placed vehicle, if the item is in hand.");
         RENDER_BLOCK_PREVIEW = config.getBoolean(RENDER_BLOCK_PREVIEW_, GENERAL, true, "3D full size preview of to be placed block, if the item is in hand.");
+        ROUND_RAIL_TRACKS = config.getBoolean(ROUND_RAIL_TRACKS_, PROTOTYPING, false, "If rail tracks should get rounded.");
     }
 
     public static void add(List<IConfigElement> list){

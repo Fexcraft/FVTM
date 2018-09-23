@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
+import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.client.renderer.entity.Render;
@@ -70,6 +72,18 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
                         pos.translateR();
                     });
                 }
+            }
+            if(Command.DEBUG){
+            	try{
+            		ModelBase.bindTexture(Resources.NULL_TEXTURE);
+                	Pos pos = vehicle.getVehicleData().getFrontConnectorPos();
+                	if(pos != null){ pos.translate(); RenderGenericRailed.CUBE.render(); pos.translateR(); }
+                	pos = vehicle.getVehicleData().getRearConnectorPos();
+                    if(pos != null){ pos.translate(); RenderGenericRailed.CUBE.render(); pos.translateR(); }
+            	}
+            	catch(Exception e){
+            		e.printStackTrace();
+            	}
             }
             GL11.glPopMatrix();
         }

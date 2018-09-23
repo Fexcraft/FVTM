@@ -18,7 +18,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
 
     public GenericTrailerEntity(World world, VehicleData data, VehicleEntity parent){
         super(world, data);
-        Vec3d vec = parent.getAxes().getRelativeVector(parent.getVehicleData().getRearConnector().to16Double());
+        Vec3d vec = parent.getAxes().getRelativeVector(parent.getVehicleData().getRearConnectorPos().to16Double());
         setPosition(parent.getEntity().posX + vec.x, parent.getEntity().posY + vec.y, parent.getEntity().posZ + vec.z);
         this.axes = parent.getAxes().clone();
         initVeh(data, false);
@@ -80,7 +80,7 @@ public class GenericTrailerEntity extends UnboundVehicleEntity {
         if(wheels == null || wheels[0] == null || wheels[1] == null || getParent() == null){
         	return;
         }
-        Vec3d conn = getParent().getAxes().getRelativeVector(getParent().getVehicleData().getRearConnector().to16Double());
+        Vec3d conn = getParent().getAxes().getRelativeVector(getParent().getVehicleData().getRearConnectorPos().to16Double());
         this.setPosition(getParent().getEntity().posX + conn.x, getParent().getEntity().posY + conn.y, getParent().getEntity().posZ + conn.z);
         //
         int lw = this.getParent().getVehicleData().getVehicle().getFMAttribute("trailer_adjustment_axe") < 0 ? 3 : 0;

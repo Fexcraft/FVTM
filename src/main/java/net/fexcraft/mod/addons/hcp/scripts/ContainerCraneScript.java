@@ -20,7 +20,7 @@ import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
 import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.impl.GenericContainerItem;
+import net.fexcraft.mod.fvtm.impl.container.GenericContainerItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.state.IBlockState;

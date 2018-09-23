@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.gui;
 import java.util.List;
 
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
-import net.fexcraft.mod.fvtm.impl.CrafterBlockScriptBase;
+import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;

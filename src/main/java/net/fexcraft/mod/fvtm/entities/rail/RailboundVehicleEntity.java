@@ -29,9 +29,8 @@ import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
-import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.impl.EngineLoopSound;
+import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -57,6 +56,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -97,8 +97,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     //public double passed;
     
 	
-    public RailboundVehicleEntity(World worldIn){
-        super(worldIn);
+    public RailboundVehicleEntity(World world){
+        super(world);
         axes = new VehicleAxes();
         prevaxes = new VehicleAxes();
         preventEntitySpawning = true;
@@ -479,8 +479,142 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 }
                 return true;
             }
+            case 13: case 14: {
+            	if(!world.isRemote){
+            		boolean front = key == 13;
+            		if(throttle > 0){ Print.chat(player, "Please stop the vehicle first!"); return true; }
+            		
+            		if(front ? this.vehicledata.getFrontConnectorPos() == null : this.vehicledata.getRearConnectorPos() == null){
+            			Print.chat(player, "This vehicle does not have a " + (front ? "front" : "rear") + " connector installed.");
+            			return true;
+            		}
+                    if(toggletimer <= 0){
+                    	if(front){
+                        	if(this.getEntityAtFront() == null){
+                        		this.tryAttach(player, front);
+                        	}
+                        	else{
+                        		this.tryDetach(player, front);
+                        	}
+                    	}
+                    	else{
+                        	if(this.getEntityAtRear() == null){
+                        		this.tryAttach(player, front);
+                        	}
+                        	else{
+                        		this.tryDetach(player, front);
+                        	}
+                    	}
+                    	toggletimer = 10;
+                    }
+            	}
+            	return true;
+            }
         }
         return false;
+	}
+
+	@Override
+	public AxisAlignedBB getFrontConnectorAABB(){
+		if(this.vehicledata.getFrontConnectorPos() == null) return null;
+		Vec3d vec = this.getPositionVector().add(axes.getRelativeVector(vehicledata.getFrontConnectorPos().to16Double()));
+		return new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
+	}
+
+	@Override
+	public AxisAlignedBB getRearConnectorAABB(){
+		if(this.vehicledata.getRearConnectorPos() == null) return null;
+		Vec3d vec = this.getPositionVector().add(axes.getRelativeVector(vehicledata.getRearConnectorPos().to16Double()));
+		return new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
+	}
+
+    private void tryAttach(EntityPlayer player, boolean front){
+    	if(front ? this.getEntityAtFront() != null : this.getEntityAtRear() != null){
+			Print.chat(player, (front ? "Front" : "Rear") + " already Connected."); return;
+    	}
+    	AxisAlignedBB aabb = front ? this.getFrontConnectorAABB() : this.getRearConnectorAABB();
+    	if(aabb == null){
+			Print.chat(player, "No " + (front ? "front" : "rear") + " connector."); return;
+    	}
+    	RailboundVehicleEntity ent = null; Boolean rear = null;
+    	for(Entity e : world.loadedEntityList){
+    		if(e instanceof VehicleEntity && !e.equals(this)){ ent = (RailboundVehicleEntity)e;
+    			if(ent.getVehicleData().getVehicle().getType().isRailVehicle()){
+    				if(ent.getRearConnectorAABB().intersects(aabb)){
+    					if(ent.getEntityAtRear() == null){ rear = true; break; }
+    					else{
+    						Print.chat(player, "&8Issue found.");
+    						Print.chat(player, (front ? "Front" : "Rear") + " connector intersects with " + ent.toString());
+    						Print.chat(player, "But the other's entity REAR connector is already connected to something.");
+    						ent = null; break;
+    					}
+    				}
+    				else if(ent.getFrontConnectorAABB().intersects(aabb)){
+    					if(ent.getEntityAtFront() == null){ rear = false; break; }
+    					else{
+    						Print.chat(player, "&8Issue found.");
+    						Print.chat(player, (front ? "Front" : "Rear") + " connector intersects with " + ent.toString());
+    						Print.chat(player, "But the other's entity FRONT connector is already connected to something.");
+    						ent = null; break;
+    					}
+    				}
+    				else continue;
+    			}
+    		}
+    	}
+    	if(ent == null){
+    		Print.chat(player, "No entity found at " + (front ? "FRONT" : "REAR") + " connector."); return;
+    	} if(rear == null){ Print.chat(player, "ERROR! Connector direction of other entity not detected."); return; }
+    	//
+    	try{
+    		Print.chat(player, "Connecting to " + ent.getName());
+    		if(rear) ent.rear = this; else ent.front = this;
+    		if(front) this.front = ent; else this.rear = ent;
+    		//
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setString("task", "update_connection_" + (rear ? "rear" : "front"));
+            nbt.setInteger("entity", this.getEntityId());
+            ApiUtil.sendEntityUpdatePacketToAllAround(ent.getEntity(), nbt);
+            //
+            nbt = new NBTTagCompound();
+            nbt.setString("task", "update_connection_" + (front ? "front" : "rear"));
+            nbt.setInteger("entity", ent.getEntity().getEntityId());
+            ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+    		Print.chat(player, "Connected!");
+    	}
+    	catch(Exception e){
+    		Print.debug("ERROR! See console/log for info.");
+    		e.printStackTrace();
+    	}
+	}
+
+	private void tryDetach(EntityPlayer player, boolean front){
+		if((front ? this.getEntityAtFront() : this.getEntityAtRear()) == null){
+			Print.chat(player, "No entity connected at " + (front ? "front" : "rear") + "!");
+			return;
+		}
+		VehicleEntity veh = front ? this.getEntityAtFront() : this.getEntityAtRear();
+		veh.getEntity().dismountRidingEntity(); Boolean rear = null;
+		if(veh instanceof RailboundVehicleEntity){
+			RailboundVehicleEntity reil = (RailboundVehicleEntity)veh;
+            if(reil.rear != null && reil.rear.equals(this)){ reil.rear = null; rear = true; }
+            if(reil.front != null && reil.front.equals(this)){ reil.front = null; rear = false; }
+		}
+		if(front) this.front = null; else this.rear = null;
+		Print.chat(player, "Detaching " + veh.getEntity().getName());
+		//
+		NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("task", "update_connection_" + (front ? "front" : "rear"));
+        nbt.setInteger("entity", -1);
+        ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+        //
+        if(rear != null){
+            nbt = new NBTTagCompound();
+            nbt.setString("task", "update_connection_" + (rear ? "rear" : "front"));
+            nbt.setInteger("entity", -1);
+            ApiUtil.sendEntityUpdatePacketToAllAround(veh.getEntity(), nbt);
+        }
+		Print.chat(player, "Detached.");
 	}
 
 	@Override
@@ -584,7 +718,15 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
         if(this.getEntityAtRear() != null){
             this.getEntityAtRear().getEntity().dismountRidingEntity();
-            ((UnboundVehicleEntity)this.getEntityAtRear()).parentent = null;
+            RailboundVehicleEntity rear = (RailboundVehicleEntity)this.getEntityAtRear();
+            if(rear.rear.equals(this)) rear.rear = null;
+            if(rear.front.equals(this)) rear.front = null;
+        }
+        if(this.getEntityAtFront() != null){
+            this.getEntityAtFront().getEntity().dismountRidingEntity();
+            RailboundVehicleEntity front = (RailboundVehicleEntity)this.getEntityAtFront();
+            if(front.rear.equals(this)) front.rear = null;
+            if(front.front.equals(this)) front.front = null;
         }
         if(world.isRemote){
         	net.fexcraft.mod.fvtm.util.RenderCache.removeEntity(this);
@@ -634,7 +776,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             	VehicleData data = ((VehicleItem)stack.getItem()).getVehicle(stack);
             	if(data.getVehicle().getType().isRailVehicle()){
             		//TODO add check if locomotive?
-            		this.tryAttach(player, stack, data);
+            		//this.tryAttach(player, stack, data);
             	}
             	else{
             		Print.chat(player, "&cNot a rail vehicle.");
@@ -778,7 +920,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             throttle *= 0.98F;
         }
         if(!world.isRemote){
-        	this.onUpdateMovement(0f);
+        	this.onUpdateMovement(0f, false, false);
         	this.updateRotation();
         	//
             if(llp == null || lcp == null){ llp = lastpos; lcp = currentpos; }
@@ -862,12 +1004,13 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	public float[] getBogieYaw(){
 		return bogierot;
 	}
-
-    private void tryAttach(EntityPlayer player, ItemStack stack, VehicleData data){
-		Print.bar(player, "&cFunction not available yet.");
-	}
-
-	public abstract void onUpdateMovement(double f);
+	
+	/**
+	 * @param f amount to move
+	 * @param b if call is from another (connected) entity
+	 * @param front if call is from the front connector
+	 */
+	public abstract void onUpdateMovement(double f, boolean b, boolean front);
     
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i){
@@ -889,14 +1032,6 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 //
                 if(PermissionAPI.hasPermission((EntityPlayer)damagesource.getImmediateSource(), FvtmPermissions.VEHICLE_BREAK)
                 	|| PermissionAPI.hasPermission((EntityPlayer)damagesource.getImmediateSource(), FvtmPermissions.permBreak(stack))){
-                    if(this.getEntityAtRear() != null){
-                        Entity ent = this.getEntityAtRear().getEntity();
-                        if(ent instanceof UnboundVehicleEntity){
-                            ((UnboundVehicleEntity)this.getEntityAtRear()).parentent = null;
-                        }
-                        ent.dismountRidingEntity();
-                    }
-                    //
                     entityDropItem(stack, 0.5F);
                     setDead();
                     Print.debug(stack.toString());
@@ -1033,6 +1168,12 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 	reverse = pkt.nbt.getBoolean("reverse");
                 	Print.debug("PACKET CL RC", currentpos, lastpos);
                 	break;
+                }
+                case "update_connection_front":{
+                	this.front = pkt.nbt.getInteger("entity") < 0 ? null : (VehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
+                }
+                case "update_connection_rear":{
+                	this.rear = pkt.nbt.getInteger("entity") < 0 ? null : (VehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
                 }
             }
         }

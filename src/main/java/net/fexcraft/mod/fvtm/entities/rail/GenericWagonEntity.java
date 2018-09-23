@@ -17,12 +17,21 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
 	}
 
 	@Override
-	public void onUpdateMovement(double amount){
+	public void onUpdateMovement(double amount, boolean call, boolean frontdir){
         if(amount != 0){ amount = Math.abs(amount);
         	RailUtil.Return ret = RailUtil.getExpectedPosition(world, new double[]{ posX, posY, posZ }, reverse ? lastpos : currentpos, reverse ? currentpos : lastpos, amount);
         	this.posX = ret.dest[0]; this.posY = ret.dest[1]; this.posZ = ret.dest[2];
         	this.prevPosX = this.posX; this.prevPosY = this.posY; this.prevPosZ = this.posZ;
         	this.currentpos = reverse ? ret.last : ret.curr; this.lastpos = reverse ? ret.curr : ret.last;
+        }
+        if(call && amount != 0){
+            RailboundVehicleEntity ent = null; /*amount = reverse ? -amount : amount;*/ boolean fr;
+            if(frontdir && rear != null && rear.getVehicleData().getVehicle().isTrailerOrWagon()){
+            	(ent = (RailboundVehicleEntity)rear).onUpdateMovement((fr = ent.front.equals(this)) ? amount : -amount, true, fr);
+            }
+            if(!frontdir && front != null && front.getVehicleData().getVehicle().isTrailerOrWagon()){
+            	(ent = (RailboundVehicleEntity)front).onUpdateMovement((fr = ent.front.equals(this)) ? amount : -amount, true, fr);
+            }
         }
 	}
 	

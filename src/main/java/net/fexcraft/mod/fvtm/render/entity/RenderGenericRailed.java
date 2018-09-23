@@ -5,10 +5,12 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
+import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.tmt.ModelConverter;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.math.Pos;
+import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -30,14 +32,17 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
         ModelBase.bindTexture(rs);
     }
 
-    private static final ModelRendererTurbo light = new ModelRendererTurbo(new ModelConverter());
-    private static final ModelRendererTurbo light2 = new ModelRendererTurbo(new ModelConverter());
+    private static final ModelRendererTurbo light = new ModelRendererTurbo(null);
+    private static final ModelRendererTurbo light2 = new ModelRendererTurbo(null);
+    public static final ModelRendererTurbo CUBE = new ModelRendererTurbo(null);
 
     static{
         //light.flip = true;
         light.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
         light2.flip = true;
         light2.addCylinder(48, 0, 0, 16, 128, 32, 0.25f, 2, ModelRendererTurbo.MR_RIGHT);
+        CUBE.addBox(-8, -8, -8, 16, 16, 16);
+        CUBE.setRotationPoint(0, 0, 0);
     }
 
     @Override
@@ -82,6 +87,18 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
                         pos.translateR();
                     });
                 }
+            }
+            if(Command.DEBUG){
+            	try{
+            		ModelBase.bindTexture(Resources.NULL_TEXTURE);
+                	Pos pos = vehicle.getVehicleData().getFrontConnectorPos();
+                    if(pos != null){ pos.translate(); RGB.GREEN.glColorApply(); CUBE.render(); RGB.glColorReset(); pos.translateR(); }
+                	pos = vehicle.getVehicleData().getRearConnectorPos();
+                    if(pos != null){ pos.translate(); RGB.RED.glColorApply(); CUBE.render(); RGB.glColorReset(); pos.translateR(); }
+            	}
+            	catch(Exception e){
+            		e.printStackTrace();
+            	}
             }
             GL11.glPopMatrix();
         }

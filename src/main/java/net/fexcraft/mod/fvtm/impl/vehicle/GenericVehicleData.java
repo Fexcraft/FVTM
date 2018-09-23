@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.impl;
+package net.fexcraft.mod.fvtm.impl.vehicle;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -324,12 +324,12 @@ public class GenericVehicleData extends GenericColorable<VehicleData, Vehicle> i
     }
 
     @Override
-    public Pos getFrontConnector(){
+    public Pos getFrontConnectorPos(){
         return frontConnector;
     }
 
     @Override
-    public Pos getRearConnector(){
+    public Pos getRearConnectorPos(){
         return rearConnector;
     }
 

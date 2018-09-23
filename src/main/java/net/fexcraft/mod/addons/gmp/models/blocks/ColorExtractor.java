@@ -11,7 +11,7 @@ package net.fexcraft.mod.addons.gmp.models.blocks; //Path where the model is loc
 
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
-import net.fexcraft.mod.fvtm.impl.CrafterBlockScriptBase;
+import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;

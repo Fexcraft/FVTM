@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.impl;
+package net.fexcraft.mod.fvtm.impl.block;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -177,6 +177,9 @@ public class GuiVehicleController extends GuiScreen {
             if(isKeyDown(KeyHandler.trailerToggle.getKeyCode())){
                 seat.onKeyPress(13, player);
             }
+            if(isKeyDown(KeyHandler.wagonToggle.getKeyCode())){
+            	seat.onKeyPress(14, player);
+            }
             if(s > 0){
                 s--;
             }
@@ -211,7 +214,7 @@ public class GuiVehicleController extends GuiScreen {
             mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff);
             return;
         }
-        mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity()) + " ck/m"), 7, 7, 0xffffff);
+        mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity()) + " blk/s"), 7, 7, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.getThrottle()) + pc(ent.getThrottle()) + "%"), 7, 21, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getFuelTankContent()) + "&f/&b" + ent.getVehicleData().getFuelTankSize()), 7, 35, 0xffffff);
     }

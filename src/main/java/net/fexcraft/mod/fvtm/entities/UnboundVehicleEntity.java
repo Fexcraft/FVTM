@@ -27,7 +27,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.impl.EngineLoopSound;
+import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -453,7 +453,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
             			Print.chat(player, "Please stop the vehicle first!");
             			return true;
             		}
-            		if(this.vehicledata.getRearConnector() == null){
+            		if(this.vehicledata.getRearConnectorPos() == null){
             			Print.chat(player, "This vehicle does not have a rear connector installed.");
             			return true;
             		}
@@ -473,12 +473,26 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         return false;
     }
 
+	@Override
+	public AxisAlignedBB getFrontConnectorAABB(){
+		if(this.vehicledata.getFrontConnectorPos() == null) return null;
+		Vec3d vec = this.getPositionVector().add(axes.getRelativeVector(vehicledata.getFrontConnectorPos().to16Double()));
+		return new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
+	}
+
+	@Override
+	public AxisAlignedBB getRearConnectorAABB(){
+		if(this.vehicledata.getRearConnectorPos() == null) return null;
+		Vec3d vec = this.getPositionVector().add(axes.getRelativeVector(vehicledata.getRearConnectorPos().to16Double()));
+		return new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
+	}
+
 	private void tryAttach(EntityPlayer player){
 		if(this.getEntityAtRear() != null){
 			Print.chat(player, "Trailer already Connected.");
 		}
 		VehicleEntity trailer = null;
-		AxisAlignedBB aabb = new AxisAlignedBB(new BlockPos(this.getPositionVector().add(axes.getRelativeVector(vehicledata.getRearConnector().to16Double()))));
+		AxisAlignedBB aabb = new AxisAlignedBB(new BlockPos(this.getPositionVector().add(axes.getRelativeVector(vehicledata.getRearConnectorPos().to16Double()))));
 		for(Entity e : world.loadedEntityList){
 			if(e instanceof VehicleEntity && e.getEntityBoundingBox().intersects(aabb)){
 				VehicleEntity ent = (VehicleEntity)e;
@@ -829,7 +843,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
                 return true;
             }
             if(stack.getItem() instanceof VehicleItem){
-                if(this.vehicledata.getRearConnector() != null && this.getEntityAtRear() == null && ((VehicleItem) stack.getItem()).getVehicle(stack).getVehicle().isTrailerOrWagon()){
+                if(this.vehicledata.getRearConnectorPos() != null && this.getEntityAtRear() == null && ((VehicleItem) stack.getItem()).getVehicle(stack).getVehicle().isTrailerOrWagon()){
                     Print.chat(player, "Connecting...");
                     GenericTrailerEntity trailer = new GenericTrailerEntity(world, ((VehicleItem) stack.getItem()).getVehicle(stack), this);
                     world.spawnEntity(trailer);

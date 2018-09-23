@@ -4,13 +4,15 @@
     "Addon": "fvtm:test",
     "ModelFile": "null",
     "Category": [ "seats" ],
-    "Attributes":[ "seat" ],
+    "Attributes":[ "seat", "connector" ],
     "Textures": [
         "fvtm:textures/entities/null_texture.png"
     ],
     "AttributeData":{
         "FM-Seats":[
             { "x": 0, "y": 20, "z": 0, "driver": true, "sitting": false }
-        ]    
+        ],
+        "Rear-Connector": [ { "x": -82, "y": -8, "z": 0 } ],
+        "Front-Connector": [ { "x": 82, "y": -8, "z": 0  } ] 
     }
 }

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.impl;
+package net.fexcraft.mod.fvtm.impl.container;
 
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container;

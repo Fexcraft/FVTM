@@ -33,6 +33,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
@@ -142,10 +143,10 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         public List<PartData> getContainerHolders();
 
         @Nullable
-        public Pos getFrontConnector();
+        public Pos getFrontConnectorPos();
 
         @Nullable
-        public Pos getRearConnector();
+        public Pos getRearConnectorPos();
 
         /**
          * 0 = off 1 = on 2 = long (?) 3 = fog lights (?)
@@ -237,6 +238,10 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
         public VehicleEntity getEntityAtFront();
 
         public VehicleEntity getEntityAtRear();
+        
+        public AxisAlignedBB getFrontConnectorAABB();
+        
+        public AxisAlignedBB getRearConnectorAABB();
 
         public Vec3d getAngularVelocity();
 

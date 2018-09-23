@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.impl;
+package net.fexcraft.mod.fvtm.impl.vehicle;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +19,8 @@ import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
+import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
+import net.fexcraft.mod.fvtm.impl.GenericCreativeTab;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -257,7 +259,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
                     }
                     if(!world.isRemote){
                     	if(data.getVehicle().isTrailerOrWagon()){
-                    		//world.spawnEntity(new GenericTrailerEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
+                    		world.spawnEntity(new GenericWagonEntity(world, pos, player, data));
                     	}
                     	else{
                     		world.spawnEntity(new GenericLocomotiveEntity(world, pos, player, data));

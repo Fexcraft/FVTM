@@ -15,7 +15,7 @@ public class KeyHandler {
     private final Minecraft minecraft;
     public static KeyBinding engineToggle;
     public static KeyBinding openInventory;
-    public static KeyBinding doorToggle, scriptsGUI, lightsToggle, trailerToggle;
+    public static KeyBinding doorToggle, scriptsGUI, lightsToggle, trailerToggle, wagonToggle;
     public static final String category = "FVTM Controls";
 
     public KeyHandler(){
@@ -26,6 +26,7 @@ public class KeyHandler {
         ClientRegistry.registerKeyBinding(scriptsGUI = new KeyBinding("fvtm:vehicle_scripts", Keyboard.KEY_G, category));
         ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("fvtm:vehicle_lights", Keyboard.KEY_L, category));
         ClientRegistry.registerKeyBinding(trailerToggle = new KeyBinding("fvtm:vehicle_trailer", Keyboard.KEY_0, category));
+        ClientRegistry.registerKeyBinding(wagonToggle = new KeyBinding("fvtm:vehicle_wagon", Keyboard.KEY_MINUS, category));
     }
 
     //TODO sunscribe keyinput event

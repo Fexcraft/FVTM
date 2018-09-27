@@ -82,7 +82,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     protected TreeMap<String, ContainerHolder> containers;
     protected double throttle;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
-    protected VehicleEntity front, rear;
+    protected /*VehicleEntity*/ RailboundVehicleEntity front, rear;
     protected byte toggletimer;
     public EngineLoopSound engineloop;
     //
@@ -205,11 +205,16 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     @Override
     public void writeSpawnData(ByteBuf buffer){
         NBTTagCompound compound = new NBTTagCompound();
-        if(getEntityAtFront() != null){
-            compound.setInteger("FrontEntityId", getEntityAtFront().getEntity().getEntityId());
+        try{
+            if(getEntityAtFront() != null){
+                compound.setInteger("FrontEntityId", getEntityAtFront().getEntity().getEntityId());
+            }
+            if(getEntityAtRear() != null){
+                compound.setInteger("RearEntityId", getEntityAtFront().getEntity().getEntityId());
+            }
         }
-        if(getEntityAtRear() != null){
-            compound.setInteger("RearEntityId", getEntityAtFront().getEntity().getEntityId());
+        catch(Exception e){
+        	e.printStackTrace();
         }
         if(lastpos != null){
         	compound.setLong("LastRail", lastpos.toLong());
@@ -920,7 +925,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             throttle *= 0.98F;
         }
         if(!world.isRemote){
-        	this.onUpdateMovement(0f, false, false);
+        	this.onUpdateMovement(0f, false, null);
         	this.updateRotation();
         	//
             if(llp == null || lcp == null){ llp = lastpos; lcp = currentpos; }
@@ -1007,10 +1012,10 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	
 	/**
 	 * @param f amount to move
-	 * @param b if call is from another (connected) entity
-	 * @param front if call is from the front connector
+	 * @param call if from another (connected) entity
+	 * @param front direction call is from
 	 */
-	public abstract void onUpdateMovement(double f, boolean b, boolean front);
+	public abstract void onUpdateMovement(double amount, boolean call, Boolean front);
     
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i){
@@ -1166,14 +1171,14 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 	lastpos = BlockPos.fromLong(pkt.nbt.getLong("last_pos"));
                 	currentpos = BlockPos.fromLong(pkt.nbt.getLong("current_pos"));
                 	reverse = pkt.nbt.getBoolean("reverse");
-                	Print.debug("PACKET CL RC", currentpos, lastpos);
+                	//Print.debug("PACKET CL RC", currentpos, lastpos);
                 	break;
                 }
                 case "update_connection_front":{
-                	this.front = pkt.nbt.getInteger("entity") < 0 ? null : (VehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
+                	this.front = pkt.nbt.getInteger("entity") < 0 ? null : (RailboundVehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
                 }
                 case "update_connection_rear":{
-                	this.rear = pkt.nbt.getInteger("entity") < 0 ? null : (VehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
+                	this.rear = pkt.nbt.getInteger("entity") < 0 ? null : (RailboundVehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
                 }
             }
         }

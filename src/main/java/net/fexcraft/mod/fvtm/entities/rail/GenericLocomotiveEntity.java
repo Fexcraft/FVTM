@@ -20,7 +20,11 @@ public class GenericLocomotiveEntity extends GenericWagonEntity {
 	}
 
 	@Override
-	public void onUpdateMovement(double amount, boolean call, boolean frontdir){
+	public void onUpdateMovement(double amount, boolean call, Boolean frontdir){
+		if(frontdir != null){
+			super.onUpdateMovement(amount, call, frontdir);
+			//TODO
+		}
         boolean creativemode = !Config.VEHICLE_NEEDS_FUEL || (seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode);
         boolean consumed = false;
         Part.PartData enginepart = vehicledata.getPart("engine");
@@ -34,15 +38,7 @@ public class GenericLocomotiveEntity extends GenericWagonEntity {
         	vel *= vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
         }
         //TODO check if connected to another locomotive, etc.
-        super.onUpdateMovement(vel, true, false);
-        if(front == null && rear == null && vel == 0) return;
-        RailboundVehicleEntity ent = null; vel = reverse ? -vel : vel; boolean fr;
-        if(rear != null && rear.getVehicleData().getVehicle().isTrailerOrWagon()){
-        	(ent = (RailboundVehicleEntity)rear).onUpdateMovement((fr = ent.front.equals(this)) ? vel : -vel, true, fr);
-        }
-        if(front != null && front.getVehicleData().getVehicle().isTrailerOrWagon()){
-        	(ent = (RailboundVehicleEntity)front).onUpdateMovement((fr = ent.front.equals(this)) ? vel : -vel, true, fr);
-        }
+        super.onUpdateMovement(vel, true, null);
 	}
 	
 }

@@ -4,7 +4,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class GenericWagonEntity extends RailboundVehicleEntity {
@@ -16,13 +15,11 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
 	public GenericWagonEntity(World world, BlockPos pos, EntityPlayer player, VehicleData data){
 		super(world, pos, player, data);
 	}
-	
-	private boolean fr;
 
 	@Override
 	public void onUpdateMovement(double amount, boolean call, Boolean frontdir){
-        if((amount > 0.001 || amount < -0.001)){
-        	/*amount = Math.abs(amount);*/ move(amount, false, null);
+        if((amount > 0.001 || amount < -0.001)){ /*amount = Math.abs(amount);*/
+        	set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, amount, reverse), reverse);
         }
         /*if(call){
         	if(vehicledata.getVehicle().isTrailerOrWagon()){
@@ -53,12 +50,12 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
         	}
         }*/
         if(!call) return;
-        Vec3d own, oth;
+        //Vec3d own, oth;
         if(this.vehicledata.getVehicle().isTrailerOrWagon()){
         	
         }
         else{
-        	if(rear != null /*&& rear.getVehicleData().getVehicle().isTrailerOrWagon()*/){
+        	/*if(rear != null && rear.getVehicleData().getVehicle().isTrailerOrWagon()){
         		fr = rear.front != null && rear.front.equals(this);
         		own = axes.getRelativeVector(vehicledata.getRearConnectorPos().to16Double());
         		oth = rear.getAxes().getRelativeVector((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16Double());
@@ -66,25 +63,32 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
         		if(dob < this.getPositionVector().distanceTo(own)) return;
         		((GenericWagonEntity)rear).move(dob, true, fr);
         	}
-        	if(front != null /*&& front.getVehicleData().getVehicle().isTrailerOrWagon()*/){
+        	if(front != null && front.getVehicleData().getVehicle().isTrailerOrWagon()){
         		fr = front.front != null && front.front.equals(this);
         		own = axes.getRelativeVector(vehicledata.getFrontConnectorPos().to16Double());
         		oth = front.getAxes().getRelativeVector((fr ? front.getVehicleData().getFrontConnectorPos() : front.getVehicleData().getRearConnectorPos()).to16Double());
         		double dob = this.getPositionVector().add(own).distanceTo(rear.getPositionVector().add(oth));
         		if(dob < this.getPositionVector().distanceTo(own)) return;
         		((GenericWagonEntity)front).move(dob, true, fr);
+        	}*/
+        	if(rear != null){
+        		boolean fr = rear.front != null && rear.front.equals(this), rev = fr ? reverse : !reverse;
+        		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16FloatX());
+        		((GenericWagonEntity)rear).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, /*reverse ? -dob :*/ dob, rev), fr);
         	}
         }
 	}
 	
-	protected void move(double amount, boolean up, Boolean bool){
+	/*protected void move(double amount, boolean up, Boolean bool){
 		if(amount < 0.001 && amount > -0.001) return;
-		RailUtil.Return ret = RailUtil.getExpectedPosition(world, new double[]{ posX, posY, posZ }, reverse ? lastpos : currentpos, reverse ? currentpos : lastpos, amount);
-		//if(this.vehicledata.getVehicle().isTrailerOrWagon()) Print.debug(amount + " =|= " + this, posX + " =?= " + ret.dest[0], posY + " =?= " + ret.dest[1], posZ + " =?= " + ret.dest[2]);
+		set(RailUtil.getExpectedPosition(world, new double[]{ posX, posY, posZ }, reverse ? lastpos : currentpos, reverse ? currentpos : lastpos, amount), reverse);
+    	if(up && bool != null) this.onUpdateMovement(0f, true, bool);
+	}*/
+	
+	public void set(RailUtil.Return ret, boolean reverse){
     	this.posX = ret.dest[0]; this.posY = ret.dest[1]; this.posZ = ret.dest[2];
     	this.prevPosX = this.posX; this.prevPosY = this.posY; this.prevPosZ = this.posZ;
     	this.currentpos = reverse ? ret.last : ret.curr; this.lastpos = reverse ? ret.curr : ret.last;
-    	if(up && bool != null) this.onUpdateMovement(0f, true, bool);
 	}
 	
 }

@@ -42,6 +42,10 @@ public class RailUtil {
 	public static final Return move(World world, double[] own, BlockPos curr, BlockPos last, double amount){
 		return getExpectedPosition(world, own, curr, last, amount);
 	}
+
+	public static final Return move(World world, double[] own, BlockPos curr, BlockPos last, double amount, boolean reverse){
+		return getExpectedPosition(world, own, reverse ? last : curr, reverse ? curr : last, amount);
+	}
 	
 	public static final Return move(World world, Vec3d own, BlockPos curr, BlockPos last, double amount){
 		return getExpectedPosition(world, new double[]{ own.x, own.y, own.z }, curr, last, amount);

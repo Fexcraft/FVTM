@@ -70,7 +70,7 @@ public class ModelC4Z1Interior extends PartModelTMT {
         body[13].addBox(0F, 0F, 0F, 1, 1, 4, 0F); // Box 285
         body[13].setRotationPoint(51.8F, -21.5F, 2F);
 
-        this.fixRotations(body);
+        fixRotations(body);
     }
 
     @Override

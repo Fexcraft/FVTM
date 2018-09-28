@@ -80,10 +80,10 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
     		rear.onUpdateMovement(0, call, fr);
     	}
     	if(front != null && (frontdir == null ? true : !frontdir)){
-    		boolean fr = front.front != null && front.front.equals(this), rev = fr ? reverse : !reverse;
+    		boolean fr = front.front != null && front.front.equals(this), rev = fr ? !reverse : reverse;
     		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? front.getVehicleData().getFrontConnectorPos() : front.getVehicleData().getRearConnectorPos()).to16FloatX());
-    		((GenericWagonEntity)rear).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? -dob : dob, rev), rev);
-    		rear.onUpdateMovement(0, call, fr);
+    		((GenericWagonEntity)front).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? -dob : dob, rev), rev);
+    		front.onUpdateMovement(0, call, fr);
     	}
 	}
 	

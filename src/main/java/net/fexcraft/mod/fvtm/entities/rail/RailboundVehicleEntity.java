@@ -1010,7 +1010,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	}
 	
 	/**
-	 * @param f amount to move
+	 * @param amount amount to move
 	 * @param call if from another (connected) entity
 	 * @param front direction call is from
 	 */

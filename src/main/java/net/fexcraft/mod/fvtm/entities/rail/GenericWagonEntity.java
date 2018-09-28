@@ -51,11 +51,11 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
         }*/
         if(!call) return;
         //Vec3d own, oth;
-        if(this.vehicledata.getVehicle().isTrailerOrWagon()){
+        /*if(this.vehicledata.getVehicle().isTrailerOrWagon()){
         	
         }
         else{
-        	/*if(rear != null && rear.getVehicleData().getVehicle().isTrailerOrWagon()){
+        	if(rear != null && rear.getVehicleData().getVehicle().isTrailerOrWagon()){
         		fr = rear.front != null && rear.front.equals(this);
         		own = axes.getRelativeVector(vehicledata.getRearConnectorPos().to16Double());
         		oth = rear.getAxes().getRelativeVector((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16Double());
@@ -70,13 +70,21 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
         		double dob = this.getPositionVector().add(own).distanceTo(rear.getPositionVector().add(oth));
         		if(dob < this.getPositionVector().distanceTo(own)) return;
         		((GenericWagonEntity)front).move(dob, true, fr);
-        	}*/
-        	if(rear != null){
-        		boolean fr = rear.front != null && rear.front.equals(this), rev = fr ? reverse : !reverse;
-        		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16FloatX());
-        		((GenericWagonEntity)rear).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, /*reverse ? -dob :*/ dob, rev), fr);
         	}
-        }
+        }*/
+        //
+    	if(rear != null && (frontdir == null ? true : frontdir)){
+    		boolean fr = rear.front != null && rear.front.equals(this), rev = fr ? reverse : !reverse;
+    		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16FloatX());
+    		((GenericWagonEntity)rear).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? dob : -dob, rev), rev);
+    		rear.onUpdateMovement(0, call, fr);
+    	}
+    	if(front != null && (frontdir == null ? true : !frontdir)){
+    		boolean fr = front.front != null && front.front.equals(this), rev = fr ? reverse : !reverse;
+    		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? front.getVehicleData().getFrontConnectorPos() : front.getVehicleData().getRearConnectorPos()).to16FloatX());
+    		((GenericWagonEntity)rear).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? -dob : dob, rev), rev);
+    		rear.onUpdateMovement(0, call, fr);
+    	}
 	}
 	
 	/*protected void move(double amount, boolean up, Boolean bool){

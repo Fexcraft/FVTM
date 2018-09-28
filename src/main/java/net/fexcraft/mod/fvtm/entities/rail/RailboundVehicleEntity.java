@@ -487,8 +487,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             case 13: case 14: {
             	if(!world.isRemote){
             		boolean front = key == 13;
-            		if(throttle > 0){ Print.chat(player, "Please stop the vehicle first!"); return true; }
-            		
+            		if(throttle > 0.001 && !vehicledata.getVehicle().isTrailerOrWagon()){ Print.chat(player, "Please stop the vehicle first!"); return true; }
             		if(front ? this.vehicledata.getFrontConnectorPos() == null : this.vehicledata.getRearConnectorPos() == null){
             			Print.chat(player, "This vehicle does not have a " + (front ? "front" : "rear") + " connector installed.");
             			return true;

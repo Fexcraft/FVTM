@@ -58,6 +58,7 @@ import net.fexcraft.mod.fvtm.impl.part.GenericPartItem;
 import net.fexcraft.mod.fvtm.impl.vehicle.GenericVehicle;
 import net.fexcraft.mod.fvtm.impl.vehicle.GenericVehicleItem;
 import net.fexcraft.mod.fvtm.model.EmptyModel;
+import net.fexcraft.mod.fvtm.model.ObjModelWrapper;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.model.container.ContainerBaseModel;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleBaseModel;
@@ -734,22 +735,19 @@ public class Resources {
 		Model<T, K> model = null;
 		try{
 			switch(type){
-				case JAVA:
-				case TMT:
+				case JAVA: case TMT:
 					Class<?> clasz = Class.forName(name.replace(".class", ""));
 					model = (Model<T, K>)clasz.newInstance();
-					//if(model instanceof GenericModel){ ((GenericModel<T, K>)model).importSubModels(); }
 					break;
 				case JTMT:
 					JsonObject obj = JsonUtil.getObjectFromInputStream(net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(name)).getInputStream());
 					model = clazz.getConstructor(JsonObject.class).newInstance(obj);
-					//if(model instanceof GenericModel){ ((GenericModel<T, K>)model).importSubModels(); }
 					break;
 				case JSON:
 					//TODO create a wrapper.
 					break;
 				case OBJ:
-					//Use MRT's OBJ methods instead / or create a wrapper.
+					model = new ObjModelWrapper<T, K>(name);
 					break;
 				case NONE:
 				default: return (Model<T, K>)EmptyModel.INSTANCE;
@@ -757,8 +755,8 @@ public class Resources {
 		}
 		catch(Exception e){
 			Print.log("Failed to find/parse model with adress '" + name + "'!");
-			e.printStackTrace();
-			Static.stop();
+			e.printStackTrace(); Static.stop();
+			return (Model<T, K>)EmptyModel.INSTANCE;
 		}
 		MODELS.put(name, model);
 		return model;

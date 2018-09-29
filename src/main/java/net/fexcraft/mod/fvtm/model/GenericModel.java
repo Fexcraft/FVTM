@@ -20,32 +20,6 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
 	private ArrayList<String> creators = new ArrayList<>();
 	
 	public GenericModel(){}
-	
-	/*public final void importSubModels(){
-		searchFields(this.getClass().getDeclaredFields());
-		Class<?> clazz = null;
-		while((clazz = clazz == null ? this.getClass().getSuperclass() : clazz.getSuperclass()) != GenericModel.class){
-			searchFields(clazz.getDeclaredFields());
-		}
-	}
-	
-	private void searchFields(Field[] fields){
-		for(Field field : fields){
-			if(field.getType().getSimpleName().equals("ModelRendererTurbo[]") && field.getType().isArray()){
-				try{
-					boolean access = field.isAccessible();
-					if(!access){ field.setAccessible(!access); }
-					submodels.put(field.getName(), (ModelRendererTurbo[])field.get(this));
-					if(!access){ field.setAccessible( access); }
-					//Print.debug(field.getName(), submodels.get(field.getName()).length);
-				}
-				catch(IllegalArgumentException | IllegalAccessException e){
-					e.printStackTrace();
-					Static.stop();
-				}
-			}
-		}
-	}*/
 
 	public GenericModel(JsonObject obj){
 		this(); if(obj == null){ return; }

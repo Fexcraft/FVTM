@@ -174,9 +174,7 @@ public class Resources {
 	public void regAddons(RegistryEvent.Register<Addon> event){
 		boolean defload = !(Config.ADDONS_FOLDER.equals("mods") || Config.ADDONS_FOLDER.equals("/mods") || Config.ADDONS_FOLDER.equals("/mods/"));
 		File[] folders = new File[defload ? 3 : 2];
-		if(defload){
-			folders[2] = new File("./" + Config.ADDONS_FOLDER + "/");
-		}
+		if(defload){ folders[2] = new File("./" + Config.ADDONS_FOLDER + "/"); }
 		folders[1] = new File("./mods/" + FCL.getMinecraftVersion() + "/");
 		folders[0] = new File("./mods/");
 		ClassLoader cl = net.minecraft.server.MinecraftServer.class.getClassLoader();
@@ -187,9 +185,9 @@ public class Resources {
 			for(File file : folders[folder].listFiles()){
 				if(AddonList.isAddonContainer(parent, file)){
 					try{
-						if(folder == 2) method.invoke(cl, file.toURI().toURL());
+						/*if(folder == 2)*/ method.invoke(cl, file.toURI().toURL());
 						Addon addon = GenericAddon.isHybrid(file) ? HybridAddon.getClass(file).getConstructor(File.class).newInstance(file) : new GenericAddon(file);
-						ADDONS.register(addon); if(folder == 2) defloaded.add(addon.getRegistryName());
+						ADDONS.register(addon); /*if(folder == 2)*/ defloaded.add(addon.getRegistryName());
 					}
 					catch(Exception e){
 						e.printStackTrace();

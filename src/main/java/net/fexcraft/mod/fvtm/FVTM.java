@@ -2,10 +2,11 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
+import net.fexcraft.mod.fvtm.blocks.Pallet;
 import net.fexcraft.mod.fvtm.entities.*;
-import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
-import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
-import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.railold.GenericLocomotiveEntity;
+import net.fexcraft.mod.fvtm.entities.railold.GenericWagonEntity;
+import net.fexcraft.mod.fvtm.entities.railold.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
@@ -67,8 +68,10 @@ public class FVTM {
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		REGISTERER = new AutoRegisterer(MODID);
+		String[] wood_types = new String[]{ "oak", "spruce", "birch", "jungle", "dark_oak", "acacia"};
 		try{
 			new ConstructorController();
+			for(String string : wood_types) new Pallet(string);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -105,7 +108,9 @@ public class FVTM {
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
 		MinecraftForge.EVENT_BUS.register(new GuiHandler.EventHandler());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new GuiHandler.SReceiver());
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new GuiHandler.CReceiver());
+		if(event.getSide().isClient()){
+			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.gui.GuiHandler.CReceiver());
+		}
 		//
 		RecipeObject.registerRecipes();
 		RecipeRegistry.addBluePrintRecipe("FVTM (B)", new ItemStack(RegistryUtil.getBlock("fvtm:constructor_controller"), 1, 0), new ItemStack(Blocks.IRON_BLOCK, 2), new ItemStack(Items.REDSTONE, 8), new ItemStack(Items.GOLD_INGOT, 3));

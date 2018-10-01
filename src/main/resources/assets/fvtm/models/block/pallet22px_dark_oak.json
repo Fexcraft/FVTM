@@ -1,0 +1,8 @@
+{
+	"parent": "fvtm:block/pallet22px",
+	"textures": {
+		"particle": "blocks/piston_top_normal",
+		"texture": "blocks/planks_big_oak",
+		"texture1": "blocks/log_big_oak"
+	}
+}

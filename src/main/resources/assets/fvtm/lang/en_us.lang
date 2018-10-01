@@ -75,6 +75,12 @@ tile.fvtm:display_block.name=Display Block
 tile.fvtm:container_block.name=Container Block
 tile.fvtm:fluid_pipe.name=Generic FVTM Fluid Pipe
 tile.fvtm:streetpost.name=Streetpost
+tile.fvtm:pallet_oak.name=(Oakwood) Pallet
+tile.fvtm:pallet_dark_oak.name=(Dark Oakwood) Pallet
+tile.fvtm:pallet_spruce.name=(Sprucewood) Pallet
+tile.fvtm:pallet_birch.name=(Birchwood) Pallet
+tile.fvtm:pallet_jungle.name=(Junglewood) Pallet
+tile.fvtm:pallet_acacia.name=(Acaciawood) Pallet
 
 #Items
 item.fvtm:constructor_remote.name=Constructor Remote Controller

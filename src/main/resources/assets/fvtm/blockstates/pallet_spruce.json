@@ -1,0 +1,15 @@
+{
+    "variants": {
+        "normal": { "model": "fvtm:pallet22pxcent_spruce" },
+        "centered=true,orientation=false,rotation=0": { "model": "fvtm:pallet22pxcent_spruce" },
+        "centered=true,orientation=true,rotation=0": { "model": "fvtm:pallet22pxcent_spruce", "y": 90 },
+        "centered=false,orientation=false,rotation=0": { "model": "fvtm:pallet22px_spruce", "y":   0 },
+        "centered=false,orientation=false,rotation=1": { "model": "fvtm:pallet22px_spruce", "y":  90 },
+        "centered=false,orientation=false,rotation=2": { "model": "fvtm:pallet22px_spruce", "y": 180 },
+        "centered=false,orientation=false,rotation=3": { "model": "fvtm:pallet22px_spruce", "y": 270 },
+        "centered=false,orientation=true,rotation=0": { "model": "fvtm:pallet22pxrot_spruce", "y":   0 },
+        "centered=false,orientation=true,rotation=1": { "model": "fvtm:pallet22pxrot_spruce", "y":  90 },
+        "centered=false,orientation=true,rotation=2": { "model": "fvtm:pallet22pxrot_spruce", "y": 180 },
+        "centered=false,orientation=true,rotation=3": { "model": "fvtm:pallet22pxrot_spruce", "y": 270 }
+    }
+}

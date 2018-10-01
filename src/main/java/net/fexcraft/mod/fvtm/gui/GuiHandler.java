@@ -53,6 +53,7 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -407,7 +408,8 @@ public class GuiHandler implements IGuiHandler {
         }
 
     }
-
+    
+    @SideOnly(Side.CLIENT)
     public static class CReceiver implements IPacketListener<PacketNBTTagCompound> {
 
         @Override

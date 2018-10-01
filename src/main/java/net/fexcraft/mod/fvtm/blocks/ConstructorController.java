@@ -49,7 +49,7 @@ public class ConstructorController extends Block implements ITileEntityProvider 
 
     public static ConstructorController INSTANCE;
 
-    public ConstructorController() throws Exception{
+    public ConstructorController() throws Exception {
         super(Material.ANVIL, MapColor.OBSIDIAN);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setCreativeTab(Tabs.BLOCKS);

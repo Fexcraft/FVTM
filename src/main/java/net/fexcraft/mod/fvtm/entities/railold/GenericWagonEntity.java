@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities.rail;
+package net.fexcraft.mod.fvtm.entities.railold;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities.rail;
+package net.fexcraft.mod.fvtm.entities.railold;
 
 import java.util.TreeMap;
 

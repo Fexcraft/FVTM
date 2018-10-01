@@ -1,15 +1,25 @@
 {
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {
+			"particle": "blocks/piston_top_normal",
+			"texture": "blocks/planks_oak",
+			"texture1": "blocks/log_oak"
+		}, "model": "fvtm:pallet22px_new"
+	},
     "variants": {
-        "normal": { "model": "fvtm:pallet22pxcent_oak" },
-        "centered=true,orientation=false,rotation=0": { "model": "fvtm:pallet22pxcent_oak" },
-        "centered=true,orientation=true,rotation=0": { "model": "fvtm:pallet22pxcent_oak", "y": 90 },
-        "centered=false,orientation=false,rotation=0": { "model": "fvtm:pallet22px_oak", "y":   0 },
-        "centered=false,orientation=false,rotation=1": { "model": "fvtm:pallet22px_oak", "y":  90 },
-        "centered=false,orientation=false,rotation=2": { "model": "fvtm:pallet22px_oak", "y": 180 },
-        "centered=false,orientation=false,rotation=3": { "model": "fvtm:pallet22px_oak", "y": 270 },
-        "centered=false,orientation=true,rotation=0": { "model": "fvtm:pallet22pxrot_oak", "y":   0 },
-        "centered=false,orientation=true,rotation=1": { "model": "fvtm:pallet22pxrot_oak", "y":  90 },
-        "centered=false,orientation=true,rotation=2": { "model": "fvtm:pallet22pxrot_oak", "y": 180 },
-        "centered=false,orientation=true,rotation=3": { "model": "fvtm:pallet22pxrot_oak", "y": 270 }
-    }
+        "normal":{ "model": "fvtm:pallet22px_new" },
+        "grid":{
+        	"centered": {},
+        	"centered_90": { "y": 90 },
+            "rot0": { "transform": { "translation": [  0.3125, 0,  0.3125 ] } },
+            "rot1": { "transform": { "translation": [ -0.3125, 0,  0.3125 ] } },
+            "rot2": { "transform": { "translation": [ -0.3125, 0, -0.3125 ] } },
+            "rot3": { "transform": { "translation": [  0.3125, 0, -0.3125 ] } },
+            "rot0_90": { "transform": { "rotation": { "y": 90 }, "translation": [  0.3125, 0,  0.3125 ] } },
+            "rot1_90": { "transform": { "rotation": { "y": 90 }, "translation": [ -0.3125, 0,  0.3125 ] } },
+            "rot2_90": { "transform": { "rotation": { "y": 90 }, "translation": [ -0.3125, 0, -0.3125 ] } },
+            "rot3_90": { "transform": { "rotation": { "y": 90 }, "translation": [  0.3125, 0, -0.3125 ] } }
+        }
+	}
 }

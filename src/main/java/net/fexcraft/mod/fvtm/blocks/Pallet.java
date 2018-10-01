@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.blocks;
 
+import com.google.common.base.Predicate;
+
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.PalletUtil;
 import net.fexcraft.mod.fvtm.util.Tabs;
@@ -11,8 +13,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -24,6 +25,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -76,7 +78,7 @@ public class Pallet extends BlockContainer {
 			if(!itemstack.isEmpty() && player.canPlayerEdit(pos, facing, itemstack) && world.mayPlace(this.block, pos, false, facing, (Entity)null)){
 				int i = this.getMetadata(itemstack.getMetadata());
 				IBlockState iblockstate1 = this.block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i, player, hand)
-					.withProperty(ORIENT, player.isSneaking()).withProperty(CENTERED, hand == EnumHand.MAIN_HAND);
+					.withProperty(GRIDPOS, hand == EnumHand.MAIN_HAND ? player.isSneaking() ? GridPos.CENTERED_90 : GridPos.CENTERED : player.isSneaking() ? GridPos.ROT0_90 : GridPos.ROT0);
 				if(placeBlockAt(itemstack, player, world, pos, facing, hitX, hitY, hitZ, iblockstate1)){
 					iblockstate1 = world.getBlockState(pos);
 					SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, world, pos, player);
@@ -91,9 +93,43 @@ public class Pallet extends BlockContainer {
 		}
 	}
 	
-    public static final PropertyBool ORIENT = PropertyBool.create("orientation");
+    /*public static final PropertyBool ORIENT = PropertyBool.create("orientation");
     public static final PropertyBool CENTERED = PropertyBool.create("centered");
-    public static final PropertyInteger ROTATION = PropertyInteger.create("rotation", 0, 3);
+    public static final PropertyInteger ROTATION = PropertyInteger.create("rotation", 0, 3);*/
+	
+	public static final PropertyEnum<GridPos> GRIDPOS = PropertyEnum.<GridPos>create("grid",
+		GridPos.class, GridPos.CENTERED, GridPos.ROT0, GridPos.ROT1, GridPos.ROT2, GridPos.ROT3,
+		GridPos.CENTERED_90, GridPos.ROT0_90, GridPos.ROT1_90, GridPos.ROT2_90, GridPos.ROT3_90);
+	
+	public static enum GridPos implements Predicate<EnumFacing>, IStringSerializable {
+		
+		CENTERED("centered", false), ROT0("rot0", false), ROT1("rot1", false), ROT2("rot2", false), ROT3("rot3", false),
+		CENTERED_90("centered_90", true), ROT0_90("rot0_90", true), ROT1_90("rot1_90", true), ROT2_90("rot2_90", true), ROT3_90("rot3_90", true);
+		
+		private String name;
+		private boolean orient, centered;
+		
+		GridPos(String str, boolean orient){
+			this.name = str; this.orient = orient;
+			this.centered = str.contains("centered");
+		}
+
+		@Override
+		public String getName(){
+			return name;
+		}
+
+		@Override
+		public boolean apply(EnumFacing input){
+			return false;
+		}
+
+		public static GridPos fromInteger(int in, boolean orient){
+			switch(in){ case 0: return orient ? ROT0_90 : ROT0; case 1: return orient ? ROT1_90 : ROT1; case 2: return orient ? ROT2_90 : ROT2; case 3: return orient ? ROT3_90 : ROT3; }
+			return CENTERED;
+		}
+		
+	}
     
     //@Override public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState){}
     
@@ -119,7 +155,7 @@ public class Pallet extends BlockContainer {
     
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos){
-    	if(!state.getValue(CENTERED)) return state.withProperty(ROTATION, PalletUtil.getRotationForBlock(pos)); else return state;
+    	if(!state.getValue(GRIDPOS).centered) return state.withProperty(GRIDPOS, GridPos.fromInteger(PalletUtil.getRotationForBlock(pos), state.getValue(GRIDPOS).orient)); else return state;
     }
     
     @Override
@@ -134,17 +170,17 @@ public class Pallet extends BlockContainer {
     
     @Override
     protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[] { ORIENT, CENTERED, ROTATION });
+        return new BlockStateContainer(this, new IProperty[] { GRIDPOS });
     }
     
     @Override
     public IBlockState getStateFromMeta(int meta){
-        return this.getDefaultState().withProperty(ORIENT, meta % 2 == 1).withProperty(CENTERED, meta >= 2);
+        return this.getDefaultState().withProperty(GRIDPOS, meta >= 2 ? meta % 2 == 1 ? GridPos.CENTERED_90 : GridPos.CENTERED : meta % 2 == 1 ? GridPos.ROT0_90 : GridPos.ROT0);
     }
 
     @Override
     public int getMetaFromState(IBlockState state){
-    	boolean bool = state.getValue(CENTERED), orient = state.getValue(ORIENT);
+    	boolean bool = state.getValue(GRIDPOS).orient, orient = state.getValue(GRIDPOS).centered;
         return bool ? orient ? 3 : 2 : orient ? 1 : 0;
     }
     

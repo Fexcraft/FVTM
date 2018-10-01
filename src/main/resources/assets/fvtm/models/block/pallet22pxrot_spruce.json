@@ -1,8 +1,0 @@
-{
-	"parent": "fvtm:block/pallet22pxrot",
-	"textures": {
-		"particle": "blocks/piston_top_normal",
-		"texture": "blocks/planks_spruce",
-		"texture1": "blocks/log_spruce"
-	}
-}

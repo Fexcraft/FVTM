@@ -1,5 +1,10 @@
 {
 	"__comment": "Designed by Ferdinand (FEX___96) with Cubik Studio",
+	"textures": {
+		"particle": "blocks/piston_top_normal",
+		"texture": "blocks/planks_oak",
+		"texture1": "blocks/log_oak"
+	},
 	"elements": [ 	 
 		{
 			"__comment": "Box1",
@@ -277,36 +282,39 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"rotation":  [ 90, 0, 0 ],
-			"translation":  [ -11, 18, 0 ]
+			"rotation":  [ 75, 45, 0 ],
+			"translation":  [ 0, 2.5, 2 ],
+			"scale":  [ 0.375, 0.375, 0.375 ]
 		},
 		"thirdperson_lefthand": {
-			"rotation":  [ 90, 0, 0 ],
-			"translation":  [ -2, 18, 0 ]
+			"rotation":  [ 75, 45, 0 ],
+			"translation":  [ 0, 2.5, 2 ],
+			"scale":  [ 0.375, 0.375, 0.375 ]
 		},
 		"firstperson_righthand": {
-			"rotation":  [ 47, 0, 42 ],
-			"translation":  [ 3.5, 5, 0 ]
+			"rotation":  [ 0, 45, 0 ],
+			"translation":  [ 0, 6, 4 ],
+			"scale":  [ 0.4, 0.4, 0.4 ]
 		},
 		"firstperson_lefthand": {
-			"rotation":  [ 47, 0, 42 ],
-			"translation":  [ 9, 5, 0 ]
+			"rotation":  [ 0, 45, 0 ],
+			"translation":  [ 0, 6, 4 ],
+			"scale":  [ 0.4, 0.4, 0.4 ]
 		},
 		"gui": {
 			"rotation":  [ 90, 0, 0 ],
-			"translation":  [ -2.6, 2.6, 0 ],
-			"scale":  [ 0.65, 0.65, 0.65 ]
+			"scale":  [ 0.7, 0.7, 0.7 ]
 		},
 		"head": {
 			"rotation":  [ 0, 0, 180 ],
-			"translation":  [ 4, 2, -4 ]
+			"translation":  [ 0, 2, 0 ]
 		},
 		"ground": {
-			"translation":  [ -4, 4, -4 ]
+			"translation":  [ 0, 4, 0 ]
 		},
 		"fixed": {
 			"rotation":  [ -90, 0, 0 ],
-			"translation":  [ -4, -4, -8 ]
+			"translation":  [ 0, 0, -8 ]
 		}
 	}
 }

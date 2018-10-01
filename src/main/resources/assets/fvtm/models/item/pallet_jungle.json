@@ -1,3 +1,8 @@
 {
-	"parent": "fvtm:block/pallet22px_jungle"
+	"parent": "fvtm:block/pallet22px_new",
+	"textures": {
+		"particle": "blocks/piston_top_normal",
+		"texture": "blocks/planks_jungle",
+		"texture1": "blocks/log_jungle"
+	}
 }

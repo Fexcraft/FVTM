@@ -1,4 +1,9 @@
 {
-	"parent": "fvtm:block/pallet22px_birch"
+	"parent": "fvtm:block/pallet22px_new",
+	"textures": {
+		"particle": "blocks/piston_top_normal",
+		"texture": "blocks/planks_birch",
+		"texture1": "blocks/log_birch"
+	}
 }
 

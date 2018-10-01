@@ -47,10 +47,10 @@ public class Pallet extends BlockContainer {
 
 		public PalletItem(Block block){ super(block); this.setRegistryName(block.getRegistryName()); this.setUnlocalizedName(this.getRegistryName().toString()); }
 		
-		public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-			IBlockState iblockstate = worldIn.getBlockState(pos);
+		public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
+			IBlockState iblockstate = world.getBlockState(pos);
 			Block block = iblockstate.getBlock();
-			if(!block.isReplaceable(worldIn, pos)){ pos = pos.offset(facing); }
+			if(!block.isReplaceable(world, pos)){ pos = pos.offset(facing); }
 			ItemStack itemstack = player.getHeldItem(hand);
 			if(hand == EnumHand.OFF_HAND){
 				int res = PalletUtil.getRotation(pos);
@@ -59,14 +59,25 @@ public class Pallet extends BlockContainer {
 					return EnumActionResult.FAIL;
 				}
 			}
-			if(!itemstack.isEmpty() && player.canPlayerEdit(pos, facing, itemstack) && worldIn.mayPlace(this.block, pos, false, facing, (Entity)null)){
+			if(hand == EnumHand.MAIN_HAND){
+				for(int x = -1; x < 2; x++){
+					if(blkpos != null) break;
+					for(int z = -1; z < 2; z++){
+					}
+				}
+				if(blkpos != null){
+					Print.bar(player, "Colliding with Pallet at " + blkpos.toString() + "!");
+					return EnumActionResult.FAIL;
+				}
+			}
+			if(!itemstack.isEmpty() && player.canPlayerEdit(pos, facing, itemstack) && world.mayPlace(this.block, pos, false, facing, (Entity)null)){
 				int i = this.getMetadata(itemstack.getMetadata());
-				IBlockState iblockstate1 = this.block.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, i, player, hand)
+				IBlockState iblockstate1 = this.block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i, player, hand)
 					.withProperty(ORIENT, player.isSneaking()).withProperty(CENTERED, hand == EnumHand.MAIN_HAND);
-				if(placeBlockAt(itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ, iblockstate1)){
-					iblockstate1 = worldIn.getBlockState(pos);
-					SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, worldIn, pos, player);
-					worldIn.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+				if(placeBlockAt(itemstack, player, world, pos, facing, hitX, hitY, hitZ, iblockstate1)){
+					iblockstate1 = world.getBlockState(pos);
+					SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, world, pos, player);
+					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 					itemstack.shrink(1);
 				}
 				return EnumActionResult.SUCCESS;

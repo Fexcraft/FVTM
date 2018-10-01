@@ -60,9 +60,12 @@ public class Pallet extends BlockContainer {
 				}
 			}
 			if(hand == EnumHand.MAIN_HAND){
+				BlockPos blkpos = null, temppos = null;
 				for(int x = -1; x < 2; x++){
 					if(blkpos != null) break;
 					for(int z = -1; z < 2; z++){
+						if(x == 0 && z == 0) continue; temppos = pos.add(x, 0, z);
+						if(world.getBlockState(temppos).getBlock() instanceof Pallet){ blkpos = temppos; break; }
 					}
 				}
 				if(blkpos != null){

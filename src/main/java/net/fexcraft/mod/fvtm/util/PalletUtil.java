@@ -5,8 +5,8 @@ import net.minecraft.util.math.BlockPos;
 public class PalletUtil {
 
 	public static Integer getRotation(BlockPos pos){
-		if(pos.getX() % 2 == 1 || pos.getZ() % 2 == 1) return -1;
-		int x = pos.getX() % 4, z = pos.getZ() % 4;
+		if(pos.getX() % 3 == 1 || pos.getZ() % 3 == 1) return -1;
+		int x = pos.getX() % 3, z = pos.getZ() % 3;
 		return x == 0 ? z == 0 ? 0 : 3 : z == 0 ? 1 : 2;
 	}
 	

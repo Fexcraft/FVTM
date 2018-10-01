@@ -1,9 +1,5 @@
 package net.fexcraft.mod.fvtm.blocks;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.PalletUtil;
 import net.fexcraft.mod.fvtm.util.Tabs;

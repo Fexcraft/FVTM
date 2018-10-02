@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.blocks.rail;
 
 import net.fexcraft.mod.fvtm.api.StaticValues;
-import net.fexcraft.mod.fvtm.api.compatibility.IRailProvider;
 import net.fexcraft.mod.lib.api.network.IPacketReceiver;
 import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.lib.util.common.ApiUtil;
@@ -21,7 +20,7 @@ import trackapi.lib.ITrack;
 
 /** @author Ferdinand Calo' (FEX___96) **/
 @Optional.Interface(iface = "trackapi.lib.ITrack", modid = "trackapi")
-public class TrackTileEntity extends TileEntity implements ITrack, IRailProvider, IPacketReceiver<PacketTileEntityUpdate> {
+public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiver<PacketTileEntityUpdate> {
 	
 	public Connection[] connections = new Connection[0];
 

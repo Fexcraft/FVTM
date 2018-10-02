@@ -1,5 +1,9 @@
 package net.fexcraft.mod.fvtm.blocks;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Predicate;
 
 import net.fexcraft.mod.fvtm.FVTM;
@@ -8,19 +12,18 @@ import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.registry.ItemBlock16;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -32,7 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class Pallet extends BlockContainer {
+public class Pallet extends Block/*Container*/ {
 
 	public Pallet(String str){
 		super(Material.WOOD, MapColor.GRAY);
@@ -43,6 +46,7 @@ public class Pallet extends BlockContainer {
         this.setResistance(128.0F);
         //
         FVTM.getRegisterer().addBlock("pallet_" + str, this, PalletItem.class, 0, null);
+        //GameRegistry.registerTileEntity(PalletEntity.class, new net.minecraft.util.ResourceLocation("fvtm:" + "pallet_" + str));
 	}
 	
 	public static class PalletItem extends ItemBlock16 {
@@ -100,6 +104,7 @@ public class Pallet extends BlockContainer {
 	public static final PropertyEnum<GridPos> GRIDPOS = PropertyEnum.<GridPos>create("grid",
 		GridPos.class, GridPos.CENTERED, GridPos.ROT0, GridPos.ROT1, GridPos.ROT2, GridPos.ROT3,
 		GridPos.CENTERED_90, GridPos.ROT0_90, GridPos.ROT1_90, GridPos.ROT2_90, GridPos.ROT3_90);
+	public static final PropertyInteger CARGO = PropertyInteger.create("cargo", 0, 28);
 	
 	public static enum GridPos implements Predicate<EnumFacing>, IStringSerializable {
 		
@@ -128,14 +133,35 @@ public class Pallet extends BlockContainer {
 			switch(in){ case 0: return orient ? ROT0_90 : ROT0; case 1: return orient ? ROT1_90 : ROT1; case 2: return orient ? ROT2_90 : ROT2; case 3: return orient ? ROT3_90 : ROT3; }
 			return CENTERED;
 		}
+
+		public boolean rot0(){ return this == ROT0 || this == ROT0_90; }
+		public boolean rot1(){ return this == ROT1 || this == ROT1_90; }
+		public boolean rot2(){ return this == ROT2 || this == ROT2_90; }
+		public boolean rot3(){ return this == ROT3 || this == ROT3_90; }
 		
 	}
     
-    //@Override public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState){}
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean iscurr){
+        if(!iscurr) state = getActualState(state, world, pos);
+    	addCollisionBoxToList(pos, entityBox, collidingBoxes, getBoundingBox(state, world, pos));
+    	if(state.getValue(CARGO) > 0){
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, getBoundingBox(state, world, pos).expand(0, 0.0625 * state.getValue(CARGO), 0));
+    	}
+    }
     
-	@Override @SuppressWarnings("deprecation")
+    public static final AxisAlignedBB PALLET_AABB = new AxisAlignedBB(-.1875D, 0.0D, -.1875D, 1.1875D, 0.25D, 1.1875D);
+    public static final AxisAlignedBB CARGO_AABB = new AxisAlignedBB(-.1875D, 0.25D, -.1875D, 1.1875D, 0.0D, 1.1875D);
+    
+	@Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return super.getBoundingBox(state, source, pos);
+		if((state = getActualState(state, source, pos)).getValue(GRIDPOS).centered) return PALLET_AABB;
+		GridPos gridpos = state.getValue(GRIDPOS);
+		if(gridpos.rot0()){ return PALLET_AABB.offset(0.3125, 0, 0.3125); }
+		if(gridpos.rot1()){ return PALLET_AABB.offset(-.3125, 0, 0.3125); }
+		if(gridpos.rot2()){ return PALLET_AABB.offset(-.3125, 0, -.3125); }
+		if(gridpos.rot3()){ return PALLET_AABB.offset(0.3125, 0, -.3125); }
+		return PALLET_AABB;
     }
 
     @Override
@@ -170,12 +196,12 @@ public class Pallet extends BlockContainer {
     
     @Override
     protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[] { GRIDPOS });
+        return new BlockStateContainer(this, new IProperty[] { GRIDPOS, CARGO });
     }
     
     @Override
     public IBlockState getStateFromMeta(int meta){
-        return this.getDefaultState().withProperty(GRIDPOS, meta >= 2 ? meta % 2 == 1 ? GridPos.CENTERED_90 : GridPos.CENTERED : meta % 2 == 1 ? GridPos.ROT0_90 : GridPos.ROT0);
+        return this.getDefaultState().withProperty(GRIDPOS, meta >= 2 ? meta % 2 == 1 ? GridPos.CENTERED_90 : GridPos.CENTERED : meta % 2 == 1 ? GridPos.ROT2_90 : GridPos.ROT2);
     }
 
     @Override
@@ -186,13 +212,14 @@ public class Pallet extends BlockContainer {
     
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-    	//
+    	Print.chat(player, world.isRemote + " " + state.getValue(GRIDPOS));
+    	Print.chat(player, this.getBoundingBox(state, world, pos));
     	return false;
     }
 
-	@Override
+	/*@Override
 	public TileEntity createNewTileEntity(World world, int meta){
 		return new PalletEntity(world, meta);
-	}
+	}*/
 
 }

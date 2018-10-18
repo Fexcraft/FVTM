@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.root.Colorable;
 import net.fexcraft.mod.fvtm.api.root.Colorable.ColorHolder;
+import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.api.root.Lockable;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
@@ -14,16 +15,13 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface Container extends IForgeRegistryEntry<Container>, TextureHolder, ColorHolder {
+public interface Container extends DataHolderObject.Extended<Container, Container.ContainerData>, TextureHolder, ColorHolder {
 
     @Override
     public default Class<Container> getRegistryType(){
         return Container.class;
     }
-
-    public ItemStack getItemStack(@Nullable ContainerData data);
 
     public default boolean isMediumContainer(){
         return this.getType() == ContainerType.MEDIUM;
@@ -33,13 +31,7 @@ public interface Container extends IForgeRegistryEntry<Container>, TextureHolder
         return this.getType() == ContainerType.LARGE;
     }
 
-    public Addon getAddon();
-
-    public String getName();
-
     public ContainerType getType();
-
-    public String[] getDescription();
 
     public Model<ContainerData, Object> getModel();
 

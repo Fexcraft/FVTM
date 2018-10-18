@@ -13,6 +13,9 @@ import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.render.entity.RenderGenericRailed;
+import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.lib.util.common.Static;
@@ -147,9 +150,14 @@ public abstract class PartBaseModel extends GenericModel<VehicleData, String> {
     }
 
     public static void def_renderContainer(VehicleData type, String us, Entity ent){
-        PartData partdata = type.getPart(us);
-        if(partdata == null){
-            return;
+        PartData partdata = type.getPart(us); if(partdata == null) return;
+        if(Command.DEBUG){
+    		ModelBase.bindTexture(Resources.NULL_TEXTURE);
+    		ContainerAttribute attr = partdata.getPart().getAttribute(ContainerAttribute.class);
+    		attr.getContainerOffset().translate();
+            RenderGenericRailed.CUBE.render();
+    		attr.getContainerOffset().translateR();
+            ModelBase.bindTexture(partdata.getTexture());
         }
         ContainerAttribute conattr = partdata.getPart().getAttribute(ContainerAttribute.class);
         if(conattr != null){

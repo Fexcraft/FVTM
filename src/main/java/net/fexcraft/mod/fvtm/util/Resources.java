@@ -31,6 +31,8 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Fuel;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Model;
+import net.fexcraft.mod.fvtm.api.Pallet;
+import net.fexcraft.mod.fvtm.api.Pallet.PalletData;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
@@ -38,6 +40,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.blocks.Pallet.PalletItem;
 import net.fexcraft.mod.fvtm.blocks.UniversalBlock;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.impl.GenericConsumable;
@@ -106,6 +109,7 @@ public class Resources {
 	public static IForgeRegistry<Container> CONTAINERS;
 	public static IForgeRegistry<Block> BLOCKS;
 	public static IForgeRegistry<Consumable> CONSUMABLES;
+	public static IForgeRegistry<Pallet> PALLETS;
 	public static TreeMap<String, Model<?, ?>> MODELS = new TreeMap<String, Model<?, ?>>();
 	public static TreeMap<ResourceLocation, SoundEvent> SOUNDS = new TreeMap<ResourceLocation, SoundEvent>();
 	public static TreeMap<String, JsonObject> PRESETS = new TreeMap<String, JsonObject>();
@@ -131,6 +135,7 @@ public class Resources {
 		CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
 		CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
 		BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
+		PALLETS = new RegistryBuilder<Pallet>().setName(new ResourceLocation("fvtm:pallets")).setType(Pallet.class).create();
 		//
 		try{
 			method = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", java.net.URL.class);
@@ -172,6 +177,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regAddons(RegistryEvent.Register<Addon> event){
+		event.getRegistry().register(FVTM.INTERNAL_ADDON);
 		boolean defload = !(Config.ADDONS_FOLDER.equals("mods") || Config.ADDONS_FOLDER.equals("/mods") || Config.ADDONS_FOLDER.equals("/mods/"));
 		File[] folders = new File[defload ? 3 : 2];
 		if(defload){ folders[2] = new File("./" + Config.ADDONS_FOLDER + "/"); }
@@ -223,7 +229,7 @@ public class Resources {
 				}
 			}
 			Print.debug(addon.getRegistryName());
-			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+			if(addon.isEnabled() && addon.getFile() != null /* && !addon.hasMissingDependencies()*/){
 				if(addon.getFile().isDirectory()){
 					File matfol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/materials/");
 					Print.debug(matfol.getPath());
@@ -279,7 +285,7 @@ public class Resources {
 				}
 			}
 			Print.debug(addon.getRegistryName());
-			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+			if(addon.isEnabled() && addon.getFile() != null /* && !addon.hasMissingDependencies()*/){
 				if(addon.getFile().isDirectory()){
 					File partfol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/parts/");
 					Print.debug(partfol.getPath());
@@ -335,7 +341,7 @@ public class Resources {
 				}
 			}
 			Print.debug(addon.getRegistryName());
-			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+			if(addon.isEnabled() && addon.getFile() != null /* && !addon.hasMissingDependencies()*/){
 				if(addon.getFile().isDirectory()){
 					File vehfol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/vehicles/");
 					Print.debug(vehfol.getPath());
@@ -502,7 +508,7 @@ public class Resources {
 				}
 			}
 			Print.debug(addon.getRegistryName());
-			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+			if(addon.isEnabled() && addon.getFile() != null /* && !addon.hasMissingDependencies()*/){
 				if(addon.getFile().isDirectory()){
 					File confol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/containers/");
 					Print.debug(confol.getPath());
@@ -567,7 +573,7 @@ public class Resources {
 				}
 			}
 			Print.debug(addon.getRegistryName());
-			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+			if(addon.isEnabled() && addon.getFile() != null /* && !addon.hasMissingDependencies()*/){
 				if(addon.getFile().isDirectory()){
 					File matfol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/consumables/");
 					Print.debug(matfol.getPath());
@@ -622,7 +628,7 @@ public class Resources {
 				}
 			}
 			Print.debug(addon.getRegistryName());
-			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+			if(addon.isEnabled() && addon.getFile() != null /* && !addon.hasMissingDependencies()*/){
 				if(addon.getFile().isDirectory()){
 					File matfol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/blocks/");
 					Print.debug(matfol.getPath());
@@ -685,7 +691,7 @@ public class Resources {
 				continue;
 			}
 			Print.debug(addon.getRegistryName());
-			if(addon.isEnabled()/* && !addon.hasMissingDependencies()*/){
+			if(addon.isEnabled() && addon.getFile() != null /* && !addon.hasMissingDependencies()*/){
 				if(addon.getFile().isDirectory()){
 					File matfol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/");
 					Print.debug(matfol.getPath());
@@ -858,13 +864,28 @@ public class Resources {
 		return null;
 	}
 
+	public static PalletData getPalletData(NBTTagCompound compound){
+		if(compound.hasKey(PalletItem.NBTKEY)){
+			Pallet pallet = PALLETS.getValue(new ResourceLocation(compound.getString(PalletItem.NBTKEY)));
+			if(pallet != null){
+				try{
+					return pallet.getDataClass().getConstructor(Pallet.class).newInstance(pallet).readFromNBT(compound);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
 	// UPDATE CHECKS //
 	private TreeMap<ResourceLocation, String> updatelist = new TreeMap<ResourceLocation, String>();
 
 	public void checkForUpdates(){
 		ADDONS.forEach((addon) -> {
 			String str = addon.getUpdateId();
-			if(str != null && !str.equals("") && !str.equals(GenericAddon.NONE)){
+			if(str != null && !str.equals("") && !str.equals(GenericAddon.NONE) && !str.equals(FVTM.MODID)){
 				JsonObject obj = Network.request("http://fexcraft.net/minecraft/fcl/request", "mode=exists&modid=" + str);
 				if(obj != null && obj.has("exists") && obj.get("exists").getAsBoolean()){
 					obj = Network.getModData(str);

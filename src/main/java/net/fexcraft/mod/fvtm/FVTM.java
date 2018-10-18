@@ -1,5 +1,10 @@
 package net.fexcraft.mod.fvtm;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.blocks.Pallet;
@@ -25,6 +30,7 @@ import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -53,6 +59,7 @@ public class FVTM {
 	public static final String MODID = "fvtm";
 	public static final String PREFIX = Formatter.format("&0[&9FVTM&0]&7 ");
 	public static final String VERSION = "@VERSION@";
+	public static final Addon INTERNAL_ADDON = new InternalAddon();
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
@@ -168,6 +175,85 @@ public class FVTM {
 
 	public static AutoRegisterer getRegisterer(){
 		return REGISTERER;
+	}
+	
+	public static class InternalAddon implements Addon {
+		
+		private static final ResourceLocation regname = new ResourceLocation(MODID, "fvtm");
+		private static final List<ResourceLocation> empty = new ArrayList<ResourceLocation>();
+		private static final List<UUID> authors = new ArrayList<>();
+		static { authors.add(UUID.fromString("01e4af9b-2a30-471e-addf-f6338ffce04b")); }
+
+		@Override
+		public Addon setRegistryName(ResourceLocation name){
+			/*regname = name;*/ return this;
+		}
+
+		@Override
+		public ResourceLocation getRegistryName(){
+			return regname;
+		}
+
+		@Override
+		public String getName(){
+			return "Internal Addon";
+		}
+
+		@Override
+		public String getVersion(){
+			return "1.0-Universal";
+		}
+
+		@Override
+		public String getURL(){
+			return "http://fexcraft.net/downloads?modid=fvtm";
+		}
+
+		@Override
+		public String getLicense(){
+			return "http://fexcraft.net/license?id=mods";
+		}
+
+		@Override
+		public String getUpdateId(){
+			return "fvtm";
+		}
+
+		@Override
+		public List<ResourceLocation> getDependencies(){
+			return (List<ResourceLocation>)empty;
+		}
+
+		@Override
+		public List<UUID> getAuthors(){
+			return authors;
+		}
+
+		@Override
+		public boolean isEnabled(){
+			return true;
+		}
+
+		@Override
+		public void setEnabled(boolean bool){
+			//
+		}
+
+		@Override
+		public List<ResourceLocation> getMissingDependencies(){
+			return empty;
+		}
+
+		@Override
+		public NBTTagCompound toNBT(){
+			return new NBTTagCompound();
+		}
+
+		@Override
+		public Addon fromNBT(NBTTagCompound nbt){
+			return this;
+		}
+		
 	}
 
 }

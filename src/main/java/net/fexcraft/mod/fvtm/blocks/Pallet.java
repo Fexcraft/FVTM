@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.blocks;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -7,7 +8,11 @@ import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.api.Pallet.PalletData;
+import net.fexcraft.mod.fvtm.impl.pallet.GenericPallet;
+import net.fexcraft.mod.fvtm.impl.pallet.GenericPalletData;
 import net.fexcraft.mod.fvtm.util.PalletUtil;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.fexcraft.mod.lib.util.common.Print;
 import net.fexcraft.mod.lib.util.registry.ItemBlock16;
@@ -24,11 +29,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -36,6 +43,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class Pallet extends Block/*Container*/ {
+	
+	private net.fexcraft.mod.fvtm.api.Pallet pallettype;
+	private static final HashMap<ResourceLocation, Pallet> pallets = new HashMap<>();
 
 	public Pallet(String str){
 		super(Material.WOOD, MapColor.GRAY);
@@ -47,9 +57,10 @@ public class Pallet extends Block/*Container*/ {
         //
         FVTM.getRegisterer().addBlock("pallet_" + str, this, PalletItem.class, 0, null);
         //GameRegistry.registerTileEntity(PalletEntity.class, new net.minecraft.util.ResourceLocation("fvtm:" + "pallet_" + str));
+        Resources.PALLETS.register(pallettype = new GenericPallet(this, this.getRegistryName())); pallets.put(this.getRegistryName(), this);
 	}
 	
-	public static class PalletItem extends ItemBlock16 {
+	public static class PalletItem extends ItemBlock16 implements net.fexcraft.mod.fvtm.api.Pallet.PalletItem {
 
 		public PalletItem(Block block){ super(block); this.setRegistryName(block.getRegistryName()); this.setUnlocalizedName(this.getRegistryName().toString()); }
 		
@@ -94,6 +105,17 @@ public class Pallet extends Block/*Container*/ {
 			else{
 				return EnumActionResult.FAIL;
 			}
+		}
+
+		@Override
+		public PalletData getPallet(ItemStack stack){
+			if(!stack.hasTagCompound()){
+				stack.setTagCompound(new GenericPalletData(((Pallet)this.block).pallettype).writeToNBT(new NBTTagCompound()));
+			}
+	        if(stack.getTagCompound().hasKey(NBTKEY)){
+	            return Resources.getPalletData(stack.getTagCompound());
+	        }
+	        else return null;
 		}
 	}
 	
@@ -216,6 +238,10 @@ public class Pallet extends Block/*Container*/ {
     	Print.chat(player, this.getBoundingBox(state, world, pos));
     	return false;
     }
+
+	public static Block byRegistryName(ResourceLocation regname){
+		return pallets.get(regname);
+	}
 
 	/*@Override
 	public TileEntity createNewTileEntity(World world, int meta){

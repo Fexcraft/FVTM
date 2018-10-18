@@ -5,6 +5,8 @@
  */
 package net.fexcraft.mod.addons.hcp.scripts;
 
+import java.util.TreeMap;
+
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontData;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontRendererAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
@@ -405,7 +407,8 @@ public class ContainerCraneScript implements VehicleScript {
 					holder = (ContainerHolder)e;
 				}
 				else if(e instanceof VehicleEntity){
-					for(ContainerHolder obj : ((VehicleEntity)e).getContainers().values()){
+					TreeMap<String, ContainerHolder> str = ((VehicleEntity)e).getContainers();
+					if(str == null) continue; for(ContainerHolder obj : str.values()){
 						if(obj instanceof ContainerWrapper && ((ContainerWrapper)obj).intersects(aabb)){
 							holder = obj;
 						}

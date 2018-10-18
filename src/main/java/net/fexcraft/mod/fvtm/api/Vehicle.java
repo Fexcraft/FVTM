@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
 import net.fexcraft.mod.fvtm.api.root.Colorable.ColorHolder;
+import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
 import net.fexcraft.mod.fvtm.api.root.Lockable;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.SettingHolder;
@@ -38,15 +39,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, ColorHolder {
-
-    public Addon getAddon();
-
-    public String getName();
-
-    public String[] getDescription();
+public interface Vehicle extends DataHolderObject.Extended<Vehicle, Vehicle.VehicleData>, TextureHolder, ColorHolder {
 
     @Override
     public default Class<Vehicle> getRegistryType(){
@@ -54,8 +48,6 @@ public interface Vehicle extends IForgeRegistryEntry<Vehicle>, TextureHolder, Co
     }
 
     public VehicleType getType();
-
-    public ItemStack getItemStack(@Nullable VehicleData data);
 
     public Map<String, ResourceLocation> getPreinstalledParts();
 

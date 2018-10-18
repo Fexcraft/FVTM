@@ -57,8 +57,8 @@ public class ContainerWrapper implements ContainerHolder {
 	}
 
 	public boolean intersects(AxisAlignedBB aabb){
-		AxisAlignedBB temp = bbox.offset(entity.getAxes().getRelativeVector(getRelPos()));
-		return temp.intersects(aabb);
+		Vec3d temp = entity.getAxes().getRelativeVector(getRelPos());
+		return bbox.offset(entity.getEntity().posX + temp.x, entity.getEntity().posY + temp.y, entity.getEntity().posZ + temp.z).intersects(aabb);
 	}
 	
     private VehicleAxes conrot;

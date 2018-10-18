@@ -1,28 +1,19 @@
 package net.fexcraft.mod.fvtm.api;
 
+import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
 import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.registries.IForgeRegistryEntry;
-
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-public interface Material extends IForgeRegistryEntry<Material> {
-
-    public Addon getAddon();
-
-    public String getName();
-
-    public String[] getDescription();
+public interface Material extends DataHolderObject.Simple<Material> {
 
     @Override
     public default Class<Material> getRegistryType(){
         return Material.class;
     }
-
-    public ItemStack getItemStack();
 
     public boolean isFuelContainer();
 

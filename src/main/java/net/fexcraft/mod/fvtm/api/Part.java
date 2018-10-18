@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Attribute.AttributeData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
@@ -18,22 +19,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface Part extends IForgeRegistryEntry<Part>, TextureHolder {
-
-    public Addon getAddon();
-
-    public String getName();
-
-    public String[] getDescription();
-
+public interface Part extends DataHolderObject.Extended<Part, Part.PartData>, TextureHolder {
+	
     @Override
     public default Class<Part> getRegistryType(){
         return Part.class;
     }
-
-    public ItemStack getItemStack(@Nullable PartData data);
 
     public List<ResourceLocation> getCompatibleVehicles();
 

@@ -3,24 +3,16 @@ package net.fexcraft.mod.fvtm.api;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.compatibility.TANItemData;
+import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface Consumable extends IForgeRegistryEntry<Consumable> {
+public interface Consumable extends DataHolderObject.Simple<Consumable> {
 
     @Override
     public default Class<Consumable> getRegistryType(){
         return Consumable.class;
     }
-
-    public Addon getAddon();
-
-    public String getName();
-
-    public String[] getDescription();
-
-    public ItemStack getItemStack();
 
     public int getHealAmount();
 

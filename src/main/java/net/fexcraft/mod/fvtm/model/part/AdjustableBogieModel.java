@@ -2,10 +2,10 @@ package net.fexcraft.mod.fvtm.model.part;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 
 public class AdjustableBogieModel extends PartBaseModel {

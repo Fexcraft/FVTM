@@ -9,9 +9,9 @@ import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.blocks.AdjustableSignEntity;
 import net.fexcraft.mod.fvtm.blocks.CylinderSignEntity;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

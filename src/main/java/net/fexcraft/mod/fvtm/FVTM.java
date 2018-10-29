@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.fexcraft.lib.mc.capabilities.sign.SignCapabilitySerializer;
+import net.fexcraft.lib.mc.crafting.RecipeRegistry;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
+import net.fexcraft.lib.mc.registry.FCLRegistry;
+import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
@@ -13,6 +20,7 @@ import net.fexcraft.mod.fvtm.entities.railold.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.railold.GenericWagonEntity;
 import net.fexcraft.mod.fvtm.entities.railold.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.impl.caps.ChunkRailDataUtil;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
 import net.fexcraft.mod.fvtm.impl.container.ContainerStatusListener;
@@ -20,13 +28,6 @@ import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packets.*;
-import net.fexcraft.mod.lib.capabilities.sign.SignCapabilityUtil;
-import net.fexcraft.mod.lib.crafting.RecipeRegistry;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.PacketHandler.PacketHandlerType;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.registry.RegistryUtil;
-import net.fexcraft.mod.lib.util.registry.RegistryUtil.AutoRegisterer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -72,6 +73,7 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		CapabilityManager.INSTANCE.register(VAPDataCache.VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(net.fexcraft.mod.fvtm.api.Resources.class, new WorldResourcesUtil.Storage(), new WorldResourcesUtil.Callable());
+		CapabilityManager.INSTANCE.register(ChunkRailDataUtil.ChunkRailData.class, new ChunkRailDataUtil.Storage(), new ChunkRailDataUtil.Callable());
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		REGISTERER = new AutoRegisterer(MODID);
@@ -120,7 +122,7 @@ public class FVTM {
 		}
 		//
 		RecipeObject.registerRecipes();
-		RecipeRegistry.addBluePrintRecipe("FVTM (B)", new ItemStack(RegistryUtil.getBlock("fvtm:constructor_controller"), 1, 0), new ItemStack(Blocks.IRON_BLOCK, 2), new ItemStack(Items.REDSTONE, 8), new ItemStack(Items.GOLD_INGOT, 3));
+		RecipeRegistry.addBluePrintRecipe("FVTM (B)", new ItemStack(FCLRegistry.getBlock("fvtm:constructor_controller"), 1, 0), new ItemStack(Blocks.IRON_BLOCK, 2), new ItemStack(Items.REDSTONE, 8), new ItemStack(Items.GOLD_INGOT, 3));
 		RecipeRegistry.addBluePrintRecipe("FVTM (B)", new ItemStack(ConstructorCenter.INSTANCE, 1, 0), new ItemStack(Blocks.IRON_BLOCK, 1), new ItemStack(Items.REDSTONE, 4), new ItemStack(Items.GOLD_INGOT, 2), new ItemStack(Blocks.PLANKS, 4), new ItemStack(Items.STICK, 4), new ItemStack(Blocks.LOG, 2));
 		//
 		PacketHandler.getInstance().registerMessage(VehicleControlPacketHandler.Client.class, PacketVehicleControl.class, 9910, Side.CLIENT);
@@ -142,7 +144,7 @@ public class FVTM {
 		RESOURCES.checkForUpdates();
 		FvtmPermissions.register();
 		//
-		SignCapabilityUtil.addListener(ContainerStatusListener.class);
+		SignCapabilitySerializer.addListener(ContainerStatusListener.class);
 		//CapabilityManager.INSTANCE.register(BlockChunk.class, new BlockChunkUtil.Storage(), new BlockChunkUtil.Callable());
 		//
 		APIs.load();

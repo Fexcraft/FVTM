@@ -1,13 +1,13 @@
 package net.fexcraft.mod.fvtm.blocks;
 
+import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
+import net.fexcraft.lib.mc.registry.UCResourceLocation;
+import net.fexcraft.lib.mc.render.ExternalTextureHelper;
+import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.model.block.AdjSignModel;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.api.network.IPacketReceiver;
-import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
-import net.fexcraft.mod.lib.util.common.ApiUtil;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.registry.UCResourceLocation;
-import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;

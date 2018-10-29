@@ -9,14 +9,14 @@
 
 package net.fexcraft.mod.addons.gmp.models.blocks; //Path where the model is located
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
 import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
 public class ColorExtractor extends BlockModel {

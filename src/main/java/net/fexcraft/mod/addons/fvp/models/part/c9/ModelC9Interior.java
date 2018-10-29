@@ -1,7 +1,7 @@
 package net.fexcraft.mod.addons.fvp.models.part.c9;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class ModelC9Interior extends PartModelTMT {
 

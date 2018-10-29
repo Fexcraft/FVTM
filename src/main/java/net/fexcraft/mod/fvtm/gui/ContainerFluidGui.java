@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
 import net.fexcraft.mod.fvtm.render.Renderer;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;

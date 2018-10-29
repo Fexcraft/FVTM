@@ -4,11 +4,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entities.StreetSignEntity;
 import net.fexcraft.mod.fvtm.entities.StreetSignEntity.StreetSignItem;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.MapColor;

@@ -9,9 +9,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.fexcraft.mod.lib.crafting.RecipeRegistry;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.crafting.RecipeRegistry;
+import net.fexcraft.lib.mc.utils.Print;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;

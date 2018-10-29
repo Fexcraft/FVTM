@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.api.Attribute.AttributeData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
@@ -14,7 +15,6 @@ import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

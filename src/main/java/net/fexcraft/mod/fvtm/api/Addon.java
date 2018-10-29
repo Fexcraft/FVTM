@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-import net.fexcraft.mod.lib.util.common.ZipUtil;
+import net.fexcraft.lib.common.utils.ZipUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;

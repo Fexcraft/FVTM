@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.blocks;
 
+import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

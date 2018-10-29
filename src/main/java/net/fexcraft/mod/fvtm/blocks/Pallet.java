@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 
+import net.fexcraft.lib.mc.registry.ItemBlock16;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Pallet.PalletData;
 import net.fexcraft.mod.fvtm.impl.pallet.GenericPallet;
@@ -14,8 +16,6 @@ import net.fexcraft.mod.fvtm.impl.pallet.GenericPalletData;
 import net.fexcraft.mod.fvtm.util.PalletUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.registry.ItemBlock16;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;

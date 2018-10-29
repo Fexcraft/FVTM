@@ -1,7 +1,7 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class ModelT1_1 extends PartModelTMT {
 

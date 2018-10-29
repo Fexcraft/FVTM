@@ -1,10 +1,10 @@
 package net.fexcraft.mod.addons.hcp.models.part;
 
+import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
 import net.fexcraft.mod.fvtm.util.RenderCache;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 
 /**

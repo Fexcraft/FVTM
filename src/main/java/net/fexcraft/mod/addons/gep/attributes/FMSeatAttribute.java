@@ -7,9 +7,9 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
-import net.fexcraft.mod.lib.util.common.Formatter;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

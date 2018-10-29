@@ -2,19 +2,19 @@ package net.fexcraft.mod.fvtm.blocks;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.api.LockableObject;
+import net.fexcraft.lib.mc.api.PaintableObject;
+import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
+import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.api.common.LockableObject;
-import net.fexcraft.mod.lib.api.common.PaintableObject;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.api.network.IPacketReceiver;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
-import net.fexcraft.mod.lib.util.common.ApiUtil;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,6 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import static net.minecraft.util.EnumFacing.*;
 
+@SuppressWarnings("deprecation")
 public class UniversalTileEntity extends TileEntity implements BlockTileEntity, IPacketReceiver<PacketTileEntityUpdate>, LockableObject, ITickable, PaintableObject {
 	
 	private Long longpos;
@@ -140,12 +141,12 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 	            }
 	            case "update_primary_color":{
 	            	if(this.getBlockData() == null){ break; }
-	            	this.getBlockData().getPrimaryColor().readFromNBT(packet.nbt, null);
+	            	ApiUtil.readFromNBT(this.getBlockData().getPrimaryColor(), packet.nbt, null);
 	            	break;
 	            }
 	            case "update_secondary_color":{
 	            	if(this.getBlockData() == null){ break; }
-	            	this.getBlockData().getSecondaryColor().readFromNBT(packet.nbt, null);
+	            	ApiUtil.readFromNBT(this.getBlockData().getSecondaryColor(), packet.nbt, null);
 	            	break;
 	            }
             }
@@ -189,8 +190,7 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
         		this.getBlockData().getScript().onPlace(this, this.getBlockData());
         	}
         	if(data == null){
-        		Print.debug(stack.getTagCompound());
-        		Static.stop();
+        		Print.debug(stack.getTagCompound()); Static.stop();
         	}
         }
         Print.debug("BLKTESETUP: " + this.pos.toString() + " OK;");
@@ -448,7 +448,7 @@ public class UniversalTileEntity extends TileEntity implements BlockTileEntity, 
 		//
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("task", "update_primary_color");
-        this.getBlockData().getPrimaryColor().writeToNBT(nbt, null);
+        ApiUtil.writeToNBT(this.getBlockData().getPrimaryColor(), nbt, null);
         PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
 	}
 

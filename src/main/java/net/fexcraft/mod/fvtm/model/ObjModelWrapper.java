@@ -2,8 +2,9 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.Collection;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 
 public class ObjModelWrapper<D, K> implements Model<D, K>{
@@ -12,7 +13,7 @@ public class ObjModelWrapper<D, K> implements Model<D, K>{
 	
 	public ObjModelWrapper(String objloc){
 		objmodel = new ModelRendererTurbo(null, 0, 0, 256, 256);
-		objmodel.addObj(objloc);
+		objmodel.addObj(objloc, Resources.getModelInputStream(objloc));
 	}
 
 	@Override

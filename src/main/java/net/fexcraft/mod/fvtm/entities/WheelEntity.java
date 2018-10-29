@@ -1,9 +1,9 @@
 package net.fexcraft.mod.fvtm.entities;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.api.Vehicle.MovementCalculationEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;

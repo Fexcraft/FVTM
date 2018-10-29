@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import net.fexcraft.lib.common.lang.ArrayList;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.addons.gep.attributes.ConnectorAttribute;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.FMSeatAttribute;
@@ -22,8 +24,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
 import net.fexcraft.mod.fvtm.impl.root.GenericColorable;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.util.lang.ArrayList;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

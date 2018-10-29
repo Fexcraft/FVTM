@@ -1,11 +1,12 @@
 package net.fexcraft.mod.fvtm.gui;
 
 import java.util.ArrayList;
+
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.GenericGuiButton;
 import net.fexcraft.mod.fvtm.api.root.SettingHolder.ScriptSetting;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.lib.util.common.GenericGuiButton;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -19,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+@SuppressWarnings("deprecation")
 public class UniversalBlockScriptGui extends GuiContainer {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/guis/vehicle_scripts.png");

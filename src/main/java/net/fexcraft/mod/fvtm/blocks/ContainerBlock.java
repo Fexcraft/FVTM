@@ -3,16 +3,16 @@ package net.fexcraft.mod.fvtm.blocks;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
@@ -39,6 +39,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+@SuppressWarnings("deprecation")
 @fBlock(modid = FVTM.MODID, name = "container_block", item = ContainerBlock.ITB.class, tileentity = ContainerTileEntity.class)
 public class ContainerBlock extends BlockContainer {
 

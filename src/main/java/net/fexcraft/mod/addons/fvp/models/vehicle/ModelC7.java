@@ -7,10 +7,10 @@
 // Last changed on: 11.01.2017 - 21:49:25
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.render.RGB;
 
 public class ModelC7 extends VehicleModelTMT {
 

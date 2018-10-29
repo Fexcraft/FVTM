@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.util.packets;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.mc.api.packet.IPacket;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.lib.api.network.IPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

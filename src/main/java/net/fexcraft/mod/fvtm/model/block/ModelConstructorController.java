@@ -7,9 +7,9 @@
 // Last changed on: 07.06.2017 - 18:47:56
 package net.fexcraft.mod.fvtm.model.block;
 
+import net.fexcraft.lib.tmt.ModelConverter;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.lib.tmt.ModelConverter;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelConstructorController extends ModelConverter {

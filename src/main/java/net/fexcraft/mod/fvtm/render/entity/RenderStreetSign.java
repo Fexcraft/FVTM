@@ -2,10 +2,10 @@ package net.fexcraft.mod.fvtm.render.entity;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.entities.StreetSignEntity;
 import net.fexcraft.mod.fvtm.model.block.StreetSignModel;
 import net.fexcraft.mod.fvtm.render.Renderer;
-import net.fexcraft.mod.lib.tmt.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;

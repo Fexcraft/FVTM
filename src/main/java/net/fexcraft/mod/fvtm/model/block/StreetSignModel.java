@@ -6,8 +6,8 @@
 
 package net.fexcraft.mod.fvtm.model.block;
 
-import net.fexcraft.mod.lib.tmt.ModelConverter;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.tmt.ModelConverter;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 
 public class StreetSignModel extends ModelConverter {
 	

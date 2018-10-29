@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.impl.root;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class GenericColorable<T, B> extends GenericLockable<T, B> implements Colorable {

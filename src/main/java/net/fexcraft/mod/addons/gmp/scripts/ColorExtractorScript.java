@@ -3,13 +3,13 @@ package net.fexcraft.mod.addons.gmp.scripts;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fexcraft.lib.mc.api.PaintItem;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockScript;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
-import net.fexcraft.mod.lib.api.item.PaintItem;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDye;
@@ -20,6 +20,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 
+@SuppressWarnings("deprecation")
 public class ColorExtractorScript extends CrafterBlockScriptBase {
 	
 	public ColorExtractorScript(){ super(); }

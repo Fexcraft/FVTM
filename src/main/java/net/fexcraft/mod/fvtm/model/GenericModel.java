@@ -5,18 +5,17 @@ import java.util.Map.Entry;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonToTMT;
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
-import net.fexcraft.mod.lib.fmr.ModelCompound;
-import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.tmt.util.JsonToTMT;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
 
 public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K> {
 	
 	protected int textureX, textureY;
 	protected ModelMap<ModelRendererTurbo[]> submodels = new ModelMap<ModelRendererTurbo[]>(false);
-	protected ModelMap<ModelCompound> fmrmodels = new ModelMap<ModelCompound>(true);
+	//protected ModelMap<ModelCompound> fmrmodels = new ModelMap<ModelCompound>(true);
 	private ArrayList<String> creators = new ArrayList<>();
 	
 	public GenericModel(){}
@@ -28,7 +27,7 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
         textureY = obj.get("texture_size_y").getAsInt();
         JsonObject modelobj = obj.get("model").getAsJsonObject();
         for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-        	submodels.put(entry.getKey(), JsonToTMT.parse(this, entry.getValue().getAsJsonArray(), textureX, textureY));
+        	submodels.put(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), textureX, textureY));
         }
 	}
 	
@@ -55,11 +54,11 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
 				translate(sub, x, y, z);
 			});
 		}
-		if(fmrmodels != null){
+		/*if(fmrmodels != null){
 			fmrmodels.values().forEach(elm -> {
 				elm.translate(x, y, z);
 			});
-		}
+		}*/
 	}
 
 	@Override
@@ -69,11 +68,11 @@ public abstract class GenericModel<T, K> extends ModelBase implements Model<T, K
 				rotate(sub, x, y, z);
 			});
 		}
-		if(fmrmodels != null){
+		/*if(fmrmodels != null){
 			fmrmodels.values().forEach(elm -> {
 				elm.rotate(x, y, z);
 			});
-		}
+		}*/
 	}
 	
 	/** legacy method **/

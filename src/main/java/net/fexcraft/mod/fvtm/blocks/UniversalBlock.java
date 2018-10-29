@@ -3,6 +3,11 @@ package net.fexcraft.mod.fvtm.blocks;
 import java.util.Random;
 import java.util.TreeMap;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.api.PaintItem;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockIOT;
@@ -10,11 +15,6 @@ import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.api.root.SettingHolder.ScriptSetting;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.api.item.PaintItem;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -39,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 //@fBlock(modid = "fvtm", name = "block", tileentity = UniversalTileEntity.class)
+@SuppressWarnings("deprecation")
 public class UniversalBlock extends BlockContainer {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -184,10 +185,10 @@ public class UniversalBlock extends BlockContainer {
             ItemStack stack = player.getHeldItem(hand);
             if(stack.getItem() instanceof KeyItem && (stack.getItem() instanceof MaterialItem ? ((MaterialItem)stack.getItem()).getMaterial(stack).isVehicleKey() : true)){
                 if(tile.isLocked()){
-                    tile.unlock(world, player, stack, (KeyItem) stack.getItem());
+                    tile.unlock(world, player, stack, (KeyItem)stack.getItem());
                 }
                 else{
-                    tile.lock(world, player, stack, (KeyItem) stack.getItem());
+                    tile.lock(world, player, stack, (KeyItem)stack.getItem());
                 }
             }
             if(tile.isLocked()){

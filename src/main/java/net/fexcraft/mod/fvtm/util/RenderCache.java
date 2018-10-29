@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.util;
 
 import java.util.TreeMap;
 
-import net.fexcraft.mod.lib.util.common.Print;
+import net.fexcraft.lib.mc.utils.Print;
 import net.minecraft.entity.Entity;
 
 public class RenderCache {

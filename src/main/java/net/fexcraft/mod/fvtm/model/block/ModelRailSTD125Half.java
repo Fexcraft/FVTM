@@ -8,9 +8,9 @@
 
 package net.fexcraft.mod.fvtm.model.block;
 
+import net.fexcraft.lib.tmt.GenericModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.lib.tmt.GenericModelBase;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelRailSTD125Half extends GenericModelBase {

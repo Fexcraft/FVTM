@@ -3,11 +3,11 @@ package net.fexcraft.mod.fvtm.gui.ccg;
 import java.io.IOException;
 import java.util.List;
 
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.lib.util.common.Formatter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;

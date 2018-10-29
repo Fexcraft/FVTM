@@ -2,17 +2,17 @@ package net.fexcraft.mod.fvtm.gui;
 
 import com.google.common.collect.Lists;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.GenericGuiButton;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.GenericGuiButton;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -27,6 +27,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+@SuppressWarnings("deprecation")
 public class UniversalBlockInventoryGui {
 	
 	private static final ResourceLocation invtex = new ResourceLocation("fvtm:textures/guis/vehicle_inventory.png");

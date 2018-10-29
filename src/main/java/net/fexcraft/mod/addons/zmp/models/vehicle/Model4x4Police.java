@@ -1,7 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class Model4x4Police extends VehicleModelTMT {
 

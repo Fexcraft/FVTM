@@ -2,11 +2,11 @@ package net.fexcraft.mod.fvtm.gui;
 
 import com.google.common.collect.Lists;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.GenericGuiButton;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.GenericGuiButton;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+@SuppressWarnings("deprecation")
 public class ContainerInventoryGui {
 
     //Recycling is good for earth, recycling is good for health, basically this a cut down "Vehicle Inventory".

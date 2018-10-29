@@ -6,8 +6,8 @@
 // Last changed on: 05.12.2017 - 18:43:59
 package net.fexcraft.mod.addons.hcp.models.container;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class StandardMediumContainer extends ContainerModelTMT {
 

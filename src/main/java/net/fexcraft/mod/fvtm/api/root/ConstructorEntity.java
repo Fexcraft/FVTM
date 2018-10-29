@@ -2,9 +2,9 @@ package net.fexcraft.mod.fvtm.api.root;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

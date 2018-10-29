@@ -6,8 +6,9 @@
 package net.fexcraft.mod.fvtm.impl;
 
 import java.util.TreeMap;
+
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.api.Addon;
-import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;

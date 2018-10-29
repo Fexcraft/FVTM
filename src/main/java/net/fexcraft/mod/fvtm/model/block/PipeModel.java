@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.model.block;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
-import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.render.RGB;
 
 public class PipeModel extends ModelBase {
 

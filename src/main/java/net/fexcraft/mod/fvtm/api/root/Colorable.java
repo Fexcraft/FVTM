@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.api.root;
 
-import net.fexcraft.mod.lib.util.render.RGB;
+import net.fexcraft.lib.common.math.RGB;
 
 public interface Colorable {
 

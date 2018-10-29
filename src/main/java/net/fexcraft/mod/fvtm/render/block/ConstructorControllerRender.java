@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.render.block;
 
-import net.fexcraft.mod.lib.util.render.RGB;
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorController;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 

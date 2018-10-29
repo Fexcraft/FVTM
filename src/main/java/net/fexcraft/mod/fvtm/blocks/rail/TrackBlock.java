@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.blocks.rail;
 
+import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.lib.api.block.fBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;

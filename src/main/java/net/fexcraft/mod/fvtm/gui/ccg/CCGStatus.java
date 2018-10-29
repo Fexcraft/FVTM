@@ -2,12 +2,12 @@ package net.fexcraft.mod.fvtm.gui.ccg;
 
 import java.io.IOException;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenterEntity;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

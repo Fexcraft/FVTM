@@ -2,6 +2,9 @@ package net.fexcraft.mod.fvtm.impl.part;
 
 import java.util.HashMap;
 
+import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Attribute.AttributeData;
@@ -9,9 +12,6 @@ import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.impl.root.GenericTextureable;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;

@@ -8,8 +8,8 @@
 
 package net.fexcraft.mod.addons.fvp.models.bogie;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.AdjustableBogieModel;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class ModelBogieST1 extends AdjustableBogieModel {
 

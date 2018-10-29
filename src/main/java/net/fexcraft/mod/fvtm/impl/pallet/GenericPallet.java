@@ -2,11 +2,11 @@ package net.fexcraft.mod.fvtm.impl.pallet;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Pallet;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

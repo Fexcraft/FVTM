@@ -1,8 +1,8 @@
 package net.fexcraft.mod.addons.gep.models.containers;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
 public class GenericContainerModel extends ContainerModelTMT {

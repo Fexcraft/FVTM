@@ -6,6 +6,15 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
+import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.api.LockableObject;
+import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
+import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
@@ -38,15 +47,6 @@ import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packets.PacketVehicleControl;
 import net.fexcraft.mod.fvtm.util.packets.PacketVehicleKeyPress;
-import net.fexcraft.mod.lib.api.common.LockableObject;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.api.network.IPacketReceiver;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
-import net.fexcraft.mod.lib.util.common.ApiUtil;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -72,6 +72,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.server.permission.PermissionAPI;
 
+@SuppressWarnings("deprecation")
 public abstract class RailboundVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
 
 	protected VehicleData vehicledata;

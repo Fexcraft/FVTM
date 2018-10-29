@@ -4,14 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import net.fexcraft.lib.mc.network.Network;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.util.FvtmUpdateHandler;
-import net.fexcraft.mod.lib.network.Browser;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -208,7 +208,7 @@ public class AddonManagerGui extends GuiContainer {
                     OpenGlHelper.openFile(new File(this.mc.getResourcePackRepository().getDirResourcepacks().getParentFile(), "addons/"));
                 }
                 else if(button.id == 2){
-                    Static.toggleDebug();
+                    Static.setDevmode(!Static.devmode);
                     Print.chat(mc.player, "Client Side (FCL) Debug Toggled.");
                     PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(getPacket("toggle_debug")));
                 }
@@ -217,7 +217,7 @@ public class AddonManagerGui extends GuiContainer {
                     Static.halt();
                 }
                 else if(button.id == 7){
-                    Browser.browse(mc.player, FvtmUpdateHandler.WIKIURL);
+                    Network.browse(mc.player, FvtmUpdateHandler.WIKIURL);
                 }
                 break;
             case VIEW_ALL:
@@ -271,10 +271,10 @@ public class AddonManagerGui extends GuiContainer {
             case VIEW_ONE:
                 switch(button.id){
                     case 0:
-                        Browser.browse(mc.player, addon.getURL());
+                        Network.browse(mc.player, addon.getURL());
                         break;
                     case 1:
-                        Browser.browse(mc.player, addon.getLicense());
+                        Network.browse(mc.player, addon.getLicense());
                         break;
                     case 2:
                         File file = new File(addon.getFileAddress());

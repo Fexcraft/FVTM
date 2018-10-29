@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.impl.root;
 
+import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
-import net.fexcraft.mod.lib.util.render.ExternalTextureHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 

@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.vector.Matrix4f;
 import net.fexcraft.mod.fvtm.util.vector.Vector3f;
-import net.fexcraft.mod.lib.util.math.Vec3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 

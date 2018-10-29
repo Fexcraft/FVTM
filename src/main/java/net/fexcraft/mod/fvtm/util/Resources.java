@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.util;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,6 +20,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.utils.HttpUtil;
+import net.fexcraft.lib.common.utils.ZipUtil;
+import net.fexcraft.lib.mc.FCL;
+import net.fexcraft.lib.mc.network.Network;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Attribute;
@@ -65,13 +74,6 @@ import net.fexcraft.mod.fvtm.model.ObjModelWrapper;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.model.container.ContainerBaseModel;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleBaseModel;
-import net.fexcraft.mod.lib.FCL;
-import net.fexcraft.mod.lib.network.Network;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.common.ZipUtil;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
-import net.fexcraft.mod.lib.util.render.ModelType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -354,7 +356,7 @@ public class Resources {
 							event.getRegistry().register(veh);
 							if(Static.side().isClient()){
 								if(Config.RENDER_IN_GUI){
-									net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
+									net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
 								}
 								net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
 							}
@@ -367,7 +369,7 @@ public class Resources {
 									event.getRegistry().register(veh);
 									if(Static.side().isClient()){
 										if(Config.RENDER_IN_GUI){
-											net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
+											net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
 										}
 										net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
 									}
@@ -413,7 +415,7 @@ public class Resources {
 						event.getRegistry().register(veh);
 						if(Static.side().isClient()){
 							if(Config.RENDER_IN_GUI){
-								net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
+								net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(veh.getRegistryName(), (VehicleBaseModel)veh.getModel());
 							}
 							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericVehicleItem.INSTANCE, veh.getRegistryName());
 						}
@@ -521,7 +523,7 @@ public class Resources {
 							event.getRegistry().register(con);
 							if(Static.side().isClient()){
 								if(Config.RENDER_IN_GUI){
-									net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
+									net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
 								}
 								net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
 							}
@@ -534,7 +536,7 @@ public class Resources {
 									event.getRegistry().register(con);
 									if(Static.side().isClient()){
 										if(Config.RENDER_IN_GUI){
-											net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
+											net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
 										}
 										net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
 									}
@@ -553,7 +555,7 @@ public class Resources {
 						event.getRegistry().register(con);
 						if(Static.side().isClient()){
 							if(Config.RENDER_IN_GUI){
-								net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
+								net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(con.getRegistryName(), (ContainerBaseModel)con.getModel());
 							}
 							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
 						}
@@ -641,7 +643,7 @@ public class Resources {
 							event.getRegistry().register(block);
 							if(Static.side().isClient()){
 								net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericBlockItem.INSTANCE, block.getRegistryName());
-								net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
+								net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
 							}
 							Print.debug(block.getRegistryName());
 						}
@@ -652,7 +654,7 @@ public class Resources {
 									event.getRegistry().register(block);
 									if(Static.side().isClient()){
 										net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericConsumableItem.INSTANCE, block.getRegistryName());
-										net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
+										net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
 									}
 									Print.debug(block.getRegistryName());
 								}
@@ -668,7 +670,7 @@ public class Resources {
 						event.getRegistry().register(block);
 						if(Static.side().isClient()){
 							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericConsumableItem.INSTANCE, block.getRegistryName());
-							net.fexcraft.mod.lib.fmr.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
+							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(block.getRegistryName(), (BlockModel)block.getModel());
 						}
 						Print.debug(block.getRegistryName());
 					}
@@ -735,26 +737,25 @@ public class Resources {
 		if(MODELS.containsKey(name)){
 			return (Model<T, K>)MODELS.get(name);
 		}
-		ModelType type = getModelType(name);
+		String ext = FilenameUtils.getExtension(name);
 		Model<T, K> model = null;
 		try{
-			switch(type){
-				case JAVA: case TMT:
+			switch(ext){
+				case "class":
 					Class<?> clasz = Class.forName(name.replace(".class", ""));
 					model = (Model<T, K>)clasz.newInstance();
 					break;
-				case JTMT:
+				case "jtmt":
 					JsonObject obj = JsonUtil.getObjectFromInputStream(net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(name)).getInputStream());
 					model = clazz.getConstructor(JsonObject.class).newInstance(obj);
 					break;
-				case JSON:
+				case "json":
 					//TODO create a wrapper.
 					break;
-				case OBJ:
+				case "obj":
 					model = new ObjModelWrapper<T, K>(name);
 					break;
-				case NONE:
-				default: return (Model<T, K>)EmptyModel.INSTANCE;
+				case "": default: return (Model<T, K>)EmptyModel.INSTANCE;
 			}
 		}
 		catch(Exception e){
@@ -764,21 +765,6 @@ public class Resources {
 		}
 		MODELS.put(name, model);
 		return model;
-	}
-
-	public static ModelType getModelType(String modelname){
-		String str = FilenameUtils.getExtension(modelname);
-		switch(str){
-			case "class":
-				return ModelType.TMT;
-			case "json":
-				return ModelType.JSON;
-			case "jtmt":
-				return ModelType.JTMT;
-			case "obj":
-				return ModelType.OBJ;
-		}
-		return ModelType.NONE;
 	}
 
 	public static final VehicleData getVehicleData(NBTTagCompound compound){
@@ -886,7 +872,7 @@ public class Resources {
 		ADDONS.forEach((addon) -> {
 			String str = addon.getUpdateId();
 			if(str != null && !str.equals("") && !str.equals(GenericAddon.NONE) && !str.equals(FVTM.MODID)){
-				JsonObject obj = Network.request("http://fexcraft.net/minecraft/fcl/request", "mode=exists&modid=" + str);
+				JsonObject obj = HttpUtil.request("http://fexcraft.net/minecraft/fcl/request", "mode=exists&modid=" + str);
 				if(obj != null && obj.has("exists") && obj.get("exists").getAsBoolean()){
 					obj = Network.getModData(str);
 					if(obj != null && obj.has("versions")){
@@ -997,6 +983,22 @@ public class Resources {
 		/*passenger.lastTickPosX = passenger.prevPosX;
 		passenger.lastTickPosY = passenger.prevPosY;
 		passenger.lastTickPosZ = passenger.prevPosZ;*/
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static InputStream getModelInputStream(String string){
+		return getModelInputStream(new ResourceLocation(string));
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static InputStream getModelInputStream(ResourceLocation resloc){
+		try{
+			return net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(resloc).getInputStream();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

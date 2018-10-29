@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.fvp.scripts;
 
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.block.BlockSnow;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

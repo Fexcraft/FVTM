@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.model.block;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 
 public class AdjSignModel extends ModelBase {
 

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.minecraftforge.fml.common.Loader;
 
 public class APIs {

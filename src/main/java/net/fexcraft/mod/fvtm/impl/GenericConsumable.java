@@ -2,14 +2,14 @@ package net.fexcraft.mod.fvtm.impl;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.compatibility.TANItemData;
 import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.util.APIs;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;

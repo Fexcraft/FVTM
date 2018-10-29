@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.util.packets;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.mod.lib.api.network.IPacket;
+import net.fexcraft.lib.mc.api.packet.IPacket;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketSeatDismount implements IPacket, IMessage {

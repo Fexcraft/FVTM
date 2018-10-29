@@ -9,12 +9,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.lang.ArrayList;
+import net.fexcraft.lib.common.utils.ZipUtil;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.common.ZipUtil;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
-import net.fexcraft.mod.lib.util.lang.ArrayList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 

@@ -2,8 +2,8 @@ package net.fexcraft.mod.fvtm.api.compatibility;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.mod.lib.util.json.JsonUtil;
-import net.fexcraft.mod.lib.util.math.Pos;
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 

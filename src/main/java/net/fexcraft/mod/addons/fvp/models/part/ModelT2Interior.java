@@ -5,8 +5,8 @@
 // Model Creator: FEX___96
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class ModelT2Interior extends PartModelTMT {
 

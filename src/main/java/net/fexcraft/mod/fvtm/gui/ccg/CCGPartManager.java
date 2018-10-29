@@ -1,13 +1,14 @@
 package net.fexcraft.mod.fvtm.gui.ccg;
 
 import java.io.IOException;
+
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.blocks.ConstructorControllerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.GenericGuiContainer;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -105,7 +106,7 @@ public class CCGPartManager extends GenericGui<CCGPartManager.Container> {
                         return;
                     }
                     data = tile.getVehicleData().getParts().remove(part);
-                    if(data == null){ Print.chat(player, "Error, see log for location.");Static.exception(new Exception(), false); }
+                    if(data == null){ Print.chat(player, "Error, see log for location."); Static.exception(new Exception(), false); }
                     EntityItem item = new EntityItem(tile.getWorld());
                     item.setItem(data.getPart().getItemStack(data));
                     item.setPosition(tile.getPos().getX() + 0.5, tile.getPos().getY() + 1.5, tile.getPos().getZ() + 0.5);

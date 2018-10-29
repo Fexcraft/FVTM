@@ -2,11 +2,11 @@ package net.fexcraft.mod.fvtm.render.block;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.api.registry.fTESR;
+import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
-import net.fexcraft.mod.lib.api.render.fTESR;
-import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR

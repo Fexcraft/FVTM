@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.entities;
 
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.lib.util.math.Pos;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.util.packets;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.lib.network.PacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

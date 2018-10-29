@@ -2,15 +2,15 @@ package net.fexcraft.mod.fvtm.render.entity;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.railold.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.math.Pos;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;

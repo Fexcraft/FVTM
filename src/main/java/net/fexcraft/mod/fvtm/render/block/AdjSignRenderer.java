@@ -2,8 +2,8 @@ package net.fexcraft.mod.fvtm.render.block;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.mod.fvtm.blocks.AdjustableSignEntity;
-import net.fexcraft.mod.lib.api.render.fTESR;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 

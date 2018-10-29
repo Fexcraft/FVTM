@@ -4,6 +4,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Addon;
 
 import net.fexcraft.mod.fvtm.api.Fuel;
@@ -11,10 +16,6 @@ import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -25,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SuppressWarnings("deprecation")
 public class GenericMaterialItem extends MaterialItem implements FuelItem {
 
     public static final GenericMaterialItem INSTANCE = new GenericMaterialItem();

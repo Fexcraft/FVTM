@@ -10,6 +10,13 @@ import org.lwjgl.input.Mouse;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
+import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.GenericGuiButton;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
@@ -19,13 +26,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.render.Renderer;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.GenericGuiButton;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -43,6 +43,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+@SuppressWarnings("deprecation")
 public class VehicleInventoryGui {
 
     //x 0 = inv view

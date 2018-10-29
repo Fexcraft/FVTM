@@ -3,11 +3,11 @@ package net.fexcraft.mod.fvtm.gui;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.GenericGuiButton;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.root.SettingHolder.ScriptSetting;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.lib.util.common.GenericGuiButton;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+@SuppressWarnings("deprecation")
 public class VehicleScriptGui extends GuiContainer {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/guis/vehicle_scripts.png");

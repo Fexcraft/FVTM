@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

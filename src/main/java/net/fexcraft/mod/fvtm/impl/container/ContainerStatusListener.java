@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.impl.container;
 
+import net.fexcraft.lib.mc.capabilities.sign.SignCapability;
+import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
-import net.fexcraft.mod.lib.capabilities.sign.SignCapability;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagLong;

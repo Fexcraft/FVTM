@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Block;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
@@ -16,9 +19,6 @@ import net.fexcraft.mod.fvtm.blocks.UniversalBlock;
 import net.fexcraft.mod.fvtm.impl.GenericCreativeTab;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;

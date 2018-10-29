@@ -7,6 +7,7 @@ package net.fexcraft.mod.addons.hcp.scripts;
 
 import java.util.TreeMap;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontData;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontRendererAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
@@ -24,7 +25,6 @@ import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.container.GenericContainerItem;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

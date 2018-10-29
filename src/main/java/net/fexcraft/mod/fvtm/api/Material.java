@@ -1,13 +1,14 @@
 package net.fexcraft.mod.fvtm.api;
 
+import net.fexcraft.lib.mc.api.KeyItem;
 import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
-import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings("deprecation")
 public interface Material extends DataHolderObject.Simple<Material> {
 
     @Override

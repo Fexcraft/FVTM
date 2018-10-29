@@ -3,11 +3,11 @@ package net.fexcraft.mod.fvtm.blocks;
 import java.util.List;
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.registry.FCLRegistry;
+import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
-import net.fexcraft.mod.lib.util.registry.ItemBlock16;
-import net.fexcraft.mod.lib.util.registry.RegistryUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
@@ -70,7 +70,7 @@ public class AdjustableSign extends BlockContainer {
 
     @Override
     public ItemStack getItem(World world, BlockPos pos, IBlockState state){
-        ItemStack stack = new ItemStack(RegistryUtil.getBlock("fvtm:adj_sign"));
+        ItemStack stack = new ItemStack(FCLRegistry.getBlock("fvtm:adj_sign"));
         stack.setTagCompound(new NBTTagCompound());
         stack.getTagCompound().setString(AdjSignItem.NBT, ((AdjustableSignEntity) world.getTileEntity(pos)).getTexture().toString());
         if(world.isRemote){

@@ -7,9 +7,9 @@
 // Last changed on: 20.01.2016 - 22:15:40
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 import net.minecraft.entity.Entity;
 
 public class ModelT1FW extends PartModelTMT {

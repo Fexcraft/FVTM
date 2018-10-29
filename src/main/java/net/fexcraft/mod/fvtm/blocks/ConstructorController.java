@@ -2,6 +2,11 @@ package net.fexcraft.mod.fvtm.blocks;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.api.PaintItem;
+import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Material.MaterialItem;
@@ -11,11 +16,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.api.item.PaintItem;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -44,6 +44,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
 
+@SuppressWarnings("deprecation")
 @fBlock(modid = FVTM.MODID, name = "constructor_controller", tileentity = ConstructorControllerEntity.class)
 public class ConstructorController extends Block implements ITileEntityProvider {
 
@@ -187,7 +188,7 @@ public class ConstructorController extends Block implements ITileEntityProvider 
         }
     }
 
-    @Override
+	@Override
     public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         if(w.isRemote/* || hand == EnumHand.OFF_HAND*/){
             /*ConstructorControllerEntity te = (ConstructorControllerEntity)w.getTileEntity(pos);
@@ -273,10 +274,10 @@ public class ConstructorController extends Block implements ITileEntityProvider 
                     return true;
                 }
                 if(hand == EnumHand.OFF_HAND){
-                    te.getColorable().getSecondaryColor().packed = (((PaintItem) stack.getItem()).getRGBColor()).packed;
+                    te.getColorable().getSecondaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
                 }
                 else{
-                    te.getColorable().getPrimaryColor().packed = (((PaintItem) stack.getItem()).getRGBColor()).packed;
+                    te.getColorable().getPrimaryColor().packed = (((PaintItem)stack.getItem()).getRGBColor()).packed;
                 }
                 te.sendUpdate("rgb");
                 Print.chat(p, "Colour updated.");

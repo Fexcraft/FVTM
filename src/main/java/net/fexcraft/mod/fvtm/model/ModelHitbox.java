@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
-import net.fexcraft.mod.lib.tmt.EmptyModelBase;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.tmt.EmptyModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 
 public class ModelHitbox extends EmptyModelBase {
 

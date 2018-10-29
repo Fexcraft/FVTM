@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.model.block;
 
-import net.fexcraft.mod.lib.tmt.ModelBase;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 
 public class ModelEmptyCyl extends ModelBase {
 

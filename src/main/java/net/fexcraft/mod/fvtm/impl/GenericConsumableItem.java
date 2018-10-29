@@ -4,13 +4,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.api.Addon;
 
 import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Consumable.ConsumableItem;
 import net.fexcraft.mod.fvtm.util.APIs;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.util.common.Formatter;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;

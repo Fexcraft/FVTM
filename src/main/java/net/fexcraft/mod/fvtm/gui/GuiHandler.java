@@ -6,6 +6,12 @@ import java.util.UUID;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import net.fexcraft.lib.mc.api.packet.IPacketListener;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.addons.gep.attributes.FuelTankExtensionAttribute.FuelTankExtensionAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -32,12 +38,6 @@ import net.fexcraft.mod.fvtm.gui.ccg.CCGVehicleData;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.AddonList;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.api.network.IPacketListener;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
-import net.fexcraft.mod.lib.network.packet.PacketNBTTagCompound;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -197,7 +197,7 @@ public class GuiHandler implements IGuiHandler {
                     break;
                 case "toggle_debug":
                     if(Static.side().isServer()){
-                        Static.toggleDebug();
+                        Static.setDevmode(!Static.devmode);
                         Print.chat((EntityPlayer) objs[0], "Server Side (FCL) Debug Toggled.");
                     }
                     break;

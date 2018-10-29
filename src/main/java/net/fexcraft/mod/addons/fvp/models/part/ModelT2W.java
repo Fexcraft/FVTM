@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.lib.tmt.Coord2D;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.tmt.Shape2D;
 import net.fexcraft.mod.fvtm.model.part.AdjustableWheelModel;
-import net.fexcraft.mod.lib.tmt.Coord2D;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.tmt.Shape2D;
 
 public class ModelT2W extends AdjustableWheelModel {
 

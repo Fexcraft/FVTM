@@ -2,18 +2,18 @@ package net.fexcraft.mod.fvtm.blocks;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.api.LockableObject;
+import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.util.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.lib.api.common.LockableObject;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.api.network.IPacketReceiver;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
-import net.fexcraft.mod.lib.util.common.Print;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,6 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+@SuppressWarnings("deprecation")
 public class ContainerTileEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, LockableObject {
 
     private ItemStackHandler itemStackHandler;

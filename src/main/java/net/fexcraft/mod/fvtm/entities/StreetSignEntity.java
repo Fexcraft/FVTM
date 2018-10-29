@@ -1,13 +1,13 @@
 package net.fexcraft.mod.fvtm.entities;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.api.LockableObject;
+import net.fexcraft.lib.mc.api.registry.fItem;
+import net.fexcraft.lib.mc.registry.FCLRegistry;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.common.LockableObject;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.api.item.fItem;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.registry.RegistryUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -21,6 +21,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
+@SuppressWarnings("deprecation")
 public class StreetSignEntity extends Entity implements IEntityAdditionalSpawnData, LockableObject {
 	
 	//Common
@@ -188,7 +189,7 @@ public class StreetSignEntity extends Entity implements IEntityAdditionalSpawnDa
     }
     
     public static Item getItem(){
-    	return ITEM == null ? ITEM = RegistryUtil.getItem("fvtm:streetsign") : ITEM;
+    	return ITEM == null ? ITEM = FCLRegistry.getItem("fvtm:streetsign") : ITEM;
     }
     
     @fItem(modid = FVTM.MODID, name = "streetsign")

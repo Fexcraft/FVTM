@@ -6,9 +6,9 @@ import java.util.Optional;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Addon;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
 
 public class AddonList {
 	

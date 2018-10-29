@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.api;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
 import net.fexcraft.mod.fvtm.api.root.Colorable.ColorHolder;
 import net.fexcraft.mod.fvtm.api.root.Lockable;
@@ -10,8 +12,6 @@ import net.fexcraft.mod.fvtm.api.root.Saveloadable;
 import net.fexcraft.mod.fvtm.api.root.SettingHolder;
 import net.fexcraft.mod.fvtm.api.root.Textureable;
 import net.fexcraft.mod.fvtm.api.root.Textureable.TextureHolder;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketTileEntityUpdate;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;

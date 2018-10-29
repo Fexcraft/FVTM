@@ -8,15 +8,15 @@ import java.util.TreeMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Block;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;

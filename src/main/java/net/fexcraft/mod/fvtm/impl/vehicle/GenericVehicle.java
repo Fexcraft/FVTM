@@ -10,6 +10,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.DriveType;
 import net.fexcraft.mod.fvtm.api.EntityType;
@@ -19,10 +23,6 @@ import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.json.JsonUtil;
-import net.fexcraft.mod.lib.util.math.Pos;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -54,7 +54,7 @@ public class GenericVehicle implements Vehicle {
     private TreeMap<String, Float> soundpitch = new TreeMap<String, Float>();
     //FM
     //private TreeMap<String, Float> floats;//TODO replace all the "physics related" float vars to entries of this, unless anyone can prove that's a bad idea.
-    private float cameradis, maxposthrottle, maxnegthrottle, turnleftmod, turnrightmod, wheelspringstrength, wheelstepheight, bouyancy;
+    private float cameradis, maxposthrottle, maxnegthrottle, turnleftmod, turnrightmod, wheelspringstrength, wheelstepheight, bouyancy, colldamage;
     //
     private float trailer_adjustment_axe;
 
@@ -120,7 +120,7 @@ public class GenericVehicle implements Vehicle {
             }
         }
         this.isTrailer = JsonUtil.getIfExists(obj, new String[]{"Trailer", "Wagon", "IsTrailer"}, false);
-        this.type = VehicleType.fromJson(obj);
+        this.type = VehicleType.fromJson(obj); if(type.isWaterVehicle()) this.wheelstepheight = 0;
         this.bouyancy = JsonUtil.getIfExists(obj, "Bouyancy", 0.0165F).floatValue();
         this.def_key = new ResourceLocation(JsonUtil.getIfExists(obj, "DefaultKey", "generic:key"));
         if(obj.has("WheelCoords")){
@@ -317,6 +317,7 @@ public class GenericVehicle implements Vehicle {
             case "wheel_spring_strength": return wheelspringstrength;
             case "trailer_adjustment_axe": return trailer_adjustment_axe;
             case "bouyancy": return bouyancy;
+            case "collision_damage": return colldamage;
         }
         return 0f;
     }

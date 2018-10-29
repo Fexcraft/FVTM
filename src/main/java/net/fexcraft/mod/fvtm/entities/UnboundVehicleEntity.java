@@ -1,11 +1,19 @@
 package net.fexcraft.mod.fvtm.entities;
 
-
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.api.KeyItem;
+import net.fexcraft.lib.mc.api.LockableObject;
+import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
+import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
@@ -35,15 +43,6 @@ import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packets.PacketVehicleControl;
 import net.fexcraft.mod.fvtm.util.packets.PacketVehicleKeyPress;
-import net.fexcraft.mod.lib.api.common.LockableObject;
-import net.fexcraft.mod.lib.api.item.KeyItem;
-import net.fexcraft.mod.lib.api.network.IPacketReceiver;
-import net.fexcraft.mod.lib.network.PacketHandler;
-import net.fexcraft.mod.lib.network.packet.PacketEntityUpdate;
-import net.fexcraft.mod.lib.util.common.ApiUtil;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.common.Static;
-import net.fexcraft.mod.lib.util.math.Time;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -69,6 +68,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.server.permission.PermissionAPI;
 
+@SuppressWarnings("deprecation")
 public abstract class UnboundVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
 	
     protected boolean sync;
@@ -242,7 +242,10 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
     }
 
     public void checkForCollisions(){
-        return;
+    	/*if(!Config.COLLSYS) return;
+    	for(Entity ent : world.loadedEntityList){
+    		if(ent instanceof EntityPlayer) CollUtil.move(this, world, ent);
+    	}*/
     }
 
     protected boolean isDriverInGM1(){
@@ -1347,6 +1350,10 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
 	@Override
 	public float[] getBogieYaw(){
 		return new float[]{ 0, 0, 0, 0, 0, 0, 0, 0 };
+	}
+
+	public VehicleAxes getPrevAxes(){
+		return prevAxes;
 	}
 
 }

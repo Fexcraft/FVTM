@@ -1,7 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class ModelCarTransporter extends VehicleModelTMT {
 

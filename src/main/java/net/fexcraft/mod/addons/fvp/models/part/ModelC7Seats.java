@@ -1,9 +1,9 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.lib.util.render.RGB;
 import net.minecraft.entity.Entity;
 
 public class ModelC7Seats extends PartModelTMT {

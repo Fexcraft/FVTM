@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.vector.Matrix4f;
 import net.fexcraft.mod.fvtm.util.vector.Vector3f;
 import net.minecraft.entity.Entity;
@@ -39,6 +40,11 @@ public class VehicleAxes {
         Matrix4f.rotate((float)(yaw   * 3.14159265F / 180D), new Vector3f(0F, 1F, 0F), mat, mat);
         return new Vec3d(mat.m00, mat.m10, mat.m20);
     }
+
+	public Vec3f getRelativeVector(Vec3f relpos){
+		Vec3d vec = getRelativeVector(new Vec3d(relpos.xCoord, relpos.yCoord, relpos.zCoord));
+		return new Vec3f(vec.x, vec.y, vec.z);
+	}
 
     public VehicleAxes getRelativeVector(VehicleAxes axes){
         Matrix4f mat = new Matrix4f();
@@ -196,5 +202,13 @@ public class VehicleAxes {
     public void setRotation(double yaw, double pitch, double roll){
         setRotation((float)yaw, (float)pitch, (float)roll);
     }
+
+	public Vec3f getLocalVector(Vec3f vec){
+		Matrix4f mat = new Matrix4f(); mat.m00 = vec.xCoord; mat.m10 = vec.yCoord; mat.m20 = vec.zCoord;
+		mat.rotate((float)(roll * 3.14159265F / 180F), new Vector3f(1F, 0F, 0F));
+		mat.rotate((float)(pitch * 3.14159265F / 180F), new Vector3f(0F, 0F, 1F));
+		mat.rotate((float)(yaw * 3.14159265F / 180F), new Vector3f(0F, 1F, 0F));
+		return new Vec3f(mat.m00, mat.m10, mat.m20);
+	}
 
 }

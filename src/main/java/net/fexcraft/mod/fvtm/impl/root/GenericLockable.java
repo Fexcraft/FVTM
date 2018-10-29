@@ -1,9 +1,10 @@
 package net.fexcraft.mod.fvtm.impl.root;
 
+import net.fexcraft.lib.mc.api.KeyItem;
 import net.fexcraft.mod.fvtm.api.root.Lockable;
-import net.fexcraft.mod.lib.api.item.KeyItem;
 import net.minecraft.nbt.NBTTagCompound;
 
+@SuppressWarnings("deprecation")
 public class GenericLockable<T, B> extends GenericTextureable<T, B> implements Lockable {
 
     protected boolean locked;

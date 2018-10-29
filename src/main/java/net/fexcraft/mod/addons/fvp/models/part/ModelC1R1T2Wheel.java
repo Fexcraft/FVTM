@@ -6,8 +6,8 @@
 // Last changed on: 31.03.2017 - 14:38:29
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.AdjustableWheelModel;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class ModelC1R1T2Wheel extends AdjustableWheelModel {
 

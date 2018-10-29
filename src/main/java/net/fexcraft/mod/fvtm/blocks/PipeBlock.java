@@ -5,12 +5,12 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.registry.ItemBlock16;
+import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.fexcraft.mod.lib.api.block.fBlock;
-import net.fexcraft.mod.lib.util.common.Formatter;
-import net.fexcraft.mod.lib.util.common.Print;
-import net.fexcraft.mod.lib.util.registry.ItemBlock16;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;

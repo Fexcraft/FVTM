@@ -7,8 +7,8 @@
 // Last changed on: 04.04.2018
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
-import net.fexcraft.mod.lib.tmt.ModelRendererTurbo;
 
 public class ModelC1_R1 extends VehicleModelTMT {
 

@@ -17,10 +17,10 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 version = "1.12.x"
-def modversion = "2.8.33"
+def modversion = "2.8.33.."
 group = "net.fexcraft.mod.fvtm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "FVTM-ALL"
-def localDevMode = false
+def localDevMode = true
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
@@ -46,6 +46,7 @@ dependencies {
     	compile 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
     	compile 'com.github.cam72cam:TrackAPI:master-SNAPSHOT'
 	}
+	//compile "com.github.cam72cam:ImmersiveRailroading:master-SNAPSHOT";
     compile "com.github.glitchfiend.biomesoplenty:ToughAsNails:1.12.2-3.1.0.116:deobf"
 }
 

@@ -10,18 +10,16 @@ package net.fexcraft.mod.addons.fvp.models.part;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.fvp.scripts.T1_2Script;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelT1_2 extends PartModelTMT {
-
-    private ModelRendererTurbo[] out, in;
+public class ModelT1_2 extends PartModel {
 
     public ModelT1_2(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
         //
-        body = new ModelRendererTurbo[79];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[79];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 65, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 2
@@ -338,8 +336,9 @@ public class ModelT1_2 extends PartModelTMT {
 
         body[78].addShapeBox(0F, 0F, 0F, 2, 6, 1, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F); // Box 93
         body[78].setRotationPoint(10F, -22F, -18F);
+        this.add("body", body);
 
-        out = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] out = new ModelRendererTurbo[4];
         out[0] = new ModelRendererTurbo(this, 1, 209, textureX, textureY); // Box 58
         out[1] = new ModelRendererTurbo(this, 121, 209, textureX, textureY); // Box 59
         out[2] = new ModelRendererTurbo(this, 465, 17, textureX, textureY); // Box 78
@@ -356,8 +355,9 @@ public class ModelT1_2 extends PartModelTMT {
 
         out[3].addShapeBox(0F, 0F, 0F, 4, 1, 8, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F); // Box 79
         out[3].setRotationPoint(-155F, 8.5F, 14F);
+        this.add("out", out);
 
-        in = new ModelRendererTurbo[6];
+        ModelRendererTurbo[] in = new ModelRendererTurbo[6];
         in[0] = new ModelRendererTurbo(this, 345, 217, textureX, textureY); // Box 60
         in[1] = new ModelRendererTurbo(this, 1, 225, textureX, textureY); // Box 62
         in[2] = new ModelRendererTurbo(this, 1, 33, textureX, textureY); // Box 80
@@ -384,8 +384,9 @@ public class ModelT1_2 extends PartModelTMT {
 
         in[5].addShapeBox(0F, 0F, 0F, 1, 2, 6, 0F, -0.2F, 0F, -0.5F, -0.2F, 0F, -0.5F, -0.2F, 0F, -0.5F, -0.2F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 95
         in[5].setRotationPoint(-102F, -16F, -21F);
+        this.add("in", in);
 
-        body_colored_secondary = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] body_colored_secondary = new ModelRendererTurbo[4];
         body_colored_secondary[0] = new ModelRendererTurbo(this, 169, 97, textureX, textureY); // Box 32
         body_colored_secondary[1] = new ModelRendererTurbo(this, 1, 193, textureX, textureY); // Box 35
         body_colored_secondary[2] = new ModelRendererTurbo(this, 217, 17, textureX, textureY); // Box 63
@@ -402,9 +403,8 @@ public class ModelT1_2 extends PartModelTMT {
 
         body_colored_secondary[3].addShapeBox(0F, 0F, 0F, 30, 8, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F); // Box 64
         body_colored_secondary[3].setRotationPoint(-54F, -11F, 13F);
-
+        this.add("body_colored_secondary", body_colored_secondary);
         translateAll(0F, 0F, 0F);
-
     }
 
     @Override
@@ -412,10 +412,10 @@ public class ModelT1_2 extends PartModelTMT {
         super.render(data, us, vehicle, meta);
         T1_2Script scr = data.getScript(T1_2Script.class);
         if(scr != null){
-            render(scr.out ? out : in);
+            render(scr.out ? "out" : "in");
         }
         else{
-            render(in);
+            render("in");
         }
     }
 }

@@ -6,14 +6,14 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelT2SW extends PartModelTMT {
+public class ModelT2SW extends PartModel {
 
     public ModelT2SW(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        steering = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 153, 49, textureX, textureY); // Box 263
         steering[1] = new ModelRendererTurbo(this, 449, 89, textureX, textureY); // Box 264
         steering[2] = new ModelRendererTurbo(this, 57, 1, textureX, textureY); // Box 265
@@ -79,7 +79,7 @@ public class ModelT2SW extends PartModelTMT {
         steering[12].addShapeBox(-3F, 0F, -4F, 1, 2, 8, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, -2.5F, 0F, 0F, -2.5F, 0F, 0F, -2.5F, -0.5F, 0F, -2.5F); // Box 275
         steering[12].setRotationPoint(56F, -31.5F, 12F);
         steering[12].rotateAngleZ = -1.04719755F;
-
+        this.add("steering", steering);
         //translateAll(0F, 0F, 0F);
         flipAll();
     }

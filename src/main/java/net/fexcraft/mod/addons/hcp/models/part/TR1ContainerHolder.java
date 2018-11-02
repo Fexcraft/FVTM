@@ -2,19 +2,19 @@ package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
 /**
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1ContainerHolder extends PartModelTMT {
+public class TR1ContainerHolder extends PartModel {
 
     public TR1ContainerHolder(){
     	super(); this.addToCreators("FEX___96");
         textureX = 512; textureY = 512;
-		body = new ModelRendererTurbo[21];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[21];
 		body[0] = new ModelRendererTurbo(this, 409, 185, textureX, textureY); // Box 131
 		body[1] = new ModelRendererTurbo(this, 449, 185, textureX, textureY); // Box 132
 		body[2] = new ModelRendererTurbo(this, 145, 217, textureX, textureY); // Box 133
@@ -99,17 +99,18 @@ public class TR1ContainerHolder extends PartModelTMT {
 
 		body[20].addBox(0F, 0F, 0F, 18, 1, 48, 0F); // Box 151
 		body[20].setRotationPoint(-1F, -31F, -24F);
+		this.add("body", body);
     }
     
         @Override
     public void render(VehicleData data, String us){
-        render(body);
+        render("body");
         super.def_renderContainer(data, us);
     }
 
     @Override
     public void render(VehicleData data, String us, Entity ent, int meta){
-        render(body);
+        render("body");
         super.def_renderContainer(data, us, ent);
     }
 

@@ -9,15 +9,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelT1BW extends PartModelTMT {
+public class ModelT1BW extends PartModel {
 
     public ModelT1BW(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("Ferdinand (FEX___96)");
-        wheel_back_left = new ModelRendererTurbo[62];
+        ModelRendererTurbo[] wheel_back_left = new ModelRendererTurbo[62];
         wheel_back_left[0] = new ModelRendererTurbo(this, 249, 145, textureX, textureY); // Box 231
         wheel_back_left[1] = new ModelRendererTurbo(this, 209, 121, textureX, textureY); // Box 232
         wheel_back_left[2] = new ModelRendererTurbo(this, 161, 129, textureX, textureY); // Box 233
@@ -266,8 +266,9 @@ public class ModelT1BW extends PartModelTMT {
 
         wheel_back_left[61].addShapeBox(-2F, 5F, 2F, 1, 1, 1, 0F, -0.1F, -0.1F, 0F, -0.1F, -0.1F, 0F, -0.3F, -0.3F, -0.6F, -0.3F, -0.3F, -0.6F, -0.1F, -0.1F, 0F, -0.1F, -0.1F, 0F, -0.3F, -0.3F, -0.6F, -0.3F, -0.3F, -0.6F); // Box 600
         wheel_back_left[61].setRotationPoint(-71F, 0F, 17F);
+        this.add("wheel_back_left", wheel_back_left);
 
-        wheel_back_right = new ModelRendererTurbo[62];
+        ModelRendererTurbo[] wheel_back_right = new ModelRendererTurbo[62];
         wheel_back_right[0] = new ModelRendererTurbo(this, 473, 169, textureX, textureY); // Box 273
         wheel_back_right[1] = new ModelRendererTurbo(this, 489, 129, textureX, textureY); // Box 274
         wheel_back_right[2] = new ModelRendererTurbo(this, 281, 169, textureX, textureY); // Box 275
@@ -516,6 +517,7 @@ public class ModelT1BW extends PartModelTMT {
 
         wheel_back_right[61].addShapeBox(-2F, 5F, -3F, 1, 1, 1, 0F, -0.3F, -0.3F, -0.6F, -0.3F, -0.3F, -0.6F, -0.1F, -0.1F, 0F, -0.1F, -0.1F, 0F, -0.3F, -0.3F, -0.6F, -0.3F, -0.3F, -0.6F, -0.1F, -0.1F, 0F, -0.1F, -0.1F, 0F); // Box 608
         wheel_back_right[61].setRotationPoint(-71F, 0F, -17F);
+        this.add("wheel_back_right", wheel_back_right);
     }
 
     @Override

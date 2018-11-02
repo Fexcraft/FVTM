@@ -10,14 +10,14 @@ package net.fexcraft.mod.addons.fvp.models.vehicle;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelC7 extends VehicleModelTMT {
+public class ModelC7 extends VehicleModel {
 
     public ModelC7(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[94];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[94];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 137, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 249, 1, textureX, textureY); // Box 2
@@ -394,9 +394,10 @@ public class ModelC7 extends VehicleModelTMT {
 
         body[93].addBox(0F, 0F, 0F, 1, 1, 34, 0F); // Box 245
         body[93].setRotationPoint(23F, -4F, -17F);
+        this.add("body", body);
 
         //
-        body_colored_primary = new ModelRendererTurbo[78];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[78];
         body_colored_primary[0] = new ModelRendererTurbo(this, 177, 17, textureX, textureY); // Box 44
         body_colored_primary[1] = new ModelRendererTurbo(this, 209, 17, textureX, textureY); // Box 45
         body_colored_primary[2] = new ModelRendererTurbo(this, 257, 17, textureX, textureY); // Box 46
@@ -709,14 +710,15 @@ public class ModelC7 extends VehicleModelTMT {
 
         body_colored_primary[77].addShapeBox(0F, 0F, 0F, 4, 11, 2, 0F, 0F, 0F, -1F, -1F, 0F, -1F, -1F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 240
         body_colored_primary[77].setRotationPoint(-4F, -15F, -18F);
+        this.add("body_colored_primary", body_colored_primary);
         flipAll();
     }
 
     @Override
     public void render(VehicleData data, Object obj){
-        render(body);
+        render("body");
         data.getPrimaryColor().glColorApply();
-        render(body_colored_primary);
+        render("body_colored_primary");
         data.getPrimaryColor();
         RGB.glColorReset();
     }

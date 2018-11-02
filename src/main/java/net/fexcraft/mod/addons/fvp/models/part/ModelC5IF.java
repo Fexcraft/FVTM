@@ -2,15 +2,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC5IF extends PartModelTMT {
+public class ModelC5IF extends PartModel {
 
     public ModelC5IF(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[26];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[26];
         body[0] = new ModelRendererTurbo(this, 1, 321, textureX, textureY); // Box 216
         body[1] = new ModelRendererTurbo(this, 305, 217, textureX, textureY); // Box 230
         body[2] = new ModelRendererTurbo(this, 129, 353, textureX, textureY); // Box 264
@@ -129,20 +129,21 @@ public class ModelC5IF extends PartModelTMT {
 
         body[25].addShapeBox(0F, 0F, 0F, 2, 1, 4, 0F, 1F, 0F, 1F, 1F, 0F, 1F, 1F, 0F, 1F, 1F, 0F, 1F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F); // Box 427
         body[25].setRotationPoint(4F, -23F, -2F);
-        this.flipAll();
+        this.add("body", body);
         for(ModelRendererTurbo mod : body){
             mod.rotateAngleY = -mod.rotateAngleY;
         }
+        this.flipAll();
     }
 
     @Override
     public void render(VehicleData data, String us){
-        render(body);
+        render("body");
     }
 
     @Override
     public void render(VehicleData data, String us, Entity vehicle, int meta){
-        render(body);
+        render("body");
     }
 
 }

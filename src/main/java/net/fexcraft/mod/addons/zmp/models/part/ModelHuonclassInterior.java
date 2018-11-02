@@ -1,14 +1,14 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelHuonclassInterior extends PartModelTMT {
+public class ModelHuonclassInterior extends PartModel {
 
     public ModelHuonclassInterior(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("zackyboy18");
-        body = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[13];
         body[0] = new ModelRendererTurbo(this, 353, 25, textureX, textureY); // Box 243
         body[1] = new ModelRendererTurbo(this, 393, 25, textureX, textureY); // Box 18
         body[2] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 19
@@ -64,8 +64,9 @@ public class ModelHuonclassInterior extends PartModelTMT {
 
         body[12].addBox(0F, 0F, 0F, 6, 3, 6, 0F); // Box 262
         body[12].setRotationPoint(20F, -5F, -2F);
+        this.add("body", body);
 
-        steering = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 353, 129, textureX, textureY); // Box 261
         steering[1] = new ModelRendererTurbo(this, 361, 129, textureX, textureY); // Box 262
         steering[2] = new ModelRendererTurbo(this, 369, 129, textureX, textureY); // Box 263
@@ -118,6 +119,7 @@ public class ModelHuonclassInterior extends PartModelTMT {
 
         steering[12].addShapeBox(0F, 1.5F, -2.5F, 1, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, 1F, 0F, -1F, 1F); // Box 273
         steering[12].setRotationPoint(30F, -13F, -1F);
+        this.add("steering", steering);
         //
         translateAll(0F, 0F, 0F);
         flipAll();

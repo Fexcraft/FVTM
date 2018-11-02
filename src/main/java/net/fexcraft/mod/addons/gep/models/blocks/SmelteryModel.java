@@ -10,14 +10,11 @@ import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.minecraft.entity.Entity;
 
 public class SmelteryModel extends BlockModel {
-	
-	private ModelRendererTurbo[] left = new ModelRendererTurbo[2];
-	private ModelRendererTurbo[] right = new ModelRendererTurbo[2];
 
     public SmelteryModel(){
         textureX = 512; textureY = 256;
         this.addToCreators("FEX___96");
-        body = new ModelRendererTurbo[43];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[43];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 201, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 313, 1, textureX, textureY); // Box 2
@@ -190,6 +187,7 @@ public class SmelteryModel extends BlockModel {
 
         body[42].addBox(0F, 0F, 0F, 1, 1, 1, 0F); // Box 56
         body[42].setRotationPoint(0F, 0F, 0F);
+        this.add("body", body);
 
         /*turretModel = new ModelRendererTurbo[8];
         turretModel[0] = new ModelRendererTurbo(this, 265, 1, textureX, textureY); // Box 40
@@ -225,7 +223,7 @@ public class SmelteryModel extends BlockModel {
         turretModel[7].addBox(0F, 0F, 0F, 4, 2, 2, 0F); // Box 48
         turretModel[7].setRotationPoint(2F, -15F, -38F);*/
 
-        right = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] right = new ModelRendererTurbo[2];
         right[0] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 33
         right[1] = new ModelRendererTurbo(this, 489, 1, textureX, textureY); // Box 34
 
@@ -234,8 +232,9 @@ public class SmelteryModel extends BlockModel {
 
         right[1].addShapeBox(12F, 0F, -17F, 9, 12, 1, 0F, 0F, 0F, 0F, 0F, 0F, -9F, 0F, 0F, 9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -9F, 0F, 0F, 9F, 0F, 0F, 0F); // Box 34
         right[1].setRotationPoint(0F, -32F, 0F);
+        this.add("right", right);
 
-        left = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] left = new ModelRendererTurbo[2];
         left[0] = new ModelRendererTurbo(this, 1, 73, textureX, textureY); // Box 38
         left[1] = new ModelRendererTurbo(this, 25, 25, textureX, textureY); // Box 39
 
@@ -244,6 +243,7 @@ public class SmelteryModel extends BlockModel {
 
         left[1].addShapeBox(-21F, 0F, -17F, 9, 12, 1, 0F, 0F, 0F, -9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 9F, 0F, 0F, -9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 9F); // Box 39
         left[1].setRotationPoint(0F, -32F, 0F);
+        this.add("left", left);
 
         translateAll(0F, 0F, 0F);
         flipAll();
@@ -253,21 +253,21 @@ public class SmelteryModel extends BlockModel {
     
 	@Override
 	public void render(BlockData data, BlockTileEntity key, Entity ent, int meta){
-		render(body);
+		render("body");
 		if(data.getScript() != null && key != null){
 	    	float angle = RenderCache.getData(key.getLongPos(), "openstate", 0) + (data.getScript(SmelteryScript.class).open ? 1 : -1);
 	    	RenderCache.updateData(key.getLongPos(), "openstate", angle = angle > 160 ? 160 : angle < 0 ? 0 : angle);
 	    	//
-	    	rotate(left, 0, quarterrad * angle, 0);
-	        render(left);
-	    	rotate(left, 0, quarterrad * -angle, 0);
-	    	rotate(right, 0, quarterrad * -angle, 0);
-	        render(right);
-	    	rotate(right, 0, quarterrad * angle, 0);
+	    	get("left").rotate(0, quarterrad * angle, 0);
+	        render("left");
+	    	get("left").rotate(0, quarterrad * -angle, 0);
+	    	get("right").rotate(0, quarterrad * -angle, 0);
+	        render("right");
+	    	get("right").rotate(0, quarterrad * angle, 0);
 		}
 		else{
-			render(right);
-			render(left);
+			render("right");
+			render("left");
 		}
 	}
 

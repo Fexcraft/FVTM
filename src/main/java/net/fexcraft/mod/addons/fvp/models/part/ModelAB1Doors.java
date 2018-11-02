@@ -4,16 +4,16 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelAB1Doors extends PartModelTMT {
+public class ModelAB1Doors extends PartModel {
 
     public ModelAB1Doors(){
     	super();
         textureX = 1024; textureY = 1024;
         addToCreators("Ferdinand (FEX___96)");
-        body_door_open = new ModelRendererTurbo[7];
+        ModelRendererTurbo[] body_door_open = new ModelRendererTurbo[7];
         body_door_open[0] = new ModelRendererTurbo(this, 457, 177, textureX, textureY); // Box 298
         body_door_open[1] = new ModelRendererTurbo(this, 41, 105, textureX, textureY); // Box 299
         body_door_open[2] = new ModelRendererTurbo(this, 913, 57, textureX, textureY); // Box 300
@@ -42,8 +42,9 @@ public class ModelAB1Doors extends PartModelTMT {
 
         body_door_open[6].addBox(-1F, 16F, 0.5F, 3, 2, 1, 0F); // Box 304
         body_door_open[6].setRotationPoint(-54F, -26F, -31.5F);
+        this.add("body_door_open", body_door_open);
 
-        body_door_close = new ModelRendererTurbo[7];
+        ModelRendererTurbo[] body_door_close = new ModelRendererTurbo[7];
         body_door_close[0] = new ModelRendererTurbo(this, 1, 161, textureX, textureY); // Box 289
         body_door_close[1] = new ModelRendererTurbo(this, 209, 57, textureX, textureY); // Box 290
         body_door_close[2] = new ModelRendererTurbo(this, 297, 57, textureX, textureY); // Box 291
@@ -72,7 +73,7 @@ public class ModelAB1Doors extends PartModelTMT {
 
         body_door_close[6].addBox(9F, 1F, -0.5F, 3, 1, 2, 0F); // Box 296
         body_door_close[6].setRotationPoint(82F, -21F, -31.5F);
-
+        this.add("body_door_close", body_door_close);
         //translateAll(0F, 0F, 0F);
         flipAll();
     }
@@ -80,11 +81,11 @@ public class ModelAB1Doors extends PartModelTMT {
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        for(ModelRendererTurbo mod : body_door_open){
+        for(ModelRendererTurbo mod : get("body_door_open")){
             mod.rotateAngleY = data.doorsOpen() ? Static.rad90 : 0;
             mod.render();
         }
-        for(ModelRendererTurbo mod : body_door_close){
+        for(ModelRendererTurbo mod : get("body_door_close")){
             mod.rotateAngleY = data.doorsOpen() ? Static.rad90 : 0;
             mod.render();
         }

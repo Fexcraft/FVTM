@@ -1,15 +1,15 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class Model4x4Police extends VehicleModelTMT {
+public class Model4x4Police extends VehicleModel {
 
     public Model4x4Police(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("zackyboy18");
         this.addToCreators("FEX___96");
-        body = new ModelRendererTurbo[261];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[261];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 49, 1, textureX, textureY); // Box 2
@@ -1063,8 +1063,9 @@ public class Model4x4Police extends VehicleModelTMT {
 
         body[260].addShapeBox(0F, 0F, 0F, 1, 2, 1, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 381
         body[260].setRotationPoint(35F, 11.5F, -3.5F);
+        this.add("body", body);
 
-        body_door_close = new ModelRendererTurbo[8];
+        ModelRendererTurbo[] body_door_close = new ModelRendererTurbo[8];
         body_door_close[0] = new ModelRendererTurbo(this, 41, 81, textureX, textureY); // Box 230
         body_door_close[1] = new ModelRendererTurbo(this, 473, 81, textureX, textureY); // Box 231
         body_door_close[2] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 232
@@ -1097,6 +1098,7 @@ public class Model4x4Police extends VehicleModelTMT {
 
         body_door_close[7].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 270
         body_door_close[7].setRotationPoint(8F, -3F, -19.5F);
+        this.add("body_door_close", body_door_close);
 
         translateAll(0F, -12F, 0F);
         flipAll();

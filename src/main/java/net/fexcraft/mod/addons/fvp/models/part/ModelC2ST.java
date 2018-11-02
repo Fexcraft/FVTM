@@ -8,21 +8,21 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelC2ST extends PartModelTMT {
+public class ModelC2ST extends PartModel {
 
     public ModelC2ST(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        steering = new ModelRendererTurbo[1];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[1];
         steering[0] = new ModelRendererTurbo(this, 425, 81, textureX, textureY); // Box 94
 
         steering[0].addBox(0F, -3F, -3F, 1, 7, 7, 0F); // Box 94
         steering[0].setRotationPoint(5F, -26F, 13F);
         steering[0].rotateAngleZ = 0.26179939F;
 
-        body = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[4];
         body[0] = new ModelRendererTurbo(this, 353, 73, textureX, textureY); // Box 81
         body[1] = new ModelRendererTurbo(this, 257, 1, textureX, textureY); // Box 93
         body[2] = new ModelRendererTurbo(this, 361, 1, textureX, textureY); // Box 97
@@ -40,7 +40,8 @@ public class ModelC2ST extends PartModelTMT {
 
         body[3].addShapeBox(0F, 0F, 0F, 3, 2, 2, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 98
         body[3].setRotationPoint(14F, -14F, 13F);
-
+        this.add("steering", steering);
+        this.add("body", body);
     }
 
     //TODO override rendering to save up processing time

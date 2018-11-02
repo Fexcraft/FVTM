@@ -15,7 +15,7 @@ public class ModelBogieST1 extends AdjustableBogieModel {
 
 	public ModelBogieST1(){
 		this.textureX = this.textureY = 256;
-		chassis = new ModelRendererTurbo[43];
+		ModelRendererTurbo[] chassis = new ModelRendererTurbo[43];
 		chassis[0] = new ModelRendererTurbo(this, 113, 113, textureX, textureY); // Box 149
 		chassis[1] = new ModelRendererTurbo(this, 145, 113, textureX, textureY); // Box 150
 		chassis[2] = new ModelRendererTurbo(this, 217, 113, textureX, textureY); // Box 151
@@ -188,9 +188,9 @@ public class ModelBogieST1 extends AdjustableBogieModel {
 
 		chassis[42].addShapeBox(-3F, 0F, 1.5F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -0.5F, -1.5F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, -0.5F, -1.5F, 0F, 0.5F); // Box 191
 		chassis[42].setRotationPoint(0F, -20.5F, 0F);
+		this.add("chassis", chassis);
 
-
-		axle0 = new ModelRendererTurbo[67];
+		ModelRendererTurbo[] axle0 = new ModelRendererTurbo[67];
 		axle0[0] = new ModelRendererTurbo(this, 233, 1, textureX, textureY); // Box 0
 		axle0[1] = new ModelRendererTurbo(this, 233, 9, textureX, textureY); // Box 1
 		axle0[2] = new ModelRendererTurbo(this, 97, 17, textureX, textureY); // Box 2
@@ -519,9 +519,9 @@ public class ModelBogieST1 extends AdjustableBogieModel {
 
 		axle0[66].addBox(-1F, -1F, -17F, 2, 2, 34, 0F); // Box 66
 		axle0[66].setRotationPoint(16F, -16F, 0F);
+		this.add("axle0", axle0);
 
-
-		axle1 = new ModelRendererTurbo[67];
+		ModelRendererTurbo[] axle1 = new ModelRendererTurbo[67];
 		axle1[0] = new ModelRendererTurbo(this, 137, 65, textureX, textureY); // Box 67
 		axle1[1] = new ModelRendererTurbo(this, 153, 65, textureX, textureY); // Box 68
 		axle1[2] = new ModelRendererTurbo(this, 169, 65, textureX, textureY); // Box 69
@@ -850,6 +850,7 @@ public class ModelBogieST1 extends AdjustableBogieModel {
 
 		axle1[66].addBox(-1F, -1F, -17F, 2, 2, 34, 0F); // Box 133
 		axle1[66].setRotationPoint(-16F, -16F, 0F);
+		this.add("axle1", axle1);
 		
 		translateAll(0F, 8F, 0F);
 		flipAll();

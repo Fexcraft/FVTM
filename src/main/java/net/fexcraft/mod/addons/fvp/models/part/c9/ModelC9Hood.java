@@ -5,16 +5,16 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.minecraft.entity.Entity;
 
-public class ModelC9Hood extends PartModelTMT {
+public class ModelC9Hood extends PartModel {
 
     public ModelC9Hood(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-		body_colored_primary = new ModelRendererTurbo[31];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[31];
 		body_colored_primary[0] = new ModelRendererTurbo(this, 489, 33, textureX, textureY); // Box 70
 		body_colored_primary[1] = new ModelRendererTurbo(this, 33, 49, textureX, textureY); // Box 76
 		body_colored_primary[2] = new ModelRendererTurbo(this, 265, 41, textureX, textureY); // Box 84
@@ -108,12 +108,13 @@ public class ModelC9Hood extends PartModelTMT {
 		body_colored_primary[29].setRotationPoint(20F, -5F, 0F);
 		body_colored_primary[30].addShapeBox(28F, 2.5F, -6.8F, 1, 1, 1, 0F, 0F, -0.2F, -0.8F, -0.9F, -0.2F, -0.9F, -0.9F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, -0.6F, -0.4F, 0.1F, -0.6F, 0.1F, -0.3F, 0F, 0F, -0.4F, 0F); // Box 141
 		body_colored_primary[30].setRotationPoint(20F, -5F, 0F);
+		this.add("body_colored_primary", body_colored_primary);
     }
 
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render(body_colored_primary);
+        render("body_colored_primary");
         RGB.glColorReset();
     }
 
@@ -123,9 +124,9 @@ public class ModelC9Hood extends PartModelTMT {
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
     	float state = ent == null ? data.doorsOpen() ? 45 : 0 : RenderCache.getData(ent, "c9_hood", 0) + ((script == null ? data.doorsOpen() : script.hood) ? 1 : -1);
     	if(ent != null) RenderCache.updateData(ent, "c9_hood", state = state > 45 ? 45 : state < 0 ? 0 : state);
-        rotate(body_colored_primary, 0, 0, state * -Static.rad1, true);
-        render(body_colored_primary);
-        rotate(body_colored_primary, 0, 0, 0, true);
+        get("body_colored_primary").rotate(0, 0, state * -Static.rad1, true);
+        render("body_colored_primary");
+        get("body_colored_primary").rotate(0, 0, 0, true);
         RGB.glColorReset();
     }
 

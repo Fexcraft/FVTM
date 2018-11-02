@@ -2,14 +2,14 @@ package net.fexcraft.mod.addons.fvp.models.part.c9;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC9Bumper extends PartModelTMT {
+public class ModelC9Bumper extends PartModel {
 	
 	public ModelC9Bumper(){
     	super(); textureX = 512; textureY = 512;
-		track_wheels_left = new ModelRendererTurbo[8];
+    	ModelRendererTurbo[] track_wheels_left = new ModelRendererTurbo[8];
 		track_wheels_left[0] = new ModelRendererTurbo(this, 169, 97, textureX, textureY); // Box 204
 		track_wheels_left[1] = new ModelRendererTurbo(this, 249, 89, textureX, textureY); // Box 205
 		track_wheels_left[2] = new ModelRendererTurbo(this, 201, 97, textureX, textureY); // Box 206
@@ -34,8 +34,9 @@ public class ModelC9Bumper extends PartModelTMT {
 		track_wheels_left[6].setRotationPoint(48.5F, 4F, 18.8F);
 		track_wheels_left[7].addShapeBox(0F, 0F, 0F, 1, 4, 1, 0F, 0.9F, 0F, -0.45F, -0.8F, -0.3F, -0.5F, 0F, -0.3F, 0F, 0F, 0F, 0F, 0.9F, -0.6F, -0.45F, -0.8F, -0.9F, -0.5F, 0F, -0.9F, 0F, 0F, -0.6F, 0F); // Box 342
 		track_wheels_left[7].setRotationPoint(48.5F, 4F, -19.8F);
+		this.add("track_wheels_left", track_wheels_left);
 		//
-		track_wheels_right = new ModelRendererTurbo[8];
+		ModelRendererTurbo[] track_wheels_right = new ModelRendererTurbo[8];
 		track_wheels_right[0] = new ModelRendererTurbo(this, 345, 129, textureX, textureY); // Box 329
 		track_wheels_right[1] = new ModelRendererTurbo(this, 473, 153, textureX, textureY); // Box 346
 		track_wheels_right[2] = new ModelRendererTurbo(this, 385, 129, textureX, textureY); // Box 347
@@ -60,17 +61,18 @@ public class ModelC9Bumper extends PartModelTMT {
 		track_wheels_right[6].setRotationPoint(-55.3F, 3F, 19.2F); 
 		track_wheels_right[7].addShapeBox(0F, 1F, 0F, 1, 4, 1, 0F, 0.7F, -0.3F, -0.7F, -0.6F, -0.3F, -0.5F, 0.4F, 0F, -0.5F, 0F, 0F, 0F, 0.7F, -0.9F, -0.7F, -0.6F, -0.8F, -0.5F, 0.4F, -0.6F, -0.5F, 0F, -0.6F, 0F); // Box 352
 		track_wheels_right[7].setRotationPoint(-55.3F, 3F, -20.2F);
+		this.add("track_wheel_right", track_wheels_right);
 	}
 	
     @Override
 	public void render(VehicleData data, String us){
 	    switch(us){
 	        case "front_bumper": {
-	            render(track_wheels_left);
+	            render("track_wheels_left");
 	            return;
 	        }
 	        case "rear_bumper": {
-	            render(track_wheels_right);
+	            render("track_wheels_right");
 	            return;
 	        }
 	        default: {

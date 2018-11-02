@@ -4,16 +4,16 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.minecraft.entity.Entity;
 
-public class ModelCargoShip extends VehicleModelTMT {
+public class ModelCargoShip extends VehicleModel {
 
     public ModelCargoShip(){
     	super(); textureX = 4096; textureY = 4096;
         this.addToCreators("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
         this.gui_scale_x = this.gui_scale_y = this.gui_scale_z = 0.015f;
-        body = new ModelRendererTurbo[133];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[133];
         body[0] = new ModelRendererTurbo(this, 1, 913, textureX, textureY); // Box 82
         body[1] = new ModelRendererTurbo(this, 1249, 913, textureX, textureY); // Box 83
         body[2] = new ModelRendererTurbo(this, 2697, 913, textureX, textureY); // Box 84
@@ -546,8 +546,9 @@ public class ModelCargoShip extends VehicleModelTMT {
 
         body[132].addShapeBox(0F, 0F, 0F, 30, 25, 11, 0F, 0F, 0F, 0F, 0F, 0F, -6F, 0F, 0F, -5F, 0F, 0F, 0F, 0F, 0F, -5F, -15F, 0F, -5F, -15F, 0F, -6F, 0F, 0F, -6F); // Box 227
         body[132].setRotationPoint(787F, 29F, -6F);
+        this.add("body", body);
 
-        turret = new ModelRendererTurbo[87];
+        ModelRendererTurbo[] turret = new ModelRendererTurbo[87];
         turret[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         turret[1] = new ModelRendererTurbo(this, 297, 1, textureX, textureY); // Box 1
         turret[2] = new ModelRendererTurbo(this, 593, 1, textureX, textureY); // Box 2
@@ -896,6 +897,7 @@ public class ModelCargoShip extends VehicleModelTMT {
 
         turret[86].addBox(0F, 0F, 0F, 48, 48, 96, 0F); // Box 230
         turret[86].setRotationPoint(618F, -177F, -50F);
+        this.add("turret", turret);
 
         translateAll(0F, 0F, 0F);
         flipAll();
@@ -903,7 +905,7 @@ public class ModelCargoShip extends VehicleModelTMT {
 
     @Override
     public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
-        render(body);
+        render("body");
     }
 
 }

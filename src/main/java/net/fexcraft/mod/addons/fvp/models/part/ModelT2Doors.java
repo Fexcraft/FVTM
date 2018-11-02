@@ -1,26 +1,22 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.Coord2D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.lib.tmt.Shape2D;
-import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelT2Doors extends PartModelTMT {
+public class ModelT2Doors extends PartModel {
 	
-    public ModelRendererTurbo[] front_right;
-    public ModelRendererTurbo[] front_left;
-    private static final float rad80 = Static.rad60 + Static.rad20;
+    //private static final float rad80 = Static.rad60 + Static.rad20;
 
     public ModelT2Doors(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
         //
-        front_left = new ModelRendererTurbo[6];
+        ModelRendererTurbo[] front_left = new ModelRendererTurbo[6];
         front_left[0] = new ModelRendererTurbo(this, 425, 89, textureX, textureY); // Box 230
         front_left[1] = new ModelRendererTurbo(this, 209, 49, textureX, textureY); // Box 231
         front_left[2] = new ModelRendererTurbo(this, 233, 57, textureX, textureY); // Box 232
@@ -44,7 +40,7 @@ public class ModelT2Doors extends PartModelTMT {
         //front_left[6].addShapeBox(-23F, -18F, -0.5F, 21, 18, 1, 0F, 0F, 0F, 0.1F, 0F, 0F, 0.1F, 0F, 0F, -0.9F, 0F, 0F, -0.9F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F); // Box 243
         //front_left[6].setRotationPoint(64F, -32F, 25F);
         //
-        front_right = new ModelRendererTurbo[6];
+        ModelRendererTurbo[] front_right = new ModelRendererTurbo[6];
         front_right[0] = new ModelRendererTurbo(this, 1, 73, textureX, textureY); // Box 235
         front_right[1] = new ModelRendererTurbo(this, 65, 73, textureX, textureY); // Box 236
         front_right[2] = new ModelRendererTurbo(this, 241, 185, textureX, textureY); // Box 237
@@ -68,24 +64,25 @@ public class ModelT2Doors extends PartModelTMT {
         //front_right[6].addShapeBox(-23F, -18F, -0.5F, 21, 18, 1, 0F, 0F, 0F, -0.9F, 0F, 0F, -0.9F, 0F, 0F, 0.1F, 0F, 0F, 0.1F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F); // Box 242
         //front_right[6].setRotationPoint(64F, -32F, -25F);
         //
+        this.add("front_left", front_left); this.add("front_right", front_right);
         flipAll();
     }
 
     @Override
     public void render(VehicleData data, String us){
-        data.getPrimaryColor().glColorApply();
+        /*data.getPrimaryColor().glColorApply();
         rotate(this.front_left, 0, 0, 0, true);
         front_left[4].rotateAngleZ = Static.rad180;
         render(this.front_left);
         rotate(this.front_right, 0, 0, 0, true);
         front_right[4].rotateAngleZ = Static.rad180;
         render(this.front_right);
-        RGB.glColorReset();
+        RGB.glColorReset();*///TODO
     }
 
     @Override
     public void render(VehicleData data, String us, Entity vehicle, int meta){
-        MultiDoorScript script = data.getScript(MultiDoorScript.class);
+        /*MultiDoorScript script = data.getScript(MultiDoorScript.class);
         if(script == null){
             data.getPrimaryColor().glColorApply();
             rotate(this.front_left, 0, data.doorsOpen() ? rad80 : 0, 0, true);
@@ -105,7 +102,7 @@ public class ModelT2Doors extends PartModelTMT {
             front_right[4].rotateAngleZ = Static.rad180;
             render(this.front_right);
             RGB.glColorReset();
-        }
+        }*///TODO
     }
 
 }

@@ -23,7 +23,7 @@ public class ColorExtractor extends BlockModel {
 	
 	public ColorExtractor(){
 		textureX = textureY = 256;
-		body = new ModelRendererTurbo[140];
+		ModelRendererTurbo[] body = new ModelRendererTurbo[140];
 		body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
 		body[1] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 1
 		body[2] = new ModelRendererTurbo(this, 49, 1, textureX, textureY); // Box 2
@@ -590,9 +590,10 @@ public class ColorExtractor extends BlockModel {
 
 		body[139].addShapeBox(0F, 0F, 0F, 1, 8, 1, 0F, -14F, 0F, -4F, 14F, 0F, -4F, 14F, 0F, 4F, -14F, 0F, 4F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 171
 		body[139].setRotationPoint(-22F, -18F, -6F);
+		this.add("body", body);
 
 
-		glow = new ModelRendererTurbo[8];
+		ModelRendererTurbo[] glow = new ModelRendererTurbo[8];
 		glow[0] = new ModelRendererTurbo(this, 177, 121, textureX, textureY); // Box 127
 		glow[1] = new ModelRendererTurbo(this, 73, 129, textureX, textureY); // Box 128
 		glow[2] = new ModelRendererTurbo(this, 113, 129, textureX, textureY); // Box 129
@@ -632,9 +633,10 @@ public class ColorExtractor extends BlockModel {
 		glow[7].addShapeBox(0F, 0F, 0F, 1, 3, 7, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F); // Box 134
 		glow[7].setRotationPoint(0F, -27F, 0F);
 		glow[7].rotateAngleY = -5.49778714F;
+		this.add("glow", glow);
 
 
-		body_colored_primary = new ModelRendererTurbo[24];
+		ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[24];
 		body_colored_primary[0] = new ModelRendererTurbo(this, 241, 1, textureX, textureY); // Box 81
 		body_colored_primary[1] = new ModelRendererTurbo(this, 241, 9, textureX, textureY); // Box 82
 		body_colored_primary[2] = new ModelRendererTurbo(this, 241, 33, textureX, textureY); // Box 83
@@ -731,6 +733,7 @@ public class ColorExtractor extends BlockModel {
 
 		body_colored_primary[23].addBox(0F, 0F, 0F, 4, 4, 1, 0F); // Box 105
 		body_colored_primary[23].setRotationPoint(-2F, -31F, -8F);
+		this.add("body_colored_primary", body_colored_primary);
 
 		translateAll(0F, 0F, 0F);
 		flipAll();
@@ -738,12 +741,12 @@ public class ColorExtractor extends BlockModel {
 	
 	@Override
 	public void render(BlockData data, BlockTileEntity tile, Entity ent, int meta){
-		render(body); data.getPrimaryColor().glColorApply(); render(body_colored_primary); RGB.glColorReset();
+		render("body"); data.getPrimaryColor().glColorApply(); render("body_colored_primary"); RGB.glColorReset();
 		//
 		if(tile == null){ return; }
     	float rot = RenderCache.getData(tile.getLongPos(), "rotation", 0) + (data.getScript() == null ? 1 : data.getScript(CrafterBlockScriptBase.class).getProgress() > 0 ? 1 : 0);
     	RenderCache.updateData(tile.getLongPos(), "rotation", rot = rot > 360 ? 0 : rot < 0 ? 0 : rot);
-    	for(ModelRendererTurbo model : glow){
+    	for(ModelRendererTurbo model : get("glow")){
     		model.rotateAngleY += rot * Static.rad1; model.render(); model.rotateAngleY -= rot * Static.rad1;
     	}
 	}

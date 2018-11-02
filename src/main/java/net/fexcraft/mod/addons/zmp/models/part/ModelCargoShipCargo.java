@@ -6,10 +6,10 @@ import net.fexcraft.lib.common.lang.ArrayList;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelCargoShipCargo extends PartModelTMT {
+public class ModelCargoShipCargo extends PartModel {
 
     private static final ArrayList<Pos> offsets = new ArrayList<Pos>();
     private static final TreeMap<String, Pos> positions = new TreeMap<String, Pos>();

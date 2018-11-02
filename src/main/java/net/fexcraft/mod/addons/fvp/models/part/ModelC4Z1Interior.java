@@ -2,16 +2,16 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC4Z1Interior extends PartModelTMT {
+public class ModelC4Z1Interior extends PartModel {
 
     public ModelC4Z1Interior(){
     	super(); textureX = 1024; textureY = 1024;
         this.addToCreators("zackyboy18");
         this.addToCreators("FEX___96");
-        body = new ModelRendererTurbo[14];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[14];
         body[0] = new ModelRendererTurbo(this, 905, 145, textureX, textureY); // Box 259
         body[1] = new ModelRendererTurbo(this, 113, 121, textureX, textureY); // Box 260
         body[2] = new ModelRendererTurbo(this, 985, 153, textureX, textureY); // Box 274
@@ -69,18 +69,18 @@ public class ModelC4Z1Interior extends PartModelTMT {
 
         body[13].addBox(0F, 0F, 0F, 1, 1, 4, 0F); // Box 285
         body[13].setRotationPoint(51.8F, -21.5F, 2F);
-
-        fixRotations(body);
+        this.add("body", body);
+        fixRotations(get("body"));
     }
 
     @Override
     public void render(VehicleData data, String us){
-        render(body);
+        render("body");
     }
 
     @Override
     public void render(VehicleData data, String us, Entity vehicle, int meta){
-        render(body);
+        render("body");
     }
 
 }

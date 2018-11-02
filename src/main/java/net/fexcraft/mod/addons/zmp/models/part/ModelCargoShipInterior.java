@@ -1,14 +1,14 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelCargoShipInterior extends PartModelTMT {
+public class ModelCargoShipInterior extends PartModel {
 	
     public ModelCargoShipInterior(){
     	super(); textureX = 4096; textureY = 4096;
         this.addToCreators("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
-        body = new ModelRendererTurbo[41];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[41];
         body[0] = new ModelRendererTurbo(this, 3273, 1, textureX, textureY); // Box 169
         body[1] = new ModelRendererTurbo(this, 3457, 1, textureX, textureY); // Box 170
         body[2] = new ModelRendererTurbo(this, 3305, 1, textureX, textureY); // Box 171
@@ -173,6 +173,7 @@ public class ModelCargoShipInterior extends PartModelTMT {
 
         body[40].addBox(0F, 0F, 0F, 15, 1, 117, 0F); // Box 268
         body[40].setRotationPoint(-590F, -216F, -58F);
+        this.add("body", body);
         //
         //translateAll(0F, 0F, 0F);
         flipAll();

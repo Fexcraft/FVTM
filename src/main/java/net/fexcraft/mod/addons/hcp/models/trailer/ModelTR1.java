@@ -6,15 +6,15 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.minecraft.entity.Entity;
 
-public class ModelTR1 extends VehicleModelTMT {
+public class ModelTR1 extends VehicleModel {
 
     public ModelTR1(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("FEX___96");
-        body = new ModelRendererTurbo[30];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[30];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 221
         body[1] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[2] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 1
@@ -137,7 +137,7 @@ public class ModelTR1 extends VehicleModelTMT {
         body[29].addBox(0F, 0F, 0F, 128, 3, 52, 0F); // Box 370
         body[29].setRotationPoint(-108F, -24F, -26F);
 
-        chassis = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] chassis = new ModelRendererTurbo[4];
         chassis[0] = new ModelRendererTurbo(this, 465, 49, textureX, textureY); // Box 32
         chassis[1] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 33
         chassis[2] = new ModelRendererTurbo(this, 489, 49, textureX, textureY); // Box 35
@@ -155,17 +155,19 @@ public class ModelTR1 extends VehicleModelTMT {
         chassis[3].addBox(-3F, 24F, -3F, 6, 3, 6, 0F); // Box 36
         chassis[3].setRotationPoint(-47F, -17F, 19F);
         //
+        this.add("body", body);
+        this.add("chassis", chassis);
         //translateAll(0, 0, 0);
         flipAll();
     }
 
     @Override
     public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
-        render(body);
-        for(ModelRendererTurbo turbo : chassis){
+        render("body");
+        for(ModelRendererTurbo turbo : get("chassis")){
             turbo.rotateAngleZ = entity == null || ((VehicleEntity)entity).getEntityAtFront() == null ? 0 : Static.rad90;
         }
-        render(chassis);
+        render("chassis");
     }
 
 }

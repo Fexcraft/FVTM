@@ -1,14 +1,14 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelUtilityTrailer extends VehicleModelTMT {
+public class ModelUtilityTrailer extends VehicleModel {
 
     public ModelUtilityTrailer(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("zackyboy18");
-        body = new ModelRendererTurbo[187];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[187];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 209, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 353, 1, textureX, textureY); // Box 2
@@ -847,6 +847,7 @@ public class ModelUtilityTrailer extends VehicleModelTMT {
 
         body[186].addBox(0F, 0F, 0F, 2, 1, 1, 0F); // Box 219
         body[186].setRotationPoint(-51F, -11.7F, -15.8F);
+        this.add("body", body);
         //
         translateAll(0, 1, 0);
         flipAll();

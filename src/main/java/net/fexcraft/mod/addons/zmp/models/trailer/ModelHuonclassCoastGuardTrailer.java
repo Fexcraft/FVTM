@@ -1,13 +1,13 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelHuonclassCoastGuardTrailer extends VehicleModelTMT {
+public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
     public ModelHuonclassCoastGuardTrailer(){
     	super(); textureX = 512; textureY = 512;
-        body = new ModelRendererTurbo[535];
+    	ModelRendererTurbo[] body = new ModelRendererTurbo[535];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 89, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 177, 1, textureX, textureY); // Box 2
@@ -2331,8 +2331,9 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModelTMT {
 
         body[534].addBox(0F, 0F, 0F, 2, 2, 2, 0F); // Box 547
         body[534].setRotationPoint(-16F, -18.2F, -1F);
+        this.add("body", body);
 
-        steering = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 17, 129, textureX, textureY); // Box 261
         steering[1] = new ModelRendererTurbo(this, 137, 129, textureX, textureY); // Box 262
         steering[2] = new ModelRendererTurbo(this, 145, 129, textureX, textureY); // Box 263
@@ -2385,6 +2386,7 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModelTMT {
 
         steering[12].addShapeBox(0F, 1.5F, -2.5F, 1, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, 1F, 0F, -1F, 1F); // Box 273
         steering[12].setRotationPoint(-66F, -27F, -1F);
+        this.add("steering", steering);
         //
         translateAll(0, 2, 0);
         flipAll();

@@ -1,14 +1,14 @@
 package net.fexcraft.mod.addons.fvp.models.part.c9;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelC9Seats extends PartModelTMT {
+public class ModelC9Seats extends PartModel {
 
     public ModelC9Seats(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-		body = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[13];
 		body[0] = new ModelRendererTurbo(this, 65, 169, textureX, textureY); // Box 381
 		body[1] = new ModelRendererTurbo(this, 249, 177, textureX, textureY); // Box 427
 		body[2] = new ModelRendererTurbo(this, 393, 193, textureX, textureY); // Box 428
@@ -61,7 +61,7 @@ public class ModelC9Seats extends PartModelTMT {
 
 		body[12].addShapeBox(0F, 0F, 0F, 12, 3, 12, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 445
 		body[12].setRotationPoint(-4.5F, 7.8F, 3.5F);
-
+		this.add("body", body);
         translateAll(0F, 0F, 0F);
         flipAll();
     }

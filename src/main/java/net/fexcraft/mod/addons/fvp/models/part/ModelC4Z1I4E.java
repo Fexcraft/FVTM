@@ -2,15 +2,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC4Z1I4E extends PartModelTMT {
+public class ModelC4Z1I4E extends PartModel {
 
     public ModelC4Z1I4E(){
     	super(); textureX = 1024; textureY = 1024;
         this.addToCreators("zackyboy18");
-        body = new ModelRendererTurbo[132];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[132];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 244
         body[1] = new ModelRendererTurbo(this, 537, 9, textureX, textureY); // Box 165
         body[2] = new ModelRendererTurbo(this, 569, 9, textureX, textureY); // Box 166
@@ -554,8 +554,8 @@ public class ModelC4Z1I4E extends PartModelTMT {
 
         body[131].addShapeBox(0F, 0F, 0F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 198
         body[131].setRotationPoint(60F, -7F, 11F);
-
-        fixRotations(body);
+        this.add("body", body);
+        fixRotations(get("body"));
 
     }
 
@@ -570,7 +570,7 @@ public class ModelC4Z1I4E extends PartModelTMT {
 				render(c4z1_var);
 			}
 		}*/
-        render(body);
+        render("body");
     }
 
     @Override
@@ -584,7 +584,7 @@ public class ModelC4Z1I4E extends PartModelTMT {
 				render(c4z1_var);
 			}
 		}*/
-        render(body);
+        render("body");
     }
 
 }

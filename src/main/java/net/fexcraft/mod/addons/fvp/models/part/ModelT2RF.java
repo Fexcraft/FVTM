@@ -7,15 +7,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelT2RF extends PartModelTMT {
+public class ModelT2RF extends PartModel {
 
     public ModelT2RF(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        body = new ModelRendererTurbo[9];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[9];
         body[0] = new ModelRendererTurbo(this, 185, 49, textureX, textureY); // Box 28
         body[1] = new ModelRendererTurbo(this, 233, 57, textureX, textureY); // Box 29
         body[2] = new ModelRendererTurbo(this, 1, 73, textureX, textureY); // Box 30
@@ -52,8 +52,9 @@ public class ModelT2RF extends PartModelTMT {
 
         body[8].addShapeBox(0F, 0F, 0F, 17, 1, 2, 0F, -2F, 0F, -1F, -2F, 0F, -1F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 147
         body[8].setRotationPoint(-56F, -16F, 12F);
+        this.add("body", body);
 
-        turret = new ModelRendererTurbo[9];
+        ModelRendererTurbo[] turret = new ModelRendererTurbo[9];
         turret[0] = new ModelRendererTurbo(this, 129, 73, textureX, textureY); // Box 35
         turret[1] = new ModelRendererTurbo(this, 385, 73, textureX, textureY); // Box 36
         turret[2] = new ModelRendererTurbo(this, 385, 33, textureX, textureY); // Box 37
@@ -90,7 +91,7 @@ public class ModelT2RF extends PartModelTMT {
 
         turret[8].addShapeBox(0F, 0F, 0F, 17, 1, 2, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, -2F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 149
         turret[8].setRotationPoint(-56F, -16F, -14F);
-
+        this.add("turret", turret);
         translateAll(0F, 0F, 0F);
         flipAll();
     }
@@ -99,16 +100,16 @@ public class ModelT2RF extends PartModelTMT {
     public void render(VehicleData data, String us){
         switch(us){
             case "rear_fender_left": {
-                render(body);
+                render("body");
                 return;
             }
             case "rear_fender_right": {
-                render(turret);
+                render("turret");
                 return;
             }
             default: {
-                render(body);
-                render(turret);
+                render("body");
+                render("turret");
                 return;
             }
         }

@@ -5,22 +5,16 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC7Doors extends PartModelTMT {
-	
-    public ModelRendererTurbo[] trunkn, trunkc;
-    public ModelRendererTurbo[] front_right;
-    public ModelRendererTurbo[] front_left;
-    public ModelRendererTurbo[] back_left;
-    public ModelRendererTurbo[] back_right;
+public class ModelC7Doors extends PartModel {
 
     public ModelC7Doors(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
         //
-        front_left = new ModelRendererTurbo[3];
+        ModelRendererTurbo[] front_left = new ModelRendererTurbo[3];
         front_left[0] = new ModelRendererTurbo(this, 57, 145, textureX, textureY); // Box 242
         front_left[1] = new ModelRendererTurbo(this, 129, 153, textureX, textureY); // Box 243
         front_left[2] = new ModelRendererTurbo(this, 57, 49, textureX, textureY); // Box 248
@@ -30,8 +24,9 @@ public class ModelC7Doors extends PartModelTMT {
         front_left[1].setRotationPoint(15F, -14F, 17F);
         front_left[2].addBox(-15F, 0F, -0.5F, 3, 1, 1, 0F); // Box 248
         front_left[2].setRotationPoint(15F, -12F, 17F);
+        this.add("front_left", front_left);
         //
-        front_right = new ModelRendererTurbo[3];
+        ModelRendererTurbo[] front_right = new ModelRendererTurbo[3];
         front_right[0] = new ModelRendererTurbo(this, 225, 153, textureX, textureY); // Box 244
         front_right[1] = new ModelRendererTurbo(this, 265, 153, textureX, textureY); // Box 245
         front_right[2] = new ModelRendererTurbo(this, 73, 49, textureX, textureY); // Box 249
@@ -41,24 +36,27 @@ public class ModelC7Doors extends PartModelTMT {
         front_right[1].setRotationPoint(15F, -14F, -16F);
         front_right[2].addBox(-15F, 0F, -1.5F, 3, 1, 1, 0F); // Box 249
         front_right[2].setRotationPoint(15F, -12F, -16F);
+        this.add("front_right", front_right);
         //
-        back_left = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] back_left = new ModelRendererTurbo[2];
         back_left[0] = new ModelRendererTurbo(this, 305, 153, textureX, textureY); // Box 246
         back_left[1] = new ModelRendererTurbo(this, 105, 49, textureX, textureY); // Box 250
         back_left[0].addShapeBox(-17F, 0F, 1F, 18, 11, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 1F, -1F, 0F, 1F); // Box 246
         back_left[0].setRotationPoint(-5F, -15F, 15F);
         back_left[1].addBox(-14F, 0F, 1.5F, 3, 1, 1, 0F); // Box 250
         back_left[1].setRotationPoint(-5F, -12F, 15F);
+        this.add("back_left", back_left);
         //
-        back_right = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] back_right = new ModelRendererTurbo[2];
         back_right[0] = new ModelRendererTurbo(this, 345, 153, textureX, textureY); // Box 247
         back_right[1] = new ModelRendererTurbo(this, 321, 49, textureX, textureY); // Box 251
         back_right[0].addShapeBox(-17F, 0F, 1F, 18, 11, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, -1F, -1F, 0F, -1F); // Box 247
         back_right[0].setRotationPoint(-5F, -15F, -18F);
         back_right[1].addBox(-14F, 0F, 0.5F, 3, 1, 1, 0F); // Box 251
         back_right[1].setRotationPoint(-5F, -12F, -18F);
+        this.add("back_right", back_right);
         //
-        trunkc = new ModelRendererTurbo[3];
+        ModelRendererTurbo[] trunkc = new ModelRendererTurbo[3];
         trunkc[0] = new ModelRendererTurbo(this, 145, 153, textureX, textureY); // Box 252
         trunkc[1] = new ModelRendererTurbo(this, 361, 153, textureX, textureY); // Box 253
         trunkc[2] = new ModelRendererTurbo(this, 193, 145, textureX, textureY); // Box 254
@@ -68,8 +66,9 @@ public class ModelC7Doors extends PartModelTMT {
         trunkc[1].setRotationPoint(-41F, -26F, -15F);
         trunkc[2].addShapeBox(0F, 0F, 0F, 2, 1, 26, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F); // Box 254
         trunkc[2].setRotationPoint(-41F, -26F, -13F);
+        this.add("trunkc", trunkc);
         //
-        trunkn = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] trunkn = new ModelRendererTurbo[4];
         trunkn[0] = new ModelRendererTurbo(this, 425, 81, textureX, textureY); // Box 255
         trunkn[1] = new ModelRendererTurbo(this, 25, 89, textureX, textureY); // Box 256
         trunkn[2] = new ModelRendererTurbo(this, 233, 1, textureX, textureY); // Box 257
@@ -82,18 +81,19 @@ public class ModelC7Doors extends PartModelTMT {
         trunkn[2].setRotationPoint(-41F, -26F, -10F);
         trunkn[3].addShapeBox(-6F, 13F, 4F, 1, 3, 10, 0F, -0.8F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, -0.8F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F); // Box 258
         trunkn[3].setRotationPoint(-41F, -25F, -9F);
+        this.add("trunkn", trunkn);
     }
 
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render(this.front_left);
-        render(this.front_right);
-        render(this.back_left);
-        render(this.back_right);
-        render(this.trunkc);
+        render("front_left");
+        render("front_right");
+        render("back_left");
+        render("back_right");
+        render("trunkc");
         RGB.glColorReset();
-        render(this.trunkn);
+        render("trunkn");
     }
 
     @Override
@@ -101,37 +101,37 @@ public class ModelC7Doors extends PartModelTMT {
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
         if(script == null){
             data.getPrimaryColor().glColorApply();
-            rotate(this.front_left, 0, data.doorsOpen() ? Static.rad60 : 0, 0, true);
-            render(this.front_left);
-            rotate(this.front_right, 0, data.doorsOpen() ? -Static.rad60 : 0, 0, true);
-            render(this.front_right);
-            rotate(this.back_left, 0, data.doorsOpen() ? Static.rad60 : 0, 0, true);
-            render(this.back_left);
-            rotate(this.back_right, 0, data.doorsOpen() ? -Static.rad60 : 0, 0, true);
-            render(this.back_right);
+            get("front_left").rotate(0, data.doorsOpen() ? Static.rad60 : 0, 0, true);
+            render("front_left");
+            get("front_right").rotate(0, data.doorsOpen() ? -Static.rad60 : 0, 0, true);
+            render("front_right");
+            get("back_left").rotate(0, data.doorsOpen() ? Static.rad60 : 0, 0, true);
+            render("back_left");
+            get("back_right").rotate(0, data.doorsOpen() ? -Static.rad60 : 0, 0, true);
+            render("back_right");
             //
-            rotate(this.trunkc, 0, 0, data.doorsOpen() ? Static.rad120 : 0, true);
-            render(this.trunkc);
+            get("trunkc").rotate(0, 0, data.doorsOpen() ? Static.rad120 : 0, true);
+            render("trunkc");
             RGB.glColorReset();
-            rotate(this.trunkn, 0, 0, data.doorsOpen() ? Static.rad120 : 0, true);
-            render(this.trunkn);
+            get("trunkn").rotate(0, 0, data.doorsOpen() ? Static.rad120 : 0, true);
+            render("trunkn");
         }
         else{
             data.getPrimaryColor().glColorApply();
-            rotate(this.front_left, 0, script.front_left ? Static.rad60 : 0, 0, true);
-            render(this.front_left);
-            rotate(this.front_right, 0, script.front_right ? -Static.rad60 : 0, 0, true);
-            render(this.front_right);
-            rotate(this.back_left, 0, script.back_left ? Static.rad60 : 0, 0, true);
-            render(this.back_left);
-            rotate(this.back_right, 0, script.back_right ? -Static.rad60 : 0, 0, true);
-            render(this.back_right);
+            get("front_left").rotate(0, script.front_left ? Static.rad60 : 0, 0, true);
+            render("front_left");
+            get("front_right").rotate(0, script.front_right ? -Static.rad60 : 0, 0, true);
+            render("front_right");
+            get("back_left").rotate(0, script.back_left ? Static.rad60 : 0, 0, true);
+            render("back_left");
+            get("back_right").rotate(0, script.back_right ? -Static.rad60 : 0, 0, true);
+            render("back_right");
             //
-            rotate(this.trunkc, 0, 0, script.trunk ? Static.rad120 : 0, true);
-            render(this.trunkc);
+            get("trunkc").rotate(0, 0, script.trunk ? Static.rad120 : 0, true);
+            render("trunkc");
             RGB.glColorReset();
-            rotate(this.trunkn, 0, 0, script.trunk ? Static.rad120 : 0, true);
-            render(this.trunkn);
+            get("trunkn").rotate(0, 0, script.trunk ? Static.rad120 : 0, true);
+            render("trunkn");
         }
     }
 

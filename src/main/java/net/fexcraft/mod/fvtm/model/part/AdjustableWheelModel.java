@@ -10,8 +10,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.minecraft.entity.Entity;
 
 public class AdjustableWheelModel extends PartBaseModel {
-	
-	public ModelRendererTurbo[] wheel = new ModelRendererTurbo[0];
 
     @Override
     public void render(VehicleData data, String us){
@@ -28,11 +26,11 @@ public class AdjustableWheelModel extends PartBaseModel {
         pos = pos == null ? new Pos(0, 0, 0) : pos;
         pos.translate();
         if(us.contains("left")){
-            render(wheel);
+            render("wheel");
         }
         else if(us.contains("right")){
             GL11.glRotated(180, 0, 1, 0);
-            render(wheel);
+            render("wheel");
             GL11.glRotated(-180, 0, 1, 0);
         }
         pos.translateR();
@@ -75,7 +73,7 @@ public class AdjustableWheelModel extends PartBaseModel {
             GL11.glRotated(180, 0, 1, 0);
         }
         float wheelangl = mir ? -vehicle.getWheelsAngle() : vehicle.getWheelsAngle();
-        for(ModelRendererTurbo element : wheel){
+        for(ModelRendererTurbo element : get("wheel")){
             element.rotateAngleZ = wheelangl;
             if(str){
                 element.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
@@ -125,7 +123,7 @@ public class AdjustableWheelModel extends PartBaseModel {
             if(mir){
                 GL11.glRotated(180, 0, 1, 0);
             }
-            this.def_renderWheelWithRotations(wheel, ent, mir ? -((VehicleEntity)ent).getWheelsAngle() : ((VehicleEntity)ent).getWheelsAngle(), str);
+            this.def_renderWheelWithRotations("wheel", ent, mir ? -((VehicleEntity)ent).getWheelsAngle() : ((VehicleEntity)ent).getWheelsAngle(), str);
             if(mir){
                 //for(ModelRendererTurbo turbo : wheels){ turbo.rotateAngleZ = -turbo.rotateAngleZ; }
                 GL11.glRotated(-180, 0, 1, 0);

@@ -8,14 +8,14 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelC8Interior extends PartModelTMT {
+public class ModelC8Interior extends PartModel {
 
     public ModelC8Interior(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        body = new ModelRendererTurbo[40];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[40];
         body[0] = new ModelRendererTurbo(this, 313, 225, textureX, textureY); // Box 144
         body[1] = new ModelRendererTurbo(this, 81, 161, textureX, textureY); // Box 159
         body[2] = new ModelRendererTurbo(this, 137, 17, textureX, textureY); // Box 183
@@ -196,9 +196,9 @@ public class ModelC8Interior extends PartModelTMT {
 
         body[39].addShapeBox(0F, 0F, 0F, 1, 1, 1, 0F, -0.2F, 0F, -0.2F, -0.2F, 0F, -0.2F, -0.2F, 0F, -0.2F, -0.2F, 0F, -0.2F, -0.2F, 0F, -0.2F, -0.2F, 0F, -0.2F, -0.2F, 0F, -0.2F, -0.2F, 0F, -0.2F); // Box 262
         body[39].setRotationPoint(13.5F, -21.5F, 1F);
-
+        this.add("body", body);
         //
-        lights = new ModelRendererTurbo[6];
+        ModelRendererTurbo[] lights = new ModelRendererTurbo[6];
         lights[0] = new ModelRendererTurbo(this, 81, 33, textureX, textureY); // Box 186
         lights[1] = new ModelRendererTurbo(this, 137, 33, textureX, textureY); // Box 187
         lights[2] = new ModelRendererTurbo(this, 209, 49, textureX, textureY); // Box 195
@@ -228,7 +228,7 @@ public class ModelC8Interior extends PartModelTMT {
 
         lights[5].addBox(0F, 0.2F, 1F, 1, 1, 3, 0F); // Box 226
         lights[5].setRotationPoint(20.8F, -8.5F, -2.5F);
-
+        this.add("lights", lights);
         translateAll(0F, 0F, 0F);
         flipAll();
     }

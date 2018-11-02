@@ -1,14 +1,14 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelHuonclass extends VehicleModelTMT {
+public class ModelHuonclass extends VehicleModel {
 
     public ModelHuonclass(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("zackyboy18");
-        body = new ModelRendererTurbo[207];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[207];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 89, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 177, 1, textureX, textureY); // Box 2
@@ -949,6 +949,7 @@ public class ModelHuonclass extends VehicleModelTMT {
 		steeringWheelModel[12].addShapeBox(0F, 1.5F, -2.5F, 1, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, 1F, 0F, -1F, 1F); // Box 273
 		steeringWheelModel[12].setRotationPoint(30F, -13F, -1F);*/
         //
+        this.add("body", body);
         translateAll(0F, 0F, 0F);
         flipAll();
     }

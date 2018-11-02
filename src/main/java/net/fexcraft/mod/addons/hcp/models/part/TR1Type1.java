@@ -3,7 +3,7 @@ package net.fexcraft.mod.addons.hcp.models.part;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.minecraft.entity.Entity;
 
@@ -11,14 +11,12 @@ import net.minecraft.entity.Entity;
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Type1 extends PartModelTMT {
-    
-    private ModelRendererTurbo[] door_left, door_right, door_left_lights, door_right_lights;
+public class TR1Type1 extends PartModel {
 
     public TR1Type1(){
     	super(); this.addToCreators("FEX___96");
         textureX = 512; textureY = 512;
-        body = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[13];
 		body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
 		body[1] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 1
 		body[2] = new ModelRendererTurbo(this, 1, 113, textureX, textureY); // Box 2
@@ -71,9 +69,10 @@ public class TR1Type1 extends PartModelTMT {
 
 		body[12].addBox(0F, 0F, 0F, 128, 2, 52, 0F); // Box 12
 		body[12].setRotationPoint(-236F, -74F, -26F);
+		this.add("body", body);
 
 
-		door_right = new ModelRendererTurbo[8];
+		ModelRendererTurbo[] door_right = new ModelRendererTurbo[8];
 		door_right[0] = new ModelRendererTurbo(this, 321, 81, textureX, textureY); // Box 14
 		door_right[1] = new ModelRendererTurbo(this, 361, 1, textureX, textureY); // Box 15
 		door_right[2] = new ModelRendererTurbo(this, 361, 1, textureX, textureY); // Box 23
@@ -106,9 +105,10 @@ public class TR1Type1 extends PartModelTMT {
 
 		door_right[7].addBox(-0.7F, 44F, -24F, 1, 1, 1, 0F); // Box 28
 		door_right[7].setRotationPoint(-235.5F, -72F, 25F);
+		this.add("door_right", door_right);
 
 
-		door_left = new ModelRendererTurbo[8];
+		ModelRendererTurbo[] door_left = new ModelRendererTurbo[8];
 		door_left[0] = new ModelRendererTurbo(this, 265, 33, textureX, textureY); // Box 13
 		door_left[1] = new ModelRendererTurbo(this, 385, 1, textureX, textureY); // Box 16
 		door_left[2] = new ModelRendererTurbo(this, 377, 1, textureX, textureY); // Box 17
@@ -141,9 +141,10 @@ public class TR1Type1 extends PartModelTMT {
 
 		door_left[7].addBox(-0.7F, 44F, 23F, 1, 1, 3, 0F); // Box 22
 		door_left[7].setRotationPoint(-235.5F, -72F, -25F);
+		this.add("door_left", door_left);
 
 
-		lights = new ModelRendererTurbo[34];
+		ModelRendererTurbo[] lights = new ModelRendererTurbo[34];
 		lights[0] = new ModelRendererTurbo(this, 497, 9, textureX, textureY); // Box 39
 		lights[1] = new ModelRendererTurbo(this, 361, 17, textureX, textureY); // Box 40
 		lights[2] = new ModelRendererTurbo(this, 377, 17, textureX, textureY); // Box 41
@@ -280,9 +281,10 @@ public class TR1Type1 extends PartModelTMT {
 
 		lights[33].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 72
 		lights[33].setRotationPoint(14F, -73.5F, -26.2F);
+		this.add("lights", lights);
 
 
-		door_left_lights = new ModelRendererTurbo[5];
+		ModelRendererTurbo[] door_left_lights = new ModelRendererTurbo[5];
 		door_left_lights[0] = new ModelRendererTurbo(this, 473, 1, textureX, textureY); // Box 29
 		door_left_lights[1] = new ModelRendererTurbo(this, 433, 9, textureX, textureY); // Box 35
 		door_left_lights[2] = new ModelRendererTurbo(this, 441, 9, textureX, textureY); // Box 36
@@ -303,9 +305,10 @@ public class TR1Type1 extends PartModelTMT {
 
 		door_left_lights[4].addBox(-0.7F, 36F, -2F, 1, 3, 1, 0F); // Box 38
 		door_left_lights[4].setRotationPoint(-235.5F, -72F, 25F);
+		this.add("door_left_lights", door_left_lights);
 
 
-		door_right_lights = new ModelRendererTurbo[5];
+		ModelRendererTurbo[] door_right_lights = new ModelRendererTurbo[5];
 		door_right_lights[0] = new ModelRendererTurbo(this, 417, 9, textureX, textureY); // Box 30
 		door_right_lights[1] = new ModelRendererTurbo(this, 489, 1, textureX, textureY); // Box 31
 		door_right_lights[2] = new ModelRendererTurbo(this, 497, 1, textureX, textureY); // Box 32
@@ -326,43 +329,39 @@ public class TR1Type1 extends PartModelTMT {
 
 		door_right_lights[4].addBox(-0.7F, 36F, 1F, 1, 3, 1, 0F); // Box 34
 		door_right_lights[4].setRotationPoint(-235.5F, -72F, -25F);
+		this.add("door_right_lights", door_right_lights);
     }
     
     @Override
     public void render(VehicleData data, String us){
-        render(body);
-        render(lights);
-        render(door_left);
-        render(door_right);
-        render(door_left_lights);
-        render(door_right_lights);
+        render("body");
+        render("lights");
+        render("door_left");
+        render("door_right");
+        render("door_left_lights");
+        render("door_right_lights");
     }
 
     @Override
     public void render(VehicleData data, String us, Entity ent, int meta){
-    	render(body);
+    	render("body");
     	float doortoggle = RenderCache.getData(ent, "tr1_type1_door", 0) + (data.doorsOpen() ? 1 : -1);
     	RenderCache.updateData(ent, "tr1_type1_door", doortoggle = doortoggle > 100 ? 100 : doortoggle < 0 ? 0 : doortoggle);
-    	rotate(door_left, 0, Static.rad1 * -doortoggle, 0);
-        render(door_left);
-    	rotate(door_left, 0, Static.rad1 * doortoggle, 0);
-    	rotate(door_right, 0, Static.rad1 * doortoggle, 0);
-        render(door_right);
-    	rotate(door_right, 0, Static.rad1 * -doortoggle, 0);
+    	get("door_left").rotate(0, Static.rad1 * -doortoggle, 0);
+        render("door_left");
+    	get("door_left").rotate(0, Static.rad1 * doortoggle, 0);
+    	get("door_right").rotate(0, Static.rad1 * doortoggle, 0);
+        render("door_right");
+    	get("door_right").rotate(0, Static.rad1 * -doortoggle, 0);
+    	//
     	boolean ls = data.getLightsState() > 0;
-    	if(ls){
-            lightOff(ent);
-        }
-        render(lights);
-    	rotate(door_left_lights, 0, Static.rad1 * doortoggle, 0);
-        render(door_left_lights);
-    	rotate(door_left_lights, 0, Static.rad1 * -doortoggle, 0);
-    	rotate(door_right_lights, 0, Static.rad1 * -doortoggle, 0);
-        render(door_right_lights);
-    	rotate(door_right_lights, 0, Static.rad1 * doortoggle, 0);
-        if(ls){
-            lightOn(ent);
-        }
+        if(ls) renderGlow(ent, "lights"); else render("lights");
+    	get("door_left_lights").rotate(0, Static.rad1 * doortoggle, 0);
+        if(ls) renderGlow(ent, "door_left_lights"); else render("door_left_lights");
+    	get("door_left_lights").rotate(0, Static.rad1 * -doortoggle, 0);
+    	get("door_right_lights").rotate(0, Static.rad1 * -doortoggle, 0);
+        if(ls) renderGlow(ent, "door_right_lights"); else render("door_right_lights");
+    	get("door_right_lights").rotate(0, Static.rad1 * doortoggle, 0);
     }
 
 }

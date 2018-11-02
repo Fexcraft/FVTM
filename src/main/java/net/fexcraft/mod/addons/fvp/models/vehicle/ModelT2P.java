@@ -10,15 +10,15 @@ package net.fexcraft.mod.addons.fvp.models.vehicle;
 import net.fexcraft.lib.tmt.Coord2D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.lib.tmt.Shape2D;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelT2P extends VehicleModelTMT {
+public class ModelT2P extends VehicleModel {
 
     public ModelT2P(){
     	super(); addToCreators("Ferdinand (FEX___96)");
         textureX = 512; textureY = 512;
         //
-        body = new ModelRendererTurbo[55];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[55];
         body[0] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 313, 1, textureX, textureY); // Box 5
         body[2] = new ModelRendererTurbo(this, 385, 9, textureX, textureY); // Box 6
@@ -244,8 +244,9 @@ public class ModelT2P extends VehicleModelTMT {
         body[54].addBox(0F, 0F, 0F, 1, 3, 12, 0F); // Box 332
         body[54].setRotationPoint(-67F, -3.5F, -6F);
         body[54].rotateAngleZ = 0.15707963F;
+        this.add("body", body);
         //
-        body_colored_primary = new ModelRendererTurbo[52];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[52];
         body_colored_primary[0] = new ModelRendererTurbo(this, 129, 49, textureX, textureY); // Box 12
         body_colored_primary[1] = new ModelRendererTurbo(this, 1, 73, textureX, textureY); // Box 14
         body_colored_primary[2] = new ModelRendererTurbo(this, 449, 1, textureX, textureY); // Box 15
@@ -454,6 +455,7 @@ public class ModelT2P extends VehicleModelTMT {
 
         body_colored_primary[51].addShapeBox(0F, 0F, 0F, 3, 4, 2, 0F, 0F, 0F, -1F, 0F, 0F, -0.5F, 0F, 0F, 0.5F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F); // Box 261
         body_colored_primary[51].setRotationPoint(15F, -56F, -25.5F);
+        this.add("body_colored_primary", body_colored_primary);
         //
         translateAll(0F, 0F, 0F);
         flipAll();

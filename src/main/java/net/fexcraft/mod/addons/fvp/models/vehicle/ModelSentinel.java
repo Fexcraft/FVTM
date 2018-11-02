@@ -1,7 +1,7 @@
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
 // This File was created with the Minecraft-SMP Modelling Toolbox 2.3.0.0
 // Copyright (C) 2018 Minecraft-SMP.de
@@ -11,12 +11,12 @@ import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
 // Created on: 18.03.2018 - 20:37:49
 // Last changed on: 03.08.2018
 
-public class ModelSentinel extends VehicleModelTMT {
+public class ModelSentinel extends VehicleModel {
 
 	public ModelSentinel(){
 		textureX = textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-		body_colored_primary = new ModelRendererTurbo[293];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[293];
 		body_colored_primary[0] = new ModelRendererTurbo(this, 289, 1, textureX, textureY); // Box 4
 		body_colored_primary[1] = new ModelRendererTurbo(this, 137, 17, textureX, textureY); // Box 6
 		body_colored_primary[2] = new ModelRendererTurbo(this, 137, 25, textureX, textureY); // Box 7
@@ -1193,8 +1193,9 @@ public class ModelSentinel extends VehicleModelTMT {
 
 		body_colored_primary[292].addShapeBox(0F, -1F, 0F, 5, 4, 1, 0F, 0F, -0.5F, 0F, -1.2F, 0.5F, 0F, -1.2F, 0.5F, -0.9F, 0F, -0.5F, -0.8F, 4F, -0.4F, -1.5F, -4.4F, -0.4F, -1.5F, -4.4F, -0.4F, 1F, 4F, -0.4F, 1F); // Box 508
 		body_colored_primary[292].setRotationPoint(-29.8F, -8.4F, 14.9F);
+		this.add("body_colored_primary", body_colored_primary);
 
-		chassis = new ModelRendererTurbo[64];
+		ModelRendererTurbo[] chassis = new ModelRendererTurbo[64];
 		chassis[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
 		chassis[1] = new ModelRendererTurbo(this, 137, 1, textureX, textureY); // Box 1
 		chassis[2] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 2
@@ -1460,6 +1461,7 @@ public class ModelSentinel extends VehicleModelTMT {
 
 		chassis[63].addBox(0F, 0F, 0F, 2, 2, 32, 0F); // Box 554
 		chassis[63].setRotationPoint(-34F, 7F, -16F);
+		this.add("chassis", chassis);
 
 		translateAll(0F, 0F, 0F);
 		//flipAll();

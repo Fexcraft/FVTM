@@ -5,15 +5,15 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC7Hood extends PartModelTMT {
+public class ModelC7Hood extends PartModel {
 
     public ModelC7Hood(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[4];
         body[0] = new ModelRendererTurbo(this, 57, 41, textureX, textureY); // Box 58
         body[1] = new ModelRendererTurbo(this, 305, 49, textureX, textureY); // Box 59
         body[2] = new ModelRendererTurbo(this, 105, 57, textureX, textureY); // Box 67
@@ -26,12 +26,13 @@ public class ModelC7Hood extends PartModelTMT {
         body[2].setRotationPoint(22F, -15F, -13F);
         body[3].addBox(20F, 1.5F, 0F, 1, 1, 18, 0F); // Box 96
         body[3].setRotationPoint(22F, -15F, -9F);
+        this.add("body", body);
     }
 
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render(body);
+        render("body");
         RGB.glColorReset();
     }
 
@@ -39,8 +40,8 @@ public class ModelC7Hood extends PartModelTMT {
     public void render(VehicleData data, String us, Entity vehicle, int meta){
         data.getPrimaryColor().glColorApply();
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
-        rotate(body, 0, 0, script == null ? data.doorsOpen() ? -Static.rad60 : 0 : script.hood ? -Static.rad60 : 0, true);
-        render(body);
+        get("body").rotate(0, 0, script == null ? data.doorsOpen() ? -Static.rad60 : 0 : script.hood ? -Static.rad60 : 0, true);
+        render("body");
         RGB.glColorReset();
     }
 

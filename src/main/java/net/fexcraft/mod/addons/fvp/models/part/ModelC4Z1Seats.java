@@ -1,18 +1,17 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC4Z1Seats extends PartModelTMT {
+public class ModelC4Z1Seats extends PartModel {
 
     public ModelC4Z1Seats(){
     	super(); textureX = 1024; textureY = 1024;
         this.addToCreators("FEX___96");
         this.addToCreators("zackyboy18");
-        body = new ModelRendererTurbo[22];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[22];
         body[0] = new ModelRendererTurbo(this, 497, 161, textureX, textureY); // Box 226
         body[1] = new ModelRendererTurbo(this, 353, 161, textureX, textureY); // Box 228
         body[2] = new ModelRendererTurbo(this, 577, 153, textureX, textureY); // Box 231
@@ -116,23 +115,19 @@ public class ModelC4Z1Seats extends PartModelTMT {
 
         body[21].addBox(0F, 0F, 0F, 9, 10, 42, 0F); // Box 504
         body[21].setRotationPoint(25F, -14F, -20F);
-
-        super.fixRotations(body);
+        this.add("body", body);
+        super.fixRotations(get("body"));
         //TODO sub models without paint be.
     }
 
     @Override
     public void render(VehicleData data, String us){
-        data.getSecondaryColor().glColorApply();
-        render(body);
-        RGB.glColorReset();
+        render("body", data.getSecondaryColor());
     }
 
     @Override
     public void render(VehicleData data, String us, Entity vehicle, int meta){
-        data.getSecondaryColor().glColorApply();
-        render(body);
-        RGB.glColorReset();
+        render("body", data.getSecondaryColor());
     }
 
 }

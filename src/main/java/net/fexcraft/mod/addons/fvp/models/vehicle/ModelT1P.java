@@ -8,14 +8,14 @@
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelT1P extends VehicleModelTMT {
+public class ModelT1P extends VehicleModel {
 
     public ModelT1P(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[187];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[187];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 161, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 193, 1, textureX, textureY); // Box 2
@@ -807,8 +807,9 @@ public class ModelT1P extends VehicleModelTMT {
         body[186].addBox(0F, 0F, 0F, 1, 1, 6, 0F); // Box 440
         body[186].setRotationPoint(-100.5F, -2.5F, 15F);
         body[186].rotateAngleX = 0.01745329F;
+        this.add("body", body);
 
-        body_door_open_colored_primary = new ModelRendererTurbo[16];
+        ModelRendererTurbo[] body_door_open_colored_primary = new ModelRendererTurbo[16];
         body_door_open_colored_primary[0] = new ModelRendererTurbo(this, 49, 241, textureX, textureY); // Box 441
         body_door_open_colored_primary[1] = new ModelRendererTurbo(this, 353, 321, textureX, textureY); // Box 442
         body_door_open_colored_primary[2] = new ModelRendererTurbo(this, 297, 329, textureX, textureY); // Box 443
@@ -873,8 +874,9 @@ public class ModelT1P extends VehicleModelTMT {
 
         body_door_open_colored_primary[15].addBox(0F, 0F, 0F, 1, 15, 1, 0F); // Box 456
         body_door_open_colored_primary[15].setRotationPoint(52.5F, -37F, -48F);
+        this.add("body_door_open_colored_primary", body_door_open_colored_primary);
 
-        body_door_close_colored_primary = new ModelRendererTurbo[16];
+        ModelRendererTurbo[]  body_door_close_colored_primary = new ModelRendererTurbo[16];
         body_door_close_colored_primary[0] = new ModelRendererTurbo(this, 121, 225, textureX, textureY); // Box 403
         body_door_close_colored_primary[1] = new ModelRendererTurbo(this, 393, 225, textureX, textureY); // Box 404
         body_door_close_colored_primary[2] = new ModelRendererTurbo(this, 441, 257, textureX, textureY); // Box 405
@@ -939,14 +941,15 @@ public class ModelT1P extends VehicleModelTMT {
 
         body_door_close_colored_primary[15].addShapeBox(0F, 0F, 0F, 1, 17, 1, 0F, 3F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 418
         body_door_close_colored_primary[15].setRotationPoint(52.5F, -38F, -23F);
+        this.add("body_door_close_colored_primary", body_door_close_colored_primary);
 
-        body_colored_secondary = new ModelRendererTurbo[1];
+        ModelRendererTurbo[] body_colored_secondary = new ModelRendererTurbo[1];
         body_colored_secondary[0] = new ModelRendererTurbo(this, 473, 193, textureX, textureY); // Box 312
-
         body_colored_secondary[0].addBox(0F, 0F, 0F, 4, 11, 9, 0F); // Box 312
         body_colored_secondary[0].setRotationPoint(18F, -10.5F, -22.5F);
+        this.add("body_colored_secondary", body_colored_secondary);
 
-        body_colored_primary = new ModelRendererTurbo[63];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[63];
         body_colored_primary[0] = new ModelRendererTurbo(this, 33, 73, textureX, textureY); // Box 120
         body_colored_primary[1] = new ModelRendererTurbo(this, 265, 73, textureX, textureY); // Box 122
         body_colored_primary[2] = new ModelRendererTurbo(this, 105, 73, textureX, textureY); // Box 124
@@ -1205,7 +1208,7 @@ public class ModelT1P extends VehicleModelTMT {
 
         body_colored_primary[62].addShapeBox(0F, 0F, 0F, 19, 8, 1, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 619
         body_colored_primary[62].setRotationPoint(22F, -19F, 22F);
-
+        this.add("body_colored_primary", body_colored_primary);
         translateAll(0F, 0F, 0F);
     }
 

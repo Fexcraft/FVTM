@@ -9,15 +9,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC1R1T1Wheel extends PartModelTMT {
+public class ModelC1R1T1Wheel extends PartModel {
 
     public ModelC1R1T1Wheel(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        wheel_front_left = new ModelRendererTurbo[78];
+        ModelRendererTurbo[] wheel_front_left = new ModelRendererTurbo[78];
         wheel_front_left[0] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 6
         wheel_front_left[1] = new ModelRendererTurbo(this, 265, 1, textureX, textureY); // Box 11
         wheel_front_left[2] = new ModelRendererTurbo(this, 305, 1, textureX, textureY); // Box 12
@@ -330,8 +330,9 @@ public class ModelC1R1T1Wheel extends PartModelTMT {
 
         wheel_front_left[77].addShapeBox(-7.5F, -0.5F, -0.5F, 6, 1, 1, 0F, -0.75F, -3.8F, 0F, -0.05F, -0.8F, 0F, 0.15F, -1.25F, -0.5F, -0.85F, -4.25F, -0.5F, -1.25F, 3.7F, 0F, 0.45F, 0.7F, 0F, 0.3F, 0.15F, -0.5F, -1.05F, 3.15F, -0.5F); // Box 102
         wheel_front_left[77].setRotationPoint(43.5F, 0.5F, 20F);
+        this.add("wheel_front_left", wheel_front_left);
 
-        wheel_front_right = new ModelRendererTurbo[78];
+        ModelRendererTurbo[] wheel_front_right = new ModelRendererTurbo[78];
         wheel_front_right[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 5
         wheel_front_right[1] = new ModelRendererTurbo(this, 281, 41, textureX, textureY); // Box 103
         wheel_front_right[2] = new ModelRendererTurbo(this, 305, 41, textureX, textureY); // Box 104
@@ -644,8 +645,9 @@ public class ModelC1R1T1Wheel extends PartModelTMT {
 
         wheel_front_right[77].addShapeBox(-7.5F, -0.5F, -0.5F, 6, 1, 1, 0F, -1.05F, 3.15F, -0.5F, 0.3F, 0.15F, -0.5F, 0.45F, 0.7F, 0F, -1.25F, 3.7F, 0F, -0.85F, -4.25F, -0.5F, 0.15F, -1.25F, -0.5F, -0.05F, -0.8F, 0F, -0.75F, -3.8F, 0F); // Box 277
         wheel_front_right[77].setRotationPoint(43.5F, 0.5F, -20F);
+        this.add("wheel_front_right", wheel_front_right);
 
-        wheel_back_left = new ModelRendererTurbo[78];
+        ModelRendererTurbo[] wheel_back_left = new ModelRendererTurbo[78];
         wheel_back_left[0] = new ModelRendererTurbo(this, 177, 1, textureX, textureY); // Box 7
         wheel_back_left[1] = new ModelRendererTurbo(this, 353, 57, textureX, textureY); // Box 278
         wheel_back_left[2] = new ModelRendererTurbo(this, 417, 57, textureX, textureY); // Box 279
@@ -958,8 +960,9 @@ public class ModelC1R1T1Wheel extends PartModelTMT {
 
         wheel_back_left[77].addShapeBox(-7.5F, -0.5F, -0.5F, 6, 1, 1, 0F, -0.75F, -3.8F, 0F, -0.05F, -0.8F, 0F, 0.15F, -1.25F, -0.5F, -0.85F, -4.25F, -0.5F, -1.25F, 3.7F, 0F, 0.45F, 0.7F, 0F, 0.3F, 0.15F, -0.5F, -1.05F, 3.15F, -0.5F); // Box 354
         wheel_back_left[77].setRotationPoint(-43.5F, 0.5F, 20F);
+        this.add("wheel_back_left", wheel_back_left);
 
-        wheel_back_right = new ModelRendererTurbo[78];
+        ModelRendererTurbo[] wheel_back_right = new ModelRendererTurbo[78];
         wheel_back_right[0] = new ModelRendererTurbo(this, 217, 1, textureX, textureY); // Box 8
         wheel_back_right[1] = new ModelRendererTurbo(this, 497, 73, textureX, textureY); // Box 355
         wheel_back_right[2] = new ModelRendererTurbo(this, 1, 81, textureX, textureY); // Box 356
@@ -1272,7 +1275,7 @@ public class ModelC1R1T1Wheel extends PartModelTMT {
 
         wheel_back_right[77].addShapeBox(1.5F, -0.5F, -0.5F, 6, 1, 1, 0F, 0.15F, -1.25F, -0.5F, -0.85F, -4.25F, -0.5F, -0.75F, -3.8F, 0F, -0.05F, -0.8F, 0F, 0.3F, 0.15F, -0.5F, -1.05F, 3.15F, -0.5F, -1.25F, 3.7F, 0F, 0.45F, 0.7F, 0F); // Box 431
         wheel_back_right[77].setRotationPoint(-43.5F, 0.5F, -20F);
-
+        this.add("wheel_back_right", wheel_back_right);
         translateAll(0F, 0F, 0F);
         flipAll();
     }

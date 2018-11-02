@@ -5,17 +5,18 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC4Z1 extends VehicleModelTMT {
+public class ModelC4Z1 extends VehicleModel {
 
     private static final int texture = 1024;
 
     public ModelC4Z1(){
-    	super(); this.addToCreators("Ferdinand (FEX___96)");
+    	super(); this.textureX = this.textureY = texture;
+    	this.addToCreators("Ferdinand (FEX___96)");
         this.addToCreators("zackyboy18");
-        body = new ModelRendererTurbo[193];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[193];
         body[0] = new ModelRendererTurbo(this, 1, 1, texture, texture); // Box 364
         body[1] = new ModelRendererTurbo(this, 33, 1, texture, texture); // Box 365
         body[2] = new ModelRendererTurbo(this, 81, 1, texture, texture); // Box 366
@@ -790,9 +791,10 @@ public class ModelC4Z1 extends VehicleModelTMT {
 
         body[192].addShapeBox(0F, 0F, 0F, 5, 1, 1, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, -0.5F, -1F, 0F, 1.5F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, -0.5F, -1F, 0F, 1.5F); // Box 683
         body[192].setRotationPoint(77.5F, -8.5F, 20.5F);
+        this.add("body", body);
 
         //-//-//-//-//-//
-        body_colored_primary = new ModelRendererTurbo[177];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[177];
         body_colored_primary[0] = new ModelRendererTurbo(this, 625, 41, texture, texture); // Box 0
         body_colored_primary[1] = new ModelRendererTurbo(this, 865, 33, texture, texture); // Box 1
         body_colored_primary[2] = new ModelRendererTurbo(this, 833, 33, texture, texture); // Box 7
@@ -1501,8 +1503,9 @@ public class ModelC4Z1 extends VehicleModelTMT {
 
         body_colored_primary[176].addShapeBox(0F, 0F, 0F, 117, 8, 1, 0F, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, -2F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 439
         body_colored_primary[176].setRotationPoint(-97.5F, -55.5F, 22F);
+        this.add("body_colored_primary", body_colored_primary);
 
-        body_door_close = new ModelRendererTurbo[15];
+        ModelRendererTurbo[] body_door_close = new ModelRendererTurbo[15];
         body_door_close[0] = new ModelRendererTurbo(this, 97, 73, texture, texture); // Box 125
         body_door_close[1] = new ModelRendererTurbo(this, 297, 81, texture, texture); // Box 126
         body_door_close[2] = new ModelRendererTurbo(this, 201, 105, texture, texture); // Box 321
@@ -1563,8 +1566,9 @@ public class ModelC4Z1 extends VehicleModelTMT {
 
         body_door_close[14].addShapeBox(0F, 0F, 0F, 1, 1, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 458
         body_door_close[14].setRotationPoint(-106.5F, -22.5F, 2.2F);
+        this.add("body_door_close", body_door_close);
 
-        body_door_close_colored_primary = new ModelRendererTurbo[35];
+        ModelRendererTurbo[] body_door_close_colored_primary = new ModelRendererTurbo[35];
         body_door_close_colored_primary[0] = new ModelRendererTurbo(this, 137, 49, texture, texture); // Box 72
         body_door_close_colored_primary[1] = new ModelRendererTurbo(this, 865, 49, texture, texture); // Box 73
         body_door_close_colored_primary[2] = new ModelRendererTurbo(this, 321, 65, texture, texture); // Box 74
@@ -1705,23 +1709,24 @@ public class ModelC4Z1 extends VehicleModelTMT {
 
         body_door_close_colored_primary[34].addShapeBox(0F, 0F, 0F, 1, 2, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 469
         body_door_close_colored_primary[34].setRotationPoint(-103.5F, -39.5F, 19F);
+        this.add("body_door_close_colored_primary", body_door_close_colored_primary);
 
-        turret = new ModelRendererTurbo[1];
+        ModelRendererTurbo[] turret = new ModelRendererTurbo[1];
         turret[0] = new ModelRendererTurbo(this, 249, 177, texture, texture); // hood
 
         turret[0].addShapeBox(0F, 0F, 0F, 8, 6, 35, 0F, 0F, 0F, 0F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0F, 0F, 0F, -5F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, -5F, 0F); // hood
         turret[0].setRotationPoint(69.5F, -22.5F, -18F);
-        
+        this.add("turret", turret);
     }
 
     @Override
     public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
-        render(this.body);
-        render(this.body_door_close);
+        render("body");
+        render("body_door_close");
         data.getPrimaryColor().glColorApply();
-        render(this.body_door_close_colored_primary);
-        render(this.body_colored_primary);
-        if(!data.doorsOpen()){ render(this.turret); }
+        render("body_door_close_colored_primary");
+        render("body_colored_primary");
+        if(!data.doorsOpen()){ render("turret"); }
         RGB.glColorReset();
     }
 

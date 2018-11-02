@@ -7,14 +7,14 @@
 package net.fexcraft.mod.addons.hcp.models.container;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
+import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 
-public class StandardMediumContainer extends ContainerModelTMT {
+public class StandardMediumContainer extends ContainerModel {
 
     public StandardMediumContainer(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        body_colored_primary = new ModelRendererTurbo[91];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[91];
         body_colored_primary[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body_colored_primary[1] = new ModelRendererTurbo(this, 57, 1, textureX, textureY); // Box 1
         body_colored_primary[2] = new ModelRendererTurbo(this, 201, 1, textureX, textureY); // Box 2
@@ -379,8 +379,9 @@ public class StandardMediumContainer extends ContainerModelTMT {
 
         body_colored_primary[90].addShapeBox(0F, 0F, 0F, 2, 43, 1, 0F, 1F, 0F, -0.5F, 1F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, -0.5F, 1F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 51
         body_colored_primary[90].setRotationPoint(-5F, -46F, 23F);
+        this.add("body_colored_primary", body_colored_primary);
 
-        body = new ModelRendererTurbo[32];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[32];
         body[0] = new ModelRendererTurbo(this, 257, 25, textureX, textureY); // Box 92
         body[1] = new ModelRendererTurbo(this, 265, 25, textureX, textureY); // Box 93
         body[2] = new ModelRendererTurbo(this, 273, 25, textureX, textureY); // Box 94
@@ -509,6 +510,7 @@ public class StandardMediumContainer extends ContainerModelTMT {
 
         body[31].addShapeBox(-1.5F, 26.5F, -5F, 1, 1, 1, 0F, -0.4F, 0F, -0.1F, 0F, 0.5F, -0.1F, 0F, 0.5F, -0.1F, -0.4F, 0F, -0.1F, -0.4F, 0F, -0.1F, 0F, 0.5F, -0.1F, 0F, 0.5F, -0.1F, -0.4F, 0F, -0.1F); // Box 125
         body[31].setRotationPoint(-47.5F, -46F, 21F);
+        this.add("body", body);
         //
         flipAll();
     }

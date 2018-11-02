@@ -2,15 +2,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC5W extends PartModelTMT {
+public class ModelC5W extends PartModel {
 
     public ModelC5W(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        wheel_front_left = new ModelRendererTurbo[42];
+        ModelRendererTurbo[] wheel_front_left = new ModelRendererTurbo[42];
         wheel_front_left[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         wheel_front_left[1] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 10
         wheel_front_left[2] = new ModelRendererTurbo(this, 329, 1, textureX, textureY); // Box 12
@@ -179,8 +179,9 @@ public class ModelC5W extends PartModelTMT {
 
         wheel_front_left[41].addShapeBox(-1F, 0F, 2F, 1, 5, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -5F, 0F, 0F, 5F, 0F, 0F, 5F, 0F, 0F, -5F, 0F, 0F); // Box 362
         wheel_front_left[41].setRotationPoint(46F, 2F, 19F);
+        this.add("wheel_front_left", wheel_front_left);
 
-        wheel_front_right = new ModelRendererTurbo[42];
+        ModelRendererTurbo[] wheel_front_right = new ModelRendererTurbo[42];
         wheel_front_right[0] = new ModelRendererTurbo(this, 81, 1, textureX, textureY); // Box 100
         wheel_front_right[1] = new ModelRendererTurbo(this, 97, 1, textureX, textureY); // Box 101
         wheel_front_right[2] = new ModelRendererTurbo(this, 121, 1, textureX, textureY); // Box 102
@@ -349,8 +350,9 @@ public class ModelC5W extends PartModelTMT {
 
         wheel_front_right[41].addShapeBox(-5F, 0F, -4F, 1, 5, 2, 0F, -5F, 0F, 0F, 5F, 0F, 0F, 5F, 0F, 0F, -5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 369
         wheel_front_right[41].setRotationPoint(46F, 2F, -19F);
+        this.add("wheel_front_right", wheel_front_right);
 
-        wheel_back_left = new ModelRendererTurbo[42];
+        ModelRendererTurbo[] wheel_back_left = new ModelRendererTurbo[42];
         wheel_back_left[0] = new ModelRendererTurbo(this, 97, 17, textureX, textureY); // Box 156
         wheel_back_left[1] = new ModelRendererTurbo(this, 481, 25, textureX, textureY); // Box 183
         wheel_back_left[2] = new ModelRendererTurbo(this, 297, 33, textureX, textureY); // Box 0
@@ -519,8 +521,9 @@ public class ModelC5W extends PartModelTMT {
 
         wheel_back_left[41].addShapeBox(4F, -5F, 2F, 1, 5, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 5F, 0F, 0F, -5F, 0F, 0F, -5F, 0F, 0F, 5F, 0F, 0F); // Box 376
         wheel_back_left[41].setRotationPoint(-26F, 2F, 19F);
+        this.add("wheel_back_left", wheel_back_left);
 
-        wheel_back_right = new ModelRendererTurbo[42];
+        ModelRendererTurbo[] wheel_back_right = new ModelRendererTurbo[42];
         wheel_back_right[0] = new ModelRendererTurbo(this, 233, 49, textureX, textureY); // Box 77
         wheel_back_right[1] = new ModelRendererTurbo(this, 33, 49, textureX, textureY); // Box 78
         wheel_back_right[2] = new ModelRendererTurbo(this, 281, 49, textureX, textureY); // Box 79
@@ -689,6 +692,7 @@ public class ModelC5W extends PartModelTMT {
 
         wheel_back_right[41].addShapeBox(-5F, -5F, -4F, 1, 5, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -5F, 0F, 0F, 5F, 0F, 0F, 5F, 0F, 0F, -5F, 0F, 0F); // Box 384
         wheel_back_right[41].setRotationPoint(-26F, 2F, -19F);
+        this.add("wheel_back_right", wheel_back_right);
         flipAll();
     }
 

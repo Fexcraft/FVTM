@@ -7,8 +7,8 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.hcp.scripts.ContainerCraneScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
@@ -16,10 +16,10 @@ import org.lwjgl.opengl.GL11;
  *
  * @author Ferdinand (FEX___96)
  */
-public class ContainerCrane extends VehicleModelTMT {
+public class ContainerCrane extends VehicleModel {
 
     private final void initChassis(){
-        chassis = new ModelRendererTurbo[502];
+    	ModelRendererTurbo[] chassis = new ModelRendererTurbo[502];
         chassis[0] = new ModelRendererTurbo(this, 241, 25, textureX, textureY); // Box 202
         chassis[1] = new ModelRendererTurbo(this, 153, 17, textureX, textureY); // Box 203
         chassis[2] = new ModelRendererTurbo(this, 217, 17, textureX, textureY); // Box 204
@@ -2028,6 +2028,7 @@ public class ContainerCrane extends VehicleModelTMT {
 
         chassis[501].addShapeBox(0F, 0F, 0F, 2, 2, 8, 0F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F); // Box 855
         chassis[501].setRotationPoint(-44F, -172F, 20F);
+        this.add("chassis", chassis);
     }
 
     public ContainerCrane(){
@@ -2035,7 +2036,7 @@ public class ContainerCrane extends VehicleModelTMT {
         this.addToCreators("FEX___96");
         this.addToCreators("GolddolphinSKB");
         this.initChassis();
-        body = new ModelRendererTurbo[396];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[396];
         body[0] = new ModelRendererTurbo(this, 617, 1, textureX, textureY); // Box 633
         body[1] = new ModelRendererTurbo(this, 657, 1, textureX, textureY); // Box 634
         body[2] = new ModelRendererTurbo(this, 961, 33, textureX, textureY); // Box 635
@@ -3620,8 +3621,9 @@ public class ContainerCrane extends VehicleModelTMT {
 
         body[395].addShapeBox(0F, 0F, 0F, 4, 6, 1, 0F, -4F, 0F, 0F, 0F, -1.5F, 0F, 0F, -1.5F, 0F, -4F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F); // Box 1061
         body[395].setRotationPoint(-54F, -166F, -13.5F);
+        this.add("body", body);
 
-        wheels_import = new ModelRendererTurbo[16];
+        ModelRendererTurbo[] wheels_import = new ModelRendererTurbo[16];
         wheels_import[0] = new ModelRendererTurbo(this, 857, 17, textureX, textureY); // Box 147
         wheels_import[1] = new ModelRendererTurbo(this, 881, 17, textureX, textureY); // Box 148
         wheels_import[2] = new ModelRendererTurbo(this, 921, 17, textureX, textureY); // Box 149
@@ -3686,8 +3688,9 @@ public class ContainerCrane extends VehicleModelTMT {
 
         wheels_import[15].addBox(0F, 0F, 0F, 16, 2, 2, 0F); // Box 1060
         wheels_import[15].setRotationPoint(-8F, -4F, 111F);
+        this.add("wheels_import", wheels_import);
         
-        turret = new ModelRendererTurbo[132];
+        ModelRendererTurbo[] turret = new ModelRendererTurbo[132];
         turret[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 2
         turret[1] = new ModelRendererTurbo(this, 113, 1, textureX, textureY); // Box 3
         turret[2] = new ModelRendererTurbo(this, 177, 1, textureX, textureY); // Box 4
@@ -4216,6 +4219,7 @@ public class ContainerCrane extends VehicleModelTMT {
 
         turret[131].addShapeBox(0F, 0F, 0F, 4, 3, 2, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 927
         turret[131].setRotationPoint(-49F, -68F, 15F);
+        this.add("turret", turret);
         translateAll(-8F, 16F, 112F);
         flipAll();
         //
@@ -4223,11 +4227,12 @@ public class ContainerCrane extends VehicleModelTMT {
         this.gui_scale_y = this.gui_scale_y / 2;
         this.gui_scale_z = this.gui_scale_z / 2;
         //
-		box = new ModelRendererTurbo[1];
-		box[0] = new ModelRendererTurbo(this, 332, 215, textureX, textureY); // Box 1062
-		box[0].addBox(0F, 0F, 0F, 16, 16, 16, 0F); // Box 1062
-		box[0].setRotationPoint(-8F, -16F, -8F);
-		translate(box, -16F, 16F, 112F);
+        this.groups.put("box", new TurboList());
+		ModelRendererTurbo box = new ModelRendererTurbo(this, 332, 215, textureX, textureY); // Box 1062
+		box.addBox(0F, 0F, 0F, 16, 16, 16, 0F); // Box 1062
+		box.setRotationPoint(-8F, -16F, -8F);
+		get("box").add(box); get("box").translate(-16f, 16f, 112f);
+		//translate(box, -16F, 16F, 112F);
     }
 
     @Override
@@ -4240,23 +4245,21 @@ public class ContainerCrane extends VehicleModelTMT {
         	GL11.glTranslatef(-script.length + 1, 0, 0);
         	int len = (script.length * 2) + 1;
             for(int i = 0; i < len; i++){
-                render(wheels_import);
+                render("wheels_import");
                 GL11.glTranslatef(1, 0, 0);
             }
             GL11.glTranslatef(-script.length - 1, 0, 0);
         	GL11.glPushMatrix();
         	GL11.glTranslated(script.xpos * 0.001, 0, 0);
-        	render(chassis);
+        	render("chassis");
         	GL11.glTranslated(0, 0, script.zpos * 0.001);
-        	render(body);
+        	render("body");
         	rope = getRopes(script.ypos);
-        	if(rope != null){ render(rope); }
+        	if(rope != null){ rope.render("rope"); }
         	GL11.glTranslated(0, script.ypos * 0.001, 0);
-        	render(turret);
+        	render("turret");
         	if(script.searchbox){
-        		PartModelTMT.lightOff(entity);
-        		render(box);
-        		PartModelTMT.lightOn(entity);
+        		renderGlow(entity, "box");
         	}
         	if(script.getContainerData() != null){
         		GL11.glTranslatef(-0.5f, 1, 7);
@@ -4267,20 +4270,20 @@ public class ContainerCrane extends VehicleModelTMT {
         }
     }
     
-    private TreeMap<Integer, ModelRendererTurbo[]> ropes = new TreeMap<Integer, ModelRendererTurbo[]>();
-    private ModelRendererTurbo[] rope, box;
+    private TreeMap<Integer, TurboList> ropes = new TreeMap<>();
+    private TurboList rope;
 
-	private final ModelRendererTurbo[] getRopes(int ypos){
+	private final TurboList getRopes(int ypos){
 		int i = 101 + (ypos / 60);
 		if(ropes.containsKey(i)){
 			return ropes.get(i);
 		}
-		ModelRendererTurbo[] newropes = generate(i);
+		TurboList newropes = generate(i);
 		ropes.put(i, newropes);
 		return newropes;
 	}
 
-	private final ModelRendererTurbo[] generate(int i){
+	private final TurboList generate(int i){
 		ModelRendererTurbo[] model = new ModelRendererTurbo[4];
 		model[0] = new ModelRendererTurbo(this, 1001, 161, textureX, textureY);
 		model[1] = new ModelRendererTurbo(this, 465, 329, textureX, textureY);
@@ -4294,8 +4297,9 @@ public class ContainerCrane extends VehicleModelTMT {
 		model[2].setRotationPoint(46.5F, -165F, -16.5F);
 		model[3].addBox(0F, 0F, 0F, 1, i, 1, 0F);
 		model[3].setRotationPoint(46.5F, -165F, 15.5F);
-		translate(model, -8, 16, 112);
-		return model;
+		TurboList list = new TurboList(model);
+		list.translate(-8, 16, 112);
+		return list;
 	}
 
 }

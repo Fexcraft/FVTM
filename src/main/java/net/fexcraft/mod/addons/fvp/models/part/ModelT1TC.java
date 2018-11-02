@@ -8,14 +8,14 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelT1TC extends PartModelTMT {
+public class ModelT1TC extends PartModel {
 
     public ModelT1TC(){
     	super(); textureX = 128; textureY = 32;
         addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[5];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[5];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 49, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 1, 9, textureX, textureY); // Box 2
@@ -36,6 +36,7 @@ public class ModelT1TC extends PartModelTMT {
 
         body[4].addBox(0F, 0F, 0F, 1, 2, 1, 0F); // Box 4
         body[4].setRotationPoint(-105.5F, -3F, -0.5F);
+        this.add("body", body);
 
         //translateAll(0F, 0F, 0F);
         //flipAll();

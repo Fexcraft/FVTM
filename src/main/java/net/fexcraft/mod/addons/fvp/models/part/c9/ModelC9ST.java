@@ -1,14 +1,14 @@
 package net.fexcraft.mod.addons.fvp.models.part.c9;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelC9ST extends PartModelTMT {
+public class ModelC9ST extends PartModel {
 
     public ModelC9ST(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        steering = new ModelRendererTurbo[12];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[12];
 		steering[0] = new ModelRendererTurbo(this, 161, 137, textureX, textureY); // Box 446
 		steering[1] = new ModelRendererTurbo(this, 273, 137, textureX, textureY); // Box 447
 		steering[2] = new ModelRendererTurbo(this, 489, 9, textureX, textureY); // Box 448
@@ -71,7 +71,7 @@ public class ModelC9ST extends PartModelTMT {
 		steering[11].setRotationPoint(6.5F, -2.5F, 8F);
 		steering[11].rotateAngleX = -2.26892803F;
 		steering[11].rotateAngleZ = -0.20943951F;
-
+		this.add("steering", steering);
         translateAll(0F, 0F, 0F);
         flipAll();
     }

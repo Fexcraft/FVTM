@@ -1,16 +1,16 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelCargoShipSteeringWheel extends PartModelTMT {
+public class ModelCargoShipSteeringWheel extends PartModel {
 
 
     public ModelCargoShipSteeringWheel(){
     	super(); textureX = 4096; textureY = 4096;
         this.addToCreators("643a5fd6-f325-442f-9ea8-6445dbb0cdc9");
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        steering = new ModelRendererTurbo[8];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[8];
         steering[0] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 229
         steering[1] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 230
         steering[2] = new ModelRendererTurbo(this, 201, 1, textureX, textureY); // Box 231
@@ -43,6 +43,7 @@ public class ModelCargoShipSteeringWheel extends PartModelTMT {
 
         steering[7].addShapeBox(0F, -1.5F, 0.5F, 1, 1, 4, 0F, 0F, 3F, 0F, 0F, 3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 236
         steering[7].setRotationPoint(-517F, -215.5F, 0.5F);
+        this.add("steering", steering);
         //
         //translateAll(0F, 0F, 0F);
         flipAll();

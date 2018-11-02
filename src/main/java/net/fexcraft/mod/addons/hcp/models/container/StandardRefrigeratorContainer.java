@@ -12,19 +12,15 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class StandardRefrigeratorContainer extends ContainerModelTMT {
-
-    public ModelRendererTurbo rot[] = new ModelRendererTurbo[0];
-    public ModelRendererTurbo glow[] = new ModelRendererTurbo[0];
+public class StandardRefrigeratorContainer extends ContainerModel {
 
     public StandardRefrigeratorContainer(){
     	super(); this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         textureX = 512; textureY = 512;
-        body_colored_primary = new ModelRendererTurbo[104];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[104];
         body_colored_primary[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body_colored_primary[1] = new ModelRendererTurbo(this, 129, 1, textureX, textureY); // Box 0
         body_colored_primary[2] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 1
@@ -441,8 +437,9 @@ public class StandardRefrigeratorContainer extends ContainerModelTMT {
 
         body_colored_primary[103].addShapeBox(0F, 0F, 0F, 12, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 2F, 0F, 0F, 2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 2F, 0F, 0F, 2F, 0F); // Box 90
         body_colored_primary[103].setRotationPoint(-46F, -42F, -24F);
+        this.add("body_colored_primary", body_colored_primary);
 
-        body = new ModelRendererTurbo[55];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[55];
         body[0] = new ModelRendererTurbo(this, 137, 1, textureX, textureY); // Box 92
         body[1] = new ModelRendererTurbo(this, 145, 1, textureX, textureY); // Box 93
         body[2] = new ModelRendererTurbo(this, 153, 1, textureX, textureY); // Box 94
@@ -663,8 +660,9 @@ public class StandardRefrigeratorContainer extends ContainerModelTMT {
 
         body[54].addShapeBox(0F, 0F, 0F, 12, 1, 1, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F); // Box 83
         body[54].setRotationPoint(-46F, -4F, -23.8F);
+        this.add("body", body);
 
-        other = new ModelRendererTurbo[5];
+        ModelRendererTurbo[] other = new ModelRendererTurbo[5];
         other[0] = new ModelRendererTurbo(this, 33, 65, textureX, textureY); // Box 8
         other[1] = new ModelRendererTurbo(this, 105, 217, textureX, textureY); // Box 91
         other[2] = new ModelRendererTurbo(this, 249, 225, textureX, textureY); // Box 92
@@ -685,8 +683,9 @@ public class StandardRefrigeratorContainer extends ContainerModelTMT {
 
         other[4].addShapeBox(0F, 0F, 0F, 1, 2, 16, 0F, -0.8F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, -0.8F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F); // Box 94
         other[4].setRotationPoint(-47F, -22.5F, -9.5F);
+        this.add("other", other);
 
-        rot = new ModelRendererTurbo[39];
+        ModelRendererTurbo[] rot = new ModelRendererTurbo[39];
         rot[0] = new ModelRendererTurbo(this, 113, 33, textureX, textureY); // Box 11
         rot[1] = new ModelRendererTurbo(this, 97, 41, textureX, textureY); // Box 12
         rot[2] = new ModelRendererTurbo(this, 121, 41, textureX, textureY); // Box 13
@@ -878,8 +877,9 @@ public class StandardRefrigeratorContainer extends ContainerModelTMT {
         rot[38].addShapeBox(0F, 1.5F, -0.5F, 5, 6, 1, 0F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, 1F, 0F, -1.2F, -1F, 0F, -0.4F, -1F, 0F, -0.4F, 1F, 0F, 0.4F); // Box 49
         rot[38].setRotationPoint(-43.5F, -27.5F, -1.5F);
         rot[38].rotateAngleX = 3.14159265F;
+        this.add("rot", rot);
 
-        glow = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] glow = new ModelRendererTurbo[2];
         glow[0] = new ModelRendererTurbo(this, 1, 81, textureX, textureY); // Box 55
         glow[1] = new ModelRendererTurbo(this, 81, 81, textureX, textureY); // Box 56
 
@@ -890,6 +890,7 @@ public class StandardRefrigeratorContainer extends ContainerModelTMT {
         glow[1].addBox(0F, 0F, 0F, 1, 1, 3, 0F); // Box 56
         glow[1].setRotationPoint(-44F, -20.2F, 17F);
         glow[1].rotateAngleZ = 0.78539816F;
+        this.add("glow", glow);
         
         translateAll(0F, 0F, 0F);
         flipAll();
@@ -900,11 +901,11 @@ public class StandardRefrigeratorContainer extends ContainerModelTMT {
     @Override
     public void render(ContainerData data, Object obj){
         data.getPrimaryColor().glColorApply();
-        render(body_colored_primary);
+        render("body_colored_primary");
         RGB.glColorReset();
-        render(body);
+        render("body");
         //
-        for(ModelRendererTurbo sub : rot){
+        for(ModelRendererTurbo sub : get("rot")){
             sub.rotateAngleX += Static.rad1;
             if(sub.rotateAngleX > 360){
                 sub.rotateAngleX -= 360;
@@ -918,7 +919,7 @@ public class StandardRefrigeratorContainer extends ContainerModelTMT {
             GL11.glDepthMask(false);
             GL11.glEnable(GL11.GL_ALPHA_TEST);
             color.glColorApply();
-            render(other);
+            render("other");
             RGB.glColorReset();
             GL11.glDisable(GL11.GL_ALPHA_TEST);
             GL11.glDepthMask(true);
@@ -926,9 +927,7 @@ public class StandardRefrigeratorContainer extends ContainerModelTMT {
             GlStateManager.popMatrix();
         }
         //
-        PartModelTMT.lightOff(null);
-        render(glow);
-        PartModelTMT.lightOn(null);
+        renderGlow(null, "glow");
     }
 
 }

@@ -4,23 +4,22 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.fvp.scripts.T1SnowPlowScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelT1_FT1 extends PartModelTMT {
-
-    private ModelRendererTurbo[] snowplow;
+public class ModelT1_FT1 extends PartModel {
 
     public ModelT1_FT1(){
     	super(); textureX = 512; textureY = 128;
         addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[1];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[1];
         body[0] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 9
 
         body[0].addShapeBox(0F, 0F, -24F, 4, 7, 48, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, -1F, 0F, -1F, -1F, 0F, 0F, 0F); // Box 9
         body[0].setRotationPoint(56F, -4.5F, 0F);
+        this.add("body", body);
 
-        snowplow = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] snowplow = new ModelRendererTurbo[13];
         snowplow[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         snowplow[1] = new ModelRendererTurbo(this, 121, 1, textureX, textureY); // Box 1
         snowplow[2] = new ModelRendererTurbo(this, 241, 1, textureX, textureY); // Box 2
@@ -73,24 +72,23 @@ public class ModelT1_FT1 extends PartModelTMT {
 
         snowplow[12].addShapeBox(9F, -8F, -24.5F, 1, 2, 4, 0F, 0F, -0.2F, -0.2F, -0.8F, -0.45F, -0.45F, -0.8F, -0.45F, -0.45F, 0F, -0.2F, -0.2F, 0F, -0.2F, -0.2F, -0.8F, -0.45F, -0.45F, -0.8F, -0.45F, -0.45F, 0F, -0.2F, -0.2F); // Box 13
         snowplow[12].setRotationPoint(58F, -5F, 0F);
-
+        this.add("snowplow", snowplow);
         translateAll(0F, 0F, 0F);
-
     }
 
     @Override
     public void render(VehicleData data, String usedAS){
         super.render(data, usedAS);
-        rotate(snowplow, 0, 0, -Static.rad20, true);
-        render(snowplow);
+        get("snowplow").rotate(0, 0, -Static.rad20, true);
+        render("snowplow");
     }
 
     @Override
     public void render(VehicleData data, String us, Entity vehicle, int meta){
-        render(body);
+        render("body");
         T1SnowPlowScript sps = data.getScript(T1SnowPlowScript.class);
-        rotate(snowplow, 0, 0, sps == null ? 0 : sps.on ? 0 : -Static.rad20, true);
-        render(snowplow);
+        get("snowplow").rotate(0, 0, sps == null ? 0 : sps.on ? 0 : -Static.rad20, true);
+        render("snowplow");
     }
 
 }

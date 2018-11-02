@@ -25,6 +25,7 @@ import net.fexcraft.lib.common.utils.HttpUtil;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.FCL;
 import net.fexcraft.lib.mc.network.Network;
+import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -736,6 +737,10 @@ public class Resources {
 		}
 		if(MODELS.containsKey(name)){
 			return (Model<T, K>)MODELS.get(name);
+		}
+		if(FCLRegistry.getModel(name) != null){
+			MODELS.put(name, FCLRegistry.getModel(name));
+			return FCLRegistry.getModel(name);
 		}
 		String ext = FilenameUtils.getExtension(name);
 		Model<T, K> model = null;

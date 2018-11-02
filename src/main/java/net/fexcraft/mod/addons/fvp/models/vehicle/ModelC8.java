@@ -10,14 +10,14 @@ package net.fexcraft.mod.addons.fvp.models.vehicle;
 import net.fexcraft.lib.tmt.Coord2D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.lib.tmt.Shape2D;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelC8 extends VehicleModelTMT {
+public class ModelC8 extends VehicleModel {
 
     public ModelC8(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        body = new ModelRendererTurbo[49];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[49];
         body[0] = new ModelRendererTurbo(this, 161, 1, textureX, textureY); // Box 8
         body[1] = new ModelRendererTurbo(this, 433, 1, textureX, textureY); // Box 19
         body[2] = new ModelRendererTurbo(this, 1, 17, textureX, textureY); // Box 20
@@ -216,8 +216,9 @@ public class ModelC8 extends VehicleModelTMT {
         body[48].addBox(0F, 0F, 0F, 1, 3, 4, 0F); // Box 259
         body[48].setRotationPoint(26.5F, -13F, -23F);
         body[48].rotateAngleY = -2.93215314F;
+        this.add("body", body);
         //
-        body_colored_primary = new ModelRendererTurbo[98];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[98];
         body_colored_primary[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body_colored_primary[1] = new ModelRendererTurbo(this, 49, 1, textureX, textureY); // Shape 1
         body_colored_primary[2] = new ModelRendererTurbo(this, 73, 1, textureX, textureY); // Shape 2
@@ -635,6 +636,7 @@ public class ModelC8 extends VehicleModelTMT {
         body_colored_primary[97].setRotationPoint(-44F, -8F, -22F);
         body_colored_primary[97].rotateAngleY = -3.14159265F;
         //
+        this.add("body_colored_primary", body_colored_primary);
         translateAll(0F, 0F, 0F);
         flipAll();
     }

@@ -7,15 +7,15 @@
 package net.fexcraft.mod.addons.hcp.models.container;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
+import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 
-public class StandardFluidContainer extends ContainerModelTMT {
+public class StandardFluidContainer extends ContainerModel {
 
     public StandardFluidContainer(){
     	super();
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         textureX = 512; textureY = 512;
-        body_colored_primary = new ModelRendererTurbo[32];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[32];
         body_colored_primary[0] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 13
         body_colored_primary[1] = new ModelRendererTurbo(this, 273, 65, textureX, textureY); // Box 15
         body_colored_primary[2] = new ModelRendererTurbo(this, 1, 113, textureX, textureY); // Box 16
@@ -152,8 +152,9 @@ public class StandardFluidContainer extends ContainerModelTMT {
 
         body_colored_primary[31].addShapeBox(0F, 0F, 0F, 2, 30, 32, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, 0F, 0F, 0F); // Box 45
         body_colored_primary[31].setRotationPoint(45F, -39F, -16F);
+        this.add("body_colored_primary", body_colored_primary);
 
-        other = new ModelRendererTurbo[36];
+        ModelRendererTurbo[] other = new ModelRendererTurbo[36];
         other[0] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 50
         other[1] = new ModelRendererTurbo(this, 9, 57, textureX, textureY); // Box 51
         other[2] = new ModelRendererTurbo(this, 97, 1, textureX, textureY); // Box 52
@@ -298,8 +299,9 @@ public class StandardFluidContainer extends ContainerModelTMT {
 
         other[35].addBox(0F, 0F, 0F, 1, 42, 1, 0F); // Box 85
         other[35].setRotationPoint(-43F, -45F, -23F);
+        this.add("other", other);
 
-        body_colored_secondary = new ModelRendererTurbo[12];
+        ModelRendererTurbo[] body_colored_secondary = new ModelRendererTurbo[12];
         body_colored_secondary[0] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 1
         body_colored_secondary[1] = new ModelRendererTurbo(this, 129, 1, textureX, textureY); // Box 2
         body_colored_secondary[2] = new ModelRendererTurbo(this, 185, 1, textureX, textureY); // Box 3
@@ -348,8 +350,9 @@ public class StandardFluidContainer extends ContainerModelTMT {
 
         body_colored_secondary[11].addShapeBox(0F, 0F, 0F, 3, 42, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -1F); // Box 12
         body_colored_secondary[11].setRotationPoint(45F, -45F, -24F);
+        this.add("body_colored_secondary", body_colored_secondary);
 
-        body = new ModelRendererTurbo[5];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[5];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 129, 289, textureX, textureY); // Box 46
         body[2] = new ModelRendererTurbo(this, 233, 289, textureX, textureY); // Box 47
@@ -370,6 +373,7 @@ public class StandardFluidContainer extends ContainerModelTMT {
 
         body[4].addBox(-2F, 0F, -2F, 4, 48, 4, 0F); // Box 49
         body[4].setRotationPoint(-8F, -48F, 0F);
+        this.add("body", body);
 
         translateAll(0F, 0F, 0F);
         flipAll();

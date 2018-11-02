@@ -2,16 +2,16 @@ package net.fexcraft.mod.addons.gep.models.containers;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
+import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.minecraft.entity.Entity;
 
-public class GenericContainerModel extends ContainerModelTMT {
+public class GenericContainerModel extends ContainerModel {
 
     private static final GenericContainerModel INSTANCE = new GenericContainerModel();
     private static final int textureSize = 512;
 
     public GenericContainerModel(){
-    	super(); body = new ModelRendererTurbo[4];
+    	super(); ModelRendererTurbo[] body = new ModelRendererTurbo[4];
         //
         body[0] = new ModelRendererTurbo(this, 1, 1, textureSize, textureSize); // Box 0
         body[0].addBox(0F, 0F, 0F, 192, 48, 48, 0F); // Box 0
@@ -28,6 +28,7 @@ public class GenericContainerModel extends ContainerModelTMT {
         body[3] = new ModelRendererTurbo(this, 1, 313, textureSize, textureSize); // Box 3
         body[3].addBox(0F, 0F, 0F, 96, 48, 48, 0F); // Box 3
         body[3].setRotationPoint(-48F, -48F, -24F);
+        this.add("body", body);
         //
         flipAll();
     }
@@ -35,10 +36,10 @@ public class GenericContainerModel extends ContainerModelTMT {
     @Override
     public void render(ContainerData data, Object obj){
     	if(data.getContainer().isLargeContainer()){
-            body[0].render();
+            get("body").get(0).render();
         }
         else{
-            body[3].render();
+            get("body").get(3).render();
         }
     }
 

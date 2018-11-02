@@ -8,15 +8,15 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelT1_4 extends PartModelTMT {
+public class ModelT1_4 extends PartModel {
 
     public ModelT1_4(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
         //
-        body = new ModelRendererTurbo[66];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[66];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 97, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 193, 1, textureX, textureY); // Box 2
@@ -281,8 +281,9 @@ public class ModelT1_4 extends PartModelTMT {
 
         body[65].addBox(0F, 0F, 0F, 18, 3, 12, 0F); // Box 104
         body[65].setRotationPoint(-11F, -49.5F, -6F);
+        this.add("body", body);
 
-        body_colored_secondary = new ModelRendererTurbo[30];
+        ModelRendererTurbo[] body_colored_secondary = new ModelRendererTurbo[30];
         body_colored_secondary[0] = new ModelRendererTurbo(this, 249, 1, textureX, textureY); // Box 3
         body_colored_secondary[1] = new ModelRendererTurbo(this, 249, 17, textureX, textureY); // Box 4
         body_colored_secondary[2] = new ModelRendererTurbo(this, 249, 33, textureX, textureY); // Box 5
@@ -403,7 +404,7 @@ public class ModelT1_4 extends PartModelTMT {
 
         body_colored_secondary[29].addShapeBox(0F, 0F, 0F, 2, 4, 28, 0F, 0F, 0F, -8F, 0F, -2F, -8F, 0F, -2F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F); // Box 39
         body_colored_secondary[29].setRotationPoint(18F, -49F, -14F);
-
+        this.add("body_colored_secondary", body_colored_secondary);
     }
 
 }

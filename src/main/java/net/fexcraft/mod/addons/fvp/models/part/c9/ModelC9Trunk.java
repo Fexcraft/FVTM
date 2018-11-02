@@ -5,16 +5,16 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.minecraft.entity.Entity;
 
-public class ModelC9Trunk extends PartModelTMT {
+public class ModelC9Trunk extends PartModel {
 
     public ModelC9Trunk(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-		body_colored_primary = new ModelRendererTurbo[12];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[12];
 		body_colored_primary[0] = new ModelRendererTurbo(this, 121, 121, textureX, textureY); // Box 260
 		body_colored_primary[1] = new ModelRendererTurbo(this, 49, 121, textureX, textureY); // Box 261
 		body_colored_primary[2] = new ModelRendererTurbo(this, 177, 121, textureX, textureY); // Box 262
@@ -51,12 +51,13 @@ public class ModelC9Trunk extends PartModelTMT {
 		body_colored_primary[10].setRotationPoint(-38F, -6F, 0F);
 		body_colored_primary[11].addShapeBox(-8F, 0F, 6.5F, 9, 1, 10, 0F, 0F, -1F, -0.5F, -0.5F, 0.2F, 0.5F, 0.2F, -0.6F, 0.1F, -1F, -1.4F, 0.1F, 0F, 1F, -0.5F, -0.5F, 0F, 0.5F, 0.2F, 0.6F, 0.1F, -1F, 1.4F, 0.1F); // Box 329
 		body_colored_primary[11].setRotationPoint(-38F, -6F, 0F);
+		this.add("body_colored_primary", body_colored_primary);
     }
 
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render(body_colored_primary);
+        render("body_colored_primary");
         RGB.glColorReset();
     }
 
@@ -66,9 +67,9 @@ public class ModelC9Trunk extends PartModelTMT {
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
     	float state = ent == null ? data.doorsOpen() ? 75 : 0 : RenderCache.getData(ent, "c9_trunk", 0) + ((script == null || ent == null? data.doorsOpen() : script.trunk) ? 1 : -1);
     	if(ent != null) RenderCache.updateData(ent, "c9_trunk", state = state > 75 ? 75 : state < 0 ? 0 : state);
-        rotate(body_colored_primary, 0, 0, state * Static.rad1, true);
-        render(body_colored_primary);
-        rotate(body_colored_primary, 0, 0, 0, true);
+        get("body_colored_primary").rotate(0, 0, state * Static.rad1, true);
+        render("body_colored_primary");
+        get("body_colored_primary").rotate(0, 0, 0, true);
         RGB.glColorReset();
     }
 

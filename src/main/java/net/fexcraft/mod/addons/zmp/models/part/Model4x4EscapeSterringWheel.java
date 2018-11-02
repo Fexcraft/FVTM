@@ -1,15 +1,15 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class Model4x4EscapeSterringWheel extends PartModelTMT {
+public class Model4x4EscapeSterringWheel extends PartModel {
 
     public Model4x4EscapeSterringWheel(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("zackyboy18");
         this.addToCreators("FEX___96");
-        steering = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 505, 33, textureX, textureY); // Box 261
         steering[1] = new ModelRendererTurbo(this, 145, 41, textureX, textureY); // Box 262
         steering[2] = new ModelRendererTurbo(this, 153, 41, textureX, textureY); // Box 263
@@ -62,6 +62,7 @@ public class Model4x4EscapeSterringWheel extends PartModelTMT {
 
         steering[12].addShapeBox(0F, 1.5F, -3.5F, 1, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, 1F, 0F, -1F, 1F); // Box 273
         steering[12].setRotationPoint(17F, -5F, 9F);
+        this.add("steering", steering);
         //
         translateAll(0F, -12F, 0F);
         flipAll();

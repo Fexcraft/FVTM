@@ -1,14 +1,13 @@
 package net.fexcraft.mod.addons.test.models; //Path where the model is located
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class GenericLocomotive extends VehicleModelTMT {
-	int textureX = 512;
-	int textureY = 512;
+public class GenericLocomotive extends VehicleModel {
 
 	public GenericLocomotive(){
-		body = new ModelRendererTurbo[17];
+		this.textureX = this.textureY = 512;
+		ModelRendererTurbo[] body = new ModelRendererTurbo[17];
 		body[0] = new ModelRendererTurbo(this, 257, 41, textureX, textureY); // Box 115
 		body[1] = new ModelRendererTurbo(this, 73, 33, textureX, textureY); // Box 116
 		body[2] = new ModelRendererTurbo(this, 137, 49, textureX, textureY); // Box 117
@@ -77,6 +76,7 @@ public class GenericLocomotive extends VehicleModelTMT {
 
 		body[16].addBox(0F, 0F, 0F, 48, 12, 2, 0F); // Box 131
 		body[16].setRotationPoint(-24F, -50F, 19F);
+		this.add("body", body);
 
 
 		/*steering = new ModelRendererTurbo[47];

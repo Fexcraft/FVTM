@@ -8,19 +8,19 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelT2RL extends PartModelTMT {
+public class ModelT2RL extends PartModel {
 
     public ModelT2RL(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        body = new ModelRendererTurbo[1];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[1];
         body[0] = new ModelRendererTurbo(this, 17, 177, textureX, textureY); // Box 136
         body[0].addShapeBox(0F, 0F, 0F, 2, 2, 48, 0F, 0F, 0F, 0F, 0F, 0F, -8F, 0F, 0F, -8F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -8F, 0F, 0F, -8F, 0F, 0F, 0F); // Box 136
         body[0].setRotationPoint(-63F, -12F, -24F);
         //
-        back_lights = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] back_lights = new ModelRendererTurbo[4];
         back_lights[0] = new ModelRendererTurbo(this, 57, 1, textureX, textureY); // Box 137
         back_lights[1] = new ModelRendererTurbo(this, 385, 1, textureX, textureY); // Box 138
         back_lights[2] = new ModelRendererTurbo(this, 105, 1, textureX, textureY); // Box 139
@@ -34,6 +34,8 @@ public class ModelT2RL extends PartModelTMT {
         back_lights[3].addShapeBox(0F, 0F, 0F, 1, 3, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 140
         back_lights[3].setRotationPoint(-64F, -12.5F, -25F);
         //
+        this.add("body", body);
+        this.add("back_lights", back_lights);
         translateAll(0F, 0F, 0F);
         flipAll();
     }

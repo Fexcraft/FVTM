@@ -9,15 +9,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelOT1BW extends PartModelTMT {
+public class ModelOT1BW extends PartModel {
 
     public ModelOT1BW(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("Ferdinand (FEX___96)");
-        wheel_back_left = new ModelRendererTurbo[42];
+        ModelRendererTurbo[] wheel_back_left = new ModelRendererTurbo[42];
         wheel_back_left[0] = new ModelRendererTurbo(this, 305, 73, textureX, textureY); // Box 164
         wheel_back_left[1] = new ModelRendererTurbo(this, 305, 33, textureX, textureY); // Box 165
         wheel_back_left[2] = new ModelRendererTurbo(this, 321, 33, textureX, textureY); // Box 166
@@ -186,8 +186,9 @@ public class ModelOT1BW extends PartModelTMT {
 
         wheel_back_left[41].addBox(1F, 1F, 0.2F, 1, 1, 1, 0F); // Box 326
         wheel_back_left[41].setRotationPoint(-53F, 0F, 19F);
+        this.add("wheel_back_left", wheel_back_left);
 
-        wheel_back_right = new ModelRendererTurbo[42];
+        ModelRendererTurbo[] wheel_back_right = new ModelRendererTurbo[42];
         wheel_back_right[0] = new ModelRendererTurbo(this, 169, 113, textureX, textureY); // Box 225
         wheel_back_right[1] = new ModelRendererTurbo(this, 377, 89, textureX, textureY); // Box 226
         wheel_back_right[2] = new ModelRendererTurbo(this, 273, 113, textureX, textureY); // Box 227
@@ -356,7 +357,7 @@ public class ModelOT1BW extends PartModelTMT {
 
         wheel_back_right[41].addBox(-2F, 1F, -1.2F, 1, 1, 1, 0F); // Box 333
         wheel_back_right[41].setRotationPoint(-53F, 0F, -19F);
-
+        this.add("wheel_back_right", wheel_back_right);
         //translateAll(0F, 0F, 0F);
         //flipAll();
     }

@@ -8,15 +8,15 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelT2FL extends PartModelTMT {
+public class ModelT2FL extends PartModel {
 
     public ModelT2FL(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
         //
-        front_lights = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] front_lights = new ModelRendererTurbo[4];
         front_lights[0] = new ModelRendererTurbo(this, 89, 73, textureX, textureY); // Box 204
         front_lights[1] = new ModelRendererTurbo(this, 449, 73, textureX, textureY); // Box 206
         front_lights[2] = new ModelRendererTurbo(this, 153, 73, textureX, textureY); // Box 208
@@ -29,6 +29,7 @@ public class ModelT2FL extends PartModelTMT {
         front_lights[2].setRotationPoint(66F, -16F, -26F);
         front_lights[3].addShapeBox(0F, 0F, 0F, 4, 8, 6, 0F, 0F, 0F, 0F, -0.2F, 0F, -3F, -0.2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.2F, 0F, -3F, -0.2F, 0F, 0F, 0F, 0F, 0F); // Box 209
         front_lights[3].setRotationPoint(66F, -24F, -26F);
+        this.add("front_lights", front_lights);
         //
         translateAll(0F, 0F, 0F);
         flipAll();

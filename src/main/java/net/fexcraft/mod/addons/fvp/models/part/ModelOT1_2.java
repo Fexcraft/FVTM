@@ -8,14 +8,14 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelOT1_2 extends PartModelTMT {
+public class ModelOT1_2 extends PartModel {
 
     public ModelOT1_2(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[35];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[35];
         body[0] = new ModelRendererTurbo(this, 33, 249, textureX, textureY); // Box 373
         body[1] = new ModelRendererTurbo(this, 225, 249, textureX, textureY); // Box 374
         body[2] = new ModelRendererTurbo(this, 369, 233, textureX, textureY); // Box 375
@@ -156,8 +156,9 @@ public class ModelOT1_2 extends PartModelTMT {
 
         body[34].addShapeBox(0F, 0F, 0F, 1, 23, 24, 0F, -0.4F, 0F, 0F, -0.4F, 0F, 0F, -0.4F, -4F, 0F, -0.4F, -4F, 0F, -0.4F, 4F, 0F, -0.4F, 4F, 0F, -0.4F, 4F, -1F, -0.4F, 4F, -1F); // Box 411
         body[34].setRotationPoint(18F, -52F, 0.5F);
+        this.add("body", body);
 
-        body_door_open = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] body_door_open = new ModelRendererTurbo[2];
         body_door_open[0] = new ModelRendererTurbo(this, 321, 265, textureX, textureY); // Box 382
         body_door_open[1] = new ModelRendererTurbo(this, 25, 209, textureX, textureY); // Box 383
 
@@ -167,8 +168,9 @@ public class ModelOT1_2 extends PartModelTMT {
 
         body_door_open[1].addBox(0F, 0F, 0F, 2, 1, 5, 0F); // Box 383
         body_door_open[1].setRotationPoint(-87.5F, -13F, -2.5F);
+        this.add("body_door_open", body_door_open);
 
-        body_door_close = new ModelRendererTurbo[11];
+        ModelRendererTurbo[] body_door_close = new ModelRendererTurbo[11];
         body_door_close[0] = new ModelRendererTurbo(this, 17, 265, textureX, textureY); // Box 378
         body_door_close[1] = new ModelRendererTurbo(this, 145, 1, textureX, textureY); // Box 381
         body_door_close[2] = new ModelRendererTurbo(this, 433, 361, textureX, textureY); // Box 412
@@ -213,7 +215,7 @@ public class ModelOT1_2 extends PartModelTMT {
 
         body_door_close[10].addShapeBox(0F, 0F, 0F, 1, 1, 2, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F); // Box 420
         body_door_close[10].setRotationPoint(-77F, -26F, -1F);
-
+        this.add("body_door_close", body_door_close);
         //translateAll(0F, 0F, 0F);
         //flipAll();
     }

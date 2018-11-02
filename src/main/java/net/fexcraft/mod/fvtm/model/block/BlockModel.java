@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.model.block;
 
-import java.util.ArrayList;
-
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
@@ -9,10 +7,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.render.FCLItemModel;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
@@ -20,12 +15,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
 public class BlockModel extends GenericModel<BlockData, BlockTileEntity> implements FCLItemModel {
-
-    public ModelRendererTurbo body[] = new ModelRendererTurbo[0];
-    public ModelRendererTurbo body_colored_primary[] = new ModelRendererTurbo[0];
-    public ModelRendererTurbo body_colored_secondary[] = new ModelRendererTurbo[0];
-    public ModelRendererTurbo glow[] = new ModelRendererTurbo[0];
-    public ArrayList<String> creators = new ArrayList<String>();
+	
+	public static final String[] defval = new String[]{ "body", "body_colored_primary", "body_colored_secondary", "glow" };
     
     public float gui_translate_x = 0;
     public float gui_translate_y = 0;
@@ -38,16 +29,12 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
 
     public BlockModel(JsonObject obj){
         super(obj);
-        body = submodels.get("body");
-        body_colored_primary = submodels.get("body_colored_primary");
-        body_colored_secondary = submodels.get("body_colored_secondary");
-        glow = submodels.get("glow");
     }
 
     @Override
     public void render(){
         //cannot render without providing vehicledata;
-    	render(body);
+    	render("body");
     }
 
 	@Override
@@ -57,45 +44,11 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
 
 	@Override
 	public void render(BlockData data, BlockTileEntity key, Entity ent, int meta){
-		render(body);
-		if(PartModelTMT.rq(body_colored_primary)){
-			data.getPrimaryColor().glColorApply();
-			render(body_colored_primary);
-			RGB.glColorReset();
-		}
-		if(PartModelTMT.rq(body_colored_secondary)){
-			data.getSecondaryColor().glColorApply();
-			render(body_colored_secondary);
-			RGB.glColorReset();
-		}
-		if(PartModelTMT.rq(glow)){
-			PartModelTMT.lightOff(ent);
-			render(glow);
-			PartModelTMT.lightOn(ent);
-		}
+		render("body");
+		render("body_colored_primary", data.getPrimaryColor());
+		render("body_colored_secondary", data.getSecondaryColor());
+		renderGlow(ent, "glow");
 	}
-
-    @Override
-    public void rotate(ModelRendererTurbo[] mod, float d, float d1, float d2){
-        for(ModelRendererTurbo model : mod){
-            model.rotateAngleX = d;
-            model.rotateAngleY = d1;
-            model.rotateAngleZ = d2;
-        }
-    }
-
-    @Override
-    public void rotateAll(float x, float y, float z){
-        rotate(body, x, y, z);
-    }
-
-    public void translateAll(float x, float y, float z){
-        translate(body, x, y, z);
-    }
-
-    public void flipAll(){
-        flip(body);
-    }
 
     @Override
     public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
@@ -153,7 +106,7 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
             {
                 GL11.glPushMatrix();
                 GL11.glRotated(180d, 1, 0, 0);
-                bindTexture(data.getTexture());
+                super.bindTexture(data.getTexture());
                 model.render(data, null, null, -1);
                 GL11.glPopMatrix();
             }

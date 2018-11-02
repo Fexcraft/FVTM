@@ -1,18 +1,18 @@
 package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 /**
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Lights extends PartModelTMT {
+public class TR1Lights extends PartModel {
 
     public TR1Lights(){
     	super(); this.addToCreators("FEX___96");
         textureX = 512; textureY = 512;
-        back_lights = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] back_lights = new ModelRendererTurbo[2];
         back_lights[0] = new ModelRendererTurbo(this, 1, 97, textureX, textureY); // Box 119
         back_lights[1] = new ModelRendererTurbo(this, 361, 161, textureX, textureY); // Box 123
 
@@ -21,8 +21,9 @@ public class TR1Lights extends PartModelTMT {
 
         back_lights[1].addBox(0F, 0F, 0F, 1, 2, 7, 0F); // Box 123
         back_lights[1].setRotationPoint(-236F, -20.5F, 15F);
+        this.add("back_lights", back_lights);
 
-        reverse_lights = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] reverse_lights = new ModelRendererTurbo[4];
         reverse_lights[0] = new ModelRendererTurbo(this, 505, 1, textureX, textureY); // Box 118
         reverse_lights[1] = new ModelRendererTurbo(this, 505, 9, textureX, textureY); // Box 121
         reverse_lights[2] = new ModelRendererTurbo(this, 505, 17, textureX, textureY); // Box 122
@@ -39,19 +40,21 @@ public class TR1Lights extends PartModelTMT {
 
         reverse_lights[3].addBox(0F, 0F, 0F, 1, 4, 1, 0F); // Box 125
         reverse_lights[3].setRotationPoint(-236F, -20.5F, 14F);
+        this.add("reverse_lights", reverse_lights);
 
         ///---INDICATOR LIGHTS---///
-        body = new ModelRendererTurbo[1];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[1];
         body[0] = new ModelRendererTurbo(this, 505, 33, textureX, textureY); // Box 371
         body[0].addBox(0F, 0F, 0F, 1, 4, 1, 0F); // Box 371
         body[0].setRotationPoint(-236F, -20.5F, 24F);
-        turret = new ModelRendererTurbo[1];
+        ModelRendererTurbo[] turret = new ModelRendererTurbo[1];
         turret[0] = new ModelRendererTurbo(this, 1, 41, textureX, textureY); // Box 372
         turret[0].addBox(0F, 0F, 0F, 1, 4, 1, 0F); // Box 372
         turret[0].setRotationPoint(-236F, -20.5F, -25F);
+        this.add("body", body); this.add("turret", turret);
         ///---INDICATOR LIGHTS---///
 
-        lights = new ModelRendererTurbo[36];
+        ModelRendererTurbo[] lights = new ModelRendererTurbo[36];
         lights[0] = new ModelRendererTurbo(this, 33, 49, textureX, textureY); // Box 79
         lights[1] = new ModelRendererTurbo(this, 313, 49, textureX, textureY); // Box 80
         lights[2] = new ModelRendererTurbo(this, 329, 49, textureX, textureY); // Box 81
@@ -196,6 +199,7 @@ public class TR1Lights extends PartModelTMT {
 
         lights[35].addBox(0F, 0F, 0F, 3, 1, 1, 0F); // Box 114
         lights[35].setRotationPoint(-62F, -20F, 24.5F);
+        this.add("lights", lights);
     }
 
 }

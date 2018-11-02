@@ -1,14 +1,14 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelC5S extends PartModelTMT {
+public class ModelC5S extends PartModel {
 
     public ModelC5S(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[28];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[28];
         body[0] = new ModelRendererTurbo(this, 233, 65, textureX, textureY); // Box 218
         body[1] = new ModelRendererTurbo(this, 449, 121, textureX, textureY); // Box 219
         body[2] = new ModelRendererTurbo(this, 257, 65, textureX, textureY); // Box 220
@@ -124,6 +124,7 @@ public class ModelC5S extends PartModelTMT {
 
         body[27].addBox(0F, 0F, 0F, 2, 3, 8, 0F); // Box 246
         body[27].setRotationPoint(7F, -18F, -16F);
+        this.add("body", body);
         this.flipAll();
         //TODO sub models without paint be.
     }

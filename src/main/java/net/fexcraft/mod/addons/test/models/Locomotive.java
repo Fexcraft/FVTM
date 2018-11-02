@@ -9,14 +9,13 @@
 package net.fexcraft.mod.addons.test.models;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class Locomotive extends VehicleModelTMT {
-	int textureX = 512;
-	int textureY = 512;
+public class Locomotive extends VehicleModel {
 
 	public Locomotive(){
-		body = new ModelRendererTurbo[588];
+		this.textureX = this.textureY = 512;
+		ModelRendererTurbo[] body = new ModelRendererTurbo[588];
 		body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
 		body[1] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 1
 		body[2] = new ModelRendererTurbo(this, 33, 1, textureX, textureY); // Box 2
@@ -2441,6 +2440,7 @@ public class Locomotive extends VehicleModelTMT {
 
 		body[587].addShapeBox(0F, 0F, 0F, 1, 2, 1, 0F, -0.1F, 0F, -0.2F, -0.4F, 0F, -0.2F, -0.1F, 0F, -0.2F, -0.4F, 0F, -0.2F, -0.1F, 0F, -0.2F, -0.4F, 0F, -0.2F, -0.1F, 0F, -0.2F, -0.4F, 0F, -0.2F); // Box 593
 		body[587].setRotationPoint(-27.5F, -29F, 3F);
+		this.add("body", body);
 
 		translateAll(0F, 4F, 0F);
 		flipAll();

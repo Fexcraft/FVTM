@@ -14,7 +14,7 @@ public class ModelC1R1T2Wheel extends AdjustableWheelModel {
     public ModelC1R1T2Wheel(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        wheel = new ModelRendererTurbo[63];
+        ModelRendererTurbo[] wheel = new ModelRendererTurbo[63];
         wheel[0] = new ModelRendererTurbo(this, 217, 209, textureX, textureY); // Box 632
         wheel[1] = new ModelRendererTurbo(this, 241, 209, textureX, textureY); // Box 633
         wheel[2] = new ModelRendererTurbo(this, 217, 217, textureX, textureY); // Box 634
@@ -329,7 +329,7 @@ public class ModelC1R1T2Wheel extends AdjustableWheelModel {
         wheel[62].addShapeBox(0F, 6.5F, -1.5F, 4, 3, 1, 0F, 0F, -0.5F, -0.5F, -1.3F, -0.05F, -0.5F, -1.5F, 0.45F, 0F, 0F, 0F, 0F, 0F, -0.5F, -0.5F, -0.6F, -1.25F, -0.5F, -0.35F, -0.75F, 0F, 0F, 0F, 0F); // Box 696
         wheel[62].setRotationPoint(0F, 0F, 0F);
         wheel[62].rotateAngleZ = 5.89048623F;
-
+        this.add("wheel", wheel);
         //translateAll(0F, 0F, 0F);
         flipAll();
     }

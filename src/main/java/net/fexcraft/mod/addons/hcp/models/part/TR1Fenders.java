@@ -2,19 +2,19 @@ package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
 /**
  *
  * @author Ferdinand (FEX___96)
  */
-public class TR1Fenders extends PartModelTMT {
+public class TR1Fenders extends PartModel {
 
     public TR1Fenders(){
     	super(); this.addToCreators("FEX___96");
         textureX = 512; textureY = 512;
-        track_wheels_left = new ModelRendererTurbo[21];
+        ModelRendererTurbo[] track_wheels_left = new ModelRendererTurbo[21];
         track_wheels_left[0] = new ModelRendererTurbo(this, 145, 169, textureX, textureY); // Box 58
         track_wheels_left[1] = new ModelRendererTurbo(this, 457, 145, textureX, textureY); // Box 59
         track_wheels_left[2] = new ModelRendererTurbo(this, 473, 169, textureX, textureY); // Box 60
@@ -99,8 +99,9 @@ public class TR1Fenders extends PartModelTMT {
 
         track_wheels_left[20].addShapeBox(0F, 0F, 0F, 2, 8, 14, 0F, 5F, 0F, 0F, -5F, 0F, 0F, -5F, 0F, 0F, 5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 78
         track_wheels_left[20].setRotationPoint(-172F, -14F, 12F);
+        this.add("track_wheels_left", track_wheels_left);
 
-        track_wheels_right = new ModelRendererTurbo[21];
+        ModelRendererTurbo[] track_wheels_right = new ModelRendererTurbo[21];
         track_wheels_right[0] = new ModelRendererTurbo(this, 273, 81, textureX, textureY); // Box 37
         track_wheels_right[1] = new ModelRendererTurbo(this, 401, 65, textureX, textureY); // Box 38
         track_wheels_right[2] = new ModelRendererTurbo(this, 1, 73, textureX, textureY); // Box 39
@@ -185,17 +186,18 @@ public class TR1Fenders extends PartModelTMT {
 
         track_wheels_right[20].addBox(0F, 0F, 0F, 2, 8, 14, 0F); // Box 57
         track_wheels_right[20].setRotationPoint(-199F, -6F, -26F);
+        this.add("track_wheels_right", track_wheels_right);
     }
     
     @Override
     public void render(VehicleData data, String us){
         switch(us){
             case "fender_left": {
-                render(track_wheels_left);
+                render("track_wheels_left");
                 return;
             }
             case "fender_right": {
-                render(track_wheels_right);
+                render("track_wheels_right");
                 return;
             }
             default: {

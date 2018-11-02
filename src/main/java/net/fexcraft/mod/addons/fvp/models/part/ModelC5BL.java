@@ -1,14 +1,14 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelC5BL extends PartModelTMT {
+public class ModelC5BL extends PartModel {
 
     public ModelC5BL(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("Ferdinand (FEX___96)");
-        back_lights = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] back_lights = new ModelRendererTurbo[4];
         back_lights[0] = new ModelRendererTurbo(this, 233, 1, textureX, textureY); // Box 138
         back_lights[1] = new ModelRendererTurbo(this, 305, 81, textureX, textureY); // Box 139
         back_lights[2] = new ModelRendererTurbo(this, 249, 1, textureX, textureY); // Box 142
@@ -25,6 +25,7 @@ public class ModelC5BL extends PartModelTMT {
 
         back_lights[3].addBox(0F, 0F, 0F, 2, 3, 5, 0F); // Box 143
         back_lights[3].setRotationPoint(-40.9F, -6F, -21.9F);
+        this.add("back_lights", back_lights);
         //translateAll(0F, 0F, 0F);
         flipAll();
     }

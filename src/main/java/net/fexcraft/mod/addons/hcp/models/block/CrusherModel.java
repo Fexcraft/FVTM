@@ -29,8 +29,8 @@ public class CrusherModel extends BlockModel {
 
 	public CrusherModel(){
 		this.textureX = 512; this.textureY = 256;
-		this.creators.add("FEX___96");
-		body = new ModelRendererTurbo[62];
+		this.addToCreators("FEX___96");
+		ModelRendererTurbo[] body = new ModelRendererTurbo[62];
 		body[0] = new ModelRendererTurbo(this, 345, 1, textureX, textureY); // Box 4
 		body[1] = new ModelRendererTurbo(this, 369, 1, textureX, textureY); // Box 5
 		body[2] = new ModelRendererTurbo(this, 393, 1, textureX, textureY); // Box 6
@@ -279,9 +279,10 @@ public class CrusherModel extends BlockModel {
 
 		body[61].addBox(0F, 0F, 0F, 1, 2, 44, 0F); // Box 225
 		body[61].setRotationPoint(22F, -18F, -22F);
+		this.add("body", body);
 
 
-		body_colored_primary = new ModelRendererTurbo[8];
+		ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[8];
 		body_colored_primary[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
 		body_colored_primary[1] = new ModelRendererTurbo(this, 97, 1, textureX, textureY); // Box 1
 		body_colored_primary[2] = new ModelRendererTurbo(this, 153, 1, textureX, textureY); // Box 2
@@ -314,6 +315,7 @@ public class CrusherModel extends BlockModel {
 
 		body_colored_primary[7].addBox(0F, 0F, 0F, 44, 8, 2, 0F); // Box 11
 		body_colored_primary[7].setRotationPoint(-22F, -48F, 22F);
+		this.add("body_colored_primary", body_colored_primary);
 
 
 		state = new ModelRendererTurbo[3];
@@ -1076,9 +1078,9 @@ public class CrusherModel extends BlockModel {
 	
 	@Override
 	public void render(BlockData data, BlockTileEntity tile, Entity ent, int meta){
-		render(body);
+		render("body");
 		data.getPrimaryColor().glColorApply();
-		render(body_colored_primary);
+		render("body_colored_primary");
 		RGB.glColorReset();
 		if(tile == null){
 			render(rot);

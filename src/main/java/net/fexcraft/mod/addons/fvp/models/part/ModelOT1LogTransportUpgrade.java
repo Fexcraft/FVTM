@@ -3,19 +3,17 @@ package net.fexcraft.mod.addons.fvp.models.part;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class ModelOT1LogTransportUpgrade extends PartModelTMT {
-
-    public ModelRendererTurbo cargo[] = new ModelRendererTurbo[0];
+public class ModelOT1LogTransportUpgrade extends PartModel {
 
     public ModelOT1LogTransportUpgrade(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[39];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[39];
         body[0] = new ModelRendererTurbo(this, 1, 249, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 201, 249, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 201, 161, textureX, textureY); // Box 2
@@ -172,8 +170,9 @@ public class ModelOT1LogTransportUpgrade extends PartModelTMT {
 
         body[38].addBox(0F, 0F, 0F, 1, 6, 26, 0F); // Box 39
         body[38].setRotationPoint(19.5F, -32F, -13F);
+        this.add("body", body);
 
-        cargo = new ModelRendererTurbo[22];
+        ModelRendererTurbo[] cargo = new ModelRendererTurbo[22];
         cargo[0] = new ModelRendererTurbo(this, 1, 305, textureX, textureY); // Box 41
         cargo[1] = new ModelRendererTurbo(this, 1, 321, textureX, textureY); // Box 42
         cargo[2] = new ModelRendererTurbo(this, 1, 337, textureX, textureY); // Box 43
@@ -275,9 +274,8 @@ public class ModelOT1LogTransportUpgrade extends PartModelTMT {
         cargo[21].addBox(0F, 0.2F, 0F, 98, 6, 6, 0F); // Box 62
         cargo[21].setRotationPoint(-81.5F, -38F, -8F);
         cargo[21].rotateAngleX = -0.01745329F;
-
+        this.add("cargo", cargo);
         translateAll(0F, 0F, 0F);
-
     }
 
     @Override
@@ -290,7 +288,7 @@ public class ModelOT1LogTransportUpgrade extends PartModelTMT {
         super.render(data, us, vehicle, meta);
         NonNullList<ItemStack> stacks = data.getPart(us).getAttributeData(InventoryAttributeData.class).getInventory();
         int j = 0;
-        for(int i = 0; i < cargo.length; i++){
+        for(int i = 0; i < get("cargo").size(); i++){
             if(i < stacks.size() && !stacks.get(i).isEmpty()){
                 //cargo[i].render();
                 j++;
@@ -301,7 +299,7 @@ public class ModelOT1LogTransportUpgrade extends PartModelTMT {
             }
         }
         for(int i = 0; i < j; i++){
-            cargo[i].render();
+            get("cargo").get(i).render();
         }
     }
 

@@ -8,14 +8,14 @@
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelC1_R1 extends VehicleModelTMT {
+public class ModelC1_R1 extends VehicleModel {
 
     public ModelC1_R1(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("01e4af9b-2a30-471e-addf-f6338ffce04b");
-        body = new ModelRendererTurbo[86];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[86];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 177, 1, textureX, textureY); // Box 1
         body[2] = new ModelRendererTurbo(this, 209, 1, textureX, textureY); // Box 2
@@ -363,8 +363,9 @@ public class ModelC1_R1 extends VehicleModelTMT {
 
         body[85].addBox(-32F, 1F, -21F, 64, 1, 40, 0F); // Box 704
         body[85].setRotationPoint(0F, -1F, 1F);
+        this.add("body", body);
 
-        body_door_open_colored_primary = new ModelRendererTurbo[41];
+        ModelRendererTurbo[] body_door_open_colored_primary = new ModelRendererTurbo[41];
         body_door_open_colored_primary[0] = new ModelRendererTurbo(this, 129, 281, textureX, textureY); // Box 610
         body_door_open_colored_primary[1] = new ModelRendererTurbo(this, 193, 281, textureX, textureY); // Box 611
         body_door_open_colored_primary[2] = new ModelRendererTurbo(this, 217, 145, textureX, textureY); // Box 612
@@ -570,8 +571,9 @@ public class ModelC1_R1 extends VehicleModelTMT {
         body_door_open_colored_primary[40].addShapeBox(-26.5F, 5F, -6F, 1, 3, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.3F, 0F, 0F, -0.3F, 0F, 0F, -0.3F, 0F, 0F, 0.3F, 0F, 0F); // Box 653
         body_door_open_colored_primary[40].setRotationPoint(-32F, -12F, 0F);
         body_door_open_colored_primary[40].rotateAngleZ = -1.04719755F;
+        this.add("body_door_open_colored_primary", body_door_open_colored_primary);
 
-        body_door_close_colored_primary = new ModelRendererTurbo[41];
+        ModelRendererTurbo[] body_door_close_colored_primary = new ModelRendererTurbo[41];
         body_door_close_colored_primary[0] = new ModelRendererTurbo(this, 105, 209, textureX, textureY); // Box 526
         body_door_close_colored_primary[1] = new ModelRendererTurbo(this, 209, 209, textureX, textureY); // Box 528
         body_door_close_colored_primary[2] = new ModelRendererTurbo(this, 1, 217, textureX, textureY); // Box 529
@@ -736,8 +738,9 @@ public class ModelC1_R1 extends VehicleModelTMT {
 
         body_door_close_colored_primary[40].addShapeBox(-26.5F, 5F, -6F, 1, 3, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0.3F, 0F, 0F, -0.3F, 0F, 0F, -0.3F, 0F, 0F, 0.3F, 0F, 0F); // Box 650
         body_door_close_colored_primary[40].setRotationPoint(-32F, -12F, 0F);
+        this.add("body_door_close_colored_primary", body_door_close_colored_primary);
 
-        body_colored_primary = new ModelRendererTurbo[73];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[73];
         body_colored_primary[0] = new ModelRendererTurbo(this, 97, 113, textureX, textureY); // Box 439
         body_colored_primary[1] = new ModelRendererTurbo(this, 409, 105, textureX, textureY); // Box 444
         body_colored_primary[2] = new ModelRendererTurbo(this, 441, 105, textureX, textureY); // Box 445
@@ -1030,16 +1033,17 @@ public class ModelC1_R1 extends VehicleModelTMT {
 
         body_colored_primary[72].addBox(0F, 0F, 0F, 54, 1, 1, 0F); // Box 568
         body_colored_primary[72].setRotationPoint(-29F, 0F, -21F);
+        this.add("body_colored_primary", body_colored_primary);
 
         translateAll(0F, 0F, 0F);
         flipAll();
         
-        for(ModelRendererTurbo turbo : body_door_open){
+        /*for(ModelRendererTurbo turbo : body_door_open){
         	turbo.rotateAngleY = -turbo.rotateAngleY;
         }
         for(ModelRendererTurbo turbo : body_door_open_colored_primary){
         	turbo.rotateAngleY = -turbo.rotateAngleY;
-        }
+        }*///TODO
         
     }
 

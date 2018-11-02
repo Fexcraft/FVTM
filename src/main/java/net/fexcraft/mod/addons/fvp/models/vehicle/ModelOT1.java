@@ -8,14 +8,14 @@
 package net.fexcraft.mod.addons.fvp.models.vehicle;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
-public class ModelOT1 extends VehicleModelTMT {
+public class ModelOT1 extends VehicleModel {
 
     public ModelOT1(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[139];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[139];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 153, 17, textureX, textureY); // Box 71
         body[2] = new ModelRendererTurbo(this, 273, 17, textureX, textureY); // Box 72
@@ -572,8 +572,9 @@ public class ModelOT1 extends VehicleModelTMT {
 
         body[138].addShapeBox(0F, 0F, 0F, 26, 1, 42, 0F, 0F, 0F, 0F, 0F, 0F, -6F, 0F, 0F, -6F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -6F, 0F, 0F, -6F, 0F, 0F, 0F); // Box 378
         body[138].setRotationPoint(24F, -1F, -21F);
+        this.add("body", body);
 
-        body_door_open = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] body_door_open = new ModelRendererTurbo[4];
         body_door_open[0] = new ModelRendererTurbo(this, 457, 193, textureX, textureY); // Box 369
         body_door_open[1] = new ModelRendererTurbo(this, 377, 201, textureX, textureY); // Box 370
         body_door_open[2] = new ModelRendererTurbo(this, 393, 201, textureX, textureY); // Box 371
@@ -590,8 +591,9 @@ public class ModelOT1 extends VehicleModelTMT {
 
         body_door_open[3].addShapeBox(0F, 0F, 0F, 1, 1, 4, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, 1F, 0F, 0F); // Box 372
         body_door_open[3].setRotationPoint(53F, -16F, -33.5F);
+        this.add("body_door_open", body_door_open);
 
-        body_door_close = new ModelRendererTurbo[4];
+        ModelRendererTurbo[] body_door_close = new ModelRendererTurbo[4];
         body_door_close[0] = new ModelRendererTurbo(this, 1, 49, textureX, textureY); // Box 302
         body_door_close[1] = new ModelRendererTurbo(this, 305, 49, textureX, textureY); // Box 303
         body_door_close[2] = new ModelRendererTurbo(this, 193, 89, textureX, textureY); // Box 365
@@ -608,8 +610,9 @@ public class ModelOT1 extends VehicleModelTMT {
 
         body_door_close[3].addShapeBox(0F, 0F, 0F, 4, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, 1F, 0F, 0F, 0F); // Box 366
         body_door_close[3].setRotationPoint(28F, -16F, -19.75F);
+        this.add("body_door_close", body_door_close);
 
-        body_colored_primary = new ModelRendererTurbo[56];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[56];
         body_colored_primary[0] = new ModelRendererTurbo(this, 337, 17, textureX, textureY); // Box 75
         body_colored_primary[1] = new ModelRendererTurbo(this, 449, 17, textureX, textureY); // Box 76
         body_colored_primary[2] = new ModelRendererTurbo(this, 1, 41, textureX, textureY); // Box 79
@@ -834,6 +837,7 @@ public class ModelOT1 extends VehicleModelTMT {
 
         body_colored_primary[55].addShapeBox(0F, 0F, 0F, 2, 1, 7, 0F, 1F, -3F, 0F, 0F, 0F, 0F, 1F, -1F, 0F, 0F, -3F, 0F, 0.8F, 2F, 0F, 0F, -0.8F, 0F, 1F, 0.2F, 0F, -0.2F, 2F, 0F); // Box 406
         body_colored_primary[55].setRotationPoint(52F, -5F, -16F);
+        this.add("body_colored_primary", body_colored_primary);
 
 
         /*leftFrontWheelModel = new ModelRendererTurbo[51];
@@ -1590,7 +1594,7 @@ public class ModelOT1 extends VehicleModelTMT {
 
 		rightBackWheelModel[41].addBox(-2F, 1F, -1.2F, 1, 1, 1, 0F); // Box 333
 		rightBackWheelModel[41].setRotationPoint(-53F, 0F, -19F);*/
-        body_door_close_colored_primary = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] body_door_close_colored_primary = new ModelRendererTurbo[2];
         body_door_close_colored_primary[0] = new ModelRendererTurbo(this, 457, 57, textureX, textureY); // Box 145
         body_door_close_colored_primary[1] = new ModelRendererTurbo(this, 1, 137, textureX, textureY); // Box 146
 
@@ -1599,8 +1603,9 @@ public class ModelOT1 extends VehicleModelTMT {
 
         body_door_close_colored_primary[1].addShapeBox(0F, 0F, 0F, 26, 16, 1, 0F, 0F, 0F, 0F, 0F, 0F, -6F, 0F, 0F, 6F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -6F, 0F, 0F, 6F, 0F, 0F, 0F); // Box 146
         body_door_close_colored_primary[1].setRotationPoint(24F, -21F, -21F);
+        this.add("body_door_close_colored_primary", body_door_close_colored_primary);
 
-        body_door_open_colored_primary = new ModelRendererTurbo[2];
+        ModelRendererTurbo[] body_door_open_colored_primary = new ModelRendererTurbo[2];
         body_door_open_colored_primary[0] = new ModelRendererTurbo(this, 425, 225, textureX, textureY); // Box 367
         body_door_open_colored_primary[1] = new ModelRendererTurbo(this, 1, 249, textureX, textureY); // Box 368
 
@@ -1609,6 +1614,7 @@ public class ModelOT1 extends VehicleModelTMT {
 
         body_door_open_colored_primary[1].addShapeBox(0F, 0F, 0F, 1, 16, 26, 0F, -6F, 0F, 0F, 6F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -6F, 0F, 0F, 6F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 368
         body_door_open_colored_primary[1].setRotationPoint(49F, -21F, -40F);
+        this.add("body_door_open_colored_primary", body_door_open_colored_primary);
 
         //translateAll(0F, 0F, 0F);
         //flipAll();

@@ -9,15 +9,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelOT1FW extends PartModelTMT {
+public class ModelOT1FW extends PartModel {
 
     public ModelOT1FW(){
     	super(); textureX = 512; textureY = 512;
         addToCreators("Ferdinand (FEX___96)");
-        wheel_front_left = new ModelRendererTurbo[51];
+        ModelRendererTurbo[] wheel_front_left = new ModelRendererTurbo[51];
         wheel_front_left[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 01
         wheel_front_left[1] = new ModelRendererTurbo(this, 17, 1, textureX, textureY); // Box 02
         wheel_front_left[2] = new ModelRendererTurbo(this, 49, 1, textureX, textureY); // Box 03
@@ -222,8 +222,9 @@ public class ModelOT1FW extends PartModelTMT {
 
         wheel_front_left[50].addShapeBox(-2F, -2F, 1.5F, 4, 4, 1, 0F, 1F, 1F, 0F, 1F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 1F, 0F, 1F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 364
         wheel_front_left[50].setRotationPoint(65F, 0F, 18F);
+        this.add("wheel_front_left", wheel_front_left);
 
-        wheel_front_right = new ModelRendererTurbo[51];
+        ModelRendererTurbo[] wheel_front_right = new ModelRendererTurbo[51];
         wheel_front_right[0] = new ModelRendererTurbo(this, 81, 9, textureX, textureY); // Box 36
         wheel_front_right[1] = new ModelRendererTurbo(this, 97, 9, textureX, textureY); // Box 37
         wheel_front_right[2] = new ModelRendererTurbo(this, 113, 9, textureX, textureY); // Box 38
@@ -428,7 +429,7 @@ public class ModelOT1FW extends PartModelTMT {
 
         wheel_front_right[50].addShapeBox(-2F, -2F, -2.5F, 4, 4, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 1F, 0F, 1F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 1F, 0F, 1F, 1F, 0F); // Box 365
         wheel_front_right[50].setRotationPoint(65F, 0F, -18F);
-
+        this.add("wheel_front_right", wheel_front_right);
         //translateAll(0F, 0F, 0F);
         //flipAll();
     }

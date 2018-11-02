@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
-import net.fexcraft.mod.fvtm.model.container.ContainerModelTMT;
+import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.material.Material;
@@ -55,7 +55,7 @@ public class GenericContainer implements Container {
         this.addon = DataUtil.getAddon(registryname, obj, "CONTAINER");
         this.type = ContainerType.valueOf(obj.has("Type") ? obj.get("Type").getAsString().toUpperCase() : obj.has("ContainerType") ? obj.get("ContainerType").getAsString().toUpperCase() : Container.ContainerType.MEDIUM.name());
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), ContainerData.class, Object.class, ContainerModelTMT.class);
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), ContainerData.class, Object.class, ContainerModel.class);
         }
         this.name = JsonUtil.getIfExists(obj, "FullName", this.getRegistryName().toString());
         this.textures = DataUtil.getTextures(obj, registryname, "CONTAINER");;

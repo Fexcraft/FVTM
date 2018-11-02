@@ -17,12 +17,10 @@ import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.render.entity.RenderGenericRailed;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 
 public abstract class PartBaseModel extends GenericModel<VehicleData, String> {
@@ -36,62 +34,24 @@ public abstract class PartBaseModel extends GenericModel<VehicleData, String> {
 	@Override
 	public void render(){
 		//invalid render call for part model
-    	render(submodels.get("body")); render(submodels.get("wheels"));
+    	render("body"); render("wheels");
 	}
 
-    public static boolean rq(ModelRendererTurbo[]... turbos){
-        for(ModelRendererTurbo[] turbo : turbos){
-            if(turbo != null && turbo.length > 0){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void rotate(ModelRendererTurbo[] part, float x, float y, float z, boolean mode){
-        if(!mode){
-            super.rotate(part, x, y, z);
-        }
-        else{
-            for(ModelRendererTurbo model : part){
-                model.rotateAngleX = x;
-                model.rotateAngleY = y;
-                model.rotateAngleZ = z;
-            }
-        }
-    }
-
-    public static void lightOn(Entity ent){
-        int i = ent == null ? MapColor.WHITE_STAINED_HARDENED_CLAY.colorValue : ent.getBrightnessForRender(), j = i % 65536, k = i / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-    }
-
-    public static void lightOff(Entity ent){
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-        GlStateManager.depthMask(true);
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-    }
-
-    public void def_renderWheelWithRotations(ModelRendererTurbo[] model, Entity ent, float amount, boolean steering){
+    public void def_renderWheelWithRotations(String model, Entity ent, float amount, boolean steering){
+    	TurboList list = groups.get(model);
         VehicleEntity vehicle = (VehicleEntity) ent;
-        if(amount != model[0].rotateAngleZ){
-            amount -= model[0].rotateAngleZ;
-            this.rotate(model, 0, 0, amount, false);
-
+        if(amount != list.get(0).rotateAngleZ){
+            amount -= list.get(0).rotateAngleZ;
+            list.rotate(0, 0, amount, false);
         }
         if(steering){
-            for(ModelRendererTurbo sub : model){
+            for(ModelRendererTurbo sub : list){
                 sub.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
             }
         }
         this.render(model);
         if(steering){
-            for(ModelRendererTurbo sub : model){
+            for(ModelRendererTurbo sub : list){
                 sub.rotateAngleY = 0;
             }
         }

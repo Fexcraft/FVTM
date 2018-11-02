@@ -29,8 +29,7 @@ public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object>
 	@Override
 	public void render(){
 		//invalid render call for vehicle model
-    	render(submodels.get("body")); render(submodels.get("chassis"));
-    	render(submodels.get("wheels_import")); render(submodels.get("turret"));
+    	render("body"); render("chassis"); render("wheels_import"); render("turret");
 	}
 
 	@Override

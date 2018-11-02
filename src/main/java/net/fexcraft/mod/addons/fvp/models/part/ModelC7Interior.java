@@ -2,15 +2,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC7Interior extends PartModelTMT {
+public class ModelC7Interior extends PartModel {
 
     public ModelC7Interior(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[14];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[14];
         body[0] = new ModelRendererTurbo(this, 401, 153, textureX, textureY); // Box 259
         body[1] = new ModelRendererTurbo(this, 73, 57, textureX, textureY); // Box 260
         body[2] = new ModelRendererTurbo(this, 97, 81, textureX, textureY); // Box 274
@@ -54,16 +54,17 @@ public class ModelC7Interior extends PartModelTMT {
         body[12].setRotationPoint(15.8F, -10F, -2F);
         body[13].addBox(0F, 0F, 0F, 1, 1, 4, 0F); // Box 285
         body[13].setRotationPoint(15.8F, -10.5F, -2F);
+        this.add("body", body);
     }
 
     @Override
     public void render(VehicleData data, String us){
-        render(body);
+        render("body");
     }
 
     @Override
     public void render(VehicleData data, String us, Entity vehicle, int meta){
-        render(body);
+        render("body");
     }
 
 }

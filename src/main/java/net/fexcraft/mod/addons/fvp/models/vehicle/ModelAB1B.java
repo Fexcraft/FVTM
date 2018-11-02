@@ -5,15 +5,15 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.vehicle.VehicleModelTMT;
+import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 import net.minecraft.entity.Entity;
 
-public class ModelAB1B extends VehicleModelTMT {
+public class ModelAB1B extends VehicleModel {
 
     public ModelAB1B(){
     	super(); textureX = 1024; textureY = 1024;
         addToCreators("Ferdinand (FEX___96)");
-        body = new ModelRendererTurbo[105];
+        ModelRendererTurbo[] body = new ModelRendererTurbo[105];
         body[0] = new ModelRendererTurbo(this, 217, 1, textureX, textureY); // Box 6
         body[1] = new ModelRendererTurbo(this, 593, 1, textureX, textureY); // Box 7
         body[2] = new ModelRendererTurbo(this, 705, 1, textureX, textureY); // Box 8
@@ -437,8 +437,9 @@ public class ModelAB1B extends VehicleModelTMT {
 
         body[104].addBox(0F, 0F, 0F, 2, 36, 2, 0F); // Box 315
         body[104].setRotationPoint(57F, -48F, 28F);
+        this.add("body", body);
 
-        body_colored_secondary = new ModelRendererTurbo[26];
+        ModelRendererTurbo[] body_colored_secondary = new ModelRendererTurbo[26];
         body_colored_secondary[0] = new ModelRendererTurbo(this, 1017, 49, textureX, textureY); // Box 113
         body_colored_secondary[1] = new ModelRendererTurbo(this, 809, 57, textureX, textureY); // Box 114
         body_colored_secondary[2] = new ModelRendererTurbo(this, 1001, 113, textureX, textureY); // Box 141
@@ -543,8 +544,9 @@ public class ModelAB1B extends VehicleModelTMT {
 
         body_colored_secondary[25].addShapeBox(0F, 0F, -1F, 11, 4, 1, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 398
         body_colored_secondary[25].setRotationPoint(82F, -48F, -29.5F);
+        this.add("body_colored_secondary", body_colored_secondary);
 
-        body_colored_primary = new ModelRendererTurbo[68];
+        ModelRendererTurbo[] body_colored_primary = new ModelRendererTurbo[68];
         body_colored_primary[0] = new ModelRendererTurbo(this, 753, 113, textureX, textureY); // Box 35
         body_colored_primary[1] = new ModelRendererTurbo(this, 1, 121, textureX, textureY); // Box 36
         body_colored_primary[2] = new ModelRendererTurbo(this, 713, 25, textureX, textureY); // Box 38
@@ -817,8 +819,9 @@ public class ModelAB1B extends VehicleModelTMT {
 
         body_colored_primary[67].addBox(0F, 0F, 0F, 14, 27, 1, 0F); // Box 317
         body_colored_primary[67].setRotationPoint(59F, -44F, 7.5F);
+        this.add("body_colored_primary", body_colored_primary);
 
-        chassis = new ModelRendererTurbo[6];
+        ModelRendererTurbo[] chassis = new ModelRendererTurbo[6];
         chassis[0] = new ModelRendererTurbo(this, 657, 33, textureX, textureY); // Box 42
         chassis[1] = new ModelRendererTurbo(this, 953, 49, textureX, textureY); // Box 43
         chassis[2] = new ModelRendererTurbo(this, 689, 57, textureX, textureY); // Box 44
@@ -837,19 +840,20 @@ public class ModelAB1B extends VehicleModelTMT {
         chassis[4].setRotationPoint(-5F, -13F, -30.5F);
         chassis[5].addBox(0F, 0F, -1F, 24, 9, 1, 0F); // Box 51
         chassis[5].setRotationPoint(24F, -13F, -30.5F);
+        this.add("chassis", chassis);
         translateAll(0F, 0F, 0F);
         flipAll();
     }
 
     @Override
     public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
-        render(body);
+        render("body");
         data.getPrimaryColor().glColorApply();
-        render(body_colored_primary);
-        render(chassis);
+        render("body_colored_primary");
+        render("chassis");
         RGB.glColorReset();
         data.getSecondaryColor().glColorApply();
-        render(body_colored_secondary);
+        render("body_colored_secondary");
         RGB.glColorReset();
     }
 

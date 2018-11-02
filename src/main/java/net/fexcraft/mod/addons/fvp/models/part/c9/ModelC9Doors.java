@@ -5,22 +5,17 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 import net.minecraft.entity.Entity;
 
-public class ModelC9Doors extends PartModelTMT {
-	
-    public ModelRendererTurbo[] front_right;
-    public ModelRendererTurbo[] front_left;
-    public ModelRendererTurbo[] back_left;
-    public ModelRendererTurbo[] back_right;
+public class ModelC9Doors extends PartModel {
 
     public ModelC9Doors(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
         //
-        front_left = new ModelRendererTurbo[21];
+        ModelRendererTurbo[] front_left = new ModelRendererTurbo[21];
 		front_left[0] = new ModelRendererTurbo(this, 65, 209, textureX, textureY); // Box 458
 		front_left[1] = new ModelRendererTurbo(this, 409, 209, textureX, textureY); // Box 459
 		front_left[2] = new ModelRendererTurbo(this, 217, 201, textureX, textureY); // Box 460
@@ -114,9 +109,9 @@ public class ModelC9Doors extends PartModelTMT {
 		front_left[20].addShapeBox(-3.9F, 0F, 2.5F, 1, 2, 1, 0F, 0F, -0.3F, -0.5F, -0.4F, -0.5F, -1F, -0.9F, 0F, 0F, 0F, 0F, 0F, 0F, -0.3F, -0.5F, -0.4F, -0.5F, -1F, -0.9F, 0F, 0F, 0F, 0F, 0F); // Box 561
 		front_left[20].setRotationPoint(17F, -6.5F, 17.5F);
 		front_left[20].rotateAngleY = -0.17453293F;
+		this.add("front_left", front_left);
 
-
-		front_right = new ModelRendererTurbo[21];
+		ModelRendererTurbo[] front_right = new ModelRendererTurbo[21];
 		front_right[0] = new ModelRendererTurbo(this, 65, 169, textureX, textureY); // Box 474
 		front_right[1] = new ModelRendererTurbo(this, 1, 225, textureX, textureY); // Box 475
 		front_right[2] = new ModelRendererTurbo(this, 57, 225, textureX, textureY); // Box 476
@@ -210,9 +205,9 @@ public class ModelC9Doors extends PartModelTMT {
 		front_right[20].setRotationPoint(17F, -5.5F, -19.5F);
 		front_right[20].rotateAngleX = 1.04719755F;
 		front_right[20].rotateAngleZ = -0.78539816F;
+		this.add("front_right", front_right);
 
-
-		back_left = new ModelRendererTurbo[17];
+		ModelRendererTurbo[] back_left = new ModelRendererTurbo[17];
 		back_left[0] = new ModelRendererTurbo(this, 281, 225, textureX, textureY); // Box 489
 		back_left[1] = new ModelRendererTurbo(this, 401, 225, textureX, textureY); // Box 490
 		back_left[2] = new ModelRendererTurbo(this, 449, 225, textureX, textureY); // Box 491
@@ -282,9 +277,9 @@ public class ModelC9Doors extends PartModelTMT {
 		back_left[16].addShapeBox(-15F, -1.9F, 1.9F, 16, 1, 1, 0F, 0.4F, -0.3F, 0.3F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, -0.2F, -0.3F, -0.3F, -0.2F, 0.3F, 0.3F, 0.5F, 0F, 0F, 0.5F, 0F, 0F, -0.6F, 0.3F, -0.3F); // Box 509
 		back_left[16].setRotationPoint(-8F, 3.8F, 17.5F);
 		back_left[16].rotateAngleX = -0.78539816F;
+		this.add("back_left", back_left);
 
-
-		back_right = new ModelRendererTurbo[17];
+		ModelRendererTurbo[] back_right = new ModelRendererTurbo[17];
 		back_right[0] = new ModelRendererTurbo(this, 321, 233, textureX, textureY); // Box 510
 		back_right[1] = new ModelRendererTurbo(this, 361, 233, textureX, textureY); // Box 511
 		back_right[2] = new ModelRendererTurbo(this, 409, 233, textureX, textureY); // Box 512
@@ -354,12 +349,13 @@ public class ModelC9Doors extends PartModelTMT {
 
 		back_right[16].addShapeBox(-5.5F, -2F, 1.5F, 3, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.3F, 0F, 0F, -0.3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.1F, 0F, 0F, -0.1F); // Box 527
 		back_right[16].setRotationPoint(-8F, 0F, -19.5F);
+		this.add("back_right", back_right);
     }
 
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render(this.front_left); render(this.front_right); render(this.back_left); render(this.back_right);
+        render("front_left"); render("front_right"); render("back_left"); render("back_right");
         RGB.glColorReset();
     }
 
@@ -370,21 +366,21 @@ public class ModelC9Doors extends PartModelTMT {
     		arr[i] = arr[i] * Static.rad1;
     	}
         data.getPrimaryColor().glColorApply();
-        rotate(this.front_left, 0, arr[0], 0);
-        render(this.front_left);
-        rotate(this.front_left, 0, -arr[0], 0);
+        get("front_left").rotate(0, arr[0], 0);
+        render("front_left");
+        get("front_left").rotate(0, -arr[0], 0);
         //
-        rotate(this.front_right, 0, -arr[1], 0);
-        render(this.front_right);
-        rotate(this.front_right, 0, arr[1], 0);
+        get("front_right").rotate(0, -arr[1], 0);
+        render("front_right");
+        get("front_right").rotate(0, arr[1], 0);
         //
-        rotate(this.back_left, 0, arr[2], 0);
-        render(this.back_left);
-        rotate(this.back_left, 0, -arr[2], 0);
+        get("back_left").rotate(0, arr[2], 0);
+        render("back_left");
+        get("back_left").rotate(0, -arr[2], 0);
         //
-        rotate(this.back_right, 0, -arr[3], 0);
-        render(this.back_right);
-        rotate(this.back_right, 0, arr[3], 0);
+        get("back_right").rotate(0, -arr[3], 0);
+        render("back_right");
+        get("back_right").rotate(0, arr[3], 0);
         RGB.glColorReset();
     }
 

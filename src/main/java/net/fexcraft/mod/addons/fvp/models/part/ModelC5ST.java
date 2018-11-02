@@ -8,14 +8,14 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelC5ST extends PartModelTMT {
+public class ModelC5ST extends PartModel {
 
     public ModelC5ST(){
     	super(); textureX = 512; textureY = 512;
         this.addToCreators("Ferdinand (FEX___96)");
-        steering = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 345, 1, textureX, textureY); // Box 277
         steering[1] = new ModelRendererTurbo(this, 97, 1, textureX, textureY); // Box 278
         steering[2] = new ModelRendererTurbo(this, 361, 1, textureX, textureY); // Box 279
@@ -68,6 +68,7 @@ public class ModelC5ST extends PartModelTMT {
 
         steering[12].addBox(-0.5F, -1.5F, -3.5F, 1, 3, 1, 0F); // Box 386
         steering[12].setRotationPoint(25F, -10F, 12F);
+        this.add("steering", steering);
         flipAll();
     }
 

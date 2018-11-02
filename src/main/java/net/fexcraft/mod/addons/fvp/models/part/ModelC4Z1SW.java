@@ -3,15 +3,15 @@ package net.fexcraft.mod.addons.fvp.models.part;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.model.part.PartModelTMT;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.minecraft.entity.Entity;
 
-public class ModelC4Z1SW extends PartModelTMT {
+public class ModelC4Z1SW extends PartModel {
 
     public ModelC4Z1SW(){
     	super(); textureX = 1024; textureY = 1024;
         this.addToCreators("Ferdinand (FEX___96)");
-        steering = new ModelRendererTurbo[13];
+        ModelRendererTurbo[] steering = new ModelRendererTurbo[13];
         steering[0] = new ModelRendererTurbo(this, 873, 17, textureX, textureY); // Box 261
         steering[1] = new ModelRendererTurbo(this, 817, 105, textureX, textureY); // Box 262
         steering[2] = new ModelRendererTurbo(this, 25, 113, textureX, textureY); // Box 263
@@ -64,17 +64,18 @@ public class ModelC4Z1SW extends PartModelTMT {
 
         steering[12].addShapeBox(0F, 1.5F, -3.5F, 1, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, 1F, 0F, -1F, 1F); // Box 273
         steering[12].setRotationPoint(48F, -25F, 13F);
+        this.add("steering", steering);
     }
 
     @Override
     public void render(VehicleData data, String us){
-        render(steering);
+        render("steering");
     }
 
     @Override
     public void render(VehicleData data, String us, Entity vehicle, int meta){
         VehicleEntity ent = (VehicleEntity) vehicle;
-        for(ModelRendererTurbo submodel : steering){
+        for(ModelRendererTurbo submodel : get("steering")){
             submodel.rotateAngleX = ent.getWheelsYaw() * 3.14159265F / 180F * 3F;
             submodel.render();
         }

@@ -456,6 +456,7 @@ public class ModelT2P extends VehicleModel {
         body_colored_primary[51].addShapeBox(0F, 0F, 0F, 3, 4, 2, 0F, 0F, 0F, -1F, 0F, 0F, -0.5F, 0F, 0F, 0.5F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F); // Box 261
         body_colored_primary[51].setRotationPoint(15F, -56F, -25.5F);
         this.add("body_colored_primary", body_colored_primary);
+        this.get("body_colored_primary").addProgram("fvtm:rgb_primary");;
         //
         translateAll(0F, 0F, 0F);
         flipAll();

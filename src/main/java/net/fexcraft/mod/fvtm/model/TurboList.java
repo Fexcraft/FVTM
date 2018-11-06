@@ -4,6 +4,8 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import org.lwjgl.opengl.GL11;
+
 import net.fexcraft.lib.common.lang.ArrayList;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -24,7 +26,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	public static final ProgramMap PROGRAMS = new ProgramMap();
 	//
 	public ArrayList<Program> programs = new ArrayList<>();
-	//public float rotX, rotY, rotZ, offX, offY, offZ;
+	public float rotX, rotY, rotZ, offX, offY, offZ;
 	protected RGB windowcolor = new RGB(0x00, 0x72, 0x08, 0.3f);
 	public String name;
 	
@@ -51,25 +53,23 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	}
 
 	public void render(VehicleEntity ent, VehicleData data, Colorable color, String part){
-		/*GL11.glPushMatrix();
+		GL11.glPushMatrix();
 		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
 		if(rotX != 0f) GL11.glRotatef(rotX, 1, 0, 0);
 		if(rotY != 0f) GL11.glRotatef(rotY, 0, 1, 0);
-		if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);*/
+		if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);
 		if(programs.size() > 0) for(Program program : programs) program.preRender(this, ent, data, color, part);
 		for(ModelRendererTurbo turbo : this){ turbo.render(); }
 		if(programs.size() > 0) for(Program program : programs) program.postRender(this, ent, data, color, part);
-		/*if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
-		GL11.glPopMatrix();*/
+		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
+		GL11.glPopMatrix();
 	}
 
 	public void translate(float x, float y, float z){
 		for(ModelRendererTurbo mrt : this){ mrt.rotationPointX += x; mrt.rotationPointY += y; mrt.rotationPointZ += z; }
 	}
 	
-	public void rotate(float x, float y, float z){
-		rotate(x, y, z, false);
-	}
+	public void rotate(float x, float y, float z){ rotate(x, y, z, false); }
 
 	public void rotate(float x, float y, float z, boolean apply){
 		if(apply){
@@ -79,12 +79,30 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 			for(ModelRendererTurbo mrt : this){ mrt.rotateAngleX += x; mrt.rotateAngleY += y; mrt.rotateAngleZ += z; }
 		}
 	}
+
+	public void rotateAxis(float value, int axis, boolean apply){
+		switch(axis){
+			case 0: {
+				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotateAngleX = value; }
+				else{ for(ModelRendererTurbo mrt : this) mrt.rotateAngleX += value; } return;
+			}
+			case 1: {
+				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotateAngleY = value; }
+				else{ for(ModelRendererTurbo mrt : this) mrt.rotateAngleY += value; } return;
+			}
+			case 2: {
+				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotateAngleZ = value; }
+				else{ for(ModelRendererTurbo mrt : this) mrt.rotateAngleZ += value; } return;
+			}
+			default: return;
+		}
+	}
 	
 	public void addProgram(String str){
 		Program prog = PROGRAMS.get(str); if(prog != null) programs.add(prog); else return;
 	}
 	
-	public void addPrograms(String[] strs){
+	public void addPrograms(String... strs){
 		for(String str : strs) addProgram(str);
 	}
 	
@@ -92,7 +110,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		this.programs.add(program);
 	}
 	
-	public void addPrograms(Program[] programs){
+	public void addPrograms(Program... programs){
 		for(Program program : programs) addProgram(program);
 	}
 	
@@ -100,9 +118,9 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		
 		public String getId();
 		
-		public void preRender(TurboList list, @Nullable VehicleEntity ent, VehicleData data, @Nullable Colorable color, @Nullable String Part);
+		public void preRender(TurboList list, @Nullable VehicleEntity ent, VehicleData data, @Nullable Colorable color, @Nullable String part);
 		
-		public void postRender(TurboList list, @Nullable VehicleEntity ent, VehicleData data, @Nullable Colorable color, @Nullable String Part);
+		public void postRender(TurboList list, @Nullable VehicleEntity ent, VehicleData data, @Nullable Colorable color, @Nullable String part);
 		
 	}
 	

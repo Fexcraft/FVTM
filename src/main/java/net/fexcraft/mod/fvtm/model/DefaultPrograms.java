@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
@@ -15,14 +16,14 @@ public class DefaultPrograms {
 	
 	public static final Program RGB_PRIMARY = new AutoRegProgram(){
 		@Override public String getId(){ return "fvtm:rgb_primary"; }
-		@Override public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){ color.getPrimaryColor().glColorApply(); }
-		@Override public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){ RGB.glColorReset(); }
+		@Override public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){ color.getPrimaryColor().glColorApply(); }
+		@Override public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){ RGB.glColorReset(); }
 	};
 	
 	public static final Program RGB_SECONDARY = new AutoRegProgram(){
 		@Override public String getId(){ return "fvtm:rgb_secondary"; }
-		@Override public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){ color.getSecondaryColor().glColorApply(); }
-		@Override public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){ RGB.glColorReset(); }
+		@Override public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){ color.getSecondaryColor().glColorApply(); }
+		@Override public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){ RGB.glColorReset(); }
 	};
 	
 	public static final Program ALWAYS_GLOW = new AlwaysGlow(){
@@ -60,7 +61,7 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:window"; }
 		//
 		@Override
-		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
             GlStateManager.pushMatrix();
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glDepthMask(false);
@@ -69,7 +70,7 @@ public class DefaultPrograms {
 		}
 		//
 		@Override
-		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
             RGB.glColorReset();
             GL11.glDisable(GL11.GL_ALPHA_TEST);
             GL11.glDepthMask(true);
@@ -82,13 +83,12 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:steering_x"; }
 		//
 		@Override
-		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
-	        if(ent == null) return;
-	        list.rotate(ent.getWheelsYaw() * 3.14159265F / 180F * 3F, 0, 0, true);
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        if(ent == null) return; list.rotateAxis(ent.getWheelsYaw() * 3.14159265F / 180F * 3F, 0, true);
 		}
 		//
 		@Override
-		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
 			//
 		}
 	};
@@ -97,13 +97,12 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:steering_y"; }
 		//
 		@Override
-		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
-	        if(ent == null) return;
-	        list.rotate(0, ent.getWheelsYaw() * 3.14159265F / 180F * 3F, 0, true);
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        if(ent == null) return; list.rotateAxis(ent.getWheelsYaw() * 3.14159265F / 180F * 3F, 1, true);
 		}
 		//
 		@Override
-		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
 			//
 		}
 	};
@@ -112,13 +111,13 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:default_wheel"; }
 		//
 		@Override
-		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
-			list.rotate(0, 0, ent.getWheelsAngle(), false);
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			if(ent == null) return; list.rotateAxis(ent.getWheelsAngle(), 2, true);
 		}
 		//
 		@Override
-		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
-			//
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			if(ent == null) return; list.rotateAxis(-ent.getWheelsAngle(), 2, true);
 		}
 	};
 	
@@ -126,13 +125,33 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:rotated_wheel"; }
 		//
 		@Override
-		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
-			list.rotate(0, 0, ent.getWheelsAngle(), true);
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			if(ent == null) return; list.rotateAxis(ent.getWheelsAngle(), 2, false);
 		}
 		//
 		@Override
-		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
-			//
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			if(ent == null) return; list.rotateAxis(-ent.getWheelsAngle(), 2, false);
+		}
+	};
+	
+	public static final Program ADJUSTABLE_WHEEL = new AutoRegProgram(){
+		private net.fexcraft.lib.mc.utils.Pos lastpos;
+		@Override public String getId(){ return "fvtm:adjustable_wheel"; }
+		//
+		@Override
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        lastpos = data.getVehicle().getWheelPositions().get(part);
+	        lastpos = lastpos == null ? new Pos(0, 0, 0) : lastpos;
+	        lastpos.translate();
+	        if(part.contains("right")){ GL11.glRotated(180, 0, 1, 0); }
+	        if(ent != null && data.getVehicle().getSteeringWheels().contains(part))
+		}
+		//
+		@Override
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			if(part.contains("right")){ GL11.glRotated(-180, 0, 1, 0); }
+			lastpos.translateR();
 		}
 	};
 	
@@ -147,7 +166,7 @@ public class DefaultPrograms {
 		public abstract boolean shouldGlow(VehicleEntity ent, VehicleData data);
 
 		@Override
-		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
 			if(!shouldGlow(ent, data)) return;
 	        GlStateManager.enableBlend();
 	        GlStateManager.disableAlpha();
@@ -158,10 +177,10 @@ public class DefaultPrograms {
 		}
 
 		@Override
-		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String Part){
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
 			if(!shouldGlow(ent, data)) return;
 	        int i = ent == null ? MapColor.WHITE_STAINED_HARDENED_CLAY.colorValue : ent.getEntity().getBrightnessForRender(), j = i % 65536, k = i / 65536;
-	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
+	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
 	        GlStateManager.disableBlend();
 	        GlStateManager.enableAlpha();
 		}

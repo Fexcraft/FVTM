@@ -41,6 +41,7 @@ public class GenericVehicle implements Vehicle {
     private List<String> required;
     private Model<VehicleData, Object> model;
     private List<Pos> wheelpos;
+    private List<String> steeringwheels;
     private RGB primary, secondary;
     private int constructionlength;
     private DriveType drivetype;
@@ -137,6 +138,15 @@ public class GenericVehicle implements Vehicle {
             this.wheel_coords.put("right_front_wheel", new Pos(0, 0, 0));
             this.wheel_coords.put("left_back_wheel", new Pos(0, 0, 0));
             this.wheel_coords.put("right_back_wheel", new Pos(0, 0, 0));
+        }
+        if(obj.has("SteeringWheels")){
+        	this.steeringwheels = JsonUtil.jsonArrayToStringArray(JsonUtil.getIfExists(obj, "SteeringWheels", new JsonArray()).getAsJsonArray());
+        }
+        else{
+            this.steeringwheels = new ArrayList<>();
+            for(String str : this.wheel_coords.keySet()){
+            	if(str.contains("front")){ this.steeringwheels.add(str); }
+            }
         }
         //
         {
@@ -321,5 +331,10 @@ public class GenericVehicle implements Vehicle {
         }
         return 0f;
     }
+
+	@Override
+	public List<String> getSteeringWheels(){
+		return steeringwheels;
+	}
 
 }

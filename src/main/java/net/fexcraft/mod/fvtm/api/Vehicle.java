@@ -77,6 +77,8 @@ public interface Vehicle extends DataHolderObject.Extended<Vehicle, Vehicle.Vehi
 
     public TreeMap<String, Pos> getWheelPositions();
 
+    public List<String> getSteeringWheels();
+
     public Collection<ResourceLocation> getSounds();
 
     public SoundEvent getSound(String event);
@@ -141,7 +143,7 @@ public interface Vehicle extends DataHolderObject.Extended<Vehicle, Vehicle.Vehi
         public Pos getRearConnectorPos();
 
         /**
-         * 0 = off 1 = on 2 = long (?) 3 = fog lights (?)
+         * 0 = off || 1 = on || 2 = long (?) || 3 = fog lights (?)
          */
         public int getLightsState();
 

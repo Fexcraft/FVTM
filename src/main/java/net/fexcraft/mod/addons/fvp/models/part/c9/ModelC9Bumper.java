@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.fvp.models.part.c9;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC9Bumper extends PartModel {
 	
@@ -68,11 +68,11 @@ public class ModelC9Bumper extends PartModel {
 	public void render(VehicleData data, String us){
 	    switch(us){
 	        case "front_bumper": {
-	            render("track_wheels_left");
+	            render(data, "track_wheels_left");
 	            return;
 	        }
 	        case "rear_bumper": {
-	            render("track_wheels_right");
+	            render(data, "track_wheels_right");
 	            return;
 	        }
 	        default: {
@@ -83,7 +83,7 @@ public class ModelC9Bumper extends PartModel {
 	}
 	
 	@Override
-	public void render(VehicleData data, String us, Entity vehicle, int meta){
+	public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
 	    this.render(data, us);
 	}
 	

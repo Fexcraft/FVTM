@@ -9,15 +9,14 @@
 
 package net.fexcraft.mod.addons.gmp.models.blocks; //Path where the model is located
 
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
-import net.minecraft.entity.Entity;
 
 public class ColorExtractor extends BlockModel {
 	
@@ -740,8 +739,8 @@ public class ColorExtractor extends BlockModel {
 	}
 	
 	@Override
-	public void render(BlockData data, BlockTileEntity tile, Entity ent, int meta){
-		render("body"); data.getPrimaryColor().glColorApply(); render("body_colored_primary"); RGB.glColorReset();
+	public void render(BlockData data, BlockTileEntity tile, VehicleEntity ent, int meta){
+		//TODO render("body"); data.getPrimaryColor().glColorApply(); render("body_colored_primary"); RGB.glColorReset();
 		//
 		if(tile == null){ return; }
     	float rot = RenderCache.getData(tile.getLongPos(), "rotation", 0) + (data.getScript() == null ? 1 : data.getScript(CrafterBlockScriptBase.class).getProgress() > 0 ? 1 : 0);

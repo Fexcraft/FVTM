@@ -2,10 +2,9 @@ package net.fexcraft.mod.fvtm.model.container;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.minecraft.entity.Entity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.model.TurboList;
 
 public class ContainerModel extends ContainerBaseModel {
 	
@@ -24,21 +23,10 @@ public class ContainerModel extends ContainerBaseModel {
 	}
 
 	@Override
-	public void render(ContainerData data, Object key, Entity ent, int meta){
-		render("body");
-        //
-		if(notEmpty("body_colored_primary", "body_door_open_colored_primary", "body_door_close_colored_primary")){
-			data.getPrimaryColor().glColorApply();
-	        render("body_colored_primary");
-	        render((key instanceof VehicleData ? ((VehicleData)key).doorsOpen() : false) ? "body_door_open_colored_primary" : "body_door_close_colored_primary");
-	        RGB.glColorReset();
+	public void render(ContainerData data, Object key, VehicleEntity ent, int meta){
+		for(TurboList list : groups.values()){
+			list.render(ent, null, data, null);
 		}
-        //
-		if(notEmpty("body_colored_secondary")){
-	        render("body_colored_secondary", data.getSecondaryColor());
-		}
-        //
-        render("other");
 	}
 
 }

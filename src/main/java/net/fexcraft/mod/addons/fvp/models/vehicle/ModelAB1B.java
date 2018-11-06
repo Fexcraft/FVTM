@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
-import net.minecraft.entity.Entity;
 
 public class ModelAB1B extends VehicleModel {
 
@@ -846,14 +846,14 @@ public class ModelAB1B extends VehicleModel {
     }
 
     @Override
-    public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
-        render("body");
+    public void render(VehicleData data, Object obj, @Nullable VehicleEntity entity, int meta){
+        render(data, "body");
         data.getPrimaryColor().glColorApply();
-        render("body_colored_primary");
-        render("chassis");
+        render(data, "body_colored_primary");
+        render(data, "chassis");
         RGB.glColorReset();
         data.getSecondaryColor().glColorApply();
-        render("body_colored_secondary");
+        render(data, "body_colored_secondary");
         RGB.glColorReset();
     }
 

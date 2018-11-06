@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC4Z1I4E extends PartModel {
 
@@ -570,11 +570,11 @@ public class ModelC4Z1I4E extends PartModel {
 				render(c4z1_var);
 			}
 		}*/
-        render("body");
+        render(data, "body");
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
         /*switch(data.getVehicle().getRegistryName().toString()){
 			case "fvp:c7":{
 				render(c7_var);
@@ -584,7 +584,7 @@ public class ModelC4Z1I4E extends PartModel {
 				render(c4z1_var);
 			}
 		}*/
-        render("body");
+        render(data, "body");
     }
 
 }

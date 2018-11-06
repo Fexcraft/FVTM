@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC4Z1 extends VehicleModel {
 
@@ -1720,13 +1720,13 @@ public class ModelC4Z1 extends VehicleModel {
     }
 
     @Override
-    public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
-        render("body");
-        render("body_door_close");
+    public void render(VehicleData data, Object obj, @Nullable VehicleEntity entity, int meta){
+        render(data, "body");
+        render(data, "body_door_close");
         data.getPrimaryColor().glColorApply();
-        render("body_door_close_colored_primary");
-        render("body_colored_primary");
-        if(!data.doorsOpen()){ render("turret"); }
+        render(data, "body_door_close_colored_primary");
+        render(data, "body_colored_primary");
+        if(!data.doorsOpen()){ render(data, "turret"); }
         RGB.glColorReset();
     }
 

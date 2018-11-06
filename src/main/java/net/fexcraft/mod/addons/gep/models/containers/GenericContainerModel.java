@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.gep.models.containers;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
-import net.minecraft.entity.Entity;
 
 public class GenericContainerModel extends ContainerModel {
 
@@ -44,7 +44,7 @@ public class GenericContainerModel extends ContainerModel {
     }
 
     @Override
-    public void render(ContainerData data, Object obj, Entity vehicle, int meta){
+    public void render(ContainerData data, Object obj, VehicleEntity vehicle, int meta){
         render(data, obj);
     }
 

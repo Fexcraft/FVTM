@@ -1,13 +1,10 @@
 package net.fexcraft.mod.addons.gep.models.blocks;
 
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.addons.gep.scripts.SmelteryScript;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
-import net.fexcraft.mod.fvtm.util.RenderCache;
-import net.minecraft.entity.Entity;
 
 public class SmelteryModel extends BlockModel {
 
@@ -249,11 +246,11 @@ public class SmelteryModel extends BlockModel {
         flipAll();
     }
     
-    private float quarterrad = Static.rad1 / 4;
+    //private float quarterrad = Static.rad1 / 4;
     
 	@Override
-	public void render(BlockData data, BlockTileEntity key, Entity ent, int meta){
-		render("body");
+	public void render(BlockData data, BlockTileEntity key, VehicleEntity ent, int meta){
+		/*render("body");
 		if(data.getScript() != null && key != null){
 	    	float angle = RenderCache.getData(key.getLongPos(), "openstate", 0) + (data.getScript(SmelteryScript.class).open ? 1 : -1);
 	    	RenderCache.updateData(key.getLongPos(), "openstate", angle = angle > 160 ? 160 : angle < 0 ? 0 : angle);
@@ -268,7 +265,7 @@ public class SmelteryModel extends BlockModel {
 		else{
 			render("right");
 			render("left");
-		}
+		}*///TODO
 	}
 
 }

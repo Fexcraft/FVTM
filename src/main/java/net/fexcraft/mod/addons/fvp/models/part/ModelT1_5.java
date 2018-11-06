@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelT1_5 extends PartModel {
 
@@ -72,13 +72,13 @@ public class ModelT1_5 extends PartModel {
 
     @Override
     public void render(VehicleData data, String usedAS){
-        render("body");
+        render(data, "body");
         super.def_renderContainer(data, usedAS);
     }
 
     @Override
-    public void render(VehicleData data, String usedAS, Entity vehicle, int meta){
-        render("body");
+    public void render(VehicleData data, String usedAS, VehicleEntity vehicle, int meta){
+        render(data, "body");
         super.def_renderContainer(data, usedAS, vehicle);
     }
 

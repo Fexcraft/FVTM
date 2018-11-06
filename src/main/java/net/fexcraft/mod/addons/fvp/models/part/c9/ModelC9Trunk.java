@@ -5,9 +5,9 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
-import net.minecraft.entity.Entity;
 
 public class ModelC9Trunk extends PartModel {
 
@@ -57,18 +57,18 @@ public class ModelC9Trunk extends PartModel {
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render("body_colored_primary");
+        render(data, "body_colored_primary");
         RGB.glColorReset();
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity ent, int meta){
+    public void render(VehicleData data, String us, VehicleEntity ent, int meta){
         data.getPrimaryColor().glColorApply();
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
     	float state = ent == null ? data.doorsOpen() ? 75 : 0 : RenderCache.getData(ent, "c9_trunk", 0) + ((script == null || ent == null? data.doorsOpen() : script.trunk) ? 1 : -1);
     	if(ent != null) RenderCache.updateData(ent, "c9_trunk", state = state > 75 ? 75 : state < 0 ? 0 : state);
         get("body_colored_primary").rotate(0, 0, state * Static.rad1, true);
-        render("body_colored_primary");
+        render(data, "body_colored_primary");
         get("body_colored_primary").rotate(0, 0, 0, true);
         RGB.glColorReset();
     }

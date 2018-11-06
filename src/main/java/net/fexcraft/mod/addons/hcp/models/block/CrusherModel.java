@@ -11,16 +11,14 @@ package net.fexcraft.mod.addons.hcp.models.block;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.hcp.scripts.CrusherScript;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
-
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
-import net.minecraft.entity.Entity;
 
 public class CrusherModel extends BlockModel {
 	
@@ -1077,11 +1075,11 @@ public class CrusherModel extends BlockModel {
 	}
 	
 	@Override
-	public void render(BlockData data, BlockTileEntity tile, Entity ent, int meta){
-		render("body");
+	public void render(BlockData data, BlockTileEntity tile, VehicleEntity ent, int meta){
+		/*render(data, "body");
 		data.getPrimaryColor().glColorApply();
-		render("body_colored_primary");
-		RGB.glColorReset();
+		render(data, "body_colored_primary");
+		RGB.glColorReset();*///TODO
 		if(tile == null){
 			render(rot);
 		}

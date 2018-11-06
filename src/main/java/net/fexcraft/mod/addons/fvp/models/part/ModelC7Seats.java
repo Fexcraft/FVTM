@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC7Seats extends PartModel {
 
@@ -152,12 +152,12 @@ public class ModelC7Seats extends PartModel {
 
     @Override
     public void render(VehicleData data, String us){
-        render("body", data.getSecondaryColor());
+        render(data, "body");//, data.getSecondaryColor());
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
-        render("body", data.getSecondaryColor());
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
+        render(data, "body");//, data.getSecondaryColor());
     }
 
 }

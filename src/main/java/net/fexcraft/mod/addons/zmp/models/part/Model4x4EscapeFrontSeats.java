@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class Model4x4EscapeFrontSeats extends PartModel {
 
@@ -62,12 +62,12 @@ public class Model4x4EscapeFrontSeats extends PartModel {
 
     @Override
     public void render(VehicleData data, String us){
-        render("body");
+        render(data, "body");
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
-        render("body");
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
+        render(data, "body");
     }
 
 }

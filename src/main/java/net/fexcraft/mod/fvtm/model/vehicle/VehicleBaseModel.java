@@ -27,12 +27,6 @@ public abstract class VehicleBaseModel extends GenericModel<VehicleData, Object>
 	public VehicleBaseModel(JsonObject obj){ super(obj); }
 	
 	@Override
-	public void render(){
-		//invalid render call for vehicle model
-    	render("body"); render("chassis"); render("wheels_import"); render("turret");
-	}
-
-	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
 		if(item.getItem() instanceof VehicleItem == false){ return; }
 		VehicleData data = item.getCapability(VAPDataCache.CAPABILITY, null).getVehicleData();

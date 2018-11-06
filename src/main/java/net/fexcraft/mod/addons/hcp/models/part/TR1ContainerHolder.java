@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 /**
  *
@@ -104,13 +104,13 @@ public class TR1ContainerHolder extends PartModel {
     
         @Override
     public void render(VehicleData data, String us){
-        render("body");
+        super.render(data, us);
         super.def_renderContainer(data, us);
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity ent, int meta){
-        render("body");
+    public void render(VehicleData data, String us, VehicleEntity ent, int meta){
+        super.render(data, us);
         super.def_renderContainer(data, us, ent);
     }
 

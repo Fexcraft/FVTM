@@ -4,16 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.fexcraft.mod.fvtm.api.Model;
-import net.minecraft.entity.Entity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 
 public class EmptyModel implements Model<Object, Object>{
 	
 	public static final EmptyModel INSTANCE = new EmptyModel();
-
-	@Override
-	public void render(){
-		//
-	}
 
 	@Override
 	public void render(Object data, Object key){
@@ -21,7 +16,7 @@ public class EmptyModel implements Model<Object, Object>{
 	}
 
 	@Override
-	public void render(Object data, Object key, Entity ent, int meta){
+	public void render(Object data, Object key, VehicleEntity ent, int meta){
 		//
 	}
 	

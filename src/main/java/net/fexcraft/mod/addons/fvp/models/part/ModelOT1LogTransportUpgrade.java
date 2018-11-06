@@ -3,8 +3,8 @@ package net.fexcraft.mod.addons.fvp.models.part;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
@@ -284,7 +284,7 @@ public class ModelOT1LogTransportUpgrade extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
         super.render(data, us, vehicle, meta);
         NonNullList<ItemStack> stacks = data.getPart(us).getAttributeData(InventoryAttributeData.class).getInventory();
         int j = 0;

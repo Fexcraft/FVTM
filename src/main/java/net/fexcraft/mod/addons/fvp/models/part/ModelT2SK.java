@@ -7,8 +7,8 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelT2SK extends PartModel {
 
@@ -52,15 +52,15 @@ public class ModelT2SK extends PartModel {
             }
             case "sides":
             default: {
-                render("body");
+                super.render(data, "body");
                 return;
             }
         }
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
-        this.render(data, us);
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
+        super.render(data, us);
     }
 
 }

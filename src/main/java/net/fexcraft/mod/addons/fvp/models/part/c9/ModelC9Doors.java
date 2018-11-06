@@ -5,9 +5,9 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
-import net.minecraft.entity.Entity;
 
 public class ModelC9Doors extends PartModel {
 
@@ -355,36 +355,36 @@ public class ModelC9Doors extends PartModel {
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render("front_left"); render("front_right"); render("back_left"); render("back_right");
+        render(data, "front_left"); render(data, "front_right"); render(data, "back_left"); render(data, "back_right");
         RGB.glColorReset();
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity ent, int meta){
+    public void render(VehicleData data, String us, VehicleEntity ent, int meta){
     	float[] arr = get(data, us, ent, meta);
     	for(int i = 0; i < arr.length; i++){
     		arr[i] = arr[i] * Static.rad1;
     	}
         data.getPrimaryColor().glColorApply();
         get("front_left").rotate(0, arr[0], 0);
-        render("front_left");
+        render(data, "front_left");
         get("front_left").rotate(0, -arr[0], 0);
         //
         get("front_right").rotate(0, -arr[1], 0);
-        render("front_right");
+        render(data, "front_right");
         get("front_right").rotate(0, arr[1], 0);
         //
         get("back_left").rotate(0, arr[2], 0);
-        render("back_left");
+        render(data, "back_left");
         get("back_left").rotate(0, -arr[2], 0);
         //
         get("back_right").rotate(0, -arr[3], 0);
-        render("back_right");
+        render(data, "back_right");
         get("back_right").rotate(0, arr[3], 0);
         RGB.glColorReset();
     }
 
-	private float[] get(VehicleData data, String us, Entity ent, int meta){
+	private float[] get(VehicleData data, String us, VehicleEntity ent, int meta){
 		if(ent  == null){
 			return new float[]{
 				data.doorsOpen() ? 45 : 0, data.doorsOpen() ? 45 : 0,
@@ -406,7 +406,7 @@ public class ModelC9Doors extends PartModel {
 		};
 	}
 
-	private float get(Entity ent, boolean bool, String string){
+	private float get(VehicleEntity ent, boolean bool, String string){
     	float state = RenderCache.getData(ent, string, 0) + (bool ? 1 : -1);
     	return RenderCache.updateData(ent, string, state = state > 45 ? 45 : state < 0 ? 0 : state);
 	}

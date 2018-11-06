@@ -716,9 +716,9 @@ public class ModelC7 extends VehicleModel {
 
     @Override
     public void render(VehicleData data, Object obj){
-        render("body");
+        render(data, "body");
         data.getPrimaryColor().glColorApply();
-        render("body_colored_primary");
+        render(data, "body_colored_primary");
         data.getPrimaryColor();
         RGB.glColorReset();
     }

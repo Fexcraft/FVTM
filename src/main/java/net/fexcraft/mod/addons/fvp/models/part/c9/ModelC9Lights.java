@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.fvp.models.part.c9;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC9Lights extends PartModel {
 	
@@ -61,15 +61,15 @@ public class ModelC9Lights extends PartModel {
     @Override
 	public void render(VehicleData data, String us){
 	    super.render(data, us);
-	    render("turn_signal_left");
-	    render("turn_signal_right");
+	    render(data, "turn_signal_left");
+	    render(data, "turn_signal_right");
 	}
 	
 	@Override
-	public void render(VehicleData data, String us, Entity vehicle, int meta){
+	public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
 	    super.render(data, us, vehicle, meta);
-	    render("turn_signal_left");
-	    render("turn_signal_right");
+	    render(data, "turn_signal_left");
+	    render(data, "turn_signal_right");
 	}
 	
 }

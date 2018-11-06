@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
-import net.minecraft.entity.Entity;
 
 public class ModelCargoShip extends VehicleModel {
 
@@ -904,8 +904,8 @@ public class ModelCargoShip extends VehicleModel {
     }
 
     @Override
-    public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
-        render("body");
+    public void render(VehicleData data, Object obj, @Nullable VehicleEntity entity, int meta){
+        render(data, "body");
     }
 
 }

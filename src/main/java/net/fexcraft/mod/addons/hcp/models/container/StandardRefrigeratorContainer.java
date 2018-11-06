@@ -12,6 +12,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -891,6 +892,7 @@ public class StandardRefrigeratorContainer extends ContainerModel {
         glow[1].setRotationPoint(-44F, -20.2F, 17F);
         glow[1].rotateAngleZ = 0.78539816F;
         this.add("glow", glow);
+        get("glow").addProgram(DefaultPrograms.ALWAYS_GLOW);
         
         translateAll(0F, 0F, 0F);
         flipAll();
@@ -901,9 +903,9 @@ public class StandardRefrigeratorContainer extends ContainerModel {
     @Override
     public void render(ContainerData data, Object obj){
         data.getPrimaryColor().glColorApply();
-        render("body_colored_primary");
+        render(data, "body_colored_primary");
         RGB.glColorReset();
-        render("body");
+        render(data, "body");
         //
         for(ModelRendererTurbo sub : get("rot")){
             sub.rotateAngleX += Static.rad1;
@@ -919,7 +921,7 @@ public class StandardRefrigeratorContainer extends ContainerModel {
             GL11.glDepthMask(false);
             GL11.glEnable(GL11.GL_ALPHA_TEST);
             color.glColorApply();
-            render("other");
+            render(data, "other");
             RGB.glColorReset();
             GL11.glDisable(GL11.GL_ALPHA_TEST);
             GL11.glDepthMask(true);
@@ -927,7 +929,7 @@ public class StandardRefrigeratorContainer extends ContainerModel {
             GlStateManager.popMatrix();
         }
         //
-        renderGlow(null, "glow");
+        render(data, "glow");
     }
 
 }

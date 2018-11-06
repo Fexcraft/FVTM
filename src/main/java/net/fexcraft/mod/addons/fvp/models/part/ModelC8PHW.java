@@ -4,8 +4,8 @@ import net.fexcraft.lib.tmt.Coord2D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.lib.tmt.Shape2D;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC8PHW extends PartModel {
 
@@ -45,7 +45,7 @@ public class ModelC8PHW extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
         super.def_renderWheels4(data, us, vehicle);
     }
 

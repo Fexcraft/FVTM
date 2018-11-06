@@ -7,7 +7,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.minecraft.entity.Entity;
 
 public class AdjustableWheelModel extends PartBaseModel {
 
@@ -17,7 +16,7 @@ public class AdjustableWheelModel extends PartBaseModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity veh, int meta){
+    public void render(VehicleData data, String us, VehicleEntity veh, int meta){
         this.def_renderAdjustableWheels4(data, us, veh, true);
     }
 
@@ -26,17 +25,17 @@ public class AdjustableWheelModel extends PartBaseModel {
         pos = pos == null ? new Pos(0, 0, 0) : pos;
         pos.translate();
         if(us.contains("left")){
-            render("wheel");
+            render(data, "wheel");
         }
         else if(us.contains("right")){
             GL11.glRotated(180, 0, 1, 0);
-            render("wheel");
+            render(data, "wheel");
             GL11.glRotated(-180, 0, 1, 0);
         }
         pos.translateR();
     }
 
-    public void def_renderAdjustableWheels4(VehicleData data, String us, Entity ent){
+    public void def_renderAdjustableWheels4(VehicleData data, String us, VehicleEntity ent){
         Pos pos = data.getVehicle().getWheelPositions().get(us);
         pos = pos == null ? new Pos(0, 0, 0) : pos;
         pos.translate();
@@ -87,7 +86,7 @@ public class AdjustableWheelModel extends PartBaseModel {
         pos.translateR();
     }
 
-    public void def_renderAdjustableWheels4(VehicleData data, String us, Entity ent, boolean rot){
+    public void def_renderAdjustableWheels4(VehicleData data, String us, VehicleEntity ent, boolean rot){
         if(rot){
             Pos pos = data.getVehicle().getWheelPositions().get(us);
             pos = pos == null ? new Pos(0, 0, 0) : pos;
@@ -123,7 +122,7 @@ public class AdjustableWheelModel extends PartBaseModel {
             if(mir){
                 GL11.glRotated(180, 0, 1, 0);
             }
-            this.def_renderWheelWithRotations("wheel", ent, mir ? -((VehicleEntity)ent).getWheelsAngle() : ((VehicleEntity)ent).getWheelsAngle(), str);
+            this.def_renderWheelWithRotations("wheel", ent, mir ? -ent.getWheelsAngle() : ent.getWheelsAngle(), str);
             if(mir){
                 //for(ModelRendererTurbo turbo : wheels){ turbo.rotateAngleZ = -turbo.rotateAngleZ; }
                 GL11.glRotated(-180, 0, 1, 0);

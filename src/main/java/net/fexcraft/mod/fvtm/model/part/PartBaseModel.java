@@ -21,7 +21,6 @@ import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.render.entity.RenderGenericRailed;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.entity.Entity;
 
 public abstract class PartBaseModel extends GenericModel<VehicleData, String> {
 	
@@ -30,16 +29,9 @@ public abstract class PartBaseModel extends GenericModel<VehicleData, String> {
 	public PartBaseModel(){ super(); }
 	
 	public PartBaseModel(JsonObject obj){ super(obj); }
-	
-	@Override
-	public void render(){
-		//invalid render call for part model
-    	render("body"); render("wheels");
-	}
 
-    public void def_renderWheelWithRotations(String model, Entity ent, float amount, boolean steering){
+    public void def_renderWheelWithRotations(String model, VehicleEntity vehicle, float amount, boolean steering){
     	TurboList list = groups.get(model);
-        VehicleEntity vehicle = (VehicleEntity) ent;
         if(amount != list.get(0).rotateAngleZ){
             amount -= list.get(0).rotateAngleZ;
             list.rotate(0, 0, amount, false);
@@ -49,7 +41,7 @@ public abstract class PartBaseModel extends GenericModel<VehicleData, String> {
                 sub.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
             }
         }
-        this.render(model);
+        this.render(vehicle.getVehicleData(), model);
         if(steering){
             for(ModelRendererTurbo sub : list){
                 sub.rotateAngleY = 0;
@@ -109,7 +101,7 @@ public abstract class PartBaseModel extends GenericModel<VehicleData, String> {
         }
     }
 
-    public static void def_renderContainer(VehicleData type, String us, Entity ent){
+    public static void def_renderContainer(VehicleData type, String us, VehicleEntity vehicle){
         PartData partdata = type.getPart(us); if(partdata == null) return;
         if(Command.DEBUG){
     		ModelBase.bindTexture(Resources.NULL_TEXTURE);

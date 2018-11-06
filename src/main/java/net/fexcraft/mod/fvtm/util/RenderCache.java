@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import java.util.TreeMap;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.minecraft.entity.Entity;
 
 public class RenderCache {
@@ -23,6 +24,10 @@ public class RenderCache {
 	public static final float getData(Entity ent, String id, float def){
 		return getData(ent.getEntityId(), id, def);
 	}
+	
+	public static final float getData(VehicleEntity ent, String id, float def){
+		return getData(ent.getEntity().getEntityId(), id, def);
+	}
 
 	public static final float getData(long ent, String id, float def){
 		if(!cache.containsKey(ent)){
@@ -36,6 +41,10 @@ public class RenderCache {
 	
 	public static final float updateData(Entity ent, String id, float data){
 		return updateData(ent.getEntityId(), id, data);
+	}
+	
+	public static final float updateData(VehicleEntity ent, String id, float data){
+		return updateData(ent.getEntity().getEntityId(), id, data);
 	}
 	
 	public static final float updateData(long ent, String id, float data){

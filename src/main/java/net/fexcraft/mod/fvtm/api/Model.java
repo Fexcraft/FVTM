@@ -1,10 +1,9 @@
 package net.fexcraft.mod.fvtm.api;
 
 import java.util.Collection;
-
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.Entity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 
 /**
  * @param <T> "Data Type"
@@ -13,7 +12,8 @@ import net.minecraft.entity.Entity;
 public interface Model<T, K> {
 	
 	/** Parameterless rendering. **/
-	public void render();
+	//@Deprecated
+	//public void render();
 	
 	/** 
 	 * Entityless rendering.
@@ -29,7 +29,7 @@ public interface Model<T, K> {
 	 * @param ent - the entity that is being rendered
 	 * @param meta - optional metadata if rendering from blocks
 	 */
-	public void render(T data, @Nullable K key, @Nullable Entity ent, int meta);
+	public void render(T data, @Nullable K key, @Nullable VehicleEntity ent, int meta);
 	
 	/** Collection containing either name or UUID of the creator/s of the model.**/
 	public Collection<String> getCreators();

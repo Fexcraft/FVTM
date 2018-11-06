@@ -6,11 +6,12 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Block.BlockTileEntity;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
+import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
@@ -31,23 +32,16 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
         super(obj);
     }
 
-    @Override
-    public void render(){
-        //cannot render without providing vehicledata;
-    	render("body");
-    }
-
 	@Override
 	public void render(BlockData data, BlockTileEntity key){
 		render(data, key, null, -2);
 	}
 
 	@Override
-	public void render(BlockData data, BlockTileEntity key, Entity ent, int meta){
-		render("body");
-		render("body_colored_primary", data.getPrimaryColor());
-		render("body_colored_secondary", data.getSecondaryColor());
-		renderGlow(ent, "glow");
+	public void render(BlockData data, BlockTileEntity key, VehicleEntity ent, int meta){
+		for(TurboList list : groups.values()){
+			list.render(ent, null, data, null);
+		}
 	}
 
     @Override

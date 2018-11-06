@@ -6,9 +6,7 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelT2TC extends PartModel {
 
@@ -28,16 +26,6 @@ public class ModelT2TC extends PartModel {
         this.add("body", body);
         //translateAll(0F, 0F, 0F);
         flipAll();
-    }
-
-    @Override
-    public void render(VehicleData data, String us){
-        render("body");
-    }
-
-    @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
-        render("body");
     }
 
 }

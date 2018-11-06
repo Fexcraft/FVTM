@@ -1,9 +1,8 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelAB1Lights extends PartModel {
 
@@ -24,23 +23,9 @@ public class ModelAB1Lights extends PartModel {
         lights[3].addShapeBox(0F, 0F, 0F, 1, 10, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, 1F, 0F, 0F); // Box 309
         lights[3].setRotationPoint(-108.2F, -23F, -31.7F);
         this.add("lights", lights);
+        get("lights").addProgram(DefaultPrograms.LIGHTS);
         //translateAll(0F, 0F, 0F);
         flipAll();
-    }
-
-    @Override
-    public void render(VehicleData data, String us){
-        render("lights");
-    }
-
-    @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
-        if(data.getLightsState() > 0){
-        	renderGlow(vehicle, "lights");
-        }
-        else{
-        	render("lights");
-        }
     }
 
 }

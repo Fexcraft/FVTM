@@ -9,8 +9,8 @@ package net.fexcraft.mod.addons.fvp.models.part;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelT1FuelGauge extends PartModel {
 
@@ -39,15 +39,15 @@ public class ModelT1FuelGauge extends PartModel {
     @Override
     public void render(VehicleData data, String usedAS){
         get("body").get(1).rotateAngleX = 3.14159265F;
-        render("body");
+        render(data, "body");
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
         //double per = (data.getFuelTankContent() / data.getFuelTankSize()) * 100;
         double rad = (data.getFuelTankContent() / data.getFuelTankSize()) * 90;
         get("body").get(1).rotateAngleX = (float)(Static.rad1 * (rad + 135));
-        render("body");
+        render(data, "body");
     }
 
 }

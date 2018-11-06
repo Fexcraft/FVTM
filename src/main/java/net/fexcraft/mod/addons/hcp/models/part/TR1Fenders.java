@@ -2,8 +2,8 @@ package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 /**
  *
@@ -193,11 +193,11 @@ public class TR1Fenders extends PartModel {
     public void render(VehicleData data, String us){
         switch(us){
             case "fender_left": {
-                render("track_wheels_left");
+                super.render(data, "track_wheels_left");
                 return;
             }
             case "fender_right": {
-                render("track_wheels_right");
+                super.render(data, "track_wheels_right");
                 return;
             }
             default: {
@@ -208,8 +208,8 @@ public class TR1Fenders extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
-        this.render(data, us);
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
+        super.render(data, us);
     }
 
 }

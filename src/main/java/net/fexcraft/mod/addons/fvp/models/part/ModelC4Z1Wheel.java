@@ -8,8 +8,8 @@ package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC4Z1Wheel extends PartModel {
 
@@ -356,7 +356,7 @@ public class ModelC4Z1Wheel extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity veh, int meta){
+    public void render(VehicleData data, String us, VehicleEntity veh, int meta){
         super.def_renderWheels4(data, us, veh);
     }
 

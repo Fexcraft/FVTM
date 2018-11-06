@@ -7,7 +7,6 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
-import net.minecraft.entity.Entity;
 
 public class ModelTR1 extends VehicleModel {
 
@@ -162,12 +161,13 @@ public class ModelTR1 extends VehicleModel {
     }
 
     @Override
-    public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
-        render("body");
+    public void render(VehicleData data, Object obj, @Nullable VehicleEntity entity, int meta){
+    	get("body").render(entity, data);
         for(ModelRendererTurbo turbo : get("chassis")){
             turbo.rotateAngleZ = entity == null || ((VehicleEntity)entity).getEntityAtFront() == null ? 0 : Static.rad90;
         }
-        render("chassis");
+    	get("chassis").render(entity, data);
+        
     }
 
 }

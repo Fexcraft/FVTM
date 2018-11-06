@@ -3,8 +3,8 @@ package net.fexcraft.mod.addons.fvp.models.part;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC7SW extends PartModel {
 
@@ -69,11 +69,11 @@ public class ModelC7SW extends PartModel {
 
     @Override
     public void render(VehicleData data, String us){
-        render("steering");
+        render(data, "steering");
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
         for(ModelRendererTurbo submodel : get("steering")){
             submodel.rotateAngleX = ((Vehicle.VehicleEntity) vehicle).getWheelsYaw() * 3.14159265F / 180F * 3F;
             submodel.render();

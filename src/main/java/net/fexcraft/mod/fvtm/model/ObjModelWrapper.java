@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.entity.Entity;
 
 public class ObjModelWrapper<D, K> implements Model<D, K>{
 	
@@ -17,17 +17,12 @@ public class ObjModelWrapper<D, K> implements Model<D, K>{
 	}
 
 	@Override
-	public void render(){
-		objmodel.render();
-	}
-
-	@Override
 	public void render(D data, K key){
 		objmodel.render();
 	}
 
 	@Override
-	public void render(D data, K key, Entity ent, int meta){
+	public void render(D data, K key, VehicleEntity ent, int meta){
 		objmodel.render();
 	}
 

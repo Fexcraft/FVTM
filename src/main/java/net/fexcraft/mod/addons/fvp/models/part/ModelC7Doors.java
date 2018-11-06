@@ -5,8 +5,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC7Doors extends PartModel {
 
@@ -87,51 +87,51 @@ public class ModelC7Doors extends PartModel {
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render("front_left");
-        render("front_right");
-        render("back_left");
-        render("back_right");
-        render("trunkc");
+        render(data, "front_left");
+        render(data, "front_right");
+        render(data, "back_left");
+        render(data, "back_right");
+        render(data, "trunkc");
         RGB.glColorReset();
-        render("trunkn");
+        render(data, "trunkn");
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
         if(script == null){
             data.getPrimaryColor().glColorApply();
             get("front_left").rotate(0, data.doorsOpen() ? Static.rad60 : 0, 0, true);
-            render("front_left");
+            render(data, "front_left");
             get("front_right").rotate(0, data.doorsOpen() ? -Static.rad60 : 0, 0, true);
-            render("front_right");
+            render(data, "front_right");
             get("back_left").rotate(0, data.doorsOpen() ? Static.rad60 : 0, 0, true);
-            render("back_left");
+            render(data, "back_left");
             get("back_right").rotate(0, data.doorsOpen() ? -Static.rad60 : 0, 0, true);
-            render("back_right");
+            render(data, "back_right");
             //
             get("trunkc").rotate(0, 0, data.doorsOpen() ? Static.rad120 : 0, true);
-            render("trunkc");
+            render(data, "trunkc");
             RGB.glColorReset();
             get("trunkn").rotate(0, 0, data.doorsOpen() ? Static.rad120 : 0, true);
-            render("trunkn");
+            render(data, "trunkn");
         }
         else{
             data.getPrimaryColor().glColorApply();
             get("front_left").rotate(0, script.front_left ? Static.rad60 : 0, 0, true);
-            render("front_left");
+            render(data, "front_left");
             get("front_right").rotate(0, script.front_right ? -Static.rad60 : 0, 0, true);
-            render("front_right");
+            render(data, "front_right");
             get("back_left").rotate(0, script.back_left ? Static.rad60 : 0, 0, true);
-            render("back_left");
+            render(data, "back_left");
             get("back_right").rotate(0, script.back_right ? -Static.rad60 : 0, 0, true);
-            render("back_right");
+            render(data, "back_right");
             //
             get("trunkc").rotate(0, 0, script.trunk ? Static.rad120 : 0, true);
-            render("trunkc");
+            render(data, "trunkc");
             RGB.glColorReset();
             get("trunkn").rotate(0, 0, script.trunk ? Static.rad120 : 0, true);
-            render("trunkn");
+            render(data, "trunkn");
         }
     }
 

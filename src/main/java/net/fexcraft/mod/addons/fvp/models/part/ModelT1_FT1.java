@@ -4,8 +4,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.fvp.scripts.T1SnowPlowScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelT1_FT1 extends PartModel {
 
@@ -80,15 +80,15 @@ public class ModelT1_FT1 extends PartModel {
     public void render(VehicleData data, String usedAS){
         super.render(data, usedAS);
         get("snowplow").rotate(0, 0, -Static.rad20, true);
-        render("snowplow");
+        render(data, "snowplow");
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
-        render("body");
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
+        render(data, "body");
         T1SnowPlowScript sps = data.getScript(T1SnowPlowScript.class);
         get("snowplow").rotate(0, 0, sps == null ? 0 : sps.on ? 0 : -Static.rad20, true);
-        render("snowplow");
+        render(data, "snowplow");
     }
 
 }

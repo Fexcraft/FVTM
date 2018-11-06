@@ -7,9 +7,10 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.hcp.scripts.ContainerCraneScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
-import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -4227,16 +4228,17 @@ public class ContainerCrane extends VehicleModel {
         this.gui_scale_y = this.gui_scale_y / 2;
         this.gui_scale_z = this.gui_scale_z / 2;
         //
-        this.groups.put("box", new TurboList());
+        this.groups.put("box", new TurboList("box"));
 		ModelRendererTurbo box = new ModelRendererTurbo(this, 332, 215, textureX, textureY); // Box 1062
 		box.addBox(0F, 0F, 0F, 16, 16, 16, 0F); // Box 1062
 		box.setRotationPoint(-8F, -16F, -8F);
 		get("box").add(box); get("box").translate(-16f, 16f, 112f);
+		get("box").addProgram(DefaultPrograms.ALWAYS_GLOW);
 		//translate(box, -16F, 16F, 112F);
     }
 
     @Override
-    public void render(VehicleData data, Object obj, @Nullable Entity entity, int meta){
+    public void render(VehicleData data, Object obj, @Nullable VehicleEntity entity, int meta){
         ContainerCraneScript script = data.getScript(ContainerCraneScript.class);
         if(script == null){
             super.render(data, obj, entity, meta);
@@ -4245,21 +4247,21 @@ public class ContainerCrane extends VehicleModel {
         	GL11.glTranslatef(-script.length + 1, 0, 0);
         	int len = (script.length * 2) + 1;
             for(int i = 0; i < len; i++){
-                render("wheels_import");
+                render(data, "wheels_import");
                 GL11.glTranslatef(1, 0, 0);
             }
             GL11.glTranslatef(-script.length - 1, 0, 0);
         	GL11.glPushMatrix();
         	GL11.glTranslated(script.xpos * 0.001, 0, 0);
-        	render("chassis");
+        	render(data, "chassis");
         	GL11.glTranslated(0, 0, script.zpos * 0.001);
-        	render("body");
+        	render(data, "body");
         	rope = getRopes(script.ypos);
-        	if(rope != null){ rope.render("rope"); }
+        	if(rope != null){ rope.render(entity, data, data, "rope"); }
         	GL11.glTranslated(0, script.ypos * 0.001, 0);
-        	render("turret");
+        	render(data, "turret");
         	if(script.searchbox){
-        		renderGlow(entity, "box");
+        		get("box").render(entity, data, data, "box");
         	}
         	if(script.getContainerData() != null){
         		GL11.glTranslatef(-0.5f, 1, 7);
@@ -4297,7 +4299,7 @@ public class ContainerCrane extends VehicleModel {
 		model[2].setRotationPoint(46.5F, -165F, -16.5F);
 		model[3].addBox(0F, 0F, 0F, 1, i, 1, 0F);
 		model[3].setRotationPoint(46.5F, -165F, 15.5F);
-		TurboList list = new TurboList(model);
+		TurboList list = new TurboList("rope" + i, model);
 		list.translate(-8, 16, 112);
 		return list;
 	}

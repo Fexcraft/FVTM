@@ -5,8 +5,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelC7Hood extends PartModel {
 
@@ -32,16 +32,16 @@ public class ModelC7Hood extends PartModel {
     @Override
     public void render(VehicleData data, String us){
         data.getPrimaryColor().glColorApply();
-        render("body");
+        render(data, "body");
         RGB.glColorReset();
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity vehicle, int meta){
+    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
         data.getPrimaryColor().glColorApply();
         MultiDoorScript script = data.getScript(MultiDoorScript.class);
         get("body").rotate(0, 0, script == null ? data.doorsOpen() ? -Static.rad60 : 0 : script.hood ? -Static.rad60 : 0, true);
-        render("body");
+        render(data, "body");
         RGB.glColorReset();
     }
 

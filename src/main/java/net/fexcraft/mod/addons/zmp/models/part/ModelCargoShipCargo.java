@@ -6,8 +6,8 @@ import net.fexcraft.lib.common.lang.ArrayList;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
-import net.minecraft.entity.Entity;
 
 public class ModelCargoShipCargo extends PartModel {
 
@@ -59,7 +59,7 @@ public class ModelCargoShipCargo extends PartModel {
     }
 
     @Override
-    public void render(VehicleData data, String usedAS, Entity vehicle, int meta){
+    public void render(VehicleData data, String usedAS, VehicleEntity vehicle, int meta){
         positions.get(usedAS).translate();
         super.def_renderContainer(data, usedAS, vehicle);
         positions.get(usedAS).translateR();

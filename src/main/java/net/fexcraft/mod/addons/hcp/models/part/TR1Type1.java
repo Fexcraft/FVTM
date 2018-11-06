@@ -3,9 +3,10 @@ package net.fexcraft.mod.addons.hcp.models.part;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
-import net.minecraft.entity.Entity;
 
 /**
  *
@@ -282,6 +283,7 @@ public class TR1Type1 extends PartModel {
 		lights[33].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 72
 		lights[33].setRotationPoint(14F, -73.5F, -26.2F);
 		this.add("lights", lights);
+		get("lights").addProgram(DefaultPrograms.LIGHTS);
 
 
 		ModelRendererTurbo[] door_left_lights = new ModelRendererTurbo[5];
@@ -306,6 +308,7 @@ public class TR1Type1 extends PartModel {
 		door_left_lights[4].addBox(-0.7F, 36F, -2F, 1, 3, 1, 0F); // Box 38
 		door_left_lights[4].setRotationPoint(-235.5F, -72F, 25F);
 		this.add("door_left_lights", door_left_lights);
+		get("door_left_lights").addProgram(DefaultPrograms.LIGHTS);
 
 
 		ModelRendererTurbo[] door_right_lights = new ModelRendererTurbo[5];
@@ -330,37 +333,37 @@ public class TR1Type1 extends PartModel {
 		door_right_lights[4].addBox(-0.7F, 36F, 1F, 1, 3, 1, 0F); // Box 34
 		door_right_lights[4].setRotationPoint(-235.5F, -72F, -25F);
 		this.add("door_right_lights", door_right_lights);
+		get("door_right_lights").addProgram(DefaultPrograms.LIGHTS);
     }
     
     @Override
     public void render(VehicleData data, String us){
-        render("body");
-        render("lights");
-        render("door_left");
-        render("door_right");
-        render("door_left_lights");
-        render("door_right_lights");
+        super.render(data, "body");
+        super.render(data, "lights");
+        super.render(data, "door_left");
+        super.render(data, "door_right");
+        super.render(data, "door_left_lights");
+        super.render(data, "door_right_lights");
     }
 
     @Override
-    public void render(VehicleData data, String us, Entity ent, int meta){
-    	render("body");
+    public void render(VehicleData data, String us, VehicleEntity ent, int meta){
+    	get("body").render(data);
     	float doortoggle = RenderCache.getData(ent, "tr1_type1_door", 0) + (data.doorsOpen() ? 1 : -1);
     	RenderCache.updateData(ent, "tr1_type1_door", doortoggle = doortoggle > 100 ? 100 : doortoggle < 0 ? 0 : doortoggle);
     	get("door_left").rotate(0, Static.rad1 * -doortoggle, 0);
-        render("door_left");
+    	get("door_left").render(data);
     	get("door_left").rotate(0, Static.rad1 * doortoggle, 0);
     	get("door_right").rotate(0, Static.rad1 * doortoggle, 0);
-        render("door_right");
+    	get("door_right").render(data);
     	get("door_right").rotate(0, Static.rad1 * -doortoggle, 0);
     	//
-    	boolean ls = data.getLightsState() > 0;
-        if(ls) renderGlow(ent, "lights"); else render("lights");
+        get("lights").render(data);
     	get("door_left_lights").rotate(0, Static.rad1 * doortoggle, 0);
-        if(ls) renderGlow(ent, "door_left_lights"); else render("door_left_lights");
+        get("door_left_lights").render(data);
     	get("door_left_lights").rotate(0, Static.rad1 * -doortoggle, 0);
     	get("door_right_lights").rotate(0, Static.rad1 * -doortoggle, 0);
-        if(ls) renderGlow(ent, "door_right_lights"); else render("door_right_lights");
+        get("door_right_lights").render(data);
     	get("door_right_lights").rotate(0, Static.rad1 * doortoggle, 0);
     }
 

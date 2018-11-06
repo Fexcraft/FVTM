@@ -146,10 +146,12 @@ public class DefaultPrograms {
 	        lastpos.translate();
 	        if(part.contains("right")){ GL11.glRotated(180, 0, 1, 0); }
 	        if(ent != null && data.getVehicle().getSteeringWheels().contains(part))
+	        	list.rotateAxis(ent.getWheelsYaw() * 3.14159265F / 180F * 3F, 1, true);
 		}
 		//
 		@Override
 		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        if(ent != null && data.getVehicle().getSteeringWheels().contains(part)) list.rotateAxis(0, 1, true);
 			if(part.contains("right")){ GL11.glRotated(-180, 0, 1, 0); }
 			lastpos.translateR();
 		}

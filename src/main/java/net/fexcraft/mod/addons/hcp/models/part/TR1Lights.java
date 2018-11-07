@@ -22,6 +22,7 @@ public class TR1Lights extends PartModel {
         back_lights[1].addBox(0F, 0F, 0F, 1, 2, 7, 0F); // Box 123
         back_lights[1].setRotationPoint(-236F, -20.5F, 15F);
         this.add("back_lights", back_lights);
+        this.get("back_lights").addProgram("fvtm:back_lights");
 
         ModelRendererTurbo[] reverse_lights = new ModelRendererTurbo[4];
         reverse_lights[0] = new ModelRendererTurbo(this, 505, 1, textureX, textureY); // Box 118
@@ -41,6 +42,7 @@ public class TR1Lights extends PartModel {
         reverse_lights[3].addBox(0F, 0F, 0F, 1, 4, 1, 0F); // Box 125
         reverse_lights[3].setRotationPoint(-236F, -20.5F, 14F);
         this.add("reverse_lights", reverse_lights);
+        this.get("reverse_lights").addProgram("fvtm:reverse_lights");
 
         ///---INDICATOR LIGHTS---///
         ModelRendererTurbo[] body = new ModelRendererTurbo[1];
@@ -200,6 +202,7 @@ public class TR1Lights extends PartModel {
         lights[35].addBox(0F, 0F, 0F, 3, 1, 1, 0F); // Box 114
         lights[35].setRotationPoint(-62F, -20F, 24.5F);
         this.add("lights", lights);
+        this.get("lights").addProgram("fvtm:lights");
     }
 
 }

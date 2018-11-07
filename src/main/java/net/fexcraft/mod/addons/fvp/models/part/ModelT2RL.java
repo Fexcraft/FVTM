@@ -8,6 +8,7 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelT2RL extends PartModel {
@@ -36,6 +37,7 @@ public class ModelT2RL extends PartModel {
         //
         this.add("body", body);
         this.add("back_lights", back_lights);
+        this.get("back_lights").addProgram(DefaultPrograms.BACK_LIGHTS);
         translateAll(0F, 0F, 0F);
         flipAll();
     }

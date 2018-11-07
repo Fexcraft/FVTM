@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 
@@ -142,7 +141,7 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
 	        lastpos = data.getVehicle().getWheelPositions().get(part);
-	        lastpos = lastpos == null ? new Pos(0, 0, 0) : lastpos;
+	        lastpos = lastpos == null ? Pos.NULL : lastpos;
 	        lastpos.translate();
 	        if(part.contains("right")){ GL11.glRotated(180, 0, 1, 0); }
 	        if(ent != null && data.getVehicle().getSteeringWheels().contains(part))
@@ -165,26 +164,26 @@ public class DefaultPrograms {
 	
 	public static abstract class AlwaysGlow extends AutoRegProgram {
 		
+		private boolean didglow; private float lx, ly;
+		
 		public abstract boolean shouldGlow(VehicleEntity ent, VehicleData data);
 
 		@Override
 		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
-			if(!shouldGlow(ent, data)) return;
-	        GlStateManager.enableBlend();
-	        GlStateManager.disableAlpha();
+			if(!(didglow = shouldGlow(ent, data))) return;
+	        GlStateManager.enableBlend(); GlStateManager.disableAlpha();
 	        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-	        GlStateManager.depthMask(true);
-	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 238f, 238f);
+	        if(ent != null) GlStateManager.depthMask(!ent.getEntity().isInvisible());
+	        lx = OpenGlHelper.lastBrightnessX; ly = OpenGlHelper.lastBrightnessY;
+	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 61680, 0.941162109375f);//238f, 238f);
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 
 		@Override
 		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
-			if(!shouldGlow(ent, data)) return;
-	        int i = ent == null ? MapColor.WHITE_STAINED_HARDENED_CLAY.colorValue : ent.getEntity().getBrightnessForRender(), j = i % 65536, k = i / 65536;
-	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
-	        GlStateManager.disableBlend();
-	        GlStateManager.enableAlpha();
+			if(!didglow) return;
+	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
+	        GlStateManager.disableBlend(); GlStateManager.enableAlpha();
 		}
 		
 	}

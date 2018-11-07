@@ -8,6 +8,7 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelT2FL extends PartModel {
@@ -30,6 +31,7 @@ public class ModelT2FL extends PartModel {
         front_lights[3].addShapeBox(0F, 0F, 0F, 4, 8, 6, 0F, 0F, 0F, 0F, -0.2F, 0F, -3F, -0.2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.2F, 0F, -3F, -0.2F, 0F, 0F, 0F, 0F, 0F); // Box 209
         front_lights[3].setRotationPoint(66F, -24F, -26F);
         this.add("front_lights", front_lights);
+        this.get("front_lights").addProgram(DefaultPrograms.FRONT_LIGHTS);
         //
         translateAll(0F, 0F, 0F);
         flipAll();

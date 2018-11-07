@@ -7,9 +7,10 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.part.AdjustableWheelModel;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
+import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-public class ModelC2R2T1Wheel extends AdjustableWheelModel {
+public class ModelC2R2T1Wheel extends PartModel {
 
     public ModelC2R2T1Wheel(){
     	super(); textureX = 128; textureY = 64;
@@ -208,6 +209,7 @@ public class ModelC2R2T1Wheel extends AdjustableWheelModel {
         wheel[47].addShapeBox(-5.5F, -1.5F, -1F, 1, 3, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.5F, 0F, 0F, -0.5F); // Box 112
         wheel[47].setRotationPoint(0F, 0F, 0F);
         this.add("wheel", wheel);
+        this.get("wheel").addPrograms(DefaultPrograms.ADJUSTABLE_WHEEL, DefaultPrograms.DEF_WHEEL_ROTATE);
         //translateAll(0F, 0F, 0F);
         //flipAll();
     }

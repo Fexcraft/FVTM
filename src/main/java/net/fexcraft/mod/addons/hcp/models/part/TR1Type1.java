@@ -348,22 +348,22 @@ public class TR1Type1 extends PartModel {
 
     @Override
     public void render(VehicleData data, String us, VehicleEntity ent, int meta){
-    	get("body").render(data);
+    	get("body").render(ent, data);
     	float doortoggle = RenderCache.getData(ent, "tr1_type1_door", 0) + (data.doorsOpen() ? 1 : -1);
     	RenderCache.updateData(ent, "tr1_type1_door", doortoggle = doortoggle > 100 ? 100 : doortoggle < 0 ? 0 : doortoggle);
     	get("door_left").rotate(0, Static.rad1 * -doortoggle, 0);
-    	get("door_left").render(data);
+    	get("door_left").render(ent, data);
     	get("door_left").rotate(0, Static.rad1 * doortoggle, 0);
     	get("door_right").rotate(0, Static.rad1 * doortoggle, 0);
-    	get("door_right").render(data);
+    	get("door_right").render(ent, data);
     	get("door_right").rotate(0, Static.rad1 * -doortoggle, 0);
     	//
-        get("lights").render(data);
+        get("lights").render(ent, data);
     	get("door_left_lights").rotate(0, Static.rad1 * doortoggle, 0);
-        get("door_left_lights").render(data);
+        get("door_left_lights").render(ent, data);
     	get("door_left_lights").rotate(0, Static.rad1 * -doortoggle, 0);
     	get("door_right_lights").rotate(0, Static.rad1 * -doortoggle, 0);
-        get("door_right_lights").render(data);
+        get("door_right_lights").render(ent, data);
     	get("door_right_lights").rotate(0, Static.rad1 * doortoggle, 0);
     }
 

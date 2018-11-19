@@ -62,8 +62,7 @@ public class ModelC9Seats extends PartModel {
 		body[12].addShapeBox(0F, 0F, 0F, 12, 3, 12, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 445
 		body[12].setRotationPoint(-4.5F, 7.8F, 3.5F);
 		this.add("body", body);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+		fixRotations();
     }
 
 }

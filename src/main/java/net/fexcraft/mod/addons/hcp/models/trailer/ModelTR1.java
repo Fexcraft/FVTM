@@ -157,7 +157,7 @@ public class ModelTR1 extends VehicleModel {
         this.add("body", body);
         this.add("chassis", chassis);
         //translateAll(0, 0, 0);
-        flipAll();
+        this.fixRotations();
     }
 
     @Override

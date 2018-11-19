@@ -458,8 +458,7 @@ public class ModelT2P extends VehicleModel {
         this.add("body_colored_primary", body_colored_primary);
         this.get("body_colored_primary").addProgram("fvtm:rgb_primary");;
         //
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

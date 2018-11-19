@@ -956,8 +956,7 @@ public class ModelC5 extends VehicleModel {
         body_colored_primary[87].setRotationPoint(30F, -9F, 21F);
         this.add("body_colored_primary", body_colored_primary);
 
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
         for(ModelRendererTurbo mod : body){
             mod.rotateAngleY = -mod.rotateAngleY;
         }

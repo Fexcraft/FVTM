@@ -1,16 +1,18 @@
 package net.fexcraft.mod.addons.fvp.models.part;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.Coord2D;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.lib.tmt.Shape2D;
+import net.fexcraft.mod.addons.gep.scripts.MultiDoorScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelT2Doors extends PartModel {
 	
-    //private static final float rad80 = Static.rad60 + Static.rad20;
+    private static final float rad80 = Static.rad60 + Static.rad20;
 
     public ModelT2Doors(){
     	super(); textureX = 512; textureY = 512;
@@ -65,44 +67,44 @@ public class ModelT2Doors extends PartModel {
         //front_right[6].setRotationPoint(64F, -32F, -25F);
         //
         this.add("front_left", front_left); this.add("front_right", front_right);
-        flipAll();
+        fixRotations();
     }
 
     @Override
     public void render(VehicleData data, String us){
-        /*data.getPrimaryColor().glColorApply();
-        rotate(this.front_left, 0, 0, 0, true);
-        front_left[4].rotateAngleZ = Static.rad180;
-        render(this.front_left);
-        rotate(this.front_right, 0, 0, 0, true);
-        front_right[4].rotateAngleZ = Static.rad180;
-        render(this.front_right);
-        RGB.glColorReset();*///TODO
+        data.getPrimaryColor().glColorApply();
+        get("front_left").rotate(0, 0, 0, true);
+        get("front_left").get(4).rotateAngleZ = Static.rad180;
+        get("front_left").render(data, us);
+        get("front_right").rotate(0, 0, 0, true);
+        get("front_right").get(4).rotateAngleZ = Static.rad180;
+        get("front_right").render(data, us);
+        RGB.glColorReset();
     }
 
     @Override
     public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
-        /*MultiDoorScript script = data.getScript(MultiDoorScript.class);
+        MultiDoorScript script = data.getScript(MultiDoorScript.class);
         if(script == null){
             data.getPrimaryColor().glColorApply();
-            rotate(this.front_left, 0, data.doorsOpen() ? rad80 : 0, 0, true);
-            front_left[4].rotateAngleZ = Static.rad180;
-            render(this.front_left);
-            rotate(this.front_right, 0, data.doorsOpen() ? -rad80 : 0, 0, true);
-            front_right[4].rotateAngleZ = Static.rad180;
-            render(this.front_right);
+            get("front_left").rotate(0, data.doorsOpen() ? rad80 : 0, 0, true);
+            get("front_left").get(4).rotateAngleZ = Static.rad180;
+            get("front_left").render(vehicle, data, us);
+            get("front_right").rotate(0, data.doorsOpen() ? -rad80 : 0, 0, true);
+            get("front_right").get(4).rotateAngleZ = Static.rad180;
+            get("front_right").render(vehicle, data, us);;
             RGB.glColorReset();
         }
         else{
             data.getPrimaryColor().glColorApply();
-            rotate(this.front_left, 0, script.front_left ? rad80 : 0, 0, true);
-            front_left[4].rotateAngleZ = Static.rad180;
-            render(this.front_left);
-            rotate(this.front_right, 0, script.front_right ? -rad80 : 0, 0, true);
-            front_right[4].rotateAngleZ = Static.rad180;
-            render(this.front_right);
+            get("front_left").rotate(0, script.front_left ? rad80 : 0, 0, true);
+            get("front_left").get(4).rotateAngleZ = Static.rad180;
+            get("front_left").render(vehicle, data, us);
+            get("front_right").rotate(0, script.front_right ? -rad80 : 0, 0, true);
+            get("front_right").get(4).rotateAngleZ = Static.rad180;
+            get("front_right").render(vehicle, data, us);
             RGB.glColorReset();
-        }*///TODO
+        }
     }
 
 }

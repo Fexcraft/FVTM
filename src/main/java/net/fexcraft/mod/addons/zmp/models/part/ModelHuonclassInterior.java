@@ -121,8 +121,7 @@ public class ModelHuonclassInterior extends PartModel {
         steering[12].setRotationPoint(30F, -13F, -1F);
         this.add("steering", steering);
         //
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
     
 }

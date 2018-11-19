@@ -133,7 +133,7 @@ public class ModelC5IF extends PartModel {
         for(ModelRendererTurbo mod : body){
             mod.rotateAngleY = -mod.rotateAngleY;
         }
-        this.flipAll();
+        fixRotations();
     }
 
     @Override

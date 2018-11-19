@@ -928,8 +928,7 @@ public class ModelHorseFloat extends VehicleModel {
         body[206].setRotationPoint(-104F, -0.5F, 16.5F);
         this.add("body", body);
 
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

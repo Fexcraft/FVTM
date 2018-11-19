@@ -80,8 +80,7 @@ public class ModelT2SW extends PartModel {
         steering[12].setRotationPoint(56F, -31.5F, 12F);
         steering[12].rotateAngleZ = -1.04719755F;
         this.add("steering", steering);
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

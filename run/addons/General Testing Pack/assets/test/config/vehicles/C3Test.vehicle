@@ -1,0 +1,18 @@
+{
+    "RegistryName": "test:c3",
+    "Addon": "fvtm:test",
+    "FullName": "Test C3 version.",
+    "ModelFile": "test:models/c3",
+    "Textures": [ "test:textures/other/c3.png" ],
+    "WheelPos":[
+        { "x": -40, "y": -10, "z": 0 },
+        { "x":  40, "y": -10, "z": 0 }
+    ],
+    "ConstructionLength": 6,
+    "ConstructionYOffSet": 16,
+    "RequiredParts": [ ],
+    "PreInstalled":[
+		{ "part": "test:seats", "as": "seats" }
+	],
+	"VehicleType": "RAIL"
+}

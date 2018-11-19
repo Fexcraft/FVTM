@@ -38,8 +38,7 @@ public class ModelT2RL extends PartModel {
         this.add("body", body);
         this.add("back_lights", back_lights);
         this.get("back_lights").addProgram(DefaultPrograms.BACK_LIGHTS);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

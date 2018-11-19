@@ -474,8 +474,7 @@ public class ModelT2W extends PartModel {
         
         this.add("wheel", wheel);
         get("wheel").addPrograms(DefaultPrograms.ADJUSTABLE_WHEEL, DefaultPrograms.ROTATED_WHEEL_ROTATE);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        this.fixRotations();
     }
 
 }

@@ -22,8 +22,7 @@ public class ModelC5FL extends PartModel {
         front_lights[3].addBox(0F, 0F, 0F, 2, 3, 5, 0F); // Box 90
         front_lights[3].setRotationPoint(59.9F, -6F, 16.9F);
         this.add("front_lights", front_lights);
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
     /*@Override

@@ -33,8 +33,7 @@ public class ModelT2SK extends PartModel {
         body[3].addShapeBox(0F, 0F, 0F, 50, 13, 12, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 154
         body[3].setRotationPoint(-32F, -12F, -26F);
         this.add("body", body);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
     @Override

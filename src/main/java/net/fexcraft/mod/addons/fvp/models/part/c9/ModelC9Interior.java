@@ -135,8 +135,7 @@ public class ModelC9Interior extends PartModel {
 		body[29].addShapeBox(0F, -1F, 0F, 1, 1, 3, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F); // Box 551
 		body[29].setRotationPoint(8.8F, -2F, -10.5F);
 		this.add("body", body);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+		fixRotations();
     }
 
 }

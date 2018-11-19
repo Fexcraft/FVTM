@@ -849,8 +849,7 @@ public class ModelUtilityTrailer extends VehicleModel {
         body[186].setRotationPoint(-51F, -11.7F, -15.8F);
         this.add("body", body);
         //
-        translateAll(0, 1, 0);
-        flipAll();
+        this.fixRotations();
     }
 
 }

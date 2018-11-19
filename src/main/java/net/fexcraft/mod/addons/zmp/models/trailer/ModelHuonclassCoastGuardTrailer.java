@@ -2388,8 +2388,8 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
         steering[12].setRotationPoint(-66F, -27F, -1F);
         this.add("steering", steering);
         //
-        translateAll(0, 2, 0);
-        flipAll();
+        translate(0, 2, 0);
+        fixRotations();
     }
 
 }

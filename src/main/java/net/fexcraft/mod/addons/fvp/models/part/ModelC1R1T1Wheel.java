@@ -1276,8 +1276,7 @@ public class ModelC1R1T1Wheel extends PartModel {
         wheel_back_right[77].addShapeBox(1.5F, -0.5F, -0.5F, 6, 1, 1, 0F, 0.15F, -1.25F, -0.5F, -0.85F, -4.25F, -0.5F, -0.75F, -3.8F, 0F, -0.05F, -0.8F, 0F, 0.3F, 0.15F, -0.5F, -1.05F, 3.15F, -0.5F, -1.25F, 3.7F, 0F, 0.45F, 0.7F, 0F); // Box 431
         wheel_back_right[77].setRotationPoint(-43.5F, 0.5F, -20F);
         this.add("wheel_back_right", wheel_back_right);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
     @Override

@@ -57,18 +57,14 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		}
 	}*/
 
-	/** legacy method **/
-	public void translateAll(float x, float y, float z){
+	public void translate(float x, float y, float z){
 		groups.values().forEach(group -> group.translate(x, y, z));
 	}
-
-	/** legacy method **/
-	public void rotateAll(float x, float y, float z, boolean apply){
+	public void rotate(float x, float y, float z, boolean apply){
 		groups.values().forEach(group -> group.rotate(x, y, z, apply));
 	}
-
-	/** legacy method **/
-	public void flipAll(){
+	
+	public void fixRotations(){
 		groups.values().forEach(group -> fixRotations(group));
 	}
 

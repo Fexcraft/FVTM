@@ -1100,9 +1100,8 @@ public class Model4x4Police extends VehicleModel {
         body_door_close[7].setRotationPoint(8F, -3F, -19.5F);
         this.add("body_door_close", body_door_close);
 
-        translateAll(0F, -12F, 0F);
-        flipAll();
-
+        translate(0F, -12F, 0F);
+        fixRotations();
     }
 
 }

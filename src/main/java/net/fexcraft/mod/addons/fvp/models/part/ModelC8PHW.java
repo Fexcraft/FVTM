@@ -35,8 +35,7 @@ public class ModelC8PHW extends PartModel {
         wheel_back_right[0].addShape3D(8F, -8F, 0F, new Shape2D(new Coord2D[]{new Coord2D(8, 0, 8, 0), new Coord2D(14, 2, 14, 2), new Coord2D(16, 8, 16, 8), new Coord2D(14, 14, 14, 14), new Coord2D(8, 16, 8, 16), new Coord2D(2, 14, 2, 14), new Coord2D(0, 8, 0, 8), new Coord2D(2, 2, 2, 2)}), 4, 16, 16, 56, 4, ModelRendererTurbo.MR_FRONT, new float[]{7, 7, 7, 7, 7, 7, 7, 7}); // Shape 12
         wheel_back_right[0].setRotationPoint(-39F, 2F, -16.5F);
         this.add("wheel_back_right", wheel_back_right);
-        flipAll();
-
+        fixRotations();
     }
 
     @Override

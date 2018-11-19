@@ -375,8 +375,7 @@ public class StandardFluidContainer extends ContainerModel {
         body[4].setRotationPoint(-8F, -48F, 0F);
         this.add("body", body);
 
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        this.fixRotations();
     }
 
 }

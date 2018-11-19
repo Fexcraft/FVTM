@@ -852,8 +852,8 @@ public class ModelBogieST1 extends AdjustableBogieModel {
 		axle1[66].setRotationPoint(-16F, -16F, 0F);
 		this.add("axle1", axle1);
 		
-		translateAll(0F, 8F, 0F);
-		flipAll();
+		translate(0F, 8F, 0F);
+		fixRotations();
 	}
 	
 }

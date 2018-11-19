@@ -175,8 +175,7 @@ public class ModelCargoShipInterior extends PartModel {
         body[40].setRotationPoint(-590F, -216F, -58F);
         this.add("body", body);
         //
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

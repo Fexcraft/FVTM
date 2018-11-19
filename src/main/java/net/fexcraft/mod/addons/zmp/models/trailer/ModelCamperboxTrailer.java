@@ -793,8 +793,8 @@ public class ModelCamperboxTrailer extends VehicleModel {
         body[172].setRotationPoint(-51F, -10.7F, 13F);
         this.add("body", body);
         //
-        translateAll(0, 1, 0);
-        flipAll();
+        translate(0, 1, 0);
+        fixRotations();
     }
 
 }

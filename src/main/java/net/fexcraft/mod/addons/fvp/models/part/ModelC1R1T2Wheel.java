@@ -332,8 +332,7 @@ public class ModelC1R1T2Wheel extends PartModel {
         wheel[62].rotateAngleZ = 5.89048623F;
         this.add("wheel", wheel);
         this.get("wheel").addPrograms(DefaultPrograms.ADJUSTABLE_WHEEL, DefaultPrograms.DEF_WHEEL_ROTATE);
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

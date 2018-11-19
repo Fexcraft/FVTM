@@ -25,7 +25,7 @@ public class ModelAB1Lights extends PartModel {
         this.add("lights", lights);
         get("lights").addProgram(DefaultPrograms.LIGHTS);
         //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

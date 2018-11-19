@@ -404,7 +404,7 @@ public class ModelT1_2 extends PartModel {
         body_colored_secondary[3].addShapeBox(0F, 0F, 0F, 30, 8, 10, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F); // Box 64
         body_colored_secondary[3].setRotationPoint(-54F, -11F, 13F);
         this.add("body_colored_secondary", body_colored_secondary);
-        translateAll(0F, 0F, 0F);
+        fixRotations();
     }
 
     @Override

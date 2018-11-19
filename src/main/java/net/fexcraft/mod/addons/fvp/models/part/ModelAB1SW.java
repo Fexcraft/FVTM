@@ -70,7 +70,7 @@ public class ModelAB1SW extends PartModel {
         steering[12].rotateAngleZ = -1.29154365F;
         this.add("steering", steering);
         //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

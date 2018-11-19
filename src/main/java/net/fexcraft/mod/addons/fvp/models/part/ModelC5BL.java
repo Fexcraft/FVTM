@@ -26,8 +26,7 @@ public class ModelC5BL extends PartModel {
         back_lights[3].addBox(0F, 0F, 0F, 2, 3, 5, 0F); // Box 143
         back_lights[3].setRotationPoint(-40.9F, -6F, -21.9F);
         this.add("back_lights", back_lights);
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
     /*@Override

@@ -841,8 +841,7 @@ public class ModelAB1B extends VehicleModel {
         chassis[5].addBox(0F, 0F, -1F, 24, 9, 1, 0F); // Box 51
         chassis[5].setRotationPoint(24F, -13F, -30.5F);
         this.add("chassis", chassis);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
     @Override

@@ -841,8 +841,8 @@ public class ModelFarmTrailer extends VehicleModel {
         body[184].setRotationPoint(-50F, -26.7F, -14.5F);
         this.add("body", body);
         //
-        translateAll(0, 1, 0);
-        flipAll();
+        translate(0, 1, 0);
+        fixRotations();
     }
 
 }

@@ -69,7 +69,7 @@ public class ModelC5ST extends PartModel {
         steering[12].addBox(-0.5F, -1.5F, -3.5F, 1, 3, 1, 0F); // Box 386
         steering[12].setRotationPoint(25F, -10F, 12F);
         this.add("steering", steering);
-        flipAll();
+        fixRotations();
     }
 
     //TODO override rendering to save up processing time

@@ -45,8 +45,7 @@ public class ModelCargoShipSteeringWheel extends PartModel {
         steering[7].setRotationPoint(-517F, -215.5F, 0.5F);
         this.add("steering", steering);
         //
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

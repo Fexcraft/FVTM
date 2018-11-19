@@ -500,8 +500,7 @@ public class ModelC2 extends VehicleModel {
         body_colored_primary[60].rotateAngleZ = -0.38397244F;
         this.add("body_colored_primary", body_colored_primary);
 
-        translateAll(0F, 0F, 0F);
-        //flipAll();
+        fixRotations();
     }
 
 }

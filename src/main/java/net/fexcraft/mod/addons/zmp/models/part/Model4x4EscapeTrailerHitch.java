@@ -28,7 +28,7 @@ public class Model4x4EscapeTrailerHitch extends PartModel {
         body[3].setRotationPoint(-52F, 13.2F, 0F);
         this.add("body", body);
         //
-        translateAll(0F, -12F, 0F);
+        fixRotations();
     }
 
 }

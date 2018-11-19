@@ -733,9 +733,7 @@ public class ColorExtractor extends BlockModel {
 		body_colored_primary[23].addBox(0F, 0F, 0F, 4, 4, 1, 0F); // Box 105
 		body_colored_primary[23].setRotationPoint(-2F, -31F, -8F);
 		this.add("body_colored_primary", body_colored_primary);
-
-		translateAll(0F, 0F, 0F);
-		flipAll();
+		this.fixRotations();
 	}
 	
 	@Override

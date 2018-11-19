@@ -765,7 +765,7 @@ public class Resources {
 		}
 		catch(Exception e){
 			Print.log("Failed to find/parse model with adress '" + name + "'!");
-			e.printStackTrace(); Static.stop();
+			e.printStackTrace(); //TODO re-active after model converting Static.stop();
 			return (Model<T, K>)EmptyModel.INSTANCE;
 		}
 		MODELS.put(name, model);

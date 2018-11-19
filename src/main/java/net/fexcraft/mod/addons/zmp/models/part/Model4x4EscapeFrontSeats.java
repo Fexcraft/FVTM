@@ -56,8 +56,8 @@ public class Model4x4EscapeFrontSeats extends PartModel {
         body[9].setRotationPoint(5.5F, -11.5F, -14F);
         this.add("body", body);
         //
-        translateAll(0F, -12F, 0F);
-        this.flipAll();
+        translate(0F, -12F, 0F);
+        fixRotations();
     }
 
     @Override

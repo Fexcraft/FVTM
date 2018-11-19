@@ -114,8 +114,7 @@ public class ModelC1R1FS extends PartModel {
         body[21].rotateAngleZ = 0.17453293F;
         this.add("body", body);
 
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

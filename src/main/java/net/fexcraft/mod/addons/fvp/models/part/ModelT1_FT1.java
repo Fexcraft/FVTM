@@ -73,7 +73,7 @@ public class ModelT1_FT1 extends PartModel {
         snowplow[12].addShapeBox(9F, -8F, -24.5F, 1, 2, 4, 0F, 0F, -0.2F, -0.2F, -0.8F, -0.45F, -0.45F, -0.8F, -0.45F, -0.45F, 0F, -0.2F, -0.2F, 0F, -0.2F, -0.2F, -0.8F, -0.45F, -0.45F, -0.8F, -0.45F, -0.45F, 0F, -0.2F, -0.2F); // Box 13
         snowplow[12].setRotationPoint(58F, -5F, 0F);
         this.add("snowplow", snowplow);
-        translateAll(0F, 0F, 0F);
+        fixRotations();
     }
 
     @Override

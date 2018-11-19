@@ -1463,8 +1463,7 @@ public class ModelSentinel extends VehicleModel {
 		chassis[63].setRotationPoint(-34F, 7F, -16F);
 		this.add("chassis", chassis);
 
-		translateAll(0F, 0F, 0F);
-		//flipAll();
+		fixRotations();
 		for(ModelRendererTurbo turbo : body_colored_primary){
 			turbo.rotateAngleY = -turbo.rotateAngleY;
 			turbo.rotateAngleZ = -turbo.rotateAngleZ;

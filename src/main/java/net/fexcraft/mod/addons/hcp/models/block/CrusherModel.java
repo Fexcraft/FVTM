@@ -1070,8 +1070,7 @@ public class CrusherModel extends BlockModel {
 		rot[152].addBox(-0.5F, 0.800000000000001F, 0F, 1, 1, 3, 0F); // Box 212
 		rot[152].setRotationPoint(4F, -32F, -7F);
 		rot[152].rotateAngleZ = 0.78539816F;
-		translateAll(0F, 0F, 0F);
-		flipAll();
+		fixRotations();
 	}
 	
 	@Override

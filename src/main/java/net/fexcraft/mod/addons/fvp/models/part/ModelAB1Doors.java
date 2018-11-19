@@ -75,7 +75,7 @@ public class ModelAB1Doors extends PartModel {
         body_door_close[6].setRotationPoint(82F, -21F, -31.5F);
         this.add("body_door_close", body_door_close);
         //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
     @Override

@@ -40,8 +40,7 @@ public class ModelC8Lights extends PartModel {
         this.add("front_lights", front_lights);
         this.add("back_lights", back_lights);
         this.add("reverse_lights", reverse_lights);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

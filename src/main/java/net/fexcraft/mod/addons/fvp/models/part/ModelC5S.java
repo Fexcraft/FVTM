@@ -125,7 +125,7 @@ public class ModelC5S extends PartModel {
         body[27].addBox(0F, 0F, 0F, 2, 3, 8, 0F); // Box 246
         body[27].setRotationPoint(7F, -18F, -16F);
         this.add("body", body);
-        this.flipAll();
+        fixRotations();
         //TODO sub models without paint be.
     }
 

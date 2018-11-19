@@ -33,8 +33,7 @@ public class ModelT2FL extends PartModel {
         this.add("front_lights", front_lights);
         this.get("front_lights").addProgram(DefaultPrograms.FRONT_LIGHTS);
         //
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

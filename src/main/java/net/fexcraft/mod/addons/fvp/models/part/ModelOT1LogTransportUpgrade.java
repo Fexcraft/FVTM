@@ -275,7 +275,7 @@ public class ModelOT1LogTransportUpgrade extends PartModel {
         cargo[21].setRotationPoint(-81.5F, -38F, -8F);
         cargo[21].rotateAngleX = -0.01745329F;
         this.add("cargo", cargo);
-        translateAll(0F, 0F, 0F);
+        fixRotations();
     }
 
     @Override

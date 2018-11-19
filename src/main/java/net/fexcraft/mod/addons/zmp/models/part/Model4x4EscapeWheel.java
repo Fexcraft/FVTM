@@ -295,7 +295,8 @@ public class Model4x4EscapeWheel extends PartModel {
         wheel_back_right[16].setRotationPoint(-31.5F, 12.5F, -16F);
         this.add("wheel_back_right", wheel_back_right);
         //
-        translateAll(0F, -12F, 0F);
+        translate(0F, -12F, 0F);
+        fixRotations();
     }
 
     @Override

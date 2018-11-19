@@ -125,8 +125,7 @@ public class ModelC1R1ST extends PartModel {
         steering[17].rotateAngleX = -0.03490659F;
         steering[17].rotateAngleZ = -0.26179939F;
         this.add("steering", steering);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

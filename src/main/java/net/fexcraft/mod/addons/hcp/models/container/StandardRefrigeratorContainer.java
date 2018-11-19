@@ -894,8 +894,7 @@ public class StandardRefrigeratorContainer extends ContainerModel {
         this.add("glow", glow);
         get("glow").addProgram(DefaultPrograms.ALWAYS_GLOW);
         
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
     private static RGB color = new RGB(128, 128, 128, 0.67f);

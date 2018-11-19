@@ -89,8 +89,8 @@ public class Model4x4EscapeBackSeats extends PartModel {
         body[17].setRotationPoint(-15.5F, -11F, -3F);
         //
         this.add("body", body);
-        translateAll(0F, -12F, 0F);
-        this.flipAll();
+        translate(0F, -12F, 0F);
+        fixRotations();
     }
 
     @Override

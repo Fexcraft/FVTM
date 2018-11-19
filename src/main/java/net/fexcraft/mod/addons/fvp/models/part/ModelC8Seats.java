@@ -69,7 +69,7 @@ public class ModelC8Seats extends PartModel {
         body[13].addBox(0F, 0F, 0F, 10, 1, 2, 0F); // Box 208
         body[13].setRotationPoint(-15F, 2F, -8F);
         this.add("body", body);
-        flipAll();
+        fixRotations();
     }
 
 }

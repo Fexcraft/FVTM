@@ -340,7 +340,7 @@ public class ModelAB1PS extends PartModel {
         body[77].setRotationPoint(-102F, -23F, -28F);
         this.add("body", body);
         //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

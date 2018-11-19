@@ -711,7 +711,7 @@ public class ModelC7 extends VehicleModel {
         body_colored_primary[77].addShapeBox(0F, 0F, 0F, 4, 11, 2, 0F, 0F, 0F, -1F, -1F, 0F, -1F, -1F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 240
         body_colored_primary[77].setRotationPoint(-4F, -15F, -18F);
         this.add("body_colored_primary", body_colored_primary);
-        flipAll();
+        fixRotations();
     }
 
     @Override

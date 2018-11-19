@@ -73,7 +73,7 @@ public class ModelT1SW extends PartModel {
         steering[13].addShapeBox(-2F, -4.5F, 3.5F, 1, 3, 1, 0F, 0F, -1F, 2F, 0F, -1F, 2F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 400
         steering[13].setRotationPoint(47.6F, -22F, 11F);
         this.add("steering", steering);
-        translateAll(0F, 0F, 0F);
+        fixRotations();
     }
 
 }

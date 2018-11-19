@@ -693,7 +693,7 @@ public class ModelC5W extends PartModel {
         wheel_back_right[41].addShapeBox(-5F, -5F, -4F, 1, 5, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -5F, 0F, 0F, 5F, 0F, 0F, 5F, 0F, 0F, -5F, 0F, 0F); // Box 384
         wheel_back_right[41].setRotationPoint(-26F, 2F, -19F);
         this.add("wheel_back_right", wheel_back_right);
-        flipAll();
+        fixRotations();
     }
 
     @Override

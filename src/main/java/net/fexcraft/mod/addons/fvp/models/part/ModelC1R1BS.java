@@ -50,8 +50,7 @@ public class ModelC1R1BS extends PartModel {
         body[7].setRotationPoint(-23F, -5F, -16F);
         this.add("body", body);
 
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

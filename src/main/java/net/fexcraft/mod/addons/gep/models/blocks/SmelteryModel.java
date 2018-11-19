@@ -241,9 +241,8 @@ public class SmelteryModel extends BlockModel {
         left[1].addShapeBox(-21F, 0F, -17F, 9, 12, 1, 0F, 0F, 0F, -9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 9F, 0F, 0F, -9F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 9F); // Box 39
         left[1].setRotationPoint(0F, -32F, 0F);
         this.add("left", left);
-
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        
+        this.fixRotations();
     }
     
     //private float quarterrad = Static.rad1 / 4;

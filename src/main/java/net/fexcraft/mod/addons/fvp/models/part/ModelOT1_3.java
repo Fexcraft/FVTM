@@ -240,9 +240,7 @@ public class ModelOT1_3 extends PartModel {
         body_door_close[10].addShapeBox(0F, 0F, 0F, 1, 1, 2, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F); // Box 420
         body_door_close[10].setRotationPoint(-77F, -26F, -1F);
         this.add("body_door_close", body_door_close);
-        translateAll(0F, 0F, 0F);
-
-        //flipAll();
+        fixRotations();
     }
 
 }

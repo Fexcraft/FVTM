@@ -92,8 +92,7 @@ public class ModelT2RF extends PartModel {
         turret[8].addShapeBox(0F, 0F, 0F, 17, 1, 2, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, -2F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 149
         turret[8].setRotationPoint(-56F, -16F, -14F);
         this.add("turret", turret);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
     @Override

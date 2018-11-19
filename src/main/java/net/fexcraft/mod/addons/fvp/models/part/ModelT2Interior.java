@@ -317,8 +317,7 @@ public class ModelT2Interior extends PartModel {
         body[69].addShapeBox(0F, 0F, 0F, 14, 4, 12, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F); // Box 327
         body[69].setRotationPoint(37F, -23F, -18F);
         this.add("body", body);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

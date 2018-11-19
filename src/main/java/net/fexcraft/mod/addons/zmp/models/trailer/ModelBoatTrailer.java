@@ -811,8 +811,7 @@ public class ModelBoatTrailer extends VehicleModel {
         body[177].addBox(0F, 0F, 0F, 1, 1, 2, 0F); // Box 177
         body[177].setRotationPoint(-19F, -9.2F, -2.5F);
         this.add("body", body);
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

@@ -229,8 +229,7 @@ public class ModelC8Interior extends PartModel {
         lights[5].addBox(0F, 0.2F, 1F, 1, 1, 3, 0F); // Box 226
         lights[5].setRotationPoint(20.8F, -8.5F, -2.5F);
         this.add("lights", lights);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

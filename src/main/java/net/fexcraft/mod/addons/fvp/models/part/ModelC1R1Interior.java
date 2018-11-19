@@ -167,9 +167,7 @@ public class ModelC1R1Interior extends PartModel {
         body[36].setRotationPoint(22F, -2F, 12F);
         
         this.add("body", body);
-
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

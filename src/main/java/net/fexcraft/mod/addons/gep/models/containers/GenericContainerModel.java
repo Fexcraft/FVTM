@@ -30,7 +30,7 @@ public class GenericContainerModel extends ContainerModel {
         body[3].setRotationPoint(-48F, -48F, -24F);
         this.add("body", body);
         //
-        flipAll();
+        this.fixRotations();
     }
     
     @Override

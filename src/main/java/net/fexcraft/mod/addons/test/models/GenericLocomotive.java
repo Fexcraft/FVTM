@@ -460,8 +460,7 @@ public class GenericLocomotive extends VehicleModel {
 		turret[46].addBox(-15.5F, 0F, 0F, 31, 9, 26, 0F); // Box 67
 		turret[46].setRotationPoint(-51.5F, -12F, -13F);*/
 
-		translateAll(0F, 0F, 0F);
-		flipAll();
+		fixRotations();
 	}
 	
 }

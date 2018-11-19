@@ -1165,9 +1165,8 @@ public class Model4x4Samu extends VehicleModel {
         body_door_close[7].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 270
         this.add("body_door_close", body_door_close);
 
-        translateAll(0F, -12F, 0F);
-        flipAll();
-
+        translate(0F, -12F, 0F);
+        fixRotations();
     }
 
 }

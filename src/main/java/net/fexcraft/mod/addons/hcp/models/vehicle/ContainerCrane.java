@@ -4221,8 +4221,7 @@ public class ContainerCrane extends VehicleModel {
         turret[131].addShapeBox(0F, 0F, 0F, 4, 3, 2, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 927
         turret[131].setRotationPoint(-49F, -68F, 15F);
         this.add("turret", turret);
-        translateAll(-8F, 16F, 112F);
-        flipAll();
+        this.fixRotations();
         //
         this.gui_scale_x = this.gui_scale_x / 2;
         this.gui_scale_y = this.gui_scale_y / 2;
@@ -4247,7 +4246,7 @@ public class ContainerCrane extends VehicleModel {
         	GL11.glTranslatef(-script.length + 1, 0, 0);
         	int len = (script.length * 2) + 1;
             for(int i = 0; i < len; i++){
-                render(data, "wheels_import");
+                super.render(data, "wheels_import");
                 GL11.glTranslatef(1, 0, 0);
             }
             GL11.glTranslatef(-script.length - 1, 0, 0);

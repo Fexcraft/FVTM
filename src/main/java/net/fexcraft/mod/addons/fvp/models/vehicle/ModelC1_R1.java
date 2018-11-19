@@ -1035,8 +1035,7 @@ public class ModelC1_R1 extends VehicleModel {
         body_colored_primary[72].setRotationPoint(-29F, 0F, -21F);
         this.add("body_colored_primary", body_colored_primary);
 
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
         
         /*for(ModelRendererTurbo turbo : body_door_open){
         	turbo.rotateAngleY = -turbo.rotateAngleY;

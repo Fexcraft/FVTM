@@ -82,8 +82,7 @@ public class ModelC8ST extends PartModel {
         steering[12].setRotationPoint(18F, -9F, 11F);
         steering[12].rotateAngleZ = -0.34906585F;
         this.add("steering", steering);
-        translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

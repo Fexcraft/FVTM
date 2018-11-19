@@ -2442,8 +2442,7 @@ public class Locomotive extends VehicleModel {
 		body[587].setRotationPoint(-27.5F, -29F, 3F);
 		this.add("body", body);
 
-		translateAll(0F, 4F, 0F);
-		flipAll();
+		fixRotations();
 	}
 	
 }

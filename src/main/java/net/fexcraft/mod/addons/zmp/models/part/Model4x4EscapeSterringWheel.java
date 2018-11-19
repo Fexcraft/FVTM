@@ -64,8 +64,8 @@ public class Model4x4EscapeSterringWheel extends PartModel {
         steering[12].setRotationPoint(17F, -5F, 9F);
         this.add("steering", steering);
         //
-        translateAll(0F, -12F, 0F);
-        flipAll();
+        translate(0F, -12F, 0F);
+        fixRotations();
     }
 
 }

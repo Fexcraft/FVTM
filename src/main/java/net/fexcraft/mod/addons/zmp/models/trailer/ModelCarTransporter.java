@@ -803,9 +803,7 @@ public class ModelCarTransporter extends VehicleModel {
         body[175].addBox(0F, 0F, 0F, 1, 1, 2, 0F); // Box 175
         body[175].setRotationPoint(-105.3F, -28.5F, -14.5F);
         this.add("body", body);
-        //translateAll(0F, 0F, 0F);
-        flipAll();
-
+        fixRotations();
     }
 
 }

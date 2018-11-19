@@ -1005,8 +1005,8 @@ public class ModelBoxTrailer extends VehicleModel {
         this.add("body_door_open", body_door_open);
         this.add("body_door_close", body_door_close);
         //
-        translateAll(0, 2, 0);
-        flipAll();
+        translate(0, 2, 0);
+        fixRotations();
     }
 
 }

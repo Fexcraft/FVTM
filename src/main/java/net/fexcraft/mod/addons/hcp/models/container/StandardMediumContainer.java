@@ -512,7 +512,7 @@ public class StandardMediumContainer extends ContainerModel {
         body[31].setRotationPoint(-47.5F, -46F, 21F);
         this.add("body", body);
         //
-        flipAll();
+        fixRotations();
     }
 
 }

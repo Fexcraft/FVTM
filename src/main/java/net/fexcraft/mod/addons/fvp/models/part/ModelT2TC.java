@@ -24,8 +24,7 @@ public class ModelT2TC extends PartModel {
         body[2].addShapeBox(0F, 0F, 0F, 15, 3, 8, 0F, -2F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, -2F, -1F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 220
         body[2].setRotationPoint(-43F, -17F, 2F);
         this.add("body", body);
-        //translateAll(0F, 0F, 0F);
-        flipAll();
+        fixRotations();
     }
 
 }

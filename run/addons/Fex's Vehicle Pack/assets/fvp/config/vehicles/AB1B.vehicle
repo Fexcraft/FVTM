@@ -2,7 +2,7 @@
     "RegistryName": "fvp:ab1",
     "Addon": "fvtm:fvp",
     "FullName": "AB1 Variant B",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelAB1B.class",
+    "ModelFile": "fvp:models/vehicle/ab1b",
     "PrimaryColor": {
         "Red": 239,
         "Blue": 239,

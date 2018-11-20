@@ -19,7 +19,9 @@ public class VehicleModel extends VehicleBaseModel {
 
 	@Override
 	public void render(VehicleData data, Object key){
-		this.render(data, key, null, -2);
+		for(TurboList list : groups.values()){
+			list.render(null, data, data, null);
+		}
 	}
 
 	@Override

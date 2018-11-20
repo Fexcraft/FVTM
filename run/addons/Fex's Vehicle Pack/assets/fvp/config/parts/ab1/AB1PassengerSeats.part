@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:ab1_passenger_seats",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelAB1PS.class",
+    "ModelFile": "fvp:models/part/ab1b_passenger_seats",
     "Category": [
         "inner"
     ],

@@ -2,7 +2,7 @@
     "RegistryName": "fvp:ab1_doors",
     "Addon": "fvtm:fvp",
     "FullName": "AB1 Default Doors",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelAB1Doors.class",
+    "ModelFile": "fvp:models/part/ab1b_doors",
     "Category": [
         "doors"
     ],

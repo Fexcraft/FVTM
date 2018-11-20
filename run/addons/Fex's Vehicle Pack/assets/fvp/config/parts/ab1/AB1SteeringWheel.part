@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:ab1_steering_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelAB1SW.class",
+    "ModelFile": "fvp:models/part/ab1b_steering_wheel",
     "Category": [
         "steering_wheel"
     ],

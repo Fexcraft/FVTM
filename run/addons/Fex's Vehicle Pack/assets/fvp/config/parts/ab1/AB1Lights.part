@@ -2,7 +2,7 @@
     "RegistryName": "fvp:ab1_lights",
     "Addon": "fvtm:fvp",
     "FullName": "AB1 Lights",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelAB1Lights.class",
+    "ModelFile": "fvp:models/part/ab1b_lights",
     "Category": [
         "lights"
     ],

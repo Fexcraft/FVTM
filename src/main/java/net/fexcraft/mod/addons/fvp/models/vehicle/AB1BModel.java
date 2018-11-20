@@ -28,6 +28,7 @@ public class AB1BModel extends VehicleModel {
 		cargo_bay_left.add(new ModelRendererTurbo(cargo_bay_left, 689, 57, textureX, textureY).addBox(0, 0, 0, 24, 9, 1)
 			.setRotationPoint(-34, -13, 30.5f).setRotationAngle(0, 0, 0).setName("Box 44")
 		);
+		cargo_bay_left.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(cargo_bay_left);
 		//
 		TurboList cargo_bay_right = new TurboList("cargo_bay_right");
@@ -40,6 +41,7 @@ public class AB1BModel extends VehicleModel {
 		cargo_bay_right.add(new ModelRendererTurbo(cargo_bay_right, 689, 73, textureX, textureY).addBox(0, 0, -1, 24, 9, 1)
 			.setRotationPoint(24, -13, -30.5f).setRotationAngle(0, 0, 0).setName("Box 51")
 		);
+		cargo_bay_right.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(cargo_bay_right);
 		//
 		TurboList chassis_core = new TurboList("chassis_core");

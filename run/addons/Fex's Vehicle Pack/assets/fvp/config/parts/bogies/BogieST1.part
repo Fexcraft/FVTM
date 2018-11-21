@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:bogie_st1",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.bogie.ModelBogieST1.class",
+    "ModelFile": "fvp:models/part/bogiest1",
     "FullName": "Bogie (S) Type 1",
     "Category": [
         "bogie_front", "bogie_back", "bogie"

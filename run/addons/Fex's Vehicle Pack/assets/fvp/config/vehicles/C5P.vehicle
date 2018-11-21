@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c5",
     "Addon": "fvtm:fvp",
     "FullName": "C5 Type P",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelC5.class",
+    "ModelFile": "fvp:models/vehicle/c5",
     "PrimaryColor": {
         "Red": 168,
         "Blue": 168,

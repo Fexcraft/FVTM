@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c5_interior",
     "Addon": "fvtm:fvp",
     "FullName": "C5 (Default Front) Interior",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC5IF.class",
+    "ModelFile": "fvp:models/part/c5_interior",
     "Category": [
         "interior"
     ],

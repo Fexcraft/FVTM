@@ -1,16 +1,16 @@
 {
     "RegistryName": "fvp:c2_interior",
     "Addon": "fvtm:fvp",
-    "FullName": "C2 Interior & Settings",
-    "ModelFile": "null",
+    "FullName": "C2 Interior",
+    "ModelFile": "fvp:models/part/c2_interior",
     "Category": [
-        "interior"
+        "lights"
     ],
     "Attributes": [
         "seat", "font_renderer"
     ],
     "Textures": [
-        "fvtm:textures/entities/null_texture.png"
+        "fvp:textures/entities/skin_vehicle_c2.png"
     ],
     "Compatible": [{ "Vehicle": "fvp:c2", "x": 0, "y": 0, "z": 0 }],
     "Removable": false,

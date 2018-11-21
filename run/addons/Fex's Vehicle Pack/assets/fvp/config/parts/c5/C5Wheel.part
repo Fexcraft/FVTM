@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:c5_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC5W.class",
+    "ModelFile": "fvp:models/part/c5_wheel",
     "FullName": "C5 Default Wheel",
     "Category": [
         "right_front_wheel",

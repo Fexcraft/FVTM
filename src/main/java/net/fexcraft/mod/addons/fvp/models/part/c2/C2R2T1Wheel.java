@@ -159,7 +159,7 @@ public class C2R2T1Wheel extends PartModel {
 		wheel.add(new ModelRendererTurbo(wheel, 65, 33, textureX, textureY)
 			.addShapeBox(-5.5f, -1.5f, -1, 1, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f).setName("Import Box112")
 		);
-		wheel.addProgram(DefaultPrograms.ADJUSTABLE_WHEEL);
+		wheel.addPrograms(DefaultPrograms.ADJUSTABLE_WHEEL, DefaultPrograms.DEF_WHEEL_ROTATE);
 		this.groups.add(wheel);
 	}
 

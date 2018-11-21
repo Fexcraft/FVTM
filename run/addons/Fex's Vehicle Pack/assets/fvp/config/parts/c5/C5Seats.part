@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c5_seats",
     "Addon": "fvtm:fvp",
     "FullName": "C5 Seats",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC5S.class",
+    "ModelFile": "fvp:models/part/c5_seats",
     "Category": [
         "seats"
     ],

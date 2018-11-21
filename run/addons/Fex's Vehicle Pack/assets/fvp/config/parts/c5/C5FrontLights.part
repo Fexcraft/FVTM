@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c5_front_lights",
     "Addon": "fvtm:fvp",
     "FullName": "C5 Front Lights",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC5FL.class",
+    "ModelFile": "fvp:models/part/c5_front_lights",
     "Category": [
         "front_lights"
     ],

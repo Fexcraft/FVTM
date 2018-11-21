@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c5_back_lights",
     "Addon": "fvtm:fvp",
     "FullName": "C5 Back Lights",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC5BL.class",
+    "ModelFile": "fvp:models/part/c5_back_lights",
     "Category": [
         "back_lights"
     ],

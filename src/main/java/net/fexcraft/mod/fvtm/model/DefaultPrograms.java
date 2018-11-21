@@ -156,6 +156,27 @@ public class DefaultPrograms {
 		}
 	};
 	
+	public static final Program IMPORTED_WHEEL = new AutoRegProgram(){
+		private boolean bool;
+		@Override public String getId(){ return "fvtm:imported_wheel"; }
+		//
+		@Override
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			switch(part){
+				case "right_front_wheel": bool = list.name.equals("wheel_front_right"); break;
+				case "left_front_wheel": bool = list.name.equals("wheel_front_left"); break;
+				case "right_back_wheel": bool = list.name.equals("wheel_back_right"); break;
+				case "left_back_wheel": bool = list.name.equals("wheel_back_left"); break;
+				default: bool = true;
+			} list.visible = bool;
+		}
+		//
+		@Override
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        list.visible = true;
+		}
+	};
+	
 	public static final Program DOOR_OPEN = new AutoRegProgram(){
 		@Override public String getId(){ return "fvtm:door_open"; }
 		//

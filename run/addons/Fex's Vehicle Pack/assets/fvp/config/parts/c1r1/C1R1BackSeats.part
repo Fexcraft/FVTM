@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c1r1_back_seats",
     "FullName": "C1R1 Back Seats",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC1R1BS.class",
+    "ModelFile": "fvp:models/part/c1_r1_back_seats",
     "Category": [
         "back_seats"
     ],

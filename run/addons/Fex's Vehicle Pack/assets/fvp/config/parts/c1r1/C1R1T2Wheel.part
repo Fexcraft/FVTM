@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:c1r1t2_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC1R1T2Wheel.class",
+    "ModelFile": "fvp:models/part/c1_r1_t2_wheel",
     "FullName": "C1R1T2 Wheel",
     "Category": [
         "right_front_wheel",

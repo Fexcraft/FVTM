@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c1r1_front_seats",
     "FullName": "C1R1 Front Seats",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC1R1FS.class",
+    "ModelFile": "fvp:models/part/c1_r1_front_seats",
     "Category": [
         "front_seats"
     ],

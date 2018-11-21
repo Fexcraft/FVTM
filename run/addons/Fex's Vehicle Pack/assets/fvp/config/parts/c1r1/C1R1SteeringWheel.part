@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:c1r1_steering_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC1R1ST.class",
+    "ModelFile": "fvp:models/part/c1_r1_steering_wheel",
     "FullName": "C1R1 Steering Wheel",
     "Category": [
         "steering_wheel"

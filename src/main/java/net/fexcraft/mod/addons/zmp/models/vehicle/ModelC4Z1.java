@@ -1,4 +1,4 @@
-package net.fexcraft.mod.addons.fvp.models.vehicle;
+package net.fexcraft.mod.addons.zmp.models.vehicle;
 
 import javax.annotation.Nullable;
 

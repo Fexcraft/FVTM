@@ -4,7 +4,7 @@
 // Model Creator: FEX___96
 // Created on: 31.03.2017 - 14:38:29
 // Last changed on: 31.03.2017 - 14:38:29
-package net.fexcraft.mod.addons.fvp.models.part.c4;
+package net.fexcraft.mod.addons.zmp.models.part.c4;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;

@@ -28,6 +28,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	public ArrayList<Program> programs = new ArrayList<>();
 	public float rotX, rotY, rotZ, offX, offY, offZ;
 	protected RGB windowcolor = new RGB(0x00, 0x72, 0x08, 0.3f);
+	protected boolean visible = true;
 	public String name;
 	
 	public TurboList(String name){ super(); this.name = name; }
@@ -59,7 +60,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		if(rotY != 0f) GL11.glRotatef(rotY, 0, 1, 0);
 		if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);
 		if(programs.size() > 0) for(Program program : programs) program.preRender(this, ent, data, color, part);
-		for(ModelRendererTurbo turbo : this){ turbo.render(); }
+		if(visible) for(ModelRendererTurbo turbo : this){ turbo.render(); }
 		if(programs.size() > 0) for(Program program : programs) program.postRender(this, ent, data, color, part);
 		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
 		GL11.glPopMatrix();

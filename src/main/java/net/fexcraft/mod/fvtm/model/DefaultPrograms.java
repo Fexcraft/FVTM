@@ -156,6 +156,34 @@ public class DefaultPrograms {
 		}
 	};
 	
+	public static final Program DOOR_OPEN = new AutoRegProgram(){
+		@Override public String getId(){ return "fvtm:door_open"; }
+		//
+		@Override
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			list.visible = data.doorsOpen();
+		}
+		//
+		@Override
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        list.visible = true;
+		}
+	};
+	
+	public static final Program DOOR_CLOSE = new AutoRegProgram(){
+		@Override public String getId(){ return "fvtm:door_close"; }
+		//
+		@Override
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			list.visible = !data.doorsOpen();
+		}
+		//
+		@Override
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        list.visible = true;
+		}
+	};
+	
 	public static abstract class AutoRegProgram implements Program {
 		
 		public AutoRegProgram(){ TurboList.PROGRAMS.add(this); }

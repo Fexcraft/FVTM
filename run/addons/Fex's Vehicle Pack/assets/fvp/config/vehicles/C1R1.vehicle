@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c1r1",
     "Addon": "fvtm:fvp",
     "FullName": "C1 (Serie R1)",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelC1_R1.class",
+    "ModelFile": "fvp:models/vehicle/c1_r1",
     "PrimaryColor": {
         "Red": 168,
         "Blue": 168,

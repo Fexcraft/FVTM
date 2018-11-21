@@ -3,11 +3,13 @@ package net.fexcraft.mod.addons.zmp.models.vehicle;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
+@fModel(registryname = "zmp:models/vehicle/c4z1")
 public class ModelC4Z1 extends VehicleModel {
 
     private static final int texture = 1024;

@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c4z1",
     "Addon": "fvtm:fvp",
     "FullName": "C4-Z1",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelC4Z1.class",
+    "ModelFile": "zmp:models/vehicle/c4z1",
     "PrimaryColor": {
         "Red": 255,
         "Blue": 255,

@@ -45,6 +45,18 @@
         }
       },
       {
+        "FVTM:Part": "fvp:c2_lights",
+        "UsedAs": "lights",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
         "FVTM:Part": "fvp:c2r2t1_wheel",
         "UsedAs": "left_back_wheel",
         "fvtm_part": {

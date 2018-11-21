@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c2",
     "Addon": "fvtm:fvp",
     "FullName": "C2 Type P",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelC2.class",
+    "ModelFile": "fvp:models/vehicle/c2",
     "PrimaryColor": {
         "Red": 168,
         "Blue": 168,
@@ -37,14 +37,9 @@
         "right_back_wheel",
         "left_back_wheel",
         "steering_wheel",
+        "interior",
         "engine",
         "fuel_tank"
-    ],
-    "PreInstalled":[
-        {
-            "as": "interior",
-            "part": "fvp:c2_interior"
-        }
     ],
     "DriveType": "fwd",
     "FM-MaxPositiveThrottle": 1.47,

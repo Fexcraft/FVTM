@@ -1,0 +1,15 @@
+{
+    "RegistryName": "fvp:c2_lights",
+    "Addon": "fvtm:fvp",
+    "FullName": "C2 Lights",
+    "ModelFile": "fvp:models/part/c2_lights",
+    "Category": [
+        "lights"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c2.png"
+    ],
+    "Compatible": [{ "Vehicle": "fvp:c2", "x": 0, "y": 0, "z": 0 }],
+    "Removable": true,
+    "Available": true
+}

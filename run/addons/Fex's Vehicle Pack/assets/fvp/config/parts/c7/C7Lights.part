@@ -1,0 +1,15 @@
+{
+    "RegistryName": "fvp:c7_lights",
+    "Addon": "fvtm:fvp",
+    "FullName": "C7 Lights",
+    "ModelFile": "fvp:models/part/c7_lights",
+    "Category": [
+        "lights"
+    ],
+    "Textures": [
+        "fvp:textures/entities/skin_vehicle_c7.png"
+    ],
+    "Compatible": [{ "Vehicle": "fvp:c7", "x": 0, "y": 0, "z": 0 }],
+    "Removable": true,
+    "Available": true
+}

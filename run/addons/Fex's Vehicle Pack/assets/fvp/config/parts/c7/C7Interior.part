@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c7_interior",
     "Addon": "fvtm:fvp",
     "FullName": "C7 Default Interior",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7Interior.class",
+    "ModelFile": "fvp:models/part/c7_interior",
     "Category": [
         "interior"
     ],

@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c7_seats",
     "Addon": "fvtm:fvp",
     "FullName": "C7 Seats",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7Seats.class",
+    "ModelFile": "fvp:models/part/c7_seats",
     "Category": [
         "seats"
     ],

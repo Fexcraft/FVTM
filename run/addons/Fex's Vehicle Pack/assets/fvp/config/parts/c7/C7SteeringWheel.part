@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:c7_steering_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7SW.class",
+    "ModelFile": "fvp:models/part/c7_steering_wheel",
     "FullName": "C7 Default Steering Wheel",
     "Category": [
         "steering_wheel"

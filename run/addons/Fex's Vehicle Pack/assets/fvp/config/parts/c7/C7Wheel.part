@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:c7_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7W1.class",
+    "ModelFile": "fvp:models/part/c7_wheel1",
     "FullName": "C7 Default Wheel",
     "Category": [
         "right_front_wheel",

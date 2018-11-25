@@ -56,6 +56,18 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:reverse_lights"; }
 	};
 	
+	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){
+		@Override public boolean shouldGlow(VehicleEntity ent, VehicleData data){ return false; }//TODO
+		@Override public String getId(){ return "fvtm:turn_signal_left"; }
+	};
+	
+	public static final Program TURN_SIGNAL_RIGHT = new AlwaysGlow(){
+		@Override public boolean shouldGlow(VehicleEntity ent, VehicleData data){ return false; }//TODO
+		@Override public String getId(){ return "fvtm:turn_signal_right"; }
+	};
+	
+	public static final Program INDICATOR_LIGHT_LEFT = TURN_SIGNAL_LEFT, INDICATOR_LIGHT_RIGHT = TURN_SIGNAL_RIGHT;
+	
 	public static final Program WINDOW = new AutoRegProgram(){
 		@Override public String getId(){ return "fvtm:window"; }
 		//

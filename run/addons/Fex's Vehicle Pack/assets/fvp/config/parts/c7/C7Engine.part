@@ -2,7 +2,7 @@
     "RegistryName": "fvp:engine_c7i4",
     "Addon": "fvtm:fvp",
     "FullName": "C7I4 Engine",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7I4E.class",
+    "ModelFile": "fvp:models/part/c7_i4_engine",
     "Category": [
         "engine"
     ],

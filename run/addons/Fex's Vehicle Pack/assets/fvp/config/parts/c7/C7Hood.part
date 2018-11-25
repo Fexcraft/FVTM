@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c7_hood",
     "Addon": "fvtm:fvp",
     "FullName": "C7 Default Hood",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC7Hood.class",
+    "ModelFile": "fvp:models/part/c7_hood",
     "Category": [
         "hood"
     ],

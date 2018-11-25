@@ -28,7 +28,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	public ArrayList<Program> programs = new ArrayList<>();
 	public float rotX, rotY, rotZ, offX, offY, offZ;
 	protected RGB windowcolor = new RGB(0x00, 0x72, 0x08, 0.3f);
-	protected boolean visible = true;
+	public boolean visible = true;
 	public String name;
 	
 	public TurboList(String name){ super(); this.name = name; }

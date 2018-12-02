@@ -2,7 +2,7 @@
     "RegistryName": "fvp:sentinel",
     "Addon": "fvtm:fvp",
     "FullName": "Sentinel (C9)",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelSentinel.class",
+    "ModelFile": "fvp:models/vehicle/c9",
     "PrimaryColor": {
         "Red": 168,
         "Blue": 168,

@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c9_bumper",
     "Addon": "fvtm:fvp",
     "FullName": "C9 Front/Rear bumper",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.c9.ModelC9Bumper.class",
+    "ModelFile": "fvp:models/part/c9_bumper",
     "Category": [
         "front_bumper",
         "rear_bumper"

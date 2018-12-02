@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 
 public class DefaultPrograms {
-	
+
 	public static final Program RGB_PRIMARY = new AutoRegProgram(){
 		@Override public String getId(){ return "fvtm:rgb_primary"; }
 		@Override public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){ color.getPrimaryColor().glColorApply(); }
@@ -247,6 +247,48 @@ public class DefaultPrograms {
 	        GlStateManager.disableBlend(); GlStateManager.enableAlpha();
 		}
 		
+	}
+	
+	public static class IDSpecific extends AutoRegProgram {
+		
+		private String group;
+		
+		public IDSpecific(String id){ this.group = id; }
+
+		@Override
+		public String getId(){ return "fvtm:group_specific"; }
+
+		@Override
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			if(!part.equals(group)) list.visible = false;
+		}
+
+		@Override
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			list.visible = true;
+		}
+
+	}
+	
+	public static class IDSpecificArray extends AutoRegProgram {
+		
+		private String[] groups;
+		
+		public IDSpecificArray(String... ids){ this.groups = ids; }
+
+		@Override
+		public String getId(){ return "fvtm:group_specific"; }
+
+		@Override
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			for(String str : groups) if(str.equals(part)) return; list.visible = false;
+		}
+
+		@Override
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+			list.visible = true;
+		}
+
 	}
 	
 }

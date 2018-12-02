@@ -38,6 +38,7 @@
         "left_back_wheel",
         "steering_wheel",
         "interior",
+        "bumpers",
         "seats",
         "engine",
         "fuel_tank"

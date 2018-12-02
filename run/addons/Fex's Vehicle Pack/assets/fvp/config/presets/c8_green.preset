@@ -26,6 +26,18 @@
         }
       },
       {
+        "FVTM:Part": "fvp:c8_bumpers",
+        "UsedAs": "bumpers",
+        "fvtm_part": {
+          "CustomTexture": "minecraft:",
+          "IsTextureExternal": "0b",
+          "Offset_x": "0.0f",
+          "Offset_y": "0.0f",
+          "Offset_z": "0.0f",
+          "SelectedTexture": "0"
+        }
+      },
+      {
         "FVTM:Part": "generic:engine2",
         "UsedAs": "engine",
         "fvtm_part": {

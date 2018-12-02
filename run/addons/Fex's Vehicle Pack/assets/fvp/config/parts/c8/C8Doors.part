@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c8_doors",
     "Addon": "fvtm:fvp",
     "FullName": "C8 Standard Doors, Hood and Trunk",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8Doors.class",
+    "ModelFile": "fvp:models/part/c8_doors",
     "Description": [
         "&7Use the &c`G`&7 key to open settings."
     ],

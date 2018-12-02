@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c8_interior",
     "Addon": "fvtm:fvp",
     "FullName": "C8 Standard Interior",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8Interior.class",
+    "ModelFile": "fvp:models/part/c8_interior",
     "Category": [
         "interior"
     ],

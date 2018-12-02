@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c8_lights",
     "Addon": "fvtm:fvp",
     "FullName": "C8 Standard Lights",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8Lights.class",
+    "ModelFile": "fvp:models/part/c8_lights",
     "Category": [
         "lights"
     ],

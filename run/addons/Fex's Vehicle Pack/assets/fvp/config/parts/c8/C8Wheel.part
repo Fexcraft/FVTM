@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:c8_phwheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8PHW.class",
+    "ModelFile": "fvp:models/part/c8_phwheel",
     "FullName": "C8 Placeholder Wheel",
     "Category": [
         "right_front_wheel",

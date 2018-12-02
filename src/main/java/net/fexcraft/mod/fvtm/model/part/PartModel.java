@@ -43,6 +43,7 @@ public class PartModel extends PartBaseModel {
 		}
 	}
 
+	@Deprecated
     public void def_renderWheels4(VehicleData type, String us, VehicleEntity veh, boolean rot){
         if(rot){
         	float ret = ((VehicleEntity)veh).getWheelsAngle();
@@ -66,6 +67,7 @@ public class PartModel extends PartBaseModel {
         }
     }
 
+    @Deprecated
     public void def_renderWheels4(VehicleData type, String us){
         switch(us){
             case "left_front_wheel":
@@ -82,7 +84,8 @@ public class PartModel extends PartBaseModel {
                 break;
         }
     }
-
+    
+    @Deprecated
     public void def_renderWheels4(VehicleData type, String us, VehicleEntity veh){
         VehicleEntity vehicle = (VehicleEntity) veh;
         switch(us){

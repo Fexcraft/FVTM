@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c8_seats",
     "FullName": "C8 Standard Seats",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC8Seats.class",
+    "ModelFile": "fvp:models/part/c8_seats",
     "Category": [
         "seats"
     ],

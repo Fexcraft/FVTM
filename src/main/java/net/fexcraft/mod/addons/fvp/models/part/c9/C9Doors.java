@@ -4,6 +4,7 @@ package net.fexcraft.mod.addons.fvp.models.part.c9;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.models.GeneralPrograms;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
@@ -103,7 +104,7 @@ public class C9Doors extends PartModel {
 			.addShapeBox(-3.9f, 0, 2.5f, 1, 2, 1, 0, 0, -0.3f, -0.5f, -0.4f, -0.5f, -1, -0.9f, 0, 0, 0, 0, 0, 0, -0.3f, -0.5f, -0.4f, -0.5f, -1, -0.9f, 0, 0, 0, 0, 0)
 			.setRotationPoint(17, -6.5f, 17.5f).setRotationAngle(0, -0.17453294f, 0).setName("Box 561")
 		);
-		door_front_left.addProgram(new GeneralPrograms.CustomMultiDoorFrontLeft(67, 1, false));
+		door_front_left.addPrograms(DefaultPrograms.RGB_PRIMARY, new GeneralPrograms.CustomMultiDoorFrontLeft(58, 1, true));
 		this.groups.add(door_front_left);
 		//
 		TurboList door_front_right = new TurboList("door_front_right");
@@ -191,7 +192,7 @@ public class C9Doors extends PartModel {
 			.addShapeBox(-3.8f, -3.25f, 1.5f, 1, 5, 1, 0, -0.25f, 0, -0.25f, -0.25f, 0, -0.25f, -0.25f, 0, -0.25f, -0.25f, 0, -0.25f, -0.25f, 0, -0.25f, -0.25f, 0, -0.25f, -0.25f, 0, -0.25f, -0.25f, 0, -0.25f)
 			.setRotationPoint(17, -5.5f, -19.5f).setRotationAngle(1.0471976f, 0, -0.7853982f).setName("Box 568")
 		);
-		door_front_right.addProgram(new GeneralPrograms.CustomMultiDoorFrontRight(-67, 1, false));
+		door_front_right.addPrograms(DefaultPrograms.RGB_PRIMARY, new GeneralPrograms.CustomMultiDoorFrontRight(-58, 1, true));
 		this.groups.add(door_front_right);
 		//
 		TurboList door_rear_left = new TurboList("door_rear_left");
@@ -263,7 +264,7 @@ public class C9Doors extends PartModel {
 			.addShapeBox(-15, -1.9f, 1.9f, 16, 1, 1, 0, 0.4f, -0.3f, 0.3f, 0.5f, 0, 0, 0.5f, 0, 0, -0.2f, -0.3f, -0.3f, -0.2f, 0.3f, 0.3f, 0.5f, 0, 0, 0.5f, 0, 0, -0.6f, 0.3f, -0.3f)
 			.setRotationPoint(-8, 3.8f, 17.5f).setRotationAngle(-0.7853982f, 0, 0).setName("Box 509")
 		);
-		door_rear_left.addProgram(new GeneralPrograms.CustomMultiDoorBackLeft(67, 1, false));
+		door_rear_left.addPrograms(DefaultPrograms.RGB_PRIMARY, new GeneralPrograms.CustomMultiDoorBackLeft(58, 1, true));
 		this.groups.add(door_rear_left);
 		//
 		TurboList door_rear_right = new TurboList("door_rear_right");
@@ -335,7 +336,7 @@ public class C9Doors extends PartModel {
 			.addShapeBox(-5.5f, -2, 1.5f, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0, 0, 0, 0, 0, 0, -0.1f, 0, 0, -0.1f)
 			.setRotationPoint(-8, 0, -19.5f).setRotationAngle(0, 0, 0).setName("Box 527")
 		);
-		door_rear_right.addProgram(new GeneralPrograms.CustomMultiDoorBackRight(-67, 1, false));
+		door_rear_right.addPrograms(DefaultPrograms.RGB_PRIMARY, new GeneralPrograms.CustomMultiDoorBackRight(-58, 1, true));
 		this.groups.add(door_rear_right);
 	}
 

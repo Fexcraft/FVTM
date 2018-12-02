@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c9_trunk",
     "Addon": "fvtm:fvp",
     "FullName": "C9 Standard Trunk",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.c9.ModelC9Trunk.class",
+    "ModelFile": "fvp:models/part/c9_trunk",
     "Category": [
         "trunk"
     ],

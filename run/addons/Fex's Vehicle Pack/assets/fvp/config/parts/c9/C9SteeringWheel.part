@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:c9_steering_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.c9.ModelC9ST.class",
+    "ModelFile": "fvp:models/part/c9_steering_wheel",
     "FullName": "C9 Steering Wheel",
     "Category": [
         "steering_wheel"

@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c9_interior",
     "Addon": "fvtm:fvp",
     "FullName": "C9 Standard Interior",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.c9.ModelC9Interior.class",
+    "ModelFile": "fvp:models/part/c9_interior",
     "Category": [
         "interior"
     ],

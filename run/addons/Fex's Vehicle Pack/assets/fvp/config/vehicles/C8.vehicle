@@ -2,7 +2,7 @@
     "RegistryName": "fvp:c8",
     "Addon": "fvtm:fvp",
     "FullName": "C8",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelC8.class",
+    "ModelFile": "fvp:models/vehicle/c8",
     "PrimaryColor": {
         "Red": 168,
         "Blue": 168,

@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:ot1_steering_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "fvp:models/parts/ot1st.jtmt",
+    "ModelFile": "fvp:models/part/ot1st.jtmt",
     "Category": [
         "steering_wheel"
     ],

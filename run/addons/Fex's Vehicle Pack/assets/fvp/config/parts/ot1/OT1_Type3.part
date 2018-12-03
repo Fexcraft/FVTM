@@ -1,16 +1,10 @@
 {
     "RegistryName": "fvp:ot1_type3",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelOT1_3.class",
-    "Category": [
-        "cargo"
-    ],
-    "Attributes":[
-        "seat"
-    ],
-    "Textures": [
-        "fvp:textures/entities/skin_vehicle_ot1_3.png"
-    ],
+    "ModelFile": "fvp:models/part/ot1_type3",
+    "Category": [ "cargo" ],
+    "Attributes":[ "seat" ],
+    "Textures": [ "fvp:textures/entities/skin_vehicle_ot1_3.png" ],
     "Removable": true,
     "Available": true,
     "AttributeData":{

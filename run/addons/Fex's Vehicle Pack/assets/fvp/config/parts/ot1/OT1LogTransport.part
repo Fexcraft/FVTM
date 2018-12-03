@@ -1,16 +1,10 @@
 {
     "RegistryName": "fvp:ot1_logtransport",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelOT1LogTransportUpgrade.class",
-    "Category": [
-        "cargo"
-    ],
-    "Attributes":[
-        "inventory"
-    ],
-    "Textures": [
-        "fvp:textures/entities/ot1_logtransportupgrade.png"
-    ],
+    "ModelFile": "fvp:models/part/ot1_ltu",
+    "Category": [ "cargo" ],
+    "Attributes":[ "inventory" ],
+    "Textures": [ "fvp:textures/entities/ot1_logtransportupgrade.png" ],
     "Removable": true,
     "Available": true,
     "Compatible": [

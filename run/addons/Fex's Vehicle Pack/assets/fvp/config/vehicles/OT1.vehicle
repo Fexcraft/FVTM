@@ -2,7 +2,7 @@
     "RegistryName": "fvp:ot1",
     "Addon": "fvtm:fvp",
     "FullName": "OT1 Type P",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelOT1.class",
+    "ModelFile": "fvp:models/vehicle/ot1",
     "PrimaryColor": {
         "Red": 168,
         "Blue": 168,
@@ -32,6 +32,7 @@
          "left_front_wheel",
          "right_back_wheel",
          "left_back_wheel",
+         "lights",
          "engine",
          "fuel_tank"
      ],

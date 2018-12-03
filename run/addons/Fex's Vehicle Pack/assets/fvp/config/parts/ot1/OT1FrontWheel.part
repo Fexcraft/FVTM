@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:ot1_front_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelOT1FW.class",
+    "ModelFile": "fvp:models/part/ot1_front_wheels",
     "Category": [
         "right_front_wheel",
         "left_front_wheel"

@@ -34,7 +34,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
         creators = JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray());
         textureX = obj.get("texture_size_x").getAsInt();
         textureY = obj.get("texture_size_y").getAsInt();
-        if(JsonUtil.getIfExists(obj, "formt", 2).intValue() == 1){
+        if(JsonUtil.getIfExists(obj, "format", 2).intValue() == 1){
             JsonObject modelobj = obj.get("model").getAsJsonObject();
             for(Entry<String, JsonElement> entry : modelobj.entrySet()){
             	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), textureX, textureY)));
@@ -44,6 +44,11 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
         	JsonObject modelobj = obj.get("groups").getAsJsonObject();
             for(Entry<String, JsonElement> entry : modelobj.entrySet()){
             	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonObject().get("polygons").getAsJsonArray(), textureX, textureY)));
+            	if(entry.getValue().isJsonObject() && entry.getValue().getAsJsonObject().has("fvtm:programs")){
+            		for(JsonElement elm : entry.getValue().getAsJsonObject().get("fvtm:programs").getAsJsonArray()){
+            			groups.get(entry.getKey()).addProgram(elm.getAsString());
+            		}
+            	}
             }
         }
 	}

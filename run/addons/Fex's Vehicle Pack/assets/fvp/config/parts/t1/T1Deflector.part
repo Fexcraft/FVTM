@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:t1_deflector",
     "Addon": "fvtm:fvp",
-    "ModelFile": "fvp:models/parts/t1dc1.jtmt",
+    "ModelFile": "fvp:models/part/t1dc1.jtmt",
     "Category": [
         "top_deflector"
     ],

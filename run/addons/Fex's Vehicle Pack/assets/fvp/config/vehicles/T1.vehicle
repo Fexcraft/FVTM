@@ -1,8 +1,8 @@
 {
     "RegistryName": "fvp:t1",
     "Addon": "fvtm:fvp",
-    "FullName": "T1 Type P-",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelT1P.class",
+    "FullName": "T1 Type P+",
+    "ModelFile": "fvp:models/part/t1p",
     "PrimaryColor": {
         "Red": 168,
         "Blue": 168,
@@ -30,6 +30,7 @@
         "left_front_wheel",
         "right_back_wheel",
         "left_back_wheel",
+        "lights",
         "engine",
         "fuel_tank"
     ],

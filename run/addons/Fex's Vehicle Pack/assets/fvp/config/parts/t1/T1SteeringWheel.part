@@ -1,27 +1,15 @@
 {
     "RegistryName": "fvp:t1_steering_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT1SW.class",
-    "Category": [
-        "steering_wheel"
-    ],
-    "Attributes":[
-        "particle_spawner"
-    ],
-    "Textures": [
-        "fvp:textures/entities/skin_vehicle_t1p.png"
-    ],
+    "ModelFile": "fvp:models/part/t1_steering_wheel",
+    "Category": [ "steering_wheel" ],
+    "Attributes":[ "particle_spawner" ],
+    "Textures": [ "fvp:textures/entities/skin_vehicle_t1p.png" ],
     "Compatible": [
-        {
-            "Vehicle": "fvp:t1",
-            "x": 0, "y": 0, "z": 0
-        }
+        { "Vehicle": "fvp:t1", "x": 0, "y": 0, "z": 0 }
     ],
     "Incompatible": [
-        {
-            "Vehicle": "T2S",
-            "Parts": [ "all" ]
-        }
+        { "Vehicle": "T2S", "Parts": [ "all" ] }
     ],
     "Removable": false,
     "RenderSettings": {

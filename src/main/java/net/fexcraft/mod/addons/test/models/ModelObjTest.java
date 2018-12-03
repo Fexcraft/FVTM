@@ -1,4 +1,4 @@
-package net.fexcraft.mod.addons.fvp.models.part.t1;
+package net.fexcraft.mod.addons.test.models;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.PartModel;

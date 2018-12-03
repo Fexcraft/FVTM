@@ -2,7 +2,7 @@
     "RegistryName": "fvp:t1_trailer_connector",
     "Addon": "fvtm:fvp",
     "FullName": "Trailer hitch.",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT1TC.class",
+    "ModelFile": "fvp:models/part/t1_trailer_connector",
     "Category": [
         "rear_connector"
     ],

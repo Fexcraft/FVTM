@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonToTMT;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.tmt.ModelBase;
@@ -34,22 +33,27 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
         creators = JsonUtil.jsonArrayToStringArray(obj.get("creators").getAsJsonArray());
         textureX = obj.get("texture_size_x").getAsInt();
         textureY = obj.get("texture_size_y").getAsInt();
-        if(JsonUtil.getIfExists(obj, "format", 2).intValue() == 1){
-            JsonObject modelobj = obj.get("model").getAsJsonObject();
-            for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-            	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), textureX, textureY)));
+        try{
+            if(JsonUtil.getIfExists(obj, "format", 2).intValue() == 1){
+                JsonObject modelobj = obj.get("model").getAsJsonObject();
+                for(Entry<String, JsonElement> entry : modelobj.entrySet()){
+                	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonArray(), textureX, textureY)));
+                }
+            }
+            else{
+            	JsonObject modelobj = obj.get("groups").getAsJsonObject();
+                for(Entry<String, JsonElement> entry : modelobj.entrySet()){
+                	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonObject().get("polygons").getAsJsonArray(), textureX, textureY)));
+                	if(entry.getValue().isJsonObject() && entry.getValue().getAsJsonObject().has("fvtm:programs")){
+                		for(JsonElement elm : entry.getValue().getAsJsonObject().get("fvtm:programs").getAsJsonArray()){
+                			groups.get(entry.getKey()).addProgram(elm.getAsString());
+                		}
+                	}
+                }
             }
         }
-        else{
-        	JsonObject modelobj = obj.get("groups").getAsJsonObject();
-            for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-            	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonObject().get("polygons").getAsJsonArray(), textureX, textureY)));
-            	if(entry.getValue().isJsonObject() && entry.getValue().getAsJsonObject().has("fvtm:programs")){
-            		for(JsonElement elm : entry.getValue().getAsJsonObject().get("fvtm:programs").getAsJsonArray()){
-            			groups.get(entry.getKey()).addProgram(elm.getAsString());
-            		}
-            	}
-            }
+        catch(Throwable thr){
+        	thr.printStackTrace(); net.fexcraft.lib.mc.utils.Static.stop();
         }
 	}
 	
@@ -90,7 +94,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
             if(model.isShape3D){
                 model.rotateAngleY = -model.rotateAngleY;
                 model.rotateAngleX = -model.rotateAngleX;
-                model.rotateAngleZ = -model.rotateAngleZ + Static.rad180;
+                model.rotateAngleZ = -model.rotateAngleZ + net.fexcraft.lib.mc.utils.Static.rad180;
             }
             else{
                 model.rotateAngleZ = -model.rotateAngleZ;

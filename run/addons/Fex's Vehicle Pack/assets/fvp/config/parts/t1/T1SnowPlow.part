@@ -1,27 +1,16 @@
 {
     "RegistryName": "fvp:t1_snowplow",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT1_FT1.class",
+    "ModelFile": "fvp:models/part/t1_snow_plow",
     "FullName": "T1 FT1 Snow Plow",
-    "Description": [
-        "&7Use the &c`F (default)`&7 key to enable/disable."
-    ],
-    "Category": [
-        "front_tool"
-    ],
-    "Scripts":[
-        "net.fexcraft.mod.addons.fvp.scripts.T1SnowPlowScript.class"
-    ],
-    "Textures": [
-        "fvp:textures/entities/skin_vehicle_t1_ft1.png"
-    ],
+    "Description": [ "&7Use the &c`F (default)`&7 key to enable/disable." ],
+    "Category": [ "front_tool" ],
+    "Scripts":[ "net.fexcraft.mod.addons.fvp.scripts.T1SnowPlowScript.class" ],
+    "Textures": [ "fvp:textures/entities/skin_vehicle_t1_ft1.png" ],
     "Removable": true,
     "Available": true,
     "Compatible": [
-        {
-            "Vehicle": "fvp:t1",
-            "x": 0, "y": 0, "z": 0
-        }
+        { "Vehicle": "fvp:t1", "x": 0, "y": 0, "z": 0 }
     ],
      "Recipes":[
         {

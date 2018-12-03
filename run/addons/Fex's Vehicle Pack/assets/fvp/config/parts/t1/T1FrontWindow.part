@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:t1_front_window",
     "Addon": "fvtm:fvp",
-    "ModelFile": "fvp:models/parts/t1fw.jtmt",
+    "ModelFile": "fvp:models/part/t1fw.jtmt",
     "Category": [
         "front_window"
     ],

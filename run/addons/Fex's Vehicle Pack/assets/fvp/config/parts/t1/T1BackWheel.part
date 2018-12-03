@@ -1,7 +1,7 @@
 {
     "RegistryName": "fvp:t1_back_wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT1BW.class",
+    "ModelFile": "fvp:models/part/t1_back_wheels",
     "Category": [
         "right_back_wheel",
         "left_back_wheel"

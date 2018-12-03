@@ -4,7 +4,7 @@
 // Model Creator: FEX___96
 // Created on: 31.03.2017 - 14:38:29
 // Last changed on: 31.03.2017 - 14:38:29
-package net.fexcraft.mod.addons.fvp.models.part.t1;
+package net.fexcraft.mod.addons.test.models;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.registry.fModel;

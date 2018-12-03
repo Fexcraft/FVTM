@@ -763,9 +763,9 @@ public class Resources {
 				case "": default: return (Model<T, K>)EmptyModel.INSTANCE;
 			}
 		}
-		catch(Exception e){
+		catch(Throwable thr){
 			Print.log("Failed to find/parse model with adress '" + name + "'!");
-			e.printStackTrace(); //TODO re-active after model converting Static.stop();
+			thr.printStackTrace(); //TODO re-active after model converting Static.stop();
 			return (Model<T, K>)EmptyModel.INSTANCE;
 		}
 		MODELS.put(name, model);

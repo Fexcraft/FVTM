@@ -2,7 +2,7 @@
 	"RegistryName": "hcp:medium",
 	"Addon": "fvtm:hcp",
 	"ContainerType": "MEDIUM",
-	"ModelFile": "net.fexcraft.mod.addons.hcp.models.container.StandardMediumContainer.class",
+	"ModelFile": "fvp:models/container/medium",
 	"FullName": "Standard Medium Container",
 	"Textures":[
 		"hcp:textures/containers/standard_medium.png"

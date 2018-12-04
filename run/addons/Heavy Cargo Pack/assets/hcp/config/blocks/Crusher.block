@@ -1,7 +1,7 @@
 {
 	"RegistryName": "hcp:crusher",
 	"Addon": "fvtm:hcp",
-	"ModelFile": "net.fexcraft.mod.addons.hcp.models.block.CrusherModel.class",
+	"ModelFile": "hcp:models/block/crusher",
 	"FullName": "3³ Rock Crusher",
 	"Textures":[
 		"hcp:textures/blocks/crusher.png"

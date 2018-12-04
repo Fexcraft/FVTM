@@ -2029,12 +2029,12 @@ public class ContainerCrane extends VehicleModel {
 
         chassis[501].addShapeBox(0F, 0F, 0F, 2, 2, 8, 0F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F); // Box 855
         chassis[501].setRotationPoint(-44F, -172F, 20F);
-        this.add("chassis", chassis);
+        this.add("chassis", chassis); this.chassis = this.get("chassis");
     }
 
     public ContainerCrane(){
     	super(); textureX = 1024; textureY = 1024;
-        this.addToCreators("FEX___96");
+        this.addToCreators("Ferdinand (FEX___96)");
         this.addToCreators("GolddolphinSKB");
         this.initChassis();
         ModelRendererTurbo[] body = new ModelRendererTurbo[396];
@@ -3622,7 +3622,7 @@ public class ContainerCrane extends VehicleModel {
 
         body[395].addShapeBox(0F, 0F, 0F, 4, 6, 1, 0F, -4F, 0F, 0F, 0F, -1.5F, 0F, 0F, -1.5F, 0F, -4F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F); // Box 1061
         body[395].setRotationPoint(-54F, -166F, -13.5F);
-        this.add("body", body);
+        this.add("body", body); this.body = this.get("body");
 
         ModelRendererTurbo[] wheels_import = new ModelRendererTurbo[16];
         wheels_import[0] = new ModelRendererTurbo(this, 857, 17, textureX, textureY); // Box 147
@@ -3689,7 +3689,7 @@ public class ContainerCrane extends VehicleModel {
 
         wheels_import[15].addBox(0F, 0F, 0F, 16, 2, 2, 0F); // Box 1060
         wheels_import[15].setRotationPoint(-8F, -4F, 111F);
-        this.add("wheels_import", wheels_import);
+        this.add("wheels_import", wheels_import); this.rail_piece = this.get("wheels_import");
         
         ModelRendererTurbo[] turret = new ModelRendererTurbo[132];
         turret[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 2
@@ -4220,21 +4220,25 @@ public class ContainerCrane extends VehicleModel {
 
         turret[131].addShapeBox(0F, 0F, 0F, 4, 3, 2, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 927
         turret[131].setRotationPoint(-49F, -68F, 15F);
-        this.add("turret", turret);
+        this.add("turret", turret); this.turret = this.get("turret");
         this.fixRotations();
         //
         this.gui_scale_x = this.gui_scale_x / 2;
         this.gui_scale_y = this.gui_scale_y / 2;
         this.gui_scale_z = this.gui_scale_z / 2;
         //
-        this.groups.put("box", new TurboList("box"));
-		ModelRendererTurbo box = new ModelRendererTurbo(this, 332, 215, textureX, textureY); // Box 1062
-		box.addBox(0F, 0F, 0F, 16, 16, 16, 0F); // Box 1062
-		box.setRotationPoint(-8F, -16F, -8F);
-		get("box").add(box); get("box").translate(-16f, 16f, 112f);
-		get("box").addProgram(DefaultPrograms.ALWAYS_GLOW);
+        this.groups.put("box", box = new TurboList("box"));
+		ModelRendererTurbo mbox = new ModelRendererTurbo(this, 332, 215, textureX, textureY); // Box 1062
+		mbox.addBox(0F, 0F, 0F, 16, 16, 16, 0F); // Box 1062
+		mbox.setRotationPoint(-8F, -16F, -8F);
+		box.add(mbox); box.translate(-16f, 16f, 112f);
+		box.addProgram(DefaultPrograms.ALWAYS_GLOW);
 		//translate(box, -16F, 16F, 112F);
+		this.translate(-8, 16, 112);
     }
+    
+    private TurboList rail_piece, chassis, body, turret, box, rope;
+    private TreeMap<Integer, TurboList> ropes = new TreeMap<>();
 
     @Override
     public void render(VehicleData data, Object obj, @Nullable VehicleEntity entity, int meta){
@@ -4246,21 +4250,21 @@ public class ContainerCrane extends VehicleModel {
         	GL11.glTranslatef(-script.length + 1, 0, 0);
         	int len = (script.length * 2) + 1;
             for(int i = 0; i < len; i++){
-                super.render(data, "wheels_import");
+                rail_piece.render(entity, data);
                 GL11.glTranslatef(1, 0, 0);
             }
             GL11.glTranslatef(-script.length - 1, 0, 0);
         	GL11.glPushMatrix();
         	GL11.glTranslated(script.xpos * 0.001, 0, 0);
-        	render(data, "chassis");
+        	chassis.render(entity, data);
         	GL11.glTranslated(0, 0, script.zpos * 0.001);
-        	render(data, "body");
+        	body.render(entity, data);
         	rope = getRopes(script.ypos);
         	if(rope != null){ rope.render(entity, data, data, "rope"); }
         	GL11.glTranslated(0, script.ypos * 0.001, 0);
-        	render(data, "turret");
+        	turret.render(entity, data);
         	if(script.searchbox){
-        		get("box").render(entity, data, data, "box");
+        		box.render(entity, data, data, "box");
         	}
         	if(script.getContainerData() != null){
         		GL11.glTranslatef(-0.5f, 1, 7);
@@ -4270,18 +4274,10 @@ public class ContainerCrane extends VehicleModel {
         	GL11.glPopMatrix();
         }
     }
-    
-    private TreeMap<Integer, TurboList> ropes = new TreeMap<>();
-    private TurboList rope;
 
 	private final TurboList getRopes(int ypos){
-		int i = 101 + (ypos / 60);
-		if(ropes.containsKey(i)){
-			return ropes.get(i);
-		}
-		TurboList newropes = generate(i);
-		ropes.put(i, newropes);
-		return newropes;
+		int i = 101 + (ypos / 60); if(ropes.containsKey(i)){ return ropes.get(i); }
+		TurboList newropes = generate(i); ropes.put(i, newropes); return newropes;
 	}
 
 	private final TurboList generate(int i){

@@ -174,7 +174,7 @@ public class ContainerBlock extends BlockContainer {
                 }
                 BlockPos corepos = te.getCore().getPos();
                 if(te.getContainerData().getContainer().getInventoryType() == InventoryType.ITEM){
-                    player.openGui(FVTM.getInstance(), GuiHandler.CCG_Main, world, corepos.getX(), corepos.getY(), corepos.getZ());
+                    player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_INVENTORY, world, corepos.getX(), corepos.getY(), corepos.getZ());
                 }
                 else if(te.getContainerData().getContainer().getInventoryType() == InventoryType.FLUID){
                     te.sendFluidTankUpdate(player);

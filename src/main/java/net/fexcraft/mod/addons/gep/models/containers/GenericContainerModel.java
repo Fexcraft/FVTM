@@ -3,12 +3,14 @@ package net.fexcraft.mod.addons.gep.models.containers;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 
 public class GenericContainerModel extends ContainerModel {
 
     private static final GenericContainerModel INSTANCE = new GenericContainerModel();
     private static final int textureSize = 512;
+    private TurboList body;
 
     public GenericContainerModel(){
     	super(); ModelRendererTurbo[] body = new ModelRendererTurbo[4];
@@ -28,19 +30,12 @@ public class GenericContainerModel extends ContainerModel {
         body[3] = new ModelRendererTurbo(this, 1, 313, textureSize, textureSize); // Box 3
         body[3].addBox(0F, 0F, 0F, 96, 48, 48, 0F); // Box 3
         body[3].setRotationPoint(-48F, -48F, -24F);
-        this.add("body", body);
-        //
-        this.fixRotations();
+        this.add("body", body); this.body = this.get("body");
     }
     
     @Override
     public void render(ContainerData data, Object obj){
-    	if(data.getContainer().isLargeContainer()){
-            get("body").get(0).render();
-        }
-        else{
-            get("body").get(3).render();
-        }
+        body.get(data.getContainer().isLargeContainer() ? 0 : 3).render();
     }
 
     @Override

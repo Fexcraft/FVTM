@@ -37,16 +37,12 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		this(name); for(ModelRendererTurbo mrt : mrts){ this.add(mrt); }
 	}
 
-	public void render(VehicleData data){
-		render(null, data, data, null);
-	}
-
 	public void render(VehicleData data, String part){
 		render(null, data, data, part);
 	}
 
-	public void render(VehicleEntity entity, VehicleData data){
-		render(entity, data, data, null);
+	public void render(VehicleEntity ent, VehicleData data){
+		render(ent, data, data, null);
 	}
 
 	public void render(VehicleEntity ent, VehicleData data, String part){
@@ -64,6 +60,10 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		if(programs.size() > 0) for(Program program : programs) program.postRender(this, ent, data, color, part);
 		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
 		GL11.glPopMatrix();
+	}
+	
+	public void renderPlain(){
+		for(ModelRendererTurbo turbo : this){ turbo.render(); }
 	}
 
 	public void translate(float x, float y, float z){
@@ -130,10 +130,5 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		public void add(Program prog){ this.put(prog.getId(), prog); }
 		
 	}
-	
-	/*@FunctionalInterface
-	public static interface ProgramEx<P, T, E, V, S> {
-		public void execute(P prog, T list, E ent, V data, S part);
-	}*/
 	
 }

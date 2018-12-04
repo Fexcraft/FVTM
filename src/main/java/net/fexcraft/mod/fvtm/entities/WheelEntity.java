@@ -66,9 +66,7 @@ public class WheelEntity extends MovementCalculationEntity implements IEntityAdd
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         stepHeight = vehicle.getVehicleData().getVehicle().getFMAttribute("wheel_step_height");
         //
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
+        prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
     }
 
     @Override

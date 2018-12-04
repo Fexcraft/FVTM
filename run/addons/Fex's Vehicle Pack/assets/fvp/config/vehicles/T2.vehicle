@@ -2,61 +2,34 @@
     "RegistryName": "fvp:t2",
     "Addon": "fvtm:fvp",
     "FullName": "T2",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.vehicle.ModelT2P.class",
+    "ModelFile": "fvp:models/vehicle/t2p",
     "PrimaryColor": {
         "Red": 168,
         "Blue": 168,
         "Green": 168
     },
-    "Textures": [
-        "fvp:textures/entities/skin_vehicle_t2p.png",
-        "fvp:textures/entities/skin_vehicle_t2p_l0.png"
-    ],
+    "Textures": [ "fvp:textures/entities/skin_vehicle_t2p.png" ],
     "WheelPos": [
-        {
-            "x": -47,
-            "y": -10,
-            "z": -22
-        },
-        {
-            "x": -47,
-            "y": -10,
-            "z": 22
-        },
-        {
-            "x": 41,
-            "y": -10,
-            "z": 22
-        },
-        {
-            "x": 41,
-            "y": -10,
-            "z": -22
-        }
+        { "x": -47, "y": -10, "z": -22 },
+        { "x": -47, "y": -10, "z":  22 },
+        { "x":  41, "y": -10, "z":  22 },
+        { "x":  41, "y": -10, "z": -22 }
     ],
     "WheelCoords": [
         {
-            "x": 40,
-            "y": -2,
-            "z": -20,
+            "x": 40, "y": -2, "z": -20,
             "id": "right_front_wheel"
         },
         {
-            "x": 40,
-            "y": -2,
-            "z": 20,
+            "x": 40, "y": -2, "z": 20,
             "id": "left_front_wheel"
         },
         {
-            "x": -48,
-            "y": -2,
-            "z": -20,
+            "x": -48, "y": -2, "z": -20,
             "id": "right_back_wheel"
         },
         {
-            "x": -48,
-            "y": -2,
-            "z": 20,
+            "x": -48, "y": -2, "z": 20,
             "id": "left_back_wheel"
         }
     ],
@@ -72,18 +45,9 @@
         "fuel_tank"
     ],
     "PreInstalled": [
-        {
-            "as": "steering_wheel",
-            "part": "fvp:t2_steering_wheel"
-        },
-        {
-            "as": "interior",
-            "part": "fvp:t2_interior"
-        },
-        {
-            "as": "front_window",
-            "part": "fvp:t3_front_window"
-        }
+        { "as": "steering_wheel", "part": "fvp:t2_steering_wheel" },
+        { "as": "interior", "part": "fvp:t2_interior" },
+        { "as": "front_window", "part": "fvp:t3_front_window" }
     ],
     "DriveType": "front",
     "FM-CameraDistance": 6.75,

@@ -2,7 +2,7 @@
     "RegistryName": "fvp:t2r1t1_wheel",
     "FullName": "T2 (R1) Type 1 Wheel",
     "Addon": "fvtm:fvp",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT2W.class",
+    "ModelFile": "fvp:models/part/t2r1t1_wheel",
     "Category": [
         "right_front_wheel",
         "left_front_wheel",

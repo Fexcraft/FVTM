@@ -2,31 +2,15 @@
     "RegistryName": "fvp:t2_interior",
     "Addon": "fvtm:fvp",
     "FullName": "T2 Interior and Seats",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelT2Interior.class",
-    "Category": [
-        "interior"
-    ],
-    "Attributes": [
-        "seat"
-    ],
-    "Textures": [
-        "fvp:textures/entities/skin_vehicle_t2p.png"
-    ],
+    "ModelFile": "fvp:models/part/t2_interior",
+    "Category": [ "interior" ], "Attributes": [ "seat" ],
+    "Textures": [ "fvp:textures/entities/skin_vehicle_t2p.png" ],
     "Compatible": [{ "Vehicle": "fvp:t2", "x": 0, "y": 0, "z": 0 }],
     "Removable": true,
     "AttributeData":{
         "FM-Seats":[
-            {
-                "driver": true,
-                "x": 41,
-                "y": 26,
-                "z": -12
-            },
-            {
-                "x": 41,
-                "y": 26,
-                "z": 12
-            }
+            { "driver": true, "x": 41, "y": 26, "z": -12 },
+            { "x": 41, "y": 26, "z": 12 }
         ]
     }
 }

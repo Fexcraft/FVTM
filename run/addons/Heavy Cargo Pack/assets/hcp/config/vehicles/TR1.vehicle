@@ -2,7 +2,7 @@
     "RegistryName": "hcp:tr1",
     "Addon": "fvtm:hcp",
     "FullName": "Trailer Base",
-    "ModelFile": "net.fexcraft.mod.addons.hcp.models.trailer.ModelTR1.class",
+    "ModelFile": "hcp:models/vehicle/tr1",
     "Textures": [ "hcp:textures/trailers/tr1_base.png" ],
     "WheelPos":[
         { "x": -184, "y": -10, "z": -23 },

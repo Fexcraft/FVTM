@@ -2,10 +2,8 @@
     "RegistryName": "hcp:tr1_type1",
     "Addon": "fvtm:hcp",
     "FullName": "TR1 Type 1",
-    "ModelFile": "net.fexcraft.mod.addons.hcp.models.part.TR1Type1.class",
-    "Category": [
-        "cargo"
-    ],
+    "ModelFile": "hcp:models/part/tr1_type1",
+    "Category": [ "cargo" ],
     "Textures": [
         "hcp:textures/trailers/tr1_type1.png",
         "hcp:textures/trailers/tr1_type1_alt0.png",
@@ -14,10 +12,6 @@
     "Compatible": [{ "Vehicle": "hcp:tr1", "x": 0, "y": 0, "z": 0 }],
     "Removable": false,
     "Available": true,
-    "Attributes":[
-        "inventory"
-    ],
-    "AttributeData":{
-        "Inventory-Size": 1458
-    }
+    "Attributes":[ "inventory" ],
+    "AttributeData":{ "Inventory-Size": 1458 }
 }

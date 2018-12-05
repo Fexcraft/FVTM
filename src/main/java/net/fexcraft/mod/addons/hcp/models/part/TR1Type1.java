@@ -1,370 +1,294 @@
+//FMT-Marker FVTM-1
 package net.fexcraft.mod.addons.hcp.models.part;
 
-import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
+import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.util.RenderCache;
 
-/**
- *
- * @author Ferdinand (FEX___96)
+/** This file was exported via the FVTM Exporter V1 of<br>
+ *  FMT (Fex's Modelling Toolbox) v.1.0.4-test &copy; 2018 - Fexcraft.net<br>
+ *  All rights reserved. For this Model's License contact the Author/Creator.
  */
+@fModel(registryname = "hcp:models/part/tr1_type1")
 public class TR1Type1 extends PartModel {
-
-    public TR1Type1(){
-    	super(); this.addToCreators("FEX___96");
-        textureX = 512; textureY = 512;
-        ModelRendererTurbo[] body = new ModelRendererTurbo[13];
-		body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
-		body[1] = new ModelRendererTurbo(this, 1, 57, textureX, textureY); // Box 1
-		body[2] = new ModelRendererTurbo(this, 1, 113, textureX, textureY); // Box 2
-		body[3] = new ModelRendererTurbo(this, 1, 169, textureX, textureY); // Box 3
-		body[4] = new ModelRendererTurbo(this, 265, 1, textureX, textureY); // Box 4
-		body[5] = new ModelRendererTurbo(this, 281, 1, textureX, textureY); // Box 5
-		body[6] = new ModelRendererTurbo(this, 297, 1, textureX, textureY); // Box 6
-		body[7] = new ModelRendererTurbo(this, 313, 1, textureX, textureY); // Box 7
-		body[8] = new ModelRendererTurbo(this, 329, 1, textureX, textureY); // Box 8
-		body[9] = new ModelRendererTurbo(this, 345, 1, textureX, textureY); // Box 9
-		body[10] = new ModelRendererTurbo(this, 361, 1, textureX, textureY); // Box 10
-		body[11] = new ModelRendererTurbo(this, 1, 225, textureX, textureY); // Box 11
-		body[12] = new ModelRendererTurbo(this, 1, 281, textureX, textureY); // Box 12
-
-		body[0].addBox(0F, 0F, 0F, 128, 48, 1, 0F); // Box 0
-		body[0].setRotationPoint(-236F, -72F, -26F);
-
-		body[1].addBox(0F, 0F, 0F, 128, 48, 1, 0F); // Box 1
-		body[1].setRotationPoint(-108F, -72F, -26F);
-
-		body[2].addBox(0F, 0F, 0F, 128, 48, 1, 0F); // Box 2
-		body[2].setRotationPoint(-236F, -72F, 25F);
-
-		body[3].addBox(0F, 0F, 0F, 128, 48, 1, 0F); // Box 3
-		body[3].setRotationPoint(-108F, -72F, 25F);
-
-		body[4].addBox(0F, 0F, 0F, 2, 48, 2, 0F); // Box 4
-		body[4].setRotationPoint(17F, -72F, -25F);
-
-		body[5].addBox(0F, 0F, 0F, 2, 48, 2, 0F); // Box 5
-		body[5].setRotationPoint(-109F, -72F, -25F);
-
-		body[6].addBox(0F, 0F, 0F, 2, 48, 2, 0F); // Box 6
-		body[6].setRotationPoint(-235F, -72F, -25F);
-
-		body[7].addBox(0F, 0F, 0F, 2, 48, 2, 0F); // Box 7
-		body[7].setRotationPoint(-235F, -72F, 23F);
-
-		body[8].addBox(0F, 0F, 0F, 2, 48, 2, 0F); // Box 8
-		body[8].setRotationPoint(-109F, -72F, 23F);
-
-		body[9].addBox(0F, 0F, 0F, 2, 48, 2, 0F); // Box 9
-		body[9].setRotationPoint(17F, -72F, 23F);
-
-		body[10].addBox(0F, 0F, 0F, 1, 48, 50, 0F); // Box 10
-		body[10].setRotationPoint(19F, -72F, -25F);
-
-		body[11].addBox(0F, 0F, 0F, 128, 2, 52, 0F); // Box 11
-		body[11].setRotationPoint(-108F, -74F, -26F);
-
-		body[12].addBox(0F, 0F, 0F, 128, 2, 52, 0F); // Box 12
-		body[12].setRotationPoint(-236F, -74F, -26F);
-		this.add("body", body);
-
-
-		ModelRendererTurbo[] door_right = new ModelRendererTurbo[8];
-		door_right[0] = new ModelRendererTurbo(this, 321, 81, textureX, textureY); // Box 14
-		door_right[1] = new ModelRendererTurbo(this, 361, 1, textureX, textureY); // Box 15
-		door_right[2] = new ModelRendererTurbo(this, 361, 1, textureX, textureY); // Box 23
-		door_right[3] = new ModelRendererTurbo(this, 385, 1, textureX, textureY); // Box 24
-		door_right[4] = new ModelRendererTurbo(this, 425, 1, textureX, textureY); // Box 25
-		door_right[5] = new ModelRendererTurbo(this, 441, 1, textureX, textureY); // Box 26
-		door_right[6] = new ModelRendererTurbo(this, 457, 1, textureX, textureY); // Box 27
-		door_right[7] = new ModelRendererTurbo(this, 473, 1, textureX, textureY); // Box 28
-
-		door_right[0].addBox(-0.5F, 0F, -25F, 1, 48, 25, 0F); // Box 14
-		door_right[0].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_right[1].addBox(-0.7F, 43F, -9F, 1, 4, 8, 0F); // Box 15
-		door_right[1].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_right[2].addBox(-0.7F, 3F, -24F, 1, 1, 1, 0F); // Box 23
-		door_right[2].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_right[3].addBox(-0.7F, 11F, -24F, 1, 1, 1, 0F); // Box 24
-		door_right[3].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_right[4].addBox(-0.7F, 19F, -24F, 1, 1, 1, 0F); // Box 25
-		door_right[4].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_right[5].addBox(-0.7F, 27F, -24F, 1, 1, 1, 0F); // Box 26
-		door_right[5].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_right[6].addBox(-0.7F, 36F, -24F, 1, 1, 1, 0F); // Box 27
-		door_right[6].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_right[7].addBox(-0.7F, 44F, -24F, 1, 1, 1, 0F); // Box 28
-		door_right[7].setRotationPoint(-235.5F, -72F, 25F);
-		this.add("door_right", door_right);
-
-
-		ModelRendererTurbo[] door_left = new ModelRendererTurbo[8];
-		door_left[0] = new ModelRendererTurbo(this, 265, 33, textureX, textureY); // Box 13
-		door_left[1] = new ModelRendererTurbo(this, 385, 1, textureX, textureY); // Box 16
-		door_left[2] = new ModelRendererTurbo(this, 377, 1, textureX, textureY); // Box 17
-		door_left[3] = new ModelRendererTurbo(this, 401, 1, textureX, textureY); // Box 18
-		door_left[4] = new ModelRendererTurbo(this, 417, 1, textureX, textureY); // Box 19
-		door_left[5] = new ModelRendererTurbo(this, 433, 1, textureX, textureY); // Box 20
-		door_left[6] = new ModelRendererTurbo(this, 449, 1, textureX, textureY); // Box 21
-		door_left[7] = new ModelRendererTurbo(this, 465, 1, textureX, textureY); // Box 22
-
-		door_left[0].addBox(-0.5F, 0F, 0F, 1, 48, 25, 0F); // Box 13
-		door_left[0].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_left[1].addBox(-0.7F, 43F, 1F, 1, 4, 8, 0F); // Box 16
-		door_left[1].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_left[2].addBox(-0.7F, 3F, 23F, 1, 1, 3, 0F); // Box 17
-		door_left[2].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_left[3].addBox(-0.7F, 11F, 23F, 1, 1, 3, 0F); // Box 18
-		door_left[3].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_left[4].addBox(-0.7F, 19F, 23F, 1, 1, 3, 0F); // Box 19
-		door_left[4].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_left[5].addBox(-0.7F, 27F, 23F, 1, 1, 3, 0F); // Box 20
-		door_left[5].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_left[6].addBox(-0.7F, 36F, 23F, 1, 1, 3, 0F); // Box 21
-		door_left[6].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_left[7].addBox(-0.7F, 44F, 23F, 1, 1, 3, 0F); // Box 22
-		door_left[7].setRotationPoint(-235.5F, -72F, -25F);
-		this.add("door_left", door_left);
-
-
-		ModelRendererTurbo[] lights = new ModelRendererTurbo[34];
-		lights[0] = new ModelRendererTurbo(this, 497, 9, textureX, textureY); // Box 39
-		lights[1] = new ModelRendererTurbo(this, 361, 17, textureX, textureY); // Box 40
-		lights[2] = new ModelRendererTurbo(this, 377, 17, textureX, textureY); // Box 41
-		lights[3] = new ModelRendererTurbo(this, 393, 17, textureX, textureY); // Box 42
-		lights[4] = new ModelRendererTurbo(this, 441, 17, textureX, textureY); // Box 43
-		lights[5] = new ModelRendererTurbo(this, 457, 17, textureX, textureY); // Box 44
-		lights[6] = new ModelRendererTurbo(this, 473, 17, textureX, textureY); // Box 45
-		lights[7] = new ModelRendererTurbo(this, 489, 17, textureX, textureY); // Box 46
-		lights[8] = new ModelRendererTurbo(this, 361, 25, textureX, textureY); // Box 47
-		lights[9] = new ModelRendererTurbo(this, 377, 25, textureX, textureY); // Box 48
-		lights[10] = new ModelRendererTurbo(this, 393, 25, textureX, textureY); // Box 49
-		lights[11] = new ModelRendererTurbo(this, 417, 25, textureX, textureY); // Box 50
-		lights[12] = new ModelRendererTurbo(this, 433, 25, textureX, textureY); // Box 51
-		lights[13] = new ModelRendererTurbo(this, 449, 25, textureX, textureY); // Box 52
-		lights[14] = new ModelRendererTurbo(this, 465, 25, textureX, textureY); // Box 53
-		lights[15] = new ModelRendererTurbo(this, 481, 25, textureX, textureY); // Box 54
-		lights[16] = new ModelRendererTurbo(this, 497, 25, textureX, textureY); // Box 55
-		lights[17] = new ModelRendererTurbo(this, 361, 33, textureX, textureY); // Box 56
-		lights[18] = new ModelRendererTurbo(this, 377, 33, textureX, textureY); // Box 57
-		lights[19] = new ModelRendererTurbo(this, 393, 33, textureX, textureY); // Box 58
-		lights[20] = new ModelRendererTurbo(this, 417, 33, textureX, textureY); // Box 59
-		lights[21] = new ModelRendererTurbo(this, 433, 33, textureX, textureY); // Box 60
-		lights[22] = new ModelRendererTurbo(this, 449, 33, textureX, textureY); // Box 61
-		lights[23] = new ModelRendererTurbo(this, 465, 33, textureX, textureY); // Box 62
-		lights[24] = new ModelRendererTurbo(this, 481, 33, textureX, textureY); // Box 63
-		lights[25] = new ModelRendererTurbo(this, 497, 33, textureX, textureY); // Box 64
-		lights[26] = new ModelRendererTurbo(this, 361, 41, textureX, textureY); // Box 65
-		lights[27] = new ModelRendererTurbo(this, 377, 41, textureX, textureY); // Box 66
-		lights[28] = new ModelRendererTurbo(this, 393, 41, textureX, textureY); // Box 67
-		lights[29] = new ModelRendererTurbo(this, 417, 41, textureX, textureY); // Box 68
-		lights[30] = new ModelRendererTurbo(this, 433, 41, textureX, textureY); // Box 69
-		lights[31] = new ModelRendererTurbo(this, 449, 41, textureX, textureY); // Box 70
-		lights[32] = new ModelRendererTurbo(this, 465, 41, textureX, textureY); // Box 71
-		lights[33] = new ModelRendererTurbo(this, 481, 41, textureX, textureY); // Box 72
-
-		lights[0].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 39
-		lights[0].setRotationPoint(-234F, -73.5F, 25.2F);
-
-		lights[1].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 40
-		lights[1].setRotationPoint(-222F, -73.5F, 25.2F);
-
-		lights[2].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 41
-		lights[2].setRotationPoint(-206F, -73.5F, 25.2F);
-
-		lights[3].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 42
-		lights[3].setRotationPoint(-190F, -73.5F, 25.2F);
-
-		lights[4].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 43
-		lights[4].setRotationPoint(-174F, -73.5F, 25.2F);
-
-		lights[5].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 44
-		lights[5].setRotationPoint(-158F, -73.5F, 25.2F);
-
-		lights[6].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 45
-		lights[6].setRotationPoint(-142F, -73.5F, 25.2F);
-
-		lights[7].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 46
-		lights[7].setRotationPoint(-126F, -73.5F, 25.2F);
-
-		lights[8].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 47
-		lights[8].setRotationPoint(-110F, -73.5F, 25.2F);
-
-		lights[9].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 48
-		lights[9].setRotationPoint(-94F, -73.5F, 25.2F);
-
-		lights[10].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 49
-		lights[10].setRotationPoint(-78F, -73.5F, 25.2F);
-
-		lights[11].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 50
-		lights[11].setRotationPoint(-62F, -73.5F, 25.2F);
-
-		lights[12].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 51
-		lights[12].setRotationPoint(-46F, -73.5F, 25.2F);
-
-		lights[13].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 52
-		lights[13].setRotationPoint(-30F, -73.5F, 25.2F);
-
-		lights[14].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 53
-		lights[14].setRotationPoint(-14F, -73.5F, 25.2F);
-
-		lights[15].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 54
-		lights[15].setRotationPoint(2F, -73.5F, 25.2F);
-
-		lights[16].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 55
-		lights[16].setRotationPoint(14F, -73.5F, 25.2F);
-
-		lights[17].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 56
-		lights[17].setRotationPoint(-234F, -73.5F, -26.2F);
-
-		lights[18].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 57
-		lights[18].setRotationPoint(-222F, -73.5F, -26.2F);
-
-		lights[19].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 58
-		lights[19].setRotationPoint(-206F, -73.5F, -26.2F);
-
-		lights[20].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 59
-		lights[20].setRotationPoint(-190F, -73.5F, -26.2F);
-
-		lights[21].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 60
-		lights[21].setRotationPoint(-174F, -73.5F, -26.2F);
-
-		lights[22].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 61
-		lights[22].setRotationPoint(-158F, -73.5F, -26.2F);
-
-		lights[23].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 62
-		lights[23].setRotationPoint(-142F, -73.5F, -26.2F);
-
-		lights[24].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 63
-		lights[24].setRotationPoint(-126F, -73.5F, -26.2F);
-
-		lights[25].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 64
-		lights[25].setRotationPoint(-110F, -73.5F, -26.2F);
-
-		lights[26].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 65
-		lights[26].setRotationPoint(-94F, -73.5F, -26.2F);
-
-		lights[27].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 66
-		lights[27].setRotationPoint(-78F, -73.5F, -26.2F);
-
-		lights[28].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 67
-		lights[28].setRotationPoint(-62F, -73.5F, -26.2F);
-
-		lights[29].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 68
-		lights[29].setRotationPoint(-46F, -73.5F, -26.2F);
-
-		lights[30].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 69
-		lights[30].setRotationPoint(-30F, -73.5F, -26.2F);
-
-		lights[31].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 70
-		lights[31].setRotationPoint(-14F, -73.5F, -26.2F);
-
-		lights[32].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 71
-		lights[32].setRotationPoint(2F, -73.5F, -26.2F);
-
-		lights[33].addBox(0F, 0F, 0F, 4, 1, 1, 0F); // Box 72
-		lights[33].setRotationPoint(14F, -73.5F, -26.2F);
-		this.add("lights", lights);
-		get("lights").addProgram(DefaultPrograms.LIGHTS);
-
-
-		ModelRendererTurbo[] door_left_lights = new ModelRendererTurbo[5];
-		door_left_lights[0] = new ModelRendererTurbo(this, 473, 1, textureX, textureY); // Box 29
-		door_left_lights[1] = new ModelRendererTurbo(this, 433, 9, textureX, textureY); // Box 35
-		door_left_lights[2] = new ModelRendererTurbo(this, 441, 9, textureX, textureY); // Box 36
-		door_left_lights[3] = new ModelRendererTurbo(this, 449, 9, textureX, textureY); // Box 37
-		door_left_lights[4] = new ModelRendererTurbo(this, 457, 9, textureX, textureY); // Box 38
-
-		door_left_lights[0].addBox(-0.7F, 1F, -9F, 1, 1, 8, 0F); // Box 29
-		door_left_lights[0].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_left_lights[1].addBox(-0.7F, 6F, -2F, 1, 3, 1, 0F); // Box 35
-		door_left_lights[1].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_left_lights[2].addBox(-0.7F, 16F, -2F, 1, 3, 1, 0F); // Box 36
-		door_left_lights[2].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_left_lights[3].addBox(-0.7F, 26F, -2F, 1, 3, 1, 0F); // Box 37
-		door_left_lights[3].setRotationPoint(-235.5F, -72F, 25F);
-
-		door_left_lights[4].addBox(-0.7F, 36F, -2F, 1, 3, 1, 0F); // Box 38
-		door_left_lights[4].setRotationPoint(-235.5F, -72F, 25F);
-		this.add("door_left_lights", door_left_lights);
-		get("door_left_lights").addProgram(DefaultPrograms.LIGHTS);
-
-
-		ModelRendererTurbo[] door_right_lights = new ModelRendererTurbo[5];
-		door_right_lights[0] = new ModelRendererTurbo(this, 417, 9, textureX, textureY); // Box 30
-		door_right_lights[1] = new ModelRendererTurbo(this, 489, 1, textureX, textureY); // Box 31
-		door_right_lights[2] = new ModelRendererTurbo(this, 497, 1, textureX, textureY); // Box 32
-		door_right_lights[3] = new ModelRendererTurbo(this, 505, 1, textureX, textureY); // Box 33
-		door_right_lights[4] = new ModelRendererTurbo(this, 417, 9, textureX, textureY); // Box 34
-
-		door_right_lights[0].addBox(-0.7F, 1F, 1F, 1, 1, 8, 0F); // Box 30
-		door_right_lights[0].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_right_lights[1].addBox(-0.7F, 6F, 1F, 1, 3, 1, 0F); // Box 31
-		door_right_lights[1].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_right_lights[2].addBox(-0.7F, 16F, 1F, 1, 3, 1, 0F); // Box 32
-		door_right_lights[2].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_right_lights[3].addBox(-0.7F, 26F, 1F, 1, 3, 1, 0F); // Box 33
-		door_right_lights[3].setRotationPoint(-235.5F, -72F, -25F);
-
-		door_right_lights[4].addBox(-0.7F, 36F, 1F, 1, 3, 1, 0F); // Box 34
-		door_right_lights[4].setRotationPoint(-235.5F, -72F, -25F);
-		this.add("door_right_lights", door_right_lights);
-		get("door_right_lights").addProgram(DefaultPrograms.LIGHTS);
-    }
+	
+	private TurboList chassis_body, door_left, lights_door_left, door_right, lights_door_right, lights;
+
+	public TR1Type1(){
+		super(); textureX = 512; textureY = 512;
+		this.addToCreators("Ferdinand (FEX___96)");
+		//
+		chassis_body = new TurboList("chassis_body");
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 1, 1, textureX, textureY).addBox(0, 0, 0, 128, 48, 1)
+			.setRotationPoint(-236, -72, -26).setRotationAngle(0, 0, 0).setName("Box 0")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 1, 57, textureX, textureY).addBox(0, 0, 0, 128, 48, 1)
+			.setRotationPoint(-108, -72, -26).setRotationAngle(0, 0, 0).setName("Box 1")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 1, 113, textureX, textureY).addBox(0, 0, 0, 128, 48, 1)
+			.setRotationPoint(-236, -72, 25).setRotationAngle(0, 0, 0).setName("Box 2")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 1, 169, textureX, textureY).addBox(0, 0, 0, 128, 48, 1)
+			.setRotationPoint(-108, -72, 25).setRotationAngle(0, 0, 0).setName("Box 3")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 265, 1, textureX, textureY).addBox(0, 0, 0, 2, 48, 2)
+			.setRotationPoint(17, -72, -25).setRotationAngle(0, 0, 0).setName("Box 4")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 281, 1, textureX, textureY).addBox(0, 0, 0, 2, 48, 2)
+			.setRotationPoint(-109, -72, -25).setRotationAngle(0, 0, 0).setName("Box 5")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 297, 1, textureX, textureY).addBox(0, 0, 0, 2, 48, 2)
+			.setRotationPoint(-235, -72, -25).setRotationAngle(0, 0, 0).setName("Box 6")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 313, 1, textureX, textureY).addBox(0, 0, 0, 2, 48, 2)
+			.setRotationPoint(-235, -72, 23).setRotationAngle(0, 0, 0).setName("Box 7")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 329, 1, textureX, textureY).addBox(0, 0, 0, 2, 48, 2)
+			.setRotationPoint(-109, -72, 23).setRotationAngle(0, 0, 0).setName("Box 8")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 345, 1, textureX, textureY).addBox(0, 0, 0, 2, 48, 2)
+			.setRotationPoint(17, -72, 23).setRotationAngle(0, 0, 0).setName("Box 9")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 361, 1, textureX, textureY).addBox(0, 0, 0, 1, 48, 50)
+			.setRotationPoint(19, -72, -25).setRotationAngle(0, 0, 0).setName("Box 10")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 1, 225, textureX, textureY).addBox(0, 0, 0, 128, 2, 52)
+			.setRotationPoint(-108, -74, -26).setRotationAngle(0, 0, 0).setName("Box 11")
+		);
+		chassis_body.add(new ModelRendererTurbo(chassis_body, 1, 281, textureX, textureY).addBox(0, 0, 0, 128, 2, 52)
+			.setRotationPoint(-236, -74, -26).setRotationAngle(0, 0, 0).setName("Box 12")
+		);
+		this.groups.add(chassis_body);
+		//
+		door_left = new TurboList("door_left");
+		door_left.add(new ModelRendererTurbo(door_left, 321, 81, textureX, textureY).addBox(-0.5f, 0, -25, 1, 48, 25)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 14")
+		);
+		door_left.add(new ModelRendererTurbo(door_left, 361, 1, textureX, textureY).addBox(-0.7f, 43, -9, 1, 4, 8)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 15")
+		);
+		door_left.add(new ModelRendererTurbo(door_left, 361, 1, textureX, textureY).addBox(-0.7f, 3, -24, 1, 1, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 23")
+		);
+		door_left.add(new ModelRendererTurbo(door_left, 385, 1, textureX, textureY).addBox(-0.7f, 11, -24, 1, 1, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 24")
+		);
+		door_left.add(new ModelRendererTurbo(door_left, 425, 1, textureX, textureY).addBox(-0.7f, 19, -24, 1, 1, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 25")
+		);
+		door_left.add(new ModelRendererTurbo(door_left, 441, 1, textureX, textureY).addBox(-0.7f, 27, -24, 1, 1, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 26")
+		);
+		door_left.add(new ModelRendererTurbo(door_left, 457, 1, textureX, textureY).addBox(-0.7f, 36, -24, 1, 1, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 27")
+		);
+		door_left.add(new ModelRendererTurbo(door_left, 473, 1, textureX, textureY).addBox(-0.7f, 44, -24, 1, 1, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 28")
+		);
+		this.groups.add(door_left);
+		//
+		door_right = new TurboList("door_right");
+		door_right.add(new ModelRendererTurbo(door_right, 265, 33, textureX, textureY).addBox(-0.5f, 0, 0, 1, 48, 25)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 13")
+		);
+		door_right.add(new ModelRendererTurbo(door_right, 385, 1, textureX, textureY).addBox(-0.7f, 43, 1, 1, 4, 8)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 16")
+		);
+		door_right.add(new ModelRendererTurbo(door_right, 377, 1, textureX, textureY).addBox(-0.7f, 3, 23, 1, 1, 3)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 17")
+		);
+		door_right.add(new ModelRendererTurbo(door_right, 401, 1, textureX, textureY).addBox(-0.7f, 11, 23, 1, 1, 3)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 18")
+		);
+		door_right.add(new ModelRendererTurbo(door_right, 417, 1, textureX, textureY).addBox(-0.7f, 19, 23, 1, 1, 3)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 19")
+		);
+		door_right.add(new ModelRendererTurbo(door_right, 433, 1, textureX, textureY).addBox(-0.7f, 27, 23, 1, 1, 3)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 20")
+		);
+		door_right.add(new ModelRendererTurbo(door_right, 449, 1, textureX, textureY).addBox(-0.7f, 36, 23, 1, 1, 3)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 21")
+		);
+		door_right.add(new ModelRendererTurbo(door_right, 465, 1, textureX, textureY).addBox(-0.7f, 44, 23, 1, 1, 3)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 22")
+		);
+		this.groups.add(door_right);
+		//
+		lights = new TurboList("lights");
+		lights.add(new ModelRendererTurbo(lights, 497, 9, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-234, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 39")
+		);
+		lights.add(new ModelRendererTurbo(lights, 361, 17, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-222, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 40")
+		);
+		lights.add(new ModelRendererTurbo(lights, 377, 17, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-206, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 41")
+		);
+		lights.add(new ModelRendererTurbo(lights, 393, 17, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-190, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 42")
+		);
+		lights.add(new ModelRendererTurbo(lights, 441, 17, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-174, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 43")
+		);
+		lights.add(new ModelRendererTurbo(lights, 457, 17, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-158, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 44")
+		);
+		lights.add(new ModelRendererTurbo(lights, 473, 17, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-142, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 45")
+		);
+		lights.add(new ModelRendererTurbo(lights, 489, 17, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-126, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 46")
+		);
+		lights.add(new ModelRendererTurbo(lights, 361, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-110, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 47")
+		);
+		lights.add(new ModelRendererTurbo(lights, 377, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-94, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 48")
+		);
+		lights.add(new ModelRendererTurbo(lights, 393, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-78, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 49")
+		);
+		lights.add(new ModelRendererTurbo(lights, 417, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-62, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 50")
+		);
+		lights.add(new ModelRendererTurbo(lights, 433, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-46, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 51")
+		);
+		lights.add(new ModelRendererTurbo(lights, 449, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-30, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 52")
+		);
+		lights.add(new ModelRendererTurbo(lights, 465, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-14, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 53")
+		);
+		lights.add(new ModelRendererTurbo(lights, 481, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(2, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 54")
+		);
+		lights.add(new ModelRendererTurbo(lights, 497, 25, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(14, -73.5f, 25.2f).setRotationAngle(0, 0, 0).setName("Box 55")
+		);
+		lights.add(new ModelRendererTurbo(lights, 361, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-234, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 56")
+		);
+		lights.add(new ModelRendererTurbo(lights, 377, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-222, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 57")
+		);
+		lights.add(new ModelRendererTurbo(lights, 393, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-206, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 58")
+		);
+		lights.add(new ModelRendererTurbo(lights, 417, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-190, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 59")
+		);
+		lights.add(new ModelRendererTurbo(lights, 433, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-174, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 60")
+		);
+		lights.add(new ModelRendererTurbo(lights, 449, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-158, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 61")
+		);
+		lights.add(new ModelRendererTurbo(lights, 465, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-142, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 62")
+		);
+		lights.add(new ModelRendererTurbo(lights, 481, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-126, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 63")
+		);
+		lights.add(new ModelRendererTurbo(lights, 497, 33, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-110, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 64")
+		);
+		lights.add(new ModelRendererTurbo(lights, 361, 41, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-94, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 65")
+		);
+		lights.add(new ModelRendererTurbo(lights, 377, 41, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-78, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 66")
+		);
+		lights.add(new ModelRendererTurbo(lights, 393, 41, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-62, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 67")
+		);
+		lights.add(new ModelRendererTurbo(lights, 417, 41, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-46, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 68")
+		);
+		lights.add(new ModelRendererTurbo(lights, 433, 41, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-30, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 69")
+		);
+		lights.add(new ModelRendererTurbo(lights, 449, 41, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(-14, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 70")
+		);
+		lights.add(new ModelRendererTurbo(lights, 465, 41, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(2, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 71")
+		);
+		lights.add(new ModelRendererTurbo(lights, 481, 41, textureX, textureY).addBox(0, 0, 0, 4, 1, 1)
+			.setRotationPoint(14, -73.5f, -26.2f).setRotationAngle(0, 0, 0).setName("Box 72")
+		);
+		lights.addProgram(DefaultPrograms.LIGHTS);
+		this.groups.add(lights);
+		//
+		lights_door_left = new TurboList("lights_door_left");
+		lights_door_left.add(new ModelRendererTurbo(lights_door_left, 473, 1, textureX, textureY).addBox(-0.7f, 1, -9, 1, 1, 8)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 29")
+		);
+		lights_door_left.add(new ModelRendererTurbo(lights_door_left, 433, 9, textureX, textureY).addBox(-0.7f, 6, -2, 1, 3, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 35")
+		);
+		lights_door_left.add(new ModelRendererTurbo(lights_door_left, 441, 9, textureX, textureY).addBox(-0.7f, 16, -2, 1, 3, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 36")
+		);
+		lights_door_left.add(new ModelRendererTurbo(lights_door_left, 449, 9, textureX, textureY).addBox(-0.7f, 26, -2, 1, 3, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 37")
+		);
+		lights_door_left.add(new ModelRendererTurbo(lights_door_left, 457, 9, textureX, textureY).addBox(-0.7f, 36, -2, 1, 3, 1)
+			.setRotationPoint(-235.5f, -72, 25).setRotationAngle(0, 0, 0).setName("Box 38")
+		);
+		lights_door_left.addProgram(DefaultPrograms.LIGHTS);
+		this.groups.add(lights_door_left);
+		//
+		lights_door_right = new TurboList("lights_door_right");
+		lights_door_right.add(new ModelRendererTurbo(lights_door_right, 417, 9, textureX, textureY).addBox(-0.7f, 1, 1, 1, 1, 8)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 30")
+		);
+		lights_door_right.add(new ModelRendererTurbo(lights_door_right, 489, 1, textureX, textureY).addBox(-0.7f, 6, 1, 1, 3, 1)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 31")
+		);
+		lights_door_right.add(new ModelRendererTurbo(lights_door_right, 497, 1, textureX, textureY).addBox(-0.7f, 16, 1, 1, 3, 1)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 32")
+		);
+		lights_door_right.add(new ModelRendererTurbo(lights_door_right, 505, 1, textureX, textureY).addBox(-0.7f, 26, 1, 1, 3, 1)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 33")
+		);
+		lights_door_right.add(new ModelRendererTurbo(lights_door_right, 417, 9, textureX, textureY).addBox(-0.7f, 36, 1, 1, 3, 1)
+			.setRotationPoint(-235.5f, -72, -25).setRotationAngle(0, 0, 0).setName("Box 34")
+		);
+		lights_door_right.addProgram(DefaultPrograms.LIGHTS);
+		this.groups.add(lights_door_right);
+	}
     
     @Override
     public void render(VehicleData data, String us){
-        super.render(data, "body");
-        super.render(data, "lights");
-        super.render(data, "door_left");
-        super.render(data, "door_right");
-        super.render(data, "door_left_lights");
-        super.render(data, "door_right_lights");
+    	for(TurboList list : groups.values()){ list.render(data, us); }
     }
 
     @Override
     public void render(VehicleData data, String us, VehicleEntity ent, int meta){
-    	get("body").render(ent, data);
+    	chassis_body.render(ent, data);
     	float doortoggle = RenderCache.getData(ent, "tr1_type1_door", 0) + (data.doorsOpen() ? 1 : -1);
     	RenderCache.updateData(ent, "tr1_type1_door", doortoggle = doortoggle > 100 ? 100 : doortoggle < 0 ? 0 : doortoggle);
-    	get("door_left").rotate(0, Static.rad1 * -doortoggle, 0);
-    	get("door_left").render(ent, data);
-    	get("door_left").rotate(0, Static.rad1 * doortoggle, 0);
-    	get("door_right").rotate(0, Static.rad1 * doortoggle, 0);
-    	get("door_right").render(ent, data);
-    	get("door_right").rotate(0, Static.rad1 * -doortoggle, 0);
+    	door_left.rotate(0, Static.rad1 * -doortoggle, 0);
+    	door_left.render(ent, data);
+    	door_left.rotate(0, Static.rad1 * doortoggle, 0);
+    	door_right.rotate(0, Static.rad1 * doortoggle, 0);
+    	door_right.render(ent, data);
+    	door_right.rotate(0, Static.rad1 * -doortoggle, 0);
     	//
-        get("lights").render(ent, data);
-    	get("door_left_lights").rotate(0, Static.rad1 * doortoggle, 0);
-        get("door_left_lights").render(ent, data);
-    	get("door_left_lights").rotate(0, Static.rad1 * -doortoggle, 0);
-    	get("door_right_lights").rotate(0, Static.rad1 * -doortoggle, 0);
-        get("door_right_lights").render(ent, data);
-    	get("door_right_lights").rotate(0, Static.rad1 * doortoggle, 0);
+        lights.render(ent, data);
+    	lights_door_left.rotate(0, Static.rad1 * doortoggle, 0);
+    	lights_door_left.render(ent, data);
+    	lights_door_left.rotate(0, Static.rad1 * -doortoggle, 0);
+    	lights_door_right.rotate(0, Static.rad1 * -doortoggle, 0);
+    	lights_door_right.render(ent, data);
+    	lights_door_right.rotate(0, Static.rad1 * doortoggle, 0);
     }
 
 }

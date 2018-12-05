@@ -2,14 +2,9 @@
     "RegistryName": "hcp:tr1_fenders",
     "Addon": "fvtm:hcp",
     "FullName": "TR1 Fenders",
-    "ModelFile": "net.fexcraft.mod.addons.hcp.models.part.TR1Fenders.class",
-    "Category": [
-        "fender_left",
-        "fender_right"
-    ],
-    "Textures": [
-        "hcp:textures/trailers/tr1_base.png"
-    ],
+    "ModelFile": "hcp:models/part/tr_fenders",
+    "Category": [ "fender_left", "fender_right" ],
+    "Textures": [ "hcp:textures/trailers/tr1_base.png" ],
     "Compatible": [{ "Vehicle": "hcp:tr1", "x": 0, "y": 0, "z": 0 }],
     "Removable": true
 }

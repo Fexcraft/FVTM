@@ -1,117 +1,116 @@
+//FMT-Marker FVTM-1
 package net.fexcraft.mod.addons.hcp.models.part;
 
+import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
-/**
- *
- * @author Ferdinand (FEX___96)
+/** This file was exported via the FVTM Exporter V1 of<br>
+ *  FMT (Fex's Modelling Toolbox) v.1.0.4-test &copy; 2018 - Fexcraft.net<br>
+ *  All rights reserved. For this Model's License contact the Author/Creator.
  */
+@fModel(registryname = "hcp:models/part/tr1_container_holder")
 public class TR1ContainerHolder extends PartModel {
 
-    public TR1ContainerHolder(){
-    	super(); this.addToCreators("FEX___96");
-        textureX = 512; textureY = 512;
-        ModelRendererTurbo[] body = new ModelRendererTurbo[21];
-		body[0] = new ModelRendererTurbo(this, 409, 185, textureX, textureY); // Box 131
-		body[1] = new ModelRendererTurbo(this, 449, 185, textureX, textureY); // Box 132
-		body[2] = new ModelRendererTurbo(this, 145, 217, textureX, textureY); // Box 133
-		body[3] = new ModelRendererTurbo(this, 185, 217, textureX, textureY); // Box 134
-		body[4] = new ModelRendererTurbo(this, 401, 209, textureX, textureY); // Box 135
-		body[5] = new ModelRendererTurbo(this, 441, 209, textureX, textureY); // Box 136
-		body[6] = new ModelRendererTurbo(this, 225, 217, textureX, textureY); // Box 137
-		body[7] = new ModelRendererTurbo(this, 265, 217, textureX, textureY); // Box 138
-		body[8] = new ModelRendererTurbo(this, 401, 161, textureX, textureY); // Box 139
-		body[9] = new ModelRendererTurbo(this, 145, 185, textureX, textureY); // Box 140
-		body[10] = new ModelRendererTurbo(this, 169, 185, textureX, textureY); // Box 141
-		body[11] = new ModelRendererTurbo(this, 257, 185, textureX, textureY); // Box 142
-		body[12] = new ModelRendererTurbo(this, 369, 193, textureX, textureY); // Box 143
-		body[13] = new ModelRendererTurbo(this, 497, 89, textureX, textureY); // Box 144
-		body[14] = new ModelRendererTurbo(this, 489, 193, textureX, textureY); // Box 145
-		body[15] = new ModelRendererTurbo(this, 497, 97, textureX, textureY); // Box 146
-		body[16] = new ModelRendererTurbo(this, 489, 201, textureX, textureY); // Box 147
-		body[17] = new ModelRendererTurbo(this, 25, 217, textureX, textureY); // Box 148
-		body[18] = new ModelRendererTurbo(this, 1, 241, textureX, textureY); // Box 149
-		body[19] = new ModelRendererTurbo(this, 249, 289, textureX, textureY); // Box 150
-		body[20] = new ModelRendererTurbo(this, 345, 289, textureX, textureY); // Box 151
-
-		body[0].addBox(0F, 0F, 0F, 4, 4, 8, 0F); // Box 131
-		body[0].setRotationPoint(-16F, -28F, -25F);
-
-		body[1].addBox(0F, 0F, 0F, 4, 4, 8, 0F); // Box 132
-		body[1].setRotationPoint(-16F, -28F, 17F);
-
-		body[2].addShapeBox(0F, 0F, 0F, 8, 4, 8, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 133
-		body[2].setRotationPoint(-12F, -28F, -25F);
-
-		body[3].addShapeBox(0F, 0F, 0F, 8, 4, 8, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 134
-		body[3].setRotationPoint(-12F, -28F, 17F);
-
-		body[4].addBox(0F, 0F, 0F, 4, 4, 8, 0F); // Box 135
-		body[4].setRotationPoint(-212F, -28F, -25F);
-
-		body[5].addBox(0F, 0F, 0F, 4, 4, 8, 0F); // Box 136
-		body[5].setRotationPoint(-212F, -28F, 17F);
-
-		body[6].addShapeBox(0F, 0F, 0F, 8, 4, 8, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 137
-		body[6].setRotationPoint(-220F, -28F, -25F);
-
-		body[7].addShapeBox(0F, 0F, 0F, 8, 4, 8, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 138
-		body[7].setRotationPoint(-220F, -28F, 17F);
-
-		body[8].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 139
-		body[8].setRotationPoint(-24F, -28F, -25F);
-
-		body[9].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 140
-		body[9].setRotationPoint(-24F, -28F, 24F);
-
-		body[10].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 141
-		body[10].setRotationPoint(-208F, -28F, 24F);
-
-		body[11].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 142
-		body[11].setRotationPoint(-208F, -28F, -25F);
-
-		body[12].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 143
-		body[12].setRotationPoint(-110F, -28F, -25F);
-
-		body[13].addShapeBox(0F, 0F, 0F, 4, 4, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 144
-		body[13].setRotationPoint(-114F, -28F, -25F);
-
-		body[14].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 145
-		body[14].setRotationPoint(-122F, -28F, -25F);
-
-		body[15].addShapeBox(0F, 0F, 0F, 4, 4, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, 1F); // Box 146
-		body[15].setRotationPoint(-114F, -28F, 24F);
-
-		body[16].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 147
-		body[16].setRotationPoint(-110F, -28F, 24F);
-
-		body[17].addShapeBox(0F, 0F, 0F, 8, 4, 1, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 148
-		body[17].setRotationPoint(-122F, -28F, 24F);
-
-		body[18].addBox(0F, 0F, 0F, 20, 4, 50, 0F); // Box 149
-		body[18].setRotationPoint(-2F, -28F, -25F);
-
-		body[19].addShapeBox(0F, 0F, 0F, 20, 2, 50, 0F, -2F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, -2F, -2F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 150
-		body[19].setRotationPoint(-2F, -30F, -25F);
-
-		body[20].addBox(0F, 0F, 0F, 18, 1, 48, 0F); // Box 151
-		body[20].setRotationPoint(-1F, -31F, -24F);
-		this.add("body", body);
-    }
+	public TR1ContainerHolder(){
+		super(); textureX = 512; textureY = 512;
+		this.addToCreators("Ferdinand (FEX___96)");
+		//
+		TurboList container_holder = new TurboList("container_holder");
+		container_holder.add(new ModelRendererTurbo(container_holder, 409, 185, textureX, textureY).addBox(0, 0, 0, 4, 4, 8)
+			.setRotationPoint(-16, -28, -25).setRotationAngle(0, 0, 0).setName("Box 131")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 449, 185, textureX, textureY).addBox(0, 0, 0, 4, 4, 8)
+			.setRotationPoint(-16, -28, 17).setRotationAngle(0, 0, 0).setName("Box 132")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 145, 217, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 8, 0, 0, 0, 0, 0, -3, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-12, -28, -25).setRotationAngle(0, 0, 0).setName("Box 133")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 185, 217, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 8, 0, 0, 0, 0, 0, -3, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-12, -28, 17).setRotationAngle(0, 0, 0).setName("Box 134")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 401, 209, textureX, textureY).addBox(0, 0, 0, 4, 4, 8)
+			.setRotationPoint(-212, -28, -25).setRotationAngle(0, 0, 0).setName("Box 135")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 441, 209, textureX, textureY).addBox(0, 0, 0, 4, 4, 8)
+			.setRotationPoint(-212, -28, 17).setRotationAngle(0, 0, 0).setName("Box 136")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 225, 217, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 8, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-220, -28, -25).setRotationAngle(0, 0, 0).setName("Box 137")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 265, 217, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 8, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-220, -28, 17).setRotationAngle(0, 0, 0).setName("Box 138")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 401, 161, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 1, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-24, -28, -25).setRotationAngle(0, 0, 0).setName("Box 139")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 145, 185, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 1, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-24, -28, 24).setRotationAngle(0, 0, 0).setName("Box 140")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 169, 185, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 1, 0, 0, 0, 0, 0, -3, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-208, -28, 24).setRotationAngle(0, 0, 0).setName("Box 141")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 257, 185, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 1, 0, 0, 0, 0, 0, -3, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-208, -28, -25).setRotationAngle(0, 0, 0).setName("Box 142")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 369, 193, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 1, 0, 0, 0, 0, 0, -3, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-110, -28, -25).setRotationAngle(0, 0, 0).setName("Box 143")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 497, 89, textureX, textureY)
+			.addShapeBox(0, 0, 0, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-114, -28, -25).setRotationAngle(0, 0, 0).setName("Box 144")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 489, 193, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 1, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-122, -28, -25).setRotationAngle(0, 0, 0).setName("Box 145")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 497, 97, textureX, textureY)
+			.addShapeBox(0, 0, 0, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1)
+			.setRotationPoint(-114, -28, 24).setRotationAngle(0, 0, 0).setName("Box 146")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 489, 201, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 1, 0, 0, 0, 0, 0, -3, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-110, -28, 24).setRotationAngle(0, 0, 0).setName("Box 147")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 25, 217, textureX, textureY)
+			.addShapeBox(0, 0, 0, 8, 4, 1, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-122, -28, 24).setRotationAngle(0, 0, 0).setName("Box 148")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 1, 241, textureX, textureY).addBox(0, 0, 0, 20, 4, 50)
+			.setRotationPoint(-2, -28, -25).setRotationAngle(0, 0, 0).setName("Box 149")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 249, 289, textureX, textureY)
+			.addShapeBox(0, 0, 0, 20, 2, 50, 0, -2, 0, -2, -2, 0, -2, -2, 0, -2, -2, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-2, -30, -25).setRotationAngle(0, 0, 0).setName("Box 150")
+		);
+		container_holder.add(new ModelRendererTurbo(container_holder, 345, 289, textureX, textureY).addBox(0, 0, 0, 18, 1, 48)
+			.setRotationPoint(-1, -31, -24).setRotationAngle(0, 0, 0).setName("Box 151")
+		);
+		this.groups.add(container_holder);
+	}
     
-        @Override
-    public void render(VehicleData data, String us){
-        super.render(data, us);
-        super.def_renderContainer(data, us);
-    }
-
-    @Override
-    public void render(VehicleData data, String us, VehicleEntity ent, int meta){
-        super.render(data, us);
-        super.def_renderContainer(data, us, ent);
-    }
+	@Override
+	public void render(VehicleData data, String us){
+	    super.render(data, us);
+	    super.def_renderContainer(data, us);
+	}
+	
+	@Override
+	public void render(VehicleData data, String us, VehicleEntity ent, int meta){
+	    super.render(data, us);
+	    super.def_renderContainer(data, us, ent);
+	}
 
 }

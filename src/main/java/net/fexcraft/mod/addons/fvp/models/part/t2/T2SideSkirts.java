@@ -51,9 +51,9 @@ public class T2SideSkirts extends PartModel {
     @Override
     public void render(VehicleData data, String us){
         switch(us){
-            case "side_left":{ side_skirt_left.render(data, us); return; }
-            case "side_right":{ side_skirt_right.render(data, us); return; }
-            case "sides": default:{ side_skirt_left.render(data, us); side_skirt_right.render(data, us); return; }
+            case "side_left":{ side_skirt_left.render(null, data, us); return; }
+            case "side_right":{ side_skirt_right.render(null, data, us); return; }
+            case "sides": default:{ side_skirt_left.render(null, data, us); side_skirt_right.render(null, data, us); return; }
         }
     }
 

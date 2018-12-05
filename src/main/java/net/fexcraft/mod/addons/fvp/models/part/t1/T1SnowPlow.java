@@ -68,13 +68,13 @@ public class T1SnowPlow extends PartModel {
 
     @Override
     public void render(VehicleData data, String us){
-        body.render(data, us); snowplow.rotate(0, 0, -Static.rad20, true); snowplow.render(data, us);
+        body.render(null, data, us); snowplow.rotate(0, 0, -Static.rad20, true); snowplow.render(null, data, us);
     }
 
     @Override
     public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
-        body.render(data, us); T1SnowPlowScript sps = data.getScript(T1SnowPlowScript.class);
-        snowplow.rotate(0, 0, sps == null ? 0 : sps.on ? 0 : -Static.rad20, true); snowplow.render(data, us);
+        body.render(null, data, us); T1SnowPlowScript sps = data.getScript(T1SnowPlowScript.class);
+        snowplow.rotate(0, 0, sps == null ? 0 : sps.on ? 0 : -Static.rad20, true); snowplow.render(null, data, us);
     }
 
 }

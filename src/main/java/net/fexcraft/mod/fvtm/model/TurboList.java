@@ -4,8 +4,6 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.lang.ArrayList;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -28,7 +26,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	public ArrayList<Program> programs = new ArrayList<>();
 	public float rotX, rotY, rotZ, offX, offY, offZ;
 	protected RGB windowcolor = new RGB(0x00, 0x72, 0x08, 0.3f);
-	public boolean visible = true;
+	public boolean visible = true, hasprog = false;
 	public String name;
 	
 	public TurboList(String name){ super(); this.name = name; }
@@ -37,6 +35,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		this(name); for(ModelRendererTurbo mrt : mrts){ this.add(mrt); }
 	}
 
+	@Deprecated
 	public void render(VehicleData data, String part){
 		render(null, data, data, part);
 	}
@@ -50,16 +49,16 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	}
 
 	public void render(VehicleEntity ent, VehicleData data, Colorable color, String part){
-		GL11.glPushMatrix();
+		/*GL11.glPushMatrix();
 		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
 		if(rotX != 0f) GL11.glRotatef(rotX, 1, 0, 0);
 		if(rotY != 0f) GL11.glRotatef(rotY, 0, 1, 0);
-		if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);
-		if(programs.size() > 0) for(Program program : programs) program.preRender(this, ent, data, color, part);
+		if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);*/
+		if(hasprog) for(Program program : programs) program.preRender(this, ent, data, color, part);
 		if(visible) for(ModelRendererTurbo turbo : this){ turbo.render(); }
-		if(programs.size() > 0) for(Program program : programs) program.postRender(this, ent, data, color, part);
-		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
-		GL11.glPopMatrix();
+		if(hasprog) for(Program program : programs) program.postRender(this, ent, data, color, part);
+		/*if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
+		GL11.glPopMatrix();*/
 	}
 	
 	public void renderPlain(){
@@ -100,19 +99,23 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	}
 	
 	public void addProgram(String str){
-		Program prog = PROGRAMS.get(str); if(prog != null) programs.add(prog); else return;
+		Program prog = PROGRAMS.get(str); if(prog != null) programs.add(prog); else return; hasPrograms();
 	}
 	
 	public void addPrograms(String... strs){
-		for(String str : strs) addProgram(str);
+		for(String str : strs) addProgram(str); hasPrograms();
 	}
 	
 	public void addProgram(Program program){
-		this.programs.add(program);
+		this.programs.add(program); hasPrograms();
 	}
 	
 	public void addPrograms(Program... programs){
-		for(Program program : programs) addProgram(program);
+		for(Program program : programs) addProgram(program); hasPrograms();
+	}
+	
+	public boolean hasPrograms(){
+		return this.hasprog = this.programs.size() > 0;
 	}
 	
 	public static interface Program {

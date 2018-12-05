@@ -22,7 +22,10 @@ import net.minecraft.util.ResourceLocation;
  */
 public abstract class GenericModel<T, K> implements Model<T, K> {
 	
-	protected GroupMap groups = new GroupMap();
+	public static final ArrayList<String> defcreemptlist = new ArrayList<>();
+	//
+	//protected GroupMap groups = new GroupMap();
+	public GroupList groups = new GroupList();
 	private ArrayList<String> creators = new ArrayList<>();
 	protected int textureX, textureY;
 	
@@ -75,14 +78,14 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	}*/
 
 	public void translate(float x, float y, float z){
-		groups.values().forEach(group -> group.translate(x, y, z));
+		groups.forEach(group -> group.translate(x, y, z));
 	}
 	public void rotate(float x, float y, float z, boolean apply){
-		groups.values().forEach(group -> group.rotate(x, y, z, apply));
+		groups.forEach(group -> group.rotate(x, y, z, apply));
 	}
 	
 	public void fixRotations(){
-		groups.values().forEach(group -> fixRotations(group));
+		groups.forEach(group -> fixRotations(group));
 	}
 
 	public void bindTexture(ResourceLocation texture){
@@ -121,6 +124,14 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		@Override
 		public TurboList get(Object key){
 			return super.get(key) == null ? TurboList.EMPTY : super.get(key);
+		}
+		
+	}
+	
+	public static final class GroupList extends ArrayList<TurboList> {
+
+		public TurboList get(String key){
+			for(TurboList list : this) if(list.name == key) return list; return null;
 		}
 		
 	}

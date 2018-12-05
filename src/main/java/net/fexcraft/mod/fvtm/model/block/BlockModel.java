@@ -39,7 +39,7 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
 
 	@Override
 	public void render(BlockData data, BlockTileEntity key, VehicleEntity ent, int meta){
-		for(TurboList list : groups.values()){
+		for(TurboList list : groups){
 			list.render(ent, null, data, null);
 		}
 	}
@@ -110,5 +110,7 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
     }
     
     public static boolean PREVIEW = false;
+    
+    public static final BlockModel EMPTY = new BlockModel();
 
 }

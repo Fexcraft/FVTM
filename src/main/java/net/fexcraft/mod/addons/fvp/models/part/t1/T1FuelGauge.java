@@ -40,7 +40,7 @@ public class T1FuelGauge extends PartModel {
     @Override
     public void render(VehicleData data, String usedAS){
         list.get(1).rotateAngleX = 3.14159265F;
-        list.render(data, usedAS);
+        list.render(null, data, usedAS);
     }
 
     @Override

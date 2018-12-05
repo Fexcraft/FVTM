@@ -7,8 +7,6 @@
 package net.fexcraft.mod.addons.zmp.models.part.c4;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelC4Z1Wheel extends PartModel {
@@ -348,16 +346,8 @@ public class ModelC4Z1Wheel extends PartModel {
         wheel_back_right[19].addShapeBox(-8.5F, -6.5F, -3F, 4, 4, 6, 0F, -2F, 0F, 0F, 1F, -3F, 0F, 1F, -3F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F); // Box 665
         wheel_back_right[19].setRotationPoint(-63F, -1.5F, -21F);
         this.add("wheel_back_right", wheel_back_right);
-    }
-
-    @Override
-    public void render(VehicleData data, String us){
-        super.def_renderWheels4(data, us);
-    }
-
-    @Override
-    public void render(VehicleData data, String us, VehicleEntity veh, int meta){
-        super.def_renderWheels4(data, us, veh);
+        
+        //TODO def prog imported
     }
 
 }

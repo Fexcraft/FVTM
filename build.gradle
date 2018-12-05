@@ -28,7 +28,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.4.2705"
+    version = "1.12.2-14.23.5.2768"
     runDir = "run"
     
     replace "@VERSION@", modversion
@@ -87,14 +87,14 @@ task fvp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/fvp/'}
     from 'run/addons/Fex\'s Vehicle Pack'
     baseName = 'Fexcraft Vehicle Pack'
-    appendix = '1.16.1'
+    appendix = '1.17'
 }
 
 task gep_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
     from 'run/addons/General Essentials Pack'
     baseName = 'General Essentials Pack'
-    appendix = '1.6.2'
+    appendix = '1.7'
 }
 task zmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}
@@ -106,7 +106,7 @@ task hcp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/hcp/'}
     from 'run/addons/Heavy Cargo Pack'
     baseName = 'Heavy Cargo Pack'
-    appendix = '1.4.2'
+    appendix = '1.5'
 }
 task gmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gmp/'}

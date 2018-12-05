@@ -28,7 +28,7 @@ public class ObjModelWrapper<D, K> implements Model<D, K>{
 
 	@Override
 	public Collection<String> getCreators(){
-		return EmptyModel.INSTANCE.getCreators();
+		return GenericModel.defcreemptlist;
 	}
 
 	@Override

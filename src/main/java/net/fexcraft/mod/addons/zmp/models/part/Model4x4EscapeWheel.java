@@ -1,8 +1,6 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class Model4x4EscapeWheel extends PartModel {
@@ -297,16 +295,8 @@ public class Model4x4EscapeWheel extends PartModel {
         //
         translate(0F, -12F, 0F);
         fixRotations();
-    }
-
-    @Override
-    public void render(VehicleData data, String us){
-        super.def_renderWheels4(data, us);
-    }
-
-    @Override
-    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
-        super.def_renderWheels4(data, us, vehicle);
+        
+        //TODO def prog imported
     }
 
 }

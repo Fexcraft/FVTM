@@ -4227,7 +4227,7 @@ public class ContainerCrane extends VehicleModel {
         this.gui_scale_y = this.gui_scale_y / 2;
         this.gui_scale_z = this.gui_scale_z / 2;
         //
-        this.groups.put("box", box = new TurboList("box"));
+        this.groups.add(box = new TurboList("box"));
 		ModelRendererTurbo mbox = new ModelRendererTurbo(this, 332, 215, textureX, textureY); // Box 1062
 		mbox.addBox(0F, 0F, 0F, 16, 16, 16, 0F); // Box 1062
 		mbox.setRotationPoint(-8F, -16F, -8F);

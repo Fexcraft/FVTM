@@ -6,7 +6,7 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 
-public class AdjustableBogieModel extends PartBaseModel {
+public class AdjustableBogieModel extends PartModel {
 	
 	public static final String[] defval = new String[]{ "chassis", "axle0", "axle1", "axle2", "axle3" };
 

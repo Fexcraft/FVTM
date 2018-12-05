@@ -98,9 +98,9 @@ public class T2RearFenders extends PartModel {
     @Override
     public void render(VehicleData data, String us){
         switch(us){
-            case "rear_fender_left":{ fender_left.render(data, us); return; }
-            case "rear_fender_right":{ fender_right.render(data, us); return; }
-            default:{ fender_left.render(data, us);  fender_right.render(data, us); return; }
+            case "rear_fender_left":{ fender_left.render(null, data, us); return; }
+            case "rear_fender_right":{ fender_right.render(null, data, us); return; }
+            default:{ fender_left.render(null, data, us);  fender_right.render(null, data, us); return; }
         }
     }
 

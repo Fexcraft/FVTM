@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.blocks;
+package net.fexcraft.mod.fvtm.blocks.sign;
 
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;

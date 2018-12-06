@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.blocks;
+package net.fexcraft.mod.fvtm.blocks.sign;
 
 import java.util.List;
 import javax.annotation.Nullable;

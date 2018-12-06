@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.render.block;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
-import net.fexcraft.mod.fvtm.blocks.CylinderSignEntity;
+import net.fexcraft.mod.fvtm.blocks.sign.CylinderSignEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 

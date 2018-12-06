@@ -1,0 +1,11 @@
+{
+    "RegistryName": "hcp:container_lift_wheels",
+    "Addon": "fvtm:hcp",
+    "FullName": "Container Crane Wheels",
+    "ModelFile": "hcp:models/part/container_lift_wheels",
+    "Category": [ "wheels" ],
+    "Textures": [ "hcp:textures/vehicles/container_lift.png" ],
+    "Compatible": [{ "Vehicle": "hcp:container_lift", "x": 0, "y": 0, "z": 0 }],
+    "Removable": false,
+    "Available": true
+}

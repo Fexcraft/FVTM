@@ -22,5 +22,9 @@
     "ConstructionLength": 4,
     "ConstructionYOffSet": 6,
     "ConstructionWheelOffset": 21,
-    "Trailer": false
+    "Trailer": false,
+    "FM-MaxPositiveThrottle": 0.56,
+    "FM-MaxNegativeThrottle": 0.56,
+    "FM-TurnLeftModifier": 3,
+    "FM-TurnRightModifier": 3
 }

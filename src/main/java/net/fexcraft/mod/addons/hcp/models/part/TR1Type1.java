@@ -267,7 +267,7 @@ public class TR1Type1 extends PartModel {
     
     @Override
     public void render(VehicleData data, String us){
-    	for(TurboList list : groups){ list.render(data, us); }
+    	for(TurboList list : groups){ list.render(null, data, us); }
     }
 
     @Override

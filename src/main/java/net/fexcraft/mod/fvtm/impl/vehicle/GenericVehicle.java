@@ -34,7 +34,7 @@ public class GenericVehicle implements Vehicle {
     private Addon addon;
     private String name;
     private String[] description;
-    private float yoffset, wheeloffset;
+    private float yoffset, wheeloffset, spawnheight;
     private List<ResourceLocation> textures;
     private TreeMap<String, ResourceLocation> preinstalled = new TreeMap<String, ResourceLocation>();
     private TreeMap<String, Pos> wheel_coords = new TreeMap<>();
@@ -107,6 +107,7 @@ public class GenericVehicle implements Vehicle {
         this.wheelspringstrength = JsonUtil.getIfExists(obj, "FM-WheelSpringStrength", 0.25f).floatValue();
         this.wheelstepheight = JsonUtil.getIfExists(obj, "FM-WheelStepHeight", 1f).floatValue();
         this.trailer_adjustment_axe = JsonUtil.getIfExists(obj, "FVTM-TrailerAdjustmentAxe", 1f).floatValue();
+        this.spawnheight = JsonUtil.getIfExists(obj, "FVTM-SpawnHeight", 2f).floatValue();
         if(obj.has("Sounds")){
             for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
                 JsonObject jsn = elm.getAsJsonObject();
@@ -328,6 +329,7 @@ public class GenericVehicle implements Vehicle {
             case "trailer_adjustment_axe": return trailer_adjustment_axe;
             case "bouyancy": return bouyancy;
             case "collision_damage": return colldamage;
+            case "spawnheight": return spawnheight;
         }
         return 0f;
     }

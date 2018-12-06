@@ -13,6 +13,6 @@
     "Removable": false,
     "Available": true,
     "AttributeData":{
-        "FM-Seats":[ { "driver": true, "x": 54, "y": 96, "z": 33 } ]
+        "FM-Seats":[ { "driver": true, "x": 54, "y": -48, "z": 33 } ]
     }
 }

@@ -39,6 +39,7 @@ public class ContainerLiftWheels extends PartModel {
 		);
 		wheels.addProgram(DefaultPrograms.DEF_WHEEL_ROTATE);
 		this.groups.add(wheels);
+		this.translate(0, 144, 0);
 	}
 
 }

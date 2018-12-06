@@ -144,6 +144,7 @@ public class ContainerLiftCabin extends PartModel {
 		);
 		cabin_steering.addProgram(DefaultPrograms.STEERING_Y);
 		this.groups.add(cabin_steering);
+		this.translate(0, 144, 0);
 	}
 
 }

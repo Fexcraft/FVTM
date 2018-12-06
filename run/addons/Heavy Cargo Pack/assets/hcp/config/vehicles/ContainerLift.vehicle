@@ -5,10 +5,10 @@
     "ModelFile": "hcp:models/vehicle/container_lift",
     "Textures": [ "hcp:textures/vehicles/container_lift.png" ],
     "WheelPos":[
-        { "x": -32, "y": -14, "z": -41 },
-        { "x": -32, "y": -14, "z":  41 },
-        { "x":  32, "y": -14, "z":  41 },
-        { "x":  32, "y": -14, "z": -41 }
+        { "x": -32, "y": -154, "z": -41 },
+        { "x": -32, "y": -154, "z":  41 },
+        { "x":  32, "y": -154, "z":  41 },
+        { "x":  32, "y": -154, "z": -41 }
     ],
     "PreInstalled":[
         {
@@ -24,5 +24,6 @@
     "ConstructionLength": 4,
     "ConstructionYOffSet": 14,
     "ConstructionWheelOffset": 38,
+    "FVTM-SpawnHeight": 12,
     "Trailer": false
 }

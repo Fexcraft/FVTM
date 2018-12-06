@@ -1,8 +1,13 @@
 //FMT-Marker FVTM-1
 package net.fexcraft.mod.addons.hcp.models.vehicle;
 
+import org.lwjgl.opengl.GL11;
+
 import net.fexcraft.lib.mc.api.registry.fModel;
+import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.addons.hcp.scripts.ContainerLiftScript;
+import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
@@ -88,15 +93,26 @@ public class ContainerLiftModel extends VehicleModel {
 			public String getId(){
 				return "hcp:container_lift";
 			}
+			private Float translated;
+			private ContainerData data;
 			//
 			@Override
 			public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
-				//
+				ContainerLiftScript script = data.getScript(ContainerLiftScript.class); if(script == null){ translated = null; return; }
+				GL11.glTranslatef(0, translated = script.getCurrentOffset(), 0); this.data = script.getContainerData();
 			}
 			//
 			@Override
 			public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
-				//
+				if(translated == null) return;
+				if(this.data != null){
+					GL11.glTranslatef(0, 3, 0);
+					ModelBase.bindTexture(this.data.getTexture());
+					this.data.getContainer().getModel().render(this.data, null, ent, -1);
+					ModelBase.bindTexture(data.getTexture());
+					GL11.glTranslatef(0, -3, 0);
+				}
+				GL11.glTranslatef(0, -translated, 0);
 			}
 		});
 		this.groups.add(grabber);
@@ -345,6 +361,8 @@ public class ContainerLiftModel extends VehicleModel {
 			.setRotationPoint(-45, -2, 32).setRotationAngle(0, 0, 0)
 		);
 		this.groups.add(steel);
+		this.translate(0, 144, 0);
+		this.gui_translate_y = 9 / 16f;
 	}
 
 }

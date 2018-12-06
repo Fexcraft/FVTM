@@ -54,6 +54,7 @@ public class GenericEntityType extends EntityType {
                 Print.chat(player, "Vehicle can not be spawned, missing parts!"); return false;
             }
             if(world.getBlockState(pos).getBlock() instanceof DisplayBlock){ return true; }
+            float sho = data.getVehicle().getFMAttribute("spawnheight");//spawnheightoffset
             switch(data.getVehicle().getType()){
                 case LAND: {
                     if(world.getBlockState(pos).getBlock() instanceof BlockLiquid){
@@ -61,10 +62,10 @@ public class GenericEntityType extends EntityType {
                     }
                     if(!world.isRemote){
                     	if(data.getVehicle().isTrailerOrWagon()){
-                    		world.spawnEntity(new GenericTrailerEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
+                    		world.spawnEntity(new GenericTrailerEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
                     	}
                     	else{
-                    		world.spawnEntity(new GenericVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
+                    		world.spawnEntity(new GenericVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
                     	}
                     }
                     break;
@@ -74,7 +75,7 @@ public class GenericEntityType extends EntityType {
                         Print.chat(player, "Vehicle not placeable on land!");
                     }
                     if(!world.isRemote){
-                        world.spawnEntity(new WaterVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
+                        world.spawnEntity(new WaterVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
                     }
                     break;
                 }

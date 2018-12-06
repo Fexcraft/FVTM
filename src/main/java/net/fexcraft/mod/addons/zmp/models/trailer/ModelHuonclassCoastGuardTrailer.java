@@ -1,6 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
 public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
@@ -2386,7 +2387,7 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
         steering[12].addShapeBox(0F, 1.5F, -2.5F, 1, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, 1F, 0F, -1F, 1F); // Box 273
         steering[12].setRotationPoint(-66F, -27F, -1F);
-        this.add("steering", steering);
+        this.add("steering", steering); this.get("steering").addProgram(DefaultPrograms.STEERING_X);
         //
         translate(0, 2, 0);
         fixRotations();

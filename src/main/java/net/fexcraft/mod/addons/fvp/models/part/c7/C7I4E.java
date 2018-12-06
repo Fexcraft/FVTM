@@ -538,7 +538,6 @@ public class C7I4E extends PartModel {
 			.addShapeBox(0, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(26, -2.5f, -6.5f).setRotationAngle(0, 0, 0).setName("Box 129")
 		);
-		group1.addProgram("fvtm:example_program");//TODO do not forget these exists!
 		this.groups.add(group1);
 	}
 

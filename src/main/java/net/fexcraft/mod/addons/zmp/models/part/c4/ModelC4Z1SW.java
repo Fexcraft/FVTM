@@ -1,8 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.part.c4;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelC4Z1SW extends PartModel {
@@ -24,60 +23,33 @@ public class ModelC4Z1SW extends PartModel {
         steering[10] = new ModelRendererTurbo(this, 1017, 121, textureX, textureY); // Box 271
         steering[11] = new ModelRendererTurbo(this, 313, 129, textureX, textureY); // Box 272
         steering[12] = new ModelRendererTurbo(this, 321, 129, textureX, textureY); // Box 273
-
         steering[0].addBox(0F, -0.5F, -0.5F, 2, 1, 1, 0F); // Box 261
         steering[0].setRotationPoint(48F, -25F, 13F);
-
         steering[1].addShapeBox(0F, -2.5F, -0.5F, 1, 2, 1, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F); // Box 262
         steering[1].setRotationPoint(48F, -25F, 13F);
-
         steering[2].addShapeBox(0F, 0.5F, -0.5F, 1, 2, 1, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F); // Box 263
         steering[2].setRotationPoint(48F, -25F, 13F);
-
         steering[3].addShapeBox(0F, -0.5F, 0.5F, 1, 1, 2, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F); // Box 264
         steering[3].setRotationPoint(48F, -25F, 13F);
-
         steering[4].addShapeBox(0F, -0.5F, -2.5F, 1, 1, 2, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F, -0.2F, 0F, 0F); // Box 265
         steering[4].setRotationPoint(48F, -25F, 13F);
-
         steering[5].addBox(0F, 2.5F, -1.5F, 1, 1, 3, 0F); // Box 266
         steering[5].setRotationPoint(48F, -25F, 13F);
-
         steering[6].addBox(0F, -3.5F, -1.5F, 1, 1, 3, 0F); // Box 267
         steering[6].setRotationPoint(48F, -25F, 13F);
-
         steering[7].addBox(0F, -1.5F, -3.5F, 1, 3, 1, 0F); // Box 268
         steering[7].setRotationPoint(48F, -25F, 13F);
-
         steering[8].addBox(0F, -1.5F, 2.5F, 1, 3, 1, 0F); // Box 269
         steering[8].setRotationPoint(48F, -25F, 13F);
-
         steering[9].addShapeBox(0F, 1.5F, 2.5F, 1, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 1F, 0F, -1F, 1F, 0F, 0F, -2F, 0F, 0F, -2F); // Box 270
         steering[9].setRotationPoint(48F, -25F, 13F);
-
         steering[10].addShapeBox(0F, -3.5F, 2.5F, 1, 2, 1, 0F, 0F, -1F, 1F, 0F, -1F, 1F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 271
         steering[10].setRotationPoint(48F, -25F, 13F);
-
         steering[11].addShapeBox(0F, -3.5F, -3.5F, 1, 2, 1, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, 1F, 0F, -1F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 272
         steering[11].setRotationPoint(48F, -25F, 13F);
-
         steering[12].addShapeBox(0F, 1.5F, -3.5F, 1, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, -1F, 1F, 0F, -1F, 1F); // Box 273
         steering[12].setRotationPoint(48F, -25F, 13F);
-        this.add("steering", steering);
-    }
-
-    @Override
-    public void render(VehicleData data, String us){
-        render(data, "steering");
-    }
-
-    @Override
-    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
-        VehicleEntity ent = (VehicleEntity) vehicle;
-        for(ModelRendererTurbo submodel : get("steering")){
-            submodel.rotateAngleX = ent.getWheelsYaw() * 3.14159265F / 180F * 3F;
-            submodel.render();
-        }
+        this.add("steering", steering);this.get("steering").addProgram(DefaultPrograms.STEERING_X);
     }
 
 }

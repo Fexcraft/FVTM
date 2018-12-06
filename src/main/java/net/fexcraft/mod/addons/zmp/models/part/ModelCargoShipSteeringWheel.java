@@ -1,6 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelCargoShipSteeringWheel extends PartModel {
@@ -43,7 +44,7 @@ public class ModelCargoShipSteeringWheel extends PartModel {
 
         steering[7].addShapeBox(0F, -1.5F, 0.5F, 1, 1, 4, 0F, 0F, 3F, 0F, 0F, 3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 236
         steering[7].setRotationPoint(-517F, -215.5F, 0.5F);
-        this.add("steering", steering);
+        this.add("steering", steering); this.get("steering").addProgram(DefaultPrograms.STEERING_X);
         //
         fixRotations();
     }

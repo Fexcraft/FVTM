@@ -1,6 +1,6 @@
 {
-    "RegistryName": "fvp:c4z1",
-    "Addon": "fvtm:fvp",
+    "RegistryName": "zmp:c4z1",
+    "Addon": "fvtm:zmp",
     "FullName": "C4-Z1",
     "ModelFile": "zmp:models/vehicle/c4z1",
     "PrimaryColor": {
@@ -14,8 +14,8 @@
         "Green": 74
     },
     "Textures": [
-        "fvp:textures/entities/skin_vehicle_c4z1.png",
-        "fvp:textures/entities/skin_vehicle_c4z1_alt.png"
+        "zmp:textures/vehicles/skin_vehicle_c4z1.png",
+        "zmp:textures/vehicles/skin_vehicle_c4z1_alt.png"
     ],
     "WheelPos":[
         { "x": -63, "y": -7, "z": -20 },
@@ -40,7 +40,7 @@
     "PreInstalled":[
         {
             "as": "cargo",
-            "part": "fvp:c4z1_cargospace"
+            "part": "zmp:c4z1_cargospace"
         }
     ],
     "DriveType": "4wd",

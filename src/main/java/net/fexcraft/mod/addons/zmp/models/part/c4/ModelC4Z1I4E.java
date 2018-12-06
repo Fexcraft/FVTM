@@ -1,8 +1,6 @@
 package net.fexcraft.mod.addons.zmp.models.part.c4;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelC4Z1I4E extends PartModel {
@@ -554,37 +552,7 @@ public class ModelC4Z1I4E extends PartModel {
 
         body[131].addShapeBox(0F, 0F, 0F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 198
         body[131].setRotationPoint(60F, -7F, 11F);
-        this.add("body", body);
-        fixRotations(get("body"));
-
-    }
-
-    @Override
-    public void render(VehicleData data, String us){
-        /*switch(data.getVehicle().getRegistryName().toString()){
-			case "fvp:c7":{
-				render(c7_var);
-				break;
-			}
-			case "fvp:c4z1":{
-				render(c4z1_var);
-			}
-		}*/
-        render(data, "body");
-    }
-
-    @Override
-    public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
-        /*switch(data.getVehicle().getRegistryName().toString()){
-			case "fvp:c7":{
-				render(c7_var);
-				break;
-			}
-			case "fvp:c4z1":{
-				render(c4z1_var);
-			}
-		}*/
-        render(data, "body");
+        this.add("body", body); fixRotations(get("body"));
     }
 
 }

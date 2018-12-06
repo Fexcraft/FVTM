@@ -1,17 +1,17 @@
 {
-    "RegistryName": "fvp:c4z1_interior",
-    "Addon": "fvtm:fvp",
+    "RegistryName": "zmp:c4z1_interior",
+    "Addon": "fvtm:zmp",
     "FullName": "C4Z1 Default Interior",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC4Z1Interior.class",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.part.c4.ModelC4Z1Interior.class",
     "Category": [
         "interior"
     ],
     "Textures": [
-        "fvp:textures/entities/skin_vehicle_c4z1.png"
+        "zmp:textures/vehicles/skin_vehicle_c4z1.png"
     ],
     "Compatible": [
         {
-            "Vehicle": "fvp:c4z1",
+            "Vehicle": "zmp:c4z1",
             "x": 0, "y": 0, "z": 0
         }
     ],

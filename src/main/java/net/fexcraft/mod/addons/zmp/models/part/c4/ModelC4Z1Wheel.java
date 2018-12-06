@@ -7,6 +7,7 @@
 package net.fexcraft.mod.addons.zmp.models.part.c4;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelC4Z1Wheel extends PartModel {
@@ -96,7 +97,7 @@ public class ModelC4Z1Wheel extends PartModel {
 
         wheel_front_left[19].addShapeBox(-1.5F, -1.5F, 0F, 1, 3, 3, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F); // Box 335
         wheel_front_left[19].setRotationPoint(60F, -1.5F, 20F);
-        this.add("wheel_front_left", wheel_front_left);
+        this.add("wheel_front_left", wheel_front_left); this.get("wheel_front_left").addProgram(DefaultPrograms.IMPORTED_WHEEL);
 
         ModelRendererTurbo[] wheel_front_right = new ModelRendererTurbo[20];
         wheel_front_right[0] = new ModelRendererTurbo(this, 409, 185, textureX, textureY); // Import WBL1
@@ -179,7 +180,7 @@ public class ModelC4Z1Wheel extends PartModel {
 
         wheel_front_right[19].addShapeBox(0.5F, -1.5F, 0F, 1, 3, 3, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F); // Box 645
         wheel_front_right[19].setRotationPoint(60F, -1.5F, -24F);
-        this.add("wheel_front_right", wheel_front_right);
+        this.add("wheel_front_right", wheel_front_right); this.get("wheel_front_right").addProgram(DefaultPrograms.IMPORTED_WHEEL);
 
         ModelRendererTurbo[] wheel_back_left = new ModelRendererTurbo[20];
         wheel_back_left[0] = new ModelRendererTurbo(this, 169, 201, textureX, textureY); // Box 666
@@ -262,7 +263,7 @@ public class ModelC4Z1Wheel extends PartModel {
 
         wheel_back_left[19].addShapeBox(-1.5F, 0F, 1.5F, 3, 6, 1, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 4F, 0F, 0F, -5F, 0F, 0F, -5F, 0F, 0F, 4F, 0F, 0F); // Box 685
         wheel_back_left[19].setRotationPoint(-63F, -1.5F, 20F);
-        this.add("wheel_back_left", wheel_back_left);
+        this.add("wheel_back_left", wheel_back_left); this.get("wheel_back_left").addProgram(DefaultPrograms.IMPORTED_WHEEL);
 
         ModelRendererTurbo[] wheel_back_right = new ModelRendererTurbo[20];
         wheel_back_right[0] = new ModelRendererTurbo(this, 145, 177, textureX, textureY); // Box 646
@@ -345,9 +346,7 @@ public class ModelC4Z1Wheel extends PartModel {
 
         wheel_back_right[19].addShapeBox(-8.5F, -6.5F, -3F, 4, 4, 6, 0F, -2F, 0F, 0F, 1F, -3F, 0F, 1F, -3F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F); // Box 665
         wheel_back_right[19].setRotationPoint(-63F, -1.5F, -21F);
-        this.add("wheel_back_right", wheel_back_right);
-        
-        //TODO def prog imported
+        this.add("wheel_back_right", wheel_back_right); this.get("wheel_back_right").addProgram(DefaultPrograms.IMPORTED_WHEEL);
     }
 
 }

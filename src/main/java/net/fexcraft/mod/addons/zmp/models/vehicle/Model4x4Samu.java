@@ -7,8 +7,7 @@ public class Model4x4Samu extends VehicleModel {
 
     public Model4x4Samu(){
     	super(); textureX = 512; textureY = 512;
-        this.addToCreators("zackyboy18");
-        this.addToCreators("FEX___96");
+        this.addToCreators("zackyboy18"); this.addToCreators("FEX___96");
         ModelRendererTurbo[] body = new ModelRendererTurbo[278];
         body[0] = new ModelRendererTurbo(this, 1, 1, textureX, textureY); // Box 0
         body[1] = new ModelRendererTurbo(this, 25, 1, textureX, textureY); // Box 1

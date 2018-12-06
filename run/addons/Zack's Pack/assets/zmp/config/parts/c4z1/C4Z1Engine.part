@@ -1,8 +1,8 @@
 {
-    "RegistryName": "fvp:engine_c4z1i4",
-    "Addon": "fvtm:fvp",
+    "RegistryName": "zmp:engine_c4z1i4",
+    "Addon": "fvtm:zmp",
     "FullName": "C4Z1-I4 Engine",
-    "ModelFile": "net.fexcraft.mod.addons.fvp.models.part.ModelC4Z1I4E.class",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.part.c4.ModelC4Z1I4E.class",
     "Category": [
         "engine"
     ],
@@ -10,13 +10,13 @@
         "engine"
     ],
     "Textures": [
-        "fvp:textures/entities/skin_vehicle_c4z1.png"
+        "zmp:textures/vehicles/skin_vehicle_c4z1.png"
     ],
     "Removable": true,
     "Available": true,
     "Compatible": [
         {
-            "Vehicle": "fvp:c4z1",
+            "Vehicle": "zmp:c4z1",
             "x": 0, "y": 0, "z": 0
         }
     ],

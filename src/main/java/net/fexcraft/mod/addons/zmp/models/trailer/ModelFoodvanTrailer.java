@@ -1159,9 +1159,7 @@ public class ModelFoodvanTrailer extends VehicleModel {
 
         body[264].addBox(0F, 0F, 0F, 1, 1, 2, 0F); // Box 288
         body[264].setRotationPoint(-100.5F, -23.2F, 11.5F);
-        this.add("body", body);
-        //
-        fixRotations();
+        this.add("body", body); fixRotations();
     }
 
 }

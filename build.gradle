@@ -100,7 +100,7 @@ task zmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}
     from 'run/addons/Zack\'s Pack'
     baseName = 'ZMP'
-    appendix = 'V1.1'
+    appendix = 'V1.2'
 }
 task hcp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/hcp/'}

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class Model4x4EscapeWheel extends PartModel {
@@ -78,7 +79,7 @@ public class Model4x4EscapeWheel extends PartModel {
 
         wheel_front_left[16].addShapeBox(-1.5F, 0F, 1.5F, 3, 6, 1, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -5F, 0F, 0F, 4F, 0F, 0F, 4F, 0F, 0F, -5F, 0F, 0F); // Box 571
         wheel_front_left[16].setRotationPoint(38.5F, 12.5F, 16F);
-        this.add("wheel_front_left", wheel_front_left);
+        this.add("wheel_front_left", wheel_front_left); this.get("wheel_front_left").addProgram(DefaultPrograms.IMPORTED_WHEEL);
 
         ModelRendererTurbo[] wheel_front_right = new ModelRendererTurbo[17];
         wheel_front_right[0] = new ModelRendererTurbo(this, 265, 185, textureX, textureY); // Box 500
@@ -149,7 +150,7 @@ public class Model4x4EscapeWheel extends PartModel {
 
         wheel_front_right[16].addShapeBox(-1.5F, 0F, -2.5F, 3, 6, 1, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, -5F, 0F, 0F, 4F, 0F, 0F, 4F, 0F, 0F, -5F, 0F, 0F); // Box 519
         wheel_front_right[16].setRotationPoint(38.5F, 12.5F, -16F);
-        this.add("wheel_front_right", wheel_front_right);
+        this.add("wheel_front_right", wheel_front_right); this.get("wheel_front_right").addProgram(DefaultPrograms.IMPORTED_WHEEL);
 
         ModelRendererTurbo[] wheel_back_left = new ModelRendererTurbo[17];
         wheel_back_left[0] = new ModelRendererTurbo(this, 65, 137, textureX, textureY); // Box 581
@@ -220,7 +221,7 @@ public class Model4x4EscapeWheel extends PartModel {
 
         wheel_back_left[16].addShapeBox(4.5F, 2.5F, -3F, 4, 4, 6, 0F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 1F, -3F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 1F, -3F, 0F); // Box 600
         wheel_back_left[16].setRotationPoint(-31.5F, 12.5F, 16F);
-        this.add("wheel_back_left", wheel_back_left);
+        this.add("wheel_back_left", wheel_back_left); this.get("wheel_back_left").addProgram(DefaultPrograms.IMPORTED_WHEEL);
 
         ModelRendererTurbo[] wheel_back_right = new ModelRendererTurbo[17];
         wheel_back_right[0] = new ModelRendererTurbo(this, 497, 97, textureX, textureY); // Box 649
@@ -291,12 +292,10 @@ public class Model4x4EscapeWheel extends PartModel {
 
         wheel_back_right[16].addShapeBox(-8.5F, -6.5F, -3F, 4, 4, 6, 0F, -2F, 0F, 0F, 1F, -3F, 0F, 1F, -3F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 1F, 0F, 0F, 1F, 0F, 0F, 0F, 0F); // Box 665
         wheel_back_right[16].setRotationPoint(-31.5F, 12.5F, -16F);
-        this.add("wheel_back_right", wheel_back_right);
+        this.add("wheel_back_right", wheel_back_right); this.get("wheel_back_right").addProgram(DefaultPrograms.IMPORTED_WHEEL);
         //
         translate(0F, -12F, 0F);
         fixRotations();
-        
-        //TODO def prog imported
     }
 
 }

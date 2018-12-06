@@ -1,6 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
 public class ModelBoxTrailer extends VehicleModel {
@@ -1002,8 +1003,8 @@ public class ModelBoxTrailer extends VehicleModel {
         body_door_close[0] = new ModelRendererTurbo(this, 257, 33, textureX, textureY); // Box 139
         body_door_close[0].addBox(0F, 0F, 0F, 1, 7, 28, 0F); // Box 139
         body_door_close[0].setRotationPoint(-67F, -11F, -14F);
-        this.add("body_door_open", body_door_open);
-        this.add("body_door_close", body_door_close);
+        this.add("body_door_open", body_door_open); this.get("body_door_open").addProgram(DefaultPrograms.DOOR_OPEN);
+        this.add("body_door_close", body_door_close); this.get("body_door_close").addProgram(DefaultPrograms.DOOR_CLOSE);
         //
         translate(0, 2, 0);
         fixRotations();

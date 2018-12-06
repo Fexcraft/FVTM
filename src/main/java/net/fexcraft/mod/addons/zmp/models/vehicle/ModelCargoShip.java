@@ -1,10 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
 public class ModelCargoShip extends VehicleModel {
@@ -897,14 +894,9 @@ public class ModelCargoShip extends VehicleModel {
 
         turret[86].addBox(0F, 0F, 0F, 48, 48, 96, 0F); // Box 230
         turret[86].setRotationPoint(618F, -177F, -50F);
-        this.add("turret", turret);
+        this.add("turret", turret); this.get("turret").addProgram(DefaultPrograms.DOOR_CLOSE);
         //
         fixRotations();
-    }
-
-    @Override
-    public void render(VehicleData data, Object obj, @Nullable VehicleEntity entity, int meta){
-        render(data, "body");
     }
 
 }

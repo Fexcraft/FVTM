@@ -11,7 +11,11 @@ import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Addon;
+import net.fexcraft.mod.fvtm.api.EntityType;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.blocks.Pallet;
@@ -20,6 +24,8 @@ import net.fexcraft.mod.fvtm.entities.railold.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.railold.GenericWagonEntity;
 import net.fexcraft.mod.fvtm.entities.railold.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.impl.GenericEntityType;
+import net.fexcraft.mod.fvtm.impl.PrototypeEntityType;
 import net.fexcraft.mod.fvtm.impl.caps.ChunkRailDataUtil;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
@@ -28,11 +34,13 @@ import net.fexcraft.mod.fvtm.render.entity.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packets.*;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -109,6 +117,15 @@ public class FVTM {
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.render.Renderer());
 		}
+		//
+		EntityType.NONE = new EntityType(new ResourceLocation("minecraft:none"), "NONE", VehicleType.NULL){
+			@Override
+			public boolean spawnEntity(World world, EntityPlayer player, ItemStack stack, VehicleData data, VehicleType type){
+				Print.console("It was tried to spawn an entity with the ENTITYTYPE.NONE, here more data: ");
+				Print.console(world, player, stack, data, type); return false;
+			}
+		};
+		EntityType.INTERNAL = new GenericEntityType(); EntityType.PROTOTYPE = new PrototypeEntityType();
 	}
 
 	@Mod.EventHandler

@@ -14,23 +14,16 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
+import net.fexcraft.mod.fvtm.api.EntityType;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
-import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
-import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
-import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.railold.GenericLocomotiveEntity;
-import net.fexcraft.mod.fvtm.entities.railold.GenericWagonEntity;
 import net.fexcraft.mod.fvtm.impl.GenericCreativeTab;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.SpawnCmd;
 import net.fexcraft.mod.fvtm.util.Tabs;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,10 +36,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -191,92 +180,9 @@ public class GenericVehicleItem extends Item implements VehicleItem {
     		Print.chat(player, "&c&oYou do not have permission to place/spawn this vehicle.");
             return new ActionResult<ItemStack>(EnumActionResult.FAIL, player.getHeldItem(hand));
     	}
-        float cosYaw = MathHelper.cos(-player.rotationYaw * 0.01745329F - 3.141593F);
-        float sinYaw = MathHelper.sin(-player.rotationYaw * 0.01745329F - 3.141593F);
-        float cosPitch = -MathHelper.cos(-player.rotationPitch * 0.01745329F);
-        float sinPitch = MathHelper.sin(-player.rotationPitch * 0.01745329F);
-        double length = 5D;
-        Vec3d posVec = new Vec3d(player.posX, player.posY + 1.62D - player.getYOffset(), player.posZ);
-        Vec3d lookVec = posVec.addVector(sinYaw * cosPitch * length, sinPitch * length, cosYaw * cosPitch * length);
-        RayTraceResult movingobjectposition = world.rayTraceBlocks(posVec, lookVec, true);
-        if(movingobjectposition == null){
-            /*ItemStack stack = player.getHeldItem(hand);
-	        if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()){
-	            player.setItemStackToSlot(EntityEquipmentSlot.HEAD, stack.copy());
-	            stack.setCount(0);
-	            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
-	        }*/
-            return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
-        }
-        if(movingobjectposition.typeOfHit == RayTraceResult.Type.BLOCK){
-            BlockPos pos = movingobjectposition.getBlockPos();
-            VehicleData data = this.getVehicle(player.getHeldItem(hand));
-            if(data == null){
-                Print.chat(player, "No Vehicle Data found.");
-                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-            }
-            if(!data.readyToSpawn()){
-                Print.chat(player, "Vehicle can not be spawned, missing parts!");
-                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-            }
-            if(world.getBlockState(pos).getBlock() instanceof DisplayBlock){
-                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-            }
-            switch(data.getVehicle().getType()){
-                case LAND: {
-                    if(world.getBlockState(pos).getBlock() instanceof BlockLiquid){
-                        Print.chat(player, "Vehicle not placeable on water!");
-                        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-                    }
-                    if(!world.isRemote){
-                    	if(data.getVehicle().isTrailerOrWagon()){
-                    		world.spawnEntity(new GenericTrailerEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
-                    	}
-                    	else{
-                    		world.spawnEntity(new GenericVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
-                    	}
-                    }
-                    break;
-                }
-                case WATER: {
-                    if(world.getBlockState(pos).getBlock() instanceof BlockLiquid == false){
-                        Print.chat(player, "Vehicle not placeable on land!");
-                        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-                    }
-                    if(!world.isRemote){
-                        world.spawnEntity(new WaterVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + 2.5F, pos.getZ() + 0.5F, player, data));
-                    }
-                    break;
-                }
-                case AIR: {
-                    Print.chat(player, "Unavailable yet.");
-                    return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-                }
-                case RAIL: {
-                    if(world.getTileEntity(pos) instanceof TrackTileEntity == false){
-                        Print.chat(player, "Only placeable directly on rail pieces.");
-                        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-                    }
-                    if(!world.isRemote){
-                    	if(data.getVehicle().isTrailerOrWagon()){
-                    		world.spawnEntity(new GenericWagonEntity(world, pos, player, data));
-                    	}
-                    	else{
-                    		world.spawnEntity(new GenericLocomotiveEntity(world, pos, player, data));
-                    	}
-                    }
-                    break;
-                }
-                default:
-                case NULL: {
-                    Print.chat(player, "Invalid Vehicle Type.");
-                    return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-                }
-            }
-            if(!player.capabilities.isCreativeMode){
-                player.getHeldItem(hand).shrink(1);
-            }
-        }
+    	//TODO open gui for selecting EntityType
+    	ItemStack stack = player.getHeldItem(hand); VehicleData data = ((VehicleItem)stack.getItem()).getVehicle(stack);
+    	EntityType.INTERNAL.spawnEntity(world, player, stack, data, data.getVehicle().getType());
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
     }
 

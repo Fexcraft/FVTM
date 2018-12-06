@@ -1,52 +1,73 @@
 package net.fexcraft.mod.fvtm.api;
 
-public enum EntityType {
+import java.util.TreeMap;
 
-    NONE(0, "No Type"), //un-spawned
-    INTERNAL(1, "INTERNAL"),
-    PROTOTYPE(2, "PROTOTYPE"),
-    MTS(3, "MC Trans. Sim."), //if it ever get's that far
-    TiM(4, "Trains In Motion"); //Trains-Only
+import javax.annotation.Nullable;
 
-    private int index;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+
+public abstract class EntityType {
+	
+	//Those here usually get initialized by FVTM, 
+	public static EntityType NONE, INTERNAL, PROTOTYPE;
+	private static TreeMap<ResourceLocation, EntityType> ENTITYTYPES = new TreeMap<>();
+
+    private ResourceLocation rsname;
+    private VehicleType[] types;
     private String name;
 
-    EntityType(int index, String name){
-        this.index = index;
-        this.name = name;
+    public EntityType(ResourceLocation id, String name, VehicleType... types){
+        this.rsname = id; this.name = name; this.types = types; add(this, name.equals("NONE"));
     }
 
     @Override
-    public final String toString(){
-        return this.name().toLowerCase();
+    public String toString(){
+        return this.getName();
     }
 
-    public final EntityType fromString(String string){
-        if(string != null && !string.equals("")){
-            for(EntityType type : values()){
-                if(type.name().equalsIgnoreCase(string)){
-                    return type;
-                }
-            }
-        }
-        return NONE;
-    }
-
-    public static final EntityType byIndex(int i){
-        for(EntityType type : values()){
-            if(type.index() == i){
-                return type;
-            }
-        }
-        return NONE;
-    }
-
-    public final int index(){
-        return index;
-    }
-
-    public final String getName(){
+    public String getName(){
         return name;
     }
+    
+    public ResourceLocation getRegistryName(){
+    	return rsname;
+    }
+    
+    /** Returns the first type in the array, or NULL. */
+    public VehicleType getType(){
+    	return types == null || types.length == 0 ? VehicleType.NULL : types[0];
+    }
+    
+    public VehicleType[] getTypes(){
+    	return types;
+    }
+    
+    public boolean supports(VehicleType type){
+    	for(VehicleType vehtype : types) if(vehtype == type) return true; return false;
+    }
+    
+    public static void add(EntityType type, boolean override){
+    	if(!override && ENTITYTYPES.containsKey(type.getRegistryName())) return;
+    	ENTITYTYPES.put(type.getRegistryName(), type); return;
+    }
+    
+    public static void addAll(Iterable<EntityType> types, boolean override){
+    	for(EntityType type : types) add(type, override);
+    }
+    
+    public static void addAll(EntityType[] types, boolean override){
+    	for(EntityType type : types) add(type, override);
+    }
+    
+    public static TreeMap<ResourceLocation, EntityType> getEntityTypes(){
+    	return ENTITYTYPES;
+    }
+    
+    public abstract boolean spawnEntity(World world, @Nullable EntityPlayer player, ItemStack stack, VehicleData data, VehicleType type);
 
 }

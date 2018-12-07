@@ -38,6 +38,10 @@ script.hcp:container_crane.speed=Movement Speed
 script.hcp:container_crane.stepwise=Stepwise Movement
 script.hcp:container_crane.searchbox=Toggle Searchbox
 script.hcp:container_crane.length=Rail Length
+script.hcp:container_lift.expected=Position (exp.)
+script.hcp:container_lift.trycatch=Try Catch
+script.hcp:container_lift.release=Release
+script.hcp:container_lift.align=Try Align
 
 
 

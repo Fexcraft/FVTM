@@ -181,9 +181,9 @@ public class ContainerLiftScript implements VehicleScript {
 	}
 
 	protected void tryRelease(EntityPlayer player, VehicleEntity ent){
-		if(data == null){ Print.chat(player, "Not holding a Container."); return; }
-		if(!aligned()){ Print.chat(player, "Please align the Vehicle first."); return; }
-		if(current != expected){ Print.chat(player, "Still moving, please wait.");return;}
+		if(data == null){ Print.chat(player, "&7Not holding a Container."); return; }
+		if(!aligned()){ Print.chat(player, "&2Please align the Vehicle first."); return; }
+		if(current != expected){ Print.chat(player, "&aStill moving, please wait.");return;}
 		Vec3d pos = ent.getEntity().getPositionVector().addVector(0, (-expected) - 3, 0);
 		BlockPos blkpos = new BlockPos(pos);
 		EnumFacing facing = EnumFacing.fromAngle(ent.getAxes().getYaw()/* + 90 */);
@@ -197,23 +197,23 @@ public class ContainerLiftScript implements VehicleScript {
 					state.getBlock().onBlockPlacedBy(ent.getEntity().world, bp, state.withProperty(ContainerBlock.FACING, facing), player, stack);
 				});
 				this.data = null;
-				Print.chat(player, "Container Placed.");
+				Print.chat(player, "&9Container Placed.");
 			}
 			catch(Exception e){
 				e.printStackTrace();
-				Print.chat(player, "ERROR: See Console/Log.");
+				Print.chat(player, "&cERROR: See Console/Log.");
 			}
 		}
 		else{
-			Print.chat(player, "Invalid position for a container.");
+			Print.chat(player, "&cInvalid position for a container.");
 		}
 		return;
 	}
 
 	protected void tryCatch(EntityPlayer player, VehicleEntity ent){
-		if(data != null){ Print.chat(player, "Already holding a Container."); return; }
-		if(!aligned()){ Print.chat(player, "Please align the Vehicle first."); return; }
-		if(current != expected){ Print.chat(player, "Still moving, please wait.");return;}
+		if(data != null){ Print.chat(player, "&7Already holding a Container."); return; }
+		if(!aligned()){ Print.chat(player, "&2Please align the Vehicle first."); return; }
+		if(current != expected){ Print.chat(player, "&aStill moving, please wait.");return;}
 		Vec3d pos = ent.getEntity().getPositionVector().addVector(0, (-expected) - 3, 0);
 		BlockPos blkpos = new BlockPos(pos);
 		IBlockState state = ent.getEntity().world.getBlockState(blkpos);
@@ -222,16 +222,16 @@ public class ContainerLiftScript implements VehicleScript {
 			if(te.isCore()){
 				this.data = te.getContainerData();
 				te.notifyBreak(ent.getEntity().world, blkpos, state, false);
-				Print.chat(player, "Container: " + data.getContainer().getName());
+				Print.chat(player, "&7Container: &9" + data.getContainer().getName());
 			}
 			else{
-				Print.chat(player, "Not the Container core. ");
-				Print.chat(player, blkpos.toString());
-				Print.chat(player, te.getPos().toString());
+				Print.chat(player, "&cNot the Container core. ");
+				//Print.chat(player, blkpos.toString());
+				//Print.chat(player, te.getPos().toString());
 			}
 		}
 		else{
-			Print.chat(player, "No Container at position found. " + blkpos.toString());
+			Print.chat(player, "&cNo Container at position found.");
 		}
 		//ent.getEntity().world.setBlockState(blkpos, Blocks.ANVIL.getDefaultState(), 2);
 		Print.debug(pos, blkpos);

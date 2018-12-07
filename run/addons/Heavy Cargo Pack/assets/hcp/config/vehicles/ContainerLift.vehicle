@@ -25,5 +25,6 @@
     "ConstructionYOffSet": 14,
     "ConstructionWheelOffset": 38,
     "FVTM-SpawnHeight": 12,
-    "Trailer": false
+    "Trailer": false,
+    "DriveType": "catepillar"
 }

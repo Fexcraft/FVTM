@@ -168,6 +168,27 @@ public class DefaultPrograms {
 		}
 	};
 	
+	public static final Program ADJUSTABLE_BOGIE = new AutoRegProgram(){
+		private net.fexcraft.lib.mc.utils.Pos lastpos;
+		@Override public String getId(){ return "fvtm:adjustable_wheel"; }
+		//
+		@Override
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        lastpos = data.getVehicle().getWheelPositions().get(part);
+	        lastpos = lastpos == null ? Pos.NULL : lastpos;
+	        lastpos.translate();
+	        if(ent != null)
+	        	list.rotateAxis(ent.getBogieYaw()[part.contains("front") ? 0 : 1] * 3.14159265F / 180F * 3F, 1, true);
+		}
+		//
+		@Override
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+	        if(ent != null)
+	        	list.rotateAxis(-ent.getBogieYaw()[part.contains("front") ? 0 : 1] * 3.14159265F / 180F * 3F, 1, true);
+			lastpos.translateR();
+		}
+	};
+	
 	public static final Program IMPORTED_WHEEL = new AutoRegProgram(){
 		private boolean bool;
 		@Override public String getId(){ return "fvtm:imported_wheel"; }

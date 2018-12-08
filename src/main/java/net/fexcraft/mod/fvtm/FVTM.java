@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.blocks.Pallet;
+import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.entities.*;
 import net.fexcraft.mod.fvtm.entities.railold.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.railold.GenericWagonEntity;
@@ -40,6 +41,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -124,8 +126,14 @@ public class FVTM {
 				Print.console("It was tried to spawn an entity with the ENTITYTYPE.NONE, here more data: ");
 				Print.console(world, player, stack, data, type); return false;
 			}
+			@Override
+			public boolean spawnEntity(World world, BlockPos pos, VehicleData data){
+				Print.console("It was tried to spawn an entity with the ENTITYTYPE.NONE, here more data: ");
+				Print.console(world, pos, data); return false;
+			}
 		};
 		EntityType.INTERNAL = new GenericEntityType(); EntityType.PROTOTYPE = new PrototypeEntityType();
+		GenericTrigger.preInit(event);
 	}
 
 	@Mod.EventHandler
@@ -150,6 +158,7 @@ public class FVTM {
 		if(event.getSide().isClient()){
 			net.fexcraft.mod.fvtm.render.Renderer.initFontRenderer();
 		}
+		GenericTrigger.properInit(event);
 	}
 
 	@Mod.EventHandler
@@ -163,7 +172,7 @@ public class FVTM {
 		SignCapabilitySerializer.addListener(ContainerStatusListener.class);
 		//CapabilityManager.INSTANCE.register(BlockChunk.class, new BlockChunkUtil.Storage(), new BlockChunkUtil.Callable());
 		//
-		APIs.load();
+		GenericTrigger.postInit(event);
 	}
 
 	@Mod.EventHandler

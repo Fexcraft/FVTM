@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class PrototypeEntityType extends EntityType {
@@ -19,6 +20,12 @@ public class PrototypeEntityType extends EntityType {
 	public boolean spawnEntity(World world, EntityPlayer player, ItemStack stack, VehicleData data, VehicleType type){
 		Print.console("\"//TODO\"");
         return false;		
+	}
+
+	@Override
+	public boolean spawnEntity(World world, BlockPos pos, VehicleData data){
+		Print.console("\"//TODO\"");
+		return false;
 	}
 	
 }

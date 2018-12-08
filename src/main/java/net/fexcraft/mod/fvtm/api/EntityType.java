@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class EntityType {
@@ -69,5 +70,7 @@ public abstract class EntityType {
     }
     
     public abstract boolean spawnEntity(World world, @Nullable EntityPlayer player, ItemStack stack, VehicleData data, VehicleType type);
+    
+    public abstract boolean spawnEntity(World world, @Nullable BlockPos pos, VehicleData data);
 
 }

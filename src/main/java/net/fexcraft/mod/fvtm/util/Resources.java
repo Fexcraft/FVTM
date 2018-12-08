@@ -219,7 +219,8 @@ public class Resources {
 		}
 		ADDONS.getValuesCollection().forEach(addon ->  new GenericCreativeTab(addon));
 		if(Static.side().isClient() && defloaded.size() > 0){
-			net.minecraft.client.Minecraft.getMinecraft().refreshResources();
+			//net.minecraft.client.Minecraft.getMinecraft().refreshResources();
+			net.minecraftforge.fml.client.FMLClientHandler.instance().refreshResources();
 		}
 	}
 

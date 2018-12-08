@@ -176,6 +176,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
+    	if(world.isRemote) return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
     	if(!PermissionAPI.hasPermission(player, FvtmPermissions.VEHICLE_PLACE) || !PermissionAPI.hasPermission(player, FvtmPermissions.permPlace(player.getHeldItem(hand)))){
     		Print.chat(player, "&c&oYou do not have permission to place/spawn this vehicle.");
             return new ActionResult<ItemStack>(EnumActionResult.FAIL, player.getHeldItem(hand));

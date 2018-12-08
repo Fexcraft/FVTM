@@ -4,7 +4,9 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Model;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Command;
@@ -63,14 +65,14 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
                 this.bindTexture(vehicle.getVehicleData().getTexture());
                 modVehicle.render(vehicle.getVehicleData(), null, vehicle, -1);
                 if(vehicle.getVehicleData().getParts().size() > 0){
-                    vehicle.getVehicleData().getParts().forEach((key, partdata) -> {
-                        this.bindTexture(partdata.getTexture());
-                        Pos pos = partdata.getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
+                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
+                    	ModelBase.bindTexture(entry.getValue().getTexture());
+                        Pos pos = entry.getValue().getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
                         pos.translate();
-                        partdata.getPart().getModel().render(vehicle.getVehicleData(), key, vehicle, -1);
-                        partdata.getPart().getAttributes().forEach(attr -> { if(attr.hasRenderData()){ attr.render(vehicle, partdata, key); } });
+                        entry.getValue().getPart().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, -1);
+                        for(Attribute attr : entry.getValue().getPart().getAttributes()) if(attr.hasRenderData()){ attr.render(vehicle, entry.getValue(), entry.getKey()); };
                         pos.translateR();
-                    });
+                	}
                 }
             }
             if(Command.DEBUG){

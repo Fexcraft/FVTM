@@ -7,8 +7,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.compatibility.TANItemData;
+import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
-import net.fexcraft.mod.fvtm.util.APIs;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,7 +40,7 @@ public class GenericConsumable implements Consumable {
         this.wolfmeat = JsonUtil.getIfExists(obj, "WolfMeat", false);
         this.drinkable = JsonUtil.getIfExists(obj, "Drinkable", false);
         this.alwaysedible = JsonUtil.getIfExists(obj, "AlwaysEdible", false);
-        if(this.drinkable && APIs.TOUGHASNAILS){
+        if(this.drinkable && GenericTrigger.TOUGHASNAILS){
             this.tandata = obj.has("ToughAsNails") ? new TANDataImpl(obj.get("ToughAsNails").getAsJsonObject()) : null;
         }
         if(obj.has("Recipes")){

@@ -40,6 +40,7 @@ public class PartModel extends GenericModel<VehicleData, String> {
 		//
 		"windows", "windows_door_open", "windows_door_close"
 	};
+	public static final String[] defval_bogie = new String[]{ "chassis", "axle0", "axle1", "axle2", "axle3" };
 	
 	////-///---/---///-////
 	

@@ -284,7 +284,7 @@ public class BogieST1Model extends PartModel {
 		axle0.add(new ModelRendererTurbo(axle0, 97, 57, textureX, textureY).addBox(-1, -1, -17, 2, 2, 34)
 			.setRotationPoint(16, -16, 0).setRotationAngle(0, 0, 0).setName("Box 66")
 		);
-		axle0.addProgram(DefaultPrograms.ROTATED_WHEEL_ROTATE);
+		axle0.addPrograms(DefaultPrograms.ROTATED_WHEEL_ROTATE, DefaultPrograms.ADJUSTABLE_BOGIE);
 		this.groups.add(axle0);
 		//
 		TurboList axle1 = new TurboList("axle1");
@@ -553,7 +553,7 @@ public class BogieST1Model extends PartModel {
 		axle1.add(new ModelRendererTurbo(axle1, 73, 105, textureX, textureY).addBox(-1, -1, -17, 2, 2, 34)
 			.setRotationPoint(-16, -16, 0).setRotationAngle(0, 0, 0).setName("Box 133")
 		);
-		axle1.addProgram(DefaultPrograms.ROTATED_WHEEL_ROTATE);
+		axle1.addPrograms(DefaultPrograms.ROTATED_WHEEL_ROTATE, DefaultPrograms.ADJUSTABLE_BOGIE);
 		this.groups.add(axle1);
 		//
 		TurboList chassis = new TurboList("chassis");
@@ -718,6 +718,7 @@ public class BogieST1Model extends PartModel {
 			.addShapeBox(-3, 0, 1.5f, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0.5f, 0, -0.5f, -1.5f, 0, 0.5f, 0, 0, 0, 0, 0, 0, 0.5f, 0, -0.5f, -1.5f, 0, 0.5f)
 			.setRotationPoint(0, -20.5f, 0).setRotationAngle(0, 0, 0).setName("Box 191")
 		);
+		chassis.addProgram(DefaultPrograms.ADJUSTABLE_BOGIE);
 		this.groups.add(chassis);
 	}
 

@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
+import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
@@ -27,6 +28,8 @@ public class GenericEntityType extends EntityType {
 	public GenericEntityType(){
 		super(new ResourceLocation("fvtm:internal"), "FVTM", VehicleType.LAND, VehicleType.WATER, VehicleType.RAIL);
 	}
+	
+	private EntityPlayer player;//last player;
 
 	@Override
 	public boolean spawnEntity(World world, EntityPlayer player, ItemStack stack, VehicleData data, VehicleType type){
@@ -54,59 +57,70 @@ public class GenericEntityType extends EntityType {
                 Print.chat(player, "Vehicle can not be spawned, missing parts!"); return false;
             }
             if(world.getBlockState(pos).getBlock() instanceof DisplayBlock){ return true; }
-            float sho = data.getVehicle().getFMAttribute("spawnheight");//spawnheightoffset
-            switch(data.getVehicle().getType()){
-                case LAND: {
-                    if(world.getBlockState(pos).getBlock() instanceof BlockLiquid){
-                        Print.chat(player, "Vehicle not placeable on water!");
-                    }
-                    if(!world.isRemote){
-                    	if(data.getVehicle().isTrailerOrWagon()){
-                    		world.spawnEntity(new GenericTrailerEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
-                    	}
-                    	else{
-                    		world.spawnEntity(new GenericVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
-                    	}
-                    }
-                    break;
-                }
-                case WATER: {
-                    if(world.getBlockState(pos).getBlock() instanceof BlockLiquid == false){
-                        Print.chat(player, "Vehicle not placeable on land!");
-                    }
-                    if(!world.isRemote){
-                        world.spawnEntity(new WaterVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
-                    }
-                    break;
-                }
-                case AIR: {
-                    Print.chat(player, "Unavailable yet."); return false;
-                }
-                case RAIL: {
-                    if(world.getTileEntity(pos) instanceof TrackTileEntity == false){
-                        Print.chat(player, "Only placeable directly on rail pieces.");
-                    }
-                    if(!world.isRemote){
-                    	if(data.getVehicle().isTrailerOrWagon()){
-                    		world.spawnEntity(new GenericWagonEntity(world, pos, player, data));
-                    	}
-                    	else{
-                    		world.spawnEntity(new GenericLocomotiveEntity(world, pos, player, data));
-                    	}
-                    }
-                    break;
-                }
-                default:
-                case NULL: {
-                    Print.chat(player, "Invalid Vehicle Type."); break;
-                }
-            }
+            this.player = player; this.spawnEntity(world, pos, data);
             if(!player.capabilities.isCreativeMode){
             	stack.shrink(1);
             }
             return true;
         }
         return false;		
+	}
+
+	@Override
+	public boolean spawnEntity(World world, BlockPos pos, VehicleData data){
+		if(pos == null) return false;
+        float sho = data.getVehicle().getFMAttribute("spawnheight");//spawnheightoffset
+        switch(data.getVehicle().getType()){
+            case LAND: {
+                if(world.getBlockState(pos).getBlock() instanceof BlockLiquid){
+                    Print.chat(player, "Vehicle not placeable on water!");
+                }
+                if(!world.isRemote){
+                	if(data.getVehicle().isTrailerOrWagon()){
+                		world.spawnEntity(new GenericTrailerEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
+                	}
+                	else{
+                		world.spawnEntity(new GenericVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
+                	}
+                }
+                break;
+            }
+            case WATER: {
+                if(world.getBlockState(pos).getBlock() instanceof BlockLiquid == false){
+                    Print.chat(player, "Vehicle not placeable on land!");
+                }
+                if(!world.isRemote){
+                    world.spawnEntity(new WaterVehicleEntity(world, pos.getX() + 0.5F, pos.getY() + sho + 0.5F, pos.getZ() + 0.5F, player, data));
+                }
+                break;
+            }
+            case AIR: {
+                Print.chat(player, "Unavailable yet."); return false;
+            }
+            case RAIL: {
+            	if(GenericTrigger.AM_TRAINS){
+            		GenericTrigger.AM_TRAINS_ET.spawnEntity(world, pos, data);
+            		return true;
+            	}
+                if(world.getTileEntity(pos) instanceof TrackTileEntity == false){
+                    Print.chat(player, "Only placeable directly on rail pieces.");
+                }
+                if(!world.isRemote){
+                	if(data.getVehicle().isTrailerOrWagon()){
+                		world.spawnEntity(new GenericWagonEntity(world, pos, player, data));
+                	}
+                	else{
+                		world.spawnEntity(new GenericLocomotiveEntity(world, pos, player, data));
+                	}
+                }
+                break;
+            }
+            default:
+            case NULL: {
+                Print.chat(player, "Invalid Vehicle Type."); break;
+            }
+        }
+		return true;
 	}
 	
 }

@@ -33,25 +33,7 @@ public class GenericTrigger {
 		IR = Loader.isModLoaded("immersiverailroading");
 		TRACK_API = Loader.isModLoaded("trackapi") || AM_TRAINS || IR;
 		//
-		if(AM_TRAINS){
-			alemax.trainsmod.util.FVTMCompatibility.load(event);
-			//
-			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:trainsmod"), TrainsModEntityConverter.class, "fvtm:trainsmod", 29910, FVTM.getInstance(), 256, 1, false);
-			AM_TRAINS_ET = new EntityType(new ResourceLocation("trainsmod:internal"), "TrainsMod - FVTM Internal Compatibility Module", VehicleType.RAIL){
-				@Override
-				public boolean spawnEntity(World world, EntityPlayer player, ItemStack stack, VehicleData data, VehicleType type){
-					// TODO Auto-generated method stub
-					return false;
-				}
-				@Override
-				public boolean spawnEntity(World world, BlockPos pos, VehicleData data){
-					return world.spawnEntity(new TrainsModEntityConverter(world, pos, data));
-				}
-			};
-			if(event.getSide().isClient()){
-				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(TrainsModEntityConverter.class, RenderTrainsModGeneric::new);
-			}
-		}
+		if(AM_TRAINS) registerAMTrains(event);
 		//
 	}
 
@@ -62,6 +44,30 @@ public class GenericTrigger {
 	public static void postInit(FMLPostInitializationEvent event){
 		//
 	}
+	
+	//-//-//-//
+	
+	private static void registerAMTrains(FMLPreInitializationEvent event){
+		alemax.trainsmod.util.FVTMCompatibility.load(event);
+		//
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:trainsmod"), TrainsModEntityConverter.class, "fvtm:trainsmod", 29910, FVTM.getInstance(), 256, 1, false);
+		AM_TRAINS_ET = new EntityType(new ResourceLocation("trainsmod:internal"), "TrainsMod - FVTM Internal Compatibility Module", VehicleType.RAIL){
+			@Override
+			public boolean spawnEntity(World world, EntityPlayer player, ItemStack stack, VehicleData data, VehicleType type){
+				// TODO Auto-generated method stub
+				return false;
+			}
+			@Override
+			public boolean spawnEntity(World world, BlockPos pos, VehicleData data){
+				return world.spawnEntity(new TrainsModEntityConverter(world, pos, data));
+			}
+		};
+		if(event.getSide().isClient()){
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(TrainsModEntityConverter.class, RenderTrainsModGeneric::new);
+		}
+	}
+	
+	//-//-//-//
 	
 	public static boolean getTaNBooleanValue(String string){
 		return DetachedTaN.getBooleanValue(string);

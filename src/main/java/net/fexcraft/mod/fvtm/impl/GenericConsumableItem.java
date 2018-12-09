@@ -6,16 +6,19 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Addon;
 
 import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Consumable.ConsumableItem;
+import net.fexcraft.mod.fvtm.api.compatibility.TANItemData;
 import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -124,7 +127,7 @@ public class GenericConsumableItem extends ConsumableItem {
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey(NBTKEY)){
             return Resources.CONSUMABLES.getValue(new ResourceLocation(stack.getTagCompound().getString(NBTKEY)));
         }
-        return null;
+        return NULL;
     }
 
     @Override
@@ -203,5 +206,81 @@ public class GenericConsumableItem extends ConsumableItem {
             return super.onItemUseFinish(stack, world, entity);
         }
     }
+    
+    public static final Consumable NULL = new Consumable(){
+    	
+    	private ResourceLocation loc = new ResourceLocation("fvtm:null");
+
+		@Override
+		public ItemStack getItemStack(){
+			return new ItemStack(Blocks.AIR);
+		}
+
+		@Override
+		public Addon getAddon(){
+			return FVTM.INTERNAL_ADDON;
+		}
+
+		@Override
+		public String getName(){
+			return "NULL Placeholder Consumable";
+		}
+
+		@Override
+		public String[] getDescription(){
+			return new String[0];
+		}
+
+		@Override
+		public Consumable setRegistryName(ResourceLocation name){
+			loc = name; return this;
+		}
+
+		@Override
+		public ResourceLocation getRegistryName(){
+			return loc;
+		}
+
+		@Override
+		public int getHealAmount(){
+			return 0;
+		}
+
+		@Override
+		public float getSaturation(){
+			return 0;
+		}
+
+		@Override
+		public int getItemUseDuration(){
+			return 0;
+		}
+
+		@Override
+		public boolean isWolfMeat(){
+			return false;
+		}
+
+		@Override
+		public boolean isDrinkable(){
+			return false;
+		}
+
+		@Override
+		public boolean alwaysEdible(){
+			return false;
+		}
+
+		@Override
+		public TANItemData getTANData(){
+			return null;
+		}
+
+		@Override
+		public ItemStack getContainerItemStack(){
+			return null;
+		}
+    	
+    };
 
 }

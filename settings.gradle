@@ -2,4 +2,6 @@ include ':FCL'
 project(':FCL').projectDir = new File(settingsDir, '../FCL')
 include ':TrackAPI'
 project(':TrackAPI').projectDir = new File(settingsDir, '../TrackAPI')
+include ':TrainsMod'
+project(':TrainsMod').projectDir = new File(settingsDir, '../TrainsMod')
 //uncomment when using local copies

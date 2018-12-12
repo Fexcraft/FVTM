@@ -21,9 +21,9 @@ import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.blocks.Pallet;
 import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.entities.*;
-import net.fexcraft.mod.fvtm.entities.railold.GenericLocomotiveEntity;
-import net.fexcraft.mod.fvtm.entities.railold.GenericWagonEntity;
-import net.fexcraft.mod.fvtm.entities.railold.RailboundVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
+import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
+import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.GenericEntityType;
 import net.fexcraft.mod.fvtm.impl.PrototypeEntityType;
@@ -94,6 +94,7 @@ public class FVTM {
 		catch(Exception e){
 			e.printStackTrace();
 		}
+		//Config.ROUND_RAIL_TRACKS = true;
 		//
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSignEntity.class, "fvtm:streetsign", 1991, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);

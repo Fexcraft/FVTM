@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities.railold;
+package net.fexcraft.mod.fvtm.entities.rail;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
@@ -74,13 +74,13 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
         }*/
         //
     	if(rear != null && (frontdir == null ? true : frontdir)){
-    		boolean fr = rear.front != null && rear.front.equals(this), rev = fr ? reverse : !reverse;
+    		boolean fr = rear.front == this, rev = fr ;//? reverse : !reverse;
     		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16FloatX());
     		((GenericWagonEntity)rear).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? dob : -dob, rev), rev);
     		rear.onUpdateMovement(0, call, fr);
     	}
     	if(front != null && (frontdir == null ? true : !frontdir)){
-    		boolean fr = front.front != null && front.front.equals(this), rev = fr ? !reverse : reverse;
+    		boolean fr = front.front == this, rev = fr ? !reverse : reverse;
     		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? front.getVehicleData().getFrontConnectorPos() : front.getVehicleData().getRearConnectorPos()).to16FloatX());
     		((GenericWagonEntity)front).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? -dob : dob, rev), rev);
     		front.onUpdateMovement(0, call, fr);

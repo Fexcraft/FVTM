@@ -6,12 +6,11 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
-import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.railold.GenericLocomotiveEntity;
-import net.fexcraft.mod.fvtm.entities.railold.GenericWagonEntity;
+import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
+import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -98,10 +97,10 @@ public class GenericEntityType extends EntityType {
                 Print.chat(player, "Unavailable yet."); return false;
             }
             case RAIL: {
-            	if(GenericTrigger.AM_TRAINS){
+            	/*if(GenericTrigger.AM_TRAINS){
             		GenericTrigger.AM_TRAINS_ET.spawnEntity(world, pos, data);
             		return true;
-            	}
+            	}*/
                 if(world.getTileEntity(pos) instanceof TrackTileEntity == false){
                     Print.chat(player, "Only placeable directly on rail pieces.");
                 }

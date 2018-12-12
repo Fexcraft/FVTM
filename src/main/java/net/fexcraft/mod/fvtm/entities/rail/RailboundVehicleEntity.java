@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities.railold;
+package net.fexcraft.mod.fvtm.entities.rail;
 
 import java.util.TreeMap;
 
@@ -959,6 +959,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         _front = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX()).dest;
         _back = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX()).dest;
         if(_front != null && _back != null){
+        	//if(reverse){ double[] copy = _front; _front = _back; _back = copy; }
             double dx = _front[0] - _back[0], dy = _front[1] - _back[1], dz = _front[2] - _back[2];
             double dxz = Math.sqrt(dx * dx + dz * dz);
             //

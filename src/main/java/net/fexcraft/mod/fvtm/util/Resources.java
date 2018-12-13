@@ -755,7 +755,7 @@ public class Resources {
 						confol.mkdirs();
 					}
 					for(File file : confol.listFiles()){
-						if(!file.isDirectory() && file.getName().endsWith(".container")){
+						if(!file.isDirectory() && file.getName().endsWith(".gauge")){
 							GenericRailGauge con = new GenericRailGauge(JsonUtil.get(file));
 							event.getRegistry().register(con);
 							if(Static.side().isClient()){

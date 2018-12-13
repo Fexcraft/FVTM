@@ -1,0 +1,8 @@
+{
+    "RegistryName": "test:12dyn",
+    "Addon": "fvtm:test",
+    "FullName": "Joke Gauge v. 12.0-vanilla",
+    "ModelFile": "net.fexcraft.mod.addons.test.models.ModelRailSTD125_DYNTEST12.class",
+    "Texture": "test:textures/other/rail_dyn12.png",
+    "GaugeInnerWidth": 12
+}

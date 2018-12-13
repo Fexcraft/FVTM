@@ -1,0 +1,28 @@
+{
+    "RegistryName": "hcp:container_wagon_1",
+    "Addon": "fvtm:hcp",
+    "FullName": "Container Wagon (Type 1)",
+    "ModelFile": "hcp:models/vehicle/containerwagon1",
+    "Textures": [
+        "hcp:textures/vehicles/container_wagon_1.png",
+        "hcp:textures/vehicles/container_wagon_1_notex.png"
+    ],
+    "WheelPos":[
+        { "x": -128, "y": -10, "z": 0 },
+        { "x":  128, "y": -10, "z": 0 }
+    ],
+    "ConstructionLength": 10,
+    "ConstructionYOffSet": 24,
+    "RequiredParts": [ ],
+    "PreInstalled":[
+        { "as": "cargo0", "part": "hcp:container_wagon_1_cargo0" },
+        { "as": "cargo1", "part": "hcp:container_wagon_1_cargo1" },
+        { "as": "bogie_front", "part": "fvp:bogie_st1" },
+        { "as": "bogie_back", "part": "fvp:bogie_st1" }
+    ],
+	"VehicleType": "RAIL", "Wagon": true,
+    "WheelCoords":[
+        { "x": -128, "y": 8, "z": 0, "id": "bogie_front" },
+        { "x":  128, "y": 8, "z": 0, "id": "bogie_back" }
+    ]
+}

@@ -57,7 +57,7 @@ public class GenericVehicle implements Vehicle {
     //private TreeMap<String, Float> floats;//TODO replace all the "physics related" float vars to entries of this, unless anyone can prove that's a bad idea.
     private float cameradis, maxposthrottle, maxnegthrottle, turnleftmod, turnrightmod, wheelspringstrength, wheelstepheight, bouyancy, colldamage;
     //
-    private float trailer_adjustment_axe;
+    private float trailer_adjustment_axe, railgauge_width;
 
     public GenericVehicle(JsonObject obj){
         this.registryname = DataUtil.getRegistryName(obj, "VEHICLE");
@@ -108,6 +108,7 @@ public class GenericVehicle implements Vehicle {
         this.wheelstepheight = JsonUtil.getIfExists(obj, "FM-WheelStepHeight", 1f).floatValue();
         this.trailer_adjustment_axe = JsonUtil.getIfExists(obj, "FVTM-TrailerAdjustmentAxe", 1f).floatValue();
         this.spawnheight = JsonUtil.getIfExists(obj, "FVTM-SpawnHeight", 2f).floatValue();
+        this.railgauge_width = JsonUtil.getIfExists(obj, "FVTM-RailGaugeWidth", 30).floatValue();
         if(obj.has("Sounds")){
             for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
                 JsonObject jsn = elm.getAsJsonObject();
@@ -330,6 +331,7 @@ public class GenericVehicle implements Vehicle {
             case "bouyancy": return bouyancy;
             case "collision_damage": return colldamage;
             case "spawnheight": return spawnheight;
+            case "railgauge_width": return railgauge_width;
         }
         return 0f;
     }

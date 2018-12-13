@@ -23,9 +23,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class TrackItemBlock extends ItemBlock16 {
+	
+	public static TrackItemBlock INSTANCE;
 
 	public TrackItemBlock(Block block){
-		super(block);
+		super(block); INSTANCE = this;
 	}
 	
 	@Override

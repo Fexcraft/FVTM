@@ -69,7 +69,7 @@ public class FVTM {
 	public static final String MODID = "fvtm";
 	public static final String PREFIX = Formatter.format("&0[&9FVTM&0]&7 ");
 	public static final String VERSION = "@VERSION@";
-	public static final Addon INTERNAL_ADDON = new InternalAddon();
+	public static final InternalAddon INTERNAL_ADDON = new InternalAddon();
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
@@ -211,6 +211,7 @@ public class FVTM {
 		private static final List<ResourceLocation> empty = new ArrayList<ResourceLocation>();
 		private static final List<UUID> authors = new ArrayList<>();
 		static { authors.add(UUID.fromString("01e4af9b-2a30-471e-addf-f6338ffce04b")); }
+		public static final ResourceLocation STANDARD_GAUGE = new ResourceLocation("fvtm:standard");
 
 		@Override
 		public Addon setRegistryName(ResourceLocation name){

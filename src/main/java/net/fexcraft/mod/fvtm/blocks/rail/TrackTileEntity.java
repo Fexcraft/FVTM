@@ -3,12 +3,17 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FVTM.InternalAddon;
+import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.api.StaticValues;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -23,6 +28,7 @@ import trackapi.lib.ITrack;
 public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiver<PacketTileEntityUpdate> {
 	
 	public Connection[] connections = new Connection[0];
+	public Gauge gauge;
 
 	public TrackTileEntity(World world){
 		if(this.world == null) this.world = world;
@@ -32,7 +38,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
 
 	@Override @Optional.Method(modid = "trackapi")
 	public double getTrackGauge(){
-		return StaticValues.GAUGE_S125;
+		return gauge == null ? StaticValues.GAUGE_S125 : gauge.width() * Static.sixteenth;
 	}
 
 	@Override @Optional.Method(modid = "trackapi")
@@ -71,6 +77,9 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
         	for(Connection conn : connections){ nbtlinks.appendTag(conn.write(new NBTTagCompound())); }
         	compound.setTag("connections", nbtlinks);
         }
+        if(gauge != null){
+        	compound.setString(Gauge.GaugeItem.NBTKEY, gauge.getRegistryName().toString());
+        }
         return compound;
     }
 
@@ -83,6 +92,12 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
         	for(int i = 0; i < connections.length; i++){
         		connections[i] = new Connection().read(list.getCompoundTagAt(i));
         	}
+        }
+        if(!compound.hasKey(Gauge.GaugeItem.NBTKEY)){
+        	gauge = Resources.GAUGES.getValue(InternalAddon.STANDARD_GAUGE);
+        }
+        else{
+        	gauge = Resources.GAUGES.getValue(new ResourceLocation(compound.getString(Gauge.GaugeItem.NBTKEY)));
         }
         if(world == null || !world.isRemote) RailUtil.attach(this);
     }

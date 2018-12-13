@@ -105,6 +105,19 @@ public class GenericEntityType extends EntityType {
                     Print.chat(player, "Only placeable directly on rail pieces.");
                 }
                 if(!world.isRemote){
+                	TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(pos);
+                	if(tile == null){
+                		Print.chat(player, "No TileEntity at postion found.");
+                		return false;
+                	}
+                	if(tile.gauge == null){
+                		Print.chat(player, "Track has no Gauge Data.");
+                		return false;
+                	}
+                	if(tile.gauge.width() != data.getVehicle().getFMAttribute("railgauge_width")){
+                		Print.chat(player, "Vehicle's Gauge is not compatible with Track's Gauge");
+                		return false;
+                	}
                 	if(data.getVehicle().isTrailerOrWagon()){
                 		world.spawnEntity(new GenericWagonEntity(world, pos, player, data));
                 	}

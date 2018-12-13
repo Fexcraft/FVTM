@@ -29,6 +29,7 @@ import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.FVTM.InternalAddon;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Block;
@@ -39,6 +40,7 @@ import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Fuel;
+import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Pallet;
@@ -58,6 +60,8 @@ import net.fexcraft.mod.fvtm.impl.GenericConsumableItem;
 import net.fexcraft.mod.fvtm.impl.GenericCreativeTab;
 import net.fexcraft.mod.fvtm.impl.GenericMaterial;
 import net.fexcraft.mod.fvtm.impl.GenericMaterialItem;
+import net.fexcraft.mod.fvtm.impl.GenericRailGauge;
+import net.fexcraft.mod.fvtm.impl.GenericRailGaugeItem;
 import net.fexcraft.mod.fvtm.impl.HybridAddon;
 import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.impl.block.GenericBlock;
@@ -113,6 +117,7 @@ public class Resources {
 	public static IForgeRegistry<Block> BLOCKS;
 	public static IForgeRegistry<Consumable> CONSUMABLES;
 	public static IForgeRegistry<Pallet> PALLETS;
+	public static IForgeRegistry<Gauge> GAUGES;
 	public static TreeMap<String, Model<?, ?>> MODELS = new TreeMap<String, Model<?, ?>>();
 	public static TreeMap<ResourceLocation, SoundEvent> SOUNDS = new TreeMap<ResourceLocation, SoundEvent>();
 	public static TreeMap<String, JsonObject> PRESETS = new TreeMap<String, JsonObject>();
@@ -139,6 +144,7 @@ public class Resources {
 		CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
 		BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
 		PALLETS = new RegistryBuilder<Pallet>().setName(new ResourceLocation("fvtm:pallets")).setType(Pallet.class).create();
+		GAUGES = new RegistryBuilder<Gauge>().setName(new ResourceLocation("fvtm:railgauges")).setType(Gauge.class).create();
 		//
 		try{
 			method = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", java.net.URL.class);
@@ -164,6 +170,7 @@ public class Resources {
 		event.getRegistry().register(GenericContainerItem.INSTANCE);
 		event.getRegistry().register(GenericConsumableItem.INSTANCE);
 		event.getRegistry().register(GenericBlockItem.INSTANCE);
+		event.getRegistry().register(GenericRailGaugeItem.INSTANCE);
 		//
 	}
 
@@ -724,6 +731,62 @@ public class Resources {
 					array = ZipUtil.getJsonElementsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/recipes/", ".recipes");
 					for(JsonElement elm : array){
 						CrafterBlockScriptBase.registerRecipes(elm, null, null);
+					}
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void regRailGauges(RegistryEvent.Register<Gauge> event){
+		event.getRegistry().register(new GenericRailGauge(FVTM.INTERNAL_ADDON, InternalAddon.STANDARD_GAUGE, 30f));
+		for(Addon addon : ADDONS.getValuesCollection()){
+			if(addon instanceof GenericAddon){
+				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){
+					continue;
+				}
+			}
+			//Print.debug(addon.getRegistryName());
+			if(addon.isEnabled() && addon.getFile() != null /* && !addon.hasMissingDependencies()*/){
+				if(addon.getFile().isDirectory()){
+					File confol = new File(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/railgauges/");
+					Print.debug(confol.getPath());
+					if(!confol.exists()){
+						confol.mkdirs();
+					}
+					for(File file : confol.listFiles()){
+						if(!file.isDirectory() && file.getName().endsWith(".container")){
+							GenericRailGauge con = new GenericRailGauge(JsonUtil.get(file));
+							event.getRegistry().register(con);
+							if(Static.side().isClient()){
+								net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
+							}
+						}
+						else if(file.isDirectory()){
+							for(File fl : file.listFiles()){
+								if(fl.getName().endsWith(".gauge")){
+									GenericRailGauge con = new GenericRailGauge(JsonUtil.get(fl));
+									event.getRegistry().register(con);
+									if(Static.side().isClient()){
+										net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
+									}
+									Print.debug(con.getRegistryName());
+								}
+							}
+						}
+						Print.debug(file.getPath());
+						//else skip;
+					}
+				}
+				else{
+					JsonArray array = ZipUtil.getJsonObjectsAt(addon.getFile(), "assets/" + addon.getRegistryName().getResourcePath() + "/config/railgauges/", ".gauge");
+					for(JsonElement elm : array){
+						GenericRailGauge con = new GenericRailGauge(elm.getAsJsonObject());
+						event.getRegistry().register(con);
+						if(Static.side().isClient()){
+							net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(GenericContainerItem.INSTANCE, con.getRegistryName());
+						}
+						Print.debug(con.getRegistryName());
 					}
 				}
 			}

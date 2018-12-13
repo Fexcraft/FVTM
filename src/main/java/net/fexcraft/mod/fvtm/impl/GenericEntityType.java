@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
+import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
@@ -97,10 +98,9 @@ public class GenericEntityType extends EntityType {
                 Print.chat(player, "Unavailable yet."); return false;
             }
             case RAIL: {
-            	/*if(GenericTrigger.AM_TRAINS){
-            		GenericTrigger.AM_TRAINS_ET.spawnEntity(world, pos, data);
-            		return true;
-            	}*/
+            	if(world.getBlockState(pos).getBlock().getRegistryName().getResourceDomain().equals("trainsmod") && GenericTrigger.AM_TRAINS){
+            		GenericTrigger.AM_TRAINS_ET.spawnEntity(world, pos, data); return true;
+            	}
                 if(world.getTileEntity(pos) instanceof TrackTileEntity == false){
                     Print.chat(player, "Only placeable directly on rail pieces.");
                 }

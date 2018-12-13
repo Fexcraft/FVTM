@@ -90,9 +90,7 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote){
-        	return EnumActionResult.PASS;
-        }
+        if(world.isRemote){ return EnumActionResult.PASS; }
         IBlockState state = world.getBlockState(pos); Block block = state.getBlock(); ItemStack stack = player.getHeldItem(hand);
         if(block instanceof TrackBlock){
     		TrackTileEntity tte = (TrackTileEntity)world.getTileEntity(pos);
@@ -106,6 +104,16 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         		TrackTileEntity tile0 = (TrackTileEntity)world.getTileEntity(pos0);
         		if(tile0 == null){ Print.chat(player, "&cTileEntity at first connection point is NULL."); return EnumActionResult.FAIL; }
         		if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
+        		if(tte.gauge == null){
+        			Print.chat(player, "&aGauge Updated.");
+        			tte.gauge = this.getGauge(stack); tte.sendUpdate();
+        		}
+        		if(tte.gauge != tile0.gauge){
+        			Print.chat(player, "&cGauges do not match.");
+        			Print.chat(player, "&7First: &9(" + tile0.gauge.width() + ") &7" + tile0.gauge.getName());
+        			Print.chat(player, "&7This: &a(" + tte.gauge.width() + ") &7" + tte.gauge.getName());
+        	        return EnumActionResult.FAIL;
+        		}
         		if(stack.getTagCompound().getInteger("fvtm:railtrackpoints") == 1){
         			Print.chat(player, "&cAt least 2 subpoints are needed."); return EnumActionResult.FAIL;
         		}
@@ -127,18 +135,26 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
             			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + tte.connections.length + ";)");
             	        return EnumActionResult.FAIL;
         			}
-        			if(this.getGauge(stack) == null){
+    				Gauge sec = this.getGauge(stack);
+        			if(sec == null){
             			Print.chat(player, "&cItem has no Gauge Data.");
             	        return EnumActionResult.FAIL;
         			}
         			if(tte.gauge == null){
-        				tte.gauge = this.getGauge(stack);//Resources.GAUGES.getValue(InternalAddon.STANDARD_GAUGE);
-        				tte.sendUpdate();
+            			Print.chat(player, "&aGauge Updated.");
+        				tte.gauge = sec; tte.sendUpdate();
+        				//Resources.GAUGES.getValue(InternalAddon.STANDARD_GAUGE);
         			}
-        			if(tte.gauge.width() != this.getGauge(stack).width()){
+        			if(tte.gauge.width() != sec.width()){
             			Print.chat(player, "&cGauges do not match.");
+            			Print.chat(player, "&7Item: &9(" + sec.width() + ") &7" + sec.getName());
+            			Print.chat(player, "&7Rail: &b(" + tte.gauge.width() + ") &7" + tte.gauge.getName());
             	        return EnumActionResult.FAIL;
         			}
+        		}
+        		else{
+        			Print.chat(player, "No TileEntity at position.");
+        	        return EnumActionResult.FAIL;
         		}
         		stack.getTagCompound().setLong("fvtm:railtrackstart", pos.toLong());
         		stack.getTagCompound().setByte("fvtm:railtrackpoints", (byte)0);

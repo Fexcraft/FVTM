@@ -8,18 +8,13 @@
 
 package net.fexcraft.mod.fvtm.model.block;
 
-import net.fexcraft.lib.tmt.GenericModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.FVTM;
-import net.minecraft.util.ResourceLocation;
+import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 
-public class ModelRailSTD125Half extends GenericModelBase {
-
-	private static final ResourceLocation texture = new ResourceLocation(FVTM.MODID, "textures/blocks/railstandard125.png");
+public class ModelRailSTD125Half extends RailGaugeModel {
+	
 	public static final ModelRailSTD125Half INSTANCE = new ModelRailSTD125Half();
 	private static final int textureX = 256, textureY = 128;
-
-	public static void bindTexture(){ bindTexture(texture); }
 
 	public ModelRailSTD125Half(){
 		base = new ModelRendererTurbo[16];
@@ -71,11 +66,9 @@ public class ModelRailSTD125Half extends GenericModelBase {
 		base[14].setRotationPoint(-4F, -2F, -24F);
 		base[15].addBox(-1F, 0F, 0F, 1, 5, 1, 0F); // Box16
 		base[15].setRotationPoint(0.5F, -5F, 14.75F);
-		translateAll(4F, 0F, 0F);
-		flipAll();
+		for(ModelRendererTurbo turbo : base){
+			turbo.rotationPointX += 4f;
+		}
 	}
-	
-	@Override
-	public void render(){ render(base); }
 	
 }

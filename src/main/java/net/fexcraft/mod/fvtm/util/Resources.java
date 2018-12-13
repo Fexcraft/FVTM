@@ -739,7 +739,7 @@ public class Resources {
 
 	@SubscribeEvent
 	public void regRailGauges(RegistryEvent.Register<Gauge> event){
-		event.getRegistry().register(new GenericRailGauge(FVTM.INTERNAL_ADDON, InternalAddon.STANDARD_GAUGE, 30f));
+		event.getRegistry().register(new GenericRailGauge(FVTM.INTERNAL_ADDON, InternalAddon.STANDARD_GAUGE, new ResourceLocation("fvtm:textures/blocks/railstandard125.png"), 30f));
 		for(Addon addon : ADDONS.getValuesCollection()){
 			if(addon instanceof GenericAddon){
 				if(((GenericAddon)addon).isHybrid() && ((HybridAddon)addon).skipDefaultRegistryMethods()){

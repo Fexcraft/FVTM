@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 public class GenericRailGauge implements Gauge {
 
     private Model<TrackTileEntity, Connection> model;
-    private ResourceLocation registryname;
+    private ResourceLocation registryname, texture;
     private Addon addon;
     private String name;
     private String[] description;
@@ -32,14 +32,18 @@ public class GenericRailGauge implements Gauge {
         this.name = JsonUtil.getIfExists(obj, "FullName", this.registryname.toString());
         this.description = DataUtil.getDescription(obj);
         this.width = JsonUtil.getIfExists(obj, "GaugeInnerWidth", 30).floatValue();
+        this.texture = new ResourceLocation(JsonUtil.getIfExists(obj, "Texture", "fvtm:textures/blocks/railstandard125.png"));
         if(Static.side().isClient()){
             this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), TrackTileEntity.class, Connection.class, RailGaugeModel.class);
         }
 	}
 
-	public GenericRailGauge(InternalAddon addon, ResourceLocation resloc, float f){
-		this.registryname = resloc; this.addon = addon; this.width = f;
+	public GenericRailGauge(InternalAddon addon, ResourceLocation resloc, ResourceLocation texture, float f){
+		this.registryname = resloc; this.addon = addon; this.width = f; this.texture = texture;
 		this.name = f + "px Standard Gauge"; this.description = new String[]{ "&7&oInCode Created Gauge." };
+		if(Static.side().isClient()){
+			this.model = net.fexcraft.mod.fvtm.model.block.ModelRailSTD125Half.INSTANCE;
+		}
 	}
 
 	@Override
@@ -83,6 +87,11 @@ public class GenericRailGauge implements Gauge {
 	@Override
 	public Model<TrackTileEntity, Connection> getModel(){
 		return model;
+	}
+
+	@Override
+	public ResourceLocation getTexture(){
+		return texture;
 	}
 	
 }

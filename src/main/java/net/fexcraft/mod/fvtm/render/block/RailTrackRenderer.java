@@ -5,7 +5,6 @@ import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
-import net.fexcraft.mod.fvtm.model.block.ModelRailSTD125Half;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import org.lwjgl.opengl.GL11;
@@ -42,7 +41,7 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 		GL11.glPushMatrix();
 		GL11.glTranslated(posX, posY - 0.5, posZ);
 		GL11.glPushMatrix();
-		ModelRailSTD125Half.bindTexture();
+		ModelBase.bindTexture(te.gauge.getTexture());
 		for(int i = 0; i < te.connections.length; i++){
 			te.gauge.getModel().render(te, te.connections[i], null, i);
 		}

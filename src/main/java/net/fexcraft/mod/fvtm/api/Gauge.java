@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public interface Gauge extends DataHolderObject.Simple<Gauge> {
 
@@ -21,6 +22,8 @@ public interface Gauge extends DataHolderObject.Simple<Gauge> {
     }
 
     public Model<TrackTileEntity, Connection> getModel();
+    
+    public ResourceLocation getTexture();
     
     /** In pixels. */
     public float width();

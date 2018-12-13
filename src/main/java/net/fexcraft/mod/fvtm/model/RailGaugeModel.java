@@ -7,11 +7,11 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
 
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
-import net.fexcraft.mod.fvtm.model.block.ModelRailSTD125Half;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.util.math.BlockPos;
@@ -23,8 +23,9 @@ public class RailGaugeModel implements Model<TrackTileEntity, Connection> {
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	private static final ArrayList<String> creators = new ArrayList<>();
 	static { creators.add("Ferdinand (FEX___96)"); }
+	//
+	public ModelRendererTurbo[] base = new ModelRendererTurbo[0];
 	
-	////-///---/---///-////
 	
 	public RailGaugeModel(){ super(); }
 
@@ -83,7 +84,7 @@ public class RailGaugeModel implements Model<TrackTileEntity, Connection> {
 		GL11.glTranslated( dest[0],  dest[1],  dest[2]);
 		GL11.glRotated( 180, 0, 0, 1);
 		GL11.glRotated( angle, 0, 1, 0);
-		ModelRailSTD125Half.INSTANCE.render();
+		for(ModelRendererTurbo turbo : base) turbo.render();
 		GL11.glRotated(-angle, 0, 1, 0);
 		GL11.glRotated(-180, 0, 0, 1);
 		GL11.glTranslated(-dest[0], -dest[1], -dest[2]);

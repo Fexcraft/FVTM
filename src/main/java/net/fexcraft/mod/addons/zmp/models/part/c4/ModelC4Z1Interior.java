@@ -1,5 +1,6 @@
 package net.fexcraft.mod.addons.zmp.models.part.c4;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
@@ -39,7 +40,7 @@ public class ModelC4Z1Interior extends PartModel {
         body[6].setRotationPoint(37F, -15F, 2.5F);
         body[7].addBox(0F, 0F, 0F, 6, 1, 1, 0F); // Box 279
         body[7].setRotationPoint(38F, -15.5F, 3.5F);
-        body[7].rotateAngleZ = 0.19198622F;
+        body[7].rotationAngleZ = Static.toDegrees(0.19198622F);
         body[8].addShapeBox(0F, 0F, 0F, 4, 1, 4, 0F, -0.5F, -0.5F, -0.5F, -0.5F, -0.5F, -0.5F, -0.5F, -0.5F, -0.5F, -0.5F, -0.5F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 280
         body[8].setRotationPoint(47F, -15F, 2F);
         body[9].addBox(0F, 0F, 0F, 1, 4, 1, 0F); // Box 281

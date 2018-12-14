@@ -4,7 +4,6 @@ package net.fexcraft.mod.addons.hcp.models.trailer;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fModel;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
@@ -147,7 +146,7 @@ public class TR1Model extends VehicleModel {
     public void render(VehicleData data, Object obj, @Nullable VehicleEntity entity, int meta){
     	body.render(entity,  data);
         for(ModelRendererTurbo turbo : feet){
-            turbo.rotateAngleZ = entity == null || ((VehicleEntity)entity).getEntityAtFront() == null ? 0 : Static.rad90;
+            turbo.rotationAngleZ = entity == null || ((VehicleEntity)entity).getEntityAtFront() == null ? 0 : 90f;
         } feet.render(entity, data);
         
     }

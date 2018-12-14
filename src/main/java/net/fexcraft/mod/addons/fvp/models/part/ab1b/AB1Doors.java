@@ -1,7 +1,6 @@
 //FMT-Marker FVTM-1
 package net.fexcraft.mod.addons.fvp.models.part.ab1b;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
@@ -91,12 +90,12 @@ public class AB1Doors extends PartModel {
 		@Override
 		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
 			if(data.doorsOpen()){
-				for(ModelRendererTurbo con : list){ con.rotateAngleY = Static.rad90; }
+				for(ModelRendererTurbo con : list){ con.rotationAngleY = 90f; }
 			}
 		}
 		@Override
 		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
-			for(ModelRendererTurbo con : list){ con.rotateAngleY = 0; }
+			for(ModelRendererTurbo con : list){ con.rotationAngleY = 0; }
 		}
 	};
 

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.addons.zmp.models.trailer;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
@@ -1183,21 +1184,21 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
         body[212].addBox(0F, 0F, 0F, 2, 10, 8, 0F); // Box 228
         body[212].setRotationPoint(-117F, -30.5F, 4F);
-        body[212].rotateAngleZ = 0.06981317F;
+        body[212].rotationAngleZ = Static.toDegrees(0.06981317F);
 
         body[213].addBox(0F, 0F, 0F, 10, 2, 8, 0F); // Box 256
         body[213].setRotationPoint(-100F, -21F, 4F);
 
         body[214].addBox(0F, 0F, 0F, 2, 10, 8, 0F); // Box 257
         body[214].setRotationPoint(-101F, -30.5F, 4F);
-        body[214].rotateAngleZ = 0.06981317F;
+        body[214].rotationAngleZ = Static.toDegrees(0.06981317F);
 
         body[215].addBox(0F, 0F, 0F, 8, 2, 8, 0F); // Box 258
         body[215].setRotationPoint(-77F, -21F, -4F);
 
         body[216].addBox(0F, 0F, 0F, 2, 10, 8, 0F); // Box 259
         body[216].setRotationPoint(-78F, -30.5F, -4F);
-        body[216].rotateAngleZ = 0.06981317F;
+        body[216].rotationAngleZ = Static.toDegrees(0.06981317F);
 
         body[217].addBox(0F, 0F, 0F, 8, 3, 8, 0F); // Box 260
         body[217].setRotationPoint(-114F, -19F, 4F);
@@ -1330,63 +1331,63 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
         body[260].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[260].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[260].rotateAngleZ = -0.39269908F;
+        body[260].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[261].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[261].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[261].rotateAngleZ = -1.17809725F;
+        body[261].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[262].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[262].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[262].rotateAngleZ = -0.78539816F;
+        body[262].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[263].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[263].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[263].rotateAngleZ = -2.74889357F;
+        body[263].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[264].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[264].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[264].rotateAngleZ = -2.35619449F;
+        body[264].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[265].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[265].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[265].rotateAngleZ = -1.96349541F;
+        body[265].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[266].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[266].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[266].rotateAngleZ = -1.57079633F;
+        body[266].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[267].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[267].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[267].rotateAngleZ = -5.89048623F;
+        body[267].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[268].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[268].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[268].rotateAngleZ = -5.49778714F;
+        body[268].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[269].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[269].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[269].rotateAngleZ = -5.10508806F;
+        body[269].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[270].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[270].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[270].rotateAngleZ = -4.71238898F;
+        body[270].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[271].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[271].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[271].rotateAngleZ = -4.3196899F;
+        body[271].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[272].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[272].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[272].rotateAngleZ = -3.92699082F;
+        body[272].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[273].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[273].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[273].rotateAngleZ = -3.53429174F;
+        body[273].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[274].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 506
         body[274].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[274].rotateAngleZ = -3.14159265F;
+        body[274].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[275].addShapeBox(-1.5F, -1.5F, -1.5F, 2, 3, 2, 0F, 0F, -0.75F, 0F, -0.5F, 0.25F, 0F, -0.5F, 0.25F, 0F, 0F, -0.75F, 0F, 0F, -0.75F, 0F, -0.5F, 0.25F, 0F, -0.5F, 0.25F, 0F, 0F, -0.75F, 0F); // Box 506
         body[275].setRotationPoint(-112.5F, 3.05F, 19.5F);
@@ -1396,189 +1397,189 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
         body[277].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[277].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[277].rotateAngleZ = -0.39269908F;
+        body[277].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[278].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[278].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[278].rotateAngleZ = -1.17809725F;
+        body[278].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[279].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[279].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[279].rotateAngleZ = -0.78539816F;
+        body[279].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[280].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[280].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[280].rotateAngleZ = -2.74889357F;
+        body[280].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[281].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[281].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[281].rotateAngleZ = -2.35619449F;
+        body[281].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[282].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[282].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[282].rotateAngleZ = -1.96349541F;
+        body[282].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[283].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[283].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[283].rotateAngleZ = -1.57079633F;
+        body[283].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[284].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[284].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[284].rotateAngleZ = -5.89048623F;
+        body[284].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[285].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[285].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[285].rotateAngleZ = -5.49778714F;
+        body[285].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[286].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[286].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[286].rotateAngleZ = -5.10508806F;
+        body[286].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[287].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[287].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[287].rotateAngleZ = -4.71238898F;
+        body[287].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[288].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[288].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[288].rotateAngleZ = -4.3196899F;
+        body[288].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[289].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[289].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[289].rotateAngleZ = -3.92699082F;
+        body[289].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[290].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[290].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[290].rotateAngleZ = -3.53429174F;
+        body[290].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[291].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 506
         body[291].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[291].rotateAngleZ = -3.14159265F;
+        body[291].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[292].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[292].setRotationPoint(-112.5F, 3.05F, 20.5F);
 
         body[293].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[293].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[293].rotateAngleZ = -0.39269908F;
+        body[293].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[294].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[294].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[294].rotateAngleZ = -1.17809725F;
+        body[294].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[295].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[295].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[295].rotateAngleZ = -0.78539816F;
+        body[295].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[296].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[296].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[296].rotateAngleZ = -2.74889357F;
+        body[296].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[297].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[297].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[297].rotateAngleZ = -2.35619449F;
+        body[297].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[298].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[298].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[298].rotateAngleZ = -1.96349541F;
+        body[298].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[299].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[299].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[299].rotateAngleZ = -1.57079633F;
+        body[299].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[300].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[300].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[300].rotateAngleZ = -5.89048623F;
+        body[300].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[301].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[301].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[301].rotateAngleZ = -5.10508806F;
+        body[301].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[302].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[302].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[302].rotateAngleZ = -4.71238898F;
+        body[302].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[303].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[303].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[303].rotateAngleZ = -4.3196899F;
+        body[303].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[304].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[304].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[304].rotateAngleZ = -3.92699082F;
+        body[304].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[305].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[305].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[305].rotateAngleZ = -3.53429174F;
+        body[305].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[306].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[306].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[306].rotateAngleZ = -3.14159265F;
+        body[306].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[307].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 506
         body[307].setRotationPoint(-112.5F, 3.05F, 20.5F);
-        body[307].rotateAngleZ = -5.49778714F;
+        body[307].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[308].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 141
         body[308].setRotationPoint(-112.5F, 3.05F, -19.5F);
 
         body[309].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 142
         body[309].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[309].rotateAngleZ = -0.39269908F;
+        body[309].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[310].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 143
         body[310].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[310].rotateAngleZ = -0.78539816F;
+        body[310].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[311].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 144
         body[311].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[311].rotateAngleZ = -1.17809725F;
+        body[311].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[312].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 145
         body[312].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[312].rotateAngleZ = -1.57079633F;
+        body[312].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[313].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 146
         body[313].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[313].rotateAngleZ = -1.96349541F;
+        body[313].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[314].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 147
         body[314].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[314].rotateAngleZ = -2.35619449F;
+        body[314].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[315].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 148
         body[315].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[315].rotateAngleZ = -2.74889357F;
+        body[315].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[316].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 149
         body[316].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[316].rotateAngleZ = -3.14159265F;
+        body[316].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[317].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 150
         body[317].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[317].rotateAngleZ = -3.53429174F;
+        body[317].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[318].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 151
         body[318].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[318].rotateAngleZ = -3.92699082F;
+        body[318].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[319].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 152
         body[319].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[319].rotateAngleZ = -4.3196899F;
+        body[319].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[320].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 153
         body[320].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[320].rotateAngleZ = -4.71238898F;
+        body[320].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[321].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 154
         body[321].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[321].rotateAngleZ = -5.10508806F;
+        body[321].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[322].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 155
         body[322].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[322].rotateAngleZ = -5.89048623F;
+        body[322].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[323].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 156
         body[323].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[323].rotateAngleZ = -5.49778714F;
+        body[323].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[324].addShapeBox(-1.5F, -1.5F, -1.5F, 2, 3, 2, 0F, -0.5F, 0.25F, 0F, 0F, -0.75F, 0F, 0F, -0.75F, 0F, -0.5F, 0.25F, 0F, -0.5F, 0.25F, 0F, 0F, -0.75F, 0F, 0F, -0.75F, 0F, -0.5F, 0.25F, 0F); // Box 157
         body[324].setRotationPoint(-111.5F, 3.05F, -18.5F);
@@ -1591,126 +1592,126 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
         body[327].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 160
         body[327].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[327].rotateAngleZ = -5.89048623F;
+        body[327].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[328].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 161
         body[328].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[328].rotateAngleZ = -5.49778714F;
+        body[328].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[329].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 162
         body[329].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[329].rotateAngleZ = -5.10508806F;
+        body[329].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[330].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 163
         body[330].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[330].rotateAngleZ = -4.71238898F;
+        body[330].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[331].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 164
         body[331].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[331].rotateAngleZ = -4.3196899F;
+        body[331].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[332].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 165
         body[332].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[332].rotateAngleZ = -3.53429174F;
+        body[332].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[333].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 166
         body[333].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[333].rotateAngleZ = -3.92699082F;
+        body[333].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[334].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 167
         body[334].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[334].rotateAngleZ = -3.14159265F;
+        body[334].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[335].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 168
         body[335].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[335].rotateAngleZ = -2.74889357F;
+        body[335].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[336].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 169
         body[336].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[336].rotateAngleZ = -2.35619449F;
+        body[336].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[337].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 170
         body[337].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[337].rotateAngleZ = -1.96349541F;
+        body[337].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[338].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 171
         body[338].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[338].rotateAngleZ = -1.57079633F;
+        body[338].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[339].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 172
         body[339].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[339].rotateAngleZ = -1.17809725F;
+        body[339].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[340].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 173
         body[340].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[340].rotateAngleZ = -0.78539816F;
+        body[340].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[341].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 174
         body[341].setRotationPoint(-112.5F, 3.05F, -19.5F);
-        body[341].rotateAngleZ = -0.39269908F;
+        body[341].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[342].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 175
         body[342].setRotationPoint(-112.5F, 3.05F, -15.5F);
 
         body[343].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 176
         body[343].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[343].rotateAngleZ = -0.39269908F;
+        body[343].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[344].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 177
         body[344].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[344].rotateAngleZ = -0.78539816F;
+        body[344].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[345].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 178
         body[345].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[345].rotateAngleZ = -1.17809725F;
+        body[345].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[346].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 179
         body[346].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[346].rotateAngleZ = -1.57079633F;
+        body[346].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[347].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 180
         body[347].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[347].rotateAngleZ = -1.96349541F;
+        body[347].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[348].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 181
         body[348].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[348].rotateAngleZ = -2.35619449F;
+        body[348].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[349].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 182
         body[349].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[349].rotateAngleZ = -2.74889357F;
+        body[349].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[350].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 183
         body[350].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[350].rotateAngleZ = -3.14159265F;
+        body[350].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[351].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 184
         body[351].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[351].rotateAngleZ = -3.53429174F;
+        body[351].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[352].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 185
         body[352].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[352].rotateAngleZ = -3.92699082F;
+        body[352].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[353].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 186
         body[353].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[353].rotateAngleZ = -4.3196899F;
+        body[353].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[354].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 187
         body[354].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[354].rotateAngleZ = -4.71238898F;
+        body[354].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[355].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 188
         body[355].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[355].rotateAngleZ = -5.10508806F;
+        body[355].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[356].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 189
         body[356].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[356].rotateAngleZ = -5.49778714F;
+        body[356].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[357].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 190
         body[357].setRotationPoint(-112.5F, 3.05F, -15.5F);
-        body[357].rotateAngleZ = -5.89048623F;
+        body[357].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[358].addBox(0F, 0F, 0F, 10, 1, 1, 0F); // Box 191
         body[358].setRotationPoint(-118F, -3.7F, -16F);
@@ -1894,192 +1895,192 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
         body[418].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 264
         body[418].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[418].rotateAngleZ = -5.10508806F;
+        body[418].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[419].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 265
         body[419].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[419].rotateAngleZ = -4.71238898F;
+        body[419].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[420].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 266
         body[420].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[420].rotateAngleZ = -4.3196899F;
+        body[420].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[421].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 267
         body[421].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[421].rotateAngleZ = -3.92699082F;
+        body[421].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[422].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 268
         body[422].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[422].rotateAngleZ = -5.49778714F;
+        body[422].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[423].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 269
         body[423].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[423].rotateAngleZ = -5.89048623F;
+        body[423].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[424].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 270
         body[424].setRotationPoint(-99.5F, 3.05F, -15.5F);
 
         body[425].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 271
         body[425].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[425].rotateAngleZ = -0.39269908F;
+        body[425].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[426].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 272
         body[426].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[426].rotateAngleZ = -0.78539816F;
+        body[426].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[427].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 273
         body[427].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[427].rotateAngleZ = -1.17809725F;
+        body[427].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[428].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 274
         body[428].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[428].rotateAngleZ = -1.57079633F;
+        body[428].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[429].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 275
         body[429].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[429].rotateAngleZ = -1.96349541F;
+        body[429].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[430].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 276
         body[430].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[430].rotateAngleZ = -2.35619449F;
+        body[430].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[431].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 277
         body[431].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[431].rotateAngleZ = -2.74889357F;
+        body[431].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[432].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 278
         body[432].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[432].rotateAngleZ = -3.14159265F;
+        body[432].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[433].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 279
         body[433].setRotationPoint(-99.5F, 3.05F, -15.5F);
-        body[433].rotateAngleZ = -3.53429174F;
+        body[433].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[434].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 280
         body[434].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[434].rotateAngleZ = -5.10508806F;
+        body[434].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[435].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 281
         body[435].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[435].rotateAngleZ = -4.71238898F;
+        body[435].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[436].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 282
         body[436].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[436].rotateAngleZ = -4.3196899F;
+        body[436].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[437].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 283
         body[437].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[437].rotateAngleZ = -3.92699082F;
+        body[437].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[438].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 284
         body[438].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[438].rotateAngleZ = -3.53429174F;
+        body[438].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[439].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 285
         body[439].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[439].rotateAngleZ = -3.14159265F;
+        body[439].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[440].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 286
         body[440].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[440].rotateAngleZ = -2.74889357F;
+        body[440].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[441].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 287
         body[441].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[441].rotateAngleZ = -2.35619449F;
+        body[441].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[442].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 288
         body[442].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[442].rotateAngleZ = -1.96349541F;
+        body[442].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[443].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 289
         body[443].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[443].rotateAngleZ = -1.57079633F;
+        body[443].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[444].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 290
         body[444].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[444].rotateAngleZ = -1.17809725F;
+        body[444].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[445].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 291
         body[445].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[445].rotateAngleZ = -0.78539816F;
+        body[445].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[446].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 292
         body[446].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[446].rotateAngleZ = -0.39269908F;
+        body[446].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[447].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 293
         body[447].setRotationPoint(-99.5F, 3.05F, -19.5F);
 
         body[448].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 294
         body[448].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[448].rotateAngleZ = -5.89048623F;
+        body[448].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[449].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 295
         body[449].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[449].rotateAngleZ = -5.49778714F;
+        body[449].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[450].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 296
         body[450].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[450].rotateAngleZ = -5.89048623F;
+        body[450].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[451].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 297
         body[451].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[451].rotateAngleZ = -0.39269908F;
+        body[451].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[452].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 298
         body[452].setRotationPoint(-99.5F, 3.05F, -19.5F);
 
         body[453].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 299
         body[453].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[453].rotateAngleZ = -0.78539816F;
+        body[453].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[454].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 300
         body[454].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[454].rotateAngleZ = -1.57079633F;
+        body[454].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[455].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 301
         body[455].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[455].rotateAngleZ = -1.96349541F;
+        body[455].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[456].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 302
         body[456].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[456].rotateAngleZ = -2.35619449F;
+        body[456].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[457].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 303
         body[457].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[457].rotateAngleZ = -3.14159265F;
+        body[457].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[458].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 304
         body[458].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[458].rotateAngleZ = -1.17809725F;
+        body[458].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[459].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 305
         body[459].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[459].rotateAngleZ = -5.49778714F;
+        body[459].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[460].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 306
         body[460].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[460].rotateAngleZ = -5.10508806F;
+        body[460].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[461].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 307
         body[461].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[461].rotateAngleZ = -4.71238898F;
+        body[461].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[462].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 308
         body[462].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[462].rotateAngleZ = -4.3196899F;
+        body[462].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[463].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 309
         body[463].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[463].rotateAngleZ = -3.92699082F;
+        body[463].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[464].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 310
         body[464].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[464].rotateAngleZ = -3.53429174F;
+        body[464].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[465].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F); // Box 311
         body[465].setRotationPoint(-99.5F, 3.05F, -19.5F);
-        body[465].rotateAngleZ = -2.74889357F;
+        body[465].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[466].addShapeBox(-0.5F, -1.5F, -1.5F, 2, 3, 2, 0F, 0F, -0.75F, 0F, -0.5F, 0.25F, 0F, -0.5F, 0.25F, 0F, 0F, -0.75F, 0F, 0F, -0.75F, 0F, -0.5F, 0.25F, 0F, -0.5F, 0.25F, 0F, 0F, -0.75F, 0F); // Box 312
         body[466].setRotationPoint(-100.5F, 3.05F, -18.5F);
@@ -2143,123 +2144,123 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
         body[486].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 332
         body[486].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[486].rotateAngleZ = -0.39269908F;
+        body[486].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[487].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 333
         body[487].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[487].rotateAngleZ = -0.78539816F;
+        body[487].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[488].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 334
         body[488].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[488].rotateAngleZ = -1.17809725F;
+        body[488].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[489].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 335
         body[489].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[489].rotateAngleZ = -1.57079633F;
+        body[489].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[490].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 336
         body[490].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[490].rotateAngleZ = -1.96349541F;
+        body[490].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[491].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 337
         body[491].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[491].rotateAngleZ = -2.74889357F;
+        body[491].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[492].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 338
         body[492].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[492].rotateAngleZ = -2.35619449F;
+        body[492].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[493].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 339
         body[493].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[493].rotateAngleZ = -3.14159265F;
+        body[493].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[494].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 340
         body[494].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[494].rotateAngleZ = -3.53429174F;
+        body[494].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[495].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 341
         body[495].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[495].rotateAngleZ = -3.92699082F;
+        body[495].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[496].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 342
         body[496].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[496].rotateAngleZ = -4.3196899F;
+        body[496].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[497].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 343
         body[497].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[497].rotateAngleZ = -4.71238898F;
+        body[497].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[498].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 344
         body[498].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[498].rotateAngleZ = -5.10508806F;
+        body[498].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[499].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 345
         body[499].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[499].rotateAngleZ = -5.49778714F;
+        body[499].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[500].addShapeBox(-1F, -6F, -3.5F, 2, 6, 2, 0F, 0.1F, -0.5F, 0F, 0.1F, -0.5F, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F); // Box 346
         body[500].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[500].rotateAngleZ = -5.89048623F;
+        body[500].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[501].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 347
         body[501].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[501].rotateAngleZ = -5.89048623F;
+        body[501].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[502].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 348
         body[502].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[502].rotateAngleZ = -5.49778714F;
+        body[502].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[503].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 349
         body[503].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[503].rotateAngleZ = -5.10508806F;
+        body[503].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[504].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 350
         body[504].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[504].rotateAngleZ = -4.71238898F;
+        body[504].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[505].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 351
         body[505].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[505].rotateAngleZ = -4.3196899F;
+        body[505].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[506].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 352
         body[506].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[506].rotateAngleZ = -3.92699082F;
+        body[506].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[507].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 353
         body[507].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[507].rotateAngleZ = -3.53429174F;
+        body[507].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[508].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 354
         body[508].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[508].rotateAngleZ = -3.14159265F;
+        body[508].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[509].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 355
         body[509].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[509].rotateAngleZ = -2.74889357F;
+        body[509].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[510].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 356
         body[510].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[510].rotateAngleZ = -2.35619449F;
+        body[510].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[511].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 357
         body[511].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[511].rotateAngleZ = -1.96349541F;
+        body[511].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[512].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 358
         body[512].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[512].rotateAngleZ = -1.57079633F;
+        body[512].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[513].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 359
         body[513].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[513].rotateAngleZ = -1.17809725F;
+        body[513].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[514].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 360
         body[514].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[514].rotateAngleZ = -0.78539816F;
+        body[514].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[515].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 361
         body[515].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[515].rotateAngleZ = -0.39269908F;
+        body[515].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[516].addShapeBox(-1F, -3F, -1.5F, 2, 1, 2, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.35F, 0.2F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, 0F, -0.525F, -0.4F, -0.6F, -0.525F, -0.4F, -0.6F); // Box 362
         body[516].setRotationPoint(-99.5F, 3.05F, 20.5F);
@@ -2269,63 +2270,63 @@ public class ModelHuonclassCoastGuardTrailer extends VehicleModel {
 
         body[518].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 364
         body[518].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[518].rotateAngleZ = -0.39269908F;
+        body[518].rotationAngleZ = Static.toDegrees(-0.39269908F);
 
         body[519].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 365
         body[519].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[519].rotateAngleZ = -0.78539816F;
+        body[519].rotationAngleZ = Static.toDegrees(-0.78539816F);
 
         body[520].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 366
         body[520].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[520].rotateAngleZ = -1.17809725F;
+        body[520].rotationAngleZ = Static.toDegrees(-1.17809725F);
 
         body[521].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 367
         body[521].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[521].rotateAngleZ = -1.57079633F;
+        body[521].rotationAngleZ = Static.toDegrees(-1.57079633F);
 
         body[522].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 368
         body[522].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[522].rotateAngleZ = -1.96349541F;
+        body[522].rotationAngleZ = Static.toDegrees(-1.96349541F);
 
         body[523].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 369
         body[523].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[523].rotateAngleZ = -2.35619449F;
+        body[523].rotationAngleZ = Static.toDegrees(-2.35619449F);
 
         body[524].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 370
         body[524].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[524].rotateAngleZ = -2.74889357F;
+        body[524].rotationAngleZ = Static.toDegrees(-2.74889357F);
 
         body[525].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 371
         body[525].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[525].rotateAngleZ = -3.14159265F;
+        body[525].rotationAngleZ = Static.toDegrees(-3.14159265F);
 
         body[526].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 372
         body[526].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[526].rotateAngleZ = -3.53429174F;
+        body[526].rotationAngleZ = Static.toDegrees(-3.53429174F);
 
         body[527].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 373
         body[527].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[527].rotateAngleZ = -3.92699082F;
+        body[527].rotationAngleZ = Static.toDegrees(-3.92699082F);
 
         body[528].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 374
         body[528].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[528].rotateAngleZ = -4.3196899F;
+        body[528].rotationAngleZ = Static.toDegrees(-4.3196899F);
 
         body[529].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 375
         body[529].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[529].rotateAngleZ = -4.71238898F;
+        body[529].rotationAngleZ = Static.toDegrees(-4.71238898F);
 
         body[530].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 376
         body[530].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[530].rotateAngleZ = -5.10508806F;
+        body[530].rotationAngleZ = Static.toDegrees(-5.10508806F);
 
         body[531].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 377
         body[531].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[531].rotateAngleZ = -5.49778714F;
+        body[531].rotationAngleZ = Static.toDegrees(-5.49778714F);
 
         body[532].addShapeBox(-1F, -6F, -1.5F, 2, 3, 2, 0F, 0.2F, 0F, 0F, 0.2F, 0F, 0F, 0.05F, -0.7F, 0F, 0.05F, -0.7F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F, -0.35F, -0.2F, 0F); // Box 378
         body[532].setRotationPoint(-99.5F, 3.05F, 20.5F);
-        body[532].rotateAngleZ = -5.89048623F;
+        body[532].rotationAngleZ = Static.toDegrees(-5.89048623F);
 
         body[533].addBox(0F, 0F, 0F, 1, 1, 1, 0F); // Box 547
         body[533].setRotationPoint(-96F, -16F, 0F);

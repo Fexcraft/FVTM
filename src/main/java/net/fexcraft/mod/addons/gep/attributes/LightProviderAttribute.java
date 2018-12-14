@@ -134,12 +134,12 @@ public class LightProviderAttribute implements Attribute {
                 send.addCylinder(0, 0, 0, radius, length, segments, base, top, 3);
                 send.setRotationPoint(pos.xCoord, pos.yCoord, pos.zCoord);
                 //
-                main.rotateAngleX = rotx == 0 ? 0 : (float) Math.toRadians(rotx);
-                main.rotateAngleY = roty == 0 ? 0 : (float) Math.toRadians(roty);
-                main.rotateAngleZ = rotz == 0 ? 0 : (float) Math.toRadians(rotz);
-                send.rotateAngleX = rotx == 0 ? 0 : (float) Math.toRadians(rotx);
-                send.rotateAngleY = roty == 0 ? 0 : (float) Math.toRadians(roty);
-                send.rotateAngleZ = rotz == 0 ? 0 : (float) Math.toRadians(rotz);
+                main.rotationAngleX = rotx == 0 ? 0 : rotx;
+                main.rotationAngleY = roty == 0 ? 0 : roty;
+                main.rotationAngleZ = rotz == 0 ? 0 : rotz;
+                send.rotationAngleX = rotx == 0 ? 0 : rotx;
+                send.rotationAngleY = roty == 0 ? 0 : roty;
+                send.rotationAngleZ = rotz == 0 ? 0 : rotz;
             }
             if(color != null){
                 color.glColorApply();

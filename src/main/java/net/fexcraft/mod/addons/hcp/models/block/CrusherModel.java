@@ -784,9 +784,9 @@ public class CrusherModel extends BlockModel {
 	    	float rotation = RenderCache.getData(tile.getLongPos(), "rot_state", 0) + 1;
 	    	RenderCache.updateData(tile.getLongPos(), "rot_state", rotation > 360 ? 0 : rotation);
 	    	for(ModelRendererTurbo turbo : rot){
-	    		turbo.rotateAngleZ += net.fexcraft.lib.common.Static.rad1 * rotation;
+	    		turbo.rotationAngleZ += rotation;
 	    		turbo.render();
-	    		turbo.rotateAngleZ -= net.fexcraft.lib.common.Static.rad1 * rotation;
+	    		turbo.rotationAngleZ -= rotation;
 	    	}
 		}
 		//

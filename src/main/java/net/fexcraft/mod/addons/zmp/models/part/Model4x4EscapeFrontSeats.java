@@ -1,5 +1,6 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
@@ -23,7 +24,7 @@ public class Model4x4EscapeFrontSeats extends PartModel {
         body[0].setRotationPoint(9F, 4F, 4F);
         body[1].addBox(0F, 0F, 0F, 12, 1, 10, 0F); // Box 257
         body[1].setRotationPoint(9F, 4F, 4F);
-        body[1].rotateAngleZ = 1.8675023F;
+        body[1].rotationAngleZ = Static.toDegrees(1.8675023F);
         body[2].addBox(0F, 0F, 0F, 1, 2, 1, 0F); // Box 258
         body[2].setRotationPoint(5.5F, -9F, 6F);
         body[3].addBox(0F, 0F, 0F, 1, 2, 1, 0F); // Box 260
@@ -34,7 +35,7 @@ public class Model4x4EscapeFrontSeats extends PartModel {
         body[5].setRotationPoint(9F, 4F, -15F);
         body[6].addBox(0F, 0F, 0F, 12, 1, 10, 0F); // Box 263
         body[6].setRotationPoint(9F, 4F, -15F);
-        body[6].rotateAngleZ = 1.8675023F;
+        body[6].rotationAngleZ = Static.toDegrees(1.8675023F);
         body[7].addBox(0F, 0F, 0F, 1, 2, 1, 0F); // Box 520
         body[7].setRotationPoint(5.5F, -9F, -13F);
         body[8].addBox(0F, 0F, 0F, 1, 2, 1, 0F); // Box 521

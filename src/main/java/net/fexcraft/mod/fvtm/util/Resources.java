@@ -67,7 +67,6 @@ import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.impl.block.GenericBlock;
 import net.fexcraft.mod.fvtm.impl.block.GenericBlockItem;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
-import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
 import net.fexcraft.mod.fvtm.impl.container.GenericContainer;
 import net.fexcraft.mod.fvtm.impl.container.GenericContainerItem;
 import net.fexcraft.mod.fvtm.impl.part.GenericPart;
@@ -88,7 +87,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -1029,10 +1027,11 @@ public class Resources {
 		}
 	}
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
-	}
+		event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+	}*/
 	
 	private static Field flightdata;
 	private static boolean flightdata_failed = false;

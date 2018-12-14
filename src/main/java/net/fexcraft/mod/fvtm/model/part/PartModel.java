@@ -66,19 +66,19 @@ public class PartModel extends GenericModel<VehicleData, String> {
 
     public void def_renderWheelWithRotations(String model, VehicleEntity vehicle, float amount, boolean steering){
     	TurboList list = groups.get(model);
-        if(amount != list.get(0).rotateAngleZ){
-            amount -= list.get(0).rotateAngleZ;
+        if(amount != list.get(0).rotationAngleZ){
+            amount -= list.get(0).rotationAngleZ;
             list.rotate(0, 0, amount, false);
         }
         if(steering){
             for(ModelRendererTurbo sub : list){
-                sub.rotateAngleY = vehicle.getWheelsYaw() * Static.rad180 / 180F * 3F;
+                sub.rotationAngleY = Static.toDegrees(vehicle.getWheelsYaw() * Static.rad180);
             }
         }
         this.render(vehicle.getVehicleData(), model);
         if(steering){
             for(ModelRendererTurbo sub : list){
-                sub.rotateAngleY = 0;
+                sub.rotationAngleY = 0;
             }
         }
     }

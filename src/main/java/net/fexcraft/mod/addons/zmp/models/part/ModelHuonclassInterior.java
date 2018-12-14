@@ -1,5 +1,6 @@
 package net.fexcraft.mod.addons.zmp.models.part;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
@@ -41,21 +42,21 @@ public class ModelHuonclassInterior extends PartModel {
 
         body[5].addBox(0F, 0F, 0F, 2, 10, 8, 0F); // Box 228
         body[5].setRotationPoint(-21F, -16.5F, 4F);
-        body[5].rotateAngleZ = 0.06981317F;
+        body[5].rotationAngleZ = Static.toDegrees(0.06981317F);
 
         body[6].addBox(0F, 0F, 0F, 10, 2, 8, 0F); // Box 256
         body[6].setRotationPoint(-4F, -7F, 4F);
 
         body[7].addBox(0F, 0F, 0F, 2, 10, 8, 0F); // Box 257
         body[7].setRotationPoint(-5F, -16.5F, 4F);
-        body[7].rotateAngleZ = 0.06981317F;
+        body[7].rotationAngleZ = Static.toDegrees(0.06981317F);
 
         body[8].addBox(0F, 0F, 0F, 8, 2, 8, 0F); // Box 258
         body[8].setRotationPoint(19F, -7F, -4F);
 
         body[9].addBox(0F, 0F, 0F, 2, 10, 8, 0F); // Box 259
         body[9].setRotationPoint(18F, -16.5F, -4F);
-        body[9].rotateAngleZ = 0.06981317F;
+        body[9].rotationAngleZ = Static.toDegrees(0.06981317F);
 
         body[10].addBox(0F, 0F, 0F, 8, 3, 8, 0F); // Box 260
         body[10].setRotationPoint(-18F, -5F, 4F);

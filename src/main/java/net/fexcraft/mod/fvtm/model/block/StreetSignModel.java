@@ -168,8 +168,7 @@ public class StreetSignModel extends ModelConverter {
 		backWheelModel[3].addShapeBox(0F, 0F, 0F, 2, 4, 1, 0F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.5F, 0F, 0F, -0.5F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 26
 		backWheelModel[3].setRotationPoint(8F, -4F, -4F);
 
-		translateAll(0F, 16F, 0F);
-		flipAll();
+		translate(0F, 16F, 0F); flipAll();
 	}
 	
 }

@@ -16,7 +16,7 @@ public class AdjSignModel extends ModelBase {
         //body.addShapeBox(0F, 0F, 0F, 16 * x, 16 * y, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, -0.8F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, -0.8F);
         body.addBox(0f, 0f, 0f, 16 * x, 16 * y, 0);
         body.setRotationPoint(-8F, -16F, 7.5F);
-        this.translateAll(8, 0, 8);
+        this.translate(8, 0, 8);
     }
 
     @Override
@@ -27,17 +27,17 @@ public class AdjSignModel extends ModelBase {
     }
 
     @Override
-    public void translateAll(float x, float y, float z){
+    public void translate(float x, float y, float z){
         body.rotationPointX += x;
         body.rotationPointY += y;
         body.rotationPointZ += z;
     }
 
     @Override
-    public void rotateAll(float x, float y, float z){
-        body.rotateAngleX += x;
-        body.rotateAngleY += y;
-        body.rotateAngleZ += z;
+    public void rotate(float x, float y, float z){
+        body.rotationAngleX += x;
+        body.rotationAngleY += y;
+        body.rotationAngleZ += z;
     }
 
     public static AdjSignModel getModel(int x, int y){

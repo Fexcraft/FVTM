@@ -78,7 +78,7 @@ public class ModelConstructorCenter extends ModelConverter {
         trailerModel[2].addBox(0F, 0F, 0F, 4, 1, 8, 0F); // Box 20
         trailerModel[2].setRotationPoint(-2F, -0.5F, -6F);
 
-        translateAll(0F, 24F, 0F);
+        translate(0F, 24F, 0F);
 
         //flipAll();
     }

@@ -73,26 +73,26 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 
 	public void rotate(float x, float y, float z, boolean apply){
 		if(apply){
-			for(ModelRendererTurbo mrt : this){ mrt.rotateAngleX = x; mrt.rotateAngleY = y; mrt.rotateAngleZ = z; }
+			for(ModelRendererTurbo mrt : this){ mrt.rotationAngleX = x; mrt.rotationAngleY = y; mrt.rotationAngleZ = z; }
 		}
 		else {
-			for(ModelRendererTurbo mrt : this){ mrt.rotateAngleX += x; mrt.rotateAngleY += y; mrt.rotateAngleZ += z; }
+			for(ModelRendererTurbo mrt : this){ mrt.rotationAngleX += x; mrt.rotationAngleY += y; mrt.rotationAngleZ += z; }
 		}
 	}
 
 	public void rotateAxis(float value, int axis, boolean apply){
 		switch(axis){
 			case 0: {
-				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotateAngleX = value; }
-				else{ for(ModelRendererTurbo mrt : this) mrt.rotateAngleX += value; } return;
+				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotationAngleX = value; }
+				else{ for(ModelRendererTurbo mrt : this) mrt.rotationAngleX += value; } return;
 			}
 			case 1: {
-				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotateAngleY = value; }
-				else{ for(ModelRendererTurbo mrt : this) mrt.rotateAngleY += value; } return;
+				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotationAngleY = value; }
+				else{ for(ModelRendererTurbo mrt : this) mrt.rotationAngleY += value; } return;
 			}
 			case 2: {
-				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotateAngleZ = value; }
-				else{ for(ModelRendererTurbo mrt : this) mrt.rotateAngleZ += value; } return;
+				if(apply){ for(ModelRendererTurbo mrt : this) mrt.rotationAngleZ = value; }
+				else{ for(ModelRendererTurbo mrt : this) mrt.rotationAngleZ += value; } return;
 			}
 			default: return;
 		}

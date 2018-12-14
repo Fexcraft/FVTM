@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.model.block;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.blocks.PipeTileEntity;
@@ -39,12 +38,12 @@ public class PipeModel extends ModelBase {
         north.flip = true;
         north.addCylinder(0, -8F, 0, 2, 8, segments, 1f, 1f, ModelRendererTurbo.MR_FRONT);
         north.setRotationPoint(0, 0, 0);
-        north.rotateAngleY = Static.rad180;
+        north.rotationAngleY = 180f;
         //
         east = new ModelRendererTurbo(this, 0, 0, tx, ty);
         east.addCylinder(0, -8F, 0, 2, 8, segments, 1f, 1f, ModelRendererTurbo.MR_LEFT);
         east.setRotationPoint(0, 0, 0);
-        east.rotateAngleY = Static.rad180;
+        east.rotationAngleY = 180f;
         //
         south = new ModelRendererTurbo(this, 0, 0, tx, ty);
         south.flip = true;
@@ -81,7 +80,7 @@ public class PipeModel extends ModelBase {
         east_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
         east_.addCylinder(7F, -8F, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_LEFT);
         east_.setRotationPoint(0, 0, 0);
-        east_.rotateAngleY = Static.rad180;
+        east_.rotationAngleY = 180f;
         //
         west_ = new ModelRendererTurbo(this, 0, 0, tx, ty);
         west_.addCylinder(7F, -8F, 0, rd, lg, segments, sl, sl, ModelRendererTurbo.MR_LEFT);
@@ -142,17 +141,17 @@ public class PipeModel extends ModelBase {
     }
 
     @Override
-    public void translateAll(float x, float y, float z){
+    public void translate(float x, float y, float z){
         bottom.rotationPointX += x;
         bottom.rotationPointY += y;
         bottom.rotationPointZ += z;
     }
 
     @Override
-    public void rotateAll(float x, float y, float z){
-        bottom.rotateAngleX += x;
-        bottom.rotateAngleY += y;
-        bottom.rotateAngleZ += z;
+    public void rotate(float x, float y, float z){
+        bottom.rotationAngleX += x;
+        bottom.rotationAngleY += y;
+        bottom.rotationAngleZ += z;
     }
 
 }

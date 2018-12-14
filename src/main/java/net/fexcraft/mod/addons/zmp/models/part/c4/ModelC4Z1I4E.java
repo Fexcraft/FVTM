@@ -1,5 +1,6 @@
 package net.fexcraft.mod.addons.zmp.models.part.c4;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
@@ -147,11 +148,11 @@ public class ModelC4Z1I4E extends PartModel {
 
         body[1].addShapeBox(0F, 0F, 0F, 12, 2, 1, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 1F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 1F, 0F, 0F, 0F, 0F, 0F); // Box 165
         body[1].setRotationPoint(62F, 0F, -9F);
-        body[1].rotateAngleZ = 1.55334303F;
+        body[1].rotationAngleZ = Static.toDegrees(1.55334303F);
 
         body[2].addShapeBox(0F, 0F, 0F, 13, 2, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, 0F, 0F, -1F, 0F); // Box 166
         body[2].setRotationPoint(62F, 0F, -8F);
-        body[2].rotateAngleZ = 1.55334303F;
+        body[2].rotationAngleZ = Static.toDegrees(1.55334303F);
 
         body[3].addShapeBox(0F, 0F, 0F, 10, 7, 21, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, -2F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 294
         body[3].setRotationPoint(61.5F, -11.5F, -11F);
@@ -170,19 +171,19 @@ public class ModelC4Z1I4E extends PartModel {
 
         body[8].addShapeBox(0F, 0F, 0F, 2, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 299
         body[8].setRotationPoint(68.5F, -13.5F, -8F);
-        body[8].rotateAngleZ = 0.73303829F;
+        body[8].rotationAngleZ = Static.toDegrees(0.73303829F);
 
         body[9].addShapeBox(0F, 0F, 0F, 2, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 300
         body[9].setRotationPoint(68.5F, -13.5F, 7F);
-        body[9].rotateAngleZ = 0.73303829F;
+        body[9].rotationAngleZ = Static.toDegrees(0.73303829F);
 
         body[10].addShapeBox(0F, 0F, 0F, 2, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 301
         body[10].setRotationPoint(68.5F, -13.5F, 2F);
-        body[10].rotateAngleZ = 0.73303829F;
+        body[10].rotationAngleZ = Static.toDegrees(0.73303829F);
 
         body[11].addShapeBox(0F, 0F, 0F, 2, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 302
         body[11].setRotationPoint(68.5F, -13.5F, -3F);
-        body[11].rotateAngleZ = 0.73303829F;
+        body[11].rotationAngleZ = Static.toDegrees(0.73303829F);
 
         body[12].addShapeBox(0F, 0F, 0F, 4, 1, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 303
         body[12].setRotationPoint(70.5F, -7.5F, -2F);
@@ -201,35 +202,35 @@ public class ModelC4Z1I4E extends PartModel {
 
         body[17].addShapeBox(0F, 0F, 0F, 4, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 308
         body[17].setRotationPoint(69.5F, -7.5F, 2F);
-        body[17].rotateAngleZ = 0.87266463F;
+        body[17].rotationAngleZ = Static.toDegrees(0.87266463F);
 
         body[18].addShapeBox(5F, -1F, -1F, 1, 3, 3, 0F, 0F, -1F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, -1F, 0F, -1F, -1F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -1F, -1F); // Box 309
         body[18].setRotationPoint(68.5F, -6.5F, 2F);
-        body[18].rotateAngleZ = 0.87266463F;
+        body[18].rotationAngleZ = Static.toDegrees(0.87266463F);
 
         body[19].addShapeBox(6F, -1F, -1F, 2, 3, 3, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 310
         body[19].setRotationPoint(68.5F, -6.5F, 2F);
-        body[19].rotateAngleZ = 0.87266463F;
+        body[19].rotationAngleZ = Static.toDegrees(0.87266463F);
 
         body[20].addShapeBox(8F, -1F, -1F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 311
         body[20].setRotationPoint(68.5F, -6.5F, 2F);
-        body[20].rotateAngleZ = 0.87266463F;
+        body[20].rotationAngleZ = Static.toDegrees(0.87266463F);
 
         body[21].addShapeBox(8F, 1F, -1F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 312
         body[21].setRotationPoint(68.5F, -6.5F, 2F);
-        body[21].rotateAngleZ = 0.87266463F;
+        body[21].rotationAngleZ = Static.toDegrees(0.87266463F);
 
         body[22].addShapeBox(8F, 1F, 1F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 313
         body[22].setRotationPoint(68.5F, -6.5F, 2F);
-        body[22].rotateAngleZ = 0.87266463F;
+        body[22].rotationAngleZ = Static.toDegrees(0.87266463F);
 
         body[23].addShapeBox(8F, -1F, 1F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 314
         body[23].setRotationPoint(68.5F, -6.5F, 2F);
-        body[23].rotateAngleZ = 0.87266463F;
+        body[23].rotationAngleZ = Static.toDegrees(0.87266463F);
 
         body[24].addShapeBox(8F, 0F, 0F, 2, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 315
         body[24].setRotationPoint(68.5F, -6.5F, 2F);
-        body[24].rotateAngleZ = 0.87266463F;
+        body[24].rotationAngleZ = Static.toDegrees(0.87266463F);
 
         body[25].addShapeBox(0F, 0F, 0F, 4, 6, 0, 0F, -3F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F, -3F, 0F, 0F, -3F, 0F, 0F, 0F, 0F, 0F); // Box 317
         body[25].setRotationPoint(60.5F, -13.5F, 9.5F);
@@ -410,7 +411,7 @@ public class ModelC4Z1I4E extends PartModel {
 
         body[84].addShapeBox(0F, 0F, 0F, 2, 3, 2, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 392
         body[84].setRotationPoint(56.5F, -17.5F, 6F);
-        body[84].rotateAngleZ = 0.4712389F;
+        body[84].rotationAngleZ = Static.toDegrees(0.4712389F);
 
         body[85].addShapeBox(0F, 0F, 0F, 1, 1, 1, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 393
         body[85].setRotationPoint(58.5F, -18.5F, 3F);

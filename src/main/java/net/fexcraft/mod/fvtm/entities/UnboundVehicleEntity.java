@@ -336,14 +336,14 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         }
         switch(key){
             case 0: {//Accelerate;
-                throttle += 0.005F;
+                throttle += throttle < 0 ? 0.02f : 0.005F;
                 if(throttle > 1F){
                     throttle = 1F;
                 }
                 return true;
             }
             case 1: {//Decelerate
-                throttle -= 0.005F;
+                throttle -= throttle > 0 ? 0.02f : 0.005F;
                 if(throttle < -1F){
                     throttle = -1F;
                 }
@@ -992,8 +992,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         }
         //
         if(seats == null || (!vehicledata.getVehicle().isTrailerOrWagon() && seats.length == 0)){
-            this.setDead();
-            return;
+            this.setDead(); return;
         }
         if(doorToggleTimer > 0){
             doorToggleTimer--;
@@ -1033,7 +1032,7 @@ public abstract class UnboundVehicleEntity extends Entity implements VehicleEnti
         }
         if(!world.isRemote && this.vehicledata.getVehicle().isTrailerOrWagon() ? this.wheels.length > 2 : true){
             if(hasEnoughFuel()){
-                wheelsAngle += throttle * 0.2F;
+                wheelsAngle += throttle * 20;//TODO proper calc for rotation relative to wheel size
             }
             //
             if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || vehicledata.getFuelTankContent() > 0) && vehicledata.getVehicle().getFMAttribute("max_positive_throttle") != 0){

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
 
@@ -590,7 +591,7 @@ public class Model4x4Samu extends VehicleModel {
 
         body[100].addBox(0F, -4F, 0F, 1, 4, 1, 0F); // Box 250
         body[100].setRotationPoint(21F, -4F, 5F);
-        body[100].rotateAngleZ = -0.6981317F;
+        body[100].rotationAngleZ = Static.toDegrees(-0.6981317F);
 
         body[101].addBox(0F, 0F, 0F, 1, 2, 32, 0F); // Box 255
         body[101].setRotationPoint(24.8F, -6F, -16F);
@@ -765,27 +766,27 @@ public class Model4x4Samu extends VehicleModel {
 
         body[158].addBox(0F, 0F, 0F, 1, 4, 3, 0F); // Import Sp1
         body[158].setRotationPoint(22F, -9.5F, -23F);
-        body[158].rotateAngleY = -0.17453293F;
+        body[158].rotationAngleY = Static.toDegrees(-0.17453293F);
 
         body[159].addBox(0F, 0F, 0F, 1, 1, 1, 0F); // Import Sp2
         body[159].setRotationPoint(22F, -5.5F, -21F);
-        body[159].rotateAngleY = 0.1745329F;
+        body[159].rotationAngleY = Static.toDegrees(0.1745329F);
 
         body[160].addBox(0F, 0F, -2F, 1, 1, 3, 0F); // Import Sp3
         body[160].setRotationPoint(22F, -4.5F, -23F);
-        body[160].rotateAngleY = 0.1745329F;
+        body[160].rotationAngleY = Static.toDegrees(0.1745329F);
 
         body[161].addBox(0F, 0F, -3F, 1, 4, 3, 0F); // Import Sp4
         body[161].setRotationPoint(23F, -9.5F, 17F);
-        body[161].rotateAngleY = 0.17453293F;
+        body[161].rotationAngleY = Static.toDegrees(0.17453293F);
 
         body[162].addBox(0F, 0F, -1F, 1, 1, 1, 0F); // Import Sp5
         body[162].setRotationPoint(23F, -5.5F, 19F);
-        body[162].rotateAngleY = -0.1745329F;
+        body[162].rotationAngleY = Static.toDegrees(-0.1745329F);
 
         body[163].addBox(0F, 0F, -1F, 1, 1, 3, 0F); // Import Sp6
         body[163].setRotationPoint(23F, -4.5F, 17F);
-        body[163].rotateAngleY = -0.1745329F;
+        body[163].rotationAngleY = Static.toDegrees(-0.1745329F);
 
         body[164].addBox(0F, 0F, 0F, 2, 1, 1, 0F); // Box 410
         body[164].setRotationPoint(-50F, -3F, -6F);

@@ -95,7 +95,7 @@ public class DefaultPrograms {
 		//
 		@Override
 		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
-	        if(ent == null) return; list.rotateAxis(ent.getWheelsYaw() * 3.14159265F / 180F * 3F, 0, true);
+	        if(ent == null) return; list.rotateAxis(ent.getWheelsYaw() * 3F, 0, true);
 		}
 		//
 		@Override
@@ -109,7 +109,7 @@ public class DefaultPrograms {
 		//
 		@Override
 		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
-	        if(ent == null) return; list.rotateAxis(ent.getWheelsYaw() * 3.14159265F / 180F * 3F, 1, true);
+	        if(ent == null) return; list.rotateAxis(ent.getWheelsYaw() * 3F, 1, true);
 		}
 		//
 		@Override
@@ -157,7 +157,7 @@ public class DefaultPrograms {
 	        lastpos.translate();
 	        if(part.contains("right")){ GL11.glRotated(180, 0, 1, 0); }
 	        if(ent != null && data.getVehicle().getSteeringWheels().contains(part))
-	        	list.rotateAxis(ent.getWheelsYaw() * 3.14159265F / 180F * 3F, 1, true);
+	        	list.rotateAxis(ent.getWheelsYaw() * 3F, 1, true);
 		}
 		//
 		@Override
@@ -178,13 +178,13 @@ public class DefaultPrograms {
 	        lastpos = lastpos == null ? Pos.NULL : lastpos;
 	        lastpos.translate();
 	        if(ent != null)
-	        	list.rotateAxis(ent.getBogieYaw()[part.contains("front") ? 0 : 1] * 3.14159265F / 180F * 3F, 1, true);
+	        	list.rotateAxis(ent.getBogieYaw()[part.contains("front") ? 0 : 1] * 3F, 1, true);
 		}
 		//
 		@Override
 		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
 	        if(ent != null)
-	        	list.rotateAxis(-ent.getBogieYaw()[part.contains("front") ? 0 : 1] * 3.14159265F / 180F * 3F, 1, true);
+	        	list.rotateAxis(-ent.getBogieYaw()[part.contains("front") ? 0 : 1] * 3F, 1, true);
 			lastpos.translateR();
 		}
 	};

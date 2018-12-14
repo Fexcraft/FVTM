@@ -1,6 +1,7 @@
 package net.fexcraft.mod.addons.zmp.models.vehicle;
 
 import net.fexcraft.lib.mc.api.registry.fModel;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
@@ -726,11 +727,11 @@ public class ModelC4Z1 extends VehicleModel {
 
         body[172].addShapeBox(0F, 0F, 0F, 1, 1, 34, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 400
         body[172].setRotationPoint(79.5F, -12.5F, -17.5F);
-        body[172].rotateAngleZ = 0.40142573F;
+        body[172].rotationAngleZ = Static.toDegrees(0.40142573F);
 
         body[173].addShapeBox(0F, 0F, 0F, 1, 1, 34, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F); // Box 401
         body[173].setRotationPoint(78.5F, -14.5F, -17.5F);
-        body[173].rotateAngleZ = 0.40142573F;
+        body[173].rotationAngleZ = Static.toDegrees(0.40142573F);
 
         body[174].addBox(0F, 0F, 0F, 2, 7, 1, 0F); // Box 106
         body[174].setRotationPoint(-105.5F, -18.5F, -24F);

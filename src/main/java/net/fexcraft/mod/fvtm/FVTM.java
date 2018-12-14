@@ -27,7 +27,6 @@ import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.GenericEntityType;
 import net.fexcraft.mod.fvtm.impl.PrototypeEntityType;
-import net.fexcraft.mod.fvtm.impl.caps.ChunkRailDataUtil;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
 import net.fexcraft.mod.fvtm.impl.container.ContainerStatusListener;
@@ -82,7 +81,8 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		CapabilityManager.INSTANCE.register(VAPDataCache.VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(net.fexcraft.mod.fvtm.api.Resources.class, new WorldResourcesUtil.Storage(), new WorldResourcesUtil.Callable());
-		CapabilityManager.INSTANCE.register(ChunkRailDataUtil.ChunkRailData.class, new ChunkRailDataUtil.Storage(), new ChunkRailDataUtil.Callable());
+		//CapabilityManager.INSTANCE.register(ChunkRailDataUtil.ChunkRailData.class, new ChunkRailDataUtil.Storage(), new ChunkRailDataUtil.Callable());
+		//CapabilityManager.INSTANCE.register(WorldRailData.class, new WorldRailDataSerializer.Storage(), new WorldRailDataSerializer.Callable());
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		REGISTERER = new AutoRegisterer(MODID);

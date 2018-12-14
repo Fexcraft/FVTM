@@ -7,7 +7,6 @@
 package net.fexcraft.mod.addons.fvp.models.part.t1;
 
 import net.fexcraft.lib.mc.api.registry.fModel;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
@@ -30,16 +29,16 @@ public class T1FuelGauge extends PartModel {
         body[0].setRotationPoint(50.3F, -21F, 14F);
         body[1].addShapeBox(0F, 0F, -0.5F, 1, 2, 1, 0F, 0F, 0F, -0.4F, -0.8F, 0F, -0.4F, -0.8F, 0F, -0.4F, 0F, 0F, -0.4F, 0F, -0.6F, -0.4F, -0.8F, -0.6F, -0.4F, -0.8F, -0.6F, -0.4F, 0F, -0.6F, -0.4F); // Box 1
         body[1].setRotationPoint(50.2F, -19.5F, 15F);
-        body[1].rotateAngleX = 3.14159265F;
+        body[1].rotationAngleX = 180f;
         body[2].addShapeBox(0F, -0.5F, -0.5F, 1, 1, 1, 0F, 0F, -0.3F, -0.3F, 0F, -0.3F, -0.3F, 0F, -0.3F, -0.3F, 0F, -0.3F, -0.3F, 0F, -0.3F, -0.3F, 0F, -0.3F, -0.3F, 0F, -0.3F, -0.3F, 0F, -0.3F, -0.3F); // Box 2
         body[2].setRotationPoint(50.1F, -19.5F, 15F);
-        body[2].rotateAngleX = 3.14159265F;
+        body[2].rotationAngleX = 180f;
         this.add("body", body); list = this.get("body");
     }
 
     @Override
     public void render(VehicleData data, String usedAS){
-        list.get(1).rotateAngleX = 3.14159265F;
+        list.get(1).rotationAngleX = 180f;
         list.render(null, data, usedAS);
     }
 
@@ -47,7 +46,7 @@ public class T1FuelGauge extends PartModel {
     public void render(VehicleData data, String us, VehicleEntity vehicle, int meta){
         //double per = (data.getFuelTankContent() / data.getFuelTankSize()) * 100;
         double rad = (data.getFuelTankContent() / data.getFuelTankSize()) * 90;
-        list.get(1).rotateAngleX = (float)(Static.rad1 * (rad + 135));
+        list.get(1).rotationAngleX = (float)(rad + 135f);//(float)(Static.rad1 * (rad + 135));
         list.render(vehicle, data, us);
     }
 

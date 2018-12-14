@@ -71,8 +71,7 @@ public class ModelRailSTD125 extends GenericModelBase {
 		base[15].setRotationPoint(-8F, -2F, -24F);
 		base[16].addBox(-1F, 0F, 0F, 1, 8, 1, 0F); // Box 16
 		base[16].setRotationPoint(0F, -8F, 14F);
-		translateAll(0F, 0F, 0F);
-		flipAll();
+		translate(0F, 0F, 0F); flipAll();
 	}
 	
 	private static final ResourceLocation texture = new ResourceLocation(FVTM.MODID, "textures/blocks/railstandard125.png");

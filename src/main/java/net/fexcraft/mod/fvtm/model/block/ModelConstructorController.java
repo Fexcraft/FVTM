@@ -7,6 +7,7 @@
 // Last changed on: 07.06.2017 - 18:47:56
 package net.fexcraft.mod.fvtm.model.block;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelConverter;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -75,7 +76,7 @@ public class ModelConstructorController extends ModelConverter {
 
         bodyModel[8].addBox(0F, 0F, 0F, 10, 1, 2, 0F); // Box 12
         bodyModel[8].setRotationPoint(3F, -16.1F, 1F);
-        bodyModel[8].rotateAngleY = -1.57079633F;
+        bodyModel[8].rotationAngleY = Static.toDegrees(-1.57079633F);
 
         bodyModel[9].addBox(0F, 0F, 0F, 8, 1, 8, 0F); // Box 21
         bodyModel[9].setRotationPoint(4F, -16.2F, 1F);

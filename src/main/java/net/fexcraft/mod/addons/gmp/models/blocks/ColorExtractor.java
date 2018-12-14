@@ -376,42 +376,42 @@ public class ColorExtractor extends BlockModel {
 
 		body[70].addBox(0F, 0F, 0F, 15, 8, 1, 0F); // Box 70
 		body[70].setRotationPoint(23F, -8F, 7F);
-		body[70].rotateAngleY = 1.57079633F;
+		body[70].rotationAngleY = Static.toDegrees(1.57079633F);
 
 		body[71].addBox(0F, 0F, 0F, 15, 8, 1, 0F); // Box 71
 		body[71].setRotationPoint(9F, -8F, 7F);
 
 		body[72].addBox(0F, 0F, 0F, 15, 8, 1, 0F); // Box 72
 		body[72].setRotationPoint(8F, -8F, 8F);
-		body[72].rotateAngleY = 1.57079633F;
+		body[72].rotationAngleY = Static.toDegrees(1.57079633F);
 
 		body[73].addBox(0F, 0F, 0F, 1, 1, 16, 0F); // Box 73
 		body[73].setRotationPoint(7.5F, -2F, -8.5F);
 
 		body[74].addBox(0F, 0F, 0F, 1, 1, 16, 0F); // Box 74
 		body[74].setRotationPoint(8.5F, -2F, -7.5F);
-		body[74].rotateAngleY = 1.57079633F;
+		body[74].rotationAngleY = Static.toDegrees(1.57079633F);
 
 		body[75].addBox(0F, 0F, 0F, 1, 1, 16, 0F); // Box 75
 		body[75].setRotationPoint(23.5F, -2F, -7.5F);
 
 		body[76].addBox(0F, 0F, 0F, 1, 1, 16, 0F); // Box 76
 		body[76].setRotationPoint(7.5F, -2F, 8.5F);
-		body[76].rotateAngleY = 1.57079633F;
+		body[76].rotationAngleY = Static.toDegrees(1.57079633F);
 
 		body[77].addBox(0F, 0F, 0F, 1, 1, 16, 0F); // Box 77
 		body[77].setRotationPoint(7.5F, -7F, -8.5F);
 
 		body[78].addBox(0F, 0F, 0F, 1, 1, 16, 0F); // Box 78
 		body[78].setRotationPoint(8.5F, -7F, -7.5F);
-		body[78].rotateAngleY = 1.57079633F;
+		body[78].rotationAngleY = Static.toDegrees(1.57079633F);
 
 		body[79].addBox(0F, 0F, 0F, 1, 1, 16, 0F); // Box 79
 		body[79].setRotationPoint(23.5F, -7F, -7.5F);
 
 		body[80].addBox(0F, 0F, 0F, 1, 1, 16, 0F); // Box 80
 		body[80].setRotationPoint(7.5F, -7F, 8.5F);
-		body[80].rotateAngleY = 1.57079633F;
+		body[80].rotationAngleY = Static.toDegrees(1.57079633F);
 
 		body[81].addBox(0F, 0F, 0F, 14, 0, 14, 0F); // Box 93
 		body[81].setRotationPoint(9F, -0.1F, -7F);
@@ -607,31 +607,31 @@ public class ColorExtractor extends BlockModel {
 
 		glow[1].addShapeBox(0F, 0F, 0F, 1, 3, 7, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F); // Box 128
 		glow[1].setRotationPoint(0F, -27F, 0F);
-		glow[1].rotateAngleY = -0.78539816F;
+		glow[1].rotationAngleY = Static.toDegrees(-0.78539816F);
 
 		glow[2].addShapeBox(0F, 0F, 0F, 1, 3, 7, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F); // Box 129
 		glow[2].setRotationPoint(0F, -27F, 0F);
-		glow[2].rotateAngleY = -1.57079633F;
+		glow[2].rotationAngleY = Static.toDegrees(-1.57079633F);
 
 		glow[3].addShapeBox(0F, 0F, 0F, 1, 3, 7, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F); // Box 130
 		glow[3].setRotationPoint(0F, -27F, 0F);
-		glow[3].rotateAngleY = -2.35619449F;
+		glow[3].rotationAngleY = Static.toDegrees(-2.35619449F);
 
 		glow[4].addShapeBox(0F, 0F, 0F, 1, 3, 7, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F); // Box 131
 		glow[4].setRotationPoint(0F, -27F, 0F);
-		glow[4].rotateAngleY = -3.14159265F;
+		glow[4].rotationAngleY = Static.toDegrees(-3.14159265F);
 
 		glow[5].addShapeBox(0F, 0F, 0F, 1, 3, 7, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F); // Box 132
 		glow[5].setRotationPoint(0F, -27F, 0F);
-		glow[5].rotateAngleY = -3.92699082F;
+		glow[5].rotationAngleY = Static.toDegrees(-3.92699082F);
 
 		glow[6].addShapeBox(0F, 0F, 0F, 1, 3, 7, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F); // Box 133
 		glow[6].setRotationPoint(0F, -27F, 0F);
-		glow[6].rotateAngleY = -4.71238898F;
+		glow[6].rotationAngleY = Static.toDegrees(-4.71238898F);
 
 		glow[7].addShapeBox(0F, 0F, 0F, 1, 3, 7, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F, 0F, 0F, 0F, -0.8F, 0F, 0F, 2F, 0F, -0.6F, 0F, 0F, 0F); // Box 134
 		glow[7].setRotationPoint(0F, -27F, 0F);
-		glow[7].rotateAngleY = -5.49778714F;
+		glow[7].rotationAngleY = Static.toDegrees(-5.49778714F);
 		this.add("glow", glow);
 
 
@@ -744,7 +744,7 @@ public class ColorExtractor extends BlockModel {
     	float rot = RenderCache.getData(tile.getLongPos(), "rotation", 0) + (data.getScript() == null ? 1 : data.getScript(CrafterBlockScriptBase.class).getProgress() > 0 ? 1 : 0);
     	RenderCache.updateData(tile.getLongPos(), "rotation", rot = rot > 360 ? 0 : rot < 0 ? 0 : rot);
     	for(ModelRendererTurbo model : get("glow")){
-    		model.rotateAngleY += rot * Static.rad1; model.render(); model.rotateAngleY -= rot * Static.rad1;
+    		model.rotationAngleY += rot; model.render(); model.rotationAngleY -= rot;
     	}
 	}
 	

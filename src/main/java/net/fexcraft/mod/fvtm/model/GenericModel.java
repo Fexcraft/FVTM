@@ -95,12 +95,12 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	public static void fixRotations(TurboList group){
         for(ModelRendererTurbo model : group){
             if(model.isShape3D){
-                model.rotateAngleY = -model.rotateAngleY;
-                model.rotateAngleX = -model.rotateAngleX;
-                model.rotateAngleZ = -model.rotateAngleZ + net.fexcraft.lib.mc.utils.Static.rad180;
+                model.rotationAngleY = -model.rotationAngleY;
+                model.rotationAngleX = -model.rotationAngleX;
+                model.rotationAngleZ = -model.rotationAngleZ + 180f;
             }
             else{
-                model.rotateAngleZ = -model.rotateAngleZ;
+                model.rotationAngleZ = -model.rotationAngleZ;
             }
         }
     }

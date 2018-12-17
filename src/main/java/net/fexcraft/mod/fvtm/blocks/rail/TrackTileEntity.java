@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.blocks.rail;
 
-import net.fexcraft.lib.common.utils.Print;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
@@ -79,7 +78,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
         	compound.setTag("connections", nbtlinks);
         }
     	compound.setString(Gauge.GaugeItem.NBTKEY, (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
-    	Print.console("writ " + compound);
+    	//Print.console("writ " + compound);
         return compound;
     }
 
@@ -94,7 +93,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
         	}
         }
         gauge = Resources.GAUGES.getValue(compound.hasKey(Gauge.GaugeItem.NBTKEY) ? new ResourceLocation(compound.getString(Gauge.GaugeItem.NBTKEY)) : InternalAddon.STANDARD_GAUGE);
-        Print.console("read " + compound);
+        //Print.console("read " + compound);
         if(world == null || !world.isRemote) RailUtil.attach(this);
     }
 
@@ -147,8 +146,7 @@ public class TrackTileEntity extends TileEntity implements ITrack, IPacketReceiv
         return super.getMaxRenderDistanceSquared() * 8;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
+    @SideOnly(Side.CLIENT) @Override
     public AxisAlignedBB getRenderBoundingBox(){
         return INFINITE_EXTENT_AABB;
     }

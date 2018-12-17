@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.entities.rail;
 
 import java.util.TreeMap;
-
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;

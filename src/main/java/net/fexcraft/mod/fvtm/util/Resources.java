@@ -67,6 +67,7 @@ import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.impl.block.GenericBlock;
 import net.fexcraft.mod.fvtm.impl.block.GenericBlockItem;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
+import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
 import net.fexcraft.mod.fvtm.impl.container.GenericContainer;
 import net.fexcraft.mod.fvtm.impl.container.GenericContainerItem;
 import net.fexcraft.mod.fvtm.impl.part.GenericPart;
@@ -87,6 +88,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -1027,10 +1029,29 @@ public class Resources {
 		}
 	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
-		event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+		//event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+	}
+	
+	/*private long tickcounter;
+	
+	@SubscribeEvent
+	public void onTick(TickEvent.ServerTickEvent event){
+		if(event.phase == TickEvent.Phase.END) return;
+		if(++tickcounter % 10 == 0){
+			for(World world : Static.getServer().worlds){
+				WorldRailData data = world.getCapability(WorldRailDataSerializer.CAPABILITY, EnumFacing.UP);
+				if(data == null) continue; data.checkForInactive();
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onWorldUnload(WorldEvent.Unload event){
+		WorldRailData data = event.getWorld().getCapability(WorldRailDataSerializer.CAPABILITY, EnumFacing.UP);
+		if(data == null) return; data.onUnload();
 	}*/
 	
 	private static Field flightdata;

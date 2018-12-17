@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.impl.caps;
+package net.fexcraft.mod.fvtm.prototype;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;

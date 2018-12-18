@@ -41,7 +41,7 @@ public class GenericBlock implements Block {
         this.registryname = DataUtil.getRegistryName(obj, "BLOCK");
         this.addon = DataUtil.getAddon(registryname, obj, "BLOCK");
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), BlockData.class, BlockTileEntity.class, BlockModel.class);
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), BlockModel.class);
         }
         this.name = JsonUtil.getIfExists(obj, "FullName", this.getRegistryName().toString());
         this.textures = DataUtil.getTextures(obj, registryname, "BLOCK");;

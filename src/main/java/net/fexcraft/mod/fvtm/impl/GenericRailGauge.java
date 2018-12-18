@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.impl;
 
+import java.util.Map;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -9,17 +11,17 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 
 public class GenericRailGauge implements Gauge {
 
-    private Model<TrackTileEntity, Connection> model;
+    private Model<Map.Entry<BlockPos, Connection[]>, Connection> model;
     private ResourceLocation registryname, texture;
     private Addon addon;
     private String name;
@@ -34,7 +36,7 @@ public class GenericRailGauge implements Gauge {
         this.width = JsonUtil.getIfExists(obj, "GaugeInnerWidth", 30).floatValue();
         this.texture = new ResourceLocation(JsonUtil.getIfExists(obj, "Texture", "fvtm:textures/blocks/railstandard125.png"));
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), TrackTileEntity.class, Connection.class, RailGaugeModel.class);
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), RailGaugeModel.class);
         }
 	}
 
@@ -85,7 +87,7 @@ public class GenericRailGauge implements Gauge {
 	}
 
 	@Override
-	public Model<TrackTileEntity, Connection> getModel(){
+	public Model<Map.Entry<BlockPos, Connection[]>, Connection> getModel(){
 		return model;
 	}
 

@@ -2,6 +2,9 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 
 import java.util.TreeMap;
 
+import net.fexcraft.mod.fvtm.prototype.RailRegion;
+import net.fexcraft.mod.fvtm.prototype.WorldRailData;
+import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -20,9 +23,16 @@ public class RailUtil {
     		//
     		RailLink link = CONNS.get(curr);
     		if(link == null){
-        		TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(new BlockPos(curr));
-        		if(tile == null) return new Return(own, curr, last);
-        		BlockPos pos = tile.getNext(curr, last); //Print.debug(curr, last, pos);
+    			WorldRailData data = world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+    			/*if(data == null){
+    				Print.log("WorldRailData is null! This is bad!");
+    				return new Return(own, curr, last);
+    			}*/
+        		BlockPos pos = data.getNext(curr, last); //Print.debug(curr, last, pos);
+        		if(pos == null || curr.equals(pos)){
+        			//Print.console(pos, curr, last);
+        			return new Return(own, curr, last);
+        		}
         		last = curr; curr = pos;
     		}
     		else if(link.next.equals(last)){
@@ -32,7 +42,8 @@ public class RailUtil {
     			curr = link.next; last = link.self;
     		}
     		//
-			own = Vector3D.newVector(last); dest = Vector3D.newVector(curr);
+			own = Vector3D.newVector(last);
+			dest = Vector3D.newVector(curr);
 		}
     	dest = Vector3D.direction(dest[0] - own[0], dest[1] - own[1], dest[2] - own[2]);
     	dest = Vector3D.newVector(own[0] + (dest[0] * amount), own[1] + (dest[1] * amount), own[2] + (dest[2] * amount));
@@ -70,7 +81,7 @@ public class RailUtil {
 	
 	private static final TreeMap<BlockPos, RailLink> CONNS = new TreeMap<BlockPos, RailLink>();
 
-	public static void update(TrackTileEntity tile, boolean addition){
+	/*public static void update(TrackTileEntity tile, boolean addition){
 		attach(tile);
 	}
 
@@ -93,6 +104,32 @@ public class RailUtil {
 			CONNS.put(all[0], new RailLink(conn.getBeginning(), all[0], all[1]));
 			for(int i = 1; i < all.length - 1; i++) CONNS.put(all[i], new RailLink(all[i - 1], all[i], all[i + 1]));
 			CONNS.put(all[all.length - 1], new RailLink(all[all.length - 2], all[all.length - 1], conn.getDestination()));
+		}
+	}*/
+	
+	public static void detach(RailRegion reg){
+		for(Connection[] conns : reg.getConnections().values()){
+			for(Connection conn : conns){
+				BlockPos[] all = conn.allPositions();
+				for(BlockPos pos : all){
+					if(CONNS.containsKey(pos)){
+						CONNS.remove(pos);
+					}
+				}
+			}
+		}
+	}
+
+	public static void attach(RailRegion reg){
+		detach(reg);
+		for(Connection[] conns : reg.getConnections().values()){
+			for(Connection conn : conns){
+				BlockPos[] all = conn.getPoints();
+				if(all.length < 2) continue;
+				CONNS.put(all[0], new RailLink(conn.getBeginning(), all[0], all[1]));
+				for(int i = 1; i < all.length - 1; i++) CONNS.put(all[i], new RailLink(all[i - 1], all[i], all[i + 1]));
+				CONNS.put(all[all.length - 1], new RailLink(all[all.length - 2], all[all.length - 1], conn.getDestination()));
+			}
 		}
 	}
 	

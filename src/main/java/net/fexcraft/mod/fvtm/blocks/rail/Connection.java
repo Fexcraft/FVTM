@@ -3,9 +3,13 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import net.fexcraft.mod.fvtm.FVTM.InternalAddon;
+import net.fexcraft.mod.fvtm.api.Gauge;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -16,17 +20,19 @@ public class Connection {
 	private BlockPos[] points;
 	public Vec3d[] vecpoints;
 	public boolean opposite;
+	private Gauge gauge;
 	public int disl;
 	
-	public Connection(BlockPos begin, BlockPos dest, BlockPos... points){
-		this(begin, dest, false, points);
+	public Connection(Gauge gauge, BlockPos begin, BlockPos dest, BlockPos... points){
+		this(gauge, begin, dest, false, points);
 	}
 	
-	public Connection(BlockPos begin, BlockPos dest, boolean opposite, BlockPos... points){
+	public Connection(Gauge gauge, BlockPos begin, BlockPos dest, boolean opposite, BlockPos... points){
 		this.opposite = opposite;
 		this.destination = dest;
 		this.beginning = begin;
 		this.points = points;
+		this.gauge = gauge;
 		this.init();
 	}
 	
@@ -75,7 +81,7 @@ public class Connection {
 	public Connection opposite(){
 		BlockPos[] poss = new BlockPos[points.length]; int j = 0;
 		for(int i = points.length - 1; i > -1; i--){ poss[j++] = points[i]; }
-		return new Connection(destination, beginning, true, poss);
+		return new Connection(gauge, destination, beginning, true, poss);
 	}
 	
 	private static final TreeMap<BlockPos, Vec3d> vecs = new TreeMap<>();
@@ -96,6 +102,7 @@ public class Connection {
 			compound.setLong("point" + i, points[i].toLong());
 		}
 		compound.setBoolean("opposite", opposite);
+		compound.setString("gauge", gauge.getRegistryName().toString());
 		return compound;
 	}
 	
@@ -104,6 +111,12 @@ public class Connection {
 		this.beginning = BlockPos.fromLong(compound.getLong("begin"));
 		this.points = new BlockPos[compound.getByte("points")];
 		this.opposite = compound.getBoolean("opposite");
+		if(compound.hasKey("gauge")){
+			gauge = Resources.GAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
+		}
+		if(gauge == null){
+			gauge = Resources.GAUGES.getValue(InternalAddon.STANDARD_GAUGE);
+		}
 		for(int i = 0; i < points.length; i++){
 			this.points[i] = BlockPos.fromLong(compound.getLong("point" + i));
 		} init(); return this;
@@ -138,6 +151,14 @@ public class Connection {
 
 	public boolean equalsDestOrFirst(BlockPos previous){
 		return points.length > 0 ? points[0].equals(previous) : destination.equals(previous);
+	}
+	
+	public Gauge getGauge(){
+		return gauge;
+	}
+	
+	public boolean isCompatibleGauge(Gauge gauge){
+		return this.gauge.width() == gauge.width();
 	}
 	
 }

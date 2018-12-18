@@ -7,6 +7,10 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FVTM.InternalAddon;
+import net.fexcraft.mod.fvtm.prototype.WorldRailData;
+import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
@@ -48,22 +52,24 @@ public class TrackItemBlock extends ItemBlock16 {
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote){
-        	return EnumActionResult.PASS;
+        if(world.isRemote){ return EnumActionResult.PASS; }
+        WorldRailData worldcap = world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+        if(worldcap == null){
+			Print.chat(player, "&cWorld Capability not found.");
+	        return EnumActionResult.FAIL;
         }
         IBlockState state = world.getBlockState(pos); Block block = state.getBlock(); ItemStack stack = player.getHeldItem(hand);
         if(block instanceof TrackBlock){
-    		TrackTileEntity tte = (TrackTileEntity)world.getTileEntity(pos);
-    		if(tte != null && player.isSneaking()){
-    			tte.reset(); Print.chat(player, "&cResetting...");
+    		if(player.isSneaking()){
+    			worldcap.resetConnectionsAt(pos); Print.chat(player, "&cResetting...");
     			return EnumActionResult.SUCCESS;
     		}
     		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
         	if(stack.getTagCompound().hasKey("fvtm:railtrackstart")){
         		BlockPos pos0 = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackstart"));
-        		TrackTileEntity tile0 = (TrackTileEntity)world.getTileEntity(pos0);
-        		if(tile0 == null){ Print.chat(player, "&cTileEntity at first connection point is NULL."); return EnumActionResult.FAIL; }
-        		if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
+        		IBlockState state0 = world.getBlockState(pos0);
+        		if(state0 == null){ Print.chat(player, "&cRailConnector at first connection point is NULL."); return EnumActionResult.FAIL; }
+        		//if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
         		if(stack.getTagCompound().getInteger("fvtm:railtrackpoints") == 1){
         			Print.chat(player, "&cAt least 2 subpoints are needed."); return EnumActionResult.FAIL;
         		}
@@ -71,7 +77,7 @@ public class TrackItemBlock extends ItemBlock16 {
         		for(int j = 0; j < arr.length; j++){
         			arr[j] = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackpoint" + j));
         		}
-        		tile0.addConnection(new Connection(pos0, pos, false, arr), false);
+        		worldcap.addConnection(new Connection(Resources.GAUGES.getValue(InternalAddon.STANDARD_GAUGE), pos0, pos, false, arr));
         		Print.bar(player, "&7Connected&9!");
         		//
         		stack.getTagCompound().removeTag("fvtm:railtrackstart");
@@ -80,8 +86,9 @@ public class TrackItemBlock extends ItemBlock16 {
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
-        		if(tte != null && tte.connections.length >= 4){
-        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + tte.connections.length + ";)");
+        		int check = worldcap.getConnectionsAt(pos).length;
+        		if(check >= 4){
+        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + check + ";)");
         	        return EnumActionResult.FAIL;
         		}
         		stack.getTagCompound().setLong("fvtm:railtrackstart", pos.toLong());

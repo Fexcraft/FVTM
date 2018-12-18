@@ -2,23 +2,23 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
-public class RailGaugeModel implements Model<TrackTileEntity, Connection> {
+public class RailGaugeModel implements Model<Map.Entry<BlockPos, Connection[]>, Connection> {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	private static final ArrayList<String> creators = new ArrayList<>();
@@ -30,21 +30,21 @@ public class RailGaugeModel implements Model<TrackTileEntity, Connection> {
 	public RailGaugeModel(){ super(); }
 
 	@Override
-	public void render(TrackTileEntity te, Connection conn){
+	public void render(Map.Entry<BlockPos, Connection[]> te, Connection conn){
 		this.render(te, conn, null, 0);
 	}
 
 	@Override
-	public void render(TrackTileEntity te, Connection conn, VehicleEntity ent, int i){
+	public void render(Map.Entry<BlockPos, Connection[]> te, Connection conn, VehicleEntity ent, int i){
 		if(conn.opposite) return;
 		if(Command.DEBUG){
-			float[] colr = getColor(te.getWorld(), te.getPos(), te.connections.length, i);
+			float[] colr = getColor(te.getKey(), te.getValue().length, i);
 			GL11.glColor4f(colr[0], colr[1], colr[2], 0.25f);
 		}
 		boolean b = false;
 		for(int k = 0; k < conn.vecpoints.length - 1; k++){
-			Vec3d vec1 = conn.getVecpoint(k).subtract(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
-			Vec3d vec = conn.getVecpoint(k + 1).subtract(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
+			Vec3d vec1 = conn.getVecpoint(k).subtract(te.getKey().getX(), te.getKey().getY(), te.getKey().getZ());
+			Vec3d vec = conn.getVecpoint(k + 1).subtract(te.getKey().getX(), te.getKey().getY(), te.getKey().getZ());
 			if(i > 2) GL11.glTranslated(0, -0.02, 0);
 			double dis = vec1.distanceTo(vec);
 			/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
@@ -90,7 +90,7 @@ public class RailGaugeModel implements Model<TrackTileEntity, Connection> {
 		GL11.glTranslated(-dest[0], -dest[1], -dest[2]);
 	}
 	
-	private float[] getColor(World world, BlockPos pos, int length, int i){
+	private float[] getColor(BlockPos pos, int length, int i){
 		switch(length){
 			case 1:{
 				return new float[]{ 0, 0, 1 };
@@ -101,8 +101,8 @@ public class RailGaugeModel implements Model<TrackTileEntity, Connection> {
 			case 3:{
 				switch(i){
 					case 0: return new float[]{ 0, 1, 0 };
-					case 1: return new float[]{ 1, world.isBlockPowered(pos) ? 0.5f : 1, 0 };
-					case 2: return new float[]{ 1, world.isBlockPowered(pos) ? 1 : 0.5f, 0 };
+					case 1: return new float[]{ 1, Static.getServer().getEntityWorld().isBlockPowered(pos) ? 0.5f : 1, 0 };
+					case 2: return new float[]{ 1, Static.getServer().getEntityWorld().isBlockPowered(pos) ? 1 : 0.5f, 0 };
 				}
 				break;
 			}

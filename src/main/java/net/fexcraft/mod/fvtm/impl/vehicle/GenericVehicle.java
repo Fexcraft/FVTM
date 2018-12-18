@@ -78,7 +78,7 @@ public class GenericVehicle implements Vehicle {
         }
         this.required = JsonUtil.jsonArrayToStringArray(JsonUtil.getIfExists(obj, "RequiredParts", new JsonArray()).getAsJsonArray());
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleData.class, Object.class, VehicleModel.class);
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), VehicleModel.class);
         }
         this.wheelpos = new ArrayList<Pos>();
         if(obj.has("WheelPos")){

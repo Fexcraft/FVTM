@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -169,6 +170,69 @@ public class Renderer {
     		render(event.getPlayer(), data, event.getTarget().getBlockPos());
     	}
     }
+    
+	protected static final ModelRendererTurbo model, model0;
+	static{
+		model = new ModelRendererTurbo(null, 0, 0, 32, 32);
+		model.addCylinder(0, 0, 0, 3, 5, 32, 1, 1, ModelRendererTurbo.MR_TOP);
+		model.setRotationPoint(0, -5, 0);
+		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32);
+		model0.addCylinder(-12, 0, 0, 4, 16, 6, 1.2f, 1, ModelRendererTurbo.MR_TOP);
+		model0.setRotationPoint(0, 0, 0);
+	}
+	
+	//private static WorldRailData raildata;
+    
+    /*@SubscribeEvent
+    public void renderRails(RenderWorldLastEvent event){
+	    raildata = Static.getServer().getEntityWorld().getCapability(WorldRailDataSerializer.CAPABILITY, null);
+        Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
+        double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();
+        double y = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * event.getPartialTicks();
+        double z = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * event.getPartialTicks();
+        //
+        GL11.glPushMatrix();
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glTranslated(-x, -y, -z);
+        //Print.console(raildata.getLoadedRegions().size());
+        for(RailRegion region : raildata.getLoadedRegions()){
+        	for(java.util.Map.Entry<BlockPos, Connection[]> conns : region.getConnections().entrySet()){
+        		x = conns.getKey().getX(); y = conns.getKey().getY(); z = conns.getKey().getZ();
+        		if(conns.getValue() == null || conns.getValue().length < 2){
+    				GL11.glPushMatrix();
+    				GL11.glTranslated(x + 0.5F, y, z + 0.5F);
+    				ModelBase.bindTexture(ModelConstructorCenter.getTexture());
+    				GL11.glPushMatrix();
+    				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+    				GL11.glRotated(90, 0, 1D, 0);
+    				ModelBase.bindTexture(Resources.NULL_TEXTURE);
+    				model.render();
+    				GL11.glPopMatrix();
+    				GL11.glPopMatrix();
+    			}
+        		if(!hasGaugeModel(conns.getValue())){
+        			Print.console("invalid gauge");
+        			continue;
+        		}
+    			GL11.glPushMatrix();
+    			//GL11.glTranslated(x, y - 0.5, z);
+    			GL11.glPushMatrix();
+    			ModelBase.bindTexture(conns.getValue()[0].getGauge().getTexture());
+    			for(int i = 0; i < conns.getValue().length; i++){
+    				conns.getValue()[0].getGauge().getModel().render(conns, conns.getValue()[i], null, i);
+    			}
+    			GL11.glPopMatrix(); GL11.glPopMatrix();
+        	}
+        }
+		GL11.glPopMatrix();
+    }*/
+
+	/*private boolean hasGaugeModel(Connection[] value){
+		if(value.length < 1) return false;
+		if(value[0].getGauge() == null) return false;
+		if(value[0].getGauge().getModel() == null) return false;
+		return true;
+	}*/
 
 	@SuppressWarnings("unused")
 	private static boolean bteq(BlockData data, EnumFacing facing, BlockPos pos, World world){

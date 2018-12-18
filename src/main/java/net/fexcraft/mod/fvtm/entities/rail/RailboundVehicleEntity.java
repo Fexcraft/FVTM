@@ -33,12 +33,14 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
+import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
+import net.fexcraft.mod.fvtm.blocks.rail.TrackBlock;
 import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
+import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.ItemStackHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -158,9 +160,11 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         	return;
         }
         lastpos = pos;
-        if(world.getTileEntity(pos) != null){
-        	TrackTileEntity tile = (TrackTileEntity)world.getTileEntity(pos);
-        	currentpos = tile.connections.length > 0 ? tile.connections[0].getFirstTowardsDest() : pos;
+        if(world.getBlockState(pos).getBlock() == TrackBlock.INSTANCE){
+        	Print.debug("pre");
+        	Connection[] connections = world.getCapability(WorldRailDataSerializer.CAPABILITY, null).getConnectionsAt(pos);
+        	currentpos = connections.length > 0 ? connections[0].getFirstTowardsDest() : pos;
+        	Print.debug("past");
         }
         else{
         	currentpos = pos;

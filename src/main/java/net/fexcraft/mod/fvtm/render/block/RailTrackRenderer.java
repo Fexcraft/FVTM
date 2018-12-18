@@ -1,17 +1,12 @@
 package net.fexcraft.mod.fvtm.render.block;
 
-import net.fexcraft.lib.mc.api.registry.fTESR;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
-import net.fexcraft.mod.fvtm.model.block.ModelConstructorCenter;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.tileentity.TileEntity;
 
 /** @author Ferdinand Calo' (FEX___96) **/
-@fTESR
-public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity> {
+//@fTESR
+public class RailTrackRenderer extends TileEntitySpecialRenderer<TileEntity> {
 	
 	protected static final ModelRendererTurbo model, model0;
 	static{
@@ -24,8 +19,8 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 	}
 
 	@Override
-	public void render(TrackTileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
-		if(te.connections == null || te.connections.length < 2){
+	public void render(TileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
+		/*if(te.connections == null || te.connections.length < 2){
 			GL11.glPushMatrix();
 			GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
 			ModelBase.bindTexture(ModelConstructorCenter.getTexture());
@@ -45,7 +40,7 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 		for(int i = 0; i < te.connections.length; i++){
 			te.gauge.getModel().render(te, te.connections[i], null, i);
 		}
-		GL11.glPopMatrix(); GL11.glPopMatrix();
+		GL11.glPopMatrix(); GL11.glPopMatrix();*/
 	}
 
 }

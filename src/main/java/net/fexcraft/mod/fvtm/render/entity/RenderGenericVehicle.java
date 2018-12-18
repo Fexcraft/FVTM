@@ -34,27 +34,19 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
 
     @Override
     public void doRender(UnboundVehicleEntity vehicle, double x, double y, double z, float entity_yaw, float ticks){
-        if(vehicle.getVehicleData() == null){
-            return;
-        }
+        if(vehicle.getVehicleData() == null){ return; }
         GL11.glPushMatrix();
         {
             GL11.glTranslated(x, y, z);
             float yaw = (vehicle.axes.getYaw() - vehicle.prevRotationYaw);
-            for(; yaw > 180F; yaw -= 360F){
-            }
-            for(; yaw <= -180F; yaw += 360F){
-            }
+            for(; yaw > 180F; yaw -= 360F){ }
+            for(; yaw <= -180F; yaw += 360F){ }
             float pitch = (vehicle.axes.getPitch() - vehicle.prevRotationPitch);
-            for(; pitch > 180F; pitch -= 360F){
-            }
-            for(; pitch <= -180F; pitch += 360F){
-            }
+            for(; pitch > 180F; pitch -= 360F){ }
+            for(; pitch <= -180F; pitch += 360F){ }
             float roll = (vehicle.axes.getRoll() - vehicle.prevRotationRoll);
-            for(; roll > 180F; roll -= 360F){
-            }
-            for(; roll <= -180F; roll += 360F){
-            }
+            for(; roll > 180F; roll -= 360F){ }
+            for(; roll <= -180F; roll += 360F){ }
             GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);

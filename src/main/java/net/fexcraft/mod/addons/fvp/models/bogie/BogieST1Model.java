@@ -25,63 +25,63 @@ public class BogieST1Model extends PartModel {
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 233, 9, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 0.3926991f).setName("Box 1")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -22.5f).setName("Box 1")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 97, 17, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 0.7853982f).setName("Box 2")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -45).setName("Box 2")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 113, 17, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 1.1780972f).setName("Box 3")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -67.5f).setName("Box 3")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 153, 17, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 1.5707964f).setName("Box 4")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -90).setName("Box 4")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 169, 17, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 1.9634955f).setName("Box 5")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -112.5f).setName("Box 5")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 185, 17, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 2.3561945f).setName("Box 6")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -135).setName("Box 6")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 201, 17, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 2.7488935f).setName("Box 7")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -157.5f).setName("Box 7")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 217, 17, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 3.1415927f).setName("Box 8")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -180).setName("Box 8")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 233, 17, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 3.5342917f).setName("Box 9")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -202.5f).setName("Box 9")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 1, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 3.926991f).setName("Box 10")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -225).setName("Box 10")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 17, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 4.3196898f).setName("Box 11")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -247.5f).setName("Box 11")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 57, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 4.712389f).setName("Box 12")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -270).setName("Box 12")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 73, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 5.105088f).setName("Box 13")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -292.5f).setName("Box 13")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 89, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 5.497787f).setName("Box 14")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -315).setName("Box 14")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 105, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 5.8904862f).setName("Box 15")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -337.5f).setName("Box 15")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 153, 25, textureX, textureY).addBox(-6, -6, -0.1f, 12, 12, 1)
 			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 0).setName("Box 16")
@@ -92,63 +92,63 @@ public class BogieST1Model extends PartModel {
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 185, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 0.3926991f).setName("Box 18")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -22.5f).setName("Box 18")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 201, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 0.7853982f).setName("Box 19")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -45).setName("Box 19")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 217, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 1.1780972f).setName("Box 20")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -67.5f).setName("Box 20")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 233, 25, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 1.5707964f).setName("Box 21")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -90).setName("Box 21")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 1, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 1.9634955f).setName("Box 22")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -112.5f).setName("Box 22")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 17, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 2.3561945f).setName("Box 23")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -135).setName("Box 23")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 57, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 2.7488935f).setName("Box 24")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -157.5f).setName("Box 24")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 73, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 3.1415927f).setName("Box 25")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -180).setName("Box 25")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 89, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 3.5342917f).setName("Box 26")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -202.5f).setName("Box 26")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 105, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 3.926991f).setName("Box 27")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -225).setName("Box 27")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 121, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 4.3196898f).setName("Box 28")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -247.5f).setName("Box 28")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 185, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 4.712389f).setName("Box 29")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -270).setName("Box 29")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 201, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 5.105088f).setName("Box 30")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -292.5f).setName("Box 30")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 217, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 5.497787f).setName("Box 31")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -315).setName("Box 31")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 233, 33, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, 5.8904862f).setName("Box 32")
+			.setRotationPoint(16, -16, -16).setRotationAngle(0, 0, -337.5f).setName("Box 32")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 193, 41, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
@@ -156,63 +156,63 @@ public class BogieST1Model extends PartModel {
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 209, 41, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 0.3926991f).setName("Box 34")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -22.5f).setName("Box 34")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 225, 41, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 0.7853982f).setName("Box 35")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -45).setName("Box 35")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 241, 41, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 1.1780972f).setName("Box 36")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -67.5f).setName("Box 36")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 1, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 1.5707964f).setName("Box 37")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -90).setName("Box 37")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 17, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 1.9634955f).setName("Box 38")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -112.5f).setName("Box 38")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 33, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 2.3561945f).setName("Box 39")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -135).setName("Box 39")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 89, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 2.7488935f).setName("Box 40")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -157.5f).setName("Box 40")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 105, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 3.1415927f).setName("Box 41")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -180).setName("Box 41")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 121, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 3.5342917f).setName("Box 42")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -202.5f).setName("Box 42")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 137, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 3.926991f).setName("Box 43")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -225).setName("Box 43")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 153, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 4.3196898f).setName("Box 44")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -247.5f).setName("Box 44")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 169, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 4.712389f).setName("Box 45")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -270).setName("Box 45")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 185, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 5.105088f).setName("Box 46")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -292.5f).setName("Box 46")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 201, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 5.497787f).setName("Box 47")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -315).setName("Box 47")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 217, 49, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, 5.8904862f).setName("Box 48")
+			.setRotationPoint(16, -16, 16).setRotationAngle(0, 0, -337.5f).setName("Box 48")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 1, 57, textureX, textureY).addBox(-6, -6, -0.1f, 12, 12, 1)
 			.setRotationPoint(16, -16, 15).setRotationAngle(0, 0, 0).setName("Box 49")
@@ -223,63 +223,63 @@ public class BogieST1Model extends PartModel {
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 33, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 0.3926991f).setName("Box 51")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -22.5f).setName("Box 51")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 89, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 0.7853982f).setName("Box 52")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -45).setName("Box 52")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 105, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 1.1780972f).setName("Box 53")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -67.5f).setName("Box 53")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 121, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 1.5707964f).setName("Box 54")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -90).setName("Box 54")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 137, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 1.9634955f).setName("Box 55")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -112.5f).setName("Box 55")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 153, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 2.3561945f).setName("Box 56")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -135).setName("Box 56")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 169, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 2.7488935f).setName("Box 57")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -157.5f).setName("Box 57")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 185, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 3.1415927f).setName("Box 58")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -180).setName("Box 58")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 201, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 3.5342917f).setName("Box 59")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -202.5f).setName("Box 59")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 217, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 3.926991f).setName("Box 60")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -225).setName("Box 60")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 233, 57, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 4.3196898f).setName("Box 61")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -247.5f).setName("Box 61")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 33, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 4.712389f).setName("Box 62")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -270).setName("Box 62")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 89, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 5.105088f).setName("Box 63")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -292.5f).setName("Box 63")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 105, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 5.497787f).setName("Box 64")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -315).setName("Box 64")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 121, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, 5.8904862f).setName("Box 65")
+			.setRotationPoint(16, -16, 13).setRotationAngle(0, 0, -337.5f).setName("Box 65")
 		);
 		axle0.add(new ModelRendererTurbo(axle0, 97, 57, textureX, textureY).addBox(-1, -1, -17, 2, 2, 34)
 			.setRotationPoint(16, -16, 0).setRotationAngle(0, 0, 0).setName("Box 66")
@@ -294,63 +294,63 @@ public class BogieST1Model extends PartModel {
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 153, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 0.3926991f).setName("Box 68")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -22.5f).setName("Box 68")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 169, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 0.7853982f).setName("Box 69")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -45).setName("Box 69")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 185, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 1.1780972f).setName("Box 70")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -67.5f).setName("Box 70")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 201, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 1.5707964f).setName("Box 71")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -90).setName("Box 71")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 217, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 1.9634955f).setName("Box 72")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -112.5f).setName("Box 72")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 233, 65, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 2.3561945f).setName("Box 73")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -135).setName("Box 73")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 1, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 2.7488935f).setName("Box 74")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -157.5f).setName("Box 74")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 17, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 3.1415927f).setName("Box 75")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -180).setName("Box 75")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 33, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 3.5342917f).setName("Box 76")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -202.5f).setName("Box 76")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 89, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 3.926991f).setName("Box 77")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -225).setName("Box 77")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 105, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 4.3196898f).setName("Box 78")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -247.5f).setName("Box 78")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 137, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 4.712389f).setName("Box 79")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -270).setName("Box 79")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 153, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 5.105088f).setName("Box 80")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -292.5f).setName("Box 80")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 169, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 5.497787f).setName("Box 81")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -315).setName("Box 81")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 185, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 5.8904862f).setName("Box 82")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -337.5f).setName("Box 82")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 201, 73, textureX, textureY).addBox(-6, -6, -0.1f, 12, 12, 1)
 			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 0).setName("Box 83")
@@ -361,63 +361,63 @@ public class BogieST1Model extends PartModel {
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 233, 73, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 0.3926991f).setName("Box 85")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -22.5f).setName("Box 85")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 1, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 0.7853982f).setName("Box 86")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -45).setName("Box 86")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 17, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 1.1780972f).setName("Box 87")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -67.5f).setName("Box 87")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 33, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 1.5707964f).setName("Box 88")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -90).setName("Box 88")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 89, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 1.9634955f).setName("Box 89")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -112.5f).setName("Box 89")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 105, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 2.3561945f).setName("Box 90")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -135).setName("Box 90")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 121, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 2.7488935f).setName("Box 91")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -157.5f).setName("Box 91")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 137, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 3.1415927f).setName("Box 92")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -180).setName("Box 92")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 153, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 3.5342917f).setName("Box 93")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -202.5f).setName("Box 93")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 169, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 3.926991f).setName("Box 94")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -225).setName("Box 94")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 185, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 4.3196898f).setName("Box 95")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -247.5f).setName("Box 95")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 233, 81, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 4.712389f).setName("Box 96")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -270).setName("Box 96")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 1, 89, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 5.105088f).setName("Box 97")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -292.5f).setName("Box 97")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 17, 89, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 5.497787f).setName("Box 98")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -315).setName("Box 98")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 33, 89, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f)
-			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, 5.8904862f).setName("Box 99")
+			.setRotationPoint(-16, -16, -16).setRotationAngle(0, 0, -337.5f).setName("Box 99")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 177, 89, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
@@ -425,63 +425,63 @@ public class BogieST1Model extends PartModel {
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 193, 89, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 0.3926991f).setName("Box 101")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -22.5f).setName("Box 101")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 209, 89, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 0.7853982f).setName("Box 102")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -45).setName("Box 102")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 225, 89, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 1.1780972f).setName("Box 103")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -67.5f).setName("Box 103")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 241, 89, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 1.5707964f).setName("Box 104")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -90).setName("Box 104")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 137, 97, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 1.9634955f).setName("Box 105")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -112.5f).setName("Box 105")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 153, 97, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 2.3561945f).setName("Box 106")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -135).setName("Box 106")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 169, 97, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 2.7488935f).setName("Box 107")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -157.5f).setName("Box 107")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 185, 97, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 3.1415927f).setName("Box 108")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -180).setName("Box 108")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 201, 97, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 3.5342917f).setName("Box 109")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -202.5f).setName("Box 109")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 217, 97, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 3.926991f).setName("Box 110")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -225).setName("Box 110")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 233, 97, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 4.3196898f).setName("Box 111")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -247.5f).setName("Box 111")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 1, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 4.712389f).setName("Box 112")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -270).setName("Box 112")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 17, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 5.105088f).setName("Box 113")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -292.5f).setName("Box 113")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 33, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 5.497787f).setName("Box 114")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -315).setName("Box 114")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 49, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, -1, 3, 2, 2, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, -0.3f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.1f, 0, 0)
-			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, 5.8904862f).setName("Box 115")
+			.setRotationPoint(-16, -16, 16).setRotationAngle(0, 0, -337.5f).setName("Box 115")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 65, 105, textureX, textureY).addBox(-6, -6, -0.1f, 12, 12, 1)
 			.setRotationPoint(-16, -16, 15).setRotationAngle(0, 0, 0).setName("Box 116")
@@ -492,63 +492,63 @@ public class BogieST1Model extends PartModel {
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 113, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 0.3926991f).setName("Box 118")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -22.5f).setName("Box 118")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 129, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 0.7853982f).setName("Box 119")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -45).setName("Box 119")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 145, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 1.1780972f).setName("Box 120")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -67.5f).setName("Box 120")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 161, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 1.5707964f).setName("Box 121")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -90).setName("Box 121")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 177, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 1.9634955f).setName("Box 122")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -112.5f).setName("Box 122")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 193, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 2.3561945f).setName("Box 123")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -135).setName("Box 123")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 209, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 2.7488935f).setName("Box 124")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -157.5f).setName("Box 124")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 225, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 3.1415927f).setName("Box 125")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -180).setName("Box 125")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 241, 105, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 3.5342917f).setName("Box 126")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -202.5f).setName("Box 126")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 1, 113, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 3.926991f).setName("Box 127")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -225).setName("Box 127")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 17, 113, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 4.3196898f).setName("Box 128")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -247.5f).setName("Box 128")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 33, 113, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 4.712389f).setName("Box 129")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -270).setName("Box 129")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 49, 113, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 5.105088f).setName("Box 130")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -292.5f).setName("Box 130")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 97, 113, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 5.497787f).setName("Box 131")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -315).setName("Box 131")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 113, 113, textureX, textureY)
 			.addShapeBox(-1.5f, 6, 1, 3, 3, 1, 0, -0.3f, 0, -0.5f, -0.3f, 0, -0.5f, -0.3f, 0, 0, -0.3f, 0, 0, 0.3f, 0, -0.5f, 0.3f, 0, -0.5f, 0.3f, 0, 0, 0.3f, 0, 0)
-			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, 5.8904862f).setName("Box 132")
+			.setRotationPoint(-16, -16, 13).setRotationAngle(0, 0, -337.5f).setName("Box 132")
 		);
 		axle1.add(new ModelRendererTurbo(axle1, 73, 105, textureX, textureY).addBox(-1, -1, -17, 2, 2, 34)
 			.setRotationPoint(-16, -16, 0).setRotationAngle(0, 0, 0).setName("Box 133")

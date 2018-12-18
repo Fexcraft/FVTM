@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.prototype;
 
+import net.fexcraft.lib.mc.api.packet.IPacketListener;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Static;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -12,6 +15,7 @@ public class WorldRailDataSerializer implements ICapabilitySerializable<NBTBase>
 	
 	@CapabilityInject(WorldRailData.class)
 	public static final Capability<WorldRailData> CAPABILITY = null;
+	public static final String REGNAM = "fvtm:raildata";
 	private WorldRailData instance;
 	
 	public WorldRailDataSerializer(World world, int dimension){
@@ -57,6 +61,42 @@ public class WorldRailDataSerializer implements ICapabilitySerializable<NBTBase>
 		@Override
 		public WorldRailData call() throws Exception {
 			return new WorldRailUtil();
+		}
+		
+	}
+	
+	public static class Client implements IPacketListener<PacketNBTTagCompound> {
+
+		@Override public String getId(){ return REGNAM; }
+
+		@Override
+		public void process(PacketNBTTagCompound packet, Object[] objs){
+			if(!packet.nbt.hasKey("task")) return;
+			int dim = packet.nbt.getInteger("dimension");
+			World world = Static.getServer().getWorld(dim);
+			WorldRailData data = world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+			//if(data == null) return;
+			int x = packet.nbt.getInteger("RegionX");
+			int z = packet.nbt.getInteger("RegionZ");
+			if(packet.nbt.getString("task").equals("update")){
+				data.updateRegion(x, z, packet.nbt);
+			}
+			else if(packet.nbt.getString("task").equals("unload")){
+				data.unloadRegion(x, z);
+			}
+			//Print.console(packet.nbt); Static.stop();
+		}
+		
+	}
+	
+	public static class Server implements IPacketListener<PacketNBTTagCompound> {
+
+		@Override public String getId(){ return REGNAM; }
+
+		@Override
+		public void process(PacketNBTTagCompound packet, Object[] objs){
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}

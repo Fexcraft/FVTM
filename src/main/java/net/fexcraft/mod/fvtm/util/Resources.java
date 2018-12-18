@@ -79,6 +79,8 @@ import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 import net.fexcraft.mod.fvtm.model.vehicle.VehicleModel;
+import net.fexcraft.mod.fvtm.prototype.WorldRailData;
+import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -86,11 +88,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLModContainer;
 import net.minecraftforge.fml.common.MetadataCollection;
@@ -99,6 +103,7 @@ import net.minecraftforge.fml.common.discovery.ModCandidate;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -795,7 +800,7 @@ public class Resources {
 
 	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
-	public static <T, K> Model<T, K> getModel(String name, Class<T> dataclazz, Class<K> keyclazz, Class<? extends Model<T, K>> clazz){
+	public static <T, K> Model<T, K> getModel(String name, Class<? extends Model<T, K>> clazz){
 		if(name == null || name.equals("") || name.equals("null")){
 			return (Model<T, K>)getEmptyModelFromClass(clazz);
 		}
@@ -1032,19 +1037,20 @@ public class Resources {
 	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
-		//event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+		event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
 	}
 	
-	/*private long tickcounter;
+	private long tickcounter = 0;
+	private long div = 200;
 	
 	@SubscribeEvent
 	public void onTick(TickEvent.ServerTickEvent event){
 		if(event.phase == TickEvent.Phase.END) return;
-		if(++tickcounter % 10 == 0){
+		if(tickcounter % div == 0){
 			for(World world : Static.getServer().worlds){
 				WorldRailData data = world.getCapability(WorldRailDataSerializer.CAPABILITY, EnumFacing.UP);
 				if(data == null) continue; data.checkForInactive();
-			}
+			} tickcounter = 0; div = 1200;
 		}
 	}
 	
@@ -1052,7 +1058,7 @@ public class Resources {
 	public void onWorldUnload(WorldEvent.Unload event){
 		WorldRailData data = event.getWorld().getCapability(WorldRailDataSerializer.CAPABILITY, EnumFacing.UP);
 		if(data == null) return; data.onUnload();
-	}*/
+	}
 	
 	private static Field flightdata;
 	private static boolean flightdata_failed = false;

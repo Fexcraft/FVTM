@@ -55,7 +55,7 @@ public class GenericContainer implements Container {
         this.addon = DataUtil.getAddon(registryname, obj, "CONTAINER");
         this.type = ContainerType.valueOf(obj.has("Type") ? obj.get("Type").getAsString().toUpperCase() : obj.has("ContainerType") ? obj.get("ContainerType").getAsString().toUpperCase() : Container.ContainerType.MEDIUM.name());
         if(Static.side().isClient()){
-            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), ContainerData.class, Object.class, ContainerModel.class);
+            this.model = Resources.getModel(JsonUtil.getIfExists(obj, "ModelFile", "null"), ContainerModel.class);
         }
         this.name = JsonUtil.getIfExists(obj, "FullName", this.getRegistryName().toString());
         this.textures = DataUtil.getTextures(obj, registryname, "CONTAINER");;

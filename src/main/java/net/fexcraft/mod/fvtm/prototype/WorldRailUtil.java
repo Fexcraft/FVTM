@@ -279,7 +279,7 @@ public class WorldRailUtil implements WorldRailData {
 		else{
 			track.region = null; track.entry = null;
 		}
-		Print.debug(track.getPos(), track.region, track.entry);
+		//Print.debug(track.getPos(), track.region, track.entry);
 	}
 
 	@Override

@@ -135,12 +135,9 @@ public class RailRegion {
 		if(conns != null){
 			int j = -1;
 			for(int i = 0; i < conns.length; i++){
-				if(conns[i].getBeginning().equals(start) && conns[i].getDestination().equals(end)){
-					i = j; break;
-				}
-				if(conns[i].getDestination().equals(start) && conns[i].getBeginning().equals(end)){
-					i = j; break;
-				}
+				if((conns[i].getBeginning().equals(start) && conns[i].getDestination().equals(end))
+					|| (conns[i].getDestination().equals(start) && conns[i].getBeginning().equals(end))){
+					j = i; break; }
 			}
 			if(j != -1){
 				connections.put(start, remove(conns, j));
@@ -150,12 +147,9 @@ public class RailRegion {
 		if(conns != null){
 			int j = -1;
 			for(int i = 0; i < conns.length; i++){
-				if(conns[i].getBeginning().equals(start) && conns[i].getDestination().equals(end)){
-					i = j; break;
-				}
-				if(conns[i].getDestination().equals(start) && conns[i].getBeginning().equals(end)){
-					i = j; break;
-				}
+				if((conns[i].getBeginning().equals(start) && conns[i].getDestination().equals(end))
+					|| (conns[i].getDestination().equals(start) && conns[i].getBeginning().equals(end))){
+					j = i; break; }
 			}
 			if(j != -1){
 				connections.put(end, remove(conns, j));

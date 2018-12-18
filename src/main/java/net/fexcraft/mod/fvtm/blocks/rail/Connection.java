@@ -161,4 +161,9 @@ public class Connection {
 		return this.gauge.width() == gauge.width();
 	}
 	
+	@Override
+	public String toString(){
+		return beginning.toString() + " < " + (points.length > 0 ? points.length + "subpoints" : "-") + " > " + destination.toString() + " [o:" + opposite + "]";
+	}
+	
 }

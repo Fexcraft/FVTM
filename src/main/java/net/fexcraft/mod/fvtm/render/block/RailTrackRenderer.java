@@ -1,12 +1,17 @@
 package net.fexcraft.mod.fvtm.render.block;
 
+import org.lwjgl.opengl.GL11;
+
+import net.fexcraft.lib.mc.api.registry.fTESR;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 
 /** @author Ferdinand Calo' (FEX___96) **/
-//@fTESR
-public class RailTrackRenderer extends TileEntitySpecialRenderer<TileEntity> {
+@fTESR
+public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity> {
 	
 	protected static final ModelRendererTurbo model, model0;
 	static{
@@ -19,8 +24,8 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TileEntity> {
 	}
 
 	@Override
-	public void render(TileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
-		/*if(te.connections == null || te.connections.length < 2){
+	public void render(TrackTileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float alpha){
+		/*if(te.entry == null || te.entry.getValue().length < 2){
 			GL11.glPushMatrix();
 			GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
 			ModelBase.bindTexture(ModelConstructorCenter.getTexture());
@@ -31,16 +36,24 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TileEntity> {
 			model.render();
 			GL11.glPopMatrix();
 			GL11.glPopMatrix();
+		}*/
+		if(te.entry == null){
+			Print.debug("norender0"); return;
 		}
-		if(te.gauge == null || te.gauge.getModel() == null) return;
+		if(te.entry.getValue().length < 1){
+			Print.debug("norender1"); return;
+		}
+		if(te.entry.getValue()[0].getGauge().getModel() == null){
+			Print.debug("norender2"); return;
+		}
 		GL11.glPushMatrix();
 		GL11.glTranslated(posX, posY - 0.5, posZ);
 		GL11.glPushMatrix();
-		ModelBase.bindTexture(te.gauge.getTexture());
-		for(int i = 0; i < te.connections.length; i++){
-			te.gauge.getModel().render(te, te.connections[i], null, i);
+		ModelBase.bindTexture(te.entry.getValue()[0].getGauge().getTexture());
+		for(int i = 0; i < te.entry.getValue().length; i++){
+			te.entry.getValue()[0].getGauge().getModel().render(te.entry, te.entry.getValue()[i], null, i);
 		}
-		GL11.glPopMatrix(); GL11.glPopMatrix();*/
+		GL11.glPopMatrix(); GL11.glPopMatrix();
 	}
 
 }

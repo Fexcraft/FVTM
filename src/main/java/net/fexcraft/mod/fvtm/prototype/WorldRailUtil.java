@@ -10,8 +10,10 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
+import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -236,6 +238,22 @@ public class WorldRailUtil implements WorldRailData {
 			Print.debug("Loading RailRegion " + x + ", " + z);
 		}
 		Print.debug(this.getLoadedRegions().size() + "loaded");
+		//
+		//if(world.isRemote){
+			TrackTileEntity track = null; RailRegion reg = null;
+			for(TileEntity tile : world.loadedTileEntityList){
+				if(tile instanceof TrackTileEntity == false) continue;
+				track = (TrackTileEntity)tile;
+				if(this.getConnectionsAt(track.getPos()).length > 0){
+					reg = map.getRegion(getRegion(track.getPos()));
+					track.region = reg; track.entry = reg.getEntry(track.getPos());
+				}
+				else{
+					track.region = null; track.entry = null;
+				}
+				Print.debug(track.getPos(), track.region, track.entry);
+			}
+		//} else{ Print.log("This code shouldn't get called server side usually. [92764]"); }
 	}
 
 	@Override

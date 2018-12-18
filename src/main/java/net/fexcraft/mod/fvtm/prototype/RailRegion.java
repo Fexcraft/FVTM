@@ -195,5 +195,11 @@ public class RailRegion {
 		if(x == reg.x && z == reg.z) return true;
 		return this.equals(reg);
 	}
+
+	public Entry<BlockPos, Connection[]> getEntry(BlockPos pos){
+		for(Entry<BlockPos, Connection[]> entry : connections.entrySet()){
+			if(entry.getKey().equals(pos)) return entry;
+		} return null;
+	}
 	
 }

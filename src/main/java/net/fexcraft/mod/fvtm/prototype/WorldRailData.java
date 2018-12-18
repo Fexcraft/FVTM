@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.prototype;
 import java.util.Collection;
 
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
+import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -41,5 +42,9 @@ public interface WorldRailData {
 	public void unloadRegion(int x, int z);
 
 	public Collection<RailRegion> getLoadedRegions();
+
+	public void setTileData(TrackTileEntity trackTileEntity, boolean fromtile);
+
+	public void doTask(String string, int[] reg);
 	
 }

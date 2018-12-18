@@ -38,7 +38,7 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 			GL11.glPopMatrix();
 		}*/
 		if(te.entry == null){
-			Print.debug("norender0"); return;
+			/*Print.debug("norender0");*/ return;
 		}
 		if(te.entry.getValue().length < 1){
 			Print.debug("norender1"); return;

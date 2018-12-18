@@ -127,7 +127,7 @@ public class RailRegion {
 			torem.add(conn);
 		} // we don't want concurrent exceptions.
 		for(Connection conn : torem) util.delConnection(conn.getBeginning(), conn.getDestination());
-		this.updateAccess(null); this.sendUpdatePacket(false); return;
+		this.updateAccess(null); //this.sendUpdatePacket(false); return;
 	}
 
 	public void delConnection(BlockPos start, BlockPos end){

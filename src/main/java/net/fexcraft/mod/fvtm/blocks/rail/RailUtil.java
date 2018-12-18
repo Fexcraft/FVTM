@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 
 import java.util.TreeMap;
 
+import net.fexcraft.lib.common.utils.Print;
 import net.fexcraft.mod.fvtm.prototype.RailRegion;
 import net.fexcraft.mod.fvtm.prototype.WorldRailData;
 import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
@@ -131,6 +132,7 @@ public class RailUtil {
 				CONNS.put(all[all.length - 1], new RailLink(all[all.length - 2], all[all.length - 1], conn.getDestination()));
 			}
 		}
+		Print.console(CONNS);
 	}
 	
 }

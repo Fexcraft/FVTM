@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
@@ -107,6 +109,10 @@ public class WorldRailUtil implements WorldRailData {
 		public boolean contains(int x, int z){
 			return this.get(tempkey = new XZKey(x, z)) != null;
 		}
+
+		public boolean contains(int[] region){
+			return contains(region[0], region[1]);
+		}
 		
 	}
 	
@@ -140,11 +146,12 @@ public class WorldRailUtil implements WorldRailData {
 		for(Chunk pos : server.getLoadedChunks()){
 			reg = this.map.getRegion(getRegion(pos.x, pos.z)); if(reg != null) reg.updateAccess(date);
 		}
+		ArrayList<XZKey> keys = new ArrayList<>();
 		for(Entry<XZKey, RailRegion> entry : map.entrySet()){
 			if(entry.getValue().lastaccessed + Time.MIN_MS < date){
-				unloadRegion(entry.getKey());
+				keys.add(entry.getKey());
 			}
-		}
+		} for(XZKey key : keys) unloadRegion(key);
 	}
 
 	private void unloadRegion(XZKey key){
@@ -157,8 +164,7 @@ public class WorldRailUtil implements WorldRailData {
 		ArrayList<XZKey> keys = new ArrayList<>();
 		for(Entry<XZKey, RailRegion> entry : map.entrySet()){
 			keys.add(entry.getKey());
-		}
-		for(XZKey key : keys) unloadRegion(key);
+		} for(XZKey key : keys) unloadRegion(key);
 	}
 
 	@Override
@@ -206,25 +212,25 @@ public class WorldRailUtil implements WorldRailData {
 	public void resetConnectionsAt(BlockPos pos){
 		RailRegion reg = map.getRegion(getRegion(pos));
 		if(reg == null) return; reg.resetConnectionsAt(pos);
-		this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
+		//this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
 	}
 
 	@Override
 	public void addConnection(Connection conn){
 		RailRegion reg = map.getRegion(getRegion(conn.getBeginning()));
-		if(reg != null) reg.addConnection(conn);
-		RailRegion reg2 = map.getRegion(getRegion(conn.getDestination()));
-		if(reg2 != null) reg2.addConnection(conn.opposite());
-		this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
+		if(reg != null) reg.addConnection(conn); RailUtil.attach(reg);
+		reg = map.getRegion(getRegion(conn.getDestination()));
+		if(reg != null) reg.addConnection(conn.opposite()); RailUtil.attach(reg);
+		//this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
 	}
 
 	@Override
 	public void delConnection(BlockPos start, BlockPos end){
 		RailRegion reg = map.getRegion(getRegion(start));
-		if(reg != null) reg.delConnection(start, end);
+		if(reg != null) reg.delConnection(start, end); RailUtil.attach(reg);
 		reg = map.getRegion(getRegion(end));
-		if(reg != null) reg.delConnection(start, end);
-		this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
+		if(reg != null) reg.delConnection(start, end); RailUtil.attach(reg);
+		//this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
 	}
 
 	@Override
@@ -237,23 +243,12 @@ public class WorldRailUtil implements WorldRailData {
 			this.map.put(new XZKey(x, z), new RailRegion(this, x, z, nbt));
 			Print.debug("Loading RailRegion " + x + ", " + z);
 		}
-		Print.debug(this.getLoadedRegions().size() + "loaded");
+		Print.debug(this.getLoadedRegions().size() + " railregions loaded");
 		//
-		//if(world.isRemote){
-			TrackTileEntity track = null; RailRegion reg = null;
-			for(TileEntity tile : world.loadedTileEntityList){
-				if(tile instanceof TrackTileEntity == false) continue;
-				track = (TrackTileEntity)tile;
-				if(this.getConnectionsAt(track.getPos()).length > 0){
-					reg = map.getRegion(getRegion(track.getPos()));
-					track.region = reg; track.entry = reg.getEntry(track.getPos());
-				}
-				else{
-					track.region = null; track.entry = null;
-				}
-				Print.debug(track.getPos(), track.region, track.entry);
-			}
-		//} else{ Print.log("This code shouldn't get called server side usually. [92764]"); }
+		for(TileEntity tile : world.loadedTileEntityList){
+			if(tile instanceof TrackTileEntity == false) continue;
+			this.setTileData((TrackTileEntity)tile, false);
+		}
 	}
 
 	@Override
@@ -265,6 +260,36 @@ public class WorldRailUtil implements WorldRailData {
 	@Override
 	public Collection<RailRegion> getLoadedRegions(){
 		return map.values();
+	}
+
+	@Override
+	public void setTileData(TrackTileEntity track, boolean fromtile){
+		if(!map.contains(getRegion(track.getPos())) && fromtile){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("target_listener", WorldRailDataSerializer.REGNAM);
+			compound.setString("task", "sync_region");
+			compound.setIntArray("region", getRegion(track.getPos()));
+			compound.setInteger("dimension", this.getDimension());
+			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
+			return;
+		}
+		if(this.getConnectionsAt(track.getPos()).length > 0){
+			track.region = map.getRegion(getRegion(track.getPos())); track.entry = track.region.getEntry(track.getPos());
+		}
+		else{
+			track.region = null; track.entry = null;
+		}
+		Print.debug(track.getPos(), track.region, track.entry);
+	}
+
+	@Override
+	public void doTask(String string, int[] reg){
+		switch(string){
+			case "sync_region":{
+				this.map.getRegion(reg).sendUpdatePacket(false);
+				break;
+			}
+		} return;
 	}
 
 }

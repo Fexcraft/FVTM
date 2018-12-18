@@ -12,7 +12,6 @@
         { "x":  128, "y": -10, "z": 0 }
     ],
     "ConstructionLength": 10,
-    "ConstructionYOffSet": 24,
     "RequiredParts": [ ],
     "PreInstalled":[
         { "as": "cargo0", "part": "hcp:container_wagon_1_cargo0" },

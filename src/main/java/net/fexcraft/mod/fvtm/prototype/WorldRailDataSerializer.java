@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.prototype;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Static;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -94,8 +95,16 @@ public class WorldRailDataSerializer implements ICapabilitySerializable<NBTBase>
 
 		@Override
 		public void process(PacketNBTTagCompound packet, Object[] objs){
-			// TODO Auto-generated method stub
-			
+			if(!packet.nbt.hasKey("task")) return;
+			int dim = packet.nbt.getInteger("dimension");
+			World world = Static.getServer().getWorld(dim);
+			WorldRailData data = world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+			//if(data == null) return;
+			int[] reg = packet.nbt.getIntArray("region");
+			if(packet.nbt.getString("task").equals("sync_region")){
+				data.doTask("sync_region", reg);
+			}
+			//Print.console(packet.nbt); Static.stop();
 		}
 		
 	}

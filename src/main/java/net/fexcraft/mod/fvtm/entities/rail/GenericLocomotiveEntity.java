@@ -23,6 +23,7 @@ public class GenericLocomotiveEntity extends GenericWagonEntity {
 	public void onUpdateMovement(double amount, boolean call, Boolean frontdir){
 		if(frontdir != null){
 			super.onUpdateMovement(amount, call, frontdir);
+			return;
 			//TODO
 		}
         boolean creativemode = !Config.VEHICLE_NEEDS_FUEL || (seats != null && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer && ((EntityPlayer) seats[0].getControllingPassenger()).capabilities.isCreativeMode);

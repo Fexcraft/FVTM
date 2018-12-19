@@ -109,7 +109,7 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         		IBlockState state0 = world.getBlockState(pos0);
         		if(state0 == null){ Print.chat(player, "&cRailConnector at first connection point is NULL."); return EnumActionResult.FAIL; }
         		//if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
-        		Connection[] conns = worldcap.getConnectionsAt(pos0); Gauge sec = this.getGauge(stack);
+        		Connection[] conns = worldcap.getConnectionsAt(pos0).connections; Gauge sec = this.getGauge(stack);
         		if(conns != null && conns.length > 0 && !conns[0].isCompatibleGauge(sec)){
         			Print.chat(player, "&cGauges do not match.");
         			Print.chat(player, "&7Item: &9(" + sec.width() + ") &7" + sec.getName());
@@ -132,7 +132,7 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
-        		Connection[] conns = worldcap.getConnectionsAt(pos);
+        		Connection[] conns = worldcap.getConnectionsAt(pos).connections;
     			if(conns != null && conns.length >= 4){
         			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + conns.length + ";)");
         	        return EnumActionResult.FAIL;

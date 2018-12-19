@@ -8,17 +8,17 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
 
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
+import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public class RailGaugeModel implements Model<Map.Entry<BlockPos, Connection[]>, Connection> {
+public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>, Connection> {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	private static final ArrayList<String> creators = new ArrayList<>();
@@ -30,15 +30,15 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, Connection[]>, 
 	public RailGaugeModel(){ super(); }
 
 	@Override
-	public void render(Map.Entry<BlockPos, Connection[]> te, Connection conn){
+	public void render(Map.Entry<BlockPos, ConnContainer> te, Connection conn){
 		this.render(te, conn, null, 0);
 	}
 
 	@Override
-	public void render(Map.Entry<BlockPos, Connection[]> te, Connection conn, VehicleEntity ent, int i){
+	public void render(Map.Entry<BlockPos, ConnContainer> te, Connection conn, VehicleEntity ent, int i){
 		if(conn.opposite) return;
 		if(Command.DEBUG){
-			float[] colr = getColor(te.getKey(), te.getValue().length, i);
+			float[] colr = getColor(te.getValue().switch0, te.getValue().connections.length, i);
 			GL11.glColor4f(colr[0], colr[1], colr[2], 0.25f);
 		}
 		boolean b = false;
@@ -90,7 +90,7 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, Connection[]>, 
 		GL11.glTranslated(-dest[0], -dest[1], -dest[2]);
 	}
 	
-	private float[] getColor(BlockPos pos, int length, int i){
+	private float[] getColor(boolean switch0, int length, int i){
 		switch(length){
 			case 1:{
 				return new float[]{ 0, 0, 1 };
@@ -101,8 +101,8 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, Connection[]>, 
 			case 3:{
 				switch(i){
 					case 0: return new float[]{ 0, 1, 0 };
-					case 1: return new float[]{ 1, Static.getServer().getEntityWorld().isBlockPowered(pos) ? 0.5f : 1, 0 };
-					case 2: return new float[]{ 1, Static.getServer().getEntityWorld().isBlockPowered(pos) ? 1 : 0.5f, 0 };
+					case 1: return new float[]{ 1, switch0 ? 0.5f : 1, 0 };
+					case 2: return new float[]{ 1, switch0 ? 1 : 0.5f, 0 };
 				}
 				break;
 			}

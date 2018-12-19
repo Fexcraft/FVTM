@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.api;
 
 import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
+import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +22,7 @@ public interface Gauge extends DataHolderObject.Simple<Gauge> {
 
     }
 
-    public Model<java.util.Map.Entry<BlockPos, Connection[]>, Connection> getModel();
+    public Model<java.util.Map.Entry<BlockPos, ConnContainer>, Connection> getModel();
     
     public ResourceLocation getTexture();
     

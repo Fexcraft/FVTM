@@ -162,7 +162,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         lastpos = pos;
         if(world.getBlockState(pos).getBlock() == TrackBlock.INSTANCE){
         	Print.debug("pre");
-        	Connection[] connections = world.getCapability(WorldRailDataSerializer.CAPABILITY, null).getConnectionsAt(pos);
+        	Connection[] connections = world.getCapability(WorldRailDataSerializer.CAPABILITY, null).getConnectionsAt(pos).connections;
         	currentpos = connections.length > 0 ? connections[0].getFirstTowardsDest() : pos;
         	Print.debug("past");
         }

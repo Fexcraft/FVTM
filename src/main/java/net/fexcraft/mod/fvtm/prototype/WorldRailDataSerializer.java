@@ -102,7 +102,7 @@ public class WorldRailDataSerializer implements ICapabilitySerializable<NBTBase>
 			//if(data == null) return;
 			int[] reg = packet.nbt.getIntArray("region");
 			if(packet.nbt.getString("task").equals("sync_region")){
-				data.doTask("sync_region", reg);
+				data.doTask("sync_region", reg, packet.nbt);
 			}
 			//Print.console(packet.nbt); Static.stop();
 		}

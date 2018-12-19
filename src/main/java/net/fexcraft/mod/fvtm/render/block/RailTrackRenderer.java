@@ -40,18 +40,18 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 		if(te.entry == null){
 			/*Print.debug("norender0");*/ return;
 		}
-		if(te.entry.getValue().length < 1){
+		if(te.entry.getValue().connections.length < 1){
 			Print.debug("norender1"); return;
 		}
-		if(te.entry.getValue()[0].getGauge().getModel() == null){
+		if(te.entry.getValue().connections[0].getGauge().getModel() == null){
 			Print.debug("norender2"); return;
 		}
 		GL11.glPushMatrix();
 		GL11.glTranslated(posX, posY - 0.5, posZ);
 		GL11.glPushMatrix();
-		ModelBase.bindTexture(te.entry.getValue()[0].getGauge().getTexture());
-		for(int i = 0; i < te.entry.getValue().length; i++){
-			te.entry.getValue()[0].getGauge().getModel().render(te.entry, te.entry.getValue()[i], null, i);
+		ModelBase.bindTexture(te.entry.getValue().connections[0].getGauge().getTexture());
+		for(int i = 0; i < te.entry.getValue().connections.length; i++){
+			te.entry.getValue().connections[0].getGauge().getModel().render(te.entry, te.entry.getValue().connections[i], null, i);
 		}
 		GL11.glPopMatrix(); GL11.glPopMatrix();
 	}

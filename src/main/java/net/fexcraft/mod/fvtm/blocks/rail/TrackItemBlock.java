@@ -86,7 +86,7 @@ public class TrackItemBlock extends ItemBlock16 {
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
-        		int check = worldcap.getConnectionsAt(pos).length;
+        		int check = worldcap.getConnectionsAt(pos).connections.length;
         		if(check >= 4){
         			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + check + ";)");
         	        return EnumActionResult.FAIL;

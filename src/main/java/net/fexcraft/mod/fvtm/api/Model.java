@@ -14,7 +14,7 @@ public interface Model<T, K> {
 	/** Parameterless rendering. **/
 	//@Deprecated
 	//public void render();
-	
+
 	/** 
 	 * Entityless rendering.
 	 * @param data - self-explaining?

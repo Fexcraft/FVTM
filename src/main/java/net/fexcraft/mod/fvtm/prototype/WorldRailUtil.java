@@ -68,9 +68,9 @@ public class WorldRailUtil implements WorldRailData {
 	}
 
 	@Override
-	public Connection[] getConnectionsAt(BlockPos pos){
+	public ConnContainer getConnectionsAt(BlockPos pos){
 		RailRegion reg = map.getRegion(getRegion(pos));
-		if(reg == null) return new Connection[0];
+		if(reg == null) return RailRegion.EMPTY;
 		return reg.getConnectionsAt(pos);
 	}
 	
@@ -169,7 +169,8 @@ public class WorldRailUtil implements WorldRailData {
 
 	@Override
 	public BlockPos getNext(BlockPos current, BlockPos previous){
-		Connection[] connections = this.getConnectionsAt(current);
+		ConnContainer conns = this.getConnectionsAt(current);
+		Connection[] connections = conns.connections;//this.getConnectionsAt(current);
 		if(current == null){
 			return connections.length == 0 ? new BlockPos(0, 0, 0) : connections[0].getDestination();
 		}
@@ -183,7 +184,7 @@ public class WorldRailUtil implements WorldRailData {
 			}
 			case 3: {
 				if(connections[0].equalsDestOrFirst(previous)){
-					return world.isBlockPowered(current) ? connections[2].getFirstTowardsDest() : connections[1].getFirstTowardsDest();
+					return conns.switch0 ? connections[2].getFirstTowardsDest() : connections[1].getFirstTowardsDest();
 				}
 				else{
 					return connections[0].getFirstTowardsDest();
@@ -273,7 +274,7 @@ public class WorldRailUtil implements WorldRailData {
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
 			return;
 		}
-		if(this.getConnectionsAt(track.getPos()).length > 0){
+		if(this.getConnectionsAt(track.getPos()).connections.length > 0){
 			track.region = map.getRegion(getRegion(track.getPos())); track.entry = track.region.getEntry(track.getPos());
 		}
 		else{
@@ -283,13 +284,19 @@ public class WorldRailUtil implements WorldRailData {
 	}
 
 	@Override
-	public void doTask(String string, int[] reg){
+	public void doTask(String string, int[] reg, NBTTagCompound packet){
 		switch(string){
 			case "sync_region":{
 				this.map.getRegion(reg).sendUpdatePacket(false);
 				break;
 			}
 		} return;
+	}
+
+	@Override
+	public void toggleSwitch(BlockPos pos){
+		RailRegion region = map.getRegion(getRegion(pos));
+		if(region == null) return; region.toggleSwitch(pos);
 	}
 
 }

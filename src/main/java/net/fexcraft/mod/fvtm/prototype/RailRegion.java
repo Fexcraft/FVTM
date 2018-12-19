@@ -22,8 +22,9 @@ import net.minecraft.util.math.BlockPos;
 public class RailRegion {
 	
 	//private ArrayList<Connection> connections = new ArrayList<>();
-	private TreeMap<BlockPos, Connection[]> connections = new TreeMap<BlockPos, Connection[]>();
-	private static final Connection[] NONE = new Connection[0];
+	private TreeMap<BlockPos, ConnContainer> connections = new TreeMap<BlockPos, ConnContainer>();
+	//private static final Connection[] NONE = new Connection[0];
+	public static final ConnContainer EMPTY = new ConnContainer();
 	private WorldRailUtil util;
 	public long lastaccessed;
 	private boolean wasempty;
@@ -58,13 +59,14 @@ public class RailRegion {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("LastUse", this.lastaccessed);
 		NBTTagList list = new NBTTagList();
-		for(Entry<BlockPos, Connection[]> entry : connections.entrySet()){
+		for(Entry<BlockPos, ConnContainer> entry : connections.entrySet()){
 			NBTTagList clist = new NBTTagList();
 			NBTTagCompound com = new NBTTagCompound();
 			com.setLong("Position", entry.getKey().toLong());
-			for(Connection conn : entry.getValue()){
+			for(Connection conn : entry.getValue().connections){
 				clist.appendTag(conn.write(new NBTTagCompound()));
 			}
+			com.setBoolean("Switch0", entry.getValue().switch0);
 			com.setTag("Connections", clist);
 			list.appendTag(com);
 		}
@@ -86,7 +88,8 @@ public class RailRegion {
 					for(int i = 0; i < conns.length; i++){
 						conns[i] = new Connection().read((NBTTagCompound)clist.get(i));
 					}
-					connections.put(pos, conns);
+					boolean bool = com.getBoolean("Switch0");
+					connections.put(pos, new ConnContainer(conns, bool));
 				} 
 			}
 		} else wasempty = true;
@@ -111,19 +114,19 @@ public class RailRegion {
 		Print.debug("x" + x + ", z" + z + " |S| " + connections);
 	}
 
-	public Connection[] getConnectionsAt(BlockPos pos){ this.updateAccess(null);
-		return connections.containsKey(pos) ? connections.get(pos) : NONE;
+	public ConnContainer getConnectionsAt(BlockPos pos){ this.updateAccess(null);
+		return connections.containsKey(pos) ? connections.get(pos) : EMPTY;
 		//return connections.stream().filter(pre -> pre.getBeginning().equals(pos) || pre.getDestination().equals(pos)).toArray(Connection[]::new);
 	}
 
-	public TreeMap<BlockPos, Connection[]> getConnections(){
+	public TreeMap<BlockPos, ConnContainer> getConnections(){
 		this.updateAccess(null); return connections;
 	}
 
 	public void resetConnectionsAt(BlockPos pos){
 		if(!connections.containsKey(pos)) return;
 		ArrayList<Connection> torem = new ArrayList<>();
-		for(Connection conn : connections.get(pos)){
+		for(Connection conn : connections.get(pos).connections){
 			torem.add(conn);
 		} // we don't want concurrent exceptions.
 		for(Connection conn : torem) util.delConnection(conn.getBeginning(), conn.getDestination());
@@ -131,53 +134,36 @@ public class RailRegion {
 	}
 
 	public void delConnection(BlockPos start, BlockPos end){
-		Connection[] conns = connections.get(start);
+		ConnContainer conns = connections.get(start);
 		if(conns != null){
 			int j = -1;
-			for(int i = 0; i < conns.length; i++){
-				if((conns[i].getBeginning().equals(start) && conns[i].getDestination().equals(end))
-					|| (conns[i].getDestination().equals(start) && conns[i].getBeginning().equals(end))){
+			for(int i = 0; i < conns.connections.length; i++){
+				if((conns.connections[i].getBeginning().equals(start) && conns.connections[i].getDestination().equals(end))
+					|| (conns.connections[i].getDestination().equals(start) && conns.connections[i].getBeginning().equals(end))){
 					j = i; break; }
 			}
-			if(j != -1){
-				connections.put(start, remove(conns, j));
-			}
+			if(j != -1){ conns.remove(j); }
 		}
 		conns = connections.get(end);
 		if(conns != null){
 			int j = -1;
-			for(int i = 0; i < conns.length; i++){
-				if((conns[i].getBeginning().equals(start) && conns[i].getDestination().equals(end))
-					|| (conns[i].getDestination().equals(start) && conns[i].getBeginning().equals(end))){
+			for(int i = 0; i < conns.connections.length; i++){
+				if((conns.connections[i].getBeginning().equals(start) && conns.connections[i].getDestination().equals(end))
+					|| (conns.connections[i].getDestination().equals(start) && conns.connections[i].getBeginning().equals(end))){
 					j = i; break; }
 			}
-			if(j != -1){
-				connections.put(end, remove(conns, j));
-			}
+			if(j != -1){ conns.remove(j); }
 		}
 		this.updateAccess(null); this.sendUpdatePacket(false);
 	}
 
-	private Connection[] remove(Connection[] conns, int j){
-		if(conns.length <= 1) return new Connection[0];
-		Connection[] newconns = new Connection[conns.length - 1];
-		int c = 0; for(int i = 0; i < conns.length; i++){
-			if(i == j) continue; newconns[c++] = conns[i];
-		}
-		return newconns;
-	}
-
-	private Connection[] addnew(Connection[] conns, Connection conn){
-		if(conns == null || conns.length <= 0) return new Connection[]{ conn };
-		Connection[] newconns = new Connection[conns.length + 1];
-		for(int i = 0; i < conns.length; i++){
-			newconns[i] = conns[i];
-		} newconns[newconns.length - 1] = conn;
-		return newconns;
-	}
-
 	public void addConnection(Connection conn){
-		connections.put(conn.getBeginning(), addnew(connections.get(conn.getBeginning()), conn));
+		if(connections.containsKey(conn.getBeginning())){
+			connections.get(conn.getBeginning()).addnew(conn);
+		}
+		else{
+			connections.put(conn.getBeginning(), new ConnContainer(conn));
+		}
 		this.updateAccess(null); this.sendUpdatePacket(false); return;
 	}
 
@@ -190,10 +176,15 @@ public class RailRegion {
 		return this.equals(reg);
 	}
 
-	public Entry<BlockPos, Connection[]> getEntry(BlockPos pos){
-		for(Entry<BlockPos, Connection[]> entry : connections.entrySet()){
+	public Entry<BlockPos, ConnContainer> getEntry(BlockPos pos){
+		for(Entry<BlockPos, ConnContainer> entry : connections.entrySet()){
 			if(entry.getKey().equals(pos)) return entry;
 		} return null;
+	}
+
+	public void toggleSwitch(BlockPos pos){
+		ConnContainer conns = this.connections.get(pos); if(conns == null) return;
+		conns.switch0 = !conns.switch0; this.sendUpdatePacket(false);//TODO specialized packet
 	}
 	
 }

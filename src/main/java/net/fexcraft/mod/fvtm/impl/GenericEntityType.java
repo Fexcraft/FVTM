@@ -113,7 +113,7 @@ public class GenericEntityType extends EntityType {
                 		Print.chat(player, "No WorldRailData found.");
                 		return false;
                 	}
-                	Connection[] conns = worldcap.getConnectionsAt(pos);
+                	Connection[] conns = worldcap.getConnectionsAt(pos).connections;
                 	if(conns == null || conns.length == 0){
                 		Print.chat(player, "Track has no Connection Data.");
                 		return false;

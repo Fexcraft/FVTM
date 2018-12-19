@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
+import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
@@ -21,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class GenericRailGauge implements Gauge {
 
-    private Model<Map.Entry<BlockPos, Connection[]>, Connection> model;
+    private Model<Map.Entry<BlockPos, ConnContainer>, Connection> model;
     private ResourceLocation registryname, texture;
     private Addon addon;
     private String name;
@@ -87,7 +88,7 @@ public class GenericRailGauge implements Gauge {
 	}
 
 	@Override
-	public Model<Map.Entry<BlockPos, Connection[]>, Connection> getModel(){
+	public Model<Map.Entry<BlockPos, ConnContainer>, Connection> getModel(){
 		return model;
 	}
 

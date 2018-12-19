@@ -22,7 +22,7 @@ public interface WorldRailData {
 
 	public void read(EnumFacing side, NBTBase nbt);
 	
-	public Connection[] getConnectionsAt(BlockPos pos);
+	public ConnContainer getConnectionsAt(BlockPos pos);
 	
 	public BlockPos getNext(BlockPos current, BlockPos previous);
 	
@@ -45,6 +45,8 @@ public interface WorldRailData {
 
 	public void setTileData(TrackTileEntity trackTileEntity, boolean fromtile);
 
-	public void doTask(String string, int[] reg);
+	public void doTask(String string, int[] reg, NBTTagCompound packet);
+
+	public void toggleSwitch(BlockPos pos);
 	
 }

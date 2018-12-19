@@ -70,15 +70,15 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
             }
             for(; roll <= -180F; roll += 360F){
             }
+            Model<VehicleData, Object> vehmodel = vehicle.getVehicleData().getVehicle().getModel();
             GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(180f, 0f, 0f, 1f);
             GL11.glPushMatrix();
-            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
-            if(modVehicle != null){
+            if(vehmodel != null){
                 ModelBase.bindTexture(vehicle.getVehicleData().getTexture());
-                modVehicle.render(vehicle.getVehicleData(), null, vehicle, -1);
+                vehmodel.render(vehicle.getVehicleData(), null, vehicle, -1);
                 if(vehicle.getVehicleData().getParts().size() > 0){
                 	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
                     	ModelBase.bindTexture(entry.getValue().getTexture());

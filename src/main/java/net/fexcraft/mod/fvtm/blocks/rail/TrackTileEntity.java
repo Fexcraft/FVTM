@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.prototype.RailRegion;
 import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TrackTileEntity extends TileEntity {
 	
 	public RailRegion region;
-	public Entry<BlockPos, Connection[]> entry;
+	public Entry<BlockPos, ConnContainer> entry;
 	
     @SideOnly(Side.CLIENT)
     @Override

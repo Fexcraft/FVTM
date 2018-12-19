@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 import java.util.TreeMap;
 
 import net.fexcraft.lib.common.utils.Print;
+import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.prototype.RailRegion;
 import net.fexcraft.mod.fvtm.prototype.WorldRailData;
 import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
@@ -109,8 +110,8 @@ public class RailUtil {
 	}*/
 	
 	public static void detach(RailRegion reg){
-		for(Connection[] conns : reg.getConnections().values()){
-			for(Connection conn : conns){
+		for(ConnContainer conns : reg.getConnections().values()){
+			for(Connection conn : conns.connections){
 				BlockPos[] all = conn.allPositions();
 				for(BlockPos pos : all){
 					if(CONNS.containsKey(pos)){
@@ -123,8 +124,8 @@ public class RailUtil {
 
 	public static void attach(RailRegion reg){
 		detach(reg);
-		for(Connection[] conns : reg.getConnections().values()){
-			for(Connection conn : conns){
+		for(ConnContainer conns : reg.getConnections().values()){
+			for(Connection conn : conns.connections){
 				BlockPos[] all = conn.getPoints();
 				if(all.length < 2) continue;
 				CONNS.put(all[0], new RailLink(conn.getBeginning(), all[0], all[1]));

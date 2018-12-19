@@ -55,5 +55,8 @@ public class RailTrackRenderer extends TileEntitySpecialRenderer<TrackTileEntity
 		}
 		GL11.glPopMatrix(); GL11.glPopMatrix();
 	}
+	
+	@Override
+    public boolean isGlobalRenderer(TrackTileEntity tileentity){ return true; }
 
 }

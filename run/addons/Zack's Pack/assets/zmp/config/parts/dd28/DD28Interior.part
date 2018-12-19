@@ -1,0 +1,24 @@
+{
+    "RegistryName": "zmp:dd28_interior",
+    "Addon": "fvtm:zmp",
+    "ModelFile": "zmp:models/part/dd28_interior",
+    "FullName": "DD28 Interior and Assets",
+    "Category": [ "interior" ],
+    "Attributes":[ "seat", "connector", "fuel_tank" ],
+    "Textures": [ 
+        "zmp:textures/vehicles/dd28_green.png",
+        "zmp:textures/vehicles/dd28_blue.png",
+        "zmp:textures/vehicles/dd28_red.png"
+    ],
+    "Compatible": [ { "Vehicle": "zmp:dd28", "x": 0, "y": 0, "z": 0 } ],
+    "Removable": false,
+    "AttributeData":{
+        "FM-Seats":[
+        	{ "driver": true, "x": 37.5, "y": 35, "z": -13 },
+        	{ "driver": false, "x": 37.5, "y": 35, "z": 13 }
+        ],
+        "Rear-Connector": [ { "x": -107, "y": -21, "z": 0 } ],
+        "Front-Connector": [ { "x": 106, "y": -21, "z": 0  } ],
+        "Fuel-TankSize": 24000
+    }
+}

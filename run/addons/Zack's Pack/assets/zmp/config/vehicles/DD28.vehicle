@@ -1,0 +1,29 @@
+{
+    "RegistryName": "zmp:dd28",
+    "Addon": "fvtm:zmp",
+    "FullName": "DD28",
+    "ModelFile": "zmp:models/vehicle/dd28",
+    "Textures": [
+        "zmp:textures/vehicles/dd28_green.png",
+        "zmp:textures/vehicles/dd28_blue.png",
+        "zmp:textures/vehicles/dd28_red.png"
+    ],
+    "WheelPos":[
+        { "x": -52, "y": -10, "z": 0 },
+        { "x":  52, "y": -10, "z": 0 }
+    ],
+    "ConstructionLength": 6,
+    "ConstructionYOffSet": 16,
+    "RequiredParts": [ ],
+    "PreInstalled":[
+		{ "part": "zmp:dd28_interior", "as": "interior" },
+		{ "part": "zmp:dd28_engine", "as": "engine" },
+        { "as": "bogie_front", "part": "fvp:bogie_st1" },
+        { "as": "bogie_back", "part": "fvp:bogie_st1" }
+	],
+	"VehicleType": "RAIL",
+    "WheelCoords":[
+        { "x": -52, "y": 8, "z": 0, "id": "bogie_front" },
+        { "x":  52, "y": 8, "z": 0, "id": "bogie_back" }
+    ]
+}

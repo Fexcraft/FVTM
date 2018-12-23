@@ -1,0 +1,15 @@
+{
+    "RegistryName": "zmp:flatbedwagon_containerholder",
+    "Addon": "fvtm:zmp",
+    "ModelFile": "zmp:models/part/flatbedwagon_containerholder",
+    "FullName": "FlatbedWagon's Container Holder",
+    "Category": [ "cargo" ],
+    "Attributes":[ "container" ],
+    "Textures": [ "zmp:textures/vehicles/flatbedwagon.png" ],
+    "Compatible": [{ "Vehicle": "zmp:flatbedwagon", "x": 0, "y": 0, "z": 0 }],
+    "Removable": true,
+    "AttributeData":{
+        "Container-Type": "LARGE",
+        "Container-Offset": { "x": 0, "y": -21, "z": 0 }
+    }
+}

@@ -30,7 +30,7 @@ public class RailUtil {
     				Print.log("WorldRailData is null! This is bad!");
     				return new Return(own, curr, last);
     			}*/
-        		BlockPos pos = data.getNext(curr, last); //Print.debug(curr, last, pos);
+        		BlockPos pos = data.getNext(curr, last, false); //Print.debug(curr, last, pos);
         		if(pos == null || curr.equals(pos)){
         			//Print.console(pos, curr, last);
         			return new Return(own, curr, last);

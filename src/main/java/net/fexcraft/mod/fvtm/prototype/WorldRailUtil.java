@@ -172,7 +172,7 @@ public class WorldRailUtil implements WorldRailData {
 	}
 
 	@Override
-	public BlockPos getNext(BlockPos current, BlockPos previous){
+	public BlockPos getNext(BlockPos current, BlockPos previous, boolean test){
 		ConnContainer conns = this.getConnectionsAt(current);
 		Connection[] connections = conns.connections;//this.getConnectionsAt(current);
 		if(current == null){
@@ -191,9 +191,11 @@ public class WorldRailUtil implements WorldRailData {
 					return conns.switch0 ? connections[2].getFirstTowardsDest() : connections[1].getFirstTowardsDest();
 				}
 				else{
-					boolean bool = connections[2].equalsDestOrFirst(previous);
-					if(bool != conns.switch0){
-						conns.switch0 = bool; map.getRegion(current).sendUpdatePacket(false);
+					if(!test){
+						boolean bool = connections[2].equalsDestOrFirst(previous);
+						if(bool != conns.switch0){
+							conns.switch0 = bool; map.getRegion(current).sendUpdatePacket(false);
+						}
 					}
 					return connections[0].getFirstTowardsDest();
 				}

@@ -24,7 +24,7 @@ public interface WorldRailData {
 	
 	public ConnContainer getConnectionsAt(BlockPos pos);
 	
-	public BlockPos getNext(BlockPos current, BlockPos previous);
+	public BlockPos getNext(BlockPos current, BlockPos previous, boolean test);
 	
 	/** To be called from a tick handler or something. */
 	public void checkForInactive();

@@ -106,6 +106,10 @@ public class WorldRailUtil implements WorldRailData {
 			return this.getRegion(new int[]{ x, z });
 		}
 
+		public RailRegion getRegion(BlockPos pos){
+			return getRegion(pos.getX() >> 4, pos.getZ() >> 4);
+		}
+
 		public boolean contains(int x, int z){
 			return this.get(tempkey = new XZKey(x, z)) != null;
 		}
@@ -187,6 +191,10 @@ public class WorldRailUtil implements WorldRailData {
 					return conns.switch0 ? connections[2].getFirstTowardsDest() : connections[1].getFirstTowardsDest();
 				}
 				else{
+					boolean bool = connections[2].equalsDestOrFirst(previous);
+					if(bool != conns.switch0){
+						conns.switch0 = bool; map.getRegion(current).sendUpdatePacket(false);
+					}
 					return connections[0].getFirstTowardsDest();
 				}
 			}

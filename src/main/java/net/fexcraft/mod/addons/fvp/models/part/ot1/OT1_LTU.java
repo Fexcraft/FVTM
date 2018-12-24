@@ -95,7 +95,7 @@ public class OT1_LTU extends PartModel {
 			public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
 		        NonNullList<ItemStack> stacks = data.getPart(part).getAttributeData(InventoryAttributeData.class).getInventory();
 		        int j = 0;
-		        for(int i = 0; i < get("cargo").size(); i++){
+		        for(int i = 0; i < list.size(); i++){
 		            if(i < stacks.size() && !stacks.get(i).isEmpty()){
 		                j++; continue; //cargo[i].render();
 		            }

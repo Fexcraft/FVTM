@@ -40,6 +40,7 @@ import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
+import net.fexcraft.mod.fvtm.prototype.WorldRailData;
 import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.ItemStackHandler;
@@ -959,8 +960,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	
 	private void updateRotation(){
         Vec3d thiz = this.getPositionVector();
-        _front = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX()).dest;
-        _back = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX()).dest;
+        _front = RailUtil.move(this.getWorldData(), thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX()).dest;
+        _back = RailUtil.move(this.getWorldData(), thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX()).dest;
         if(_front != null && _back != null){
         	//if(reverse){ double[] copy = _front; _front = _back; _back = copy; }
             double dx = _front[0] - _back[0], dy = _front[1] - _back[1], dz = _front[2] - _back[2];
@@ -1218,5 +1219,9 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         }
         return super.getCapability(capability, facing);
     }
+	
+	protected WorldRailData getWorldData(){
+		return world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+	}
 
 }

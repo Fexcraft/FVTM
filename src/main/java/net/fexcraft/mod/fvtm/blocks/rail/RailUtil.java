@@ -6,16 +6,14 @@ import net.fexcraft.lib.common.utils.Print;
 import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.prototype.RailRegion;
 import net.fexcraft.mod.fvtm.prototype.WorldRailData;
-import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 /** @author Ferdinand Calo' (FEX___96) **/
 public class RailUtil {
 	
-	public static final Return getExpectedPosition(World world, double[] own, BlockPos curr, BlockPos last, double amount){
+	public static final Return getExpectedPosition(WorldRailData world, double[] own, BlockPos curr, BlockPos last, double amount){
 		if(amount == 0) return new Return(own, curr, last); if(amount < 0) return move(world, own, last, curr, -amount);
 		if(amount < 0.001 && amount > -0.001) return new Return(own, curr, last);
 		double[] dest = Vector3D.newVector(curr);
@@ -25,12 +23,11 @@ public class RailUtil {
     		//
     		RailLink link = CONNS.get(curr);
     		if(link == null){
-    			WorldRailData data = world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
     			/*if(data == null){
     				Print.log("WorldRailData is null! This is bad!");
     				return new Return(own, curr, last);
     			}*/
-        		BlockPos pos = data.getNext(curr, last, false); //Print.debug(curr, last, pos);
+        		BlockPos pos = world.getNext(curr, last, false); //Print.debug(curr, last, pos);
         		if(pos == null || curr.equals(pos)){
         			//Print.console(pos, curr, last);
         			return new Return(own, curr, last);
@@ -52,15 +49,15 @@ public class RailUtil {
 		return new Return(dest, curr, last);
 	}
 	
-	public static final Return move(World world, double[] own, BlockPos curr, BlockPos last, double amount){
+	public static final Return move(WorldRailData world, double[] own, BlockPos curr, BlockPos last, double amount){
 		return getExpectedPosition(world, own, curr, last, amount);
 	}
 
-	public static final Return move(World world, double[] own, BlockPos curr, BlockPos last, double amount, boolean reverse){
+	public static final Return move(WorldRailData world, double[] own, BlockPos curr, BlockPos last, double amount, boolean reverse){
 		return getExpectedPosition(world, own, reverse ? last : curr, reverse ? curr : last, amount);
 	}
 	
-	public static final Return move(World world, Vec3d own, BlockPos curr, BlockPos last, double amount){
+	public static final Return move(WorldRailData world, Vec3d own, BlockPos curr, BlockPos last, double amount){
 		return getExpectedPosition(world, new double[]{ own.x, own.y, own.z }, curr, last, amount);
 	}
 	

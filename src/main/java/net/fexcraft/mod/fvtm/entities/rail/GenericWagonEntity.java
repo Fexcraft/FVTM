@@ -19,7 +19,7 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
 	@Override
 	public void onUpdateMovement(double amount, boolean call, Boolean frontdir){
         if((amount > 0.001 || amount < -0.001)){ /*amount = Math.abs(amount);*/
-        	set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, amount, reverse), reverse);
+        	set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, amount, reverse), reverse);
         }
         /*if(call){
         	if(vehicledata.getVehicle().isTrailerOrWagon()){
@@ -76,13 +76,13 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
     	if(rear != null && (frontdir == null ? true : frontdir)){
     		boolean fr = rear.front == this, rev = fr ;//? reverse : !reverse;
     		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16FloatX());
-    		((GenericWagonEntity)rear).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? dob : -dob, rev), rev);
+    		((GenericWagonEntity)rear).set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? dob : -dob, rev), rev);
     		rear.onUpdateMovement(0, call, fr);
     	}
     	if(front != null && (frontdir == null ? true : !frontdir)){
     		boolean fr = front.front == this, rev = fr ;//? !reverse : reverse;
     		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? front.getVehicleData().getFrontConnectorPos() : front.getVehicleData().getRearConnectorPos()).to16FloatX());
-    		((GenericWagonEntity)front).set(RailUtil.move(world, new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? -dob : dob, rev), rev);
+    		((GenericWagonEntity)front).set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? -dob : dob, rev), rev);
     		front.onUpdateMovement(0, call, fr);
     	}
 	}

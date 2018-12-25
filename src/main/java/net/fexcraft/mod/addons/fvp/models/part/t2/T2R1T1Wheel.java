@@ -383,6 +383,7 @@ public class T2R1T1Wheel extends PartModel {
         wheel[92].setRotationPoint(0F, 0F, 0F);
         //
         this.add("wheel", wheel); get("wheel").addPrograms(DefaultPrograms.ADJUSTABLE_WHEEL, DefaultPrograms.ROTATED_WHEEL_ROTATE);
+        //get("wheel").scale(get("wheel").scale * 2.5f);
     }
 
 }

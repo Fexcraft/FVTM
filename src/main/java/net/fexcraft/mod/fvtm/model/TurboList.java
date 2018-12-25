@@ -24,7 +24,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	public static final ProgramMap PROGRAMS = new ProgramMap();
 	//
 	public ArrayList<Program> programs = new ArrayList<>();
-	public float rotX, rotY, rotZ, offX, offY, offZ;
+	public float rotX, rotY, rotZ, offX, offY, offZ, scale = 0.0625F;
 	protected RGB windowcolor = new RGB(0x00, 0x72, 0x08, 0.3f);
 	public boolean visible = true, hasprog = false;
 	public String name;
@@ -55,7 +55,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		if(rotY != 0f) GL11.glRotatef(rotY, 0, 1, 0);
 		if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);*/
 		if(hasprog) for(Program program : programs) program.preRender(this, ent, data, color, part);
-		if(visible) for(ModelRendererTurbo turbo : this){ turbo.render(); }
+		if(visible) for(ModelRendererTurbo turbo : this){ turbo.render(scale); }
 		if(hasprog) for(Program program : programs) program.postRender(this, ent, data, color, part);
 		/*if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
 		GL11.glPopMatrix();*/
@@ -67,6 +67,10 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 
 	public void translate(float x, float y, float z){
 		for(ModelRendererTurbo mrt : this){ mrt.rotationPointX += x; mrt.rotationPointY += y; mrt.rotationPointZ += z; }
+	}
+
+	public void scale(float flt){
+		this.scale = flt;
 	}
 	
 	public void rotate(float x, float y, float z){ rotate(x, y, z, false); }

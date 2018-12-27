@@ -834,7 +834,7 @@ public class Resources {
 		}
 		catch(Throwable thr){
 			Print.log("Failed to find/parse model with adress '" + name + "'!");
-			thr.printStackTrace(); //TODO re-active after model converting Static.stop();
+			thr.printStackTrace(); Static.stop();
 			return (Model<T, K>)getEmptyModelFromClass(clazz);
 		}
 		MODELS.put(name, model);
@@ -1042,14 +1042,19 @@ public class Resources {
 	
 	private long tickcounter = 0;
 	private long div = 200;
+	private WorldRailData temp;
 	
 	@SubscribeEvent
 	public void onTick(TickEvent.ServerTickEvent event){
 		if(event.phase == TickEvent.Phase.END) return;
+		for(World world : Static.getServer().worlds){
+			temp = world.getCapability(WorldRailDataSerializer.CAPABILITY, EnumFacing.UP);
+			if(temp == null) continue; temp.updateTick();
+		}
 		if(tickcounter % div == 0){
 			for(World world : Static.getServer().worlds){
-				WorldRailData data = world.getCapability(WorldRailDataSerializer.CAPABILITY, EnumFacing.UP);
-				if(data == null) continue; data.checkForInactive();
+				temp = world.getCapability(WorldRailDataSerializer.CAPABILITY, EnumFacing.UP);
+				if(temp == null) continue; temp.checkForInactive();
 			} tickcounter = 0; div = 1200;
 		}
 	}

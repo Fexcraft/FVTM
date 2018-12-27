@@ -309,4 +309,9 @@ public class WorldRailUtil implements WorldRailData {
 		if(region == null) return; region.toggleSwitch(pos);
 	}
 
+	@Override
+	public void updateTick(){
+		//
+	}
+
 }

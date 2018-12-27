@@ -49,4 +49,6 @@ public interface WorldRailData {
 
 	public void toggleSwitch(BlockPos pos);
 	
+	public void updateTick();
+	
 }

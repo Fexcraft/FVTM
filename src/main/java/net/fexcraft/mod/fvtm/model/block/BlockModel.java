@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class BlockModel extends GenericModel<BlockData, BlockTileEntity> implements FCLItemModel {
 	
@@ -28,9 +29,9 @@ public class BlockModel extends GenericModel<BlockData, BlockTileEntity> impleme
 
     public BlockModel(){ super(); }
 
-    public BlockModel(JsonObject obj){
-        super(obj);
-    }
+    public BlockModel(JsonObject obj){ super(obj); }
+	
+	public BlockModel(String type, ResourceLocation loc){ super(type, loc); }
 
 	@Override
 	public void render(BlockData data, BlockTileEntity key){

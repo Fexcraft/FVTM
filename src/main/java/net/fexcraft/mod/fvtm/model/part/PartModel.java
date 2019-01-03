@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.render.entity.RenderGenericRailed;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.util.ResourceLocation;
 
 public class PartModel extends GenericModel<VehicleData, String> {
 
@@ -47,6 +48,8 @@ public class PartModel extends GenericModel<VehicleData, String> {
 	public PartModel(){ super(); }
 	
 	public PartModel(JsonObject obj){ super(obj); }
+	
+	public PartModel(String type, ResourceLocation loc){ super(type, loc); }
 
 	@Override
 	public void render(VehicleData data, String key){

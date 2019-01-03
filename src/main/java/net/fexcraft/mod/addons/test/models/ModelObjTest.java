@@ -11,7 +11,7 @@ public class ModelObjTest extends PartModel {
     	ModelRendererTurbo[] body = new ModelRendererTurbo[1];
         //
         body[0] = new ModelRendererTurbo(this, 0, 0, 512, 512);
-        body[0].addObj("fvp:models/obj/test.obj", Resources.getModelInputStream("fvp:models/obj/test.obj"));
+        body[0].addObj(Resources.getModelInputStream("fvp:models/obj/test.obj"), null);//"fvp:models/obj/test.obj"
         body[0].setRotationPoint(0, -24F, 0);
         this.add("body", body);
     }

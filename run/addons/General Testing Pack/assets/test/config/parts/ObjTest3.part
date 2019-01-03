@@ -1,0 +1,10 @@
+{
+    "RegistryName": "test:obj3",
+    "Addon": "fvtm:test",
+    "ModelFile": "test:models/obj/c7test.obj",
+    "FullName": "ObjTest",
+    "Category": [ "objtest" ],
+    "Textures": [ "test:textures/items/inventory.png", "fvp:textures/entities/skin_vehicle_c7.png" ],
+    "Removable": true,
+    "Available": true
+}

@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class ContainerModel extends GenericModel<ContainerData, Object> implements FCLItemModel {
 	
@@ -32,6 +33,8 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
 	public ContainerModel(){ super(); }
 	
 	public ContainerModel(JsonObject obj){ super(obj); }
+	
+	public ContainerModel(String type, ResourceLocation loc){ super(type, loc); }
     
 	@Override
 	public void render(ContainerData data, Object key){

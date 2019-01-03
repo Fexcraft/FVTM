@@ -9,9 +9,11 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonToTMT;
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.utils.WavefrontObjUtil;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -58,6 +60,25 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
         catch(Throwable thr){
         	thr.printStackTrace(); net.fexcraft.lib.mc.utils.Static.stop();
         }
+	}
+	
+	public GenericModel(String type, ResourceLocation loc){
+		if(!type.equals("obj")) return;
+		String[][] authors = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), new String[]{ "# Creators:", "# Creator:", "# Editors:", "# Editor:", "# Model Creator:" });
+		for(String[] str : authors) for(String auth : str) this.creators.add(auth);
+		try{
+			this.textureX = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), "# TextureSizeX:")[0][0]);
+			this.textureY = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), "# TextureSizeY:")[0][0]);
+		}
+		catch(Exception e){ e.printStackTrace(); }
+		String[] ogroups = WavefrontObjUtil.getGroups(Resources.getModelInputStream(loc));
+		for(String group : ogroups){
+			try{
+				groups.add(new TurboList(group, new ModelRendererTurbo[]{
+					new ModelRendererTurbo(null, 0, 0, textureX, textureY).addObj(Resources.getModelInputStream(loc), group)
+				}));
+			} catch(Exception e){ e.printStackTrace(); }
+		}
 	}
 	
 	@Override

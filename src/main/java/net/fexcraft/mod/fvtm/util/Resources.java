@@ -74,7 +74,6 @@ import net.fexcraft.mod.fvtm.impl.part.GenericPart;
 import net.fexcraft.mod.fvtm.impl.part.GenericPartItem;
 import net.fexcraft.mod.fvtm.impl.vehicle.GenericVehicle;
 import net.fexcraft.mod.fvtm.impl.vehicle.GenericVehicleItem;
-import net.fexcraft.mod.fvtm.model.ObjModelWrapper;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
 import net.fexcraft.mod.fvtm.model.container.ContainerModel;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
@@ -826,8 +825,8 @@ public class Resources {
 				case "json":
 					//TODO create a wrapper.
 					break;
-				case "obj":
-					model = new ObjModelWrapper<T, K>(name);
+				case "obj": //model = new ObjModelWrapper<T, K>(name);
+					model = clazz.getConstructor(String.class, ResourceLocation.class).newInstance("obj", new ResourceLocation(name));
 					break;
 				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);
 			}

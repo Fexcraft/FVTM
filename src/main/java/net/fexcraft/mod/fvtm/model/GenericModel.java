@@ -71,11 +71,13 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			this.textureY = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), "# TextureSizeY:")[0][0]);
 		}
 		catch(Exception e){ e.printStackTrace(); }
+		String str[][] = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), "# FlipAxes: ");
+		boolean bool = str.length == 0 ? false : Boolean.parseBoolean(str[0][0]);
 		String[] ogroups = WavefrontObjUtil.getGroups(Resources.getModelInputStream(loc));
 		for(String group : ogroups){
 			try{
 				groups.add(new TurboList(group, new ModelRendererTurbo[]{
-					new ModelRendererTurbo(null, 0, 0, textureX, textureY).addObj(Resources.getModelInputStream(loc), group)
+					new ModelRendererTurbo(null, 0, 0, textureX, textureY).setFlipped(bool).addObj(Resources.getModelInputStream(loc), group, bool)
 				}));
 			} catch(Exception e){ e.printStackTrace(); }
 		}

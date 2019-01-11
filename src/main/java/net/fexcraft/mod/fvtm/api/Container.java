@@ -48,10 +48,11 @@ public interface Container extends DataHolderObject.Extended<Container, Containe
 
     public static enum ContainerType {
 
-        TINY,//unused
-        SMALL,//unused
-        MEDIUM,
-        LARGE;
+        TINY, //1m //unused
+        XSMALL, //2m //unused
+        SMALL, //3m //unused
+        MEDIUM, //6m
+        LARGE; //12m
 
     }
 

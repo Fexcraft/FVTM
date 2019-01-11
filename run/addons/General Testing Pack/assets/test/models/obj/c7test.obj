@@ -11,6 +11,7 @@ o C7
 
 # TextureSizeX: 512
 # TextureSizeY: 512
+# FlipAxes: true
 
 # Group Name
 g chassis_body

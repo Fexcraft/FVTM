@@ -1,0 +1,12 @@
+{
+	"RegistryName": "test:tiny",
+	"Addon": "fvtm:test",
+	"ContainerType": "TINY",
+	"ModelFile": "test:models/container/tiny",
+	"FullName": "Test Tiny Container (HexCon)",
+	"Textures":[
+        "fvtm:textures/entities/null_texture.png"
+    ],
+	"InventorySize": 243,
+	"InventoryType": "item"
+}

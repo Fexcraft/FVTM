@@ -38,7 +38,7 @@ public class TempContainerTileInventory implements IInventory {
 
     @Override
     public ItemStack getStackInSlot(int index){
-        return tile.getContainerData().getInventory().get(index);
+        return tile == null || tile.getContainerData() == null ? ItemStack.EMPTY : tile.getContainerData().getInventory().get(index);
     }
 
     @Override

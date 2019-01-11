@@ -11,40 +11,40 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
 public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerTileEntity> {
+	
+	private double off;
 
     @Override
     public void render(ContainerTileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
-        if(!te.isCore()){
-            return;
-        }
+        if(!te.isCore()){ return; }
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         //ModelBase.bindTexture(ModelConstructorCenter.getTexture());
-        GL11.glPushMatrix();
+        GL11.glPushMatrix(); off = te.getContainerData().getContainer().getType().evenLength() ? 0.5 : 0;
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         switch(te.getBlockMetadata()){
             case 2: {
-                GL11.glTranslated(0.5D, 0, 0);
+                GL11.glTranslated(off, 0, 0);
                 GL11.glRotated(0, 0, 1D, 0);
                 break;
             }
             case 3: {
-                GL11.glTranslated(0.5D, 0, 0);
+                GL11.glTranslated(off, 0, 0);
                 GL11.glRotated(180D, 0, 1D, 0);
                 break;
             }
             case 4: {
-                GL11.glTranslated(0, 0, -0.5D);
+                GL11.glTranslated(0, 0, -off);
                 GL11.glRotated(-90D, 0, 1D, 0);
                 break;
             }
             case 5: {
-                GL11.glTranslated(0, 0, -0.5D);
+                GL11.glTranslated(0, 0, -off);
                 GL11.glRotated(-270D, 0, 1D, 0);
                 break;
             }
             default: {
-                GL11.glTranslated(0, -0.5D, 0);
+                GL11.glTranslated(0, -off, 0);
                 GL11.glRotated(Time.getSecond() * 6, 0, 1D, 0);
                 break;
             }

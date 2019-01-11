@@ -1,0 +1,12 @@
+{
+	"RegistryName": "test:small",
+	"Addon": "fvtm:test",
+	"ContainerType": "SMALL",
+	"ModelFile": "test:models/container/small",
+	"FullName": "Test Small Container (HalfCon)",
+	"Textures":[
+        "fvtm:textures/entities/null_texture.png"
+    ],
+	"InventorySize": 729,
+	"InventoryType": "item"
+}

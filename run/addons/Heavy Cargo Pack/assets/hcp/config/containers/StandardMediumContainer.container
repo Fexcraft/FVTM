@@ -2,7 +2,7 @@
 	"RegistryName": "hcp:medium",
 	"Addon": "fvtm:hcp",
 	"ContainerType": "MEDIUM",
-	"ModelFile": "fvp:models/container/medium",
+	"ModelFile": "hcp:models/container/medium",
 	"FullName": "Standard Medium Container",
 	"Textures":[
 		"hcp:textures/containers/standard_medium.png"

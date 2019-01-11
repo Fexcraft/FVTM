@@ -11,7 +11,7 @@ import net.fexcraft.mod.fvtm.model.container.ContainerModel;
  *  FMT (Fex's Modelling Toolbox) v.1.0.6-test &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-@fModel(registryname = "fvp:models/container/xsmall") //TODO adjust as needed
+@fModel(registryname = "hcp:models/container/xsmall") //TODO adjust as needed
 public class StandardXSmallContainer extends ContainerModel {
 
 	public StandardXSmallContainer(){

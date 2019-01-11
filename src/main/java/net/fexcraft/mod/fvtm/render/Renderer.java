@@ -289,6 +289,8 @@ public class Renderer {
         GL11.glPopMatrix();
         GL11.glPopMatrix();
 	}
+	
+	private double offset;
 
 	private void render(EntityPlayer player, ContainerData data, BlockPos bpos){
 		if(data.getContainer().getModel() == null) return;
@@ -296,31 +298,31 @@ public class Renderer {
         float off = player.world.getBlockState(bpos).getBlock().isReplaceable(player.world, bpos) ? 0 : 1;
         GL11.glTranslated((bpos.getX() + 0.5) - player.posX, bpos.getY() - player.posY + off, (bpos.getZ() + 0.5) - player.posZ);
         GlStateManager.disableBlend(); GlStateManager.enableAlpha();
-        GL11.glPushMatrix();
+        GL11.glPushMatrix(); offset = data.getContainer().getType().evenLength() ? 0.5 : 0; 
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         switch(player.getHorizontalFacing().getIndex()){
             case 2: {
-                GL11.glTranslated(0.5D, 0, 0);
+                GL11.glTranslated(offset, 0, 0);
                 GL11.glRotated(0, 0, 1D, 0);
                 break;
             }
             case 3: {
-                GL11.glTranslated(0.5D, 0, 0);
+                GL11.glTranslated(offset, 0, 0);
                 GL11.glRotated(180D, 0, 1D, 0);
                 break;
             }
             case 4: {
-                GL11.glTranslated(0, 0, -0.5D);
+                GL11.glTranslated(0, 0, -offset);
                 GL11.glRotated(-90D, 0, 1D, 0);
                 break;
             }
             case 5: {
-                GL11.glTranslated(0, 0, -0.5D);
+                GL11.glTranslated(0, 0, -offset);
                 GL11.glRotated(-270D, 0, 1D, 0);
                 break;
             }
             default: {
-                GL11.glTranslated(0, -0.5D, 0);
+                GL11.glTranslated(0, -offset, 0);
                 GL11.glRotated(Time.getSecond() * 6, 0, 1D, 0);
                 break;
             }

@@ -196,11 +196,45 @@ public class ContainerBlock extends BlockContainer {
         ArrayList<BlockPos> list = new ArrayList<BlockPos>();
         facing = rotate90(facing);
         BlockPos core = new BlockPos(pos);
-        boolean m = !data.getContainer().isLargeContainer();
-        int xil = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? -1 : m ? -3 : -6;
-        int xal = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? 2 : m ? 3 : 6;
-        int zil = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? m ? -3 : -6 : -1;
-        int zal = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? m ? 3 : 6 : 2;
+        //boolean m = !data.getContainer().isLargeContainer();
+        int xil = 0, xal = 0, zil = 0, zal = 0; boolean ax = facing.getAxis() == EnumFacing.Axis.Z;
+        switch(data.getContainer().getType()){
+			case LARGE:
+				xil = ax ? -1 : -6;
+				xal = ax ? 2 : 6;
+				zil = ax ? -6 : -1;
+				zal = ax ? 6 : 2;
+				break;
+			case MEDIUM:
+				xil = ax ? -1 : -3;
+				xal = ax ? 2 : 3;
+				zil = ax ? -3 : -1;
+				zal = ax ? 3 : 2;
+				break;
+			case SMALL:
+				xil = ax ? -1 : -1;
+				xal = ax ? 2 : 2;
+				zil = ax ? -1 : -1;
+				zal = ax ? 2 : 2;
+				break;
+			case XSMALL:
+				xil = ax ? -1 : -1;
+				xal = ax ? 2 : 1;
+				zil = ax ? -1 : -1;
+				zal = ax ? 1 : 2;
+				break;
+			case TINY:
+				xil = ax ? -1 : -0;
+				xal = ax ? 2 : 1;
+				zil = ax ? -0 : -1;
+				zal = ax ? 1 : 2;
+				break;
+			default: return list;
+        }
+        //int xil = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? -1 : m ? -3 : -6;
+        //int xal = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? 2 : m ? 3 : 6;
+        //int zil = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? m ? -3 : -6 : -1;
+        //int zal = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? m ? 3 : 6 : 2;
         for(int x = xil; x < xal; x++){
             for(int y = 0; y < 3; y++){
                 for(int z = zil; z < zal; z++){

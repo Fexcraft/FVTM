@@ -48,11 +48,17 @@ public interface Container extends DataHolderObject.Extended<Container, Containe
 
     public static enum ContainerType {
 
-        TINY, //1m //unused
-        XSMALL, //2m //unused
-        SMALL, //3m //unused
-        MEDIUM, //6m
-        LARGE; //12m
+        TINY(1f), XSMALL(2f), SMALL(3f), MEDIUM(6f), LARGE(12f);
+    	
+    	private boolean even; private float length;
+    	
+    	ContainerType(float length){
+    		this.length = length; even = this.length % 2 == 0;
+    	}
+    	
+    	public float length(){ return length; }
+    	
+    	public boolean evenLength(){ return even; }
 
     }
 

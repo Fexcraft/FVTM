@@ -219,19 +219,19 @@ public class StandardFluidContainer extends ContainerModel {
 		);
 		primary.add(new ModelRendererTurbo(primary, 417, 129, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 32, 0, 0.5f, 0, -1, 0, 0, 0, 0, 0, 0, 0.5f, 0, -1, 0.5f, -0.5f, -7, 0, 0, -6, 0, 0, -6, 0.5f, -0.5f, -7)
-			.setRotationPoint(-47, -40, -16).setRotationAngle(-1.5707964f, 0, 0).setName("Box 28")
+			.setRotationPoint(-47, -40, -16).setRotationAngle(-90f, 0, 0).setName("Box 28")
 		);
 		primary.add(new ModelRendererTurbo(primary, 433, 169, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 32, 0, 0.5f, -0.5f, -7, 0, 0, -6, 0, 0, -6, 0.5f, -0.5f, -7, 0.5f, 0, -1, 0, 0, 0, 0, 0, 0, 0.5f, 0, -1)
-			.setRotationPoint(-47, -40, 20).setRotationAngle(-1.5707964f, 0, 0).setName("Box 29")
+			.setRotationPoint(-47, -40, 20).setRotationAngle(-90f, 0, 0).setName("Box 29")
 		);
 		primary.add(new ModelRendererTurbo(primary, 129, 9, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 2, 20, 0, 0.5f, -1, -8, 0, 0, -8, 0, 0, -8, 0.5f, -1, -8, 0.5f, 0.5f, -1, 0, 0, 0, 0, 0, 0, 0.5f, 0.5f, -1)
-			.setRotationPoint(-47, -14, -22).setRotationAngle(1.5707964f, 0, 0).setName("Box 30")
+			.setRotationPoint(-47, -14, -22).setRotationAngle(90f, 0, 0).setName("Box 30")
 		);
 		primary.add(new ModelRendererTurbo(primary, 97, 25, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 2, 20, 0, 0.5f, 0.5f, -1, 0, 0, 0, 0, 0, 0, 0.5f, 0.5f, -1, 0.5f, -1, -8, 0, 0, -8, 0, 0, -8, 0.5f, -1, -8)
-			.setRotationPoint(-47, -14, 20).setRotationAngle(1.5707964f, 0, 0).setName("Box 31")
+			.setRotationPoint(-47, -14, 20).setRotationAngle(90f, 0, 0).setName("Box 31")
 		);
 		primary.add(new ModelRendererTurbo(primary, 433, 209, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 1, 32, 0, 0.5f, 0, -1, 0, 0, 0, 0, 0, 0, 0.5f, 0, -1, 0.5f, 0, 0, 0, 0, 0, 0, 0, 0, 0.5f, 0, 0)
@@ -263,19 +263,19 @@ public class StandardFluidContainer extends ContainerModel {
 		);
 		primary.add(new ModelRendererTurbo(primary, 265, 33, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 2, 20, 0, 0, 0, -8, 0.5f, -1, -8, 0.5f, -1, -8, 0, 0, -8, 0, 0, 0, 0.5f, 0.5f, -1, 0.5f, 0.5f, -1, 0, 0, 0)
-			.setRotationPoint(45, -14, -22).setRotationAngle(1.5707964f, 0, 0).setName("Box 39")
+			.setRotationPoint(45, -14, -22).setRotationAngle(90f, 0, 0).setName("Box 39")
 		);
 		primary.add(new ModelRendererTurbo(primary, 257, 249, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 32, 0, 0, 0, 0, 0.5f, 0, -1, 0.5f, 0, -1, 0, 0, 0, 0, 0, -6, 0.5f, -0.5f, -7, 0.5f, -0.5f, -7, 0, 0, -6)
-			.setRotationPoint(45, -40, -16).setRotationAngle(-1.5707964f, 0, 0).setName("Box 40")
+			.setRotationPoint(45, -40, -16).setRotationAngle(-90f, 0, 0).setName("Box 40")
 		);
 		primary.add(new ModelRendererTurbo(primary, 297, 41, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 2, 20, 0, 0, 0, 0, 0.5f, 0.5f, -1, 0.5f, 0.5f, -1, 0, 0, 0, 0, 0, -8, 0.5f, -1, -8, 0.5f, -1, -8, 0, 0, -8)
-			.setRotationPoint(45, -14, 20).setRotationAngle(1.5707964f, 0, 0).setName("Box 41")
+			.setRotationPoint(45, -14, 20).setRotationAngle(90f, 0, 0).setName("Box 41")
 		);
 		primary.add(new ModelRendererTurbo(primary, 329, 249, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 32, 0, 0, 0, -6, 0.5f, -0.5f, -7, 0.5f, -0.5f, -7, 0, 0, -6, 0, 0, 0, 0.5f, 0, -1, 0.5f, 0, -1, 0, 0, 0)
-			.setRotationPoint(45, -40, 20).setRotationAngle(-1.5707964f, 0, 0).setName("Box 42")
+			.setRotationPoint(45, -40, 20).setRotationAngle(-90f, 0, 0).setName("Box 42")
 		);
 		primary.add(new ModelRendererTurbo(primary, 401, 249, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0.5f, 0, -1, 0.5f, 0, -1, 0, 0, 0, 0, 0, 0, 0.5f, 0, 0, 0.5f, 0, 0, 0, 0, 0)

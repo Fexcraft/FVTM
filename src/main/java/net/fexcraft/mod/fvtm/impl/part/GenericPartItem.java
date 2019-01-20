@@ -14,8 +14,8 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
+import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.impl.GenericCreativeTab;
-import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -58,7 +58,7 @@ public class GenericPartItem extends Item implements PartItem {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey(NBTKEY)){
-            PartData part = stack.getCapability(VAPDataCache.CAPABILITY, null).getPartData();
+            PartData part = stack.getCapability(FVTMCaps.VAPDATA, null).getPartData();
             if(part == null){
                 return;
             }

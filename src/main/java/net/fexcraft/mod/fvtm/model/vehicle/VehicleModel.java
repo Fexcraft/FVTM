@@ -8,7 +8,7 @@ import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
-import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
+import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -58,7 +58,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
 		if(item.getItem() instanceof VehicleItem == false){ return; }
-		VehicleData data = item.getCapability(VAPDataCache.CAPABILITY, null).getVehicleData();
+		VehicleData data = item.getCapability(FVTMCaps.VAPDATA, null).getVehicleData();
 		if(data == null){ return; }
 		VehicleModel model = (VehicleModel)data.getVehicle().getModel();
 		if(model == null) { return; }

@@ -1,26 +1,23 @@
 package net.fexcraft.mod.fvtm.impl.caps;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
+import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
+import net.fexcraft.mod.fvtm.api.capability.VehicleAndPartDataCache;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 	
-	@CapabilityInject(VehicleAndPartDataCache.class)
-	public static final Capability<VehicleAndPartDataCache> CAPABILITY = null;
 	private VehicleAndPartDataCache instance;
 	
 	public VAPDataCache(ItemStack stack){
@@ -40,22 +37,22 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing){
-		return capability != null && capability == CAPABILITY;
+		return capability != null && capability == FVTMCaps.VAPDATA;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing){
-		return capability != null && capability == CAPABILITY ? CAPABILITY.<T>cast(this.instance) : null;
+		return capability != null && capability == FVTMCaps.VAPDATA ? FVTMCaps.VAPDATA.<T>cast(this.instance) : null;
 	}
 
 	@Override
 	public NBTBase serializeNBT(){
-		return CAPABILITY.getStorage().writeNBT(CAPABILITY, instance, null);
+		return FVTMCaps.VAPDATA.getStorage().writeNBT(FVTMCaps.VAPDATA, instance, null);
 	}
 
 	@Override
 	public void deserializeNBT(NBTBase nbt){
-		CAPABILITY.getStorage().readNBT(CAPABILITY, instance, null, nbt);
+		FVTMCaps.VAPDATA.getStorage().readNBT(FVTMCaps.VAPDATA, instance, null, nbt);
 	}
 	
 	public static class Storage implements IStorage<VehicleAndPartDataCache> {
@@ -78,18 +75,6 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		public VehicleAndPartDataCache call() throws Exception {
 			return new Implementation();
 		}
-		
-	}
-	
-	public static interface VehicleAndPartDataCache {
-
-		public void setStack(ItemStack stack);
-		
-		public @Nullable VehicleData getVehicleData();
-		
-		public @Nullable PartData getPartData();
-
-		public @Nullable BlockData getBlockData();
 		
 	}
 	

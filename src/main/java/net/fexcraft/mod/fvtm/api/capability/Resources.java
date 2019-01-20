@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.api;
+package net.fexcraft.mod.fvtm.api.capability;
 
 import java.util.Collection;
 import java.util.Map;
@@ -13,13 +13,12 @@ import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.api.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
@@ -28,9 +27,6 @@ import net.minecraftforge.registries.IForgeRegistry;
  * World Capability to get or init/load various FVTM Resources.
  * **/
 public interface Resources {
-	
-	@CapabilityInject(Resources.class)
-	public static final Capability<Resources> CAPABILITY = null;
 
 	public void setWorld(World world);
 	

@@ -18,8 +18,8 @@ import net.fexcraft.mod.fvtm.api.EntityType;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
+import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.impl.GenericCreativeTab;
-import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.SpawnCmd;
@@ -70,7 +70,7 @@ public class GenericVehicleItem extends Item implements VehicleItem {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
         if(stack.hasTagCompound() && (stack.getTagCompound().hasKey(NBTKEY) || stack.getTagCompound().hasKey(OLDNBTKEY))){
-            VehicleData veh = stack.getCapability(VAPDataCache.CAPABILITY, null).getVehicleData();
+            VehicleData veh = stack.getCapability(FVTMCaps.VAPDATA, null).getVehicleData();
             if(veh == null){
                 return;
             }

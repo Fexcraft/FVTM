@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.impl.caps;
 
-import net.fexcraft.mod.fvtm.api.Resources;
+import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
+import net.fexcraft.mod.fvtm.api.capability.Resources;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -8,34 +9,33 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import static net.fexcraft.mod.fvtm.api.Resources.CAPABILITY;
 
 public class WorldResourcesUtil implements ICapabilitySerializable<NBTBase>{
 	
 	private Resources instance;
 	
 	public WorldResourcesUtil(World world){
-		(instance = CAPABILITY.getDefaultInstance()).setWorld(world);
+		(instance = FVTMCaps.RESOURCES.getDefaultInstance()).setWorld(world);
 	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing){
-		return capability != null && capability == CAPABILITY;
+		return capability != null && capability == FVTMCaps.RESOURCES;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing){
-		return capability != null && capability == CAPABILITY ? CAPABILITY.cast(this.instance) : null;
+		return capability != null && capability == FVTMCaps.RESOURCES ? FVTMCaps.RESOURCES.cast(this.instance) : null;
 	}
 
 	@Override
 	public NBTBase serializeNBT(){
-		return CAPABILITY.getStorage().writeNBT(CAPABILITY, instance, null);
+		return FVTMCaps.RESOURCES.getStorage().writeNBT(FVTMCaps.RESOURCES, instance, null);
 	}
 
 	@Override
 	public void deserializeNBT(NBTBase nbt){
-		CAPABILITY.getStorage().readNBT(CAPABILITY, instance, null, nbt);
+		FVTMCaps.RESOURCES.getStorage().readNBT(FVTMCaps.RESOURCES, instance, null, nbt);
 	}
 	
 	public static class Storage implements IStorage<Resources> {

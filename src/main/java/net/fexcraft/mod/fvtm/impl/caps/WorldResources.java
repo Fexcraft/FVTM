@@ -34,7 +34,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistry;
 
-public class WorldResources implements net.fexcraft.mod.fvtm.api.Resources {
+public class WorldResources implements net.fexcraft.mod.fvtm.api.capability.Resources {
 	
 	private World world;
 

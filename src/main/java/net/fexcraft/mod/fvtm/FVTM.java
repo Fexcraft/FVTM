@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.EntityType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.api.capability.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
 import net.fexcraft.mod.fvtm.blocks.Pallet;
@@ -81,8 +82,8 @@ public class FVTM {
 	public void initPre(FMLPreInitializationEvent event){
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
-		CapabilityManager.INSTANCE.register(VAPDataCache.VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
-		CapabilityManager.INSTANCE.register(net.fexcraft.mod.fvtm.api.Resources.class, new WorldResourcesUtil.Storage(), new WorldResourcesUtil.Callable());
+		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
+		CapabilityManager.INSTANCE.register(net.fexcraft.mod.fvtm.api.capability.Resources.class, new WorldResourcesUtil.Storage(), new WorldResourcesUtil.Callable());
 		//CapabilityManager.INSTANCE.register(ChunkRailDataUtil.ChunkRailData.class, new ChunkRailDataUtil.Storage(), new ChunkRailDataUtil.Callable());
 		CapabilityManager.INSTANCE.register(WorldRailData.class, new WorldRailDataSerializer.Storage(), new WorldRailDataSerializer.Callable());
 		//

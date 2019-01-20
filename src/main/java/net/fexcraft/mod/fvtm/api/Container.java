@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.api;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
 import net.fexcraft.mod.fvtm.api.root.Colorable.ColorHolder;
 import net.fexcraft.mod.fvtm.api.root.DataHolderObject;
@@ -83,13 +84,11 @@ public interface Container extends DataHolderObject.Extended<Container, Containe
 
     }
     
-    public static interface ContainerHolder {
+    public static interface ContainerHolderEntity {
     	
-    	public @Nullable ContainerData getContainerData();
+    	public void setupCapability(ContainerHolder cap);
     	
-    	public boolean setContainerData(@Nullable ContainerData data);
-    	
-    	public ContainerType getContainerType();
+    	public float[] cheGetRotation();
     	
     }
 

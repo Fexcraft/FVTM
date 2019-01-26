@@ -41,6 +41,7 @@ public abstract class GenericGui<CONTAINER extends GenericGuiContainer> extends 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
         super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
     
     @Override
@@ -96,6 +97,8 @@ public abstract class GenericGui<CONTAINER extends GenericGuiContainer> extends 
     
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    	super.mouseClicked(mouseX, mouseY, mouseButton);//needed for slot interaction...
+    	//
         if(mouseButton == 0){
         	for(java.util.Map.Entry<String, BasicButton> entry : buttons.entrySet()){
         		if(entry.getValue().mousePressed(this.mc, mouseX, mouseY)){

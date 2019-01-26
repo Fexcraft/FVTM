@@ -1,26 +1,12 @@
 package net.fexcraft.mod.fvtm.model.part;
 
-import org.lwjgl.opengl.GL11;
-
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.lib.tmt.ModelBase;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
-import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
-import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
-import net.fexcraft.mod.fvtm.api.Container.ContainerType;
-import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
-import net.fexcraft.mod.fvtm.render.entity.RenderGenericRailed;
-import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
 
 public class PartModel extends GenericModel<VehicleData, String> {
@@ -67,26 +53,7 @@ public class PartModel extends GenericModel<VehicleData, String> {
 	
 	////-///---/---///-////
 
-    public void def_renderWheelWithRotations(String model, VehicleEntity vehicle, float amount, boolean steering){
-    	TurboList list = groups.get(model);
-        if(amount != list.get(0).rotationAngleZ){
-            amount -= list.get(0).rotationAngleZ;
-            list.rotate(0, 0, amount, false);
-        }
-        if(steering){
-            for(ModelRendererTurbo sub : list){
-                sub.rotationAngleY = Static.toDegrees(vehicle.getWheelsYaw() * Static.rad180);
-            }
-        }
-        this.render(vehicle.getVehicleData(), model);
-        if(steering){
-            for(ModelRendererTurbo sub : list){
-                sub.rotationAngleY = 0;
-            }
-        }
-    }
-
-    public static void def_renderContainer(VehicleData type, String us){
+    /*public static void def_renderContainer(VehicleData type, String us){
         PartData partdata = type.getPart(us);
         if(partdata == null){
             return;
@@ -193,6 +160,6 @@ public class PartModel extends GenericModel<VehicleData, String> {
             }
             conattr.getContainerOffset().translateR();
         }
-    }
+    }*/
 	
 }

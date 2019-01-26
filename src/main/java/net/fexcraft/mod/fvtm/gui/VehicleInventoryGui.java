@@ -17,7 +17,6 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.GenericGuiButton;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
@@ -25,6 +24,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.gui.veh.ContainerInventory;
 import net.fexcraft.mod.fvtm.render.Renderer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiButton;
@@ -304,11 +304,12 @@ public class VehicleInventoryGui {
                             nbt.setString("task", "open_gui");
                             nbt.setInteger("gui", GuiHandler.VEHICLE_INVENTORY);
                             if(y >= data.getInventoryContainers().size()){
-                                nbt.setIntArray("args", new int[]{4, y - data.getInventoryContainers().size(), scroll});
+                            	nbt.setInteger("gui", GuiHandler.VEH_INV_Container);
+                                nbt.setIntArray("args", new int[]{ ent.getEntity().getEntityId(), y - data.getInventoryContainers().size(), 0 });
                             }
                             else{
                                 InventoryAttribute attr = data.getInventoryContainers().get(y).getPart().getAttribute(InventoryAttribute.class);
-                                nbt.setIntArray("args", new int[]{attr.getType() == InventoryType.ITEM ? 1 : 6, y, scroll});
+                                nbt.setIntArray("args", new int[]{ attr.getType() == InventoryType.ITEM ? 1 : 6, y, scroll });
                             }
                             PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(nbt));
                             break;
@@ -619,8 +620,8 @@ public class VehicleInventoryGui {
                     break;
                 }
                 case 4: {
-                    addSlotToContainer(new ContainerSlot(coninv = new ContainerInventory(data.getContainerHolders().get(y).getAttributeData(ContainerAttributeData.class)), 0, 179, 27));
-                    addSlotToContainer(new ContainerSlot(coninv, 1, 179, 59));
+                    //addSlotToContainer(new ContainerSlot(coninv = new ContainerInventory(data.getContainerHolders().get(y).getAttributeData(ContainerAttributeData.class)), 0, 179, 27));
+                    //addSlotToContainer(new ContainerSlot(coninv, 1, 179, 59));
                     for(int row = 0; row < 3; row++){
                         for(int col = 0; col < 9; col++){
                             addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 6 + col * 18, 25 + row * 18));

@@ -35,6 +35,7 @@ import net.fexcraft.mod.fvtm.gui.ccg.CCGPartManager;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGStatus;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGTextureManager;
 import net.fexcraft.mod.fvtm.gui.ccg.CCGVehicleData;
+import net.fexcraft.mod.fvtm.gui.veh.VehInvContainer;
 import net.fexcraft.mod.fvtm.impl.GenericAddon;
 import net.fexcraft.mod.fvtm.util.AddonList;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -78,6 +79,8 @@ public class GuiHandler implements IGuiHandler {
 	public static final int CCG_PartInstaller = 9006;
 	public static final int CCG_TextureManager = 9007;
 	public static final int CCG_PainterTool = 9008;
+	//
+	public static final int VEH_INV_Container = 12000;
 	
 	public static EnumFacing lastside = EnumFacing.UP;
 
@@ -124,6 +127,8 @@ public class GuiHandler implements IGuiHandler {
             //case 9007: return new CCGTextureManager.Container();
             case 9008:
             	return new CCGPainter.Container(world, x, y, z);
+            case 12000:
+            	return new VehInvContainer.Container(player, world, x, y, z);
             default:
             	return new GenericGuiContainer.DefImpl();
         }
@@ -173,6 +178,8 @@ public class GuiHandler implements IGuiHandler {
             //case 9007: return new CCGTextureManager(player, world, x, y, z);
             case 9008:
             	return new CCGPainter(player, world, x, y, z);
+            case 12000:
+            	return new VehInvContainer(player, world, x, y, z);
             default: return null;
         }
     }

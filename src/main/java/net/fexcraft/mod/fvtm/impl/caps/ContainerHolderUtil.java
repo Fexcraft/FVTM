@@ -147,7 +147,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		}
 
 		@SuppressWarnings("unlikely-arg-type")
-		private ContainerSlot getContainerSlot(String id){
+		public ContainerSlot getContainerSlot(String id){
 			if(singlecon) return singular;
 			for(ContainerSlot slot : map.values()){
 				if(slot.equals(id)) return slot;
@@ -271,16 +271,20 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 	
 	public static class ContainerSlot {
 		
-		private ContainerType size, curr;
-		private ContainerType[] supported;
-		private ContainerData[] data;
+		public ContainerType size, curr;
+		public ContainerType[] supported;
+		public ContainerData[] data;
 		//
 		private String id;
 		private float[] relpos = new float[3];
 		private float rotangle;
 		//
-		private Implementation impl;
+		public Implementation impl;
 		private static String div = ",";
+		
+		public final String ID(){
+			return id;
+		}
 		
 		public ContainerSlot(Implementation impl, String id, float[] relpos, float rotangle, ContainerType size, ContainerType... accepted){
 			this.size = this.curr = size; this.id = id; this.impl = impl; ArrayList<ContainerType> types = new ArrayList<ContainerType>();

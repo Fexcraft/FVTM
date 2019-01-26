@@ -3,8 +3,6 @@ package net.fexcraft.mod.addons.hcp.models.part;
 
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
@@ -99,18 +97,6 @@ public class TR1ContainerHolder extends PartModel {
 			.setRotationPoint(-1, -31, -24).setRotationAngle(0, 0, 0).setName("Box 151")
 		);
 		this.groups.add(container_holder);
-	}
-    
-	@Override
-	public void render(VehicleData data, String us){
-	    super.render(data, us);
-	    super.def_renderContainer(data, us);
-	}
-	
-	@Override
-	public void render(VehicleData data, String us, VehicleEntity ent, int meta){
-	    super.render(data, us);
-	    super.def_renderContainer(data, us, ent);
 	}
 
 }

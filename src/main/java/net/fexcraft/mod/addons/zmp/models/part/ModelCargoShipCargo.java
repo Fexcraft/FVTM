@@ -5,8 +5,6 @@ import java.util.TreeMap;
 import net.fexcraft.lib.common.lang.ArrayList;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.part.PartModel;
 
 public class ModelCargoShipCargo extends PartModel {
@@ -51,7 +49,7 @@ public class ModelCargoShipCargo extends PartModel {
         }
     }
 
-    @Override
+    /*@Override
     public void render(VehicleData data, String usedAS){
         positions.get(usedAS).translate();
         super.def_renderContainer(data, usedAS);
@@ -63,6 +61,6 @@ public class ModelCargoShipCargo extends PartModel {
         positions.get(usedAS).translate();
         super.def_renderContainer(data, usedAS, vehicle);
         positions.get(usedAS).translateR();
-    }
+    }*/
 
 }

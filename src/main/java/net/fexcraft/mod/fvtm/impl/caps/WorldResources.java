@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Block;
@@ -13,24 +12,18 @@ import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -141,8 +134,8 @@ public class WorldResources implements net.fexcraft.mod.fvtm.api.capability.Reso
 	}
 
 	@Override
-	public ContainerHolder getContainerAt(ICommandSender receiver, BlockPos position){
-		ContainerHolder holder = null;
+	public ContainerData getContainerAt(ICommandSender receiver, BlockPos position){
+		/*ContainerHolder holder = null;
 		if(world.getTileEntity(position) != null && world.getTileEntity(position) instanceof ContainerHolder){
 			holder = (ContainerHolder)world.getTileEntity(position);
 		}
@@ -176,13 +169,13 @@ public class WorldResources implements net.fexcraft.mod.fvtm.api.capability.Reso
 			}
 		}
 		chat(receiver, "Container: " + holder.getContainerData() == null ? "none" : holder.getContainerData().getContainer().getName());
-		return holder;
+		return holder;*/ return null;
 	}
 
-	private void chat(ICommandSender sender, String string){
+	/*private void chat(ICommandSender sender, String string){
 		if(sender != null && string != null){
 			sender.sendMessage(new TextComponentString(Formatter.format(string)));
 		}
-	}
+	}*/
 	
 }

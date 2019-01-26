@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.EntityType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.capability.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
 import net.fexcraft.mod.fvtm.blocks.ConstructorController;
@@ -28,6 +29,7 @@ import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.GenericEntityType;
 import net.fexcraft.mod.fvtm.impl.PrototypeEntityType;
+import net.fexcraft.mod.fvtm.impl.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
 import net.fexcraft.mod.fvtm.impl.container.ContainerStatusListener;
@@ -86,6 +88,7 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(net.fexcraft.mod.fvtm.api.capability.Resources.class, new WorldResourcesUtil.Storage(), new WorldResourcesUtil.Callable());
 		//CapabilityManager.INSTANCE.register(ChunkRailDataUtil.ChunkRailData.class, new ChunkRailDataUtil.Storage(), new ChunkRailDataUtil.Callable());
 		CapabilityManager.INSTANCE.register(WorldRailData.class, new WorldRailDataSerializer.Storage(), new WorldRailDataSerializer.Callable());
+		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		REGISTERER = new AutoRegisterer(MODID);
@@ -150,8 +153,10 @@ public class FVTM {
 		}
 		//
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new WorldRailDataSerializer.Server());
+		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ContainerHolderUtil.Server());
 		if(event.getSide().isClient()){
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new WorldRailDataSerializer.Client());
+			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ContainerHolderUtil.Client());
 		}
 		//
 		RecipeObject.registerRecipes();

@@ -14,4 +14,8 @@ public class FVTMCaps {
 	@CapabilityInject(Resources.class)
 	public static final Capability<Resources> RESOURCES = null;
 	
+	/** For Vehicles which can transport Containers */
+	@CapabilityInject(ContainerHolder.class)
+	public static final Capability<ContainerHolder> CONTAINER = null;
+	
 }

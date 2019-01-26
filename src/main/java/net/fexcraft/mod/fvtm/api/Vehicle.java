@@ -13,7 +13,6 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Pos;
-import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.compatibility.FMSeat;
 import net.fexcraft.mod.fvtm.api.root.Colorable;
@@ -255,7 +254,7 @@ public interface Vehicle extends DataHolderObject.Extended<Vehicle, Vehicle.Vehi
             //TO BE OVERRIDEN BY A TRAILER
         }
 
-		public @Nullable TreeMap<String, ContainerHolder> getContainers();
+		//public @Nullable TreeMap<String, ContainerHolderEntity> getContainers();
 
     }
 

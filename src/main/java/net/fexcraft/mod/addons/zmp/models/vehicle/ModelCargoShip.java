@@ -894,7 +894,7 @@ public class ModelCargoShip extends VehicleModel {
 
         turret[86].addBox(0F, 0F, 0F, 48, 48, 96, 0F); // Box 230
         turret[86].setRotationPoint(618F, -177F, -50F);
-        this.add("turret", turret); this.get("turret").addProgram(DefaultPrograms.DOOR_CLOSE);
+        this.add("turret", turret); this.get("turret").addProgram(DefaultPrograms.DOOR_OPEN);
         //
         fixRotations();
     }

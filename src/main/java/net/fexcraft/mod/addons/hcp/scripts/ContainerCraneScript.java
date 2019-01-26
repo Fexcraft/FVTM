@@ -5,13 +5,10 @@
  */
 package net.fexcraft.mod.addons.hcp.scripts;
 
-import java.util.TreeMap;
-
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontData;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontRendererAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
@@ -21,7 +18,6 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
-import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.container.GenericContainerItem;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -33,7 +29,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -400,7 +395,7 @@ public class ContainerCraneScript implements VehicleScript {
 			}
 		}
 		else{
-			ContainerHolder holder = null;
+			/*ContainerHolder holder = null;
 			AxisAlignedBB aabb = new AxisAlignedBB(blkpos);
 			for(Entity e : ent.getEntity().world.loadedEntityList){
 				if(e instanceof ContainerHolder && e.getEntityBoundingBox().intersects(aabb)){
@@ -429,7 +424,8 @@ public class ContainerCraneScript implements VehicleScript {
 			}
 			else{
 				Print.chat(player, "No Container Holder Entity found at position.");
-			}
+			}*/
+			//TODO update
 		}
 		return;
 	}
@@ -460,7 +456,7 @@ public class ContainerCraneScript implements VehicleScript {
 			}
 		}
 		else{
-			ContainerHolder holder = null;
+			/*ContainerHolder holder = null;
 			AxisAlignedBB aabb = new AxisAlignedBB(blkpos);
 			for(Entity e : ent.getEntity().world.loadedEntityList){
 				if(e instanceof ContainerHolder && e.getEntityBoundingBox().intersects(aabb)){
@@ -490,7 +486,8 @@ public class ContainerCraneScript implements VehicleScript {
 			}
 			else{
 				Print.chat(player, "No Container Entity found at position.");
-			}
+			}*/
+			//TODO update
 		}
 		//ent.getEntity().world.setBlockState(blkpos, Blocks.ANVIL.getDefaultState(), 2);
 		Print.debug(pos, blkpos);

@@ -88,7 +88,7 @@ public interface Container extends DataHolderObject.Extended<Container, Containe
     	
     	public void setupCapability(ContainerHolder cap);
     	
-    	public float[] cheGetRotation();
+    	@Deprecated public float[] cheGetRotation();
     	
     }
 

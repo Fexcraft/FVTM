@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.entities.rail;
 
-import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.KeyItem;
 import net.fexcraft.lib.mc.api.LockableObject;
@@ -14,15 +14,12 @@ import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttributeData;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
-import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
-import net.fexcraft.mod.fvtm.api.Container.ContainerPosition;
-import net.fexcraft.mod.fvtm.api.Container.ContainerType;
+import net.fexcraft.mod.fvtm.api.Container.ContainerHolderEntity;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.MovementCalculationEntity;
@@ -32,11 +29,12 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
+import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackBlock;
-import net.fexcraft.mod.fvtm.entities.ContainerWrapper;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
@@ -75,14 +73,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 @SuppressWarnings("deprecation")
-public abstract class RailboundVehicleEntity extends Entity implements VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
+public abstract class RailboundVehicleEntity extends Entity implements ContainerHolderEntity, VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
 
 	protected VehicleData vehicledata;
 	public VehicleAxes axes;
 	protected VehicleAxes prevaxes;
 	//public BogieEntity[] bogies;
 	public SeatEntity[] seats;
-    protected TreeMap<String, ContainerHolder> containers;
     protected double throttle;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
     protected /*VehicleEntity*/ RailboundVehicleEntity front, rear;
@@ -93,7 +90,7 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
     protected Vec3d angvel = new Vec3d(0, 0, 0);
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
-    public int serverPositionTransitionTicker, consize = -1;
+    public int serverPositionTransitionTicker;
     //
     public BlockPos lastpos, currentpos;
     public BlockPos llp, lcp;
@@ -142,21 +139,8 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
         seats = new SeatEntity[type.getSeats().size()];
         //bogies = new BogieEntity[2];
         stepHeight = type.getVehicle().getFMAttribute("wheel_step_height");
+        this.setupCapability(this.getCapability(FVTMCaps.CONTAINER, null));
         vehicledata.getScripts().forEach((script) -> script.onCreated(this, vehicledata));
-        if(vehicledata.getContainerHolders().size() > 0){
-        	containers = new TreeMap<>();
-        	consize = 0;
-        	for(PartData data : vehicledata.getContainerHolders()){
-        		if(data.getAttributeData(ContainerAttributeData.class) != null){
-        			if(data.getAttributeData(ContainerAttributeData.class).getAttribute().getContainerType() == ContainerType.LARGE){
-        				consize += 3;
-        			}
-        			else{
-        				consize++;
-        			}
-        		}
-        	}
-        }
         if(pos == null){
         	return;
         }
@@ -688,11 +672,6 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	public float getWheelsYaw(){
 		return 0;
 	}
-
-	@Override
-	public TreeMap<String, ContainerHolder> getContainers(){
-		return containers;
-	}
 	
     @Override
     public void setDead(){
@@ -720,10 +699,6 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
                 wheel.setDead();
             }
         }*/
-        if(containers != null){
-        	containers.clear();
-        	containers = null;
-        }
         vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
         if(this.getEntityAtRear() != null){
             this.getEntityAtRear().getEntity().dismountRidingEntity();
@@ -861,29 +836,6 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
             }*/
             if(vehicledata.getVehicle().isTrailerOrWagon()){
             	//
-            }
-            if(containers != null && containers.size() < consize){
-            	vehicledata.getParts().forEach((key, part) -> {
-            		if(part.getAttributeData(ContainerAttributeData.class) != null){
-            			ContainerAttributeData condata = part.getAttributeData(ContainerAttributeData.class);
-            			if(condata.getAttribute().getContainerType() == ContainerType.LARGE){
-            				if(!containers.containsKey(key + "_0")){
-            					containers.put(key + "_0", new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_DUAL1, 0));
-            				}
-            				if(!containers.containsKey(key + "_1")){
-            					containers.put(key + "_1", new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_DUAL2, 1));
-            				}
-            				if(!containers.containsKey(key)){
-            					containers.put(key, new ContainerWrapper(this, condata, ContainerPosition.LARGE_SINGLE, -1));
-            				}
-            			}
-            			else{
-            				if(!containers.containsKey(key)){
-            					containers.put(key, new ContainerWrapper(this, condata, ContainerPosition.MEDIUM_SINGLE, -1));
-            				}
-            			}
-            		}
-            	});
             }
         }
         else{
@@ -1222,6 +1174,25 @@ public abstract class RailboundVehicleEntity extends Entity implements VehicleEn
 	
 	protected WorldRailData getWorldData(){
 		return world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+	}
+
+	@Override
+	public void setupCapability(ContainerHolder cap){
+		if(vehicledata == null || this.vehicledata.getContainerHolders().isEmpty()) return;
+		if(world.isRemote){ cap.sync(true); return; }
+		cap.setOnlyOneContainer(this.vehicledata.getContainerHolders().size() < 2);
+		for(java.util.Map.Entry<String, PartData> entry : this.vehicledata.getParts().entrySet()){
+    		if(entry.getValue().getAttributeData(ContainerAttributeData.class) != null){
+    			ContainerAttributeData condata = entry.getValue().getAttributeData(ContainerAttributeData.class);
+    			cap.addContainerSlot(entry.getKey(), condata.getAttribute().getContainerOffset().to16Double(),
+    				condata.getAttribute().getContainerType(), condata.getAttribute().getContainerRotation());
+    		}
+		} cap.sync(false);
+	}
+
+	@Override
+	public float[] cheGetRotation(){
+		return new float[]{ axes.getRoll(), axes.getYaw(), axes.getPitch() };
 	}
 
 }

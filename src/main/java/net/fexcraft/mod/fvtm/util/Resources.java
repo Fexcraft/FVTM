@@ -38,6 +38,7 @@ import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Consumable;
 import net.fexcraft.mod.fvtm.api.Container;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerHolderEntity;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.api.Fuel;
 import net.fexcraft.mod.fvtm.api.Gauge;
@@ -66,6 +67,7 @@ import net.fexcraft.mod.fvtm.impl.HybridAddon;
 import net.fexcraft.mod.fvtm.impl.block.CrafterBlockScriptBase;
 import net.fexcraft.mod.fvtm.impl.block.GenericBlock;
 import net.fexcraft.mod.fvtm.impl.block.GenericBlockItem;
+import net.fexcraft.mod.fvtm.impl.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
 import net.fexcraft.mod.fvtm.impl.container.GenericContainer;
@@ -1037,6 +1039,13 @@ public class Resources {
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
 		event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+	}
+	
+	@SubscribeEvent
+	public void onEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
+		if(event.getObject() instanceof ContainerHolderEntity){
+			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
+		}
 	}
 	
 	private long tickcounter = 0;

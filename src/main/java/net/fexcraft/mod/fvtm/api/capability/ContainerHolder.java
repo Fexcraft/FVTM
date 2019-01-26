@@ -57,14 +57,14 @@ public interface ContainerHolder {
 	/** Tries to update the Entity's ContainerData
 	 * @param id the to be changed ContainerData, ignored if single container entity.
 	 * @param data the ContainerData to be set, can be null.
-	 * @return the ContainerData which was the before, null if none was there.
+	 * @return if the process did succeed.
 	 * */
-	public ContainerData setContainer(@Nullable String id, @Nullable ContainerData data);
+	public boolean setContainer(@Nullable String id, @Nullable ContainerData data);
 	
 	// Entity Stuff
 	
 	/** Internal method, do not use! */
-	public void setEntity(Entity entity);
+	public ContainerHolder setEntity(Entity entity);
 	
 	/** Returns the entity this capability is bound to. */
 	public Entity getEntity();
@@ -85,5 +85,7 @@ public interface ContainerHolder {
 	
 	/** Client Side Method for rendering the Container(s). */
 	@SideOnly(Side.CLIENT) public void render();
+
+	public void sync(boolean tellserver);
 
 }

@@ -10,6 +10,8 @@ import net.fexcraft.mod.fvtm.api.Attribute;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
+import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -46,6 +48,8 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
         CUBE.addBox(-8, -8, -8, 16, 16, 16);
         CUBE.setRotationPoint(0, 0, 0);
     }
+    
+    private ContainerHolder tempholder;
 
     @Override
     public void doRender(RailboundVehicleEntity vehicle, double x, double y, double z, float entity_yaw, float ticks){
@@ -74,8 +78,8 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
             GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef(180f, 0f, 0f, 1f);
             GL11.glPushMatrix();
+            GL11.glRotatef(180f, 0f, 0f, 1f);
             if(vehmodel != null){
                 ModelBase.bindTexture(vehicle.getVehicleData().getTexture());
                 vehmodel.render(vehicle.getVehicleData(), null, vehicle, -1);
@@ -103,6 +107,9 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
             	}
             }
             GL11.glPopMatrix();
+            if((tempholder = vehicle.getCapability(FVTMCaps.CONTAINER, null)) != null){
+            	tempholder.render();
+            }
         }
         GL11.glPopMatrix();
         //Renderer.drawString(vehicle.getVehicleData().getVehicle().getName(), x, y + 2, z, vehicle.axes.getYaw(), vehicle.axes.getPitch(), vehicle.axes.getRoll(), false, MapColor.GOLD.colorValue);

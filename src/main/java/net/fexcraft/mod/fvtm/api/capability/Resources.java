@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.api.Container.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
@@ -70,6 +69,6 @@ public interface Resources {
 	
 	public @Nullable BlockPos getNextRailCoordinate(BlockPos current_dest, BlockPos previous_dest);
 	
-	public @Nullable ContainerHolder getContainerAt(@Nullable ICommandSender receiver, BlockPos pos);
+	public @Nullable ContainerData getContainerAt(@Nullable ICommandSender receiver, BlockPos pos);
 	
 }

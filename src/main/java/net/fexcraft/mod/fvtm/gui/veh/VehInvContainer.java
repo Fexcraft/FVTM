@@ -2,7 +2,10 @@ package net.fexcraft.mod.fvtm.gui.veh;
 
 import java.io.IOException;
 
-import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
+import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
@@ -23,44 +26,34 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class VehInvContainer extends GenericGui<VehInvContainer.Container> {
+	
+	private int[] pos;
 
 	public VehInvContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(new ResourceLocation("fvtm:textures/guis/veh_inv_container.png"), new Container(player, world, x, y, z), player);
-		this.xSize = 226; this.ySize = 123;
+		this.xSize = 226; this.ySize = 123; pos = new int[]{ x, y, z };
 	}
 
 	@Override
 	protected void init(){
 		this.texts.put("title", new BasicText(guiLeft + 7, guiTop + 7, 192, MapColor.BLACK.colorValue, "0"));
+		this.texts.put("size", new BasicText(guiLeft + 174, guiTop + 46, 45, MapColor.BLACK.colorValue, "0"));
+		this.texts.put("curr", new BasicText(guiLeft + 174, guiTop + 74, 45, MapColor.BLACK.colorValue, "0"));
+		this.texts.put("state", new BasicText(guiLeft + 174, guiTop + 88, 45, MapColor.BLACK.colorValue, " - - - - "));
 		//
-		this.buttons.put("+", new BasicButton("+", guiLeft + 172, guiTop + 58, 3, 172, 58, 12, true));
-		this.buttons.put("-", new BasicButton("-", guiLeft + 198, guiTop + 58, 3, 198, 58, 12, true));
+		this.buttons.put("-", new BasicButton("-", guiLeft + 172, guiTop + 58, 172, 58, 23, 12, true));
+		this.buttons.put("+", new BasicButton("+", guiLeft + 198, guiTop + 58, 198, 58, 23, 12, true));
 		//
-		/*for(int i = 0; i < 12; i++){
-			this.texts.put("row" + i, new BasicText(guiLeft + 13, guiTop + 20 + (i * 12), 181, null, i + ""));
-			this.buttons.put("edit" + i, new BasicButton("e" + i, guiLeft + 175, guiTop + 19 + (i * 12), 175, 19, 10, 10, false));
-			this.buttons.put("rem" + i, new BasicButton("r" + i, guiLeft + 187, guiTop + 19 + (i * 12), 187, 19, 10, 10, false));
-		}*/
+		texts.get("size").string = container.coninv.getConSlot().size.name();
+		texts.get("curr").string = container.coninv.getConSlot().curr.name();
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		texts.get("title").string = "ConSlot: " + container.id;
-		/*if(container.tile.getVehicleData() == null){
-			texts.get("title").string = "no vehicle";
-			buttons.get("+").enabled = false; buttons.get("-").enabled = false;
-		}
-		else{
-			texts.get("title").string = container.tile.getVehicleData().getVehicle().getName();
-			Part.PartData[] arr = container.tile.getVehicleData().getParts().values().toArray(new Part.PartData[]{});
-			buttons.get("+").enabled = scroll < arr.length; buttons.get("-").enabled = scroll > 0;
-			//
-			for(int j = 0; j < 12; j ++){
-				int k = scroll + j; texts.get("row" + j).string = k >= arr.length ? "" : arr[k].getPart().getName();
-				buttons.get("edit" + j).enabled = k >= arr.length ? false : arr[k].getPart().isAdjustable();//TODO
-				buttons.get("rem" + j).enabled = k >= arr.length ? false : arr[k].getPart().isRemovable();//TODO
-			}
-		}*/
+		texts.get("title").string = "ID: " + container.id + " || ST:" + container.coninv.getConSlot().curr + "/" + container.coninv.getConSlot().size;
+		//
+		buttons.get("+").enabled = container.coninv.getConSlot().curr.next(false, true) != null;
+		buttons.get("-").enabled = container.coninv.getConSlot().curr.prev(false, true) != null;
 	}
 
 	@Override
@@ -70,22 +63,25 @@ public class VehInvContainer extends GenericGui<VehInvContainer.Container> {
 
 	@Override
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		/*switch(key){
-			case "+": scroll = ++scroll > (container.tile.getVehicleData() == null ? 0 : container.tile.getVehicleData().getParts().size()) ? --scroll : scroll; break;
-			case "-": scroll = --scroll < 0 ? 0 : scroll; break;
+		if(!key.equals("+") && !key.equals("-")) return;
+		if(!container.coninv.isEmpty()){ Print.chat(player, "Please remove all Containers first."); return; }
+		if(container.coninv.getConSlot().supported == null || container.coninv.getConSlot().supported.length == 0){
+			Print.chat(player, "Slot does not support other Container Sizes."); return;
 		}
-		if(key.startsWith("edit")){
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("part", container.tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("edit", "")) + scroll]);
-			this.openGenericGui(GuiHandler.CCG_PartAdjuster, pos, compound);
-		}
-		else if(key.startsWith("rem")){
+		boolean add = key.equals("+") || !key.equals("-"); ContainerSlot slot = container.coninv.getConSlot();
+		ContainerType type = add ? slot.curr.next(false, true) : slot.curr.prev(false, true); if(type == null) return;
+		texts.get("curr").string = type.name();
+		if(slot.isValid(type)){
 	        NBTTagCompound compound = new NBTTagCompound();
 	        compound.setIntArray("pos", pos);
-	        compound.setString("cargo", "remove");
-	        compound.setString("part", container.tile.getVehicleData().getParts().keySet().toArray(new String[]{})[Integer.parseInt(key.replace("rem", "")) + scroll]);
+	        compound.setString("cargo", "update_slot_contype");
+	        compound.setString("contype", type.name());
 	        this.container.send(Side.SERVER, compound);
-		}*/
+			texts.get("state").string = "valid";
+		}
+		else{
+			texts.get("state").string = "invalid";
+		}
 	}
 	
 	public static class Container extends GenericGuiContainer {
@@ -100,7 +96,7 @@ public class VehInvContainer extends GenericGui<VehInvContainer.Container> {
 			this.entity = world.getEntityByID(x); this.player = player;
 			if(entity instanceof VehicleEntity){ int i = 0; vehent = (VehicleEntity)entity;
 				for(java.util.Map.Entry<String, PartData> entry : vehent.getVehicleData().getParts().entrySet()){
-					if(entry.getValue().getAttributeData(ContainerAttributeData.class) != null){
+					if(entry.getValue().getPart().getAttribute(ContainerAttribute.class) != null){
 						if(i == y){ id = entry.getKey(); break; } i++;
 					}
 				}
@@ -109,9 +105,9 @@ public class VehInvContainer extends GenericGui<VehInvContainer.Container> {
 				id = entity.getCapability(FVTMCaps.CONTAINER, null).getContainerIDs(null).toArray(new String[0])[y];
 			}
 			//
-            ContainerSlot slot = ((ContainerHolderUtil.Implementation)entity.getCapability(FVTMCaps.CONTAINER, EnumFacing.DOWN)).getContainerSlot(id);
+            coninv = new ContainerInventory(((ContainerHolderUtil.Implementation)entity.getCapability(FVTMCaps.CONTAINER, EnumFacing.DOWN)).getContainerSlot(id));
 			for(int i = 0; i < 12; i++){
-				addSlotToContainer(new net.fexcraft.mod.fvtm.gui.veh.ContainerSlot(coninv = new ContainerInventory(slot), i, 6 + (i * 18), 20));
+				addSlotToContainer(new net.fexcraft.mod.fvtm.gui.veh.ContainerSlot(coninv, i, 6 + (i * 18), 20));
 			}
             for(int row = 0; row < 3; row++){
                 for(int col = 0; col < 9; col++){
@@ -147,22 +143,18 @@ public class VehInvContainer extends GenericGui<VehInvContainer.Container> {
 		protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
 			if(side.isClient() || !packet.hasKey("cargo")) return;
 			switch(packet.getString("cargo")){
-				case "remove":{
-					/*String part = !packet.hasKey("part") ? null : packet.getString("part");
-					if(part == null || tile.getVehicleData() == null) return;
-					Part.PartData data = tile.getVehicleData().getPart(part);
-                    if(data == null || !data.getPart().isRemovable()){
-                        Print.chat(player, data == null ? "Part not found in Server Instance." : "Part is marked as non-remove on Server Instance!");
-                        return;
-                    }
-                    data = tile.getVehicleData().getParts().remove(part);
-                    if(data == null){ Print.chat(player, "Error, see log for location."); Static.exception(new Exception(), false); }
-                    EntityItem item = new EntityItem(tile.getWorld());
-                    item.setItem(data.getPart().getItemStack(data));
-                    item.setPosition(tile.getPos().getX() + 0.5, tile.getPos().getY() + 1.5, tile.getPos().getZ() + 0.5);
-                    tile.getWorld().spawnEntity(item);
-                    tile.sendUpdate("vehicledata");*/
-					break;
+				case "update_slot_contype":{
+					if(!coninv.isEmpty()){ Print.chat(player, "SERVER: Please remove all Containers first."); return; }
+					if(coninv.getConSlot().supported == null || coninv.getConSlot().supported.length == 0){
+						Print.chat(player, "SERVER: Slot does not support other Container Sizes."); return;
+					}
+					ContainerType type = ContainerType.valueOf(packet.getString("contype"));
+					if(type == null){ Print.chat(player, "SERVER: ContainerType not found."); return; }
+					coninv.getConSlot().setType(type); coninv.getConSlot().impl.sync(false);
+					//
+					int[] pos = packet.getIntArray("pos");
+					player.openGui(FVTM.getInstance(), GuiHandler.VEH_INV_Container, entity.world, pos[0], pos[1], pos[2]);
+					return;
 				}
 			}
 		}

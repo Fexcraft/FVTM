@@ -61,6 +61,28 @@ public interface Container extends DataHolderObject.Extended<Container, Containe
     	
     	public boolean evenLength(){ return even; }
 
+		public ContainerType next(boolean loop, boolean nell){
+			switch(this){
+				case LARGE: return loop ? TINY : nell ? null : LARGE;
+				case MEDIUM: return LARGE;
+				case SMALL: return MEDIUM;
+				case XSMALL: return SMALL;
+				case TINY: return XSMALL;
+				default: return nell ? null : MEDIUM;
+			}
+		}
+		
+		public ContainerType prev(boolean loop, boolean nell){
+			switch(this){
+				case LARGE: return MEDIUM;
+				case MEDIUM: return SMALL;
+				case SMALL: return XSMALL;
+				case XSMALL: return TINY;
+				case TINY: return loop ? LARGE : nell ? null : TINY;
+				default: return nell ? null : MEDIUM;
+			}
+		}
+
     }
 
     public static interface ContainerData extends Lockable, Colorable, Saveloadable<ContainerData>, Textureable {
@@ -90,13 +112,6 @@ public interface Container extends DataHolderObject.Extended<Container, Containe
     	
     	@Deprecated public float[] cheGetRotation();
     	
-    }
-
-    public static enum ContainerPosition {
-        LARGE_SINGLE,
-        MEDIUM_DUAL1,
-        MEDIUM_DUAL2,
-        MEDIUM_SINGLE;
     }
 
 }

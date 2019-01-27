@@ -12,7 +12,7 @@ import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
@@ -1314,10 +1314,10 @@ public abstract class UnboundVehicleEntity extends Entity implements ContainerHo
 		if(world.isRemote){ cap.sync(true); return; }
 		cap.setOnlyOneContainer(this.vehicledata.getContainerHolders().size() < 2);
 		for(java.util.Map.Entry<String, PartData> entry : this.vehicledata.getParts().entrySet()){
-    		if(entry.getValue().getAttributeData(ContainerAttributeData.class) != null){
-    			ContainerAttributeData condata = entry.getValue().getAttributeData(ContainerAttributeData.class);
-    			cap.addContainerSlot(entry.getKey(), condata.getAttribute().getContainerOffset().to16Double(),
-    				condata.getAttribute().getContainerType(), condata.getAttribute().getContainerRotation());
+    		if(entry.getValue().getPart().getAttribute(ContainerAttribute.class) != null){
+    			ContainerAttribute condata = entry.getValue().getPart().getAttribute(ContainerAttribute.class);
+    			cap.addContainerSlot(entry.getKey(), condata.getContainerOffset().to16Double(),
+    				condata.getContainerType(), condata.getContainerRotation(), condata.getSupportedTypes());
     		}
 		} cap.sync(false);
 	}

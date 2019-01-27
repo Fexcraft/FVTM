@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.entities.rail;
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
-import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute.ContainerAttributeData;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.KeyItem;
 import net.fexcraft.lib.mc.api.LockableObject;
@@ -1182,10 +1182,10 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 		if(world.isRemote){ cap.sync(true); return; }
 		cap.setOnlyOneContainer(this.vehicledata.getContainerHolders().size() < 2);
 		for(java.util.Map.Entry<String, PartData> entry : this.vehicledata.getParts().entrySet()){
-    		if(entry.getValue().getAttributeData(ContainerAttributeData.class) != null){
-    			ContainerAttributeData condata = entry.getValue().getAttributeData(ContainerAttributeData.class);
-    			cap.addContainerSlot(entry.getKey(), condata.getAttribute().getContainerOffset().to16Double(),
-    				condata.getAttribute().getContainerType(), condata.getAttribute().getContainerRotation());
+    		if(entry.getValue().getPart().getAttribute(ContainerAttribute.class) != null){
+    			ContainerAttribute condata = entry.getValue().getPart().getAttribute(ContainerAttribute.class);
+    			cap.addContainerSlot(entry.getKey(), condata.getContainerOffset().to16Double(),
+    				condata.getContainerType(), condata.getContainerRotation(), condata.getSupportedTypes());
     		}
 		} cap.sync(false);
 	}

@@ -171,6 +171,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public void setOnlyOneContainer(boolean value){
+			//TODO make more save-load friendly
 			if(map != null && !map.isEmpty()) map.clear();
 			if(!value && map == null){ map = new TreeMap<>(); singular = null; }
 			if(value && map != null){ map = null; } this.singlecon = value;
@@ -178,6 +179,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public void addContainerSlot(String id, Vec3d relpos, ContainerType deftype, float rotangle, ContainerType... supported){
+			//TODO make more save-load friendly
 			//Print.debug(id, relpos, deftype, rotangle, supported);
 			if(map == null) singlecon = true;
 			if(singlecon){
@@ -245,12 +247,12 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			if(singlecon){ list.appendTag(singular.toNBT(syncpacket)); }
 			else{ for(ContainerSlot slot : map.values()) list.appendTag(slot.toNBT(syncpacket)); }
 			compound.setTag("slots", list);
-			Print.debug(compound);
+			//Print.debug(compound);
 			return compound;
 		}
 
 		public void readFromNBT(boolean syncpacket, EnumFacing side, NBTTagCompound compound){
-			Print.debug(compound);
+			//Print.debug(compound);
 			if(compound == null || compound.getKeySet().isEmpty()) return;
 			this.setOnlyOneContainer(compound.hasKey("singular") && compound.getBoolean("singular"));
 			String[] cons = compound.getString("slot-ids").split(",");
@@ -281,6 +283,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		//
 		public Implementation impl;
 		private static String div = ",";
+		private float[] renderoffset;
 		
 		public final String ID(){
 			return id;
@@ -288,20 +291,14 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		
 		public ContainerSlot(Implementation impl, String id, float[] relpos, float rotangle, ContainerType size, ContainerType... accepted){
 			this.size = this.curr = size; this.id = id; this.impl = impl; ArrayList<ContainerType> types = new ArrayList<ContainerType>();
-			for(ContainerType type : accepted){
-				if(type.length() >= size.length()) continue;
-				if((size.length() / type.length()) % 1 != 0) continue;
-				types.add(type);
+			if(accepted != null){
+				for(ContainerType type : accepted){
+					if(type.length() >= size.length()) continue;
+					if((size.length() / type.length()) % 1 != 0) continue;
+					types.add(type);
+				}
 			} this.supported = types.toArray(new ContainerType[0]);
-			this.relpos = relpos; this.rotangle = rotangle;
-			data = new ContainerData[]{ null };
-			if(this.id == null) this.id = "singular";
-			//temporary for testing
-			/*try {
-				Container con = Resources.CONTAINERS.getValue(new net.minecraft.util.ResourceLocation("hcp:medium"));
-				data[0] = con.getDataClass().getConstructor(Container.class).newInstance(con);
-			}
-			catch(Throwable thr){ thr.printStackTrace(); Static.stop(); }*/
+			this.relpos = relpos; this.rotangle = rotangle; data = new ContainerData[]{ null }; if(this.id == null) this.id = "singular";
 		}
 		
 		/** Only to be used with the READ method! */
@@ -331,7 +328,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 				if(data[i] == null) continue;
 				NBTTagCompound com = new NBTTagCompound();
 				com.setString("id", id + div + i);
-				data[i].writeToNBT(com); list.appendTag(com);
+				list.appendTag(data[i].writeToNBT(com));
 			}
 			compound.setTag("data", list);
 			return compound;
@@ -354,20 +351,20 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 				}
 				rotangle = compound.getFloat("rotangle");
 			}
+			curr = ContainerType.valueOf(compound.getString("current"));
 			NBTTagList list = (NBTTagList)compound.getTag("data");
 			data = new ContainerData[compound.getInteger("segments")];
 			for(int i = 0; i < data.length; i++){
 				NBTTagCompound com = null;
 				for(NBTBase base : list){
-					com = (NBTTagCompound)base;
-					if(!com.getString("id").equals(id + div + i)){
-						com = null; continue;
+					if(((NBTTagCompound)base).getString("id").equals(id + div + i)){
+						com = (NBTTagCompound)base; break;
 					}
 				} if(com == null) continue;
 				data[i] = Resources.getContainerData(com);
 			}
-			Print.debug(compound);
-			Print.debug(data[0]);
+			//Print.debug(compound);
+			//Print.debug(data[0]);
 			return this;
 		}
 
@@ -499,13 +496,63 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
             GL11.glRotatef(180f, 0f, 0f, 1f);
 	        GL11.glRotatef(this.rotangle, 0, 1, 0);
 	        GL11.glTranslatef(relpos[0], relpos[1], relpos[2]);
+	        if(renderoffset == null) renderoffset = loadRenderOffset();
 	        for(int i = 0; i < data.length; i++){
 	        	if(data[i] != null){
+		        	if(renderoffset[i] != 0f) GL11.glTranslatef(renderoffset[i], 0, 0);
 	        		ModelBase.bindTexture(data[i].getTexture());
 	        		data[i].getContainer().getModel().render(data[i], null, null, -23);
+		        	if(renderoffset[i] != 0f) GL11.glTranslatef(-renderoffset[i], 0, 0);
 	        	}
 	        }
 	        GL11.glPopMatrix();
+		}
+
+		private float[] loadRenderOffset(){
+			switch(size){
+				case LARGE:{
+					switch(curr){
+						case LARGE: break;
+						case MEDIUM: return new float[]{ -3f, 3f };
+						case SMALL: return new float[]{ -4.5f, -1.5f, 1.5f, 4.5f };
+						case XSMALL: return new float[]{ -5f, -3f, -1f, 1f, 3f, 5f };
+						case TINY: return new float[]{ -5.5f, -4.5f, -3.5f, -2.5f, -1.5f, -0.5f, 0.5f, 1.5f, 2.5f, 3.5f, 4.5f, 5.5f };
+					} break;
+				}
+				case MEDIUM:{
+					switch(curr){
+						case LARGE: case MEDIUM: break;
+						case SMALL: return new float[]{ -1.5f, 1.5f };
+						case XSMALL: return new float[]{ -2f, 0f, 2f };
+						case TINY: return new float[]{ -2.5f, -1.5f, -0.5f, 0.5f, 1.5f, 2.5f };
+					} break;
+				}
+				case SMALL:{
+					switch(curr){
+						case LARGE: case MEDIUM: case SMALL: break; case XSMALL: break;
+						case TINY: return new float[]{ -1f, 0f, 1f };
+					} break;
+				}
+				case XSMALL:{
+					switch(curr){
+						case LARGE: case MEDIUM: case SMALL: case XSMALL: break;
+						case TINY: return new float[]{ -0.5f, 0.5f };
+					} break;
+				}
+				case TINY:{ break; }
+			} return new float[]{ 0 };
+		}
+
+		public boolean isValid(ContainerType type){
+			if(size == type) return true;
+			for(ContainerType supp : supported){
+				if(supp == type) return true;
+			} return false;
+		}
+
+		public void setType(ContainerType type){
+			data = new ContainerData[this.getNewArrayLength(size, curr = type)];
+			renderoffset = this.loadRenderOffset();
 		}
 		
 	}

@@ -1,20 +1,20 @@
 package net.fexcraft.mod.fvtm.gui.veh;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Container;
-import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.mod.fvtm.impl.caps.ContainerHolderUtil.ContainerSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
 public class ContainerInventory implements IInventory {
+
 
     private NonNullList<ItemStack> coninv = NonNullList.<ItemStack>withSize(12, ItemStack.EMPTY);
     private ContainerSlot conslot;
@@ -30,10 +30,12 @@ public class ContainerInventory implements IInventory {
         	}
         }
     }
+    
+    public ContainerSlot getConSlot(){ return conslot; }
 
     @Override
     public String getName(){
-        return coninv == null || coninv.isEmpty() || coninv.get(0).isEmpty() ? "Null;" : coninv.get(0).getDisplayName();
+        return "Vehicle-Inventory Container GUI";
     }
 
     @Override
@@ -54,7 +56,7 @@ public class ContainerInventory implements IInventory {
     @Override
     public boolean isEmpty(){
     	for(ItemStack stack : coninv){
-    		if(!stack.isEmpty()) return false;
+    		if(!stack.isEmpty() && !(stack.getItem() instanceof ItemBlock)) return false;
     	} return true;
     }
 
@@ -65,22 +67,26 @@ public class ContainerInventory implements IInventory {
 
     @Override
     public ItemStack decrStackSize(int index, int count){
-        return !getStackInSlot(index).isEmpty() ? ItemStackHelper.getAndSplit(coninv, index, count) : ItemStack.EMPTY;
+    	if(!getStackInSlot(index).isEmpty()){
+    		ItemStack stack = ItemStackHelper.getAndSplit(coninv, index, count);
+    		this.sync(); return stack;
+    	} return ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeStackFromSlot(int index){
-        return coninv.set(index, ItemStack.EMPTY);
+    	ItemStack stack = coninv.set(index, ItemStack.EMPTY);
+    	this.sync(); return stack;
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack){
-        coninv.set(index, stack);
+        coninv.set(index, stack); this.sync();
     }
 
     @Override
     public int getInventoryStackLimit(){
-        return 1;
+        return 64;
     }
 
     @Override
@@ -100,24 +106,25 @@ public class ContainerInventory implements IInventory {
 
     @Override
     public void closeInventory(EntityPlayer player){
+    	//
+    }
+    
+    private void sync(){
     	for(int i = 0; i < conslot.data.length; i++){
     		if(i >= coninv.size()) break;
-    		if(coninv.get(i).isEmpty() || coninv.get(i).getItem() instanceof ContainerItem) continue;
-    		conslot.data[i] = ((ContainerItem)coninv.get(i).getItem()).getContainer(coninv.get(i));
-    	}
-        conslot.impl.sync(true);
+    		if(coninv.get(i).getItem() instanceof ContainerItem){
+    			conslot.data[i] = ((ContainerItem)coninv.get(i).getItem()).getContainer(coninv.get(i));
+    		} else { conslot.data[i] = null; }
+    	} conslot.impl.sync(false);
     }
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack){
-    	Print.debug(stack.getTagCompound());
+    	//Print.debug(stack.getTagCompound());
+    	if(index >= conslot.data.length) return false;
         if(stack.getItem() instanceof Container.ContainerItem){
-            ContainerData data = get(stack); return data.getContainer().getType() == conslot.curr && index < conslot.data.length && index > -1;
-        } Print.debug("nopass"); return false;
-    }
-
-    private ContainerData get(ItemStack stack){
-        return ((ContainerItem)stack.getItem()).getContainer(stack);
+            return ((ContainerItem)stack.getItem()).getContainer(stack).getContainer().getType() == conslot.curr;
+        } return false;
     }
 
     @Override
@@ -137,7 +144,7 @@ public class ContainerInventory implements IInventory {
 
     @Override
     public void clear(){
-        coninv.clear();
+        //coninv.clear();
     }
 
 }

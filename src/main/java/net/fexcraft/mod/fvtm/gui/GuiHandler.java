@@ -86,7 +86,7 @@ public class GuiHandler implements IGuiHandler {
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
-        Print.debug("REQUEST " + ID + " | " + x + ", " + y + ", " + z + ";");
+        //Print.debug("REQUEST " + ID + " | " + x + ", " + y + ", " + z + ";");
         switch(ID){
             case 55:
                 return new GenericGuiContainer.DefImpl();
@@ -136,7 +136,7 @@ public class GuiHandler implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
-        Print.debug("REQUEST " + ID + " | " + x + ", " + y + ", " + z + ";");
+        //Print.debug("REQUEST " + ID + " | " + x + ", " + y + ", " + z + ";");
         switch(ID){
             case 55:
                 return new AddonManagerGui(x, y, z);

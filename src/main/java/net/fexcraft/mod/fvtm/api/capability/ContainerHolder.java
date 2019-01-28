@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -80,6 +81,18 @@ public interface ContainerHolder {
 	 * @param supported sub-types the slot can hold, e.g. if the type is LARGE and supported has MEDIUM, 2 medium instead one large container can be placed
 	 * */
 	public void addContainerSlot(String id, Vec3d relpos, ContainerType deftype, float rotangle, ContainerType... supported);
+
+	/** To be used when the entity is being removed (e.g. Entity.setDead();) */
+	public void dropContents();
+	
+	/** To be used to open the dedicated FVTM GUI. */
+	public void openGui(EntityPlayer player, String slot);
+	
+	/** Generic boolean if the Capability has already data set or not. */
+	public boolean isSetup();
+	
+	/** Set if the capability is setup or not, if not, it will listen to setOnlyOneContainer/addContainerSlot calls. */
+	public boolean setSetup(boolean bool);
 	
 	// Rendering
 	
@@ -87,5 +100,15 @@ public interface ContainerHolder {
 	@SideOnly(Side.CLIENT) public void render();
 
 	public void sync(boolean tellserver);
+	
+	//Moved from Container.class
+    
+    public static interface ContainerHolderEntity {
+    	
+    	public void setupCapability(ContainerHolder cap);
+    	
+    	public float[] getEntityRotationForContainer();
+    	
+    }
 
 }

@@ -173,7 +173,7 @@ public class VehInvContainer extends GenericGui<VehInvContainer.Container> {
 	
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(keyCode == 1) this.openGui(GuiHandler.VEHICLE_INVENTORY, new int[]{ 0, 0, 0 });
+        if(keyCode == 1 && container.entity instanceof VehicleEntity) this.openGui(GuiHandler.VEHICLE_INVENTORY, new int[]{ 0, 0, 0 });
         super.keyTyped(typedChar, keyCode);
     }
 	

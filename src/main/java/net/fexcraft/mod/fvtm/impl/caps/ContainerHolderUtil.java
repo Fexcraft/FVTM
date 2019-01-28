@@ -13,14 +13,19 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
-import net.fexcraft.mod.fvtm.api.Container.ContainerHolderEntity;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.VehicleAxes;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -70,12 +75,13 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public NBTBase writeNBT(Capability<ContainerHolder> capability, ContainerHolder instance, EnumFacing side){
-			return ((Implementation)instance).writeToNBT(false, side);
+			return ((Implementation)instance).writeToNBT(side);
 		}
 
 		@Override
 		public void readNBT(Capability<ContainerHolder> capability, ContainerHolder instance, EnumFacing side, NBTBase nbt){
-			((Implementation)instance).readFromNBT(false, side, (NBTTagCompound)nbt);
+			try{ ((Implementation)instance).readFromNBT(side, (NBTTagCompound)nbt); instance.sync(false); }
+			catch(Exception e){ e.printStackTrace(); }
 		}
 		
 	}
@@ -95,7 +101,9 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		private ContainerSlot singular;
 		private TreeMap<String, ContainerSlot> map;
 		private Entity entity;
-		private boolean singlecon;
+		private boolean singlecon, setup;
+		//
+		private VehicleAxes tempaxe = new VehicleAxes();
 		
 		public Implementation(){
 			this.singlecon = true;
@@ -117,7 +125,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public Collection<String> getContainerIDs(ContainerType oftype){
-			if(!singlecon && oftype == null)return map.keySet();
+			if(!singlecon && oftype == null) return map.keySet();
 			ArrayList<String> list = new ArrayList<>();
 			if(singlecon){
 				singular.addIDsToList(list, oftype);
@@ -131,14 +139,39 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public Map<String, AxisAlignedBB> getContainerAABBs(ContainerType oftype){
-			// TODO Auto-generated method stub
-			return null;
+			TreeMap<String, AxisAlignedBB> axis = new TreeMap<>();
+			AxisAlignedBB[] aabbs = null;
+			if(this.singlecon && singular != null){
+				aabbs = singular.getAABB(oftype);
+				if(aabbs.length > 1){
+					for(int i = 0; i < aabbs.length; i++){
+						axis.put(singular.id + ContainerSlot.div + i, aabbs[i]);
+					}
+				}
+				else if(aabbs.length == 1){
+					axis.put(singular.id, aabbs[0]);
+				} else return axis;
+			}
+			else if(map != null && !map.isEmpty()){
+				for(Map.Entry<String, ContainerSlot> entry : map.entrySet()){
+					aabbs = entry.getValue().getAABB(oftype);
+					if(aabbs.length > 1){
+						for(int i = 0; i < aabbs.length; i++){
+							axis.put(entry.getKey() + ContainerSlot.div + i, aabbs[i]);
+						}
+					}
+					else if(aabbs.length == 1){
+						axis.put(entry.getKey(), aabbs[0]);
+					} else continue;
+				}
+			}
+			return axis;
 		}
 
 		@Override
 		public AxisAlignedBB getContainerAABB(String id){
-			// TODO Auto-generated method stub
-			return null;
+			ContainerSlot slot = this.getContainerSlot(id);
+			return slot == null ? null : slot.getAABB(null)[0];
 		}
 
 		@Override
@@ -171,26 +204,33 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public void setOnlyOneContainer(boolean value){
-			//TODO make more save-load friendly
-			if(map != null && !map.isEmpty()) map.clear();
-			if(!value && map == null){ map = new TreeMap<>(); singular = null; }
-			if(value && map != null){ map = null; } this.singlecon = value;
+			if(setup) return; this.singlecon = value;
+			if(singlecon){
+				if(map != null){
+					if(!map.isEmpty() && singular == null){
+						singular = map.values().toArray(new ContainerSlot[0])[0];
+					} map.clear(); map = null;
+				}
+			}
+			else{
+				map = new TreeMap<>(); singular = null;
+				if(singular != null){
+					this.map.put(singular.id, singular);
+				}
+			}
 		}
 
 		@Override
 		public void addContainerSlot(String id, Vec3d relpos, ContainerType deftype, float rotangle, ContainerType... supported){
-			//TODO make more save-load friendly
-			//Print.debug(id, relpos, deftype, rotangle, supported);
-			if(map == null) singlecon = true;
+			if(setup) return; if(map == null) singlecon = true;
 			if(singlecon){
+				if(singular != null) return;
 				singular = new ContainerSlot(this, id, new float[]{ (float)relpos.x, (float)relpos.y, (float)relpos.z }, rotangle, deftype, supported);
 			}
 			else{
-				if(id == null) id = "containerslot" + map.size();//:thinking:
+				if(id == null) id = "containerslot" + map.size();/*//:thinking:*/ if(map.containsKey(id)) return;
 				map.put(id, new ContainerSlot(this, id, new float[]{ (float)relpos.x, (float)relpos.y, (float)relpos.z }, rotangle, deftype, supported));
 			}
-			//Print.debug(singular, map, singlecon);
-			//Static.stop();
 		}
 
 		@SideOnly(Side.CLIENT) @Override
@@ -221,7 +261,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		}
 
 		private NBTTagCompound getBasicPacket(String task, boolean appenddata){
-			NBTTagCompound compound = appenddata ? this.writeToNBT(true, null) : new NBTTagCompound();
+			NBTTagCompound compound = appenddata ? this.writeToNBT(null) : new NBTTagCompound();
 			compound.setInteger("dimension", entity.dimension);
 			compound.setInteger("entity", entity.getEntityId());
 			compound.setString("target_listener", REGNAM.toString());
@@ -229,8 +269,9 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			return compound;
 		}
 
-		public NBTTagCompound writeToNBT(boolean syncpacket, EnumFacing side){
+		public NBTTagCompound writeToNBT(EnumFacing side){
 			NBTTagCompound compound = new NBTTagCompound();
+			compound.setBoolean("setup", setup);
 			if(!singlecon){
 				StringBuffer buffer = new StringBuffer();
 				int i = 0, siz = map.keySet().size() - 1;
@@ -241,32 +282,69 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			}
 			else{
 				compound.setBoolean("singular", true);
-				compound.setString("slot-ids", singular.id);
+				compound.setString("slot-ids", singular == null ? ContainerSlot.def : singular.ID());
 			}
 			NBTTagList list = new NBTTagList();
-			if(singlecon){ list.appendTag(singular.toNBT(syncpacket)); }
-			else{ for(ContainerSlot slot : map.values()) list.appendTag(slot.toNBT(syncpacket)); }
+			if(singlecon){ if(singular != null) list.appendTag(singular.toNBT()); }
+			else{ for(ContainerSlot slot : map.values()) list.appendTag(slot.toNBT()); }
 			compound.setTag("slots", list);
-			//Print.debug(compound);
 			return compound;
 		}
 
-		public void readFromNBT(boolean syncpacket, EnumFacing side, NBTTagCompound compound){
-			//Print.debug(compound);
+		public void readFromNBT(EnumFacing side, NBTTagCompound compound){
 			if(compound == null || compound.getKeySet().isEmpty()) return;
 			this.setOnlyOneContainer(compound.hasKey("singular") && compound.getBoolean("singular"));
+			this.setup = compound.getBoolean("setup");
 			String[] cons = compound.getString("slot-ids").split(",");
+			if(cons.length == 0){
+				Print.debug("length 0 " + compound.getString("slot-ids"));
+				cons = new String[]{ ContainerSlot.def };
+			}
 			NBTTagList list = (NBTTagList)compound.getTag("slots");
 			for(NBTBase base : list){
 				NBTTagCompound com = (NBTTagCompound)base;
 				String id = com.getString("id");
 				if(singlecon){
 					if(!id.equals(cons[0])) continue;
-					singular = new ContainerSlot(this).fromNBT(syncpacket, com); break;
+					singular = new ContainerSlot(this).fromNBT(com); break;
 				}
 				boolean found = false; for(String str : cons){ if(str.equals(id)){ found = true; break; } } if(!found) continue;
-				map.put(id, new ContainerSlot(this).fromNBT(syncpacket, com));
+				map.put(id, new ContainerSlot(this).fromNBT(com));
 			}
+		}
+
+		@Override
+		public void dropContents(){
+			if(entity.world.isRemote) return;
+			if(!singlecon) for(ContainerSlot slot : map.values()) slot.dropContents(); else if(singular != null) singular.dropContents();
+		}
+
+		@Override
+		public void openGui(EntityPlayer player, String slot){
+			if(slot == null){ if(singlecon) slot = singular.id; else return; }
+			int y = -1, i = 0; Collection<String> coll = this.getContainerIDs(null);
+			for(String str : coll){ if(str.equals(slot)){ y = i; break; } i++; }
+			player.openGui(FVTM.getInstance(), GuiHandler.VEH_INV_Container, player.world, entity.getEntityId(), y, 0);
+		}
+
+		public void updateAxe(){
+			if(conholder == null){
+				tempaxe.setRotation(entity.getPitchYaw().y, entity.getPitchYaw().x, 0);
+			}
+			else{
+				float[] relpos = conholder.getEntityRotationForContainer();
+				tempaxe.setRotation(relpos[0], relpos[1], relpos[2]);
+			}
+		}
+
+		@Override
+		public boolean isSetup(){
+			return setup;
+		}
+
+		@Override
+		public boolean setSetup(boolean bool){
+			return setup = bool;
 		}
 		
 	}
@@ -282,13 +360,37 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		private float rotangle;
 		//
 		public Implementation impl;
-		private static String div = ",";
+		private static String div = ",", def = "singular";
 		private float[] renderoffset;
 		
 		public final String ID(){
 			return id;
 		}
 		
+		public AxisAlignedBB[] getAABB(ContainerType type){
+			impl.updateAxe(); if(type == size) return new AxisAlignedBB[]{ this.getRelPos(null) };
+			AxisAlignedBB[] all = new AxisAlignedBB[this.getNewArrayLength(size, type)];
+			float[] rel = this.loadRenderOffset(type);
+			for(int i = 0; i < all.length; i++){
+				all[i] = this.getRelPos(new Vec3d(relpos[0] + rel[i], relpos[1], relpos[2]));
+			} return all;
+		}
+
+		private AxisAlignedBB getRelPos(Vec3d pos){
+			Vec3d rel = impl.tempaxe.getRelativeVector(pos == null ? new Vec3d(relpos[0], relpos[1], relpos[2]) : pos);
+			return new AxisAlignedBB(-0.2 + rel.x, rel.y, -0.2 + rel.z, 0.2 + rel.x, 0.6 + rel.y, 0.2 + rel.z);
+		}
+
+		public void dropContents(){
+			for(ContainerData datt : data){
+				if(datt == null) continue;
+				ItemStack stack = datt.getContainer().getItemStack(datt);
+				EntityItem item = new EntityItem(impl.entity.world);
+				item.setPosition(impl.entity.posX, impl.entity.posY + 0.5, impl.entity.posZ);
+				item.setItem(stack); impl.entity.world.spawnEntity(item);
+			}
+		}
+
 		public ContainerSlot(Implementation impl, String id, float[] relpos, float rotangle, ContainerType size, ContainerType... accepted){
 			this.size = this.curr = size; this.id = id; this.impl = impl; ArrayList<ContainerType> types = new ArrayList<ContainerType>();
 			if(accepted != null){
@@ -298,16 +400,16 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 					types.add(type);
 				}
 			} this.supported = types.toArray(new ContainerType[0]);
-			this.relpos = relpos; this.rotangle = rotangle; data = new ContainerData[]{ null }; if(this.id == null) this.id = "singular";
+			this.relpos = relpos; this.rotangle = rotangle; data = new ContainerData[]{ null }; if(this.id == null) this.id = def;
 		}
 		
 		/** Only to be used with the READ method! */
 		public ContainerSlot(Implementation impl){ this.impl = impl; }
 
-		public NBTTagCompound toNBT(boolean syncpacket){
+		public NBTTagCompound toNBT(){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("id", id);
-			if(syncpacket){
+			if(true){//syncpacket
 				compound.setFloat("relpos_x", relpos[0]);
 				compound.setFloat("relpos_y", relpos[1]);
 				compound.setFloat("relpos_z", relpos[2]);
@@ -334,13 +436,14 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			return compound;
 		}
 
-		public ContainerSlot fromNBT(boolean syncpacket, NBTTagCompound compound){
-			if(!compound.getString("id").equals(id) && !syncpacket) return null;
-			if(syncpacket){
+		public ContainerSlot fromNBT(NBTTagCompound compound){
+			//if(!compound.getString("id").equals(id) && !syncpacket) return null;
+			if(true){//syncpacket
 				id = compound.getString("id");
 				relpos[0] = compound.getFloat("relpos_x");
 				relpos[1] = compound.getFloat("relpos_y");
 				relpos[2] = compound.getFloat("relpos_z");
+				Print.debug(compound.getString("size"));
 				size = ContainerType.valueOf(compound.getString("size"));
 				if(compound.hasKey("supported")){
 					String[] supp = compound.getString("supported").split(",");
@@ -363,8 +466,6 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 				} if(com == null) continue;
 				data[i] = Resources.getContainerData(com);
 			}
-			//Print.debug(compound);
-			//Print.debug(data[0]);
 			return this;
 		}
 
@@ -492,11 +593,11 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@SideOnly(Side.CLIENT)
 		public void render(){
+	        if(renderoffset == null) renderoffset = loadRenderOffset(null);
 	        GL11.glPushMatrix();
+	        GL11.glTranslatef(relpos[0], relpos[1], relpos[2]);
             GL11.glRotatef(180f, 0f, 0f, 1f);
 	        GL11.glRotatef(this.rotangle, 0, 1, 0);
-	        GL11.glTranslatef(relpos[0], relpos[1], relpos[2]);
-	        if(renderoffset == null) renderoffset = loadRenderOffset();
 	        for(int i = 0; i < data.length; i++){
 	        	if(data[i] != null){
 		        	if(renderoffset[i] != 0f) GL11.glTranslatef(renderoffset[i], 0, 0);
@@ -508,10 +609,11 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 	        GL11.glPopMatrix();
 		}
 
-		private float[] loadRenderOffset(){
+		private float[] loadRenderOffset(ContainerType type){
+			if(type == null) type = curr;
 			switch(size){
 				case LARGE:{
-					switch(curr){
+					switch(type){
 						case LARGE: break;
 						case MEDIUM: return new float[]{ -3f, 3f };
 						case SMALL: return new float[]{ -4.5f, -1.5f, 1.5f, 4.5f };
@@ -520,7 +622,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 					} break;
 				}
 				case MEDIUM:{
-					switch(curr){
+					switch(type){
 						case LARGE: case MEDIUM: break;
 						case SMALL: return new float[]{ -1.5f, 1.5f };
 						case XSMALL: return new float[]{ -2f, 0f, 2f };
@@ -528,13 +630,13 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 					} break;
 				}
 				case SMALL:{
-					switch(curr){
+					switch(type){
 						case LARGE: case MEDIUM: case SMALL: break; case XSMALL: break;
 						case TINY: return new float[]{ -1f, 0f, 1f };
 					} break;
 				}
 				case XSMALL:{
-					switch(curr){
+					switch(type){
 						case LARGE: case MEDIUM: case SMALL: case XSMALL: break;
 						case TINY: return new float[]{ -0.5f, 0.5f };
 					} break;
@@ -552,7 +654,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		public void setType(ContainerType type){
 			data = new ContainerData[this.getNewArrayLength(size, curr = type)];
-			renderoffset = this.loadRenderOffset();
+			renderoffset = this.loadRenderOffset(null);
 		}
 		
 	}
@@ -575,7 +677,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			Implementation impl = (Implementation)entity.getCapability(FVTMCaps.CONTAINER, EnumFacing.UP);
 			switch(packet.nbt.getString("task")){
 				case "sync":{
-					impl.readFromNBT(true, EnumFacing.UP, packet.nbt); break;
+					impl.readFromNBT(EnumFacing.UP, packet.nbt); break;
 				}
 			}
 			return;

@@ -1,10 +1,16 @@
 package net.fexcraft.mod.fvtm.render.entity;
 
+import java.util.Map;
+
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Attribute;
+import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
@@ -16,6 +22,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implements IRenderFactory<UnboundVehicleEntity> {
@@ -42,55 +49,83 @@ public class RenderGenericVehicle extends Render<UnboundVehicleEntity> implement
         GL11.glPushMatrix();
         {
             GL11.glTranslated(x, y, z);
-            float yaw = (vehicle.axes.getYaw() - vehicle.prevRotationYaw);
-            for(; yaw > 180F; yaw -= 360F){ }
-            for(; yaw <= -180F; yaw += 360F){ }
-            float pitch = (vehicle.axes.getPitch() - vehicle.prevRotationPitch);
-            for(; pitch > 180F; pitch -= 360F){ }
-            for(; pitch <= -180F; pitch += 360F){ }
-            float roll = (vehicle.axes.getRoll() - vehicle.prevRotationRoll);
-            for(; roll > 180F; roll -= 360F){ }
-            for(; roll <= -180F; roll += 360F){ }
-            GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
             GL11.glPushMatrix();
-            GL11.glRotatef(180f, 0f, 0f, 1f);
-            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
-            if(modVehicle != null){
-                this.bindTexture(vehicle.getVehicleData().getTexture());
-                modVehicle.render(vehicle.getVehicleData(), null, vehicle, -1);
-                if(vehicle.getVehicleData().getParts().size() > 0){
-                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
-                    	ModelBase.bindTexture(entry.getValue().getTexture());
-                        Pos pos = entry.getValue().getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
-                        pos.translate();
-                        entry.getValue().getPart().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, -1);
-                        for(Attribute attr : entry.getValue().getPart().getAttributes()) if(attr.hasRenderData()){ attr.render(vehicle, entry.getValue(), entry.getKey()); };
-                        pos.translateR();
-                	}
-                }
-            }
-            if(Command.DEBUG){
-            	try{
-            		ModelBase.bindTexture(Resources.NULL_TEXTURE);
-                	Pos pos = vehicle.getVehicleData().getFrontConnectorPos();
-                	if(pos != null){ pos.translate(); RenderGenericRailed.CUBE.render(); pos.translateR(); }
-                	pos = vehicle.getVehicleData().getRearConnectorPos();
-                    if(pos != null){ pos.translate(); RenderGenericRailed.CUBE.render(); pos.translateR(); }
-            	}
-            	catch(Exception e){
-            		e.printStackTrace();
-            	}
+            {
+	            float yaw = (vehicle.axes.getYaw() - vehicle.prevRotationYaw);
+	            for(; yaw > 180F; yaw -= 360F){ }
+	            for(; yaw <= -180F; yaw += 360F){ }
+	            float pitch = (vehicle.axes.getPitch() - vehicle.prevRotationPitch);
+	            for(; pitch > 180F; pitch -= 360F){ }
+	            for(; pitch <= -180F; pitch += 360F){ }
+	            float roll = (vehicle.axes.getRoll() - vehicle.prevRotationRoll);
+	            for(; roll > 180F; roll -= 360F){ }
+	            for(; roll <= -180F; roll += 360F){ }
+	            GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
+	            GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
+	            GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
+	            GL11.glPushMatrix();
+	            {
+		            GL11.glRotatef(180f, 0f, 0f, 1f);
+		            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getVehicle().getModel();
+		            if(modVehicle != null){
+		                this.bindTexture(vehicle.getVehicleData().getTexture());
+		                modVehicle.render(vehicle.getVehicleData(), null, vehicle, -1);
+		                if(vehicle.getVehicleData().getParts().size() > 0){
+		                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
+		                    	ModelBase.bindTexture(entry.getValue().getTexture());
+		                        Pos pos = entry.getValue().getPart().getOffsetFor(vehicle.getVehicleData().getVehicle().getRegistryName());
+		                        pos.translate();
+		                        entry.getValue().getPart().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, -1);
+		                        for(Attribute attr : entry.getValue().getPart().getAttributes()) if(attr.hasRenderData()){ attr.render(vehicle, entry.getValue(), entry.getKey()); };
+		                        pos.translateR();
+		                	}
+		                }
+		            }
+		            if(Command.DEBUG){
+		            	try{
+		            		ModelBase.bindTexture(Resources.NULL_TEXTURE);
+		                	Pos pos = vehicle.getVehicleData().getFrontConnectorPos();
+		                	if(pos != null){ pos.translate(); RenderGenericRailed.CUBE.render(); pos.translateR(); }
+		                	pos = vehicle.getVehicleData().getRearConnectorPos();
+		                    if(pos != null){ pos.translate(); RenderGenericRailed.CUBE.render(); pos.translateR(); }
+		            	}
+		            	catch(Exception e){
+		            		e.printStackTrace();
+		            	}
+		            }
+	            }
+	            GL11.glPopMatrix();
+	            //GL11.glRotatef(-180f, 0f, 1f, 0f);
+	            //GL11.glRotatef(-180f, 1f, 0f, 0f);
+	            //GL11.glTranslatef(0, 3, 0);
+	            if((tempholder = vehicle.getCapability(FVTMCaps.CONTAINER, null)) != null){
+		            GL11.glRotatef(-180f, 0f, 1f, 0f); tempholder.render();
+	            }
             }
             GL11.glPopMatrix();
-            if((tempholder = vehicle.getCapability(FVTMCaps.CONTAINER, null)) != null){
-            	tempholder.render();
+            if(Command.DEBUG){
+                if(tempholder != null){
+                	GL11.glPushMatrix();
+                	ContainerType type = ContainerType.values()[tempo / 5];
+                	if(last != Time.getSecond()){
+                		last = Time.getSecond(); tempo++; if(tempo == 25) tempo = 0;
+                	}
+            		Map<String, AxisAlignedBB> map = tempholder.getContainerAABBs(type);
+            		for(AxisAlignedBB axis : map.values()){
+            			GL11.glTranslated(((axis.minX + axis.maxX) / 2), ((axis.minY + axis.maxY) / 2), ((axis.minZ + axis.maxZ) / 2));
+            			temp.render();
+            			GL11.glTranslated(-((axis.minX + axis.maxX) / 2), -((axis.minY + axis.maxY) / 2), -((axis.minZ + axis.maxZ) / 2));
+            		}
+                	GL11.glPopMatrix();
+                }
             }
         }
         GL11.glPopMatrix();
         //Renderer.drawString(vehicle.getVehicleData().getVehicle().getName(), x, y + 2, z, vehicle.axes.getYaw(), vehicle.axes.getPitch(), vehicle.axes.getRoll(), false, MapColor.GOLD.colorValue);
     }
+    
+    private static int tempo, last;
+    private static final ModelRendererTurbo temp = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 4, 16, 16, 0, 0).setTextured(false).setColor(RGB.GREEN);
 
     @Override
     protected ResourceLocation getEntityTexture(UnboundVehicleEntity entity){

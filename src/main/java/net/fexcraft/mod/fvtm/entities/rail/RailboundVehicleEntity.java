@@ -19,7 +19,6 @@ import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute.InventoryAttrib
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Material;
 import net.fexcraft.mod.fvtm.api.Part;
-import net.fexcraft.mod.fvtm.api.Container.ContainerHolderEntity;
 import net.fexcraft.mod.fvtm.api.Fuel.FuelItem;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.MovementCalculationEntity;
@@ -30,6 +29,7 @@ import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
+import net.fexcraft.mod.fvtm.api.capability.ContainerHolder.ContainerHolderEntity;
 import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
@@ -687,6 +687,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                 }
             }
         }
+        this.getCapability(FVTMCaps.CONTAINER, null).dropContents();
         //
         super.setDead();
         for(SeatEntity seat : seats){
@@ -1187,12 +1188,12 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     			cap.addContainerSlot(entry.getKey(), condata.getContainerOffset().to16Double(),
     				condata.getContainerType(), condata.getContainerRotation(), condata.getSupportedTypes());
     		}
-		} cap.sync(false);
+		} cap.setSetup(true); cap.sync(false);
 	}
 
 	@Override
-	public float[] cheGetRotation(){
-		return new float[]{ axes.getRoll(), axes.getYaw(), axes.getPitch() };
+	public float[] getEntityRotationForContainer(){
+		return new float[]{ (float)axes.getRadianYaw(), (float)axes.getRadianPitch(), (float)axes.getRadianRoll() };
 	}
 
 }

@@ -13,7 +13,7 @@
     ],
     "AttributeData":{
         "Container-Type": "MEDIUM",
-        "Container-Offset": { "x": -40, "y": -13, "z": 0 },
+        "Container-Offset": { "x": -40, "y": 13, "z": 0 },
         "Container-SupportedTypes":[
         	"XSMALL", "SMALL", "TINY"
         ]

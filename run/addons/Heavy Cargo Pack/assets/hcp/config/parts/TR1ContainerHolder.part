@@ -10,7 +10,7 @@
     "Removable": true,
     "AttributeData":{
         "Container-Type": "LARGE",
-        "Container-Offset": { "x": -112, "y": -24, "z": 0 },
+        "Container-Offset": { "x": -112, "y": 24, "z": 0 },
         "FM-Seats":[ { "driver": true, "x": 8, "y": 24, "z": 0 } ],
         "Container-SupportedTypes":[
         	"MEDIUM", "SMALL", "XSMALL", "TINY"

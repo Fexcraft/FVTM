@@ -40,12 +40,10 @@ minecraft {
 dependencies {
 	if(localDevMode){
     	compile project(':FCL')
-    	compile project(':TrackAPI')
     	compile project(':TrainsMod')
 	}
 	else{
     	compile 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
-    	compile 'com.github.cam72cam:TrackAPI:master-SNAPSHOT'
 	}
 	//compile "com.github.cam72cam:ImmersiveRailroading:master-SNAPSHOT";
     compile "com.github.glitchfiend.biomesoplenty:ToughAsNails:1.12.2-3.1.0.116:deobf"

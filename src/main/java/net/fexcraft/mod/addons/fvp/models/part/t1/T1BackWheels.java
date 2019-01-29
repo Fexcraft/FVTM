@@ -251,7 +251,7 @@ public class T1BackWheels extends PartModel {
 			.addShapeBox(-2, 5, 2, 1, 1, 1, 0, -0.1f, -0.1f, 0, -0.1f, -0.1f, 0, -0.3f, -0.3f, -0.6f, -0.3f, -0.3f, -0.6f, -0.1f, -0.1f, 0, -0.1f, -0.1f, 0, -0.3f, -0.3f, -0.6f, -0.3f, -0.3f, -0.6f)
 			.setRotationPoint(-71, 0, 17).setRotationAngle(0, 0, 0).setName("Box 600")
 		);
-		wheel_back_left.addProgram(DefaultPrograms.IMPORTED_WHEEL);
+		wheel_back_left.addPrograms(DefaultPrograms.IMPORTED_WHEEL, DefaultPrograms.DEF_WHEEL_ROTATE);
 		this.groups.add(wheel_back_left);
 		//
 		TurboList wheel_back_right = new TurboList("wheel_back_right");
@@ -487,7 +487,7 @@ public class T1BackWheels extends PartModel {
 			.addShapeBox(-2, 5, -3, 1, 1, 1, 0, -0.3f, -0.3f, -0.6f, -0.3f, -0.3f, -0.6f, -0.1f, -0.1f, 0, -0.1f, -0.1f, 0, -0.3f, -0.3f, -0.6f, -0.3f, -0.3f, -0.6f, -0.1f, -0.1f, 0, -0.1f, -0.1f, 0)
 			.setRotationPoint(-71, 0, -17).setRotationAngle(0, 0, 0).setName("Box 608")
 		);
-		wheel_back_right.addProgram(DefaultPrograms.IMPORTED_WHEEL);
+		wheel_back_right.addPrograms(DefaultPrograms.IMPORTED_WHEEL, DefaultPrograms.DEF_WHEEL_ROTATE);
 		this.groups.add(wheel_back_right);
 	}
 

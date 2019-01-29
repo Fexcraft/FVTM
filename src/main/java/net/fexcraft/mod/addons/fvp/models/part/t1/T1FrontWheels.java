@@ -397,7 +397,7 @@ public class T1FrontWheels extends PartModel {
 			.addShapeBox(-2, 3.5f, 5.5f, 1, 1, 1, 0, -0.1f, -0.1f, 0, -0.1f, -0.1f, 0, -0.3f, -0.3f, -0.6f, -0.3f, -0.3f, -0.6f, -0.1f, -0.1f, 0, -0.1f, -0.1f, 0, -0.3f, -0.3f, -0.6f, -0.3f, -0.3f, -0.6f)
 			.setRotationPoint(35, 0, 17).setRotationAngle(0, 0, 0).setName("Box 616")
 		);
-		wheel_front_left.addProgram(DefaultPrograms.IMPORTED_WHEEL);
+		wheel_front_left.addPrograms(DefaultPrograms.IMPORTED_WHEEL, DefaultPrograms.DEF_WHEEL_ROTATE, DefaultPrograms.STEERING_Y);
 		this.groups.add(wheel_front_left);
 		//
 		TurboList wheel_front_right = new TurboList("wheel_front_right");
@@ -779,7 +779,7 @@ public class T1FrontWheels extends PartModel {
 			.addShapeBox(-2, 3.5f, -6.5f, 1, 1, 1, 0, -0.3f, -0.3f, -0.6f, -0.3f, -0.3f, -0.6f, -0.1f, -0.1f, 0, -0.1f, -0.1f, 0, -0.3f, -0.3f, -0.6f, -0.3f, -0.3f, -0.6f, -0.1f, -0.1f, 0, -0.1f, -0.1f, 0)
 			.setRotationPoint(35, 0, -17).setRotationAngle(0, 0, 0).setName("Box 624")
 		);
-		wheel_front_right.addProgram(DefaultPrograms.IMPORTED_WHEEL);
+		wheel_front_right.addPrograms(DefaultPrograms.IMPORTED_WHEEL, DefaultPrograms.DEF_WHEEL_ROTATE, DefaultPrograms.STEERING_Y);
 		this.groups.add(wheel_front_right);
 	}
 

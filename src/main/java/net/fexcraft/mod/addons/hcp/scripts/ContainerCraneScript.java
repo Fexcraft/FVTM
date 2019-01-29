@@ -10,12 +10,16 @@ import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontData;
 import net.fexcraft.mod.addons.gep.attributes.FontRendererAttribute.FontRendererAttributeData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
+import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Part.PartItem;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.Vehicle;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
+import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
+import net.fexcraft.mod.fvtm.api.root.ResultEntry;
 import net.fexcraft.mod.fvtm.blocks.ContainerBlock;
 import net.fexcraft.mod.fvtm.blocks.ContainerTileEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
@@ -26,6 +30,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -395,37 +401,16 @@ public class ContainerCraneScript implements VehicleScript {
 			}
 		}
 		else{
-			/*ContainerHolder holder = null;
-			AxisAlignedBB aabb = new AxisAlignedBB(blkpos);
-			for(Entity e : ent.getEntity().world.loadedEntityList){
-				if(e instanceof ContainerHolder && e.getEntityBoundingBox().intersects(aabb)){
-					holder = (ContainerHolder)e;
-				}
-				else if(e instanceof VehicleEntity){
-					TreeMap<String, ContainerHolder> str = ((VehicleEntity)e).getContainers();
-					if(str == null) continue; for(ContainerHolder obj : str.values()){
-						if(obj instanceof ContainerWrapper && ((ContainerWrapper)obj).intersects(aabb)){
-							holder = obj;
-						}
-					}
-				}
-			}
-			if(holder != null){
-				if(holder.getContainerData() != null){
-					Print.chat(player, "Vehicle's Container isn't empty.");
-				}
-				if(holder.setContainerData(data)){
-					data = null;
-					Print.chat(player, "Container loaded into vehicle.");
-				}
-				else{
-					Print.chat(player, "Vehicle didn't agree to take Container.");
-				}
+			ActionResult<ResultEntry<String, ContainerHolder>> result = ent.getEntity().world.getCapability(FVTMCaps.RESOURCES, null)
+				.getContainerSlotAt(player, data.getContainer().getType(), pos);
+			if(result.getType() == EnumActionResult.SUCCESS){
+				ResultEntry<String, ContainerHolder> entry = result.getResult();
+				ActionResult<ContainerData> rslt = entry.getValue().setContainer(entry.getKey(), data, player);
+				if(rslt.getType() == EnumActionResult.SUCCESS){ this.data = null; }
 			}
 			else{
 				Print.chat(player, "No Container Holder Entity found at position.");
-			}*/
-			//TODO update
+			}
 		}
 		return;
 	}
@@ -456,6 +441,16 @@ public class ContainerCraneScript implements VehicleScript {
 			}
 		}
 		else{
+			ActionResult<ResultEntry<String, ContainerHolder>> result = ent.getEntity().world.getCapability(FVTMCaps.RESOURCES, null)
+				.getContainerSlotAt(player, ContainerType.MEDIUM, pos);
+			if(result.getType() == EnumActionResult.SUCCESS){
+				ResultEntry<String, ContainerHolder> entry = result.getResult();
+				ActionResult<ContainerData> rslt = entry.getValue().setContainer(entry.getKey(), null, player);
+				if(rslt.getType() == EnumActionResult.SUCCESS){ this.data = rslt.getResult(); }
+			}
+			else{
+				Print.chat(player, "No Container Holder Entity found at position.");
+			}
 			/*ContainerHolder holder = null;
 			AxisAlignedBB aabb = new AxisAlignedBB(blkpos);
 			for(Entity e : ent.getEntity().world.loadedEntityList){

@@ -164,7 +164,7 @@ public class WorldResources implements net.fexcraft.mod.fvtm.api.capability.Reso
 				}
 			}
 		}
-		if(sender != null) Print.chat(sender, "No container found at position.");
+		if(sender != null) Print.chat(sender, "No Container found at position.");
 		return new ActionResult<ResultEntry<String, ContainerHolder>>(EnumActionResult.PASS, null);
 	}
 

@@ -386,7 +386,8 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		private AxisAlignedBB getRelPos(Vec3d pos){
 			Vec3d rel = impl.tempaxe.getRelativeVector(pos == null ? new Vec3d(relpos[0], relpos[1], relpos[2]) : pos);
-			return new AxisAlignedBB(-0.2 + rel.x, rel.y, -0.2 + rel.z, 0.2 + rel.x, 0.6 + rel.y, 0.2 + rel.z);
+			Vec3d ent = impl.entity.getPositionVector();
+			return new AxisAlignedBB(-0.2 + rel.x + ent.x, rel.y + ent.y, -0.2 + rel.z + ent.z, 0.2 + rel.x + ent.x, 0.6 + rel.y + ent.y, 0.2 + rel.z + ent.z);
 		}
 
 		public void dropContents(){
@@ -559,13 +560,12 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		}
 
 		public ActionResult<ContainerData> setContainerData(ICommandSender sender, String id, ContainerData condata){
-			ContainerData oldata = null;
-			if(condata.getContainer().getType() != size){
-				int in = this.getsubid(id);
-				if(in < 0){
-					if(sender != null) Print.chat(sender, "Slot Array ID bellow zero.");
-					return new ActionResult<ContainerData>(EnumActionResult.FAIL, condata);
-				}
+			ContainerData oldata = null; int in = this.getsubid(id);
+			if(in < 0){
+				if(sender != null) Print.chat(sender, "Slot Array ID bellow zero.");
+				return new ActionResult<ContainerData>(EnumActionResult.FAIL, condata);
+			}
+			if(condata != null &&condata.getContainer().getType() != size){
 				if(condata.getContainer().getType() == curr){
 					if(in >= data.length){
 						if(sender != null) Print.chat(sender, "Slot Array ID out of bounds.");
@@ -610,6 +610,17 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 				}
 			}
 			else{
+				if(condata == null && data.length > 1){
+					if(in >= data.length){
+						if(sender != null) Print.chat(sender, "Slot Array ID out of bounds.");
+						return new ActionResult<ContainerData>(EnumActionResult.FAIL, condata);
+					}
+					else{
+						oldata = data[in]; data[in] = condata; this.impl.sync(false);
+						if(sender != null) Print.chat(sender, "Container slot updated. [4]");
+						return new ActionResult<ContainerData>(EnumActionResult.SUCCESS, oldata);
+					}
+				}
 				oldata = data[0]; data = new ContainerData[]{ condata }; this.impl.sync(false);
 				if(sender != null) Print.chat(sender, "Container slot updated. [3]");
 				return new ActionResult<ContainerData>(EnumActionResult.SUCCESS, oldata);

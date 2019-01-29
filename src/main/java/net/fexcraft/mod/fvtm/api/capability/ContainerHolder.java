@@ -7,8 +7,10 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerType;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -43,7 +45,7 @@ public interface ContainerHolder {
 	 * */ @Nullable
 	public Collection<String> getContainerIDs(@Nullable ContainerType oftype);
 	
-	/** Returns a list of all Container AABBs in this entity (usually 1m³ large, center of the container).
+	/** Returns a list of all Container AABBs in this entity (usually 1m³ large (or smaller), center of the container).
 	 * @param oftype filter option, shouldn't be null for cross-compatible container-slot entities
 	 * @return map of AABBs of this entity's container slots.
 	 */
@@ -58,9 +60,10 @@ public interface ContainerHolder {
 	/** Tries to update the Entity's ContainerData
 	 * @param id the to be changed ContainerData, ignored if single container entity.
 	 * @param data the ContainerData to be set, can be null.
-	 * @return if the process did succeed.
+	 * @param ics optional, to send error/status messages
+	 * @return ActionResult, which contains the old ContainerData which was at that place (if any) or the one passed earlier as parameter if the process does fail or "pass".
 	 * */
-	public boolean setContainer(@Nullable String id, @Nullable ContainerData data);
+	public ActionResult<ContainerData> setContainer(@Nullable String id, @Nullable ContainerData data, @Nullable ICommandSender ics);
 	
 	// Entity Stuff
 	

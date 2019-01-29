@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.VehicleAxes;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +30,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -175,8 +178,13 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		}
 
 		@Override
-		public boolean setContainer(String id, ContainerData data){
-			ContainerSlot slot = getContainerSlot(id); return slot == null ? false : slot.setContainerData(id, data);
+		public ActionResult<ContainerData> setContainer(String id, ContainerData data, ICommandSender sender){
+			ContainerSlot slot = getContainerSlot(id);
+			if(slot == null){
+				if(sender != null) Print.chat(sender, "Container slot not found.");
+				return new ActionResult<ContainerData>(EnumActionResult.PASS, data);
+			}
+			else return slot.setContainerData(sender, id, data);
 		}
 
 		@SuppressWarnings("unlikely-arg-type")
@@ -540,8 +548,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		private boolean isEmpty(){
 			for(ContainerData condata : data){
 				if(condata != null) return false;
-			}
-			return true;
+			} return true;
 		}
 
 		@Override
@@ -551,29 +558,61 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			return ((ContainerSlot)other).id.split(div)[0].equals(this.id.split(div)[0]);
 		}
 
-		public boolean setContainerData(String id, ContainerData condata){
+		public ActionResult<ContainerData> setContainerData(ICommandSender sender, String id, ContainerData condata){
+			ContainerData oldata = null;
 			if(condata.getContainer().getType() != size){
 				int in = this.getsubid(id);
-				if(condata.getContainer().getType() == curr){
-					data[in] = condata; this.impl.sync(false); return true;
+				if(in < 0){
+					if(sender != null) Print.chat(sender, "Slot Array ID bellow zero.");
+					return new ActionResult<ContainerData>(EnumActionResult.FAIL, condata);
 				}
-				else{
-					int newargsiz = this.getNewArrayLength(size, condata.getContainer().getType());
-					if(newargsiz == 0) return false;
-					if(newargsiz == 1 && data.length == 1){
-						curr = condata.getContainer().getType();
-						data[0] = condata; this.impl.sync(false); return true;
+				if(condata.getContainer().getType() == curr){
+					if(in >= data.length){
+						if(sender != null) Print.chat(sender, "Slot Array ID out of bounds.");
+						return new ActionResult<ContainerData>(EnumActionResult.FAIL, condata);
 					}
 					else{
+						oldata = data[in]; data[in] = condata; this.impl.sync(false);
+						if(sender != null) Print.chat(sender, "Container slot updated. [0]");
+						return new ActionResult<ContainerData>(EnumActionResult.SUCCESS, oldata);
+					}
+				}
+				else{
+					if(!this.isEmpty()){
+						if(sender != null) Print.chat(sender, "Cannot convert slots unless empty.");
+						return new ActionResult<ContainerData>(EnumActionResult.FAIL, condata);
+					}
+					int newargsiz = this.getNewArrayLength(size, condata.getContainer().getType());
+					if(newargsiz == 0){
+						if(sender != null) Print.chat(sender, "Incompatible conversion mode.");
+						return new ActionResult<ContainerData>(EnumActionResult.FAIL, condata);
+					}
+					if(newargsiz == 1 && data.length == 1){
 						curr = condata.getContainer().getType();
-						data = new ContainerData[newargsiz];
-						data[newargsiz] = condata; this.impl.sync(false);
-						return true;
+						oldata = data[0]; data[0] = condata; this.impl.sync(false);
+						if(sender != null) Print.chat(sender, "Container slot updated. [1]");
+						return new ActionResult<ContainerData>(EnumActionResult.SUCCESS, oldata);
+					}
+					else{
+						if(in >= newargsiz){
+							if(sender != null) Print.chat(sender, "Slot Array ID out of NEW bounds.");
+							return new ActionResult<ContainerData>(EnumActionResult.FAIL, condata);
+						}
+						else{
+							for(ContainerData datt : data){ if(datt != null) oldata = datt; break; }
+							//actually, I know it should be empty at this point.
+							curr = condata.getContainer().getType();
+							data = new ContainerData[newargsiz]; data[in] = condata; this.impl.sync(false);
+							if(sender != null) Print.chat(sender, "Container slot updated. [2]");
+							return new ActionResult<ContainerData>(EnumActionResult.SUCCESS, oldata);
+						}
 					}
 				}
 			}
 			else{
-				data = new ContainerData[]{ condata }; this.impl.sync(false); return true;
+				oldata = data[0]; data = new ContainerData[]{ condata }; this.impl.sync(false);
+				if(sender != null) Print.chat(sender, "Container slot updated. [3]");
+				return new ActionResult<ContainerData>(EnumActionResult.SUCCESS, oldata);
 			}
 		}
 

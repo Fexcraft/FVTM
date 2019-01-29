@@ -9,14 +9,19 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
+import net.fexcraft.mod.fvtm.api.Container.ContainerType;
 import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.api.root.ResultEntry;
 import net.fexcraft.mod.fvtm.api.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -69,6 +74,8 @@ public interface Resources {
 	
 	public @Nullable BlockPos getNextRailCoordinate(BlockPos current_dest, BlockPos previous_dest);
 	
-	public @Nullable ContainerData getContainerAt(@Nullable ICommandSender receiver, BlockPos pos);
+	public @Nullable ActionResult<ResultEntry<String, ContainerHolder>> getContainerSlotAt(@Nullable ICommandSender receiver, @Nullable ContainerType oftype, Vec3d pos);
+	
+	public @Nullable ActionResult<ContainerData> getContainerBlock(@Nullable ICommandSender receiver, BlockPos pos, EnumFacing.Axis axis);
 	
 }

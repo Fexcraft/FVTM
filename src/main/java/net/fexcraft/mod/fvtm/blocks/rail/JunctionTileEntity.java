@@ -8,17 +8,14 @@ import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TrackTileEntity extends TileEntity {
+public class JunctionTileEntity extends TileEntity {
 	
 	public RailRegion region;
 	public Entry<BlockPos, ConnContainer> entry;
 	
-    @SideOnly(Side.CLIENT)
+    /*@SideOnly(Side.CLIENT)
     @Override
     public double getMaxRenderDistanceSquared(){
         return super.getMaxRenderDistanceSquared() * 8;
@@ -27,7 +24,7 @@ public class TrackTileEntity extends TileEntity {
     @SideOnly(Side.CLIENT) @Override
     public AxisAlignedBB getRenderBoundingBox(){
         return INFINITE_EXTENT_AABB;
-    }
+    }*/
     
     @Override
     public void readFromNBT(NBTTagCompound compound){

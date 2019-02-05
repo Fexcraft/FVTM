@@ -10,11 +10,11 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.api.Gauge.GaugeItem;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackBlock;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackItemBlock;
+import net.fexcraft.mod.fvtm.blocks.rail.JunctionBlock;
+import net.fexcraft.mod.fvtm.blocks.rail.JunctionItemBlock;
 import net.fexcraft.mod.fvtm.prototype.WorldRailData;
 import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -98,9 +98,9 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
 	        return EnumActionResult.FAIL;
         }
         IBlockState state = world.getBlockState(pos); Block block = state.getBlock(); ItemStack stack = player.getHeldItem(hand);
-        if(block instanceof TrackBlock){
+        if(block instanceof JunctionBlock){
     		if(player.isSneaking()){
-    			worldcap.resetConnectionsAt(pos); Print.chat(player, "&cResetting...");
+    			worldcap.resetJunctionAt(pos); Print.chat(player, "&cResetting...");
     			return EnumActionResult.SUCCESS;
     		}
     		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
@@ -109,11 +109,11 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         		IBlockState state0 = world.getBlockState(pos0);
         		if(state0 == null){ Print.chat(player, "&cRailConnector at first connection point is NULL."); return EnumActionResult.FAIL; }
         		//if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
-        		Connection[] conns = worldcap.getConnectionsAt(pos0).connections; Gauge sec = this.getGauge(stack);
-        		if(conns != null && conns.length > 0 && !conns[0].isCompatibleGauge(sec)){
+        		Junction junk = worldcap.getJunctionAt(pos0); Gauge sec = this.getGauge(stack);
+        		if(junk != null && junk.tracks.length > 0 && !junk.tracks[0].isCompatibleGauge(sec)){
         			Print.chat(player, "&cGauges do not match.");
         			Print.chat(player, "&7Item: &9(" + sec.width() + ") &7" + sec.getName());
-        			Print.chat(player, "&7This: &a(" + conns[0].getGauge().width() + ") &7" + conns[0].getGauge().getName());
+        			Print.chat(player, "&7This: &a(" + junk.tracks[0].getGauge().width() + ") &7" + junk.tracks[0].getGauge().getName());
         	        return EnumActionResult.FAIL;
         		}
         		if(stack.getTagCompound().getInteger("fvtm:railtrackpoints") == 1){
@@ -123,7 +123,8 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         		for(int j = 0; j < arr.length; j++){
         			arr[j] = BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:railtrackpoint" + j));
         		}
-        		worldcap.addConnection(new Connection(sec, pos0, pos, false, arr));
+        		//worldcap.addConnection(new Connection(sec, pos0, pos, false, arr));
+        		worldcap.addJunction(sec, pos0, pos, arr);
         		Print.bar(player, "&7Connected&9!");
         		//
         		stack.getTagCompound().removeTag("fvtm:railtrackstart");
@@ -132,9 +133,9 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
-        		Connection[] conns = worldcap.getConnectionsAt(pos).connections;
-    			if(conns != null && conns.length >= 4){
-        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + conns.length + ";)");
+        		Junction junk = worldcap.getJunctionAt(pos);
+    			if(junk != null && junk.tracks.length >= 4){
+        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + junk.tracks.length + ";)");
         	        return EnumActionResult.FAIL;
     			}
 				Gauge sec = this.getGauge(stack);
@@ -142,10 +143,10 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         			Print.chat(player, "&cItem has no Gauge Data.");
         	        return EnumActionResult.FAIL;
     			}
-    			if(conns != null && conns.length > 0 && !conns[0].isCompatibleGauge(sec)){
+    			if(junk != null && junk.tracks.length > 0 && !junk.tracks[0].isCompatibleGauge(sec)){
         			Print.chat(player, "&cGauges do not match.");
         			Print.chat(player, "&7Item: &9(" + sec.width() + ") &7" + sec.getName());
-        			Print.chat(player, "&7Rail: &b(" + conns[0].getGauge().width() + ") &7" + conns[0].getGauge().getName());
+        			Print.chat(player, "&7Rail: &b(" + junk.tracks[0].getGauge().width() + ") &7" + junk.tracks[0].getGauge().getName());
         	        return EnumActionResult.FAIL;
     			}
         		stack.getTagCompound().setLong("fvtm:railtrackstart", pos.toLong());
@@ -171,10 +172,10 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
-    	        if(!stack.isEmpty() && player.canPlayerEdit(pos, facing, stack) && world.mayPlace(TrackItemBlock.INSTANCE.getBlock(), pos, false, facing, (Entity)null)){
+    	        if(!stack.isEmpty() && player.canPlayerEdit(pos, facing, stack) && world.mayPlace(JunctionItemBlock.INSTANCE.getBlock(), pos, false, facing, (Entity)null)){
     	            int i = this.getMetadata(stack.getMetadata());
-    	            IBlockState nstate = TrackItemBlock.INSTANCE.getBlock().getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i, player, hand);
-    	            if(TrackItemBlock.INSTANCE.placeBlockAt(stack, player, world, pos, facing, hitX, hitY, hitZ, nstate)){
+    	            IBlockState nstate = JunctionItemBlock.INSTANCE.getBlock().getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, i, player, hand);
+    	            if(JunctionItemBlock.INSTANCE.placeBlockAt(stack, player, world, pos, facing, hitX, hitY, hitZ, nstate)){
     	                nstate = world.getBlockState(pos); SoundType soundtype = nstate.getBlock().getSoundType(nstate, world, pos, player);
     	                world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
     	                stack.shrink(1);

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
+import net.fexcraft.mod.fvtm.util.Tabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -19,21 +20,16 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /** @author Ferdinand Calo' (FEX___96) **/
-@fBlock(modid = FVTM.MODID, name = "rail_connector", tileentity = TrackTileEntity.class, item = TrackItemBlock.class)
-public class TrackBlock extends Block implements ITileEntityProvider {
-	
-	public static TrackBlock INSTANCE;
-
-	public TrackBlock(){
-		super(Material.IRON, MapColor.GRAY);
-		INSTANCE = this;
-	}
-
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta){
-		return new TrackTileEntity();//(world);
-	}
+@fBlock(modid = FVTM.MODID, name = "rail_junction", item = JunctionItemBlock.class, tileentity = JunctionTileEntity.class)
+public class JunctionBlock extends Block implements ITileEntityProvider {
     
+    public static final AxisAlignedBB AABB = new AxisAlignedBB(0D, 0D, 0D, 1D, 0.25D, 1D);
+
+	public JunctionBlock(){
+		super(Material.ANVIL, MapColor.IRON);
+		this.setCreativeTab(Tabs.BLOCKS);
+	}
+	
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state){
         return EnumBlockRenderType.MODEL;
@@ -53,8 +49,6 @@ public class TrackBlock extends Block implements ITileEntityProvider {
     public boolean isOpaqueCube(IBlockState state){
         return false;
     }
-    
-    public static final AxisAlignedBB AABB = new AxisAlignedBB(0D, 0D, 0D, 1D, 0.25D, 1D);
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
@@ -68,7 +62,7 @@ public class TrackBlock extends Block implements ITileEntityProvider {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
-    	world.getCapability(WorldRailDataSerializer.CAPABILITY, null).resetConnectionsAt(pos);
+    	world.getCapability(WorldRailDataSerializer.CAPABILITY, null).resetJunctionAt(pos);
         super.breakBlock(world, pos, state);
     }
     
@@ -80,5 +74,10 @@ public class TrackBlock extends Block implements ITileEntityProvider {
         	return true;
         } return false;
     }
-    
+
+	@Override
+	public TileEntity createNewTileEntity(World world, int meta){
+		return new JunctionTileEntity();
+	}
+	
 }

@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
@@ -85,6 +86,20 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>,
 		GL11.glRotated( 180, 0, 0, 1);
 		GL11.glRotated( angle, 0, 1, 0);
 		for(ModelRendererTurbo turbo : base) turbo.render();
+		GL11.glRotated(-angle, 0, 1, 0);
+		GL11.glRotated(-180, 0, 0, 1);
+		GL11.glTranslated(-dest[0], -dest[1], -dest[2]);
+	}
+
+	public static void renderpiece(ModelRendererTurbo[] model, Vec3f vec1, Vec3f vec, double dis){
+		double angle = Math.toDegrees(Math.atan2(vec1.zCoord - vec.zCoord, vec1.xCoord - vec.xCoord));
+		double[] dest = new double[]{ vec.xCoord, vec.yCoord, vec.zCoord };
+		dest = Vector3D.direction(dest[0] - vec1.xCoord, dest[1] - vec1.yCoord, dest[2] - vec1.zCoord);
+		dest = Vector3D.newVector(vec1.xCoord + (dest[0] * dis), vec1.yCoord + (dest[1] * dis), vec1.zCoord + (dest[2] * dis));
+		GL11.glTranslated( dest[0],  dest[1],  dest[2]);
+		GL11.glRotated( 180, 0, 0, 1);
+		GL11.glRotated( angle, 0, 1, 0);
+		for(ModelRendererTurbo turbo : model) turbo.render();
 		GL11.glRotated(-angle, 0, 1, 0);
 		GL11.glRotated(-180, 0, 0, 1);
 		GL11.glTranslated(-dest[0], -dest[1], -dest[2]);

@@ -4,8 +4,8 @@ import java.util.TreeMap;
 
 import net.fexcraft.lib.common.utils.Print;
 import net.fexcraft.mod.fvtm.prototype.ConnContainer;
-import net.fexcraft.mod.fvtm.prototype.RailRegion;
 import net.fexcraft.mod.fvtm.prototype.WorldRailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;

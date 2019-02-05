@@ -5,30 +5,45 @@ import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
 import net.fexcraft.mod.fvtm.blocks.UniversalTileEntity;
+import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.block.BlockModel;
+import net.fexcraft.mod.fvtm.prototype.WorldRailData;
+import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
+import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -38,6 +53,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class Renderer {
@@ -174,16 +190,16 @@ public class Renderer {
 	protected static final ModelRendererTurbo model, model0;
 	static{
 		model = new ModelRendererTurbo(null, 0, 0, 32, 32);
-		model.addCylinder(0, 0, 0, 3, 5, 32, 1, 1, ModelRendererTurbo.MR_TOP);
-		model.setRotationPoint(0, -5, 0);
+		model.addCylinder(0, 0, 0, 2, 16, 32, 1, 1, ModelRendererTurbo.MR_TOP);
+		model.setRotationPoint(0, -8, 0);
 		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32);
 		model0.addCylinder(-12, 0, 0, 4, 16, 6, 1.2f, 1, ModelRendererTurbo.MR_TOP);
 		model0.setRotationPoint(0, 0, 0);
 	}
 	
-	//private static WorldRailData raildata;
+	private static WorldRailData raildata;
     
-    /*@SubscribeEvent
+    @SuppressWarnings("unchecked") @SubscribeEvent
     public void renderRails(RenderWorldLastEvent event){
 	    raildata = Static.getServer().getEntityWorld().getCapability(WorldRailDataSerializer.CAPABILITY, null);
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
@@ -194,45 +210,71 @@ public class Renderer {
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(-x, -y, -z);
-        //Print.console(raildata.getLoadedRegions().size());
-        for(RailRegion region : raildata.getLoadedRegions()){
-        	for(java.util.Map.Entry<BlockPos, Connection[]> conns : region.getConnections().entrySet()){
-        		x = conns.getKey().getX(); y = conns.getKey().getY(); z = conns.getKey().getZ();
-        		if(conns.getValue() == null || conns.getValue().length < 2){
-    				GL11.glPushMatrix();
-    				GL11.glTranslated(x + 0.5F, y, z + 0.5F);
-    				ModelBase.bindTexture(ModelConstructorCenter.getTexture());
-    				GL11.glPushMatrix();
-    				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    				GL11.glRotated(90, 0, 1D, 0);
-    				ModelBase.bindTexture(Resources.NULL_TEXTURE);
-    				model.render();
-    				GL11.glPopMatrix();
-    				GL11.glPopMatrix();
-    			}
-        		if(!hasGaugeModel(conns.getValue())){
-        			Print.console("invalid gauge");
-        			continue;
-        		}
-    			GL11.glPushMatrix();
-    			//GL11.glTranslated(x, y - 0.5, z);
-    			GL11.glPushMatrix();
-    			ModelBase.bindTexture(conns.getValue()[0].getGauge().getTexture());
-    			for(int i = 0; i < conns.getValue().length; i++){
-    				conns.getValue()[0].getGauge().getModel().render(conns, conns.getValue()[i], null, i);
-    			}
-    			GL11.glPopMatrix(); GL11.glPopMatrix();
+        ModelBase.bindTexture(Resources.NULL_TEXTURE);
+        for(RailRegion reg : raildata.getLoadedRegions()){
+        	if(reg.READING) continue;
+        	for(int i = 0; i < reg.getJunctions().size(); i++){
+        		Entry<BlockPos, Junction> str = (Entry<BlockPos, Junction>)reg.getJunctions().entrySet().toArray()[i];
+        		/*GL11.glPushMatrix();
+        		GL11.glTranslatef(str.getKey().getX() + 0.5f, str.getKey().getY() + 0.5f, str.getKey().getZ() + 0.5f);
+        		RGB.RED.glColorApply();
+        		model.render();
+        		RGB.glColorReset();
+        		GL11.glPopMatrix();*/
+        		renderLines(str.getValue());
         	}
         }
 		GL11.glPopMatrix();
-    }*/
+    }
 
-	/*private boolean hasGaugeModel(Connection[] value){
-		if(value.length < 1) return false;
-		if(value[0].getGauge() == null) return false;
-		if(value[0].getGauge().getModel() == null) return false;
-		return true;
-	}*/
+	private void renderLines(Junction value){
+		Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        Vec3f vec0, vec1; float flfl, glgl;
+        //
+        if(Command.DEBUG){
+    		for(Track conn : value.tracks){
+    	        flfl = conn.isOppositeCopy() ? 1 : 0;
+    	        glgl = conn.isOppositeCopy() ? 0 : 1;
+                GL11.glPushMatrix();
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                GlStateManager.glLineWidth(2.0F);
+                GlStateManager.disableTexture2D();
+                GlStateManager.depthMask(false);
+    			for(int j = 0; j < conn.vectors.length - 1; j++){
+    				vec0 = conn.vectors[j];//.subtract(pos);
+    				vec1 = conn.vectors[j + 1];//.subtract(pos);
+                    bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+                    bufferbuilder.pos(vec0.xCoord, vec0.yCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec0.zCoord).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec1.xCoord, vec1.yCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec1.zCoord).color(0f, glgl, flfl, 1F).endVertex();
+                    tessellator.draw();
+    			}
+                GlStateManager.depthMask(true);
+                GlStateManager.enableTexture2D();
+                GlStateManager.disableBlend();
+                GL11.glPopMatrix();
+    		}
+        }
+        else{
+    		for(Track conn : value.tracks){
+    			if(conn.isOppositeCopy()) continue;
+    			ModelBase.bindTexture(conn.getGauge().getTexture());
+    			boolean b = false;
+    			for(int k = 0; k < conn.vectors.length - 1; k++){
+    				vec0 = conn.vectors[k];//.subtract(pos);
+    				vec1 = conn.vectors[k + 1];//.subtract(pos);//TODO replace with translate
+    				double dis = vec1.distanceTo(vec0);
+    				/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
+    				if(b = !b) GL11.glTranslated(0, -0.01, 0);
+    				GL11.glTranslatef(0, -0.5f, 0);
+    				while(dis > 0){ RailGaugeModel.renderpiece(((RailGaugeModel)conn.getGauge().getModel()).base, vec0, vec1, dis); dis -= 0.5; }
+    				GL11.glTranslatef(0,  0.5f, 0);
+    				if(b) GL11.glTranslated(0, 0.01, 0);
+    			}
+    		}
+        }
+	}
 
 	@SuppressWarnings("unused")
 	private static boolean bteq(BlockData data, EnumFacing facing, BlockPos pos, World world){

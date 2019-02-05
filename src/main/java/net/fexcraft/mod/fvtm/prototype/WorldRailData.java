@@ -2,8 +2,12 @@ package net.fexcraft.mod.fvtm.prototype;
 
 import java.util.Collection;
 
+import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
+import net.fexcraft.mod.fvtm.blocks.rail.JunctionTileEntity;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -50,5 +54,13 @@ public interface WorldRailData {
 	public void toggleSwitch(BlockPos pos);
 	
 	public void updateTick();
+
+	public void addJunction(Gauge gauge, BlockPos start, BlockPos end, BlockPos[] arr);
+
+	public void resetJunctionAt(BlockPos pos);
+
+	public Junction getJunctionAt(BlockPos pos);
+
+	public void setTileData(JunctionTileEntity junctionTileEntity, boolean fromtile);
 	
 }

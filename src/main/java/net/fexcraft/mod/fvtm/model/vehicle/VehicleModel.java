@@ -1,10 +1,13 @@
 package net.fexcraft.mod.fvtm.model.vehicle;
 
+import java.util.Map;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.render.FCLItemModel;
+import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleItem;
@@ -116,12 +119,12 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 			GL11.glRotated(180d, 1, 0, 0);
 			bindTexture(data.getTexture());
 			model.render(data, null, null, 0);
-			data.getParts().forEach((key, partdata) -> {
-				bindTexture(partdata.getTexture());
-				partdata.getPart().getOffsetFor(data.getVehicle().getRegistryName()).translate();
-				partdata.getPart().getModel().render(data, key);
-				partdata.getPart().getOffsetFor(data.getVehicle().getRegistryName()).translateR();
-			});
+			for(Map.Entry<String, PartData> entry : data.getParts().entrySet()){
+				bindTexture(entry.getValue().getTexture());
+				entry.getValue().getPart().getOffsetFor(data.getVehicle().getRegistryName()).translate();
+				entry.getValue().getPart().getModel().render(data, entry.getKey());
+				entry.getValue().getPart().getOffsetFor(data.getVehicle().getRegistryName()).translateR();
+			}
 			GL11.glPopMatrix();
 		}
 		GL11.glScalef(-scal[0], -scal[1], -scal[2]);

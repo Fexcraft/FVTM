@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.prototype;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.sys.rail.WorldRailImpl;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -60,7 +61,7 @@ public class WorldRailDataSerializer implements ICapabilitySerializable<NBTBase>
 
 		@Override
 		public WorldRailData call() throws Exception {
-			return new WorldRailUtil();
+			return new WorldRailImpl();
 		}
 		
 	}

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -34,5 +35,9 @@ public class Vector3D {
     public static double[] direction(double... arr){
     	double l = length(arr[0], arr[1], arr[2]); return new double[]{ arr[0] / l, arr[1] / l, arr[2] / l };
     }
+
+	public static double[] newVector(Vec3f vec){
+		return new double[]{ vec.xCoord, vec.yCoord, vec.zCoord };
+	}
 	
 }

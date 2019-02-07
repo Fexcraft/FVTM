@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import net.minecraft.util.math.BlockPos;
 
+/** @author Ferdinand Calo' (FEX___96) **/
 public class LineSection {
 	
 	public String id;

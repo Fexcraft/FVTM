@@ -61,7 +61,7 @@ public class JunctionItemBlock extends ItemBlock16 {
         IBlockState state = world.getBlockState(pos); Block block = state.getBlock(); ItemStack stack = player.getHeldItem(hand);
         if(block instanceof JunctionBlock){
     		if(player.isSneaking()){
-    			worldcap.resetJunctionAt(pos); Print.chat(player, "&cResetting...");
+    			worldcap.delJunction(pos); Print.chat(player, "&cResetting...");
     			return EnumActionResult.SUCCESS;
     		}
     		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
@@ -87,7 +87,7 @@ public class JunctionItemBlock extends ItemBlock16 {
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
-        		int check = worldcap.getConnectionsAt(pos).connections.length;
+        		int check = worldcap.getJunction(pos).tracks.size();
         		if(check >= 4){
         			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + check + ";)");
         	        return EnumActionResult.FAIL;

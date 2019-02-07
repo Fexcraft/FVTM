@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
+/** @author Ferdinand Calo' (FEX___96) **/
 public class Track {
 	
 	public @Nullable LineSection line;

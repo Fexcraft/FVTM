@@ -2,15 +2,13 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 
 import java.util.TreeMap;
 
-import net.fexcraft.lib.common.utils.Print;
-import net.fexcraft.mod.fvtm.prototype.ConnContainer;
-import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 /** @author Ferdinand Calo' (FEX___96) **/
+@Deprecated
 public class RailUtil {
 	
 	public static final Return getExpectedPosition(WorldRailData world, double[] own, BlockPos curr, BlockPos last, double amount){
@@ -106,7 +104,7 @@ public class RailUtil {
 		}
 	}*/
 	
-	public static void detach(RailRegion reg){
+	/*public static void detach(RailRegion reg){
 		for(ConnContainer conns : reg.getConnections().values()){
 			for(Connection conn : conns.connections){
 				BlockPos[] all = conn.allPositions();
@@ -131,6 +129,6 @@ public class RailUtil {
 			}
 		}
 		Print.console(CONNS);
-	}
+	}*/
 	
 }

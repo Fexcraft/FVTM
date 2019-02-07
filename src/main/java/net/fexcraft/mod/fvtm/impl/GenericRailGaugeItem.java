@@ -100,7 +100,7 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         IBlockState state = world.getBlockState(pos); Block block = state.getBlock(); ItemStack stack = player.getHeldItem(hand);
         if(block instanceof JunctionBlock){
     		if(player.isSneaking()){
-    			worldcap.resetJunctionAt(pos); Print.chat(player, "&cResetting...");
+    			worldcap.delJunction(pos); Print.chat(player, "&cResetting...");
     			return EnumActionResult.SUCCESS;
     		}
     		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
@@ -109,7 +109,7 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         		IBlockState state0 = world.getBlockState(pos0);
         		if(state0 == null){ Print.chat(player, "&cRailConnector at first connection point is NULL."); return EnumActionResult.FAIL; }
         		//if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
-        		Junction junk = worldcap.getJunctionAt(pos0); Gauge sec = this.getGauge(stack);
+        		Junction junk = worldcap.getJunction(pos0); Gauge sec = this.getGauge(stack);
         		if(junk != null && junk.tracks.size() > 0 && !junk.tracks.get(0).isCompatibleGauge(sec)){
         			Print.chat(player, "&cGauges do not match.");
         			Print.chat(player, "&7Item: &9(" + sec.width() + ") &7" + sec.getName());
@@ -133,7 +133,7 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
-        		Junction junk = worldcap.getJunctionAt(pos);
+        		Junction junk = worldcap.getJunction(pos);
     			if(junk != null && junk.tracks.size() >= 4){
         			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + junk.tracks.size() + ";)");
         	        return EnumActionResult.FAIL;

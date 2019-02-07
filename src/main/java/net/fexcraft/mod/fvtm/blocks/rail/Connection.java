@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 /** @author Ferdinand Calo' (FEX___96) **/
+@Deprecated
 public class Connection {
 	
 	private BlockPos destination, beginning;

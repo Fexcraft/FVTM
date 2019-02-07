@@ -5,14 +5,14 @@ import net.fexcraft.mod.fvtm.api.EntityType;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.blocks.DisplayBlock;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackBlock;
+import net.fexcraft.mod.fvtm.blocks.rail.JunctionBlock;
 import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.entities.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.WaterVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
 import net.minecraft.block.BlockLiquid;
@@ -104,7 +104,7 @@ public class GenericEntityType extends EntityType {
             	if(world.getBlockState(pos).getBlock().getRegistryName().getResourceDomain().equals("trainsmod") && GenericTrigger.AM_TRAINS){
             		GenericTrigger.AM_TRAINS_ET.spawnEntity(world, pos, data); return true;
             	}
-                if(world.getBlockState(pos).getBlock() != TrackBlock.INSTANCE){
+                if(world.getBlockState(pos).getBlock() != JunctionBlock.INSTANCE){
                     Print.chat(player, "Only placeable directly on rail connectors.");
                 }
                 if(!world.isRemote){
@@ -113,12 +113,12 @@ public class GenericEntityType extends EntityType {
                 		Print.chat(player, "No WorldRailData found.");
                 		return false;
                 	}
-                	Connection[] conns = worldcap.getConnectionsAt(pos).connections;
-                	if(conns == null || conns.length == 0){
+                	Junction junk = worldcap.getJunction(pos);
+                	if(junk == null || junk.tracks.size() == 0){
                 		Print.chat(player, "Track has no Connection Data.");
                 		return false;
                 	}
-                	if(conns[0].getGauge().width() != data.getVehicle().getFMAttribute("railgauge_width")){
+                	if(junk.tracks.get(0).getGauge().width() != data.getVehicle().getFMAttribute("railgauge_width")){
                 		Print.chat(player, "Vehicle's Gauge is not compatible with Track's Gauge");
                 		return false;
                 	}

@@ -11,6 +11,7 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
+/** @author Ferdinand Calo' (FEX___96) **/
 public class WorldRailDataSerializer implements ICapabilitySerializable<NBTBase>{
 	
 	@CapabilityInject(WorldRailData.class)

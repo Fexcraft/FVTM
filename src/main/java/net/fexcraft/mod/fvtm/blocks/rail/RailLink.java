@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 import net.minecraft.util.math.BlockPos;
 
 /** @author Ferdinand Calo' (FEX___96) **/
+@Deprecated
 public class RailLink {
 	
 	public final BlockPos prev, self, next;

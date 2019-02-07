@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -12,7 +11,6 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -24,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 
+/** @author Ferdinand Calo' (FEX___96) **/
 public class RailRegion {
 	
 	//private ArrayList<Connection> connections = new ArrayList<>();
@@ -150,54 +149,6 @@ public class RailRegion {
 	public ConnContainer getConnectionsAt(BlockPos pos){ this.updateAccess(null);
 		return connections.containsKey(pos) ? connections.get(pos) : EMPTY;
 		//return connections.stream().filter(pre -> pre.getBeginning().equals(pos) || pre.getDestination().equals(pos)).toArray(Connection[]::new);
-	}
-
-	public TreeMap<BlockPos, ConnContainer> getConnections(){
-		this.updateAccess(null); return connections;
-	}
-
-	public void resetConnectionsAt(BlockPos pos){
-		if(!connections.containsKey(pos)) return;
-		ArrayList<Connection> torem = new ArrayList<>();
-		for(Connection conn : connections.get(pos).connections){
-			torem.add(conn);
-		} // we don't want concurrent exceptions.
-		for(Connection conn : torem) util.delConnection(conn.getBeginning(), conn.getDestination());
-		this.updateAccess(null); //this.sendUpdatePacket(false); return;
-	}
-
-	public void delConnection(BlockPos start, BlockPos end){
-		ConnContainer conns = connections.get(start);
-		if(conns != null){
-			int j = -1;
-			for(int i = 0; i < conns.connections.length; i++){
-				if((conns.connections[i].getBeginning().equals(start) && conns.connections[i].getDestination().equals(end))
-					|| (conns.connections[i].getDestination().equals(start) && conns.connections[i].getBeginning().equals(end))){
-					j = i; break; }
-			}
-			if(j != -1){ conns.remove(j); }
-		}
-		conns = connections.get(end);
-		if(conns != null){
-			int j = -1;
-			for(int i = 0; i < conns.connections.length; i++){
-				if((conns.connections[i].getBeginning().equals(start) && conns.connections[i].getDestination().equals(end))
-					|| (conns.connections[i].getDestination().equals(start) && conns.connections[i].getBeginning().equals(end))){
-					j = i; break; }
-			}
-			if(j != -1){ conns.remove(j); }
-		}
-		this.updateAccess(null); this.sendUpdatePacket(false);
-	}
-
-	public void addConnection(Connection conn){
-		if(connections.containsKey(conn.getBeginning())){
-			connections.get(conn.getBeginning()).addnew(conn);
-		}
-		else{
-			connections.put(conn.getBeginning(), new ConnContainer(conn));
-		}
-		this.updateAccess(null); this.sendUpdatePacket(false); return;
 	}
 
 	public void updateAccess(Long date){

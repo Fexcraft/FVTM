@@ -24,10 +24,12 @@ import net.minecraft.world.World;
 public class JunctionBlock extends Block implements ITileEntityProvider {
     
     public static final AxisAlignedBB AABB = new AxisAlignedBB(0D, 0D, 0D, 1D, 0.25D, 1D);
+	public static JunctionBlock INSTANCE;
 
 	public JunctionBlock(){
 		super(Material.ANVIL, MapColor.IRON);
 		this.setCreativeTab(Tabs.BLOCKS);
+		INSTANCE = this;
 	}
 	
     @Override
@@ -62,7 +64,7 @@ public class JunctionBlock extends Block implements ITileEntityProvider {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
-    	world.getCapability(WorldRailDataSerializer.CAPABILITY, null).resetJunctionAt(pos);
+    	world.getCapability(WorldRailDataSerializer.CAPABILITY, null).delJunction(pos);
         super.breakBlock(world, pos, state);
     }
     

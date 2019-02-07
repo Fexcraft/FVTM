@@ -11,13 +11,10 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Gauge;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.JunctionTileEntity;
-import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
-import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.LineSection;
+import net.fexcraft.mod.fvtm.sys.rail.MoveUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.minecraft.nbt.NBTBase;
@@ -75,13 +72,6 @@ public class WorldRailImpl implements WorldRailData {
 	public static int[] getRegion(BlockPos pos){
 		return getRegion(pos.getX() >> 4, pos.getZ() >> 4);
 	}
-
-	@Override
-	public ConnContainer getConnectionsAt(BlockPos pos){
-		RailRegion reg = map.getRegion(getRegion(pos));
-		if(reg == null) return RailRegion.EMPTY;
-		return reg.getConnectionsAt(pos);
-	}
 	
 	public File getRootFile(){
 		if(dim != 0){
@@ -105,7 +95,7 @@ public class WorldRailImpl implements WorldRailData {
 			else{
 				//TODO check if qualifies for load
 				region = new RailRegion(util, reg[0], reg[1], null);
-				RailUtil.attach(region);
+				MoveUtil.attach(region);
 				this.put(new XZKey(reg), region);
 				return this.get(tempkey);
 			}
@@ -169,7 +159,7 @@ public class WorldRailImpl implements WorldRailData {
 
 	private void unloadRegion(XZKey key){
 		RailRegion reg = map.remove(key); if(reg == null) return;
-		reg.save(); reg.sendUpdatePacket(true); RailUtil.detach(reg);
+		reg.save(); reg.sendUpdatePacket(true); MoveUtil.detach(reg);
 	}
 
 	@Override
@@ -182,7 +172,7 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public BlockPos getNext(BlockPos current, BlockPos previous, boolean test){
-		ConnContainer conns = this.getConnectionsAt(current);
+		/*ConnContainer conns = this.getConnectionsAt(current);
 		Connection[] connections = conns.connections;//this.getConnectionsAt(current);
 		if(current == null){
 			return connections.length == 0 ? new BlockPos(0, 0, 0) : connections[0].getDestination();
@@ -225,32 +215,7 @@ public class WorldRailImpl implements WorldRailData {
 				break;
 			}
 			default: return current;
-		} return current;
-	}
-
-	@Override
-	public void resetConnectionsAt(BlockPos pos){
-		RailRegion reg = map.getRegion(getRegion(pos));
-		if(reg == null) return; reg.resetConnectionsAt(pos);
-		//this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
-	}
-
-	@Override
-	public void addConnection(Connection conn){
-		RailRegion reg = map.getRegion(getRegion(conn.getBeginning()));
-		if(reg != null) reg.addConnection(conn); RailUtil.attach(reg);
-		reg = map.getRegion(getRegion(conn.getDestination()));
-		if(reg != null) reg.addConnection(conn.opposite()); RailUtil.attach(reg);
-		//this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
-	}
-
-	@Override
-	public void delConnection(BlockPos start, BlockPos end){
-		RailRegion reg = map.getRegion(getRegion(start));
-		if(reg != null) reg.delConnection(start, end); RailUtil.attach(reg);
-		reg = map.getRegion(getRegion(end));
-		if(reg != null) reg.delConnection(start, end); RailUtil.attach(reg);
-		//this.map.values().forEach(elm -> Print.debug(elm.getConnections()));
+		}*/ return current;
 	}
 
 	@Override
@@ -266,8 +231,8 @@ public class WorldRailImpl implements WorldRailData {
 		Print.debug(this.getLoadedRegions().size() + " railregions loaded");
 		//
 		for(TileEntity tile : world.loadedTileEntityList){
-			if(tile instanceof TrackTileEntity == false) continue;
-			this.setTileData((TrackTileEntity)tile, false);
+			if(tile instanceof JunctionTileEntity == false) continue;
+			this.setTileData((JunctionTileEntity)tile, false);
 		}
 	}
 
@@ -280,26 +245,6 @@ public class WorldRailImpl implements WorldRailData {
 	@Override
 	public Collection<RailRegion> getLoadedRegions(){
 		return map.values();
-	}
-
-	@Override
-	public void setTileData(TrackTileEntity track, boolean fromtile){
-		if(!map.contains(getRegion(track.getPos())) && fromtile){
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("target_listener", WorldRailDataSerializer.REGNAM);
-			compound.setString("task", "sync_region");
-			compound.setIntArray("region", getRegion(track.getPos()));
-			compound.setInteger("dimension", this.getDimension());
-			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
-			return;
-		}
-		if(this.getConnectionsAt(track.getPos()).connections.length > 0){
-			track.region = map.getRegion(getRegion(track.getPos())); track.entry = track.region.getEntry(track.getPos());
-		}
-		else{
-			track.region = null; track.entry = null;
-		}
-		//Print.debug(track.getPos(), track.region, track.entry);
 	}
 
 	@Override
@@ -333,13 +278,13 @@ public class WorldRailImpl implements WorldRailData {
 	}
 
 	@Override
-	public void resetJunctionAt(BlockPos pos){
+	public void delJunction(BlockPos pos){
 		RailRegion reg = map.getRegion(getRegion(pos));
 		if(reg == null) return; reg.resetJunctionAt(pos);
 	}
 
 	@Override
-	public Junction getJunctionAt(BlockPos pos){
+	public Junction getJunction(BlockPos pos){
 		RailRegion reg = map.getRegion(getRegion(pos));
 		if(reg == null) return null;
 		return reg.getJunctionAt(pos);
@@ -356,7 +301,7 @@ public class WorldRailImpl implements WorldRailData {
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
 			return;
 		}
-		if(this.getConnectionsAt(junction.getPos()).connections.length > 0){
+		if(this.getJunction(junction.getPos()).tracks.size() > 0){
 			junction.region = map.getRegion(getRegion(junction.getPos())); junction.entry = junction.region.getEntry(junction.getPos());
 		}
 		else{

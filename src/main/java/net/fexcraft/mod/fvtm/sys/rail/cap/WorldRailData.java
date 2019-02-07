@@ -3,10 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail.cap;
 import java.util.Collection;
 
 import net.fexcraft.mod.fvtm.api.Gauge;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.JunctionTileEntity;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
-import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.minecraft.nbt.NBTBase;
@@ -15,6 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+/** @author Ferdinand Calo' (FEX___96) **/
 public interface WorldRailData {
 	
 	public void setWorld(World world, int dimension);
@@ -27,8 +25,6 @@ public interface WorldRailData {
 
 	public void read(EnumFacing side, NBTBase nbt);
 	
-	public ConnContainer getConnectionsAt(BlockPos pos);
-	
 	public BlockPos getNext(BlockPos current, BlockPos previous, boolean test);
 	
 	/** To be called from a tick handler or something. */
@@ -36,19 +32,11 @@ public interface WorldRailData {
 
 	public void onUnload();
 
-	public void resetConnectionsAt(BlockPos pos);
-	
-	public void addConnection(Connection conn);
-	
-	public void delConnection(BlockPos pos, BlockPos end);
-
 	public void updateRegion(int x, int z, NBTTagCompound nbt);
 
 	public void unloadRegion(int x, int z);
 
 	public Collection<RailRegion> getLoadedRegions();
-
-	public void setTileData(TrackTileEntity trackTileEntity, boolean fromtile);
 
 	public void doTask(String string, int[] reg, NBTTagCompound packet);
 
@@ -58,9 +46,9 @@ public interface WorldRailData {
 
 	public void addJunction(Gauge gauge, BlockPos start, BlockPos end, BlockPos[] arr);
 
-	public void resetJunctionAt(BlockPos pos);
+	public void delJunction(BlockPos pos);
 
-	public Junction getJunctionAt(BlockPos pos);
+	public Junction getJunction(BlockPos pos);
 
 	public void setTileData(JunctionTileEntity junctionTileEntity, boolean fromtile);
 	

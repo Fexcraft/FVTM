@@ -32,12 +32,12 @@ import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.capability.ContainerHolder.ContainerHolderEntity;
 import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
+import net.fexcraft.mod.fvtm.blocks.rail.JunctionBlock;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
-import net.fexcraft.mod.fvtm.blocks.rail.TrackBlock;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;
@@ -145,11 +145,11 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         	return;
         }
         lastpos = pos;
-        if(world.getBlockState(pos).getBlock() == TrackBlock.INSTANCE){
+        if(world.getBlockState(pos).getBlock() == JunctionBlock.INSTANCE){
         	Print.debug("pre");
-        	Connection[] connections = world.getCapability(WorldRailDataSerializer.CAPABILITY, null).getConnectionsAt(pos).connections;
-        	currentpos = connections.length > 0 ? connections[0].getFirstTowardsDest() : pos;
-        	Print.debug("past");
+        	Junction junk = world.getCapability(WorldRailDataSerializer.CAPABILITY, null).getJunction(pos);
+        	currentpos = junk.tracks.size() > 0 ? junk.tracks.get(0).start/*.getFirstTowardsDest()*/ : pos;
+        	Print.debug("past"); //TODO
         }
         else{
         	currentpos = pos;

@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+/** @author Ferdinand Calo' (FEX___96) **/
 public class Junction {
 	
 	//public Integer displaylist;
@@ -62,7 +63,7 @@ public class Junction {
 		if(track == null) return;
 		if(firstcall){
 			Junction junk = world.getCapability(WorldRailDataSerializer.CAPABILITY, null)
-				.getJunctionAt(track.start.equals(core) ? track.end : track.start);
+				.getJunction(track.start.equals(core) ? track.end : track.start);
 			if(junk != null) junk.remove(track.getOppositeId(), false);
 		}
 	}

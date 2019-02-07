@@ -270,7 +270,7 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public void addJunction(Gauge gauge, BlockPos start, BlockPos end, BlockPos[] arr){
-		Track track = new Track(start, end, 0, 0, gauge, arr);
+		Track track = new Track(start, end, gauge, arr);
 		RailRegion reg = map.getRegion(getRegion(start));
 		if(reg != null) reg.addTrack(track);
 		reg = map.getRegion(getRegion(end));

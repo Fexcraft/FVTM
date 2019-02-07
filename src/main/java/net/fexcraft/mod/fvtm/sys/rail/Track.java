@@ -25,13 +25,13 @@ public class Track {
 	public BlockPos start, end;
 	private boolean copy;
 	public String line_id;
-	private float start_, end_;
-	public double length;
+	//private float start_, end_;
+	public float length;
 	
 	/** "subs" was Vec3f's initially. */
-	public Track(BlockPos start, BlockPos end, float startangle, float endangle, Gauge gauge, BlockPos... subs){
+	public Track(BlockPos start, BlockPos end, Gauge gauge, BlockPos... subs){
 		this.id = start.toLong() + "_" + end.toLong(); this.gauge = gauge;
-		this.start = start; this.end = end; start_ = startangle; end_ = endangle;
+		this.start = start; this.end = end; //start_ = startangle; end_ = endangle;
 		this.vectors = new Vec3f[subs == null ? 2 : subs.length + 2];
 		if(vectors.length == 2){
 			vectors[0] = new Vec3f(start.getX() + 0.5, start.getY() + 0.5, start.getZ() + 0.5);
@@ -46,12 +46,9 @@ public class Track {
 			vectors[0] = new Vec3f(start.getX() + 0.5, start.getY() + 0.5, start.getZ() + 0.5);
 			for(int i = 0; i < vecs.length; i++){ vectors[i + 1] = vecs[i]; }
 			vectors[vectors.length - 1] = new Vec3f(end.getX() + 0.5, end.getY() + 0.5, end.getZ() + 0.5);
-			//
-			for(int i = 0; i < vectors.length - 1; i++){
-				length += vectors[i].distanceTo(vectors[i + 1]);
-			}
-			if(Static.dev()) Print.log("Track Length - " + this.getId() + ": " + length);
 		}
+		this.length = this.calcLength();
+		if(Static.dev()) Print.log("Track Length - " + this.getId() + ": " + length);
 	}
 	
 	private Vec3f[] curve(Vec3f[] vecpoints){
@@ -99,11 +96,16 @@ public class Track {
 				compound.getFloat("vector_" + i + "y"),
 				compound.getFloat("vector_" + i + "z"));
 		}
-		this.start_ = compound.getFloat("start_angle");
-		this.end_ = compound.getFloat("end_angle");
+		//this.start_ = compound.getFloat("start_angle");
+		//this.end_ = compound.getFloat("end_angle");
+		this.length = compound.hasKey("length") ? compound.getFloat("length") : calcLength();
 		return this;
 	}
 	
+	private float calcLength(){
+		float temp = 0; for(int i = 0; i < vectors.length - 1; i++){ temp += vectors[i].distanceTo(vectors[i + 1]); } return temp;
+	}
+
 	private void grabLine(){
 		//TODO
 	}
@@ -122,8 +124,9 @@ public class Track {
 			compound.setFloat("vector_" + i + "y", vectors[i].yCoord);
 			compound.setFloat("vector_" + i + "z", vectors[i].zCoord);
 		}
-		compound.setFloat("start_angle", start_);
-		compound.setFloat("start_end", end_);
+		//compound.setFloat("start_angle", start_);
+		//compound.setFloat("start_end", end_);
+		compound.setFloat("length", length);
 		return compound;
 	}
 	
@@ -167,6 +170,29 @@ public class Track {
 
 	public Gauge getGauge(){
 		return gauge;
+	}
+	
+	public float[] getPosition(float distance){
+		if(distance >= this.length){
+			if(distance == this.length) blkposToVec3f(end).toFloatArray();
+			return new float[]{ distance - length };
+		}
+		float traveled = 0, temp, multi;
+		for(int i = 0; i < vectors.length - 1; i++){
+			temp = traveled + (multi = vectors[i].distanceTo(vectors[i + 1]));
+			if(temp >= distance){
+				if(temp == distance) return vectors[i + 1].toFloatArray();
+				return vectors[i + 1].distance(vectors[i], temp - distance).toFloatArray();
+			}
+			else{
+				traveled += multi;
+			}
+		}
+		return blkposToVec3f(start).toFloatArray();
+	}
+
+	private Vec3f blkposToVec3f(BlockPos pos){
+		return new Vec3f(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
 	}
 	
 }

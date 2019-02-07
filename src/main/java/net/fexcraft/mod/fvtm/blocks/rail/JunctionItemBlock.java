@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM.InternalAddon;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -87,9 +88,9 @@ public class JunctionItemBlock extends ItemBlock16 {
 	            return EnumActionResult.SUCCESS;
         	}
         	else{
-        		int check = worldcap.getJunction(pos).tracks.size();
-        		if(check >= 4){
-        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + check + ";)");
+        		Junction junk = worldcap.getJunction(pos);
+        		if(junk != null && junk.tracks.size() >= 4){
+        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + junk.tracks.size() + ";)");
         	        return EnumActionResult.FAIL;
         		}
         		stack.getTagCompound().setLong("fvtm:railtrackstart", pos.toLong());

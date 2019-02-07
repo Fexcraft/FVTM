@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.api.Block.BlockData;
 import net.fexcraft.mod.fvtm.api.Block.BlockItem;
 import net.fexcraft.mod.fvtm.api.Container.ContainerData;
 import net.fexcraft.mod.fvtm.api.Container.ContainerItem;
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Pos;
@@ -187,14 +188,18 @@ public class Renderer {
     	}
     }
     
-	protected static final ModelRendererTurbo model, model0;
+	protected static final ModelRendererTurbo model, model0, model1, model2;
 	static{
-		model = new ModelRendererTurbo(null, 0, 0, 32, 32);
-		model.addCylinder(0, 0, 0, 2, 16, 32, 1, 1, ModelRendererTurbo.MR_TOP);
-		model.setRotationPoint(0, -8, 0);
-		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32);
-		model0.addCylinder(-12, 0, 0, 4, 16, 6, 1.2f, 1, ModelRendererTurbo.MR_TOP);
-		model0.setRotationPoint(0, 0, 0);
+		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
+			.addCylinder(0, 0, 0, 2, 16, 32, 1, 1, ModelRendererTurbo.MR_TOP)
+			.setRotationPoint(0, -8, 0);
+		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32)
+			.addCylinder(-12, 0, 0, 4, 16, 6, 1.2f, 1, ModelRendererTurbo.MR_TOP)
+			.setRotationPoint(0, 0, 0);
+		model1 = new ModelRendererTurbo(null, 0, 0, 32, 32)
+			.addSphere(0, 0, 0, 1, 8, 8, 32, 32).setTextured(false).setColor(new RGB(245, 234, 128));
+		model2 = new ModelRendererTurbo(null, 0, 0, 32, 32)
+			.addSphere(0, 0, 0, 1, 8, 8, 32, 32).setTextured(false).setColor(new RGB(123, 245, 126));
 	}
 	
 	private static WorldRailData raildata;
@@ -253,6 +258,13 @@ public class Renderer {
                 GlStateManager.depthMask(true);
                 GlStateManager.enableTexture2D();
                 GlStateManager.disableBlend();
+                GL11.glPopMatrix();
+                //
+                float[] vec = conn.getPosition(conn.length * (Time.getSecond() / 60f));
+                if(vec.length == 1){ /*Print.debug(vec[0], conn.length);*/ continue; }
+                GL11.glPushMatrix();
+                GL11.glTranslatef(vec[0], vec[1] + (conn.isOppositeCopy() ? 0.1f : 0), vec[2]);
+                (conn.isOppositeCopy() ? model2 : model1).render();// GL11.glTranslatef(-vec[0], -vec[1], -vec[2]);
                 GL11.glPopMatrix();
     		}
         }

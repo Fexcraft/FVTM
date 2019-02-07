@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 
 public class Junction {
 	
+	//public Integer displaylist;
 	public ArrayList<Track> tracks;
 	private BlockPos core;
 	public boolean switch0, switch1;

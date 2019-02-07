@@ -257,22 +257,28 @@ public class Renderer {
     		}
         }
         else{
-    		for(Track conn : value.tracks){
-    			if(conn.isOppositeCopy()) continue;
-    			ModelBase.bindTexture(conn.getGauge().getTexture());
-    			boolean b = false;
-    			for(int k = 0; k < conn.vectors.length - 1; k++){
-    				vec0 = conn.vectors[k];//.subtract(pos);
-    				vec1 = conn.vectors[k + 1];//.subtract(pos);//TODO replace with translate
-    				double dis = vec1.distanceTo(vec0);
-    				/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
-    				if(b = !b) GL11.glTranslated(0, -0.01, 0);
-    				GL11.glTranslatef(0, -0.5f, 0);
-    				while(dis > 0){ RailGaugeModel.renderpiece(((RailGaugeModel)conn.getGauge().getModel()).base, vec0, vec1, dis); dis -= 0.5; }
-    				GL11.glTranslatef(0,  0.5f, 0);
-    				if(b) GL11.glTranslated(0, 0.01, 0);
-    			}
-    		}
+        	//if(value.displaylist == null){
+        		//value.displaylist = GL11.glGenLists(1);
+        		//GL11.glNewList(value.displaylist, GL11.GL_COMPILE);
+        		for(Track conn : value.tracks){
+        			if(conn.isOppositeCopy()) continue;
+        			ModelBase.bindTexture(conn.getGauge().getTexture());
+        			boolean b = false;
+        			for(int k = 0; k < conn.vectors.length - 1; k++){
+        				vec0 = conn.vectors[k];//.subtract(pos);
+        				vec1 = conn.vectors[k + 1];//.subtract(pos);//TODO replace with translate
+        				double dis = vec1.distanceTo(vec0);
+        				/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
+        				if(b = !b) GL11.glTranslated(0, -0.01, 0);
+        				GL11.glTranslatef(0, -0.5f, 0);
+        				while(dis > 0){ RailGaugeModel.renderpiece(((RailGaugeModel)conn.getGauge().getModel()).base, vec0, vec1, dis); dis -= 0.5; }
+        				GL11.glTranslatef(0,  0.5f, 0);
+        				if(b) GL11.glTranslated(0, 0.01, 0);
+        			}
+        		}
+				//GL11.glEndList();
+        	//}
+			//GL11.glCallList(value.displaylist);
         }
 	}
 

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.prototype;
+package net.fexcraft.mod.fvtm.sys.rail.cap;
 
 import java.util.Collection;
 
@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.blocks.rail.JunctionTileEntity;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
+import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.minecraft.nbt.NBTBase;

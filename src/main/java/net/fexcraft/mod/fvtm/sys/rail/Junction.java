@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.ArrayList;
 
-import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
+import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

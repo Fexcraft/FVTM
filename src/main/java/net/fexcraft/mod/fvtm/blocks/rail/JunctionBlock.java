@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.blocks.rail;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
+import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.util.Tabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;

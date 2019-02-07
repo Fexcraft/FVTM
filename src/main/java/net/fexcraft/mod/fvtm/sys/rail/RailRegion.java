@@ -14,10 +14,10 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.prototype.ConnContainer;
-import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.rail.WorldRailImpl;
+import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
+import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailImpl;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -135,7 +135,7 @@ public class RailRegion {
 
 	public void save(){
 		if(util.getWorld().isRemote) return;
-		if(wasempty && connections.isEmpty()) return;
+		if(wasempty && junctions.isEmpty()) return;
 		NBTTagCompound compound = this.write();
 		try{
 			CompressedStreamTools.write(compound, this.getFile(x, z));

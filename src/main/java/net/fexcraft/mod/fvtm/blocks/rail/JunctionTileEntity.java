@@ -4,8 +4,8 @@ import java.util.Map.Entry;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.prototype.ConnContainer;
-import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
+import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

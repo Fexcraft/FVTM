@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.rail;
+package net.fexcraft.mod.fvtm.sys.rail.cap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,8 +16,10 @@ import net.fexcraft.mod.fvtm.blocks.rail.JunctionTileEntity;
 import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
 import net.fexcraft.mod.fvtm.blocks.rail.TrackTileEntity;
 import net.fexcraft.mod.fvtm.prototype.ConnContainer;
-import net.fexcraft.mod.fvtm.prototype.WorldRailData;
-import net.fexcraft.mod.fvtm.prototype.WorldRailDataSerializer;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.LineSection;
+import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
+import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

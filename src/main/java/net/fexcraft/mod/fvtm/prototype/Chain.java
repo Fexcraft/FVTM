@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.prototype;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  *

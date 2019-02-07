@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM.InternalAddon;
 import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -23,6 +25,7 @@ public class Track {
 	private boolean copy;
 	public String line_id;
 	private float start_, end_;
+	public double length;
 	
 	/** "subs" was Vec3f's initially. */
 	public Track(BlockPos start, BlockPos end, float startangle, float endangle, Gauge gauge, BlockPos... subs){
@@ -42,6 +45,11 @@ public class Track {
 			vectors[0] = new Vec3f(start.getX() + 0.5, start.getY() + 0.5, start.getZ() + 0.5);
 			for(int i = 0; i < vecs.length; i++){ vectors[i + 1] = vecs[i]; }
 			vectors[vectors.length - 1] = new Vec3f(end.getX() + 0.5, end.getY() + 0.5, end.getZ() + 0.5);
+			//
+			for(int i = 0; i < vectors.length - 1; i++){
+				length += vectors[i].distanceTo(vectors[i + 1]);
+			}
+			if(Static.dev()) Print.log("Track Length - " + this.getId() + ": " + length);
 		}
 	}
 	

@@ -110,10 +110,10 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         		if(state0 == null){ Print.chat(player, "&cRailConnector at first connection point is NULL."); return EnumActionResult.FAIL; }
         		//if(tte == null){ Print.chat(player, "&cTileEntity at second connection point is NULL."); return EnumActionResult.FAIL; }
         		Junction junk = worldcap.getJunctionAt(pos0); Gauge sec = this.getGauge(stack);
-        		if(junk != null && junk.tracks.length > 0 && !junk.tracks[0].isCompatibleGauge(sec)){
+        		if(junk != null && junk.tracks.size() > 0 && !junk.tracks.get(0).isCompatibleGauge(sec)){
         			Print.chat(player, "&cGauges do not match.");
         			Print.chat(player, "&7Item: &9(" + sec.width() + ") &7" + sec.getName());
-        			Print.chat(player, "&7This: &a(" + junk.tracks[0].getGauge().width() + ") &7" + junk.tracks[0].getGauge().getName());
+        			Print.chat(player, "&7This: &a(" + junk.tracks.get(0).getGauge().width() + ") &7" + junk.tracks.get(0).getGauge().getName());
         	        return EnumActionResult.FAIL;
         		}
         		if(stack.getTagCompound().getInteger("fvtm:railtrackpoints") == 1){
@@ -134,8 +134,8 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         	}
         	else{
         		Junction junk = worldcap.getJunctionAt(pos);
-    			if(junk != null && junk.tracks.length >= 4){
-        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + junk.tracks.length + ";)");
+    			if(junk != null && junk.tracks.size() >= 4){
+        			Print.chat(player, "&cTileEntity reached max allowed connections. (#" + junk.tracks.size() + ";)");
         	        return EnumActionResult.FAIL;
     			}
 				Gauge sec = this.getGauge(stack);
@@ -143,10 +143,10 @@ public class GenericRailGaugeItem extends Item implements GaugeItem {
         			Print.chat(player, "&cItem has no Gauge Data.");
         	        return EnumActionResult.FAIL;
     			}
-    			if(junk != null && junk.tracks.length > 0 && !junk.tracks[0].isCompatibleGauge(sec)){
+    			if(junk != null && junk.tracks.size() > 0 && !junk.tracks.get(0).isCompatibleGauge(sec)){
         			Print.chat(player, "&cGauges do not match.");
         			Print.chat(player, "&7Item: &9(" + sec.width() + ") &7" + sec.getName());
-        			Print.chat(player, "&7Rail: &b(" + junk.tracks[0].getGauge().width() + ") &7" + junk.tracks[0].getGauge().getName());
+        			Print.chat(player, "&7Rail: &b(" + junk.tracks.get(0).getGauge().width() + ") &7" + junk.tracks.get(0).getGauge().getName());
         	        return EnumActionResult.FAIL;
     			}
         		stack.getTagCompound().setLong("fvtm:railtrackstart", pos.toLong());

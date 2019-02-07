@@ -238,7 +238,7 @@ public class RailRegion {
 	public void resetJunctionAt(BlockPos pos){
 		if(!junctions.containsKey(pos)) return;
 		Junction junk = junctions.remove(pos);
-		for(Track track : junk.tracks) junk.remove(track, true);
+		if(junk != null) junk.clear();
 		this.updateAccess(null); //this.sendUpdatePacket(false); return;
 	}
 

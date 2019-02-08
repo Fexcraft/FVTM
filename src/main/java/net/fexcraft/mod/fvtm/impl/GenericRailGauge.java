@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.impl;
 
-import java.util.Map;
-
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -10,19 +8,16 @@ import net.fexcraft.mod.fvtm.FVTM.InternalAddon;
 import net.fexcraft.mod.fvtm.api.Addon;
 import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.api.Model;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
-import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 public class GenericRailGauge implements Gauge {
 
-    private Model<Map.Entry<BlockPos, ConnContainer>, Connection> model;
+    private Model<Object, Object> model;
     private ResourceLocation registryname, texture;
     private Addon addon;
     private String name;
@@ -88,7 +83,7 @@ public class GenericRailGauge implements Gauge {
 	}
 
 	@Override
-	public Model<Map.Entry<BlockPos, ConnContainer>, Connection> getModel(){
+	public Model<Object, Object> getModel(){
 		return model;
 	}
 

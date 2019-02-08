@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -11,7 +10,6 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.prototype.ConnContainer;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
@@ -25,10 +23,6 @@ import net.minecraft.util.math.BlockPos;
 /** @author Ferdinand Calo' (FEX___96) **/
 public class RailRegion {
 	
-	//private ArrayList<Connection> connections = new ArrayList<>();
-	private TreeMap<BlockPos, ConnContainer> connections = new TreeMap<BlockPos, ConnContainer>();
-	//private static final Connection[] NONE = new Connection[0];
-	public static final ConnContainer EMPTY = new ConnContainer();
 	private WorldRailImpl util;
 	public long lastaccessed;
 	private boolean wasempty;
@@ -49,7 +43,7 @@ public class RailRegion {
 			if(compound == null) compound = new NBTTagCompound();
 		}
 		this.read(compound);
-		Print.debug("x" + x + ", z" + z + " |L| " + connections);
+		Print.debug("x" + x + ", z" + z + " |L| " + junctions);
 		if(!util.getWorld().isRemote) this.sendUpdatePacket(false);
 	}
 
@@ -65,19 +59,6 @@ public class RailRegion {
 	public NBTTagCompound write(){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("LastUse", this.lastaccessed);
-		/*NBTTagList list = new NBTTagList();
-		for(Entry<BlockPos, ConnContainer> entry : connections.entrySet()){
-			NBTTagList clist = new NBTTagList();
-			NBTTagCompound com = new NBTTagCompound();
-			com.setLong("Position", entry.getKey().toLong());
-			for(Connection conn : entry.getValue().connections){
-				clist.appendTag(conn.write(new NBTTagCompound()));
-			}
-			com.setBoolean("Switch0", entry.getValue().switch0);
-			com.setTag("Connections", clist);
-			list.appendTag(com);
-		}
-		compound.setTag("Positions", list);*/
 		compound.setInteger("RegionX", x);
 		compound.setInteger("RegionZ", z);
 		//
@@ -91,23 +72,6 @@ public class RailRegion {
 	
 	public void read(NBTTagCompound compound){
 		READING = true;
-		/*if(compound.hasKey("Positions")){
-			NBTTagList list = (NBTTagList)compound.getTag("Positions");
-			for(NBTBase base : list){
-				NBTTagCompound com = (NBTTagCompound)base;
-				BlockPos pos = BlockPos.fromLong(com.getLong("Position"));
-				if(com.hasKey("Connections")){
-					NBTTagList clist = (NBTTagList)com.getTag("Connections");
-					Connection[] conns = new Connection[clist.tagCount()];
-					for(int i = 0; i < conns.length; i++){
-						conns[i] = new Connection().read((NBTTagCompound)clist.get(i));
-					}
-					boolean bool = com.getBoolean("Switch0");
-					connections.put(pos, new ConnContainer(conns, bool));
-				} 
-			}
-		}
-		else wasempty = true;*/
 		if(compound.hasKey("Junctions")){
 			junctions.clear();
 			NBTTagList list = (NBTTagList)compound.getTag("Junctions");
@@ -143,12 +107,7 @@ public class RailRegion {
 			Print.log("FAILED TO WRITE RAIL REGION, THIS IS SEVERE.");
 			Print.log(compound); e.printStackTrace();
 		}
-		Print.debug("x" + x + ", z" + z + " |S| " + connections);
-	}
-
-	public ConnContainer getConnectionsAt(BlockPos pos){ this.updateAccess(null);
-		return connections.containsKey(pos) ? connections.get(pos) : EMPTY;
-		//return connections.stream().filter(pre -> pre.getBeginning().equals(pos) || pre.getDestination().equals(pos)).toArray(Connection[]::new);
+		Print.debug("x" + x + ", z" + z + " |S| " + junctions);
 	}
 
 	public void updateAccess(Long date){
@@ -160,15 +119,11 @@ public class RailRegion {
 		return this.equals(reg);
 	}
 
-	public Entry<BlockPos, ConnContainer> getEntry(BlockPos pos){
-		for(Entry<BlockPos, ConnContainer> entry : connections.entrySet()){
-			if(entry.getKey().equals(pos)) return entry;
-		} return null;
-	}
-
-	public void toggleSwitch(BlockPos pos){
-		ConnContainer conns = this.connections.get(pos); if(conns == null) return;
-		conns.switch0 = !conns.switch0; this.sendUpdatePacket(false);//TODO specialized packet
+	public void toggleSwitch(BlockPos pos, boolean type){
+		Junction junk = this.junctions.get(pos); if(junk == null) return;
+		if(type) junk.switch1 = !junk.switch1;
+			else junk.switch0 = !junk.switch0;
+		this.sendUpdatePacket(false);//TODO specialized packet
 	}
 
 	public void addTrack(Track track){

@@ -72,7 +72,7 @@ public class JunctionBlock extends Block implements ITileEntityProvider {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         if(world.isRemote || hand == EnumHand.OFF_HAND){ return false; }
         if(player.getHeldItem(hand).isEmpty()){
-        	world.getCapability(WorldRailDataSerializer.CAPABILITY, null).toggleSwitch(pos);
+        	world.getCapability(WorldRailDataSerializer.CAPABILITY, null).toggleSwitch(pos, false);
         	return true;
         } return false;
     }

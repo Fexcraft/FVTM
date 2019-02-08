@@ -2,8 +2,6 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
@@ -12,14 +10,12 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.api.Model;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.blocks.rail.Connection;
-import net.fexcraft.mod.fvtm.prototype.ConnContainer;
-import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.render.Renderer;
 import net.fexcraft.mod.fvtm.util.Vector3D;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 
-public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>, Connection> {
+public class RailGaugeModel implements Model<Object, Object> {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	private static final ArrayList<String> creators = new ArrayList<>();
@@ -31,13 +27,13 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>,
 	public RailGaugeModel(){ super(); }
 
 	@Override
-	public void render(Map.Entry<BlockPos, ConnContainer> te, Connection conn){
+	public void render(Object te, Object conn){
 		this.render(te, conn, null, 0);
 	}
 
 	@Override
-	public void render(Map.Entry<BlockPos, ConnContainer> te, Connection conn, VehicleEntity ent, int i){
-		if(conn.opposite) return;
+	public void render(Object te, Object conn, VehicleEntity ent, int i){
+		/*if(conn.opposite) return;
 		if(Command.DEBUG){
 			float[] colr = getColor(te.getValue().switch0, te.getValue().connections.length, i);
 			GL11.glColor4f(colr[0], colr[1], colr[2], 0.25f);
@@ -48,7 +44,7 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>,
 			Vec3d vec = conn.getVecpoint(k + 1).subtract(te.getKey().getX(), te.getKey().getY(), te.getKey().getZ());
 			if(i > 2) GL11.glTranslated(0, -0.02, 0);
 			double dis = vec1.distanceTo(vec);
-			/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
+			/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); *//*
 			if(b = !b) GL11.glTranslated(0, -0.02, 0);
 			while(dis > 0){ renderpiece(vec1, vec, dis); dis -= 0.5; }
 			if(b) GL11.glTranslated(0, 0.02, 0);
@@ -61,10 +57,10 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>,
 				GL11.glRotated( angle, 0, 1, 0);
 				GL11.glTranslated(-0.5, -0.5, -0.5);
 				GL11.glPopMatrix();
-			}*/
+			}*//*
 			if(i > 2) GL11.glTranslated(0, 0.02, 0);
 		}
-		if(Command.DEBUG) GL11.glColor4f(1f, 1f, 1f, 1f);
+		if(Command.DEBUG) GL11.glColor4f(1f, 1f, 1f, 1f);*/
 	}
 
 	@Override
@@ -77,7 +73,7 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>,
 		return false;
 	}
 
-	private void renderpiece(Vec3d vec1, Vec3d vec, double dis){
+	/*private void renderpiece(Vec3d vec1, Vec3d vec, double dis){
 		double angle = Math.toDegrees(Math.atan2(vec1.z - vec.z, vec1.x - vec.x));
 		double[] dest = new double[]{ vec.x, vec.y, vec.z };
 		dest = Vector3D.direction(dest[0] - vec1.x, dest[1] - vec1.y, dest[2] - vec1.z);
@@ -89,9 +85,9 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>,
 		GL11.glRotated(-angle, 0, 1, 0);
 		GL11.glRotated(-180, 0, 0, 1);
 		GL11.glTranslated(-dest[0], -dest[1], -dest[2]);
-	}
+	}*/
 
-	public static void renderpiece(ModelRendererTurbo[] model, Vec3f vec1, Vec3f vec, double dis){
+	public static void renderpiece(ModelRendererTurbo[] model, Vec3f vec1, Vec3f vec, double dis, boolean light){
 		double angle = Math.toDegrees(Math.atan2(vec1.zCoord - vec.zCoord, vec1.xCoord - vec.xCoord));
 		double[] dest = new double[]{ vec.xCoord, vec.yCoord, vec.zCoord };
 		dest = Vector3D.direction(dest[0] - vec1.xCoord, dest[1] - vec1.yCoord, dest[2] - vec1.zCoord);
@@ -99,13 +95,18 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>,
 		GL11.glTranslated( dest[0],  dest[1],  dest[2]);
 		GL11.glRotated( 180, 0, 0, 1);
 		GL11.glRotated( angle, 0, 1, 0);
+		if(light){
+	        int i = Renderer.getBrightness(dest[0], dest[1], dest[2]), j = i % 65536, k = i / 65536;
+	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		}
 		for(ModelRendererTurbo turbo : model) turbo.render();
 		GL11.glRotated(-angle, 0, 1, 0);
 		GL11.glRotated(-180, 0, 0, 1);
 		GL11.glTranslated(-dest[0], -dest[1], -dest[2]);
 	}
 	
-	private float[] getColor(boolean switch0, int length, int i){
+	/*private float[] getColor(boolean switch0, int length, int i){
 		switch(length){
 			case 1:{
 				return new float[]{ 0, 0, 1 };
@@ -131,6 +132,6 @@ public class RailGaugeModel implements Model<Map.Entry<BlockPos, ConnContainer>,
 			}
 		}
 		return new float[]{ 1, 0, 0 };
-	}
+	}*/
 	
 }

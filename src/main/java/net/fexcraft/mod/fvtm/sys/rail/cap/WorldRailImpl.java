@@ -32,6 +32,7 @@ public class WorldRailImpl implements WorldRailData {
 	private DynamicRegionMap map = new DynamicRegionMap(this);
 	private World world;
 	private int dim;
+	private boolean LOADING;
 	//
 	public ArrayList<LineSection> sections = new ArrayList<>();
 
@@ -94,9 +95,11 @@ public class WorldRailImpl implements WorldRailData {
 			if(region != null) return region;
 			else{
 				//TODO check if qualifies for load
+				util.LOADING = true;
 				region = new RailRegion(util, reg[0], reg[1], null);
 				MoveUtil.attach(region);
 				this.put(new XZKey(reg), region);
+				util.LOADING = false;
 				return this.get(tempkey);
 			}
 		}
@@ -158,16 +161,20 @@ public class WorldRailImpl implements WorldRailData {
 	}
 
 	private void unloadRegion(XZKey key){
+		LOADING = true;
 		RailRegion reg = map.remove(key); if(reg == null) return;
 		reg.save(); reg.sendUpdatePacket(true); MoveUtil.detach(reg);
+		LOADING = false;
 	}
 
 	@Override
 	public void onUnload(){
+		LOADING = true;
 		ArrayList<XZKey> keys = new ArrayList<>();
 		for(Entry<XZKey, RailRegion> entry : map.entrySet()){
 			keys.add(entry.getKey());
 		} for(XZKey key : keys) unloadRegion(key);
+		LOADING = false;
 	}
 
 	@Override
@@ -220,6 +227,7 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public void updateRegion(int x, int z, NBTTagCompound nbt){
+		LOADING = true;
 		if(map.contains(x, z)){
 			this.map.getRegion(x, z).read(nbt); //return;
 			Print.debug("Updating RailRegion " + x + ", " + z);
@@ -232,8 +240,10 @@ public class WorldRailImpl implements WorldRailData {
 		//
 		for(TileEntity tile : world.loadedTileEntityList){
 			if(tile instanceof JunctionTileEntity == false) continue;
-			this.setTileData((JunctionTileEntity)tile, false);
+			//this.setTileData((JunctionTileEntity)tile, false);
+			//TODO
 		}
+		LOADING = false;
 	}
 
 	@Override
@@ -258,9 +268,9 @@ public class WorldRailImpl implements WorldRailData {
 	}
 
 	@Override
-	public void toggleSwitch(BlockPos pos){
+	public void toggleSwitch(BlockPos pos, boolean type){
 		RailRegion region = map.getRegion(getRegion(pos));
-		if(region == null) return; region.toggleSwitch(pos);
+		if(region == null) return; region.toggleSwitch(pos, type);
 	}
 
 	@Override
@@ -301,12 +311,18 @@ public class WorldRailImpl implements WorldRailData {
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
 			return;
 		}
-		if(this.getJunction(junction.getPos()).tracks.size() > 0){
+		/*Junction junk = this.getJunction(junction.getPos());
+		if(junk != null && junk.tracks.size() > 0){
 			junction.region = map.getRegion(getRegion(junction.getPos())); junction.entry = junction.region.getEntry(junction.getPos());
 		}
 		else{
 			junction.region = null; junction.entry = null;
-		}
+		}*/
+	}
+
+	@Override
+	public boolean isLoading(){
+		return LOADING;
 	}
 
 }

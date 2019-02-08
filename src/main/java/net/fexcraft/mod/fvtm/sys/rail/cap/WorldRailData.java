@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 /** @author Ferdinand Calo' (FEX___96) **/
 public interface WorldRailData {
-	
+
 	public void setWorld(World world, int dimension);
 	
 	public World getWorld();
@@ -40,7 +40,7 @@ public interface WorldRailData {
 
 	public void doTask(String string, int[] reg, NBTTagCompound packet);
 
-	public void toggleSwitch(BlockPos pos);
+	public void toggleSwitch(BlockPos pos, boolean type);
 	
 	public void updateTick();
 
@@ -51,5 +51,8 @@ public interface WorldRailData {
 	public Junction getJunction(BlockPos pos);
 
 	public void setTileData(JunctionTileEntity junctionTileEntity, boolean fromtile);
+	
+	/** Mainly for client side, to prevent concurrent errors on rendering. */
+	public boolean isLoading();
 	
 }

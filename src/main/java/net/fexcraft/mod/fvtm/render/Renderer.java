@@ -30,14 +30,13 @@ import net.minecraft.client.Minecraft;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Map.Entry;
-
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -51,6 +50,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -204,9 +204,10 @@ public class Renderer {
 	
 	private static WorldRailData raildata;
     
-    @SuppressWarnings("unchecked") @SubscribeEvent
+    @SubscribeEvent
     public void renderRails(RenderWorldLastEvent event){
 	    raildata = Static.getServer().getEntityWorld().getCapability(WorldRailDataSerializer.CAPABILITY, null);
+        if(raildata.isLoading()) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();
         double y = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * event.getPartialTicks();
@@ -219,14 +220,16 @@ public class Renderer {
         for(RailRegion reg : raildata.getLoadedRegions()){
         	if(reg.READING) continue;
         	for(int i = 0; i < reg.getJunctions().size(); i++){
-        		Entry<BlockPos, Junction> str = (Entry<BlockPos, Junction>)reg.getJunctions().entrySet().toArray()[i];
-        		/*GL11.glPushMatrix();
-        		GL11.glTranslatef(str.getKey().getX() + 0.5f, str.getKey().getY() + 0.5f, str.getKey().getZ() + 0.5f);
-        		RGB.RED.glColorApply();
-        		model.render();
-        		RGB.glColorReset();
-        		GL11.glPopMatrix();*/
-        		renderLines(str.getValue());
+        		Junction junk = reg.getJunctions().values().toArray(new Junction[0])[i];
+        		if(junk.tracks.isEmpty()){
+            		GL11.glPushMatrix();
+                    GlStateManager.disableTexture2D();
+            		GL11.glTranslatef(junk.getCore().getX() + 0.5f, junk.getCore().getY() + 0.5f, junk.getCore().getZ() + 0.5f);
+            		RGB.RED.glColorApply(); model.render(); RGB.glColorReset();
+                    GlStateManager.enableTexture2D();
+            		GL11.glPopMatrix();
+        		}
+        		renderLines(junk);
         	}
         }
 		GL11.glPopMatrix();
@@ -272,6 +275,13 @@ public class Renderer {
         	//if(value.displaylist == null){
         		//value.displaylist = GL11.glGenLists(1);
         		//GL11.glNewList(value.displaylist, GL11.GL_COMPILE);
+        		//
+            	GL11.glPushMatrix();
+            	Minecraft.getMinecraft().entityRenderer.enableLightmap();
+            	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            	GL11.glEnable(GL11.GL_LIGHTING);
+            	GL11.glDisable(GL11.GL_BLEND);
+            	RenderHelper.enableStandardItemLighting();
         		for(Track conn : value.tracks){
         			if(conn.isOppositeCopy()) continue;
         			ModelBase.bindTexture(conn.getGauge().getTexture());
@@ -283,15 +293,28 @@ public class Renderer {
         				/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
         				if(b = !b) GL11.glTranslated(0, -0.01, 0);
         				GL11.glTranslatef(0, -0.5f, 0);
-        				while(dis > 0){ RailGaugeModel.renderpiece(((RailGaugeModel)conn.getGauge().getModel()).base, vec0, vec1, dis); dis -= 0.5; }
+        				while(dis > 0){ RailGaugeModel.renderpiece(((RailGaugeModel)conn.getGauge().getModel()).base, vec0, vec1, dis, true); dis -= 0.5; }
         				GL11.glTranslatef(0,  0.5f, 0);
         				if(b) GL11.glTranslated(0, 0.01, 0);
         			}
         		}
+        		Minecraft.getMinecraft().entityRenderer.disableLightmap();
+        		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        		GL11.glDisable(GL11.GL_LIGHTING);
+        		GL11.glPopMatrix();
+        		//
 				//GL11.glEndList();
         	//}
 			//GL11.glCallList(value.displaylist);
         }
+	}
+	
+	public static int getBrightness(double x, double y, double z){
+        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(MathHelper.floor(x), 0, MathHelper.floor(z));
+        if(Minecraft.getMinecraft().world.isBlockLoaded(blockpos$mutableblockpos)){
+            blockpos$mutableblockpos.setY(MathHelper.floor(y));
+            return Minecraft.getMinecraft().world.getCombinedLight(blockpos$mutableblockpos, 0);
+        } else { return 0; }
 	}
 
 	@SuppressWarnings("unused")

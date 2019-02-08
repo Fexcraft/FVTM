@@ -16,7 +16,7 @@ import net.fexcraft.mod.fvtm.api.Part.PartData;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
-import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.land.UnboundVehicleEntity;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.renderer.entity.Render;

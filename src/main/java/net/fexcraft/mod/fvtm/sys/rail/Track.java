@@ -153,7 +153,9 @@ public class Track {
 		track.vectors = new Vec3f[vectors.length]; int j = vectors.length - 1;
 		for(int i = 0; i < track.vectors.length; i++){
 			track.vectors[i] = vectors[j--];
-		} return track;
+		}
+		track.length = track.calcLength();
+		return track;
 	}
 	
 	public boolean isOppositeCopy(){

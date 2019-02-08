@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.impl.part;
 
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.entities.UnboundVehicleEntity;
+import net.fexcraft.mod.fvtm.entities.land.UnboundVehicleEntity;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.util.SoundCategory;

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.entities;
+package net.fexcraft.mod.fvtm.entities.land;
 
 import javax.annotation.Nullable;
 
@@ -32,6 +32,8 @@ import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.capability.ContainerHolder.ContainerHolderEntity;
 import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
+import net.fexcraft.mod.fvtm.entities.SeatEntity;
+import net.fexcraft.mod.fvtm.entities.WheelEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
 import net.fexcraft.mod.fvtm.util.FvtmPermissions;

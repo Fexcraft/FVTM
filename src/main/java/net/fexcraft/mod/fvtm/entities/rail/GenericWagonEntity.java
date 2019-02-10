@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.entities.rail;
 
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.blocks.rail.RailUtil;
+import net.fexcraft.mod.fvtm.sys.rail.MoveUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -19,7 +19,8 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
 	@Override
 	public void onUpdateMovement(double amount, boolean call, Boolean frontdir){
         if((amount > 0.001 || amount < -0.001)){ /*amount = Math.abs(amount);*/
-        	set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, amount, reverse), reverse);
+        	//set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, amount, reverse), reverse);
+        	MoveUtil.moveEntity(this, amount, reverse);
         }
         /*if(call){
         	if(vehicledata.getVehicle().isTrailerOrWagon()){
@@ -73,7 +74,9 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
         	}
         }*/
         //
-    	if(rear != null && (frontdir == null ? true : frontdir)){
+        
+        //
+    	/*if(rear != null && (frontdir == null ? true : frontdir)){
     		boolean fr = rear.front == this, rev = fr ;//? reverse : !reverse;
     		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16FloatX());
     		((GenericWagonEntity)rear).set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? dob : -dob, rev), rev);
@@ -84,7 +87,7 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
     		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? front.getVehicleData().getFrontConnectorPos() : front.getVehicleData().getRearConnectorPos()).to16FloatX());
     		((GenericWagonEntity)front).set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? -dob : dob, rev), rev);
     		front.onUpdateMovement(0, call, fr);
-    	}
+    	}*/
 	}
 	
 	/*protected void move(double amount, boolean up, Boolean bool){
@@ -93,10 +96,10 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
     	if(up && bool != null) this.onUpdateMovement(0f, true, bool);
 	}*/
 	
-	public void set(RailUtil.Return ret, boolean reverse){
+	/*public void set(RailUtil.Return ret, boolean reverse){
     	this.posX = ret.dest[0]; this.posY = ret.dest[1]; this.posZ = ret.dest[2];
     	this.prevPosX = this.posX; this.prevPosY = this.posY; this.prevPosZ = this.posZ;
     	this.currentpos = reverse ? ret.last : ret.curr; this.lastpos = reverse ? ret.curr : ret.last;
-	}
+	}*/
 	
 }

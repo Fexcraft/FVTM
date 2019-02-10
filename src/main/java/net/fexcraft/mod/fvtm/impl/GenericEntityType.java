@@ -114,7 +114,7 @@ public class GenericEntityType extends EntityType {
                 		return false;
                 	}
                 	Junction junk = worldcap.getJunction(pos);
-                	if(junk == null || junk.tracks.size() == 0){
+                	if(junk == null || junk.tracks.isEmpty()){
                 		Print.chat(player, "Track has no Connection Data.");
                 		return false;
                 	}

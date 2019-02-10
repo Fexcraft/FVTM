@@ -192,9 +192,39 @@ public class Track {
 		}
 		return blkposToVec3f(start).toFloatArray();
 	}
+	
+	public Vec3f getVectorPosition(float distance){
+		if(distance >= this.length){
+			//if(distance == this.length) blkposToVec3f(end).toFloatArray();
+			//return new float[]{ distance - length };
+			return blkposToVec3f(end);
+		}
+		float traveled = 0, temp, multi;
+		for(int i = 0; i < vectors.length - 1; i++){
+			temp = traveled + (multi = vectors[i].distanceTo(vectors[i + 1]));
+			if(temp >= distance){
+				if(temp == distance) return vectors[i + 1];
+				return vectors[i + 1].distance(vectors[i], temp - distance);
+			}
+			else{
+				traveled += multi;
+			}
+		}
+		return blkposToVec3f(start);
+	}
 
-	private Vec3f blkposToVec3f(BlockPos pos){
+	public static Vec3f blkposToVec3f(BlockPos pos){
 		return new Vec3f(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		return obj == this ? true : obj instanceof Track ? ((Track)obj).getId().equals(this.getId()) : false;
+	}
+	
+	@Override
+	public String toString(){
+		return String.format("Track[%s-%s, %s, %s]", start.toLong(), end.toLong(), vectors.length, copy ? "copy" : "original");
 	}
 	
 }

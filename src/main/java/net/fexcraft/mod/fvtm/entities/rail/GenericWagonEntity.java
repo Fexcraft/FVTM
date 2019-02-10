@@ -51,6 +51,18 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
         	}
         }*/
         if(!call) return;
+    	/*if(rear != null && (frontdir == null ? true : frontdir)){
+    		boolean fr = rear.front == this, rev = fr ;//? reverse : !reverse;
+    		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16FloatX());
+    		MoveUtil.moveEntity(rear, amount, rev);
+    		rear.onUpdateMovement(0, call, fr);
+    	}
+    	if(front != null && (frontdir == null ? true : !frontdir)){
+    		boolean fr = front.front == this, rev = fr ;//? !reverse : reverse;
+    		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? front.getVehicleData().getFrontConnectorPos() : front.getVehicleData().getRearConnectorPos()).to16FloatX());
+    		MoveUtil.moveEntity(front, amount, rev);
+    		front.onUpdateMovement(0, call, fr);
+    	}*/
         //Vec3d own, oth;
         /*if(this.vehicledata.getVehicle().isTrailerOrWagon()){
         	

@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import net.fexcraft.mod.addons.gep.attributes.ContainerAttribute;
 import net.fexcraft.mod.addons.gep.attributes.InventoryAttribute;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.KeyItem;
 import net.fexcraft.lib.mc.api.LockableObject;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
@@ -38,6 +39,7 @@ import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
 import net.fexcraft.mod.fvtm.sys.rail.Bogie;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.MoveUtil;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
@@ -946,9 +948,19 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
 	//temp
     //public double[] _front, _back;
+    private Vec3f qfront, qback;
 	
 	private void updateRotation(){
-		return;
+		WorldRailData raildata = this.world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+		qfront = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr_track, passed, frontconndis)).tir;
+		qback = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr_track, passed, rearconndis)).tir;
+        double dx = qfront.xCoord - qback.xCoord, dy = qfront.yCoord - qback.yCoord, dz = qfront.zCoord - qback.zCoord;
+        double dxz = Math.sqrt(dx * dx + dz * dz);
+        double yaw = Math.atan2(dz, dx);
+        double pitch = -Math.atan2(dy, dxz);
+        double roll = 0F;
+        axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+        //
         /*Vec3d thiz = this.getPositionVector();
         _front = RailUtil.move(this.getWorldData(), thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX()).dest;
         _back = RailUtil.move(this.getWorldData(), thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX()).dest;

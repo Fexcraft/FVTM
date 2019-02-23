@@ -312,4 +312,18 @@ public class DefaultPrograms {
 
 	}
 	
+	public static final Program NO_CULLFACE = new AutoRegProgram(){
+		@Override public String getId(){ return "fvtm:no_cullface"; }
+		//
+		@Override
+		public void preRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+            GL11.glDisable(GL11.GL_CULL_FACE);
+		}
+		//
+		@Override
+		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
+            GL11.glEnable(GL11.GL_CULL_FACE);
+		}
+	};
+	
 }

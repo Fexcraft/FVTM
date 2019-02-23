@@ -403,17 +403,17 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             		return true;
             	} toggletimer = 4;
                 throttle -= 0.05F;
-                if(throttle < 0F){
-                    throttle = 0F;
+                if(throttle < 1F){
+                    throttle = 1F;
                 }
                 return true;
             }
             case 2: {//Left
-                reverse = false;
+                //reverse = false;
                 return true;
             }
             case 3: {//Right
-                reverse = true;
+                //reverse = true;
                 return true;
             }
             case 4: {//Brake

@@ -22,16 +22,18 @@ public class MoveUtil {
 		
 	}
 
-	public static void moveEntity(RailboundVehicleEntity entity, double amount, boolean reverse){
+	public static double moveEntity(RailboundVehicleEntity entity, double amount){//, boolean reverse){
 		WorldRailData raildata = entity.world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+		boolean reverse = amount < 0;
 		amount = testDistance(raildata, entity.curr_track, entity.passed, amount);//+ (reverse ? entity.rearconndis : entity.frontconndis)
 		//amount -= reverse ? entity.rearconndis : entity.frontconndis;
 		ObjCon<Track, Double, Vec3f> obj = travelDistance(raildata, new ObjCon<Track, Double, Double>(entity.curr_track, entity.passed, reverse ? -amount : amount));
 		entity.last_track = entity.curr_track; entity.curr_track = obj.fir; entity.passed = obj.sec;
-		if(!entity.last_track.equals(entity.curr_track)) entity.reverse = false;
+		//if(!entity.last_track.equals(entity.curr_track)) entity.reverse = false;
 		//
 		entity.posX = obj.tir.xCoord; entity.posY = obj.tir.yCoord; entity.posZ = obj.tir.zCoord;
 		entity.prevPosX = entity.posX; entity.prevPosY = entity.posY; entity.prevPosZ = entity.posZ;
+		return amount;
 		//
 		//
 		/*if(reverse) amount = -amount;

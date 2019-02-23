@@ -1,0 +1,54 @@
+{
+    "RegistryName": "fvp:c4",
+    "Addon": "fvtm:fvp",
+    "FullName": "C4 Revised",
+    "ModelFile": "fvp:models/vehicle/c4",
+    "PrimaryColor": {
+        "Red": 168,
+        "Blue": 168,
+        "Green": 168
+    },
+    "SecondaryColor": {
+        "Red": 194,
+        "Blue": 194,
+        "Green": 194
+    },
+    "Textures": [
+        "fvp:textures/entities/c4_general.png"
+    ],
+    "WheelPos":[
+        { "x": -45, "y": -1, "z": -21 },
+        { "x": -45, "y": -1, "z":  21 },
+        { "x":  45, "y": -1, "z":  21 },
+        { "x":  45, "y": -1, "z": -21 }
+    ],
+    "WheelCoords":[
+        { "x":  45.5, "y": -7.5, "z": -19, "id": "right_front_wheel" },
+        { "x":  45.5, "y": -7.5, "z":  19, "id": "left_front_wheel" },
+        { "x": -45.5, "y": -7.5, "z": -19, "id": "right_back_wheel" },
+        { "x": -45.5, "y": -7.5, "z":  19, "id": "left_back_wheel" }
+    ],
+    "ConstructionLength": 4,
+    "ConstructionYOffSet": 22.5,
+    "ConstructionWheelOffset": 20,
+    "RequiredParts": [
+        "right_front_wheel", "left_front_wheel",
+        "right_back_wheel", "left_back_wheel",
+        "front_seats", "engine", "fuel_tank", "lights"
+    ],
+    "PreInstalled":[
+        {
+            "as": "interior",
+            "part": "fvp:c4_interior"
+        },
+        {
+            "as": "steering_wheel",
+            "part": "fvp:c4_steering_wheel"
+        }
+    ],
+    "DriveType": "fwd",
+    "FM-MaxPositiveThrottle": 1.567,
+    "FM-MaxNegativeThrottle": 0.789,
+    "FM-TurnLeftModifier": 1.25,
+    "FM-TurnRightModifier": 1.25
+}

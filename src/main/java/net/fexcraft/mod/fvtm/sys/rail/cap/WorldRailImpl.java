@@ -11,10 +11,12 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Gauge;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.rail.JunctionTileEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.LineSection;
 import net.fexcraft.mod.fvtm.sys.rail.MoveUtil;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.minecraft.nbt.NBTBase;
@@ -275,7 +277,9 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public void updateTick(){
-		//
+		for(RailRegion region : map.values()){
+			region.updateTick();
+		}
 	}
 
 	@Override
@@ -323,6 +327,12 @@ public class WorldRailImpl implements WorldRailData {
 	@Override
 	public boolean isLoading(){
 		return LOADING;
+	}
+
+	@Override
+	public void spawnEntity(VehicleData data, Junction junk){
+		Track[] tracks = junk.getTracksForSpawn();
+		new RailEntity(tracks[0], tracks[1], map.getRegion(getRegion(junk.getCore())), data);
 	}
 
 }

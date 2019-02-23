@@ -9,7 +9,8 @@ import net.minecraft.util.math.BlockPos;
 public class LineSection {
 	
 	public String id;
-	public ArrayList<RailEntity> entities = new ArrayList<>();
+	//public ArrayList<RailEntity> entities = new ArrayList<>();
+	public ArrayList<PointOnTrack> points = new ArrayList<>();
 	public TreeMap<BlockPos, Junction> junctions = new TreeMap<>();
 	
 	public LineSection(String id){
@@ -21,12 +22,20 @@ public class LineSection {
 	}
 
 	private boolean isFree(){
-		return entities.isEmpty();
+		return points.isEmpty();//entities.isEmpty();
 	}
 	
 	@Override
 	public boolean equals(Object obj){
 		return obj instanceof LineSection ? ((LineSection)obj).id.equals(id) : false;
+	}
+
+	public void remove(PointOnTrack point){
+		this.points.remove(point);
+	}
+
+	public void add(PointOnTrack point){
+		this.points.add(point);
 	}
 	
 }

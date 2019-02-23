@@ -112,4 +112,11 @@ public class Junction {
 		return tracks.get(i).getId().equals(track);
 	}
 	
+	//TODO
+	public Track[] getTracksForSpawn(){
+		return new Track[]{ tracks.get(0), tracks.get(1) };
+	}
+	
+	//TODO public abstract boolean supportsSpawning();
+	
 }

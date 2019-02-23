@@ -6,6 +6,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.minecraft.entity.Entity;
 
+@Deprecated
 public class RenderCache {
 	
 	//I tried a Guava Table, but it was relatively unreliable, somehow.

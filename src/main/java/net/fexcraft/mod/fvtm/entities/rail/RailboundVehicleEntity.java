@@ -40,6 +40,7 @@ import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
 import net.fexcraft.mod.fvtm.sys.rail.Bogie;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.MoveUtil;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
@@ -103,6 +104,8 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     public double passed;
     public Bogie _front, _rear;
     public double frontconndis, rearconndis;
+    //
+    public RailEntity railent;
 	
     public RailboundVehicleEntity(World world){
         super(world);
@@ -140,6 +143,14 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         rotateYaw((placer * 90f) + 90F);
         initVeh(pos, data, false);
         Print.debugChat("SPAWNING");
+    }
+    
+    public RailboundVehicleEntity(World world, RailEntity railent){
+    	this(world, railent.vehdata);
+    	this.stepHeight = 1f; this.railent = railent;
+    	railent.align(this);
+    	initVeh(railent.current.start, railent.vehdata, false);
+        Print.debugChat("SPAWNING RAILENT");
     }
 
 	protected void initVeh(BlockPos pos, VehicleData type, boolean remote){

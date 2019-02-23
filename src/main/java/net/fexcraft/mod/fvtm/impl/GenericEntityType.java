@@ -10,8 +10,6 @@ import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
 import net.fexcraft.mod.fvtm.entities.land.GenericTrailerEntity;
 import net.fexcraft.mod.fvtm.entities.land.GenericVehicleEntity;
 import net.fexcraft.mod.fvtm.entities.land.WaterVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
-import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
@@ -122,12 +120,14 @@ public class GenericEntityType extends EntityType {
                 		Print.chat(player, "Vehicle's Gauge is not compatible with Track's Gauge");
                 		return false;
                 	}
-                	if(data.getVehicle().isTrailerOrWagon()){
+                	/*if(data.getVehicle().isTrailerOrWagon()){
                 		world.spawnEntity(new GenericWagonEntity(world, pos, player, data));
                 	}
                 	else{
                 		world.spawnEntity(new GenericLocomotiveEntity(world, pos, player, data));
-                	}
+                	}*/
+                	WorldRailData raildata = world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+                	raildata.spawnEntity(data, junk);
                 }
                 break;
             }

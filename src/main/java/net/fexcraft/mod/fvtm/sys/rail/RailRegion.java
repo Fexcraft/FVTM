@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -29,6 +30,7 @@ public class RailRegion {
 	private int x, z;
 	//
 	private TreeMap<BlockPos, Junction> junctions = new TreeMap<>();
+	private ArrayList<RailEntity> entities = new ArrayList<>();
 	public boolean READING;
 	
 	public RailRegion(WorldRailImpl data, int x, int z, @Nullable NBTTagCompound compound){
@@ -150,6 +152,24 @@ public class RailRegion {
 
 	public Junction getJunctionAt(BlockPos pos){
 		return junctions.containsKey(pos) ? junctions.get(pos) : null;
+	}
+	
+	public WorldRailImpl getUtil(){
+		return util;
+	}
+
+	public void addEntity(RailEntity entity){
+		this.entities.add(entity);
+	}
+
+	public void removeEntity(RailEntity entity){
+		this.entities.remove(entity);
+	}
+
+	public void updateTick(){
+		for(int i = 0; i < entities.size(); i++){
+			entities.get(i).update();
+		}
 	}
 	
 }

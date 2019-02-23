@@ -1,8 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.rail.cap;
 
 import java.util.Collection;
-
 import net.fexcraft.mod.fvtm.api.Gauge;
+import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.rail.JunctionTileEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
@@ -54,5 +54,7 @@ public interface WorldRailData {
 	
 	/** Mainly for client side, to prevent concurrent errors on rendering. */
 	public boolean isLoading();
+
+	public void spawnEntity(VehicleData data, Junction junk);
 	
 }

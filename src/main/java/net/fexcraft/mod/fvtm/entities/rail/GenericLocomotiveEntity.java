@@ -3,21 +3,18 @@ package net.fexcraft.mod.fvtm.entities.rail;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
 import net.fexcraft.mod.fvtm.api.Part;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class GenericLocomotiveEntity extends GenericWagonEntity {
 
-	public GenericLocomotiveEntity(World world){
-		super(world);
+	public GenericLocomotiveEntity(World world, RailEntity railent){
+		super(world, railent);
 	}
 
-	public GenericLocomotiveEntity(World world, BlockPos pos, EntityPlayer player, VehicleData data){
-		super(world, pos, player, data);
-	}
+	public GenericLocomotiveEntity(World world){ super(world); }
 
 	@Override
 	public void onUpdateMovement(double amount, boolean call, Boolean frontdir){

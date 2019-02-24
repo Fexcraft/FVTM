@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.packets;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.api.packet.IPacket;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -25,12 +26,18 @@ public class PacketVehicleControl implements IPacket, IMessage {
         Entity ent = vehicle.getEntity();
         entId0 = ent.getPersistentID().getMostSignificantBits();
         entId1 = ent.getPersistentID().getLeastSignificantBits();
-        posX = ent.posX;
-        posY = ent.posY;
-        posZ = ent.posZ;
-        yaw = vehicle.getAxes().getYaw();
-        pitch = vehicle.getAxes().getPitch();
-        roll = vehicle.getAxes().getRoll();
+        if(vehicle instanceof RailboundVehicleEntity){
+        	RailboundVehicleEntity railent = (RailboundVehicleEntity)vehicle.getEntity();
+        	posX = railent.railent.accumulator; railent.railent.accumulator = 0;
+        }
+        else{
+            posX = ent.posX;
+            posY = ent.posY;
+            posZ = ent.posZ;
+            yaw = vehicle.getAxes().getYaw();
+            pitch = vehicle.getAxes().getPitch();
+            roll = vehicle.getAxes().getRoll();
+        }
         motX = ent.motionX;
         motY = ent.motionY;
         motZ = ent.motionZ;

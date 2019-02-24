@@ -18,7 +18,7 @@ import net.minecraft.util.math.Vec3d;
 /** @author Ferdinand Calo' (FEX___96) **/
 public class RailEntity {
 	
-	public double ppx, ppy, ppz;
+	public double ppx, ppy, ppz, accumulator;
 	public double px, py, pz, passed;
 	public Track last, current;
 	private RailRegion region;
@@ -53,13 +53,22 @@ public class RailEntity {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void write(NBTTagCompound compound){
+		if(compound == null) compound = new NBTTagCompound();
+		//TODO
+	}
 	
 	public void update(){
 		if(this.isInRangeOfPlayers()){
-			if(this.shouldSpawnEntity()){ this.spawnEntity(); }
+			if(this.shouldSpawnEntity()){
+				Print.debugChat("Entity in View, spawning."); this.spawnEntity();
+			}
 		}
 		else{
-			if(this.shouldRemoveEntity()){ this.removeEntity(); }
+			if(this.shouldRemoveEntity()){
+				Print.debugChat("Entity out of View, de-spawning.");  this.removeEntity();
+			}
 		}
 		//
 		if(!this.isWagon()){
@@ -85,7 +94,7 @@ public class RailEntity {
 
 	private void requestMove(double amount, boolean call, Boolean conn){
         if((amount > 0.001 || amount < -0.001)){
-        	amount = MoveUtil.moveEntity(this, amount);
+        	accumulator += MoveUtil.moveEntity(this, amount);
         }
         if(!call){
         	//TODO connected
@@ -103,11 +112,6 @@ public class RailEntity {
 		for(EntityPlayer player : Static.getServer().getPlayerList().getPlayers()){
 			if(vector.distanceTo(player.getPositionVector()) < 128/*256*/) return true;
 		} return false;
-	}
-
-	public void write(NBTTagCompound compound){
-		if(compound == null) compound = new NBTTagCompound();
-		
 	}
 	
 	public boolean shouldSpawnEntity(){
@@ -128,7 +132,7 @@ public class RailEntity {
 	
 	public void removeEntity(){
 		if(this.entity != null) entity.setDead();
-		this.entity.railent = null; this.entity = null;
+		/*this.entity.railent = null;*/ this.entity = null;
 	}
 
 	public void align(RailboundVehicleEntity entity){
@@ -162,7 +166,7 @@ public class RailEntity {
 		if(region.getX() != id[0] || region.getZ() != id[1]){
 			RailRegion oldregion = region; oldregion.removeEntity(this);
 			region = oldregion.getUtil().getRegionMap().getRegion(WorldRailImpl.getRegion(current.start));
-			region.addEntity(this);
+			region.addEntity(this); region.updateAccess(null);
 			Print.debug("Switched RailRegion! " + oldregion.getX() + ", " + oldregion.getZ() + " >>> " + region.getX() + ", " + region.getZ() + ";");
 		}
 	}

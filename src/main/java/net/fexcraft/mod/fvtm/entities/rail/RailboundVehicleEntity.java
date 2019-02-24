@@ -58,7 +58,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
@@ -85,11 +84,13 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     protected byte toggletimer;
     public EngineLoopSound engineloop;
     //
-    protected boolean sync;
+    //protected boolean sync;
 	//public boolean reverse;
     protected Vec3d angvel = new Vec3d(0, 0, 0);
-    public double serverPosX, serverPosY, serverPosZ;
-    public double serverYaw, serverPitch, serverRoll;
+    //public double serverPosX, serverPosY, serverPosZ;
+    //public Double actualPosX, actualPosY, actualPosZ;
+    //public double serverYaw, serverPitch, serverRoll;
+    public double serverPass;
     public int serverPositionTransitionTicker;
     //
     //CLIENT
@@ -109,15 +110,11 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         preventEntitySpawning = true;
         setSize(0.8f, 0.8f);
         ignoreFrustumCheck = true;
-        stepHeight = 1.2f;
     }
     
     public RailboundVehicleEntity(World world, RailEntity railent){
-    	this(world);
-    	this.stepHeight = 1f; this.railent = railent;
-    	railent.align(this);
-    	initVeh(railent.vehdata);
-        Print.debugChat("SPAWNING RAILENT");
+    	this(world); this.stepHeight = 1f; this.railent = railent;
+    	railent.align(this); initVeh(railent.vehdata);
     }
 
 	protected void initVeh(VehicleData type){
@@ -141,6 +138,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 	@Override
     protected void readEntityFromNBT(NBTTagCompound compound){
 		if(!world.isRemote){ this.removal = true; this.setDead(); return; }
+        //
         if(cl_vehdata == null){
         	cl_vehdata = Resources.getVehicleData(compound);
         }
@@ -617,12 +615,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 	@Override
 	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw){
         if(world.isRemote){
-            serverPosX = posX;
-            serverPosY = posY;
-            serverPosZ = posZ;
-            serverYaw = yaw;
-            serverPitch = pitch;
-            serverRoll = roll;
+        	serverPass = posX;
             serverPositionTransitionTicker = 5;
             //
             dl_throttle = throttle;
@@ -818,19 +811,12 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         //
         if(world.isRemote){
             if(serverPositionTransitionTicker > 0){
-                double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
-                double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
-                double z = posZ + (serverPosZ - posZ) / serverPositionTransitionTicker;
-                double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
-                double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
-                double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
-                rotationYaw = (float)(axes.getYaw() + dYaw / serverPositionTransitionTicker);
-                rotationPitch = (float)(axes.getPitch() + dPitch / serverPositionTransitionTicker);
-                float rotationRoll = (float)(axes.getRoll() + dRoll / serverPositionTransitionTicker);
+            	double toPass = serverPass / 5;
+            	MoveUtil.ObjCon<Track, Double, Vec3f> ret = MoveUtil.travelDistance(world.getCapability(WorldRailDataSerializer.CAPABILITY, null),
+            		new MoveUtil.ObjCon<Track, Double, Double>(CL_CT, cl_passed, toPass));
+            	CL_LT = CL_CT; CL_CT = ret.fir; cl_passed = ret.sec;
+            	this.setPosition(ret.tir.xCoord, ret.tir.xCoord, ret.tir.zCoord);
                 --serverPositionTransitionTicker;
-                setPosition(x, y, z);
-                setRotation(rotationYaw, rotationPitch, rotationRoll);
-                //return;
             }
         }
         //TODO if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }

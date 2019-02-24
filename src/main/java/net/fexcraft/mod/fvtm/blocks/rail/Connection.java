@@ -1,13 +1,10 @@
 package net.fexcraft.mod.fvtm.blocks.rail;
 
-import java.util.ArrayList;
 import java.util.TreeMap;
 
 import net.fexcraft.mod.fvtm.FVTM.InternalAddon;
 import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vector3D;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -47,17 +44,17 @@ public class Connection {
 		}
 		this.vecpoints[vecpoints.length - 1] = newVector(destination);
 		if(vecpoints.length == 2) return;
-		if(Config.ROUND_RAIL_TRACKS) vecpoints = curve(vecpoints);
+		//if(Config.ROUND_RAIL_TRACKS) vecpoints = curve(vecpoints);
 	}
 	
-	private Vec3d[] addBD(Vec3d[] vecpoints){
+	/*private Vec3d[] addBD(Vec3d[] vecpoints){
 		Vec3d[] vecs = new Vec3d[vecpoints.length + 2]; vecs[0] = newVector(beginning);
 		for(int i = 0; i < vecpoints.length; i++) vecs[i + 1] = vecpoints[i];
 		vecs[vecs.length - 1] = newVector(destination);
 		return vecs;
-	}
+	}*/
 
-	private Vec3d[] curve(Vec3d[] vecpoints){
+	/*private Vec3d[] curve(Vec3d[] vecpoints){
 		ArrayList<Vec3d> vecs = new ArrayList<Vec3d>();
 		double d = 0; while(d < 1){
 			Vec3d[] moved = vecpoints;
@@ -70,14 +67,14 @@ public class Connection {
 			vecs.add(move(moved[0], moved[1], moved[0].distanceTo(moved[1]) * d));
 		}
 		return addBD(vecs.toArray(new Vec3d[0]));
-	}
+	}*/
 
-	private Vec3d move(Vec3d vec0, Vec3d vec1, double dis){
+	/*private Vec3d move(Vec3d vec0, Vec3d vec1, double dis){
 		double[] dest = Vector3D.newVector(vec1), beg = Vector3D.newVector(vec0);
     	dest = Vector3D.direction(dest[0] - beg[0], dest[1] - beg[1], dest[2] - beg[2]);
     	dest = Vector3D.newVector(beg[0] + (dest[0] * dis), beg[1] + (dest[1] * dis), beg[2] + (dest[2] * dis));
 		return new Vec3d(dest[0], dest[1], dest[2]);
-	}
+	}*/
 
 	public Connection opposite(){
 		BlockPos[] poss = new BlockPos[points.length]; int j = 0;

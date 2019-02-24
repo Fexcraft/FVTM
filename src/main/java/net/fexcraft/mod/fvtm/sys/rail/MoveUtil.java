@@ -2,9 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
-import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
 
 /**
  * Movement Utility
@@ -22,17 +20,18 @@ public class MoveUtil {
 		
 	}
 
-	public static double moveEntity(RailboundVehicleEntity entity, double amount){//, boolean reverse){
-		WorldRailData raildata = entity.world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+	public static double moveEntity(RailEntity entity, double amount){//, boolean reverse){
+		WorldRailData raildata = entity.getRegion().getUtil();
 		boolean reverse = amount < 0;
-		amount = testDistance(raildata, entity.curr_track, entity.passed, amount);//+ (reverse ? entity.rearconndis : entity.frontconndis)
+		amount = testDistance(raildata, entity.current, entity.passed, amount);//+ (reverse ? entity.rearconndis : entity.frontconndis)
 		//amount -= reverse ? entity.rearconndis : entity.frontconndis;
-		ObjCon<Track, Double, Vec3f> obj = travelDistance(raildata, new ObjCon<Track, Double, Double>(entity.curr_track, entity.passed, reverse ? -amount : amount));
-		entity.last_track = entity.curr_track; entity.curr_track = obj.fir; entity.passed = obj.sec;
+		ObjCon<Track, Double, Vec3f> obj = travelDistance(raildata, new ObjCon<Track, Double, Double>(entity.current, entity.passed, reverse ? -amount : amount));
+		entity.last = entity.current; entity.current = obj.fir; entity.passed = obj.sec;
 		//if(!entity.last_track.equals(entity.curr_track)) entity.reverse = false;
 		//
-		entity.posX = obj.tir.xCoord; entity.posY = obj.tir.yCoord; entity.posZ = obj.tir.zCoord;
-		entity.prevPosX = entity.posX; entity.prevPosY = entity.posY; entity.prevPosZ = entity.posZ;
+		entity.updateRailRegion();
+		entity.ppx = entity.px; entity.ppy = entity.py; entity.ppz = entity.pz;
+		entity.px = obj.tir.xCoord; entity.py = obj.tir.yCoord; entity.pz = obj.tir.zCoord;
 		return amount;
 		//
 		//

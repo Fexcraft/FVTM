@@ -104,7 +104,6 @@ public class FVTM {
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		//Config.ROUND_RAIL_TRACKS = true;
 		//
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSignEntity.class, "fvtm:streetsign", 1991, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);

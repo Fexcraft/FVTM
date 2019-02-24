@@ -2,10 +2,15 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
+import net.fexcraft.mod.addons.gep.attributes.EngineAttribute.EngineAttributeData;
+import net.fexcraft.mod.fvtm.api.Part;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
 import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
+import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailImpl;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
@@ -18,6 +23,8 @@ public class RailEntity {
 	public Track last, current;
 	private RailRegion region;
 	private boolean active;
+	public boolean reverse;
+	private double throttle;
 	//
 	public VehicleData vehdata;
 	private PointOnTrack[] points;
@@ -35,7 +42,7 @@ public class RailEntity {
 		points[2] = new PointOnTrack(this, PointOnTrack.Type.BOGIE_FRONT);
 		points[3] = new PointOnTrack(this, PointOnTrack.Type.BOGIE_REAR);
 		this.region.addEntity(this);
-		Print.debug("created"); this.active = true;
+		Print.debug("created"); //this.active = true;
 	}
 	
 	public RailEntity(NBTTagCompound compound){
@@ -55,10 +62,34 @@ public class RailEntity {
 			if(this.shouldRemoveEntity()){ this.removeEntity(); }
 		}
 		//
+		if(!this.isWagon()){
+	        boolean borderless = !Config.VEHICLE_NEEDS_FUEL || (entity != null && entity.isDriverInCreativeMode());
+	        boolean consumed = false; Part.PartData enginepart = vehdata.getPart("engine");
+	        active = enginepart.getAttributeData(EngineAttributeData.class).isOn();
+	        if(!borderless && enginepart != null && active && vehdata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
+	            double d = (enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
+	            consumed = vehdata.consumeFuel(d > 0 ? d : (enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() / 320));
+	        }
+	        double amount = 0d;
+	        if(enginepart != null && (borderless || consumed)){//TODO multi-engine support
+	        	amount = /*0.2f **/ throttle * (throttle > 0 ? vehdata.getVehicle().getFMAttribute("max_positive_throttle") : vehdata.getVehicle().getFMAttribute("max_negative_throttle"));
+	        	amount *= enginepart.getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
+	        }
+	        this.requestMove(amount, false, null); //Print.debug("amount:move: " + amount);
+		}
 		//TODO move & stuff
 		//
 		if(this.active) region.updateAccess(null);
 		this.updateSection();
+	}
+
+	private void requestMove(double amount, boolean call, Boolean conn){
+        if((amount > 0.001 || amount < -0.001)){
+        	amount = MoveUtil.moveEntity(this, amount);
+        }
+        if(!call){
+        	//TODO connected
+        }
 	}
 
 	private void updateSection(){
@@ -103,6 +134,42 @@ public class RailEntity {
 	public void align(RailboundVehicleEntity entity){
 		entity.posX = px; entity.posY = py; entity.posZ = pz;
 		entity.prevPosX = ppx; entity.prevPosY = ppy; entity.prevPosZ = ppz;
+	}
+	
+	public boolean isWagon(){
+		return this.vehdata.getVehicle().isTrailerOrWagon();
+	}
+
+	public void modifyThrottle(double by, boolean totalitarian){
+		if(totalitarian) this.throttle = by; else this.throttle += by;
+		if(throttle < -1f) throttle = -1f; if(throttle > 1f) throttle = 1f;
+	}
+
+	public void breakThrottle(){
+        throttle *= 0.8F; if(throttle > -0.0001 && throttle < 0.0001) throttle = 0;
+	}
+
+	public double getThrottle(){
+		return throttle;
+	}
+
+	public RailRegion getRegion(){
+		return region;
+	}
+
+	public void updateRailRegion(){
+		int[] id = WorldRailImpl.getRegion(current.start.getX() >> 4, current.start.getZ() >> 4);
+		if(region.getX() != id[0] || region.getZ() != id[1]){
+			RailRegion oldregion = region; oldregion.removeEntity(this);
+			region = oldregion.getUtil().getRegionMap().getRegion(WorldRailImpl.getRegion(current.start));
+			region.addEntity(this);
+			Print.debug("Switched RailRegion! " + oldregion.getX() + ", " + oldregion.getZ() + " >>> " + region.getX() + ", " + region.getZ() + ";");
+		}
+	}
+
+	public void removeSelf(){
+		this.throttle = 0; this.region.removeEntity(this);
+		Print.debug("Removing RAILENT: " + vehdata.getVehicle().getName() + " || AT: " + px + ", " + py + ", " + pz + ";");
 	}
 	
 }

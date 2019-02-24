@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.entities.rail;
 
-import net.fexcraft.mod.fvtm.sys.rail.MoveUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.minecraft.world.World;
 
@@ -14,10 +13,10 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
 
 	@Override
 	public void onUpdateMovement(double amount, boolean call, Boolean frontdir){
-        if((amount > 0.001 || amount < -0.001)){ /*amount = Math.abs(amount);*/
+        /*if((amount > 0.001 || amount < -0.001)){ //amount = Math.abs(amount);
         	//set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, amount, reverse), reverse);
-        	amount = MoveUtil.moveEntity(this, amount);//, reverse);
-        }
+        	amount = MoveUtil.moveEntity(railent, amount);//, reverse);
+        }*/
         /*if(call){
         	if(vehicledata.getVehicle().isTrailerOrWagon()){
         		if(frontdir && rear != null && rear.getVehicleData().getVehicle().isTrailerOrWagon()){
@@ -84,7 +83,7 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
         //
         
         //
-    	if(rear != null && (frontdir == null ? true : frontdir)){
+    	/*if(rear != null && (frontdir == null ? true : frontdir)){
     		boolean fr = rear.front == this, rev = fr ;//? reverse : !reverse;
     		double dob = Math.abs(vehicledata.getRearConnectorPos().to16FloatX()) + Math.abs((fr ? rear.getVehicleData().getFrontConnectorPos() : rear.getVehicleData().getRearConnectorPos()).to16FloatX());
     		//((GenericWagonEntity)rear).set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? dob : -dob, rev), rev);
@@ -97,7 +96,7 @@ public class GenericWagonEntity extends RailboundVehicleEntity {
     		//((GenericWagonEntity)front).set(RailUtil.move(this.getWorldData(), new double[]{ posX, posY, posZ }, currentpos, lastpos, rev ? -dob : dob, rev), rev);
     		MoveUtil.moveEntity(front, rev ? -dob : dob);//, rev);
     		front.onUpdateMovement(0, call, fr);
-    	}
+    	}*///TODO
 	}
 	
 	/*protected void move(double amount, boolean up, Boolean bool){

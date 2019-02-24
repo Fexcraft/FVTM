@@ -33,12 +33,9 @@ import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
 import net.fexcraft.mod.fvtm.api.capability.ContainerHolder.ContainerHolderEntity;
 import net.fexcraft.mod.fvtm.api.capability.FVTMCaps;
 import net.fexcraft.mod.fvtm.api.root.InventoryType;
-import net.fexcraft.mod.fvtm.blocks.rail.JunctionBlock;
 import net.fexcraft.mod.fvtm.entities.SeatEntity;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.impl.part.EngineLoopSound;
-import net.fexcraft.mod.fvtm.sys.rail.Bogie;
-import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.MoveUtil;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -61,7 +58,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -79,32 +75,31 @@ import net.minecraftforge.server.permission.PermissionAPI;
 @SuppressWarnings("deprecation")
 public abstract class RailboundVehicleEntity extends Entity implements ContainerHolderEntity, VehicleEntity, IEntityAdditionalSpawnData, LockableObject, IPacketReceiver<PacketEntityUpdate> {
 
-	protected VehicleData vehicledata;
+	protected VehicleData cl_vehdata;
 	public VehicleAxes axes;
 	protected VehicleAxes prevaxes;
-	//public BogieEntity[] bogies;
 	public SeatEntity[] seats;
-    protected double throttle;
+    //protected double throttle;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
-    protected /*VehicleEntity*/ RailboundVehicleEntity front, rear;
+    //protected RailboundVehicleEntity front, rear;
     protected byte toggletimer;
     public EngineLoopSound engineloop;
     //
     protected boolean sync;
-	public boolean reverse;
+	//public boolean reverse;
     protected Vec3d angvel = new Vec3d(0, 0, 0);
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
     public int serverPositionTransitionTicker;
     //
-    //public BlockPos lastpos, currentpos;
-    //public BlockPos llp, lcp;
-    public Track curr_track, last_track;
-    public Track _curr_track, _last_track;
-    public double passed;
-    public Bogie _front, _rear;
+    //CLIENT
+    public Track CL_CT, CL_LT, LL_CT, LL_LT;
     public double frontconndis, rearconndis;
+    public double frontbogiedis, rearbogiedis;
+    public boolean cl_reverse, removal;
+    public double cl_passed, dl_throttle;
     //
+    //SERVER
     public RailEntity railent;
 	
     public RailboundVehicleEntity(World world){
@@ -117,68 +112,23 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         stepHeight = 1.2f;
     }
     
-    protected RailboundVehicleEntity(World world, VehicleData type){
-        this(world);
-        vehicledata = type;
-    }
-
-    /**
-     * From Constructor (Item)
-     */
-    public RailboundVehicleEntity(World world, BlockPos pos, EntityPlayer placer, VehicleData vehicleData){
-        this(world, vehicleData);
-        stepHeight = 1.0F;
-        setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        rotateYaw(placer.rotationYaw + 90F);
-        initVeh(pos, vehicleData, false);
-    }
-
-    /**
-     * From Constructor (Center)
-     */
-    public RailboundVehicleEntity(World world, BlockPos pos, int placer, VehicleData data){
-        this(world, data);
-        stepHeight = 1.0F;
-        setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        rotateYaw((placer * 90f) + 90F);
-        initVeh(pos, data, false);
-        Print.debugChat("SPAWNING");
-    }
-    
     public RailboundVehicleEntity(World world, RailEntity railent){
-    	this(world, railent.vehdata);
+    	this(world);
     	this.stepHeight = 1f; this.railent = railent;
     	railent.align(this);
-    	initVeh(railent.current.start, railent.vehdata, false);
+    	initVeh(railent.vehdata);
         Print.debugChat("SPAWNING RAILENT");
     }
 
-	protected void initVeh(BlockPos pos, VehicleData type, boolean remote){
+	protected void initVeh(VehicleData type){
         seats = new SeatEntity[type.getSeats().size()];
-        //bogies = new BogieEntity[2];
         stepHeight = type.getVehicle().getFMAttribute("wheel_step_height");
-        this.frontconndis = vehicledata.getFrontConnectorPos().to16FloatX();
-        this.rearconndis = vehicledata.getRearConnectorPos().to16FloatX();
+        this.frontconndis = type.getFrontConnectorPos().to16FloatX();
+        this.rearconndis = type.getRearConnectorPos().to16FloatX();
+        this.frontbogiedis = type.getWheelPos().get(0).to16FloatX();
+        this.rearbogiedis = type.getWheelPos().get(1).to16FloatX();
         this.setupCapability(this.getCapability(FVTMCaps.CONTAINER, null));
-        vehicledata.getScripts().forEach((script) -> script.onCreated(this, vehicledata));
-        if(pos == null){
-        	return;
-        }
-        if(world.getBlockState(pos).getBlock() == JunctionBlock.INSTANCE){
-        	Print.debug("pre");
-        	Junction junk = world.getCapability(WorldRailDataSerializer.CAPABILITY, null).getJunction(pos);
-        	if(junk == null || junk.tracks.size() < 2){
-            	this.errorRemove("Invalid Junction to place Entity on.");
-        	}
-        	else{
-        		this.last_track = junk.tracks.get(0);
-        		this.curr_track = junk.tracks.get(1);
-        	}
-        	Print.debug("past"); //TODO
-        }
-        else{
-        	this.errorRemove("No Junction found.");
-        }
+        type.getScripts().forEach((script) -> script.onCreated(this, type));
     }
 	
 	private void errorRemove(String error){
@@ -190,49 +140,53 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
 	@Override
     protected void readEntityFromNBT(NBTTagCompound compound){
-        if(vehicledata == null){
-            vehicledata = Resources.getVehicleData(compound);
+		if(!world.isRemote){ this.removal = true; this.setDead(); return; }
+        if(cl_vehdata == null){
+        	cl_vehdata = Resources.getVehicleData(compound);
         }
         else{
-            vehicledata.readFromNBT(compound);
+        	cl_vehdata.readFromNBT(compound);
         }
         prevRotationYaw = compound.getFloat("RotationYaw");
         prevRotationPitch = compound.getFloat("RotationPitch");
         prevRotationRoll = compound.getFloat("RotationRoll");
         axes = VehicleAxes.read(this, compound);
         if(compound.hasKey("LastTrack")){
-        	last_track = new Track().read(compound.getCompoundTag("LastTrack"));
+        	CL_LT = new Track().read(compound.getCompoundTag("LastTrack"));
         }
         if(compound.hasKey("CurrentTrack")){
-        	curr_track = new Track().read(compound.getCompoundTag("CurrentTrack"));
+        	CL_CT = new Track().read(compound.getCompoundTag("CurrentTrack"));
         }
         else{
         	errorRemove("No Track NBT Data on READ.");
         }
-        throttle = compound.getDouble("Throttle");
-        passed = compound.getDouble("Passed");
-        reverse = compound.getBoolean("Reverse");
-        initVeh(null, vehicledata, false);
-        Print.debug(compound.toString());
+        //throttle = compound.getDouble("Throttle");
+        cl_passed = compound.getDouble("Passed");
+        cl_reverse = compound.getBoolean("Reverse");
+        initVeh(cl_vehdata); Print.debug(compound.toString());
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound){
-        compound = vehicledata.writeToNBT(compound);
+        compound = vehdata().writeToNBT(compound);
         axes.write(this, compound);
-        if(last_track != null){
-        	compound.setTag("LastTrack", last_track.write(null));
+        if(railent.last != null){
+        	compound.setTag("LastTrack", railent.last.write(null));
         }
-        if(curr_track != null){
-        	compound.setTag("CurrentTrack", curr_track.write(null));
+        if(railent.current != null){
+        	compound.setTag("CurrentTrack", railent.current.write(null));
         }
-        compound.setDouble("Throttle", throttle);
-        compound.setDouble("Passed", passed);
-        compound.setBoolean("Reverse", reverse);
+        //compound.setDouble("Throttle", throttle);
+        compound.setDouble("Passed", railent.passed);
+        compound.setBoolean("Reverse", railent.reverse);
         Print.debug(compound.toString());
     }
 
-    @Override
+    private VehicleData vehdata(){
+		return world.isRemote || railent == null ? cl_vehdata : railent.vehdata;
+	}
+
+	@Override
     public void writeSpawnData(ByteBuf buffer){
         NBTTagCompound compound = new NBTTagCompound();
         try{
@@ -246,30 +200,30 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         catch(Exception e){
         	e.printStackTrace();
         }
-        if(last_track != null){
-        	compound.setTag("LastTrack", last_track.write(null));
+        if(railent.last != null){
+        	compound.setTag("LastTrack", railent.last.write(null));
         }
-        if(curr_track != null){
-        	compound.setTag("CurrentTrack", curr_track.write(null));
+        if(railent.current != null){
+        	compound.setTag("CurrentTrack", railent.current.write(null));
         }
-        ByteBufUtils.writeTag(buffer, axes.write(this, vehicledata.writeToNBT(compound)));
+        ByteBufUtils.writeTag(buffer, axes.write(this, railent.vehdata.writeToNBT(compound)));
     }
 
     @Override
     public void readSpawnData(ByteBuf buffer){
         try{
             NBTTagCompound compound = ByteBufUtils.readTag(buffer);
-            vehicledata = Resources.getVehicleData(compound);
+            cl_vehdata = Resources.getVehicleData(compound);
             axes = VehicleAxes.read(this, compound);
             prevRotationYaw = axes.getYaw();
             prevRotationPitch = axes.getPitch();
             prevRotationRoll = axes.getRoll();
-            initVeh(null, vehicledata, true);
+            initVeh(cl_vehdata);
             if(compound.hasKey("LastTrack")){
-            	last_track = new Track().read(compound.getCompoundTag("LastTrack"));
+            	CL_LT = new Track().read(compound.getCompoundTag("LastTrack"));
             }
             if(compound.hasKey("CurrentTrack")){
-            	curr_track = new Track().read(compound.getCompoundTag("CurrentTrack"));
+            	CL_CT = new Track().read(compound.getCompoundTag("CurrentTrack"));
             }
             else{
             	errorRemove("No Track NBT Data on SPAWN DATA READ.");
@@ -344,7 +298,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
 	@Override
 	public boolean isLocked(){
-		return vehicledata.isLocked();
+		return vehdata().isLocked();
 	}
 
 	@Override
@@ -361,7 +315,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
 	@Override
 	public VehicleData getVehicleData(){
-		return vehicledata;
+		return vehdata();
 	}
 
 	@Override
@@ -403,20 +357,14 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             	if(toggletimer > 0){
             		return true;
             	} toggletimer = 4;
-                throttle += 0.05F;
-                if(throttle > 1F){
-                    throttle = 1F;
-                }
+            	railent.modifyThrottle( 0.05, false);
                 return true;
             }
             case 1: {//Decelerate
             	if(toggletimer > 0){
             		return true;
             	} toggletimer = 4;
-                throttle -= 0.05F;
-                if(throttle < 1F){
-                    throttle = 1F;
-                }
+            	railent.modifyThrottle(-0.05, false);
                 return true;
             }
             case 2: {//Left
@@ -432,13 +380,10 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             		return true;
             	}
             	toggletimer = 4;
-                throttle *= 0.8F;
+            	railent.breakThrottle();
                 if(onGround){
                     motionX *= 0.8F;
                     motionZ *= 0.8F;
-                }
-                if(throttle < -0.0001){
-                    throttle = 0;
                 }
                 return true;
             }
@@ -462,14 +407,14 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             case 10: {
                 if(!world.isRemote){
                     if(toggletimer <= 0){
-                        vehicledata.toggleDoors(null);
+                        railent.vehdata.toggleDoors(null);
                         if(this.getEntityAtFront() != null){
                         	
                         }
                         if(this.getEntityAtRear() != null){
                         	
                         }
-                        player.sendMessage(new TextComponentString("Doors " + (vehicledata.doorsOpen() ? "opened" : "closed") + "."));
+                        player.sendMessage(new TextComponentString("Doors " + (railent.vehdata.doorsOpen() ? "opened" : "closed") + "."));
                         toggletimer = 10;
                         PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
                     }
@@ -486,15 +431,15 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             case 12: {
                 if(!world.isRemote){
                     if(toggletimer <= 0){
-                        int i = vehicledata.getLightsState();
-                        vehicledata.setLightsState(++i > 3 ? 0 : i < 0 ? 0 : i);
+                        int i = railent.vehdata.getLightsState();
+                        railent.vehdata.setLightsState(++i > 3 ? 0 : i < 0 ? 0 : i);
                         if(this.getEntityAtFront() != null){
                         	
                         }
                         if(this.getEntityAtRear() != null){
                         	
                         }
-                        switch(vehicledata.getLightsState()){
+                        switch(railent.vehdata.getLightsState()){
                             case 0: {
                                 Print.chat(player, "Lights Off.");
                                 break;
@@ -515,7 +460,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                         toggletimer = 10;
                         NBTTagCompound nbt = new NBTTagCompound();
                         nbt.setString("task", "lights_toggle");
-                        nbt.setInteger("lightsstate", vehicledata.getLightsState());
+                        nbt.setInteger("lightsstate", railent.vehdata.getLightsState());
                         ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                     }
                 }
@@ -524,8 +469,8 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             case 13: case 14: {
             	if(!world.isRemote){
             		boolean front = key == 13;
-            		if(throttle > 0.001 && !vehicledata.getVehicle().isTrailerOrWagon()){ Print.chat(player, "Please stop the vehicle first!"); return true; }
-            		if(front ? this.vehicledata.getFrontConnectorPos() == null : this.vehicledata.getRearConnectorPos() == null){
+            		if(railent.getThrottle() > 0.001 && !railent.vehdata.getVehicle().isTrailerOrWagon()){ Print.chat(player, "Please stop the vehicle first!"); return true; }
+            		if(front ? railent.vehdata.getFrontConnectorPos() == null : railent.vehdata.getRearConnectorPos() == null){
             			Print.chat(player, "This vehicle does not have a " + (front ? "front" : "rear") + " connector installed.");
             			return true;
             		}
@@ -557,15 +502,15 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
 	@Override
 	public AxisAlignedBB getFrontConnectorAABB(){
-		if(this.vehicledata.getFrontConnectorPos() == null) return null;
-		Vec3d vec = this.getPositionVector().add(axes.getRelativeVector(vehicledata.getFrontConnectorPos().to16Double()));
+		if(vehdata().getFrontConnectorPos() == null) return null;
+		Vec3d vec = this.getPositionVector().add(axes.getRelativeVector(vehdata().getFrontConnectorPos().to16Double()));
 		return new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
 	}
 
 	@Override
 	public AxisAlignedBB getRearConnectorAABB(){
-		if(this.vehicledata.getRearConnectorPos() == null) return null;
-		Vec3d vec = this.getPositionVector().add(axes.getRelativeVector(vehicledata.getRearConnectorPos().to16Double()));
+		if(vehdata().getRearConnectorPos() == null) return null;
+		Vec3d vec = this.getPositionVector().add(axes.getRelativeVector(vehdata().getRearConnectorPos().to16Double()));
 		return new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
 	}
 
@@ -609,8 +554,8 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     	//
     	try{
     		Print.chat(player, "Connecting to " + ent.getName());
-    		if(rear) ent.rear = this; else ent.front = this;
-    		if(front) this.front = ent; else this.rear = ent;
+    		//TODO if(rear) ent.rear = this; else ent.front = this;
+    		//TODO if(front) this.front = ent; else this.rear = ent;
     		//
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setString("task", "update_connection_" + (rear ? "rear" : "front"));
@@ -629,6 +574,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     	}
 	}
 
+	@SuppressWarnings("unused")
 	private void tryDetach(EntityPlayer player, boolean front){
 		if((front ? this.getEntityAtFront() : this.getEntityAtRear()) == null){
 			Print.chat(player, "No entity connected at " + (front ? "front" : "rear") + "!");
@@ -638,10 +584,10 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 		veh.getEntity().dismountRidingEntity(); Boolean rear = null;
 		if(veh instanceof RailboundVehicleEntity){
 			RailboundVehicleEntity reil = (RailboundVehicleEntity)veh;
-            if(reil.rear != null && reil.rear.equals(this)){ reil.rear = null; rear = true; }
-            if(reil.front != null && reil.front.equals(this)){ reil.front = null; rear = false; }
+            //TODO if(reil.rear != null && reil.rear.equals(this)){ reil.rear = null; rear = true; }
+            //TODO if(reil.front != null && reil.front.equals(this)){ reil.front = null; rear = false; }
 		}
-		if(front) this.front = null; else this.rear = null;
+		//TODO if(front) this.front = null; else this.rear = null;
 		Print.chat(player, "Detaching " + veh.getEntity().getName());
 		//
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -660,12 +606,12 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
 	@Override
 	public double getThrottle(){
-		return throttle;
+		return world.isRemote ? dl_throttle : railent.getThrottle();
 	}
 
 	@Override
 	public void setThrottle(double newthr){
-		throttle = newthr;
+		if(!world.isRemote) railent.modifyThrottle(newthr, true);
 	}
 
 	@Override
@@ -678,6 +624,8 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             serverPitch = pitch;
             serverRoll = roll;
             serverPositionTransitionTicker = 5;
+            //
+            dl_throttle = throttle;
         }
         else{
             setPosition(posX, posY, posZ);
@@ -685,25 +633,23 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             prevRotationPitch = pitch;
             prevRotationRoll = roll;
             setRotation(yaw, pitch, roll);
+            railent.modifyThrottle(throttle, true);
         }
         motionX = motX;
         motionY = motY;
         motionZ = motZ;
         angvel = new Vec3d(avelx, avely, avelz);
-        this.throttle = throttle;
-        //
-        //wheelsYaw = steeringYaw;
         this.updateRotation();
 	}
 
 	@Override
 	public VehicleEntity getEntityAtFront(){
-		return front;
+		return null;//TODO
 	}
 
 	@Override
 	public VehicleEntity getEntityAtRear(){
-		return rear;
+		return null;//TODO
 	}
 
 	@Override
@@ -723,8 +669,8 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 	
     @Override
     public void setDead(){
-        if(Config.DROP_ITEMS_ON_BREAK && !world.isRemote){
-            for(Part.PartData partData : this.vehicledata.getInventoryContainers()){
+        if(Config.DROP_ITEMS_ON_BREAK && !world.isRemote && !removal){
+            for(Part.PartData partData : railent.vehdata.getInventoryContainers()){
                 InventoryAttribute.InventoryAttributeData invattr = partData.getAttributeData(InventoryAttribute.InventoryAttributeData.class);
                 if(invattr == null){
                     continue;
@@ -735,21 +681,13 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                 }
             }
         }
-        this.getCapability(FVTMCaps.CONTAINER, null).dropContents();
+        if(!removal) this.getCapability(FVTMCaps.CONTAINER, null).dropContents();
         //
         super.setDead();
-        for(SeatEntity seat : seats){
-            if(seat != null){
-                seat.setDead();
-            }
-        }
-        /*for(BogieEntity wheel : bogies){
-            if(wheel != null){
-                wheel.setDead();
-            }
-        }*/
-        vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
-        if(this.getEntityAtRear() != null){
+        for(SeatEntity seat : seats) if(seat != null) seat.setDead();
+        //
+        vehdata().getScripts().forEach((script) -> script.onRemove(this, vehdata()));
+        /*if(this.getEntityAtRear() != null){
             this.getEntityAtRear().getEntity().dismountRidingEntity();
             RailboundVehicleEntity rear = (RailboundVehicleEntity)this.getEntityAtRear();
             if(rear.rear.equals(this)) rear.rear = null;
@@ -760,10 +698,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             RailboundVehicleEntity front = (RailboundVehicleEntity)this.getEntityAtFront();
             if(front.rear.equals(this)) front.rear = null;
             if(front.front.equals(this)) front.front = null;
-        }
-        if(world.isRemote){
-        	net.fexcraft.mod.fvtm.util.RenderCache.removeEntity(this);
-        }
+        }*///TODO
     }
     
     @Override
@@ -796,7 +731,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             }
             return true;
         }
-        if(vehicledata.isLocked()){
+        if(railent.vehdata.isLocked()){
             Print.chat(player, "Vehicle is locked.");
             return true;
         }
@@ -818,44 +753,19 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             }
             //TODO other item types
         }
-        if(!vehicledata.getScripts().isEmpty()){
-            for(VehicleScript script : vehicledata.getScripts()){
-                if(script.onInteract(this, vehicledata, player, hand)){
+        if(!railent.vehdata.getScripts().isEmpty()){
+            for(VehicleScript script : railent.vehdata.getScripts()){
+                if(script.onInteract(this, railent.vehdata, player, hand)){
                     return true;
                 }
             }
         }
-        for(int i = 0; i <= vehicledata.getSeats().size(); i++){
+        for(int i = 0; i <= railent.vehdata.getSeats().size(); i++){
             if(seats[i] != null && seats[i].processInitialInteract(player, hand)){
                 return true;
             }
         }
         return false;
-    }
-
-	@Override
-    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport){
-        if(ticksExisted > 1){
-            return;
-        }
-        /*if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
-            //
-        }
-        else{*/
-            if(sync){
-                serverPositionTransitionTicker = posRotationIncrements + 5;
-            }
-            else{
-                double xx = x - posX; double yy = y - posY; double zz = z - posZ;
-                double xxx = xx * xx + yy * yy + zz * zz;
-                if(xxx <= 1.0D){
-                    return;
-                }
-                serverPositionTransitionTicker = 3;
-            }
-            serverPosX = x; serverPosY = y; serverPosZ = z;
-            serverYaw = yaw; serverPitch = pitch;
-        /*}*/
     }
     
     public boolean isDrivenByPlayer(){
@@ -865,13 +775,12 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     @Override
     public void onUpdate(){
         super.onUpdate();
-        if(vehicledata == null){
+        if(vehdata() == null){
             Print.log("VehicleData is NULL; Not ticking vehicle.");
-            Static.stop();
-            return;
+            Static.stop(); return;
         }
         if(!world.isRemote){
-            for(int i = 0; i < vehicledata.getSeats().size(); i++){
+            for(int i = 0; i < railent.vehdata.getSeats().size(); i++){
                 if(seats[i] == null || !seats[i].addedToChunk){
                     seats[i] = new SeatEntity(world, this, i);
                     world.spawnEntity(seats[i]);
@@ -883,12 +792,12 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                     world.spawnEntity(bogies[i]);
                 }
             }*/
-            if(vehicledata.getVehicle().isTrailerOrWagon()){
+            if(railent.vehdata.getVehicle().isTrailerOrWagon()){
             	//
             }
         }
         else{
-            if(vehicledata.getVehicle().isTrailerOrWagon()){
+            if(cl_vehdata.getVehicle().isTrailerOrWagon()){
             	//
             }
         }
@@ -901,7 +810,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             this.ticksExisted = 0;
         }
         //
-        if(seats == null || (!vehicledata.getVehicle().isTrailerOrWagon() && seats.length == 0)){
+        if(seats == null || (!vehdata().getVehicle().isTrailerOrWagon() && seats.length == 0)){
             this.setDead();
             return;
         }
@@ -915,9 +824,9 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                 double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
                 double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
                 double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
-                rotationYaw = (float) (axes.getYaw() + dYaw / serverPositionTransitionTicker);
-                rotationPitch = (float) (axes.getPitch() + dPitch / serverPositionTransitionTicker);
-                float rotationRoll = (float) (axes.getRoll() + dRoll / serverPositionTransitionTicker);
+                rotationYaw = (float)(axes.getYaw() + dYaw / serverPositionTransitionTicker);
+                rotationPitch = (float)(axes.getPitch() + dPitch / serverPositionTransitionTicker);
+                float rotationRoll = (float)(axes.getRoll() + dRoll / serverPositionTransitionTicker);
                 --serverPositionTransitionTicker;
                 setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll);
@@ -926,26 +835,25 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         }
         //TODO if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }
         //
-        if((Config.VEHICLE_NEEDS_FUEL && vehicledata.getFuelTankContent() <= 0) || vehicledata.getVehicle().getFMAttribute("max_positive_throttle") <= 0){
-            throttle *= 0.98F;
+        if((Config.VEHICLE_NEEDS_FUEL && vehdata().getFuelTankContent() <= 0) || vehdata().getVehicle().getFMAttribute("max_positive_throttle") <= 0){
+            if(world.isRemote) dl_throttle *= 0.98F; else railent.modifyThrottle(railent.getThrottle() *- 0.98f, true);
         }
         if(!world.isRemote){
-        	this.onUpdateMovement(0f, false, null);
-        	this.updateRotation();
+        	railent.align(this); this.updateRotation();
         	//
-            if(_last_track == null || _curr_track == null){ _last_track = last_track; _curr_track = curr_track; }
-        	if(!_last_track.equals(last_track) || !_curr_track.equals(curr_track)){
+            if(LL_LT == null || LL_CT == null){ LL_LT = railent.last; LL_CT = railent.current; }
+        	if(!LL_LT.equals(railent.last) || !LL_CT.equals(railent.current)){
         		NBTTagCompound compound = new NBTTagCompound();
         		compound.setString("task", "direction_update");
-                compound.setTag("LastTrack", last_track.write(null));
-                compound.setTag("CurrentTrack", curr_track.write(null));
-        		compound.setDouble("passed", passed);
-        		compound.setBoolean("reverse", reverse);
+                compound.setTag("LastTrack", railent.last.write(null));
+                compound.setTag("CurrentTrack", railent.current.write(null));
+        		compound.setDouble("passed", railent.passed);
+        		compound.setBoolean("reverse", railent.reverse);
         		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
         	}
-        }
+        } else{ this.updateRotation(); }
         //
-        vehicledata.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
+        vehdata().getScripts().forEach((script) -> script.onUpdate(this, vehdata()));
         //this.updateCollisions();
         for(SeatEntity seat : seats){
             if(seat != null){
@@ -956,70 +864,34 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
         }
     }
-
-	//temp
-    //public double[] _front, _back;
-    private Vec3f qfront, qback;
+    
+    //tempdata
+    private Vec3f qfront, qback, bf0, bf1, br0, br1;
 	
 	private void updateRotation(){
+		double passed = world.isRemote ? cl_passed : railent.passed; Track curr = world.isRemote ? CL_CT : railent.current;
+		if(curr == null){ Print.debug("No Track Data."); return; }
 		WorldRailData raildata = this.world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
-		qfront = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr_track, passed, frontconndis)).tir;
-		qback = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr_track, passed, rearconndis)).tir;
+		qfront = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis)).tir;
+		qback = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis)).tir;
         double dx = qfront.xCoord - qback.xCoord, dy = qfront.yCoord - qback.yCoord, dz = qfront.zCoord - qback.zCoord;
         double dxz = Math.sqrt(dx * dx + dz * dz);
         double yaw = Math.atan2(dz, dx);
         double pitch = -Math.atan2(dy, dxz);
         double roll = 0F;
         axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+        this.posX = this.prevPosX = (qfront.xCoord + qback.xCoord) * 0.5;
+        this.posY = this.prevPosY = (qfront.yCoord + qback.yCoord) * 0.5;
+        this.posZ = this.prevPosZ = (qfront.zCoord + qback.zCoord) * 0.5;
+        if(!world.isRemote) return;
         //
-        /*Vec3d thiz = this.getPositionVector();
-        _front = RailUtil.move(this.getWorldData(), thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX()).dest;
-        _back = RailUtil.move(this.getWorldData(), thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX()).dest;
-        if(_front != null && _back != null){
-        	//if(reverse){ double[] copy = _front; _front = _back; _back = copy; }
-            double dx = _front[0] - _back[0], dy = _front[1] - _back[1], dz = _front[2] - _back[2];
-            double dxz = Math.sqrt(dx * dx + dz * dz);
-            //
-            double yaw = Math.atan2(dz, dx);
-            double pitch = -Math.atan2(dy, dxz);
-            double roll = 0F;
-            axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
-            //
-            /*double[] fr0 = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX() - 0.125).dest;
-            double[] fr1 = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(1).to16FloatX() + 0.125).dest;
-            double[] bk0 = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX() - 0.125).dest;
-            double[] bk1 = RailUtil.move(world, thiz, currentpos, lastpos, vehicledata.getWheelPos().get(0).to16FloatX() + 0.125).dest;
-            bogierot[0] = -(float)(Math.toDegrees(Math.atan2(fr0[2] - fr1[2], fr0[0] - fr1[0]) + axes.getRadianYaw()));
-            bogierot[1] = -(float)(Math.toDegrees(Math.atan2(bk0[2] - bk1[2], bk0[0] - bk1[0]) + axes.getRadianYaw()));*/
-            //TODO
-            /*if(oldf != null && _front != null){
-            	bogierot[0] = (float)Math.toDegrees(Math.atan2(oldf[2] - _front[2], oldf[0] - _front[0]));
-            }
-            if(oldb != null &&  _back != null){
-            	bogierot[1] = (float)Math.toDegrees(Math.atan2(oldb[2] -  _back[2], oldb[0] -  _back[0]));
-            }*/
-        //}
+		bf0 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis - 0.1)).tir;
+		bf1 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis + 0.1)).tir;
+		br0 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis - 0.1)).tir;
+		br1 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis + 0.1)).tir;
+		bogierot[0] = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - (yaw * 180F / 3.14159F));
+		bogierot[1] = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - (yaw * 180F / 3.14159F));
 	}
-
-	/*private double[] calcBogiePos(int i, Vec3d own){
-		return getNextBogiePos(vehicledata.getWheelPos().get(i).to16FloatX(), own, i == 1 ? currentpos : lastpos, i == 0 ? currentpos : lastpos);
-	}
-	
-	public double[] getNextBogiePos(double dis, Vec3d core, BlockPos curr, BlockPos last){
-		dis = Math.abs(dis); double[] dest = Vector3D.newVector(curr), own = Vector3D.newVector(core.x, core.y, core.z);
-		while(Double.compare(dis, Vector3D.distance(own, dest)) >= 0){
-			dis -= Vector3D.distance(own, dest);
-			if(dis <= 0.001){ break; }
-			else{
-				BlockPos las = world.getCapability(net.fexcraft.mod.fvtm.api.Resources.CAPABILITY, null).getNextRailCoordinate(curr, last);
-				if(las == null){ break; }
-				if(curr.equals(las)){ break; }
-				last = curr; curr = las; own = Vector3D.newVector(last); dest = Vector3D.newVector(curr);
-			}
-		}
-    	dest = Vector3D.direction(dest[0] - own[0], dest[1] - own[1], dest[2] - own[2]);
-		return Vector3D.newVector(own[0] + (dest[0] * dis), own[1] + (dest[1] * dis), own[2] + (dest[2] * dis));
-	}*/
 	
 	private float[] bogierot = new float[]{ 0, 0 };
 
@@ -1042,21 +914,21 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             return true;
         }
         if(damagesource.damageType.equals("player") && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
-            if(vehicledata.isLocked()){
+            if(railent.vehdata.isLocked()){
                 Print.chat(damagesource.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
                 return false;
             }
             else{
-                if(vehicledata.getPart("engine") != null){
-                    vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).setOn(false);
+                if(railent.vehdata.getPart("engine") != null){
+                    railent.vehdata.getPart("engine").getAttributeData(EngineAttributeData.class).setOn(false);
                 }
-                vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
-                ItemStack stack = vehicledata.getVehicle().getItemStack(vehicledata);
+                railent.vehdata.getScripts().forEach((script) -> script.onRemove(this, railent.vehdata));
+                ItemStack stack = railent.vehdata.getVehicle().getItemStack(railent.vehdata);
                 //
                 if(PermissionAPI.hasPermission((EntityPlayer)damagesource.getImmediateSource(), FvtmPermissions.VEHICLE_BREAK)
                 	|| PermissionAPI.hasPermission((EntityPlayer)damagesource.getImmediateSource(), FvtmPermissions.permBreak(stack))){
                     entityDropItem(stack, 0.5F);
-                    setDead();
+                    setDead(); railent.removeSelf();
                     Print.debug(stack.toString());
                     return true;
                 }
@@ -1076,14 +948,14 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target){
-        ItemStack stack = vehicledata.getVehicle().getItemStack(vehicledata);
+        ItemStack stack = vehdata().getVehicle().getItemStack(vehdata());
         stack.setItemDamage(0);
         return stack;
     }
 
     @Override
     public String getName(){
-        return vehicledata.getVehicle().getName();
+        return vehdata().getVehicle().getName();
     }
 
     @SideOnly(Side.CLIENT)
@@ -1098,9 +970,9 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     @Override
     public void processServerPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : vehicledata.getScripts()){
+            for(VehicleScript script : railent.vehdata.getScripts()){
                 if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
-                    script.onDataPacket(this, vehicledata, pkt.nbt, Side.SERVER);
+                    script.onDataPacket(this, railent.vehdata, pkt.nbt, Side.SERVER);
                 }
             }
         }
@@ -1112,15 +984,15 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                     }
                     lr = Time.getDate();
                     boolean on = false, nf = false;
-                    pkt.nbt.setBoolean("engine_toggle_result", on = vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).toggle());
-                    if(vehicledata.getFuelTankContent() == 0 || vehicledata.getFuelTankContent() < 0.1){
+                    pkt.nbt.setBoolean("engine_toggle_result", on = railent.vehdata.getPart("engine").getAttributeData(EngineAttributeData.class).toggle());
+                    if(railent.vehdata.getFuelTankContent() == 0 || railent.vehdata.getFuelTankContent() < 0.1){
                         pkt.nbt.setBoolean("engine_toggle_result", on = false);
                         pkt.nbt.setBoolean("no_fuel", nf = true);
                     }
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
-                    throttle = 0;
+                    railent.modifyThrottle(0, true);
                     //
-                    SoundEvent event = vehicledata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
+                    SoundEvent event = railent.vehdata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
                     if(event != null){
                         this.playSound(event, 0.5f, 1f);
                         //this.world.playSound(null, this.posX, this.posY, this.posZ, event, this.getSoundCategory(), 1f, 1f);
@@ -1132,7 +1004,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                     break;
                 }
                 case "resync": {
-                    NBTTagCompound nbt = this.vehicledata.writeToNBT(new NBTTagCompound());
+                    NBTTagCompound nbt = this.railent.vehdata.writeToNBT(new NBTTagCompound());
                     nbt.setString("task", "update_vehicledata");
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                 }
@@ -1144,9 +1016,9 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     @Override
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : vehicledata.getScripts()){
+            for(VehicleScript script : cl_vehdata.getScripts()){
                 if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
-                    script.onDataPacket(this, vehicledata, pkt.nbt, Side.SERVER);
+                    script.onDataPacket(this, cl_vehdata, pkt.nbt, Side.SERVER);
                 }
             }
         }
@@ -1154,14 +1026,14 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
                     if(net.minecraft.client.Minecraft.getMinecraft().player.isRiding() && this.seats[0] == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
-                        Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).setOn(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
+                        Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (cl_vehdata.getPart("engine").getAttributeData(EngineAttributeData.class).setOn(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");
                         }
                     }
-                    throttle = 0;
-                    if(vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).isOn() && this.engineloop == null){
-                        SoundEvent event = vehicledata.getPart("engine").getPart().getSound("engine_running");
+                    dl_throttle = 0;
+                    if(cl_vehdata.getPart("engine").getAttributeData(EngineAttributeData.class).isOn() && this.engineloop == null){
+                        SoundEvent event = cl_vehdata.getPart("engine").getPart().getSound("engine_running");
                         if(event != null){
                             this.engineloop = new EngineLoopSound(event, SoundCategory.NEUTRAL, this);
                             net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
@@ -1175,29 +1047,29 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                 }
                 case "resync":
                 case "update_vehicledata": {
-                    this.vehicledata.readFromNBT(pkt.nbt);
+                    this.cl_vehdata.readFromNBT(pkt.nbt);
                     break;
                 }
                 case "lights_toggle": {
-                    this.vehicledata.setLightsState(pkt.nbt.getInteger("lightsstate"));
+                    this.cl_vehdata.setLightsState(pkt.nbt.getInteger("lightsstate"));
                     if(this.getEntityAtRear() != null){
                         this.getEntityAtRear().getVehicleData().setLightsState(pkt.nbt.getInteger("lightsstate"));
                     }
                     break;
                 }
                 case "direction_update":{
-                	last_track = new Track().read(pkt.nbt.getCompoundTag("LastTrack"));
-                	curr_track = new Track().read(pkt.nbt.getCompoundTag("CurrentTrack"));
-                	passed = pkt.nbt.getDouble("passed");
-                	reverse = pkt.nbt.getBoolean("reverse");
+                	CL_LT = new Track().read(pkt.nbt.getCompoundTag("LastTrack"));
+                	CL_CT = new Track().read(pkt.nbt.getCompoundTag("CurrentTrack"));
+                	cl_passed = pkt.nbt.getDouble("passed");
+                	cl_reverse = pkt.nbt.getBoolean("reverse");
                 	//Print.debug("PACKET CL RC", currentpos, lastpos);
                 	break;
                 }
                 case "update_connection_front":{
-                	this.front = pkt.nbt.getInteger("entity") < 0 ? null : (RailboundVehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
+                	//this.front = pkt.nbt.getInteger("entity") < 0 ? null : (RailboundVehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
                 }
                 case "update_connection_rear":{
-                	this.rear = pkt.nbt.getInteger("entity") < 0 ? null : (RailboundVehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
+                	//this.rear = pkt.nbt.getInteger("entity") < 0 ? null : (RailboundVehicleEntity)world.getEntityByID(pkt.nbt.getInteger("entity")); break;
                 }
             }
         }
@@ -1208,13 +1080,13 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
             if(facing.getAxis().isVertical() && !this.isLocked() && seats != null && seats[0] != null && seats[0].getControllingPassenger() == null){
-                return !this.vehicledata.getInventoryContainers().isEmpty() && this.vehicledata.getInventoryContainers().get(0).getPart().getAttribute(InventoryAttribute.class).getType() == InventoryType.ITEM;
+                return !vehdata().getInventoryContainers().isEmpty() && vehdata().getInventoryContainers().get(0).getPart().getAttribute(InventoryAttribute.class).getType() == InventoryType.ITEM;
             }
             return false;
         }
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
             if(facing.getAxis().isVertical() && !this.isLocked() && seats != null && seats[0] != null && seats[0].getControllingPassenger() == null){
-                return !this.vehicledata.getInventoryContainers().isEmpty() && this.vehicledata.getInventoryContainers().get(0).getPart().getAttribute(InventoryAttribute.class).getType() == InventoryType.FLUID;
+                return !vehdata().getInventoryContainers().isEmpty() && vehdata().getInventoryContainers().get(0).getPart().getAttribute(InventoryAttribute.class).getType() == InventoryType.FLUID;
             }
             return false;
         }
@@ -1226,10 +1098,10 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-            return (T) new ItemStackHandler(this.vehicledata.getInventoryContainers().get(0).getAttributeData(InventoryAttributeData.class).getInventory());
+            return (T) new ItemStackHandler(vehdata().getInventoryContainers().get(0).getAttributeData(InventoryAttributeData.class).getInventory());
         }
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-            return (T) this.vehicledata.getInventoryContainers().get(0).getAttributeData(InventoryAttributeData.class).getFluidHandler();
+            return (T) vehdata().getInventoryContainers().get(0).getAttributeData(InventoryAttributeData.class).getFluidHandler();
         }
         return super.getCapability(capability, facing);
     }
@@ -1240,10 +1112,10 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
 	@Override
 	public void setupCapability(ContainerHolder cap){
-		if(vehicledata == null || this.vehicledata.getContainerHolders().isEmpty()) return;
+		if(vehdata() == null || vehdata().getContainerHolders().isEmpty()) return;
 		if(world.isRemote){ cap.sync(true); return; }
-		cap.setOnlyOneContainer(this.vehicledata.getContainerHolders().size() < 2);
-		for(java.util.Map.Entry<String, PartData> entry : this.vehicledata.getParts().entrySet()){
+		cap.setOnlyOneContainer(vehdata().getContainerHolders().size() < 2);
+		for(java.util.Map.Entry<String, PartData> entry : vehdata().getParts().entrySet()){
     		if(entry.getValue().getPart().getAttribute(ContainerAttribute.class) != null){
     			ContainerAttribute condata = entry.getValue().getPart().getAttribute(ContainerAttribute.class);
     			cap.addContainerSlot(entry.getKey(), condata.getContainerOffset().to16Double(),
@@ -1255,6 +1127,11 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 	@Override
 	public float[] getEntityRotationForContainer(){
 		return new float[]{ (float)axes.getRadianYaw(), (float)axes.getRadianPitch(), (float)axes.getRadianRoll() };
+	}
+
+	public boolean isDriverInCreativeMode(){
+		if(seats == null || seats.length < 1 || seats[0] == null || seats[0].getControllingPassenger() instanceof EntityPlayer == false) return false;
+		return ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode;
 	}
 
 }

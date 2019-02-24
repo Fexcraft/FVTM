@@ -171,5 +171,9 @@ public class RailRegion {
 			entities.get(i).update();
 		}
 	}
+
+	public int getX(){ return x; }
+
+	public int getZ(){ return z; }
 	
 }

@@ -335,4 +335,8 @@ public class WorldRailImpl implements WorldRailData {
 		new RailEntity(tracks[0], tracks[1], map.getRegion(getRegion(junk.getCore())), data);
 	}
 
+	public DynamicRegionMap getRegionMap(){
+		return map;
+	}
+
 }

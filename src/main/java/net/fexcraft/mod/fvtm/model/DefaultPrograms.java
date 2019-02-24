@@ -177,14 +177,15 @@ public class DefaultPrograms {
 	        lastpos = data.getVehicle().getWheelPositions().get(part);
 	        lastpos = lastpos == null ? Pos.NULL : lastpos;
 	        lastpos.translate();
-	        if(ent != null)
-	        	list.rotateAxis(ent.getBogieYaw()[part.contains("front") ? 0 : 1] * 3F, 1, true);
+	        if(ent != null){
+	        	GL11.glPushMatrix();
+	        	GL11.glRotatef(ent.getBogieYaw()[part.contains("front") ? 0 : 1], 0, 1, 0);
+	        }
 		}
 		//
 		@Override
 		public void postRender(TurboList list, VehicleEntity ent, VehicleData data, Colorable color, String part){
-	        if(ent != null)
-	        	list.rotateAxis(-ent.getBogieYaw()[part.contains("front") ? 0 : 1] * 3F, 1, true);
+	        if(ent != null) GL11.glPopMatrix();
 			lastpos.translateR();
 		}
 	};

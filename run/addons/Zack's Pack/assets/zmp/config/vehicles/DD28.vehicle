@@ -23,7 +23,7 @@
 	],
 	"VehicleType": "RAIL",
     "WheelCoords":[
-        { "x": -52, "y": 8, "z": 0, "id": "bogie_front" },
-        { "x":  52, "y": 8, "z": 0, "id": "bogie_back" }
+        { "x":  52, "y": 8, "z": 0, "id": "bogie_front" },
+        { "x": -52, "y": 8, "z": 0, "id": "bogie_back" }
     ]
 }

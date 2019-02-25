@@ -217,7 +217,7 @@ public class Renderer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(-x, -y, -z);
         ModelBase.bindTexture(Resources.NULL_TEXTURE);
-        for(RailRegion reg : raildata.getLoadedRegions()){
+        for(RailRegion reg : raildata.getRegions().values()){
         	if(reg.READING) continue;
         	for(int i = 0; i < reg.getJunctions().size(); i++){
         		Junction junk = reg.getJunctions().values().toArray(new Junction[0])[i];

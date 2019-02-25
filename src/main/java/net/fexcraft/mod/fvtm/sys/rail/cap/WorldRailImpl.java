@@ -3,9 +3,9 @@ package net.fexcraft.mod.fvtm.sys.rail.cap;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -86,23 +86,22 @@ public class WorldRailImpl implements WorldRailData {
 	public static class DynamicRegionMap extends TreeMap<XZKey, RailRegion> {
 		
 		private WorldRailImpl util;
-		private XZKey tempkey;
 
 		public DynamicRegionMap(WorldRailImpl util){
 			this.util = util;
 		}
 
 		public RailRegion getRegion(int[] reg){
-			RailRegion region = this.get(tempkey = new XZKey(reg));
+			RailRegion region = this.get(new XZKey(reg));
 			if(region != null) return region;
 			else{
 				//TODO check if qualifies for load
 				util.LOADING = true;
 				region = new RailRegion(util, reg[0], reg[1], null);
 				MoveUtil.attach(region);
-				this.put(new XZKey(reg), region);
+				this.putIfAbsent(new XZKey(reg), region);
 				util.LOADING = false;
-				return this.get(tempkey);
+				return region;
 			}
 		}
 
@@ -115,16 +114,21 @@ public class WorldRailImpl implements WorldRailData {
 		}
 
 		public boolean contains(int x, int z){
-			return this.get(tempkey = new XZKey(x, z)) != null;
+			return this.get(new XZKey(x, z)) != null;
 		}
 
 		public boolean contains(int[] region){
 			return contains(region[0], region[1]);
 		}
 		
+		@Override
+		public Collection<RailRegion> values(){
+			return super.values();
+		}
+		
 	}
 	
-	private static class XZKey implements Comparable<XZKey> {
+	public static class XZKey implements Comparable<XZKey> {
 		
 		private int x, z;
 		
@@ -149,6 +153,7 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public void checkForInactive(){
+		LOADING = true;
 		final long date = Time.getDate(); RailRegion reg = null;
 		ChunkProviderServer server = (ChunkProviderServer)world.getChunkProvider();
 		for(Chunk pos : server.getLoadedChunks()){
@@ -160,6 +165,7 @@ public class WorldRailImpl implements WorldRailData {
 				keys.add(entry.getKey());
 			}
 		} for(XZKey key : keys) unloadRegion(key);
+		LOADING = false;
 	}
 
 	private void unloadRegion(XZKey key){
@@ -180,54 +186,6 @@ public class WorldRailImpl implements WorldRailData {
 	}
 
 	@Override
-	public BlockPos getNext(BlockPos current, BlockPos previous, boolean test){
-		/*ConnContainer conns = this.getConnectionsAt(current);
-		Connection[] connections = conns.connections;//this.getConnectionsAt(current);
-		if(current == null){
-			return connections.length == 0 ? new BlockPos(0, 0, 0) : connections[0].getDestination();
-		}
-		switch(connections.length){
-			case 0: { return current; }
-			case 1: {
-				return connections[0].equalsDestOrFirst(previous) ? current : connections[0].getFirstTowardsDest();
-			}
-			case 2: {
-				return connections[0].equalsDestOrFirst(previous) ? connections[1].getFirstTowardsDest() : connections[0].getFirstTowardsDest();
-			}
-			case 3: {
-				if(connections[0].equalsDestOrFirst(previous)){
-					return conns.switch0 ? connections[2].getFirstTowardsDest() : connections[1].getFirstTowardsDest();
-				}
-				else{
-					if(!test){
-						boolean bool = connections[2].equalsDestOrFirst(previous);
-						if(bool != conns.switch0){
-							conns.switch0 = bool; map.getRegion(current).sendUpdatePacket(false);
-						}
-					}
-					return connections[0].getFirstTowardsDest();
-				}
-			}
-			case 4: {
-				if(connections[1].equalsDestOrFirst(previous)){
-					return connections[0].getFirstTowardsDest();
-				}
-				if(connections[0].equalsDestOrFirst(previous)){
-					return connections[1].getFirstTowardsDest();
-				}
-				if(connections[3].equalsDestOrFirst(previous)){
-					return connections[2].getFirstTowardsDest();
-				}
-				if(connections[2].equalsDestOrFirst(previous)){
-					return connections[3].getFirstTowardsDest();
-				}
-				break;
-			}
-			default: return current;
-		}*/ return current;
-	}
-
-	@Override
 	public void updateRegion(int x, int z, NBTTagCompound nbt){
 		LOADING = true;
 		if(map.contains(x, z)){
@@ -235,10 +193,10 @@ public class WorldRailImpl implements WorldRailData {
 			Print.debug("Updating RailRegion " + x + ", " + z);
 		}
 		else{
-			this.map.put(new XZKey(x, z), new RailRegion(this, x, z, nbt));
+			this.map.putIfAbsent(new XZKey(x, z), new RailRegion(this, x, z, nbt));
 			Print.debug("Loading RailRegion " + x + ", " + z);
 		}
-		Print.debug(this.getLoadedRegions().size() + " railregions loaded");
+		Print.debug(map.size() + " railregions loaded");
 		//
 		for(TileEntity tile : world.loadedTileEntityList){
 			if(tile instanceof JunctionTileEntity == false) continue;
@@ -250,13 +208,10 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public void unloadRegion(int x, int z){
+		LOADING = true;
 		this.unloadRegion(new XZKey(new int[]{ x, z }));
 		Print.debug("Unloading RailRegion " + x + ", " + z);
-	}
-
-	@Override
-	public Collection<RailRegion> getLoadedRegions(){
-		return map.values();
+		LOADING = false;
 	}
 
 	@Override
@@ -277,6 +232,7 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public void updateTick(){
+		if(LOADING) return;
 		for(RailRegion region : map.values()){
 			region.updateTick();
 		}
@@ -284,17 +240,21 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public void addJunction(Gauge gauge, BlockPos start, BlockPos end, BlockPos[] arr){
+		LOADING = true;
 		Track track = new Track(start, end, gauge, arr);
 		RailRegion reg = map.getRegion(getRegion(start));
 		if(reg != null) reg.addTrack(track);
 		reg = map.getRegion(getRegion(end));
 		if(reg != null) reg.addTrack(track.oppositeCopy());
+		LOADING = false;
 	}
 
 	@Override
 	public void delJunction(BlockPos pos){
+		LOADING = true;
 		RailRegion reg = map.getRegion(getRegion(pos));
 		if(reg == null) return; reg.resetJunctionAt(pos);
+		LOADING = false;
 	}
 
 	@Override
@@ -336,6 +296,11 @@ public class WorldRailImpl implements WorldRailData {
 	}
 
 	public DynamicRegionMap getRegionMap(){
+		return map;
+	}
+
+	@Override
+	public Map<XZKey, RailRegion> getRegions(){
 		return map;
 	}
 

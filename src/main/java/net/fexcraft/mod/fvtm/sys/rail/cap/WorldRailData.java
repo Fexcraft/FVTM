@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail.cap;
 
-import java.util.Collection;
+import java.util.Map;
+
 import net.fexcraft.mod.fvtm.api.Gauge;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.blocks.rail.JunctionTileEntity;
@@ -25,8 +26,6 @@ public interface WorldRailData {
 
 	public void read(EnumFacing side, NBTBase nbt);
 	
-	public BlockPos getNext(BlockPos current, BlockPos previous, boolean test);
-	
 	/** To be called from a tick handler or something. */
 	public void checkForInactive();
 
@@ -35,8 +34,6 @@ public interface WorldRailData {
 	public void updateRegion(int x, int z, NBTTagCompound nbt);
 
 	public void unloadRegion(int x, int z);
-
-	public Collection<RailRegion> getLoadedRegions();
 
 	public void doTask(String string, int[] reg, NBTTagCompound packet);
 
@@ -56,5 +53,7 @@ public interface WorldRailData {
 	public boolean isLoading();
 
 	public void spawnEntity(VehicleData data, Junction junk);
+
+	public Map<WorldRailImpl.XZKey, RailRegion> getRegions();
 	
 }

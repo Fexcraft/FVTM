@@ -25,7 +25,7 @@ public class MoveUtil {
 		boolean reverse = amount < 0;
 		amount = testDistance(raildata, entity.current, entity.passed, amount);//+ (reverse ? entity.rearconndis : entity.frontconndis)
 		//amount -= reverse ? entity.rearconndis : entity.frontconndis;
-		ObjCon<Track, Double, Vec3f> obj = travelDistance(raildata, new ObjCon<Track, Double, Double>(entity.current, entity.passed, reverse ? -amount : amount));
+		ObjCon<Track, Double, Vec3f> obj = travelDistance(raildata, new ObjCon<Track, Double, Double>(entity.current, entity.passed, amount = reverse ? -amount : amount));
 		entity.last = entity.current; entity.current = obj.fir; entity.passed = obj.sec;
 		//if(!entity.last_track.equals(entity.curr_track)) entity.reverse = false;
 		//

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util.packets;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.api.packet.IPacket;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.minecraft.entity.Entity;
@@ -26,18 +27,20 @@ public class PacketVehicleControl implements IPacket, IMessage {
         Entity ent = vehicle.getEntity();
         entId0 = ent.getPersistentID().getMostSignificantBits();
         entId1 = ent.getPersistentID().getLeastSignificantBits();
+        posX = ent.posX;
+        posY = ent.posY;
+        posZ = ent.posZ;
         if(vehicle instanceof RailboundVehicleEntity){
         	RailboundVehicleEntity railent = (RailboundVehicleEntity)vehicle.getEntity();
-        	posX = railent.railent.accumulator; railent.railent.accumulator = 0;
+        	Print.debug(railent.railent.accumulator);
+            steeringYaw = (float)railent.railent.accumulator; railent.railent.accumulator = 0;
         }
         else{
-            posX = ent.posX;
-            posY = ent.posY;
-            posZ = ent.posZ;
-            yaw = vehicle.getAxes().getYaw();
-            pitch = vehicle.getAxes().getPitch();
-            roll = vehicle.getAxes().getRoll();
+            steeringYaw = vehicle.getWheelsYaw();
         }
+        yaw = vehicle.getAxes().getYaw();
+        pitch = vehicle.getAxes().getPitch();
+        roll = vehicle.getAxes().getRoll();
         motX = ent.motionX;
         motY = ent.motionY;
         motZ = ent.motionZ;
@@ -46,7 +49,6 @@ public class PacketVehicleControl implements IPacket, IMessage {
         avely = agl.y;
         avelz = agl.z;
         throttle = vehicle.getThrottle();
-        steeringYaw = vehicle.getWheelsYaw();
         doors = vehicle.getVehicleData().doorsOpen();
     }
 

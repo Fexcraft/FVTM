@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
 import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
 import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailImpl;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,38 +37,65 @@ public class RailEntity {
 		this.ppx = px = curr.getFirstVector().xCoord;
 		this.ppy = py = curr.getFirstVector().yCoord;
 		this.ppz = pz = curr.getFirstVector().zCoord;
+		this.region.addEntity(this); this.initPoints();
+		Print.debug("created"); //this.active = true;
+	}
+	
+	private void initPoints(){
 		points = new PointOnTrack[4];
 		points[0] = new PointOnTrack(this, PointOnTrack.Type.COUPLER_FRONT);
 		points[1] = new PointOnTrack(this, PointOnTrack.Type.COUPLER_REAR);
 		points[2] = new PointOnTrack(this, PointOnTrack.Type.BOGIE_FRONT);
 		points[3] = new PointOnTrack(this, PointOnTrack.Type.BOGIE_REAR);
-		this.region.addEntity(this);
-		Print.debug("created"); //this.active = true;
-	}
-	
-	public RailEntity(NBTTagCompound compound){
-		this.read(compound);
 	}
 
-	public void read(NBTTagCompound compound){
-		// TODO Auto-generated method stub
-		
+	public RailEntity(NBTTagCompound compound, RailRegion region){
+		this.read(compound); (this.region = region).addEntity(this); this.initPoints();
 	}
 
-	public void write(NBTTagCompound compound){
+	public RailEntity read(NBTTagCompound compound){
+		this.vehdata = Resources.getVehicleData(compound);
+		this.ppx = compound.getDouble("PrevPosX");
+		this.ppy = compound.getDouble("PrevPosY");
+		this.ppz = compound.getDouble("PrevPosZ");
+		this.px = compound.getDouble("PosX");
+		this.py = compound.getDouble("PosY");
+		this.pz = compound.getDouble("PosZ");
+		this.active = compound.getBoolean("Active");
+		this.reverse = compound.getBoolean("Reverse");
+		this.throttle = compound.getDouble("Throttle");
+		//
+		this.last = new Track().read(compound.getCompoundTag("LastTrack"));
+		this.current = new Track().read(compound.getCompoundTag("CurrentTrack"));
+		return this;
+	}
+
+	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
-		//TODO
+		vehdata.writeToNBT(compound);
+		compound.setDouble("PrevPosX", ppx);
+		compound.setDouble("PrevPosY", ppy);
+		compound.setDouble("PrevPosZ", ppz);
+		compound.setDouble("PosX", px);
+		compound.setDouble("PosY", py);
+		compound.setDouble("PosZ", pz);
+		compound.setBoolean("Active", active);
+		compound.setBoolean("Reverse", reverse);
+		compound.setDouble("Throttle", throttle);
+		compound.setTag("LastTrack", last.write(null));
+		compound.setTag("CurrentTrack", current.write(null));
+		return compound;
 	}
 	
 	public void update(){
 		if(this.isInRangeOfPlayers()){
 			if(this.shouldSpawnEntity()){
-				Print.debugChat("Entity in View, spawning."); this.spawnEntity();
+				Print.debug("Entity in View, spawning."); this.spawnEntity();
 			}
 		}
 		else{
 			if(this.shouldRemoveEntity()){
-				Print.debugChat("Entity out of View, de-spawning.");  this.removeEntity();
+				Print.debug("Entity out of View, de-spawning.");  this.removeEntity();
 			}
 		}
 		//

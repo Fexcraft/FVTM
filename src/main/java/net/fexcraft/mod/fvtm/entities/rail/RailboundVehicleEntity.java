@@ -87,9 +87,9 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     //protected boolean sync;
 	//public boolean reverse;
     protected Vec3d angvel = new Vec3d(0, 0, 0);
-    //public double serverPosX, serverPosY, serverPosZ;
-    //public Double actualPosX, actualPosY, actualPosZ;
-    //public double serverYaw, serverPitch, serverRoll;
+    public double serverPosX, serverPosY, serverPosZ;
+    public double adjustedPosX, adjustedPosY, adjustedPosZ;
+    public double serverYaw, serverPitch, serverRoll;
     public double serverPass;
     public int serverPositionTransitionTicker;
     //
@@ -613,29 +613,6 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 	}
 
 	@Override
-	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw){
-        if(world.isRemote){
-        	serverPass = posX;
-            serverPositionTransitionTicker = 5;
-            //
-            dl_throttle = throttle;
-        }
-        else{
-            setPosition(posX, posY, posZ);
-            prevRotationYaw = yaw;
-            prevRotationPitch = pitch;
-            prevRotationRoll = roll;
-            setRotation(yaw, pitch, roll);
-            railent.modifyThrottle(throttle, true);
-        }
-        motionX = motX;
-        motionY = motY;
-        motionZ = motZ;
-        angvel = new Vec3d(avelx, avely, avelz);
-        this.updateRotation();
-	}
-
-	@Override
 	public VehicleEntity getEntityAtFront(){
 		return null;//TODO
 	}
@@ -764,6 +741,29 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     public boolean isDrivenByPlayer(){
     	return seats[0] != null && SeatEntity.isPassengerThePlayer((SeatEntity)seats[0]);
     }
+
+	@Override
+	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw){
+        if(world.isRemote){
+            //serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
+            //serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
+        	serverPass = steeringYaw; serverPositionTransitionTicker = 5;
+            dl_throttle = throttle;
+        }
+        else{
+            setPosition(posX, posY, posZ);
+            prevRotationYaw = yaw;
+            prevRotationPitch = pitch;
+            prevRotationRoll = roll;
+            setRotation(yaw, pitch, roll);
+            railent.modifyThrottle(throttle, true);
+        }
+        motionX = motX;
+        motionY = motY;
+        motionZ = motZ;
+        angvel = new Vec3d(avelx, avely, avelz);
+        this.updateRotation();
+	}
     
     @Override
     public void onUpdate(){
@@ -816,7 +816,22 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             		new MoveUtil.ObjCon<Track, Double, Double>(CL_CT, cl_passed, toPass));
             	CL_LT = CL_CT; CL_CT = ret.fir; cl_passed = ret.sec;
             	this.setPosition(ret.tir.xCoord, ret.tir.xCoord, ret.tir.zCoord);
+            	//
+                /*double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
+                double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
+                double z = posZ + (serverPosZ - posZ) / serverPositionTransitionTicker;
+                double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
+                double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
+                double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
+                rotationYaw = (float) (axes.getYaw() + dYaw / serverPositionTransitionTicker);
+                rotationPitch = (float) (axes.getPitch() + dPitch / serverPositionTransitionTicker);
+                float rotationRoll = (float) (axes.getRoll() + dRoll / serverPositionTransitionTicker);
+                setPosition(x, y, z);
+                setRotation(rotationYaw, rotationPitch, rotationRoll);*/
                 --serverPositionTransitionTicker;
+            }
+            else{
+            	this.posX = serverPosX; this.posY = serverPosY; this.posZ = serverPosZ;
             }
         }
         //TODO if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }

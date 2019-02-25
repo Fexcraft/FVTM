@@ -50,7 +50,7 @@ public class RailRegion {
 	}
 
 	public final void sendUpdatePacket(boolean unload){
-		NBTTagCompound compound = unload ? new NBTTagCompound() : this.write();
+		NBTTagCompound compound = unload ? new NBTTagCompound() : this.write(true);
 		compound.setString("target_listener", WorldRailDataSerializer.REGNAM);
 		compound.setString("task", unload ? "unload" : "update");
 		compound.setInteger("dimension", util.getDimension());
@@ -58,7 +58,7 @@ public class RailRegion {
 		//TODO make the packet more place-specific
 	}
 
-	public NBTTagCompound write(){
+	public NBTTagCompound write(boolean forpacket){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("LastUse", this.lastaccessed);
 		compound.setInteger("RegionX", x);
@@ -69,6 +69,14 @@ public class RailRegion {
 			jlist.appendTag(junk.write(null));
 		}
 		compound.setTag("Junctions", jlist);
+		//
+		if(!forpacket){
+			NBTTagList ents = new NBTTagList();
+			for(RailEntity entity : entities){
+				ents.appendTag(entity.write(null));
+			}
+			compound.setTag("Entities", ents);
+		}
 		return compound;
 	}
 	
@@ -90,6 +98,14 @@ public class RailRegion {
 			}
 		}
 		else wasempty = true;
+		if(compound.hasKey("Entities")){
+			entities.clear();
+			NBTTagList list = (NBTTagList)compound.getTag("Entities");
+			for(NBTBase base : list){
+				try{ this.entities.add(new RailEntity((NBTTagCompound)base, this)); }
+				catch(Exception e){ e.printStackTrace(); }
+			}
+		}
 		this.lastaccessed = compound.hasKey("LastUse") ? compound.getLong("LastUse") : Time.getDate();
 		READING = false;
 	}
@@ -101,7 +117,7 @@ public class RailRegion {
 	public void save(){
 		if(util.getWorld().isRemote) return;
 		if(wasempty && junctions.isEmpty()) return;
-		NBTTagCompound compound = this.write();
+		NBTTagCompound compound = this.write(false);
 		try{
 			CompressedStreamTools.write(compound, this.getFile(x, z));
 		}

@@ -226,7 +226,7 @@ public interface Vehicle extends DataHolderObject.Extended<Vehicle, Vehicle.Vehi
 
         public void setThrottle(double newthr);
 
-        public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw);
+        public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, double steeringYaw);
 
         public VehicleEntity getEntityAtFront();
 

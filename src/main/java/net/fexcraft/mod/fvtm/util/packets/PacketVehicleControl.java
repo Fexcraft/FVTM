@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.util.packets;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.api.packet.IPacket;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.minecraft.entity.Entity;
@@ -16,8 +15,7 @@ public class PacketVehicleControl implements IPacket, IMessage {
     public float yaw, pitch, roll;
     public double motX, motY, motZ;
     public double avelx, avely, avelz;
-    public double throttle;
-    public float steeringYaw;
+    public double throttle, steeringYaw;
     public boolean doors;
 
     public PacketVehicleControl(){
@@ -32,8 +30,8 @@ public class PacketVehicleControl implements IPacket, IMessage {
         posZ = ent.posZ;
         if(vehicle instanceof RailboundVehicleEntity){
         	RailboundVehicleEntity railent = (RailboundVehicleEntity)vehicle.getEntity();
-        	Print.debug(railent.railent.accumulator);
-            steeringYaw = (float)railent.railent.accumulator; railent.railent.accumulator = 0;
+        	net.fexcraft.lib.mc.utils.Print.debug(railent.railent.accumulator);
+            steeringYaw = Math.abs(railent.railent.accumulator); railent.railent.accumulator = 0;
         }
         else{
             steeringYaw = vehicle.getWheelsYaw();
@@ -69,7 +67,7 @@ public class PacketVehicleControl implements IPacket, IMessage {
         buf.writeDouble(avely);
         buf.writeDouble(avelz);
         buf.writeDouble(throttle);
-        buf.writeFloat(steeringYaw);
+        buf.writeDouble(steeringYaw);
         buf.writeBoolean(doors);
     }
 
@@ -90,7 +88,7 @@ public class PacketVehicleControl implements IPacket, IMessage {
         avely = buf.readDouble();
         avelz = buf.readDouble();
         throttle = buf.readDouble();
-        steeringYaw = buf.readFloat();
+        steeringYaw = buf.readDouble();
         doors = buf.readBoolean();
     }
 

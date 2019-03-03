@@ -554,7 +554,7 @@ public abstract class UnboundVehicleEntity extends Entity implements ContainerHo
     }
 
     @Override
-    public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw){
+    public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, double steeringYaw){
         if(world.isRemote){
             serverPosX = posX;
             serverPosY = posY;
@@ -578,7 +578,7 @@ public abstract class UnboundVehicleEntity extends Entity implements ContainerHo
         //f(!(seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer))
         	this.throttle = throttle;
         //
-        wheelsYaw = steeringYaw;
+        wheelsYaw = (float)steeringYaw;
     }
 
     @Override

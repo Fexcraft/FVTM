@@ -112,6 +112,18 @@ public class RenderGenericRailed extends Render<RailboundVehicleEntity> implemen
             }
         }
         GL11.glPopMatrix();
+        /*if(Command.DEBUG){
+            GL11.glPushMatrix();
+            Vec3f vec = vehicle.railent.getPointPosition(0);
+            GL11.glTranslatef(vec.xCoord, vec.yCoord, vec.zCoord);
+            RGB.BLUE.glColorApply(); CUBE.render(); RGB.glColorReset();
+            GL11.glTranslatef(-vec.xCoord, -vec.yCoord, -vec.zCoord);
+            vec = vehicle.railent.getPointPosition(1);
+            GL11.glTranslatef(vec.xCoord, vec.yCoord, vec.zCoord);
+            RGB.BLUE.glColorApply(); CUBE.render(); RGB.glColorReset();
+            GL11.glTranslatef(-vec.xCoord, -vec.yCoord, -vec.zCoord);
+            GL11.glPopMatrix();
+        }*///well, I forgot rail-entity is server side only there.
         //Renderer.drawString(vehicle.getVehicleData().getVehicle().getName(), x, y + 2, z, vehicle.axes.getYaw(), vehicle.axes.getPitch(), vehicle.axes.getRoll(), false, MapColor.GOLD.colorValue);
     }
 

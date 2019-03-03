@@ -20,59 +20,33 @@ public class MoveUtil {
 		
 	}
 
-	public static double moveEntity(RailEntity entity, double amount){//, boolean reverse){
+	public static ObjCon<Double, Boolean, Object> moveEntity(RailEntity entity, double amount, boolean reverse){
+		if(amount == 0f || (amount < 0.001 && amount > 0.001)){
+			new ObjCon<Double, Boolean, Object>(amount, reverse, null);
+		}
 		WorldRailData raildata = entity.getRegion().getUtil();
-		boolean reverse = amount < 0;
-		amount = testDistance(raildata, entity.current, entity.passed, amount);//+ (reverse ? entity.rearconndis : entity.frontconndis)
-		//amount -= reverse ? entity.rearconndis : entity.frontconndis;
-		ObjCon<Track, Double, Vec3f> obj = travelDistance(raildata, new ObjCon<Track, Double, Double>(entity.current, entity.passed, amount = reverse ? -amount : amount));
+		amount = testDistance(raildata, entity.current, entity.passed, reverse ? -amount : amount);
+		if(amount == 0f || (amount < 0.001 && amount > 0.001)){
+			new ObjCon<Double, Boolean, Object>(amount, reverse, null);
+		}
+		ObjCon<Track, Double, Vec3f> obj = travelDistance(raildata, new ObjCon<Track, Double, Double>(entity.current, entity.passed, amount), reverse);
 		entity.last = entity.current; entity.current = obj.fir; entity.passed = obj.sec;
 		//if(!entity.last_track.equals(entity.curr_track)) entity.reverse = false;
 		//
 		entity.updateRailRegion();
 		entity.ppx = entity.px; entity.ppy = entity.py; entity.ppz = entity.pz;
 		entity.px = obj.tir.xCoord; entity.py = obj.tir.yCoord; entity.pz = obj.tir.zCoord;
-		return amount;
-		//
-		//
-		/*if(reverse) amount = -amount;
-		boolean negative = amount < 0; amount = testDistance(raildata, entity.curr_track, entity.passed, amount);
-		//if(negative) amount = -amount;
-		//
-		if(negative){
-			if(amount < entity.passed){
-				float[] pos = entity.curr_track.getPosition((float)(entity.passed -= amount));
-				entity.setPosition(pos[0], pos[1], pos[2]);
-			}
-			else{
-				entity.last_track = entity.curr_track; entity.curr_track = getPrev(raildata, entity.curr_track);
-				amount -= entity.passed; entity.passed = 0;
-			}
-		}
-		float[] newpos = new float[]{ (float)amount };
-		while(newpos.length == 1){
-			amount = newpos[0];
-			entity.last_track = entity.curr_track; entity.curr_track = getNext(raildata, entity.curr_track);
-			if(entity.curr_track == null){
-				entity.curr_track = entity.last_track;
-				newpos = Track.blkposToVec3f(entity.curr_track.end).toFloatArray();
-				entity.passed = entity.curr_track.length;
-			}
-			else{
-				newpos = entity.curr_track.getPosition((float)amount);
-				entity.passed = amount;
-			}
-		}
-		entity.setPosition(newpos[0], newpos[1], newpos[2]);*/
+		return new ObjCon<Double, Boolean, Object>(amount, reverse, null);
 	}
 	
-	private static Track getPrev(WorldRailData raildata, Track track){
+	private static Track getPrev(WorldRailData raildata, Track track, boolean reverse){
 		if(track == null) Static.exception(null, false);
 		Junction junk = raildata.getJunction(track.start);
-		return junk == null ? null : junk.getNext(track.getId());
+		track = junk == null ? null : junk.getNext(track.getId());
+		return track == null ? null : reverse ? track.oppositeCopy() : track;
 	}
 	
-	private static Track getNext(WorldRailData raildata, Track track){
+	private static Track getNext(WorldRailData raildata, Track track, boolean reverse){
 		if(track == null) Static.exception(null, false);
 		Junction junk = raildata.getJunction(track.end);
 		return junk == null ? null : junk.getNext(track.getOppositeId());
@@ -82,12 +56,12 @@ public class MoveUtil {
 	public static double testDistance(WorldRailData raildata, Track at, double passed, double expected){
 		double travel = passed + expected;
 		if(travel > at.length){
-			Track track = getNext(raildata, at);
+			Track track = getNext(raildata, at, false);
 			if(track == null) return at.length - passed;
 			else return testDistance(raildata, track, 0, travel - at.length);
 		}
 		else if(travel < 0){
-			Track track = getPrev(raildata, at);
+			Track track = getPrev(raildata, at, false);
 			if(track == null) return 0;//passed;
 			else return testDistance(raildata, track, 0, Math.abs(travel));
 		}
@@ -98,29 +72,33 @@ public class MoveUtil {
 	
 	/** 
 	 * @param obj Track-At / Passed / Expected
+	 * @param reverse REVERSE
 	 * @return Track-At / Passed / Position
 	**/
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static ObjCon<Track, Double, Vec3f> travelDistance(WorldRailData raildata, ObjCon<Track, Double, Double> obj){
-		double travel = obj.sec + obj.tir;
+	public static ObjCon<Track, Double, Vec3f> travelDistance(WorldRailData raildata, ObjCon<Track, Double, Double> obj, boolean reverse){
+		double travel = obj.sec + (reverse ? -obj.tir : obj.tir);
 		if(travel > obj.fir.length){
-			Track track = getNext(raildata, obj.fir);
+			Track track = getNext(raildata, obj.fir, reverse);
 			if(track == null){
 				return new ObjCon(obj.fir, obj.fir.length + 0D, Track.blkposToVec3f(obj.fir.end));
 			}
 			else{
-				return travelDistance(raildata, new ObjCon(track, 0D, travel - obj.fir.length));
+				return travelDistance(raildata, new ObjCon(track, 0D, travel - obj.fir.length), reverse);
 			}
 		}
 		else if(travel < 0){
-			Track track = getPrev(raildata, obj.fir);
+			Track track = getPrev(raildata, obj.fir, reverse);
 			if(track == null){
-				return new ObjCon(obj.fir, 0, Track.blkposToVec3f(obj.fir.start));
+				return new ObjCon(obj.fir, 0D, Track.blkposToVec3f(obj.fir.start));
 			}
-			else return travelDistance(raildata, new ObjCon(track, 0D, Math.abs(travel)));
+			else{
+				travel = Math.abs(travel); //if(reverse) travel = track.length - travel;
+				return travelDistance(raildata, new ObjCon(track, reverse ? track.length : 0D, travel), reverse);
+			}
 		}
 		else{
-			return new ObjCon(obj.fir, travel, obj.fir.getVectorPosition((float)travel));
+			return new ObjCon(obj.fir, travel, obj.fir.getVectorPosition((float)travel, reverse));
 		}
 	}
 	

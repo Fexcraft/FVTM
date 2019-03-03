@@ -32,8 +32,8 @@ import net.minecraft.world.gen.ChunkProviderServer;
 public class WorldRailImpl implements WorldRailData {
 
 	private DynamicRegionMap map = new DynamicRegionMap(this);
-	private World world;
-	private int dim;
+	private World world; private int dim;
+	private long uuids;
 	private boolean LOADING;
 	//
 	public ArrayList<LineSection> sections = new ArrayList<>();
@@ -59,13 +59,15 @@ public class WorldRailImpl implements WorldRailData {
 		//if(!root.exists()){ root.mkdirs(); }
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("LastSave", Time.getDate());
+		compound.setLong("UUIDs", uuids);
 		return compound;
 	}
 
 	@Override
 	public void read(EnumFacing side, NBTBase nbt){
-		if(!getRootFile().exists()) return;
-		if(nbt == null) return;
+		if(!getRootFile().exists()) return; if(nbt == null) return;
+		NBTTagCompound compound = (NBTTagCompound)nbt;
+		uuids = compound.getLong("UUIDs");
 	}
 	
 	public static int[] getRegion(int cx, int cz){
@@ -302,6 +304,10 @@ public class WorldRailImpl implements WorldRailData {
 	@Override
 	public Map<XZKey, RailRegion> getRegions(){
 		return map;
+	}
+
+	public long grabNewRailEntityId(){
+		return uuids++;
 	}
 
 }

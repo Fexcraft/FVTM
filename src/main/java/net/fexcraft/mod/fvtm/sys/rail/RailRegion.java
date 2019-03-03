@@ -102,7 +102,7 @@ public class RailRegion {
 			entities.clear();
 			NBTTagList list = (NBTTagList)compound.getTag("Entities");
 			for(NBTBase base : list){
-				try{ this.entities.add(new RailEntity((NBTTagCompound)base, this)); }
+				try{ new RailEntity((NBTTagCompound)base, this); }
 				catch(Exception e){ e.printStackTrace(); }
 			}
 		}
@@ -114,6 +114,7 @@ public class RailRegion {
 		return new File(util.getRootFile(), "/railregions/" + x + "_" + z + ".dat");
 	}
 
+	//TODO add "changes" detection and only save to disc if changed.
 	public void save(){
 		if(util.getWorld().isRemote) return;
 		if(wasempty && junctions.isEmpty()) return;
@@ -191,5 +192,18 @@ public class RailRegion {
 	public int getX(){ return x; }
 
 	public int getZ(){ return z; }
+
+	public RailRegion[] getBorderingIncluding(double repx, double repz){
+		//repx = repx % 1024; repz = repz % 1024; RailRegion[] regs = new RailRegion[4]; regs[0] = this;
+		//TODO some fancy code which only selects 4 nearby regions instead of 9.
+		RailRegion[] regs = new RailRegion[9]; int k = 0;
+		for(int i = -1; i < 2; i++){
+			for(int j = -1; j < 2; j++){
+				regs[k++] = util.getRegionMap().getRegion(i + x, j + z);
+			}
+		} return regs;
+	}
+
+	public ArrayList<RailEntity> getEntities(){ return entities; }
 	
 }

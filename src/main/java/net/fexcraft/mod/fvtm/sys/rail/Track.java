@@ -193,7 +193,8 @@ public class Track {
 		return blkposToVec3f(start).toFloatArray();
 	}
 	
-	public Vec3f getVectorPosition(float distance){
+	public Vec3f getVectorPosition(float distance, boolean reverse){
+		if(reverse) distance = (float)this.oppositePassed(distance);
 		if(distance >= this.length){
 			//if(distance == this.length) blkposToVec3f(end).toFloatArray();
 			//return new float[]{ distance - length };
@@ -225,6 +226,10 @@ public class Track {
 	@Override
 	public String toString(){
 		return String.format("Track[%s-%s, %s, %s]", start.toLong(), end.toLong(), vectors.length, copy ? "copy" : "original");
+	}
+
+	public double oppositePassed(double sec){
+		return sec >= length ? 0 : sec <= 0 ? length : this.length - sec;
 	}
 	
 }

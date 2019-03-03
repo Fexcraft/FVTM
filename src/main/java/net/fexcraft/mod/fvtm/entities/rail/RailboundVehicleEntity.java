@@ -365,12 +365,18 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             	railent.modifyThrottle(-0.05, false);
                 return true;
             }
-            case 2: {//Left
-                //reverse = false;
-                return true;
-            }
-            case 3: {//Right
-                //reverse = true;
+            case 2: case 3: {//Left//Right
+            	if(world.isRemote){
+            		cl_reverse = key == 3;
+            	}
+            	else{
+            		boolean bool = key == 3;
+            		if(railent.reverse != bool){
+                		railent.reverse = bool;
+                		this.sendDirectionUpdate();
+                		railent.modifyThrottle(0, true);
+            		}
+            	}
                 return true;
             }
             case 4: {//Brake
@@ -473,21 +479,11 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             			return true;
             		}
                     if(toggletimer <= 0){
-                    	if(front){
-                        	if(this.getEntityAtFront() == null){
-                        		this.tryAttach(player, front);
-                        	}
-                        	else{
-                        		this.tryDetach(player, front);
-                        	}
+                    	if(front ? railent.front == null : railent.rear == null){
+                    		railent.tryAttach(player, front);
                     	}
                     	else{
-                        	if(this.getEntityAtRear() == null){
-                        		this.tryAttach(player, front);
-                        	}
-                        	else{
-                        		this.tryDetach(player, front);
-                        	}
+                    		railent.tryDetach(player, front);
                     	}
                     	toggletimer = 10;
                     }
@@ -512,6 +508,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 		return new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
 	}
 
+	@SuppressWarnings("unused") @Deprecated
     private void tryAttach(EntityPlayer player, boolean front){
     	if(front ? this.getEntityAtFront() != null : this.getEntityAtRear() != null){
 			Print.chat(player, (front ? "Front" : "Rear") + " already Connected."); return;
@@ -572,7 +569,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     	}
 	}
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings("unused") @Deprecated
 	private void tryDetach(EntityPlayer player, boolean front){
 		if((front ? this.getEntityAtFront() : this.getEntityAtRear()) == null){
 			Print.chat(player, "No entity connected at " + (front ? "front" : "rear") + "!");
@@ -614,12 +611,12 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 
 	@Override
 	public VehicleEntity getEntityAtFront(){
-		return null;//TODO
+		return world.isRemote ? null : railent.front == null ? null : railent.front.getEntity();
 	}
 
 	@Override
 	public VehicleEntity getEntityAtRear(){
-		return null;//TODO
+		return world.isRemote ? null : railent.rear == null ? null : railent.rear.getEntity();
 	}
 
 	@Override
@@ -743,7 +740,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     }
 
 	@Override
-	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, float steeringYaw){
+	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double avelx, double avely, double avelz, double throttle, double steeringYaw){
         if(world.isRemote){
             //serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             //serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
@@ -813,7 +810,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             if(serverPositionTransitionTicker > 0){
             	double toPass = serverPass / 5;
             	MoveUtil.ObjCon<Track, Double, Vec3f> ret = MoveUtil.travelDistance(world.getCapability(WorldRailDataSerializer.CAPABILITY, null),
-            		new MoveUtil.ObjCon<Track, Double, Double>(CL_CT, cl_passed, toPass));
+            		new MoveUtil.ObjCon<Track, Double, Double>(CL_CT, cl_passed, toPass), cl_reverse);
             	CL_LT = CL_CT; CL_CT = ret.fir; cl_passed = ret.sec;
             	this.setPosition(ret.tir.xCoord, ret.tir.xCoord, ret.tir.zCoord);
             	//
@@ -831,7 +828,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                 --serverPositionTransitionTicker;
             }
             else{
-            	this.posX = serverPosX; this.posY = serverPosY; this.posZ = serverPosZ;
+            	//this.posX = serverPosX; this.posY = serverPosY; this.posZ = serverPosZ;
             }
         }
         //TODO if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }
@@ -844,13 +841,7 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         	//
             if(LL_LT == null || LL_CT == null){ LL_LT = railent.last; LL_CT = railent.current; }
         	if(!LL_LT.equals(railent.last) || !LL_CT.equals(railent.current)){
-        		NBTTagCompound compound = new NBTTagCompound();
-        		compound.setString("task", "direction_update");
-                compound.setTag("LastTrack", railent.last.write(null));
-                compound.setTag("CurrentTrack", railent.current.write(null));
-        		compound.setDouble("passed", railent.passed);
-        		compound.setBoolean("reverse", railent.reverse);
-        		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
+        		this.sendDirectionUpdate();
         	}
         } else{ this.updateRotation(); }
         //
@@ -866,30 +857,39 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         }
     }
     
-    //tempdata
+    private void sendDirectionUpdate(){
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("task", "direction_update");
+        compound.setTag("LastTrack", railent.last.write(null));
+        compound.setTag("CurrentTrack", railent.current.write(null));
+		compound.setDouble("passed", railent.passed);
+		compound.setBoolean("reverse", railent.reverse);
+		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
+	}
+
+	//tempdata
     private Vec3f qfront, qback, bf0, bf1, br0, br1;
 	
 	private void updateRotation(){
-		double passed = world.isRemote ? cl_passed : railent.passed; Track curr = world.isRemote ? CL_CT : railent.current;
+		Track curr = world.isRemote ? CL_CT : railent.current;
+		double passed = world.isRemote ? cl_passed : railent.passed;
+		boolean reverse = world.isRemote ? cl_reverse : railent.reverse;
 		if(curr == null){ Print.debug("No Track Data."); return; }
 		WorldRailData raildata = this.world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
-		qfront = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis)).tir;
-		qback = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis)).tir;
+		qfront = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis), reverse).tir;
+		qback = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis), reverse).tir;
         double dx = qfront.xCoord - qback.xCoord, dy = qfront.yCoord - qback.yCoord, dz = qfront.zCoord - qback.zCoord;
-        double dxz = Math.sqrt(dx * dx + dz * dz);
-        double yaw = Math.atan2(dz, dx);
-        double pitch = -Math.atan2(dy, dxz);
-        double roll = 0F;
+        double dxz = Math.sqrt(dx * dx + dz * dz), yaw = Math.atan2(dz, dx), pitch = -Math.atan2(dy, dxz), roll = 0F;
         axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
         this.posX = this.prevPosX = (qfront.xCoord + qback.xCoord) * 0.5;
         this.posY = this.prevPosY = (qfront.yCoord + qback.yCoord) * 0.5;
         this.posZ = this.prevPosZ = (qfront.zCoord + qback.zCoord) * 0.5;
-        if(!world.isRemote) return;
+        if(!world.isRemote || world.isRemote) return;
         //
-		bf0 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis - 0.1)).tir;
-		bf1 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis + 0.1)).tir;
-		br0 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis - 0.1)).tir;
-		br1 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis + 0.1)).tir;
+		bf0 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis - 0.1), reverse).tir;
+		bf1 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis + 0.1), reverse).tir;
+		br0 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis - 0.1), reverse).tir;
+		br1 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis + 0.1), reverse).tir;
 		bogierot[0] = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - (yaw * 180F / 3.14159F));
 		bogierot[1] = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - (yaw * 180F / 3.14159F));
 	}

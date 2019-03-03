@@ -1,5 +1,9 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.addons.gep.attributes.EngineAttribute;
@@ -12,8 +16,10 @@ import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailImpl;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 /** @author Ferdinand Calo' (FEX___96) **/
@@ -27,9 +33,11 @@ public class RailEntity {
 	public boolean reverse;
 	private double throttle;
 	//
+	public long uniqueid, front_id, rear_id;
 	public VehicleData vehdata;
 	private PointOnTrack[] points;
 	//private LineSection section_on;
+	public RailEntity front, rear;
 	private RailboundVehicleEntity entity;
 	
 	public RailEntity(Track curr, Track last, RailRegion region, VehicleData data){
@@ -38,6 +46,7 @@ public class RailEntity {
 		this.ppy = py = curr.getFirstVector().yCoord;
 		this.ppz = pz = curr.getFirstVector().zCoord;
 		this.region.addEntity(this); this.initPoints();
+		this.uniqueid = region.getUtil().grabNewRailEntityId();
 		Print.debug("created"); //this.active = true;
 	}
 	
@@ -65,6 +74,7 @@ public class RailEntity {
 		this.reverse = compound.getBoolean("Reverse");
 		this.throttle = compound.getDouble("Throttle");
 		//
+		this.uniqueid = compound.getLong("UniqueID");
 		this.last = new Track().read(compound.getCompoundTag("LastTrack"));
 		this.current = new Track().read(compound.getCompoundTag("CurrentTrack"));
 		return this;
@@ -73,6 +83,7 @@ public class RailEntity {
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
 		vehdata.writeToNBT(compound);
+		compound.setLong("UniqueID", uniqueid);
 		compound.setDouble("PrevPosX", ppx);
 		compound.setDouble("PrevPosY", ppy);
 		compound.setDouble("PrevPosZ", ppz);
@@ -114,7 +125,8 @@ public class RailEntity {
 	        }
 	        this.requestMove(amount, false, null); //Print.debug("amount:move: " + amount);
 		}
-		//TODO move & stuff
+		//
+		for(PointOnTrack point : points){ point.update(); }
 		//
 		if(this.active) region.updateAccess(null);
 		this.updateSection();
@@ -122,11 +134,10 @@ public class RailEntity {
 
 	private void requestMove(double amount, boolean call, Boolean conn){
         if((amount > 0.001 || amount < -0.001)){
-        	accumulator += MoveUtil.moveEntity(this, amount);
-        }
-        if(!call){
-        	//TODO connected
-        }
+        	MoveUtil.ObjCon<Double, Boolean, Object> con = MoveUtil.moveEntity(this, amount, reverse);
+        	if(entity != null){ accumulator += con.fir; } reverse = con.sec;
+        } if(!call) return;
+        //TODO connected
 	}
 
 	private void updateSection(){
@@ -174,7 +185,7 @@ public class RailEntity {
 
 	public void modifyThrottle(double by, boolean totalitarian){
 		if(totalitarian) this.throttle = by; else this.throttle += by;
-		if(throttle < -1f) throttle = -1f; if(throttle > 1f) throttle = 1f;
+		if(throttle < 0) throttle = 0; if(throttle > 1f) throttle = 1f;
 	}
 
 	public void breakThrottle(){
@@ -202,6 +213,84 @@ public class RailEntity {
 	public void removeSelf(){
 		this.throttle = 0; this.region.removeEntity(this);
 		Print.debug("Removing RAILENT: " + vehdata.getVehicle().getName() + " || AT: " + px + ", " + py + ", " + pz + ";");
+	}
+
+	public RailboundVehicleEntity getEntity(){
+		return entity;
+	}
+
+	public void tryAttach(ICommandSender sender, boolean frontcall){
+		AxisAlignedBB aabb = this.getAABB(frontcall);
+		Print.debug(points[frontcall ? 0 : 1].position);
+		Collection<PointOnTrack> paints = getFreeCouplersInRange(this, 4);
+		for(PointOnTrack point : paints){
+			if(point.entity == this) continue;
+			Print.debug(point, point.position, point.getAABB().intersects(aabb));
+			if(point.getAABB().intersects(aabb)){
+				Print.debug(point.getAABB());
+				boolean front = !point.pointtype.opposite;
+				if(front ? point.entity.front != null : point.entity.rear != null){
+					Print.chat(sender, "Found Coupler but occupied, continuing search.");
+				}
+				else{
+					this.applyCoupling(sender, frontcall, point.entity, front);
+					Print.chat(sender, "Coupling Complete."); return;
+				}
+			} else continue;
+		}
+		Print.chat(sender, "No (free) Coupler in Range found.");
+	}
+
+	private void applyCoupling(ICommandSender sender, boolean front0, RailEntity entity, boolean front1){
+		if(front0){ front = entity; front_id = entity.uniqueid; } else{ rear = entity; rear_id = entity.uniqueid; }
+		if(front1){ entity.front = this; entity.front_id = uniqueid; } else{ entity.rear = this; entity.rear_id = uniqueid; }
+	}
+
+	private static Collection<PointOnTrack> getFreeCouplersInRange(RailEntity railent, int range){
+		ArrayList<PointOnTrack> array = new ArrayList<PointOnTrack>();
+		if(range > 256) range =  256; if(range < 1) range = 1; double x = railent.px, y = railent.py, z = railent.pz;
+		RailRegion[] regs = railent.region.getBorderingIncluding(railent.px, railent.pz);
+		for(RailRegion region : regs){
+			for(RailEntity ent : region.getEntities()){
+				for(PointOnTrack point : ent.points){
+					if(!point.pointtype.isCoupler()) continue;
+					boolean xx = point.position.xCoord >= (x - range) && point.position.xCoord <= (x + range);
+					boolean yy = point.position.yCoord >= (y - range) && point.position.yCoord <= (y + range);
+					boolean zz = point.position.zCoord >= (z - range) && point.position.zCoord <= (z + range);
+					Print.debug("search", point.position, point.pointtype, xx + ", " + yy + ", " + zz);
+					if(xx && yy && zz) array.add(point);
+				}
+			}
+		} return array;
+	}
+
+	public void tryDetach(ICommandSender sender, boolean frontcall){
+		if(frontcall && front != null){
+			if(front.rear != null && front.rear.uniqueid == this.uniqueid){
+				front.rear = null; front = null;
+			}
+			if(front.front != null && front.front.uniqueid == this.uniqueid){
+				front.front = null; front = null;
+			}
+			front = null; front_id = -1;
+		}
+		else{
+			if(rear.rear != null && rear.rear.uniqueid == this.uniqueid){
+				rear.rear = null; rear = null;
+			}
+			if(rear.front != null && rear.front.uniqueid == this.uniqueid){
+				rear.front = null; rear = null;
+			}
+			rear = null; rear_id = -1;
+		}
+	}
+	
+	public AxisAlignedBB getAABB(boolean front){
+		return points[front ? 0 : 1].getAABB();
+	}
+
+	public Vec3f getPointPosition(int i){
+		return points[i].position;
 	}
 	
 }

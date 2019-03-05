@@ -1,5 +1,3 @@
 include ':FCL'
 project(':FCL').projectDir = new File(settingsDir, '../FCL')
-include ':TrainsMod'
-project(':TrainsMod').projectDir = new File(settingsDir, '../TrainsMod')
 //uncomment when using local copies

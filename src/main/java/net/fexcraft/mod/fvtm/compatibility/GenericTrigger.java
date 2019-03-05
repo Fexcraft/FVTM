@@ -2,22 +2,11 @@ package net.fexcraft.mod.fvtm.compatibility;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.api.EntityType;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.compatibility.trainsmod.RenderTrainsModGeneric;
-import net.fexcraft.mod.fvtm.compatibility.trainsmod.TrainsModEntityConverter;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class GenericTrigger {
 
@@ -48,7 +37,7 @@ public class GenericTrigger {
 	//-//-//-//
 	
 	private static void registerAMTrains(FMLPreInitializationEvent event){
-		alemax.trainsmod.util.FVTMCompatibility.load(event);
+		/*alemax.trainsmod.util.FVTMCompatibility.load(event);
 		//
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:trainsmod"), TrainsModEntityConverter.class, "fvtm:trainsmod", 29910, FVTM.getInstance(), 256, 1, false);
 		AM_TRAINS_ET = new EntityType(new ResourceLocation("trainsmod:internal"), "TrainsMod - FVTM Internal Compatibility Module", VehicleType.RAIL){
@@ -64,7 +53,7 @@ public class GenericTrigger {
 		};
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(TrainsModEntityConverter.class, RenderTrainsModGeneric::new);
-		}
+		}*/
 	}
 	
 	//-//-//-//

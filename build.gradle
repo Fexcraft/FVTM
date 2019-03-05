@@ -40,7 +40,6 @@ minecraft {
 dependencies {
 	if(localDevMode){
     	compile project(':FCL')
-    	compile project(':TrainsMod')
 	}
 	else{
     	compile 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'

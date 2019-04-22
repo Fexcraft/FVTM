@@ -1,7 +1,0 @@
-{
-  "engine_running": {
-    "category": "block",
-    "subtitle": "generic.subtitle.engine_running",
-    "sounds": [ "generic:engine" ]
-  }
-}

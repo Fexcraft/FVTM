@@ -1,9 +1,0 @@
-{
-    "RegistryName": "fvp:t2_steering_wheel",
-    "Addon": "fvtm:fvp",
-    "ModelFile": "fvp:models/part/t2_steering_wheel",
-    "Category": [ "steering_wheel"  ],
-    "Textures": [ "fvp:textures/entities/skin_vehicle_t2p.png" ],
-    "Compatible": [ { "Vehicle": "fvp:t2", "x": 0, "y": 0, "z": 0 } ],
-    "Removable": true
-}

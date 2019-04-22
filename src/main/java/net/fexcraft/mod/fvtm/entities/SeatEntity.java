@@ -134,7 +134,7 @@ public class SeatEntity extends PassengerHoldingEntity implements IEntityAdditio
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int partialticks, boolean b){
-        super.setPositionAndRotationDirect(x, y, z, yaw, pitch, partialticks, b);//TODO check
+        return; //super.setPositionAndRotationDirect(x, y, z, yaw, pitch, partialticks, b);
     }
 
     @Override
@@ -195,14 +195,16 @@ public class SeatEntity extends PassengerHoldingEntity implements IEntityAdditio
             }
         }
     }
+    
+    @Override
+    public void setPosition(double x, double y, double z){
+        this.posX = x; this.posY = y; this.posZ = z; float f = this.width / 2.0F, f1 = this.height;
+        this.setEntityBoundingBox(new AxisAlignedBB(x - f, y, z - f, x + f, y + f1, z + f));
+    }
 
     public void updatePosition(){
-        if(world.isRemote && vehicle == null){
-            return;
-        }
-        if(Config.ALTERNATIVE_SEAT_UPDATE){
-            return;
-        }
+        if(world.isRemote && vehicle == null){ return; }
+        if(Config.ALTERNATIVE_SEAT_UPDATE){ return; }
         prev_pass_x = pass_x;
         prev_pass_y = pass_y;
         prev_pass_z = pass_z;
@@ -249,9 +251,7 @@ public class SeatEntity extends PassengerHoldingEntity implements IEntityAdditio
 
     @Override
     public void updatePassenger(Entity passengerr){
-        if(passengerr == null){
-            return;
-        }
+        if(passengerr == null){ return; }
         //
         passenger.rotationYaw = pass_yaw;
         passenger.rotationPitch = pass_pitch;
@@ -262,6 +262,8 @@ public class SeatEntity extends PassengerHoldingEntity implements IEntityAdditio
         passenger.lastTickPosZ = passenger.prevPosZ = prev_pass_z;
         //
         passenger.setPosition(pass_x, pass_y, pass_z);
+        //this.posX = pass_x; this.posY = pass_y; this.posZ = pass_z; float f = this.width / 2.0F, f1 = this.height;
+        //this.setEntityBoundingBox(new AxisAlignedBB(pass_x - f, pass_y, pass_z - f, pass_x + f, pass_y + f1, pass_z + f));
     }
 
     public void processServerPacket(PacketEntityUpdate pkt){

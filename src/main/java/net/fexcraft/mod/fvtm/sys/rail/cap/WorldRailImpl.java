@@ -293,8 +293,7 @@ public class WorldRailImpl implements WorldRailData {
 
 	@Override
 	public void spawnEntity(VehicleData data, Junction junk){
-		Track[] tracks = junk.getTracksForSpawn();
-		new RailEntity(tracks[0], tracks[1], map.getRegion(getRegion(junk.getCore())), data);
+		new RailEntity(junk.tracks.get(0), map.getRegion(getRegion(junk.getCore())), data);
 	}
 
 	public DynamicRegionMap getRegionMap(){

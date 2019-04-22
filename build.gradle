@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 version = "1.12.x"
-def modversion = "2.9.35"
+def modversion = "2.9.36-pre"
 group = "net.fexcraft.mod.fvtm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "FVTM-ALL"
 def localDevMode = true
@@ -85,33 +85,33 @@ task fvp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/fvp/'}
     from 'run/addons/Fex\'s Vehicle Pack'
     baseName = 'Fexcraft Vehicle Pack'
-    appendix = '1.17'
+    appendix = '1.18-pre'
 }
 
 task gep_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
     from 'run/addons/General Essentials Pack'
     baseName = 'General Essentials Pack'
-    appendix = '1.7'
+    appendix = '1.8-pre'
 }
 task zmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}
     from 'run/addons/Zack\'s Pack'
     baseName = 'ZMP'
-    appendix = 'V1.2'
+    appendix = 'V1.3-pre'
 }
 task hcp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/hcp/'}
     from 'run/addons/Heavy Cargo Pack'
     baseName = 'Heavy Cargo Pack'
-    appendix = '1.5'
+    appendix = '1.6-pre'
 }
-task gmp_fvtm(type: Jar){
+/*task gmp_fvtm(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gmp/'}
     from 'run/addons/Generic Machines Pack'
     baseName = 'Generic Machines Pack'
     appendix = '1.0'
-}
+}*/
 
 build {
     dependsOn fvtm
@@ -119,5 +119,5 @@ build {
     dependsOn fvp_fvtm
     dependsOn zmp_fvtm
     dependsOn hcp_fvtm
-    dependsOn gmp_fvtm
+    //dependsOn gmp_fvtm
 }

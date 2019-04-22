@@ -27,10 +27,10 @@ public class RailEntity {
 	
 	public double ppx, ppy, ppz, accumulator;
 	public double px, py, pz, passed;
-	public Track last, current;
+	public Track trackon;//last, current;
 	private RailRegion region;
 	private boolean active;
-	public boolean reverse;
+	private boolean reverse;
 	private double throttle;
 	//
 	public long uniqueid, front_id, rear_id;
@@ -40,8 +40,8 @@ public class RailEntity {
 	public RailEntity front, rear;
 	private RailboundVehicleEntity entity;
 	
-	public RailEntity(Track curr, Track last, RailRegion region, VehicleData data){
-		current = curr; this.last = last; this.region = region; this.vehdata = data;
+	public RailEntity(Track curr, RailRegion region, VehicleData data){
+		this.trackon = curr; this.region = region; this.vehdata = data;
 		this.ppx = px = curr.getFirstVector().xCoord;
 		this.ppy = py = curr.getFirstVector().yCoord;
 		this.ppz = pz = curr.getFirstVector().zCoord;
@@ -75,8 +75,8 @@ public class RailEntity {
 		this.throttle = compound.getDouble("Throttle");
 		//
 		this.uniqueid = compound.getLong("UniqueID");
-		this.last = new Track().read(compound.getCompoundTag("LastTrack"));
-		this.current = new Track().read(compound.getCompoundTag("CurrentTrack"));
+		//this.last = new Track().read(compound.getCompoundTag("LastTrack"));
+		this.trackon = new Track().read(compound.getCompoundTag("TrackOn"));
 		return this;
 	}
 
@@ -93,8 +93,8 @@ public class RailEntity {
 		compound.setBoolean("Active", active);
 		compound.setBoolean("Reverse", reverse);
 		compound.setDouble("Throttle", throttle);
-		compound.setTag("LastTrack", last.write(null));
-		compound.setTag("CurrentTrack", current.write(null));
+		//compound.setTag("LastTrack", last.write(null));
+		compound.setTag("TrackOn", trackon.write(null));
 		return compound;
 	}
 	
@@ -120,7 +120,7 @@ public class RailEntity {
 	        }
 	        double amount = 0d;
 	        if(enginepart != null && (borderless || consumed)){//TODO multi-engine support
-	        	amount = /*0.2f **/ throttle * (throttle > 0 ? vehdata.getVehicle().getFMAttribute("max_positive_throttle") : vehdata.getVehicle().getFMAttribute("max_negative_throttle"));
+	        	amount = /*0.2f **/ throttle * (vehdata.getVehicle().getFMAttribute(reverse ? "max_negative_throttle" : "max_positive_throttle"));
 	        	amount *= enginepart.getPart().getAttribute(EngineAttribute.class).getEngineSpeed();
 	        }
 	        this.requestMove(amount, false, null); //Print.debug("amount:move: " + amount);
@@ -134,8 +134,8 @@ public class RailEntity {
 
 	private void requestMove(double amount, boolean call, Boolean conn){
         if((amount > 0.001 || amount < -0.001)){
-        	MoveUtil.ObjCon<Double, Boolean, Object> con = MoveUtil.moveEntity(this, amount, reverse);
-        	if(entity != null){ accumulator += con.fir; } reverse = con.sec;
+        	MoveUtil.ObjCon<Double, Boolean, Object> con = MoveUtil.moveEntity(this, Math.abs(amount), reverse);
+        	if(entity != null){ accumulator += reverse ? -con.fir : con.fir; } reverse = con.sec;
         } if(!call) return;
         //TODO connected
 	}
@@ -177,6 +177,7 @@ public class RailEntity {
 	public void align(RailboundVehicleEntity entity){
 		entity.posX = px; entity.posY = py; entity.posZ = pz;
 		entity.prevPosX = ppx; entity.prevPosY = ppy; entity.prevPosZ = ppz;
+		//entity.setPosition(px, py, pz);
 	}
 	
 	public boolean isWagon(){
@@ -201,10 +202,10 @@ public class RailEntity {
 	}
 
 	public void updateRailRegion(){
-		int[] id = WorldRailImpl.getRegion(current.start.getX() >> 4, current.start.getZ() >> 4);
+		int[] id = WorldRailImpl.getRegion(trackon.start.getX() >> 4, trackon.start.getZ() >> 4);
 		if(region.getX() != id[0] || region.getZ() != id[1]){
 			RailRegion oldregion = region; oldregion.removeEntity(this);
-			region = oldregion.getUtil().getRegionMap().getRegion(WorldRailImpl.getRegion(current.start));
+			region = oldregion.getUtil().getRegionMap().getRegion(WorldRailImpl.getRegion(trackon.start));
 			region.addEntity(this); region.updateAccess(null);
 			Print.debug("Switched RailRegion! " + oldregion.getX() + ", " + oldregion.getZ() + " >>> " + region.getX() + ", " + region.getZ() + ";");
 		}
@@ -291,6 +292,14 @@ public class RailEntity {
 
 	public Vec3f getPointPosition(int i){
 		return points[i].position;
+	}
+	
+	public boolean isReverse(){
+		return reverse;
+	}
+
+	public void setReverse(boolean bool){
+		this.reverse = bool;
 	}
 	
 }

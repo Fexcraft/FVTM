@@ -78,23 +78,19 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
 	public VehicleAxes axes;
 	protected VehicleAxes prevaxes;
 	public SeatEntity[] seats;
-    //protected double throttle;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
-    //protected RailboundVehicleEntity front, rear;
     protected byte toggletimer;
     public EngineLoopSound engineloop;
     //
-    //protected boolean sync;
-	//public boolean reverse;
     protected Vec3d angvel = new Vec3d(0, 0, 0);
-    public double serverPosX, serverPosY, serverPosZ;
-    public double adjustedPosX, adjustedPosY, adjustedPosZ;
-    public double serverYaw, serverPitch, serverRoll;
+    //public double serverPosX, serverPosY, serverPosZ;
+    //public double serverYaw, serverPitch, serverRoll;
     public double serverPass;
     public int serverPositionTransitionTicker;
+    protected WorldRailData worldcap;
     //
     //CLIENT
-    public Track CL_CT, CL_LT, LL_CT, LL_LT;
+    public Track cl_current, sv_last;
     public double frontconndis, rearconndis;
     public double frontbogiedis, rearbogiedis;
     public boolean cl_reverse, removal;
@@ -149,11 +145,11 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         prevRotationPitch = compound.getFloat("RotationPitch");
         prevRotationRoll = compound.getFloat("RotationRoll");
         axes = VehicleAxes.read(this, compound);
-        if(compound.hasKey("LastTrack")){
+        /*if(compound.hasKey("LastTrack")){
         	CL_LT = new Track().read(compound.getCompoundTag("LastTrack"));
-        }
-        if(compound.hasKey("CurrentTrack")){
-        	CL_CT = new Track().read(compound.getCompoundTag("CurrentTrack"));
+        }*/
+        if(compound.hasKey("Track")){
+        	cl_current = new Track().read(compound.getCompoundTag("Track"));
         }
         else{
         	errorRemove("No Track NBT Data on READ.");
@@ -168,15 +164,15 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
     protected void writeEntityToNBT(NBTTagCompound compound){
         compound = vehdata().writeToNBT(compound);
         axes.write(this, compound);
-        if(railent.last != null){
+        /*if(railent.last != null){
         	compound.setTag("LastTrack", railent.last.write(null));
-        }
-        if(railent.current != null){
-        	compound.setTag("CurrentTrack", railent.current.write(null));
+        }*/
+        if(railent.trackon != null){
+        	compound.setTag("Track", railent.trackon.write(null));
         }
         //compound.setDouble("Throttle", throttle);
         compound.setDouble("Passed", railent.passed);
-        compound.setBoolean("Reverse", railent.reverse);
+        compound.setBoolean("Reverse", railent.isReverse());
         Print.debug(compound.toString());
     }
 
@@ -198,11 +194,9 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         catch(Exception e){
         	e.printStackTrace();
         }
-        if(railent.last != null){
-        	compound.setTag("LastTrack", railent.last.write(null));
-        }
-        if(railent.current != null){
-        	compound.setTag("CurrentTrack", railent.current.write(null));
+        /*if(railent.last != null){ compound.setTag("LastTrack", railent.last.write(null)); }*/
+        if(railent.trackon != null){
+        	compound.setTag("Track", railent.trackon.write(null));
         }
         ByteBufUtils.writeTag(buffer, axes.write(this, railent.vehdata.writeToNBT(compound)));
     }
@@ -217,11 +211,11 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             prevRotationPitch = axes.getPitch();
             prevRotationRoll = axes.getRoll();
             initVeh(cl_vehdata);
-            if(compound.hasKey("LastTrack")){
+            /*if(compound.hasKey("LastTrack")){
             	CL_LT = new Track().read(compound.getCompoundTag("LastTrack"));
-            }
-            if(compound.hasKey("CurrentTrack")){
-            	CL_CT = new Track().read(compound.getCompoundTag("CurrentTrack"));
+            }*/
+            if(compound.hasKey("Track")){
+            	cl_current = new Track().read(compound.getCompoundTag("Track"));
             }
             else{
             	errorRemove("No Track NBT Data on SPAWN DATA READ.");
@@ -371,10 +365,9 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             	}
             	else{
             		boolean bool = key == 3;
-            		if(railent.reverse != bool){
-                		railent.reverse = bool;
+            		if(railent.isReverse() != bool){
+                		railent.setReverse(bool); railent.modifyThrottle(0, true);
                 		this.sendDirectionUpdate();
-                		railent.modifyThrottle(0, true);
             		}
             	}
                 return true;
@@ -744,8 +737,9 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         if(world.isRemote){
             //serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             //serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
+        	//serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
         	serverPass = steeringYaw; serverPositionTransitionTicker = 5;
-            dl_throttle = throttle;
+            dl_throttle = throttle; if(serverPass < 0) serverPass = -serverPass;
         }
         else{
             setPosition(posX, posY, posZ);
@@ -761,6 +755,18 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         angvel = new Vec3d(avelx, avely, avelz);
         this.updateRotation();
 	}
+	
+	@Override
+    public void setPosition(double x, double y, double z){
+		//Static.exception(null, false);
+        //this.posX = x; this.posY = y; this.posZ = z; float f = this.width / 2.0F, f1 = this.height;
+        //this.setEntityBoundingBox(new AxisAlignedBB(x - f, y, z - f, x + f, y + f1, z + f));
+    }
+	
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport){
+        return; //this.setPosition(x, y, z); this.setRotation(yaw, pitch);
+    }
     
     @Override
     public void onUpdate(){
@@ -791,6 +797,8 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
             	//
             }
         }
+        if(worldcap == null) worldcap = world.getCapability(WorldRailDataSerializer.CAPABILITY, null);
+        if(worldcap == null){ Print.debug(this, "World Capability is null, returning!"); return; }
         prevRotationYaw = axes.getYaw();
         prevRotationPitch = axes.getPitch();
         prevRotationRoll = axes.getRoll();
@@ -801,49 +809,55 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         }
         //
         if(seats == null || (!vehdata().getVehicle().isTrailerOrWagon() && seats.length == 0)){
-            this.setDead();
-            return;
+            this.setDead(); return;
         }
         if(toggletimer > 0){ toggletimer--; }
         //
         if(world.isRemote){
+        	lastTickPosX = prevPosX = posX; lastTickPosY = prevPosY = posY; lastTickPosZ = prevPosZ = posZ;
             if(serverPositionTransitionTicker > 0){
-            	double toPass = serverPass / 5;
-            	MoveUtil.ObjCon<Track, Double, Vec3f> ret = MoveUtil.travelDistance(world.getCapability(WorldRailDataSerializer.CAPABILITY, null),
-            		new MoveUtil.ObjCon<Track, Double, Double>(CL_CT, cl_passed, toPass), cl_reverse);
-            	CL_LT = CL_CT; CL_CT = ret.fir; cl_passed = ret.sec;
-            	this.setPosition(ret.tir.xCoord, ret.tir.xCoord, ret.tir.zCoord);
+            	double toPass = serverPass / 5; //tPrint.debug(serverPass + ", " + toPass + ", " + cl_reverse);
+            	MoveUtil.ObjCon<Track, Double, Vec3f> ret = MoveUtil.travelDistance(worldcap,
+            		new MoveUtil.ObjCon<Track, Double, Double>(cl_current, cl_passed, toPass), cl_reverse);
+            	cl_current = ret.fir; cl_passed = ret.sec;
+            	//this.setPosition(ret.tir.xCoord, ret.tir.yCoord, ret.tir.zCoord);
+                this.posX = ret.tir.xCoord; this.posY = ret.tir.yCoord; this.posZ = ret.tir.zCoord;
+            	this.updateRotation();
+                //Print.debug("svr_update", posX, posY, posZ);
             	//
                 /*double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
                 double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
                 double z = posZ + (serverPosZ - posZ) / serverPositionTransitionTicker;
-                double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
-                double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
-                double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
-                rotationYaw = (float) (axes.getYaw() + dYaw / serverPositionTransitionTicker);
-                rotationPitch = (float) (axes.getPitch() + dPitch / serverPositionTransitionTicker);
-                float rotationRoll = (float) (axes.getRoll() + dRoll / serverPositionTransitionTicker);
+                //double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
+                //double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
+                //double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
+                //rotationYaw = (float) (axes.getYaw() + dYaw / serverPositionTransitionTicker);
+                //rotationPitch = (float) (axes.getPitch() + dPitch / serverPositionTransitionTicker);
+                //float rotationRoll = (float) (axes.getRoll() + dRoll / serverPositionTransitionTicker);
+                Print.debug("svr_update", posX, posY, posZ);
                 setPosition(x, y, z);
-                setRotation(rotationYaw, rotationPitch, rotationRoll);*/
+                //setRotation(rotationYaw, rotationPitch, rotationRoll);*/
                 --serverPositionTransitionTicker;
             }
             else{
             	//this.posX = serverPosX; this.posY = serverPosY; this.posZ = serverPosZ;
+            	this.updateRotation();
             }
         }
         //TODO if(hasEnoughFuel()){ wheelsAngle += throttle * 0.2F; }
         //
         if((Config.VEHICLE_NEEDS_FUEL && vehdata().getFuelTankContent() <= 0) || vehdata().getVehicle().getFMAttribute("max_positive_throttle") <= 0){
-            if(world.isRemote) dl_throttle *= 0.98F; else railent.modifyThrottle(railent.getThrottle() *- 0.98f, true);
+            //if(world.isRemote) dl_throttle *= 0.98F; else railent.modifyThrottle(railent.getThrottle() * 0.98f, true);
+        	if(world.isRemote) dl_throttle = 0; else railent.modifyThrottle(0, true);
         }
         if(!world.isRemote){
-        	railent.align(this); this.updateRotation();
+        	railent.align(this); /*Print.debug("pos_update", posX, posY, posZ);*/ this.updateRotation();
         	//
-            if(LL_LT == null || LL_CT == null){ LL_LT = railent.last; LL_CT = railent.current; }
-        	if(!LL_LT.equals(railent.last) || !LL_CT.equals(railent.current)){
-        		this.sendDirectionUpdate();
+            if(sv_last == null){ sv_last = railent.trackon; }
+        	if(!sv_last.equals(railent.trackon)){
+        		sv_last = railent.trackon; this.sendDirectionUpdate(); Print.debug("track change detected");
         	}
-        } else{ this.updateRotation(); }
+        } //else{ this.updateRotation(); }
         //
         vehdata().getScripts().forEach((script) -> script.onUpdate(this, vehdata()));
         //this.updateCollisions();
@@ -855,23 +869,24 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         if(!world.isRemote && ticksExisted % 5 == 0){
             PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
         }
+        //Print.debug("pos_" + (world.isRemote ? "client" : "server") + ": " + posX + ", " + posY + ", " + posZ);
     }
     
     private void sendDirectionUpdate(){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("task", "direction_update");
-        compound.setTag("LastTrack", railent.last.write(null));
-        compound.setTag("CurrentTrack", railent.current.write(null));
-		compound.setDouble("passed", railent.passed);
-		compound.setBoolean("reverse", railent.reverse);
+        //compound.setTag("LastTrack", railent.last.write(null));
+        compound.setTag("Track", railent.trackon.write(null));
+		compound.setDouble("Passed", railent.passed);
+		compound.setBoolean("Reverse", railent.isReverse());
 		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
 	}
 
 	//tempdata
     private Vec3f qfront, qback, bf0, bf1, br0, br1;
 	
-	private void updateRotation(){
-		Track curr = world.isRemote ? CL_CT : railent.current;
+	private void updateRotation(){ return;
+		/*Track curr = world.isRemote ? cl_current : railent.current;
 		double passed = world.isRemote ? cl_passed : railent.passed;
 		boolean reverse = world.isRemote ? cl_reverse : railent.reverse;
 		if(curr == null){ Print.debug("No Track Data."); return; }
@@ -884,14 +899,15 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
         this.posX = this.prevPosX = (qfront.xCoord + qback.xCoord) * 0.5;
         this.posY = this.prevPosY = (qfront.yCoord + qback.yCoord) * 0.5;
         this.posZ = this.prevPosZ = (qfront.zCoord + qback.zCoord) * 0.5;
-        if(!world.isRemote || world.isRemote) return;
+        //Print.debug("rot_update", posX, posY, posZ);
+        if(!world.isRemote) return;
         //
 		bf0 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis - 0.1), reverse).tir;
 		bf1 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, frontbogiedis + 0.1), reverse).tir;
 		br0 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis - 0.1), reverse).tir;
 		br1 = MoveUtil.travelDistance(raildata, new MoveUtil.ObjCon<Track, Double, Double>(curr, passed, rearbogiedis + 0.1), reverse).tir;
 		bogierot[0] = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - (yaw * 180F / 3.14159F));
-		bogierot[1] = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - (yaw * 180F / 3.14159F));
+		bogierot[1] = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - (yaw * 180F / 3.14159F));*/
 	}
 	
 	private float[] bogierot = new float[]{ 0, 0 };
@@ -1059,10 +1075,10 @@ public abstract class RailboundVehicleEntity extends Entity implements Container
                     break;
                 }
                 case "direction_update":{
-                	CL_LT = new Track().read(pkt.nbt.getCompoundTag("LastTrack"));
-                	CL_CT = new Track().read(pkt.nbt.getCompoundTag("CurrentTrack"));
-                	cl_passed = pkt.nbt.getDouble("passed");
-                	cl_reverse = pkt.nbt.getBoolean("reverse");
+                	//CL_LT = new Track().read(pkt.nbt.getCompoundTag("LastTrack"));
+                	cl_current = new Track().read(pkt.nbt.getCompoundTag("Track"));
+                	cl_passed = pkt.nbt.getDouble("Passed");
+                	cl_reverse = pkt.nbt.getBoolean("Reverse");
                 	//Print.debug("PACKET CL RC", currentpos, lastpos);
                 	break;
                 }

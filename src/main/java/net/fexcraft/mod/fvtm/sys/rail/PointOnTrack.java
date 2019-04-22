@@ -6,7 +6,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 public class PointOnTrack {
 	
-	public Track curr, last;
+	public Track track;
 	//public double passed;
 	public RailEntity entity;
 	public Type pointtype;
@@ -17,7 +17,7 @@ public class PointOnTrack {
 	public PointOnTrack(RailEntity ent, Type type){
 		this.entity = ent; this.pointtype = type;
 		this.offset = type.getOffset(ent);
-		this.curr = ent.current; this.last = ent.last;
+		this.track = ent.trackon;
 	}
 	
 	public static enum Type {
@@ -50,8 +50,8 @@ public class PointOnTrack {
 		if(this.section_on != null){
 			this.section_on.remove(this);
 		}
-		if(entity.current.line != null){
-			this.section_on = entity.current.line;
+		if(track.line != null){
+			this.section_on = track.line;
 		}
 	}
 
@@ -62,9 +62,10 @@ public class PointOnTrack {
 
 	public void update(){
     	ObjCon<Track, Double, Vec3f> con = MoveUtil.travelDistance(entity.getRegion().getUtil(),
-    		new MoveUtil.ObjCon<Track, Double, Double>(entity.current, entity.passed, offset), entity.reverse);
-    	this.last = this.curr; this.curr = con.fir; this.position = con.tir;
-    	if(!last.equals(curr)) this.updateSection();
+    		new MoveUtil.ObjCon<Track, Double, Double>(entity.trackon, entity.passed, offset), entity.isReverse());
+    	boolean update = !track.equals(con.fir);
+    	this.track = con.fir; this.position = con.tir;
+    	if(update) this.updateSection();
 	}
 	
 }

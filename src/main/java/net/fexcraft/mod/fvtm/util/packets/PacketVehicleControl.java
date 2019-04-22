@@ -30,8 +30,8 @@ public class PacketVehicleControl implements IPacket, IMessage {
         posZ = ent.posZ;
         if(vehicle instanceof RailboundVehicleEntity){
         	RailboundVehicleEntity railent = (RailboundVehicleEntity)vehicle.getEntity();
-        	net.fexcraft.lib.mc.utils.Print.debug(railent.railent.accumulator);
-            steeringYaw = Math.abs(railent.railent.accumulator); railent.railent.accumulator = 0;
+        	//net.fexcraft.lib.mc.utils.Print.debug(railent.railent.accumulator);
+            steeringYaw = railent.railent.accumulator; railent.railent.accumulator = 0;
         }
         else{
             steeringYaw = vehicle.getWheelsYaw();

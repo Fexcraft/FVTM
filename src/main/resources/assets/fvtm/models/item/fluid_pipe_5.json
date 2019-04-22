@@ -1,7 +1,0 @@
-{
-    "parent": "fvtm:item/fluid_pipe",
-    "textures": {
-        "particle": "minecraft:blocks/plank_big_oak",
-		"texture": "minecraft:blocks/planks_big_oak"
-    }
-}

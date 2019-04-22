@@ -1,7 +1,0 @@
-{
-    "RegistryName": "gmp:dye_powder_cyan",
-    "Addon": "fvtm:gmp",
-    "FullName": "Dye Powder (CYAN)",
-    "OreDictionary": "dyeCyan",
-    "DyeColor": "cyan"
-}

@@ -1,0 +1,26 @@
+{
+    "RegistryName": "zmp:cargoship_containerpos",
+    "Addon": "fvtm:zmp",
+    "ModelFile": "net.fexcraft.mod.addons.zmp.models.part.ModelCargoShipCargo.class",
+    "FullName": "Cargo Ship Container Slot",
+    "Category": [
+        "cargo"
+    ],
+    "Attributes":[
+        "container"
+    ],
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Removable": false,
+    "Avaiable": false,
+    "Compatible": [ { "Vehicle": "zmp:cargoship", "x": 0, "y": 0, "z": 0 } ],
+    "AttributeData":{
+        "Container-Type": "MEDIUM",
+        "Container-Offset": { "x": 0, "y": 0, "z": 0 },
+        "Container-Rotation": 90,
+        "Container-SupportedTypes":[
+        	"XSMALL", "SMALL", "TINY"
+        ]
+    }
+}

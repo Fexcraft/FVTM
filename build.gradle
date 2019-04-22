@@ -16,11 +16,10 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "1.12.x"
-def modversion = "2.9.36-pre"
-group = "net.fexcraft.mod.fvtm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.12.2"
+def modversion = "3.0.0"
+group = "net.fexcraft.mod.fvtm"
 archivesBaseName = "FVTM-ALL"
-def localDevMode = true
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
@@ -38,13 +37,7 @@ minecraft {
 }
 
 dependencies {
-	if(localDevMode){
-    	compile project(':FCL')
-	}
-	else{
-    	compile 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
-	}
-	//compile "com.github.cam72cam:ImmersiveRailroading:master-SNAPSHOT";
+    compile project(':FCL')
     compile "com.github.glitchfiend.biomesoplenty:ToughAsNails:1.12.2-3.1.0.116:deobf"
 }
 
@@ -106,12 +99,6 @@ task hcp_fvtm(type: Jar){
     baseName = 'Heavy Cargo Pack'
     appendix = '1.6-pre'
 }
-/*task gmp_fvtm(type: Jar){
-    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gmp/'}
-    from 'run/addons/Generic Machines Pack'
-    baseName = 'Generic Machines Pack'
-    appendix = '1.0'
-}*/
 
 build {
     dependsOn fvtm
@@ -119,5 +106,4 @@ build {
     dependsOn fvp_fvtm
     dependsOn zmp_fvtm
     dependsOn hcp_fvtm
-    //dependsOn gmp_fvtm
 }

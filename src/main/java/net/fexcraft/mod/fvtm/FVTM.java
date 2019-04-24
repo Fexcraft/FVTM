@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 
 /**
- * Fex's Vehicle and Transportation Mod - A Modification adding a custom (json based) add-on system to create customizable vehicles and, by far, more.
+ * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
  * <br>
  * License:
  * <a href="http://fexcraft.net/license?id=mods">http://fexcraft.net/license?id=mods</a>
@@ -47,6 +47,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
+		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		//
 	}
 

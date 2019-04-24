@@ -14,10 +14,11 @@ import net.minecraftforge.fml.common.discovery.ContainerType;
 public class InternalAddon extends Addon {
 	
 	public static final ResourceLocation REGNAME = new ResourceLocation("fvtm:fvtm");
+	public static InternalAddon INSTANCE;
 
 	/** Parameterless constructor for Forge. */
 	public InternalAddon(){
-		super(null, null);
+		super(null, null); INSTANCE = this;
 	}
 
 	public InternalAddon(ContainerType type, File file){

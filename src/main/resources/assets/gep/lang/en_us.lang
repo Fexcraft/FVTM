@@ -10,6 +10,8 @@
 item.gep:engine_diesel.name=Diesel General Purpose Engine
 item.gep:engine_petroleum.name=Petroleum General Purpose Engine
 item.gep:fuel_tank.name=General Purpose Fuel Tank
+item.gep:glue.name=General Purpose Glue
+item.gep:key.name=GEP Vehicle Key
 
 
 

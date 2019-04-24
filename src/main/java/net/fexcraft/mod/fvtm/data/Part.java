@@ -40,6 +40,7 @@ public class Part extends TypeCore<Part> {
 		if(registryname == null) return null;
 		this.pack = DataUtil.getAddon(obj);
 		if(pack == null) return null;
+		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Part");
 		this.categories = DataUtil.getStringArray(obj, "Category", true, true);
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);

@@ -8,14 +8,12 @@ import net.fexcraft.mod.fvtm.data.AddonClass;
 import net.fexcraft.mod.fvtm.data.AddonTab;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 
-@AddonClass(registryname = "fvtm:internal", hasJson = false)
-@Mod(modid = "fvtm_internal", name = "FVTM Internal Addon", version = "2.0", useMetadata = true, dependencies = "required-after:fcl;required-after:fvtm")
+@AddonClass(registryname = "fvtm:fvtm", hasJson = false)
 public class InternalAddon extends Addon {
 	
-	public static final ResourceLocation REGNAME = new ResourceLocation("fvtm:internal");
+	public static final ResourceLocation REGNAME = new ResourceLocation("fvtm:fvtm");
 
 	/** Parameterless constructor for Forge. */
 	public InternalAddon(){
@@ -24,7 +22,7 @@ public class InternalAddon extends Addon {
 
 	public InternalAddon(ContainerType type, File file){
 		super(type, file); registryname = REGNAME;
-		name = "FVTM - Internal Addon"; version = FVTM.VERSION;
+		name = "FVTM [Internal Addon]"; version = FVTM.VERSION;
 		this.authors.add("FEX___96"); update_id = "null";
 		url = "http://fexcraft.net/not_found";
 		license = "http://fexcraft.net/license?id=mods";

@@ -14,21 +14,6 @@
 	  "dependencies": ["fcl"]
 	},
 	{
-	  "modid": "fvtm_internal",
-	  "name": "\u00a7aFVTM Internal Addon",
-	  "description": "\u00a78Just the Internal Addon",
-	  "version": "${version}",
-	  "mcversion": "${mcversion}",
-	  "url": "http://fexcraft.net/",
-	  "updateUrl": "http://fexcraft.net/download?modid=fvtm",
-	  "authorList": ["FEX___96"],
-	  "credits": "",
-	  "logoFile": "",
-	  "screenshots": [],
-	  "dependencies": ["fcl", "fvtm"],
-	  "parent": "fvtm"
-	},
-	{
 	  "modid": "gep",
 	  "name": "\u00a72General Essentials Pack",
 	  "description": "\u00a77The generic general essentials pack.",

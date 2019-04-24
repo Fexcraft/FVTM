@@ -1,0 +1,67 @@
+{
+    "RegistryName": "gep:engine_diesel",
+    "Addon": "fvtm:gep",
+    "Name": "Generic Diesel Engine",
+    "Model": "null",
+    "Category": "engine",
+    "Attributes": "engine",
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Removable": true,
+    "Available": false,
+    "Compatible": [],
+    "AttributeData":{
+        "Engine-Speed": 1.00,
+        "Fuel-Consumption": 0.7,
+        "Fuel-Type": "diesel"
+    },
+    "Sounds":[
+    	{
+    		"event": "engine_start",
+    		"sound": "minecraft:block.dispenser.dispense"
+    	},
+    	{
+    		"event": "engine_stop",
+    		"sound": "minecraft:block.dispenser.fail"
+    	},
+    	{
+    		"event": "engine_running",
+    		"sound": "minecraft:entity.minecart.riding",
+    		"volume": 0.2
+    	}
+    ],
+    "Recipes":[
+        {
+            "Type": "Blueprint",
+            "Components":[
+                {
+                    "Item": "minecraft:iron_block",
+                    "Amount": 1
+                },
+                {
+                    "Item": "minecraft:iron_ingot",
+                    "Amount": 4
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 4,
+                    "Meta": 7
+                },
+                {
+                    "Item": "minecraft:dye",
+                    "Amount": 1,
+                    "Meta": 15
+                },
+                {
+                    "Item": "fvtm:material",
+                    "Amount": 4,
+                    "NBTTagCompound":{
+                        "FVTM:Material": "generic:rubber"
+                    }
+                }
+            ],
+            "Output": 1
+        }
+    ]
+}

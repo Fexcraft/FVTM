@@ -2,6 +2,11 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.mod.fvtm.util.CrashCallable;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.config.Config;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 
@@ -26,9 +31,17 @@ public class FVTM {
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
 	private static AutoRegisterer REGISTERER;
+	private static Resources RESOURCES;
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
+		REGISTERER = new AutoRegisterer(MODID);
+		Config.initalize(event, event.getSuggestedConfigurationFile());
+		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
+		//
+		//Capabilities
+		//
+		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 		REGISTERER = new AutoRegisterer(MODID);
 	}
 
@@ -63,6 +76,10 @@ public class FVTM {
 
 	public static AutoRegisterer getRegisterer(){
 		return REGISTERER;
+	}
+	
+	public static Resources getResources(){
+		return RESOURCES;
 	}
 
 }

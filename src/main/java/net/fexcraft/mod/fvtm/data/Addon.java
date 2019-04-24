@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Addon extends TypeCore<Addon> {
 	
-	protected ArrayList<String> authors = new ArrayList<>(), dependencies = new ArrayList<>();
+	protected ArrayList<String> authors = new ArrayList<>();
 	protected String version, url, license, update_id;
 	protected boolean enabled = true;
 	protected File file;
@@ -52,12 +52,6 @@ public class Addon extends TypeCore<Addon> {
 		url = JsonUtil.getIfExists(obj, "URL", "http://fexcraft.net/not_found");
 		license = JsonUtil.getIfExists(obj, "License", "http://fexcraft.net/not_found");
 		update_id = JsonUtil.getIfExists(obj, "UpdateID", "null");
-		if(obj.has("Dependencies") && obj.get("Dependencies").isJsonArray()){
-			obj.get("Dependencies").getAsJsonArray().forEach(elm -> { this.dependencies.add(elm.getAsString()); });
-		}
-		if(obj.has("Dependency") && obj.get("Dependency").isJsonPrimitive()){
-			this.dependencies.add(obj.get("Author").getAsString());
-		}
 		//
 		if(Static.side().isClient()){ this.creativetab = new AddonTab(this); }
 		this.registerer = new AutoRegisterer(this.getRegistryName().getResourcePath());
@@ -101,10 +95,6 @@ public class Addon extends TypeCore<Addon> {
 	public String getLicense(){ return license; }
 	public String getUpdateId(){ return update_id; }
 	
-	public List<String> getDependencies(){
-		return dependencies;
-	}
-	
 	public Addon setEnabled(boolean bool){
 		this.enabled = bool; return this;
 	}
@@ -123,9 +113,6 @@ public class Addon extends TypeCore<Addon> {
 		final JsonArray array1 = new JsonArray();
 		authors.forEach(elm -> array1.add(elm));
 		obj.add("Authors", array1);
-		final JsonArray array0 = new JsonArray();
-		dependencies.forEach(elm -> array0.add(elm));
-		obj.add("Dependencies", array0);
 		return obj;
 	}
 

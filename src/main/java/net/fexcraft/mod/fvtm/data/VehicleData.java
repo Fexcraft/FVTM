@@ -4,7 +4,9 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
+import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +20,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 	public VehicleData(Vehicle type){
 		super(type);
 		for(Attribute<?> attr : type.getAttributes()){
-			Attribute<?> copy = attr.clone(); attributes.put(copy.getId(), copy);
+			Attribute<?> copy = attr.copy(); attributes.put(copy.getId(), copy);
 		}
 	}
 
@@ -73,24 +75,24 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 		data.getType().getAttributes().forEach(attr -> {
 			if(attr.getTarget().startsWith("self")){
 				if(!data.getAttributes().containsKey(attr.getId()))
-					data.getAttributes().put(attr.getId(), attr.clone());
+					data.getAttributes().put(attr.getId(), attr.copy());
 			}
 			else if(attr.getTarget().startsWith("part")){
 				String id = attr.getTarget().replace("part:", "");
 				if(parts.containsKey(id)){
 					if(!parts.get(id).getAttributes().containsKey(id))
-						parts.get(id).getAttributes().put(attr.getId(), attr.clone());
+						parts.get(id).getAttributes().put(attr.getId(), attr.copy());
 				}
 			}
 			else if(attr.getTarget().startsWith("vehicle")){
 				if(attr.getTarget().contains("-")){
 					String id = attr.getTarget().replace("vehicle-", "");
 					if(this.getType().getRegistryName().toString().equals(id))
-						this.getAttributes().put(attr.getId(), attr.clone());
+						this.getAttributes().put(attr.getId(), attr.copy());
 				}
 				else{
 					if(!this.getAttributes().containsKey(attr.getId()))
-						this.getAttributes().put(attr.getId(), attr.clone());
+						this.getAttributes().put(attr.getId(), attr.copy());
 				}
 			}
 		});
@@ -99,7 +101,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 			part.getType().getAttributes().forEach(attr -> {
 				if(attr.getTarget().equals("part:" + category)){
 					if(!data.getAttributes().containsKey(attr.getId()))
-						data.getAttributes().put(attr.getId(), attr.clone());
+						data.getAttributes().put(attr.getId(), attr.copy());
 				}
 			});
 		}
@@ -110,7 +112,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 				String[] target = mod.getTarget().split(":");
 				if(target[0].equals("self")){
 					if(data.getAttributes().containsKey(target[1])){
-						data.getAttribute(target[1]).addModifer(mod.clone());
+						data.getAttribute(target[1]).addModifier(mod.copy());
 					}
 				}
 				else if(target[0].startsWith("part-")){
@@ -118,13 +120,13 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 					else if(parts.containsKey(target[0].replace("part-", ""))){
 						PartData part = parts.get(target[0].replace("part-", ""));
 						if(part.getAttributes().containsKey(target[1])){
-							part.getAttribute(target[1]).addModifer(mod.clone());
+							part.getAttribute(target[1]).addModifier(mod.copy());
 						}
 					}
 				}
 				else if(target[0].startsWith("vehicle")){
 					if(this.getAttributes().containsKey(target[1])){
-						this.getAttributes().get(target[1]).addModifer(mod.clone());
+						this.getAttributes().get(target[1]).addModifier(mod.copy());
 					}
 				}
 			}
@@ -134,21 +136,33 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 				if(mod.getTarget().startsWith("part-" + category + ":")){
 					String target = mod.getTarget().split(":")[1];
 					if(data.getAttributes().containsKey(target))
-						data.getAttribute(target).addModifer(mod.clone());
+						data.getAttribute(target).addModifier(mod.copy());
 				}
 			});
 		}
-		this.refresh(); return null;
+		//
+		this.parts.values().forEach(part -> part.resetAttributes(null));
+		this.resetAttributes(null);
+		//
+		this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INSTALL, true));
+		this.updateAttributes(Attribute.UpdateCall.INSTALL, true);
+		this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INSTALL, false));
+		this.updateAttributes(Attribute.UpdateCall.INSTALL, false);
+		return null;
 	}
 	
 	public void deinstallPart(String category){
 		//TODO general code
 		//TODO also see about removing attributes related to that part
 	}
-	
-	public void refresh(){
-		this.parts.values().forEach(part -> part.refresh());
-		this.attributes.values().forEach(attr -> { attr.resetValue(); attr.refresh(); });
+
+	public void resetAttributes(Boolean bool){
+		if(bool == null || bool){ for(Attribute<?> attr : attributes.values()){ attr.resetBaseValue(); } }
+		if(bool == null || !bool){ for(Attribute<?> attr : attributes.values()){ attr.resetCurrentValue(); } }
+	}
+
+	public void updateAttributes(UpdateCall call, Boolean bool){
+		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call, bool); }
 	}
 
 }

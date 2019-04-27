@@ -12,7 +12,7 @@
     	{ "id":"test1", "type": "integer", "value": 55 },
     	{ "id":"test2", "type": "float", "value": 60.1012 }
     ],
-    "AttributeModifiers":[
+    "Modifiers":[
     	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "120", "priority": "veryhigh" }
     ]
 }

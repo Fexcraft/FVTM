@@ -11,12 +11,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.mod.fvtm.data.Attribute.Modifier;
-import net.fexcraft.mod.fvtm.data.Attribute.ModifierPriority;
-import net.fexcraft.mod.fvtm.data.Attribute.ModifierType;
-import net.fexcraft.mod.fvtm.data.Attribute.ModifierUpdate;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -26,7 +24,7 @@ import net.minecraft.util.ResourceLocation;
 public class Part extends TypeCore<Part> {
 	
 	protected ArrayList<Attribute<?>> attributes;
-	protected ArrayList<Modifier> modifiers;
+	protected ArrayList<Modifier<?>> modifiers;
 	protected List<String> categories;
 	protected PartItem item;
 	protected String modelid;
@@ -68,40 +66,48 @@ public class Part extends TypeCore<Part> {
 				String id = json.get("id").getAsString();
 				String type = json.get("type").getAsString();
 				String target = json.has("target") ? json.get("target").getAsString() : "vehicle";
+				Attribute<?> attr = null;
 				switch(type){
 					case "string": case "text": {
-						this.attributes.add(new Attribute.StringAttribute(true, id, json.get("value").getAsString()).setTarget(target)); break;
+						attr = new Attribute<String>(true, id, json.get("value").getAsString()).setTarget(target); break;
 					}
 					case "float": case "double": {
-						this.attributes.add(new Attribute.FloatAttribute(true, id, json.get("value").getAsFloat()).setTarget(target)); break;
+						attr = new Attribute<Float>(true, id, json.get("value").getAsFloat()).setTarget(target); break;
 					}
 					case "integer": case "number": {
-						this.attributes.add(new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()).setTarget(target)); break;
+						attr = new Attribute<Integer>(true, id, json.get("value").getAsInt()).setTarget(target); break;
 					}
 					default: continue;
 				}
+				if(json.has("max") || json.has("min")){
+					float min = JsonUtil.getIfExists(json, "min", Integer.MIN_VALUE).floatValue();
+					float max = JsonUtil.getIfExists(json, "max", Integer.MAX_VALUE).floatValue();
+					attr.setMinMax(min, max);
+				}
+				this.attributes.add(attr);
 			}
 		}
-		if(obj.has("AttributeModifiers")){
+		if(obj.has("Modifiers")){
 			this.modifiers = new ArrayList<>();
-			JsonArray array = obj.get("AttributeModifiers").getAsJsonArray();
+			JsonArray array = obj.get("Modifiers").getAsJsonArray();
 			for(JsonElement elm : array){
 				JsonObject json = elm.getAsJsonObject();
-				ModifierPriority priority = ModifierPriority.valueOf(json.get("priority").getAsString().toUpperCase());
-				ModifierType type = ModifierType.valueOf(json.get("type").getAsString().toUpperCase());
-				ModifierUpdate interval = ModifierUpdate.valueOf(json.get("update_on").getAsString().toUpperCase());
-				if(priority == null || type == null) continue;
+				Modifier.Priority priority = Modifier.Priority.valueOf(json.get("priority").getAsString().toUpperCase());
+				Modifier.Type type = Modifier.Type.valueOf(json.get("type").getAsString().toUpperCase());
+				Attribute.UpdateCall interval = json.has("update") ? Attribute.UpdateCall.valueOf(json.get("update").getAsString().toUpperCase()) : null;
+				if(priority == null || type == null) continue; if(interval == null) interval = Attribute.UpdateCall.INSTALL;
 				String id = json.get("id").getAsString(), target = json.get("target").getAsString();
 				String val = json.has("val") ? json.get("val").getAsString() : null;
 				float value = json.has("value") ? json.get("value").getAsFloat() : 0f;
+				boolean bool = json.has("base") ? json.get("base").getAsBoolean() : false;
 				if(val == null){
-					this.modifiers.add(new Modifier(id, value, type, interval, priority).setTarget(target));
+					this.modifiers.add(new Modifier<Float>(id, value, bool, type, interval, priority).setTarget(target));
 				}
 				else{
-					this.modifiers.add(new Modifier(id, val, type, interval, priority).setTarget(target));
+					this.modifiers.add(new Modifier<String>(id, val, bool, type, interval, priority).setTarget(target));
 				}
 			}
-		}
+		} 
 		if(obj.has("Functions")){
 			//TODO
 		}
@@ -150,7 +156,7 @@ public class Part extends TypeCore<Part> {
 		return attributes;
 	}
 	
-	public Collection<Modifier> getAttributeModifiers(){
+	public Collection<Modifier<?>> getAttributeModifiers(){
 		return modifiers;
 	}
 

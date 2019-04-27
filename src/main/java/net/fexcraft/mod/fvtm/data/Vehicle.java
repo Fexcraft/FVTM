@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -55,17 +56,25 @@ public class Vehicle extends TypeCore<Vehicle> {
 				JsonObject json = elm.getAsJsonObject();
 				String id = json.get("id").getAsString();
 				String type = json.get("type").getAsString();
+				Attribute<?> attr = null;
 				switch(type){
 					case "string": case "text": {
-						this.attributes.add(new Attribute.StringAttribute(true, id, obj.get("value").getAsString())); break;
+						attr = new Attribute<String>(true, id, json.get("value").getAsString()); break;
 					}
 					case "float": case "double": {
-						this.attributes.add(new Attribute.FloatAttribute(true, id, obj.get("value").getAsFloat())); break;
+						attr = new Attribute<Float>(true, id, json.get("value").getAsFloat()); break;
 					}
 					case "integer": case "number": {
-						this.attributes.add(new Attribute.IntegerAttribute(true, id, obj.get("value").getAsInt())); break;
+						attr = new Attribute<Integer>(true, id, json.get("value").getAsInt()); break;
 					}
+					default: continue;
 				}
+				if(json.has("max") || json.has("min")){
+					float min = JsonUtil.getIfExists(json, "min", Integer.MIN_VALUE).floatValue();
+					float max = JsonUtil.getIfExists(json, "max", Integer.MAX_VALUE).floatValue();
+					attr.setMinMax(min, max);
+				}
+				this.attributes.add(attr);
 			}
 		}
 		//TODO add code for filling in missing attributes, based on vehicle type
@@ -104,7 +113,7 @@ public class Vehicle extends TypeCore<Vehicle> {
 	@SuppressWarnings("unchecked")
 	public <ATTR extends Attribute<?>> ATTR getAttribute(String id){
 		for(Attribute<?> attr : attributes){
-			if(attr.id.equals(id)) return (ATTR)attr;
+			if(attr.getId().equals(id)) return (ATTR)attr;
 		} return null;
 	}
 	

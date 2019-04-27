@@ -7,9 +7,9 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Part;
 import net.fexcraft.mod.fvtm.data.PartData;
-import net.fexcraft.mod.fvtm.data.Attribute;
-import net.fexcraft.mod.fvtm.data.Attribute.Modifier;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
+import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -43,13 +43,12 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         //temporary
         if(flag.isAdvanced() && type.getAttributes() != null){
         	for(Attribute<?> attr : type.getAttributes()){
-        		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getValue()));
+        		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentValue()));
         	}
         }
         if(flag.isAdvanced() && type.getAttributeModifiers() != null){
-        	for(Modifier mod : type.getAttributeModifiers()){
-        		tooltip.add(Formatter.format("&9" + mod.getId() + "-" + mod.getTarget() + ": &7"
-        			+ (mod.getVal() == null ? mod.getValue() : mod.getVal()) + "-" + mod.getType()));
+        	for(Modifier<?> mod : type.getAttributeModifiers()){
+        		tooltip.add(Formatter.format("&9" + mod.getId() + "-" + mod.getTarget() + ": &7" + mod.getValue() + "-" + mod.getType()));
         	}
         }
         //TODO texture/pos data

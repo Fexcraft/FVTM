@@ -9,7 +9,7 @@ public class Attribute<T> {
         @Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
     };
     //
-	protected TreeSet<Modifier<T>> modifiers = new TreeSet<>();
+	protected TreeSet<Modifier<T>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	protected T initial, base, current;
 	protected float max, min;
 	protected boolean original;
@@ -58,7 +58,7 @@ public class Attribute<T> {
 	public Attribute<T> resetCurrentValue(){
 		this.current = this.base; return this;
 	}
-	public Attribute<T> reseBaseValue(){
+	public Attribute<T> resetBaseValue(){
 		this.base = this.initial; return this;
 	}
 	
@@ -96,7 +96,7 @@ public class Attribute<T> {
 	}
 	
 	public static enum UpdateCall {
-		INSTALL, /*UNINSTALL,*/ ENTITY_UPDATE, MANUAL
+		INSTALL, /*UNINSTALL,*/ LOGICLOOP, MANUAL
 	}
 	
 	public static enum ValueType {
@@ -109,6 +109,11 @@ public class Attribute<T> {
 			//if(value instanceof Boolean) return BOOLEAN;
 			return FLOAT;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addModifier(Modifier<?> copy){
+		if(copy.getValueType() != this.valuetype) return; this.modifiers.add((Modifier<T>)copy);
 	}
 
 }

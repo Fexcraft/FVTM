@@ -9,24 +9,32 @@ public class Modifier<T> {
 	protected UpdateCall calltype;
 	protected Priority priority;
 	protected ValueType valuetype;
-	protected boolean original;
+	//protected boolean original;
 	protected boolean basemod;
 	protected Type type;
 	protected T value;
 	
-	public Modifier(boolean notcopy, String id, T value, boolean basemodifier){
-		this.original = notcopy; this.id = id; this.value = value;
-		this.valuetype = ValueType.findOut(value); this.basemod = basemodifier;
+	public Modifier(String id, T value, boolean basemodifier, Type type, UpdateCall call, Priority priority){
+		this.id = id; this.value = value; this.basemod = basemodifier;
+		this.valuetype = ValueType.findOut(value); this.type = type;
+		this.calltype = call; this.priority = priority;
 	}
 
 	public Modifier<T> copy(){
-		// TODO Auto-generated method stub
-		return null;
+		return new Modifier<T>(id, value, basemod, type, calltype, priority).setTarget(target);
 	}
 
-	public UpdateCall getUpdateType(){
-		return calltype;
+	public String getTarget(){ return target; }
+	public Modifier<T> setTarget(String string){
+		this.target = string; return this;
 	}
+	
+	public String getId(){ return id; }
+	public T getValue(){ return value; }
+	public Type getType(){ return type; }
+	public Priority getPriority(){ return priority; }
+	public ValueType getValueType(){ return valuetype; }
+	public UpdateCall getUpdateType(){ return calltype; }
 
 	public boolean validCall(UpdateCall call, boolean base){
 		return calltype == call && base == basemod;

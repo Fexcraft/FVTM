@@ -4,6 +4,8 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -18,7 +20,7 @@ public class PartData extends DataCore<Part, PartData> {
 		super(type);
 		for(Attribute<?> attr : type.getAttributes()){
 			if(!attr.getTarget().startsWith("self")) continue;
-			Attribute<?> copy = attr.clone(); attributes.put(copy.getId(), copy);
+			Attribute<?> copy = attr.copy(); attributes.put(copy.getId(), copy);
 		}
 	}
 
@@ -65,8 +67,13 @@ public class PartData extends DataCore<Part, PartData> {
 		return attributes;
 	}
 
-	public void refresh(){
-		attributes.values().forEach(attr -> { attr.resetValue(); attr.refresh(); });
+	public void resetAttributes(Boolean bool){
+		if(bool == null || bool){ for(Attribute<?> attr : attributes.values()){ attr.resetBaseValue(); } }
+		if(bool == null || !bool){ for(Attribute<?> attr : attributes.values()){ attr.resetCurrentValue(); } }
+	}
+
+	public void updateAttributes(UpdateCall call, Boolean bool){
+		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call, bool); }
 	}
 
 }

@@ -11,6 +11,7 @@ public abstract class Attribute<T> {
 	protected TreeSet<Modifier> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	protected boolean original;
 	protected String id, target;
+	protected T value, initial;
 	
 	public Attribute(boolean isStatic, String id){
 		this.original = isStatic; this.id = id;
@@ -18,9 +19,11 @@ public abstract class Attribute<T> {
 	
 	public boolean isOriginal(){ return original; }
 	
-	public abstract T getValue();
+	public T getValue(){ return value; }
 	
-	public abstract void setValue(T value);
+	public void setValue(T value){ this.value = value; }
+	
+	public void resetValue(){ this.value = initial; }
 	
 	public void refresh(){
 		if(this.isOriginal()) return;
@@ -48,16 +51,17 @@ public abstract class Attribute<T> {
 	public static class Modifier {
 
 		protected ModifierPriority priority;
+		protected ModifierUpdate interval;
 		protected ModifierType type;
 		protected String id, val, target;
 		protected float value;
 		
-		public Modifier(String string, float val, ModifierType mtype, ModifierPriority priority){
-			this.id = string; this.value = val; this.type = mtype; this.priority = priority;
+		public Modifier(String string, float val, ModifierType mtype, ModifierUpdate up, ModifierPriority priority){
+			this.id = string; this.value = val; this.type = mtype; this.priority = priority; this.interval = up;
 		}
 
-		public Modifier(String string, String val, ModifierType mtype, ModifierPriority priority){
-			this.id = string; this.val = val; this.type = mtype; this.priority = priority;
+		public Modifier(String string, String val, ModifierType mtype, ModifierUpdate up, ModifierPriority priority){
+			this.id = string; this.val = val; this.type = mtype; this.priority = priority; this.interval = up;
 		}
 		
 		public void modify(Attribute<?> vehattr){
@@ -108,14 +112,15 @@ public abstract class Attribute<T> {
 		public String getVal(){ return val; }
 		public float getValue(){ return value; }
 		public ModifierType getType(){ return type; }
+		public ModifierUpdate getInterval(){ return interval; }
 		public void refresh(){};
 		
 		public Modifier clone(){
 			if(val == null){
-				return new Modifier(id, value, type, priority);
+				return new Modifier(id, value, type, interval, priority);
 			}
 			else{
-				return new Modifier(id, val, type, priority);
+				return new Modifier(id, val, type, interval, priority);
 			}
 		}
 		
@@ -133,26 +138,18 @@ public abstract class Attribute<T> {
 		OVERRIDE, ADDITIVE, PROCENT_ADD, PROCENT_DEC, PROCENT_SET
 	}
 	
+	public static enum ModifierUpdate {
+		INSTALL, UPDATE, CALLED
+	}
+	
 	public static enum AttributeType {
 		STRING, FLOAT, INTEGER
 	}
 	
 	public static class StringAttribute extends Attribute<String> {
 		
-		protected String value;
-		
 		public StringAttribute(boolean isStatic, String id, String string){
-			super(isStatic, id); this.value = string;
-		}
-
-		@Override
-		public String getValue(){
-			return value;
-		}
-
-		@Override
-		public void setValue(String value){
-			this.value = value;
+			super(isStatic, id); this.value = this.initial = string;
 		}
 
 		@Override
@@ -171,21 +168,9 @@ public abstract class Attribute<T> {
 	}
 	
 	public static class IntegerAttribute extends Attribute<Integer> {
-		
-		protected int value;
 
 		public IntegerAttribute(boolean isStatic, String id, int value){
-			super(isStatic, id); this.value = value;
-		}
-
-		@Override
-		public Integer getValue(){
-			return value;
-		}
-
-		@Override
-		public void setValue(Integer value){
-			this.value = value;
+			super(isStatic, id); this.value = this.initial = value;
 		}
 
 		@Override
@@ -209,16 +194,6 @@ public abstract class Attribute<T> {
 
 		public FloatAttribute(boolean isStatic, String id, float value){
 			super(isStatic, id); this.value = value;
-		}
-
-		@Override
-		public Float getValue(){
-			return value;
-		}
-
-		@Override
-		public void setValue(Float value){
-			this.value = value;
 		}
 
 		@Override

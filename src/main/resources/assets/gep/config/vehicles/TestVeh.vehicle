@@ -1,0 +1,15 @@
+{
+    "RegistryName": "gep:test_vehicle",
+    "Addon": "fvtm:gep",
+    "Name": "Test Vehicle",
+    "Description": "Test vehicle - do not use!",
+    "Model": "null",
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Attributes":[
+    	{ "id":"weight", "type": "float", "value": 1000 },
+    	{ "id":"acceleration", "type": "float", "value": 12 },
+    	{ "id":"break_speed", "type": "float", "value": 20 }
+    ]
+}

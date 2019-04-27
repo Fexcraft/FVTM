@@ -65,4 +65,8 @@ public class PartData extends DataCore<Part, PartData> {
 		return attributes;
 	}
 
+	public void refresh(){
+		attributes.values().forEach(attr -> { attr.resetValue(); attr.refresh(); });
+	}
+
 }

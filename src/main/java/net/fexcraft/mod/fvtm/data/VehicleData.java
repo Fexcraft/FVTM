@@ -138,12 +138,17 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 				}
 			});
 		}
-		return null;
+		this.refresh(); return null;
 	}
 	
 	public void deinstallPart(String category){
 		//TODO general code
 		//TODO also see about removing attributes related to that part
+	}
+	
+	public void refresh(){
+		this.parts.values().forEach(part -> part.refresh());
+		this.attributes.values().forEach(attr -> { attr.resetValue(); attr.refresh(); });
 	}
 
 }

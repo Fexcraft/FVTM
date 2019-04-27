@@ -13,8 +13,6 @@
     	{ "id":"test2", "type": "float", "value": 60.1012 }
     ],
     "AttributeModifiers":[
-    	{ "id": "test-modifier", "type": "override", "target": "self:name", "val": "Ghibli Engines", "priority": "verylow" },
-    	{ "id": "starter", "type": "additive", "target": "self:battery-consumption", "value": "-20", "priority": "high" },
     	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "120", "priority": "veryhigh" }
     ]
 }

@@ -14,6 +14,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.Attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.Attribute.ModifierPriority;
 import net.fexcraft.mod.fvtm.data.Attribute.ModifierType;
+import net.fexcraft.mod.fvtm.data.Attribute.ModifierUpdate;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -88,15 +89,16 @@ public class Part extends TypeCore<Part> {
 				JsonObject json = elm.getAsJsonObject();
 				ModifierPriority priority = ModifierPriority.valueOf(json.get("priority").getAsString().toUpperCase());
 				ModifierType type = ModifierType.valueOf(json.get("type").getAsString().toUpperCase());
+				ModifierUpdate interval = ModifierUpdate.valueOf(json.get("update_on").getAsString().toUpperCase());
 				if(priority == null || type == null) continue;
 				String id = json.get("id").getAsString(), target = json.get("target").getAsString();
 				String val = json.has("val") ? json.get("val").getAsString() : null;
 				float value = json.has("value") ? json.get("value").getAsFloat() : 0f;
 				if(val == null){
-					this.modifiers.add(new Modifier(id, value, type, priority).setTarget(target));
+					this.modifiers.add(new Modifier(id, value, type, interval, priority).setTarget(target));
 				}
 				else{
-					this.modifiers.add(new Modifier(id, val, type, priority).setTarget(target));
+					this.modifiers.add(new Modifier(id, val, type, interval, priority).setTarget(target));
 				}
 			}
 		}

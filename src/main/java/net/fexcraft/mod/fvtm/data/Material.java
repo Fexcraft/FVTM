@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class Material extends TypeCore<Material> {
 	
@@ -101,6 +102,10 @@ public class Material extends TypeCore<Material> {
 	
 	public boolean isVehicleKey(){
 		return this.isVehicleKey;
+	}
+
+	public void registerIntoOreDictionary(){
+        if(getOreDictionaryId() != null) OreDictionary.registerOre(getOreDictionaryId(), item); else return;
 	}
 
 }

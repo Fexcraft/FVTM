@@ -96,7 +96,7 @@ public class Part extends TypeCore<Part> {
 					this.modifiers.add(new Modifier(id, value, type, priority).setTarget(target));
 				}
 				else{
-					this.modifiers.add(new Modifier(id, val, type, priority));
+					this.modifiers.add(new Modifier(id, val, type, priority).setTarget(target));
 				}
 			}
 		}

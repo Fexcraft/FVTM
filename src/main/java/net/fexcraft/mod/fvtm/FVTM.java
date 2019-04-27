@@ -48,6 +48,7 @@ public class FVTM {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
+		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
 		//
 	}
 

@@ -20,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class MaterialItem extends TypeCoreItem<Material> {
 
@@ -30,9 +29,6 @@ public class MaterialItem extends TypeCoreItem<Material> {
 		this.setMaxDamage(material.getMaxDamage());
         this.type.getAddon().getFCLRegisterer().addItem(
         	type.getRegistryName().getResourcePath(), this, 0, null);
-        if(material.getOreDictionaryId() != null){
-        	OreDictionary.registerOre(material.getOreDictionaryId(), this);
-        }
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}

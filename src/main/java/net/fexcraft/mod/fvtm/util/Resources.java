@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.Addon;
 import net.fexcraft.mod.fvtm.data.AddonClass;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Part;
+import net.fexcraft.mod.fvtm.data.Vehicle;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -23,6 +24,7 @@ public class Resources {
 	
 	public static IForgeRegistry<Addon> ADDONS;
 	public static IForgeRegistry<Part> PARTS;
+	public static IForgeRegistry<Vehicle> VEHICLES;
 	public static IForgeRegistry<Material> MATERIALS;
 	//
 	private File configroot; 
@@ -33,6 +35,7 @@ public class Resources {
 		//
 		ADDONS = new RegistryBuilder<Addon>().setName(new ResourceLocation("fvtm:addons")).setType(Addon.class).create();
 		PARTS = new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
+		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		MATERIALS = new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
 		/*FUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
 		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
@@ -69,6 +72,7 @@ public class Resources {
 		//
 		searchInAddonsFor(DataType.MATERIAL);
 		searchInAddonsFor(DataType.PART);
+		searchInAddonsFor(DataType.VEHICLE);
 	}
 
 	private void searchInAddonsFor(DataType datatype){
@@ -83,6 +87,14 @@ public class Resources {
 
 	public static Part getPart(ResourceLocation resloc){
 		return PARTS.getValue(resloc);
+	}
+
+	public static Vehicle getVehicle(String string){
+		return getVehicle(new ResourceLocation(string));
+	}
+
+	public static Vehicle getVehicle(ResourceLocation resloc){
+		return VEHICLES.getValue(resloc);
 	}
 
 }

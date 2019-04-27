@@ -1,76 +1,63 @@
 package net.fexcraft.mod.fvtm.data;
 
-import java.util.List;
-
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
-import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class Part extends TypeCore<Part> {
+public class Vehicle extends TypeCore<Vehicle> {
 	
-	protected List<String> categories;
-	protected PartItem item;
 	protected String modelid;
 	protected Model<?, ?> model;
-	
-	public Part(){}
+	//
+	protected VehicleItem item;
 
 	@Override
-	public Part setRegistryName(ResourceLocation name){
-		registryname = name; return this;
+	public Vehicle setRegistryName(ResourceLocation name){
+		this.registryname = name; return this;
 	}
 
 	@Override
 	public ResourceLocation getRegistryName(){
-		return registryname;
+		return this.registryname;
 	}
 
 	@Override
-	public Class<Part> getRegistryType(){
-		return Part.class;
+	public Class<Vehicle> getRegistryType(){
+		return Vehicle.class;
 	}
 
 	@Override
-	public Part parse(JsonObject obj){
+	public Vehicle parse(JsonObject obj){
 		this.registryname = DataUtil.getRegistryName(obj);
 		if(registryname == null) return null;
 		this.pack = DataUtil.getAddon(obj);
 		if(pack == null) return null;
 		//
-		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Part");
-		this.categories = DataUtil.getStringArray(obj, "Category", true, true);
+		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Vehicle");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
-		this.item = new PartItem(this); return this;
+		this.item = new VehicleItem(this); return this;
 	}
 
 	@Override
 	public DataType getDataType(){
-		return DataType.PART;
+		return DataType.VEHICLE;
 	}
 
 	@Override
 	public Class<?> getDataClass(){
-		return PartData.class;
-	}
-
-	public String getCategory(){
-		return categories.isEmpty() ? null : categories.get(0);
+		return VehicleData.class;
 	}
 	
-	public List<String> getCategories(){
-		return categories;
-	}
-	
-	public PartItem getItem(){
+	public VehicleItem getItem(){
 		return item;
 	}
 	
@@ -86,5 +73,6 @@ public class Part extends TypeCore<Part> {
 	public void loadModel(){
 		//TODO
 	}
+
 
 }

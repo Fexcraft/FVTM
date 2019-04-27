@@ -8,8 +8,8 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 public enum DataType {
 	
 	ADDON(".fvtm", null, Addon.class),
-	//VEHICLE(".vehicle", "vehicles"),
 	PART(".part", "parts", Part.class),
+	VEHICLE(".vehicle", "vehicles", Vehicle.class),
 	MATERIAL(".material", "materials", Material.class),
 	//CONTAINER(".container", "containers"),
 	//CONSUMABLE(".consumable", "consumables"),
@@ -27,6 +27,7 @@ public enum DataType {
 		switch(this){
 			case ADDON: return (IForgeRegistry<T>)Resources.ADDONS;
 			case PART: return (IForgeRegistry<T>)Resources.PARTS;
+			case VEHICLE: return (IForgeRegistry<T>)Resources.VEHICLES;
 			case MATERIAL: return (IForgeRegistry<T>)Resources.MATERIALS;
 			default: return null;
 		}
@@ -36,6 +37,7 @@ public enum DataType {
 		switch(this){
 			case ADDON:{ Resources.ADDONS.register((Addon)core); return; }
 			case PART:{ Resources.PARTS.register((Part)core); return; }
+			case VEHICLE:{ Resources.VEHICLES.register((Vehicle)core); return; }
 			case MATERIAL:{ Resources.MATERIALS.register((Material)core); return; }
 			default: return;
 		}

@@ -24,6 +24,9 @@ public abstract class TypeCore<SELF> implements IForgeRegistryEntry<SELF> {
 	
 	public List<String> getDescription(){ return description; }
 	
+	/** Overrride if being a type using a Model. */
+	public void loadModel(){}
+	
 	protected ResourceLocation registryname;
 	protected List<String> description;
 	protected String name;

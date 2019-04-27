@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data;
 
+import java.util.TreeMap;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.data.root.DataCore;
@@ -9,9 +11,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class PartData extends DataCore<Part, PartData> {
+	
+	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 
 	public PartData(Part type){
 		super(type);
+		for(Attribute<?> attr : type.getAttributes()){
+			if(!attr.getTarget().startsWith("self")) continue;
+			Attribute<?> copy = attr.clone(); attributes.put(copy.getId(), copy);
+		}
 	}
 
 	@Override
@@ -46,6 +54,15 @@ public class PartData extends DataCore<Part, PartData> {
 		obj.addProperty("Part", type.getRegistryName().toString());
 		//
 		return obj;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <ATTR extends Attribute<?>> ATTR getAttribute(String id){
+		return (ATTR)attributes.get(id);
+	}
+	
+	public TreeMap<String, Attribute<?>> getAttributes(){
+		return attributes;
 	}
 
 }

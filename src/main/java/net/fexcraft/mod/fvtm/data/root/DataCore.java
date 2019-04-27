@@ -25,6 +25,8 @@ public abstract class DataCore<TYPE extends TypeCore<TYPE>, SELF> {
 	
 	//
 	
+	public TYPE getType(){ return type; }
+	
 	public DataType getDataType(){
 		return type.getDataType();
 	}

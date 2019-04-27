@@ -7,6 +7,8 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Part;
 import net.fexcraft.mod.fvtm.data.PartData;
+import net.fexcraft.mod.fvtm.data.Attribute;
+import net.fexcraft.mod.fvtm.data.Attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.minecraft.client.util.ITooltipFlag;
@@ -37,6 +39,18 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         tooltip.add(Formatter.format("&9Type: &7" + type.getCategory()));
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(s));
+        }
+        //temporary
+        if(flag.isAdvanced() && type.getAttributes() != null){
+        	for(Attribute<?> attr : type.getAttributes()){
+        		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getValue()));
+        	}
+        }
+        if(flag.isAdvanced() && type.getAttributeModifiers() != null){
+        	for(Modifier mod : type.getAttributeModifiers()){
+        		tooltip.add(Formatter.format("&9" + mod.getId() + "-" + mod.getTarget() + ": &7"
+        			+ (mod.getVal() == null ? mod.getValue() : mod.getVal()) + "-" + mod.getType()));
+        	}
         }
         //TODO texture/pos data
         //TODO model data

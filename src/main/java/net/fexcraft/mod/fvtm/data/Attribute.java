@@ -3,16 +3,17 @@ package net.fexcraft.mod.fvtm.data;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-public abstract class VehicleAttribute<T> {
+public abstract class Attribute<T> {
 
 	public static final Comparator<Modifier> MODIFIER_COMPARATOR = new Comparator<Modifier>() {
         @Override public int compare(Modifier m0, Modifier m1){ return m0.priority.compareTo(m1.priority); }
     };
 	protected TreeSet<Modifier> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	protected boolean original;
+	protected String id, target;
 	
-	public VehicleAttribute(boolean isStatic){
-		this.original = isStatic;
+	public Attribute(boolean isStatic, String id){
+		this.original = isStatic; this.id = id;
 	}
 	
 	public boolean isOriginal(){ return original; }
@@ -22,6 +23,7 @@ public abstract class VehicleAttribute<T> {
 	public abstract void setValue(T value);
 	
 	public void refresh(){
+		if(this.isOriginal()) return;
 		for(Modifier mod : modifiers){
 			if(this.getType() == AttributeType.STRING && mod.getVal() == null) continue;
 			if(this.getType() != AttributeType.STRING && mod.getVal() != null) continue;
@@ -29,7 +31,7 @@ public abstract class VehicleAttribute<T> {
 		}
 	}
 	
-	public abstract VehicleAttribute<T> clone();
+	public abstract Attribute<T> clone();
 	
 	public abstract AttributeType getType();
 	
@@ -39,22 +41,26 @@ public abstract class VehicleAttribute<T> {
 	
 	public java.util.Set<Modifier> getModifiers(){ return modifiers; }
 	
+	//for storing in parts, till they are in an active instance
+	public Attribute<T> setTarget(String str){ this.target = str; return this; }
+	public String getTarget(){ return target; }
+	
 	public static class Modifier {
 
 		protected ModifierPriority priority;
 		protected ModifierType type;
-		protected String id, val;
+		protected String id, val, target;
 		protected float value;
 		
-		private Modifier(String string, float val, ModifierType mtype, ModifierPriority priority){
+		public Modifier(String string, float val, ModifierType mtype, ModifierPriority priority){
 			this.id = string; this.value = val; this.type = mtype; this.priority = priority;
 		}
 
-		private Modifier(String string, String val, ModifierType mtype, ModifierPriority priority){
+		public Modifier(String string, String val, ModifierType mtype, ModifierPriority priority){
 			this.id = string; this.val = val; this.type = mtype; this.priority = priority;
 		}
 		
-		public void modify(VehicleAttribute<?> vehattr){
+		public void modify(Attribute<?> vehattr){
 			if(this.getVal() != null && vehattr.getType() == AttributeType.STRING){
 				StringAttribute attr = (StringAttribute)vehattr;
 				switch(type){
@@ -101,6 +107,7 @@ public abstract class VehicleAttribute<T> {
 		public String getId(){ return id; }
 		public String getVal(){ return val; }
 		public float getValue(){ return value; }
+		public ModifierType getType(){ return type; }
 		public void refresh(){};
 		
 		public Modifier clone(){
@@ -111,6 +118,10 @@ public abstract class VehicleAttribute<T> {
 				return new Modifier(id, val, type, priority);
 			}
 		}
+		
+		//for storing modifiers in parts, till they are in the vehicle
+		public Modifier setTarget(String str){ this.target = str; return this; }
+		public String getTarget(){ return target; }
 		
 	}
 	
@@ -126,12 +137,12 @@ public abstract class VehicleAttribute<T> {
 		STRING, FLOAT, INTEGER
 	}
 	
-	public static class StringAttribute extends VehicleAttribute<String> {
+	public static class StringAttribute extends Attribute<String> {
 		
 		protected String value;
 		
-		public StringAttribute(boolean isStatic, String string){
-			super(isStatic); this.value = string;
+		public StringAttribute(boolean isStatic, String id, String string){
+			super(isStatic, id); this.value = string;
 		}
 
 		@Override
@@ -145,8 +156,8 @@ public abstract class VehicleAttribute<T> {
 		}
 
 		@Override
-		public VehicleAttribute<String> clone(){
-			StringAttribute str = new StringAttribute(false, value);
+		public Attribute<String> clone(){
+			StringAttribute str = new StringAttribute(false, id, value);
 			TreeSet<Modifier> mod = new TreeSet<>(MODIFIER_COMPARATOR);
 			for(Modifier modi : modifiers) mod.add(modi.clone());
 			str.modifiers = mod; return str;
@@ -159,12 +170,12 @@ public abstract class VehicleAttribute<T> {
 		
 	}
 	
-	public static class IntegerAttribute extends VehicleAttribute<Integer> {
+	public static class IntegerAttribute extends Attribute<Integer> {
 		
 		protected int value;
 
-		public IntegerAttribute(boolean isStatic, int value){
-			super(isStatic); this.value = value;
+		public IntegerAttribute(boolean isStatic, String id, int value){
+			super(isStatic, id); this.value = value;
 		}
 
 		@Override
@@ -178,8 +189,8 @@ public abstract class VehicleAttribute<T> {
 		}
 
 		@Override
-		public VehicleAttribute<Integer> clone(){
-			IntegerAttribute inte = new IntegerAttribute(false, value);
+		public Attribute<Integer> clone(){
+			IntegerAttribute inte = new IntegerAttribute(false, id, value);
 			TreeSet<Modifier> mod = new TreeSet<>(MODIFIER_COMPARATOR);
 			for(Modifier modi : modifiers) mod.add(modi.clone());
 			inte.modifiers = mod; return inte;
@@ -192,12 +203,12 @@ public abstract class VehicleAttribute<T> {
 		
 	}
 	
-	public static class FloatAttribute extends VehicleAttribute<Float> {
+	public static class FloatAttribute extends Attribute<Float> {
 		
 		protected float value;
 
-		public FloatAttribute(boolean isStatic, float value){
-			super(isStatic); this.value = value;
+		public FloatAttribute(boolean isStatic, String id, float value){
+			super(isStatic, id); this.value = value;
 		}
 
 		@Override
@@ -211,8 +222,8 @@ public abstract class VehicleAttribute<T> {
 		}
 
 		@Override
-		public VehicleAttribute<Float> clone(){
-			FloatAttribute flt = new FloatAttribute(false, value);
+		public Attribute<Float> clone(){
+			FloatAttribute flt = new FloatAttribute(false, id, value);
 			TreeSet<Modifier> mod = new TreeSet<>(MODIFIER_COMPARATOR);
 			for(Modifier modi : modifiers) mod.add(modi.clone());
 			flt.modifiers = mod; return flt;
@@ -223,6 +234,10 @@ public abstract class VehicleAttribute<T> {
 			return AttributeType.FLOAT;
 		}
 		
+	}
+
+	public String getId(){
+		return id;
 	}
 
 }

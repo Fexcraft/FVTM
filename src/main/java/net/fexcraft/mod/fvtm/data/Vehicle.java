@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.TreeMap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -19,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class Vehicle extends TypeCore<Vehicle> {
 
-	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
+	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected Model<?, ?> model;
 	protected String modelid;
 	//
@@ -74,10 +73,11 @@ public class Vehicle extends TypeCore<Vehicle> {
 					float max = JsonUtil.getIfExists(json, "max", Integer.MAX_VALUE).floatValue();
 					attr.setMinMax(min, max);
 				}
-				this.attributes.add(attr);
+				this.attributes.put(attr.getId(), attr);
 			}
 		}
 		//TODO add code for filling in missing attributes, based on vehicle type
+		if(!attributes.containsKey("weight")) attributes.put("weight", new Attribute<Float>(true, "weight", 1000f).setMinMax(0, Integer.MAX_VALUE));
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -112,12 +112,10 @@ public class Vehicle extends TypeCore<Vehicle> {
 	
 	@SuppressWarnings("unchecked")
 	public <ATTR extends Attribute<?>> ATTR getAttribute(String id){
-		for(Attribute<?> attr : attributes){
-			if(attr.getId().equals(id)) return (ATTR)attr;
-		} return null;
+		return (ATTR)attributes.get(id);
 	}
 	
-	public Collection<Attribute<?>> getAttributes(){
+	public TreeMap<String, Attribute<?>> getAttributes(){
 		return attributes;
 	}
 

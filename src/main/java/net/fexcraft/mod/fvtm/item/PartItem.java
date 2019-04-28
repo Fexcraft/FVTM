@@ -59,7 +59,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
 
 	@Override
 	public PartData getData(ItemStack stack){
-		return stack.getTagCompound() == null ? null : getData(stack.getTagCompound());
+		return getData(stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound());
 	}
 
 	@Override

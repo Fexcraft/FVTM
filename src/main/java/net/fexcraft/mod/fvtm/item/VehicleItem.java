@@ -35,6 +35,8 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(s));
         }
+        VehicleData data = this.getData(stack); if(data == null) return;
+        tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getCurrentValue() + "kg"));
         //TODO texture/pos data
         //TODO model data
         //TODO other data
@@ -42,7 +44,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
 
 	@Override
 	public VehicleData getData(ItemStack stack){
-		return stack.getTagCompound() == null ? null : getData(stack.getTagCompound());
+		return getData(stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound());
 	}
 
 	@Override

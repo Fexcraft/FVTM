@@ -2,61 +2,57 @@ package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.minecraft.block.material.MapColor;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-@SuppressWarnings("unused")
-public class ConstructorGui extends GenericGui<ConstructorContainer> {
+public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	
 	private static final ResourceLocation STONE = new ResourceLocation("minecraft:textures/blocks/stone.png");
 	private static final ResourceLocation ANVIL = new ResourceLocation("minecraft:textures/blocks/anvil_base.png");
+	//
+	protected static final String modid = FVTM.MODID;
+	protected static final int buttonheight = 12;
+	protected TitleText titletext;
+	protected BasicText menutitle;
+	protected BasicText[] tbuttons;
+	protected BasicButton[] cbuttons;
+	protected TextField[] cfields;
+	protected String[] buttontext;
+	protected String texttitle = "Fex's Vehicle & Transporation Mod";
+	protected final int[] xyz;
+	protected boolean removeEmptyButtons;
 
 	public ConstructorGui(EntityPlayer player, World world, int x, int y, int z){
 		super(STONE, new ConstructorContainer(player, world, x, y, z), player);
-		this.defbackground = false; this.deftexrect = false;
+		this.defbackground = false; this.deftexrect = false; xyz = new int[]{ x, y, z };
 	}
 	
-	private TitleText titletext;
-	private BasicText menutitle;
-	private BasicText[] tbuttons = new BasicText[9];
-	private BasicButton[] cbuttons = new BasicButton[9];
-	private String[] main = new String[]{ "Constructor Status", "Vehicle Data", "Part Manager", "Part Installer", "- - - -", "Texture Manager", "Spraying Tool", "- - - -", "Exit"};
-
 	@Override
 	protected void init(){
 		this.ySize = this.height; this.xSize = this.width / 4; int white = new RGB(228, 235, 228).packed;
-		this.texts.put("title", titletext = new TitleText(this, "Fex's Vehicle & Transporation Mod"));
+		this.texts.put("title", titletext = new TitleText(this, texttitle));
 		this.texts.put("menutitle", menutitle = new BasicText(4, 4, width, white, "Welcome " + player.getDisplayNameString() + "!"));
-		for(int i = 0; i < 9; i++){
-			this.buttons.put("button" + i, cbuttons[i] = new BasicButton("button" + i, 2, 20 + (i * 12), 0, 0, xSize - 4, 10, true));
-			this.texts.put("button" + i, tbuttons[i] = new BasicText(4, 21 + (i * 12), xSize - 8, white, main[i]));
-			cbuttons[i].rgb_hover.alpha = cbuttons[i].rgb_none.alpha = 0.8f;
+		tbuttons = new BasicText[buttontext.length]; cbuttons = new BasicButton[buttontext.length]; cfields = new TextField[buttontext.length];
+		for(int i = 0; i < buttontext.length; i++){
+			if(!(removeEmptyButtons && buttontext[i].equals(""))){
+				this.texts.put("button" + i, tbuttons[i] = new BasicText(4, 21 + (i * buttonheight), xSize - 8, white, buttontext[i]));
+				this.buttons.put("button" + i, cbuttons[i] = new BasicButton("button" + i, 2, 20 + (i * buttonheight), 0, 0, xSize - 4, 10, true));
+				cbuttons[i].rgb_hover = new RGB("#8f9924"/*"#d9df99"*/, 0.8f); cbuttons[i].rgb_none.alpha = 0.8f;
+				if(buttontext[i].equals("") || buttontext[i].startsWith("||")){ cbuttons[i].enabled = false; }
+				if(buttontext[i].startsWith("||")) tbuttons[i].string = buttontext[i].replace("||", "");
+				if(!buttontext[i].startsWith(";;")) tbuttons[i].translate();
+				else tbuttons[i].string = buttontext[i].replace(";;", "");
+			}
 		}
 	}
 
 	@Override
-	protected void predraw(float pticks, int mouseX, int mouseY){
-		titletext.update();
-	}
-
-	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
+		titletext.update();
 		this.drawTexturedModalRect(0, 0, 0, 0, this.xSize, this.ySize);
 		this.mc.getTextureManager().bindTexture(ANVIL);
-	}
-
-	@Override
-	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void scrollwheel(int am, int x, int y){
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public static class TitleText extends BasicText {

@@ -19,7 +19,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 
 	public VehicleData(Vehicle type){
 		super(type);
-		for(Attribute<?> attr : type.getAttributes()){
+		for(Attribute<?> attr : type.getAttributes().values()){
 			Attribute<?> copy = attr.copy(); attributes.put(copy.getId(), copy);
 		}
 	}

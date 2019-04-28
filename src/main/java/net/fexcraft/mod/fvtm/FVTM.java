@@ -7,7 +7,8 @@ import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
-import net.fexcraft.mod.fvtm.gui.ConstructorGui;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -62,7 +63,8 @@ public class FVTM {
 		//
 		GuiHandler.register(MODID, this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());
-		GuiHandler.insert(900, ConstructorGui.class, ConstructorContainer.class);
+		GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);
+		GuiHandler.insert(901, ConstructorStatus.class, ConstructorContainer.class);
 	}
 
 	@Mod.EventHandler

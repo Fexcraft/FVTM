@@ -1,22 +1,34 @@
 package net.fexcraft.mod.fvtm.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Set;
+
+import org.apache.commons.io.FilenameUtils;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Addon;
 import net.fexcraft.mod.fvtm.data.AddonClass;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Part;
 import net.fexcraft.mod.fvtm.data.Vehicle;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.model.PartModel;
+import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -26,6 +38,7 @@ public class Resources {
 	public static IForgeRegistry<Part> PARTS;
 	public static IForgeRegistry<Vehicle> VEHICLES;
 	public static IForgeRegistry<Material> MATERIALS;
+	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	//
 	private File configroot; 
 	
@@ -95,6 +108,73 @@ public class Resources {
 
 	public static Vehicle getVehicle(ResourceLocation resloc){
 		return VEHICLES.getValue(resloc);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static InputStream getModelInputStream(String string){
+		return getModelInputStream(new ResourceLocation(string));
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static InputStream getModelInputStream(ResourceLocation resloc){
+		try{
+			return net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(resloc).getInputStream();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@SideOnly(Side.CLIENT)
+	public static <T, K> Model<T, K> getModel(String name, Class<? extends Model<T, K>> clazz){
+		if(name == null || name.equals("") || name.equals("null")){
+			return (Model<T, K>)getEmptyModelFromClass(clazz);
+		}
+		if(MODELS.containsKey(name)){
+			return (Model<T, K>)MODELS.get(name);
+		}
+		if(FCLRegistry.getModel(name) != null){
+			MODELS.put(name, FCLRegistry.getModel(name));
+			return FCLRegistry.getModel(name);
+		}
+		String ext = FilenameUtils.getExtension(name);
+		Model<T, K> model = null;
+		try{
+			switch(ext){
+				case "class":
+					Class<?> clasz = Class.forName(name.replace(".class", ""));
+					model = (Model<T, K>)clasz.newInstance();
+					break;
+				case "jtmt":
+					JsonObject obj = JsonUtil.getObjectFromInputStream(net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(name)).getInputStream());
+					model = clazz.getConstructor(JsonObject.class).newInstance(obj);
+					break;
+				case "json":
+					//TODO create a wrapper.
+					break;
+				case "obj":
+					model = clazz.getConstructor(String.class, ResourceLocation.class).newInstance("obj", new ResourceLocation(name));
+					break;
+				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);
+			}
+		}
+		catch(Throwable thr){
+			Print.log("Failed to find/parse model with adress '" + name + "'!");
+			thr.printStackTrace(); Static.stop();
+			return (Model<T, K>)getEmptyModelFromClass(clazz);
+		}
+		MODELS.put(name, model);
+		return model;
+	}
+
+	private static Model<?, ?> getEmptyModelFromClass(Class<? extends Model<?, ?>> clazz){
+		//if(clazz == BlockModel.class) return BlockModel.EMPTY;
+		//if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
+		if(clazz == PartModel.class) return PartModel.EMPTY;
+		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
+		return null;
 	}
 
 }

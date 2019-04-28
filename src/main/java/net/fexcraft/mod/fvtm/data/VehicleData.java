@@ -4,18 +4,22 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-public class VehicleData extends DataCore<Vehicle, VehicleData> {
+public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable {
 	
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
+	protected RGB primary, secondary;
+	protected int lightstate;
 
 	public VehicleData(Vehicle type){
 		super(type);
@@ -163,6 +167,35 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> {
 
 	public void updateAttributes(UpdateCall call, Boolean bool){
 		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call, bool); }
+	}
+
+	public int getLightsState(){
+		return lightstate;
+	}
+
+	//TODO
+	public double getThrottle(){
+		return 0;
+	}
+
+	@Override
+	public RGB getPrimaryColor(){
+		return primary;
+	}
+
+	@Override
+	public RGB getSecondaryColor(){
+		return secondary;
+	}
+
+	@Override
+	public void setPrimaryColor(RGB color){
+		this.primary = color;
+	}
+
+	@Override
+	public void setSecondaryColor(RGB color){
+		this.secondary = color;
 	}
 
 }

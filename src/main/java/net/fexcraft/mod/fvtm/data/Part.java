@@ -17,7 +17,9 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -148,7 +150,7 @@ public class Part extends TypeCore<Part> {
 	
 	@Override
 	public void loadModel(){
-		//TODO
+		this.model = Resources.getModel(modelid, PartModel.class);
 	}
 	
 	@Nullable

@@ -12,7 +12,9 @@ import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -107,7 +109,7 @@ public class Vehicle extends TypeCore<Vehicle> {
 	
 	@Override
 	public void loadModel(){
-		//TODO
+		this.model = Resources.getModel(modelid, VehicleModel.class);
 	}
 	
 	@SuppressWarnings("unchecked")

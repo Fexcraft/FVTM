@@ -60,6 +60,10 @@ public class FVTM {
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
+		if(event.getSide().isClient()){
+			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
+			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
+		}
 		//
 		GuiHandler.register(MODID, this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());

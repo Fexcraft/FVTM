@@ -1,3 +1,2 @@
 include ':FCL'
 project(':FCL').projectDir = new File(settingsDir, '../FCL')
-//uncomment when using local copies

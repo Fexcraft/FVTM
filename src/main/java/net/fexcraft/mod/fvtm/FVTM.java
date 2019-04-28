@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -40,13 +41,16 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		//
 		//Capabilities
+		//Entities
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
-		REGISTERER = new AutoRegisterer(MODID);
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
+		if(event.getSide().isClient()){
+			ConstructorBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
 		//

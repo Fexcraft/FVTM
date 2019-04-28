@@ -16,13 +16,8 @@ public class InternalAddon extends Addon {
 	public static final ResourceLocation REGNAME = new ResourceLocation("fvtm:fvtm");
 	public static InternalAddon INSTANCE;
 
-	/** Parameterless constructor for Forge. */
-	public InternalAddon(){
-		super(null, null); INSTANCE = this;
-	}
-
 	public InternalAddon(ContainerType type, File file){
-		super(type, file); registryname = REGNAME;
+		super(type, file); registryname = REGNAME; INSTANCE = this;
 		name = "FVTM [Internal Addon]"; version = FVTM.VERSION;
 		this.authors.add("FEX___96"); update_id = "null";
 		url = "http://fexcraft.net/not_found";

@@ -3,7 +3,12 @@ package net.fexcraft.mod.fvtm.block;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -15,6 +20,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -91,12 +97,34 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
     }
 
 	@Override
-    public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-        if(w.isRemote) return false; ConstructorEntity te = (ConstructorEntity) w.getTileEntity(pos); if(te == null) return false;
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
+        if(world.isRemote) return false; if(player.isSneaking()) return true;
+        ConstructorEntity te = (ConstructorEntity) world.getTileEntity(pos); if(te == null) return false;
+        ItemStack held = player.getHeldItem(hand);
+        if(held.isEmpty()){
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setString("target_listener", "fcl_gui");
+            compound.setString("task", "open_gui");
+            compound.setString("guimod", "fvtm");
+            compound.setInteger("gui", 900);
+            compound.setIntArray("args", new int[]{ pos.getX(), pos.getY(), pos.getZ() });
+            PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
+            return true;
+        }
+        else if(held.getItem() instanceof MaterialItem){
+        	//TODO
+        }
+        else if(held.getItem() instanceof PartItem){
+        	//TODO
+        }
+        else if(held.getItem() instanceof VehicleItem){
+        	//TODO
+        }
+        /*else if(held.getItem() instanceof ContainerItem){
+        	//TODO
+        }*/
         //
-        
-        //
-        return true;
+        /*else*/ return true;
     }
 
     @Override

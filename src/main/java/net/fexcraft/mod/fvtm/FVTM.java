@@ -1,8 +1,13 @@
 package net.fexcraft.mod.fvtm;
 
+import net.fexcraft.lib.mc.FCL;
+import net.fexcraft.lib.mc.gui.GuiHandler;
+import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
+import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -10,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /**
  * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
@@ -54,11 +60,15 @@ public class FVTM {
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
 		//
+		GuiHandler.register(MODID, this);
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());
+		GuiHandler.insert(900, ConstructorGui.class, ConstructorContainer.class);
 	}
 
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
-		//
+		SimpleUpdateHandler.register(MODID, 1, VERSION);
+		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
 	}
 
 	@Mod.EventHandler

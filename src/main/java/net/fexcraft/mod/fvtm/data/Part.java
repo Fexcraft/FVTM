@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
@@ -23,14 +24,15 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class Part extends TypeCore<Part> {
+public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	
 	protected ArrayList<Attribute<?>> attributes;
 	protected ArrayList<Modifier<?>> modifiers;
+	protected ArrayList<ResourceLocation> textures;
 	protected List<String> categories;
 	protected PartItem item;
 	protected String modelid;
-	protected Model<?, ?> model;
+	protected Model<VehicleData, String> model;
 	
 	public Part(){}
 
@@ -59,6 +61,7 @@ public class Part extends TypeCore<Part> {
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Part");
 		this.categories = DataUtil.getStringArray(obj, "Category", true, true);
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
+		this.textures = DataUtil.getTextures(obj);
 		//
 		if(obj.has("Attributes")){
 			this.attributes = new ArrayList<>();
@@ -144,7 +147,7 @@ public class Part extends TypeCore<Part> {
 		return new ItemStack(item, 1);
 	}
 	
-	public Model<?, ?> getModel(){
+	public Model<VehicleData, String> getModel(){
 		return model;
 	}
 	
@@ -160,6 +163,11 @@ public class Part extends TypeCore<Part> {
 	
 	public Collection<Modifier<?>> getAttributeModifiers(){
 		return modifiers;
+	}
+
+	@Override
+	public java.util.List<ResourceLocation> getDefaultTextures(){
+		return textures;
 	}
 
 }

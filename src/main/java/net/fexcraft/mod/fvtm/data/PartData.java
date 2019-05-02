@@ -4,15 +4,22 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
-public class PartData extends DataCore<Part, PartData> {
+public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
+	protected int selected_texture;
+	protected String external_texture;
+	protected ResourceLocation seltex;
+	protected boolean isTextureExternal;
 
 	public PartData(Part type){
 		super(type);
@@ -78,6 +85,26 @@ public class PartData extends DataCore<Part, PartData> {
 		ItemStack stack = this.type.newItemStack();
 		stack.setTagCompound(this.write(new NBTTagCompound()));
 		return stack;
+	}
+
+	@Override
+	public ResourceLocation getTexture(){
+		return selected_texture < 0 ? this.getCustomTexture() : type.getDefaultTextures().get(selected_texture);
+	}
+
+	@Override
+	public int getSelectedTexture(){
+		return selected_texture;
+	}
+
+	@Override
+	public ResourceLocation getCustomTexture(){
+		return isTextureExternal ? ExternalTextureHelper.get(external_texture) : seltex;
+	}
+
+	@Override
+	public boolean isExternalTexture(){
+		return isTextureExternal;
 	}
 
 }

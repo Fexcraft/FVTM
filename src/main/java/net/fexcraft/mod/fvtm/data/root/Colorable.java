@@ -11,5 +11,13 @@ public interface Colorable {
 	public void setPrimaryColor(RGB color);
 	
 	public void setSecondaryColor(RGB color);
+	
+	public static interface ColorHolder {
+		
+		public RGB getDefaultPrimaryColor();
+		
+		public RGB getDefaultSecondaryColor();
+		
+	}
 
 }

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.Addon;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +45,41 @@ public class DataUtil {
 			}
 		}
 		return immutable ? ImmutableList.copyOf(list) : list;
+	}
+
+	public static ArrayList<ResourceLocation> getTextures(JsonObject obj){
+		ArrayList<ResourceLocation> reslocs = new ArrayList<>();
+		if(obj.has("Texture") && obj.get("Texture").isJsonPrimitive()){
+			reslocs.add(new ResourceLocation(obj.get("Texture").getAsString()));
+		}
+		else if(obj.has("Textures") && obj.get("Textures").isJsonArray()){
+			obj.get("Textures").getAsJsonArray().forEach(elm -> {
+				reslocs.add(new ResourceLocation(elm.getAsString()));
+			});
+		} return reslocs;
+	}
+
+	public static RGB getColor(JsonObject obj, String prefix){
+		RGB result = null;
+		if(obj.has(prefix + "Color")){
+			JsonElement elm = obj.get(prefix + "Color");
+			if(elm.isJsonPrimitive()){
+				result = new RGB(elm.getAsString());//HEX expected
+			}
+			else if(elm.isJsonObject()){
+				int red = obj.has("Red") ? obj.get("Red").getAsInt() : 0;
+				int gre = obj.has("Green") ? obj.get("Green").getAsInt() : 0;
+				int blu = obj.has("Blue") ? obj.get("Blue").getAsInt() : 0;
+				result = new RGB(red, gre, blu);
+			}
+			else if(elm.isJsonArray()){//array of 3 integers expected
+				int[] arr = new int[3]; JsonArray array = elm.getAsJsonArray();
+				for(int x = 0; x < 3; x++){ arr[x] = array.get(x).getAsInt(); }
+				result = new RGB(arr);
+			}
+			else {};
+		}
+		return result == null ? new RGB() : result;
 	}
 
 }

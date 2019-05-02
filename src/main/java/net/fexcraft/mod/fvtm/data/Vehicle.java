@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import com.google.gson.JsonArray;
@@ -7,9 +8,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
@@ -18,12 +22,15 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class Vehicle extends TypeCore<Vehicle> {
+public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder {
 
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
-	protected Model<?, ?> model;
+	protected Model<VehicleData, Object> model;
+	protected ArrayList<ResourceLocation> textures;
+	protected RGB primary, secondary;
 	protected String modelid;
 	//
+	protected VehicleType type;
 	protected VehicleItem item;
 
 	@Override
@@ -50,6 +57,10 @@ public class Vehicle extends TypeCore<Vehicle> {
 		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Vehicle");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
+		this.type = VehicleType.valueOf(JsonUtil.getIfExists(obj, "VehicleType", "LAND").toUpperCase());
+		this.textures = DataUtil.getTextures(obj);
+		this.primary = DataUtil.getColor(obj, "Primary");
+		this.secondary = DataUtil.getColor(obj, "Secondary");
 		//
 		if(obj.has("Attributes")){
 			JsonArray array = obj.get("Attributes").getAsJsonArray();
@@ -103,7 +114,7 @@ public class Vehicle extends TypeCore<Vehicle> {
 		return new ItemStack(item, 1);
 	}
 	
-	public Model<?, ?> getModel(){
+	public Model<VehicleData, Object> getModel(){
 		return model;
 	}
 	
@@ -119,6 +130,25 @@ public class Vehicle extends TypeCore<Vehicle> {
 	
 	public TreeMap<String, Attribute<?>> getAttributes(){
 		return attributes;
+	}
+	
+	public VehicleType getVehicleType(){
+		return type;
+	}
+
+	@Override
+	public java.util.List<ResourceLocation> getDefaultTextures(){
+		return textures;
+	}
+
+	@Override
+	public RGB getDefaultPrimaryColor(){
+		return primary;
+	}
+
+	@Override
+	public RGB getDefaultSecondaryColor(){
+		return secondary;
 	}
 
 }

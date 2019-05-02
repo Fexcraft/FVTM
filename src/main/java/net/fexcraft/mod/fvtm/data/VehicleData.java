@@ -5,25 +5,33 @@ import java.util.TreeMap;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
-public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable {
+public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable {
 	
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected RGB primary, secondary;
-	protected int lightstate;
+	protected int lightstate, selected_texture;
+	protected String external_texture;
+	protected ResourceLocation seltex;
+	protected boolean isTextureExternal;
 
 	public VehicleData(Vehicle type){
 		super(type);
 		for(Attribute<?> attr : type.getAttributes().values()){
 			Attribute<?> copy = attr.copy(); attributes.put(copy.getId(), copy);
 		}
+		this.primary = type.primary.copy();
+		this.secondary = type.secondary.copy();
 	}
 
 	@Override
@@ -166,6 +174,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	public void updateAttributes(UpdateCall call, Boolean bool){
 		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call, bool); }
 	}
+	
+	public java.util.Map<String, PartData> getParts(){
+		return parts;
+	}
+	
+	public PartData getPart(String string){
+		return parts.get(string);
+	}
 
 	public int getLightsState(){
 		return lightstate;
@@ -173,7 +189,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	//TODO
 	public double getThrottle(){
-		return 0;
+		return attributes.containsKey("throttle") ? attributes.get("throttle").getCastedCurrentValue() : 0;
 	}
 
 	@Override
@@ -200,6 +216,26 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		ItemStack stack = this.type.newItemStack();
 		stack.setTagCompound(this.write(new NBTTagCompound()));
 		return stack;
+	}
+
+	@Override
+	public ResourceLocation getTexture(){
+		return selected_texture < 0 ? this.getCustomTexture() : type.getDefaultTextures().get(selected_texture);
+	}
+
+	@Override
+	public int getSelectedTexture(){
+		return selected_texture;
+	}
+
+	@Override
+	public ResourceLocation getCustomTexture(){
+		return isTextureExternal ? ExternalTextureHelper.get(external_texture) : seltex;
+	}
+
+	@Override
+	public boolean isExternalTexture(){
+		return isTextureExternal;
 	}
 
 }

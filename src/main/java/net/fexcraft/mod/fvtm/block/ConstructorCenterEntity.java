@@ -42,7 +42,7 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 	private long lasttry;
 
 	@SideOnly(Side.CLIENT)
-	private VehicleData tryLink(){
+	public VehicleData tryLink(){
 		if(conpos == null || world == null){ return null; }
 		if(lasttry + 1000 < Time.getSecond()) return null;
 		TileEntity ent = world.getTileEntity(conpos);

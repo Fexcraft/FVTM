@@ -7,27 +7,27 @@ import java.util.TreeSet;
  * Third prototype.
  * @author Ferdinand Calo' (FEX___96)
  */
-public abstract class AttributeNew {
+public abstract class Attribute {
 
-	public static final Comparator<ModifierNew> MODIFIER_COMPARATOR = new Comparator<ModifierNew>() {
-        @Override public int compare(ModifierNew m0, ModifierNew m1){ return m0.priority.compareTo(m1.priority); }
+	public static final Comparator<Modifier> MODIFIER_COMPARATOR = new Comparator<Modifier>() {
+        @Override public int compare(Modifier m0, Modifier m1){ return m0.priority.compareTo(m1.priority); }
     };
     //
-	protected TreeSet<ModifierNew> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
+	protected TreeSet<Modifier> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	protected float max, min;
 	protected boolean original;
 	protected String id, target;
 	protected ValueType valuetype;
 	
-	public AttributeNew(boolean notcopy, String id, ValueType type){
+	public Attribute(boolean notcopy, String id, ValueType type){
 		this.original = notcopy; this.id = id; this.valuetype = type;
 	}
 	
-	public AttributeNew setMinMax(float min, float max){
+	public Attribute setMinMax(float min, float max){
 		this.min = min; this.max = max; return this;
 	}
 	
-	public AttributeNew setTarget(String string){
+	public Attribute setTarget(String string){
 		this.target = string; return this;
 	}
 
@@ -47,30 +47,30 @@ public abstract class AttributeNew {
 	public float getMax(){ return max; }
 	public String getId(){ return id; }
 	public String getTarget(){ return target; }
-	public TreeSet<ModifierNew> getModifiers(){ return modifiers; }
+	public TreeSet<Modifier> getModifiers(){ return modifiers; }
 	public ValueType getValueType(){ return valuetype; }
 	//
-	public abstract <T> AttributeNew setBaseValue(T value);
-	public abstract <T> AttributeNew setCurrentValue(T value);
-	public abstract AttributeNew resetCurrentValue();
-	public abstract AttributeNew resetBaseValue();
+	public abstract <T> Attribute setBaseValue(T value);
+	public abstract <T> Attribute setCurrentValue(T value);
+	public abstract Attribute resetCurrentValue();
+	public abstract Attribute resetBaseValue();
 	
-	public abstract AttributeNew copy();
+	public abstract Attribute copy();
 	
 	public boolean isNumberBased(){
 		return !this.valuetype.isString();
 	}
 	
 	/** @param bool null if both, true if base, false if current */
-	public AttributeNew updateValue(UpdateCall calltype, Boolean bool){
+	public Attribute updateValue(UpdateCall calltype, Boolean bool){
 		if(bool == null || bool){
-			for(ModifierNew mod : modifiers){
+			for(Modifier mod : modifiers){
 				if(!mod.validCall(calltype, true)) continue;
 				this.setBaseValue(mod.modify(this, true, calltype));
 			}
 		}
 		if(bool == null || !bool){
-			for(ModifierNew mod : modifiers){
+			for(Modifier mod : modifiers){
 				if(!mod.validCall(calltype, false)) continue;
 				this.setCurrentValue(mod.modify(this, false, calltype));
 			}
@@ -111,11 +111,11 @@ public abstract class AttributeNew {
 		
 	}
 
-	public void addModifier(ModifierNew copy){
-		if(copy.getValueType() != this.valuetype) return; this.modifiers.add((ModifierNew)copy);
+	public void addModifier(Modifier copy){
+		if(copy.getValueType() != this.valuetype) return; this.modifiers.add((Modifier)copy);
 	}
 	
-	public static class StringAttribute extends AttributeNew {
+	public static class StringAttribute extends Attribute {
 		
 		private String initial, base, current;
 
@@ -136,33 +136,33 @@ public abstract class AttributeNew {
 		@Override public int getCurrentInteger(){ return 0; }
 
 		@Override
-		public <T> AttributeNew setBaseValue(T value){
+		public <T> Attribute setBaseValue(T value){
 			if(value instanceof String) base = (String) value; return this;
 		}
 
 		@Override
-		public <T> AttributeNew setCurrentValue(T value){
+		public <T> Attribute setCurrentValue(T value){
 			if(value instanceof String) current = (String) value; return this;
 		}
 
 		@Override
-		public AttributeNew resetCurrentValue(){
+		public Attribute resetCurrentValue(){
 			this.current = base; return this;
 		}
 
 		@Override
-		public AttributeNew resetBaseValue(){
+		public Attribute resetBaseValue(){
 			this.base = initial; return this;
 		}
 
 		@Override
-		public AttributeNew copy(){
+		public Attribute copy(){
 			return new StringAttribute(original, id, initial).setBaseValue(base).setCurrentValue(current).setTarget(target);
 		}
 		
 	}
 	
-	public static class IntegerAttribute extends AttributeNew {
+	public static class IntegerAttribute extends Attribute {
 		
 		private int initial, base, current;
 
@@ -183,35 +183,35 @@ public abstract class AttributeNew {
 		@Override public int getCurrentInteger(){ return current; }
 
 		@Override
-		public <T> AttributeNew setBaseValue(T value){
+		public <T> Attribute setBaseValue(T value){
 			Integer val = value instanceof Number ? (int)value : null; if(val == null) return this;
 			if(val > max) base = (int)max; else if(val < min) base = (int)min; else base = val; return this;
 		}
 
 		@Override
-		public <T> AttributeNew setCurrentValue(T value){
+		public <T> Attribute setCurrentValue(T value){
 			Integer val = value instanceof Number ? (int)value : null; if(val == null) return this;
 			if(val > max) current = (int)max; else if(val < min) current = (int)min; else current = val; return this;
 		}
 
 		@Override
-		public AttributeNew resetCurrentValue(){
+		public Attribute resetCurrentValue(){
 			this.current = base; return this;
 		}
 
 		@Override
-		public AttributeNew resetBaseValue(){
+		public Attribute resetBaseValue(){
 			this.base = initial; return this;
 		}
 
 		@Override
-		public AttributeNew copy(){
+		public Attribute copy(){
 			return new IntegerAttribute(original, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
 		}
 		
 	}
 	
-	public static class FloatAttribute extends AttributeNew {
+	public static class FloatAttribute extends Attribute {
 		
 		private float initial, base, current;
 
@@ -232,29 +232,29 @@ public abstract class AttributeNew {
 		@Override public int getCurrentInteger(){ return (int)current; }
 
 		@Override
-		public <T> AttributeNew setBaseValue(T value){
+		public <T> Attribute setBaseValue(T value){
 			Float val = value instanceof Number ? (float)value : null; if(val == null) return this;
 			if(val > max) base = (int)max; else if(val < min) base = (int)min; else base = val; return this;
 		}
 
 		@Override
-		public <T> AttributeNew setCurrentValue(T value){
+		public <T> Attribute setCurrentValue(T value){
 			Float val = value instanceof Number ? (float)value : null; if(val == null) return this;
 			if(val > max) current = (int)max; else if(val < min) current = (int)min; else current = val; return this;
 		}
 
 		@Override
-		public AttributeNew resetCurrentValue(){
+		public Attribute resetCurrentValue(){
 			this.current = base; return this;
 		}
 
 		@Override
-		public AttributeNew resetBaseValue(){
+		public Attribute resetBaseValue(){
 			this.base = initial; return this;
 		}
 
 		@Override
-		public AttributeNew copy(){
+		public Attribute copy(){
 			return new FloatAttribute(original, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
 		}
 		

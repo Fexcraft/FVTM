@@ -26,8 +26,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	
-	protected ArrayList<Attribute<?>> attributes;
-	protected ArrayList<Modifier<?>> modifiers;
+	protected ArrayList<Attribute> attributes;
+	protected ArrayList<Modifier> modifiers;
 	protected ArrayList<ResourceLocation> textures;
 	protected List<String> categories;
 	protected PartItem item;
@@ -71,16 +71,16 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 				String id = json.get("id").getAsString();
 				String type = json.get("type").getAsString();
 				String target = json.has("target") ? json.get("target").getAsString() : "vehicle";
-				Attribute<?> attr = null;
+				Attribute attr = null;
 				switch(type){
 					case "string": case "text": {
-						attr = new Attribute<String>(true, id, json.get("value").getAsString()).setTarget(target); break;
+						attr = new Attribute.StringAttribute(true, id, json.get("value").getAsString()).setTarget(target); break;
 					}
 					case "float": case "double": {
-						attr = new Attribute<Float>(true, id, json.get("value").getAsFloat()).setTarget(target); break;
+						attr = new Attribute.FloatAttribute(true, id, json.get("value").getAsFloat()).setTarget(target); break;
 					}
 					case "integer": case "number": {
-						attr = new Attribute<Integer>(true, id, json.get("value").getAsInt()).setTarget(target); break;
+						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()).setTarget(target); break;
 					}
 					default: continue;
 				}
@@ -106,10 +106,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 				float value = json.has("value") ? json.get("value").getAsFloat() : 0f;
 				boolean bool = json.has("base") ? json.get("base").getAsBoolean() : false;
 				if(val == null){
-					this.modifiers.add(new Modifier<Float>(id, value, bool, type, interval, priority).setTarget(target));
+					this.modifiers.add(new Modifier.FloatModifier(id, value, bool, type, interval, priority).setTarget(target));
 				}
 				else{
-					this.modifiers.add(new Modifier<String>(id, val, bool, type, interval, priority).setTarget(target));
+					this.modifiers.add(new Modifier.StringModifier(id, val, bool, type, interval, priority).setTarget(target));
 				}
 			}
 		} 
@@ -157,11 +157,11 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	}
 	
 	@Nullable
-	public Collection<Attribute<?>> getAttributes(){
+	public Collection<Attribute> getAttributes(){
 		return attributes;
 	}
 	
-	public Collection<Modifier<?>> getAttributeModifiers(){
+	public Collection<Modifier> getAttributeModifiers(){
 		return modifiers;
 	}
 

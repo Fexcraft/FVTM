@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable {
 	
-	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
+	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected RGB primary, secondary;
 	protected int lightstate, selected_texture;
@@ -27,8 +27,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public VehicleData(Vehicle type){
 		super(type);
-		for(Attribute<?> attr : type.getAttributes().values()){
-			Attribute<?> copy = attr.copy(); attributes.put(copy.getId(), copy);
+		for(Attribute attr : type.getAttributes().values()){
+			Attribute copy = attr.copy(); attributes.put(copy.getId(), copy);
 		}
 		this.primary = type.primary.copy();
 		this.secondary = type.secondary.copy();
@@ -69,11 +69,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <ATTR extends Attribute<?>> ATTR getAttribute(String id){
+	public <ATTR extends Attribute> ATTR getAttribute(String id){
 		return (ATTR)attributes.get(id);
 	}
 	
-	public TreeMap<String, Attribute<?>> getAttributes(){
+	public TreeMap<String, Attribute> getAttributes(){
 		return attributes;
 	}
 	
@@ -167,12 +167,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public void resetAttributes(Boolean bool){
-		if(bool == null || bool){ for(Attribute<?> attr : attributes.values()){ attr.resetBaseValue(); } }
-		if(bool == null || !bool){ for(Attribute<?> attr : attributes.values()){ attr.resetCurrentValue(); } }
+		if(bool == null || bool){ for(Attribute attr : attributes.values()){ attr.resetBaseValue(); } }
+		if(bool == null || !bool){ for(Attribute attr : attributes.values()){ attr.resetCurrentValue(); } }
 	}
 
 	public void updateAttributes(UpdateCall call, Boolean bool){
-		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call, bool); }
+		for(Attribute attr : attributes.values()){ attr.updateValue(call, bool); }
 	}
 	
 	public java.util.Map<String, PartData> getParts(){
@@ -189,7 +189,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	//TODO
 	public double getThrottle(){
-		return attributes.containsKey("throttle") ? attributes.get("throttle").getCastedCurrentValue() : 0;
+		return attributes.containsKey("throttle") ? attributes.get("throttle").getCurrentFloat() : 0;
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
-	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
+	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
 	protected int selected_texture;
 	protected String external_texture;
 	protected ResourceLocation seltex;
@@ -23,9 +23,9 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 
 	public PartData(Part type){
 		super(type);
-		for(Attribute<?> attr : type.getAttributes()){
+		for(Attribute attr : type.getAttributes()){
 			if(!attr.getTarget().startsWith("self")) continue;
-			Attribute<?> copy = attr.copy(); attributes.put(copy.getId(), copy);
+			Attribute copy = attr.copy(); attributes.put(copy.getId(), copy);
 		}
 	}
 
@@ -64,21 +64,21 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <ATTR extends Attribute<?>> ATTR getAttribute(String id){
+	public <ATTR extends Attribute> ATTR getAttribute(String id){
 		return (ATTR)attributes.get(id);
 	}
 	
-	public TreeMap<String, Attribute<?>> getAttributes(){
+	public TreeMap<String, Attribute> getAttributes(){
 		return attributes;
 	}
 
 	public void resetAttributes(Boolean bool){
-		if(bool == null || bool){ for(Attribute<?> attr : attributes.values()){ attr.resetBaseValue(); } }
-		if(bool == null || !bool){ for(Attribute<?> attr : attributes.values()){ attr.resetCurrentValue(); } }
+		if(bool == null || bool){ for(Attribute attr : attributes.values()){ attr.resetBaseValue(); } }
+		if(bool == null || !bool){ for(Attribute attr : attributes.values()){ attr.resetCurrentValue(); } }
 	}
 
 	public void updateAttributes(UpdateCall call, Boolean bool){
-		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call, bool); }
+		for(Attribute attr : attributes.values()){ attr.updateValue(call, bool); }
 	}
 
 	public ItemStack newItemStack(){

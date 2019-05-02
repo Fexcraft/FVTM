@@ -37,7 +37,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
             try{
                 if(modvec != null){
                     ModelBase.bindTexture(vehicledata.getTexture());
-                    //GL11.glTranslated(0, (vehicledata.getType().getAttribute("").get * 0.0625f) - te.getLiftState(), 0);
+                    GL11.glTranslated(0, (vehicledata.getType().getAttribute("constructor_height").getCurrentFloat() * 0.0625f) /*- te.getLiftState()*/, 0);
                     modvec.render(vehicledata, null, null, te.getBlockMetadata());
                     vehicledata.getParts().forEach((key, partdata) -> {
                         ModelBase.bindTexture(partdata.getTexture());
@@ -45,7 +45,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
                         partdata.getType().getModel().render(vehicledata, key);
                         //TODO partdata.getType().getOffsetFor(vehicledata.getType().getRegistryName()).translateR();
                     });
-                    //GL11.glTranslated(0, (vehicledata.getVehicle().getYAxisConstructorOffset() * -0.0625f) + te.getLiftState(), 0);
+                    GL11.glTranslated(0, (vehicledata.getType().getAttribute("constructor_height").getCurrentFloat() * -0.0625f) /*+ te.getLiftState()*/, 0);
                     ModelBase.bindTexture(lifttexture);
                 }
             }

@@ -24,7 +24,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder {
 
-	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
+	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
 	protected Model<VehicleData, Object> model;
 	protected ArrayList<ResourceLocation> textures;
 	protected RGB primary, secondary;
@@ -68,16 +68,16 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				JsonObject json = elm.getAsJsonObject();
 				String id = json.get("id").getAsString();
 				String type = json.get("type").getAsString();
-				Attribute<?> attr = null;
+				Attribute attr = null;
 				switch(type){
 					case "string": case "text": {
-						attr = new Attribute<String>(true, id, json.get("value").getAsString()); break;
+						attr = new Attribute.StringAttribute(true, id, json.get("value").getAsString()); break;
 					}
 					case "float": case "double": {
-						attr = new Attribute<Float>(true, id, json.get("value").getAsFloat()); break;
+						attr = new Attribute.FloatAttribute(true, id, json.get("value").getAsFloat()); break;
 					}
 					case "integer": case "number": {
-						attr = new Attribute<Integer>(true, id, json.get("value").getAsInt()); break;
+						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()); break;
 					}
 					default: continue;
 				}
@@ -90,7 +90,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			}
 		}
 		//TODO add code for filling in missing attributes, based on vehicle type
-		if(!attributes.containsKey("weight")) attributes.put("weight", new Attribute<Float>(true, "weight", 1000f).setMinMax(0, Integer.MAX_VALUE));
+		if(!attributes.containsKey("weight")) attributes.put("weight", new Attribute.FloatAttribute(true, "weight", 1000f).setMinMax(0, Integer.MAX_VALUE));
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -124,11 +124,11 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <ATTR extends Attribute<?>> ATTR getAttribute(String id){
+	public <ATTR extends Attribute> ATTR getAttribute(String id){
 		return (ATTR)attributes.get(id);
 	}
 	
-	public TreeMap<String, Attribute<?>> getAttributes(){
+	public TreeMap<String, Attribute> getAttributes(){
 		return attributes;
 	}
 	

@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Vehicle;
 import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.minecraft.client.util.ITooltipFlag;
@@ -36,7 +37,13 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
             tooltip.add(Formatter.format(s));
         }
         VehicleData data = this.getData(stack); if(data == null) return;
-        tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getCurrentValue() + "kg"));
+        tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getCurrentString() + "kg"));
+        //temporary
+        if(flag.isAdvanced() && type.getAttributes() != null){
+        	for(Attribute attr : type.getAttributes().values()){
+        		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
+        	}
+        }
         //TODO texture/pos data
         //TODO model data
         //TODO other data

@@ -1,13 +1,13 @@
 package net.fexcraft.mod.fvtm.data.root;
 
-import net.fexcraft.mod.fvtm.data.root.AttributeNew.UpdateCall;
-import net.fexcraft.mod.fvtm.data.root.AttributeNew.ValueType;
+import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
+import net.fexcraft.mod.fvtm.data.root.Attribute.ValueType;
 
 /**
  * Third prototype.
  * @author Ferdinand Calo' (FEX___96)
  */
-public abstract class ModifierNew {
+public abstract class Modifier {
 	
 	protected String id, target;
 	protected UpdateCall calltype;
@@ -16,15 +16,15 @@ public abstract class ModifierNew {
 	protected boolean basemod;
 	protected Type type;
 	
-	public ModifierNew(String id, ValueType valtype, boolean basemodifier, Type type, UpdateCall call, Priority priority){
+	public Modifier(String id, ValueType valtype, boolean basemodifier, Type type, UpdateCall call, Priority priority){
 		this.id = id; this.basemod = basemodifier; this.type = type;
 		this.calltype = call; this.priority = priority;
 		this.valuetype = valtype;
 	}
 
-	public abstract ModifierNew copy();
+	public abstract Modifier copy();
 	public String getTarget(){ return target; }
-	public ModifierNew setTarget(String string){ this.target = string; return this; }
+	public Modifier setTarget(String string){ this.target = string; return this; }
 	public String getId(){ return id; }
 	public Type getType(){ return type; }
 	public Priority getPriority(){ return priority; }
@@ -40,7 +40,7 @@ public abstract class ModifierNew {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T modify(AttributeNew attr, boolean base, UpdateCall calltype){
+	public <T> T modify(Attribute attr, boolean base, UpdateCall calltype){
 		switch(valuetype){
 			case FLOAT: case INTEGER:{
 				float result = base ? attr.getBaseFloat() : attr.getCurrentFloat();
@@ -82,7 +82,7 @@ public abstract class ModifierNew {
 		VERYHIGH, HIGH, NORMAL, LOW, VERYLOW
 	}
 	
-	public static class StringModifier extends ModifierNew {
+	public static class StringModifier extends Modifier {
 		
 		protected String value;
 
@@ -91,7 +91,7 @@ public abstract class ModifierNew {
 		}
 
 		@Override
-		public ModifierNew copy(){
+		public Modifier copy(){
 			return new StringModifier(id, value, basemod, type, calltype, priority).setTarget(target);
 		}
 
@@ -112,7 +112,7 @@ public abstract class ModifierNew {
 		
 	}
 	
-	public static class IntegerModifier extends ModifierNew {
+	public static class IntegerModifier extends Modifier {
 
 		protected int value;
 		
@@ -121,7 +121,7 @@ public abstract class ModifierNew {
 		}
 
 		@Override
-		public ModifierNew copy(){
+		public Modifier copy(){
 			return new IntegerModifier(id, value, basemod, type, calltype, priority).setTarget(target);
 		}
 
@@ -142,7 +142,7 @@ public abstract class ModifierNew {
 		
 	}
 	
-	public static class FloatModifier extends ModifierNew {
+	public static class FloatModifier extends Modifier {
 
 		protected float value;
 		
@@ -151,7 +151,7 @@ public abstract class ModifierNew {
 		}
 
 		@Override
-		public ModifierNew copy(){
+		public Modifier copy(){
 			return new FloatModifier(id, value, basemod, type, calltype, priority).setTarget(target);
 		}
 

@@ -42,13 +42,13 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         }
         //temporary
         if(flag.isAdvanced() && type.getAttributes() != null){
-        	for(Attribute<?> attr : type.getAttributes()){
-        		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentValue()));
+        	for(Attribute attr : type.getAttributes()){
+        		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
         	}
         }
         if(flag.isAdvanced() && type.getAttributeModifiers() != null){
-        	for(Modifier<?> mod : type.getAttributeModifiers()){
-        		tooltip.add(Formatter.format("&9" + mod.getId() + "-" + mod.getTarget() + ": &7" + mod.getValue() + "-" + mod.getType()));
+        	for(Modifier mod : type.getAttributeModifiers()){
+        		tooltip.add(Formatter.format("&9" + mod.getId() + "-" + mod.getTarget() + ": &7" + mod.getStringValue() + "-" + mod.getType()));
         	}
         }
         //TODO texture/pos data

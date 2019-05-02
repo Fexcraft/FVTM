@@ -9,10 +9,8 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
 public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable {
 	
@@ -38,18 +36,18 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	@Override
 	public VehicleData read(NBTTagCompound compound){
-		if(!compound.hasKey("Vehicle")) return null;
-		type = Resources.getVehicle(compound.getString("Vehicle"));
-		if(type == null) return null;//TODO add "placeholder" for "missing" items
+		//if(!compound.hasKey("Vehicle")) return null;
+		//type = Resources.getVehicle(compound.getString("Vehicle"));
+		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		//
 		return this;
 	}
 
 	@Override
 	public VehicleData parse(JsonObject obj){
-		ResourceLocation regname = DataUtil.getRegistryName("Vehicle", obj);
-		if(regname == null || Resources.getPart(regname) == null) return null;
-		this.type = Resources.getVehicle(regname);
+		//ResourceLocation regname = DataUtil.getRegistryName("Vehicle", obj);
+		//if(regname == null || Resources.getPart(regname) == null) return null;
+		//this.type = Resources.getVehicle(regname);
 		//
 		return this;
 	}
@@ -196,6 +194,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	@Override
 	public void setSecondaryColor(RGB color){
 		this.secondary = color;
+	}
+
+	public ItemStack newItemStack(){
+		ItemStack stack = this.type.newItemStack();
+		stack.setTagCompound(this.write(new NBTTagCompound()));
+		return stack;
 	}
 
 }

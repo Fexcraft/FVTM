@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -98,7 +99,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
 
 	@Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-        if(world.isRemote) return false; if(player.isSneaking()) return true;
+        if(world.isRemote || hand == EnumHand.OFF_HAND) return false; if(player.isSneaking()) return true;
         ConstructorEntity te = (ConstructorEntity) world.getTileEntity(pos); if(te == null) return false;
         ItemStack held = player.getHeldItem(hand);
         if(held.isEmpty()){
@@ -115,10 +116,16 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	//TODO
         }
         else if(held.getItem() instanceof PartItem){
-        	//TODO
+        	if(te.getPartData() != null) te.dropPart();
+        	te.setPartData(((PartItem)held.getItem()).getData(held), true);
+        	Print.chat(player, "Part put into Constructor."); held.shrink(1);
         }
         else if(held.getItem() instanceof VehicleItem){
-        	//TODO
+        	if(te.getVehicleData() != null) te.dropVehicle();
+        	if(te.getPartData() != null) te.dropPart();
+        	te.setVehicleData(((VehicleItem)held.getItem()).getData(held), false);
+        	te.updateClient(null); held.shrink(1);
+        	Print.chat(player, "Vehicle put into Constructor.");
         }
         /*else if(held.getItem() instanceof ContainerItem){
         	//TODO

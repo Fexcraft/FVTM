@@ -7,10 +7,8 @@ import com.google.gson.JsonObject;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
-import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
 public class PartData extends DataCore<Part, PartData> {
 	
@@ -34,18 +32,18 @@ public class PartData extends DataCore<Part, PartData> {
 
 	@Override
 	public PartData read(NBTTagCompound compound){
-		if(!compound.hasKey("Part")) return null;
-		type = Resources.getPart(compound.getString("Part"));
-		if(type == null) return null;//TODO add "placeholder" for "missing" items
+		//if(!compound.hasKey("Part")) return null;
+		//type = Resources.getPart(compound.getString("Part"));
+		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		//
 		return this;
 	}
 
 	@Override
 	public PartData parse(JsonObject obj){
-		ResourceLocation regname = DataUtil.getRegistryName("Part", obj);
-		if(regname == null || Resources.getPart(regname) == null) return null;
-		this.type = Resources.getPart(regname);
+		//ResourceLocation regname = DataUtil.getRegistryName("Part", obj);
+		//if(regname == null || Resources.getPart(regname) == null) return null;
+		//this.type = Resources.getPart(regname);
 		//
 		return this;
 	}
@@ -74,6 +72,12 @@ public class PartData extends DataCore<Part, PartData> {
 
 	public void updateAttributes(UpdateCall call, Boolean bool){
 		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call, bool); }
+	}
+
+	public ItemStack newItemStack(){
+		ItemStack stack = this.type.newItemStack();
+		stack.setTagCompound(this.write(new NBTTagCompound()));
+		return stack;
 	}
 
 }

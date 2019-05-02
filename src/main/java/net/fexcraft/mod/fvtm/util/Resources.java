@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -18,11 +19,14 @@ import net.fexcraft.mod.fvtm.data.Addon;
 import net.fexcraft.mod.fvtm.data.AddonClass;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Part;
+import net.fexcraft.mod.fvtm.data.PartData;
 import net.fexcraft.mod.fvtm.data.Vehicle;
+import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
@@ -175,6 +179,26 @@ public class Resources {
 		if(clazz == PartModel.class) return PartModel.EMPTY;
 		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
 		return null;
+	}
+
+	public static PartData getPartData(NBTTagCompound compound){
+		if(!compound.hasKey("Part")) return null;
+		Part part = getPart(compound.getString("Part"));
+		try{ return ((PartData)part.getDataClass().getConstructor(Part.class).newInstance(part)).read(compound); }
+		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
+			| InvocationTargetException| NoSuchMethodException | SecurityException e){
+			e.printStackTrace(); return null;
+		}
+	}
+
+	public static VehicleData getVehicleData(NBTTagCompound compound){
+		if(!compound.hasKey("Vehicle")) return null;
+		Vehicle veh = getVehicle(compound.getString("Vehicle"));
+		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
+		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
+			| InvocationTargetException| NoSuchMethodException | SecurityException e){
+			e.printStackTrace(); return null;
+		}
 	}
 
 }

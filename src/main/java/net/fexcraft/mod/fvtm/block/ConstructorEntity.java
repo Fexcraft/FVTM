@@ -1,16 +1,23 @@
 package net.fexcraft.mod.fvtm.block;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
+import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.mod.fvtm.data.PartData;
 import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class ConstructorEntity extends TileEntity {
+public class ConstructorEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 	
 	private VehicleData vdata;
 	private PartData pdata;
@@ -73,6 +80,93 @@ public class ConstructorEntity extends TileEntity {
 	
 	public PartData getPartData(){
 		return pdata;
+	}
+	
+	//
+
+    @Override
+    public void processClientPacket(PacketTileEntityUpdate packet){
+        if(packet.nbt.hasKey("PartData")){
+        	this.pdata = Resources.getPartData(packet.nbt.getCompoundTag("PartData"));
+        }
+        if(packet.nbt.hasKey("VehicleData")){
+        	this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData"));
+        }
+    }
+    
+    public void updateClient(String type){
+    	if(type == null){
+        	ApiUtil.sendTileEntityUpdatePacket(world, pos, this.writeToNBT(new NBTTagCompound()));
+        	return;
+    	}
+    	NBTTagCompound compound = new NBTTagCompound();
+    	switch(type){
+    		case "vehicledata": case "vehicle": case "veh": {
+    			if(vdata != null) compound.setTag("VehicleData", vdata.write(new NBTTagCompound())); break;
+    		}
+    		case "partdata": case "part": {
+    			if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound())); break;
+    		}
+    		//
+    		default: return;
+    	}
+    	ApiUtil.sendTileEntityUpdatePacket(world, pos, compound);
+    }
+
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket(){
+        return new SPacketUpdateTileEntity(this.getPos(), this.getBlockMetadata(), this.getUpdateTag());
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag(){
+        return this.writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound){
+        super.writeToNBT(compound);
+        if(vdata != null){
+            compound.setTag("VehicleData", vdata.write(new NBTTagCompound()));
+        }
+        if(pdata != null){
+            compound.setTag("PartData", pdata.write(new NBTTagCompound()));
+        }
+        return compound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound){
+        super.readFromNBT(compound);
+        if(compound.hasKey("PartData")){
+        	this.pdata = Resources.getPartData(compound.getCompoundTag("PartData"));
+        }
+        if(compound.hasKey("VehicleData")){
+        	this.vdata = Resources.getVehicleData(compound.getCompoundTag("VehicleData"));
+        }
+    }
+    
+    //
+    
+    public void dropItem(ItemStack stack){
+    	EntityItem item = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+    	item.setItem(stack); world.spawnEntity(item);
+    }
+
+	public void dropVehicle(){
+		if(vdata == null) return; this.dropItem(vdata.newItemStack());
+	}
+
+	public void dropPart(){
+		if(pdata == null) return; this.dropItem(pdata.newItemStack());
+	}
+
+	public void setVehicleData(VehicleData data, boolean send){
+		this.vdata = data; if(send) this.updateClient("vehicle");
+	}
+
+	public void setPartData(PartData data, boolean send){
+		this.pdata = data; if(send) this.updateClient("part");
 	}
 
 }

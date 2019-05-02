@@ -27,6 +27,7 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	public ConstructorGui(EntityPlayer player, World world, int x, int y, int z){
 		super(STONE, new ConstructorContainer(player, world, x, y, z), player);
 		this.defbackground = false; this.deftexrect = false; xyz = new int[]{ x, y, z };
+		this.container.setGUI(this);
 	}
 	
 	@Override
@@ -67,8 +68,9 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 			this.x = gui.width - width - 4;
 		}
 		
-		public void update(String newtext){
+		public void update(String newtext, Integer color){
 			this.string = newtext; this.width = gui.mc.fontRenderer.getStringWidth(newtext);
+			if(color != null) this.color = color;
 		}
 		
 	}

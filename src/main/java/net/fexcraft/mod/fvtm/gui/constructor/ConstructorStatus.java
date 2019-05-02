@@ -1,9 +1,12 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
-import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class ConstructorStatus extends ConstructorGui {
 
@@ -31,12 +34,27 @@ public class ConstructorStatus extends ConstructorGui {
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("button7")) this.openGui(modid, 900, xyz);
 		else if(button.name.equals("button4")){
-			Print.log(cfields[1].getText() + ", " + cfields[2].getText() + ", " + cfields[3].getText());
+			BlockPos pos = new BlockPos(cfields[1].getIntegerValue(), cfields[2].getIntegerValue(), cfields[3].getIntegerValue());
+			if(player.world.getTileEntity(pos) == null){
+				this.titletext.update("No TileEntity at selected position. [CLIENT]", RGB.RED.packed); return;
+			}
+			this.container.send(Side.SERVER, newConnectPacket(false, pos));
+			this.titletext.update("Request sent to Server.", RGB.BLUE.packed);
 		}
 		else if(button.name.equals("button5")){
-			
+			this.container.send(Side.SERVER, newConnectPacket(true, null));
+			this.titletext.update("Request sent to Server.", RGB.BLUE.packed);
 		}
 		else return;
+	}
+
+	private NBTTagCompound newConnectPacket(boolean auto, BlockPos pos){
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("cargo", "constructor_connect");
+		compound.setBoolean("Auto", auto);
+		if(pos != null || !auto){
+			compound.setLong("BlockPos", pos.toLong());
+		} return compound;
 	}
 
 	@Override

@@ -5,10 +5,8 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -29,10 +27,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "constructor", tileentity = ConstructorEntity.class)
+@fBlock(modid = FVTM.MODID, name = "constructor_lift", tileentity = ConstructorCenterEntity.class)
 public class ConstructorCenterBlock extends Block implements ITileEntityProvider {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static final AxisAlignedBB BLOCK_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D);
     public static ConstructorCenterBlock INSTANCE;
 
     public ConstructorCenterBlock(){
@@ -42,7 +41,7 @@ public class ConstructorCenterBlock extends Block implements ITileEntityProvider
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta){
-        return new ConstructorEntity();
+        return new ConstructorCenterEntity();
     }
 
     @Override
@@ -56,12 +55,12 @@ public class ConstructorCenterBlock extends Block implements ITileEntityProvider
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return FULL_BLOCK_AABB;
+        return BLOCK_AABB;
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos){
-        return FULL_BLOCK_AABB.offset(pos);
+        return BLOCK_AABB.offset(pos);
     }
 
     @Override
@@ -98,8 +97,13 @@ public class ConstructorCenterBlock extends Block implements ITileEntityProvider
 
 	@Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-        if(world.isRemote) return false; if(player.isSneaking()) return true;
-        ConstructorEntity te = (ConstructorEntity) world.getTileEntity(pos); if(te == null) return false;
+        if(world.isRemote || hand == EnumHand.OFF_HAND) return false; if(player.isSneaking()) return true;
+        ConstructorCenterEntity tile = (ConstructorCenterEntity) world.getTileEntity(pos); if(tile == null) return false;
+        if(tile.getLinkPos() == null){
+        	Print.chat(player, "Lift not connected to a Constructor.");
+        	Print.chat(player, String.format("Lift Position: %s, %s, %s", tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ()));
+        	return true;
+        }
         ItemStack held = player.getHeldItem(hand);
         if(held.isEmpty()){
             NBTTagCompound compound = new NBTTagCompound();
@@ -107,24 +111,11 @@ public class ConstructorCenterBlock extends Block implements ITileEntityProvider
             compound.setString("task", "open_gui");
             compound.setString("guimod", "fvtm");
             compound.setInteger("gui", 900);
-            compound.setIntArray("args", new int[]{ pos.getX(), pos.getY(), pos.getZ() });
+            compound.setIntArray("args", tile.getLinkArray());
             PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
             return true;
         }
-        else if(held.getItem() instanceof MaterialItem){
-        	//TODO
-        }
-        else if(held.getItem() instanceof PartItem){
-        	//TODO
-        }
-        else if(held.getItem() instanceof VehicleItem){
-        	//TODO
-        }
-        /*else if(held.getItem() instanceof ContainerItem){
-        	//TODO
-        }*/
-        //
-        /*else*/ return true;
+        else return true;
     }
 
     @Override

@@ -63,9 +63,8 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		return obj;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <ATTR extends Attribute> ATTR getAttribute(String id){
-		return (ATTR)attributes.get(id);
+	public Attribute getAttribute(String id){
+		return attributes.get(id);
 	}
 	
 	public TreeMap<String, Attribute> getAttributes(){

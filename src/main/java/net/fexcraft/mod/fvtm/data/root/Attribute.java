@@ -21,6 +21,7 @@ public abstract class Attribute {
 	
 	public Attribute(boolean notcopy, String id, ValueType type){
 		this.original = notcopy; this.id = id; this.valuetype = type;
+		this.min = Integer.MIN_VALUE; this.max = Integer.MAX_VALUE;
 	}
 	
 	public Attribute setMinMax(float min, float max){
@@ -157,7 +158,7 @@ public abstract class Attribute {
 
 		@Override
 		public Attribute copy(){
-			return new StringAttribute(original, id, initial).setBaseValue(base).setCurrentValue(current).setTarget(target);
+			return new StringAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setTarget(target);
 		}
 		
 	}
@@ -206,7 +207,7 @@ public abstract class Attribute {
 
 		@Override
 		public Attribute copy(){
-			return new IntegerAttribute(original, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
+			return new IntegerAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
 		}
 		
 	}
@@ -233,13 +234,13 @@ public abstract class Attribute {
 
 		@Override
 		public <T> Attribute setBaseValue(T value){
-			Float val = value instanceof Number ? (float)value : null; if(val == null) return this;
+			Float val = value instanceof Float ? (float)value : null; if(val == null) return this;
 			if(val > max) base = (int)max; else if(val < min) base = (int)min; else base = val; return this;
 		}
 
 		@Override
 		public <T> Attribute setCurrentValue(T value){
-			Float val = value instanceof Number ? (float)value : null; if(val == null) return this;
+			Float val = value instanceof Float ? (float)value : null; if(val == null) return this;
 			if(val > max) current = (int)max; else if(val < min) current = (int)min; else current = val; return this;
 		}
 
@@ -255,7 +256,7 @@ public abstract class Attribute {
 
 		@Override
 		public Attribute copy(){
-			return new FloatAttribute(original, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
+			return new FloatAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
 		}
 		
 	}

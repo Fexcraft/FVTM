@@ -1,5 +1,9 @@
 package net.fexcraft.mod.fvtm.data;
 
+import java.util.List;
+
+import net.fexcraft.mod.fvtm.data.root.Attribute;
+
 public enum VehicleType {
 	
 	LAND("Landvehicle"),
@@ -32,6 +36,11 @@ public enum VehicleType {
 	
 	public String getName(){
 		return name;
+	}
+	
+	public List<Attribute> getDefaultAttributesForType(){
+		//TODO
+		return null;
 	}
 
 }

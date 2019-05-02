@@ -68,9 +68,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return obj;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <ATTR extends Attribute> ATTR getAttribute(String id){
-		return (ATTR)attributes.get(id);
+	public Attribute getAttribute(String id){
+		return attributes.get(id);
 	}
 	
 	public TreeMap<String, Attribute> getAttributes(){

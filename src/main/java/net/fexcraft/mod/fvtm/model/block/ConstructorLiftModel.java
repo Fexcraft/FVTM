@@ -16,7 +16,7 @@ public class ConstructorLiftModel extends GenericModel<ConstructorCenterEntity, 
 	
 	public static final ConstructorLiftModel INSTANCE = new ConstructorLiftModel();
 	//
-	private TurboList frame, holder, primary, secondary, rails;
+	public final TurboList frame, holder, primary, secondary, rails;
 
 	public ConstructorLiftModel(){
 		super(); textureX = 256; textureY = 256;

@@ -41,13 +41,13 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
             tooltip.add(Formatter.format(s));
         }
         //temporary
-        if(flag.isAdvanced() && type.getAttributes() != null){
-        	for(Attribute attr : type.getAttributes()){
+        if(flag.isAdvanced() && type.getBaseAttributes() != null){
+        	for(Attribute attr : type.getBaseAttributes()){
         		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
         	}
         }
-        if(flag.isAdvanced() && type.getAttributeModifiers() != null){
-        	for(Modifier mod : type.getAttributeModifiers()){
+        if(flag.isAdvanced() && type.getBaseModifiers() != null){
+        	for(Modifier mod : type.getBaseModifiers()){
         		tooltip.add(Formatter.format("&9" + mod.getId() + "-" + mod.getTarget() + ": &7" + mod.getStringValue() + "-" + mod.getType()));
         	}
         }

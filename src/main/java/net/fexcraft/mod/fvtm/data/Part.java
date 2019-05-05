@@ -71,7 +71,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 				String id = json.get("id").getAsString();
 				String type = json.get("type").getAsString();
 				String target = json.has("target") ? json.get("target").getAsString() : "vehicle";
-				Attribute attr = null;
+				Attribute attr = null; boolean isbool = false;
 				switch(type){
 					case "string": case "text": {
 						attr = new Attribute.StringAttribute(true, id, json.get("value").getAsString()).setTarget(target); break;
@@ -82,9 +82,12 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 					case "integer": case "number": {
 						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()).setTarget(target); break;
 					}
+					case "boolean": case "bool": {
+						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsBoolean() ? 1 : 0, true); isbool = true; break;
+					}
 					default: continue;
 				}
-				if(json.has("max") || json.has("min")){
+				if((json.has("max") || json.has("min")) && !isbool){
 					float min = JsonUtil.getIfExists(json, "min", Integer.MIN_VALUE).floatValue();
 					float max = JsonUtil.getIfExists(json, "max", Integer.MAX_VALUE).floatValue();
 					attr.setMinMax(min, max);
@@ -157,11 +160,11 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	}
 	
 	@Nullable
-	public Collection<Attribute> getAttributes(){
+	public Collection<Attribute> getBaseAttributes(){
 		return attributes;
 	}
 	
-	public Collection<Modifier> getAttributeModifiers(){
+	public Collection<Modifier> getBaseModifiers(){
 		return modifiers;
 	}
 

@@ -27,6 +27,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
 	protected Model<VehicleData, Object> model;
 	protected ArrayList<ResourceLocation> textures;
+	protected ArrayList<String> required;
 	protected RGB primary, secondary;
 	protected String modelid;
 	//
@@ -61,6 +62,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		this.textures = DataUtil.getTextures(obj);
 		this.primary = DataUtil.getColor(obj, "Primary");
 		this.secondary = DataUtil.getColor(obj, "Secondary");
+		this.required = (ArrayList<String>)DataUtil.getStringArray(obj, "RequiredParts", true, false);
 		//
 		if(obj.has("Attributes")){
 			JsonArray array = obj.get("Attributes").getAsJsonArray();
@@ -68,7 +70,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				JsonObject json = elm.getAsJsonObject();
 				String id = json.get("id").getAsString();
 				String type = json.get("type").getAsString();
-				Attribute attr = null;
+				Attribute attr = null; boolean isbool = false;
 				switch(type){
 					case "string": case "text": {
 						attr = new Attribute.StringAttribute(true, id, json.get("value").getAsString()); break;
@@ -79,9 +81,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 					case "integer": case "number": {
 						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()); break;
 					}
+					case "boolean": case "bool": {
+						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsBoolean() ? 1 : 0, true); isbool = true; break;
+					}
 					default: continue;
 				}
-				if(json.has("max") || json.has("min")){
+				if((json.has("max") || json.has("min") && !isbool)){
 					float min = JsonUtil.getIfExists(json, "min", Integer.MIN_VALUE).floatValue();
 					float max = JsonUtil.getIfExists(json, "max", Integer.MAX_VALUE).floatValue();
 					attr.setMinMax(min, max);
@@ -89,8 +94,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				this.attributes.put(attr.getId(), attr);
 			}
 		}
-		//TODO add code for filling in missing attributes, based on vehicle type
-		if(!attributes.containsKey("weight")) attributes.put("weight", new Attribute.FloatAttribute(true, "weight", 1000f).setMinMax(0, Integer.MAX_VALUE));
+		//Check for missing attributes / fill in default values;
+		java.util.List<Attribute> attrs = type.getDefaultAttributesForType();
+		for(Attribute attr : attrs){
+			if(!attributes.containsKey(attr.getId())) attributes.put(attr.getId(), attr.copy());
+			else{ attributes.get(attr.getId()).setMinMax(attr.getMin(), attr.getMax()); }
+		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -124,11 +133,11 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <ATTR extends Attribute> ATTR getAttribute(String id){
+	public <ATTR extends Attribute> ATTR getBaseAttribute(String id){
 		return (ATTR)attributes.get(id);
 	}
 	
-	public TreeMap<String, Attribute> getAttributes(){
+	public TreeMap<String, Attribute> getBaseAttributes(){
 		return attributes;
 	}
 	

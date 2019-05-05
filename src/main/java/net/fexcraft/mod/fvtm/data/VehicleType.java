@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
-import java.util.List;
-
+import java.util.ArrayList;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 
 public enum VehicleType {
@@ -38,9 +37,20 @@ public enum VehicleType {
 		return name;
 	}
 	
-	public List<Attribute> getDefaultAttributesForType(){
+	public ArrayList<Attribute> getDefaultAttributesForType(){
+		ArrayList<Attribute> attrs = new ArrayList<>();
+		//general
+		attrs.add(new Attribute.FloatAttribute(true, "weight", 1000f).setMinMax(0, Integer.MAX_VALUE));
+		attrs.add(new Attribute.FloatAttribute(true, "constructor_length", 3f).setMinMax(0, 4096));
+		attrs.add(new Attribute.FloatAttribute(true, "constructor_height", 0).setMinMax(0, 4096));
+		attrs.add(new Attribute.FloatAttribute(true, "constructor_wheel_offset", 16).setMinMax(0, 4096));
+		attrs.add(new Attribute.IntegerAttribute(true, "constructor_show", 1, true));
 		//TODO
-		return null;
+		switch(this){
+			//TODO type specific
+			default: break;
+		}
+		return attrs;
 	}
 
 }

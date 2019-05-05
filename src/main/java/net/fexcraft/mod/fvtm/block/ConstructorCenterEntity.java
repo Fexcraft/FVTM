@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -115,5 +116,23 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
     public AxisAlignedBB getRenderBoundingBox(){
         return INFINITE_EXTENT_AABB;
     }
+
+	public float getLength(){
+		if(tile == null || tile.getVehicleData() == null) return 3;
+		return tile.getVehicleData().getAttribute("constructor_length").getCurrentFloat();
+	}
+
+	public float getRenderLength(){
+		return this.getLength() * 2 + 1;
+	}
+
+	public int getLiftState(){
+		return 0;//TODO implement lift mechanism
+	}
+
+	public float getWheelOffset(){
+		if(tile == null || tile.getVehicleData() == null) return 1.5f;
+		return tile.getVehicleData().getAttribute("constructor_wheel_offset").getCurrentFloat() * Static.sixteenth;
+	}
 
 }

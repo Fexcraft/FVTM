@@ -5,6 +5,7 @@ import java.util.TreeMap;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
@@ -20,10 +21,11 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	protected String external_texture;
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal;
+	protected Pos currentpos = new Pos(0, 0, 0);
 
 	public PartData(Part type){
 		super(type);
-		for(Attribute attr : type.getAttributes()){
+		for(Attribute attr : type.getBaseAttributes()){
 			if(!attr.getTarget().startsWith("self")) continue;
 			Attribute copy = attr.copy(); attributes.put(copy.getId(), copy);
 		}
@@ -33,6 +35,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
 		compound.setString("Part", type.getRegistryName().toString());
+		currentpos.toNBT("CurrentPos", compound);
 		//
 		return compound;
 	}
@@ -42,6 +45,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		//if(!compound.hasKey("Part")) return null;
 		//type = Resources.getPart(compound.getString("Part"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
+		currentpos = Pos.fromNBT("CurrentPos", compound);
 		//
 		return this;
 	}
@@ -51,6 +55,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		//ResourceLocation regname = DataUtil.getRegistryName("Part", obj);
 		//if(regname == null || Resources.getPart(regname) == null) return null;
 		//this.type = Resources.getPart(regname);
+		currentpos = Pos.fromJson(obj.get("CurrentPos"), true);
 		//
 		return this;
 	}
@@ -59,6 +64,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	public JsonObject toJson(){
 		JsonObject obj = new JsonObject();
 		obj.addProperty("Part", type.getRegistryName().toString());
+		obj.add("CurrentPos", currentpos.toJson(true));
 		//
 		return obj;
 	}
@@ -104,6 +110,14 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	@Override
 	public boolean isExternalTexture(){
 		return isTextureExternal;
+	}
+
+	public Pos getInstalledPos(){
+		return currentpos;
+	}
+	
+	public void setInstalledPos(Pos pos){
+		this.currentpos = pos; return;
 	}
 
 }

@@ -33,14 +33,12 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){
-            tooltip.add(Formatter.format(s));
-        }
+        for(String s : type.getDescription()){ tooltip.add(Formatter.format(s)); }
         VehicleData data = this.getData(stack); if(data == null) return;
         tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getCurrentString() + "kg"));
         //temporary
-        if(flag.isAdvanced() && type.getAttributes() != null){
-        	for(Attribute attr : type.getAttributes().values()){
+        if(flag.isAdvanced() && type.getBaseAttributes() != null){
+        	for(Attribute attr : type.getBaseAttributes().values()){
         		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
         	}
         }

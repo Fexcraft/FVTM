@@ -27,7 +27,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public VehicleData(Vehicle type){
 		super(type);
-		for(Attribute attr : type.getAttributes().values()){
+		for(Attribute attr : type.getBaseAttributes().values()){
 			Attribute copy = attr.copy(); attributes.put(copy.getId(), copy);
 		}
 		this.primary = type.primary.copy();
@@ -81,7 +81,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//TODO check if part can be installed here
 		if(parts.containsKey(category)) return data;
 		//check if should add new attributes
-		data.getType().getAttributes().forEach(attr -> {
+		data.getType().getBaseAttributes().forEach(attr -> {
 			if(attr.getTarget().startsWith("self")){
 				if(!data.getAttributes().containsKey(attr.getId()))
 					data.getAttributes().put(attr.getId(), attr.copy());
@@ -107,7 +107,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		});
 		//check if parts have attributes to add into other parts
 		for(PartData part : parts.values()){
-			part.getType().getAttributes().forEach(attr -> {
+			part.getType().getBaseAttributes().forEach(attr -> {
 				if(attr.getTarget().equals("part:" + category)){
 					if(!data.getAttributes().containsKey(attr.getId()))
 						data.getAttributes().put(attr.getId(), attr.copy());
@@ -116,7 +116,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		parts.put(category, data);
 		//add modifiers
-		data.getType().getAttributeModifiers().forEach(mod -> {
+		data.getType().getBaseModifiers().forEach(mod -> {
 			if(mod.getTarget().contains(":")){
 				String[] target = mod.getTarget().split(":");
 				if(target[0].equals("self")){
@@ -141,7 +141,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			}
 		});
 		for(PartData part : parts.values()){ if(part == data) continue;
-			part.getType().getAttributeModifiers().forEach(mod -> {
+			part.getType().getBaseModifiers().forEach(mod -> {
 				if(mod.getTarget().startsWith("part-" + category + ":")){
 					String target = mod.getTarget().split(":")[1];
 					if(data.getAttributes().containsKey(target))

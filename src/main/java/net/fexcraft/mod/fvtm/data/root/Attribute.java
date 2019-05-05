@@ -43,6 +43,10 @@ public abstract class Attribute {
 	public abstract int getInitialInteger();
 	public abstract int getBaseInteger();
 	public abstract int getCurrentInteger();
+	//
+	public abstract boolean getInitialBoolean();
+	public abstract boolean getBaseBoolean();
+	public abstract boolean getCurrentBoolean();
 	
 	public float getMin(){ return min; }
 	public float getMax(){ return max; }
@@ -84,7 +88,7 @@ public abstract class Attribute {
 	}
 	
 	public static enum ValueType {
-		STRING, INTEGER, FLOAT;//, BOOLEAN;
+		STRING, INTEGER, FLOAT, BOOLEAN;
 
 		public static ValueType findOut(Object value){
 			if(value instanceof String) return STRING;
@@ -97,6 +101,9 @@ public abstract class Attribute {
 		public boolean isFloat(){ return this == FLOAT; }
 		public boolean isString(){ return this == STRING; }
 		public boolean isInteger(){ return this == INTEGER; }
+		public boolean isBoolean(){ return this == BOOLEAN; }
+		public boolean isNumber(){ return this.isInteger() || this.isFloat() || this.isBoolean(); }
+		
 	}
 	
 	public static class Value<T> {
@@ -136,6 +143,10 @@ public abstract class Attribute {
 		@Override public int getBaseInteger(){ return 0; }
 		@Override public int getCurrentInteger(){ return 0; }
 
+		@Override public boolean getInitialBoolean(){ return Boolean.parseBoolean(initial); }
+		@Override public boolean getBaseBoolean(){ return Boolean.parseBoolean(base); }
+		@Override public boolean getCurrentBoolean(){ return Boolean.parseBoolean(current); }
+
 		@Override
 		public <T> Attribute setBaseValue(T value){
 			if(value instanceof String) base = (String) value; return this;
@@ -166,14 +177,29 @@ public abstract class Attribute {
 	public static class IntegerAttribute extends Attribute {
 		
 		private int initial, base, current;
+		protected boolean isbool;
 
 		public IntegerAttribute(boolean notcopy, String id, int value){
 			super(notcopy, id, ValueType.INTEGER); this.initial = base = current = value;
 		}
 
-		@Override public String getInitialString(){ return initial + ""; }
-		@Override public String getBaseString(){ return base + ""; }
-		@Override public String getCurrentString(){ return current + ""; }
+		/** Will be a BOOLEAN type if setting @param isbool as true. */
+		public IntegerAttribute(boolean notcopy, String id, int value, boolean isbool){
+			super(notcopy, id, isbool ? ValueType.BOOLEAN : ValueType.INTEGER);
+			this.initial = base = current = isbool ? (value < 0 ? 0 : value > 1 ? 1 : value) : value;
+			if(this.isbool = isbool) this.setMinMax(0, 1);
+		}
+		
+		private String stateString(int i){
+			if(i == 0) return initial == 1 ? "true" : "false";
+			if(i == 1) return base == 1 ? "true" : "false";
+			if(i == 2) return current == 1 ? "true" : "false";
+			return "error";
+		}
+
+		@Override public String getInitialString(){ return isbool ? stateString(0) : initial + ""; }
+		@Override public String getBaseString(){ return isbool ? stateString(1) : base + ""; }
+		@Override public String getCurrentString(){ return isbool ? stateString(2) : current + ""; }
 
 		@Override public float getInitialFloat(){ return initial; }
 		@Override public float getBaseFloat(){ return base; }
@@ -182,6 +208,10 @@ public abstract class Attribute {
 		@Override public int getInitialInteger(){ return initial; }
 		@Override public int getBaseInteger(){ return base; }
 		@Override public int getCurrentInteger(){ return current; }
+
+		@Override public boolean getInitialBoolean(){ return initial == 1; }
+		@Override public boolean getBaseBoolean(){ return base == 1; }
+		@Override public boolean getCurrentBoolean(){ return current == 1; }
 
 		@Override
 		public <T> Attribute setBaseValue(T value){
@@ -207,7 +237,7 @@ public abstract class Attribute {
 
 		@Override
 		public Attribute copy(){
-			return new IntegerAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
+			return new IntegerAttribute(false, id, initial, isbool).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
 		}
 		
 	}
@@ -231,6 +261,10 @@ public abstract class Attribute {
 		@Override public int getInitialInteger(){ return (int)initial; }
 		@Override public int getBaseInteger(){ return (int)base; }
 		@Override public int getCurrentInteger(){ return (int)current; }
+
+		@Override public boolean getInitialBoolean(){ return initial > 0.5f; }
+		@Override public boolean getBaseBoolean(){ return base > 0.5f; }
+		@Override public boolean getCurrentBoolean(){ return current > 0.5f; }
 
 		@Override
 		public <T> Attribute setBaseValue(T value){

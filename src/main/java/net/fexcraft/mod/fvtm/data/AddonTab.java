@@ -10,6 +10,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class AddonTab extends CreativeTab {
 	
     private static TreeMap<ResourceLocation, AddonTab> TABS = new TreeMap<>();

@@ -3,6 +3,9 @@ package net.fexcraft.mod.fvtm.data;
 import java.util.ArrayList;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public enum VehicleType {
 	
 	LAND("Landvehicle"),

@@ -14,6 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();

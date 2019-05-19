@@ -84,7 +84,7 @@ public abstract class Attribute {
 	}
 	
 	public static enum UpdateCall {
-		INSTALL, /*UNINSTALL,*/ LOGICLOOP, MANUAL
+		INSTALL, UNINSTALL, LOGICLOOP, MANUAL
 	}
 	
 	public static enum ValueType {

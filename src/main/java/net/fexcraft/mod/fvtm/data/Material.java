@@ -12,6 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Material extends TypeCore<Material> {
 	
 	protected byte maxStackSize;

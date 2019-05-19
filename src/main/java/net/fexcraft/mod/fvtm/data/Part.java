@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -21,9 +22,13 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	
 	protected ArrayList<Attribute> attributes;
@@ -33,6 +38,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	protected PartItem item;
 	protected String modelid;
 	protected Model<VehicleData, String> model;
+	protected PartInstallationHandler installhandler;
+	protected Object installhandler_data;
 	
 	public Part(){}
 
@@ -120,6 +127,27 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 			//TODO
 		}
 		//
+		if(obj.has("Installation")){
+			JsonObject inst = obj.get("Installation").isJsonPrimitive() ? null : obj.get("Installation").getAsJsonObject();
+			String handler = inst == null ? obj.get("Installation").getAsString() : inst.has("Handler") ? inst.get("Handler").getAsString() : "default";
+			if(handler.equals("default") || handler.equals("def")){
+				this.installhandler = DefaultPartInstallHandler.INSTANCE;
+				this.installhandler_data = new DefaultPartInstallHandler.DPIHData(inst);
+			}
+			else if(handler.equals("advanced") || handler.equals("adv")){
+				this.installhandler = null;//TODO make the advanced one
+			}
+			else{
+				//try to load the class
+				try{
+					Class<?> clazz = Class.forName(handler.replace(".class", ""));
+					this.installhandler = (PartInstallationHandler)clazz.newInstance();
+					if(inst != null) this.installhandler.parse(inst);
+				}
+				catch(Exception e){ Print.log("Failed to load InstallationHandler for `" + this.getRegistryName().toString() + "`!"); e.printStackTrace(); }
+			}
+		} else{ this.installhandler = DefaultPartInstallHandler.INSTANCE; }
+		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new PartItem(this); return this;
 	}
@@ -171,6 +199,16 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	@Override
 	public java.util.List<ResourceLocation> getDefaultTextures(){
 		return textures;
+	}
+	
+	public PartInstallationHandler getInstallationHandler(){
+		return installhandler;
+	}
+	
+	/** Only for the internal `default` and `advanced` installation handlers, otherwise null. */
+	@SuppressWarnings("unchecked")
+	public <U> U getInstallationHandlerData(){
+		return (U)installhandler_data;
 	}
 
 }

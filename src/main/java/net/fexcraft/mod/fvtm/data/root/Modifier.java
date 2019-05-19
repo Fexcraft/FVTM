@@ -42,7 +42,7 @@ public abstract class Modifier {
 	@SuppressWarnings("unchecked")
 	public <T> T modify(Attribute attr, boolean base, UpdateCall calltype){
 		switch(valuetype){
-			case FLOAT: case INTEGER:{
+			case FLOAT: case INTEGER: case BOOLEAN: {
 				float result = base ? attr.getBaseFloat() : attr.getCurrentFloat();
 				float value = valuetype.isFloat() ? this.getFloatValue() : this.getIntegerValue();
 				switch(type){

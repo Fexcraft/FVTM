@@ -2,19 +2,26 @@ package net.fexcraft.mod.fvtm.data;
 
 import java.util.TreeMap;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable {
 	
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
@@ -77,10 +84,25 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 	
 	/** @return null if installed successfully. */
-	public PartData installPart(PartData data, String category){
-		//TODO check if part can be installed here
-		if(parts.containsKey(category)) return data;
-		//check if should add new attributes
+	public PartData installPart(@Nullable ICommandSender engineer, PartData data, String category){
+		if(!data.getType().getInstallationHandler().allowInstall(engineer, data, category, this)) return data;
+		//if(parts.containsKey(category)) return data;//<- actually, let's let the handler check that
+		if(data.getType().getInstallationHandler().processInstall(engineer, data, category, this)){
+			this.insertAttributesFromPart(data, category);
+			//
+			this.parts.values().forEach(part -> part.resetAttributes(null));
+			this.resetAttributes(null);
+			//
+			this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INSTALL, true));
+			this.updateAttributes(Attribute.UpdateCall.INSTALL, true);
+			this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INSTALL, false));
+			this.updateAttributes(Attribute.UpdateCall.INSTALL, false);
+			return null;
+		}
+		else return data;
+	}
+
+	private void insertAttributesFromPart(PartData data, String category_in){
 		data.getType().getBaseAttributes().forEach(attr -> {
 			if(attr.getTarget().startsWith("self")){
 				if(!data.getAttributes().containsKey(attr.getId()))
@@ -107,14 +129,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		});
 		//check if parts have attributes to add into other parts
 		for(PartData part : parts.values()){
+			if(part == data) continue;
 			part.getType().getBaseAttributes().forEach(attr -> {
-				if(attr.getTarget().equals("part:" + category)){
+				if(attr.getTarget().equals("part:" + category_in)){
 					if(!data.getAttributes().containsKey(attr.getId()))
 						data.getAttributes().put(attr.getId(), attr.copy());
 				}
 			});
 		}
-		parts.put(category, data);
 		//add modifiers
 		data.getType().getBaseModifiers().forEach(mod -> {
 			if(mod.getTarget().contains(":")){
@@ -125,7 +147,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 					}
 				}
 				else if(target[0].startsWith("part-")){
-					if(target[0].replace("part-", "").equals(category)){}
+					if(target[0].replace("part-", "").equals(category_in)){}
 					else if(parts.containsKey(target[0].replace("part-", ""))){
 						PartData part = parts.get(target[0].replace("part-", ""));
 						if(part.getAttributes().containsKey(target[1])){
@@ -142,27 +164,32 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		});
 		for(PartData part : parts.values()){ if(part == data) continue;
 			part.getType().getBaseModifiers().forEach(mod -> {
-				if(mod.getTarget().startsWith("part-" + category + ":")){
+				if(mod.getTarget().startsWith("part-" + category_in + ":")){
 					String target = mod.getTarget().split(":")[1];
 					if(data.getAttributes().containsKey(target))
 						data.getAttribute(target).addModifier(mod.copy());
 				}
 			});
 		}
-		//
-		this.parts.values().forEach(part -> part.resetAttributes(null));
-		this.resetAttributes(null);
-		//
-		this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INSTALL, true));
-		this.updateAttributes(Attribute.UpdateCall.INSTALL, true);
-		this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INSTALL, false));
-		this.updateAttributes(Attribute.UpdateCall.INSTALL, false);
-		return null;
 	}
-	
-	public void deinstallPart(String category){
-		//TODO general code
-		//TODO also see about removing attributes related to that part
+
+	public boolean deinstallPart(@Nullable ICommandSender sender, String category){
+		PartData part = this.getPart(category);
+		if(part == null){ Print.chatnn(sender, "No part in that category."); return false; }
+		if(!part.getType().getInstallationHandler().allowUninstall(sender, part, category, this)) return false;
+		if(part.getType().getInstallationHandler().processUninstall(sender, part, category, this)){
+			/*this.insertAttributesFromPart(data, category);
+			//
+			this.parts.values().forEach(part -> part.resetAttributes(null));
+			this.resetAttributes(null);
+			//
+			this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.UNINSTALL, true));
+			this.updateAttributes(Attribute.UpdateCall.UNINSTALL, true);
+			this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.UNINSTALL, false));
+			this.updateAttributes(Attribute.UpdateCall.UNINSTALL, false);*/
+			//TODO
+			return true;
+		} else return false;
 	}
 
 	public void resetAttributes(Boolean bool){

@@ -22,6 +22,9 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder {
 
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();

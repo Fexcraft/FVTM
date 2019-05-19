@@ -23,6 +23,9 @@ import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Addon extends TypeCore<Addon> {
 	
 	protected ArrayList<String> authors = new ArrayList<>();

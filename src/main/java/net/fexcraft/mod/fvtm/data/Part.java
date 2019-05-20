@@ -110,7 +110,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 				Modifier.Priority priority = Modifier.Priority.valueOf(json.get("priority").getAsString().toUpperCase());
 				Modifier.Type type = Modifier.Type.valueOf(json.get("type").getAsString().toUpperCase());
 				Attribute.UpdateCall interval = json.has("update") ? Attribute.UpdateCall.valueOf(json.get("update").getAsString().toUpperCase()) : null;
-				if(priority == null || type == null) continue; if(interval == null) interval = Attribute.UpdateCall.INSTALL;
+				if(priority == null || type == null) continue; if(interval == null) interval = Attribute.UpdateCall.INITIAL;
 				String id = json.get("id").getAsString(), target = json.get("target").getAsString();
 				String val = json.has("val") ? json.get("val").getAsString() : null;
 				float value = json.has("value") ? json.get("value").getAsFloat() : 0f;

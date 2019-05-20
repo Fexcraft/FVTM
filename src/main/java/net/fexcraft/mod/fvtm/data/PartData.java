@@ -27,11 +27,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	protected Pos currentpos = new Pos(0, 0, 0);
 
 	public PartData(Part type){
-		super(type);
-		for(Attribute attr : type.getBaseAttributes()){
-			if(!attr.getTarget().startsWith("self")) continue;
-			Attribute copy = attr.copy(); attributes.put(copy.getId(), copy);
-		}
+		super(type); this.clearAttributes();
 	}
 
 	@Override
@@ -87,6 +83,18 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 
 	public void updateAttributes(UpdateCall call, Boolean bool){
 		for(Attribute attr : attributes.values()){ attr.updateValue(call, bool); }
+	}
+
+	public void clearAttributes(){
+		if(!attributes.isEmpty()) attributes.clear();
+		for(Attribute attr : type.getBaseAttributes()){
+			if(!attr.getTarget().startsWith("self")) continue;
+			Attribute copy = attr.copy(null); attributes.put(copy.getId(), copy);
+		}
+	}
+
+	public void clearModifiers(){
+		for(Attribute attr : attributes.values()) attr.getModifiers().clear();
 	}
 
 	public ItemStack newItemStack(){

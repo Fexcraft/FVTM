@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.data.root.Attribute.ValueType;
  */
 public abstract class Modifier {
 	
-	protected String id, target;
+	protected String id, target, origin;
 	protected UpdateCall calltype;
 	protected Priority priority;
 	protected ValueType valuetype;
@@ -22,9 +22,11 @@ public abstract class Modifier {
 		this.valuetype = valtype;
 	}
 
-	public abstract Modifier copy();
+	public abstract Modifier copy(String origin);
 	public String getTarget(){ return target; }
+	public String getOrigin(){ return origin; }
 	public Modifier setTarget(String string){ this.target = string; return this; }
+	public Modifier setOrigin(String string){ this.origin = string; return this; }
 	public String getId(){ return id; }
 	public Type getType(){ return type; }
 	public Priority getPriority(){ return priority; }
@@ -91,8 +93,8 @@ public abstract class Modifier {
 		}
 
 		@Override
-		public Modifier copy(){
-			return new StringModifier(id, value, basemod, type, calltype, priority).setTarget(target);
+		public Modifier copy(String origin){
+			return new StringModifier(id, value, basemod, type, calltype, priority).setTarget(target).setOrigin(origin);
 		}
 
 		@Override
@@ -121,8 +123,8 @@ public abstract class Modifier {
 		}
 
 		@Override
-		public Modifier copy(){
-			return new IntegerModifier(id, value, basemod, type, calltype, priority).setTarget(target);
+		public Modifier copy(String origin){
+			return new IntegerModifier(id, value, basemod, type, calltype, priority).setTarget(target).setOrigin(origin);
 		}
 
 		@Override
@@ -151,8 +153,8 @@ public abstract class Modifier {
 		}
 
 		@Override
-		public Modifier copy(){
-			return new FloatModifier(id, value, basemod, type, calltype, priority).setTarget(target);
+		public Modifier copy(String origin){
+			return new FloatModifier(id, value, basemod, type, calltype, priority).setTarget(target).setOrigin(origin);
 		}
 
 		@Override

@@ -16,7 +16,7 @@ public abstract class Attribute {
 	protected TreeSet<Modifier> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	protected float max, min;
 	protected boolean original;
-	protected String id, target;
+	protected String id, target, origin;
 	protected ValueType valuetype;
 	
 	public Attribute(boolean notcopy, String id, ValueType type){
@@ -30,6 +30,11 @@ public abstract class Attribute {
 	
 	public Attribute setTarget(String string){
 		this.target = string; return this;
+	}
+	
+	/** Part this originates (is copied) from. */
+	public Attribute setOrigin(String string){
+		this.origin = string; return this;
 	}
 
 	public abstract String getInitialString();
@@ -52,6 +57,7 @@ public abstract class Attribute {
 	public float getMax(){ return max; }
 	public String getId(){ return id; }
 	public String getTarget(){ return target; }
+	public String getOrigin(){ return origin; }
 	public TreeSet<Modifier> getModifiers(){ return modifiers; }
 	public ValueType getValueType(){ return valuetype; }
 	//
@@ -60,7 +66,7 @@ public abstract class Attribute {
 	public abstract Attribute resetCurrentValue();
 	public abstract Attribute resetBaseValue();
 	
-	public abstract Attribute copy();
+	public abstract Attribute copy(String origin);
 	
 	public boolean isNumberBased(){
 		return !this.valuetype.isString();
@@ -84,7 +90,7 @@ public abstract class Attribute {
 	}
 	
 	public static enum UpdateCall {
-		INSTALL, UNINSTALL, LOGICLOOP, MANUAL
+		INITIAL, LOGICLOOP, MANUAL
 	}
 	
 	public static enum ValueType {
@@ -168,8 +174,8 @@ public abstract class Attribute {
 		}
 
 		@Override
-		public Attribute copy(){
-			return new StringAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setTarget(target);
+		public Attribute copy(String origin){
+			return new StringAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setTarget(target).setOrigin(origin);
 		}
 		
 	}
@@ -236,8 +242,8 @@ public abstract class Attribute {
 		}
 
 		@Override
-		public Attribute copy(){
-			return new IntegerAttribute(false, id, initial, isbool).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
+		public Attribute copy(String origin){
+			return new IntegerAttribute(false, id, initial, isbool).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target).setOrigin(origin);
 		}
 		
 	}
@@ -289,8 +295,8 @@ public abstract class Attribute {
 		}
 
 		@Override
-		public Attribute copy(){
-			return new FloatAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target);
+		public Attribute copy(String origin){
+			return new FloatAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target).setOrigin(origin);
 		}
 		
 	}

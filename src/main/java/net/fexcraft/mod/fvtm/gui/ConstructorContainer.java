@@ -22,6 +22,7 @@ public class ConstructorContainer extends GenericContainer {
 		if(side.isClient() && packet.hasKey("cargo") && packet.getString("cargo").equals("titletext")){
 			Integer color = packet.hasKey("color") ? packet.getInteger("color") : null;
 			this.gui.titletext.update(packet.getString("titletext"), color);
+			this.gui.onTitleTextUpdate();
 		}
 		entity.processGUIPacket(side, packet, player, this);
 	}
@@ -37,6 +38,10 @@ public class ConstructorContainer extends GenericContainer {
 		if(color != null) compound.setInteger("color", color);
 		compound.setString("titletext", string);
 		this.send(Side.CLIENT, compound);
+	}
+
+	public ConstructorEntity getTileEntity(){
+		return entity;
 	}
 
 }

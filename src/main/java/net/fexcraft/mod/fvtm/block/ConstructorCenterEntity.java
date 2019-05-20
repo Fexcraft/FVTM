@@ -57,15 +57,23 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 	}
 
 	private void link(){
-		if(conpos == null || world == null) return;
-		TileEntity ent = world.getTileEntity(conpos);
-		if(ent == null || !(ent instanceof ConstructorEntity)) return;
-		this.tile = (ConstructorEntity)ent;
-		if(!world.isRemote && tile != null){
+		if(world == null) return;
+		if(conpos == null){
+			this.tile = null; if(world.isRemote) return;
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setLong("conpos", conpos.toLong());
+			compound.setBoolean("conpos_reset", true);
 			ApiUtil.sendTileEntityUpdatePacket(world, pos, compound);
-		} else return;
+		}
+		else{
+			TileEntity ent = world.getTileEntity(conpos);
+			if(ent == null || !(ent instanceof ConstructorEntity)) return;
+			this.tile = (ConstructorEntity)ent;
+			if(!world.isRemote && tile != null){
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setLong("conpos", conpos.toLong());
+				ApiUtil.sendTileEntityUpdatePacket(world, pos, compound);
+			} else return;
+		}
 	}
 	
 	//
@@ -75,6 +83,9 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
         if(packet.nbt.hasKey("conpos")){
         	this.conpos = BlockPos.fromLong(packet.nbt.getLong("conpos"));
         	this.tryLink();
+        }
+        if(packet.nbt.hasKey("conpos_reset") && packet.nbt.getBoolean("conpos_reset")){
+        	this.conpos = null; this.tile = null;
         }
     }
 

@@ -22,7 +22,26 @@ public class ConstructorStatus extends ConstructorGui {
 		cfields[2] = new NumberField(2, fontRenderer, 2, 20 + (2 * buttonheight), xSize - 4, 10, true);
 		cfields[3] = new NumberField(3, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10, true);
 		this.fields.put("field1", cfields[1]); this.fields.put("field2", cfields[2]); this.fields.put("field3", cfields[3]);
-		for(TextField field : cfields) if(field != null) field.setText("0");
+		this.updateText(true);
+	}
+	
+	private void updateText(boolean initial){
+		if(this.container.getTileEntity().getCenterPos() != null){
+			cfields[1].setText(this.container.getTileEntity().getCenterPos().getX() + "");
+			cfields[2].setText(this.container.getTileEntity().getCenterPos().getY() + "");
+			cfields[3].setText(this.container.getTileEntity().getCenterPos().getZ() + "");
+			this.tbuttons[4].string = "Reset Connection";
+			this.cbuttons[5].enabled = false;
+			this.cbuttons[5].visible = false;
+			this.tbuttons[5].visible = false;
+		}
+		else{
+			if(initial) for(TextField field : cfields) if(field != null) field.setText("0");
+			this.tbuttons[4].string = this.buttontext[4];
+			this.cbuttons[5].enabled = true;
+			this.cbuttons[5].visible = true;
+			this.tbuttons[5].visible = true;
+		}
 	}
 
 	@Override
@@ -34,6 +53,12 @@ public class ConstructorStatus extends ConstructorGui {
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("button7")) this.openGui(modid, 900, xyz);
 		else if(button.name.equals("button4")){
+			if(this.container.getTileEntity().getCenterPos() != null){
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("cargo", "constructor_disconnect");
+				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+				this.container.send(Side.SERVER, compound); return;
+			}
 			BlockPos pos = new BlockPos(cfields[1].getIntegerValue(), cfields[2].getIntegerValue(), cfields[3].getIntegerValue());
 			if(player.world.getTileEntity(pos) == null){
 				this.titletext.update("No TileEntity at selected position. [CLIENT]", RGB.RED.packed); return;
@@ -60,6 +85,11 @@ public class ConstructorStatus extends ConstructorGui {
 	@Override
 	protected void scrollwheel(int am, int x, int y){
 		//
+	}
+	
+	@Override
+	public void onTitleTextUpdate(){
+		this.updateText(false);
 	}
 
 }

@@ -21,10 +21,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	
 	private VehicleData vdata;
 	private PartData pdata;
+	private BlockPos center;
 	
-	public ConstructorEntity(){
-		
-	}
+	public ConstructorEntity(){}
 
 	public void processGUIPacket(Side side, NBTTagCompound packet, EntityPlayer player, ConstructorContainer container){
 		switch(packet.getString("cargo")){
@@ -44,7 +43,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 						container.setTitleText("Tile at position has already connection data.", RGB.BLUE.packed); return;
 					}
 					else{
-						centerlift.setLinkPos(pos, true);
+						centerlift.setLinkPos(this.getPos(), true); this.setCenterPos(pos);
 						container.setTitleText("Tile connected.", RGB.BLACK.packed); return;
 					}
 				}
@@ -62,7 +61,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 						}
 					}
 					if(found && centertile != null){
-						centertile.setLinkPos(pos, true);
+						centertile.setLinkPos(pos, true); this.setCenterPos(centertile.getPos());
 						container.setTitleText("Tile connected.", RGB.BLACK.packed); return;
 					}
 					else{
@@ -70,10 +69,26 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					}
 				}
 			}
+			case "constructor_disconnect":{
+				if(this.center != null){
+					ConstructorCenterEntity tile = (ConstructorCenterEntity)world.getTileEntity(center);
+					if(tile != null) tile.setLinkPos(null, true);
+				} this.setCenterPos(null);
+				container.setTitleText("Tile connection reset.", RGB.BLACK.packed);
+				return;
+			}
 			default: return;
 		}
 	}
 	
+	private void setCenterPos(BlockPos pos){
+		this.center = pos; if(world.isRemote) return;
+		NBTTagCompound compound = new NBTTagCompound();
+		if(center != null) compound.setLong("CenterPos", center.toLong());
+		if(center == null) compound.setBoolean("CenterReset", true);
+		ApiUtil.sendTileEntityUpdatePacket(world, this.pos, compound);
+	}
+
 	public VehicleData getVehicleData(){
 		return vdata;
 	}
@@ -91,6 +106,12 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         if(packet.nbt.hasKey("VehicleData")){
         	this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData"));
+        }
+        if(packet.nbt.hasKey("CenterPos")){
+        	this.center = BlockPos.fromLong(packet.nbt.getLong("CenterPos"));
+        }
+        if(packet.nbt.hasKey("CenterReset") && packet.nbt.getBoolean("CenterReset")){
+        	this.center = null;
         }
     }
     
@@ -132,6 +153,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         if(pdata != null){
             compound.setTag("PartData", pdata.write(new NBTTagCompound()));
         }
+        if(center != null){
+            compound.setLong("Center", center.toLong());
+        }
         return compound;
     }
 
@@ -143,6 +167,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         if(compound.hasKey("VehicleData")){
         	this.vdata = Resources.getVehicleData(compound.getCompoundTag("VehicleData"));
+        }
+        if(compound.hasKey("Center")){
+            this.center = BlockPos.fromLong(compound.getLong("Center"));
         }
     }
     
@@ -167,6 +194,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 
 	public void setPartData(PartData data, boolean send){
 		this.pdata = data; if(send) this.updateClient("part");
+	}
+
+	public BlockPos getCenterPos(){
+		return center;
 	}
 
 }

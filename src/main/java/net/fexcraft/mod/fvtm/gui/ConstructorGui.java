@@ -75,4 +75,7 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		
 	}
 
+	//To be overriden.
+	public void onTitleTextUpdate(){}
+
 }

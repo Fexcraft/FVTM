@@ -22,4 +22,6 @@ public abstract class PartInstallationHandler {
 	/** Override, in case this PIH expects additional data in the part json. */
 	public void parse(@Nullable JsonObject obj){}
 
+	public abstract boolean allowsCustomCategory(PartData part);
+
 }

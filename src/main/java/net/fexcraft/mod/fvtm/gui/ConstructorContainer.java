@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorCommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -10,11 +11,13 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class ConstructorContainer extends GenericContainer {
 	
+	protected ConstructorCommandSender sender;
 	protected ConstructorEntity entity;
 	protected ConstructorGui gui;
 
 	public ConstructorContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player); this.entity = (ConstructorEntity)world.getTileEntity(new BlockPos(x, y, z));
+		this.sender = new ConstructorCommandSender(this);
 	}
 
 	@Override
@@ -33,6 +36,9 @@ public class ConstructorContainer extends GenericContainer {
 	
 	/** To be used from server side. */
 	public final void setTitleText(String string, Integer color){
+		if(this.entity == null) return; if(this.entity.getWorld().isRemote){
+			this.gui.texttitle = string; this.gui.titletext.update(string, color); return;
+		}
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("cargo", "titletext");
 		if(color != null) compound.setInteger("color", color);
@@ -42,6 +48,10 @@ public class ConstructorContainer extends GenericContainer {
 
 	public ConstructorEntity getTileEntity(){
 		return entity;
+	}
+
+	public ConstructorCommandSender getCommandSender(){
+		return sender;
 	}
 
 }

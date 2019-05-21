@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -11,6 +12,11 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	
 	private static final ResourceLocation STONE = new ResourceLocation("minecraft:textures/blocks/stone.png");
 	private static final ResourceLocation ANVIL = new ResourceLocation("minecraft:textures/blocks/anvil_base.png");
+	protected static final ResourceLocation ICON_LEFT = new ResourceLocation("fvtm:textures/gui/icons/arrow_left.png");
+	protected static final ResourceLocation ICON_RIGHT = new ResourceLocation("fvtm:textures/gui/icons/arrow_right.png");
+	protected static final ResourceLocation ICON_CHECK = new ResourceLocation("fvtm:textures/gui/icons/check.png");
+	protected static final ResourceLocation ICON_REMOVE = new ResourceLocation("fvtm:textures/gui/icons/remove.png");
+	protected static final ResourceLocation ICON_EDIT = new ResourceLocation("fvtm:textures/gui/icons/edit.png");
 	//
 	protected static final String modid = FVTM.MODID;
 	protected static final int buttonheight = 12;
@@ -78,12 +84,14 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	
 	public static class IconButton extends BasicButton {
 		
+		public ResourceLocation texture; 
 		private int button, index;
 		private boolean left;
 
-		public IconButton(String name, int button, int index, int size, boolean left){
-			super(name, 0, 0, 0, 0, size, size, true); this.button = button; this.index = index; this.left = left;
+		public IconButton(String name, int button, int index, boolean left, ResourceLocation texture){
+			super(name, 0, 0, 0, 0, 8, 8, true); this.button = button; this.index = index; this.left = left;
 			this.rgb_hover = RGB.GREEN.copy(); this.rgb_disabled = RGB.RED.copy(); this.rgb_none = RGB.WHITE.copy();
+			this.texture = texture;
 		}
 
 		@Override
@@ -92,7 +100,10 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 			this.x = g.cbuttons[button].x; int off = 2 + (index * (2 + sizex));
 			this.x += left ? off : g.cbuttons[button].sizex - off - sizex;
 			this.y = g.cbuttons[button].y + 1;
-			super.draw(gui, pticks, mouseX, mouseY);
+			gui.mc.renderEngine.bindTexture(texture);
+			RGB rgb = hovered ? enabled ? rgb_hover : rgb_disabled : rgb_none; RGB.glColorReset();
+            rgb.glColorApply(); Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 8, 8, 8, 8); RGB.glColorReset();
+			gui.mc.renderEngine.bindTexture(gui.getTexLoc());
 		}
 		
 	}

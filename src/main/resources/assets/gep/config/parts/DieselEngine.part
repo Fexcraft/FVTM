@@ -3,7 +3,9 @@
     "Addon": "fvtm:gep",
     "Name": "Generic Diesel Engine",
     "Model": "null",
-    "Category": "engine",
+    "Category": [
+    	"engine", "ballast", "decoration"
+    ],
     "Textures": [
         "fvtm:textures/entities/null_texture.png"
     ],

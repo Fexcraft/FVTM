@@ -104,4 +104,10 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		
 	}
 
+	@Override
+	public boolean allowsCustomCategory(PartData part){
+		DPIHData idata = part.getType().getInstallationHandlerData();
+		return idata == null ? false : idata.custom_cat;
+	}
+
 }

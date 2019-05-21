@@ -23,7 +23,7 @@ public class ConstructorMain extends ConstructorGui {
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(texts.get(button.name).string.equals("")) return;
 		if(button.name.equals("button10")){ player.closeScreen(); return; }
-		this.openGui(modid, Integer.parseInt(button.name.replace("button", "") + 901), xyz); return;
+		this.openGui(modid, Integer.parseInt(button.name.replace("button", "")) + 901, xyz); return;
 	}
 
 	@Override

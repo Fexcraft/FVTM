@@ -33,7 +33,7 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	@Override
 	protected void init(){
 		this.ySize = this.height; this.xSize = this.width / 4; int white = new RGB(228, 235, 228).packed;
-		this.texts.put("title", titletext = new TitleText(this, texttitle));
+		this.texts.put("title", titletext = new TitleText(this, texttitle, white));
 		this.texts.put("menutitle", menutitle = new BasicText(4, 4, width, white, "Welcome " + player.getDisplayNameString() + "!"));
 		tbuttons = new BasicText[buttontext.length]; cbuttons = new BasicButton[buttontext.length]; cfields = new TextField[buttontext.length];
 		for(int i = 0; i < buttontext.length; i++){
@@ -53,6 +53,7 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
 		titletext.update();
 		this.drawTexturedModalRect(0, 0, 0, 0, this.xSize, this.ySize);
+		this.drawTexturedModalRect(this.xSize, 0, 0, 0, this.width - this.xSize, 16);
 		this.mc.getTextureManager().bindTexture(ANVIL);
 	}
 	
@@ -60,8 +61,8 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		
 		private GenericGui<?> gui;
 
-		public TitleText(GenericGui<?> gui, String string){
-			super(0, 4, gui.mc.fontRenderer.getStringWidth(string), null, string); this.gui = gui;
+		public TitleText(GenericGui<?> gui, String string, int color){
+			super(0, 4, gui.mc.fontRenderer.getStringWidth(string), null, string); this.gui = gui; this.color = color;
 		}
 
 		public void update(){
@@ -71,6 +72,27 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		public void update(String newtext, Integer color){
 			this.string = newtext; this.width = gui.mc.fontRenderer.getStringWidth(newtext);
 			if(color != null) this.color = color;
+		}
+		
+	}
+	
+	public static class IconButton extends BasicButton {
+		
+		private int button, index;
+		private boolean left;
+
+		public IconButton(String name, int button, int index, int size, boolean left){
+			super(name, 0, 0, 0, 0, size, size, true); this.button = button; this.index = index; this.left = left;
+			this.rgb_hover = RGB.GREEN.copy(); this.rgb_disabled = RGB.RED.copy(); this.rgb_none = RGB.WHITE.copy();
+		}
+
+		@Override
+		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
+			if(!visible) return; ConstructorGui g = (ConstructorGui)gui;
+			this.x = g.cbuttons[button].x; int off = 2 + (index * (2 + sizex));
+			this.x += left ? off : g.cbuttons[button].sizex - off - sizex;
+			this.y = g.cbuttons[button].y + 1;
+			super.draw(gui, pticks, mouseX, mouseY);
 		}
 		
 	}

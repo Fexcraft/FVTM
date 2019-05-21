@@ -12,7 +12,7 @@ public class ConstructorStatus extends ConstructorGui {
 
 	public ConstructorStatus(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z); this.removeEmptyButtons = true;
-		this.buttontext = new String[]{ "||Lift/Center Pos.", "", "", "", "Manual Connect", "Auto Connect", "", "Return."};
+		this.buttontext = new String[]{ "||Lift/Center Pos.", "", "", "", "Manual Connect", "Auto Connect", "", "< Return"};
 	}
 	
 	@Override

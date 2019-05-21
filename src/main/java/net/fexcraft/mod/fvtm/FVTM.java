@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.block.ConstructorCenterBlock;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -69,8 +70,16 @@ public class FVTM {
 		//
 		GuiHandler.register(MODID, this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());
-		GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);
-		GuiHandler.insert(901, ConstructorStatus.class, ConstructorContainer.class);
+		if(event.getSide().isClient()){
+			GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);
+			GuiHandler.insert(901, ConstructorStatus.class, ConstructorContainer.class);
+			GuiHandler.insert(902, ConstructorVehicleInfo.class, ConstructorContainer.class);
+		}
+		else{
+			GuiHandler.insert(900, ConstructorContainer.class);
+			GuiHandler.insert(901, ConstructorContainer.class);
+			GuiHandler.insert(902, ConstructorContainer.class);
+		}
 	}
 
 	@Mod.EventHandler

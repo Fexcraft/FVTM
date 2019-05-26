@@ -4,16 +4,19 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class ConstructorPartManager extends ConstructorGui {
-	
+
+	private IconButton[] remico = new IconButton[10], edico = new IconButton[10];
 	private IconButton next, prev;
 	private int page;
 
 	public ConstructorPartManager(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z); this.removeEmptyButtons = true;
-		this.buttontext = new String[]{"||Installed Parts:", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "||Page -/-", "", "< Back"};
+		this.buttontext = new String[]{"||Installed Parts:", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||Page -/-", "", "< Back"};
 	}
 	
 	@Override
@@ -23,12 +26,16 @@ public class ConstructorPartManager extends ConstructorGui {
 		this.container.setTitleText(noveh ? "No Vehicle in Constructor" : container.getTileEntity().getVehicleData().getType().getName(), RGB.WHITE.packed);
 		this.buttons.put("next_page", next = new IconButton("next", 11, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_page", prev = new IconButton("prev", 11, 1, false, ICON_LEFT));
+		for(int i = 1; i < 11; i++){
+			this.buttons.put("icon" + i + "r", remico[i - 1] = new IconButton("icon_rem" + i, i, 0, false, ICON_REMOVE));
+			this.buttons.put("icon" + i + "e", edico[i - 1] = new IconButton("icon_edit" + i, i, 1, false, ICON_EDIT));
+		}
 	}
 	
 	private void updateButtons(){
 		if(container.getTileEntity().getVehicleData() == null){
 			tbuttons[11].string = "Page -/-";
-			for(int i = 1; i < 11; i++) tbuttons[i].string = "- - - -";
+			for(int i = 1; i < 11; i++) tbuttons[i].string = " / / / / / ";
 			next.enabled = prev.enabled = false;
 		}
 		else{
@@ -36,8 +43,9 @@ public class ConstructorPartManager extends ConstructorGui {
 			tbuttons[11].string = "Page " + (page + 1) + "/" + (vdata.getParts().size() / 10 + 1);
 			for(int i = 1; i < 11; i++){
 				int j = i + (page * 10) - 1;
-				tbuttons[i].string = j >= vdata.getParts().size() ? "- - - -" : (String)vdata.getParts().keySet().toArray()[j];
-				cbuttons[i].enabled = j < vdata.getParts().size();
+				tbuttons[i].string = j >= vdata.getParts().size() ? " - - - - " : "." + (String)vdata.getParts().keySet().toArray()[j];
+				remico[i -1].visible = edico[i -1].visible = j < vdata.getParts().size();
+				//TODO edico[i -1].enabled = edico[i -1].visible ? vdata.getParts().values().toArray(new PartData[0])[j].getType().isRemovable() : false;
 			}
 			next.enabled = page < vdata.getParts().size() / 10;
 			prev.enabled = page > 0;
@@ -55,14 +63,23 @@ public class ConstructorPartManager extends ConstructorGui {
 		if(button.name.equals("button13")) this.openGui(modid, 900, xyz);
 		else if(button.name.equals("next")) page++;
 		else if(button.name.equals("prev")) page--;
-		else if(button.name.contains("button")){
+		else if(button.name.contains("icon_edit")){
 			try{
-				int i = Integer.parseInt(button.name.replace("button", ""));
-				//TODO
+				int i = Integer.parseInt(button.name.replace("icon_edit", ""));
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("category", tbuttons[i].string.trim().replace(".", ""));
+				this.openGenericGui(920, xyz, compound);
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
+		}
+		else if(button.name.contains("icon_rem")){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("cargo", "part_remove");
+			compound.setString("category", tbuttons[Integer.parseInt(button.name.replace("icon_rem", ""))].string.replace(".", ""));
+			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.container.send(Side.SERVER, compound);
 		}
 		return true;
 	}

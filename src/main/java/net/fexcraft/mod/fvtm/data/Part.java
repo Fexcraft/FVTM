@@ -32,8 +32,8 @@ import net.minecraft.util.ResourceLocation;
  */
 public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	
-	protected ArrayList<Attribute> attributes;
-	protected ArrayList<Modifier> modifiers;
+	protected ArrayList<Attribute> attributes = new ArrayList<>();
+	protected ArrayList<Modifier> modifiers = new ArrayList<>();
 	protected List<NamedResourceLocation> textures;
 	protected List<String> categories;
 	protected PartItem item;
@@ -72,7 +72,6 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 		this.textures = DataUtil.getTextures(obj);
 		//
 		if(obj.has("Attributes")){
-			this.attributes = new ArrayList<>();
 			JsonArray array = obj.get("Attributes").getAsJsonArray();
 			for(JsonElement elm : array){
 				JsonObject json = elm.getAsJsonObject();
@@ -104,7 +103,6 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 			}
 		}
 		if(obj.has("Modifiers")){
-			this.modifiers = new ArrayList<>();
 			JsonArray array = obj.get("Modifiers").getAsJsonArray();
 			for(JsonElement elm : array){
 				JsonObject json = elm.getAsJsonObject();

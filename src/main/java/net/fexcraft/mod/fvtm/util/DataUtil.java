@@ -57,6 +57,9 @@ public class DataUtil {
 			obj.get("Textures").getAsJsonArray().forEach(elm -> {
 				reslocs.add(new NamedResourceLocation(elm.getAsString()));
 			});
+		}
+		else{
+			reslocs.add(new NamedResourceLocation("NullTex|fvtm:textures/entities/null_texture.png"));
 		} return reslocs;
 	}
 

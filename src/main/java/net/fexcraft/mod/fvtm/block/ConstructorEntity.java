@@ -92,6 +92,18 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					}
 				} return;
 			}
+			case "part_remove":{
+				if(this.getVehicleData() == null){ container.setTitleText("No Vehicle in Constructor.", null); return; }
+				String cat = packet.getString("category"); PartData data = this.getVehicleData().getPart(cat);
+				if(data == null){ container.setTitleText("Selected Part not found (on server).", null); return; }
+				if(data.getType().getInstallationHandler().allowUninstall(container.getCommandSender(), data, cat, getVehicleData())){
+					if(data.getType().getInstallationHandler().processUninstall(container.getCommandSender(), data, cat, getVehicleData())){
+						this.dropItem(data.newItemStack()); this.updateClient(null);
+					}
+				} return;
+			}
+			case "part_cache_drop":{ this.dropPart(true); return; }
+			//
 			default: return;
 		}
 	}
@@ -208,12 +220,14 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     	item.setItem(stack); world.spawnEntity(item);
     }
 
-	public void dropVehicle(){
+	public void dropVehicle(boolean update){
 		if(vdata == null) return; this.dropItem(vdata.newItemStack());
+		this.vdata = null; if(update) this.updateClient("vehicledata");
 	}
 
-	public void dropPart(){
+	public void dropPart(boolean update){
 		if(pdata == null) return; this.dropItem(pdata.newItemStack());
+		this.pdata = null; if(update) this.updateClient("partdata");
 	}
 
 	public void setVehicleData(VehicleData data, boolean send){

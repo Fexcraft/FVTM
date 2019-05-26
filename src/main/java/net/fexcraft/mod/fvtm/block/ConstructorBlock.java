@@ -116,13 +116,13 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	//TODO
         }
         else if(held.getItem() instanceof PartItem){
-        	if(te.getPartData() != null) te.dropPart();
+        	if(te.getPartData() != null) te.dropPart(true);
         	te.setPartData(((PartItem)held.getItem()).getData(held), true);
         	Print.chat(player, "Part put into Constructor."); held.shrink(1);
         }
         else if(held.getItem() instanceof VehicleItem){
-        	if(te.getVehicleData() != null) te.dropVehicle();
-        	if(te.getPartData() != null) te.dropPart();
+        	if(te.getVehicleData() != null) te.dropVehicle(true);
+        	if(te.getPartData() != null) te.dropPart(true);
         	te.setVehicleData(((VehicleItem)held.getItem()).getData(held), false);
         	te.updateClient(null); held.shrink(1);
         	Print.chat(player, "Vehicle put into Constructor.");

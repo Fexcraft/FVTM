@@ -73,6 +73,10 @@ public class FVTM {
 		//
 		GuiHandler.register(MODID, this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());
+		//900 - main
+		//910 - part cache
+		//920 - installed part
+		//930 - vehicle
 		if(event.getSide().isClient()){
 			GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);
 			GuiHandler.insert(901, ConstructorStatus.class, ConstructorContainer.class);

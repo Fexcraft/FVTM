@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.root;
 
+import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.minecraft.util.ResourceLocation;
 
 public interface Textureable {
@@ -14,7 +15,7 @@ public interface Textureable {
 	
 	public static interface TextureHolder {
 		
-		public java.util.List<ResourceLocation> getDefaultTextures();
+		public java.util.List<NamedResourceLocation> getDefaultTextures();
 		
 	}
 

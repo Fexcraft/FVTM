@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import com.google.gson.JsonArray;
@@ -9,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
@@ -29,7 +31,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
 	protected Model<VehicleData, Object> model;
-	protected ArrayList<ResourceLocation> textures;
+	protected List<NamedResourceLocation> textures;
 	protected ArrayList<String> required;
 	protected RGB primary, secondary;
 	protected String modelid;
@@ -149,7 +151,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 
 	@Override
-	public java.util.List<ResourceLocation> getDefaultTextures(){
+	public List<NamedResourceLocation> getDefaultTextures(){
 		return textures;
 	}
 

@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.data.root;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 /**
  * Third prototype.
  * @author Ferdinand Calo' (FEX___96)
@@ -299,6 +301,16 @@ public abstract class Attribute {
 			return new FloatAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target).setOrigin(origin);
 		}
 		
+	}
+
+	public NBTTagCompound write(NBTTagCompound com){
+		// TODO Auto-generated method stub
+		return com;
+	}
+
+	public Attribute read(NBTTagCompound com){
+		// TODO Auto-generated method stub
+		return this;
 	}
 
 }

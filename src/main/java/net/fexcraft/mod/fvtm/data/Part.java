@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataType;
@@ -33,7 +34,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	
 	protected ArrayList<Attribute> attributes;
 	protected ArrayList<Modifier> modifiers;
-	protected ArrayList<ResourceLocation> textures;
+	protected List<NamedResourceLocation> textures;
 	protected List<String> categories;
 	protected PartItem item;
 	protected String modelid;
@@ -197,7 +198,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	}
 
 	@Override
-	public java.util.List<ResourceLocation> getDefaultTextures(){
+	public List<NamedResourceLocation> getDefaultTextures(){
 		return textures;
 	}
 	

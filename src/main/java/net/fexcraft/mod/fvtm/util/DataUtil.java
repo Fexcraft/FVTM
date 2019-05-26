@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.Addon;
 import net.minecraft.util.ResourceLocation;
@@ -47,14 +48,14 @@ public class DataUtil {
 		return immutable ? ImmutableList.copyOf(list) : list;
 	}
 
-	public static ArrayList<ResourceLocation> getTextures(JsonObject obj){
-		ArrayList<ResourceLocation> reslocs = new ArrayList<>();
+	public static List<NamedResourceLocation> getTextures(JsonObject obj){
+		ArrayList<NamedResourceLocation> reslocs = new ArrayList<>();
 		if(obj.has("Texture") && obj.get("Texture").isJsonPrimitive()){
-			reslocs.add(new ResourceLocation(obj.get("Texture").getAsString()));
+			reslocs.add(new NamedResourceLocation(obj.get("Texture").getAsString()));
 		}
 		else if(obj.has("Textures") && obj.get("Textures").isJsonArray()){
 			obj.get("Textures").getAsJsonArray().forEach(elm -> {
-				reslocs.add(new ResourceLocation(elm.getAsString()));
+				reslocs.add(new NamedResourceLocation(elm.getAsString()));
 			});
 		} return reslocs;
 	}

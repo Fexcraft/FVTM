@@ -15,10 +15,13 @@ import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -48,6 +51,13 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(compound == null) compound = new NBTTagCompound();
 		compound.setString("Vehicle", type.getRegistryName().toString());
 		//
+		NBTTagList list = new NBTTagList();
+		for(Entry<String, PartData> part : parts.entrySet()){
+			NBTTagCompound com = new NBTTagCompound();
+			com.setString("InstalledAs", part.getKey());
+			list.appendTag(part.getValue().write(com));
+		}
+		compound.setTag("Parts", list);
 		return compound;
 	}
 
@@ -57,6 +67,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//type = Resources.getVehicle(compound.getString("Vehicle"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		//
+		this.parts.clear();
+		NBTTagList list = compound.hasKey("Parts") ? (NBTTagList)compound.getTag("Parts") : new NBTTagList();//temporary
+		for(NBTBase base : list){
+			NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("InstalledAs")) continue;
+			this.parts.put(com.getString("InstalledAs"), Resources.getPartData(com));
+		}
 		return this;
 	}
 

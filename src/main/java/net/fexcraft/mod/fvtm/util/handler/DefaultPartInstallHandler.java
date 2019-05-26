@@ -25,7 +25,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "There is already another part with that category installed."); return false;
 		}
 		DPIHData idata = part.getType().getInstallationHandlerData();
-		if(!part.getType().getCategories().contains(cat) && (idata == null || !idata.custom_cat)){
+		if(!part.getType().getCategories().contains(cat) && (idata != null && !idata.custom_cat)){
 			Print.chatnn(sender, "Part does not allow installing into this category."); return false;
 		}
 		if(!compatible(idata, data.getType().getRegistryName().toString())){

@@ -3,7 +3,9 @@ package net.fexcraft.mod.fvtm.gui.constructor;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class ConstructorPartInstaller extends ConstructorGui {
 
@@ -26,33 +28,55 @@ public class ConstructorPartInstaller extends ConstructorGui {
 			this.buttons.put("icon" + i, new IconButton("icon" + i, i, 0, false, ICON_EDIT));
 		}
 		this.buttons.put("icon2", new IconButton("icon2", 2, 0, false, ICON_EDIT));
-		this.updateIconsAndButtons();
+		//this.updateIconsAndButtons();
 	}
 	
 	private void updateIconsAndButtons(){
-		for(int i = 7; i < buttontext.length; i++){
-			boolean partin = container.getTileEntity().getVehicleData() == null || container.getTileEntity().getVehicleData().getPart(buttontext[i]) != null;
-			buttons.get("icon" + i).enabled = partin; ((IconButton)buttons.get("icon" + i)).texture = partin ? ICON_REMOVE : ICON_CHECK;
+		if(container.getTileEntity().getPartData() == null){
+			tbuttons[6].string = "cache empty";
+			for(int i = 7; i < buttontext.length; i++){
+				buttons.get("icon" + i).visible = buttons.get("button" + i).visible = tbuttons[i].visible = false;
+			}
 		}
-		boolean bool = container.getTileEntity().getPartData() == null || !container.getTileEntity().getPartData().getType().getInstallationHandler().allowsCustomCategory(container.getTileEntity().getPartData());
-		cbuttons[2].enabled = !bool; ((IconButton)buttons.get("icon2")).texture = bool ? ICON_REMOVE : ICON_CHECK;
+		else{
+			for(int i = 7; i < buttontext.length; i++){
+				buttons.get("icon" + i).visible = buttons.get("button" + i).visible = tbuttons[i].visible = true;
+				//
+				boolean partin = container.getTileEntity().getVehicleData() == null || container.getTileEntity().getVehicleData().getPart(buttontext[i]) != null;
+				buttons.get("icon" + i).enabled = buttons.get("button" + i).enabled = !partin;
+				((IconButton)buttons.get("icon" + i)).texture = partin ? ICON_REMOVE : ICON_CHECK;
+			}
+			boolean bool = container.getTileEntity().getPartData() == null
+				|| !container.getTileEntity().getPartData().getType().getInstallationHandler().allowsCustomCategory(container.getTileEntity().getPartData());
+			cbuttons[2].enabled = !bool; ((IconButton)buttons.get("icon2")).texture = bool ? ICON_REMOVE : ICON_CHECK;
+		}
 	}
 	
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		//
+		this.updateIconsAndButtons();
 	}
 
 	@Override
 	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("button4")) this.openGui(modid, 900, xyz);
 		else if(button.name.equals("button2")){
-			
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("cargo", "part_install");
+			compound.setString("category", fields.get("field2").getText());
+			compound.setBoolean("custom_category", true);
+			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.container.send(Side.SERVER, compound);
 		}
 		else{
 			int in = Integer.parseInt(button.name.replace("button", "").replace("icon", ""));
 			if(in >= 7){
-				
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("cargo", "part_install");
+				compound.setString("category", tbuttons[in].string);
+				compound.setBoolean("custom_category", false);
+				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+				this.container.send(Side.SERVER, compound);
 			} else return;
 		}
 	}
@@ -64,7 +88,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 	
 	@Override
 	public void onTitleTextUpdate(){
-		this.updateIconsAndButtons();
+		//this.updateIconsAndButtons();
 	}
 
 }

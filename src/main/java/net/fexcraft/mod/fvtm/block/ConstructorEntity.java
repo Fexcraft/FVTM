@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.PartData;
 import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
@@ -77,6 +78,20 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				container.setTitleText("Tile connection reset.", RGB.BLACK.packed);
 				return;
 			}
+			case "part_install":{
+				if(this.getPartData() == null){ container.setTitleText("No Part in Constructor.", null); return; }
+				if(this.getVehicleData() == null){ container.setTitleText("No Vehicle in Constructor.", null); return; }
+				boolean bool = packet.getBoolean("custom_category");
+				PartData data = this.getPartData(); String cat = packet.getString("category");
+				if(bool && !data.getType().getInstallationHandler().allowsCustomCategory(data)){
+					container.setTitleText("Custom Category not allow for this part.", null); return;
+				}
+				if(data.getType().getInstallationHandler().allowInstall(container.getCommandSender(), data, cat, getVehicleData())){
+					if(data.getType().getInstallationHandler().processInstall(container.getCommandSender(), data, cat, getVehicleData())){
+						this.pdata = null; this.updateClient(null);
+					}
+				} return;
+			}
 			default: return;
 		}
 	}
@@ -101,16 +116,25 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 
     @Override
     public void processClientPacket(PacketTileEntityUpdate packet){
+    	Print.debug(packet.nbt);
         if(packet.nbt.hasKey("PartData")){
         	this.pdata = Resources.getPartData(packet.nbt.getCompoundTag("PartData"));
         }
+        else if(packet.nbt.hasKey("PartDataReset") && packet.nbt.getBoolean("PartDataReset")){
+        	this.pdata = null;
+        }
+        //
         if(packet.nbt.hasKey("VehicleData")){
         	this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData"));
         }
+        else if(packet.nbt.hasKey("VehicleDataReset") && packet.nbt.getBoolean("VehicleDataReset")){
+        	this.vdata = null;
+        }
+        //
         if(packet.nbt.hasKey("CenterPos")){
         	this.center = BlockPos.fromLong(packet.nbt.getLong("CenterPos"));
         }
-        if(packet.nbt.hasKey("CenterReset") && packet.nbt.getBoolean("CenterReset")){
+        else if(packet.nbt.hasKey("CenterReset") && packet.nbt.getBoolean("CenterReset")){
         	this.center = null;
         }
     }
@@ -123,10 +147,12 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     	NBTTagCompound compound = new NBTTagCompound();
     	switch(type){
     		case "vehicledata": case "vehicle": case "veh": {
-    			if(vdata != null) compound.setTag("VehicleData", vdata.write(new NBTTagCompound())); break;
+    			if(vdata != null) compound.setTag("VehicleData", vdata.write(new NBTTagCompound()));
+    			else compound.setBoolean("VehicleDataReset", true); break;
     		}
     		case "partdata": case "part": {
-    			if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound())); break;
+    			if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound()));
+    			else compound.setBoolean("PartDataReset", true); break;
     		}
     		//
     		default: return;
@@ -147,15 +173,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
-        if(vdata != null){
-            compound.setTag("VehicleData", vdata.write(new NBTTagCompound()));
-        }
-        if(pdata != null){
-            compound.setTag("PartData", pdata.write(new NBTTagCompound()));
-        }
-        if(center != null){
-            compound.setLong("Center", center.toLong());
-        }
+        if(vdata != null) compound.setTag("VehicleData", vdata.write(new NBTTagCompound()));
+			else compound.setBoolean("VehicleDataReset", true);
+		if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound()));
+			else compound.setBoolean("PartDataReset", true);
+        if(center != null){ compound.setLong("Center", center.toLong()); }
         return compound;
     }
 

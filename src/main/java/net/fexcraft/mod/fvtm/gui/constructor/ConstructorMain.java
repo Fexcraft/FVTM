@@ -20,10 +20,11 @@ public class ConstructorMain extends ConstructorGui {
 	}
 
 	@Override
-	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(texts.get(button.name).string.equals("")) return;
-		if(button.name.equals("button10")){ player.closeScreen(); return; }
-		this.openGui(modid, Integer.parseInt(button.name.replace("button", "")) + 901, xyz); return;
+	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
+		if(texts.get(button.name).string.equals("")) return true;
+		if(button.name.equals("button10")){ player.closeScreen(); return true; }
+		this.openGui(modid, Integer.parseInt(button.name.replace("button", "")) + 901, xyz); return true;
 	}
 
 	@Override

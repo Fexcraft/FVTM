@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import java.util.ArrayList;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -29,6 +31,7 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	protected String texttitle = "Fex's Vehicle & Transporation Mod";
 	protected final int[] xyz;
 	protected boolean removeEmptyButtons;
+	protected CenterBox cbox;
 
 	public ConstructorGui(EntityPlayer player, World world, int x, int y, int z){
 		super(STONE, new ConstructorContainer(player, world, x, y, z), player);
@@ -53,14 +56,19 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 				else tbuttons[i].string = buttontext[i].replace(";;", "");
 			}
 		}
+		cbox = new CenterBox(this, 128, 128);
 	}
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		titletext.update();
+		titletext.update(); 
 		this.drawTexturedModalRect(0, 0, 0, 0, this.xSize, this.ySize);
 		this.drawTexturedModalRect(this.xSize, 0, 0, 0, this.width - this.xSize, 16);
-		this.mc.getTextureManager().bindTexture(ANVIL);
+		this.mc.getTextureManager().bindTexture(ANVIL); cbox.draw(pticks, mouseX, mouseY);
+	}
+	@Override
+	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(button.name.equals("center_exit")){ cbox.exit(); return true; } return false;
 	}
 	
 	public static class TitleText extends BasicText {
@@ -87,6 +95,8 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		public ResourceLocation texture; 
 		private int button, index;
 		private boolean left;
+		private CenterBox box;
+		private BasicButton cbutton;
 
 		public IconButton(String name, int button, int index, boolean left, ResourceLocation texture){
 			super(name, 0, 0, 0, 0, 8, 8, true); this.button = button; this.index = index; this.left = left;
@@ -97,14 +107,71 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		@Override
 		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
 			if(!visible) return; ConstructorGui g = (ConstructorGui)gui;
-			this.x = g.cbuttons[button].x; int off = 2 + (index * (2 + sizex));
-			this.x += left ? off : g.cbuttons[button].sizex - off - sizex;
-			this.y = g.cbuttons[button].y + 1;
+			if(box != null){
+				this.x = box.x; int off = 2 + (index * (2 + sizex));
+				this.x += left ? off : box.width - off - sizex;
+				this.y = box.y + 1;
+			}
+			else if(cbutton != null){
+				this.x = cbutton.x; int off = 2 + (index * (2 + sizex));
+				this.x += left ? off : cbutton.sizex - off - sizex;
+				this.y = cbutton.y + 1;
+			}
+			else{
+				this.x = g.cbuttons[button].x; int off = 2 + (index * (2 + sizex));
+				this.x += left ? off : g.cbuttons[button].sizex - off - sizex;
+				this.y = g.cbuttons[button].y + 1;
+			}
 			gui.mc.renderEngine.bindTexture(texture);
 			RGB rgb = hovered ? enabled ? rgb_hover : rgb_disabled : rgb_none; RGB.glColorReset();
             rgb.glColorApply(); Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 8, 8, 8, 8); RGB.glColorReset();
 			gui.mc.renderEngine.bindTexture(gui.getTexLoc());
 		}
+
+		public IconButton setCenterBound(CenterBox centerbox){
+			this.box = centerbox; return this;
+		}
+
+		public IconButton setCenterButtonBount(BasicButton button){
+			this.cbutton = button; return this;
+		}
+		
+	}
+	
+	public static class CenterBox {
+		
+		private int width, height, x, y;
+		public boolean visible = false;
+		private ConstructorGui gui;
+		public IconButton exit;
+		public ArrayList<BasicText> texts = new ArrayList<>();
+		public ArrayList<BasicButton> buttons = new ArrayList<>();
+		
+		public CenterBox(ConstructorGui gui, int width, int height){
+			this.width = width; this.height = height; this.gui = gui;
+			gui.buttons.put("center_exit", exit = new IconButton("center_exit", 0, 0, false, ICON_REMOVE).setCenterBound(this));
+		}
+
+		public void exit(){
+			this.visible = false;
+			gui.buttons.values().removeIf(pre -> buttons.contains(pre));
+			gui.texts.values().removeIf(pre -> texts.contains(pre));
+			texts.clear(); buttons.clear();
+		}
+
+		public void draw(float pticks, int mouseX, int mouseY){
+			exit.visible = this.visible; if(!visible) return;
+			this.x = (gui.width / 2) - (width / 2);
+			this.y = (gui.height / 2) - (height / 2);
+            Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, 16, 16);
+		}
+		
+		public CenterBox resize(int w, int h){
+			this.width = w; this.height = h; return this;
+		}
+		
+		public int getWidth(){ return width; }
+		public int getHeight(){ return height; }
 		
 	}
 

@@ -50,18 +50,19 @@ public class ConstructorStatus extends ConstructorGui {
 	}
 
 	@Override
-	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button7")) this.openGui(modid, 900, xyz);
 		else if(button.name.equals("button4")){
 			if(this.container.getTileEntity().getCenterPos() != null){
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("cargo", "constructor_disconnect");
 				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
-				this.container.send(Side.SERVER, compound); return;
+				this.container.send(Side.SERVER, compound); return true;
 			}
 			BlockPos pos = new BlockPos(cfields[1].getIntegerValue(), cfields[2].getIntegerValue(), cfields[3].getIntegerValue());
 			if(player.world.getTileEntity(pos) == null){
-				this.titletext.update("No TileEntity at selected position. [CLIENT]", RGB.RED.packed); return;
+				this.titletext.update("No TileEntity at selected position. [CLIENT]", RGB.RED.packed); return true;
 			}
 			this.container.send(Side.SERVER, newConnectPacket(false, pos));
 			this.titletext.update("Request sent to Server.", RGB.BLUE.packed);
@@ -70,7 +71,7 @@ public class ConstructorStatus extends ConstructorGui {
 			this.container.send(Side.SERVER, newConnectPacket(true, null));
 			this.titletext.update("Request sent to Server.", RGB.BLUE.packed);
 		}
-		else return;
+		return false;
 	}
 
 	private NBTTagCompound newConnectPacket(boolean auto, BlockPos pos){

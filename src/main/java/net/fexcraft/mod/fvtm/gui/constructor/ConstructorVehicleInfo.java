@@ -9,7 +9,7 @@ public class ConstructorVehicleInfo extends ConstructorGui {
 
 	public ConstructorVehicleInfo(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z); this.removeEmptyButtons = true;
-		this.buttontext = new String[]{ "||Name:", "", "Attributes", "Parts", "", "< Back" };
+		this.buttontext = new String[]{ "||Name:", "", "Attributes", "Functions", "Parts", "", "< Back" };
 	}
 	
 	@Override
@@ -27,15 +27,16 @@ public class ConstructorVehicleInfo extends ConstructorGui {
 	}
 
 	@Override
-	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(button.name.equals("button5")) this.openGui(modid, 900, xyz);
+	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
+		if(button.name.equals("button6")) this.openGui(modid, 900, xyz);
 		else if(button.name.equals("button3")){
 			
 		}
 		else if(button.name.equals("button4")){
 			
 		}
-		else return;
+		return false;
 	}
 
 	@Override

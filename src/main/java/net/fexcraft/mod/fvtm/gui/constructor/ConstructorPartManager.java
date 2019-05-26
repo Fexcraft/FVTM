@@ -1,0 +1,80 @@
+package net.fexcraft.mod.fvtm.gui.constructor;
+
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.gui.ConstructorGui;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+
+public class ConstructorPartManager extends ConstructorGui {
+	
+	private IconButton next, prev;
+	private int page;
+
+	public ConstructorPartManager(EntityPlayer player, World world, int x, int y, int z){
+		super(player, world, x, y, z); this.removeEmptyButtons = true;
+		this.buttontext = new String[]{"||Installed Parts:", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "||Page -/-", "", "< Back"};
+	}
+	
+	@Override
+	public void init(){
+		super.init(); this.menutitle.string = "Part Manager";
+		boolean noveh = container.getTileEntity().getVehicleData() == null;
+		this.container.setTitleText(noveh ? "No Vehicle in Constructor" : container.getTileEntity().getVehicleData().getType().getName(), RGB.WHITE.packed);
+		this.buttons.put("next_page", next = new IconButton("next", 11, 0, false, ICON_RIGHT));
+		this.buttons.put("prev_page", prev = new IconButton("prev", 11, 1, false, ICON_LEFT));
+	}
+	
+	private void updateButtons(){
+		if(container.getTileEntity().getVehicleData() == null){
+			tbuttons[11].string = "Page -/-";
+			for(int i = 1; i < 11; i++) tbuttons[i].string = "- - - -";
+			next.enabled = prev.enabled = false;
+		}
+		else{
+			VehicleData vdata = container.getTileEntity().getVehicleData();
+			tbuttons[11].string = "Page " + (page + 1) + "/" + (vdata.getParts().size() / 10 + 1);
+			for(int i = 1; i < 11; i++){
+				int j = i + (page * 10) - 1;
+				tbuttons[i].string = j >= vdata.getParts().size() ? "- - - -" : (String)vdata.getParts().keySet().toArray()[j];
+				cbuttons[i].enabled = j < vdata.getParts().size();
+			}
+			next.enabled = page < vdata.getParts().size() / 10;
+			prev.enabled = page > 0;
+		}
+	}
+	
+	@Override
+	protected void predraw(float pticks, int mouseX, int mouseY){
+		this.updateButtons();
+	}
+
+	@Override
+	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
+		if(button.name.equals("button13")) this.openGui(modid, 900, xyz);
+		else if(button.name.equals("next")) page++;
+		else if(button.name.equals("prev")) page--;
+		else if(button.name.contains("button")){
+			try{
+				int i = Integer.parseInt(button.name.replace("button", ""));
+				//TODO
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+
+	@Override
+	protected void scrollwheel(int am, int x, int y){
+		if(am == 0) return; if(am > 0) page--; else page++; if(page < 0) page = 0;
+	}
+	
+	@Override
+	public void onTitleTextUpdate(){
+		//
+	}
+
+}

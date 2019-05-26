@@ -14,7 +14,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 		String[] strarr = new String[7 + (container.getTileEntity().getPartData() == null ? 0 : container.getTileEntity().getPartData().getType().getCategories().size())];
 		strarr[0] = "||Custom Category:"; strarr[1] = ""; strarr[2] = "Install Custom"; strarr[3] = ""; strarr[4] = "< Back"; strarr[5] = ""; strarr[6] = "||Default Category:";
 		for(int i = 0; i < strarr.length - 7; i++){
-			strarr[i + 7] = "- " + container.getTileEntity().getPartData().getType().getCategories().get(i);
+			strarr[i + 7] = container.getTileEntity().getPartData().getType().getCategories().get(i);
 		} this.buttontext = strarr;
 	}
 	
@@ -58,7 +58,8 @@ public class ConstructorPartInstaller extends ConstructorGui {
 	}
 
 	@Override
-	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button4")) this.openGui(modid, 900, xyz);
 		else if(button.name.equals("button2")){
 			NBTTagCompound compound = new NBTTagCompound();
@@ -77,8 +78,9 @@ public class ConstructorPartInstaller extends ConstructorGui {
 				compound.setBoolean("custom_category", false);
 				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 				this.container.send(Side.SERVER, compound);
-			} else return;
+			} else return false;
 		}
+		return true;
 	}
 
 	@Override

@@ -5,11 +5,11 @@ import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-public class ConstructorPartInfo extends ConstructorGui {
+public class ConstructorPartCacheInfo extends ConstructorGui {
 
-	public ConstructorPartInfo(EntityPlayer player, World world, int x, int y, int z){
+	public ConstructorPartCacheInfo(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z); this.removeEmptyButtons = true;
-		this.buttontext = new String[]{ "||Name:", "", "Attributes", "Functions", "Modifiers", "", "< Back" };
+		this.buttontext = new String[]{ "||Name:", "", "Attributes", "Functions", "Def. Textures", "Install Info", "", "< Back" };
 	}
 	
 	@Override
@@ -27,18 +27,25 @@ public class ConstructorPartInfo extends ConstructorGui {
 	}
 
 	@Override
-	protected void buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(button.name.equals("button6")) this.openGui(modid, 900, xyz);
-		else if(button.name.equals("button3")){
-			
+	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
+		if(button.name.equals("button7")) this.openGui(modid, 900, xyz);
+		if(container.getTileEntity().getPartData() == null){
+			container.setTitleText("No Part in Constructor Cache.", RGB.RED.packed);
+		}
+		if(button.name.equals("button3")){
+			this.openGui(modid, 913, xyz);
 		}
 		else if(button.name.equals("button4")){
-			
+			this.openGui(modid, 912, xyz);
 		}
 		else if(button.name.equals("button5")){
-			
+			this.openGui(modid, 911, xyz);
 		}
-		else return;
+		else if(button.name.equals("button6")){
+			this.openGui(modid, 910, xyz);
+		}
+		return false;
 	}
 
 	@Override

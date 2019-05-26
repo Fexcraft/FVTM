@@ -187,8 +187,14 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         if(compound.hasKey("PartData")){
         	this.pdata = Resources.getPartData(compound.getCompoundTag("PartData"));
         }
+        else if(compound.hasKey("PartDataReset") && compound.getBoolean("PartDataReset")){
+        	this.pdata = null;
+        }
         if(compound.hasKey("VehicleData")){
         	this.vdata = Resources.getVehicleData(compound.getCompoundTag("VehicleData"));
+        }
+        else if(compound.hasKey("PartDataReset") && compound.getBoolean("PartDataReset")){
+        	this.pdata = null;
         }
         if(compound.hasKey("Center")){
             this.center = BlockPos.fromLong(compound.getLong("Center"));

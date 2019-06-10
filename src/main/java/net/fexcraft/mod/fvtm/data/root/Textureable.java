@@ -11,6 +11,8 @@ public interface Textureable {
 	
 	public ResourceLocation getCustomTexture();
 	
+	public String getCustomTextureString();
+	
 	public boolean isExternalTexture();
 	
 	public void setSelectedTexture(int i, String tex, boolean ex);

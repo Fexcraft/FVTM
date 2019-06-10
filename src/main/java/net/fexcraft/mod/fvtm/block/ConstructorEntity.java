@@ -79,8 +79,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				return;
 			}
 			case "part_install":{
-				if(this.getPartData() == null){ container.setTitleText("No Part in Constructor.", null); return; }
-				if(this.getVehicleData() == null){ container.setTitleText("No Vehicle in Constructor.", null); return; }
+				if(nopar(container)) return; if(noveh(container)) return;
 				boolean bool = packet.getBoolean("custom_category");
 				PartData data = this.getPartData(); String cat = packet.getString("category");
 				if(bool && !data.getType().getInstallationHandler().allowsCustomCategory(data)){
@@ -93,7 +92,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				} return;
 			}
 			case "part_remove":{
-				if(this.getVehicleData() == null){ container.setTitleText("No Vehicle in Constructor.", null); return; }
+				if(noveh(container)) return;
 				String cat = packet.getString("category"); PartData data = this.getVehicleData().getPart(cat);
 				if(data == null){ container.setTitleText("Selected Part not found (on server).", null); return; }
 				if(data.getType().getInstallationHandler().allowUninstall(container.getCommandSender(), data, cat, getVehicleData())){
@@ -104,10 +103,19 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			}
 			case "part_cache_drop":{ this.dropPart(true); return; }
 			case "vtm_supplied":{
+				if(noveh(container)) return;
 				int i = packet.getInteger("value");
 				if(i < 0 || i >= this.getVehicleData().getType().getDefaultTextures().size()){
 					container.setTitleText("Invalid SUPPLIED ID.", RGB.RED.packed); return;
 				} this.getVehicleData().setSelectedTexture(i, null, false);
+				container.setTitleText("Texture Applied.", null);
+				this.updateClient("vehicle"); return;
+			}
+			case "vtm_custom":{
+				if(noveh(container)) return; String value = packet.getString("value");
+				boolean external = packet.getBoolean("external");
+				//TODO check if custom textures are allowed;
+				this.getVehicleData().setSelectedTexture(-1, value, external);
 				container.setTitleText("Texture Applied.", null);
 				this.updateClient("vehicle"); return;
 			}
@@ -116,6 +124,14 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		}
 	}
 	
+	private boolean noveh(ConstructorContainer container){
+		if(this.getVehicleData() == null){ container.setTitleText("No Vehicle in Constructor.", null); return true; } return false;
+	}
+	
+	private boolean nopar(ConstructorContainer container){
+		if(this.getPartData() == null){ container.setTitleText("No Part in Constructor.", null); return true; } return false;
+	}
+
 	private void setCenterPos(BlockPos pos){
 		this.center = pos; if(world.isRemote) return;
 		NBTTagCompound compound = new NBTTagCompound();

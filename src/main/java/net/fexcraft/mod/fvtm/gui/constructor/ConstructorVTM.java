@@ -24,10 +24,15 @@ public class ConstructorVTM extends ConstructorGui {
 		super.init(); this.menutitle.string = "Vehicle Texture Management";
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_supplied", prev = new IconButton("prev_supplied", 3, 1, false, ICON_LEFT));
+		this.buttons.put("in_apply", new IconButton("in_apply", 6, 0, false, ICON_RIGHT));
+		this.buttons.put("ex_apply", new IconButton("ex_apply", 9, 0, false, ICON_RIGHT));
 		this.cfields[4] = new TextField(4, fontRenderer, 2, 20 + (4 * buttonheight), xSize - 4, 10);
-		this.cfields[7] = new TextField(7, fontRenderer, 2, 20 + (7 * buttonheight), xSize - 4, 10);
-		this.cfields[10] = new TextField(10, fontRenderer, 2, 20 + (10 * buttonheight), xSize - 4, 10);
+		this.cfields[7] = new TextField(7, fontRenderer, 2, 20 + (7 * buttonheight), xSize - 4, 10).setMaxLength(1024);
+		this.cfields[10] = new TextField(10, fontRenderer, 2, 20 + (10 * buttonheight), xSize - 4, 10).setMaxLength(1024);
 		this.fields.put("field4", cfields[4]); this.fields.put("field7", cfields[7]); this.fields.put("field10", cfields[10]);
+		VehicleData data = container.getTileEntity().getVehicleData();
+		cfields[ 7].setText(data == null ? "no data" :  data.isExternalTexture() ? "" : data.getCustomTextureString());
+		cfields[10].setText(data == null ? "no data" : !data.isExternalTexture() ? "" : data.getCustomTextureString());
 	}
 	
 	private void updateIconsAndButtons(){
@@ -58,6 +63,15 @@ public class ConstructorVTM extends ConstructorGui {
 			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 			this.container.send(Side.SERVER, compound); return true;
 		}
+		else if(button.name.endsWith("_apply")){
+			boolean external = button.name.startsWith("ex");
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("cargo", "vtm_custom");
+			compound.setString("value", external ? cfields[10].getText() : cfields[7].getText());
+			compound.setBoolean("external", external);
+			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.container.send(Side.SERVER, compound); return true;
+		}
 		else Print.debug("function not found");
 		return true;
 	}
@@ -66,10 +80,4 @@ public class ConstructorVTM extends ConstructorGui {
 	protected void scrollwheel(int am, int x, int y){
 		//
 	}
-	
-	@Override
-	public void onTitleTextUpdate(){
-		//this.updateIconsAndButtons();
-	}
-
 }

@@ -21,7 +21,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
 	protected int selected_texture;
-	protected String external_texture;
+	protected String extex;
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal;
 	protected Pos currentpos = new Pos(0, 0, 0);
@@ -115,7 +115,12 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 
 	@Override
 	public ResourceLocation getCustomTexture(){
-		return isTextureExternal ? ExternalTextureHelper.get(external_texture) : seltex;
+		return isTextureExternal ? ExternalTextureHelper.get(extex) : seltex;
+	}
+
+	@Override
+	public String getCustomTextureString(){
+		return isTextureExternal ? extex : seltex.toString();
 	}
 
 	@Override
@@ -136,7 +141,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		if(i < 0){
 			this.isTextureExternal = ex;
 			this.seltex = ex ? null : new ResourceLocation(tex);
-			this.external_texture = ex ? tex : null;
+			this.extex = ex ? tex : null;
 		}
 		else{
 			this.selected_texture = i >= type.getDefaultTextures().size() ? type.getDefaultTextures().size() - 1 : i; 

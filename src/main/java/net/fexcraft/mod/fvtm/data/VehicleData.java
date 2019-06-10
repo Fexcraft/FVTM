@@ -313,6 +313,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	@Override
+	public String getCustomTextureString(){
+		return isTextureExternal ? extex : seltex.toString();
+	}
+
+	@Override
 	public boolean isExternalTexture(){
 		return isTextureExternal;
 	}

@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartManager;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -84,6 +85,8 @@ public class FVTM {
 			GuiHandler.insert(904, ConstructorPartCacheInfo.class, ConstructorContainer.class);
 			GuiHandler.insert(905, ConstructorPartManager.class, ConstructorContainer.class);
 			GuiHandler.insert(906, ConstructorPartInstaller.class, ConstructorContainer.class);
+			//painter 907
+			GuiHandler.insert(908, ConstructorVTM.class, ConstructorContainer.class);
 		}
 		else{
 			GuiHandler.insert(900, ConstructorContainer.class);
@@ -92,6 +95,8 @@ public class FVTM {
 			GuiHandler.insert(904, ConstructorContainer.class);
 			GuiHandler.insert(905, ConstructorContainer.class);
 			GuiHandler.insert(906, ConstructorContainer.class);
+			GuiHandler.insert(907, ConstructorContainer.class);
+			GuiHandler.insert(908, ConstructorContainer.class);
 		}
 	}
 

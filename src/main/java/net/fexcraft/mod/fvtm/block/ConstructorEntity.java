@@ -84,7 +84,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				boolean bool = packet.getBoolean("custom_category");
 				PartData data = this.getPartData(); String cat = packet.getString("category");
 				if(bool && !data.getType().getInstallationHandler().allowsCustomCategory(data)){
-					container.setTitleText("Custom Category not allow for this part.", null); return;
+					container.setTitleText("Custom Category not allowed for this part.", null); return;
 				}
 				if(data.getType().getInstallationHandler().allowInstall(container.getCommandSender(), data, cat, getVehicleData())){
 					if(data.getType().getInstallationHandler().processInstall(container.getCommandSender(), data, cat, getVehicleData())){
@@ -103,6 +103,14 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				} return;
 			}
 			case "part_cache_drop":{ this.dropPart(true); return; }
+			case "vtm_supplied":{
+				int i = packet.getInteger("value");
+				if(i < 0 || i >= this.getVehicleData().getType().getDefaultTextures().size()){
+					container.setTitleText("Invalid SUPPLIED ID.", RGB.RED.packed); return;
+				} this.getVehicleData().setSelectedTexture(i, null, false);
+				container.setTitleText("Texture Applied.", null);
+				this.updateClient("vehicle"); return;
+			}
 			//
 			default: return;
 		}

@@ -13,6 +13,8 @@ public interface Textureable {
 	
 	public boolean isExternalTexture();
 	
+	public void setSelectedTexture(int i, String tex, boolean ex);
+	
 	public static interface TextureHolder {
 		
 		public java.util.List<NamedResourceLocation> getDefaultTextures();

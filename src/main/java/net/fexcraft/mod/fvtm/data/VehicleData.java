@@ -33,7 +33,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected RGB primary, secondary;
 	protected int lightstate, selected_texture;
-	protected String external_texture;
+	protected String extex;
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal;
 
@@ -58,6 +58,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			list.appendTag(part.getValue().write(com));
 		}
 		compound.setTag("Parts", list);
+		compound.setInteger("SelectedTexture", selected_texture);
+		if(seltex != null || extex != null || selected_texture < 0){
+			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
+			compound.setBoolean("ExternalTexture", isTextureExternal);
+		}
 		return compound;
 	}
 
@@ -74,6 +79,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("InstalledAs")) continue;
 				this.parts.put(com.getString("InstalledAs"), Resources.getPartData(com));
 			}
+		}
+		this.selected_texture = compound.getInteger("SelectedTexture");
+		if(selected_texture < 0){
+			isTextureExternal = compound.getBoolean("ExternalTexture");
+			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
+			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
 		}
 		return this;
 	}
@@ -298,12 +309,25 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	@Override
 	public ResourceLocation getCustomTexture(){
-		return isTextureExternal ? ExternalTextureHelper.get(external_texture) : seltex;
+		return isTextureExternal ? ExternalTextureHelper.get(extex) : seltex;
 	}
 
 	@Override
 	public boolean isExternalTexture(){
 		return isTextureExternal;
+	}
+
+	@Override
+	public void setSelectedTexture(int i, String tex, boolean ex){
+		if(i < 0){
+			this.isTextureExternal = ex; this.selected_texture = -1;
+			this.seltex = ex ? null : new ResourceLocation(tex);
+			this.extex = ex ? tex : null;
+		}
+		else{
+			this.selected_texture = i >= type.getDefaultTextures().size() ? type.getDefaultTextures().size() - 1 : i;
+			this.seltex = null; this.extex = null;
+		}
 	}
 
 }

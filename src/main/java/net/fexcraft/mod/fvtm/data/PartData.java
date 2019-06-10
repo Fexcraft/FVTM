@@ -131,4 +131,16 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		this.currentpos = pos; return;
 	}
 
+	@Override
+	public void setSelectedTexture(int i, String tex, boolean ex){
+		if(i < 0){
+			this.isTextureExternal = ex;
+			this.seltex = ex ? null : new ResourceLocation(tex);
+			this.external_texture = ex ? tex : null;
+		}
+		else{
+			this.selected_texture = i >= type.getDefaultTextures().size() ? type.getDefaultTextures().size() - 1 : i; 
+		}
+	}
+
 }

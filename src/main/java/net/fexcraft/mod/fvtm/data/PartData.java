@@ -36,6 +36,12 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		compound.setString("Part", type.getRegistryName().toString());
 		currentpos.toNBT("CurrentPos", compound);
 		//
+		compound.setInteger("SelectedTexture", selected_texture);
+		if(seltex != null || extex != null || selected_texture < 0){
+			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
+			compound.setBoolean("ExternalTexture", isTextureExternal);
+		}
+		//
 		return compound;
 	}
 
@@ -45,6 +51,13 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		//type = Resources.getPart(compound.getString("Part"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		currentpos = Pos.fromNBT("CurrentPos", compound);
+		//
+		this.selected_texture = compound.getInteger("SelectedTexture");
+		if(selected_texture < 0){
+			isTextureExternal = compound.getBoolean("ExternalTexture");
+			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
+			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
+		}
 		//
 		return this;
 	}
@@ -139,13 +152,19 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	@Override
 	public void setSelectedTexture(int i, String tex, boolean ex){
 		if(i < 0){
-			this.isTextureExternal = ex;
+			this.isTextureExternal = ex; this.selected_texture = -1;
 			this.seltex = ex ? null : new ResourceLocation(tex);
 			this.extex = ex ? tex : null;
 		}
 		else{
-			this.selected_texture = i >= type.getDefaultTextures().size() ? type.getDefaultTextures().size() - 1 : i; 
+			this.selected_texture = i >= type.getDefaultTextures().size() ? type.getDefaultTextures().size() - 1 : i;
+			this.seltex = null; this.extex = null;
 		}
+	}
+
+	@Override
+	public TextureHolder getHolder(){
+		return type;
 	}
 
 }

@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.PartData;
 import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.item.EntityItem;
@@ -105,17 +106,20 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			case "vtm_supplied":{
 				if(noveh(container)) return;
 				int i = packet.getInteger("value");
-				if(i < 0 || i >= this.getVehicleData().getType().getDefaultTextures().size()){
+				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : this.getVehicleData();
+				if(textur == null && packet.hasKey("part")){ container.setTitleText("Invalid Part Request.", RGB.RED.packed); return; }
+				if(i < 0 || i >= textur.getHolder().getDefaultTextures().size()){
 					container.setTitleText("Invalid SUPPLIED ID.", RGB.RED.packed); return;
-				} this.getVehicleData().setSelectedTexture(i, null, false);
+				} textur.setSelectedTexture(i, null, false);
 				container.setTitleText("Texture Applied.", null);
 				this.updateClient("vehicle"); return;
 			}
 			case "vtm_custom":{
-				if(noveh(container)) return; String value = packet.getString("value");
-				boolean external = packet.getBoolean("external");
+				if(noveh(container)) return; String value = packet.getString("value"); boolean external = packet.getBoolean("external");
+				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : this.getVehicleData();
+				if(textur == null && packet.hasKey("part")){ container.setTitleText("Invalid Part Request.", RGB.RED.packed); return; }
 				//TODO check if custom textures are allowed;
-				this.getVehicleData().setSelectedTexture(-1, value, external);
+				textur.setSelectedTexture(-1, value, external);
 				container.setTitleText("Texture Applied.", null);
 				this.updateClient("vehicle"); return;
 			}

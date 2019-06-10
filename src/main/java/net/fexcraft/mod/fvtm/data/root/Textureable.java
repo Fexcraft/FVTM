@@ -23,4 +23,6 @@ public interface Textureable {
 		
 	}
 
+	public TextureHolder getHolder();
+
 }

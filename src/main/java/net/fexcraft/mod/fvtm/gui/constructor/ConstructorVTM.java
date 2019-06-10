@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui.constructor;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,17 +12,26 @@ import net.minecraftforge.fml.relauncher.Side;
 
 /** Vehicle Texture Manager*/
 public class ConstructorVTM extends ConstructorGui {
-	
+
+	private Textureable textur;
 	private IconButton next, prev;
+	private String part;
 
 	public ConstructorVTM(EntityPlayer player, World world, int x, int y, int z){
-		super(player, world, x, y, z); this.removeEmptyButtons = true;
+		super(player, world, x, y, z); this.removeEmptyButtons = true; part = null;
+		this.buttontext = new String[]{ "||Current:" , "||...", "", "||Supplied:", "", "", "||Internal:", "", "", "||External:", "", "", "< Back" };
+	}
+	
+	public ConstructorVTM(EntityPlayer player, int[] xyz, NBTTagCompound compound){
+		super(player, xyz, compound); this.removeEmptyButtons = true; part = compound.getString("category");
 		this.buttontext = new String[]{ "||Current:" , "||...", "", "||Supplied:", "", "", "||Internal:", "", "", "||External:", "", "", "< Back" };
 	}
 	
 	@Override
 	public void init(){
 		super.init(); this.menutitle.string = "Vehicle Texture Management";
+		VehicleData vdata = container.getTileEntity().getVehicleData();
+		this.textur = part == null ? vdata : vdata.getPart(part);
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_supplied", prev = new IconButton("prev_supplied", 3, 1, false, ICON_LEFT));
 		this.buttons.put("in_apply", new IconButton("in_apply", 6, 0, false, ICON_RIGHT));
@@ -30,16 +40,15 @@ public class ConstructorVTM extends ConstructorGui {
 		this.cfields[7] = new TextField(7, fontRenderer, 2, 20 + (7 * buttonheight), xSize - 4, 10).setMaxLength(1024);
 		this.cfields[10] = new TextField(10, fontRenderer, 2, 20 + (10 * buttonheight), xSize - 4, 10).setMaxLength(1024);
 		this.fields.put("field4", cfields[4]); this.fields.put("field7", cfields[7]); this.fields.put("field10", cfields[10]);
-		VehicleData data = container.getTileEntity().getVehicleData();
-		cfields[ 7].setText(data == null ? "no data" :  data.isExternalTexture() ? "" : data.getCustomTextureString());
-		cfields[10].setText(data == null ? "no data" : !data.isExternalTexture() ? "" : data.getCustomTextureString());
+		
+		cfields[ 7].setText(textur == null ? "no data" :  textur.isExternalTexture() ? "" : textur.getCustomTextureString());
+		cfields[10].setText(textur == null ? "no data" : !textur.isExternalTexture() ? "" : textur.getCustomTextureString());
 	}
 	
 	private void updateIconsAndButtons(){
-		VehicleData data = container.getTileEntity().getVehicleData();
-		tbuttons[1].string = data.getSelectedTexture() < 0 ? data.isExternalTexture() ? "external" : "internal" : "supplied:" + data.getSelectedTexture();
-		cfields[4].setText(data.getSelectedTexture() < 0 ? " - - - - " : data.getType().getDefaultTextures().get(data.getSelectedTexture()).toString());
-		prev.enabled = data.getSelectedTexture() > 0; next.enabled = !(data.getSelectedTexture() >= data.getType().getDefaultTextures().size());
+		tbuttons[1].string = textur.getSelectedTexture() < 0 ? textur.isExternalTexture() ? "external" : "internal" : "supplied:" + textur.getSelectedTexture();
+		cfields[4].setText(textur.getSelectedTexture() < 0 ? " - - - - " : textur.getHolder().getDefaultTextures().get(textur.getSelectedTexture()).toString());
+		prev.enabled = textur.getSelectedTexture() > 0; next.enabled = !(textur.getSelectedTexture() >= textur.getHolder().getDefaultTextures().size());
 	}
 	
 	@Override
@@ -52,13 +61,13 @@ public class ConstructorVTM extends ConstructorGui {
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button12")) this.openGui(modid, 900, xyz);
 		else if(button.name.endsWith("_supplied")){
-			VehicleData data = container.getTileEntity().getVehicleData();
-			int i = data.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);
-			if(i >= data.getType().getDefaultTextures().size() || i < 0){
+			int i = textur.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);
+			if(i >= textur.getHolder().getDefaultTextures().size() || i < 0){
 				Print.debug("invalid id " + i); return true;
 			}
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "vtm_supplied");
+			if(part != null) compound.setString("part", part);
 			compound.setInteger("value", i);
 			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 			this.container.send(Side.SERVER, compound); return true;
@@ -67,6 +76,7 @@ public class ConstructorVTM extends ConstructorGui {
 			boolean external = button.name.startsWith("ex");
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "vtm_custom");
+			if(part != null) compound.setString("part", part);
 			compound.setString("value", external ? cfields[10].getText() : cfields[7].getText());
 			compound.setBoolean("external", external);
 			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);

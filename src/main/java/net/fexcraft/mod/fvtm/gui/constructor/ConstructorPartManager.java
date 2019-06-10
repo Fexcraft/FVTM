@@ -68,7 +68,7 @@ public class ConstructorPartManager extends ConstructorGui {
 				int i = Integer.parseInt(button.name.replace("icon_edit", ""));
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("category", tbuttons[i].string.trim().replace(".", ""));
-				this.openGenericGui(920, xyz, compound);
+				this.openGenericGui(908/*920*/, xyz, compound);
 			}
 			catch(Exception e){
 				e.printStackTrace();

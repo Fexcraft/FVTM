@@ -85,8 +85,8 @@ public class FVTM {
 			GuiHandler.insert(904, ConstructorPartCacheInfo.class, ConstructorContainer.class);
 			GuiHandler.insert(905, ConstructorPartManager.class, ConstructorContainer.class);
 			GuiHandler.insert(906, ConstructorPartInstaller.class, ConstructorContainer.class);
-			//painter 907
 			GuiHandler.insert(908, ConstructorVTM.class, ConstructorContainer.class);
+			//painter 909
 		}
 		else{
 			GuiHandler.insert(900, ConstructorContainer.class);
@@ -95,8 +95,8 @@ public class FVTM {
 			GuiHandler.insert(904, ConstructorContainer.class);
 			GuiHandler.insert(905, ConstructorContainer.class);
 			GuiHandler.insert(906, ConstructorContainer.class);
-			GuiHandler.insert(907, ConstructorContainer.class);
 			GuiHandler.insert(908, ConstructorContainer.class);
+			GuiHandler.insert(909, ConstructorContainer.class);
 		}
 	}
 

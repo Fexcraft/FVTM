@@ -1,8 +1,9 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import javax.annotation.Nullable;
+
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.mod.fvtm.block.ConstructorEntity;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorCommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -14,10 +15,16 @@ public class ConstructorContainer extends GenericContainer {
 	protected ConstructorCommandSender sender;
 	protected ConstructorEntity entity;
 	protected ConstructorGui gui;
+	@Nullable protected NBTTagCompound initpacket;
 
 	public ConstructorContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player); this.entity = (ConstructorEntity)world.getTileEntity(new BlockPos(x, y, z));
 		this.sender = new ConstructorCommandSender(this);
+	}
+	
+	public ConstructorContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
+		super(player); this.entity = (ConstructorEntity)player.world.getTileEntity(new BlockPos(xyz[0], xyz[1], xyz[2]));
+		this.sender = new ConstructorCommandSender(this); initpacket = compound;
 	}
 
 	@Override

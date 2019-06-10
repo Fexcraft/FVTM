@@ -1,8 +1,7 @@
-package net.fexcraft.mod.fvtm.gui.constructor;
+package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;

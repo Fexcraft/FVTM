@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -36,6 +37,12 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	public ConstructorGui(EntityPlayer player, World world, int x, int y, int z){
 		super(STONE, new ConstructorContainer(player, world, x, y, z), player);
 		this.defbackground = false; this.deftexrect = false; xyz = new int[]{ x, y, z };
+		this.container.setGUI(this);
+	}
+	
+	public ConstructorGui(EntityPlayer player, int[] xyz, NBTTagCompound compound){
+		super(STONE, new ConstructorContainer(player, xyz, compound), player);
+		this.defbackground = false; this.deftexrect = false; this.xyz = xyz;
 		this.container.setGUI(this);
 	}
 	

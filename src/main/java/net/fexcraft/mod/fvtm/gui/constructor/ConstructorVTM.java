@@ -29,7 +29,7 @@ public class ConstructorVTM extends ConstructorGui {
 	
 	@Override
 	public void init(){
-		super.init(); this.menutitle.string = "Vehicle Texture Management";
+		super.init(); this.menutitle.string = (part == null ? "Vehicle " : "Part [" + part + "] ") + "Texture Management";
 		VehicleData vdata = container.getTileEntity().getVehicleData();
 		this.textur = part == null ? vdata : vdata.getPart(part);
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
@@ -40,7 +40,7 @@ public class ConstructorVTM extends ConstructorGui {
 		this.cfields[7] = new TextField(7, fontRenderer, 2, 20 + (7 * buttonheight), xSize - 4, 10).setMaxLength(1024);
 		this.cfields[10] = new TextField(10, fontRenderer, 2, 20 + (10 * buttonheight), xSize - 4, 10).setMaxLength(1024);
 		this.fields.put("field4", cfields[4]); this.fields.put("field7", cfields[7]); this.fields.put("field10", cfields[10]);
-		
+		//
 		cfields[ 7].setText(textur == null ? "no data" :  textur.isExternalTexture() ? "" : textur.getCustomTextureString());
 		cfields[10].setText(textur == null ? "no data" : !textur.isExternalTexture() ? "" : textur.getCustomTextureString());
 	}
@@ -48,7 +48,7 @@ public class ConstructorVTM extends ConstructorGui {
 	private void updateIconsAndButtons(){
 		tbuttons[1].string = textur.getSelectedTexture() < 0 ? textur.isExternalTexture() ? "external" : "internal" : "supplied:" + textur.getSelectedTexture();
 		cfields[4].setText(textur.getSelectedTexture() < 0 ? " - - - - " : textur.getHolder().getDefaultTextures().get(textur.getSelectedTexture()).toString());
-		prev.enabled = textur.getSelectedTexture() > 0; next.enabled = !(textur.getSelectedTexture() >= textur.getHolder().getDefaultTextures().size());
+		prev.enabled = textur.getSelectedTexture() > 0; next.enabled = textur.getSelectedTexture() < textur.getHolder().getDefaultTextures().size() - 1;
 	}
 	
 	@Override

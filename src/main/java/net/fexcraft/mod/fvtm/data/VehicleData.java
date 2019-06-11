@@ -85,7 +85,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			isTextureExternal = compound.getBoolean("ExternalTexture");
 			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
-		}
+		} else{ seltex = null; extex = null; isTextureExternal = false; }
 		return this;
 	}
 

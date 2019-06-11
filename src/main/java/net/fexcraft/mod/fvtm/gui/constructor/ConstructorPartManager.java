@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class ConstructorPartManager extends ConstructorGui {
 
-	private IconButton[] remico = new IconButton[10], edico = new IconButton[10];
+	private IconButton[] remico = new IconButton[10], edico = new IconButton[20];
 	private IconButton next, prev;
 	private int page;
 
@@ -28,7 +28,8 @@ public class ConstructorPartManager extends ConstructorGui {
 		this.buttons.put("prev_page", prev = new IconButton("prev", 11, 1, false, ICON_LEFT));
 		for(int i = 1; i < 11; i++){
 			this.buttons.put("icon" + i + "r", remico[i - 1] = new IconButton("icon_rem" + i, i, 0, false, ICON_REMOVE));
-			this.buttons.put("icon" + i + "e", edico[i - 1] = new IconButton("icon_edit" + i, i, 1, false, ICON_EDIT));
+			this.buttons.put("icon0" + i + "e", edico[i - 1] = new IconButton("icon_edit0" + i, i, 1, false, ICON_EDIT0));
+			this.buttons.put("icon1" + i + "e", edico[i - 1 + 10] = new IconButton("icon_edit1" + i, i, 2, false, ICON_EDIT1));
 		}
 	}
 	
@@ -44,7 +45,7 @@ public class ConstructorPartManager extends ConstructorGui {
 			for(int i = 1; i < 11; i++){
 				int j = i + (page * 10) - 1;
 				tbuttons[i].string = j >= vdata.getParts().size() ? " - - - - " : "." + (String)vdata.getParts().keySet().toArray()[j];
-				remico[i -1].visible = edico[i -1].visible = j < vdata.getParts().size();
+				remico[i -1].visible = edico[i -1].visible = edico[i + 9].visible = j < vdata.getParts().size();
 				//TODO edico[i -1].enabled = edico[i -1].visible ? vdata.getParts().values().toArray(new PartData[0])[j].getType().isRemovable() : false;
 			}
 			next.enabled = page < vdata.getParts().size() / 10;
@@ -63,12 +64,23 @@ public class ConstructorPartManager extends ConstructorGui {
 		if(button.name.equals("button13")) this.openGui(modid, 900, xyz);
 		else if(button.name.equals("next")) page++;
 		else if(button.name.equals("prev")) page--;
-		else if(button.name.contains("icon_edit")){
+		else if(button.name.contains("icon_edit0")){
 			try{
-				int i = Integer.parseInt(button.name.replace("icon_edit", ""));
+				int i = Integer.parseInt(button.name.replace("icon_edit0", ""));
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("category", tbuttons[i].string.trim().replace(".", ""));
-				this.openGenericGui(908/*920*/, xyz, compound);
+				this.openGenericGui(920, xyz, compound);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		else if(button.name.contains("icon_edit1")){
+			try{
+				int i = Integer.parseInt(button.name.replace("icon_edit1", ""));
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("category", tbuttons[i].string.trim().replace(".", ""));
+				this.openGenericGui(908, xyz, compound);
 			}
 			catch(Exception e){
 				e.printStackTrace();

@@ -25,9 +25,9 @@ public class ConstructorPartInstaller extends ConstructorGui {
 		this.cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10);
 		this.cfields[1].setText("custom_cat"); this.fields.put("field2", cfields[1]);
 		for(int i = 7; i < buttontext.length; i++){
-			this.buttons.put("icon" + i, new IconButton("icon" + i, i, 0, false, ICON_EDIT));
+			this.buttons.put("icon" + i, new IconButton("icon" + i, i, 0, false, ICON_EDIT0));
 		}
-		this.buttons.put("icon2", new IconButton("icon2", 2, 0, false, ICON_EDIT));
+		this.buttons.put("icon2", new IconButton("icon2", 2, 0, false, ICON_EDIT0));
 		//this.updateIconsAndButtons();
 	}
 	

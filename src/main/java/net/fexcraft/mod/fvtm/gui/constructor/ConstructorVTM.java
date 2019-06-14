@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 /** Vehicle Texture Manager*/
 public class ConstructorVTM extends ConstructorGui {
 
-	private Textureable textur;
+	//private Textureable textur;
 	private IconButton next, prev;
 	private String part;
 
@@ -31,7 +31,7 @@ public class ConstructorVTM extends ConstructorGui {
 	public void init(){
 		super.init(); this.menutitle.string = (part == null ? "Vehicle " : "Part [" + part + "] ") + "Texture Management";
 		VehicleData vdata = container.getTileEntity().getVehicleData();
-		this.textur = part == null ? vdata : vdata.getPart(part);
+		Textureable textur = part == null ? vdata : vdata.getPart(part);
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_supplied", prev = new IconButton("prev_supplied", 3, 1, false, ICON_LEFT));
 		this.buttons.put("in_apply", new IconButton("in_apply", 6, 0, false, ICON_RIGHT));
@@ -46,6 +46,7 @@ public class ConstructorVTM extends ConstructorGui {
 	}
 	
 	private void updateIconsAndButtons(){
+		Textureable textur = part == null ? container.getTileEntity().getVehicleData() : container.getTileEntity().getVehicleData().getPart(part);
 		tbuttons[1].string = textur.getSelectedTexture() < 0 ? textur.isExternalTexture() ? "external" : "internal" : "supplied:" + textur.getSelectedTexture();
 		cfields[4].setText(textur.getSelectedTexture() < 0 ? " - - - - " : textur.getHolder().getDefaultTextures().get(textur.getSelectedTexture()).toString());
 		prev.enabled = textur.getSelectedTexture() > 0; next.enabled = textur.getSelectedTexture() < textur.getHolder().getDefaultTextures().size() - 1;
@@ -61,6 +62,7 @@ public class ConstructorVTM extends ConstructorGui {
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button12")) this.openGui(modid, 900, xyz);
 		else if(button.name.endsWith("_supplied")){
+			Textureable textur = part == null ? container.getTileEntity().getVehicleData() : container.getTileEntity().getVehicleData().getPart(part);
 			int i = textur.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);
 			if(i >= textur.getHolder().getDefaultTextures().size() || i < 0){
 				Print.debug("invalid id " + i); return true;

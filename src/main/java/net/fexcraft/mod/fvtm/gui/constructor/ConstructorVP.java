@@ -7,7 +7,9 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 /** Vehicle Color Painter */
 public class ConstructorVP extends ConstructorGui {
@@ -37,8 +39,8 @@ public class ConstructorVP extends ConstructorGui {
 		this.buttons.put("spectrum", spectrum = new Spectrum(2, 20 + (5 * buttonheight), xSize - 4));
 		this.buttons.put("palette", palette = new Palette(2, 20 + (6 * buttonheight), xSize - 4));
 		this.buttons.put("preview", new Preview(2, 20 + (4 * buttonheight), xSize - 4));
-		this.fields.put("rgb", cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10));
-		this.fields.put("hex", cfields[3] = new TextField(2, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10));
+		this.fields.put("rgb", rgb = cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10));
+		this.fields.put("hex", hex = cfields[3] = new TextField(2, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10));
 		//
 		VehicleData vdata = container.getTileEntity().getVehicleData();
 		this.updateColorTo(primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor(), true);
@@ -61,7 +63,35 @@ public class ConstructorVP extends ConstructorGui {
 		else if(button.name.equals("icon_type_prev") || button.name.equals("icon_type_next")){ primary = !primary; return true; }
 		else if(button.name.equals("spectrum")){ this.updateColorTo(spectrum.getColorAt(mouseX), true); return true; }
 		else if(button.name.equals("palette")){ this.updateColorTo(palette.getColorAt(mouseX, mouseY), false); return true; }
+		else if(button.name.equals("icon_rgb")){ this.updateColorTo(tryParse(rgb.getText(), false), true); return true; }
+		else if(button.name.equals("icon_hex")){ this.updateColorTo(tryParse(hex.getText(), true), true); return true; }
+		else if(button.name.equals("icon_remove")){ this.updateColorTo(primary ? org_p : org_s, true); sendColorUpdate();return true; }
+		else if(button.name.equals("icon_check")){ this.updateColorTo(primary ? org_p : org_s, true); sendColorUpdate();return true; }
 		return true;
+	}
+
+	private void sendColorUpdate(){
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("cargo", "color_update");
+		compound.setBoolean("primary", primary);
+		compound.setString("rgb", Integer.toHexString(current.packed));
+		this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+		this.container.send(Side.SERVER, compound);
+	}
+
+	private RGB tryParse(String text, boolean hex){
+		RGB rgb = null; try{
+			if(hex){
+				rgb = new RGB(); rgb.packed = Integer.parseInt(text.replace("#", ""), 16);
+			}
+			else{
+				String[] str = text.trim().replace(" ", "").split(",");
+				rgb = new RGB(Integer.parseInt(str[0]), Integer.parseInt(str[1]), Integer.parseInt(str[2]));
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace(); this.titletext.update("Error parsing " + (hex ? "HEX Code" : "RGB Color") + ".", RGB.RED.packed);
+		} return rgb;
 	}
 
 	@Override

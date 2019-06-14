@@ -123,6 +123,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				container.setTitleText("Texture Applied.", null);
 				this.updateClient("vehicle"); return;
 			}
+			case "color_update":{
+				if(noveh(container)) return; boolean primary = packet.getBoolean("primary"); int rgb = Integer.parseInt(packet.getString("rgb"), 16);
+				(primary ? this.getVehicleData().getPrimaryColor() : this.getVehicleData().getSecondaryColor()).packed = rgb;
+				container.setTitleText("Color Applied.", null); this.updateClient("color"); return;
+			}
 			//
 			default: return;
 		}
@@ -171,6 +176,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         	this.vdata = null;
         }
         //
+        if(packet.nbt.hasKey("RGBPrimary") && vdata != null) vdata.getPrimaryColor().packed = packet.nbt.getInteger("RGBPrimary"); 
+        if(packet.nbt.hasKey("RGBSecondary") && vdata != null) vdata.getSecondaryColor().packed = packet.nbt.getInteger("RGBSecondary");
+        //Print.debug(vdata.getPrimaryColor().packed, vdata.getSecondaryColor().packed);
+        //
         if(packet.nbt.hasKey("CenterPos")){
         	this.center = BlockPos.fromLong(packet.nbt.getLong("CenterPos"));
         }
@@ -194,9 +203,15 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     			if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound()));
     			else compound.setBoolean("PartDataReset", true); break;
     		}
+    		case "color": case "rgb":{
+    			if(vdata == null){ Print.debug("no veh in const # color"); return; }
+    			compound.setInteger("RGBPrimary", vdata.getPrimaryColor().packed);
+    			compound.setInteger("RGBSecondary", vdata.getSecondaryColor().packed);
+    			break;
+    		}
     		//
     		default: return;
-    	}
+    	} this.markDirty();//checking stuff
     	ApiUtil.sendTileEntityUpdatePacket(world, pos, compound);
     }
 

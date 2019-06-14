@@ -144,6 +144,10 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		public IconButton setCenterButtonBount(BasicButton button){
 			this.cbutton = button; return this;
 		}
+
+		public BasicButton setEnabled(boolean bool){
+			this.enabled = bool; return this;
+		}
 		
 	}
 	

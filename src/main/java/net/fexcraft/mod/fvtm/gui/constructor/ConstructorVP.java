@@ -16,7 +16,7 @@ public class ConstructorVP extends ConstructorGui {
 	private boolean primary = true;
 	private Spectrum spectrum;
 	private Palette palette;
-	private Preview preview;
+	//private Preview preview;
 	private TextField rgb, hex;
 
 	public ConstructorVP(EntityPlayer player, World world, int x, int y, int z){
@@ -27,21 +27,22 @@ public class ConstructorVP extends ConstructorGui {
 	@Override
 	public void init(){
 		super.init(); this.menutitle.string = "Vehicle Color Painter";
-		VehicleData vdata = container.getTileEntity().getVehicleData();
-		current = primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor();
-		org_p = vdata.getPrimaryColor().copy(); org_s = vdata.getSecondaryColor().copy();
 		this.buttons.put("icon_rgb", new IconButton("icon_rgb", 0, 0, false, ICON_CHECK));
 		this.buttons.put("icon_hex", new IconButton("icon_hex", 2, 0, false, ICON_CHECK));
-		this.buttons.put("icon_try", new IconButton("icon_try", 10, 2, false, ICON_QMARK));
+		this.buttons.put("icon_try", new IconButton("icon_try", 10, 2, false, ICON_QMARK).setEnabled(false));
 		this.buttons.put("icon_check", new IconButton("icon_check", 10, 1, false, ICON_CHECK));
 		this.buttons.put("icon_remove", new IconButton("icon_remove", 10, 0, false, ICON_REMOVE));
 		this.buttons.put("icon_type_prev", new IconButton("icon_type_prev", 11, 1, false, ICON_LEFT));
 		this.buttons.put("icon_type_next", new IconButton("icon_type_next", 11, 0, false, ICON_RIGHT));
 		this.buttons.put("spectrum", spectrum = new Spectrum(2, 20 + (5 * buttonheight), xSize - 4));
 		this.buttons.put("palette", palette = new Palette(2, 20 + (6 * buttonheight), xSize - 4));
-		this.buttons.put("preview", preview = new Preview(2, 20 + (4 * buttonheight), xSize - 4));
+		this.buttons.put("preview", new Preview(2, 20 + (4 * buttonheight), xSize - 4));
 		this.fields.put("rgb", cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10));
 		this.fields.put("hex", cfields[3] = new TextField(2, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10));
+		//
+		VehicleData vdata = container.getTileEntity().getVehicleData();
+		this.updateColorTo(primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor(), true);
+		org_p = vdata.getPrimaryColor().copy(); org_s = vdata.getSecondaryColor().copy();
 	}
 	
 	private void updateIconsAndButtons(){
@@ -58,6 +59,8 @@ public class ConstructorVP extends ConstructorGui {
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button12")){ this.openGui(modid, 900, xyz); return true; }
 		else if(button.name.equals("icon_type_prev") || button.name.equals("icon_type_next")){ primary = !primary; return true; }
+		else if(button.name.equals("spectrum")){ this.updateColorTo(spectrum.getColorAt(mouseX), true); return true; }
+		else if(button.name.equals("palette")){ this.updateColorTo(palette.getColorAt(mouseX, mouseY), false); return true; }
 		return true;
 	}
 
@@ -123,25 +126,54 @@ public class ConstructorVP extends ConstructorGui {
             }
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 		}
+
+		public RGB getColorAt(int mouseX){
+			int i = (mouseX - x) / size; if(i < 0 || i >= 32) return current; return rgbs[i];
+		}
 		
 	}
 	
 	public static class Palette extends BasicButton {
+		
+		private RGB[][] rgbs = new RGB[8][4];
+		private int wx, hy;
 
 		public Palette(int x, int y, int width){
-			super("palette", x, y, 0, 0, width, (4 * buttonheight) - 2, true);
+			super("palette", x, y, 0, 0, width, (4 * buttonheight) - 2, true); wx = sizex / 8; hy = sizey / 4;
 		}
 
 		@Override
 		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
 			if(!visible) return;
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
-            RGB.BLUE.glColorApply();
-            //
-            gui.drawTexturedModalRect(x, y, 1, 1, sizex, sizey);
-            //
-            RGB.glColorReset();
+			for(int i = 0; i < 8; i++){
+				for(int j = 0; j < 4; j++){
+					rgbs[i][j].glColorApply();
+		            gui.drawTexturedModalRect(x + (i * wx), y + (j * hy), 1, 1, wx, hy);
+		            RGB.glColorReset();
+				}
+			}
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
+		}
+		
+		protected void recalc(){
+			byte[] arr = current.toByteArray();
+			int[] err = new int[]{ arr[0] + 128, arr[1] + 128, arr[2] + 128 };
+			for(int x = 0; x < 8; x++){
+				for(int z = 0; z < 4; z++){
+					int y = x * 8 + z;
+					float e = (1f / (8 * 4) * y), f = (1f / 8) * z, h = (255 / 8) * x;
+					int r = (int)Math.abs((e * err[0]) + ((1 - f) * h));
+					int g = (int)Math.abs((e * err[1]) + ((1 - f) * h));
+					int l = (int)Math.abs((e * err[2]) + ((1 - f) * h));
+					rgbs[x][z] = new RGB(r, g, l);
+				}
+			}
+		}
+
+		public RGB getColorAt(int mouseX, int mouseY){
+			int xx = (mouseX - x) / wx, yy = (mouseY - y) / hy;
+			if(xx < 0 || xx >= 8 || yy < 0 || yy >= 4) return current; return rgbs[xx][yy];
 		}
 		
 	}
@@ -162,6 +194,12 @@ public class ConstructorVP extends ConstructorGui {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 		}
 		
+	}
+	
+	public void updateColorTo(RGB rgb, boolean update_pallet){
+		current = rgb; cfields[3].setText("#" + Integer.toHexString(current.packed));
+		byte[] arr = rgb.toByteArray(); cfields[1].setText((arr[0] + 128) + ", " + (arr[1] + 128) + ", " + (arr[2] + 128));
+		if(update_pallet) palette.recalc();
 	}
 	
 }

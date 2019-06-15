@@ -4,6 +4,7 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -25,6 +26,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal;
 	protected Pos currentpos = new Pos(0, 0, 0);
+	protected Vec3f currentrot = new Vec3f();//TODO add this?
 
 	public PartData(Part type){
 		super(type); this.clearAttributes();

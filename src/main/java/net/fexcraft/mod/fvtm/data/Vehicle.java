@@ -30,6 +30,7 @@ import net.minecraft.util.ResourceLocation;
 public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder {
 
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
+	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
 	protected Model<VehicleData, Object> model;
 	protected List<NamedResourceLocation> textures;
 	protected ArrayList<String> required;
@@ -105,6 +106,14 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			if(!attributes.containsKey(attr.getId())) attributes.put(attr.getId(), attr.copy(null));
 			else{ attributes.get(attr.getId()).setMinMax(attr.getMin(), attr.getMax()); }
 		}
+		if(obj.has("WheelPositions")){
+			JsonArray array = obj.get("WheelPositions").getAsJsonArray();
+			for(JsonElement elm : array){
+				JsonObject json = elm.getAsJsonObject();
+				String id = json.get("id").getAsString();
+				this.defwheelpos.put(id, new WheelSlot(json));
+			}
+		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -163,6 +172,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	@Override
 	public RGB getDefaultSecondaryColor(){
 		return secondary;
+	}
+	
+	public TreeMap<String, WheelSlot> getDefaultWheelPositions(){
+		return defwheelpos;
 	}
 
 }

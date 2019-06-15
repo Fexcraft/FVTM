@@ -23,5 +23,7 @@ public abstract class PartInstallationHandler {
 	public void parse(@Nullable JsonObject obj){}
 
 	public abstract boolean allowsCustomCategory(PartData part);
+	
+	public abstract String[] getValidCategories(PartData part, VehicleData vehicle);
 
 }

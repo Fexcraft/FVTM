@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -135,6 +136,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 			}
 			else if(handler.equals("advanced") || handler.equals("adv")){
 				this.installhandler = null;//TODO make the advanced one
+			}
+			else if(handler.equals("wheel") || handler.equals("wheel_handler") || handler.equals("wheel_installer")){
+				this.installhandler = WheelInstallationHandler.INSTANCE;
+				this.installhandler_data = new WheelInstallationHandler.WheelData(inst);
 			}
 			else{
 				//try to load the class

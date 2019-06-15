@@ -1,6 +1,10 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
+import java.util.ArrayList;
+import com.google.common.collect.Lists;
+
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.mod.fvtm.data.PartData;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,12 +14,16 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ConstructorPartInstaller extends ConstructorGui {
 
 	public ConstructorPartInstaller(EntityPlayer player, World world, int x, int y, int z){
-		super(player, world, x, y, z); this.removeEmptyButtons = true;
-		String[] strarr = new String[7 + (container.getTileEntity().getPartData() == null ? 0 : container.getTileEntity().getPartData().getType().getCategories().size())];
-		strarr[0] = "||Custom Category:"; strarr[1] = ""; strarr[2] = "Install Custom"; strarr[3] = ""; strarr[4] = "< Back"; strarr[5] = ""; strarr[6] = "||Default Category:";
-		for(int i = 0; i < strarr.length - 7; i++){
-			strarr[i + 7] = container.getTileEntity().getPartData().getType().getCategories().get(i);
-		} this.buttontext = strarr;
+		super(player, world, x, y, z);this.removeEmptyButtons = true; String[] strarr = null;
+		if(container.getTileEntity().getPartData() == null){ strarr = new String[7]; }
+		else {
+			PartData part = container.getTileEntity().getPartData();
+			ArrayList<String> list = Lists.newArrayList(part.getType().getInstallationHandler().getValidCategories(part, container.getTileEntity().getVehicleData()));
+			strarr = new String[7 + list.size()]; for(int i = 0; i < strarr.length - 7; i++){ strarr[i + 7] = list.get(i); }
+		}
+		strarr[0] = "||Custom Category:"; strarr[1] = ""; strarr[2] = "Install Custom";
+		strarr[3] = ""; strarr[4] = "< Back"; strarr[5] = ""; strarr[6] = "||Default Category:";
+		this.buttontext = strarr;
 	}
 	
 	@Override

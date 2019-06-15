@@ -89,6 +89,20 @@ public class DefaultPrograms {
 		}
 	};
 	
+	public static final Program WHEEL_AUTO = new AutoRegProgram(){
+		@Override public String getId(){ return "fvtm:wheel_auto"; }
+		//
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			/*if(ent == null) return;*/ list.rotateAxis(1, 2, true);
+		}
+		//
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			/*if(ent == null) return;*/ list.rotateAxis(-1, 2, true);
+		}
+	};
+	
 	/*public static final Program STEERING_X = new AutoRegProgram(){
 		@Override public String getId(){ return "fvtm:steering_x"; }
 		//

@@ -110,4 +110,9 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		return idata == null ? false : idata.custom_cat;
 	}
 
+	@Override
+	public String[] getValidCategories(PartData part, VehicleData vehicle){
+		return part.getType().getCategories().toArray(new String[0]);
+	}
+
 }

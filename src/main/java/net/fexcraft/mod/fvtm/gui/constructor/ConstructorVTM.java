@@ -47,8 +47,13 @@ public class ConstructorVTM extends ConstructorGui {
 	
 	private void updateIconsAndButtons(){
 		Textureable textur = part == null ? container.getTileEntity().getVehicleData() : container.getTileEntity().getVehicleData().getPart(part);
-		tbuttons[1].string = textur.getSelectedTexture() < 0 ? textur.isExternalTexture() ? "external" : "internal" : "supplied:" + textur.getSelectedTexture();
-		cfields[4].setText(textur.getSelectedTexture() < 0 ? " - - - - " : textur.getHolder().getDefaultTextures().get(textur.getSelectedTexture()).toString());
+		if(textur.getSelectedTexture() < 0){
+			tbuttons[1].string = textur.isExternalTexture() ? "external" : "internal"; cfields[4].setText(" - - - - ");
+		}
+		else{
+			tbuttons[1].string = "supplied:" + textur.getSelectedTexture();
+			cfields[4].setText(textur.getHolder().getDefaultTextures().get(textur.getSelectedTexture()).getName());
+		}
 		prev.enabled = textur.getSelectedTexture() > 0; next.enabled = textur.getSelectedTexture() < textur.getHolder().getDefaultTextures().size() - 1;
 	}
 	

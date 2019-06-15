@@ -36,11 +36,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected String extex;
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal;
+	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
 
 	public VehicleData(Vehicle type){
 		super(type);
 		for(Attribute attr : type.getBaseAttributes().values()){
 			Attribute copy = attr.copy(null); attributes.put(copy.getId(), copy);
+		}
+		for(Entry<String, WheelSlot> entry: type.getDefaultWheelPositions().entrySet()){
+			this.wheels.put(entry.getKey(), entry.getValue().copy());
 		}
 		this.primary = type.primary.copy();
 		this.secondary = type.secondary.copy();
@@ -65,6 +69,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		compound.setInteger("RGBPrimary", primary.packed);
 		compound.setInteger("RGBSecondary", secondary.packed);
+		NBTTagList wlist = new NBTTagList();
+		for(Entry<String, WheelSlot> entry : wheels.entrySet()){
+			NBTTagCompound com = new NBTTagCompound();
+			com.setString("id", entry.getKey());
+			entry.getValue().write(com);
+			wlist.appendTag(com);
+		}
+		compound.setTag("Wheels", wlist);
 		Print.debug("write", compound); return compound;
 	}
 
@@ -88,8 +100,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
 		} else{ seltex = null; extex = null; isTextureExternal = false; }
-		primary.packed = compound.getInteger("RGBPrimary");
-		secondary.packed = compound.getInteger("RGBSecondary");
+		if(compound.hasKey("RGBPrimary")) primary.packed = compound.getInteger("RGBPrimary");
+		if(compound.hasKey("RGBSecondary")) secondary.packed = compound.getInteger("RGBSecondary");
+		NBTTagList wlist = (NBTTagList)compound.getTag("Wheels");
+		if(wlist != null){ wheels.clear();
+			for(NBTBase base : wlist){
+				NBTTagCompound com = (NBTTagCompound)base; wheels.put(com.getString("id"), new WheelSlot(com));
+			}
+		}
 		Print.debug("read", compound); return this;
 	}
 
@@ -272,7 +290,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	//TODO
 	public double getThrottle(){
-		return attributes.containsKey("throttle") ? attributes.get("throttle").getCurrentFloat() : 0;
+		return attributes.get("throttle").getCurrentFloat();
 	}
 
 	@Override
@@ -342,6 +360,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	@Override
 	public TextureHolder getHolder(){
 		return type;
+	}
+	
+	public TreeMap<String, WheelSlot> getWheelPositions(){
+		return wheels;
 	}
 
 }

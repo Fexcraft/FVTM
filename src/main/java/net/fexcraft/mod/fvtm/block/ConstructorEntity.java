@@ -124,8 +124,8 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				this.updateClient("vehicle"); return;
 			}
 			case "color_update":{
-				if(noveh(container)) return; boolean primary = packet.getBoolean("primary"); int rgb = Integer.parseInt(packet.getString("rgb"), 16);
-				(primary ? this.getVehicleData().getPrimaryColor() : this.getVehicleData().getSecondaryColor()).packed = rgb;
+				if(noveh(container)) return; boolean primary = packet.getBoolean("primary"); int rgb = packet.getInteger("rgb");
+				(primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor()).packed = rgb;
 				container.setTitleText("Color Applied.", null); this.updateClient("color"); return;
 			}
 			//

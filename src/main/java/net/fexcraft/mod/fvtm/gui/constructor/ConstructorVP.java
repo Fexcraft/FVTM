@@ -65,8 +65,8 @@ public class ConstructorVP extends ConstructorGui {
 		else if(button.name.equals("palette")){ this.updateColorTo(palette.getColorAt(mouseX, mouseY), false); return true; }
 		else if(button.name.equals("icon_rgb")){ this.updateColorTo(tryParse(rgb.getText(), false), true); return true; }
 		else if(button.name.equals("icon_hex")){ this.updateColorTo(tryParse(hex.getText(), true), true); return true; }
-		else if(button.name.equals("icon_remove")){ this.updateColorTo(primary ? org_p : org_s, true); sendColorUpdate();return true; }
-		else if(button.name.equals("icon_check")){ this.updateColorTo(primary ? org_p : org_s, true); sendColorUpdate();return true; }
+		else if(button.name.equals("icon_remove")){ this.updateColorTo(primary ? org_p : org_s, true); sendColorUpdate(); return true; }
+		else if(button.name.equals("icon_check")){ sendColorUpdate(); return true; }
 		return true;
 	}
 
@@ -74,7 +74,7 @@ public class ConstructorVP extends ConstructorGui {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("cargo", "color_update");
 		compound.setBoolean("primary", primary);
-		compound.setString("rgb", Integer.toHexString(current.packed));
+		compound.setInteger("rgb", current.packed);
 		this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 		this.container.send(Side.SERVER, compound);
 	}

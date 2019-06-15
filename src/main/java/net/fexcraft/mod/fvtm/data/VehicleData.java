@@ -63,6 +63,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
 			compound.setBoolean("ExternalTexture", isTextureExternal);
 		}
+		compound.setInteger("RGBPrimary", primary.packed);
+		compound.setInteger("RGBSecondary", secondary.packed);
 		Print.debug("write", compound); return compound;
 	}
 
@@ -86,6 +88,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
 		} else{ seltex = null; extex = null; isTextureExternal = false; }
+		primary.packed = compound.getInteger("RGBPrimary");
+		secondary.packed = compound.getInteger("RGBSecondary");
 		Print.debug("read", compound); return this;
 	}
 

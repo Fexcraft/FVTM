@@ -128,6 +128,13 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				(primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor()).packed = rgb;
 				container.setTitleText("Color Applied.", null); this.updateClient("color"); return;
 			}
+			case "drop":{
+				String kind = packet.getString("what");
+				switch(kind){
+					case "vehicle": this.dropVehicle(true); container.setTitleText("Vehicle Dropped.", null); break;
+					case "part": this.dropPart(true); container.setTitleText("Part Cache Emptied.", null); break;
+				} return;
+			}
 			//
 			default: return;
 		}

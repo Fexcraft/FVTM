@@ -101,14 +101,14 @@ public class DefaultPrograms {
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);
+			//if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);//TODO steering state from car
 			//GL11.glRotatef(20, 0, 0, 1);//TODO calc from entity data
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			//GL11.glRotatef(-20, 0, 0, 1);//TODO calc from entity data
-			if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);
+			//if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);//TODO steering state from car
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
@@ -124,12 +124,12 @@ public class DefaultPrograms {
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);
+			//if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);//TODO steering state from car
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);
+			//if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);//TODO steering state from car
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		

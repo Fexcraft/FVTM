@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.data;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -12,7 +12,9 @@ import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -21,15 +23,19 @@ import net.minecraft.util.ResourceLocation;
 public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
+	protected TreeMap<String, Function> functions = new TreeMap<>();
 	protected int selected_texture;
 	protected String extex;
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal;
 	protected Pos currentpos = new Pos(0, 0, 0);
-	protected Vec3f currentrot = new Vec3f();//TODO add this?
+	//protected Vec3f currentrot = new Vec3f();//TODO add this?
 
 	public PartData(Part type){
 		super(type); this.clearAttributes();
+		for(Function func : type.functions){
+			this.functions.put(func.getId(), func.copy());
+		}
 	}
 
 	@Override
@@ -44,6 +50,12 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 			compound.setBoolean("ExternalTexture", isTextureExternal);
 		}
 		//
+		NBTTagList flist = new NBTTagList();
+		for(Function func : functions.values()){
+			NBTTagCompound com = new NBTTagCompound();
+			com.setString("id", func.getId());
+			flist.appendTag(func.write(com));
+		} compound.setTag("Functions", flist);
 		return compound;
 	}
 
@@ -61,6 +73,14 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
 		} else{ seltex = null; extex = null; isTextureExternal = false; }
 		//
+		NBTTagList flist = (NBTTagList)compound.getTag("Functions");
+		if(flist != null){
+			for(NBTBase base : flist){
+				NBTTagCompound com = (NBTTagCompound)base;
+				Function func = this.getFunction(com.getString("id"));
+				if(func != null) func.read(com);
+			}
+		}
 		return this;
 	}
 
@@ -167,6 +187,24 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	@Override
 	public TextureHolder getHolder(){
 		return type;
+	}
+	
+	public Map<String, Function> getFunctions(){
+		return functions;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <F extends Function> F getFunction(String id){
+		return (F)functions.get(id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <F> F getFunction(Class<F> clazz, String id){
+		return (F)functions.get(id);
+	}
+	
+	public <F extends Function> F getFunction(ResourceLocation resloc){
+		return this.getFunction(resloc.toString());
 	}
 
 }

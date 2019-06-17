@@ -103,9 +103,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(compound.hasKey("RGBPrimary")) primary.packed = compound.getInteger("RGBPrimary");
 		if(compound.hasKey("RGBSecondary")) secondary.packed = compound.getInteger("RGBSecondary");
 		NBTTagList wlist = (NBTTagList)compound.getTag("Wheels");
-		if(wlist != null){ wheels.clear();
+		if(wlist != null){
 			for(NBTBase base : wlist){
-				NBTTagCompound com = (NBTTagCompound)base; wheels.put(com.getString("id"), new WheelSlot(com));
+				NBTTagCompound com = (NBTTagCompound)base;
+				WheelSlot slot = wheels.get(com.getString("id"));
+				if(slot != null) slot.read(com); else continue;
 			}
 		}
 		Print.debug("read", compound); return this;

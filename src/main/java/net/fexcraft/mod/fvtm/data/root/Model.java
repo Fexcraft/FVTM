@@ -7,14 +7,16 @@ import net.minecraft.entity.Entity;
 
 /**
  * @param <T> "Data Type"
+ * @param <KD> KeyData
  * @param <K> Key/Argument Type
  * */
-public interface Model<T, K> {
+public interface Model<T, /*KD, */K> {
 
 	/** 
 	 * Entityless rendering.
 	 * @param data - self-explaining
 	 * @param key - mainly used for parts, "key" under which they are installed, shouldn't be null for parts.
+	 * @param keydata - mainly used for parts, the partdata instance
 	 */
 	public void render(T data, @Nullable K key);
 	

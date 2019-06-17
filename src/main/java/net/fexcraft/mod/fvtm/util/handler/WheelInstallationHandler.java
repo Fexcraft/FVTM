@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.PartData;
 import net.fexcraft.mod.fvtm.data.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.command.ICommandSender;
 
 public class WheelInstallationHandler extends PartInstallationHandler {
@@ -40,7 +41,8 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
 		part.setInstalledPos(data.getWheelPositions().get(cat).pos());
-		//yrot //TODO
+		WheelFunction func = part.getFunction("fvtm:wheel");
+		if(func != null) func.setWheel(cat, data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 

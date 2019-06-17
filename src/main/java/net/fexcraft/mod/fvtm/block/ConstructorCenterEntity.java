@@ -121,11 +121,13 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
     public double getMaxRenderDistanceSquared(){
         return super.getMaxRenderDistanceSquared() * 8;
     }
+    
+    public static final AxisAlignedBB FINITE_EXTENT_AABB = new AxisAlignedBB(-16, -16, -16, 16, 16, 16);
 
     @SideOnly(Side.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox(){
-        return INFINITE_EXTENT_AABB;
+        return /*IN*/FINITE_EXTENT_AABB.offset(pos);
     }
 
 	public float getLength(){

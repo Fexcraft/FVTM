@@ -27,7 +27,7 @@ public class WheelSlot {
 		steering = JsonUtil.getIfExists(obj, "steering", false);
 	}
 	
-	public WheelSlot(NBTTagCompound compound){
+	public WheelSlot read(NBTTagCompound compound){
 		position = Pos.fromNBT(null, compound);
 		yrot = compound.getFloat("y_rot");
 		drive = compound.hasKey("drive") && compound.getBoolean("drive");
@@ -35,6 +35,7 @@ public class WheelSlot {
 		maxradius = compound.hasKey("max_radius") ? compound.getFloat("max_radius") : 16f;
 		minradius = compound.hasKey("min_radius") ? compound.getFloat("min_radius") : 16f;
 		steering = compound.hasKey("steering") && compound.getBoolean("steering");
+		return this;
 	}
 	
 	public WheelSlot(Pos pos, float rot, boolean drivewheel, float conn, float max, float min, boolean bool){
@@ -64,5 +65,6 @@ public class WheelSlot {
 	public float maxradius(){ return maxradius; }
 	public float minradius(){ return minradius; }
 	public float connector(){ return connector; }
+	public boolean steering(){ return steering; }
 
 }

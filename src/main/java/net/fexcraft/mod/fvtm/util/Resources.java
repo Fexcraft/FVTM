@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -17,6 +18,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Addon;
 import net.fexcraft.mod.fvtm.data.AddonClass;
+import net.fexcraft.mod.fvtm.data.Function;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.Part;
 import net.fexcraft.mod.fvtm.data.PartData;
@@ -26,6 +28,7 @@ import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -42,6 +45,7 @@ public class Resources {
 	public static IForgeRegistry<Part> PARTS;
 	public static IForgeRegistry<Vehicle> VEHICLES;
 	public static IForgeRegistry<Material> MATERIALS;
+	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	//
 	private File configroot; 
@@ -54,6 +58,7 @@ public class Resources {
 		PARTS = new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
 		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		MATERIALS = new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
+		//FUNCTIONS = new RegistryBuilder<Function>().setName(new ResourceLocation("fvtm:part_functions")).setType(Function.class).create();
 		/*FUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
 		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		PARTATTRIBUTES = new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
@@ -87,9 +92,15 @@ public class Resources {
 		//
 		//TODO check addon on/off state
 		//
+		registerFunctions();
+		//
 		searchInAddonsFor(DataType.MATERIAL);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
+	}
+
+	private void registerFunctions(){
+		registerFunction("fvtm:wheel", WheelFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){
@@ -199,6 +210,24 @@ public class Resources {
 			| InvocationTargetException| NoSuchMethodException | SecurityException e){
 			e.printStackTrace(); return null;
 		}
+	}
+	
+	/** Registers a Functon class into FVTM Resources.*/
+	public static void registerFunction(ResourceLocation regname, Class<? extends Function> clazz, boolean override){
+		registerFunction(regname.toString(), clazz, override);
+	}
+	
+	/** Registers a Functon class into FVTM Resources.*/
+	public static void registerFunction(String regname, Class<? extends Function> clazz, boolean override){
+		if(FUNCTIONS.containsKey(regname) && !override) return; FUNCTIONS.put(regname, clazz);
+	}
+	
+	public static Class<? extends Function> getFunction(ResourceLocation regname){
+		return getFunction(regname.toString());
+	}
+	
+	public static Class<? extends Function> getFunction(String id){
+		return FUNCTIONS.get(id);
 	}
 
 }

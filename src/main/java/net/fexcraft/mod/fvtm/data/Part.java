@@ -42,6 +42,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	protected Model<VehicleData, String> model;
 	protected PartInstallationHandler installhandler;
 	protected Object installhandler_data;
+	protected ArrayList<Function> functions = new ArrayList<>();
 	
 	public Part(){}
 
@@ -123,8 +124,23 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 				}
 			}
 		} 
-		if(obj.has("Functions")){
-			//TODO
+		if(obj.has("Function") || obj.has("Functions")){
+			JsonArray array = obj.has("Functions") ? obj.get("Functions").getAsJsonArray() : new JsonArray();
+			if(obj.has("Function")) array.add(obj.get("Function"));
+			//
+			for(JsonElement elm : array){
+				JsonObject elmobj = elm.isJsonPrimitive() ? null : elm.getAsJsonObject();
+				String id = elmobj == null ? elm.getAsString() : obj.get("id").getAsString();
+				Class<? extends Function> func = Resources.getFunction(id);
+				if(func != null){
+					try {
+						this.functions.add(func.getConstructor(JsonObject.class).newInstance(elmobj));
+					} catch(Exception e){ e.printStackTrace(); }
+				}
+				else{
+					Print.log("Function with ID '" + id + "' for PART '" + registryname.toString() + "' not found!");
+				}
+			}
 		}
 		//
 		if(obj.has("Installation")){
@@ -213,6 +229,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	@SuppressWarnings("unchecked")
 	public <U> U getInstallationHandlerData(){
 		return (U)installhandler_data;
+	}
+	
+	public List<Function> getDefaultFunctions(){
+		return functions;
 	}
 
 }

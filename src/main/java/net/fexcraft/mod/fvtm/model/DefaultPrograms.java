@@ -4,8 +4,10 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
+import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -90,17 +92,47 @@ public class DefaultPrograms {
 	};
 	
 	public static final Program WHEEL_AUTO = new AutoRegProgram(){
+		
+		private WheelSlot slot;
+		
 		@Override public String getId(){ return "fvtm:wheel_auto"; }
-		//
+		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			/*if(ent == null) return;*/ list.rotateAxis(1, 2, true);
+			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);
+			//GL11.glRotatef(20, 0, 0, 1);//TODO calc from entity data
 		}
-		//
+		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			/*if(ent == null) return;*/ list.rotateAxis(-1, 2, true);
+			//GL11.glRotatef(-20, 0, 0, 1);//TODO calc from entity data
+			if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
+		
+	};
+	
+	public static final Program WHEEL_STATIC = new AutoRegProgram(){
+		
+		private WheelSlot slot;
+		
+		@Override public String getId(){ return "fvtm:wheel_static"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
+		}
+		
 	};
 	
 	/*public static final Program STEERING_X = new AutoRegProgram(){

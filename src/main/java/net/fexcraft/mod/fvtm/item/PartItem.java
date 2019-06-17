@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Function;
 import net.fexcraft.mod.fvtm.data.Part;
 import net.fexcraft.mod.fvtm.data.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -49,6 +50,11 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         if(flag.isAdvanced() && type.getBaseModifiers() != null){
         	for(Modifier mod : type.getBaseModifiers()){
         		tooltip.add(Formatter.format("&9" + mod.getId() + "-" + mod.getTarget() + ": &7" + mod.getStringValue() + "-" + mod.getType()));
+        	}
+        }
+        if(flag.isAdvanced()){
+        	for(Function func : type.getDefaultFunctions()){
+        		tooltip.add(Formatter.format("&9" + func.getId()));
         	}
         }
         //TODO texture/pos data

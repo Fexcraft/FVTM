@@ -10,7 +10,7 @@ public class WheelSlot {
 	
 	private Pos position;
 	private float yrot, connector, maxradius = 16f, minradius = 16f;
-	private boolean drive = false, steering = false;
+	private boolean drive = false, steering = false, required;
 	//TODO implement deco wheels and inactive wheels
 	
 	public WheelSlot(JsonObject obj){
@@ -25,6 +25,7 @@ public class WheelSlot {
 		maxradius = JsonUtil.getIfExists(obj, "max_radius", maxradius).floatValue();
 		minradius = JsonUtil.getIfExists(obj, "min_radius", minradius).floatValue();
 		steering = JsonUtil.getIfExists(obj, "steering", false);
+		required = JsonUtil.getIfExists(obj, "required", false);
 	}
 	
 	public WheelSlot read(NBTTagCompound compound){
@@ -35,17 +36,18 @@ public class WheelSlot {
 		maxradius = compound.hasKey("max_radius") ? compound.getFloat("max_radius") : 16f;
 		minradius = compound.hasKey("min_radius") ? compound.getFloat("min_radius") : 16f;
 		steering = compound.hasKey("steering") && compound.getBoolean("steering");
+		required = compound.hasKey("required") && compound.getBoolean("required");
 		return this;
 	}
 	
-	public WheelSlot(Pos pos, float rot, boolean drivewheel, float conn, float max, float min, boolean bool){
+	public WheelSlot(Pos pos, float rot, boolean drivewheel, float conn, float max, float min, boolean bool, boolean req){
 		this.position = pos; this.yrot = rot; this.drive = drivewheel; this.connector = conn;
-		this.maxradius = max; this.minradius = min; this.steering = bool;
+		this.maxradius = max; this.minradius = min; this.steering = bool; this.required = req;
 	}
 	
 	/** For copying the default WheelSlot from e.g. Vehicle into VehicleData*/
 	public WheelSlot copy(){
-		return new WheelSlot(position.copy(), yrot, drive, connector, maxradius, minradius, steering);
+		return new WheelSlot(position.copy(), yrot, drive, connector, maxradius, minradius, steering, required);
 	}
 	
 	public NBTTagCompound write(NBTTagCompound compound){
@@ -66,5 +68,6 @@ public class WheelSlot {
 	public float minradius(){ return minradius; }
 	public float connector(){ return connector; }
 	public boolean steering(){ return steering; }
+	public boolean required(){ return required; }
 
 }

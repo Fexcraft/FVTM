@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.PartData;
 import net.fexcraft.mod.fvtm.data.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.command.ICommandSender;
 
 public class DefaultPartInstallHandler extends PartInstallationHandler {
@@ -66,6 +67,15 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
 			Print.chatnn(sender, "Part is marked as non removable."); return false;
+		}
+		//Function Check
+		if(part.hasFunction("fvtm:wheel_positions")){
+			WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
+			for(String key : from.getParts().keySet()){
+				if(func.getPositions().containsKey(key)){
+					Print.chatnn(sender, "Please remove all linked wheels first."); return false;
+				}
+			}
 		}
 		Print.chatnn(sender, "Deinstallation check passed."); return true;
 	}

@@ -23,5 +23,20 @@ public abstract class Function {
 	
 	/** Used to crease an use-copy from the "default" function storage in a Part. */
 	public abstract Function copy();
+	
+	public static abstract class StaticFuntion extends Function {
+
+		public StaticFuntion(JsonObject obj){ super(obj); }
+
+		@Override /** Do not read anything. */
+		public Function read(NBTTagCompound compound){ return this; }
+
+		@Override /** Do not write anything. */
+		public NBTTagCompound write(NBTTagCompound compound){ return null; }
+
+		@Override /** Return self because we don't need copies. */
+		public Function copy(){ return this; }
+		
+	}
 
 }

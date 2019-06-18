@@ -53,8 +53,8 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		NBTTagList flist = new NBTTagList();
 		for(Function func : functions.values()){
 			NBTTagCompound com = new NBTTagCompound();
-			com.setString("id", func.getId());
-			flist.appendTag(func.write(com));
+			com.setString("id", func.getId()); com = func.write(com);
+			if(com != null) flist.appendTag(com);
 		} compound.setTag("Functions", flist);
 		return compound;
 	}
@@ -123,7 +123,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	public void clearAttributes(){
 		if(!attributes.isEmpty()) attributes.clear();
 		for(Attribute attr : type.getBaseAttributes()){
-			if(!attr.getTarget().startsWith("self")) continue;
+			if(attr.getTarget() != null && !attr.getTarget().startsWith("self")) continue;
 			Attribute copy = attr.copy(null); attributes.put(copy.getId(), copy);
 		}
 	}
@@ -205,6 +205,10 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
 	public <F extends Function> F getFunction(ResourceLocation resloc){
 		return this.getFunction(resloc.toString());
+	}
+
+	public boolean hasFunction(String string){
+		return getFunction(string) != null;
 	}
 
 }

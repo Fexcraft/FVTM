@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
@@ -102,6 +103,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		} else{ seltex = null; extex = null; isTextureExternal = false; }
 		if(compound.hasKey("RGBPrimary")) primary.packed = compound.getInteger("RGBPrimary");
 		if(compound.hasKey("RGBSecondary")) secondary.packed = compound.getInteger("RGBSecondary");
+		//
+		this.refreshModificableDataByParts();
+		//
 		NBTTagList wlist = (NBTTagList)compound.getTag("Wheels");
 		if(wlist != null){
 			for(NBTBase base : wlist){
@@ -111,6 +115,16 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			}
 		}
 		Print.debug("read", compound); return this;
+	}
+
+	private void refreshModificableDataByParts(){
+		this.wheels.clear(); type.getDefaultWheelPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy()));
+		for(PartData part : parts.values()){
+			if(part.hasFunction("fvtm:wheel_positions")){
+				WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
+				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy()));
+			}
+		}
 	}
 
 	@Override
@@ -152,6 +166,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			this.updateAttributes(Attribute.UpdateCall.INITIAL, true);
 			this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INITIAL, false));
 			this.updateAttributes(Attribute.UpdateCall.INITIAL, false);
+			//
+			this.refreshModificableDataByParts();
 			return null;
 		} else return data;
 	}
@@ -171,6 +187,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			this.updateAttributes(Attribute.UpdateCall.INITIAL, true);
 			this.parts.values().forEach(data -> data.updateAttributes(Attribute.UpdateCall.INITIAL, false));
 			this.updateAttributes(Attribute.UpdateCall.INITIAL, false);
+			//
+			this.refreshModificableDataByParts();
 			return true;
 		} else return false;
 	}

@@ -29,6 +29,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
+import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -101,11 +102,12 @@ public class Resources {
 
 	private void registerFunctions(){
 		registerFunction("fvtm:wheel", WheelFunction.class, true);
+		registerFunction("fvtm:wheel_positions", WheelPositionsFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){
 		for(Addon addon : ADDONS.getValuesCollection()){
-			try{ addon.searchFor(datatype); } catch (Throwable thr){ thr.printStackTrace(); }
+			try{ addon.searchFor(datatype); } catch (Throwable thr){ thr.printStackTrace(); Static.stop(); }
 		}
 	}
 

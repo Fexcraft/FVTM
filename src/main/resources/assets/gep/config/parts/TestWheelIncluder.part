@@ -1,0 +1,20 @@
+{
+    "RegistryName": "gep:test_wheel_includer",
+    "Addon": "fvtm:gep",
+    "Name": "Test Wheel Includer",
+    "Model": "null",
+    "Description": "&aA part adding an additional Wheel Slot for Testing.",
+    "Category": "wheel_includer",
+    "Attributes":[
+    	{ "id":"testing_item", "type": "boolean", "value": "true", "target": "self" }
+    ],
+    "Modifiers":[
+    	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "16.76", "priority": "veryhigh" }
+    ],
+    "Function": {
+    	"id": "fvtm:wheel_positions",
+    	"wheel_positions":[
+    		{ "x":  0, "y": -16, "z": 0, "id": "test_wheel", "radius": 8, "drive": false, "y_rot": -90, "steering": true, "required": false }
+    	]
+    }
+}

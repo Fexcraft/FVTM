@@ -5,12 +5,9 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.Function;
 import net.fexcraft.mod.fvtm.data.Part;
 import net.fexcraft.mod.fvtm.data.PartData;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -41,21 +38,14 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(s));
         }
-        //temporary
-        if(flag.isAdvanced() && type.getBaseAttributes() != null){
-        	for(Attribute attr : type.getBaseAttributes()){
-        		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
-        	}
+        if(type.getBaseAttributes().size() > 0){
+        	tooltip.add(Formatter.format("&0&9This part has &7%s &9Attribute/s.", type.getBaseAttributes().size()));
         }
-        if(flag.isAdvanced() && type.getBaseModifiers() != null){
-        	for(Modifier mod : type.getBaseModifiers()){
-        		tooltip.add(Formatter.format("&9" + mod.getId() + "-" + mod.getTarget() + ": &7" + mod.getStringValue() + "-" + mod.getType()));
-        	}
+        if(type.getBaseModifiers().size() > 0){
+        	tooltip.add(Formatter.format("&0&3This part has &7%s &3Modifier/s.", type.getBaseModifiers().size()));
         }
-        if(flag.isAdvanced()){
-        	for(Function func : type.getDefaultFunctions()){
-        		tooltip.add(Formatter.format("&9" + func.getId()));
-        	}
+        if(type.getDefaultFunctions().size() > 0){
+        	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", type.getBaseModifiers().size()));
         }
         //TODO texture/pos data
         //TODO model data

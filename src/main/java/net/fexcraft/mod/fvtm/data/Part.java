@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -130,7 +131,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 			//
 			for(JsonElement elm : array){
 				JsonObject elmobj = elm.isJsonPrimitive() ? null : elm.getAsJsonObject();
-				String id = elmobj == null ? elm.getAsString() : obj.get("id").getAsString();
+				String id = elmobj == null ? elm.getAsString() : elmobj.get("id").getAsString();
 				Class<? extends Function> func = Resources.getFunction(id);
 				if(func != null){
 					try {
@@ -138,7 +139,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 					} catch(Exception e){ e.printStackTrace(); }
 				}
 				else{
-					Print.log("Function with ID '" + id + "' for PART '" + registryname.toString() + "' not found!");
+					Print.log("Function with ID '" + id + "' for PART '" + registryname.toString() + "' not found!"); Static.stop();
 				}
 			}
 		}

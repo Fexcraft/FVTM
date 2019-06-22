@@ -16,18 +16,19 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.Addon;
-import net.fexcraft.mod.fvtm.data.AddonClass;
-import net.fexcraft.mod.fvtm.data.Function;
 import net.fexcraft.mod.fvtm.data.Material;
-import net.fexcraft.mod.fvtm.data.Part;
-import net.fexcraft.mod.fvtm.data.PartData;
-import net.fexcraft.mod.fvtm.data.Vehicle;
-import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonClass;
+import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.nbt.NBTTagCompound;
@@ -103,6 +104,7 @@ public class Resources {
 	private void registerFunctions(){
 		registerFunction("fvtm:wheel", WheelFunction.class, true);
 		registerFunction("fvtm:wheel_positions", WheelPositionsFunction.class, true);
+		registerFunction("fvtm:seats", SeatsFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){

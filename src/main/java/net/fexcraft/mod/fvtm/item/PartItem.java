@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.Part;
-import net.fexcraft.mod.fvtm.data.PartData;
+import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.minecraft.client.util.ITooltipFlag;

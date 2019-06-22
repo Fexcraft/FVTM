@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.mod.fvtm.data.Addon;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;

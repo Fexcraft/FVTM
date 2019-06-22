@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.data;
+package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
+import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
@@ -36,6 +37,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected ArrayList<String> required;
 	protected RGB primary, secondary;
 	protected String modelid;
+	protected LegacyData legacy_data;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -115,6 +117,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			}
 		}
 		//
+		if(obj.has("LegacyData")){
+			this.legacy_data = new LegacyData(obj.get("LegacyData").getAsJsonObject());
+		}
+		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
 	}
@@ -176,6 +182,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	
 	public TreeMap<String, WheelSlot> getDefaultWheelPositions(){
 		return defwheelpos;
+	}
+	
+	public LegacyData getLegacyData(){
+		return legacy_data;
 	}
 
 }

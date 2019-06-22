@@ -1,6 +1,9 @@
 package net.fexcraft.mod.fvtm.data.root;
 
 import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.part.Part;
+import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;

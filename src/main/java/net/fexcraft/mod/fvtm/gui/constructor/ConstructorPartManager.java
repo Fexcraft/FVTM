@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

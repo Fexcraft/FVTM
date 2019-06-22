@@ -1,6 +1,8 @@
-package net.fexcraft.mod.fvtm.data;
+package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -10,12 +12,16 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.minecraft.command.ICommandSender;
@@ -38,6 +44,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
+	protected ArrayList<Seat> seats = new ArrayList<>();
 
 	public VehicleData(Vehicle type){
 		super(type);
@@ -125,6 +132,13 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy()));
 			}
 		}
+		//
+		this.seats.clear();
+		for(PartData part : parts.values()){
+			if(!part.hasFunction("fvtm:seats")) continue;
+			seats.addAll(part.getFunction(SeatsFunction.class, "fvtm:seats").getSeats());
+		}
+		//
 	}
 
 	@Override
@@ -384,6 +398,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	
 	public TreeMap<String, WheelSlot> getWheelPositions(){
 		return wheels;
+	}
+
+	public List<Seat> getSeats(){
+		return seats;
 	}
 
 }

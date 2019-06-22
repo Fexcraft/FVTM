@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.render.FCLItemModel;
-import net.fexcraft.mod.fvtm.data.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;

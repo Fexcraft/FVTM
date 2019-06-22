@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorCenterBlock;
+import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
@@ -19,6 +20,7 @@ import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.handler.LegacySpawnSystem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -53,7 +55,11 @@ public class FVTM {
 		REGISTERER = new AutoRegisterer(MODID);
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
+		if(event.getSide().isClient()){
+			net.fexcraft.mod.fvtm.model.DefaultPrograms.init();
+		}
 		//
+		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
 		//Capabilities
 		//Entities
 		//

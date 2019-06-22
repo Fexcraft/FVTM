@@ -3,9 +3,9 @@ package net.fexcraft.mod.fvtm.model;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,14 +13,31 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 
 public class DefaultPrograms {
+	
+	public static void init(){
+		TurboList.PROGRAMS.add(RGB_PRIMARY);
+		TurboList.PROGRAMS.add(RGB_SECONDARY);
+		TurboList.PROGRAMS.add(ALWAYS_GLOW);
+		TurboList.PROGRAMS.add(LIGHTS);
+		TurboList.PROGRAMS.add(FRONT_LIGHTS);
+		TurboList.PROGRAMS.add(BACK_LIGHTS);
+		TurboList.PROGRAMS.add(FOG_LIGHTS);
+		TurboList.PROGRAMS.add(REVERSE_LIGHTS);
+		TurboList.PROGRAMS.add(TURN_SIGNAL_LEFT);
+		TurboList.PROGRAMS.add(TURN_SIGNAL_RIGHT);
+		TurboList.PROGRAMS.add(WINDOW);
+		TurboList.PROGRAMS.add(WHEEL_AUTO_ALL);
+		TurboList.PROGRAMS.add(WHEEL_AUTO_STEERING);
+		TurboList.PROGRAMS.add(NO_CULLFACE);
+	}
 
-	public static final Program RGB_PRIMARY = new AutoRegProgram(){
+	public static final Program RGB_PRIMARY = new Program(){
 		@Override public String getId(){ return "fvtm:rgb_primary"; }
 		@Override public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){ color.getPrimaryColor().glColorApply(); }
 		@Override public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){ RGB.glColorReset(); }
 	};
 	
-	public static final Program RGB_SECONDARY = new AutoRegProgram(){
+	public static final Program RGB_SECONDARY = new Program(){
 		@Override public String getId(){ return "fvtm:rgb_secondary"; }
 		@Override public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){ color.getSecondaryColor().glColorApply(); }
 		@Override public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){ RGB.glColorReset(); }
@@ -69,7 +86,7 @@ public class DefaultPrograms {
 	
 	public static final Program INDICATOR_LIGHT_LEFT = TURN_SIGNAL_LEFT, INDICATOR_LIGHT_RIGHT = TURN_SIGNAL_RIGHT;
 	
-	public static final Program WINDOW = new AutoRegProgram(){
+	public static final Program WINDOW = new Program(){
 		@Override public String getId(){ return "fvtm:window"; }
 		//
 		@Override
@@ -91,11 +108,11 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program WHEEL_AUTO = new AutoRegProgram(){
+	public static final Program WHEEL_AUTO_ALL = new Program(){
 		
 		private WheelSlot slot;
 		
-		@Override public String getId(){ return "fvtm:wheel_auto"; }
+		@Override public String getId(){ return "fvtm:wheel_auto_all"; }
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
@@ -114,28 +131,26 @@ public class DefaultPrograms {
 		
 	};
 	
-	public static final Program WHEEL_STATIC = new AutoRegProgram(){
+	public static final Program WHEEL_AUTO_STEERING = new Program(){
 		
-		private WheelSlot slot;
+		//private WheelSlot slot;
 		
-		@Override public String getId(){ return "fvtm:wheel_static"; }
+		@Override public String getId(){ return "fvtm:wheel_auto_steering"; }
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
-			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
+			//slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
 			//if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);//TODO steering state from car
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			//if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);//TODO steering state from car
-			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
+			//if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);//TODO steering state from car=
 		}
 		
 	};
 	
-	/*public static final Program STEERING_X = new AutoRegProgram(){
+	/*public static final Program STEERING_X = new Program(){
 		@Override public String getId(){ return "fvtm:steering_x"; }
 		//
 		@Override
@@ -149,7 +164,7 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program STEERING_Y = new AutoRegProgram(){
+	public static final Program STEERING_Y = new Program(){
 		@Override public String getId(){ return "fvtm:steering_y"; }
 		//
 		@Override
@@ -163,7 +178,7 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program DEF_WHEEL_ROTATE = new AutoRegProgram(){
+	public static final Program DEF_WHEEL_ROTATE = new Program(){
 		@Override public String getId(){ return "fvtm:default_wheel"; }
 		//
 		@Override
@@ -177,7 +192,7 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program ROTATED_WHEEL_ROTATE = new AutoRegProgram(){
+	public static final Program ROTATED_WHEEL_ROTATE = new Program(){
 		@Override public String getId(){ return "fvtm:rotated_wheel"; }
 		//
 		@Override
@@ -191,7 +206,7 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program ADJUSTABLE_WHEEL = new AutoRegProgram(){
+	public static final Program ADJUSTABLE_WHEEL = new Program(){
 		private net.fexcraft.lib.mc.utils.Pos lastpos;
 		@Override public String getId(){ return "fvtm:adjustable_wheel"; }
 		//
@@ -213,7 +228,7 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program ADJUSTABLE_BOGIE = new AutoRegProgram(){
+	public static final Program ADJUSTABLE_BOGIE = new Program(){
 		private net.fexcraft.lib.mc.utils.Pos lastpos;
 		@Override public String getId(){ return "fvtm:adjustable_wheel"; }
 		//
@@ -235,7 +250,7 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program IMPORTED_WHEEL = new AutoRegProgram(){
+	public static final Program IMPORTED_WHEEL = new Program(){
 		private boolean bool;
 		@Override public String getId(){ return "fvtm:imported_wheel"; }
 		//
@@ -256,7 +271,7 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program DOOR_OPEN = new AutoRegProgram(){
+	public static final Program DOOR_OPEN = new Program(){
 		@Override public String getId(){ return "fvtm:door_open"; }
 		//
 		@Override
@@ -270,7 +285,7 @@ public class DefaultPrograms {
 		}
 	};
 	
-	public static final Program DOOR_CLOSE = new AutoRegProgram(){
+	public static final Program DOOR_CLOSE = new Program(){
 		@Override public String getId(){ return "fvtm:door_close"; }
 		//
 		@Override
@@ -284,13 +299,7 @@ public class DefaultPrograms {
 		}
 	};*/
 	
-	public static abstract class AutoRegProgram implements Program {
-		
-		public AutoRegProgram(){ TurboList.PROGRAMS.add(this); }
-		
-	}
-	
-	public static abstract class AlwaysGlow extends AutoRegProgram {
+	public static abstract class AlwaysGlow implements Program {
 		
 		private boolean didglow; private float lx, ly;
 		
@@ -316,7 +325,7 @@ public class DefaultPrograms {
 		
 	}
 	
-	public static class IDSpecific extends AutoRegProgram {
+	public static class IDSpecific implements Program {
 		
 		private String group;
 		
@@ -337,7 +346,7 @@ public class DefaultPrograms {
 
 	}
 	
-	public static class IDSpecificArray extends AutoRegProgram {
+	public static class IDSpecificArray implements Program {
 		
 		private String[] groups;
 		
@@ -358,7 +367,7 @@ public class DefaultPrograms {
 
 	}
 	
-	public static final Program NO_CULLFACE = new AutoRegProgram(){
+	public static final Program NO_CULLFACE = new Program(){
 		@Override public String getId(){ return "fvtm:no_cullface"; }
 		//
 		@Override

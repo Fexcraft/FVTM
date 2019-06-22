@@ -1,6 +1,6 @@
 package net.fexcraft.mod.addons.gep;
 
-import net.fexcraft.mod.fvtm.data.AddonClass;
+import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.minecraftforge.fml.common.Mod;
 
 @AddonClass(registryname = "fvtm:gep")

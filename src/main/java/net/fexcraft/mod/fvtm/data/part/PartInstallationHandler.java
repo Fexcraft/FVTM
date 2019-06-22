@@ -1,9 +1,10 @@
-package net.fexcraft.mod.fvtm.data;
+package net.fexcraft.mod.fvtm.data.part;
 
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.command.ICommandSender;
 
 /**

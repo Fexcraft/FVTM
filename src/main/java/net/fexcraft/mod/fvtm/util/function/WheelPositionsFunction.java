@@ -6,8 +6,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.fexcraft.mod.fvtm.data.Function.StaticFuntion;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
 
 public class WheelPositionsFunction extends StaticFuntion {
 	

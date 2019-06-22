@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.InternalAddon;
-import net.fexcraft.mod.fvtm.data.Addon;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.minecraft.util.ResourceLocation;
 
 public class DataUtil {

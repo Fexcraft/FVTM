@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.data;
+package net.fexcraft.mod.fvtm.data.addon;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

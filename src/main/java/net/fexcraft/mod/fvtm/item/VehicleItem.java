@@ -5,11 +5,11 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.Vehicle;
-import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -36,6 +36,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         for(String s : type.getDescription()){ tooltip.add(Formatter.format(s)); }
         VehicleData data = this.getData(stack); if(data == null) return;
         tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getCurrentString() + "kg"));
+        tooltip.add(Formatter.format("&9Seats: &7" + data.getSeats().size() + "kg"));
         //temporary
         if(flag.isAdvanced() && type.getBaseAttributes() != null){
         	for(Attribute attr : type.getBaseAttributes().values()){

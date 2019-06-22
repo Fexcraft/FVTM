@@ -4,9 +4,9 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.mod.fvtm.data.Function;
-import net.fexcraft.mod.fvtm.data.VehicleData;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class WheelFunction extends Function {

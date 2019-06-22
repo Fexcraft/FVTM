@@ -3,9 +3,9 @@ package net.fexcraft.mod.fvtm;
 import java.io.File;
 
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.Addon;
-import net.fexcraft.mod.fvtm.data.AddonClass;
-import net.fexcraft.mod.fvtm.data.AddonTab;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.addon.AddonClass;
+import net.fexcraft.mod.fvtm.data.addon.AddonTab;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;

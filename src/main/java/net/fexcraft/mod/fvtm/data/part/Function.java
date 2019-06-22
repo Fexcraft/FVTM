@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.data;
+package net.fexcraft.mod.fvtm.data.part;
 
 import javax.annotation.Nullable;
 

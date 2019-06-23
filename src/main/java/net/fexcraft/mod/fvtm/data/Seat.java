@@ -9,6 +9,7 @@ public class Seat {
 	
 	public float x, y, z;
 	public boolean driver;
+	public String name;
 	//public String swivel_point;
 	
 	public Seat(JsonObject obj){
@@ -16,6 +17,7 @@ public class Seat {
 		this.y = JsonUtil.getIfExists(obj, "y", 0).floatValue();
 		this.z = JsonUtil.getIfExists(obj, "z", 0).floatValue();
 		driver = JsonUtil.getIfExists(obj, "driver", false);
+		name = obj.has("name") ? obj.get("name").getAsString() : null;
 	}
 	
 	public Seat(float x, float y, float z, boolean driver){
@@ -28,6 +30,10 @@ public class Seat {
 	
 	public Vec3f copyPos(){
 		return new Vec3f(x, y, z);
+	}
+	
+	public String getName(){
+		return name;
 	}
 
 }

@@ -94,7 +94,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()).setTarget(target); break;
 					}
 					case "boolean": case "bool": {
-						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsBoolean() ? 1 : 0, true); isbool = true; break;
+						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsBoolean() ? 1 : 0, true).setTarget(target); isbool = true; break;
 					}
 					default: continue;
 				}
@@ -103,6 +103,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 					float max = JsonUtil.getIfExists(json, "max", Integer.MAX_VALUE).floatValue();
 					attr.setMinMax(min, max);
 				}
+				attr.setSeat(json.has("seat") ? json.get("seat").getAsString() : null);
 				this.attributes.add(attr);
 			}
 		}

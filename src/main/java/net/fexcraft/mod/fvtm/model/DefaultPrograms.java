@@ -3,7 +3,9 @@ package net.fexcraft.mod.fvtm.model;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
@@ -13,6 +15,8 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 
 public class DefaultPrograms {
+
+	public static boolean DIDLOAD = false;
 	
 	public static void init(){
 		TurboList.PROGRAMS.add(RGB_PRIMARY);
@@ -29,6 +33,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(WHEEL_AUTO_ALL);
 		TurboList.PROGRAMS.add(WHEEL_AUTO_STEERING);
 		TurboList.PROGRAMS.add(NO_CULLFACE);
+		//
+		DIDLOAD = true;
 	}
 
 	public static final Program RGB_PRIMARY = new Program(){
@@ -146,6 +152,38 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			//if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);//TODO steering state from car=
+		}
+		
+	};
+	
+	public static class AttributeRotator implements Program {
+		
+		private Attribute attr; private String attribute;
+		private float min, max, step, lastcurr, current; private int axis;
+		private boolean boolstatebased, applyrot;
+		
+		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, boolean applyrot){
+			this.attribute = attribute; this.boolstatebased = boolstatebased; current = 0; lastcurr = 0;
+			this.min = min; this.max = max; this.step = step; this.axis = axis; this.applyrot = applyrot;
+		}
+		
+		@Override public String getId(){ return "fvtm:attribute_rotator"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			/*if(ent == null) return;*/ if(attr == null) attr = data.getAttribute(attribute); if(attr == null) return;
+			//temp
+			attr.setCurrentValue(Time.getSecond() % 2);
+			//
+			current = boolstatebased ? (attr.getCurrentBoolean() ? current + step : current - step) : attr.getCurrentFloat();
+			if(current > max) current = max; if(current < min) current = min;
+			if(current != lastcurr) list.rotateAxis(current, axis, applyrot);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			if(/*ent == null ||*/ attr == null) return; lastcurr = current;
+			if(current != lastcurr) list.rotateAxis(applyrot ? 0 : -current, axis, applyrot);
 		}
 		
 	};

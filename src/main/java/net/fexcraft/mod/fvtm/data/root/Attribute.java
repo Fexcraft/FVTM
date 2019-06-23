@@ -3,7 +3,9 @@ package net.fexcraft.mod.fvtm.data.root;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 /**
  * Third prototype.
@@ -18,7 +20,7 @@ public abstract class Attribute {
 	protected TreeSet<Modifier> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	protected float max, min;
 	protected boolean original;
-	protected String id, target, origin;
+	protected String id, target, origin, seat;
 	protected ValueType valuetype;
 	
 	public Attribute(boolean notcopy, String id, ValueType type){
@@ -37,6 +39,103 @@ public abstract class Attribute {
 	/** Part this originates (is copied) from. */
 	public Attribute setOrigin(String string){
 		this.origin = string; return this;
+	}
+	
+	public Attribute setSeat(String string){
+		this.seat = string; return this;
+	}
+
+	public NBTTagCompound write(NBTTagCompound com){
+		com.setBoolean("org", original);
+		com.setString("id", id);
+		com.setString("type", valuetype.name());
+		com.setFloat("min", min); com.setFloat("max", max);
+		if(target != null) com.setString("target", target);
+		if(origin != null) com.setString("origin", origin);
+		if(seat != null) com.setString("seat", seat);
+		switch(valuetype){
+			case BOOLEAN:
+				com.setBoolean("initial", getInitialBoolean());
+				com.setBoolean("base", getBaseBoolean());
+				com.setBoolean("current", getCurrentBoolean());
+				break;
+			case FLOAT:
+				com.setFloat("initial", getInitialFloat());
+				com.setFloat("base", getBaseFloat());
+				com.setFloat("current", getCurrentFloat());
+				break;
+			case INTEGER:
+				com.setInteger("initial", getInitialInteger());
+				com.setInteger("base", getBaseInteger());
+				com.setInteger("current", getCurrentInteger());
+				break;
+			case STRING:
+				com.setString("initial", getInitialString());
+				com.setString("base", getBaseString());
+				com.setString("current", getCurrentString());
+				break;
+			default: return null;
+		}
+		if(!modifiers.isEmpty()){
+			NBTTagList list = new NBTTagList();
+			for(Modifier mod : modifiers) list.appendTag(mod.write(new NBTTagCompound()));
+			com.setTag("modifiers", list);
+		} return com;
+	}
+
+	public Attribute read(NBTTagCompound com){
+		original = com.getBoolean("org"); id = com.getString("id");
+		min = com.getFloat("min"); max = com.getFloat("max");
+		if(com.hasKey("target")) this.target = com.getString("target");
+		if(com.hasKey("origin")) this.origin = com.getString("origin");
+		if(com.hasKey("seat")) this.seat = com.getString("seat");
+		switch(valuetype){
+			case BOOLEAN:{
+				IntegerAttribute attr = (IntegerAttribute)this;
+				attr.initial = com.getBoolean("initial") ? 1 : 0;
+				attr.base = com.getBoolean("base") ? 1 : 0;
+				attr.current = com.getBoolean("current") ? 1 : 0;
+				break;
+			}
+			case FLOAT:{
+				FloatAttribute attr = (FloatAttribute)this;
+				attr.initial = com.getFloat("initial");
+				attr.base = com.getFloat("base");
+				attr.current = com.getFloat("current");
+				break;
+			}
+			case INTEGER:{
+				IntegerAttribute attr = (IntegerAttribute)this;
+				attr.initial = com.getInteger("initial");
+				attr.base = com.getInteger("base");
+				attr.current = com.getInteger("current");
+				break;
+			}
+			case STRING:{
+				StringAttribute attr = (StringAttribute)this;
+				attr.initial = com.getString("initial");
+				attr.base = com.getString("base");
+				attr.current = com.getString("current");
+				break;
+			}
+			default: return null;
+		} modifiers.clear();
+		if(com.hasKey("modifiers")){
+			NBTTagList list = (NBTTagList)com.getTag("modifiers");
+			for(NBTBase base : list) modifiers.add(Modifier.parse((NBTTagCompound)base));
+		}
+		return this;
+	}
+
+	public static Attribute parse(NBTTagCompound com){
+		Attribute attr = null; ValueType type = ValueType.valueOf(com.getString("type"));
+		switch(type){
+			case BOOLEAN: attr = new IntegerAttribute(false, null, 0, true); break;
+			case FLOAT: attr = new FloatAttribute(false, null, 0); break;
+			case INTEGER: attr = new IntegerAttribute(false, null, 0); break;
+			case STRING: attr = new StringAttribute(false, null, null); break;
+			default: return null;
+		} attr.read(com); return attr;
 	}
 
 	public abstract String getInitialString();
@@ -60,6 +159,7 @@ public abstract class Attribute {
 	public String getId(){ return id; }
 	public String getTarget(){ return target; }
 	public String getOrigin(){ return origin; }
+	public String getSeat(){ return seat; }
 	public TreeSet<Modifier> getModifiers(){ return modifiers; }
 	public ValueType getValueType(){ return valuetype; }
 	//
@@ -177,7 +277,8 @@ public abstract class Attribute {
 
 		@Override
 		public Attribute copy(String origin){
-			return new StringAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setTarget(target).setOrigin(origin);
+			return new StringAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current)
+				.setTarget(target).setOrigin(origin).setSeat(seat);
 		}
 		
 	}
@@ -245,7 +346,8 @@ public abstract class Attribute {
 
 		@Override
 		public Attribute copy(String origin){
-			return new IntegerAttribute(false, id, initial, isbool).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target).setOrigin(origin);
+			return new IntegerAttribute(false, id, initial, isbool).setBaseValue(base).setCurrentValue(current)
+				.setMinMax(min, max).setTarget(target).setOrigin(origin).setSeat(seat);
 		}
 		
 	}
@@ -298,19 +400,10 @@ public abstract class Attribute {
 
 		@Override
 		public Attribute copy(String origin){
-			return new FloatAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current).setMinMax(min, max).setTarget(target).setOrigin(origin);
+			return new FloatAttribute(false, id, initial).setBaseValue(base).setCurrentValue(current)
+				.setMinMax(min, max).setTarget(target).setOrigin(origin).setSeat(seat);
 		}
 		
-	}
-
-	public NBTTagCompound write(NBTTagCompound com){
-		// TODO Auto-generated method stub
-		return com;
-	}
-
-	public Attribute read(NBTTagCompound com){
-		// TODO Auto-generated method stub
-		return this;
 	}
 
 }

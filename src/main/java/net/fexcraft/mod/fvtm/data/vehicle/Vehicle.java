@@ -99,6 +99,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 					float max = JsonUtil.getIfExists(json, "max", Integer.MAX_VALUE).floatValue();
 					attr.setMinMax(min, max);
 				}
+				attr.setSeat(json.has("seat") ? json.get("seat").getAsString() : null);
 				this.attributes.put(attr.getId(), attr);
 			}
 		}

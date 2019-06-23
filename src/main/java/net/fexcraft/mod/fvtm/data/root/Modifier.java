@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.root;
 
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.Attribute.ValueType;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Third prototype.
@@ -36,6 +37,51 @@ public abstract class Modifier {
 	public abstract int getIntegerValue();
 	public abstract float getFloatValue();
 	public abstract String getStringValue();
+
+	public NBTTagCompound write(NBTTagCompound com){
+		com.setString("id", id); com.setBoolean("basemod", basemod);
+		com.setString("valuetype", valuetype.name());
+		if(target != null) com.setString("target", target);
+		if(origin != null) com.setString("origin", origin);
+		com.setString("calltype", calltype.name());
+		com.setString("priority", priority.name());
+		com.setString("type", type.name());
+		switch(valuetype){
+			case BOOLEAN: com.setBoolean("value", this.getIntegerValue() != 0); break;
+			case FLOAT: com.setFloat("value", getFloatValue()); break;
+			case INTEGER: com.setInteger("value", getIntegerValue()); break;
+			case STRING: com.setString("value", getStringValue()); break;
+			default: return null;
+		} return com;
+	}
+
+	public Modifier read(NBTTagCompound com){
+		id = com.getString("id"); basemod = com.getBoolean("basemod");
+		valuetype = ValueType.valueOf(com.getString("valuetype"));
+		if(com.hasKey("target")) this.target = com.getString("target");
+		if(com.hasKey("origin")) this.origin = com.getString("origin");
+		calltype = UpdateCall.valueOf(com.getString("calltype"));
+		priority = Priority.valueOf(com.getString("priority"));
+		type = Type.valueOf(com.getString("type"));
+		switch(valuetype){
+			case BOOLEAN: ((IntegerModifier)this).value = com.getBoolean("value") ? 1 : 0; break;
+			case FLOAT: ((FloatModifier)this).value = com.getFloat("value"); break;
+			case INTEGER: ((IntegerModifier)this).value = com.getInteger("value"); break;
+			case STRING: ((StringModifier)this).value = com.getString("value"); break;
+			default: return null;
+		} return this;
+	}
+
+	public static Modifier parse(NBTTagCompound com){
+		Modifier mod = null; ValueType type = ValueType.valueOf(com.getString("valuetype"));
+		switch(type){
+			case BOOLEAN: mod = new IntegerModifier(null, 0, false, null, null, null); break;
+			case FLOAT: mod = new FloatModifier(null, 0, false, null, null, null); break;
+			case INTEGER: mod = new IntegerModifier(null, 0, false, null, null, null); break;
+			case STRING: mod = new StringModifier(null, null, false, null, null, null); break;
+			default: return null;
+		} mod.read(com); return mod;
+	}
 
 	public boolean validCall(UpdateCall call, boolean base){
 		return calltype == call && base == basemod;

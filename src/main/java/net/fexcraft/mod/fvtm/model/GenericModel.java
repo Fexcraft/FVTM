@@ -31,7 +31,9 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	private ArrayList<String> creators = new ArrayList<>();
 	protected int textureX, textureY;
 	
-	public GenericModel(){}
+	public GenericModel(){
+		if(!DefaultPrograms.DIDLOAD) DefaultPrograms.init();
+	}
 
 	public GenericModel(JsonObject obj){
 		this(); if(obj == null){ return; }

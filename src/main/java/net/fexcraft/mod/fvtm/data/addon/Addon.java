@@ -162,7 +162,7 @@ public class Addon extends TypeCore<Addon> {
 		if(file.isDirectory()){
 			for(File sub : file.listFiles()){
 				ArrayList<File> search = findFiles(sub, suffix);
-				if(!search.isEmpty()) result.add(sub);
+				if(!search.isEmpty()) result.addAll(search);
 			}
 		}
 		else if(file.getName().endsWith(suffix)) result.add(file);

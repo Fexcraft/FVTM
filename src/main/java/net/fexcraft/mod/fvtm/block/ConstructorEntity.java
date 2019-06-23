@@ -86,20 +86,25 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				if(bool && !data.getType().getInstallationHandler().allowsCustomCategory(data)){
 					container.setTitleText("Custom Category not allowed for this part.", null); return;
 				}
-				if(data.getType().getInstallationHandler().allowInstall(container.getCommandSender(), data, cat, getVehicleData())){
+				/*if(data.getType().getInstallationHandler().allowInstall(container.getCommandSender(), data, cat, getVehicleData())){
 					if(data.getType().getInstallationHandler().processInstall(container.getCommandSender(), data, cat, getVehicleData())){
 						this.pdata = null; this.updateClient(null);
 					}
-				} return;
+				} return;*/
+				data = getVehicleData().installPart(player, data, cat);
+				if(data == null) pdata = null; this.updateClient(null); return;
 			}
 			case "part_remove":{
 				if(noveh(container)) return;
 				String cat = packet.getString("category"); PartData data = this.getVehicleData().getPart(cat);
 				if(data == null){ container.setTitleText("Selected Part not found (on server).", null); return; }
-				if(data.getType().getInstallationHandler().allowUninstall(container.getCommandSender(), data, cat, getVehicleData())){
+				/*if(data.getType().getInstallationHandler().allowUninstall(container.getCommandSender(), data, cat, getVehicleData())){
 					if(data.getType().getInstallationHandler().processUninstall(container.getCommandSender(), data, cat, getVehicleData())){
 						this.dropItem(data.newItemStack()); this.updateClient(null);
 					}
+				} return;*/
+				if(getVehicleData().deinstallPart(player, cat)){
+					this.dropItem(data.newItemStack()); this.updateClient(null);
 				} return;
 			}
 			case "part_cache_drop":{ this.dropPart(true); return; }

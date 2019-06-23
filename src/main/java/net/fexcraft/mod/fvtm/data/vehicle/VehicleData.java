@@ -70,6 +70,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			list.appendTag(part.getValue().write(com));
 		}
 		compound.setTag("Parts", list);
+		//
+		NBTTagList alist = new NBTTagList();
+		for(Attribute attr : attributes.values()){ alist.appendTag(attr.write(new NBTTagCompound())); }
+		compound.setTag("Attributes", alist);
+		//
 		compound.setInteger("SelectedTexture", selected_texture);
 		if(seltex != null || extex != null || selected_texture < 0){
 			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
@@ -85,7 +90,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			wlist.appendTag(com);
 		}
 		compound.setTag("Wheels", wlist);
-		Print.debug("write", compound); return compound;
+		/*Print.debug("write", compound);*/ return compound;
 	}
 
 	@Override
@@ -102,6 +107,16 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				this.parts.put(com.getString("InstalledAs"), Resources.getPartData(com));
 			}
 		}
+		//
+		NBTTagList alist = (NBTTagList)compound.getTag("Attributes");
+		if(alist != null){
+			for(NBTBase base : alist){
+				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("id")) continue;
+				Attribute attr = getAttribute(com.getString("id")); if(attr != null){ attr.read(com); }
+				else{ attr = Attribute.parse(com); if(attr != null) attributes.put(attr.getId(), attr); }
+			}
+		}
+		//
 		this.selected_texture = compound.getInteger("SelectedTexture");
 		if(selected_texture < 0){
 			isTextureExternal = compound.getBoolean("ExternalTexture");
@@ -121,7 +136,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				if(slot != null) slot.read(com); else continue;
 			}
 		}
-		Print.debug("read", compound); return this;
+		/*Print.debug("read", compound);*/ return this;
 	}
 
 	private void refreshModificableDataByParts(){
@@ -227,6 +242,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				} else{ this.getAttributes().put(attr.getId(), attr.copy(dataid)); }
 			}
 		}
+		Print.console(data.getType().getBaseAttributes());
+		Print.console(attributes);
 		//check if parts have attributes to add into other parts
 		for(Entry<String, PartData> part : parts.entrySet()){
 			if(part.getValue() == data) continue;
@@ -276,16 +293,16 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	private void removeAttributesFromPart(PartData data, String category){
-		String datain = category = data.getType().getRegistryName().toString();
+		String datain = category + "|" + data.getType().getRegistryName().toString();
 		for(PartData part : this.parts.values()){
-			part.getAttributes().entrySet().removeIf(pre -> pre.getValue().getOrigin().equals(datain));
+			part.getAttributes().entrySet().removeIf(pre -> pre.getValue().getOrigin() != null && pre.getValue().getOrigin().equals(datain));
 			for(Attribute attr : part.getAttributes().values()){
-				attr.getModifiers().removeIf(pre -> pre.getOrigin().equals(datain));
+				attr.getModifiers().removeIf(pre -> pre.getOrigin() != null && pre.getOrigin().equals(datain));
 			}
 		}
-		this.attributes.entrySet().removeIf(pre -> pre.getValue().getOrigin().equals(datain));
+		this.attributes.entrySet().removeIf(pre -> pre.getValue().getOrigin() != null && pre.getValue().getOrigin().equals(datain));
 		for(Attribute attr : this.attributes.values()){
-			attr.getModifiers().removeIf(pre -> pre.getOrigin().equals(datain));
+			attr.getModifiers().removeIf(pre -> pre.getOrigin() != null && pre.getOrigin().equals(datain));
 		}
 	}
 

@@ -55,9 +55,6 @@ public class FVTM {
 		REGISTERER = new AutoRegisterer(MODID);
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
-		if(event.getSide().isClient()){
-			net.fexcraft.mod.fvtm.model.DefaultPrograms.init();
-		}
 		//
 		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
 		//Capabilities

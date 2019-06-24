@@ -61,7 +61,7 @@ public class ConstructorPartManager extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button13")) this.openGui(modid, 900, xyz);
+		if(button.name.equals("button13")) openGui(modid, 900, xyz);
 		else if(button.name.equals("next")) page++;
 		else if(button.name.equals("prev")) page--;
 		else if(button.name.contains("icon_edit0")){
@@ -69,7 +69,7 @@ public class ConstructorPartManager extends ConstructorGui {
 				int i = Integer.parseInt(button.name.replace("icon_edit0", ""));
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("category", tbuttons[i].string.trim().replace(".", ""));
-				this.openGenericGui(920, xyz, compound);
+				openGenericGui(920, xyz, compound);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -80,7 +80,7 @@ public class ConstructorPartManager extends ConstructorGui {
 				int i = Integer.parseInt(button.name.replace("icon_edit1", ""));
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("category", tbuttons[i].string.trim().replace(".", ""));
-				this.openGenericGui(908, xyz, compound);
+				openGenericGui(908, xyz, compound);
 			}
 			catch(Exception e){
 				e.printStackTrace();

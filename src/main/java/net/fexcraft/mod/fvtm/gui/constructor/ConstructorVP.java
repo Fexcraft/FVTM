@@ -59,7 +59,7 @@ public class ConstructorVP extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button12")){ this.openGui(modid, 900, xyz); return true; }
+		if(button.name.equals("button12")){ openGui(modid, 900, xyz); return true; }
 		else if(button.name.equals("icon_type_prev") || button.name.equals("icon_type_next")){ primary = !primary; return true; }
 		else if(button.name.equals("spectrum")){ this.updateColorTo(spectrum.getColorAt(mouseX), true); return true; }
 		else if(button.name.equals("palette")){ this.updateColorTo(palette.getColorAt(mouseX, mouseY), false); return true; }

@@ -48,7 +48,7 @@ public class ConstructorMain extends ConstructorGui {
 		if(button.name.equals("icon_spawn")){
 			this.titletext.update("Not available yet! Sorry!", null); return true;
 		}
-		this.openGui(modid, Integer.parseInt(button.name.replace("button", "")) + 901, xyz); return true;
+		openGui(modid, Integer.parseInt(button.name.replace("button", "")) + 901, xyz); return true;
 	}
 
 	@Override

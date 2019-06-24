@@ -29,7 +29,7 @@ public class ConstructorVehicleInfo extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button6")) this.openGui(modid, 900, xyz);
+		if(button.name.equals("button6")) openGui(modid, 900, xyz);
 		else if(button.name.equals("button2")){
 			
 		}

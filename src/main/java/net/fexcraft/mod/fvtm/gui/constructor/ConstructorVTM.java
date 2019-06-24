@@ -65,7 +65,7 @@ public class ConstructorVTM extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button12")) this.openGui(modid, 900, xyz);
+		if(button.name.equals("button12")) openGui(modid, 900, xyz);
 		else if(button.name.endsWith("_supplied")){
 			Textureable textur = part == null ? container.getTileEntity().getVehicleData() : container.getTileEntity().getVehicleData().getPart(part);
 			int i = textur.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);

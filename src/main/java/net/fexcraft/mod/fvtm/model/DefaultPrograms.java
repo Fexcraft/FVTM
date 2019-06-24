@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.model;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -124,14 +123,14 @@ public class DefaultPrograms {
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			//if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);//TODO steering state from car
+			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
 			//GL11.glRotatef(20, 0, 0, 1);//TODO calc from entity data
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			//GL11.glRotatef(-20, 0, 0, 1);//TODO calc from entity data
-			//if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);//TODO steering state from car
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
@@ -139,19 +138,21 @@ public class DefaultPrograms {
 	
 	public static final Program WHEEL_AUTO_STEERING = new Program(){
 		
-		//private WheelSlot slot;
+		private WheelSlot slot;
 		
 		@Override public String getId(){ return "fvtm:wheel_auto_steering"; }
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			//slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
-			//if(slot != null && slot.steering()) GL11.glRotatef(22.5f, 0, 1, 0);//TODO steering state from car
+			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			//if(slot != null && slot.steering()) GL11.glRotatef(-22.5f, 0, 1, 0);//TODO steering state from car=
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
 	};
@@ -160,30 +161,38 @@ public class DefaultPrograms {
 		
 		private Attribute attr; private String attribute;
 		private float min, max, step, lastcurr, current; private int axis;
-		private boolean boolstatebased, applyrot;
+		private boolean boolstatebased, override; private float defrot;
 		
-		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, boolean applyrot){
-			this.attribute = attribute; this.boolstatebased = boolstatebased; current = 0; lastcurr = 0;
-			this.min = min; this.max = max; this.step = step; this.axis = axis; this.applyrot = applyrot;
+		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot){
+			this.attribute = attribute; this.boolstatebased = boolstatebased; current = 0; lastcurr = 0; override = true;
+			this.min = min; this.max = max; this.step = step; this.axis = axis; this.defrot = defrot;
+			if(min == max || (min == 0f && max == 0f)){ min = -360; max = 360; }
 		}
 		
+		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot, boolean notadditive){
+			this(attribute, boolstatebased, min, max, step, axis, defrot); this.override = notadditive;
+		}
+
 		@Override public String getId(){ return "fvtm:attribute_rotator"; }
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			/*if(ent == null) return;*/ if(attr == null) attr = data.getAttribute(attribute); if(attr == null) return;
-			//temp
-			attr.setCurrentValue(Time.getSecond() % 2);
-			//
+			if(ent == null) return; /*if(attr == null)*/ attr = data.getAttribute(attribute); if(attr == null) return;
+			//attr.setCurrentValue(Time.getSecond() % 2);
+			/*if(!boolstatebased){
+				attr.setCurrentValue(attr.getCurrentFloat() + 0.1f);
+				if(attr.getCurrentFloat() >= attr.getMax()) attr.setCurrentValue(attr.getMin());
+			}*/
 			current = boolstatebased ? (attr.getCurrentBoolean() ? current + step : current - step) : attr.getCurrentFloat();
 			if(current > max) current = max; if(current < min) current = min;
-			if(current != lastcurr) list.rotateAxis(current, axis, applyrot);
+			if(current != lastcurr) list.rotateAxis(current + defrot, axis, override);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			if(/*ent == null ||*/ attr == null) return; lastcurr = current;
-			if(current != lastcurr) list.rotateAxis(applyrot ? 0 : -current, axis, applyrot);
+			if(ent == null || attr == null) return;
+			if(current != lastcurr) list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
+			lastcurr = current;
 		}
 		
 	};

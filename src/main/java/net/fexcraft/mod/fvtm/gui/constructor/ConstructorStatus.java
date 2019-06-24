@@ -52,7 +52,7 @@ public class ConstructorStatus extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button7")) this.openGui(modid, 900, xyz);
+		if(button.name.equals("button7")) openGui(modid, 900, xyz);
 		else if(button.name.equals("button4")){
 			if(this.container.getTileEntity().getCenterPos() != null){
 				NBTTagCompound compound = new NBTTagCompound();

@@ -31,28 +31,28 @@ public class ConstructorPartCacheInfo extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button8")) this.openGui(modid, 900, xyz);
+		if(button.name.equals("button8")) openGui(modid, 900, xyz);
 		if(container.getTileEntity().getPartData() == null){
 			container.setTitleText("No Part in Constructor Cache.", RGB.RED.packed);
 		}
 		if(button.name.equals("button2")){
-			this.openGui(modid, 913, xyz);
+			openGui(modid, 913, xyz);
 		}
 		else if(button.name.equals("button3")){
-			this.openGui(modid, 912, xyz);
+			openGui(modid, 912, xyz);
 		}
 		else if(button.name.equals("button4")){
-			this.openGui(modid, 911, xyz);
+			openGui(modid, 911, xyz);
 		}
 		else if(button.name.equals("button5")){
-			this.openGui(modid, 910, xyz);
+			openGui(modid, 910, xyz);
 		}
 		else if(button.name.equals("button6")){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "part_cache_drop");
 			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 			this.container.send(Side.SERVER, compound);
-			this.openGui(modid, 900, xyz);
+			openGui(modid, 900, xyz);
 		}
 		return false;
 	}

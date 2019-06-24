@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.block;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
@@ -119,6 +120,8 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	if(te.getPartData() != null) te.dropPart(true);
         	te.setPartData(((PartItem)held.getItem()).getData(held), true);
         	Print.chat(player, "Part put into Constructor."); held.shrink(1);
+        	//
+        	GenericGui.openGui("fvtm", 906, new int[]{ pos.getX(), pos.getY(), pos.getZ() });
         }
         else if(held.getItem() instanceof VehicleItem){
         	if(te.getVehicleData() != null) te.dropVehicle(true);

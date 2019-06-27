@@ -24,5 +24,9 @@ public abstract class EntitySystem {
 	public static enum SpawnMode {
 		PLAYER, CONSTRUCTOR, CODE, OTHER
 	}
+	
+	public static final void openGui(World world, Vec3d pos, @Nullable EntityPlayer placer, @Nullable ItemStack stack, VehicleData data, SpawnMode mode){
+		
+	}
 
 }

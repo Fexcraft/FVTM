@@ -17,15 +17,23 @@ import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
+import net.fexcraft.mod.fvtm.render.RenderEmpty;
+import net.fexcraft.mod.fvtm.render.RenderLandVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.LegacySpawnSystem;
+import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 /**
  * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
@@ -58,7 +66,15 @@ public class FVTM {
 		//
 		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
 		//Capabilities
-		//Entities
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_landvehicle"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
+		if(event.getSide().isClient()){
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderLandVehicle::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
+			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());
+		}
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
 	}
@@ -106,7 +122,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
-		SimpleUpdateHandler.register(MODID, 1, VERSION);
+		Packets.init(); SimpleUpdateHandler.register(MODID, 1, VERSION);
 		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
 	}
 

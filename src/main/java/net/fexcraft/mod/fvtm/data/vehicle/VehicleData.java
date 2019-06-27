@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
@@ -34,7 +35,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable {
+public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable, Lockable {
 	
 	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
@@ -42,7 +43,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected int lightstate, selected_texture;
 	protected String extex;
 	protected ResourceLocation seltex;
-	protected boolean isTextureExternal;
+	protected boolean isTextureExternal, locked;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
 
@@ -90,6 +91,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			wlist.appendTag(com);
 		}
 		compound.setTag("Wheels", wlist);
+		compound.setBoolean("Locked", locked);
 		/*Print.debug("write", compound);*/ return compound;
 	}
 
@@ -136,6 +138,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				if(slot != null) slot.read(com); else continue;
 			}
 		}
+		this.locked = compound.getBoolean("Locked");
 		/*Print.debug("read", compound);*/ return this;
 	}
 
@@ -419,6 +422,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public List<Seat> getSeats(){
 		return seats;
+	}
+
+	public Seat getSeat(String id){
+		for(Seat seat : seats) if(seat.name.equals(id)) return seat; return null;
+	}
+
+	@Override
+	public boolean isLocked(){
+		return locked;
 	}
 
 }

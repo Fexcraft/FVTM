@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Set;
@@ -28,14 +29,20 @@ import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -232,6 +239,38 @@ public class Resources {
 	
 	public static Class<? extends Function> getFunction(String id){
 		return FUNCTIONS.get(id);
+	}
+
+	private static Field flightdata;
+	private static boolean flightdata_failed = false;
+	/** do not remember on what this is based **/
+	public static void resetFlight(EntityPlayerMP passenger){
+		if(flightdata == null && !flightdata_failed){
+			try{
+				flightdata = ReflectionHelper.findField(NetHandlerPlayServer.class,  "floatingTickCount", "field_147365_f");
+			}
+			catch(Exception e){
+				Print.log("Failed to get field. [FLIGHTDATA:ERR:0]");
+			}
+		}
+		if(flightdata != null && !flightdata_failed){
+			try{
+				flightdata.setInt(passenger.connection, 0);
+			}
+			catch(IllegalArgumentException | IllegalAccessException e){
+				if(Static.dev()){
+					e.printStackTrace();
+				}
+				flightdata_failed = true;
+			}
+		}
+		/*passenger.lastTickPosX = passenger.prevPosX;
+		passenger.lastTickPosY = passenger.prevPosY;
+		passenger.lastTickPosZ = passenger.prevPosZ;*/
+	}
+
+	public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
+		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.VEHICLE_UPDATE_RANGE);
 	}
 
 }

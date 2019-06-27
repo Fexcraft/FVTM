@@ -38,6 +38,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected RGB primary, secondary;
 	protected String modelid;
 	protected LegacyData legacy_data;
+	protected boolean trailer;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -121,6 +122,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		if(obj.has("LegacyData")){
 			this.legacy_data = new LegacyData(obj.get("LegacyData").getAsJsonObject());
 		}
+		this.trailer = obj.has("Trailer") ? obj.get("Trailer").getAsBoolean() : obj.has("Wagon") ? obj.get("Wagon").getAsBoolean() : false;
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -187,6 +189,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	
 	public LegacyData getLegacyData(){
 		return legacy_data;
+	}
+
+	public boolean isTrailerOrWagon(){
+		return trailer;
 	}
 
 }

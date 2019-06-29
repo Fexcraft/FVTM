@@ -56,7 +56,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
 	//
 	public double throttle;
-	public float wheelsAngle, wheelsYaw;
+	public float wheelsAngle, serverWY, wheelsYaw;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
     public VehicleEntity truck, trailer;
     public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
@@ -208,7 +208,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 	}
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
-		Print.debug(key, seat.driver, key.dismount(), key.scripts(), player, seat);
+		//Print.debug(key, seat.driver, key.dismount(), key.scripts(), player, seat);
         if(!seat.driver && !key.dismount() && !key.scripts()){
             return false;
         }
@@ -439,7 +439,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         //f(!(seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer))
         	this.throttle = throttle;
         //
-        wheelsYaw = (float)steeringYaw;
+        serverWY = (float)steeringYaw;
 	}
 
     @Override
@@ -669,13 +669,6 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         }
         //
         //boolean drivenByPlayer = isDrivenByPlayer();
-        wheelsYaw *= 0.9F;
-        if(wheelsYaw > 20){
-            wheelsYaw = 20;
-        }
-        if(wheelsYaw < -20){
-            wheelsYaw = -20;
-        }
         if(world.isRemote /*&& !drivenByPlayer*/){
             if(serverPositionTransitionTicker > 0){
                 double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
@@ -684,14 +677,21 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
                 double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
                 double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
                 double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
-                rotationYaw = (float) (axes.getYaw() + dYaw / serverPositionTransitionTicker);
-                rotationPitch = (float) (axes.getPitch() + dPitch / serverPositionTransitionTicker);
-                float rotationRoll = (float) (axes.getRoll() + dRoll / serverPositionTransitionTicker);
-                --serverPositionTransitionTicker;
-                setPosition(x, y, z);
-                setRotation(rotationYaw, rotationPitch, rotationRoll);
-                //return;
+                rotationYaw = (float)(axes.getYaw() + dYaw / serverPositionTransitionTicker);
+                rotationPitch = (float)(axes.getPitch() + dPitch / serverPositionTransitionTicker);
+                float rotationRoll = (float)(axes.getRoll() + dRoll / serverPositionTransitionTicker);
+                --serverPositionTransitionTicker; setPosition(x, y, z);
+                setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
+                if(serverWY != 0){ float old = wheelsYaw;
+                	wheelsYaw = wheelsYaw + (serverWY - wheelsYaw) / serverPositionTransitionTicker;
+                	if(wheelsYaw != wheelsYaw) wheelsYaw = old;
+                }
             }
+            vehicle.getAttribute("steering_angle").setCurrentValue(wheelsYaw);
+        	vehicle.getAttribute("wheel_angle").setCurrentValue(wheelsAngle);
+        }
+        else{
+            wheelsYaw *= 0.95F; if(wheelsYaw > 36){ wheelsYaw = 36; } if(wheelsYaw < -36){ wheelsYaw = -36; }
         }
         for(WheelEntity wheel : wheels){
             if(wheel != null && world != null){
@@ -703,6 +703,8 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         if(!world.isRemote && vehicle.getType().isTrailerOrWagon() ? this.wheels.length > 2 : true){
             if(hasEnoughFuel()){
                 wheelsAngle += throttle * 20;//TODO proper calc for rotation relative to wheel size
+                if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;
+                //animation stuff
             }
             //
             if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || true/*vehicle.getFuelTankContent() > 0*/) && lata.max_throttle != 0){
@@ -747,10 +749,6 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
-        }
-        if(world.isRemote){
-        	vehicle.getAttribute("steering_angle").setCurrentValue(wheelsYaw);
-        	vehicle.getAttribute("wheel_angle").setCurrentValue(wheelsAngle);
         }
     }
 

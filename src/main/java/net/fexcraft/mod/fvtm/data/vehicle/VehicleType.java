@@ -48,8 +48,8 @@ public enum VehicleType {
 		attrs.add(new Attribute.FloatAttribute(true, "constructor_height", 0).setMinMax(0, 4096));
 		attrs.add(new Attribute.FloatAttribute(true, "constructor_wheel_offset", 16).setMinMax(0, 4096));
 		attrs.add(new Attribute.IntegerAttribute(true, "constructor_show", 1, true));
-		attrs.add(new Attribute.FloatAttribute(true, "steering_angle", 0).setMinMax(-40, 40));
-		attrs.add(new Attribute.FloatAttribute(true, "wheel_angle", 0).setMinMax(-360, 360));
+		attrs.add(new Attribute.FloatAttribute(true, "steering_angle", 0).setMinMax(-40f, 40f));
+		attrs.add(new Attribute.FloatAttribute(true, "wheel_angle", 0).setMinMax(-360f, 360f));
 		//TODO
 		switch(this){
 			//TODO type specific

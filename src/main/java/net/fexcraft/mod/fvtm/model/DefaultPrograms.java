@@ -32,6 +32,9 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(WHEEL_AUTO_ALL);
 		TurboList.PROGRAMS.add(WHEEL_AUTO_STEERING);
 		TurboList.PROGRAMS.add(NO_CULLFACE);
+		TurboList.PROGRAMS.add(STEERING_WHEEL_Z);
+		TurboList.PROGRAMS.add(STEERING_WHEEL_X);
+		TurboList.PROGRAMS.add(STEERING_WHEEL_Y);
 		//
 		DIDLOAD = true;
 	}
@@ -153,6 +156,32 @@ public class DefaultPrograms {
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
+		}
+		
+	};
+	
+	public static final Program STEERING_WHEEL_Z = new SteeringWheel(2, 1f), STEERING_WHEEL_X = new SteeringWheel(0, 1f), STEERING_WHEEL_Y = new SteeringWheel(1, 1f);
+	
+	/** Only works with centered steering wheels and translated into position. */
+	public static class SteeringWheel implements Program {
+		
+		private byte x, y, z; private float ratio; private String id;
+		
+		public SteeringWheel(int axis, float ratio){
+			x = (byte)(axis == 0 ? 1 : 0); y = (byte)(axis == 1 ? 1 : 0); z = (byte)(axis == 2 ? 1 : 0); this.ratio = ratio;
+			id = "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
+		}
+
+		@Override public String getId(){ return id; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			GL11.glRotatef(data.getAttribute("steering_angle").getCurrentFloat() * ratio, x, y, z);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			GL11.glRotatef(-data.getAttribute("steering_angle").getCurrentFloat() * ratio, x, y, z);
 		}
 		
 	};

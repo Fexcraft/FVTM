@@ -355,7 +355,6 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     }
 
     public boolean onKeyPress(KeyPress key, EntityPlayer player){
-    	Print.debug(key, player);
         if(vehicle != null){
             if(key == null){
                 //this.vehicle.getVehicleData().getScripts().forEach((script) -> script.onKeyInput(key, this.seatid, this.vehicle));

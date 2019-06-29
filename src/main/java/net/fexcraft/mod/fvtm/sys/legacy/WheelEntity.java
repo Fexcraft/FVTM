@@ -22,17 +22,13 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     public int wheelid;
 
     public WheelEntity(World world){
-        super(world);
-        setSize(0.75F, 0.75F);
-        stepHeight = 1.1F;
+        super(world); setSize(0.75F, 0.75F); stepHeight = 1.1F;
     }
 
-    public WheelEntity(World world, VehicleEntity entity, int i){
-        this(world);
-        vehicle = (LandVehicle)entity;
+    public WheelEntity(LandVehicle entity, int i){
+        this(entity.world); vehicle = entity;
         vehicleid = entity.getEntity().getEntityId();
-        wheelid = i;
-        initPosition();
+        wheelid = i; initPosition();
     }
 
     @Override
@@ -43,7 +39,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void readSpawnData(ByteBuf buffer){
         vehicleid = buffer.readInt(); wheelid = buffer.readInt();
-        if(world.getEntityByID(vehicleid) instanceof VehicleEntity){
+        if(world.getEntityByID(vehicleid) instanceof LandVehicle){
             vehicle = (LandVehicle)world.getEntityByID(vehicleid);
         }
         if(vehicle != null){
@@ -52,10 +48,10 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public void initPosition(){
-    	LegacyData data = vehicle.getVehicleData().getType().getLegacyData();
-        Vec3d vec = vehicle.getAxes().getRelativeVector(data.wheelpos[wheelid]);
+    	lata = vehicle.getVehicleData().getType().getLegacyData();
+        Vec3d vec = vehicle.getAxes().getRelativeVector(lata.wheelpos[wheelid]);
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
-        stepHeight = data.wheel_step_height;
+        stepHeight = lata.wheel_step_height;
         //
         prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
     }
@@ -83,20 +79,14 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void onUpdate(){
         if(world.isRemote && !foundveh){
-            if(!(world.getEntityByID(vehicleid) instanceof VehicleEntity)){
-                return;
-            }
+            if(!(world.getEntityByID(vehicleid) instanceof VehicleEntity)){ return; }
             vehicle = (LandVehicle)world.getEntityByID(vehicleid);
             foundveh = true; lata = vehicle.getVehicleData().getType().getLegacyData();
             if(lata.wheelpos.length <= wheelid){ this.setDead(); return; }
             vehicle.wheels[wheelid] = this;
         }
-        if(vehicle == null){
-            return;
-        }
-        if(!addedToChunk){
-            world.spawnEntity(this);
-        }
+        if(vehicle == null){ return; }
+        if(!addedToChunk){ world.spawnEntity(this); }
     }
 
     public double getHorizontalSpeed(){

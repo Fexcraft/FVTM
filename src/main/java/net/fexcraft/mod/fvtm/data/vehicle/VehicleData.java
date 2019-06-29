@@ -428,6 +428,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(Seat seat : seats) if(seat.name.equals(id)) return seat; return null;
 	}
 
+	public Seat getSeat(int index){
+		return index < 0 ? null : index >= seats.size() ? null : seats.get(index);
+	}
+
 	@Override
 	public boolean isLocked(){
 		return locked;

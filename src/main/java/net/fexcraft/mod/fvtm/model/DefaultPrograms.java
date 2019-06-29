@@ -124,12 +124,12 @@ public class DefaultPrograms {
 			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
 			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
-			//GL11.glRotatef(20, 0, 0, 1);//TODO calc from entity data
+			GL11.glRotatef(data.getAttribute("wheel_angle").getCurrentFloat(), 0, 0, 1);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			//GL11.glRotatef(-20, 0, 0, 1);//TODO calc from entity data
+			GL11.glRotatef(-data.getAttribute("wheel_angle").getCurrentFloat(), 0, 0, 1);
 			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}

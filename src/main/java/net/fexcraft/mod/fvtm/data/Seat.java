@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.minecraft.util.math.Vec3d;
 
 public class Seat {
@@ -18,9 +19,7 @@ public class Seat {
 	//public String swivel_point;
 	
 	public Seat(JsonObject obj){
-		this.x = JsonUtil.getIfExists(obj, "x", 0).floatValue();
-		this.y = JsonUtil.getIfExists(obj, "y", 0).floatValue();
-		this.z = JsonUtil.getIfExists(obj, "z", 0).floatValue();
+		Pos pos = Pos.fromJson(obj, false); x = pos.to16FloatX(); y = pos.to16FloatY(); z = pos.to16FloatZ();
 		driver = JsonUtil.getIfExists(obj, "driver", false);
 		name = obj.has("name") ? obj.get("name").getAsString() : UUID.randomUUID().toString().substring(0, 8);
 		minyaw = JsonUtil.getIfExists(obj, "min_yaw", -90f).floatValue();
@@ -49,6 +48,12 @@ public class Seat {
 	
 	public String getName(){
 		return name;
+	}
+	
+	@Override
+	public String toString(){
+		return String.format("Seat@[(%s, %s, %s), %s, %s-driver, %s-%sy, %s-%sp, %s-sit]",
+			x, y, z, name, driver, minyaw, maxyaw, minpitch, maxpitch, sitting);
 	}
 
 }

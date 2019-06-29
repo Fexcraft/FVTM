@@ -42,7 +42,7 @@ public class PKTH_SeatUpdate {
                 @Override
                 public void run(){
                     EntityPlayer player = Minecraft.getMinecraft().player;
-                    findAndApply(null, player.world.loadedEntityList, false);
+                    findAndApply(packet, player.world.loadedEntityList, false);
                 }
             });
             return null;
@@ -52,7 +52,7 @@ public class PKTH_SeatUpdate {
 	private static final void findAndApply(PKT_SeatUpdate packet, List<Entity> list, boolean send){
         for(Entity ent : list){
             if(ent.getEntityId() == packet.entid){ SeatEntity seat = (SeatEntity)ent;
-            	seat.prevlooking = seat.looking.clone();  seat.looking.setAngles(packet.yaw, packet.pitch, 0F);
+            	seat.prevlooking = seat.looking.clone(); seat.looking.setAngles(packet.yaw, packet.pitch, 0F);
             	if(send){
                     Packets.sendToAllAround(packet, new TargetPoint(seat.dimension,
                     	seat.getPosition().getX(), seat.getPosition().getY(), seat.getPosition().getZ(), Config.VEHICLE_UPDATE_RANGE));

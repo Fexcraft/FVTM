@@ -44,8 +44,8 @@ public class GuiVehicleController extends GuiScreen {
         int wheel = Mouse.getDWheel();
         if(wheel != 0){ player.inventory.changeCurrentItem(wheel); }
         //
-        if(Mouse.isButtonDown(0)){ seat.onKeyPress(null, player); }
-        if(Mouse.isButtonDown(1)){ seat.onKeyPress(null, player); }
+        if(Mouse.isButtonDown(0)){ seat.onKeyPress(KeyPress.MOUSE_MAIN, player); }
+        if(Mouse.isButtonDown(1)){ seat.onKeyPress(KeyPress.MOUSE_RIGHT, player); }
     }
 
     @Override

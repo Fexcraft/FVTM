@@ -38,6 +38,10 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(s));
         }
+        PartData data = this.getData(stack);
+        if(data != null){
+            tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
+        }
         if(type.getBaseAttributes().size() > 0){
         	tooltip.add(Formatter.format("&0&9This part has &7%s &9Attribute/s.", type.getBaseAttributes().size()));
         }
@@ -52,6 +56,12 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         //TODO attribute data
         //TODO script data
     }
+
+	private String getTexTitle(PartData data){
+		if(data.getSelectedTexture() >= 0){
+			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).getName();
+		} else return data.isExternalTexture() ? "external" : "internal";
+	}
 
 	@Override
 	public PartData getData(ItemStack stack){

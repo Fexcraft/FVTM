@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -43,18 +42,25 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){ tooltip.add(Formatter.format(s)); }
         VehicleData data = this.getData(stack); if(data == null) return;
+        tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getCurrentString() + "kg"));
         tooltip.add(Formatter.format("&9Seats: &7" + data.getSeats().size()));
         //temporary
-        if(flag.isAdvanced() && !data.getAttributes().isEmpty()){
+        /*if(flag.isAdvanced() && !data.getAttributes().isEmpty()){
         	for(Attribute attr : data.getAttributes().values()){
         		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
         	}
-        }
+        }*/
         //TODO texture/pos data
         //TODO model data
         //TODO other data
     }
+
+	private String getTexTitle(VehicleData data){
+		if(data.getSelectedTexture() >= 0){
+			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).getName();
+		} else return data.isExternalTexture() ? "external" : "internal";
+	}
 
 	@Override
 	public VehicleData getData(ItemStack stack){

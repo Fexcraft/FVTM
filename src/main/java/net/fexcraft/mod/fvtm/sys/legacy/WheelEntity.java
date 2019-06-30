@@ -94,8 +94,8 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    public void setPositionAndRotationDirect(double d, double d1, double d2, float f, float f1, int i, boolean b){
-        //
+    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int incr, boolean tele){
+        this.setPosition(x, y, z); this.setRotation(yaw, pitch);
     }
 
     @Override

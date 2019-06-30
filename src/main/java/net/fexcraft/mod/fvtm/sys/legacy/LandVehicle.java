@@ -61,11 +61,11 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
     public VehicleEntity truck, trailer;
     public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
     protected byte doorToggleTimer;
-    private boolean sync;
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
-    public int serverPositionTransitionTicker, servtick = 5;
+    public int serverPositionTransitionTicker;
+    public static final int servtick = 5;
 
 	public LandVehicle(World ilmondo){
 		super(ilmondo);
@@ -417,12 +417,8 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 
 	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, Vec3d avel, double throttle, double steeringYaw){
         if(world.isRemote){
-            serverPosX = posX;
-            serverPosY = posY;
-            serverPosZ = posZ;
-            serverYaw = yaw;
-            serverPitch = pitch;
-            serverRoll = roll;
+            serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
+            serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
             serverPositionTransitionTicker = servtick;
         }
         else{
@@ -432,32 +428,20 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
             prevRotationRoll = roll;
             setRotation(yaw, pitch, roll);
         }
-        motionX = motX;
-        motionY = motY;
-        motionZ = motZ;
-        angularVelocity = avel;
-        //f(!(seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer))
-        	this.throttle = throttle;
-        //
-        serverWY = (float)steeringYaw;
+        motionX = motX; motionY = motY; motionZ = motZ; angularVelocity = avel;
+        this.throttle = throttle; serverWY = (float)steeringYaw;
 	}
 
     @Override
-    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport){
-        if(ticksExisted > 1){
-            return;
-        }
+    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){
+        if(ticksExisted > 1){ Print.debug("setPositionAndRotationDirect"); return; }
         if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
             //
         }
         else{
-            if(sync){ serverPositionTransitionTicker = posRotationIncrements + servtick; }
-            else{
-                double var10 = x - posX, var12 = y - posY, var14 = z - posZ;
-                double var16 = var10 * var10 + var12 * var12 + var14 * var14;
-                if(var16 <= 1.0D){ return; }
-                serverPositionTransitionTicker = servtick / 2;
-            }
+            double xx = x - posX, yy = y - posY, zz = z - posZ;
+            double xyz = xx * xx + yy * yy + zz * zz; if(xyz <= 1.0D){ return; }
+            serverPositionTransitionTicker = servtick / 2;
             serverPosX = x; serverPosY = y; serverPosZ = z;
             serverYaw = yaw; serverPitch = pitch;
         }
@@ -661,9 +645,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
             this.ticksExisted = 0;
         }
         //
-        if(seats == null || (!vehicle.getType().isTrailerOrWagon() && seats.length == 0)){
-            this.setDead(); return;
-        }
+        //if(seats == null || (!vehicle.getType().isTrailerOrWagon() && seats.length == 0)){ this.setDead(); return; }
         if(doorToggleTimer > 0){
             doorToggleTimer--;
         }
@@ -700,7 +682,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
                 wheel.prevPosZ = wheel.posZ;
             }
         }
-        if(!world.isRemote && vehicle.getType().isTrailerOrWagon() ? this.wheels.length > 2 : true){
+        if(!world.isRemote){// && vehicle.getType().isTrailerOrWagon() ? this.wheels.length > 2 : true){
             if(hasEnoughFuel()){
                 wheelsAngle += throttle * 20;//TODO proper calc for rotation relative to wheel size
                 if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;

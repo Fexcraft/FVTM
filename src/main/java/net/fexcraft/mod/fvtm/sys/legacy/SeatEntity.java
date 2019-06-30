@@ -1,7 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
@@ -46,7 +47,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     private float pass_yaw, pass_pitch;//, pass_roll;
     private double prev_pass_x, prev_pass_y, prev_pass_z;
     private float prev_pass_yaw, prev_pass_pitch;//, prev_pass_roll;
-    private ArrayList<Entity> passger = new ArrayList<>();
+    private CopyOnWriteArrayList<Entity> passger = new CopyOnWriteArrayList<>();
     private Entity passenger;
 
     public SeatEntity(World world){

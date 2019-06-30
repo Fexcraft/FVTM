@@ -22,7 +22,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     public int wheelid;
 
     public WheelEntity(World world){
-        super(world); setSize(0.75F, 0.75F); stepHeight = 1.1F;
+        super(world); setSize(0.25F, 0.25F); stepHeight = 1.1F;
     }
 
     public WheelEntity(LandVehicle entity, int i){

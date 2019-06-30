@@ -73,6 +73,8 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 			//this.needs_tires = JsonUtil.getIfExists(obj, "needs_tires", needs_tires);
 		}
 		
+		public float getRadius(){ return radius; }
+		
 	}
 
 	@Override

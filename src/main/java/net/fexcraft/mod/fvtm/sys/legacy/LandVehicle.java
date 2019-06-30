@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
@@ -434,7 +435,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){
-        if(ticksExisted > 1){ Print.debug("setPositionAndRotationDirect"); return; }
+        return; /*if(ticksExisted > 1){ Print.debug("setPositionAndRotationDirect"); return; }
         if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
             //
         }
@@ -444,7 +445,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
             serverPositionTransitionTicker = servtick / 2;
             serverPosX = x; serverPosY = y; serverPosZ = z;
             serverYaw = yaw; serverPitch = pitch;
-        }
+        }*/
     }
 
 	//-- Vanilla --//
@@ -650,8 +651,9 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
             doorToggleTimer--;
         }
         //
-        //boolean drivenByPlayer = isDrivenByPlayer();
-        if(world.isRemote /*&& !drivenByPlayer*/){
+        if(!world.isRemote){ wheelsYaw *= 0.95F;  }
+        if(wheelsYaw > 30){ wheelsYaw = 30; } if(wheelsYaw < -30){ wheelsYaw = -30; }
+        if(world.isRemote){
             if(serverPositionTransitionTicker > 0){
                 double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
                 double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
@@ -664,16 +666,13 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
                 float rotationRoll = (float)(axes.getRoll() + dRoll / serverPositionTransitionTicker);
                 --serverPositionTransitionTicker; setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
-                if(serverWY != 0){ float old = wheelsYaw;
-                	wheelsYaw = wheelsYaw + (serverWY - wheelsYaw) / serverPositionTransitionTicker;
-                	if(wheelsYaw != wheelsYaw) wheelsYaw = old;
-                }
+                float old = wheelsYaw; wheelsYaw = wheelsYaw + (serverWY - wheelsYaw) / serverPositionTransitionTicker;
+                if(wheelsYaw != wheelsYaw) wheelsYaw = old;
             }
             vehicle.getAttribute("steering_angle").setCurrentValue(wheelsYaw);
+            double cir = ((WheelData)vehicle.getPart("left_front_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
+            wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setCurrentValue(wheelsAngle);
-        }
-        else{
-            wheelsYaw *= 0.95F; if(wheelsYaw > 36){ wheelsYaw = 36; } if(wheelsYaw < -36){ wheelsYaw = -36; }
         }
         for(WheelEntity wheel : wheels){
             if(wheel != null && world != null){
@@ -684,8 +683,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         }
         if(!world.isRemote){// && vehicle.getType().isTrailerOrWagon() ? this.wheels.length > 2 : true){
             if(hasEnoughFuel()){
-                wheelsAngle += throttle * 20;//TODO proper calc for rotation relative to wheel size
-                if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;
+                //wheelsAngle += throttle * 20; if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;
                 //animation stuff
             }
             //

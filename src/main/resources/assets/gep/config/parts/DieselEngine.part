@@ -16,5 +16,8 @@
     ],
     "Modifiers":[
     	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "120", "priority": "veryhigh" }
-    ]
+    ],
+    "Function": {
+    	"id": "fvtm:engine", "engine_speed": 1, "fuel_consumption": 0.125
+    }
 }

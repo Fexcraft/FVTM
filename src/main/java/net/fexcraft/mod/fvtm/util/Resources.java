@@ -30,6 +30,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
@@ -112,6 +113,7 @@ public class Resources {
 		registerFunction("fvtm:wheel", WheelFunction.class, true);
 		registerFunction("fvtm:wheel_positions", WheelPositionsFunction.class, true);
 		registerFunction("fvtm:seats", SeatsFunction.class, true);
+		registerFunction("fvtm:engine", EngineFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){

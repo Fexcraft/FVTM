@@ -172,27 +172,17 @@ public class GuiVehicleController extends GuiScreen {
     }
 
     public boolean isKeyDown(int keycode){
-        return keycode < 0 ? Mouse.isButtonDown(keycode + 100) : keycode > 255
-                ? /**
-                 * invalid code - PASS
-                 */
-                false : Keyboard.isKeyDown(keycode);
+        return keycode < 0 ? Mouse.isButtonDown(keycode + 100) : keycode > 255 ? /* invalid code - PASS */ false : Keyboard.isKeyDown(keycode);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
-        //mc.renderEngine.bindTexture(texture);
-        //drawTexturedModalRect(0, 0, 0, 0, 126, 50);//238
-        //
-        LandVehicle ent = seat.getVehicle();
-        if(ent == null){
-            return;
-        }
-        if(ent.getVehicleData().getPart("engine") == null){
+        LandVehicle ent = seat.getVehicle(); if(ent == null){ return; }
+        if(!ent.getVehicleData().hasPart("engine")){
             mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff);
             return;
         }
-        mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity()) + " blk/s"), 7, 7, 0xffffff);
+        mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity())), 7, 7, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 21, 0xffffff);
         //mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getFuelTankContent()) + "&f/&b" + ent.getVehicleData().getFuelTankSize()), 7, 35, 0xffffff);
     }
@@ -229,8 +219,6 @@ public class GuiVehicleController extends GuiScreen {
         float speed = (float) Math.sqrt(dX * dX + dY * dY + dZ * dZ) * 1000F / 16F;
         return speed = (int) (speed * 10F) / 10F;
     }
-
-    //private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/guis/vehicle_stat.png");
 
     @Override
     public boolean doesGuiPauseGame(){

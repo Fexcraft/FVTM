@@ -338,13 +338,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return parts.get(string);
 	}
 
-	public int getLightsState(){
-		return lightstate;
+	public boolean hasPart(String string){
+		return getPart(string) != null;
 	}
 
-	//TODO
-	public double getThrottle(){
-		return attributes.get("throttle").getCurrentFloat();
+	public int getLightsState(){
+		return lightstate;
 	}
 
 	@Override
@@ -435,6 +434,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	@Override
 	public boolean isLocked(){
 		return locked;
+	}
+
+	public double getThrottle(){
+		return getAttribute("throttle").getCurrentFloat();
 	}
 
 }

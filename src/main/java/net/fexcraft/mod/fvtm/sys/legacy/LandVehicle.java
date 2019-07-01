@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
@@ -19,6 +20,7 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
@@ -62,6 +64,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
     public VehicleEntity truck, trailer;
     public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
     protected byte doorToggleTimer;
+    protected Object engineloop;//TODO sound
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
@@ -219,17 +222,13 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         }
         switch(key){
             case ACCELERATE:{
-                throttle += throttle < 0 ? 0.02f : 0.005F;
-                if(throttle > 1F){
-                    throttle = 1F;
-                }
+                throttle += throttle < 0 ? 0.02f : 0.01F;
+                if(throttle > 1F){ throttle = 1F; }
                 return true;
             }
             case DECELERATE:{
-                throttle -= throttle > 0 ? 0.02f : 0.005F;
-                if(throttle < -1F){
-                    throttle = -1F;
-                }
+                throttle -= throttle > 0 ? 0.02f : 0.01F;
+                if(throttle < -1F){ throttle = -1F; }
                 if(throttle < 0F && lata.min_throttle == 0F){
                     throttle = 0F;
                 }
@@ -673,6 +672,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
             double cir = ((WheelData)vehicle.getPart("left_front_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setCurrentValue(wheelsAngle);
+        	vehicle.getAttribute("throttle").setCurrentValue(throttle);
         }
         for(WheelEntity wheel : wheels){
             if(wheel != null && world != null){
@@ -682,10 +682,9 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
             }
         }
         if(!world.isRemote){// && vehicle.getType().isTrailerOrWagon() ? this.wheels.length > 2 : true){
-            if(hasEnoughFuel()){
+            /*if(hasEnoughFuel()){
                 //wheelsAngle += throttle * 20; if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;
-                //animation stuff
-            }
+                //animation stuff }*/
             //
             if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || true/*vehicle.getFuelTankContent() > 0*/) && lata.max_throttle != 0){
                 throttle *= 0.98F;
@@ -722,10 +721,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }
         /*if(drivenByPlayer){
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
-            serverPosX = posX;
-            serverPosY = posY;
-            serverPosZ = posZ;
-            serverYaw = axes.getYaw();
+            serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
         }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
@@ -773,12 +769,12 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || (seats != null && seats[0] != null
 		        	&& seats[0].getControllingPassenger() instanceof EntityPlayer
 		        	&& ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
-		        boolean consumed = true;//TODO false;
-		        /*Part.PartData enginepart = vehicledata.getPart("engine");
-		        if(enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
-		            double d = (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
-		            consumed = vehicledata.consumeFuel(d > 0 ? d : (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() / 320));
-		        }*/
+		        boolean consumed = false;
+		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
+		        if(engine != null && engine.isOn() ){//TODO FUELSYSTEM && vehicledata.getFuelTankContent() > engine.getFuelConsumption() * throttle){
+		            //TODO FUELSYSTEM double d = (engine.getFuelConsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
+		            consumed = true;//TODO FUELSYSTEM vehicledata.consumeFuel(d > 0 ? d : (engine.getFuelConsumption() / 320));
+		        }
 		        for(WheelEntity wheel : wheels){
 		            if(wheel == null){ continue; }
 		            onGround = false; wheel.onGround = false;
@@ -790,7 +786,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		            wheel.motionY *= 0.9F;
 		            wheel.motionZ *= 0.9F;
 		            wheel.motionY -= 0.98F / 20F;//Gravity
-		            //TODO if(enginepart != null){
+		            if(engine != null){
 		                if((canThrustCreatively || consumed)){
 		                    double velocityScale;
 		                    if(lata.is_tracked){
@@ -800,14 +796,14 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
 		                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
 		                        //
-		                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * 1f;//engine speed;
+		                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
 		                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
 		                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
 		                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
 		                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
 		                    }
 		                    else{
-		                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * 1f;//engine speed;
+		                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
 		                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
 		                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
 		                        //
@@ -822,12 +818,12 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		                        }
 		                    }
 		                }
-		            //}
+		            }
 		            if(world.containsAnyLiquid(wheel.getEntityBoundingBox())){
 		                wheel.motionY += lata.bouyancy;
 		            }
 		            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-		            //pull wheel back to car
+		            //pull wheel back to the boat
 		            Vec3d targetpos = axes.getRelativeVector(lata.wheelpos[wheel.wheelid]);
 		            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
 		            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
@@ -843,12 +839,12 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || (seats != null && seats[0] != null
 		        	&& seats[0].getControllingPassenger() instanceof EntityPlayer
 		        	&& ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
-		        boolean consumed = true;//TODO false;
-		        /*Part.PartData enginepart = vehicledata.getPart("engine");
-		        if(!canThrustCreatively && enginepart != null && enginepart.getAttributeData(EngineAttributeData.class).isOn() && vehicledata.getFuelTankContent() > enginepart.getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle){
-		            double d = (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
-		            consumed = vehicledata.consumeFuel(d > 0 ? d : (vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() / 320));
-		        }*/
+		        boolean consumed = false;
+		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
+		        if(!canThrustCreatively && engine != null && engine.isOn() ){//TODO FUELSYSTEM&& vehicledata.getFuelTankContent() > engine.getFuelCompsumption() * throttle){
+		            //TODO FUELSYSTEM double d = (engine.getLegacyFuelConsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
+		            consumed = true;//TODO FUELSYSTEM vehicledata.consumeFuel(d > 0 ? d : (engine.getLegacyFuelConsumption() / 320));
+		        }
 		        for(WheelEntity wheel : wheels){
 		            if(wheel == null){
 		                continue;
@@ -862,7 +858,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		            wheel.motionY *= 0.9F;
 		            wheel.motionZ *= 0.9F;
 		            wheel.motionY -= 0.98F / 20F;//Gravity
-		            //TODO if(enginepart != null){
+		            if(engine != null){
 		                if((canThrustCreatively || consumed)){
 		                    double velocityScale;
 		                    if(lata.is_tracked){
@@ -872,14 +868,14 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
 		                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
 		                        //
-		                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * 1f;//engine speed
+		                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
 		                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
 		                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
 		                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
 		                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
 		                    }
 		                    else{
-		                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * 1f;//engine speed
+		                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
 		                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
 		                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
 		                        //
@@ -894,7 +890,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		                        }
 		                    }
 		                }
-		            //}
+		            }
 		            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 		            //pull wheel back to car
 		            Vec3d targetpos = axes.getRelativeVector(lata.wheelpos[wheel.wheelid]);
@@ -935,9 +931,9 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
                 return false;
             }
             else{
-                /*if(vehicledata.getPart("engine") != null){
-                    vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).setOn(false);
-                }*///TODO
+                if(vehicle.hasPart("engine") && vehicle.getPart("engine").hasFunction("fvtm:engine")){
+                    vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(false);
+                }
                 //TODO vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
                 ItemStack stack = vehicle.newItemStack();
                 //
@@ -977,9 +973,9 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
     }
 
     //--- PACKETS ---//
-    //private long lr = -1;
+    private long lr = -1;
 
-    @Override
+    @SuppressWarnings("unused") @Override
     public void processServerPacket(PacketEntityUpdate pkt){
         /*if(pkt.nbt.hasKey("ScriptId")){
             for(VehicleScript script : vehicledata.getScripts()){
@@ -990,19 +986,18 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         }*///TODO
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
-                case "engine_toggle": {/*
+                case "engine_toggle": {
                     if(lr + 1000 >= Time.getDate()){ break; }
-                    lr = Time.getDate();
-                    boolean on = false, nf = false;
-                    pkt.nbt.setBoolean("engine_toggle_result", on = vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).toggle());
-                    if(vehicledata.getFuelTankContent() == 0 || vehicledata.getFuelTankContent() < 0.1){
+                    lr = Time.getDate(); boolean on = false, nf = false; EngineFunction engine = vehicle.getPart("engine").getFunction("fvtm:engine");
+                    pkt.nbt.setBoolean("engine_toggle_result", on = engine.toggle());
+                    /*if(vehicledata.getFuelTankContent() == 0 || vehicledata.getFuelTankContent() < 0.1){
                         pkt.nbt.setBoolean("engine_toggle_result", on = false);
                         pkt.nbt.setBoolean("no_fuel", nf = true);
-                    }
+                    }*///TODO FUEL
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
                     throttle = 0;
                     //
-                    SoundEvent event = vehicledata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
+                    /*SoundEvent event = vehicledata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
                     if(event != null){
                         this.playSound(event, 0.5f, 1f);
                         //this.world.playSound(null, this.posX, this.posY, this.posZ, event, this.getSoundCategory(), 1f, 1f);
@@ -1010,8 +1005,8 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
                     }
                     else{
                         Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Not found.");
-                    }
-                    break;*/ return;
+                    }*///TODO SOUND
+                    break;
                 }
                 case "resync": {
                     NBTTagCompound nbt = this.vehicle.write(new NBTTagCompound());
@@ -1034,16 +1029,16 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
         }*///TODO
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
-                case "engine_toggle": {/*
+                case "engine_toggle": {
                     if(net.minecraft.client.Minecraft.getMinecraft().player.isRiding() && this.seats[0] == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
-                        Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).setOn(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
+                        Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");
                         }
                     }
                     throttle = 0;
-                    if(vehicledata.getPart("engine").getAttributeData(EngineAttributeData.class).isOn() && this.engineloop == null){
-                        SoundEvent event = vehicledata.getPart("engine").getPart().getSound("engine_running");
+                    if(vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
+                        /*SoundEvent event = vehicledata.getPart("engine").getPart().getSound("engine_running");
                         if(event != null){
                             this.engineloop = new EngineLoopSound(event, SoundCategory.NEUTRAL, this);
                             net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
@@ -1051,9 +1046,9 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
                         }
                         else{
                             Print.debug("engine_running -> Not found.");
-                        }
+                        }*///TODO sound
                     }
-                    break;*/ return;
+                    break;
                 }
                 case "resync":
                 case "update_vehicledata": {

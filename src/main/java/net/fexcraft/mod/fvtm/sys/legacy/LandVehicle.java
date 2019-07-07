@@ -773,7 +773,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		        boolean consumed = false;
 		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
 		        if(engine != null && engine.isOn() ){//TODO FUELSYSTEM && vehicledata.getFuelTankContent() > engine.getFuelConsumption() * throttle){
-		            //TODO FUELSYSTEM double d = (engine.getFuelConsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
+		            //TODO FUELSYSTEM double d = (engine.getFuelConsumption() * throttle) / 80;//20, set lower to prevent too fast consumption.
 		            consumed = true;//TODO FUELSYSTEM vehicledata.consumeFuel(d > 0 ? d : (engine.getFuelConsumption() / 320));
 		        }
 		        for(WheelEntity wheel : wheels){

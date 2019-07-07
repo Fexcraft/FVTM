@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorCenterBlock;
+import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
@@ -24,11 +25,13 @@ import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
@@ -65,7 +68,7 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		//
 		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
-		//Capabilities
+		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_landvehicle"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
@@ -77,6 +80,10 @@ public class FVTM {
 		}
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
+		if(event.getSide().isClient()){//moved from init into here cause of item models
+			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
+			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
+		}
 	}
 
 	@Mod.EventHandler
@@ -87,10 +94,6 @@ public class FVTM {
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
-		if(event.getSide().isClient()){
-			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
-			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
-		}
 		//
 		GuiHandler.register(MODID, this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());

@@ -74,7 +74,12 @@ public class Material extends TypeCore<Material> {
 		return this.maxStackSize;
 	}
 	
-	public MaterialItem getItem(){
+	public MaterialItem getMaterialItem(){
+		return item;
+	}
+	
+	@Override
+	public Item getItem(){
 		return item;
 	}
 

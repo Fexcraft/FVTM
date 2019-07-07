@@ -21,6 +21,8 @@ public abstract class TypeCore<SELF> implements IForgeRegistryEntry<SELF> {
 	public Addon getAddon(){ return pack; }
 
 	public String getName(){ return name; }
+
+	public Item getItem(){ return null; }
 	
 	public List<String> getDescription(){ return description; }
 	

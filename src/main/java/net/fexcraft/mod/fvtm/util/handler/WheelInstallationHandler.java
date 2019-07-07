@@ -53,7 +53,7 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 		if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
 		WheelData idata = part.getType().getInstallationHandlerData();
 		Vec3d vec = part.getInstalledPos().to16Double();
-		data.getWheelPositions().put(cat, vec.addVector(0, -idata.radius * Static.sixteenth, (cat.contains("left") ? -idata.width : idata.width) * Static.sixteenth));
+		data.getWheelPositions().put(cat, vec.addVector(0, -idata.radius * Static.sixteenth, (cat.contains("left") ? idata.width : -idata.width) * Static.sixteenth));
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 

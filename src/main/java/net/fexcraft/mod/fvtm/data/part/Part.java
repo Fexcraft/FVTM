@@ -27,6 +27,7 @@ import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -193,7 +194,12 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 		return categories;
 	}
 	
-	public PartItem getItem(){
+	public PartItem getPartItem(){
+		return item;
+	}
+	
+	@Override
+	public Item getItem(){
 		return item;
 	}
 	

@@ -1,9 +1,14 @@
 package net.fexcraft.mod.fvtm.model;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.render.FCLItemModel;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -53,10 +58,10 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	
 	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
-		/*if(item.getItem() instanceof VehicleItem == false){ return; }
-		VehicleData data = item.getCapability(FVTMCaps.VAPDATA, null).getVehicleData();
+		if(item.getItem() instanceof VehicleItem == false){ return; }
+		VehicleData data = item.getCapability(Capabilities.VAPDATA, null).getVehicleData();
 		if(data == null){ return; }
-		VehicleModel model = (VehicleModel)data.getVehicle().getModel();
+		VehicleModel model = (VehicleModel)data.getType().getModel();
 		if(model == null) { return; }
 		float[] scal = new float[]{ model.gui_scale_x, model.gui_scale_y, model.gui_scale_z };
 		//
@@ -78,21 +83,21 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 				break;
 			}
 			case FIRST_PERSON_LEFT_HAND: {
-				if(data.getVehicle().isTrailerOrWagon()){
+				if(data.getType().isTrailerOrWagon()){
 					GL11.glTranslatef(0, 0, -0.5f);
 				}
 				GL11.glRotatef(60f, 0F, 1F, 0F);
 				break;
 			}
 			case FIRST_PERSON_RIGHT_HAND: {
-				if (data.getVehicle().isTrailerOrWagon()){
+				if (data.getType().isTrailerOrWagon()){
 					GL11.glTranslatef(0, 0, -0.5f);
 				}
 				GL11.glRotatef(120f, 0F, 1F, 0F);
 				break;
 			}
 			case GUI: {
-				float f = data.getVehicle().isTrailerOrWagon() && !data.getVehicle().getType().isRailVehicle() ? -0.375f : 0;
+				float f = data.getType().isTrailerOrWagon() && !data.getType().getVehicleType().isRailVehicle() ? -0.375f : 0;
 				GL11.glTranslatef(model.gui_translate_x + f, model.gui_translate_y + f, model.gui_translate_z);
 				GL11.glRotatef(-135, 0, 1, 0);
 				GL11.glRotatef(-30, 1, 0, 0);
@@ -112,16 +117,16 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 			GL11.glRotated(180d, 1, 0, 0);
 			bindTexture(data.getTexture());
 			model.render(data, null, null, 0);
-			for(Map.Entry<String, PartData> entry : data.getParts().entrySet()){
+			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
 				bindTexture(entry.getValue().getTexture());
-				entry.getValue().getPart().getOffsetFor(data.getVehicle().getRegistryName()).translate();
-				entry.getValue().getPart().getModel().render(data, entry.getKey());
-				entry.getValue().getPart().getOffsetFor(data.getVehicle().getRegistryName()).translateR();
+            	entry.getValue().getInstalledPos().translate();
+                entry.getValue().getType().getModel().render(data, entry.getKey(), null, -1);
+                entry.getValue().getInstalledPos().translateR();
 			}
 			GL11.glPopMatrix();
 		}
 		GL11.glScalef(-scal[0], -scal[1], -scal[2]);
-		GL11.glPopMatrix();*/
+		GL11.glPopMatrix();
 	}
 
 }

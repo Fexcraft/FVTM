@@ -22,6 +22,8 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.config.Config;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -138,7 +140,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return VehicleData.class;
 	}
 	
-	public VehicleItem getItem(){
+	public VehicleItem getVehicleItem(){
+		return item;
+	}
+	
+	@Override
+	public Item getItem(){
 		return item;
 	}
 	
@@ -153,6 +160,9 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	@Override
 	public void loadModel(){
 		this.model = Resources.getModel(modelid, VehicleModel.class);
+		if(Config.RENDER_VEHILE_MODELS_AS_ITEMS){
+			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(this.getRegistryName(), (VehicleModel)model);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

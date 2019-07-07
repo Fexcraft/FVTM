@@ -27,8 +27,11 @@ import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
@@ -36,12 +39,15 @@ import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -274,5 +280,25 @@ public class Resources {
 	public static NetworkRegistry.TargetPoint getTargetPoint(Entity ent){
 		return new NetworkRegistry.TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, Config.VEHICLE_UPDATE_RANGE);
 	}
+	
+	@SubscribeEvent
+	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
+		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem){//|| event.getObject().getItem() instanceof BlockItem){
+			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
+		}
+	}
+	
+	/*@SubscribeEvent
+	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
+		event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
+		event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+	}
+	
+	@SubscribeEvent
+	public void onEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
+		if(event.getObject() instanceof ContainerHolderEntity){
+			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
+		}
+	}*/
 
 }

@@ -49,7 +49,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 
     public void initPosition(){
     	lata = vehicle.getVehicleData().getType().getLegacyData();
-        Vec3d vec = vehicle.getAxes().getRelativeVector(lata.wheelpos[wheelid]);
+        Vec3d vec = vehicle.getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid]));
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         stepHeight = lata.wheel_step_height;
         //
@@ -82,7 +82,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
             if(!(world.getEntityByID(vehicleid) instanceof VehicleEntity)){ return; }
             vehicle = (LandVehicle)world.getEntityByID(vehicleid);
             foundveh = true; lata = vehicle.getVehicleData().getType().getLegacyData();
-            if(lata.wheelpos.length <= wheelid){ this.setDead(); return; }
+            if(LandVehicle.WHEELINDEX.length <= wheelid){ this.setDead(); return; }
             vehicle.wheels[wheelid] = this;
         }
         if(vehicle == null){ return; }

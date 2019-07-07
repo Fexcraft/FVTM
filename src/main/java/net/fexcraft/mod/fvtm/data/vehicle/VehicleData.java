@@ -31,6 +31,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -45,6 +46,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal, locked;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
+	protected TreeMap<String, Vec3d> wheelpos = new TreeMap<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
 
 	public VehicleData(Vehicle type){
@@ -90,7 +92,17 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			entry.getValue().write(com);
 			wlist.appendTag(com);
 		}
-		compound.setTag("Wheels", wlist);
+		compound.setTag("WheelSlots", wlist);
+		wlist = new NBTTagList();
+		for(Entry<String, Vec3d> vec : wheelpos.entrySet()){
+			NBTTagCompound com = new NBTTagCompound();
+			com.setString("id", vec.getKey());
+			com.setDouble("pos_x", vec.getValue().x);
+			com.setDouble("pos_y", vec.getValue().y);
+			com.setDouble("pos_z", vec.getValue().z);
+			wlist.appendTag(com);
+		}
+		compound.setTag("WheelPos", wlist);
 		compound.setBoolean("Locked", locked);
 		/*Print.debug("write", compound);*/ return compound;
 	}
@@ -130,12 +142,19 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//
 		this.refreshModificableDataByParts();
 		//
-		NBTTagList wlist = (NBTTagList)compound.getTag("Wheels");
+		NBTTagList wlist = (NBTTagList)compound.getTag("WheelSlots");
 		if(wlist != null){
 			for(NBTBase base : wlist){
 				NBTTagCompound com = (NBTTagCompound)base;
 				WheelSlot slot = wheels.get(com.getString("id"));
 				if(slot != null) slot.read(com); else continue;
+			}
+		}
+		wlist = (NBTTagList)compound.getTag("WheelPos");
+		if(wlist != null){ wheelpos.clear();
+			for(NBTBase base : wlist){
+				NBTTagCompound com = (NBTTagCompound)base;
+				wheelpos.put(com.getString("id"), new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z")));
 			}
 		}
 		this.locked = compound.getBoolean("Locked");
@@ -415,8 +434,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return type;
 	}
 	
-	public TreeMap<String, WheelSlot> getWheelPositions(){
+	public TreeMap<String, WheelSlot> getWheelSlots(){
 		return wheels;
+	}
+	
+	public TreeMap<String, Vec3d> getWheelPositions(){
+		return wheelpos;
 	}
 
 	public List<Seat> getSeats(){

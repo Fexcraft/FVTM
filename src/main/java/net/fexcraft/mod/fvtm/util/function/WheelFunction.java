@@ -35,7 +35,7 @@ public class WheelFunction extends Function {
 	}
 	
 	public @Nullable WheelSlot getWheelPos(VehicleData vehicle){
-		if(wheel != null) return wheel; if(inst_pos != null) return wheel = vehicle.getWheelPositions().get(inst_pos);
+		if(wheel != null) return wheel; if(inst_pos != null) return wheel = vehicle.getWheelSlots().get(inst_pos);
 		return null;
 	}
 

@@ -70,6 +70,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
     public double serverYaw, serverPitch, serverRoll;
     public int serverPositionTransitionTicker;
     public static final int servtick = 5;
+    public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "left_front_wheel", "right_front_wheel" };
 
 	public LandVehicle(World ilmondo){
 		super(ilmondo);
@@ -100,7 +101,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getLegacyData();
-        wheels = new WheelEntity[lata.wheelpos.length];
+        wheels = new WheelEntity[WHEELINDEX.length];
         seats = new SeatEntity[vehicle.getSeats().size()];
         stepHeight = lata.wheel_step_height;
         this.setupCapability(null);//TODO this.getCapability(FVTMCaps.CONTAINER, null));
@@ -594,7 +595,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
             		seats[i] = new SeatEntity(this, i); world.spawnEntity(seats[i]);
             	}
         	}
-            for(int i = 0; i < lata.wheelpos.length; i++){
+            for(int i = 0; i < WHEELINDEX.length; i++){
                 if(wheels[i] == null || !wheels[i].addedToChunk){
                     wheels[i] = new WheelEntity(this, i); world.spawnEntity(wheels[i]);
                 }
@@ -745,12 +746,12 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 	            wheel.motionY -= 0.98F / 20F;//Gravity
 	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 	            Vec3d s = null;
-	        	if(wheelid >= lata.wheelpos.length && this.getVehicleData().getType().isTrailerOrWagon()){
-	        		s = lata.wheelpos[wheelid == 2 ? 1 : 0];
+	        	if(wheelid >= WHEELINDEX.length && this.getVehicleData().getType().isTrailerOrWagon()){
+	        		s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid == 2 ? 1 : 0]);
 	        		s = new Vec3d(0, s.y, s.z);
 	        	}
 	        	else{
-	        		s = lata.wheelpos[wheelid];
+	        		s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid]);
 	        	}
 	            Vec3d targetpos = axes.getRelativeVector(s);
 	            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
@@ -824,7 +825,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		            }
 		            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 		            //pull wheel back to the boat
-		            Vec3d targetpos = axes.getRelativeVector(lata.wheelpos[wheel.wheelid]);
+		            Vec3d targetpos = axes.getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
 		            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
 		            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
 		            if(despos.lengthSquared() > 0.001F){
@@ -893,7 +894,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
 		            }
 		            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 		            //pull wheel back to car
-		            Vec3d targetpos = axes.getRelativeVector(lata.wheelpos[wheel.wheelid]);
+		            Vec3d targetpos = axes.getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
 		            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
 		            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
 		            if(despos.lengthSquared() > 0.001F){

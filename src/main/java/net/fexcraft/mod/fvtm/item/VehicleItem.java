@@ -54,7 +54,6 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
         	}
         }*/
-        //TODO texture/pos data
         //TODO model data
         //TODO other data
     }

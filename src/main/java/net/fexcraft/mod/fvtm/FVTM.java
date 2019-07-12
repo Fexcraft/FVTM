@@ -69,9 +69,9 @@ public class FVTM {
 		//
 		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_landvehicle"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:old_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_universal"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderLandVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);

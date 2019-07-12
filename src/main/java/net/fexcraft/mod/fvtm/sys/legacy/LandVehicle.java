@@ -70,7 +70,7 @@ public class LandVehicle extends Entity implements VehicleEntity, IEntityAdditio
     public double serverYaw, serverPitch, serverRoll;
     public int serverPositionTransitionTicker;
     public static final int servtick = 5;
-    public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "left_front_wheel", "right_front_wheel" };
+    public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
 
 	public LandVehicle(World ilmondo){
 		super(ilmondo);

@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
@@ -31,7 +29,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-
 import io.netty.buffer.ByteBuf;
 
 public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
@@ -47,14 +44,13 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     private float pass_yaw, pass_pitch;//, pass_roll;
     private double prev_pass_x, prev_pass_y, prev_pass_z;
     private float prev_pass_yaw, prev_pass_pitch;//, prev_pass_roll;
-    private CopyOnWriteArrayList<Entity> passger = new CopyOnWriteArrayList<>();
-    private Entity passenger;
+    //private PassList passenger = new PassList();
 
     public SeatEntity(World world){
         super(world); setSize(0.5F, 0.5F);
         prevlooking = new Axis3D(); looking = new Axis3D();
         passlooking = new Axis3D(); prevpasslooking = new Axis3D();
-        this.passenger = null; //if(world.isRemote){ rqSync(); }
+        /*this.passenger = null;*/ //if(world.isRemote){ rqSync(); }
     }
 
     public SeatEntity(LandVehicle veh, int index){
@@ -64,7 +60,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         pass_x = prev_pass_x = posX; pass_y = prev_pass_y = posY; pass_z = prev_pass_z = posZ;
         looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
         prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-        this.passenger = null;
+        /*this.passenger = null;*/
     }
 
 	@Override
@@ -115,8 +111,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     public void onUpdate(){
         super.onUpdate();
         //
-        if(!world.isRemote && passenger instanceof EntityPlayerMP){
-        	Resources.resetFlight((EntityPlayerMP)passenger);
+        if(!world.isRemote && getControllingPassenger() instanceof EntityPlayerMP){
+        	Resources.resetFlight((EntityPlayerMP)getControllingPassenger());
         }
         //
         if(world.isRemote && vehicle == null){ rqSync(); }
@@ -168,9 +164,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     }
 
     @Override
-    public void updatePassenger(Entity passengerr){
-        if(passengerr == null){ return; }
-        //
+    public void updatePassenger(Entity passenger){
+        if(passenger == null){ return; }
         passenger.rotationYaw = pass_yaw;
         passenger.rotationPitch = pass_pitch;
         passenger.prevRotationYaw = prev_pass_yaw;
@@ -178,7 +173,6 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         passenger.lastTickPosX = passenger.prevPosX = prev_pass_x;
         passenger.lastTickPosY = passenger.prevPosY = prev_pass_y;
         passenger.lastTickPosZ = passenger.prevPosZ = prev_pass_z;
-        //
         passenger.setPosition(pass_x, pass_y, pass_z);
     }
 
@@ -236,7 +230,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     }
 
     public void updatePassenger(){
-        this.updatePassenger(passenger);
+        this.updatePassenger(this.getControllingPassenger());
     }
 
     @Override
@@ -264,10 +258,10 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         return false;
     }*/
 
-    @Override
+    /*@Override
     public boolean isPassenger(Entity entity){
-        return passenger.equals(entity);
-    }
+        return this.passenger.passenger.equals(entity);
+    }*/
 
     public void onMouseMoved(int dx, int dy){
         if(vehicle == null){ return; }
@@ -363,11 +357,11 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
                 return false;
             } else return vehicle.onKeyPress(key, seatdata, player);
         }
-        if(key.dismount()){ passenger.dismountRidingEntity(); }
+        if(key.dismount() && hasPassenger()){ getControllingPassenger().dismountRidingEntity(); }
         return false;
     }
 
-    @Override
+	@Override
     public boolean processInitialInteract(EntityPlayer entityplayer, EnumHand hand){
         if(isDead || world.isRemote){ return false; }
         ItemStack currentItem = entityplayer.getHeldItem(hand);
@@ -403,27 +397,35 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 
     @Override
     public Entity getControllingPassenger(){
-        return passenger;
+        return getPassengers().isEmpty() ? null : getPassengers().get(0);
     }
 
     @Override
     public List<Entity> getPassengers(){
-        return passger;
+        return super.getPassengers();
     }
+
+    private boolean hasPassenger(){
+		return this.getControllingPassenger() != null;
+	}
 
     @Override
     public void addPassenger(Entity passenger){
-        if(passenger.getRidingEntity() != this){ throw new IllegalStateException("Use x.startRiding(y), not y.addPassenger(x)"); }
-        else{ this.passenger = passenger; passger.add(passenger); }
+        super.addPassenger(passenger);
         Print.debug("AP => " + Time.getDate() + " " + seatindex + " " + (world.isRemote ? "[CLIENT]" : "[SERVER]"));
     }
 
     @Override
-    public void removePassenger(Entity entity){
-        if(world.isRemote){ passenger = null; Print.debug("RM => " + Time.getDate() + " " + seatindex + " [CLIENT] OK"); }
+    public boolean isPassenger(Entity passenger){
+        return super.isPassenger(passenger);
+    }
+
+    @Override
+    public void removePassenger(Entity entity){ //Static.exception(null, false);
+        if(world.isRemote){ super.removePassenger(entity); Print.debug("RM => " + Time.getDate() + " " + seatindex + " [CLIENT] OK"); }
         else{
-            Packets.sendToAllAround(new PKT_SeatDismount(passenger), Resources.getTargetPoint(this));
-            passenger = null; passger.clear(); Print.debug("RM => " + Time.getDate() + " " + seatindex + " [SERVER]"); return;
+            Packets.sendToAllAround(new PKT_SeatDismount(entity), Resources.getTargetPoint(this));
+            super.removePassenger(entity); Print.debug("RM => " + Time.getDate() + " " + seatindex + " [SERVER]"); return;
         }
     }
 
@@ -476,8 +478,9 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     }
 
     public static final boolean isPassengerThePlayer(SeatEntity ent){
-        if(ent.world.isRemote){ return ent.passenger == net.minecraft.client.Minecraft.getMinecraft().player; }
-        else{ return false; }
+        if(ent.world.isRemote){
+        	return ent.getControllingPassenger() == net.minecraft.client.Minecraft.getMinecraft().player;
+        } else{ return false; }
     }
 
 }

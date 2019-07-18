@@ -2,11 +2,15 @@ package net.fexcraft.mod.fvtm.gui;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
@@ -18,17 +22,24 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 
-public class GuiVehicleController extends GuiScreen {
+public class VehicleSteeringOverlay extends GuiScreen {
 
+	public static boolean toggables;
+	public static int scroll = -1, timer;
     private SeatEntity seat;
+    //
+    private static final RGB HOVER = new RGB(RGB.GREEN); static{ HOVER.alpha = 0.5f; }
+    private static VehicleSteeringOverlay instance;
+    private static ArrayList<Attribute> attributes = new ArrayList<>();
 
-    public GuiVehicleController(SeatEntity entity){
-        super(); this.seat = entity;
+    public VehicleSteeringOverlay(SeatEntity entity){
+        super(); this.seat = entity; instance = this;
     }
 
     @Override
     public void initGui(){
-        /*if(mc.gameSettings.thirdPersonView == 1){ mc.setRenderViewEntity(seat.vehicle.getCamera() == null ? mc.player : seat.vehicle.getCamera()); }*/
+        //TODO see about alternative camera
+    	scroll = -1; attributes.clear();
     }
 
     @Override
@@ -42,13 +53,30 @@ public class GuiVehicleController extends GuiScreen {
         EntityPlayer player = (EntityPlayer) seat.getControllingPassenger();
         if(player != mc.player){ mc.displayGuiScreen(null); return; }
         int wheel = Mouse.getDWheel();
-        if(wheel != 0){ player.inventory.changeCurrentItem(wheel); }
+        if(wheel != 0){ if(toggables){ scroll(wheel, false); } else player.inventory.changeCurrentItem(wheel); }
         //
-        if(Mouse.isButtonDown(0)){ seat.onKeyPress(KeyPress.MOUSE_MAIN, player); }
-        if(Mouse.isButtonDown(1)){ seat.onKeyPress(KeyPress.MOUSE_RIGHT, player); }
+        //TODO toggables
+        if(Mouse.isButtonDown(0)){
+        	if(toggables) processToggleClick(1); else seat.onKeyPress(KeyPress.MOUSE_MAIN, player);
+        }
+        if(Mouse.isButtonDown(1)){
+        	if(toggables) processToggleClick(-1); else seat.onKeyPress(KeyPress.MOUSE_RIGHT, player);
+        }
     }
 
-    @Override
+    private void scroll(int wheel, boolean usetimer){
+    	if(usetimer) if(timer > 0) return;
+    	scroll += wheel > 0 ? -1 : 1;
+    	if(scroll >= attributes.size()) scroll = 0;
+    	if(scroll < 0) scroll = 0; //0 was -1;
+    	if(usetimer) timer = 10;
+	}
+
+	private void processToggleClick(int i){
+		//TODO
+	}
+
+	@Override
     protected void keyTyped(char c, int i){
         switch(i){
             case 1: {
@@ -97,9 +125,7 @@ public class GuiVehicleController extends GuiScreen {
 
     @Override
     public void updateScreen(){
-        /*if(mc.gameSettings.thirdPersonView == 1){
-			mc.setRenderViewEntity(seat.vehicle.getCamera() == null ? mc.player : seat.vehicle.getCamera());
-		} else mc.setRenderViewEntity(mc.player);*/
+        //TODO camera stuff, probably, maybe, possibly.
     }
 
     private int s = 0;
@@ -144,10 +170,10 @@ public class GuiVehicleController extends GuiScreen {
                 seat.onKeyPress(KeyPress.DECELERATE, player);
             }
             if(isKeyDown(KeyHandler.arrow_left.getKeyCode())){
-                seat.onKeyPress(KeyPress.ROLL_LEFT, player);
+                if(toggables) scroll(1, true); else seat.onKeyPress(KeyPress.ROLL_LEFT, player);
             }
             if(isKeyDown(KeyHandler.arrow_right.getKeyCode())){
-                seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
+            	if(toggables) scroll(-1, true); else seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
             }
             if(isKeyDown(mc.gameSettings.keyBindJump.getKeyCode())){
                 seat.onKeyPress(KeyPress.BRAKE, player);
@@ -162,7 +188,7 @@ public class GuiVehicleController extends GuiScreen {
                 seat.onKeyPress(KeyPress.INVENTORY, player);
             }
             if(isKeyDown(KeyHandler.doorToggle.getKeyCode())){
-                seat.onKeyPress(KeyPress.DOORS, player);
+                seat.onKeyPress(KeyPress.TOGGABLES, player);
             }
             if(isKeyDown(KeyHandler.scriptsGUI.getKeyCode())){
                 seat.onKeyPress(KeyPress.SCRIPTS, player);
@@ -197,6 +223,32 @@ public class GuiVehicleController extends GuiScreen {
         mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity())), 7, 7, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 21, 0xffffff);
         //mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getFuelTankContent()) + "&f/&b" + ent.getVehicleData().getFuelTankSize()), 7, 35, 0xffffff);
+        if(!attributes.isEmpty()){
+        	int offset = 0;
+        	for(int i = 0; i < 8; i++){
+        		if(i >= attributes.size()) break; Attribute attr = attributes.get(i); offset = i * 12;
+        		mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
+        		if(attr.getValueType().isBoolean()){
+            		int width = fontRenderer.getStringWidth(attr.getId());
+            		if(scroll == i) HOVER.glColorApply();
+            		this.drawTexturedModalRect(this.width - width - 14, offset, 0, 0, width + 2, 12);
+            		if(scroll == i) RGB.glColorReset();
+                    mc.fontRenderer.drawString(attr.getId(), this.width - width - 12, offset + 3, 0xffffff);
+            		mc.renderEngine.bindTexture(attr.getCurrentBoolean() ? ConstructorGui.ICON_BOOL_TRUE : ConstructorGui.ICON_BOOL_FALSE);
+            		drawModalRectWithCustomSizedTexture(this.width - 12, offset, 0, 0, 12, 12, 16, 16);
+        		}
+        		else{
+        			String str = attr.getId() + " - " + attr.getCurrentFloat();
+            		int width = fontRenderer.getStringWidth(str);
+            		if(scroll == i) HOVER.glColorApply();
+            		this.drawTexturedModalRect(this.width - width - 2, offset, 0, 0, width + 2, 12);
+            		if(scroll == i) RGB.glColorReset();
+                    mc.fontRenderer.drawString(str, this.width - width, offset + 3, 0xffffff);
+        		}
+        	}
+        }
+        //
+        if(timer > 0) timer--;
     }
 
     /*private String fuelColour(VehicleData data){
@@ -236,5 +288,15 @@ public class GuiVehicleController extends GuiScreen {
     public boolean doesGuiPauseGame(){
         return false;
     }
+
+	public static void toggle(){
+		toggables = !toggables; attributes.clear(); if(!toggables) return; Print.debug("Toggled " + (toggables ? "ON" : "OFF"));
+		if(instance.seat == null || instance.seat.getVehicle() == null) return;
+		for(Attribute attr : instance.seat.getVehicle().getVehicleData().getAttributes().values()){
+			if(attr.getSeat() != null && attr.getSeat().equals(instance.seat.seatdata.name)){
+				attributes.add(attr);
+			}
+		}
+	}
 
 }

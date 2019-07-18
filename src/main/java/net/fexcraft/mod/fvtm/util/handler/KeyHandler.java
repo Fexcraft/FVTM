@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.util.handler;
 
 import org.lwjgl.input.Keyboard;
 
-import net.fexcraft.mod.fvtm.gui.GuiVehicleController;
+import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -43,7 +43,7 @@ public class KeyHandler {
             case END: {
                 if(minecraft.player == null || minecraft.world == null){ return; }
                 if(minecraft.player.getRidingEntity() instanceof SeatEntity && minecraft.currentScreen == null){
-                    minecraft.displayGuiScreen(new GuiVehicleController((SeatEntity)minecraft.player.getRidingEntity()));
+                    minecraft.displayGuiScreen(new VehicleSteeringOverlay((SeatEntity)minecraft.player.getRidingEntity()));
                 } break;
             }
         }

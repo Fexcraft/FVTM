@@ -35,6 +35,7 @@ public class InventoryFunction extends Function {
 	//
     private ArrayList<ItemStack> whitelist = new ArrayList<ItemStack>();
     private ArrayList<ItemStack> blacklist = new ArrayList<ItemStack>();
+    private ArrayList<String> seats = new ArrayList<String>();
 	//
 	private NonNullList<ItemStack> stacks;
 	private FluidTank tank;
@@ -157,6 +158,10 @@ public class InventoryFunction extends Function {
 
     public FluidTank getFluidTank(){
         return tank;
+    }
+    
+    public ArrayList<String> getSeats(){
+    	return seats;
     }
     
     public boolean isItemValid(ItemStack stack){

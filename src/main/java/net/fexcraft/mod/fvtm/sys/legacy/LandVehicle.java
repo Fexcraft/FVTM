@@ -215,10 +215,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
 		//Print.debug(key, seat.driver, key.dismount(), key.scripts(), player, seat);
-        if(!seat.driver && !key.dismount() && !key.scripts()){
+        if(!seat.driver && !key.dismount() && !key.scripts() && !key.toggables()){
             return false;
         }
-        if(world.isRemote /*&& key.dismount() */){
+        if(world.isRemote && !key.toggables() /*&& key.dismount() */){
             Packets.sendToServer(new PKT_VehKeyPress(key));
             return true;
         }
@@ -284,17 +284,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 return true;
             }
-            case DOORS: {
-                if(!world.isRemote){
-                    /*if(doorToggleTimer <= 0){
-                        vehicle.toggleDoors(null);
-                        if(this.trailer != null){
-                            this.trailer.getVehicleData().toggleDoors(vehicledata.doorsOpen());
-                        }
-                        player.sendMessage(new TextComponentString("Doors " + (vehicledata.doorsOpen() ? "opened" : "closed") + "."));
-                        doorToggleTimer = 10;
-                        PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
-                    }*/
+            case TOGGABLES: {
+                if(world.isRemote){
+                	if(doorToggleTimer > 0) return true;
+                	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.toggle();
+                	doorToggleTimer += 10;
                 }
                 return true;
             }

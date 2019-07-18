@@ -301,7 +301,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 }*/
                 return true;
             }
-            case DOORS: {
+            case TOGGABLES: {
                 if(!world.isRemote){
                     /*if(doorToggleTimer <= 0){
                         vehicle.toggleDoors(null);

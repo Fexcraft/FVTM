@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.minecraft.entity.Entity;
@@ -13,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 
-    public LandVehicle vehicle;
+    public GenericVehicle vehicle;
     public LegacyData lata;
 
     @SideOnly(Side.CLIENT)
@@ -25,7 +26,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         super(world); setSize(0.25F, 0.25F); stepHeight = 1.1F;
     }
 
-    public WheelEntity(LandVehicle entity, int i){
+    public WheelEntity(GenericVehicle entity, int i){
         this(entity.world); vehicle = entity;
         vehicleid = entity.getEntity().getEntityId();
         wheelid = i; initPosition();
@@ -39,8 +40,8 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void readSpawnData(ByteBuf buffer){
         vehicleid = buffer.readInt(); wheelid = buffer.readInt();
-        if(world.getEntityByID(vehicleid) instanceof LandVehicle){
-            vehicle = (LandVehicle)world.getEntityByID(vehicleid);
+        if(world.getEntityByID(vehicleid) instanceof GenericVehicle){
+            vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
         }
         if(vehicle != null){
             setPosition(posX, posY, posZ);
@@ -49,7 +50,13 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 
     public void initPosition(){
     	lata = vehicle.getVehicleData().getType().getLegacyData();
-        Vec3d vec = vehicle.getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid]));
+    	//Print.debug(wheelid, this, vehicle, vehicle.getVehicleData().getWheelPositions());
+    	String index = vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid];
+    	if(!vehicle.getVehicleData().getWheelPositions().containsKey(index)){
+    		Print.debug("Vehicle was missing an essential Wheel Position, skipping wheel[" + wheelid + "] init.");
+    		return;
+    	}
+        Vec3d vec = vehicle.getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(index));
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         stepHeight = lata.wheel_step_height;
         //
@@ -80,9 +87,9 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     public void onUpdate(){
         if(world.isRemote && !foundveh){
             if(!(world.getEntityByID(vehicleid) instanceof VehicleEntity)){ return; }
-            vehicle = (LandVehicle)world.getEntityByID(vehicleid);
+            vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
             foundveh = true; lata = vehicle.getVehicleData().getType().getLegacyData();
-            if(LandVehicle.WHEELINDEX.length <= wheelid){ this.setDead(); return; }
+            if((vehicle.getVehicleType().isAirVehicle() ? 3 : 4) <= wheelid){ this.setDead(); return; }
             vehicle.wheels[wheelid] = this;
         }
         if(vehicle == null){ return; }

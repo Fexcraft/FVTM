@@ -12,6 +12,7 @@ public enum VehicleType {
 	WATER("Watercraft"),
 	RAIL("Railvehicle"),
 	AIR("Aircraft"),
+	HELI("Helicraft"),
 	SPACE("Spacecraft");
 	
 	private String name;
@@ -33,7 +34,11 @@ public enum VehicleType {
 	}
 	
 	public boolean isAirVehicle(){
-		return this == AIR;
+		return this == AIR || this == HELI;
+	}
+
+	public boolean isHeli(){
+		return this == HELI;
 	}
 	
 	public String getName(){

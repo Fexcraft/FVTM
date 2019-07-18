@@ -141,6 +141,11 @@ public class Axis3D {
         matrix.rotate(rad, getXAxis().normalise(null));
         convertMatrixToAngles();
     }
+    
+	public void rotateAll(float rot, Vector3f rota){
+		matrix.rotate(rot * 3.14159265F / 180F, rota);
+		convertMatrixToAngles();
+	}
 
     public Vector3f getXAxis(){ return new Vector3f(matrix.m00, matrix.m10, matrix.m20); }
 

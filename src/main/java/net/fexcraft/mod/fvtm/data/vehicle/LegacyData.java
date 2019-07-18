@@ -7,6 +7,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 public class LegacyData {
 
 	public float max_throttle, min_throttle, turn_left_mod, turn_right_mod, wheel_step_height, camera_distance, wheel_spring_strength, bouyancy;
+	public float look_up_mod, look_down_mod, roll_left_mod, roll_right_mod, drag;
 	//public Vec3d[] wheelpos = new Vec3d[4];
 	public boolean is_tracked;
 	
@@ -23,6 +24,12 @@ public class LegacyData {
 		JsonUtil.getIfExists(obj, "Tracked", false) || JsonUtil.getIfExists(obj, "Catenary", false);
 		wheel_spring_strength = JsonUtil.getIfExists(obj, "WheelSpringStrength", 0.5f).floatValue();
 		bouyancy = JsonUtil.getIfExists(obj, "Bouyancy", 0.25f).floatValue();
+		//
+		look_up_mod = JsonUtil.getIfExists(obj, "LookUpModifier", 1f).floatValue();
+		look_down_mod = JsonUtil.getIfExists(obj, "LookDownModifier", 1f).floatValue();
+		roll_left_mod = JsonUtil.getIfExists(obj, "RollLeftModifier", 1f).floatValue();
+		roll_right_mod = JsonUtil.getIfExists(obj, "RollRightModifier", 1f).floatValue();
+		drag = JsonUtil.getIfExists(obj, "Drag", 1f).floatValue();
 	}
 
 }

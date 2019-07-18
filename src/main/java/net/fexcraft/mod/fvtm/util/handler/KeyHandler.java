@@ -13,9 +13,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class KeyHandler {
 
     private final Minecraft minecraft;
-    public static KeyBinding engineToggle;
-    public static KeyBinding openInventory;
-    public static KeyBinding doorToggle, scriptsGUI, lightsToggle, trailerToggle, wagonToggle;
+    public static KeyBinding engineToggle, openInventory;
+    public static KeyBinding doorToggle, scriptsGUI, lightsToggle;
+    public static KeyBinding trailerToggle, wagonToggle, other;
+    public static KeyBinding arrow_up, arrow_down, arrow_left, arrow_right;
     public static final String category = "FVTM Controls";
 
     public KeyHandler(){
@@ -27,6 +28,11 @@ public class KeyHandler {
         ClientRegistry.registerKeyBinding(lightsToggle = new KeyBinding("fvtm:vehicle_lights", Keyboard.KEY_L, category));
         ClientRegistry.registerKeyBinding(trailerToggle = new KeyBinding("fvtm:vehicle_trailer", Keyboard.KEY_0, category));
         ClientRegistry.registerKeyBinding(wagonToggle = new KeyBinding("fvtm:vehicle_wagon", Keyboard.KEY_MINUS, category));
+        ClientRegistry.registerKeyBinding(arrow_up = new KeyBinding("fvtm:arrow_up", Keyboard.KEY_UP, category));
+        ClientRegistry.registerKeyBinding(arrow_down = new KeyBinding("fvtm:arrow_down", Keyboard.KEY_DOWN, category));
+        ClientRegistry.registerKeyBinding(arrow_left = new KeyBinding("fvtm:arrow_left", Keyboard.KEY_LEFT, category));
+        ClientRegistry.registerKeyBinding(arrow_right = new KeyBinding("fvtm:arrow_right", Keyboard.KEY_RIGHT, category));
+        ClientRegistry.registerKeyBinding(other = new KeyBinding("fvtm:other", Keyboard.KEY_COLON, category));
     }
 
     //TODO sunscribe keyinput event

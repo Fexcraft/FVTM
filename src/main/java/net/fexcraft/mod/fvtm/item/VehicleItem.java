@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -85,7 +86,13 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand){
     	if(world.isRemote || side != EnumFacing.UP) return EnumActionResult.PASS; ItemStack stack = player.getHeldItem(hand);
     	if(world.getBlockState(pos).getBlock() instanceof ConstructorBlock) return EnumActionResult.PASS;
-    	world.spawnEntity(new LandVehicle(world, ((VehicleItem)stack.getItem()).getData(stack), new Vec3d(pos.up(2)), player, -1));
+    	VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
+    	if(data.getType().getVehicleType().isAirVehicle()){
+    		world.spawnEntity(new AirVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
+    	}
+    	else{
+    		world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
+    	}
         return EnumActionResult.SUCCESS;
     }
 

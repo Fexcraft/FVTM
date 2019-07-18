@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.util.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.api.packet.IPacket;
-import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -17,7 +17,7 @@ public class PKT_VehControl implements IPacket, IMessage {
 
     public PKT_VehControl(){}
 
-    public PKT_VehControl(LandVehicle veh){
+    public PKT_VehControl(GenericVehicle veh){
     	entid = veh.getEntityId(); posX = veh.posX; posY = veh.posY; posZ = veh.posZ;
         yaw = veh.getAxes().getYaw(); pitch = veh.getAxes().getPitch(); roll = veh.getAxes().getRoll();
         motX = veh.motionX; motY = veh.motionY; motZ = veh.motionZ;

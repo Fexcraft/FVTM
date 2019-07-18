@@ -77,7 +77,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 			}
 			case THIRD_PERSON_RIGHT_HAND:
 			case THIRD_PERSON_LEFT_HAND: {
-				GL11.glRotatef(90F, 0F, 1F, 0F);
+				GL11.glRotatef(data.getType().getVehicleType().isAirVehicle() ? -90f : 90f, 0F, 1F, 0F);
 				GL11.glTranslatef(0F, 0, 0F);
 				GL11.glTranslatef(0, 0, 0);
 				break;

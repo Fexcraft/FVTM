@@ -7,8 +7,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
-import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
 import net.minecraft.client.gui.GuiChat;
@@ -126,16 +126,28 @@ public class GuiVehicleController extends GuiScreen {
         }
         if(seat != null && seat.getControllingPassenger() instanceof EntityPlayer){
             if(isKeyDown(mc.gameSettings.keyBindForward.getKeyCode())){
-                seat.onKeyPress(KeyPress.ACCELERATE, player);
+                seat.onKeyPress(seat.getVehicle().getVehicleType().isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
             }
             if(isKeyDown(mc.gameSettings.keyBindBack.getKeyCode())){
-                seat.onKeyPress(KeyPress.DECELERATE, player);
+                seat.onKeyPress(seat.getVehicle().getVehicleType().isAirVehicle() ? KeyPress.TURN_UP : KeyPress.DECELERATE, player);
             }
             if(isKeyDown(mc.gameSettings.keyBindLeft.getKeyCode())){
                 seat.onKeyPress(KeyPress.TURN_LEFT, player);
             }
             if(isKeyDown(mc.gameSettings.keyBindRight.getKeyCode())){
                 seat.onKeyPress(KeyPress.TURN_RIGHT, player);
+            }
+            if(isKeyDown(KeyHandler.arrow_up.getKeyCode())){
+                seat.onKeyPress(KeyPress.ACCELERATE, player);
+            }
+            if(isKeyDown(KeyHandler.arrow_down.getKeyCode())){
+                seat.onKeyPress(KeyPress.DECELERATE, player);
+            }
+            if(isKeyDown(KeyHandler.arrow_left.getKeyCode())){
+                seat.onKeyPress(KeyPress.ROLL_LEFT, player);
+            }
+            if(isKeyDown(KeyHandler.arrow_right.getKeyCode())){
+                seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
             }
             if(isKeyDown(mc.gameSettings.keyBindJump.getKeyCode())){
                 seat.onKeyPress(KeyPress.BRAKE, player);
@@ -177,7 +189,7 @@ public class GuiVehicleController extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
-        LandVehicle ent = seat.getVehicle(); if(ent == null){ return; }
+    	GenericVehicle ent = seat.getVehicle(); if(ent == null){ return; }
         if(!ent.getVehicleData().hasPart("engine")){
             mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff);
             return;

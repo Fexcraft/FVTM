@@ -34,7 +34,7 @@ import io.netty.buffer.ByteBuf;
 public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
     private int vehicleid, seatindex;
-    private LandVehicle vehicle;
+    private GenericVehicle vehicle;
     //
     public Seat seatdata;
     public Axis3D looking, prevlooking;
@@ -53,7 +53,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         /*this.passenger = null;*/ //if(world.isRemote){ rqSync(); }
     }
 
-    public SeatEntity(LandVehicle veh, int index){
+    public SeatEntity(GenericVehicle veh, int index){
         this(veh.world); vehicle = veh; seatindex = index;
         vehicleid = veh.getEntity().getEntityId(); seatdata = veh.getVehicleData().getSeats().get(index);
         setPosition(veh.getEntity().posX, veh.getEntity().posY, veh.getEntity().posZ);
@@ -72,7 +72,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     @Override
     public void readSpawnData(ByteBuf buffer){
     	this.vehicleid = buffer.readInt(); seatindex = buffer.readInt(); long pos = buffer.readLong();
-        this.vehicle = (LandVehicle)world.getEntityByID(vehicleid);
+        this.vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
     	//Print.debug(world.isRemote + "", this.getEntityId(), vehicleid, vehicle);
         if(vehicle == null || vehicle.getSeats().length == 0){
             Print.debug("VEHICLE SEATS NULL? ", seatdata == null ? "no seatdata" : seatdata.name,
@@ -91,8 +91,18 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         setPosition(posX, posY, posZ); //Print.debug(posX, posY, posZ);
     }
 
+    /*@Nullable
+    public LandVehicle getLandVehicle(){
+        return (LandVehicle)vehicle;
+    }
+
     @Nullable
-    public LandVehicle getVehicle(){
+    public AirVehicle getAirVehicle(){
+        return (AirVehicle)vehicle;
+    }*/
+
+    @Nullable
+    public GenericVehicle getVehicle(){
         return vehicle;
     }
 
@@ -204,7 +214,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
                 case "sync": {
                     this.seatindex = pkt.nbt.getInteger("index");
                     this.vehicleid = pkt.nbt.getInteger("vid");
-                    this.vehicle = (LandVehicle)world.getEntityByID(vehicleid);
+                    this.vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
                     if(vehicle == null || vehicle.getSeats().length == 0){
                         Print.debug("VEHICLE SEATS NULL? ", seatdata == null ? "no seat data" : seatdata.name,
                         	vehicle, vehicleid, world.getEntityByID(vehicleid));
@@ -405,8 +415,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         return super.getPassengers();
     }
 
-    private boolean hasPassenger(){
-		return this.getControllingPassenger() != null;
+    public boolean hasPassenger(){
+		return !this.getPassengers().isEmpty();
 	}
 
     @Override
@@ -441,7 +451,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float f){
-        return !(world.isRemote && vehicle != null) && vehicle.getEntity().attackEntityFrom(source, f);
+    	if(world.isRemote || vehicle == null) return false;
+        return vehicle.getEntity().attackEntityFrom(source, f);
     }
 
     public String getSeatId(){

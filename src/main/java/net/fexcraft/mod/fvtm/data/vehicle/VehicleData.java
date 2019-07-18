@@ -48,6 +48,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
 	protected TreeMap<String, Vec3d> wheelpos = new TreeMap<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
+	protected ArrayList<String> inventories = new ArrayList<>();
 
 	public VehicleData(Vehicle type){
 		super(type);
@@ -158,6 +159,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			}
 		}
 		this.locked = compound.getBoolean("Locked");
+		//
 		/*Print.debug("read", compound);*/ return this;
 	}
 
@@ -176,6 +178,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			seats.addAll(part.getFunction(SeatsFunction.class, "fvtm:seats").getSeats());
 		}
 		//
+		inventories.clear(); parts.forEach((key, value) -> { if(value.hasFunction("fvtm:inventory")) inventories.add(key); });
 	}
 
 	@Override
@@ -461,6 +464,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public double getThrottle(){
 		return getAttribute("throttle").getCurrentFloat();
+	}
+
+	public ArrayList<String> getInventories(){
+		return inventories;
 	}
 
 }

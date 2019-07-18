@@ -1,10 +1,15 @@
 package net.fexcraft.mod.fvtm.data.part;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -38,5 +43,7 @@ public abstract class Function {
 		public Function copy(){ return this; }
 		
 	}
+
+    public void addInformation(ItemStack stack, World world, PartData data, List<String> list, ITooltipFlag flag){}
 
 }

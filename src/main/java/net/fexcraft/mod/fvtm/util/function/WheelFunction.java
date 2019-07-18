@@ -1,13 +1,21 @@
 package net.fexcraft.mod.fvtm.util.function;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 public class WheelFunction extends Function {
 	
@@ -52,5 +60,12 @@ public class WheelFunction extends Function {
 	public Function copy(){
 		return new WheelFunction(null);
 	}
+
+    @Override
+    public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
+    	WheelData wdata = data.getType().getInstallationHandlerData();
+        tooltip.add(Formatter.format("&9Wheel Radius: &7" + wdata.getRadius()));
+        tooltip.add(Formatter.format("&9Wheel Width: &7" + wdata.getWidth()));
+    }
 
 }

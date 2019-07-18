@@ -13,5 +13,7 @@ public interface VehicleEntity {
 	public UUID getPlacer();
 	
 	public VehicleEntity getCoupledEntity(boolean front);
+	
+	public boolean isLocked();
 
 }

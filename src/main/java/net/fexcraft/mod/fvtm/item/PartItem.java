@@ -5,11 +5,11 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
-import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -43,10 +43,11 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         if(data != null){
             tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         }
-        if(data.hasFunction("fvtm:wheel")){
-        	WheelData wdata = type.getInstallationHandlerData();
-            tooltip.add(Formatter.format("&9Wheel Radius: &7" + wdata.getRadius()));
-            tooltip.add(Formatter.format("&9Wheel Width: &7" + wdata.getWidth()));
+        if(!data.getFunctions().isEmpty()){
+            tooltip.add(Formatter.format("&9- - - - - - &7-"));
+            for(Function func : data.getFunctions().values()){
+            	func.addInformation(stack, world, data, tooltip, flag);
+            }
         }
         if(type.getBaseAttributes().size() > 0){
         	tooltip.add(Formatter.format("&0&9This part has &7%s &9Attribute/s.", type.getBaseAttributes().size()));

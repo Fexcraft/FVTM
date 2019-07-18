@@ -1203,37 +1203,6 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
         }
     }
 
-    // --- CAPABILITIES --- //
-    /*@Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
-        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            if(facing.getAxis().isVertical() && !this.isLocked() && seats != null && seats[0] != null && seats[0].getControllingPassenger() == null){
-                return !this.vehicledata.getInventoryContainers().isEmpty() && this.vehicledata.getInventoryContainers().get(0).getPart().getAttribute(InventoryAttribute.class).getType() == InventoryType.ITEM;
-            }
-            return false;
-        }
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            if(facing.getAxis().isVertical() && !this.isLocked() && seats != null && seats[0] != null && seats[0].getControllingPassenger() == null){
-                return !this.vehicledata.getInventoryContainers().isEmpty() && this.vehicledata.getInventoryContainers().get(0).getPart().getAttribute(InventoryAttribute.class).getType() == InventoryType.FLUID;
-            }
-            return false;
-        }
-        return super.hasCapability(capability, facing);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    @Nullable
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
-        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-            return (T) new ItemStackHandler(this.vehicledata.getInventoryContainers().get(0).getAttributeData(InventoryAttributeData.class).getInventory());
-        }
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.hasCapability(capability, facing)){
-            return (T) this.vehicledata.getInventoryContainers().get(0).getAttributeData(InventoryAttributeData.class).getFluidHandler();
-        }
-        return super.getCapability(capability, facing);
-    }*/
-
 	/*@Override
 	public void setupCapability(ContainerHolder cap){
 		if(vehicledata == null || this.vehicledata.getContainerHolders().isEmpty()) return;

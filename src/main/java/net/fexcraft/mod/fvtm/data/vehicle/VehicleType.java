@@ -57,6 +57,9 @@ public enum VehicleType {
 		attrs.add(new Attribute.FloatAttribute(true, "steering_angle", 0).setMinMax(-40f, 40f));
 		attrs.add(new Attribute.FloatAttribute(true, "wheel_angle", 0).setMinMax(-360f, 360f));
 		attrs.add(new Attribute.FloatAttribute(true, "throttle", 0).setMinMax(-10f, 10f));
+		attrs.add(new Attribute.IntegerAttribute(true, "lights", 0, true));
+		attrs.add(new Attribute.IntegerAttribute(true, "lights_long", 0, true));
+		attrs.add(new Attribute.IntegerAttribute(true, "lights_fog", 0, true));
 		//TODO
 		switch(this){
 			//TODO type specific

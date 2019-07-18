@@ -7,7 +7,9 @@ import javax.annotation.Nullable;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -265,15 +267,21 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case INVENTORY: {
-                /*if(!world.isRemote){
-                    if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getAttributeData(EngineAttributeData.class).isOn()){
+                if(!world.isRemote){
+                    if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
                         Print.chat(player, "Turn engine off first!");
                     }
                     else{
-                        player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 0, 0, 0);
+                    	NBTTagCompound compound = new NBTTagCompound();
+	                    compound.setString("target_listener", "fcl_gui");
+	                    compound.setString("task", "open_gui");
+	                    compound.setString("guimod", "fvtm");
+	                    compound.setInteger("gui", 930);
+	                    compound.setIntArray("args", new int[]{ 0, 0, 0 });
+	                    PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
                     }
                     //open inventory
-                }*/
+                }
                 return true;
             }
             case DOORS: {

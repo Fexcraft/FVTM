@@ -8,6 +8,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -20,12 +22,13 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 
 public class VehicleSteeringOverlay extends GuiScreen {
 
 	public static boolean toggables;
-	public static int scroll = -1, timer;
+	public static int scroll = -1, timer, clicktimer;//TODO replace to something fps independent
     private SeatEntity seat;
     //
     private static final RGB HOVER = new RGB(RGB.GREEN); static{ HOVER.alpha = 0.5f; }
@@ -73,7 +76,14 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	}
 
 	private void processToggleClick(int i){
-		//TODO
+		if(scroll < 0 || scroll > attributes.size()) return;
+		if(clicktimer > 0) return;
+		NBTTagCompound packet = new NBTTagCompound(); Attribute attr = attributes.get(scroll);
+		packet.setString("target_listener", "fvtm:gui"); packet.setString("task", "attr_toggle");
+		packet.setString("attr", attr.getId()); packet.setBoolean("bool", i > 0);
+		packet.setInteger("entity", seat.getVehicle().getEntityId()); Print.debug(packet);
+		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+		clicktimer += 10;
 	}
 
 	@Override
@@ -248,7 +258,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
         	}
         }
         //
-        if(timer > 0) timer--;
+        if(timer > 0) timer--; if(clicktimer > 0) clicktimer--;
     }
 
     /*private String fuelColour(VehicleData data){

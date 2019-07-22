@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.lib.mc.FCL;
 import net.fexcraft.lib.mc.gui.GuiHandler;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -9,7 +11,9 @@ import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorCenterBlock;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
+import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
+import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
@@ -41,6 +45,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
@@ -137,6 +142,10 @@ public class FVTM {
 	public void initPost(FMLPostInitializationEvent event){
 		Packets.init(); SimpleUpdateHandler.register(MODID, 1, VERSION);
 		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
+		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
+		if(event.getSide().isClient()){
+			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
+		}
 	}
 
 	@Mod.EventHandler

@@ -189,11 +189,11 @@ public class DefaultPrograms {
 	public static class AttributeRotator implements Program {
 		
 		private Attribute attr; private String attribute;
-		private float min, max, step, lastcurr, current; private int axis;
+		private float min, max, step, /*lastcurr,*/ current; private int axis;
 		private boolean boolstatebased, override; private float defrot;
 		
 		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot){
-			this.attribute = attribute; this.boolstatebased = boolstatebased; current = 0; lastcurr = 0; override = true;
+			this.attribute = attribute; this.boolstatebased = boolstatebased; current = 0; /*lastcurr = 0;*/ override = true;
 			this.min = min; this.max = max; this.step = step; this.axis = axis; this.defrot = defrot;
 			if(min == max || (min == 0f && max == 0f)){ min = -360; max = 360; }
 		}
@@ -214,14 +214,14 @@ public class DefaultPrograms {
 			}*/
 			current = boolstatebased ? (attr.getCurrentBoolean() ? current + step : current - step) : attr.getCurrentFloat();
 			if(current > max) current = max; if(current < min) current = min;
-			if(current != lastcurr) list.rotateAxis(current + defrot, axis, override);
+			/*if(current != lastcurr)*/ list.rotateAxis(current + defrot, axis, override);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			if(ent == null || attr == null) return;
-			if(current != lastcurr) list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
-			lastcurr = current;
+			/*if(current != lastcurr)*/ list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
+			//lastcurr = current;
 		}
 		
 	};

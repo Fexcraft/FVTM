@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,7 +38,7 @@ public class MaterialItem extends TypeCoreItem<Material> {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){ tooltip.add(Formatter.format(s)); }
+        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
         if(type.getOreDictionaryId() != null){
         	tooltip.add(Formatter.format("&9OreDict: &7" + type.getOreDictionaryId()));
         }

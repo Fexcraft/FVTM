@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +42,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){ tooltip.add(Formatter.format(s)); }
+        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
         VehicleData data = this.getData(stack); if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(data.hasPart("engine")){

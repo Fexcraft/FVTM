@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -37,7 +38,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         tooltip.add(Formatter.format("&9Type: &7" + type.getCategory()));
         for(String s : type.getDescription()){
-            tooltip.add(Formatter.format(s));
+            tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
         }
         PartData data = this.getData(stack);
         if(data != null){

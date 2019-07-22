@@ -42,7 +42,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
     @Override
     public void initGui(){
         //TODO see about alternative camera
-    	scroll = -1; attributes.clear();
+    	scroll = -1; attributes.clear(); toggables = false;
     }
 
     @Override

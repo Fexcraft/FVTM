@@ -21,7 +21,7 @@ public class VehicleMain extends GenericGui<VehicleContainer> {
 		this.texts.put("row0", new BasicText(20,  10, 160, MapColor.SNOW.colorValue, "Status/Info"));
 		this.texts.put("row1", new BasicText(20,  24, 160, MapColor.SNOW.colorValue, "Settings"));
 		this.texts.put("row2", new BasicText(20,  38, 160, MapColor.SNOW.colorValue, "Fuel"));
-		this.texts.put("row3", new BasicText(20,  52, 160, MapColor.SNOW.colorValue, "Toggables"));
+		this.texts.put("row3", new BasicText(20,  52, 160, MapColor.SNOW.colorValue, "Attributes"));
 		this.texts.put("row4", new BasicText(20,  66, 160, MapColor.SNOW.colorValue, "Inventories"));
 		this.texts.put("row5", new BasicText(20,  80, 160, MapColor.SNOW.colorValue, "Containers"));
 		this.texts.put("row6", new BasicText(20,  94, 160, MapColor.SNOW.colorValue, "Script Data"));
@@ -49,6 +49,7 @@ public class VehicleMain extends GenericGui<VehicleContainer> {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("row7")){ player.closeScreen(); return true; }
+		if(button.name.equals("row3")){ openGui("fvtm", 934, new int[]{ 0, 0, 0 }); return true; }
 		//
 		return false;
 	}

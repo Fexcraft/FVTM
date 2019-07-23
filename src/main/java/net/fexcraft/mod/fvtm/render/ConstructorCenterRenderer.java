@@ -39,7 +39,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
             try{
                 if(modvec != null){
                     ModelBase.bindTexture(vehicledata.getTexture());
-                    GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getCurrentFloat() * 0.0625f) - te.getLiftState(), 0);
+                    GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * 0.0625f) - te.getLiftState(), 0);
                     modvec.render(vehicledata, null, null, te.getBlockMetadata());
                     vehicledata.getParts().forEach((key, partdata) -> {
                         ModelBase.bindTexture(partdata.getTexture());
@@ -47,7 +47,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
                         partdata.getType().getModel().render(vehicledata, key);
                         partdata.getInstalledPos().translateR();
                     });
-                    GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getCurrentFloat() * -0.0625f) + te.getLiftState(), 0);
+                    GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * -0.0625f) + te.getLiftState(), 0);
                 }
             }
             catch(Exception e){
@@ -67,7 +67,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
             if(te.getLinkPos() != null) te.tryLink();
         }
         //
-        if(true && (te.getVehicleData() != null ? te.getVehicleData().getAttribute("constructor_show").getCurrentBoolean() : true)){//te.getContainerData() == null){
+        if(true && (te.getVehicleData() != null ? te.getVehicleData().getAttribute("constructor_show").getBooleanValue() : true)){//te.getContainerData() == null){
             if(te.getVehicleData() == null || te.getVehicleData().getType().getVehicleType().isLandVehicle()){
             	ModelBase.bindTexture(lifttexture);
                 GL11.glTranslatef(0, 0, te.getWheelOffset());

@@ -125,16 +125,16 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
-			GL11.glRotatef(data.getAttribute("wheel_angle").getCurrentFloat(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getFloatValue(), 0, 1, 0);
+			GL11.glRotatef(data.getAttribute("wheel_angle").getFloatValue(), 0, 0, 1);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
-			GL11.glRotatef(-data.getAttribute("wheel_angle").getCurrentFloat(), 0, 0, 1);
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
+			GL11.glRotatef(-data.getAttribute("wheel_angle").getFloatValue(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getFloatValue(), 0, 1, 0);
 		}
 		
 	};
@@ -149,12 +149,12 @@ public class DefaultPrograms {
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
 			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getFloatValue(), 0, 1, 0);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getCurrentFloat(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getFloatValue(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
@@ -176,19 +176,19 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			GL11.glRotatef(data.getAttribute("steering_angle").getCurrentFloat() * ratio, x, y, z);
+			GL11.glRotatef(data.getAttribute("steering_angle").getFloatValue() * ratio, x, y, z);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
-			GL11.glRotatef(-data.getAttribute("steering_angle").getCurrentFloat() * ratio, x, y, z);
+			GL11.glRotatef(-data.getAttribute("steering_angle").getFloatValue() * ratio, x, y, z);
 		}
 		
 	};
 	
 	public static class AttributeRotator implements Program {
 		
-		private Attribute attr; private String attribute;
+		private Attribute<?> attr; private String attribute;
 		private float min, max, step, /*lastcurr,*/ current; private int axis;
 		private boolean boolstatebased, override; private float defrot;
 		
@@ -212,7 +212,7 @@ public class DefaultPrograms {
 				attr.setCurrentValue(attr.getCurrentFloat() + 0.1f);
 				if(attr.getCurrentFloat() >= attr.getMax()) attr.setCurrentValue(attr.getMin());
 			}*/
-			current = boolstatebased ? (attr.getCurrentBoolean() ? current + step : current - step) : attr.getCurrentFloat();
+			current = boolstatebased ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
 			if(current > max) current = max; if(current < min) current = min;
 			/*if(current != lastcurr)*/ list.rotateAxis(current + defrot, axis, override);
 		}

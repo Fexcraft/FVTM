@@ -15,15 +15,14 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
-import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
@@ -38,7 +37,7 @@ import net.minecraft.util.math.Vec3d;
  */
 public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable, Lockable {
 	
-	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
+	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected RGB primary, secondary;
 	protected int lightstate, selected_texture;
@@ -52,8 +51,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public VehicleData(Vehicle type){
 		super(type);
-		for(Attribute attr : type.getBaseAttributes().values()){
-			Attribute copy = attr.copy(null); attributes.put(copy.getId(), copy);
+		for(Attribute<?> attr : type.getBaseAttributes().values()){
+			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
 		}
 		for(Entry<String, WheelSlot> entry: type.getDefaultWheelPositions().entrySet()){
 			this.wheels.put(entry.getKey(), entry.getValue().copy());
@@ -76,7 +75,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		compound.setTag("Parts", list);
 		//
 		NBTTagList alist = new NBTTagList();
-		for(Attribute attr : attributes.values()){ alist.appendTag(attr.write(new NBTTagCompound())); }
+		for(Attribute<?> attr : attributes.values()){ alist.appendTag(attr.write(new NBTTagCompound())); }
 		compound.setTag("Attributes", alist);
 		//
 		compound.setInteger("SelectedTexture", selected_texture);
@@ -127,8 +126,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(alist != null){
 			for(NBTBase base : alist){
 				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("id")) continue;
-				Attribute attr = getAttribute(com.getString("id")); if(attr != null){ attr.read(com); }
-				else{ attr = Attribute.parse(com); if(attr != null) attributes.put(attr.getId(), attr); }
+				Attribute<?> attr = getAttribute(com.getString("id")); if(attr != null){ attr.read(com); }
+				else{ attr = Attribute.parse(com); if(attr != null) attributes.put(attr.id(), attr); }
 			}
 		}
 		//
@@ -198,11 +197,16 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return obj;
 	}
 	
-	public Attribute getAttribute(String id){
+	public Attribute<?> getAttribute(String id){
 		return attributes.get(id);
 	}
 	
-	public TreeMap<String, Attribute> getAttributes(){
+	@SuppressWarnings("unchecked")
+	public <VAL> Attribute<VAL> getAttributeCasted(String id){
+		return (Attribute<VAL>)attributes.get(id);
+	}
+	
+	public TreeMap<String, Attribute<?>> getAttributes(){
 		return attributes;
 	}
 	
@@ -213,13 +217,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(data.getType().getInstallationHandler().processInstall(engineer, data, category, this)){
 			this.insertAttributesFromPart(data, category);
 			//
-			this.parts.values().forEach(part -> part.resetAttributes(null));
-			this.resetAttributes(null);
+			this.parts.values().forEach(part -> part.resetAttributes());
+			this.resetAttributes();
 			//
-			this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INITIAL, true));
-			this.updateAttributes(Attribute.UpdateCall.INITIAL, true);
-			this.parts.values().forEach(part -> part.updateAttributes(Attribute.UpdateCall.INITIAL, false));
-			this.updateAttributes(Attribute.UpdateCall.INITIAL, false);
+			this.parts.values().forEach(part -> part.updateAttributes(Attribute.Update.INITIAL));
+			this.updateAttributes(Attribute.Update.INITIAL);
 			//
 			this.refreshModificableDataByParts();
 			return null;
@@ -234,13 +236,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			this.removeAttributesFromPart(part, category);
 			part.clearAttributes(); part.clearModifiers();
 			//
-			this.parts.values().forEach(data -> data.resetAttributes(null));
-			this.resetAttributes(null);
+			this.parts.values().forEach(data -> data.resetAttributes());
+			this.resetAttributes();
 			//
-			this.parts.values().forEach(data -> data.updateAttributes(Attribute.UpdateCall.INITIAL, true));
-			this.updateAttributes(Attribute.UpdateCall.INITIAL, true);
-			this.parts.values().forEach(data -> data.updateAttributes(Attribute.UpdateCall.INITIAL, false));
-			this.updateAttributes(Attribute.UpdateCall.INITIAL, false);
+			this.parts.values().forEach(data -> data.updateAttributes(Attribute.Update.INITIAL));
+			this.updateAttributes(Attribute.Update.INITIAL);
 			//
 			this.refreshModificableDataByParts();
 			return true;
@@ -249,22 +249,22 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	private void insertAttributesFromPart(PartData data, String catin){
 		String dataid = catin + "|" + data.getType().getRegistryName().toString();
-		for(Attribute attr : data.getType().getBaseAttributes()){
+		for(Attribute<?> attr : data.getType().getBaseAttributes()){
 			/*if(attr.getTarget().startsWith("self") && !data.getAttributes().containsKey(attr.getId())){
 				data.getAttributes().put(attr.getId(), attr.copy(dataid));
 			}//this should actually happen on partdata construction else*/
-			if(attr.getTarget().startsWith("part")){
-				String id = attr.getTarget().replace("part:", "");
+			if(attr.target().startsWith("part")){
+				String id = attr.target().replace("part:", "");
 				if(!parts.containsKey(id)) continue;
 				if(!parts.get(id).getAttributes().containsKey(id))
-					parts.get(id).getAttributes().put(attr.getId(), attr.copy(dataid));
+					parts.get(id).getAttributes().put(attr.id(), attr.copy(dataid));
 			}
-			else if(attr.getTarget().startsWith("vehicle") && !this.getAttributes().containsKey(attr.getId())){
-				if(attr.getTarget().contains("-")){
-					String id = attr.getTarget().replace("vehicle-", "");
+			else if(attr.target().startsWith("vehicle") && !this.getAttributes().containsKey(attr.id())){
+				if(attr.target().contains("-")){
+					String id = attr.target().replace("vehicle-", "");
 					if(this.getType().getRegistryName().toString().equals(id))
-						this.getAttributes().put(attr.getId(), attr.copy(dataid));
-				} else{ this.getAttributes().put(attr.getId(), attr.copy(dataid)); }
+						this.getAttributes().put(attr.id(), attr.copy(dataid));
+				} else{ this.getAttributes().put(attr.id(), attr.copy(dataid)); }
 			}
 		}
 		Print.console(data.getType().getBaseAttributes());
@@ -273,17 +273,17 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(Entry<String, PartData> part : parts.entrySet()){
 			if(part.getValue() == data) continue;
 			String str = part.getKey() + "|" + part.getValue().getType().getRegistryName().toString();
-			for(Attribute attr : part.getValue().getType().getBaseAttributes()){
-				if(attr.getTarget().equals("part:" + catin)){
-					if(!data.getAttributes().containsKey(attr.getId()))
-						data.getAttributes().put(attr.getId(), attr.copy(str));
+			for(Attribute<?> attr : part.getValue().getType().getBaseAttributes()){
+				if(attr.target().equals("part:" + catin)){
+					if(!data.getAttributes().containsKey(attr.id()))
+						data.getAttributes().put(attr.id(), attr.copy(str));
 				}
 			}
 		}
 		//add modifiers
-		for(Modifier mod : data.getType().getBaseModifiers()){
-			if(!mod.getTarget().contains(":")) continue;
-			String[] target = mod.getTarget().split(":");
+		for(Modifier<?> mod : data.getType().getBaseModifiers()){
+			if(!mod.target().contains(":")) continue;
+			String[] target = mod.target().split(":");
 			if(target[0].equals("self")){
 				if(data.getAttributes().containsKey(target[1])){
 					data.getAttribute(target[1]).addModifier(mod.copy(dataid));
@@ -306,10 +306,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		for(Entry<String, PartData> part : parts.entrySet()){
 			if(part.getValue() == data) continue;
-			for(Modifier mod : part.getValue().getType().getBaseModifiers()){
+			for(Modifier<?> mod : part.getValue().getType().getBaseModifiers()){
 				String str = part.getKey() + "|" + part.getValue().getType().getRegistryName().toString();
-				if(mod.getTarget().startsWith("part-" + catin + ":")){
-					String target = mod.getTarget().split(":")[1];
+				if(mod.target().startsWith("part-" + catin + ":")){
+					String target = mod.target().split(":")[1];
 					if(data.getAttributes().containsKey(target))
 						data.getAttribute(target).addModifier(mod.copy(str));
 				}
@@ -320,36 +320,35 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	private void removeAttributesFromPart(PartData data, String category){
 		String datain = category + "|" + data.getType().getRegistryName().toString();
 		for(PartData part : this.parts.values()){
-			part.getAttributes().entrySet().removeIf(pre -> pre.getValue().getOrigin() != null && pre.getValue().getOrigin().equals(datain));
-			for(Attribute attr : part.getAttributes().values()){
-				attr.getModifiers().removeIf(pre -> pre.getOrigin() != null && pre.getOrigin().equals(datain));
+			part.getAttributes().entrySet().removeIf(pre -> pre.getValue().origin() != null && pre.getValue().origin().equals(datain));
+			for(Attribute<?> attr : part.getAttributes().values()){
+				attr.getModifiers().removeIf(pre -> pre.origin() != null && pre.origin().equals(datain));
 			}
 		}
-		this.attributes.entrySet().removeIf(pre -> pre.getValue().getOrigin() != null && pre.getValue().getOrigin().equals(datain));
-		for(Attribute attr : this.attributes.values()){
-			attr.getModifiers().removeIf(pre -> pre.getOrigin() != null && pre.getOrigin().equals(datain));
+		this.attributes.entrySet().removeIf(pre -> pre.getValue().origin() != null && pre.getValue().origin().equals(datain));
+		for(Attribute<?> attr : this.attributes.values()){
+			attr.getModifiers().removeIf(pre -> pre.origin() != null && pre.origin().equals(datain));
 		}
 	}
 
-	public void resetAttributes(Boolean bool){
-		if(bool == null || bool){ for(Attribute attr : attributes.values()){ attr.resetBaseValue(); } }
-		if(bool == null || !bool){ for(Attribute attr : attributes.values()){ attr.resetCurrentValue(); } }
+	public void resetAttributes(){
+		for(Attribute<?> attr : attributes.values()){ attr.reset(); }
 	}
 
-	public void updateAttributes(UpdateCall call, Boolean bool){
-		for(Attribute attr : attributes.values()){ attr.updateValue(call, bool); }
+	public void updateAttributes(Attribute.Update call){
+		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call); }
 	}
 
 	public void clearAttributes(){
 		if(!attributes.isEmpty()) attributes.clear();
-		for(Attribute attr : type.getBaseAttributes().values()){
-			if(!attr.getTarget().startsWith("self")) continue;
-			Attribute copy = attr.copy(null); attributes.put(copy.getId(), copy);
+		for(Attribute<?> attr : type.getBaseAttributes().values()){
+			if(!attr.target().startsWith("self")) continue;
+			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
 		}
 	}
 
 	public void clearModifiers(){
-		for(Attribute attr : attributes.values()) attr.getModifiers().clear();
+		for(Attribute<?> attr : attributes.values()) attr.getModifiers().clear();
 	}
 	
 	public java.util.Map<String, PartData> getParts(){
@@ -463,7 +462,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public double getThrottle(){
-		return getAttribute("throttle").getCurrentFloat();
+		return getAttribute("throttle").getFloatValue();
 	}
 
 	public ArrayList<String> getInventories(){

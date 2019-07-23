@@ -36,8 +36,8 @@ import net.minecraft.util.ResourceLocation;
  */
 public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	
-	protected ArrayList<Attribute> attributes = new ArrayList<>();
-	protected ArrayList<Modifier> modifiers = new ArrayList<>();
+	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
+	protected ArrayList<Modifier<?>> modifiers = new ArrayList<>();
 	protected List<NamedResourceLocation> textures;
 	protected List<String> categories;
 	protected PartItem item;
@@ -83,7 +83,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 				String id = json.get("id").getAsString();
 				String type = json.get("type").getAsString();
 				String target = json.has("target") ? json.get("target").getAsString() : "vehicle";
-				Attribute attr = null; boolean isbool = false;
+				Attribute<?> attr = null; boolean isbool = false;
 				switch(type){
 					case "string": case "text": {
 						attr = new Attribute.StringAttribute(true, id, json.get("value").getAsString()).setTarget(target); break;
@@ -95,7 +95,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()).setTarget(target); break;
 					}
 					case "boolean": case "bool": {
-						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsBoolean() ? 1 : 0, true).setTarget(target); isbool = true; break;
+						attr = new Attribute.BooleanAttribute(true, id, json.get("value").getAsBoolean()).setTarget(target); isbool = true; break;
 					}
 					default: continue;
 				}
@@ -113,18 +113,17 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 			for(JsonElement elm : array){
 				JsonObject json = elm.getAsJsonObject();
 				Modifier.Priority priority = Modifier.Priority.valueOf(json.get("priority").getAsString().toUpperCase());
-				Modifier.Type type = Modifier.Type.valueOf(json.get("type").getAsString().toUpperCase());
-				Attribute.UpdateCall interval = json.has("update") ? Attribute.UpdateCall.valueOf(json.get("update").getAsString().toUpperCase()) : null;
-				if(priority == null || type == null) continue; if(interval == null) interval = Attribute.UpdateCall.INITIAL;
+				Modifier.ModifierType type = Modifier.ModifierType.valueOf(json.get("type").getAsString().toUpperCase());
+				Attribute.Update interval = json.has("update") ? Attribute.Update.valueOf(json.get("update").getAsString().toUpperCase()) : null;
+				if(priority == null || type == null) continue; if(interval == null) interval = Attribute.Update.INITIAL;
 				String id = json.get("id").getAsString(), target = json.get("target").getAsString();
 				String val = json.has("val") ? json.get("val").getAsString() : null;
 				float value = json.has("value") ? json.get("value").getAsFloat() : 0f;
-				boolean bool = json.has("base") ? json.get("base").getAsBoolean() : false;
 				if(val == null){
-					this.modifiers.add(new Modifier.FloatModifier(id, value, bool, type, interval, priority).setTarget(target));
+					this.modifiers.add(new Modifier.FloatModifier(id, value, type, interval, priority).setTarget(target));
 				}
 				else{
-					this.modifiers.add(new Modifier.StringModifier(id, val, bool, type, interval, priority).setTarget(target));
+					this.modifiers.add(new Modifier.StringModifier(id, val, type, interval, priority).setTarget(target));
 				}
 			}
 		} 
@@ -217,11 +216,11 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	}
 	
 	@Nullable
-	public Collection<Attribute> getBaseAttributes(){
+	public Collection<Attribute<?>> getBaseAttributes(){
 		return attributes;
 	}
 	
-	public Collection<Modifier> getBaseModifiers(){
+	public Collection<Modifier<?>> getBaseModifiers(){
 		return modifiers;
 	}
 

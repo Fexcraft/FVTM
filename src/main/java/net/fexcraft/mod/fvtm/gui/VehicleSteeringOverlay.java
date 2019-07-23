@@ -33,7 +33,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
     //
     private static final RGB HOVER = new RGB(RGB.GREEN); static{ HOVER.alpha = 0.5f; }
     private static VehicleSteeringOverlay instance;
-    private static ArrayList<Attribute> attributes = new ArrayList<>();
+    private static ArrayList<Attribute<?>> attributes = new ArrayList<>();
 
     public VehicleSteeringOverlay(SeatEntity entity){
         super(); this.seat = entity; instance = this;
@@ -78,9 +78,9 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	private void processToggleClick(int i){
 		if(scroll < 0 || scroll > attributes.size()) return;
 		if(clicktimer > 0) return;
-		NBTTagCompound packet = new NBTTagCompound(); Attribute attr = attributes.get(scroll);
+		NBTTagCompound packet = new NBTTagCompound(); Attribute<?> attr = attributes.get(scroll);
 		packet.setString("target_listener", "fvtm:gui"); packet.setString("task", "attr_toggle");
-		packet.setString("attr", attr.getId()); packet.setBoolean("bool", i > 0);
+		packet.setString("attr", attr.id()); packet.setBoolean("bool", i > 0);
 		packet.setInteger("entity", seat.getVehicle().getEntityId()); Print.debug(packet);
 		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 		clicktimer += 10;
@@ -236,19 +236,19 @@ public class VehicleSteeringOverlay extends GuiScreen {
         if(!attributes.isEmpty()){
         	int offset = 0;
         	for(int i = 0; i < 8; i++){
-        		if(i >= attributes.size()) break; Attribute attr = attributes.get(i); offset = i * 12;
+        		if(i >= attributes.size()) break; Attribute<?> attr = attributes.get(i); offset = i * 12;
         		mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
-        		if(attr.getValueType().isBoolean()){
-            		int width = fontRenderer.getStringWidth(attr.getId());
+        		if(attr.type().isBoolean()){
+            		int width = fontRenderer.getStringWidth(attr.id());
             		if(scroll == i) HOVER.glColorApply();
             		this.drawTexturedModalRect(this.width - width - 14, offset, 0, 0, width + 2, 12);
             		if(scroll == i) RGB.glColorReset();
-                    mc.fontRenderer.drawString(attr.getId(), this.width - width - 12, offset + 3, 0xffffff);
-            		mc.renderEngine.bindTexture(attr.getCurrentBoolean() ? ConstructorGui.ICON_BOOL_TRUE : ConstructorGui.ICON_BOOL_FALSE);
+                    mc.fontRenderer.drawString(attr.id(), this.width - width - 12, offset + 3, 0xffffff);
+            		mc.renderEngine.bindTexture(attr.getBooleanValue() ? ConstructorGui.ICON_BOOL_TRUE : ConstructorGui.ICON_BOOL_FALSE);
             		drawModalRectWithCustomSizedTexture(this.width - 12, offset, 0, 0, 12, 12, 16, 16);
         		}
         		else{
-        			String str = attr.getId() + " - " + attr.getCurrentFloat();
+        			String str = attr.id() + " - " + attr.getFloatValue();
             		int width = fontRenderer.getStringWidth(str);
             		if(scroll == i) HOVER.glColorApply();
             		this.drawTexturedModalRect(this.width - width - 2, offset, 0, 0, width + 2, 12);
@@ -302,8 +302,8 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	public static void toggle(){
 		toggables = !toggables; attributes.clear(); if(!toggables) return; Print.debug("Toggled " + (toggables ? "ON" : "OFF"));
 		if(instance.seat == null || instance.seat.getVehicle() == null) return;
-		for(Attribute attr : instance.seat.getVehicle().getVehicleData().getAttributes().values()){
-			if(attr.getSeat() != null && attr.getSeat().equals(instance.seat.seatdata.name)){
+		for(Attribute<?> attr : instance.seat.getVehicle().getVehicleData().getAttributes().values()){
+			if(attr.seat() != null && attr.seat().equals(instance.seat.seatdata.name)){
 				attributes.add(attr);
 			}
 		}

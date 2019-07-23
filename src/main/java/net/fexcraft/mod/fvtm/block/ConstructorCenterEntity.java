@@ -132,7 +132,7 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 
 	public float getLength(){
 		if(tile == null || tile.getVehicleData() == null) return 3;
-		return tile.getVehicleData().getAttribute("constructor_length").getCurrentFloat();
+		return tile.getVehicleData().getAttribute("constructor_length").getFloatValue();
 	}
 
 	public float getRenderLength(){
@@ -145,7 +145,7 @@ public class ConstructorCenterEntity extends TileEntity implements IPacketReceiv
 
 	public float getWheelOffset(){
 		if(tile == null || tile.getVehicleData() == null) return 1.5f;
-		return tile.getVehicleData().getAttribute("constructor_wheel_offset").getCurrentFloat() * Static.sixteenth;
+		return tile.getVehicleData().getAttribute("constructor_wheel_offset").getFloatValue() * Static.sixteenth;
 	}
 
 }

@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
-import net.fexcraft.mod.fvtm.data.root.Attribute.UpdateCall;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.minecraft.item.ItemStack;
@@ -22,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
-	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
+	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, Function> functions = new TreeMap<>();
 	protected int selected_texture;
 	protected String extex;
@@ -103,33 +102,37 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		return obj;
 	}
 	
-	public Attribute getAttribute(String id){
+	public Attribute<?> getAttribute(String id){
 		return attributes.get(id);
 	}
 	
-	public TreeMap<String, Attribute> getAttributes(){
+	@SuppressWarnings("unchecked")
+	public <VAL> Attribute<VAL> getAttributeCasted(String id){
+		return (Attribute<VAL>)attributes.get(id);
+	}
+	
+	public TreeMap<String, Attribute<?>> getAttributes(){
 		return attributes;
 	}
 
-	public void resetAttributes(Boolean bool){
-		if(bool == null || bool){ for(Attribute attr : attributes.values()){ attr.resetBaseValue(); } }
-		if(bool == null || !bool){ for(Attribute attr : attributes.values()){ attr.resetCurrentValue(); } }
+	public void resetAttributes(){
+		for(Attribute<?> attr : attributes.values()){ attr.reset(); }
 	}
 
-	public void updateAttributes(UpdateCall call, Boolean bool){
-		for(Attribute attr : attributes.values()){ attr.updateValue(call, bool); }
+	public void updateAttributes(Attribute.Update call){
+		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call); }
 	}
 
 	public void clearAttributes(){
 		if(!attributes.isEmpty()) attributes.clear();
-		for(Attribute attr : type.getBaseAttributes()){
-			if(attr.getTarget() != null && !attr.getTarget().startsWith("self")) continue;
-			Attribute copy = attr.copy(null); attributes.put(copy.getId(), copy);
+		for(Attribute<?> attr : type.getBaseAttributes()){
+			if(attr.target() != null && !attr.target().startsWith("self")) continue;
+			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
 		}
 	}
 
 	public void clearModifiers(){
-		for(Attribute attr : attributes.values()) attr.getModifiers().clear();
+		for(Attribute<?> attr : attributes.values()) attr.getModifiers().clear();
 	}
 
 	public ItemStack newItemStack(){

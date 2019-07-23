@@ -54,9 +54,9 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		if(button.name.equals("next")){ updatePageEdit( 1, -1); return true; }
 		if(button.name.startsWith("edit")){
 			updatePageEdit(null, Integer.parseInt(button.name.replace("edit", "")));
-			Attribute attr = getAttr(page * 14 + edited); if(attr == null) return false;
+			Attribute<?> attr = getAttr(page * 14 + edited); if(attr == null) return false;
 			field.x = guiLeft + 203; field.y = guiTop + 7 + (edited * 14);
-			field.setText(attr.getCurrentString()); field.setVisible(true);
+			field.setText(attr.getStringValue()); field.setVisible(true);
 			return true;
 		}
 		return false;
@@ -67,21 +67,21 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		if(j != null){ edited = j; }
 		texts.get("status").string = "Current page: " + (page + 1) + "/" + (veh.getVehicleData().getAttributes().size() / 14 + 1) + (edited >= 0 ? " | Last edit: " + (edited + 1) : "");
 		//
-		Attribute[] arr = veh.getVehicleData().getAttributes().values().toArray(new Attribute[0]);
+		Attribute<?>[] arr = veh.getVehicleData().getAttributes().values().toArray(new Attribute<?>[0]);
 		for(int k = 0; k < 14; k++){ int l = page * 14 + k;
 			if(l >= arr.length){
 				texts.get("row" + k).string = "------"; texts.get("val" + k).string = "---";
 			}
 			else{
-				texts.get("row" + k).string = arr[l].getId(); texts.get("val" + k).string = arr[l].getCurrentString();
+				texts.get("row" + k).string = arr[l].id(); texts.get("val" + k).string = arr[l].getStringValue();
 			}
 		}
 		texts.forEach((key, value) -> { if(key.startsWith("val")) value.visible = true; });
-		if(edited >= 0) texts.get("val" + edited).visible = false;
+		if(edited >= 0){ texts.get("val" + edited).visible = false; } field.setVisible(false);
 	}
 
-	private Attribute getAttr(int edited){
-		Attribute[] arr = veh.getVehicleData().getAttributes().values().toArray(new Attribute[0]);
+	private Attribute<?> getAttr(int edited){
+		Attribute<?>[] arr = veh.getVehicleData().getAttributes().values().toArray(new Attribute<?>[0]);
 		return edited >= arr.length || edited < 0 ? null : arr[edited];
 	}
 

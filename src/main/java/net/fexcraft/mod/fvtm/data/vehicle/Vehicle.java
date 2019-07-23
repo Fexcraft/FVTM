@@ -32,7 +32,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder {
 
-	protected TreeMap<String, Attribute> attributes = new TreeMap<>();
+	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
 	protected Model<VehicleData, Object> model;
 	protected List<NamedResourceLocation> textures;
@@ -81,7 +81,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				JsonObject json = elm.getAsJsonObject();
 				String id = json.get("id").getAsString();
 				String type = json.get("type").getAsString();
-				Attribute attr = null; boolean isbool = false;
+				Attribute<?> attr = null; boolean isbool = false;
 				switch(type){
 					case "string": case "text": {
 						attr = new Attribute.StringAttribute(true, id, json.get("value").getAsString()); break;
@@ -93,7 +93,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()); break;
 					}
 					case "boolean": case "bool": {
-						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsBoolean() ? 1 : 0, true); isbool = true; break;
+						attr = new Attribute.BooleanAttribute(true, id, json.get("value").getAsBoolean()); isbool = true; break;
 					}
 					default: continue;
 				}
@@ -103,14 +103,14 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 					attr.setMinMax(min, max);
 				}
 				attr.setSeat(json.has("seat") ? json.get("seat").getAsString() : null);
-				this.attributes.put(attr.getId(), attr);
+				this.attributes.put(attr.id(), attr);
 			}
 		}
 		//Check for missing attributes / fill in default values;
-		java.util.List<Attribute> attrs = type.getDefaultAttributesForType();
-		for(Attribute attr : attrs){
-			if(!attributes.containsKey(attr.getId())) attributes.put(attr.getId(), attr.copy(null));
-			else{ attributes.get(attr.getId()).setMinMax(attr.getMin(), attr.getMax()); }
+		java.util.List<Attribute<?>> attrs = type.getDefaultAttributesForType();
+		for(Attribute<?> attr : attrs){
+			if(!attributes.containsKey(attr.id())) attributes.put(attr.id(), attr.copy(null));
+			else{ attributes.get(attr.id()).setMinMax(attr.min(), attr.max()); }
 		}
 		if(obj.has("WheelPositions")){
 			JsonArray array = obj.get("WheelPositions").getAsJsonArray();
@@ -166,11 +166,16 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <ATTR extends Attribute> ATTR getBaseAttribute(String id){
+	public <ATTR extends Attribute<?>> ATTR getBaseAttribute(String id){
 		return (ATTR)attributes.get(id);
 	}
 	
-	public TreeMap<String, Attribute> getBaseAttributes(){
+	@SuppressWarnings("unchecked")
+	public <T, ATTR extends Attribute<T>> ATTR getBaseAttributeCasted(String id){
+		return (ATTR)attributes.get(id);
+	}
+	
+	public TreeMap<String, Attribute<?>> getBaseAttributes(){
 		return attributes;
 	}
 	

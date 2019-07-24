@@ -215,7 +215,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
 		//Print.debug(key, seat.driver, key.dismount(), key.scripts(), player, seat);
-        if(!seat.driver && !key.dismount() && !key.scripts() && !key.toggables()){
+        if(!seat.driver && !key.dismount() && !key.scripts() && !key.toggables() && !key.inventory()){
             return false;
         }
         if(world.isRemote && !key.toggables() /*&& key.dismount() */){

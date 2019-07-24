@@ -1,17 +1,24 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
+import java.util.ArrayList;
+
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class VehicleToggables extends GenericGui<VehicleContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_toggables.png");
+	private ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	private int page, edited;
 	private VehicleEntity veh;
 	private TextField field;
@@ -21,7 +28,13 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 256; this.ySize = 218; edited = -1; page = 0;
 		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
+		SeatEntity seat = (SeatEntity)player.getRidingEntity();
 		veh = ((SeatEntity)player.getRidingEntity()).getVehicle();
+		veh.getVehicleData().getAttributes().values().forEach(attr -> {
+			if(seat.seatdata.driver || (attr.seat() != null && attr.seat().equals(seat.seatdata.name))){
+				attributes.add(attr);
+			}
+		});
 	}
 
 	@Override
@@ -41,6 +54,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
+		//
 	}
 
 	@Override
@@ -53,10 +67,34 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		if(button.name.equals("prev")){ updatePageEdit(-1, -1); return true;}
 		if(button.name.equals("next")){ updatePageEdit( 1, -1); return true; }
 		if(button.name.startsWith("edit")){
-			updatePageEdit(null, Integer.parseInt(button.name.replace("edit", "")));
-			Attribute<?> attr = getAttr(page * 14 + edited); if(attr == null) return false;
-			field.x = guiLeft + 203; field.y = guiTop + 7 + (edited * 14);
-			field.setText(attr.getStringValue()); field.setVisible(true);
+			int row = Integer.parseInt(button.name.replace("edit", ""));
+			if(field.getVisible() && edited == row){
+				if(edited < 0 || edited >= 14) return true; field.x = field.y = 0;
+				NBTTagCompound packet = new NBTTagCompound(); Attribute<?> attr = getAttr(edited);
+				packet.setString("target_listener", "fvtm:gui"); packet.setString("task", "attr_update");
+				packet.setString("attr", attr.id()); packet.setString("value", field.getText());
+				packet.setInteger("entity", veh.getEntity().getEntityId()); Print.debug(packet);
+				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+				field.setVisible(false); updatePageEdit(null, -1);
+			}
+			else{
+				updatePageEdit(null, row);
+				Attribute<?> attr = getAttr(page * 14 + edited); if(attr == null) return true;
+				if(!attr.editable()){
+					texts.get("row" + row).string = " [ Not Editable ]"; return true;
+				}
+				if(attr.type().isBoolean()){
+					NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
+					packet.setString("task", "attr_update"); packet.setString("attr", attr.id());
+					packet.setString("value", !attr.getBooleanValue() + ""); attr.setValue(!attr.getBooleanValue());
+					packet.setInteger("entity", veh.getEntity().getEntityId()); Print.debug(packet);
+					PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+					updatePageEdit(null, -1); return true;
+				}
+				field.x = guiLeft + 203; field.y = guiTop + 7 + (edited * 14);
+				field.setText(attr.getStringValue()); field.setVisible(true);
+				return true;
+			}
 			return true;
 		}
 		return false;
@@ -65,15 +103,14 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 	private void updatePageEdit(Integer i, Integer j){
 		if(i != null){ page += i; if(page < 0) page = 0; }
 		if(j != null){ edited = j; }
-		texts.get("status").string = "Current page: " + (page + 1) + "/" + (veh.getVehicleData().getAttributes().size() / 14 + 1) + (edited >= 0 ? " | Last edit: " + (edited + 1) : "");
+		texts.get("status").string = "Current page: " + (page + 1) + "/" + (attributes.size() / 14 + 1) + (edited >= 0 ? " | Last edit: " + (edited + 1) : "");
 		//
-		Attribute<?>[] arr = veh.getVehicleData().getAttributes().values().toArray(new Attribute<?>[0]);
 		for(int k = 0; k < 14; k++){ int l = page * 14 + k;
-			if(l >= arr.length){
+			if(l >= attributes.size()){
 				texts.get("row" + k).string = "------"; texts.get("val" + k).string = "---";
 			}
 			else{
-				texts.get("row" + k).string = arr[l].id(); texts.get("val" + k).string = arr[l].getStringValue();
+				texts.get("row" + k).string = attributes.get(l).id(); texts.get("val" + k).string = attributes.get(l).getStringValue();
 			}
 		}
 		texts.forEach((key, value) -> { if(key.startsWith("val")) value.visible = true; });
@@ -81,8 +118,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 	}
 
 	private Attribute<?> getAttr(int edited){
-		Attribute<?>[] arr = veh.getVehicleData().getAttributes().values().toArray(new Attribute<?>[0]);
-		return edited >= arr.length || edited < 0 ? null : arr[edited];
+		return edited >= attributes.size() || edited < 0 ? null : attributes.get(edited);
 	}
 
 	@Override

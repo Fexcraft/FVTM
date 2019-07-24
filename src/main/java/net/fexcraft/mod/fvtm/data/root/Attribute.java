@@ -48,7 +48,7 @@ public abstract class Attribute<V> {
 	public <VAL> VAL getInitValue(){ return (VAL)init; };
 	public <VAL> Attribute<V> setValue(VAL value){ this.value = (V)value; return this; };
 	public <VAL> Attribute<V> setInitValue(VAL value){ this.init = (V)value; return this; };
-	public Attribute<V> reset(){ return setValue(null); };
+	public Attribute<V> reset(){ return setValue(init); };
 	//
 	public Attribute<V> setTarget(String string){ this.target = string; return this; }
 	public Attribute<V> setOrigin(String string){ this.origin = string; return this; }
@@ -91,6 +91,21 @@ public abstract class Attribute<V> {
 		public boolean isFloatArray(){ return this == FLOAT_ARRAY; }
 		public boolean isBooleanArray(){ return this == BOOL_ARRAY; }
 		
+		public Object tryParse(String string){
+			switch(this){
+				case BOOLEAN: return Boolean.parseBoolean(string);
+				case BOOL_ARRAY: break;
+				case FLOAT: return Float.parseFloat(string);
+				case FLOAT_ARRAY: break;
+				case INTEGER: return Float.parseFloat(string);
+				case INT_ARRAY: break;
+				case OBJECT: return null;//TODO
+				case STRING: return string;
+				case STRING_ARRAY: break;
+				default: return null;
+			} return null;
+		}
+		
 	}
 	
 	public static enum Update {
@@ -123,6 +138,7 @@ public abstract class Attribute<V> {
 		if(compound.hasKey("target")) this.target = compound.getString("target");
 		if(compound.hasKey("origin")) this.origin = compound.getString("origin");
 		if(compound.hasKey("seat")) this.seat = compound.getString("seat");
+		editable = compound.hasKey("editable") ? compound.getBoolean("editable") : true;
 		init = this.readValue(compound.getTag("initial"));
 		value = compound.hasKey("value") ? this.readValue(compound.getTag("value")) : init;
 		modifiers.clear(); if(compound.hasKey("modifiers")){

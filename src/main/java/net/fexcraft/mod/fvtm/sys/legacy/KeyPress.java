@@ -18,4 +18,8 @@ public enum KeyPress {
 		return this == TOGGABLES;
 	}
 
+	public boolean inventory(){
+		return this == INVENTORY;
+	}
+
 }

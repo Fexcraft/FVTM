@@ -25,13 +25,19 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
 				if(attr.type().isBoolean()){
 					Print.debug("prev = " + attr.getBooleanValue());
-					attr.setValue(bool ? 1 : 0);
+					attr.setValue(bool);
 					Print.debug("post = " + attr.getBooleanValue());
 				}
 				else{
 					//TODO
 					Print.log("no code for toggling this attribute type yet");
 				}
+				break;
+			}
+			case "attr_update":{
+				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
+				attr.setValue(attr.type().tryParse(packet.nbt.getString("value")));
 				break;
 			}
 			default: return;

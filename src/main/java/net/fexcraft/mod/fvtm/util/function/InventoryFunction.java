@@ -152,6 +152,10 @@ public class InventoryFunction extends Function {
         return new ItemStackHandler(stacks);
     }
 
+	public NonNullList<ItemStack> getStacks(){
+		return stacks;
+	}
+
     public IFluidHandler getFluidHandler(){
         return tank;
     }
@@ -194,5 +198,9 @@ public class InventoryFunction extends Function {
             tooltip.add(Formatter.format("&9Inv. Content: &7" + (tank.getFluidAmount() == 0 ? "empty" : tank.getFluid().getLocalizedName())));
         }
     }
+
+	public InventoryType getInventoryType(){
+		return type;
+	}
 
 }

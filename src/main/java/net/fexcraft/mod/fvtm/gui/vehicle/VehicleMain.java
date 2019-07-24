@@ -50,6 +50,7 @@ public class VehicleMain extends GenericGui<VehicleContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("row7")){ player.closeScreen(); return true; }
 		if(button.name.equals("row3")){ openGui("fvtm", 934, new int[]{ 0, 0, 0 }); return true; }
+		if(button.name.equals("row4")){ openGui("fvtm", 935, new int[]{ 0, 0, 0 }); return true; }
 		//
 		return false;
 	}

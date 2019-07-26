@@ -1,0 +1,10 @@
+{
+    "RegistryName": "gep:test_can_2",
+    "Addon": "fvtm:gep",
+    "Name": "Generic Testing Can",
+    "Description": "&495percent refined!",
+    "MaxItemStackSize": 1,
+    "FuelContainer": true,
+    "FuelCapacity": 8000,
+    "FuelGroup": "petroleum:super95"
+}

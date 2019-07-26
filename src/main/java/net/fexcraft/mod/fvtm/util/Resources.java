@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeMap;
@@ -17,6 +18,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
@@ -62,6 +64,7 @@ public class Resources {
 	public static IForgeRegistry<Part> PARTS;
 	public static IForgeRegistry<Vehicle> VEHICLES;
 	public static IForgeRegistry<Material> MATERIALS;
+	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	//
@@ -111,6 +114,7 @@ public class Resources {
 		//
 		registerFunctions();
 		//
+		searchInAddonsFor(DataType.FUEL);
 		searchInAddonsFor(DataType.MATERIAL);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
@@ -288,6 +292,22 @@ public class Resources {
 		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem){//|| event.getObject().getItem() instanceof BlockItem){
 			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
 		}
+	}
+
+	public static Fuel getFuel(String id){
+		for(TreeMap<String, ArrayList<Fuel>> map : FUELS.values()){
+			for(ArrayList<Fuel> list : map.values()){
+				for(Fuel fuel : list) if(fuel.getRegistryName().toString().equals(id)) return fuel;
+			}
+		} return null;
+	}
+
+	public static String getFuelName(String id){
+		for(TreeMap<String, ArrayList<Fuel>> map : FUELS.values()){
+			for(ArrayList<Fuel> list : map.values()){
+				for(Fuel fuel : list) if(fuel.getRegistryName().toString().equals(id)) return fuel.getName();
+			}
+		} return null;
 	}
 	
 	/*@SubscribeEvent

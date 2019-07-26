@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -20,9 +21,10 @@ public class Material extends TypeCore<Material> {
 	protected byte maxStackSize;
 	protected short maxHealth;
 	protected MaterialItem item;
-	protected String oreDict, container;
-	protected int burntime;
-	protected boolean isVehicleKey;
+	protected String oreDict, container, fuelgroup;
+	protected int burntime, fuel_capacity;
+	protected boolean isVehicleKey, isFuelContainer;
+	protected Fuel fuel;
 	
 	public Material(){}
 
@@ -56,6 +58,10 @@ public class Material extends TypeCore<Material> {
 		this.container = obj.has("ContainerItem") ? obj.get("ContainerItem").getAsString() : null;
 		this.burntime = JsonUtil.getIfExists(obj, "ItemBurnTime", 0).intValue();
 		this.isVehicleKey = JsonUtil.getIfExists(obj, "VehicleKey", false);
+		this.isFuelContainer = JsonUtil.getIfExists(obj, "FuelContainer", false);
+		this.fuel_capacity = JsonUtil.getIfExists(obj, "FuelCapacity", 5000).intValue();
+		this.fuel = obj.has("FuelType") ? Resources.getFuel(obj.get("FuelType").getAsString()) : null;
+		this.fuelgroup = obj.has("FuelGroup") ? obj.get("FuelGroup").getAsString() : null;
 		//
 		this.item = new MaterialItem(this); return this;
 	}
@@ -110,6 +116,35 @@ public class Material extends TypeCore<Material> {
 	
 	public boolean isVehicleKey(){
 		return this.isVehicleKey;
+	}
+	
+	public boolean isFuelContainer(){
+		return this.isFuelContainer;
+	}
+	
+	public int getFuelCapacity(){
+		return this.fuel_capacity;
+	}
+	
+	public Fuel getFuelType(){
+		return fuel;
+	}
+	
+	/** May be a primary or primary:secondary string. */
+	public String getFuelGroup(){
+		return fuelgroup;
+	}
+	
+	public boolean isUniversalFuelContainer(){
+		return fuel == null && fuelgroup == null;
+	}
+	
+	public boolean isValidFuel(Fuel fuel){
+		if(this.isUniversalFuelContainer()) return true;
+		if(fuelgroup.contains(":")){
+			String[] split = fuelgroup.split(":");
+			return split[0].equals(fuel.getPrimaryGroup()) && split[1].equals(fuel.getSecondaryGroup());
+		} else return fuelgroup.equals(fuel.getPrimaryGroup());
 	}
 
 	public void registerIntoOreDictionary(){

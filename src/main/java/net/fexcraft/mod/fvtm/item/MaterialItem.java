@@ -5,8 +5,10 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,14 +24,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+//TODO eventually a capability storing cached fuel data.
 public class MaterialItem extends TypeCoreItem<Material> {
 
     public MaterialItem(Material material){
 		super(material); this.setHasSubtypes(true);
-		this.setMaxStackSize(material.getMaxStackSize());
+		this.setMaxStackSize(type.isFuelContainer() ? 1 : material.getMaxStackSize());
 		this.setMaxDamage(material.getMaxDamage());
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getResourcePath(), this, 0, null);
+        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getResourcePath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}
@@ -45,6 +47,11 @@ public class MaterialItem extends TypeCoreItem<Material> {
         if(type.isVehicleKey()){
         	tooltip.add(Formatter.format("&9LockCode: &7" + this.getLockCode(stack)));
         }
+        if(type.isFuelContainer()){
+        	tooltip.add(Formatter.format("&9Container: &7" + (type.isUniversalFuelContainer() ? "universal" : type.getFuelType() == null ? type.getFuelGroup() : type.getFuelType().getName())));
+        	tooltip.add(Formatter.format("&9Fuel Stored: &7" + this.getStoredFuelName(stack)));
+        	tooltip.add(Formatter.format("&9Fuel Amount: &7" + this.getStoredFuelAmount(stack) + "mB"));
+        }
     }
 	
     @Override
@@ -57,7 +64,7 @@ public class MaterialItem extends TypeCoreItem<Material> {
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
     	if(!Static.dev()) return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-        player.getHeldItem(hand).damageItem(1, player); return EnumActionResult.SUCCESS;
+        player.getHeldItem(hand).getItem().setDamage(player.getHeldItem(hand), player.getHeldItem(hand).getItemDamage() - 1); return EnumActionResult.SUCCESS;
     }
     
     @Override
@@ -70,6 +77,23 @@ public class MaterialItem extends TypeCoreItem<Material> {
     	if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
     	if(!stack.getTagCompound().hasKey("LockCode")) stack.getTagCompound().setString("LockCode", java.util.UUID.randomUUID().toString().substring(0, 8));
     	return stack.getTagCompound().getString("LockCode");
+    }
+    
+    public Fuel getStoredFuelType(ItemStack stack){
+    	if(!type.isFuelContainer()) return null; if(type.getFuelType() != null) return type.getFuelType();
+    	if(stack.hasTagCompound()) return Resources.getFuel(stack.getTagCompound().getString("StoredFuelType"));
+    	else return null;
+    }
+    
+    public int getStoredFuelAmount(ItemStack stack){
+    	if(!type.isFuelContainer() || !stack.hasTagCompound()) return 0;
+    	return stack.getTagCompound().getInteger("StoredFuelAmount");
+    }
+    
+    public String getStoredFuelName(ItemStack stack){
+    	if(!type.isFuelContainer()) return "Nothing."; if(type.getFuelType() != null) return type.getFuelType().getName();
+    	if(stack.hasTagCompound()) return Resources.getFuelName(stack.getTagCompound().getString("StoredFuelType"));
+    	else return "none";
     }
 
 }

@@ -1,0 +1,10 @@
+{
+    "RegistryName": "gep:test_can_0",
+    "Addon": "fvtm:gep",
+    "Name": "Generic Testing Can",
+    "Description": "&aA Can! &8A Can!",
+    "MaxItemStackSize": 1,
+    "ItemBurnTime": 100,
+    "FuelContainer": true,
+    "FuelCapacity": 5000
+}

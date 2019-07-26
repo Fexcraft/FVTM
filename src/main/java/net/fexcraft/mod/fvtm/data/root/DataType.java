@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.data.root;
 
+import java.util.ArrayList;
+import java.util.TreeMap;
+
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -16,6 +19,7 @@ public enum DataType {
 	MATERIAL(".material", "materials", Material.class),
 	//CONTAINER(".container", "containers"),
 	//CONSUMABLE(".consumable", "consumables"),
+	FUEL(".fuel", "fuels", Fuel.class),
 	;
 	
 	public final String suffix, cfg_folder;
@@ -32,6 +36,7 @@ public enum DataType {
 			case PART: return (IForgeRegistry<T>)Resources.PARTS;
 			case VEHICLE: return (IForgeRegistry<T>)Resources.VEHICLES;
 			case MATERIAL: return (IForgeRegistry<T>)Resources.MATERIALS;
+			case FUEL: return null;
 			default: return null;
 		}
 	}
@@ -42,6 +47,16 @@ public enum DataType {
 			case PART:{ Resources.PARTS.register((Part)core); return; }
 			case VEHICLE:{ Resources.VEHICLES.register((Vehicle)core); return; }
 			case MATERIAL:{ Resources.MATERIALS.register((Material)core); return; }
+			case FUEL:{
+				Fuel fuel = (Fuel)core;
+				if(!Resources.FUELS.containsKey(fuel.getPrimaryGroup())){
+					Resources.FUELS.put(fuel.getPrimaryGroup(), new TreeMap<>());
+				}
+				if(!Resources.FUELS.get(fuel.getPrimaryGroup()).containsKey(fuel.getSecondaryGroup())){
+					Resources.FUELS.get(fuel.getPrimaryGroup()).put(fuel.getSecondaryGroup(), new ArrayList<>());
+				}
+				Resources.FUELS.get(fuel.getPrimaryGroup()).get(fuel.getSecondaryGroup()).add(fuel);
+			}
 			default: return;
 		}
 	}

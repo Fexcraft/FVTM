@@ -10,6 +10,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.ItemStackHelper;
@@ -70,6 +71,7 @@ public class InventoryFunction extends Function {
                 }
             });
         }
+        seats = (ArrayList<String>)DataUtil.getStringArray(obj, "seats", false, false);
 	}
 
 	/** Functional Copy in PartData. */

@@ -41,7 +41,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected RGB primary, secondary;
-	protected int lightstate, selected_texture;
+	protected int selected_texture;
 	protected String extex;
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal, locked;
@@ -364,10 +364,6 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return getPart(string) != null;
 	}
 
-	public int getLightsState(){
-		return lightstate;
-	}
-
 	@Override
 	public RGB getPrimaryColor(){
 		return primary;
@@ -474,6 +470,22 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(!parts.containsKey("engine")) return new String[]{ "no engine" };
 		if(!parts.get("engine").hasFunction("fvtm:engine")) return new String[]{ "disfunctional engine" };
 		return parts.get("engine").getFunction(EngineFunction.class, "fvtm:engine").getFuelGroup();
+	}
+
+	public boolean getLightsState(){
+		return getAttribute("fvtm:lights").getBooleanValue();
+	}
+
+	public boolean getFogLightsState(){
+		return getAttribute("fvtm:lights_fog").getBooleanValue();
+	}
+
+	public boolean getLongLightsState(){
+		return getAttribute("fvtm:lights_fog").getBooleanValue();
+	}
+
+	public boolean getSpecialLightsState(){
+		return getAttribute("fvtm:lights_other").getBooleanValue();
 	}
 
 }

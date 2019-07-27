@@ -91,7 +91,7 @@ public class ConstructorLiftModel extends GenericModel<ConstructorCenterEntity, 
 
 	@Override
 	public void render(ConstructorCenterEntity data, BlockPos key){
-		//TODO
+		//
 	}
 
 	@Override

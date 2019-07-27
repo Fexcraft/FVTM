@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -23,6 +24,7 @@ import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
+import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
@@ -157,16 +159,16 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @Override
     public void setDead(){
         if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
-            /*for(Part.PartData partData : this.vehicledata.getInventoryContainers()){
-                InventoryAttribute.InventoryAttributeData invattr = partData.getAttributeData(InventoryAttribute.InventoryAttributeData.class);
-                if(invattr == null){
-                    continue;
-                }
-                for(int i = 0; i < invattr.getInventory().size(); i++){
-                    this.entityDropItem(invattr.getInventory().get(i), 0.5f);
-                    invattr.getInventory().set(i, ItemStack.EMPTY);
-                }
-            }*///TODO
+            for(String part : vehicle.getInventories()){
+            	InventoryFunction func = vehicle.getPart(part).getFunction("fvtm:inventory"); if(func == null) continue;
+            	if(func.isInventoryType(InventoryType.ITEM)){
+            		for(int i = 0; i < func.getStacks().size(); i++){
+                        this.entityDropItem(func.getStacks().get(i), 0.5f);
+                        func.getStacks().set(i, ItemStack.EMPTY);
+            		}
+            	}
+            	//TODO fluid handler alternative
+            }
         }
         //this.getCapability(FVTMCaps.CONTAINER, null).dropContents(); //TODO
         //

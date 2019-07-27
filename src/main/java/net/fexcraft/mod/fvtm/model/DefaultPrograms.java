@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -57,23 +58,23 @@ public class DefaultPrograms {
 	};
 	
 	public static final Program LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() > 0; }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState(); }
 		@Override public String getId(){ return "fvtm:lights"; }
 	};
 	
 	public static final Program FRONT_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() > 0; }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState(); }
 		@Override public String getId(){ return "fvtm:front_lights"; }
 	};
 	
 	public static final Program BACK_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() > 0 || data.getThrottle() < -0.01; }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() || data.getThrottle() < -0.01; }
 		@Override public String getId(){ return "fvtm:back_lights"; }
 	};
 	public static final Program REAR_LIGHTS = BACK_LIGHTS, BRAKE_LIGHTS = REAR_LIGHTS;//TODO add "break" marker;
 	
 	public static final Program FOG_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() > 2; }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getFogLightsState(); }
 		@Override public String getId(){ return "fvtm:fog_lights"; }
 	};
 	
@@ -82,13 +83,17 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:reverse_lights"; }
 	};
 	
+	private static final boolean checkSignalSec(){//temporary solution;
+		return Time.getSecond() % 2 == 1;
+	}
+	
 	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return false; }//TODO
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec(); }
 		@Override public String getId(){ return "fvtm:turn_signal_left"; }
 	};
 	
 	public static final Program TURN_SIGNAL_RIGHT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return false; }//TODO
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec(); }
 		@Override public String getId(){ return "fvtm:turn_signal_right"; }
 	};
 	

@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -467,6 +468,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public ArrayList<String> getInventories(){
 		return inventories;
+	}
+
+	public String[] getFuelGroup(){
+		if(!parts.containsKey("engine")) return new String[]{ "no engine" };
+		if(!parts.get("engine").hasFunction("fvtm:engine")) return new String[]{ "disfunctional engine" };
+		return parts.get("engine").getFunction(EngineFunction.class, "fvtm:engine").getFuelGroup();
 	}
 
 }

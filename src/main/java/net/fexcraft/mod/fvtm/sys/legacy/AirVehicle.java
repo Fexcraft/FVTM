@@ -694,7 +694,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
             double cir = ((WheelData)vehicle.getPart("third_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
-        	vehicle.getAttribute("throttle").setValue(throttle);
+        	vehicle.getAttribute("throttle").setValue((float)throttle);
         }
         
 		float throttlePull = 0.99F;

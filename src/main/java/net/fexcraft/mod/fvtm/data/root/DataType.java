@@ -36,7 +36,7 @@ public enum DataType {
 			case PART: return (IForgeRegistry<T>)Resources.PARTS;
 			case VEHICLE: return (IForgeRegistry<T>)Resources.VEHICLES;
 			case MATERIAL: return (IForgeRegistry<T>)Resources.MATERIALS;
-			case FUEL: return null;
+			case FUEL: return (IForgeRegistry<T>)Resources.ALLFUELS;
 			default: return null;
 		}
 	}
@@ -56,6 +56,7 @@ public enum DataType {
 					Resources.FUELS.get(fuel.getPrimaryGroup()).put(fuel.getSecondaryGroup(), new ArrayList<>());
 				}
 				Resources.FUELS.get(fuel.getPrimaryGroup()).get(fuel.getSecondaryGroup()).add(fuel);
+				Resources.ALLFUELS.register((Fuel)core); return;
 			}
 			default: return;
 		}

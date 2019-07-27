@@ -54,6 +54,11 @@ public enum VehicleType {
 		attrs.add(new Attribute.FloatAttribute(true, "constructor_height", 0f).setMinMax(0, 4096).setEditable(true));
 		attrs.add(new Attribute.FloatAttribute(true, "constructor_wheel_offset", 16f).setEditable(true).setMinMax(0, 4096));
 		attrs.add(new Attribute.BooleanAttribute(true, "constructor_show", true).setEditable(true));
+		attrs.add(new Attribute.IntegerAttribute(true, "fuel_capacity", 20000).setMinMax(0, Integer.MAX_VALUE));
+		attrs.add(new Attribute.StringAttribute(true, "fuel_primary", ""));
+		attrs.add(new Attribute.StringAttribute(true, "fuel_secondary", ""));
+		attrs.add(new Attribute.FloatAttribute(true, "fuel_quality", 0f).setMinMax(0, 10f));
+		attrs.add(new Attribute.IntegerAttribute(true, "fuel_stored", 0).setMinMax(0, Integer.MAX_VALUE));
 		//animation
 		attrs.add(new Attribute.FloatAttribute(true, "steering_angle", 0f).setMinMax(-40f, 40f));
 		attrs.add(new Attribute.FloatAttribute(true, "wheel_angle", 0f).setMinMax(-360f, 360f));

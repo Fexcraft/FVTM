@@ -46,9 +46,12 @@ public abstract class Attribute<V> {
 	//
 	public <VAL> VAL getValue(){ return (VAL)value; }
 	public <VAL> VAL getInitValue(){ return (VAL)init; };
-	public <VAL> Attribute<V> setValue(VAL value){ this.value = (V)value; return this; };
-	public <VAL> Attribute<V> setInitValue(VAL value){ this.init = (V)value; return this; };
+	public <VAL> Attribute<V> setValue(VAL value){ this.value = (V)value; validate(); return this; };
+	public <VAL> Attribute<V> setInitValue(VAL value){ this.init = (V)value; validate(); return this; };
+	public void increase(int amount){}; public void decrease(int amount){};
+	public void increase(float amount){}; public void decrease(float amount){};
 	public Attribute<V> reset(){ return setValue(init); };
+	protected void validate(){};
 	//
 	public Attribute<V> setTarget(String string){ this.target = string; return this; }
 	public Attribute<V> setOrigin(String string){ this.origin = string; return this; }
@@ -208,7 +211,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		protected Float readValue(NBTBase basetag){
-			return ((NBTTagFloat)basetag).getFloat();
+			try{ return ((NBTTagInt)basetag).getFloat(); } catch (Exception e){ return 0f; }
 		}
 
 		@Override
@@ -220,6 +223,31 @@ public abstract class Attribute<V> {
 		@Override public float getFloatValue(){ return value(); }
 		@Override public String getStringValue(){ return value() + ""; }
 		@Override public boolean getBooleanValue(){ return value() > 0; }
+		
+		@Override
+		public void increase(int amount){
+			this.increase(amount + 0f);
+		}
+		
+		@Override
+		public void increase(float amount){
+			this.setValue(value() + amount);
+		}
+		
+		@Override
+		public void decrease(int amount){
+			this.decrease(amount + 0f);
+		}
+		
+		@Override
+		public void decrease(float amount){
+			this.setValue(value() - amount);
+		}
+		
+		@Override
+		public void validate(){
+			if(value() > max()) setValue(max()); if(value() < min()) setValue(min());
+		}
 		
 	}
 	
@@ -236,7 +264,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		protected Integer readValue(NBTBase basetag){
-			return ((NBTTagInt)basetag).getInt();
+			try{ return ((NBTTagInt)basetag).getInt(); } catch (Exception e){ return 0; }
 		}
 
 		@Override
@@ -248,6 +276,31 @@ public abstract class Attribute<V> {
 		@Override public float getFloatValue(){ return value(); }
 		@Override public String getStringValue(){ return value() + ""; }
 		@Override public boolean getBooleanValue(){ return value() > 0; }
+		
+		@Override
+		public void increase(float amount){
+			this.increase((int)amount);
+		}
+		
+		@Override
+		public void increase(int amount){
+			this.setValue(value() + amount);
+		}
+		
+		@Override
+		public void decrease(float amount){
+			this.decrease((int)amount);
+		}
+		
+		@Override
+		public void decrease(int amount){
+			this.setValue(value() - amount);
+		}
+		
+		@Override
+		public void validate(){
+			if(value() > max()) setValue((int)max()); if(value() < min()) setValue((int)min());
+		}
 		
 	}
 	

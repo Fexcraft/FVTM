@@ -64,6 +64,7 @@ public class Resources {
 	public static IForgeRegistry<Part> PARTS;
 	public static IForgeRegistry<Vehicle> VEHICLES;
 	public static IForgeRegistry<Material> MATERIALS;
+	public static IForgeRegistry<Fuel> ALLFUELS;
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
@@ -78,9 +79,9 @@ public class Resources {
 		PARTS = new RegistryBuilder<Part>().setName(new ResourceLocation("fvtm:parts")).setType(Part.class).create();
 		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		MATERIALS = new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
+		ALLFUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
 		//FUNCTIONS = new RegistryBuilder<Function>().setName(new ResourceLocation("fvtm:part_functions")).setType(Function.class).create();
-		/*FUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
-		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
+		/*VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		PARTATTRIBUTES = new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
 		CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
 		CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
@@ -295,19 +296,19 @@ public class Resources {
 	}
 
 	public static Fuel getFuel(String id){
-		for(TreeMap<String, ArrayList<Fuel>> map : FUELS.values()){
-			for(ArrayList<Fuel> list : map.values()){
-				for(Fuel fuel : list) if(fuel.getRegistryName().toString().equals(id)) return fuel;
-			}
-		} return null;
+		return getFuel(new ResourceLocation(id));
+	}
+
+	public static Fuel getFuel(ResourceLocation resloc){
+		return ALLFUELS.getValue(resloc);
 	}
 
 	public static String getFuelName(String id){
-		for(TreeMap<String, ArrayList<Fuel>> map : FUELS.values()){
-			for(ArrayList<Fuel> list : map.values()){
-				for(Fuel fuel : list) if(fuel.getRegistryName().toString().equals(id)) return fuel.getName();
-			}
-		} return null;
+		return getFuelName(new ResourceLocation(id));
+	}
+
+	public static String getFuelName(ResourceLocation resloc){
+		Fuel fuel = getFuel(resloc); return fuel == null ? "not-found" : fuel.getName();
 	}
 	
 	/*@SubscribeEvent

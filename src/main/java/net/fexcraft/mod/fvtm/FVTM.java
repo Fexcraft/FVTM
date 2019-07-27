@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainer;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleFuel;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventories;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventory;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleMain;
@@ -126,6 +127,7 @@ public class FVTM {
 			GuiHandler.insert(909, ConstructorVP.class, ConstructorContainer.class);
 			//
 			GuiHandler.insert(930, VehicleMain.class, VehicleContainer.class);
+			GuiHandler.insert(933, VehicleFuel.class, VehicleContainer.class);
 			GuiHandler.insert(934, VehicleToggables.class, VehicleContainer.class);
 			GuiHandler.insert(935, VehicleInventories.class, VehicleContainer.class);
 			GuiHandler.insert(936, VehicleInventory.class, VehicleContainer.class);
@@ -141,6 +143,7 @@ public class FVTM {
 			GuiHandler.insert(909, ConstructorContainer.class);
 			//
 			GuiHandler.insert(930, VehicleContainer.class);
+			GuiHandler.insert(933, VehicleContainer.class);
 			GuiHandler.insert(934, VehicleContainer.class);
 			GuiHandler.insert(935, VehicleContainer.class);
 			GuiHandler.insert(936, VehicleContainer.class);

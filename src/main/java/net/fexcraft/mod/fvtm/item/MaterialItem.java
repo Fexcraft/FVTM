@@ -58,6 +58,16 @@ public class MaterialItem extends TypeCoreItem<Material> {
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
+    		if(type.isFuelContainer() && !type.isUniversalFuelContainer()){
+    			for(Fuel fuel : Resources.ALLFUELS.getValuesCollection()){
+    				if(!type.isValidFuel(fuel)) continue;
+        			NBTTagCompound compound = new NBTTagCompound();
+        			compound.setString("StoredFuelType", fuel.getRegistryName().toString());
+        			compound.setInteger("StoredFuelAmount", type.getFuelCapacity());
+        			ItemStack stack = type.newItemStack(); stack.setTagCompound(compound);
+        			items.add(stack); continue;
+    			}
+    		}
     	}
     }
     
@@ -95,5 +105,17 @@ public class MaterialItem extends TypeCoreItem<Material> {
     	if(stack.hasTagCompound()) return Resources.getFuelName(stack.getTagCompound().getString("StoredFuelType"));
     	else return "none";
     }
+
+	public void extractFuel(ItemStack stack, int stored){
+		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+		stack.getTagCompound().setInteger("StoredFuelAmount", stack.getTagCompound().getInteger("StoredFuelAmount") - stored);
+		if(stack.getTagCompound().getInteger("StoredFuelAmount") < 0) stack.getTagCompound().setInteger("StoredFuelAmount", 0);
+	}
+
+	public void insertFuel(ItemStack stack, int stored){
+		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+		stack.getTagCompound().setInteger("StoredFuelAmount", stack.getTagCompound().getInteger("StoredFuelAmount") + stored);
+		if(stack.getTagCompound().getInteger("StoredFuelAmount") > type.getFuelCapacity()) stack.getTagCompound().setInteger("StoredFuelAmount", type.getFuelCapacity());
+	}
 
 }

@@ -1,0 +1,9 @@
+{
+    "variants": {
+        "normal": { "model": "fvtm:constructor" },
+        "facing=north": { "model": "fvtm:constructor", "y": 0 },
+        "facing=south": { "model": "fvtm:constructor", "y": 180 },
+        "facing=west":  { "model": "fvtm:constructor", "y": 270 },
+        "facing=east":  { "model": "fvtm:constructor", "y": 90 }
+    }
+}

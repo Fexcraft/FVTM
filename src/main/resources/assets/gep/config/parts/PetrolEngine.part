@@ -1,0 +1,27 @@
+{
+    "RegistryName": "gep:engine_petrol",
+    "Addon": "fvtm:gep",
+    "Name": "Generic Petrol Engine",
+    "Model": "null",
+    "Category": [
+    	"engine", "ballast", "decoration"
+    ],
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Modifiers":[
+    	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "116.8", "priority": "veryhigh" }
+    ],
+    "Function": {
+    	"id": "fvtm:engine",
+    	"engine_speed": 1,
+    	"idle_consumption": 1.5,
+    	"active_consumption": 9,
+    	"consumptions": {
+    		"super95": 10,
+    		"super98": 8,
+    		"e10": 6.7
+    	},
+    	"fuel_group": "petrol"
+    }
+}

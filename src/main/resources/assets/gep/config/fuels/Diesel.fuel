@@ -1,0 +1,9 @@
+{
+    "RegistryName": "gep:diesel",
+    "Addon": "fvtm:gep",
+    "Name": "Standard Diesel",
+    "Description": "GEP DIESEL",
+    "PrimaryGroup": "diesel",
+    "SecondaryGroup": "petrodiesel",
+    "Quality": 1.0
+}

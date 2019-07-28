@@ -1,56 +1,47 @@
 package net.fexcraft.mod.fvtm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import net.fexcraft.lib.mc.capabilities.sign.SignCapabilitySerializer;
-import net.fexcraft.lib.mc.crafting.RecipeRegistry;
+import net.fexcraft.lib.mc.FCL;
+import net.fexcraft.lib.mc.gui.GuiHandler;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
-import net.fexcraft.lib.mc.registry.FCLRegistry;
+import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.api.Addon;
-import net.fexcraft.mod.fvtm.api.EntityType;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.api.capability.ContainerHolder;
-import net.fexcraft.mod.fvtm.api.capability.VehicleAndPartDataCache;
-import net.fexcraft.mod.fvtm.blocks.ConstructorCenter;
-import net.fexcraft.mod.fvtm.blocks.ConstructorController;
-import net.fexcraft.mod.fvtm.blocks.Pallet;
-import net.fexcraft.mod.fvtm.compatibility.GenericTrigger;
-import net.fexcraft.mod.fvtm.entities.*;
-import net.fexcraft.mod.fvtm.entities.land.GenericTrailerEntity;
-import net.fexcraft.mod.fvtm.entities.land.GenericVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.land.UnboundVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.land.WaterVehicleEntity;
-import net.fexcraft.mod.fvtm.entities.rail.GenericLocomotiveEntity;
-import net.fexcraft.mod.fvtm.entities.rail.GenericWagonEntity;
-import net.fexcraft.mod.fvtm.entities.rail.RailboundVehicleEntity;
-import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.impl.GenericEntityType;
-import net.fexcraft.mod.fvtm.impl.PrototypeEntityType;
-import net.fexcraft.mod.fvtm.impl.caps.ContainerHolderUtil;
-import net.fexcraft.mod.fvtm.impl.caps.VAPDataCache;
-import net.fexcraft.mod.fvtm.impl.caps.WorldResourcesUtil;
-import net.fexcraft.mod.fvtm.impl.container.ContainerStatusListener;
-import net.fexcraft.mod.fvtm.render.entity.*;
-import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailData;
-import net.fexcraft.mod.fvtm.sys.rail.cap.WorldRailDataSerializer;
-import net.fexcraft.mod.fvtm.util.*;
+import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.block.ConstructorCenterBlock;
+import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
+import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
+import net.fexcraft.mod.fvtm.gui.ClientReceiver;
+import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
+import net.fexcraft.mod.fvtm.gui.ServerReceiver;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartManager;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainer;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleFuel;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventories;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventory;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleMain;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleToggables;
+import net.fexcraft.mod.fvtm.render.RenderAirVehicle;
+import net.fexcraft.mod.fvtm.render.RenderEmpty;
+import net.fexcraft.mod.fvtm.render.RenderLandVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
+import net.fexcraft.mod.fvtm.util.CrashCallable;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.fvtm.util.packets.*;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.fexcraft.mod.fvtm.util.handler.LegacySpawnSystem;
+import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -61,8 +52,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
- * Fex's Vehicle and Transportation Mod - A Modification adding a custom add-on
- * part system to create customizable vehicles and, <i>more</i>.
+ * Fex's Vehicle and Transportation Mod - A Modification adding a custom (mainly json based) add-on system to create customizable vehicles and, by far, more.
  * <br>
  * License:
  * <a href="http://fexcraft.net/license?id=mods">http://fexcraft.net/license?id=mods</a>
@@ -70,126 +60,104 @@ import net.minecraftforge.fml.relauncher.Side;
  * @author Ferdinand Calo'
  *
  */
-@Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*",
-		dependencies = "required-after:fcl", guiFactory = "net.fexcraft.mod.fvtm.util.config.GuiFactory")
+@Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION,
+	acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl"
+	/*, guiFactory = "net.fexcraft.mod.fvtm.util.config.GuiFactory"*/)
 public class FVTM {
 
 	public static final String MODID = "fvtm";
 	public static final String PREFIX = Formatter.format("&0[&9FVTM&0]&7 ");
 	public static final String VERSION = "@VERSION@";
-	public static final InternalAddon INTERNAL_ADDON = new InternalAddon();
 
 	@Mod.Instance(FVTM.MODID)
 	private static FVTM INSTANCE;
-	private static Resources RESOURCES;
 	private static AutoRegisterer REGISTERER;
+	private static Resources RESOURCES;
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
+		REGISTERER = new AutoRegisterer(MODID);
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
+		//
+		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
-		CapabilityManager.INSTANCE.register(net.fexcraft.mod.fvtm.api.capability.Resources.class, new WorldResourcesUtil.Storage(), new WorldResourcesUtil.Callable());
-		//CapabilityManager.INSTANCE.register(ChunkRailDataUtil.ChunkRailData.class, new ChunkRailDataUtil.Storage(), new ChunkRailDataUtil.Callable());
-		CapabilityManager.INSTANCE.register(WorldRailData.class, new WorldRailDataSerializer.Storage(), new WorldRailDataSerializer.Callable());
-		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
-		//
-		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
-		REGISTERER = new AutoRegisterer(MODID);
-		String[] wood_types = new String[]{ "oak", "spruce", "birch", "jungle", "dark_oak", "acacia"};
-		try{
-			new ConstructorController();
-			for(String string : wood_types) new Pallet(string);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		//
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSignEntity.class, "fvtm:streetsign", 1991, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:wheel"), WheelEntity.class, "fvtm:wheel", 1992, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:seat"), SeatEntity.class, "fvtm:seat", 1993, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicle"), GenericVehicleEntity.class, "fvtm:landvehicle", 1994, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:landvehicletrailer"), GenericTrailerEntity.class, "fvtm:landvehicletrailer", 1995, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), GenericLocomotiveEntity.class, "fvtm:railvehicle", 1996, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railwagon"), GenericWagonEntity.class, "fvtm:railwagon", 1997, this, 256, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:watervehicle"), WaterVehicleEntity.class, "fvtm:watervehicle", 1998, this, 256, 1, false);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:airvehicle"), AirVehicleEntity.class, "fvtm:airvehicle", 1999, this, 256, 1, false);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:containerholder"), GenericContainerEntity.class, "fvtm:containerholder", 2000, this, 256, 1, false);
-		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:bogie"), BogieEntity.class, "fvtm:bogie", 2001, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_landvehicle"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_airvehicle"), AirVehicle.class, "fvtm.airvehicle", 8997, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
 		if(event.getSide().isClient()){
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(UnboundVehicleEntity.class, RenderGenericVehicle::new);
-			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicleTrailer.class, RenderLandVehicleTrailer::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderLandVehicle::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(AirVehicle.class, RenderAirVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
-			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WaterVehicleEntity.class, RenderWaterVehicle::new);
-			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(GenericContainerEntity.class, RenderEmpty::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSignEntity.class, RenderStreetSign::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailboundVehicleEntity.class, RenderGenericRailed::new);
-			//
-			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.KeyHandler());
-			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.render.Renderer());
+			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());
 		}
 		//
-		EntityType.NONE = new EntityType(new ResourceLocation("minecraft:none"), "NONE", VehicleType.NULL){
-			@Override
-			public boolean spawnEntity(World world, EntityPlayer player, ItemStack stack, VehicleData data, VehicleType type){
-				Print.console("It was tried to spawn an entity with the ENTITYTYPE.NONE, here more data: ");
-				Print.console(world, player, stack, data, type); return false;
-			}
-			@Override
-			public boolean spawnEntity(World world, BlockPos pos, VehicleData data){
-				Print.console("It was tried to spawn an entity with the ENTITYTYPE.NONE, here more data: ");
-				Print.console(world, pos, data); return false;
-			}
-		};
-		EntityType.INTERNAL = new GenericEntityType(); EntityType.PROTOTYPE = new PrototypeEntityType();
-		GenericTrigger.preInit(event);
+		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
+		if(event.getSide().isClient()){//moved from init into here cause of item models
+			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
+			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
+		}
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
-		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
-		MinecraftForge.EVENT_BUS.register(new GuiHandler.EventHandler());
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new GuiHandler.SReceiver());
 		if(event.getSide().isClient()){
-			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.gui.GuiHandler.CReceiver());
+			ConstructorBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			ConstructorCenterBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 		}
+		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
+		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
 		//
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new WorldRailDataSerializer.Server());
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ContainerHolderUtil.Server());
+		GuiHandler.register(MODID, this);
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());
+		//900 - main
+		//910 - part cache
+		//920 - installed part
+		//930 - vehicle
 		if(event.getSide().isClient()){
-			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new WorldRailDataSerializer.Client());
-			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ContainerHolderUtil.Client());
+			GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);
+			GuiHandler.insert(901, ConstructorStatus.class, ConstructorContainer.class);
+			GuiHandler.insert(902, ConstructorVehicleInfo.class, ConstructorContainer.class);
+			GuiHandler.insert(904, ConstructorPartCacheInfo.class, ConstructorContainer.class);
+			GuiHandler.insert(905, ConstructorPartManager.class, ConstructorContainer.class);
+			GuiHandler.insert(906, ConstructorPartInstaller.class, ConstructorContainer.class);
+			GuiHandler.insert(908, ConstructorVTM.class, ConstructorContainer.class);
+			GuiHandler.insert(909, ConstructorVP.class, ConstructorContainer.class);
+			//
+			GuiHandler.insert(930, VehicleMain.class, VehicleContainer.class);
+			GuiHandler.insert(933, VehicleFuel.class, VehicleContainer.class);
+			GuiHandler.insert(934, VehicleToggables.class, VehicleContainer.class);
+			GuiHandler.insert(935, VehicleInventories.class, VehicleContainer.class);
+			GuiHandler.insert(936, VehicleInventory.class, VehicleContainer.class);
 		}
-		//
-		RecipeObject.registerRecipes();
-		RecipeRegistry.addBluePrintRecipe("FVTM (B)", new ItemStack(FCLRegistry.getBlock("fvtm:constructor_controller"), 1, 0), new ItemStack(Blocks.IRON_BLOCK, 2), new ItemStack(Items.REDSTONE, 8), new ItemStack(Items.GOLD_INGOT, 3));
-		RecipeRegistry.addBluePrintRecipe("FVTM (B)", new ItemStack(ConstructorCenter.INSTANCE, 1, 0), new ItemStack(Blocks.IRON_BLOCK, 1), new ItemStack(Items.REDSTONE, 4), new ItemStack(Items.GOLD_INGOT, 2), new ItemStack(Blocks.PLANKS, 4), new ItemStack(Items.STICK, 4), new ItemStack(Blocks.LOG, 2));
-		//
-		PacketHandler.getInstance().registerMessage(VehicleControlPacketHandler.Client.class, PacketVehicleControl.class, 9910, Side.CLIENT);
-		PacketHandler.getInstance().registerMessage(VehicleControlPacketHandler.Server.class, PacketVehicleControl.class, 9911, Side.SERVER);
-		PacketHandler.getInstance().registerMessage(VehicleKeyPressPacketHandler.class, PacketVehicleKeyPress.class, 9912, Side.SERVER);
-		PacketHandler.getInstance().registerMessage(SeatUpdatePacketHandler.Client.class, PacketSeatUpdate.class, 9913, Side.CLIENT);
-		PacketHandler.getInstance().registerMessage(SeatUpdatePacketHandler.Server.class, PacketSeatUpdate.class, 9914, Side.SERVER);
-		PacketHandler.getInstance().registerMessage(SeatDismountPacketHandler.Client.class, PacketSeatDismount.class, 9915, Side.CLIENT);
-		if(event.getSide().isClient()){
-			net.fexcraft.mod.fvtm.render.Renderer.initFontRenderer();
+		else{
+			GuiHandler.insert(900, ConstructorContainer.class);
+			GuiHandler.insert(901, ConstructorContainer.class);
+			GuiHandler.insert(902, ConstructorContainer.class);
+			GuiHandler.insert(904, ConstructorContainer.class);
+			GuiHandler.insert(905, ConstructorContainer.class);
+			GuiHandler.insert(906, ConstructorContainer.class);
+			GuiHandler.insert(908, ConstructorContainer.class);
+			GuiHandler.insert(909, ConstructorContainer.class);
+			//
+			GuiHandler.insert(930, VehicleContainer.class);
+			GuiHandler.insert(933, VehicleContainer.class);
+			GuiHandler.insert(934, VehicleContainer.class);
+			GuiHandler.insert(935, VehicleContainer.class);
+			GuiHandler.insert(936, VehicleContainer.class);
 		}
-		GenericTrigger.properInit(event);
 	}
 
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
-		FvtmUpdateHandler.load();
-		FvtmUpdateHandler.register();
-		//check if addons have updates
-		RESOURCES.checkForUpdates();
-		FvtmPermissions.register();
-		//
-		SignCapabilitySerializer.addListener(ContainerStatusListener.class);
-		//CapabilityManager.INSTANCE.register(BlockChunk.class, new BlockChunkUtil.Storage(), new BlockChunkUtil.Callable());
-		//
-		GenericTrigger.postInit(event);
+		Packets.init(); SimpleUpdateHandler.register(MODID, 1, VERSION);
+		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
+		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
+		if(event.getSide().isClient()){
+			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
+		}
 	}
 
 	@Mod.EventHandler
@@ -199,18 +167,12 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void onStart(FMLServerStartingEvent event){
-		event.registerServerCommand(new Command());
-		event.registerServerCommand(new SpawnCmd());
+		//
 	}
 
 	@Mod.EventHandler
 	public void onStop(FMLServerStoppingEvent event){
-		//Print.debug("Clearing BLOCKDATA Cache.");
-		//BlockChunkImplementation.ALLBLOCKS.clear();
-	}
-
-	public static Resources getResources(){
-		return RESOURCES;
+		//
 	}
 
 	public static FVTM getInstance(){
@@ -221,84 +183,8 @@ public class FVTM {
 		return REGISTERER;
 	}
 	
-	public static class InternalAddon implements Addon {
-		
-		private static final ResourceLocation regname = new ResourceLocation(MODID, "fvtm");
-		private static final List<ResourceLocation> empty = new ArrayList<ResourceLocation>();
-		private static final List<UUID> authors = new ArrayList<>();
-		static { authors.add(UUID.fromString("01e4af9b-2a30-471e-addf-f6338ffce04b")); }
-		public static final ResourceLocation STANDARD_GAUGE = new ResourceLocation("fvtm:standard");
-
-		@Override
-		public Addon setRegistryName(ResourceLocation name){
-			/*regname = name;*/ return this;
-		}
-
-		@Override
-		public ResourceLocation getRegistryName(){
-			return regname;
-		}
-
-		@Override
-		public String getName(){
-			return "Internal Addon";
-		}
-
-		@Override
-		public String getVersion(){
-			return "1.0-Universal";
-		}
-
-		@Override
-		public String getURL(){
-			return "http://fexcraft.net/downloads?modid=fvtm";
-		}
-
-		@Override
-		public String getLicense(){
-			return "http://fexcraft.net/license?id=mods";
-		}
-
-		@Override
-		public String getUpdateId(){
-			return "fvtm";
-		}
-
-		@Override
-		public List<ResourceLocation> getDependencies(){
-			return (List<ResourceLocation>)empty;
-		}
-
-		@Override
-		public List<UUID> getAuthors(){
-			return authors;
-		}
-
-		@Override
-		public boolean isEnabled(){
-			return true;
-		}
-
-		@Override
-		public void setEnabled(boolean bool){
-			//
-		}
-
-		@Override
-		public List<ResourceLocation> getMissingDependencies(){
-			return empty;
-		}
-
-		@Override
-		public NBTTagCompound toNBT(){
-			return new NBTTagCompound();
-		}
-
-		@Override
-		public Addon fromNBT(NBTTagCompound nbt){
-			return this;
-		}
-		
+	public static Resources getResources(){
+		return RESOURCES;
 	}
 
 }

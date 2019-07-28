@@ -1,0 +1,9 @@
+{
+    "variants": {
+        "normal": { "model": "fvtm:rail_junction" },
+        "facing=north": { "model": "fvtm:rail_junction" },
+        "facing=south": { "model": "fvtm:rail_junction" },
+        "facing=west":  { "model": "fvtm:rail_junction" },
+        "facing=east":  { "model": "fvtm:rail_junction" }
+    }
+}

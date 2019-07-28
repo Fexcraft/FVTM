@@ -1,0 +1,9 @@
+{
+    "RegistryName": "gep:super98",
+    "Addon": "fvtm:gep",
+    "Name": "Standard Super 98",
+    "Description": "GEP SUPER98",
+    "PrimaryGroup": "petrol",
+    "SecondaryGroup": "super98",
+    "Quality": 0.98
+}

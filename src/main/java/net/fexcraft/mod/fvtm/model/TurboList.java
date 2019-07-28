@@ -5,11 +5,10 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.lang.ArrayList;
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.api.Vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.api.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.minecraft.entity.Entity;
 
 /**
  * Similar concept as the TurboList inside FMT-Standalone
@@ -19,13 +18,11 @@ import net.fexcraft.mod.fvtm.api.root.Colorable;
  */
 public class TurboList extends ArrayList<ModelRendererTurbo> {
 	
-	private static final long serialVersionUID = 1L;
-	protected static final TurboList EMPTY = new TurboList("fvtm:empty");
+	public static final TurboList EMPTY = new TurboList("fvtm:empty");
 	public static final ProgramMap PROGRAMS = new ProgramMap();
 	//
 	public ArrayList<Program> programs = new ArrayList<>();
-	public float rotX, rotY, rotZ, offX, offY, offZ, scale = 0.0625F;
-	protected RGB windowcolor = new RGB(0x00, 0x72, 0x08, 0.3f);
+	public float /*rotX, rotY, rotZ, offX, offY, offZ,*/ scale = 0.0625F;
 	public boolean visible = true, hasprog = false;
 	public String name;
 	
@@ -35,29 +32,14 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		this(name); for(ModelRendererTurbo mrt : mrts){ this.add(mrt); }
 	}
 
-	@Deprecated
-	public void render(VehicleData data, String part){
-		render(null, data, data, part);
-	}
-
-	public void render(VehicleEntity ent, VehicleData data){
-		render(ent, data, data, null);
-	}
-
-	public void render(VehicleEntity ent, VehicleData data, String part){
-		render(ent, data, data, part);
-	}
-
-	public void render(VehicleEntity ent, VehicleData data, Colorable color, String part){
+	public void render(Entity ent, VehicleData data, Colorable color, String part){
 		/*GL11.glPushMatrix();
 		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
-		if(rotX != 0f) GL11.glRotatef(rotX, 1, 0, 0);
-		if(rotY != 0f) GL11.glRotatef(rotY, 0, 1, 0);
-		if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);*/
+		if(rotX != 0f) GL11.glRotatef(rotX, 1, 0, 0); if(rotY != 0f) GL11.glRotatef(rotY, 0, 1, 0); if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);*/
 		if(hasprog) for(Program program : programs) program.preRender(this, ent, data, color, part);
 		if(visible) for(ModelRendererTurbo turbo : this){ turbo.render(scale); }
 		if(hasprog) for(Program program : programs) program.postRender(this, ent, data, color, part);
-		/*if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
+		/*if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(-offX, -offY, -offZ);
 		GL11.glPopMatrix();*/
 	}
 	
@@ -126,9 +108,9 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		
 		public String getId();
 		
-		public void preRender(TurboList list, @Nullable VehicleEntity ent, VehicleData data, @Nullable Colorable color, @Nullable String part);
+		public void preRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part);
 		
-		public void postRender(TurboList list, @Nullable VehicleEntity ent, VehicleData data, @Nullable Colorable color, @Nullable String part);
+		public void postRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part);
 		
 	}
 	

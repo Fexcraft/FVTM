@@ -1,0 +1,27 @@
+{
+    "RegistryName": "gep:engine_diesel",
+    "Addon": "fvtm:gep",
+    "Name": "Generic Diesel Engine",
+    "Model": "null",
+    "Category": [
+    	"engine", "ballast", "decoration"
+    ],
+    "Textures": [
+        "fvtm:textures/entities/null_texture.png"
+    ],
+    "Modifiers":[
+    	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "120", "priority": "veryhigh" }
+    ],
+    "Function": {
+    	"id": "fvtm:engine",
+    	"engine_speed": 1,
+    	"idle_consumption": 1,
+    	"active_consumption": 8,
+    	"consumptions": {
+    		"petrodiesel": 9,
+    		"synthetic": 6,
+    		"biodiesel": 7
+    	},
+    	"fuel_group": "diesel"
+    }
+}

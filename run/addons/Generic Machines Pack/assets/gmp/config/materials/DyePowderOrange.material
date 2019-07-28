@@ -1,7 +1,0 @@
-{
-    "RegistryName": "gmp:dye_powder_orange",
-    "Addon": "fvtm:gmp",
-    "FullName": "Dye Powder (ORANGE)",
-    "OreDictionary": "dyeOrange",
-    "DyeColor": "orange"
-}

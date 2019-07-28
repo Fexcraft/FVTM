@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -19,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -419,7 +421,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         axes.setAngles(rotYaw, rotPitch, rotRoll);
     }
 
-	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, Vec3d avel, double throttle, double steeringYaw){
+	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, Vec3d avel, double throttle, double steeringYaw, int fuel){
         if(world.isRemote){
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
@@ -434,6 +436,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         motionX = motX; motionY = motY; motionZ = motZ; angularVelocity = avel;
         this.throttle = throttle; serverWY = (float)steeringYaw;
+        vehicle.getAttribute("fuel_stored").setValue(fuel);
 	}
 
     @Override
@@ -548,9 +551,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         //TODO keyitem/lock check
         if(vehicle.isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
         if(!stack.isEmpty()){
-            /*if(stack.getItem() instanceof FuelItem){//TODO fuel
-                player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 2, 0, 0);
-                return true; }*/
+            if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
+            	GenericGui.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }); return true;
+            }
             if(stack.getItem() instanceof VehicleItem){
                 //TODO append trailer
             }
@@ -773,12 +776,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || (seats != null && seats[0] != null
 		        	&& seats[0].getControllingPassenger() instanceof EntityPlayer
 		        	&& ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
-		        boolean consumed = false;
 		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
-		        if(engine != null && engine.isOn() ){//TODO FUELSYSTEM && vehicledata.getFuelTankContent() > engine.getFuelConsumption() * throttle){
-		            //TODO FUELSYSTEM double d = (engine.getFuelConsumption() * throttle) / 80;//20, set lower to prevent too fast consumption.
-		            consumed = true;//TODO FUELSYSTEM vehicledata.consumeFuel(d > 0 ? d : (engine.getFuelConsumption() / 320));
-		        }
+		        boolean consumed = processConsumption(engine);
 		        for(WheelEntity wheel : wheels){
 		            if(wheel == null){ continue; }
 		            onGround = false; wheel.onGround = false;
@@ -843,16 +842,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || (seats != null && seats[0] != null
 		        	&& seats[0].getControllingPassenger() instanceof EntityPlayer
 		        	&& ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
-		        boolean consumed = false;
 		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
-		        if(!canThrustCreatively && engine != null && engine.isOn() ){//TODO FUELSYSTEM&& vehicledata.getFuelTankContent() > engine.getFuelCompsumption() * throttle){
-		            //TODO FUELSYSTEM double d = (engine.getLegacyFuelConsumption() * throttle) / 80;//20, set lower to prevent too fast compsumption.
-		            consumed = true;//TODO FUELSYSTEM vehicledata.consumeFuel(d > 0 ? d : (engine.getLegacyFuelConsumption() / 320));
-		        }
+		        boolean consumed = processConsumption(engine);
 		        for(WheelEntity wheel : wheels){
-		            if(wheel == null){
-		                continue;
-		            }
+		            if(wheel == null){ continue; }
 		            onGround = true; wheel.onGround = true;
 		            wheel.rotationYaw = axes.getYaw();
 		            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
@@ -913,8 +906,41 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 			}
 		}
 	}
+	
+	private byte accumulator;
+	private float consumed;
 
-    private void checkForCollisions(){
+    private boolean processConsumption(EngineFunction engine){
+    	if(engine == null) return false;
+    	if(accumulator < 20){
+    		if(!engine.isOn()){
+    			//pass
+    		}
+    		else if(throttle == 0f || (throttle < 0.05f && throttle > -0.05f)){
+    			consumed += engine.getIdleFuelConsumption();
+    		}
+    		else{
+    			consumed += engine.getFuelConsumption(vehicle.getAttribute("fuel_secondary").getStringValue()) * throttle;
+    		}
+    		accumulator++; return true;
+    	}
+    	else{
+    		if(consumed > 0){
+    			int con = (int)(consumed / 20f);
+    			vehicle.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
+    		}
+    		if(engine.isOn() && vehicle.getAttribute("fuel_stored").getFloatValue() <= 0){
+    			NBTTagCompound compound  = new NBTTagCompound();
+    			compound.setString("task", "engine_toggle");
+    			compound.setBoolean("engine_toggle_result", false);
+            	compound.setBoolean("no_fuel", true); throttle = 0;
+                ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
+    		}
+    		accumulator = 0; consumed = 0; return true;
+    	}
+	}
+
+	private void checkForCollisions(){
 		// You expected anything here? Uff.
 	}
     
@@ -994,10 +1020,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     if(lr + 1000 >= Time.getDate()){ break; }
                     lr = Time.getDate(); boolean on = false, nf = false; EngineFunction engine = vehicle.getPart("engine").getFunction("fvtm:engine");
                     pkt.nbt.setBoolean("engine_toggle_result", on = engine.toggle());
-                    /*if(vehicledata.getFuelTankContent() == 0 || vehicledata.getFuelTankContent() < 0.1){
+                    if(vehicle.getStoredFuel() == 0){
                         pkt.nbt.setBoolean("engine_toggle_result", on = false);
                         pkt.nbt.setBoolean("no_fuel", nf = true);
-                    }*///TODO FUEL
+                    }
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
                     throttle = 0;
                     //

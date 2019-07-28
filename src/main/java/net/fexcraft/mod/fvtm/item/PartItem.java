@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
+import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -55,6 +56,11 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         }
         if(type.getBaseModifiers().size() > 0){
         	tooltip.add(Formatter.format("&0&3This part has &7%s &3Modifier/s.", type.getBaseModifiers().size()));
+        	if(Static.dev()){
+        		for(Modifier<?> mod : type.getBaseModifiers()){
+                    tooltip.add(Formatter.format("&9" + mod.id() + ": &7" + mod.target() + " / " + mod.getStringValue()));
+        		}
+        	}
         }
         if(type.getDefaultFunctions().size() > 0){
         	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", type.getBaseModifiers().size()));

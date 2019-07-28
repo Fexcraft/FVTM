@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
@@ -232,7 +233,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
         }
         mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity())), 7, 7, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 21, 0xffffff);
-        //mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getFuelTankContent()) + "&f/&b" + ent.getVehicleData().getFuelTankSize()), 7, 35, 0xffffff);
+        mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 35, 0xffffff);
         if(!attributes.isEmpty()){
         	int offset = 0;
         	for(int i = 0; i < 8; i++){
@@ -261,11 +262,10 @@ public class VehicleSteeringOverlay extends GuiScreen {
         if(timer > 0) timer--; if(clicktimer > 0) clicktimer--;
     }
 
-    /*private String fuelColour(VehicleData data){
-        double d = data.getFuelTankContent() / data.getFuelTankSize();
-        //return d < 0.3 ? "&e" : d < 0.1 ? "&c" : "&a";
+    private String fuelColour(VehicleData data){
+        double d = data.getStoredFuel() / data.getFuelCapacity();
         return d < 0.3 ? d < 0.1 ? "&c" : "&e" : "&a";
-    }*/
+    }
 
     private String throttleColour(double throttle){
         if(throttle > 0.7){

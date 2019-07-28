@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.TreeSet;
 
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
@@ -60,7 +61,7 @@ public abstract class Attribute<V> {
 	public Attribute<V> setEditable(boolean bool){ this.editable = bool; return this; }
 	//
 	public Attribute<V> addModifier(Modifier<?> mod){
-		if(mod.type() != type()) return this; modifiers.add((Modifier<V>)mod); return this;
+		if(mod.type() == type() || mod.type().isNumber() == type().isNumber()) modifiers.add((Modifier<V>)mod); return this;
 	}
 	public TreeSet<Modifier<V>> getModifiers(){ return modifiers; }
 	//
@@ -188,7 +189,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<String> copy(String origin){
-			return new StringAttribute(false, id(), init()).setValue(value()).setSeat(seat()).setTarget(target()).setOrigin(origin).setEditable(editable());
+			return new StringAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setOrigin(origin).setEditable(editable());
 		}
 		
 		@Override public int getIntegerValue(){ return 0; }
@@ -211,7 +212,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		protected Float readValue(NBTBase basetag){
-			try{ return ((NBTTagInt)basetag).getFloat(); } catch (Exception e){ return 0f; }
+			try{ return ((NBTPrimitive)basetag).getFloat(); } catch (Exception e){ e.printStackTrace(); return 0f; }
 		}
 
 		@Override
@@ -264,7 +265,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		protected Integer readValue(NBTBase basetag){
-			try{ return ((NBTTagInt)basetag).getInt(); } catch (Exception e){ return 0; }
+			try{ return ((NBTPrimitive)basetag).getInt(); } catch (Exception e){ e.printStackTrace(); return 0; }
 		}
 
 		@Override
@@ -299,7 +300,9 @@ public abstract class Attribute<V> {
 		
 		@Override
 		public void validate(){
-			if(value() > max()) setValue((int)max()); if(value() < min()) setValue((int)min());
+			if((Object)value() instanceof Float) setValue(((Float)(Object)value()).intValue());
+			if(value() > max()){ setValue(((Float)max()).intValue()); }
+			if(value() < min()){ setValue(((Float)min()).intValue()); }
 		}
 		
 	}
@@ -317,7 +320,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		protected Boolean readValue(NBTBase basetag){
-			return ((NBTTagByte)basetag).getByte() > 0;
+			return ((NBTPrimitive)basetag).getByte() > 0;
 		}
 
 		@Override

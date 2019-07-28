@@ -42,7 +42,7 @@ public class PKTH_VehControl {
     private static void updatevehicle(Entity entity, PKT_VehControl pkt){
         if(entity == null || entity instanceof LandVehicle == false){ return; }
         ((LandVehicle)entity).setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll,
-        	pkt.motX, pkt.motY, pkt.motZ, pkt.avel, pkt.throttle, pkt.steeringYaw);
+        	pkt.motX, pkt.motY, pkt.motZ, pkt.avel, pkt.throttle, pkt.steeringYaw, pkt.fuel);
     }
 
 }

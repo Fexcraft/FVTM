@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.root;
 import net.fexcraft.mod.fvtm.data.root.Attribute.Type;
 import net.fexcraft.mod.fvtm.data.root.Attribute.Update;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagInt;
@@ -96,7 +97,7 @@ public abstract class Modifier<V> {
 	@SuppressWarnings("unchecked")
 	public <VL> VL modify(Attribute<VL> attribute, Update call){
 		switch(type){
-			case FLOAT: case INTEGER: case BOOLEAN: {
+			case FLOAT: case INTEGER: /*case BOOLEAN:*/ {
 				float result = attribute.getFloatValue();
 				float value = type.isFloat() ? this.getFloatValue() : this.getIntegerValue();
 				switch(mtype){
@@ -108,7 +109,7 @@ public abstract class Modifier<V> {
 					case PROCENT_SET: result  = result * 0.01f * value; break;
 					default: return null;
 				}
-				return (VL)(Object)(type.isInteger() ? (int)result : result);
+				return (VL)(Object)(attribute.type().isInteger() ? (int)result : result);
 			}
 			case STRING:{
 				String val = attribute.getStringValue();
@@ -210,7 +211,7 @@ public abstract class Modifier<V> {
 
 		@Override
 		protected Integer readValue(NBTBase basetag){
-			return ((NBTTagInt)basetag).getInt();
+			return ((NBTPrimitive)basetag).getInt();
 		}
 		
 	}
@@ -248,7 +249,7 @@ public abstract class Modifier<V> {
 
 		@Override
 		protected Float readValue(NBTBase basetag){
-			return ((NBTTagFloat)basetag).getFloat();
+			return ((NBTPrimitive)basetag).getFloat();
 		}
 		
 	}

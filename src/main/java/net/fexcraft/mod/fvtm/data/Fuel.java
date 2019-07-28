@@ -42,7 +42,7 @@ public class Fuel extends TypeCore<Fuel> {
 		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Material");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
-		this.primary = JsonUtil.getIfExists(obj, "PrimaryGroup", "petroleum");
+		this.primary = JsonUtil.getIfExists(obj, "PrimaryGroup", "petrol");
 		this.secondary = JsonUtil.getIfExists(obj, "SecondaryGroup", "super95");
 		this.quality = JsonUtil.getIfExists(obj, "Quality", 0.95f).floatValue();
 		//

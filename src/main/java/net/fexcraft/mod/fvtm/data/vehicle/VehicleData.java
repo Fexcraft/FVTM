@@ -268,8 +268,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				} else{ this.getAttributes().put(attr.id(), attr.copy(dataid)); }
 			}
 		}
-		Print.console(data.getType().getBaseAttributes());
-		Print.console(attributes);
+		//Print.console(data.getType().getBaseAttributes());
+		//Print.console(attributes);
 		//check if parts have attributes to add into other parts
 		for(Entry<String, PartData> part : parts.entrySet()){
 			if(part.getValue() == data) continue;
@@ -283,7 +283,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		//add modifiers
 		for(Modifier<?> mod : data.getType().getBaseModifiers()){
-			if(!mod.target().contains(":")) continue;
+			if(!mod.target().contains(":")){ continue; }
 			String[] target = mod.target().split(":");
 			if(target[0].equals("self")){
 				if(data.getAttributes().containsKey(target[1])){
@@ -299,7 +299,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 					}
 				}
 			}
-			else if(target[0].startsWith("vehicle")){
+			else if(target[0].equals("vehicle")){
 				if(this.getAttributes().containsKey(target[1])){
 					this.getAttributes().get(target[1]).addModifier(mod.copy(dataid));
 				}
@@ -486,6 +486,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public boolean getSpecialLightsState(){
 		return getAttribute("fvtm:lights_other").getBooleanValue();
+	}
+
+	public int getStoredFuel(){
+		return getAttribute("fuel_stored").getIntegerValue();
+	}
+
+	public int getFuelCapacity(){
+		return getAttribute("fuel_capacity").getIntegerValue();
 	}
 
 }

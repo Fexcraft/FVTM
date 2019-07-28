@@ -9,15 +9,19 @@
     "Textures": [
         "fvtm:textures/entities/null_texture.png"
     ],
-    "Attributes":[
-    	{ "id":"test0", "type": "string", "value": "Attribute Test" },
-    	{ "id":"test1", "type": "integer", "value": 55 },
-    	{ "id":"test2", "type": "float", "value": 60.1012 }
-    ],
     "Modifiers":[
     	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "120", "priority": "veryhigh" }
     ],
     "Function": {
-    	"id": "fvtm:engine", "engine_speed": 1, "fuel_consumption": 0.125, "fuel_group": "diesel"
+    	"id": "fvtm:engine",
+    	"engine_speed": 1,
+    	"idle_consumption": 1,
+    	"active_consumption": 8,
+    	"consumptions": {
+    		"petrodiesel": 9,
+    		"synthetic": 6,
+    		"biodiesel": 7
+    	},
+    	"fuel_group": "diesel"
     }
 }

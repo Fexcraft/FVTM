@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
@@ -16,19 +17,25 @@ import net.minecraft.world.World;
 
 public class EngineFunction extends Function {
 	
-	private float engine_speed, fuel_consumption;
+	private float engine_speed;
+	private int idle_con, con;
+	private TreeMap<String, Float> cons = new TreeMap<>();
 	private boolean ison;
 	private String[] fuelgroup;
 
 	public EngineFunction(JsonObject obj){
 		super(obj);
 		engine_speed = JsonUtil.getIfExists(obj, "engine_speed", 0.245f).floatValue();
-		fuel_consumption = JsonUtil.getIfExists(obj, "fuel_consumption", 0.34f).floatValue();
+		idle_con = JsonUtil.getIfExists(obj, "idle_consumption", 1).intValue();
+		con = JsonUtil.getIfExists(obj, "active_consumption", 1).intValue();
 		fuelgroup = DataUtil.getStringArray(obj, "fuel_group", false, false).toArray(new String[0]);
+		if(obj.has("consumptions") && obj.get("consumptions").isJsonObject()){//todo find better naming
+			obj.get("consumptions").getAsJsonObject().entrySet().forEach(entry -> cons.put(entry.getKey(), entry.getValue().getAsFloat()));
+		}
 	}
 
-	public EngineFunction(float es, boolean io, float fc, String[] fg){
-		super(null); engine_speed = es; ison = io; this.fuel_consumption = fc; this.fuelgroup = fg;
+	public EngineFunction(float es, boolean io, int ic, int c, TreeMap<String, Float> cs, String[] fg){
+		super(null); engine_speed = es; ison = io; idle_con = ic; con = c; cons = cs; this.fuelgroup = fg;
 	}
 
 	@Override
@@ -51,17 +58,14 @@ public class EngineFunction extends Function {
 	public float getLegacyEngineSpeed(){
 		return engine_speed;
 	}
-	
-	public float getLegacyFuelConsumption(){
-		return fuel_consumption;
-	}
 
 	public boolean toggle(){
 		return ison = !ison;
 	}
+	
 	@Override
 	public Function copy(){
-		return new EngineFunction(engine_speed, ison, fuel_consumption, fuelgroup);
+		return new EngineFunction(engine_speed, ison, idle_con, con, cons, fuelgroup);
 	}
 
 	public boolean setState(boolean bool){
@@ -82,5 +86,13 @@ public class EngineFunction extends Function {
             tooltip.add(Formatter.format("&9Engine Fuel: &7" + str));
     	}
     }
+
+	public float getFuelConsumption(String fuel_branch){
+		return cons.containsKey(fuel_branch) ? cons.get(fuel_branch) : con;
+	}
+
+	public int getIdleFuelConsumption(){
+		return idle_con;
+	}
 
 }

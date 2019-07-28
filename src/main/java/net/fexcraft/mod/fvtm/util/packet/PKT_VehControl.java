@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PKT_VehControl implements IPacket, IMessage {
 
-    public int entid;
+    public int entid, fuel;
     public Vec3d avel;
     public double posX, posY, posZ;
     public float yaw, pitch, roll;
@@ -20,7 +20,7 @@ public class PKT_VehControl implements IPacket, IMessage {
     public PKT_VehControl(GenericVehicle veh){
     	entid = veh.getEntityId(); posX = veh.posX; posY = veh.posY; posZ = veh.posZ;
         yaw = veh.getAxes().getYaw(); pitch = veh.getAxes().getPitch(); roll = veh.getAxes().getRoll();
-        motX = veh.motionX; motY = veh.motionY; motZ = veh.motionZ;
+        motX = veh.motionX; motY = veh.motionY; motZ = veh.motionZ; fuel = veh.getVehicleData().getAttribute("fuel_stored").getIntegerValue();
         steeringYaw = veh.wheelsYaw; avel = veh.angularVelocity; throttle = veh.throttle;
     }
 
@@ -41,6 +41,7 @@ public class PKT_VehControl implements IPacket, IMessage {
         buf.writeDouble(avel.z);
         buf.writeDouble(throttle);
         buf.writeDouble(steeringYaw);
+        buf.writeInt(fuel);
     }
 
     @Override
@@ -58,6 +59,7 @@ public class PKT_VehControl implements IPacket, IMessage {
         avel = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
         throttle = buf.readDouble();
         steeringYaw = buf.readDouble();
+        fuel = buf.readInt();
     }
 
 }

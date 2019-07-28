@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -46,8 +47,17 @@ public class VehicleContainer extends GenericContainer {
 		super(player);
 		if(x == 933){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-			if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-			veh = ((SeatEntity)player.getRidingEntity()).getVehicle(); if(veh == null){ player.closeScreen(); return; }
+			if(player.isRiding() && player.getRidingEntity() instanceof SeatEntity){
+				SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
+				if(!ent.seatdata.driver){ player.closeScreen(); }
+			}
+			else{
+				veh = (VehicleEntity)world.getEntityByID(y);
+				if(veh == null){
+					Print.chat(player, "VEHICLE NOT FOUND BY ID[" + y + "], OPERATION CANCELLING");
+					player.closeScreen(); return;
+				}
+			}
 			this.inventoryItemStacks.clear(); this.inventorySlots.clear();
 			invmode = true; fuel = new GenericIInventory(null, 1, 1); slots = 1;
 			addSlotToContainer(new Slot(fuel, 0, 116, 50));
@@ -218,9 +228,11 @@ public class VehicleContainer extends GenericContainer {
                 ItemStack stack = fuel.getStackInSlot(0);
                 if(stack.getItem() instanceof MaterialItem){
                 	MaterialItem item = (MaterialItem)stack.getItem();
-                	boolean pass = false; Fuel fuel = null;
-                	for(String str : veh.getVehicleData().getFuelGroup()){
-                		fuel = item.getStoredFuelType(stack); if(fuel.primary.equals(str)){ pass = true; break; }
+                	boolean pass = false; Fuel fuel = item.getStoredFuelType(stack);
+                	if(fuel != null){
+                    	for(String str : veh.getVehicleData().getFuelGroup()){
+                    		if(fuel.primary.equals(str)){ pass = true; break; }
+                    	}
                 	}
                 	if(pass){
                         int stored = item.getStoredFuelAmount(stack);

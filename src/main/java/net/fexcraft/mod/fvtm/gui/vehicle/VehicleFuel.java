@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.minecraft.block.material.MapColor;
@@ -17,9 +18,17 @@ public class VehicleFuel extends GenericGui<VehicleContainer> {
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 176; this.ySize = 154;
-		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-		SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
-		if(!ent.seatdata.driver){ player.closeScreen(); }
+		if(player.isRiding() && player.getRidingEntity() instanceof SeatEntity){
+			SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
+			if(!ent.seatdata.driver){ player.closeScreen(); }
+		}
+		else{
+			veh = (VehicleEntity)world.getEntityByID(y);
+			if(veh == null){
+				Print.chat(player, "VEHICLE NOT FOUND BY ID[" + y + "], OPERATION CANCELLING");
+				player.closeScreen(); return;
+			}
+		}
 	}
 
 	@Override

@@ -54,6 +54,11 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part); part.setInstalledPos(getPosForPart(part, data.getType().getRegistryName().toString()));
+		data.getAttributes().values().forEach(attr ->{
+			attr.getModifiers().forEach(mod -> {
+				Print.debug(mod.id(), mod.origin(), mod.target());
+			});
+		});
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 

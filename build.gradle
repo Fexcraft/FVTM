@@ -13,6 +13,9 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
@@ -37,7 +40,14 @@ minecraft {
 }
 
 dependencies {
-    compile project(':FCL')
+	def localrepos = new File("./localrepos");
+	if(localrepos.exists()){
+		print "LocalRepos marker exists, using local copies."
+		compile project(':FCL')
+	}
+	else{
+		compile 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
+	}
     compile "com.github.glitchfiend.biomesoplenty:ToughAsNails:1.12.2-3.1.0.116:deobf"
 }
 

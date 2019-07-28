@@ -19,6 +19,7 @@ out
 # Gradle
 build
 .gradle
+localrepos
 
 # Other
 eclipse

@@ -65,10 +65,10 @@ public abstract class Attribute<V> {
 	}
 	public TreeSet<Modifier<V>> getModifiers(){ return modifiers; }
 	//
-	public int getIntegerValue(){ return (int)value; }
-	public float getFloatValue(){ return (float)value; }
-	public String getStringValue(){ return (String)value; }
-	public boolean getBooleanValue(){ return (boolean)value; }
+	public abstract int getIntegerValue();
+	public abstract float getFloatValue();
+	public abstract String getStringValue();
+	public abstract boolean getBooleanValue();
 	
 	public Attribute<?> updateValue(Update call){
 		for(Modifier<?> mod : modifiers){

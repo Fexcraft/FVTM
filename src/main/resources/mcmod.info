@@ -1,16 +1,29 @@
 [
 	{
 	  "modid": "fvtm",
-	  "name": "Fex's Vehicle and Transportation Mod",
-	  "description": "A Mod adding an API to be able to create highly customisable Vehicles in Minecraft, as well as other things.",
+	  "name": "\u00a79Fex's Vehicle and Transportation Mod",
+	  "description": "\u00a77Version 3 of the not popular at all Vehicle Mod!",
 	  "version": "${version}",
 	  "mcversion": "${mcversion}",
 	  "url": "http://fexcraft.net/",
-	  "updateUrl": "http://fexcraft.net/download?modid=fvtm",
 	  "authorList": ["FEX___96"],
-	  "credits": "LandVehicle and Ship Entities are based off Flansmod made by jamioflan/The Flansmod Team. Also thanks to TypicalDarkness, for help in Custom Item Rendering.",
+	  "credits": "",
 	  "logoFile": "",
 	  "screenshots": [],
 	  "dependencies": ["fcl"]
+	},
+	{
+	  "modid": "gep",
+	  "name": "\u00a72General Essentials Pack",
+	  "description": "\u00a77The generic general essentials pack.",
+	  "version": "${version}",
+	  "mcversion": "${mcversion}",
+	  "url": "http://fexcraft.net/",
+	  "authorList": ["FEX___96"],
+	  "credits": "",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": ["fcl", "fvtm"],
+	  "parent": "fvtm"
 	}
 ]

@@ -1,7 +1,0 @@
-{
-    "parent": "fvtm:item/fluid_pipe",
-    "textures": {
-        "particle": "minecraft:blocks/sandstone_smooth",
-		"texture": "minecraft:blocks/sandstone_smooth"
-    }
-}

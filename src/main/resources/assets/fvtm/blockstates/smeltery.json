@@ -1,9 +1,0 @@
-{
-    "variants": {
-        "normal": { "model": "frsm:placeholder" },
-        "facing=north": { "model": "frsm:placeholder" },
-        "facing=south": { "model": "frsm:placeholder" },
-        "facing=west":  { "model": "frsm:placeholder" },
-        "facing=east":  { "model": "frsm:placeholder" }
-    }
-}

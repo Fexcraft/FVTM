@@ -1,7 +1,0 @@
-{
-    "RegistryName": "gmp:dye_powder_lime",
-    "Addon": "fvtm:gmp",
-    "FullName": "Dye Powder (LIME)",
-    "OreDictionary": "dyeLime",
-    "DyeColor": "lime"
-}

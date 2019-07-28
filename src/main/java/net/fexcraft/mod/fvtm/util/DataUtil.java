@@ -1,139 +1,89 @@
 package net.fexcraft.mod.fvtm.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.api.Addon;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.NonNullList;
+import net.fexcraft.lib.mc.registry.NamedResourceLocation;
+import net.fexcraft.mod.fvtm.InternalAddon;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.minecraft.util.ResourceLocation;
 
 public class DataUtil {
 
-    public static ResourceLocation getRegistryName(JsonObject obj, String type){
-        if(obj.has("RegistryName")){
-            return new ResourceLocation(obj.get("RegistryName").getAsString());
-        }
-        else{
-            Print.log(type + " DOES NOT HAVE A REGISTRY NAME, THAT IS AN ISSUE;");
-            Print.log(obj);
-            Static.halt();
-        }
-        return null;
-    }
+	public static ResourceLocation getRegistryName(JsonObject obj){
+		return obj.has("RegistryName") ? new ResourceLocation(obj.get("RegistryName").getAsString()) : null;
+	}
 
-    public static Addon getAddon(ResourceLocation registryname, JsonObject obj, String type){
-        if(obj.has("Addon")){
-            Addon addon = Resources.ADDONS.getValue(new ResourceLocation(obj.get("Addon").getAsString()));
-            if(addon == null){
-                Print.log("ADDON PACK NOT FOUND FOR " + type + " (" + registryname.toString() + "), OR INCORRECT NAME, THAT IS AN ISSUE;");
-                Static.halt();
-            }
-            return addon;
-        }
-        else{
-            Print.log(type + " (" + registryname + ") DOES NOT HAVE A SET ADDON PACK, THAT IS AN ISSUE;");
-            Static.halt();
-        }
-        return null;
-    }
+	public static ResourceLocation getRegistryName(String key, JsonObject obj){
+		return obj.has(key) ? new ResourceLocation(obj.get(key).getAsString()) : null;
+	}
 
-    public static String[] getDescription(JsonObject obj){
-        if(obj.has("Description")){
-            JsonArray desc = obj.get("Description").getAsJsonArray();
-            String[] description = new String[desc.size()];
-            for(int i = 0; i < desc.size(); i++){
-                description[i] = desc.get(i).getAsString();
-            }
-            return description;
-        }
-        return new String[0];
-    }
+	public static Addon getAddon(JsonObject obj){
+		if(obj.has("Addon")){
+			Addon addon = Resources.ADDONS.getValue(new ResourceLocation(obj.get("Addon").getAsString()));
+			if(addon != null) return addon;
+		} return Resources.ADDONS.getValue(InternalAddon.REGNAME);
+	}
 
-    public static RGB getRGB(JsonObject obj, String string){
-        return obj.has(string) ? (obj.get(string).isJsonObject() ? new RGB(obj.get(string).getAsJsonObject()) : new RGB(obj.get(string))) : new RGB();
-    }
-
-    public static ArrayList<ResourceLocation> getTextures(JsonObject obj, ResourceLocation registryname, String type){
-        ArrayList<ResourceLocation> textures = new ArrayList<ResourceLocation>();
-        if(!obj.has("Textures")){
-            Print.log("NO TEXTURE FOUND FOR " + type + " (" + registryname.toString() + ")! APPLYING DEFAULT TEXTURE;");
-            textures.add(Resources.NULL_TEXTURE);
-        }
-        else{
-            try{
-                JsonArray array = obj.get("Textures").getAsJsonArray();
-                for(JsonElement elm : array){
-                    textures.add(new ResourceLocation(elm.getAsString()));
-                }
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-        return textures;
-    }
-
-    /*public static Model loadModel(ModelType modeltype, String modelname, Class<? extends Model> clazz) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		switch(modeltype){
-			case JAVA:
-			case TMT:
-				Class clasz = Class.forName(modelname.replace(".class", ""));
-				return (Model)clasz.newInstance();
-			case JSON:
-				//TODO;
-				return null;
-			case JTMT:
-				JsonObject obj = JsonUtil.getObjectFromInputStream(net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(modelname)).getInputStream());
-				return clazz.getConstructor(JsonObject.class).newInstance(obj);
-			case OBJ:
-				//TODO
-				return null;
-			case NONE:
-				if(clazz == PartModel.class){
-					return NullModel.get();
+	public static List<String> getStringArray(JsonObject obj, String key, boolean split, boolean immutable){
+		ArrayList<String> list = new ArrayList<>();
+		if(obj.has(key)){
+			if(obj.get(key).isJsonPrimitive()){
+				if(split){
+					String[] arr = obj.get(key).getAsString().split("\n");
+					for(String string : arr) list.add(string);
 				}
-			default:
-				return null;
+				else list.add(obj.get(key).getAsString());
+			}
+			else{
+				obj.get(key).getAsJsonArray().forEach(elm -> list.add(elm.getAsString()));
+			}
 		}
-	}*/
-    
-    /** Let's not be limited by just 256 **/
-    public static void loadAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks){
-        NBTTagList list = tag.getTagList("Items", 10);
-        for(int i = 0; i < list.tagCount(); ++i){
-            NBTTagCompound compound = list.getCompoundTagAt(i);
-            int j = compound.getShort("Slot");
-            if(j >= 0 && j < stacks.size()){
-                stacks.set(j, new ItemStack(compound));
-            }
-        }
-    }
-    
-    /** Let's not be limited by just 256 **/
-    public static NBTTagCompound saveAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks, boolean saveEmpty){
-        NBTTagList list = new NBTTagList();
-        for(int i = 0; i < stacks.size(); ++i){
-            ItemStack stack = stacks.get(i);
-            if(!stack.isEmpty()){
-                NBTTagCompound compound = new NBTTagCompound();
-                compound.setShort("Slot", (short)i);
-                stack.writeToNBT(compound);
-                list.appendTag(compound);
-            }
-        }
-        if(!list.hasNoTags() || saveEmpty){
-            tag.setTag("Items", list);
-        }
-        return tag;
-    }
-    
+		return immutable ? ImmutableList.copyOf(list) : list;
+	}
+
+	public static List<NamedResourceLocation> getTextures(JsonObject obj){
+		ArrayList<NamedResourceLocation> reslocs = new ArrayList<>();
+		if(obj.has("Texture") && obj.get("Texture").isJsonPrimitive()){
+			reslocs.add(new NamedResourceLocation(obj.get("Texture").getAsString()));
+		}
+		else if(obj.has("Textures") && obj.get("Textures").isJsonArray()){
+			obj.get("Textures").getAsJsonArray().forEach(elm -> {
+				reslocs.add(new NamedResourceLocation(elm.getAsString()));
+			});
+		}
+		else{
+			reslocs.add(new NamedResourceLocation("NullTex|fvtm:textures/entities/null_texture.png"));
+		} return reslocs;
+	}
+
+	public static RGB getColor(JsonObject obj, String prefix){
+		RGB result = null;
+		if(obj.has(prefix + "Color")){
+			JsonElement elm = obj.get(prefix + "Color");
+			if(elm.isJsonPrimitive()){
+				result = new RGB(elm.getAsString());//HEX expected
+			}
+			else if(elm.isJsonObject()){
+				int red = obj.has("Red") ? obj.get("Red").getAsInt() : 0;
+				int gre = obj.has("Green") ? obj.get("Green").getAsInt() : 0;
+				int blu = obj.has("Blue") ? obj.get("Blue").getAsInt() : 0;
+				result = new RGB(red, gre, blu);
+			}
+			else if(elm.isJsonArray()){//array of 3 integers expected
+				int[] arr = new int[3]; JsonArray array = elm.getAsJsonArray();
+				for(int x = 0; x < 3; x++){ arr[x] = array.get(x).getAsInt(); }
+				result = new RGB(arr);
+			}
+			else {};
+		}
+		return result == null ? new RGB() : result;
+	}
+
 }

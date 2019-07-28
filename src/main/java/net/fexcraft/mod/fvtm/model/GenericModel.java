@@ -12,7 +12,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.WavefrontObjUtil;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.api.Model;
+import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
 
@@ -31,7 +31,9 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	private ArrayList<String> creators = new ArrayList<>();
 	protected int textureX, textureY;
 	
-	public GenericModel(){}
+	public GenericModel(){
+		if(!DefaultPrograms.DIDLOAD) DefaultPrograms.init();
+	}
 
 	public GenericModel(JsonObject obj){
 		this(); if(obj == null){ return; }
@@ -91,14 +93,6 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	public boolean addToCreators(String str){
 		return creators.add(str);
 	}
-
-	/*//@Override
-	public void render(){
-		//Actually, better not call this, we need VehicleData at least.
-		for(TurboList list : groups.values()){
-			list.render(null, null, null);
-		}
-	}*/
 
 	public void translate(float x, float y, float z){
 		groups.forEach(group -> group.translate(x, y, z));

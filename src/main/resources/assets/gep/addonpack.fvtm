@@ -1,0 +1,12 @@
+{
+  "RegistryName": "fvtm:gep",
+  "Name": "General Essentials Pack",
+  "URL": "http://fexcraft.net/download?modid=addon-gep",
+  "UpdateID": "addon-gep",
+  "License": "http://fexcraft.net/license?id=mods",
+  "Dependencies": ["fvtm:generic"],
+  "Authors": [
+    "01e4af9b-2a30-471e-addf-f6338ffce04b"
+  ],
+  "Version": "2.0"
+}

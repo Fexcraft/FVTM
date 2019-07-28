@@ -1,6 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "gmp:items/dye_powder_blue"
-    }
-}

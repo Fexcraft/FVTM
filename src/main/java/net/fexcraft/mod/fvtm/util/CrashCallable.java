@@ -47,9 +47,6 @@ public class CrashCallable implements ICrashCallable {
 			lines[i] += "| " + String.format("%-64s", "..." + (filename.length() > 64 ? filename.substring(filename.length() - 64) : filename));
 		}
 		String string = new String();
-		/*for(Addon addon : Resources.ADDONS){
-			string +="\n\t| " + addon.getRegistryName().getResourcePath() + "\t| " + addon.getName() + "\t| " + addon.getVersion() + "\t| " + addon.getFileAddress();
-		}*/
 		for(int i = 0; i < lines.length; i++){
 			string += "\n\t" + lines[i] + "|";
 		}

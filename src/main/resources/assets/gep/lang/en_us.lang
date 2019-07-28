@@ -1,0 +1,18 @@
+## Addon(generic) Lang File
+
+##Contributors:
+#> FEX___96
+#>
+#>
+#>
+
+#Items (Parts)
+item.gep:engine_diesel.name=Diesel General Purpose Engine
+item.gep:engine_petrol.name=Petrol General Purpose Engine
+item.gep:fuel_tank.name=General Purpose Fuel Tank
+item.gep:glue.name=General Purpose Glue
+item.gep:key.name=GEP Vehicle Key
+
+
+
+

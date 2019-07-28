@@ -21,6 +21,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.12.2"
 def modversion = "3.0.0"
+def gepversion = "2.0.0"
 group = "net.fexcraft.mod.fvtm"
 archivesBaseName = "FVTM-ALL"
 
@@ -82,38 +83,21 @@ task fvtm(type: Jar) {
     baseName = 'FVTM'
     appendix = modversion
 }
-
-//Addons
-task fvp_fvtm(type: Jar){
-    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/fvp/'}
-    from 'run/addons/Fex\'s Vehicle Pack'
-    baseName = 'Fexcraft Vehicle Pack'
-    appendix = '1.18-pre'
-}
-
-task gep_fvtm(type: Jar){
+task gep(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
-    from 'run/addons/General Essentials Pack'
-    baseName = 'General Essentials Pack'
-    appendix = '1.8-pre'
-}
-task zmp_fvtm(type: Jar){
-    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/zmp/'}
-    from 'run/addons/Zack\'s Pack'
-    baseName = 'ZMP'
-    appendix = 'V1.3-pre'
-}
-task hcp_fvtm(type: Jar){
-    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/hcp/'}
-    from 'run/addons/Heavy Cargo Pack'
-    baseName = 'Heavy Cargo Pack'
-    appendix = '1.6-pre'
+    from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/gep/'}
+    from(sourceSets.main.resources){
+        include 'mcmod.info'
+        expand 'version':gepversion, 'mcversion':project.minecraft.version
+        include 'LICENSE.txt'
+        include 'pack.mcmeta'
+    }
+    baseName = 'GEP'
+    appendix = gepversion
+    //TODO fine tuning
 }
 
 build {
     dependsOn fvtm
-    dependsOn gep_fvtm
-    dependsOn fvp_fvtm
-    dependsOn zmp_fvtm
-    dependsOn hcp_fvtm
+    dependsOn gep
 }

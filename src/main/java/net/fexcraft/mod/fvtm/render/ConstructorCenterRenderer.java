@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.lib.tmt.ModelBase;
-import net.fexcraft.mod.fvtm.block.ConstructorCenterEntity;
+import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
@@ -13,12 +13,12 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 
 @fTESR
-public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstructorCenterEntity> {
+public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCenterEntity> {
 	
 	public static final ResourceLocation lifttexture = new ResourceLocation("fvtm:textures/blocks/constructor_lift.png");
 
     @Override
-    public void render(ConstructorCenterEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
+    public void render(ConstCenterEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         ModelBase.bindTexture(lifttexture);
@@ -91,7 +91,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<Constru
         GL11.glPopMatrix();
     }
 
-    private static final void renderLP(ConstructorCenterEntity te){
+    private static final void renderLP(ConstCenterEntity te){
         if(te.getVehicleData() != null){
             for(int i = 0; i < 5; i++){
                 ConstructorLiftModel.INSTANCE.frame.renderPlain();

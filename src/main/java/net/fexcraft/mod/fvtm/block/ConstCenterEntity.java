@@ -14,12 +14,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ConstructorCenterEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
+public class ConstCenterEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 	
 	private ConstructorEntity tile;
 	private BlockPos conpos;
 	
-	public ConstructorCenterEntity(){}
+	public ConstCenterEntity(){}
 	
 	public ConstructorEntity getConstructor(){
 		return tile;

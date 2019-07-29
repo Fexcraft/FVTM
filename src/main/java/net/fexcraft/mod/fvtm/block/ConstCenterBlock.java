@@ -27,21 +27,21 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "constructor_lift", tileentity = ConstructorCenterEntity.class)
-public class ConstructorCenterBlock extends Block implements ITileEntityProvider {
+@fBlock(modid = FVTM.MODID, name = "constructor_lift", tileentity = ConstCenterEntity.class)
+public class ConstCenterBlock extends Block implements ITileEntityProvider {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final AxisAlignedBB BLOCK_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D);
-    public static ConstructorCenterBlock INSTANCE;
+    public static ConstCenterBlock INSTANCE;
 
-    public ConstructorCenterBlock(){
+    public ConstCenterBlock(){
         super(Material.ANVIL, MapColor.OBSIDIAN); INSTANCE = this;
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta){
-        return new ConstructorCenterEntity();
+        return new ConstCenterEntity();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class ConstructorCenterBlock extends Block implements ITileEntityProvider
 	@Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         if(world.isRemote || hand == EnumHand.OFF_HAND) return false; if(player.isSneaking()) return true;
-        ConstructorCenterEntity tile = (ConstructorCenterEntity) world.getTileEntity(pos); if(tile == null) return false;
+        ConstCenterEntity tile = (ConstCenterEntity) world.getTileEntity(pos); if(tile == null) return false;
         if(tile.getLinkPos() == null){
         	Print.chat(player, "Lift not connected to a Constructor.");
         	Print.chat(player, String.format("Lift Position: %s, %s, %s", tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ()));

@@ -2,7 +2,7 @@
 package net.fexcraft.mod.fvtm.model.block;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.block.ConstructorCenterEntity;
+import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.entity.Entity;
@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
  *  FMT (Fex's Modelling Toolbox) v.1.1.7 &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-public class ConstructorLiftModel extends GenericModel<ConstructorCenterEntity, BlockPos> {
+public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, BlockPos> {
 	
 	public static final ConstructorLiftModel INSTANCE = new ConstructorLiftModel();
 	//
@@ -90,12 +90,12 @@ public class ConstructorLiftModel extends GenericModel<ConstructorCenterEntity, 
 	}
 
 	@Override
-	public void render(ConstructorCenterEntity data, BlockPos key){
+	public void render(ConstCenterEntity data, BlockPos key){
 		//
 	}
 
 	@Override
-	public void render(ConstructorCenterEntity data, BlockPos key, Entity ent, int meta){
+	public void render(ConstCenterEntity data, BlockPos key, Entity ent, int meta){
 		this.render(data, key); return;
 	}
 

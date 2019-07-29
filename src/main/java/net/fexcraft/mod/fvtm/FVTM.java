@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.gui.GuiHandler;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
+import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -108,6 +109,7 @@ public class FVTM {
 			ConstructorBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			ConstCenterBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			DisplayBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());

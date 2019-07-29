@@ -1,0 +1,7 @@
+{
+	"textures": {
+		"particle": "blocks/anvil_base",
+		"texture": "blocks/anvil_base"
+	},
+    "parent": "fvtm:block/streetpost_core"
+}

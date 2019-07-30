@@ -223,11 +223,23 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
 		if(arrows[1] != null){ cachedmodel.add(copyTurbo("arrow_" + (arrows[1] ? "right" : "left"), 3)); }
 		if(arrows[2] != null){ cachedmodel.add(copyTurbo("arrow_" + (arrows[2] ? "right" : "left"), 2)); }
 		if(arrows[3] != null){ cachedmodel.add(copyTurbo("arrow_" + (arrows[3] ? "right" : "left"), 1)); }
-		if(arrows[4] != null && arrows[4]){ cachedmodel.add(copyTurbo("arrow_top_bot", 0)); }
-		if(arrows[5] != null && arrows[5]){ cachedmodel.add(copyTurbo("arrow_top_bot", 1)); }
+		if(arrows[4] != null && arrows[4]){
+			ModelRendererTurbo turbo = copyTurbo("arrow_top_bot", 0);
+			int j = panels[0] ? 0 : panels[1] ? 1 : panels[2] ? 2 : panels[3] ? 3 : -1;
+			if(j != -1){
+				if(j > 0) turbo.rotationPointY -= (j * 4);
+				cachedmodel.add(turbo);
+			}
+		}
+		if(arrows[5] != null && arrows[5]){
+			ModelRendererTurbo turbo = copyTurbo("arrow_top_bot", 1);
+			int j = panels[3] ? 0 : panels[2] ? 1 : panels[1] ? 2 : panels[0] ? 3 : -1;
+			if(j != -1){
+				if(j > 0) turbo.rotationPointY += (j * 4);
+				cachedmodel.add(turbo);
+			}
+		}
 		//
-		//fuse the model
-		
 	}
 
     private ModelRendererTurbo copyTurbo(String string, int i){

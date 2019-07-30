@@ -10,6 +10,8 @@ import net.fexcraft.mod.fvtm.model.PartModel;
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
 public class StreetSignModel extends PartModel {
+	
+	public static final StreetSignModel INSTANCE = new StreetSignModel();
 
 	public StreetSignModel(){
 		super(); textureX = 64; textureY = 128; this.addToCreators("Ferdinand (FEX___96)");
@@ -126,12 +128,6 @@ public class StreetSignModel extends PartModel {
 		);
 		this.groups.add(left);
 		//
-		TurboList placeholder = new TurboList("placeholder");
-		placeholder.add(new ModelRendererTurbo(placeholder, 1, 1, textureX, textureY).addBox(0, 0, 0, 16, 4, 4)
-			.setRotationPoint(-8, -10, -2).setRotationAngle(0, 0, 0).setName("Box 0")
-		);
-		this.groups.add(placeholder);
-		//
 		TurboList right = new TurboList("right");
 		right.add(new ModelRendererTurbo(right, 49, 41, textureX, textureY)
 			.addShapeBox(0, 0, 0, 2, 4, 1, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0)
@@ -233,7 +229,6 @@ public class StreetSignModel extends PartModel {
 			.setRotationPoint(-8, -18, -4).setRotationAngle(0, 0, 0).setName("Box 17")
 		);
 		this.groups.add(top_bot);
-		//
 	}
 
 }

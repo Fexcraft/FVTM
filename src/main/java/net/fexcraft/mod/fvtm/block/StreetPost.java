@@ -5,6 +5,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.entity.StreetSign;
+import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.MapColor;
@@ -16,6 +19,8 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemLead;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
@@ -167,7 +172,7 @@ public class StreetPost extends BlockFence {
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(!world.isRemote && hand == EnumHand.MAIN_HAND){
-            /*ItemStack stack = player.getHeldItemMainhand();
+            ItemStack stack = player.getHeldItemMainhand();
             if(stack.getItem() instanceof ItemLead){
             	ItemLead.attachToFence(player, world, pos);
             	return true;
@@ -176,12 +181,12 @@ public class StreetPost extends BlockFence {
     			AxisAlignedBB aabb = new AxisAlignedBB(pos);
     			boolean found = false;
     			for(Entity e : world.loadedEntityList){
-    				if(e instanceof StreetSignEntity && e.getEntityBoundingBox().intersects(aabb)){
+    				if(e instanceof StreetSign && e.getEntityBoundingBox().intersects(aabb)){
     					found = true; break;
     				}
     			}
             	if(!found){
-            		StreetSignEntity ent = new StreetSignEntity(world, player.getHorizontalFacing().getOpposite());
+            		StreetSign ent = new StreetSign(world, player.getHorizontalFacing().getOpposite());
             		ent.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             		world.spawnEntity(ent);
             	}
@@ -189,8 +194,8 @@ public class StreetPost extends BlockFence {
             		Print.bar(player, "entity/sign at position");
             	}
             	return true;
-            }//TODO street sign entities
-            else*/ return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
+            }
+            else return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
         }
         else{
             return true;

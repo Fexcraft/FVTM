@@ -44,7 +44,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	}
 	
 	public void renderPlain(){
-		for(ModelRendererTurbo turbo : this){ turbo.render(); }
+		for(ModelRendererTurbo turbo : this){ turbo.render(scale); }
 	}
 
 	public void translate(float x, float y, float z){

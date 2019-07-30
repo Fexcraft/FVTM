@@ -148,7 +148,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	public static final class GroupList extends ArrayList<TurboList> {
 
 		public TurboList get(String key){
-			for(TurboList list : this) if(list.name == key) return list; return null;
+			for(TurboList list : this) if(list.name.equals(key)) return list; return null;
 		}
 		
 	}

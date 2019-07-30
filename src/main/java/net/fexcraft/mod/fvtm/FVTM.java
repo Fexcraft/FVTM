@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.block.DisplayBlock;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
+import net.fexcraft.mod.fvtm.entity.StreetSign;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
@@ -24,6 +25,8 @@ import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
+import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
+import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainer;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleFuel;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventories;
@@ -33,6 +36,7 @@ import net.fexcraft.mod.fvtm.gui.vehicle.VehicleToggables;
 import net.fexcraft.mod.fvtm.render.RenderAirVehicle;
 import net.fexcraft.mod.fvtm.render.RenderEmpty;
 import net.fexcraft.mod.fvtm.render.RenderLandVehicle;
+import net.fexcraft.mod.fvtm.render.RenderStreetSign;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
@@ -88,11 +92,13 @@ public class FVTM {
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_airvehicle"), AirVehicle.class, "fvtm.airvehicle", 8997, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderLandVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(AirVehicle.class, RenderAirVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSign.class, RenderStreetSign::new);
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());
 		}
 		//
@@ -110,6 +116,7 @@ public class FVTM {
 			ConstCenterBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			DisplayBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			FCLRegistry.getItem("fvtm:streetsign").setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
@@ -121,6 +128,7 @@ public class FVTM {
 		//920 - installed part
 		//930 - vehicle
 		if(event.getSide().isClient()){
+			GuiHandler.insert(700, StreetSignAdjuster.class, StreetSignAdjusterContainer.class);
 			GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);
 			GuiHandler.insert(901, ConstructorStatus.class, ConstructorContainer.class);
 			GuiHandler.insert(902, ConstructorVehicleInfo.class, ConstructorContainer.class);
@@ -137,6 +145,7 @@ public class FVTM {
 			GuiHandler.insert(936, VehicleInventory.class, VehicleContainer.class);
 		}
 		else{
+			GuiHandler.insert(700, StreetSignAdjusterContainer.class);
 			GuiHandler.insert(900, ConstructorContainer.class);
 			GuiHandler.insert(901, ConstructorContainer.class);
 			GuiHandler.insert(902, ConstructorContainer.class);

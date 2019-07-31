@@ -12,6 +12,8 @@ import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.block.RS_Round;
+import net.fexcraft.mod.fvtm.model.block.RS_TriangleDown;
+import net.fexcraft.mod.fvtm.model.block.RS_TriangleUp;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
@@ -87,6 +89,12 @@ public class RoadSign extends TypeCore<RoadSign> {
 		switch(splits[0]){
 			case "circle": case "round": {
 				model = new RS_Round(splits); return;
+			}
+			case "triangle_down": case "tri_down": {
+				model = new RS_TriangleDown(splits); return;
+			}
+			case "triangle_up": case "tri_up": {
+				model = new RS_TriangleUp(splits); return;
 			}
 			default: break;
 		}

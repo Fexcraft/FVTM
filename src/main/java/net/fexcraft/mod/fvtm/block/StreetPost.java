@@ -5,11 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
-import net.fexcraft.mod.fvtm.entity.StreetSign;
-import net.fexcraft.mod.fvtm.item.RoadSignItem;
-import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.MapColor;
@@ -179,7 +174,7 @@ public class StreetPost extends BlockFence {
             	ItemLead.attachToFence(player, world, pos);
             	return true;
             }
-            else if(stack.getItem() instanceof StreetSignItem){
+            /*else if(stack.getItem() instanceof StreetSignItem){
     			AxisAlignedBB aabb = new AxisAlignedBB(pos);
     			boolean found = false;
     			for(Entity e : world.loadedEntityList){
@@ -196,24 +191,7 @@ public class StreetPost extends BlockFence {
             		Print.bar(player, "entity/sign at position");
             	}
             	return true;
-            }
-            else if(stack.getItem() instanceof RoadSignItem){
-    			AxisAlignedBB aabb = new AxisAlignedBB(pos);
-    			boolean found = false;
-    			for(Entity e : world.loadedEntityList){
-    				if((e instanceof StreetSign || e instanceof RoadSignEntity) && e.getEntityBoundingBox().intersects(aabb)){
-    					found = true; break;
-    				}
-    			}
-            	if(!found){
-            		RoadSignEntity ent = new RoadSignEntity(world, player.getHorizontalFacing().getOpposite(), ((RoadSignItem)stack.getItem()).getType(stack));
-            		ent.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5); world.spawnEntity(ent);
-            	}
-            	else{
-            		Print.bar(player, "entity/sign at position");
-            	}
-            	return true;
-            }
+            }*///should be handled by the item now
             else return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
         }
         else{

@@ -59,7 +59,7 @@ public class DataUtil {
 			});
 		}
 		else{
-			reslocs.add(new NamedResourceLocation("NullTex|fvtm:textures/entities/null_texture.png"));
+			reslocs.add(new NamedResourceLocation("NullTex|fvtm:textures/entity/null.png"));
 		} return reslocs;
 	}
 

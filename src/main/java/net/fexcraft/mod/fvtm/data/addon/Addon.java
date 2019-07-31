@@ -154,7 +154,9 @@ public class Addon extends TypeCore<Addon> {
 					continue;
 				}
 				data.register(core); Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
-				//TODO item/model registration
+				if(Static.side().isClient() && data == DataType.VEHICLE){
+					net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(core.getItem(), core.getRegistryName());
+				}
 			}
 		}
 	}

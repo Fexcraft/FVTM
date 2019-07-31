@@ -20,6 +20,7 @@ public enum DataType {
 	//CONTAINER(".container", "containers"),
 	//CONSUMABLE(".consumable", "consumables"),
 	FUEL(".fuel", "fuels", Fuel.class),
+	ROADSIGN(".sign", "roadsigns", RoadSign.class)
 	;
 	
 	public final String suffix, cfg_folder;
@@ -37,6 +38,7 @@ public enum DataType {
 			case VEHICLE: return (IForgeRegistry<T>)Resources.VEHICLES;
 			case MATERIAL: return (IForgeRegistry<T>)Resources.MATERIALS;
 			case FUEL: return (IForgeRegistry<T>)Resources.ALLFUELS;
+			case ROADSIGN: return (IForgeRegistry<T>)Resources.ROADSIGNS;
 			default: return null;
 		}
 	}
@@ -58,6 +60,7 @@ public enum DataType {
 				Resources.FUELS.get(fuel.getPrimaryGroup()).get(fuel.getSecondaryGroup()).add(fuel);
 				Resources.ALLFUELS.register((Fuel)core); return;
 			}
+			case ROADSIGN:{ Resources.ROADSIGNS.register((RoadSign)core); return; }
 			default: return;
 		}
 	}

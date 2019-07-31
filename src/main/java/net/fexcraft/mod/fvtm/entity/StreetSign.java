@@ -136,6 +136,8 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
         }
         texture = compound.getByte("texture");
         //
+        //TODO eventually scan for nearby sign entities to match their sides and corners.
+        //
         if(world.isRemote){
         	recollectModel();
         }
@@ -148,7 +150,7 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
 				GL11.glDeleteLists(turbo.displaylist(), 1);
 		cachedmodel.clear();
 		//
-		Print.debug(StreetSignModel.INSTANCE.groups);
+		//Print.debug(StreetSignModel.INSTANCE.groups);
 		//
 		if(panels[0]){
 			cachedmodel.addAll(copyGroup("row3"));

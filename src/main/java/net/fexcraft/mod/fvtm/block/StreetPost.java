@@ -6,7 +6,9 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
+import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -181,7 +183,7 @@ public class StreetPost extends BlockFence {
     			AxisAlignedBB aabb = new AxisAlignedBB(pos);
     			boolean found = false;
     			for(Entity e : world.loadedEntityList){
-    				if(e instanceof StreetSign && e.getEntityBoundingBox().intersects(aabb)){
+    				if((e instanceof StreetSign || e instanceof RoadSignEntity) && e.getEntityBoundingBox().intersects(aabb)){
     					found = true; break;
     				}
     			}
@@ -189,6 +191,23 @@ public class StreetPost extends BlockFence {
             		StreetSign ent = new StreetSign(world, player.getHorizontalFacing().getOpposite());
             		ent.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             		world.spawnEntity(ent);
+            	}
+            	else{
+            		Print.bar(player, "entity/sign at position");
+            	}
+            	return true;
+            }
+            else if(stack.getItem() instanceof RoadSignItem){
+    			AxisAlignedBB aabb = new AxisAlignedBB(pos);
+    			boolean found = false;
+    			for(Entity e : world.loadedEntityList){
+    				if((e instanceof StreetSign || e instanceof RoadSignEntity) && e.getEntityBoundingBox().intersects(aabb)){
+    					found = true; break;
+    				}
+    			}
+            	if(!found){
+            		RoadSignEntity ent = new RoadSignEntity(world, player.getHorizontalFacing().getOpposite(), ((RoadSignItem)stack.getItem()).getType(stack));
+            		ent.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5); world.spawnEntity(ent);
             	}
             	else{
             		Print.bar(player, "entity/sign at position");

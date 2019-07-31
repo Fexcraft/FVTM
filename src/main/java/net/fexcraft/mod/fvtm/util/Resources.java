@@ -20,6 +20,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.part.Function;
@@ -32,6 +33,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
+import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -65,6 +67,7 @@ public class Resources {
 	public static IForgeRegistry<Vehicle> VEHICLES;
 	public static IForgeRegistry<Material> MATERIALS;
 	public static IForgeRegistry<Fuel> ALLFUELS;
+	public static IForgeRegistry<RoadSign> ROADSIGNS;
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
@@ -81,6 +84,7 @@ public class Resources {
 		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		MATERIALS = new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
 		ALLFUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
+		ROADSIGNS = new RegistryBuilder<RoadSign>().setName(new ResourceLocation("fvtm:roadsigns")).setType(RoadSign.class).create();
 		//FUNCTIONS = new RegistryBuilder<Function>().setName(new ResourceLocation("fvtm:part_functions")).setType(Function.class).create();
 		/*VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		PARTATTRIBUTES = new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
@@ -120,6 +124,8 @@ public class Resources {
 		searchInAddonsFor(DataType.MATERIAL);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
+		//
+		searchInAddonsFor(DataType.ROADSIGN);
 	}
 
 	private void registerFunctions(){
@@ -216,6 +222,7 @@ public class Resources {
 		//if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
 		if(clazz == PartModel.class) return PartModel.EMPTY;
 		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
+		if(clazz == RoadSignModel.class) return RoadSignModel.EMPTY;
 		return null;
 	}
 
@@ -310,6 +317,14 @@ public class Resources {
 
 	public static String getFuelName(ResourceLocation resloc){
 		Fuel fuel = getFuel(resloc); return fuel == null ? "not-found" : fuel.getName();
+	}
+
+	public static RoadSign getRoadSign(String string){
+		return getRoadSign(new ResourceLocation(string));
+	}
+
+	private static RoadSign getRoadSign(ResourceLocation resloc){
+		return ROADSIGNS.getValue(resloc);
 	}
 	
 	/*@SubscribeEvent

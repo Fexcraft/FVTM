@@ -26,12 +26,13 @@ public class RenderRoadSign extends Render<RoadSignEntity> implements IRenderFac
         {
         	float rot = 60;
         	switch(entity.facing.getIndex()){
-	        	case 2:{ rot = 0; break; }
-	        	case 3:{ rot = 180; break; }
-	        	case 4:{ rot = 90; break; }
-	        	case 5:{ rot = 270; break; }
+	        	case 2:{ rot = 180; break; }
+	        	case 3:{ rot = 0; break; }
+	        	case 4:{ rot = 270; break; }
+	        	case 5:{ rot = 90; break; }
         	}
-        	GL11.glTranslated(x, y + 1, z);
+        	GL11.glTranslated(x, y, z);
+            GL11.glRotatef(180, 1f, 0f, 0f);
             GL11.glRotatef(rot, 0f, 1f, 0f);
             GL11.glPushMatrix();
             this.bindTexture(this.getEntityTexture(entity));

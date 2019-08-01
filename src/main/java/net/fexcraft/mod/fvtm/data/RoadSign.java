@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
+import net.fexcraft.mod.fvtm.model.block.RS_Quad;
 import net.fexcraft.mod.fvtm.model.block.RS_Round;
 import net.fexcraft.mod.fvtm.model.block.RS_RoundBorderless;
 import net.fexcraft.mod.fvtm.model.block.RS_TriangleDown;
@@ -100,6 +101,10 @@ public class RoadSign extends TypeCore<RoadSign> {
 			case "circle_flat": case "circle_borderless":
 			case "round_flat": case "round_borderless":{
 				model = RS_RoundBorderless.INSTANCE; return;
+			}
+			case "quad": case "rectangle": case "rect":
+			case "quad_flat": case "rect_flat":{
+				model = RS_Quad.INSTANCE; return;
 			}
 			default: break;
 		}

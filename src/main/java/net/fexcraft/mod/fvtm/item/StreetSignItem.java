@@ -51,8 +51,8 @@ public class StreetSignItem extends Item {
     		Entity entity = null;
     		switch(enttype){
 				case 0: entity = new StreetSign(world, side); break;
-				case 1: entity = new RoadSignEntity(world, side, ((RoadSignItem)stack.getItem()).getType(stack));
-				default: return false;
+				case 1: entity = new RoadSignEntity(world, side, ((RoadSignItem)stack.getItem()).getType(stack)); break;
+				default: Print.bar(player, "ERROR, Invalid Entity Type in ITEM.");return false;
 			}
     		entity.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5); world.spawnEntity(entity); return true;
     	}

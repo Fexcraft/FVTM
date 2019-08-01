@@ -53,22 +53,30 @@ public class RS_TriangleDown extends RoadSignModel {
 			.setRotationPoint(0, -1.875f, -3).setRotationAngle(0, 0, 60).setName("border5")
 		);
 		if(l0){
-			group0.add(new ModelRendererTurbo(group0, 0, 0, textureX, textureY)/* An exporter for the polygon type TEXRECT_A was not made yet. */
+			group0.add(new ModelRendererTurbo(group0, 0, 0, textureX, textureY)
+				.addTexRect(0, 0, 0, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7, 0, 0, -7, 0, 0, -7, 0, 0, -7, 0, 0,
+				new float[][]{ new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 14.0f, 0.0f, 0.0f, 0.0f, 0.0f, 12.0f, 7.0f, 12.0f }, new float[]{ 28.0f, 0.0f, 14.0f, 0.0f, 0.0f, 12.0f, 21.0f, 12.0f } })
 				.setRotationPoint(-7, -14, -2.25f).setRotationAngle(0, 0, 0).setName("layer0")
 			);
 		}
 		if(l1){
-			group0.add(new ModelRendererTurbo(group0, 29, 0, textureX, textureY)/* An exporter for the polygon type TEXRECT_A was not made yet. */
+			group0.add(new ModelRendererTurbo(group0, 29, 0, textureX, textureY)
+				.addTexRect(0, 0, 0, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7, 0, 0, -7, 0, 0, -7, 0, 0, -7, 0, 0,
+				new float[][]{ new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 14.0f, 0.0f, 0.0f, 0.0f, 0.0f, 12.0f, 7.0f, 12.0f }, new float[]{ 28.0f, 0.0f, 14.0f, 0.0f, 0.0f, 12.0f, 21.0f, 12.0f } })
 				.setRotationPoint(-7, -14, -2.5f).setRotationAngle(0, 0, 0).setName("layer1")
 			);
 		}
 		if(l2){
-			group0.add(new ModelRendererTurbo(group0, 0, 13, textureX, textureY)/* An exporter for the polygon type TEXRECT_A was not made yet. */
+			group0.add(new ModelRendererTurbo(group0, 0, 13, textureX, textureY)
+				.addTexRect(0, 0, 0, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7, 0, 0, -7, 0, 0, -7, 0, 0, -7, 0, 0,
+				new float[][]{ new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 14.0f, 0.0f, 0.0f, 0.0f, 0.0f, 12.0f, 7.0f, 12.0f }, new float[]{ 28.0f, 0.0f, 14.0f, 0.0f, 0.0f, 12.0f, 21.0f, 12.0f } })
 				.setRotationPoint(-7, -14, -2.75f).setRotationAngle(0, 0, 0).setName("layer2")
 			);
 		}
 		if(l3){
-			group0.add(new ModelRendererTurbo(group0, 29, 13, textureX, textureY)/* An exporter for the polygon type TEXRECT_A was not made yet. */
+			group0.add(new ModelRendererTurbo(group0, 29, 13, textureX, textureY)
+				.addTexRect(0, 0, 0, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7, 0, 0, -7, 0, 0, -7, 0, 0, -7, 0, 0,
+				new float[][]{ new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new float[]{ 14.0f, 0.0f, 0.0f, 0.0f, 0.0f, 12.0f, 7.0f, 12.0f }, new float[]{ 28.0f, 0.0f, 14.0f, 0.0f, 0.0f, 12.0f, 21.0f, 12.0f } })
 				.setRotationPoint(-7, -14, -2.875f).setRotationAngle(0, 0, 0).setName("layer3")
 			);
 		}

@@ -64,5 +64,9 @@ public enum DataType {
 			default: return;
 		}
 	}
+
+	public boolean has3DItemModel(){
+		return this == VEHICLE;// || this == ROADSIGN;
+	}
 	
 }

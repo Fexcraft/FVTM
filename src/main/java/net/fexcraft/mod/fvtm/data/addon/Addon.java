@@ -16,6 +16,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
@@ -140,8 +141,11 @@ public class Addon extends TypeCore<Addon> {
 					continue;
 				}
 				data.register(core); Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
-				if(Static.side().isClient() && data == DataType.VEHICLE){
-					net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(core.getItem(), core.getRegistryName());
+				if(Static.side().isClient() && data.has3DItemModel()){
+					if(data == DataType.VEHICLE){
+						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
+					}
+					//
 				}
 			}
 		}
@@ -150,12 +154,15 @@ public class Addon extends TypeCore<Addon> {
 			for(JsonElement elm : array){ JsonObject obj = elm.getAsJsonObject();
 				TypeCore<?> core = (TypeCore<?>)data.core.newInstance().parse(obj);
 				if(core == null){
-					if(obj.has("RegistryName")) Print.log("Skipping PART '" + obj.get("RegistryName").getAsString() + "' due to errors.");
+					if(obj.has("RegistryName")) Print.log("Skipping " + data.name() + " '" + obj.get("RegistryName").getAsString() + "' due to errors.");
 					continue;
 				}
 				data.register(core); Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
-				if(Static.side().isClient() && data == DataType.VEHICLE){
-					net.minecraft.client.renderer.block.model.ModelBakery.registerItemVariants(core.getItem(), core.getRegistryName());
+				if(Static.side().isClient() && data.has3DItemModel()){
+					if(data == DataType.VEHICLE){
+						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
+					}
+					//
 				}
 			}
 		}

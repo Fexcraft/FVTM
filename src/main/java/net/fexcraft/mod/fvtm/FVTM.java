@@ -34,6 +34,7 @@ import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventories;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventory;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleMain;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleToggables;
+import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.render.RenderAirVehicle;
 import net.fexcraft.mod.fvtm.render.RenderEmpty;
 import net.fexcraft.mod.fvtm.render.RenderLandVehicle;
@@ -111,6 +112,7 @@ public class FVTM {
 			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
 			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
 			Resources.ROADSIGNS.getValuesCollection().forEach(sign -> sign.loadModel());
+			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(new ResourceLocation("fvtm:roadsign"), RoadSignModel.EMPTY);
 		}
 	}
 

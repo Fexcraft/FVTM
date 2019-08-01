@@ -1,7 +1,6 @@
 //FMT-Marker FVTM-1.1
 package net.fexcraft.mod.fvtm.model.block;
 
-import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
@@ -10,7 +9,7 @@ import net.fexcraft.mod.fvtm.model.RoadSignModel;
  *  FMT (Fex's Modelling Toolbox) v.1.2.9 &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-@fModel(registryname = "fvtm:models/roadsign/round")
+//@fModel(registryname = "fvtm:models/roadsign/round")
 public class RS_Round extends RoadSignModel {
 
 	//actually might later do a single-instance with cached booleans instead, as intended initially.

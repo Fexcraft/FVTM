@@ -29,7 +29,7 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
     }
 
     public RoadSignEntity(World world, EnumFacing facing, RoadSign sign){
-        this(world); this.facing = facing; this.sign = sign;
+        this(world); this.facing = facing; this.sign = sign; if(sign == null) this.setDead();
     }
 
     @Override
@@ -61,6 +61,9 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
     	facing = EnumFacing.getFront(compound.getByte("facing"));
         locked = compound.getBoolean("locked");
         sign = Resources.getRoadSign(compound.getString("fvtm:roadsign"));
+        if(sign == null){
+        	Print.log("DESPAWNING ROAD SIGN ENTITY - REASON: sign not found in registry - ID: " + compound.getString("fvtm:roadsign"));
+        }
     }
 
     @Override

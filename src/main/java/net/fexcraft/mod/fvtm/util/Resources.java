@@ -31,6 +31,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
@@ -298,7 +299,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
-		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem){//|| event.getObject().getItem() instanceof BlockItem){
+		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof RoadSignItem){//|| event.getObject().getItem() instanceof BlockItem){
 			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
 		}
 	}
@@ -325,7 +326,7 @@ public class Resources {
 
 	private static RoadSign getRoadSign(ResourceLocation resloc){
 		return ROADSIGNS.getValue(resloc);
-	}
+	}	
 	
 	/*@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){

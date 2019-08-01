@@ -11,9 +11,13 @@
 
 # Blocks
 tile.fvtm:constructor.name=Constructor Block
+tile.fvtm:constructor_lift.name=Constructor Center/Lift
+tile.fvtm:display_block.name=Display Block (Vehicles)
+tile.fvtm:streetpost.name=Streetpost
 
 
 # Items
+item.fvtm:streetsign.name=Streetsign
 
 
 # Entities

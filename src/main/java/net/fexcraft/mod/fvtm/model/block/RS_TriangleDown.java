@@ -1,7 +1,6 @@
 //FMT-Marker FVTM-1.1
 package net.fexcraft.mod.fvtm.model.block;
 
-import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
@@ -10,7 +9,7 @@ import net.fexcraft.mod.fvtm.model.RoadSignModel;
  *  FMT (Fex's Modelling Toolbox) v.1.2.9 &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-@fModel(registryname = "fvtm:models/roadsign/triangle_down")
+//@fModel(registryname = "fvtm:models/roadsign/triangle_down")
 public class RS_TriangleDown extends RoadSignModel {
 
 	public RS_TriangleDown(String[] splits){

@@ -1,7 +1,0 @@
-{
-    "RegistryName": "gep:test0",
-    "Addon": "fvtm:gep",
-    "Description": "Test Sign 0",
-    "Texture": "gep:textures/roadsigns/test_0.png",
-    "Model": "tri_down;layer:0"
-}

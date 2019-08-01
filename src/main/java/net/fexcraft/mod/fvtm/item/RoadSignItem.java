@@ -44,6 +44,11 @@ public class RoadSignItem extends Item {
     		return;
     	}
     	RoadSign sign = Resources.getRoadSign(stack.getTagCompound().getString("fvtm:roadsign"));
+    	if(sign == null){
+            tooltip.add(Formatter.format("&cROAD SIGN NOT FOUND IN REGISTRY"));
+            tooltip.add(Formatter.format("&a&o" + stack.getTagCompound().getString("fvtm:roadsign")));
+            return;
+    	}
         tooltip.add(Formatter.format("&9&o" + sign.getAddon().getName()));
         for(String s : sign.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
     }

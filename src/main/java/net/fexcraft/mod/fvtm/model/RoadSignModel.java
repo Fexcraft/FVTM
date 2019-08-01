@@ -7,10 +7,8 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RoadSign;
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -43,12 +41,9 @@ public class RoadSignModel extends GenericModel<RoadSignEntity, RoadSign> implem
 	
 	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
-		if(item.getItem() instanceof VehicleItem == false){ return; }
-		VehicleData data = item.getCapability(Capabilities.VAPDATA, null).getVehicleData();
-		if(data == null){ return; }
-		VehicleModel model = (VehicleModel)data.getType().getModel();
-		if(model == null) { return; }
-		float[] scal = new float[]{ model.gui_scale_x, model.gui_scale_y, model.gui_scale_z };
+		if(item.getItem() instanceof RoadSignItem == false){ return; }
+		RoadSign data = item.getCapability(Capabilities.VAPDATA, null).getRSData(); if(data == null){ return; }
+		RoadSignModel model = (RoadSignModel)data.getModel(); if(model == null) { return; }
 		//
 		GL11.glPushMatrix();
 		switch(type){
@@ -62,31 +57,22 @@ public class RoadSignModel extends GenericModel<RoadSignEntity, RoadSign> implem
 			}
 			case THIRD_PERSON_RIGHT_HAND:
 			case THIRD_PERSON_LEFT_HAND: {
-				GL11.glRotatef(data.getType().getVehicleType().isAirVehicle() ? -90f : 90f, 0F, 1F, 0F);
-				GL11.glTranslatef(0F, 0, 0F);
-				GL11.glTranslatef(0, 0, 0);
+				GL11.glRotatef(90f, 0F, 1F, 0F);
+				GL11.glTranslatef(0, -0.5f, 0);
 				break;
 			}
 			case FIRST_PERSON_LEFT_HAND: {
-				if(data.getType().isTrailerOrWagon()){
-					GL11.glTranslatef(0, 0, -0.5f);
-				}
+				GL11.glTranslatef(0, -0.5f, 0);
 				GL11.glRotatef(60f, 0F, 1F, 0F);
 				break;
 			}
 			case FIRST_PERSON_RIGHT_HAND: {
-				if (data.getType().isTrailerOrWagon()){
-					GL11.glTranslatef(0, 0, -0.5f);
-				}
-				GL11.glRotatef(120f, 0F, 1F, 0F);
+				GL11.glTranslatef(0, -0.5f, 0);
+				GL11.glRotatef(-60f, 0F, 1F, 0F);
 				break;
 			}
 			case GUI: {
-				float f = data.getType().isTrailerOrWagon() && !data.getType().getVehicleType().isRailVehicle() ? -0.375f : 0;
-				GL11.glTranslatef(model.gui_translate_x + f, model.gui_translate_y + f, model.gui_translate_z);
-				GL11.glRotatef(-135, 0, 1, 0);
-				GL11.glRotatef(-30, 1, 0, 0);
-				GL11.glRotatef(-30, 0, 0, 1);
+				GL11.glTranslatef(0, -0.5f, 0);
 				break;
 			}
 			case HEAD: {
@@ -95,22 +81,11 @@ public class RoadSignModel extends GenericModel<RoadSignEntity, RoadSign> implem
 			}
 			default: break;
 		}
-		GL11.glScalef(scal[0], scal[1], scal[2]);
-		//
-		{
-			GL11.glPushMatrix();
-			GL11.glRotated(180d, 1, 0, 0);
-			bindTexture(data.getTexture());
-			model.render(data, null, null, 0);
-			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
-				bindTexture(entry.getValue().getTexture());
-            	entry.getValue().getInstalledPos().translate();
-                entry.getValue().getType().getModel().render(data, entry.getKey(), null, -1);
-                entry.getValue().getInstalledPos().translateR();
-			}
-			GL11.glPopMatrix();
-		}
-		GL11.glScalef(-scal[0], -scal[1], -scal[2]);
+		GL11.glPushMatrix();
+		GL11.glRotated(180d, 1, 0, 0);
+		bindTexture(data.getTexture());
+		model.render(null, data);
+		GL11.glPopMatrix();
 		GL11.glPopMatrix();
 	}
 	

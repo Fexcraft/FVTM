@@ -18,7 +18,7 @@ public enum DataType {
 	VEHICLE(".vehicle", "vehicles", Vehicle.class),
 	MATERIAL(".material", "materials", Material.class),
 	//CONTAINER(".container", "containers"),
-	//CONSUMABLE(".consumable", "consumables"),
+	CONSUMABLE(".consumable", "consumables", Consumable.class),
 	FUEL(".fuel", "fuels", Fuel.class),
 	ROADSIGN(".sign", "roadsigns", RoadSign.class)
 	;
@@ -39,6 +39,7 @@ public enum DataType {
 			case MATERIAL: return (IForgeRegistry<T>)Resources.MATERIALS;
 			case FUEL: return (IForgeRegistry<T>)Resources.ALLFUELS;
 			case ROADSIGN: return (IForgeRegistry<T>)Resources.ROADSIGNS;
+			case CONSUMABLE: return (IForgeRegistry<T>)Resources.CONSUMABLES;
 			default: return null;
 		}
 	}
@@ -61,6 +62,7 @@ public enum DataType {
 				Resources.ALLFUELS.register((Fuel)core); return;
 			}
 			case ROADSIGN:{ Resources.ROADSIGNS.register((RoadSign)core); return; }
+			case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
 			default: return;
 		}
 	}

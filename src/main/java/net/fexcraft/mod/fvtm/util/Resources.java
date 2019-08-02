@@ -18,6 +18,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RoadSign;
@@ -69,6 +70,7 @@ public class Resources {
 	public static IForgeRegistry<Material> MATERIALS;
 	public static IForgeRegistry<Fuel> ALLFUELS;
 	public static IForgeRegistry<RoadSign> ROADSIGNS;
+	public static IForgeRegistry<Consumable> CONSUMABLES;
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
@@ -86,11 +88,8 @@ public class Resources {
 		MATERIALS = new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
 		ALLFUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
 		ROADSIGNS = new RegistryBuilder<RoadSign>().setName(new ResourceLocation("fvtm:roadsigns")).setType(RoadSign.class).create();
-		//FUNCTIONS = new RegistryBuilder<Function>().setName(new ResourceLocation("fvtm:part_functions")).setType(Function.class).create();
-		/*VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
-		PARTATTRIBUTES = new RegistryBuilder<Attribute>().setName(new ResourceLocation("fvtm:attributes")).setType(Attribute.class).create();
-		CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
 		CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
+		/*CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
 		BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
 		PALLETS = new RegistryBuilder<Pallet>().setName(new ResourceLocation("fvtm:pallets")).setType(Pallet.class).create();
 		GAUGES = new RegistryBuilder<Gauge>().setName(new ResourceLocation("fvtm:railgauges")).setType(Gauge.class).create();*/
@@ -123,6 +122,7 @@ public class Resources {
 		//
 		searchInAddonsFor(DataType.FUEL);
 		searchInAddonsFor(DataType.MATERIAL);
+		searchInAddonsFor(DataType.CONSUMABLE);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
 		//

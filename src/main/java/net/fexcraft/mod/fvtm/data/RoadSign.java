@@ -11,6 +11,8 @@ import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
+import net.fexcraft.mod.fvtm.model.block.RS_Diamond;
+import net.fexcraft.mod.fvtm.model.block.RS_DiamondFlat;
 import net.fexcraft.mod.fvtm.model.block.RS_Octagon;
 import net.fexcraft.mod.fvtm.model.block.RS_OctagonBorderless;
 import net.fexcraft.mod.fvtm.model.block.RS_Quad;
@@ -113,6 +115,12 @@ public class RoadSign extends TypeCore<RoadSign> {
 			}
 			case "octagon": case "octa":{
 				model = RS_Octagon.INSTANCE; return;
+			}
+			case "diamond_flat": case "dia_flat":{
+				model = new RS_DiamondFlat(splits); return;
+			}
+			case "diamond": case "dia":{
+				model = new RS_Diamond(splits); return;
 			}
 			default: break;
 		}

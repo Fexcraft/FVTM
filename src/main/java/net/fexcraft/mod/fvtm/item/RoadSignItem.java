@@ -56,6 +56,13 @@ public class RoadSignItem extends Item {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
+    		/*List<RoadSign> signs = Resources.ROADSIGNS.getValuesCollection().stream().sorted(new Comparator<RoadSign>(){
+				@Override public int compare(RoadSign o1, RoadSign o2){
+					return o1.getRegistryName().compareTo(o2.getRegistryName());
+				}}).collect(java.util.stream.Collectors.toList());
+    		for(RoadSign sign : signs){
+        		items.add(sign.newItemStack());
+    		}*/
     		for(RoadSign sign : Resources.ROADSIGNS.getValuesCollection()){
         		items.add(sign.newItemStack());
     		}

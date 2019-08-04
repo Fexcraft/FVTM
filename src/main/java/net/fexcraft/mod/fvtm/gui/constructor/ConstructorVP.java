@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,9 +42,9 @@ public class ConstructorVP extends ConstructorGui {
 		this.fields.put("rgb", rgb = cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10));
 		this.fields.put("hex", hex = cfields[3] = new TextField(2, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10));
 		//
-		VehicleData vdata = container.getTileEntity().getVehicleData();
-		this.updateColorTo(primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor(), true);
-		org_p = vdata.getPrimaryColor().copy(); org_s = vdata.getSecondaryColor().copy();
+		Colorable colorable = container.getTileEntity().getVehicleData() == null ? container.getTileEntity().getContainerData() : container.getTileEntity().getVehicleData();
+		this.updateColorTo(primary ? colorable.getPrimaryColor() : colorable.getSecondaryColor(), true);
+		org_p = colorable.getPrimaryColor().copy(); org_s = colorable.getSecondaryColor().copy();
 	}
 	
 	private void updateIconsAndButtons(){

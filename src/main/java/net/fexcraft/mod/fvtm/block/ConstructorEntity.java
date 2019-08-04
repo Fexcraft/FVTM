@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class ConstructorEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 	
+	private ContainerData cdata;
 	private VehicleData vdata;
 	private PartData pdata;
 	private BlockPos center;
@@ -109,33 +111,39 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			}
 			case "part_cache_drop":{ this.dropPart(true); return; }
 			case "vtm_supplied":{
-				if(noveh(container)) return;
+				if(nocon(container) && noveh(container)) return;
 				int i = packet.getInteger("value");
-				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : this.getVehicleData();
+				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? this.getVehicleData() : this.getContainerData();
 				if(textur == null && packet.hasKey("part")){ container.setTitleText("Invalid Part Request.", RGB.RED.packed); return; }
 				if(i < 0 || i >= textur.getHolder().getDefaultTextures().size()){
 					container.setTitleText("Invalid SUPPLIED ID.", RGB.RED.packed); return;
 				} textur.setSelectedTexture(i, null, false);
 				container.setTitleText("Texture Applied.", null);
-				this.updateClient("vehicle"); return;
+				this.updateClient(cdata == null ? "vehicle" : "container"); return;
 			}
 			case "vtm_custom":{
-				if(noveh(container)) return; String value = packet.getString("value"); boolean external = packet.getBoolean("external");
-				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : this.getVehicleData();
+				if(nocon(container) && noveh(container)) return; String value = packet.getString("value"); boolean external = packet.getBoolean("external");
+				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? this.getVehicleData() : this.getContainerData();
 				if(textur == null && packet.hasKey("part")){ container.setTitleText("Invalid Part Request.", RGB.RED.packed); return; }
 				//TODO check if custom textures are allowed;
 				textur.setSelectedTexture(-1, value, external);
 				container.setTitleText("Texture Applied.", null);
-				this.updateClient("vehicle"); return;
+				this.updateClient(cdata == null ? "vehicle" : "container"); return;
 			}
 			case "color_update":{
-				if(noveh(container)) return; boolean primary = packet.getBoolean("primary"); int rgb = packet.getInteger("rgb");
-				(primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor()).packed = rgb;
+				if(nocon(container) && noveh(container)) return; boolean primary = packet.getBoolean("primary"); int rgb = packet.getInteger("rgb");
+				if(cdata == null){
+					(primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor()).packed = rgb;
+				}
+				else{
+					(primary ? cdata.getPrimaryColor() : cdata.getSecondaryColor()).packed = rgb;
+				}
 				container.setTitleText("Color Applied.", null); this.updateClient("color"); return;
 			}
 			case "drop":{
 				String kind = packet.getString("what");
 				switch(kind){
+					case "container": this.dropContainer(true); container.setTitleText("Container Dropped.", null); break;
 					case "vehicle": this.dropVehicle(true); container.setTitleText("Vehicle Dropped.", null); break;
 					case "part": this.dropPart(true); container.setTitleText("Part Cache Emptied.", null); break;
 				} return;
@@ -143,6 +151,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			//
 			default: return;
 		}
+	}
+	
+	private boolean nocon(ConstructorContainer container){
+		if(this.getContainerData() == null){ container.setTitleText("No Container in Constructor.", null); return true; } return false;
 	}
 	
 	private boolean noveh(ConstructorContainer container){
@@ -159,6 +171,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		if(center != null) compound.setLong("CenterPos", center.toLong());
 		if(center == null) compound.setBoolean("CenterReset", true);
 		ApiUtil.sendTileEntityUpdatePacket(world, this.pos, compound);
+	}
+
+	public ContainerData getContainerData(){
+		return cdata;
 	}
 
 	public VehicleData getVehicleData(){
@@ -188,8 +204,15 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         	this.vdata = null;
         }
         //
-        if(packet.nbt.hasKey("RGBPrimary") && vdata != null) vdata.getPrimaryColor().packed = packet.nbt.getInteger("RGBPrimary"); 
-        if(packet.nbt.hasKey("RGBSecondary") && vdata != null) vdata.getSecondaryColor().packed = packet.nbt.getInteger("RGBSecondary");
+        if(packet.nbt.hasKey("ContainerData")){
+        	this.cdata = Resources.getContainerData(packet.nbt.getCompoundTag("ContainerData"));
+        }
+        else if(packet.nbt.hasKey("ContainerDataReset") && packet.nbt.getBoolean("ContainerDataReset")){
+        	this.cdata = null;
+        }
+        //
+        if(packet.nbt.hasKey("RGBPrimary")) (cdata == null ? vdata : cdata).getPrimaryColor().packed = packet.nbt.getInteger("RGBPrimary"); 
+        if(packet.nbt.hasKey("RGBSecondary")) (cdata == null ? vdata : cdata).getSecondaryColor().packed = packet.nbt.getInteger("RGBSecondary");
         //Print.debug(vdata.getPrimaryColor().packed, vdata.getSecondaryColor().packed);
         //
         if(packet.nbt.hasKey("CenterPos")){
@@ -207,6 +230,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     	}
     	NBTTagCompound compound = new NBTTagCompound();
     	switch(type){
+			case "containerdata": case "container": case "con": {
+				if(cdata != null) compound.setTag("ContainerData", cdata.write(new NBTTagCompound()));
+				else compound.setBoolean("ContainerDataReset", true); break;
+			}
     		case "vehicledata": case "vehicle": case "veh": {
     			if(vdata != null) compound.setTag("VehicleData", vdata.write(new NBTTagCompound()));
     			else compound.setBoolean("VehicleDataReset", true); break;
@@ -216,9 +243,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     			else compound.setBoolean("PartDataReset", true); break;
     		}
     		case "color": case "rgb":{
-    			if(vdata == null){ Print.debug("no veh in const # color"); return; }
-    			compound.setInteger("RGBPrimary", vdata.getPrimaryColor().packed);
-    			compound.setInteger("RGBSecondary", vdata.getSecondaryColor().packed);
+    			if(vdata == null && cdata == null){ Print.debug("no veh in const # color"); return; }
+    			compound.setInteger("RGBPrimary", (cdata == null ? vdata : cdata).getPrimaryColor().packed);
+    			compound.setInteger("RGBSecondary", (cdata == null ? vdata : cdata).getSecondaryColor().packed);
     			break;
     		}
     		//
@@ -240,6 +267,8 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
         super.writeToNBT(compound);
+        if(cdata != null) compound.setTag("ContainerData", cdata.write(new NBTTagCompound()));
+			else compound.setBoolean("ContainerDataReset", true);
         if(vdata != null) compound.setTag("VehicleData", vdata.write(new NBTTagCompound()));
 			else compound.setBoolean("VehicleDataReset", true);
 		if(pdata != null) compound.setTag("PartData", pdata.write(new NBTTagCompound()));
@@ -260,8 +289,14 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         if(compound.hasKey("VehicleData")){
         	this.vdata = Resources.getVehicleData(compound.getCompoundTag("VehicleData"));
         }
-        else if(compound.hasKey("PartDataReset") && compound.getBoolean("PartDataReset")){
-        	this.pdata = null;
+        else if(compound.hasKey("VehicleDataReset") && compound.getBoolean("VehicleDataReset")){
+        	this.vdata = null;
+        }
+        if(compound.hasKey("ContainerData")){
+        	this.cdata = Resources.getContainerData(compound.getCompoundTag("ContainerData"));
+        }
+        else if(compound.hasKey("ContainerDataReset") && compound.getBoolean("ContainerDataReset")){
+        	this.cdata = null;
         }
         if(compound.hasKey("Center")){
             this.center = BlockPos.fromLong(compound.getLong("Center"));
@@ -275,6 +310,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     	item.setItem(stack); world.spawnEntity(item);
     }
 
+	public void dropContainer(boolean update){
+		if(cdata == null) return; this.dropItem(cdata.newItemStack());
+		this.cdata = null; if(update) this.updateClient("containerdata");
+	}
+
 	public void dropVehicle(boolean update){
 		if(vdata == null) return; this.dropItem(vdata.newItemStack());
 		this.vdata = null; if(update) this.updateClient("vehicledata");
@@ -283,6 +323,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	public void dropPart(boolean update){
 		if(pdata == null) return; this.dropItem(pdata.newItemStack());
 		this.pdata = null; if(update) this.updateClient("partdata");
+	}
+
+	public void setContainerData(ContainerData data, boolean send){
+		this.cdata = data; if(send) this.updateClient("container");
 	}
 
 	public void setVehicleData(VehicleData data, boolean send){

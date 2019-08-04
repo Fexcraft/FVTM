@@ -31,7 +31,7 @@ public class ConstructorVTM extends ConstructorGui {
 	public void init(){
 		super.init(); this.menutitle.string = (part == null ? "Vehicle " : "Part [" + part + "] ") + "Texture Management";
 		VehicleData vdata = container.getTileEntity().getVehicleData();
-		Textureable textur = part == null ? vdata : vdata.getPart(part);
+		Textureable textur = part == null ? vdata == null ? container.getTileEntity().getContainerData() : vdata : vdata.getPart(part);
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_supplied", prev = new IconButton("prev_supplied", 3, 1, false, ICON_LEFT));
 		this.buttons.put("in_apply", new IconButton("in_apply", 6, 0, false, ICON_RIGHT));
@@ -46,7 +46,8 @@ public class ConstructorVTM extends ConstructorGui {
 	}
 	
 	private void updateIconsAndButtons(){
-		Textureable textur = part == null ? container.getTileEntity().getVehicleData() : container.getTileEntity().getVehicleData().getPart(part);
+		VehicleData vdata = container.getTileEntity().getVehicleData();
+		Textureable textur = part == null ? vdata == null ? container.getTileEntity().getContainerData() : vdata : vdata.getPart(part);
 		if(textur.getSelectedTexture() < 0){
 			tbuttons[1].string = textur.isExternalTexture() ? "external" : "internal"; cfields[4].setText(" - - - - ");
 		}

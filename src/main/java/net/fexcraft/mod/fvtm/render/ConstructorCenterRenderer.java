@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
+import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
@@ -54,20 +55,20 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             	e.printStackTrace();
             }
         }
-        /*else if(te.getContainerData() != null){
-            GL11.glTranslated(0, 1.5F, 0);
-            Model<ContainerData, Object> model = te.getContainerData().getContainer().getModel();
+        else if(te.getContainerData() != null){
+            //GL11.glTranslated(0, 1.5F, 0);
+            Model<ContainerData, Object> model = te.getContainerData().getType().getModel();
             if(model != null){
                 ModelBase.bindTexture(te.getContainerData().getTexture());
                 model.render(te.getContainerData(), null);
-                ModelBase.bindTexture(ModelConstructorCenter.getTexture());
+                //ModelBase.bindTexture(lifttexture);
             }
-        }*/
+        }
         else{
             if(te.getLinkPos() != null) te.tryLink();
         }
         //
-        if(true && (te.getVehicleData() != null ? te.getVehicleData().getAttribute("constructor_show").getBooleanValue() : true)){//te.getContainerData() == null){
+        if(te.getContainerData() == null && te.getVehicleData() != null && te.getVehicleData().getAttribute("constructor_show").getBooleanValue()){
             if(te.getVehicleData() == null || te.getVehicleData().getType().getVehicleType().isLandVehicle()){
             	ModelBase.bindTexture(lifttexture);
                 GL11.glTranslatef(0, 0, te.getWheelOffset());

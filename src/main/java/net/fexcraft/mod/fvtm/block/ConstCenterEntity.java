@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -36,20 +37,34 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 	/** This for the renderer, better not use elsewhere. */
 	@SideOnly(Side.CLIENT)
 	public VehicleData getVehicleData(){
-		return conpos == null ? null : tile == null ? tryLink() : tile.getVehicleData();
+		return conpos == null ? null : tile == null ? tryLinkV() : tile.getVehicleData();
+	}
+
+	/** This for the renderer, */
+	public ContainerData getContainerData(){
+		return conpos == null ? null : tile == null ? tryLinkC() : tile.getContainerData();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	private long lasttry;
 
 	@SideOnly(Side.CLIENT)
-	public VehicleData tryLink(){
-		if(conpos == null || world == null){ return null; }
-		if(lasttry + 1000 < Time.getSecond()) return null;
+	public void tryLink(){
+		if(conpos == null || world == null){ return; }
+		if(lasttry + 1000 < Time.getSecond()) return;
 		TileEntity ent = world.getTileEntity(conpos);
-		if(ent == null || !(ent instanceof ConstructorEntity)) return null;
+		if(ent == null || !(ent instanceof ConstructorEntity)) return;
 		this.tile = (ConstructorEntity)ent; lasttry = Time.getDate();
-		return tile.getVehicleData();
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public VehicleData tryLinkV(){
+		tryLink(); return tile.getVehicleData();
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public ContainerData tryLinkC(){
+		tryLink(); return tile.getContainerData();
 	}
 
 	public void setLinkPos(BlockPos pos, boolean update){

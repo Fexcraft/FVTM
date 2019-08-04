@@ -4,10 +4,12 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
+import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -132,6 +134,12 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
 			compound.setBoolean("ExternalTexture", externaltex);
 		}
+        if(type.getInventoryType() == InventoryType.ITEM){
+            compound = DataUtil.saveAllItems(compound, stacks, true);
+        }
+        else if(type.getInventoryType() == InventoryType.FLUID){
+            fluidtank.writeToNBT(compound);
+        }
 		compound.setBoolean("Locked", locked);
 		return compound;
 	}
@@ -146,6 +154,12 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			seltex = externaltex ? null : new ResourceLocation(compound.getString("CustomTexture"));
 			extex = externaltex ? compound.getString("CustomTexture") : null;
 		} else{ seltex = null; extex = null; externaltex = false; }
+        if(type.getInventoryType() == InventoryType.ITEM){
+            DataUtil.loadAllItems(compound, stacks);
+        }
+        else if(type.getInventoryType() == InventoryType.FLUID){
+            fluidtank.readFromNBT(compound);
+        }
 		this.locked = compound.getBoolean("Locked");
 		return this;
 	}

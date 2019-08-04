@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -46,6 +47,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	protected PartInstallationHandler installhandler;
 	protected Object installhandler_data;
 	protected ArrayList<Function> functions = new ArrayList<>();
+	protected ArrayList<Class<? extends VehicleScript>> scripts = new ArrayList<>();
 	
 	public Part(){}
 
@@ -64,6 +66,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 		return Part.class;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Part parse(JsonObject obj){
 		this.registryname = DataUtil.getRegistryName(obj);
@@ -173,6 +176,18 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 			}
 		} else{ this.installhandler = DefaultPartInstallHandler.INSTANCE; }
 		//
+		if(obj.has("Script")){
+            try{ scripts.add((Class<? extends VehicleScript>)Class.forName(obj.get("Script").getAsString().replace(".class", ""))); }
+            catch(Exception e){ e.printStackTrace(); }
+		}
+		if(obj.has("Scripts")){
+			JsonArray array = obj.get("scripts").getAsJsonArray();
+			for(JsonElement elm : array){
+	            try{ scripts.add((Class<? extends VehicleScript>)Class.forName(elm.getAsString().replace(".class", ""))); }
+	            catch(Exception e){ e.printStackTrace(); }
+			}
+		}
+		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new PartItem(this); return this;
 	}
@@ -243,6 +258,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	
 	public List<Function> getDefaultFunctions(){
 		return functions;
+	}
+	
+	public List<Class<? extends VehicleScript>> getVehicleScripts(){
+		return scripts;
 	}
 
 }

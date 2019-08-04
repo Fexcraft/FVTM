@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -110,7 +111,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         seats = new SeatEntity[vehicle.getSeats().size()];
         stepHeight = lata.wheel_step_height;
         this.setupCapability(null);//TODO this.getCapability(FVTMCaps.CONTAINER, null));
-        //TODO data.getScripts().forEach((script) -> script.onCreated(this, vehicledata));
+        vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
 	}
 
 	//TODO
@@ -178,7 +179,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
         if(wheels != null) for(WheelEntity wheel : wheels) if(wheel != null) wheel.setDead();
         //
-        //TODO vehicledata.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
+        vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicle));
         if(this.getCoupledEntity(true) != null){
         	this.dismountRidingEntity(); ((LandVehicle)this.getCoupledEntity(true)).trailer = null;
         }
@@ -218,7 +219,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
-		//Print.debug(key, seat.driver, key.dismount(), key.scripts(), player, seat);
+		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && !key.dismount() && !key.scripts() && !key.toggables() && !key.inventory()){
             return false;
         }
@@ -559,13 +560,13 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             //TODO other Item interaction
         }
-        /*if(!vehicle.getScripts().isEmpty()){
-            for(VehicleScript script : vehicledata.getScripts()){
-                if(script.onInteract(this, vehicledata, player, hand)){
+        if(!vehicle.getScripts().isEmpty()){
+            for(VehicleScript script : vehicle.getScripts()){
+                if(script.onInteract(this, vehicle, player, hand)){
                     return true;
                 }
             }
-        }*///TODO scripts
+        }
         for(SeatEntity seat : seats){ if(seat.processInitialInteract(player, hand)){ return true; } }
         return false;
     }
@@ -723,7 +724,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         else{
         	
         }
-        //TODO scripts vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicledata));
+        vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }
         /*if(drivenByPlayer){
@@ -964,7 +965,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 if(vehicle.hasPart("engine") && vehicle.getPart("engine").hasFunction("fvtm:engine")){
                     vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(false);
                 }
-                //TODO vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicledata));
                 ItemStack stack = vehicle.newItemStack();
                 //
                 /*if(PermissionAPI.hasPermission((EntityPlayer)source.getImmediateSource(), FvtmPermissions.VEHICLE_BREAK)
@@ -1007,13 +1007,13 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @SuppressWarnings("unused") @Override
     public void processServerPacket(PacketEntityUpdate pkt){
-        /*if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : vehicledata.getScripts()){
+        if(pkt.nbt.hasKey("ScriptId")){
+            for(VehicleScript script : vehicle.getScripts()){
                 if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
-                    script.onDataPacket(this, vehicledata, pkt.nbt, Side.SERVER);
+                    script.onDataPacket(this, vehicle, pkt.nbt, Side.SERVER);
                 }
             }
-        }*///TODO
+        }
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
@@ -1050,13 +1050,13 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @SideOnly(Side.CLIENT)
     @Override
     public void processClientPacket(PacketEntityUpdate pkt){
-        /*if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : vehicledata.getScripts()){
+        if(pkt.nbt.hasKey("ScriptId")){
+            for(VehicleScript script : vehicle.getScripts()){
                 if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
-                    script.onDataPacket(this, vehicledata, pkt.nbt, Side.SERVER);
+                    script.onDataPacket(this, vehicle, pkt.nbt, Side.SERVER);
                 }
             }
-        }*///TODO
+        }
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {

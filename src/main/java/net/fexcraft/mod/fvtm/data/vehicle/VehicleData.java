@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.Map.Entry;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -49,6 +50,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, Vec3d> wheelpos = new TreeMap<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
 	protected ArrayList<String> inventories = new ArrayList<>();
+	protected ArrayList<VehicleScript> scripts = new ArrayList<>();
 
 	public VehicleData(Vehicle type){
 		super(type);
@@ -104,6 +106,17 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			wlist.appendTag(com);
 		}
 		compound.setTag("WheelPos", wlist);
+		if(!scripts.isEmpty()){
+			NBTTagList scrap = new NBTTagList();
+			for(VehicleScript script : scripts){
+				NBTTagCompound com = script.write(this, new NBTTagCompound());
+				if(com != null && !com.hasNoTags()){
+					com.setString("id", script.getId());
+					scrap.appendTag(com);
+				}
+			}
+			if(!scrap.hasNoTags()) compound.setTag("Scripts", scrap);
+		}
 		compound.setBoolean("Locked", locked);
 		/*Print.debug("write", compound);*/ return compound;
 	}
@@ -158,6 +171,13 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				wheelpos.put(com.getString("id"), new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z")));
 			}
 		}
+		NBTTagList scrap = (NBTTagList)compound.getTag("Scripts");
+		if(scrap != null){
+			for(NBTBase base : scrap){
+				NBTTagCompound com = (NBTTagCompound)base;
+				if(getVehicleScript(com.getString("id")) != null) getVehicleScript(com.getString("id")).read(this, com);
+			}
+		}
 		this.locked = compound.getBoolean("Locked");
 		//
 		/*Print.debug("read", compound);*/ return this;
@@ -179,6 +199,21 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		//
 		inventories.clear(); parts.forEach((key, value) -> { if(value.hasFunction("fvtm:inventory")) inventories.add(key); });
+		//
+		for(PartData part : parts.values()){
+			if(part.getType().getVehicleScripts().size() > 0){
+				for(Class<? extends VehicleScript> clazz : part.getType().getVehicleScripts()){
+					try{
+						String id = clazz.getMethod("getId").invoke(null).toString(); boolean found = false;
+						for(VehicleScript script : scripts) if(script.getId().equals(id)){ found = true; break; }
+						if(!found){ scripts.add(clazz.newInstance()); }
+					}
+					catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -494,6 +529,19 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public int getFuelCapacity(){
 		return getAttribute("fuel_capacity").getIntegerValue();
+	}
+
+	public VehicleScript getVehicleScript(String string){
+		for(VehicleScript script : scripts) if(script.getId().equals(string)) return script; return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <V extends VehicleScript> V getVehicleScriptCasted(String string){
+		for(VehicleScript script : scripts) if(script.getId().equals(string)) return (V)script; return null;
+	}
+
+	public ArrayList<VehicleScript> getScripts(){
+		return scripts;
 	}
 
 }

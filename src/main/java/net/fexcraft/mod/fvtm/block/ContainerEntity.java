@@ -32,15 +32,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class ContainerTileEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
+public class ContainerEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 
     private ItemStackHandler itemStackHandler;
     private boolean core, setup;
     private ContainerData container;
     private BlockPos corepos;
-    private ContainerTileEntity coretile;
+    private ContainerEntity coretile;
 
-    public ContainerTileEntity(){
+    public ContainerEntity(){
         core = false;
         container = null;
         corepos = null;
@@ -94,11 +94,11 @@ public class ContainerTileEntity extends TileEntity implements IPacketReceiver<P
         }
     }
 
-    protected ContainerTileEntity getCore(){
-        return core ? this : coretile == null ? coretile = corepos == null ? null : (ContainerTileEntity) world.getTileEntity(corepos) : coretile;
+    protected ContainerEntity getCore(){
+        return core ? this : coretile == null ? coretile = corepos == null ? null : (ContainerEntity) world.getTileEntity(corepos) : coretile;
     }
     
-    private ContainerTileEntity corr;
+    private ContainerEntity corr;
 
     public ContainerData getContainerData(){
         return (corr = getCore()) == null ? null : corr.container;
@@ -157,7 +157,7 @@ public class ContainerTileEntity extends TileEntity implements IPacketReceiver<P
 
     public void notifyBreak(World world, BlockPos pos, IBlockState state, boolean asplayer){
         if(getCore() == null){ return; }
-        ContainerTileEntity core = getCore();
+        ContainerEntity core = getCore();
         if(core.container == null){ return; }
         ContainerBlock.getPositions(core.container, core.pos, state.getValue(ContainerBlock.FACING)).forEach(blkpos -> {
         	if(!asplayer){ core.container = null; }
@@ -236,5 +236,9 @@ public class ContainerTileEntity extends TileEntity implements IPacketReceiver<P
         nbt.setTag("state", this.getContainerData().getFluidTank().writeToNBT(new NBTTagCompound()));
         PacketHandler.getInstance().sendTo(new PacketTileEntityUpdate(player.dimension, this.getPos(), nbt), (EntityPlayerMP)player);
     }
+
+	public InventoryType getInventoryType(){
+		return this.getContainerData() == null ? null : this.getContainerData().getType().getInventoryType();
+	}
 
 }

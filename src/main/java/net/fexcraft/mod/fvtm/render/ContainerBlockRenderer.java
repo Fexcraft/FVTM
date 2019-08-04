@@ -5,17 +5,17 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.lib.tmt.ModelBase;
-import net.fexcraft.mod.fvtm.block.ContainerTileEntity;
+import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
-public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerTileEntity> {
+public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerEntity> {
 	
 	private double off;
 
     @Override
-    public void render(ContainerTileEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
+    public void render(ContainerEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
         if(!te.isCore() || te.getContainerData() == null){ return; }
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);

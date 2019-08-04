@@ -37,7 +37,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-@fBlock(modid = FVTM.MODID, name = "container_block", item = ContainerBlock.ITB.class, tileentity = ContainerTileEntity.class)
+@fBlock(modid = FVTM.MODID, name = "container_block", item = ContainerBlock.ITB.class, tileentity = ContainerEntity.class)
 public class ContainerBlock extends BlockContainer {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -70,7 +70,7 @@ public class ContainerBlock extends BlockContainer {
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta){
-        return new ContainerTileEntity();
+        return new ContainerEntity();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ContainerBlock extends BlockContainer {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
         world.setBlockState(pos, state, 2);
-        ((ContainerTileEntity) world.getTileEntity(pos)).setUp(stack);
+        ((ContainerEntity) world.getTileEntity(pos)).setUp(stack);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ContainerBlock extends BlockContainer {
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
     	if(!world.isRemote){
-            ContainerTileEntity tile = (ContainerTileEntity)world.getTileEntity(pos);
+            ContainerEntity tile = (ContainerEntity)world.getTileEntity(pos);
             tile.notifyBreak(world, pos, state, true);
         }
         super.breakBlock(world, pos, state);
@@ -140,7 +140,7 @@ public class ContainerBlock extends BlockContainer {
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         if(!world.isRemote){
-            ContainerTileEntity te = (ContainerTileEntity) world.getTileEntity(pos);
+            ContainerEntity te = (ContainerEntity) world.getTileEntity(pos);
             if(te == null){
                 Print.chat(player, "No TileEntity found.");
                 return true;
@@ -265,7 +265,7 @@ public class ContainerBlock extends BlockContainer {
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
         if(world.getTileEntity(pos) != null){
             try{
-                ContainerTileEntity tile = (ContainerTileEntity)world.getTileEntity(pos);
+                ContainerEntity tile = (ContainerEntity)world.getTileEntity(pos);
                 return tile.getContainerData().newItemStack();
             }
             catch(Exception e){

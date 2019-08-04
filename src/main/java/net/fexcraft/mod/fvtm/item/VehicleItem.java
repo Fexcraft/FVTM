@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -44,7 +45,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
-        VehicleData data = this.getData(stack); if(data == null) return;
+        VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData(); if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(data.hasPart("engine")){
             tooltip.add(Formatter.format("&9Engine: &7" + data.getPart("engine").getType().getName()));
@@ -71,7 +72,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
 
 	@Override
 	public VehicleData getData(ItemStack stack){
-		return getData(stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound());
+		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
 	}
 
 	@Override

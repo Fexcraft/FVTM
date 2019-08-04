@@ -111,6 +111,7 @@ public class FVTM {
 		if(event.getSide().isClient()){//moved from init into here cause of item models
 			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
 			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
+			Resources.CONTAINERS.getValuesCollection().forEach(con -> con.loadModel());
 			Resources.ROADSIGNS.getValuesCollection().forEach(sign -> sign.loadModel());
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(new ResourceLocation("fvtm:roadsign"), RoadSignModel.EMPTY);
 		}

@@ -37,4 +37,24 @@ public enum ContainerType {
 		}
 	}
 
+	public boolean isLarge(){
+		return this == LARGE;
+	}
+
+	public boolean isMedium(){
+		return this == MEDIUM;
+	}
+
+	public boolean isSmall(){
+		return this == SMALL;
+	}
+
+	public boolean isTiny(){
+		return this == TINY;
+	}
+
+	public boolean isMicro(){
+		return this == MICRO;
+	}
+
 }

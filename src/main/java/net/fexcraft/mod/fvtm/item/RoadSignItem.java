@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.RoadSign.RoadSignsTab;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -43,7 +44,7 @@ public class RoadSignItem extends Item {
             tooltip.add(Formatter.format("&7&oNo Tag Compound."));
     		return;
     	}
-    	RoadSign sign = Resources.getRoadSign(stack.getTagCompound().getString("fvtm:roadsign"));
+    	RoadSign sign = stack.getCapability(Capabilities.VAPDATA, null).getRSData();
     	if(sign == null){
             tooltip.add(Formatter.format("&cROAD SIGN NOT FOUND IN REGISTRY"));
             tooltip.add(Formatter.format("&a&o" + stack.getTagCompound().getString("fvtm:roadsign")));

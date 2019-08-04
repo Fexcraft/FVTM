@@ -129,7 +129,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			extex = externaltex ? compound.getString("CustomTexture") : null;
 		} else{ seltex = null; extex = null; externaltex = false; }
 		this.locked = compound.getBoolean("Locked");
-		return null;
+		return this;
 	}
 
 	@Override
@@ -142,6 +142,10 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	public JsonObject toJson(){
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public ContainerType getContainerType(){
+		return type.getType();
 	}
 
 }

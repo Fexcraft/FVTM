@@ -16,7 +16,6 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -96,9 +95,6 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	@Override
 	public void loadModel(){
 		this.model = Resources.getModel(modelid, ContainerModel.class);
-		if(Config.RENDER_VEHILE_MODELS_AS_ITEMS){
-			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(this.getRegistryName(), (ContainerModel)model);
-		}
 	}
 	
 	public ContainerItem getVehicleItem(){

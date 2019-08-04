@@ -5,9 +5,10 @@ import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.render.FCLItemModel;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -53,11 +54,11 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
 
 	@Override
 	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity) {
-		if(item.getItem() instanceof VehicleItem == false){ return; }
+		if(item.getItem() instanceof ContainerItem == false){ return; }
 		ContainerData data = item.getCapability(Capabilities.VAPDATA, null).getContainerData();
-		if(data == null){ return; }
+		if(data == null){ Print.debug("no data in item"); return; }
         ContainerModel model = (ContainerModel)data.getType().getModel();
-        if(model == null){ return; }
+        if(model == null){ Print.debug("no model in data"); return; }
         float[] scal = new float[]{ model.gui_scale_x, model.gui_scale_y, model.gui_scale_z };
         //
         GL11.glPushMatrix();

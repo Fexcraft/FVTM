@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -41,10 +42,8 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
         }
-        PartData data = this.getData(stack);
-        if(data != null){
-            tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
-        }
+        PartData data = stack.getCapability(Capabilities.VAPDATA, null).getPartData(); if(data == null) return;
+        tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(!data.getFunctions().isEmpty()){
             for(Function func : data.getFunctions().values()){
             	func.addInformation(stack, world, data, tooltip, flag);
@@ -79,7 +78,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
 
 	@Override
 	public PartData getData(ItemStack stack){
-		return getData(stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound());
+		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound()); return getData(stack.getTagCompound());
 	}
 
 	@Override

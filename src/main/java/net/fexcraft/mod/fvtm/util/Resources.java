@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -321,7 +322,8 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
-		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof RoadSignItem){//|| event.getObject().getItem() instanceof BlockItem){
+		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof RoadSignItem
+			|| event.getObject().getItem() instanceof ContainerItem){//|| event.getObject().getItem() instanceof BlockItem){
 			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
 		}
 	}

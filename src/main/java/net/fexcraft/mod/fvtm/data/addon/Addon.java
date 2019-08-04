@@ -16,6 +16,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.creativetab.CreativeTabs;
@@ -145,7 +146,9 @@ public class Addon extends TypeCore<Addon> {
 					if(data == DataType.VEHICLE){
 						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
 					}
-					//
+					else if(data == DataType.CONTAINER){
+						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
+					}
 				}
 			}
 		}
@@ -162,7 +165,9 @@ public class Addon extends TypeCore<Addon> {
 					if(data == DataType.VEHICLE){
 						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
 					}
-					//
+					else if(data == DataType.CONTAINER){
+						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
+					}
 				}
 			}
 		}

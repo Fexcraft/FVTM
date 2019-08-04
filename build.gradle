@@ -19,6 +19,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 version = "1.12.2"
 def modversion = "3.0.0"
 def gepversion = "2.0.0"
+def hcpversion = "2.0.0"
 group = "net.fexcraft.mod.fvtm"
 archivesBaseName = "FVTM-ALL"
 
@@ -73,7 +74,7 @@ task fvtm(type: Jar) {
     from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/fvtm/'}
     from(sourceSets.main.resources){
         include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'fvtm_version':modversion, 'mcversion':project.minecraft.version
         include 'LICENSE.txt'
         include 'pack.mcmeta'
     }
@@ -85,16 +86,28 @@ task gep(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/gep/'}
     from(sourceSets.main.resources){
         include 'mcmod.info'
-        expand 'version':gepversion, 'mcversion':project.minecraft.version
+        expand 'gep_version':gepversion, 'mcversion':project.minecraft.version
         include 'LICENSE.txt'
         include 'pack.mcmeta'
     }
     baseName = 'GEP'
     appendix = gepversion
-    //TODO fine tuning
+}
+task gep(type: Jar){
+    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/hcp/'}
+    from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/hcp/'}
+    from(sourceSets.main.resources){
+        include 'mcmod.info'
+        expand 'hcp_version':hcpversion, 'mcversion':project.minecraft.version
+        include 'LICENSE.txt'
+        include 'pack.mcmeta'
+    }
+    baseName = 'HCP'
+    appendix = hcpversion
 }
 
 build {
     dependsOn fvtm
     dependsOn gep
+    dependsOn hcp
 }

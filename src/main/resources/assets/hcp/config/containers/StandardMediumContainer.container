@@ -1,0 +1,12 @@
+{
+	"RegistryName": "hcp:medium",
+	"Addon": "fvtm:hcp",
+	"ContainerType": "MEDIUM",
+	"Model": "hcp:models/container/medium",
+	"Name": "Standard Medium Container",
+	"Textures":[
+		"hcp:textures/containers/standard_medium.png"
+	],
+	"InventorySize": 1458,
+	"InventoryType": "item"
+}

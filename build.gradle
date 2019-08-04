@@ -38,9 +38,9 @@ minecraft {
 }
 
 dependencies {
-	def localrepos = new File("./localrepos");
+	def localrepos = new File(project.projectDir, '/localrepos');
 	if(localrepos.exists()){
-		print "LocalRepos marker exists, using local copies."
+		print "LocalRepos marker exists, using local copies.\n"
 		compile project(':FCL')
 	}
 	else{

@@ -9,5 +9,5 @@
 	],
 	"InventorySize": 1200,
 	"InventoryType": "item",
-	"InventoryContentType": "food"
+	"ContentFilter": "food_only"
 }

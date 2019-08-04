@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -32,6 +33,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 
 	protected List<NamedResourceLocation> textures;
 	protected Model<ContainerData, Object> model;
+	protected ContentFilter filter;
 	protected RGB primary, secondary;
 	protected InventoryType invtype;
 	protected ContainerType type;
@@ -87,6 +89,9 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		this.capacity = JsonUtil.getIfExists(obj, "InventorySize", invtype == InventoryType.ITEM ? 8 : 16000).intValue();
         if(obj.has("FluidType")){
             fluid = FluidRegistry.getFluid(obj.get("FluidType").getAsString());
+        }
+        if(obj.has("ContentFilter")){
+        	this.filter = ContentFilter.FILTER_REGISTRY.get(obj.get("ContentFilter").getAsString());
         }
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
@@ -145,8 +150,8 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		return fluid;
 	}
 
-	public ContainerContentFilter getContentFilter(){
-		return null;
+	public ContentFilter getContentFilter(){
+		return filter;
 	}
 
 }

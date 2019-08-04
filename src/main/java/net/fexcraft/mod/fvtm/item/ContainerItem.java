@@ -1,16 +1,20 @@
 package net.fexcraft.mod.fvtm.item;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.ConstructorBlock;
+import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -43,8 +47,13 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
         for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
         ContainerData data = stack.getCapability(Capabilities.VAPDATA, null).getContainerData(); if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
-        tooltip.add(Formatter.format("&9Type: &7" + type.getType().name()));
+        tooltip.add(Formatter.format("&9Type: &7" + type.getContainerType().name()));
         //
+        tooltip.add(Formatter.format("&9Capacity: &7" + (data.getType().getInventoryType() == InventoryType.FLUID ? data.getType().getCapacity() / 1000 : data.getType().getCapacity()) + " " + data.getType().getInventoryType().getUnitSuffix()));
+        tooltip.add(Formatter.format("&9Content: &7" + (data.getFluidTank() == null || data.getFluidTank().getFluid() == null ? data.getInventory() == null ? "empty" : data.getInventory().stream().filter(is -> is != null && !is.isEmpty()).count() : data.getFluidTank().getFluidAmount() + "mB " + data.getFluidTank().getFluid().getLocalizedName())));
+        if(data.getType().getContentFilter() != null){
+            tooltip.add(Formatter.format("&9Content Filter: &7" + data.getType().getContentFilter().id()));
+        }
     }
 
 	private String getTexTitle(ContainerData data){
@@ -72,11 +81,40 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
     
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand){
-    	if(world.isRemote || side != EnumFacing.UP) return EnumActionResult.PASS; ItemStack stack = player.getHeldItem(hand);
-    	if(world.getBlockState(pos).getBlock() instanceof ConstructorBlock) return EnumActionResult.PASS;
-    	ContainerData data = ((ContainerItem)stack.getItem()).getData(stack);
-    	//TODO block placing
-        return EnumActionResult.SUCCESS;
+        if(world.isRemote || !(side == EnumFacing.UP)){ return EnumActionResult.PASS; }
+        ContainerData data = player.getHeldItem(hand).getCapability(Capabilities.VAPDATA, null).getContainerData();
+        BlockPos core = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.add(0, 1, 0);
+        if(isValidPostitionForContainer(world, player, core, player.getHorizontalFacing(), data)){
+            ItemStack stack = player.getHeldItem(hand);
+            stack.getTagCompound().setLong("PlacedPos", core.toLong());
+            ContainerBlock.getPositions(data, core, player.getHorizontalFacing()).forEach(blkpos -> {
+                IBlockState state = ContainerBlock.INSTANCE.getDefaultState();
+                state.getBlock().onBlockPlacedBy(world, blkpos, state.withProperty(ContainerBlock.FACING, player.getHorizontalFacing()), player, stack);
+            });
+            stack.shrink(64);
+            return EnumActionResult.SUCCESS;
+        }
+        return EnumActionResult.PASS;
+    }
+
+    public static boolean isValidPostitionForContainer(World world, EntityPlayer player, BlockPos pos, EnumFacing opposite, ContainerData data){
+        ArrayList<BlockPos> list = ContainerBlock.getPositions(data, pos, opposite);
+        BlockPos obstacle = null;
+        IBlockState state = null;
+        for(BlockPos blkpos : list){
+            state = world.getBlockState(blkpos);
+            if(!state.getBlock().isReplaceable(world, blkpos)){
+                obstacle = blkpos;
+                break;
+            }
+        }
+        if(obstacle != null){
+            Print.bar(player, String.format("Obstacle at position: %sx, %sy, %sz!", obstacle.getX(), obstacle.getY(), obstacle.getZ()));
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
 }

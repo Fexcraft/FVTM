@@ -260,10 +260,10 @@ public class Resources {
 		}
 	}
 
-	public static ContainerData getContaienrData(NBTTagCompound compound){
+	public static ContainerData getContainerData(NBTTagCompound compound){
 		if(!compound.hasKey("Container")) return null;
 		Container con = getContainer(compound.getString("Container"));
-		try{ return ((ContainerData)con.getDataClass().getConstructor(Vehicle.class).newInstance(con)).read(compound); }
+		try{ return ((ContainerData)con.getDataClass().getConstructor(Container.class).newInstance(con)).read(compound); }
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
 			| InvocationTargetException| NoSuchMethodException | SecurityException e){
 			e.printStackTrace(); return null;

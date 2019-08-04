@@ -10,7 +10,10 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -22,11 +25,26 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	protected String extex;
 	protected ResourceLocation seltex;
 	protected boolean externaltex, locked;
+    private NonNullList<ItemStack> stacks;
+    private FluidTank fluidtank;
 	
 	public ContainerData(Container type){
 		super(type);
 		this.primary = type.getDefaultPrimaryColor().copy();
 		this.secondary = type.getDefaultSecondaryColor().copy();
+		//
+        switch(type.getInventoryType()){
+	        case ENERGY:
+	            break;
+	        case FLUID:
+	            fluidtank = type.getFluidType() == null ? new FluidTank(type.getCapacity()) : new FluidTank(type.getFluidType(), 0, type.getCapacity());
+	            break;
+	        case ITEM:
+	            stacks = NonNullList.<ItemStack>withSize(type.getCapacity(), ItemStack.EMPTY);
+	            break;
+	        default:
+	            break;
+	    }
 	}
 
 	@Override
@@ -145,7 +163,23 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	}
 
 	public ContainerType getContainerType(){
-		return type.getType();
+		return type.getContainerType();
+	}
+
+    public NonNullList<ItemStack> getInventory(){
+        return stacks;
+    }
+
+    public IFluidHandler getFluidHandler(){
+        return fluidtank;
+    }
+
+    public FluidTank getFluidTank(){
+        return fluidtank;
+    }
+
+	public boolean isItemValid(ItemStack stack){
+		return type.getContentFilter() == null ? true : type.getContentFilter().isValid(this, stack);
 	}
 
 }

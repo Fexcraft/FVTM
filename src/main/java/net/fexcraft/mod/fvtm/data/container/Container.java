@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
+import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -19,6 +20,8 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 /**
  * 
@@ -30,9 +33,12 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	protected List<NamedResourceLocation> textures;
 	protected Model<ContainerData, Object> model;
 	protected RGB primary, secondary;
+	protected InventoryType invtype;
 	protected ContainerType type;
 	protected ContainerItem item;
 	protected String modelid;
+	protected int capacity;
+	protected Fluid fluid;
 
 	@Override
 	public Container setRegistryName(ResourceLocation name){
@@ -77,6 +83,11 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		this.textures = DataUtil.getTextures(obj);
 		this.primary = DataUtil.getColor(obj, "Primary");
 		this.secondary = DataUtil.getColor(obj, "Secondary");
+		this.invtype = InventoryType.valueOf(JsonUtil.getIfExists(obj, "InventoryType", "ITEM").toUpperCase());
+		this.capacity = JsonUtil.getIfExists(obj, "InventorySize", invtype == InventoryType.ITEM ? 8 : 16000).intValue();
+        if(obj.has("FluidType")){
+            fluid = FluidRegistry.getFluid(obj.get("FluidType").getAsString());
+        }
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new ContainerItem(this); return this;
@@ -114,8 +125,28 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		return model;
 	}
 
-	public ContainerType getType(){
+	public ContainerType getContainerType(){
 		return type;
+	}
+
+	public InventoryType getInventoryType(){
+		return invtype;
+	}
+
+	public int getInventorySize(){
+		return capacity;
+	}
+
+	public int getCapacity(){
+		return capacity;
+	}
+
+	public Fluid getFluidType(){
+		return fluid;
+	}
+
+	public ContainerContentFilter getContentFilter(){
+		return null;
 	}
 
 }

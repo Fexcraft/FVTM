@@ -137,6 +137,7 @@ public class FVTM {
 		//910 - part cache
 		//920 - installed part
 		//930 - vehicle
+		//940 - container
 		if(event.getSide().isClient()){
 			GuiHandler.insert(700, StreetSignAdjuster.class, StreetSignAdjusterContainer.class);
 			GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);

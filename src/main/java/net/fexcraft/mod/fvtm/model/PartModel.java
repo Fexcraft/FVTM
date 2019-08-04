@@ -1,15 +1,26 @@
 package net.fexcraft.mod.fvtm.model;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.render.FCLItemModel;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class PartModel extends GenericModel<VehicleData, String> {
+public class PartModel extends GenericModel<VehicleData, String> implements FCLItemModel {
 
 	public static final PartModel EMPTY = new PartModel();
     public static final RGB windowcolor = new RGB(0x007208).setAlpha(0.3f);
@@ -49,6 +60,57 @@ public class PartModel extends GenericModel<VehicleData, String> {
 		for(TurboList list : groups){
 			list.render(ent, data, data, key);
 		}
+	}
+	
+	@Override
+	public void renderItem(TransformType type, ItemStack item, EntityLivingBase entity){
+		if(item.getItem() instanceof PartItem == false){ return; }
+		PartData data = item.getCapability(Capabilities.VAPDATA, null).getPartData(); if(data == null){ return; }
+		PartModel model = (PartModel)data.getType().getModel(); if(model == null) { return; }
+		//
+		WheelData func = data.getType().getInstallationHandlerData();
+		GL11.glPushMatrix();
+		switch(type){
+			case GROUND: {
+				GL11.glTranslatef(-0.45F, -0.05F, 0);
+				break;
+			}
+			case FIXED: {
+				//
+				break;
+			}
+			case THIRD_PERSON_RIGHT_HAND:
+			case THIRD_PERSON_LEFT_HAND: {
+				GL11.glRotatef(90f, 0F, 1F, 0F);
+				GL11.glTranslatef(-(func.getWidth() * Static.sixteenth), -0.2f, 0);
+				break;
+			}
+			case FIRST_PERSON_LEFT_HAND: {
+				GL11.glRotatef(60f, 0F, 1F, 0F);
+				break;
+			}
+			case FIRST_PERSON_RIGHT_HAND: {
+				GL11.glRotatef(-60f, 0F, 1F, 0F);
+				break;
+			}
+			case GUI: {
+				if(func.getRadius() > 8){
+					for(int i = (int)func.getRadius(); i > 8; i--)
+					GL11.glScalef(1 - Static.sixteenth, 1 - Static.sixteenth, 1 - Static.sixteenth);
+				}
+				break;
+			}
+			case HEAD: {
+				// TODO
+				break;
+			}
+			default: break;
+		}
+		GL11.glPushMatrix();
+		bindTexture(data.getTexture());
+		for(TurboList list : model.groups) list.renderPlain();
+		GL11.glPopMatrix();
+		GL11.glPopMatrix();
 	}
 	
 }

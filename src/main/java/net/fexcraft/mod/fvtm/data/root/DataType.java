@@ -71,7 +71,7 @@ public enum DataType {
 	}
 
 	public boolean has3DItemModel(){
-		return this == VEHICLE || this == CONTAINER;
+		return this == VEHICLE || this == CONTAINER || this == PART/* depends on part function */;
 	}
 	
 }

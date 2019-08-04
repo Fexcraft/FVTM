@@ -3,15 +3,15 @@ package net.fexcraft.mod.fvtm.data.container;
 /** @author Ferdinand Calo' (FEX___96) */
 public enum ContainerType {
 
-    MICRO(1f), TINY(2f), SMALL(3f), MEDIUM(6f), LARGE(12f);
+    MICRO(1), TINY(2), SMALL(3), MEDIUM(6), LARGE(12);
 	
-	private boolean even; private float length;
+	private boolean even; private int length;
 	
-	ContainerType(float length){
+	ContainerType(int length){
 		this.length = length; even = this.length % 2 == 0;
 	}
 	
-	public float length(){ return length; }
+	public int length(){ return length; }
 	
 	public boolean isEven(){ return even; }
 

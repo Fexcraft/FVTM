@@ -24,6 +24,8 @@ import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
+import net.fexcraft.mod.fvtm.data.container.Container;
+import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -71,6 +73,7 @@ public class Resources {
 	public static IForgeRegistry<Fuel> ALLFUELS;
 	public static IForgeRegistry<RoadSign> ROADSIGNS;
 	public static IForgeRegistry<Consumable> CONSUMABLES;
+	public static IForgeRegistry<Container> CONTAINERS;
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
@@ -89,8 +92,8 @@ public class Resources {
 		ALLFUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
 		ROADSIGNS = new RegistryBuilder<RoadSign>().setName(new ResourceLocation("fvtm:roadsigns")).setType(RoadSign.class).create();
 		CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
-		/*CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
-		BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
+		CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
+		/*BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
 		PALLETS = new RegistryBuilder<Pallet>().setName(new ResourceLocation("fvtm:pallets")).setType(Pallet.class).create();
 		GAUGES = new RegistryBuilder<Gauge>().setName(new ResourceLocation("fvtm:railgauges")).setType(Gauge.class).create();*/
 		//
@@ -123,6 +126,7 @@ public class Resources {
 		searchInAddonsFor(DataType.FUEL);
 		searchInAddonsFor(DataType.MATERIAL);
 		searchInAddonsFor(DataType.CONSUMABLE);
+		searchInAddonsFor(DataType.CONTAINER);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
 		//
@@ -157,6 +161,14 @@ public class Resources {
 
 	public static Vehicle getVehicle(ResourceLocation resloc){
 		return VEHICLES.getValue(resloc);
+	}
+
+	public static Container getContainer(String string){
+		return getContainer(new ResourceLocation(string));
+	}
+
+	public static Container getContainer(ResourceLocation resloc){
+		return CONTAINERS.getValue(resloc);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -241,6 +253,16 @@ public class Resources {
 		if(!compound.hasKey("Vehicle")) return null;
 		Vehicle veh = getVehicle(compound.getString("Vehicle"));
 		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
+		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
+			| InvocationTargetException| NoSuchMethodException | SecurityException e){
+			e.printStackTrace(); return null;
+		}
+	}
+
+	public static ContainerData getContaienrData(NBTTagCompound compound){
+		if(!compound.hasKey("Container")) return null;
+		Container con = getContainer(compound.getString("Container"));
+		try{ return ((ContainerData)con.getDataClass().getConstructor(Vehicle.class).newInstance(con)).read(compound); }
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
 			| InvocationTargetException| NoSuchMethodException | SecurityException e){
 			e.printStackTrace(); return null;

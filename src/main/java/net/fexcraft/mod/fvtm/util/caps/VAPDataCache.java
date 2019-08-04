@@ -3,8 +3,10 @@ package net.fexcraft.mod.fvtm.util.caps;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
+import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -33,6 +35,9 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		}*/
 		else if(stack.getItem() instanceof RoadSignItem){
 			instance = new RoadSignImplementation();
+		}
+		else if(stack.getItem() instanceof ContainerItem){
+			instance = new ContainerImplementation();
 		}
 		//
 		instance.setStack(stack);
@@ -87,6 +92,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		private VehicleData vdata;
 		private PartData pdata;
 		private RoadSign sign;
+		private ContainerData condata;
 		//private BlockData bdata;
 		boolean[] bools = new boolean[3];
 
@@ -111,6 +117,11 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public RoadSign getRSData(){
 			return sign == null ? sign = ((RoadSignItem)stack.getItem()).getType(stack) : sign;
+		}
+
+		@Override
+		public ContainerData getContainerData(){
+			return condata == null ? condata = ((ContainerItem)stack.getItem()).getData(stack) : condata;
 		}
 
 		/*@Override
@@ -145,6 +156,11 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 			return null;
 		}
 
+		@Override
+		public ContainerData getContainerData(){
+			return null;
+		}
+
 		/*@Override
 		public BlockData getBlockData(){
 			return null;
@@ -174,6 +190,11 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public RoadSign getRSData(){
+			return null;
+		}
+
+		@Override
+		public ContainerData getContainerData(){
 			return null;
 		}
 
@@ -234,6 +255,48 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public RoadSign getRSData(){
 			return data == null ? stack == null ? null : (data = ((RoadSignItem)stack.getItem()).getType(stack)) : data;
+		}
+
+		@Override
+		public ContainerData getContainerData(){
+			return null;
+		}
+
+		/*@Override
+		public BlockData getBlockData(){
+			return null;
+		}*/
+		
+	}
+	
+	public static class ContainerImplementation implements VehicleAndPartDataCache {
+		
+		private ItemStack stack;
+		private ContainerData data;
+
+		@Override
+		public void setStack(ItemStack stack){
+			this.stack = stack;
+		}
+
+		@Override
+		public VehicleData getVehicleData(){
+			return null;
+		}
+
+		@Override
+		public PartData getPartData(){
+			return null;
+		}
+
+		@Override
+		public RoadSign getRSData(){
+			return null;
+		}
+
+		@Override
+		public ContainerData getContainerData(){
+			return data == null ? stack == null ? null : (data = ((ContainerItem)stack.getItem()).getData(stack)) : data;
 		}
 
 		/*@Override

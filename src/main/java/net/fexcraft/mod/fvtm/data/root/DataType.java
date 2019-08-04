@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -17,7 +18,7 @@ public enum DataType {
 	PART(".part", "parts", Part.class),
 	VEHICLE(".vehicle", "vehicles", Vehicle.class),
 	MATERIAL(".material", "materials", Material.class),
-	//CONTAINER(".container", "containers"),
+	CONTAINER(".container", "containers", Container.class),
 	CONSUMABLE(".consumable", "consumables", Consumable.class),
 	FUEL(".fuel", "fuels", Fuel.class),
 	ROADSIGN(".sign", "roadsigns", RoadSign.class)
@@ -40,6 +41,7 @@ public enum DataType {
 			case FUEL: return (IForgeRegistry<T>)Resources.ALLFUELS;
 			case ROADSIGN: return (IForgeRegistry<T>)Resources.ROADSIGNS;
 			case CONSUMABLE: return (IForgeRegistry<T>)Resources.CONSUMABLES;
+			case CONTAINER: return (IForgeRegistry<T>)Resources.CONTAINERS;
 			default: return null;
 		}
 	}
@@ -63,6 +65,7 @@ public enum DataType {
 			}
 			case ROADSIGN:{ Resources.ROADSIGNS.register((RoadSign)core); return; }
 			case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
+			case CONTAINER:{ Resources.CONTAINERS.register((Container)core); return; }
 			default: return;
 		}
 	}

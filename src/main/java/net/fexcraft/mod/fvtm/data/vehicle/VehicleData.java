@@ -58,8 +58,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(Entry<String, WheelSlot> entry: type.getDefaultWheelPositions().entrySet()){
 			this.wheels.put(entry.getKey(), entry.getValue().copy());
 		}
-		this.primary = type.primary.copy();
-		this.secondary = type.secondary.copy();
+		this.primary = type.getDefaultPrimaryColor().copy();
+		this.secondary = type.getDefaultSecondaryColor().copy();
 	}
 
 	@Override

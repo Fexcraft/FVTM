@@ -35,6 +35,9 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		if(containsIncompatible(idata, data)){
 			Print.chatnn(sender, "Vehicle contains parts incompatible with this part."); return false;
 		}
+		if(!containsRequired(idata, data)){
+			Print.chatnn(sender, "Vehicle does not contain all required parts."); return false;
+		}
 		Print.chatnn(sender, "Installation check passed."); return true;
 	}
 
@@ -49,6 +52,12 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		if(idata == null || !idata.incompatible.containsKey(data.getType().getRegistryName().toString())){ return false; }
 		ArrayList<String> list = idata.incompatible.get(data.getType().getRegistryName().toString());
 		for(String str : list) if(data.getParts().containsKey(str)) return true; return false;
+	}
+	
+	private boolean containsRequired(DPIHData idata, VehicleData data){
+		if(idata == null || !idata.required.containsKey(data.getType().getRegistryName().toString())){ return true; }
+		ArrayList<String> list = idata.required.get(data.getType().getRegistryName().toString());
+		for(String str : list) if(!data.getParts().containsKey(str)) return false; return true;
 	}
 
 	@Override
@@ -97,6 +106,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		
 		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
 		private TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
+		private TreeMap<String, ArrayList<String>> required = new TreeMap<>();
 		private boolean removable, custom_cat;
 		
 		public DPIHData(JsonObject obj){
@@ -105,14 +115,21 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			if(obj.has("Compatible")){
 				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
 					JsonObject jsn = elm.getAsJsonObject();
-					this.compatible.put(jsn.get("Vehicle").getAsString(), Pos.fromJson(jsn, false));
+					this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
 				});
 			}
 			if(obj.has("Incompatible")){
 				obj.get("Incompable").getAsJsonArray().forEach(elm -> {
 					JsonObject jsn = elm.getAsJsonObject();
-					ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("Parts").getAsJsonArray());
-					this.incompatible.put(jsn.get("Vehicle").getAsString(), parts);
+					ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
+					this.incompatible.put(jsn.get("vehicle").getAsString(), parts);
+				});
+			}
+			if(obj.has("Required")){
+				obj.get("Required").getAsJsonArray().forEach(elm -> {
+					JsonObject jsn = elm.getAsJsonObject();
+					ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
+					this.incompatible.put(jsn.get("vehicle").getAsString(), parts);
 				});
 			}
 		}

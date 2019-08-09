@@ -28,6 +28,7 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 		WheelData idata = part.getType().getInstallationHandlerData();
 		WheelSlot slot = data.getWheelSlots().get(cat);
 		if(slot == null){ Print.chatnn(sender, "Error, slot not found."); return false;}
+		//Print.debug(idata.radius, slot.maxradius(), slot.minradius());
 		if(idata.radius > slot.maxradius()){
 			Print.chatnn(sender, "Wheel radius too large. [" + idata.radius + ">" + slot.maxradius() + "]"); return false;
 		}

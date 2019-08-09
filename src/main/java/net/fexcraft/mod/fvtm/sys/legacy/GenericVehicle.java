@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -69,5 +70,9 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity {
     	}
         return super.getCapability(capability, facing);
     }
+
+	protected Vehicle getVehicle(){
+		return this.getVehicleData() == null ? null : this.getVehicleData().getType();
+	}
 
 }

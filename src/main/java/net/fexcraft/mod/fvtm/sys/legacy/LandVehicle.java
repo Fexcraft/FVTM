@@ -677,7 +677,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 if(wheelsYaw != wheelsYaw) wheelsYaw = old;
             }
             vehicle.getAttribute("steering_angle").setValue(wheelsYaw);
-            double cir = ((WheelData)vehicle.getPart("left_front_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
+            double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
         	vehicle.getAttribute("throttle").setValue((float)throttle);
@@ -753,7 +753,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	            wheel.motionY -= 0.98F / 20F;//Gravity
 	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 	            Vec3d s = null;
-	        	if(wheelid >= WHEELINDEX.length && this.getVehicleData().getType().isTrailerOrWagon()){
+	        	if(wheelid >= 2 && this.getVehicleData().getType().isTrailerOrWagon()){
 	        		s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid == 2 ? 1 : 0]);
 	        		s = new Vec3d(0, s.y, s.z);
 	        	}

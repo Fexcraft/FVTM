@@ -52,18 +52,29 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     	lata = vehicle.getVehicleData().getType().getLegacyData();
     	//Print.debug(wheelid, this, vehicle, vehicle.getVehicleData().getWheelPositions());
     	String index = vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid];
-    	if(!vehicle.getVehicleData().getWheelPositions().containsKey(index)){
+    	Vec3d vec = null;
+    	if(!vehicle.getVehicleData().getWheelPositions().containsKey(index) && !isTrailerWheel()){
     		Print.debug("Vehicle was missing an essential Wheel Position, skipping wheel[" + wheelid + "] init.");
     		return;
     	}
-        Vec3d vec = vehicle.getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(index));
+    	if(isTrailerWheel()){
+            vec = vehicle.getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid == 2 ? 1 : 0]));
+            vec = new Vec3d(0, vec.y, vec.z);
+    	}
+    	else{
+            vec = vehicle.getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(index));
+    	}
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         stepHeight = lata.wheel_step_height;
         //
         prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
     }
 
-    @Override
+    private boolean isTrailerWheel(){
+		return vehicle.getVehicle().isTrailerOrWagon() && wheelid > 1;
+	}
+
+	@Override
     public void fall(float k, float l){
         //
     }

@@ -93,7 +93,7 @@ task gep(type: Jar){
     baseName = 'GEP'
     appendix = gepversion
 }
-task gep(type: Jar){
+task hcp(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/hcp/'}
     from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/hcp/'}
     from(sourceSets.main.resources){

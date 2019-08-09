@@ -508,19 +508,19 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public boolean getLightsState(){
-		return getAttribute("fvtm:lights").getBooleanValue();
+		return getAttribute("lights").getBooleanValue();
 	}
 
 	public boolean getFogLightsState(){
-		return getAttribute("fvtm:lights_fog").getBooleanValue();
+		return getAttribute("lights_fog").getBooleanValue();
 	}
 
 	public boolean getLongLightsState(){
-		return getAttribute("fvtm:lights_fog").getBooleanValue();
+		return getAttribute("lights_fog").getBooleanValue();
 	}
 
 	public boolean getSpecialLightsState(){
-		return getAttribute("fvtm:lights_other").getBooleanValue();
+		return getAttribute("lights_other").getBooleanValue();
 	}
 
 	public int getStoredFuel(){

@@ -13,10 +13,13 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 public class DataUtil {
 
@@ -119,5 +122,19 @@ public class DataUtil {
         }
         return tag;
     }
+
+	public static NBTBase writeVec3d(Vec3d vec){
+		NBTTagList list = new NBTTagList();
+		list.appendTag(new NBTTagDouble(vec.x));
+		list.appendTag(new NBTTagDouble(vec.y));
+		list.appendTag(new NBTTagDouble(vec.z));
+		return list;
+	}
+
+	public static Vec3d readVec3d(NBTBase base){
+		if(base instanceof NBTTagList == false) return null; NBTTagList list = (NBTTagList)base;
+		if(list.hasNoTags() || list.tagCount() < 3) return null;
+		return new Vec3d(list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2));
+	}
 
 }

@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -25,6 +26,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -40,6 +42,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected String modelid;
 	protected LegacyData legacy_data;
 	protected boolean trailer;
+	protected Vec3d def_front_conn, def_rear_conn;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -125,6 +128,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			this.legacy_data = new LegacyData(obj.get("LegacyData").getAsJsonObject());
 		}
 		this.trailer = obj.has("Trailer") ? obj.get("Trailer").getAsBoolean() : obj.has("Wagon") ? obj.get("Wagon").getAsBoolean() : false;
+		if(obj.has("FrontConnector")){
+			this.def_front_conn = Pos.fromJson(obj.get("FrontConnector"), obj.get("FrontConnector").isJsonArray()).to16Double();
+		}
+		if(obj.has("RearConnector")){
+			this.def_rear_conn = Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()).to16Double();
+		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -205,6 +214,14 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	public boolean isTrailerOrWagon(){
 		return trailer;
+	}
+	
+	public Vec3d getDefaultFrontConnector(){
+		return def_front_conn;
+	}
+	
+	public Vec3d getDefaultRearConnector(){
+		return def_rear_conn;
 	}
 
 }

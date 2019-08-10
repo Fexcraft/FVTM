@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
@@ -51,6 +52,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected ArrayList<Seat> seats = new ArrayList<>();
 	protected ArrayList<String> inventories = new ArrayList<>();
 	protected ArrayList<VehicleScript> scripts = new ArrayList<>();
+	protected Vec3d front_conn, rear_conn;
 
 	public VehicleData(Vehicle type){
 		super(type);
@@ -62,6 +64,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		this.primary = type.getDefaultPrimaryColor().copy();
 		this.secondary = type.getDefaultSecondaryColor().copy();
+		this.front_conn = type.getDefaultFrontConnector();
+		this.rear_conn = type.getDefaultRearConnector();
 	}
 
 	@Override
@@ -118,6 +122,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			if(!scrap.hasNoTags()) compound.setTag("Scripts", scrap);
 		}
 		compound.setBoolean("Locked", locked);
+		if(front_conn != null) compound.setTag("FrontConnector", DataUtil.writeVec3d(front_conn));
+		if(rear_conn != null) compound.setTag("RearConnector", DataUtil.writeVec3d(rear_conn));
 		/*Print.debug("write", compound);*/ return compound;
 	}
 
@@ -179,6 +185,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			}
 		}
 		this.locked = compound.getBoolean("Locked");
+		this.front_conn = DataUtil.readVec3d(compound.getTag("FrontConnector"));
+		this.rear_conn = DataUtil.readVec3d(compound.getTag("RearConnector"));
 		//
 		/*Print.debug("read", compound);*/ return this;
 	}
@@ -542,6 +550,21 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public ArrayList<VehicleScript> getScripts(){
 		return scripts;
+	}
+
+	public Vec3d getFrontConnector(){
+		return front_conn;
+	}
+
+	public Vec3d getRearConnector(){
+		return rear_conn;
+	}
+	
+	public void setConnector(Vec3d newcon, boolean front){
+		if(newcon == null)
+			if(front) front_conn = type.getDefaultFrontConnector();
+			else rear_conn = type.getDefaultRearConnector();
+		else if(front) front_conn = newcon; else rear_conn = newcon;
 	}
 
 }

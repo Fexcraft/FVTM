@@ -340,17 +340,17 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case COUPLER_REAR: {
-            	/*if(!world.isRemote){
+            	if(!world.isRemote){
             		if(throttle > 0 || throttle < 0){
             			Print.chat(player, "Please stop the vehicle first!");
             			return true;
             		}
-            		if(this.vehicledata.getRearConnectorPos() == null){
+            		if(this.vehicle.getRearConnector() == null){
             			Print.chat(player, "This vehicle does not have a rear connector installed.");
             			return true;
             		}
                     if(doorToggleTimer <= 0){
-                    	if(this.getEntityAtRear() == null){
+                    	if(this.getCoupledEntity(false) == null){
                     		this.tryAttach(player);
                     	}
                     	else{
@@ -358,12 +358,22 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     	}
                         doorToggleTimer = 10;
                     }
-            	}*/
+            	}
             	return true;
             }
             default:{ Print.chat(player, String.format("Task for keypress %s not found.", key)); return false; }
         }
     }
+
+	private void tryAttach(EntityPlayer player){
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void tryDetach(EntityPlayer player){
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public UUID getPlacer(){

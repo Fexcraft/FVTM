@@ -8,6 +8,7 @@ public class LegacyData {
 
 	public float max_throttle, min_throttle, turn_left_mod, turn_right_mod, wheel_step_height, camera_distance, wheel_spring_strength, bouyancy;
 	public float look_up_mod, look_down_mod, roll_left_mod, roll_right_mod, drag;
+	public int trailer_adjustment_axe;
 	//public Vec3d[] wheelpos = new Vec3d[4];
 	public boolean is_tracked;
 	
@@ -30,6 +31,7 @@ public class LegacyData {
 		roll_left_mod = JsonUtil.getIfExists(obj, "RollLeftModifier", 1f).floatValue();
 		roll_right_mod = JsonUtil.getIfExists(obj, "RollRightModifier", 1f).floatValue();
 		drag = JsonUtil.getIfExists(obj, "Drag", 1f).floatValue();
+		trailer_adjustment_axe = JsonUtil.getIfExists(obj, "TrailerAdjustmentAxe", 1).intValue();
 	}
 
 }

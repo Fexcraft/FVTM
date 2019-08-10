@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import java.util.TreeMap;
+
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
@@ -44,10 +46,15 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 	}
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		data.getParts().put(cat, part); part.setInstalledPos(data.getWheelSlots().get(cat).pos());
+		data.getParts().put(cat, part); part.setInstalledPos(getPosForPart(part, data.getType().getRegistryName().toString()));
 		boolean front = cat.startsWith("front"); ConnectorData idata = part.getType().getInstallationHandlerData();
 		data.setConnector(front ? idata.getFrontPosition() : idata.getRearPosition(), front);
 		Print.chatnn(sender, "Part installed into selected category."); return true;
+	}
+
+	private Pos getPosForPart(PartData part, String string){
+		ConnectorData idata = part.getType().getInstallationHandlerData();
+		if(idata == null || !idata.compatible.containsKey(string)) return new Pos(0, 0, 0); return idata.compatible.get(string);
 	}
 
 	@Override
@@ -70,6 +77,7 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 		
 		private Vec3d front, rear;
 		private boolean removable;
+		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
 		
 		public ConnectorData(JsonObject obj){
 			if(obj.has("Front") && obj.get("Front").isJsonArray()){
@@ -79,6 +87,12 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 				rear = Pos.fromJson(obj.get("Rear"), true).to16Double();
 			}
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
+			if(obj.has("Compatible")){
+				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
+					JsonObject jsn = elm.getAsJsonObject();
+					this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+				});
+			}
 		}
 		
 		public Vec3d getFrontPosition(){

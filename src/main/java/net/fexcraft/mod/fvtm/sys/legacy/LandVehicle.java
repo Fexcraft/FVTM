@@ -67,7 +67,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	//public double throttle;
 	public float wheelsAngle, serverWY;//, wheelsYaw;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
-    public VehicleEntity truck, trailer;
+    public LandVehicle truck, trailer;
     //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
     protected byte doorToggleTimer;
     protected Object engineloop;//TODO sound
@@ -909,14 +909,86 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
 		            }
 		            //
-		            /*if(this.getEntityAtRear() != null){
-		                this.getEntityAtRear().moveTrailer();
-		            }*/
+		            if(this.getCoupledEntity(false) != null){
+		                ((LandVehicle)this.getCoupledEntity(false)).moveTrailer();
+		            }
 		        }
 		        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
 			}
 		}
 	}
+	
+	public void moveTrailer(){
+        prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
+        if(wheels == null || wheels[0] == null || wheels[1] == null || truck == null){
+        	return;
+        }
+        Vec3d conn = truck.getAxes().getRelativeVector(truck.getVehicleData().getRearConnector());
+        this.setPosition(truck.getEntity().posX + conn.x, truck.getEntity().posY + conn.y, truck.getEntity().posZ + conn.z);
+        //
+        int lw = this.truck.getVehicle().getLegacyData().trailer_adjustment_axe < 0 ? 3 : 0;
+        int rw = lw == 3 ? 2 : 1;
+        if(truck.getWheels() == null || !this.isRiding() || truck.getWheels()[lw] == null || truck.getWheels()[rw] == null){
+        	return;
+        }
+        Vec3d front = new Vec3d((truck.getWheels()[lw].posX + truck.getWheels()[rw].posX) / 2F, (truck.getWheels()[lw].posY + truck.getWheels()[rw].posY) / 2F, (truck.getWheels()[lw].posZ + truck.getWheels()[rw].posZ) / 2F);
+    	Vec3d back = new Vec3d((wheels[0].posX + wheels[1].posX) / 2F, (wheels[0].posY + wheels[1].posY) / 2F, (wheels[0].posZ + wheels[1].posZ) / 2F);
+    	Vec3d left = new Vec3d((wheels[0].posX + truck.getWheels()[lw].posX) / 2F, (wheels[0].posY + truck.getWheels()[lw].posY) / 2F, (wheels[0].posZ + truck.getWheels()[lw].posZ) / 2F);
+    	Vec3d right = new Vec3d((wheels[1].posX + truck.getWheels()[rw].posX) / 2F, (wheels[1].posY + truck.getWheels()[rw].posY) / 2F, (wheels[1].posZ + truck.getWheels()[rw].posZ) / 2F);
+        //
+        double dx = front.x - back.x, dy = front.y - back.y, dz = front.z - back.z;
+        double drx = left.x - right.x, dry = left.y - right.y, drz = left.z - right.z;
+        double dxz = Math.sqrt(dx * dx + dz * dz);
+        double drxz = Math.sqrt(drx * drx + drz * drz);
+        //
+        double yaw = Math.atan2(dz, dx);
+        double pitch = -Math.atan2(dy, dxz);
+        double roll = -(float) Math.atan2(dry, drxz);
+        //
+        if(vehicle.getType().getLegacyData().is_tracked){
+            yaw = (float)Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
+        }
+        //
+        double thrt = /*calculateSpeed(this.truck.getEntity())*/ this.truck.throttle > 0 ? truck.throttle : -truck.throttle;
+        double rawy = Math.toDegrees(yaw) - axes.getYaw();
+        double diff = rawy * thrt * 0.2;
+        //Print.debug(rawy, diff);
+        diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
+        axes.setRotation(axes.getRadianYaw() + Math.toRadians(diff), pitch, roll);
+        //
+        alignWheels();
+	}
+
+    private final void alignWheels(){
+        for(int wheelid = 0; wheelid < wheels.length; wheelid++){
+            if(wheels[wheelid] == null ){ continue; }
+            WheelEntity wheel = wheels[wheelid];
+            onGround = true;
+            wheel.onGround = true;
+            wheel.rotationYaw = axes.getYaw();
+            //
+            Vec3d s = null;
+        	if(wheelid >= 2 && this.getVehicleData().getType().isTrailerOrWagon()){
+        		s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid == 2 ? 1 : 0]);
+        		s = new Vec3d(0, s.y, s.z);
+        	}
+        	else{
+        		s = vehicle.getWheelPositions().get(WHEELINDEX[wheelid]);
+        	}
+            Vec3d targetpos = axes.getRelativeVector(s);
+            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(this.getVehicle().getLegacyData().wheel_spring_strength);
+            if(despos.lengthSquared() > 0.001F){
+                wheel.move(MoverType.SELF, despos.x, (despos.y - (0.98F / 20F)), despos.z);
+            }
+            //
+            if(wheel.getPositionVector().distanceTo(this.getPositionVector()) > 256){//1024
+                wheel.posX = despos.x;
+                wheel.posY = despos.y;
+                wheel.posZ = despos.z;
+            }
+        }
+    }
 	
 	private byte accumulator;
 	private float consumed;
@@ -1105,10 +1177,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 case "update_connection":{
                 	int ent = pkt.nbt.getInteger("entity");
                 	if(ent == -1){
-                		trailer = null;
+                		truck = null;
                 	}
                 	else{
-                		trailer = (VehicleEntity)world.getEntityByID(ent);
+                		truck = (LandVehicle)world.getEntityByID(ent);
                 	}
                 	break;
                 }

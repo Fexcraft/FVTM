@@ -235,7 +235,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
         mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 21, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 35, 0xffffff);
         if(ent.getCoupledEntity(false) != null){
-        	mc.fontRenderer.drawString(Formatter.format("&o&aTrailer Attached."), 7, 49, 0xffffff);
+        	mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 49, 0xffffff);
         }
         if(!attributes.isEmpty()){
         	int offset = 0;

@@ -67,6 +67,8 @@ public enum VehicleType {
 		attrs.add(new Attribute.BooleanAttribute(true, "lights_fog", false).setSeat("driver"));
 		attrs.add(new Attribute.BooleanAttribute(true, "lights_long", false).setSeat("driver"));
 		attrs.add(new Attribute.BooleanAttribute(true, "lights_other", false).setSeat("driver"));
+		attrs.add(new Attribute.BooleanAttribute(true, "front_connected", false).setEditable(false));
+		attrs.add(new Attribute.BooleanAttribute(true, "rear_connected", false).setEditable(false));
 		//TODO
 		switch(this){
 			//TODO type specific

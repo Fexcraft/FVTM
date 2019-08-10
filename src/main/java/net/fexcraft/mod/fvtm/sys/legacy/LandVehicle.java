@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -100,6 +101,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		initializeVehicle(false);
 	}
 
+	public LandVehicle(World world, VehicleData data, EntityPlayer player, LandVehicle truck){
+		this(world, data, truck.getPositionVector(), player, 0);
+		this.truck = truck; truck.trailer = this;
+	}
+
 	@Override
 	protected void entityInit(){
 		//
@@ -112,6 +118,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         stepHeight = lata.wheel_step_height;
         this.setupCapability(null);//TODO this.getCapability(FVTMCaps.CONTAINER, null));
         vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
+        //
+        if(!remote && truck != null){
+        	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
+        }
 	}
 
 	//TODO
@@ -305,38 +315,29 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;*/
             }
             case LIGHTS: {
-                /*if(!world.isRemote){
+                if(!world.isRemote){
                     if(doorToggleTimer <= 0){
-                        int i = vehicledata.getLightsState();
-                        vehicledata.setLightsState(++i > 3 ? 0 : i < 0 ? 0 : i);
-                        if(this.getEntityAtRear() != null){
-                            this.getEntityAtRear().getVehicleData().setLightsState(vehicledata.getLightsState());
-                        }
-                        switch(vehicledata.getLightsState()){
-                            case 0: {
-                                Print.chat(player, "Lights Off.");
-                                break;
-                            }
-                            case 1: {
-                                Print.chat(player, "Lights On.");
-                                break;
-                            }
-                            case 2: {
-                                Print.chat(player, "(Long) Lights On.");
-                                break;
-                            }
-                            case 3: {
-                                Print.chat(player, "(Fog) Lights On.");
-                                break;
-                            }
-                        }
+                    	if(vehicle.getAttribute("lights").getBooleanValue()){
+                    		if(vehicle.getAttribute("lights_long").getBooleanValue()){
+                        		vehicle.getAttribute("lights").setValue(false);
+                        		vehicle.getAttribute("lights_long").setValue(false);
+                    		}
+                    		else{
+                        		vehicle.getAttribute("lights_long").setValue(true);
+                    		}
+                    	}
+                    	else{
+                    		vehicle.getAttribute("lights").setValue(false);
+                    	}
+                    	//TODO find a way for fog lights
                         doorToggleTimer = 10;
                         NBTTagCompound nbt = new NBTTagCompound();
-                        nbt.setString("task", "lights_toggle");
-                        nbt.setInteger("lightsstate", vehicledata.getLightsState());
+                        nbt.setString("task", "toggle_lights");
+                        nbt.setBoolean("lights", vehicle.getAttribute("lights").getBooleanValue());
+                        nbt.setBoolean("lights_long", vehicle.getAttribute("lights_long").getBooleanValue());
                         ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                     }
-                }*/
+                }
                 return true;
             }
             case COUPLER_REAR: {
@@ -366,13 +367,34 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     }
 
 	private void tryAttach(EntityPlayer player){
-		// TODO Auto-generated method stub
-		
+		Vec3d vec = this.axes.getRelativeVector(this.getVehicleData().getRearConnector()).add(this.getPositionVector());
+		AxisAlignedBB aabb = new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
+		List<Entity> list = world.getEntitiesInAABBexcluding(this, aabb, (ent) -> ent instanceof LandVehicle);
+		for(Entity ent : list){
+			LandVehicle veh = (LandVehicle)ent;
+			if(veh.truck == null){
+				veh.truck = this; this.trailer = veh;
+				this.sendConnectionUpdate(); veh.sendConnectionUpdate();
+				Print.chat(player, "&a&oTrailer connected&c!"); return;
+			} else continue;
+		}
+		Print.chat(player, "&c&oNo Trailer found at coupler position.");
+		Print.debugChat(vec.toString());
+	}
+
+	private void sendConnectionUpdate(){
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("task", "connections_update");
+		compound.setInteger("truck", truck == null ? -1 : truck.getEntityId());
+		compound.setInteger("trailer", trailer == null ? -1 : trailer.getEntityId());
+		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
 	}
 
 	private void tryDetach(EntityPlayer player){
-		// TODO Auto-generated method stub
-		
+		if(this.getCoupledEntity(false) == null) return;
+		trailer.truck = null; this.trailer = null;
+		trailer.sendConnectionUpdate(); this.sendConnectionUpdate();
+		Print.chat(player, "&c&oTrailer disconnected&a!");
 	}
 
 	@Override
@@ -566,7 +588,16 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	GenericGui.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }); return true;
             }
             if(stack.getItem() instanceof VehicleItem){
-                //TODO append trailer
+                VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
+                if(data.getType().isTrailerOrWagon()){
+                	if(vehicle.getRearConnector() == null){
+                		Print.chat(player, "&cThis vehicle has no rear connector installed.");
+                		return true;
+                	}
+                	//TODO connector checks
+                	world.spawnEntity(new LandVehicle(world, data, player, this));
+                	return true;
+                }
             }
             //TODO other Item interaction
         }
@@ -612,11 +643,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             		seats[i] = new SeatEntity(this, i); world.spawnEntity(seats[i]);
             	}
         	}
-            for(int i = 0; i < WHEELINDEX.length; i++){
-                if(wheels[i] == null || !wheels[i].addedToChunk){
-                    wheels[i] = new WheelEntity(this, i); world.spawnEntity(wheels[i]);
-                }
-            }
             if(vehicle.getType().isTrailerOrWagon()){
             	if(getCoupledEntity(true) == null){
                 	if(wheels.length == 2){
@@ -638,6 +664,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             			wheels = new WheelEntity[]{ wheels[0], wheels[1] };
             		}
             	}
+            }
+            for(int i = 0; i < wheels.length; i++){
+                if(wheels[i] == null || !wheels[i].addedToChunk){
+                    wheels[i] = new WheelEntity(this, i); world.spawnEntity(wheels[i]);
+                }
             }
         }
         else{
@@ -748,6 +779,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public void onUpdateMovement(){
 		if(vehicle.getType().isTrailerOrWagon()){
+			if(truck != null) return;
 			Vec3d atmc = new Vec3d(0, 0, 0); int wheelid = 0;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
@@ -908,21 +940,17 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
 		                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
 		            }
-		            //
-		            if(this.getCoupledEntity(false) != null){
-		                ((LandVehicle)this.getCoupledEntity(false)).moveTrailer();
-		            }
 		        }
 		        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
+		        //
+	            if(trailer != null){ trailer.moveTrailer(); }
 			}
 		}
 	}
 	
 	public void moveTrailer(){
         prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
-        if(wheels == null || wheels[0] == null || wheels[1] == null || truck == null){
-        	return;
-        }
+        if(wheels == null || wheels[0] == null || wheels[1] == null || truck == null){ return; }
         Vec3d conn = truck.getAxes().getRelativeVector(truck.getVehicleData().getRearConnector());
         this.setPosition(truck.getEntity().posX + conn.x, truck.getEntity().posY + conn.y, truck.getEntity().posZ + conn.z);
         //
@@ -941,9 +969,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         double dxz = Math.sqrt(dx * dx + dz * dz);
         double drxz = Math.sqrt(drx * drx + drz * drz);
         //
-        double yaw = Math.atan2(dz, dx);
-        double pitch = -Math.atan2(dy, dxz);
-        double roll = -(float) Math.atan2(dry, drxz);
+        double yaw = Math.atan2(dz, dx), pitch = -Math.atan2(dy, dxz), roll = -(float) Math.atan2(dry, drxz);
         //
         if(vehicle.getType().getLegacyData().is_tracked){
             yaw = (float)Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
@@ -982,10 +1008,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 wheel.move(MoverType.SELF, despos.x, (despos.y - (0.98F / 20F)), despos.z);
             }
             //
-            if(wheel.getPositionVector().distanceTo(this.getPositionVector()) > 256){//1024
-                wheel.posX = despos.x;
-                wheel.posY = despos.y;
-                wheel.posZ = despos.z;
+            if(wheel.getPositionVector().distanceTo(this.getPositionVector()) > 4){//256//1024
+                wheel.posX = despos.x; wheel.posY = despos.y; wheel.posZ = despos.z;
             }
         }
     }
@@ -1167,21 +1191,21 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     this.vehicle.read(pkt.nbt);
                     break;
                 }
-                case "lights_toggle": {
-                    /*this.vehicledata.setLightsState(pkt.nbt.getInteger("lightsstate"));
-                    if(this.getEntityAtRear() != null){
-                        this.getEntityAtRear().getVehicleData().setLightsState(pkt.nbt.getInteger("lightsstate"));
-                    }*///TODO
+                case "toggle_lights": {
+                    vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
+                    vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
+                    if(trailer != null){
+                        trailer.vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
+                        trailer.vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
+                    }
                     break;
                 }
-                case "update_connection":{
-                	int ent = pkt.nbt.getInteger("entity");
-                	if(ent == -1){
-                		truck = null;
-                	}
-                	else{
-                		truck = (LandVehicle)world.getEntityByID(ent);
-                	}
+                case "connections_update":{
+                	Print.debug(this);
+                	int truck = pkt.nbt.getInteger("truck"); Print.debug("packet result t0" + truck);
+                	if(truck == -1) this.truck = null; else this.truck = (LandVehicle)world.getEntityByID(truck);
+                	int trailer = pkt.nbt.getInteger("trailer"); Print.debug("packet result t1" + trailer);
+                	if(trailer == -1) this.trailer = null; else this.trailer = (LandVehicle)world.getEntityByID(trailer);
                 	break;
                 }
                 case "update_trailer":{

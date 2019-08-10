@@ -13,6 +13,8 @@ public interface VehicleEntity {
 	public UUID getPlacer();
 	
 	public VehicleEntity getCoupledEntity(boolean front);
+	public default VehicleEntity getFrontCoupledEntity(){ return getCoupledEntity(true); }
+	public default VehicleEntity getRearCoupledEntity(){ return getCoupledEntity(false); }
 	
 	public boolean isLocked();
 

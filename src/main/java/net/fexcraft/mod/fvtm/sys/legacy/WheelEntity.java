@@ -101,6 +101,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
             vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
             foundveh = true; lata = vehicle.getVehicleData().getType().getLegacyData();
             if((vehicle.getVehicleType().isAirVehicle() ? 3 : 4) <= wheelid){ this.setDead(); return; }
+            if(vehicle.wheels.length <= wheelid){ this.setDead(); return; }
             vehicle.wheels[wheelid] = this;
         }
         if(vehicle == null){ return; }

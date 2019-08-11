@@ -186,7 +186,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		this.locked = compound.getBoolean("Locked");
 		this.front_conn = DataUtil.readVec3d(compound.getTag("FrontConnector"));
+		if(front_conn == null) front_conn = type.getDefaultFrontConnector();
 		this.rear_conn = DataUtil.readVec3d(compound.getTag("RearConnector"));
+		if(rear_conn == null) rear_conn = type.getDefaultRearConnector();
 		//
 		/*Print.debug("read", compound);*/ return this;
 	}

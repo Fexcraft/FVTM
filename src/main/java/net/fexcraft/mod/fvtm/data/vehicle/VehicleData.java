@@ -533,6 +533,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return getAttribute("lights_other").getBooleanValue();
 	}
 
+	public boolean getTurnLightLeft(){
+		return getAttribute("turn_light_left").getBooleanValue();
+	}
+
+	public boolean getTurnLightRight(){
+		return getAttribute("turn_light_right").getBooleanValue();
+	}
+
 	public int getStoredFuel(){
 		return getAttribute("fuel_stored").getIntegerValue();
 	}

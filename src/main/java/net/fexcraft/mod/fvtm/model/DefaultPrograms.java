@@ -88,12 +88,12 @@ public class DefaultPrograms {
 	}
 	
 	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getTurnLightLeft() && checkSignalSec(); }
 		@Override public String getId(){ return "fvtm:turn_signal_left"; }
 	};
 	
 	public static final Program TURN_SIGNAL_RIGHT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getTurnLightRight() && checkSignalSec(); }
 		@Override public String getId(){ return "fvtm:turn_signal_right"; }
 	};
 	

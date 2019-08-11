@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -40,8 +41,10 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
@@ -140,6 +143,7 @@ public class Resources {
 		registerFunction("fvtm:seats", SeatsFunction.class, true);
 		registerFunction("fvtm:engine", EngineFunction.class, true);
 		registerFunction("fvtm:inventory", InventoryFunction.class, true);
+		registerFunction("fvtm:container", ContainerFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){
@@ -356,13 +360,13 @@ public class Resources {
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
 		event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
-	}
+	}*/
 	
 	@SubscribeEvent
 	public void onEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
-		if(event.getObject() instanceof ContainerHolderEntity){
+		if(event.getObject() instanceof ContainerHoldingEntity){
 			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
 		}
-	}*/
+	}
 
 }

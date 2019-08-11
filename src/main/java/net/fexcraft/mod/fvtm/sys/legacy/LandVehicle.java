@@ -15,8 +15,12 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -26,7 +30,10 @@ import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
@@ -56,7 +63,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * <br>
  * "Legacy" Main class for Vehicles.
  */
-public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
+public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, ContainerHoldingEntity {
 
 	private LegacyData lata;
 	private VehicleData vehicle;
@@ -116,19 +123,15 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         wheels = new WheelEntity[WHEELINDEX.length];
         seats = new SeatEntity[vehicle.getSeats().size()];
         stepHeight = lata.wheel_step_height;
-        this.setupCapability(null);//TODO this.getCapability(FVTMCaps.CONTAINER, null));
+        ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
+        if(impl != null){ impl.setup = false; this.setupCapability(impl); }
+        else{ Print.debug("No ContainerCap Implementation Found!");}
         vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
         //
         if(!remote && truck != null){
         	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
         }
 	}
-
-	//TODO
-	private void setupCapability(Object object){
-		//
-	}
-
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicle == null){ vehicle = Resources.getVehicleData(compound); }
@@ -186,7 +189,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	//TODO fluid handler alternative
             }
         }
-        //this.getCapability(FVTMCaps.CONTAINER, null).dropContents(); //TODO
+        this.getCapability(Capabilities.CONTAINER, null).dropContents();
         //
         super.setDead();
         if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
@@ -1202,23 +1205,19 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
     }
 
-	/*@Override
-	public void setupCapability(ContainerHolder cap){
-		if(vehicledata == null || this.vehicledata.getContainerHolders().isEmpty()) return;
-		if(world.isRemote){ cap.sync(true); return; }
-		cap.setOnlyOneContainer(this.vehicledata.getContainerHolders().size() < 2);
-		for(java.util.Map.Entry<String, PartData> entry : this.vehicledata.getParts().entrySet()){
-    		if(entry.getValue().getPart().getAttribute(ContainerAttribute.class) != null){
-    			ContainerAttribute condata = entry.getValue().getPart().getAttribute(ContainerAttribute.class);
-    			cap.addContainerSlot(entry.getKey(), condata.getContainerOffset().to16Double(),
-    				condata.getContainerType(), condata.getContainerRotation(), condata.getSupportedTypes());
-    		}
-		} cap.setSetup(true); cap.sync(false);
-	}*/
+	@Override
+	public void setupCapability(ContainerHolder capability){
+		if(vehicle == null) return;
+		for(PartData data : vehicle.getParts().values()){
+			if(!data.hasFunction("fvtm:container")) continue;
+			capability.addContainerSlot(data.getFunction(ContainerFunction.class, "fvtm:container").getAsNewSlot());
+			Print.debug("Added Container Slot from: " + data.getType().getName());
+		} ((Implementation)capability).setup = true; if(!world.isRemote) capability.sync(false);
+	}
 
-	/*@Override
-	public float[] getEntityRotationForContainer(){
-		return new float[]{ (float)axes.getRadianYaw(), (float)axes.getRadianPitch(), (float)axes.getRadianRoll() };
-	}*/
+	@Override
+	public double[] getEntityRotationForFvtmContainers(){
+		return axes.toDoubles();//radians?
+	}
 
 }

@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.DisplayBlock;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
@@ -32,6 +33,8 @@ import net.fexcraft.mod.fvtm.gui.container.ContainerItemInventory;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainer;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainerSlot;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainers;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleFuel;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventories;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventory;
@@ -49,6 +52,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.LegacySpawnSystem;
@@ -94,6 +98,7 @@ public class FVTM {
 		//
 		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
+		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_landvehicle"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_airvehicle"), AirVehicle.class, "fvtm.airvehicle", 8997, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
@@ -157,6 +162,8 @@ public class FVTM {
 			GuiHandler.insert(934, VehicleToggables.class, VehicleContainer.class);
 			GuiHandler.insert(935, VehicleInventories.class, VehicleContainer.class);
 			GuiHandler.insert(936, VehicleInventory.class, VehicleContainer.class);
+			GuiHandler.insert(937, VehicleContainers.class, VehicleContainer.class);
+			GuiHandler.insert(938, VehicleContainerSlot.class, VehicleContainer.class);
 			//
 			GuiHandler.insert(941, ContainerItemInventory.class, ContainerInvContainer.class);
 			GuiHandler.insert(942, ContainerFluidInventory.class, ContainerInvContainer.class);
@@ -177,6 +184,8 @@ public class FVTM {
 			GuiHandler.insert(934, VehicleContainer.class);
 			GuiHandler.insert(935, VehicleContainer.class);
 			GuiHandler.insert(936, VehicleContainer.class);
+			GuiHandler.insert(937, VehicleContainer.class);
+			GuiHandler.insert(938, VehicleContainer.class);
 			//
 			GuiHandler.insert(941, ContainerInvContainer.class);
 			GuiHandler.insert(942, ContainerInvContainer.class);

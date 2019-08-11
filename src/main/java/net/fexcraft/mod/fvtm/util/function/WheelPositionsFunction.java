@@ -14,8 +14,7 @@ public class WheelPositionsFunction extends StaticFuntion {
 	private HashMap<String, WheelSlot> wheels = new HashMap<>();
 
 	public WheelPositionsFunction(JsonObject obj){
-		super(obj);
-		JsonArray array = obj.get("wheel_positions").getAsJsonArray();
+		super(obj); JsonArray array = obj.get("wheel_positions").getAsJsonArray();
 		for(JsonElement elm : array){
 			JsonObject json = elm.getAsJsonObject();
 			String id = json.get("id").getAsString();

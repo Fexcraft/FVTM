@@ -3,12 +3,12 @@ package net.fexcraft.mod.fvtm.data.container;
 /** @author Ferdinand Calo' (FEX___96) */
 public enum ContainerType {
 
-    MICRO(1), TINY(2), SMALL(3), MEDIUM(6), LARGE(12);
+    MICRO(1, 0x404040), TINY(2, 0xe20000), SMALL(3, 0x007f7f), MEDIUM(6, 0x007f0e), LARGE(12, 0x00137f);
 	
-	private boolean even; private int length;
+	private boolean even; private int length, color;
 	
-	ContainerType(int length){
-		this.length = length; even = this.length % 2 == 0;
+	ContainerType(int length, int color){
+		this.length = length; even = this.length % 2 == 0; this.color = color;
 	}
 	
 	public int length(){ return length; }
@@ -55,6 +55,10 @@ public enum ContainerType {
 
 	public boolean isMicro(){
 		return this == MICRO;
+	}
+	
+	public int getColor(){
+		return color;
 	}
 
 }

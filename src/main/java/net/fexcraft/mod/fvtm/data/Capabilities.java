@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -15,7 +16,7 @@ public class Capabilities {
 	public static final Capability<Resources> RESOURCES = null;*/
 	
 	/** For Vehicles which can transport Containers */
-	/*@CapabilityInject(ContainerHolder.class)
-	public static final Capability<ContainerHolder> CONTAINER = null;*/
+	@CapabilityInject(ContainerHolder.class)
+	public static final Capability<ContainerHolder> CONTAINER = null;
 	
 }

@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -52,6 +54,10 @@ public class VehicleMain extends GenericGui<VehicleContainer> {
 		if(button.name.equals("row2")){ openGui("fvtm", 933, new int[]{ 933, 0, 0 }); return true; }
 		if(button.name.equals("row3")){ openGui("fvtm", 934, new int[]{ 0, 0, 0 }); return true; }
 		if(button.name.equals("row4")){ openGui("fvtm", 935, new int[]{ 0, 0, 0 }); return true; }
+		if(button.name.equals("row5")){
+			VehicleEntity veh = ((SeatEntity)player.getRidingEntity()).getVehicle();
+			openGui("fvtm", 937, new int[]{ veh.getEntity().getEntityId(), 0, 0 }); return true;
+		}
 		//
 		return false;
 	}

@@ -1,48 +1,34 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
-import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class VehicleInventories extends GenericGui<VehicleContainer> {
+public class VehicleContainers extends GenericGui<VehicleContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_inventories.png");
-	private ArrayList<PartData> inventories = new ArrayList<>();
-	private ArrayList<String> inv_names = new ArrayList<>();
 	private RGB[] colors = new RGB[8];
-	private VehicleEntity veh;
+	private String[] inv_names;
+	private Entity entity;
 	private int page;
 
-	public VehicleInventories(EntityPlayer player, World world, int x, int y, int z){
+	public VehicleContainers(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
-		this.defbackground = true; this.deftexrect = true; container.gui = this;
-		this.xSize = 194; this.ySize = 134;
-		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-		SeatEntity seat = (SeatEntity)player.getRidingEntity(); veh = seat.getVehicle();
-		for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
-			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
-			if(inv == null) continue; if(inv.getInventoryType() == InventoryType.CONTAINER) continue;
-			if(seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name))){
-				inventories.add(entry.getValue()); inv_names.add(entry.getKey());
-			}
-		} for(int i = 0; i < 8; i++) colors[i] = RGB.WHITE;
+		this.defbackground = true; this.deftexrect = true; container.gui = this; this.xSize = 194; this.ySize = 134;
+		entity = world.getEntityByID(x); inv_names = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlotIds();
+		for(int i = 0; i < 8; i++) colors[i] = InventoryType.CONTAINER.getColor();
 	}
 
 	@Override
 	protected void init(){
-		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 162, MapColor.SNOW.colorValue, "Inventories [-/-]"));
+		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 162, MapColor.SNOW.colorValue, "Container Slots [-/-]"));
 		for(int i = 0; i < 8; i++){
 			texts.put("row" + i, new BasicText(guiLeft + 9, guiTop + 19 + (i * 14), 162, MapColor.SNOW.colorValue, "<---->"));
 			buttons.put("inv" + i, new BasicButton("inv" + i, guiLeft + 7, guiTop + 17 + (i * 14), 7, 17, 166, 12, true));
@@ -72,10 +58,10 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		if(button.name.equals("next")){ updatePage( 1); return true; }
 		if(button.name.startsWith("inv")){
 			int i = Integer.parseInt(button.name.replace("inv", ""));
-			if(i < 0 || (i + (page * 8)) >= inventories.size()) return true;
+			if(i < 0 || (i + (page * 8)) >= inv_names.length) return true;
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("inventory", inv_names.get(i));
-			openGenericGui(936, new int[]{ 0, 0, 0 }, compound);
+			compound.setString("container", inv_names[i + (page * 8)]);
+			openGenericGui(938, new int[]{ entity.getEntityId(), 0, 0 }, compound);
 			return true;
 		}
 		return false;
@@ -88,11 +74,9 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 
 	private void updatePage(int i){
 		page += i; if(page < 0) page = 0;
-		texts.get("top").string = String.format("Inventories [%s/%s]", page + 1, inventories.size() / 8 + 1);
-		for(int j = 0; j < 8; j++){ int k = j + (page * 8); boolean bool = k >= inventories.size();
-			texts.get("row" + j).string = bool ? "" : inv_names.get(k); buttons.get("inv" + j).enabled = !bool;
-			if(!bool){ colors[j] = inventories.get(k).getFunction(InventoryFunction.class, "fvtm:inventory").getInventoryType().getColor(); }
-			else{ colors[j] = RGB.WHITE; }
+		texts.get("top").string = String.format("Container Slots [%s/%s]", page + 1, inv_names.length / 8 + 1);
+		for(int j = 0; j < 8; j++){ int k = j + (page * 8); boolean bool = k >= inv_names.length;
+			texts.get("row" + j).string = bool ? "" : inv_names[k];buttons.get("inv" + j).enabled = !bool;
 		}
 	}
 	

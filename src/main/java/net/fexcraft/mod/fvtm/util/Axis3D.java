@@ -203,4 +203,8 @@ public class Axis3D {
 		return new Vec3f(mat.m00, mat.m10, mat.m20);
 	}
 
+	public double[] toDoubles(){
+		return new double[]{ yaw, pitch, roll };
+	}
+
 }

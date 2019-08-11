@@ -4,9 +4,13 @@ import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
@@ -42,6 +46,13 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				attr.setValue(attr.type().tryParse(packet.nbt.getString("value"))); packet.nbt.setString("value", attr.getStringValue());
 				PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 				break;
+			}
+			case "update_container_holder":{
+				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				if(ent == null){ Print.debug("Entity not found. CHP " + packet.nbt.getInteger("entity")); return; }
+				ContainerHolderUtil.Implementation impl = (Implementation)ent.getCapability(Capabilities.CONTAINER, null);
+				if(impl == null) Print.debug("Capability is null. CHP " + packet.nbt.getInteger("entity"));
+					else impl.sync(false); return;
 			}
 			default: return;
 		}

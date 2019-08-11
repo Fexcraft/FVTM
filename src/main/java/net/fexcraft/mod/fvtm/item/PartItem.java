@@ -62,7 +62,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         	}
         }
         if(type.getDefaultFunctions().size() > 0){
-        	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", type.getBaseModifiers().size()));
+        	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", type.getDefaultFunctions().size()));
         }
         //TODO texture/pos data
         //TODO model data

@@ -6,7 +6,9 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -14,6 +16,7 @@ import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -41,7 +44,13 @@ public class VehicleContainer extends GenericContainer {
 	protected GenericIInventory fluid_io, fuel;
 	protected int empty_index = -1, page, slots;
 	protected long fluid_date;
+	/** When things have to be fixed by force. */
 	protected EntityPlayerMP mpp;
+	//
+	protected ContainerSlot slot;
+	protected ConSlotInv slotInv;
+	protected String slotid;
+	protected Entity entity;
 
 	public VehicleContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
@@ -82,6 +91,24 @@ public class VehicleContainer extends GenericContainer {
 			invpart = veh.getVehicleData().getPart(inv_id = compound.getString("inventory"));
 			function = invpart.getFunction("fvtm:inventory");
 			this.populateSlots();
+		}
+		if(compound.hasKey("container")){ invmode = true;
+			entity = player.world.getEntityByID(xyz[0]); slotid = compound.getString("container");
+			slot = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlot(slotid);
+			//
+			slotInv = new ConSlotInv(slot, entity, this); slots = slot.length;
+			for(int col = 0; col < 12; col++){ if(col >= slot.length) break;
+                addSlotToContainer(new ConSlotInv.SSlot(slotInv, col, 8 + col * 18, 22));
+            }
+	        //
+	        for(int row = 0; row < 3; row++){
+	            for(int col = 0; col < 9; col++){
+	                addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 64 + row * 18));
+	            }
+	        }
+	        for(int col = 0; col < 9; col++){
+	            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 120));
+	        }
 		}
 	}
 
@@ -183,6 +210,7 @@ public class VehicleContainer extends GenericContainer {
         super.onContainerClosed(player);
         if(fluid_io != null){ fluid_io.closeInventory(player); }
         if(fuel != null){ fuel.closeInventory(player); }
+        if(slotInv != null){ slotInv.closeInventory(player); }
     }
     
     @Override
@@ -292,21 +320,6 @@ public class VehicleContainer extends GenericContainer {
         }
         //
         super.detectAndSendChanges();
-        /*for(int i = 0; i < this.inventorySlots.size(); ++i){
-            ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack();
-            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
-            if(!ItemStack.areItemStacksEqual(itemstack1, itemstack)){
-                boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
-                itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
-                this.inventoryItemStacks.set(i, itemstack1);
-                //
-                if(clientStackChanged){ Print.debug(i, itemstack);
-                    for(int j = 0; j < this.listeners.size(); ++j){
-                        ((IContainerListener)this.listeners.get(j)).sendSlotContents(this, i, itemstack1);
-                    }
-                }
-            }
-        }*/
     }
 
 }

@@ -64,4 +64,21 @@ public class ContainerSlot {
 		return "ContainerSlot[" + id + ", " + length + ", " + rotation + "];";
 	}
 	
+	/** True if filled, false otherwise. */
+	public boolean[] getFillStateArray(){
+		boolean[] bools = new boolean[length];
+		for(int i = 0; i < containers.length; i++){
+			if(containers[i] != null){
+				int l = containers[i].getContainerType().length();
+				if(l > 1){
+					for(int j = 0; j < l; j++){
+						if(j + i > bools.length) break;
+						bools[j + i] = true;
+					}
+				}
+				else{ bools[i] = true; }
+			}
+		} return bools;
+	}
+	
 }

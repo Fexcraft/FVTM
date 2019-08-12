@@ -1,14 +1,16 @@
 package net.fexcraft.mod.fvtm.data.container;
 
+import net.fexcraft.lib.common.math.RGB;
+
 /** @author Ferdinand Calo' (FEX___96) */
 public enum ContainerType {
 
     MICRO(1, 0x404040), TINY(2, 0xe20000), SMALL(3, 0x007f7f), MEDIUM(6, 0x007f0e), LARGE(12, 0x00137f);
 	
-	private boolean even; private int length, color;
+	private boolean even; private int length; private RGB color;
 	
 	ContainerType(int length, int color){
-		this.length = length; even = this.length % 2 == 0; this.color = color;
+		this.length = length; even = this.length % 2 == 0; this.color = new RGB(color);
 	}
 	
 	public int length(){ return length; }
@@ -58,6 +60,10 @@ public enum ContainerType {
 	}
 	
 	public int getColor(){
+		return color.packed;
+	}
+	
+	public RGB getRGB(){
 		return color;
 	}
 

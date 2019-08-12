@@ -1,20 +1,18 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
+import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.minecraft.block.material.MapColor;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class VehicleContainerSlot extends GenericGui<VehicleContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_containerslot.png");
-	private ContainerSlot slot;
-	private String slotid;
-	private Entity entity;
 	//
 	private Integer coverx;
 	private int covery, coversx, coversy;
@@ -22,16 +20,14 @@ public class VehicleContainerSlot extends GenericGui<VehicleContainer> {
 	public VehicleContainerSlot(EntityPlayer player, int[] xyz, NBTTagCompound compound){
 		super(texture, new VehicleContainer(player, xyz, compound), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this; this.xSize = 230; this.ySize = 144;
-		entity = player.world.getEntityByID(xyz[0]); slotid = compound.getString("container");
-		slot = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlot(slotid);
 	}
 
 	@Override
 	protected void init(){
-		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 212, MapColor.SNOW.colorIndex, slotid + " / [" + slot.length + "]"));
-		if(slot.length < 12){
-			coverx = guiLeft + 7 + (18 * slot.length); covery = guiTop + 21;
-			coversx = (12 - slot.length) * 18; coversy = 38;
+		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 212, MapColor.SNOW.colorIndex, container.slotid + " / [" + container.slot.length + "]"));
+		if(container.slot.length < 12){
+			coverx = guiLeft + 7 + (18 * container.slot.length); covery = guiTop + 21;
+			coversx = (12 - container.slot.length) * 18; coversy = 18;
 		}
 	}
 
@@ -42,7 +38,19 @@ public class VehicleContainerSlot extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		if(coverx != null){ drawTexturedModalRect(coverx, covery, 0, 218, coversx, coversy); }
+		if(coverx != null){ drawTexturedModalRect(coverx, covery, 0, 238, coversx, coversy); } int count = -1;
+		for(ItemStack stack : container.slotInv.getArray()){
+			count++; if(stack == null || stack.isEmpty()) continue;
+			ContainerData data = stack.getCapability(Capabilities.VAPDATA, null).getContainerData();
+			data.getContainerType().getRGB().glColorApply();
+			drawTexturedModalRect(guiLeft + 7 + (18 * count), guiTop + 39, 7 + (18 * count), 39, 18 * data.getContainerType().length(), 18);
+			RGB.glColorReset();
+			if(data.getContainerType().length() > 1){
+				for(int i = 1; i < data.getContainerType().length(); i++){
+					drawTexturedModalRect(guiLeft + 7 + (18 * (i + count)), guiTop + 21, 0, 220, 18, 18);
+				}
+			}
+		}
 	}
 
 	@Override

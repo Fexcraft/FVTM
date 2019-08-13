@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
@@ -20,10 +19,9 @@ public class ConSlotInv implements IInventory {
 	private Entity entity;
 	//
 	private ItemStack[] array;
-	private VehicleContainer con;
 
-    public ConSlotInv(ContainerSlot slot, Entity entity, VehicleContainer con){
-        this.slot = slot; this.entity = entity; array = new ItemStack[slot.length]; this.con = con;
+    public ConSlotInv(ContainerSlot slot, Entity entity){
+        this.slot = slot; this.entity = entity; array = new ItemStack[slot.length];
     	for(int i = 0; i < slot.length; i++){
         	array[i] = slot.containers[i] == null ? null : slot.containers[i].newItemStack();
         }
@@ -31,7 +29,7 @@ public class ConSlotInv implements IInventory {
 
     private void copytoslot(){
     	for(int i = 0; i < array.length; i++){
-    		slot.containers[i] = array[i] == null ? null : ((ContainerItem)array[i].getItem()).getData(array[i]);
+    		slot.containers[i] = array[i] == null || array[i].isEmpty() ? null : ((ContainerItem)array[i].getItem()).getData(array[i]);
     	}
 	}
 
@@ -69,7 +67,6 @@ public class ConSlotInv implements IInventory {
     public ItemStack decrStackSize(int index, int count){
     	if(array[index] != null){
     		ItemStack stack = array[index]; array[index] = null; this.copytoslot();
-    		if(con.mpp != null) con.mpp.connection.sendPacket(new SPacketSetSlot(con.windowId, index, ItemStack.EMPTY));
     		return stack;
     	}
     	return ItemStack.EMPTY;
@@ -77,13 +74,12 @@ public class ConSlotInv implements IInventory {
 
     @Override
     public ItemStack removeStackFromSlot(int index){
-    	if(con.mpp != null) con.mpp.connection.sendPacket(new SPacketSetSlot(con.windowId, index, ItemStack.EMPTY));
     	this.copytoslot(); return array[index] = null;
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack){
-        array[index] = stack; this.copytoslot(); if(con.mpp != null) con.mpp.connection.sendPacket(new SPacketSetSlot(con.windowId, index, stack));
+        array[index] = stack; this.copytoslot();
     }
 
     @Override

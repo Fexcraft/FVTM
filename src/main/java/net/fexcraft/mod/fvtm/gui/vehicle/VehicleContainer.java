@@ -96,7 +96,7 @@ public class VehicleContainer extends GenericContainer {
 			entity = player.world.getEntityByID(xyz[0]); slotid = compound.getString("container");
 			slot = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlot(slotid);
 			//
-			slotInv = new ConSlotInv(slot, entity, this); slots = slot.length;
+			slotInv = new ConSlotInv(slot, entity); slots = slot.length;
 			for(int col = 0; col < 12; col++){ if(col >= slot.length) break;
                 addSlotToContainer(new ConSlotInv.SSlot(slotInv, col, 8 + col * 18, 22));
             }
@@ -319,7 +319,19 @@ public class VehicleContainer extends GenericContainer {
             }
         }
         //
-        super.detectAndSendChanges();
+        if(slotInv == null){
+        	super.detectAndSendChanges();
+        }
+        else{
+            for(int i = 0; i < this.inventorySlots.size(); ++i){
+                ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack(), itemstack1 = this.inventoryItemStacks.get(i);
+                if(ItemStack.areItemStacksEqual(itemstack1, itemstack)) continue;
+                boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
+                itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy(); this.inventoryItemStacks.set(i, itemstack1);
+                if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, i, itemstack1)); if(!clientStackChanged) continue;
+                for(int j = 0; j < this.listeners.size(); ++j){ this.listeners.get(j).sendSlotContents(this, i, itemstack1); }
+            }
+        }
     }
 
 }

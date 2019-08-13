@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import java.util.HashMap;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -25,11 +27,12 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "There is already another part with that category installed."); return false;
 		}
 		ConnectorData idata = part.getType().getInstallationHandlerData();
+		String regname = data.getType().getRegistryName().toString();
 		if(cat.startsWith("front")){
 			if(data.getFrontConnector() != null){
 				Print.chatnn(sender, "Front Connector Pos is already set."); return false;
 			}
-			if(idata.getFrontPosition() == null){
+			if(idata.getFrontPosition(regname) == null){
 				Print.chatnn(sender, "This is not a Front Connector Part."); return false;
 			}
 		}
@@ -37,7 +40,7 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 			if(data.getRearConnector() != null){
 				Print.chatnn(sender, "Rear Connector Pos is already set."); return false;
 			}
-			if(idata.getRearPosition() == null){
+			if(idata.getRearPosition(regname) == null){
 				Print.chatnn(sender, "This is not a Rear Connector Part."); return false;
 			}
 		}
@@ -48,7 +51,8 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part); part.setInstalledPos(getPosForPart(part, data.getType().getRegistryName().toString()));
 		boolean front = cat.startsWith("front"); ConnectorData idata = part.getType().getInstallationHandlerData();
-		data.setConnector(front ? idata.getFrontPosition() : idata.getRearPosition(), front);
+		String regname = data.getType().getRegistryName().toString();
+		data.setConnector(front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname), front);
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 
@@ -75,17 +79,32 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 	/** Default Part Install Handler Data */
 	public static class ConnectorData {
 		
-		private Vec3d front, rear;
 		private boolean removable;
 		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
+		private HashMap<String, Vec3d> front = new HashMap<String, Vec3d>();
+		private HashMap<String, Vec3d> rear = new HashMap<String, Vec3d>();
 		
 		public ConnectorData(JsonObject obj){
 			if(obj.has("Front") && obj.get("Front").isJsonArray()){
-				front = Pos.fromJson(obj.get("Front"), true).to16Double();
+				front.put("*", Pos.fromJson(obj.get("Front"), true).to16Double());
 			}
 			if(obj.has("Rear") && obj.get("Rear").isJsonArray()){
-				rear = Pos.fromJson(obj.get("Rear"), true).to16Double();
+				rear.put("*", Pos.fromJson(obj.get("Rear"), true).to16Double());
 			}
+			//
+			if(obj.has("Front") && obj.get("Front").isJsonObject()){
+				JsonObject jsn = obj.get("Front").getAsJsonObject();
+				for(java.util.Map.Entry<String, JsonElement> entry : jsn.entrySet()){
+					front.put(entry.getKey(), Pos.fromJson(entry.getValue(), true).to16Double());
+				}
+			}
+			if(obj.has("Rear") && obj.get("Rear").isJsonObject()){
+				JsonObject jsn = obj.get("Rear").getAsJsonObject();
+				for(java.util.Map.Entry<String, JsonElement> entry : jsn.entrySet()){
+					rear.put(entry.getKey(), Pos.fromJson(entry.getValue(), true).to16Double());
+				}
+			}
+			//
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
 			if(obj.has("Compatible")){
 				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
@@ -94,13 +113,15 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 				});
 			}
 		}
-		
-		public Vec3d getFrontPosition(){
-			return front;
+
+		public Vec3d getFrontPosition(String id){
+			if(front.containsKey(id)) return front.get(id);
+			return front.get("*");
 		}
 		
-		public Vec3d getRearPosition(){
-			return rear;
+		public Vec3d getRearPosition(String id){
+			if(rear.containsKey(id)) return rear.get(id);
+			return rear.get("*");
 		}
 		
 		public boolean isRemovable(){

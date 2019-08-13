@@ -89,11 +89,10 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			NBTTagCompound compound = new NBTTagCompound();
 			for(int i = 0; i < slots.length; i++){
 				compound.setTag("Slot" + i, slots[i].write(null));
-			} compound.setInteger("Slots", slots.length); Print.debug(compound, slots); return compound;
+			} compound.setInteger("Slots", slots.length); return compound;
 		}
 		
 		public void read(EnumFacing side, NBTTagCompound compound){
-			Print.debug(compound);
 			slots = new ContainerSlot[compound.getInteger("Slots")];
 			for(int i = 0; i < slots.length; i++){
 				if(!compound.hasKey("Slot" + i)) continue;//this rather bad

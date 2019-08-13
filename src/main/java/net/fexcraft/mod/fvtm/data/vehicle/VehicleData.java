@@ -70,9 +70,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(type.getPreInstalledParts() != null){
 			for(java.util.Map.Entry<String, ResourceLocation> entry : type.getPreInstalledParts().entrySet()){
 				Part part = Resources.PARTS.getValue(entry.getValue()); if(part == null) continue;
-				this.parts.put(entry.getKey(), new PartData(part));
+				this.installPart(null, new PartData(part), entry.getKey());
 			}
-			if(parts.size() > 0) this.refreshModificableDataByParts();
 		}
 	}
 
@@ -141,7 +140,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//type = Resources.getVehicle(compound.getString("Vehicle"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		//
-		this.parts.clear();
+		this.parts.entrySet().removeIf(pre -> !type.preinstalled.containsKey(pre.getKey()));
 		NBTTagList list = (NBTTagList)compound.getTag("Parts");
 		if(list != null){
 			for(NBTBase base : list){

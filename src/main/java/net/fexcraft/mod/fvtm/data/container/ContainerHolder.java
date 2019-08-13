@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.container;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -17,8 +18,9 @@ public interface ContainerHolder {
 	/** Works only during setup. */
 	public void addContainerSlot(ContainerSlot slot);
 	
-	/** Opens the dedicated universal FVTM GUI. NOTE: Currently a client side method, shall get fixed someday. */
-	@SideOnly(Side.CLIENT) public void openGUI();
+	/** Opens the dedicated universal FVTM ContainerHolder GUI.
+	 * @param player - can be null on client side */
+	public void openGUI(EntityPlayer player);
 
 	/** Drops the loaded containers, use e.g. before removing an entity. */
 	public void dropContents();

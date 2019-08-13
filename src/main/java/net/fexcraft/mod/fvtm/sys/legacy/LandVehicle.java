@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.Axis3D;
@@ -594,7 +595,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 	return true;
                 }
             }
-            //TODO other Item interaction
+            if(stack.getItem() instanceof ContainerItem){
+            	this.getCapability(Capabilities.CONTAINER, null).openGUI(player);
+            }
+            //space for other item interaction
         }
         if(!vehicle.getScripts().isEmpty()){
             for(VehicleScript script : vehicle.getScripts()){

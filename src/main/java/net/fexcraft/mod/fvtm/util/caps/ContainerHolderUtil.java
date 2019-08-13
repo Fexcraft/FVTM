@@ -4,6 +4,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -11,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -143,8 +145,12 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		}
 
 		@SideOnly(Side.CLIENT) @Override
-		public void openGUI(){
-			GenericGui.openGui("fvtm", 937, new int[]{ entity.getEntityId(), 0, 0 });
+		public void openGUI(EntityPlayer player){
+			if(entity.world.isRemote){
+				GenericGui.openGui("fvtm", 937, new int[]{ entity.getEntityId(), 0, 0 }); return;
+			}
+			if(player == null) Static.exception(new Exception("Tried to open GUI on server side, but no player specified / is NULL."), false);
+			GenericGui.openGui("fvtm", 937, new int[]{ entity.getEntityId(), 0, 0 }, player);
 		}
 
 		@Override

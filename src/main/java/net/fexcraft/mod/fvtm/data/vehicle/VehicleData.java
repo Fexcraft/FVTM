@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.Map.Entry;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -221,11 +220,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			if(part.getType().getVehicleScripts().size() > 0){
 				for(Class<? extends VehicleScript> clazz : part.getType().getVehicleScripts()){
 					try{
-						String id = clazz.getMethod("getId").invoke(null).toString(); boolean found = false;
+						VehicleScript scrapt = clazz.newInstance(); String id = scrapt.getId(); boolean found = false;
 						for(VehicleScript script : scripts) if(script.getId().equals(id)){ found = true; break; }
 						if(!found){ scripts.add(clazz.newInstance()); }
 					}
-					catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+					catch(InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e){
 						e.printStackTrace();
 					}
 				}

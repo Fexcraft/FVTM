@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.UUID;
 
+import net.fexcraft.mod.fvtm.util.Axis3D;
+
 public interface VehicleEntity {
 	
 	public VehicleData getVehicleData();
@@ -17,5 +19,7 @@ public interface VehicleEntity {
 	public default VehicleEntity getRearCoupledEntity(){ return getCoupledEntity(false); }
 	
 	public boolean isLocked();
+
+	public Axis3D getAxes();
 
 }

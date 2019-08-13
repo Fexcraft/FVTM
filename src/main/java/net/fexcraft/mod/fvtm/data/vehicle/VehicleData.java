@@ -15,6 +15,7 @@ import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
@@ -66,6 +67,13 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		this.secondary = type.getDefaultSecondaryColor().copy();
 		this.front_conn = type.getDefaultFrontConnector();
 		this.rear_conn = type.getDefaultRearConnector();
+		if(type.getPreInstalledParts() != null){
+			for(java.util.Map.Entry<String, ResourceLocation> entry : type.getPreInstalledParts().entrySet()){
+				Part part = Resources.PARTS.getValue(entry.getValue()); if(part == null) continue;
+				this.parts.put(entry.getKey(), new PartData(part));
+			}
+			if(parts.size() > 0) this.refreshModificableDataByParts();
+		}
 	}
 
 	@Override

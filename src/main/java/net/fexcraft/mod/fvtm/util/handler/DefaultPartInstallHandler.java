@@ -119,7 +119,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				});
 			}
 			if(obj.has("Incompatible")){
-				obj.get("Incompable").getAsJsonArray().forEach(elm -> {
+				obj.get("Incompatible").getAsJsonArray().forEach(elm -> {
 					JsonObject jsn = elm.getAsJsonObject();
 					ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
 					this.incompatible.put(jsn.get("vehicle").getAsString(), parts);

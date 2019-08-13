@@ -1,8 +1,11 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
+
+import javax.annotation.Nullable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -43,6 +46,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected LegacyData legacy_data;
 	protected boolean trailer;
 	protected Vec3d def_front_conn, def_rear_conn;
+	protected HashMap<String, ResourceLocation> preinstalled;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -134,6 +138,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		if(obj.has("RearConnector")){
 			this.def_rear_conn = Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()).to16Double();
 		}
+		if(obj.has("PreInstalled")){
+			preinstalled = new HashMap<>(); JsonObject pre = obj.get("PreInstalled").getAsJsonObject();
+			for(java.util.Map.Entry<String, JsonElement> entry : pre.entrySet()){
+				preinstalled.put(entry.getKey(), new ResourceLocation(entry.getValue().getAsString()));
+			}
+		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -222,6 +232,11 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	
 	public Vec3d getDefaultRearConnector(){
 		return def_rear_conn;
+	}
+	
+	@Nullable
+	public HashMap<String, ResourceLocation> getPreInstalledParts(){
+		return preinstalled;
 	}
 
 }

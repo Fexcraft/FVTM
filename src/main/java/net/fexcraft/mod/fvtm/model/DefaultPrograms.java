@@ -231,6 +231,29 @@ public class DefaultPrograms {
 		
 	};
 	
+	public static class AttributeVisible implements Program {
+		
+		private Attribute<?> attr; private String attribute; boolean ifis;
+		
+		public AttributeVisible(String attribute, boolean ifis){
+			this.attribute = attribute; this.ifis = ifis;
+		}
+
+		@Override public String getId(){ return "fvtm:attribute_visible"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			attr = data.getAttribute(attribute); if(attr == null) return;
+			if(attr.getBooleanValue() != ifis) list.visible = false;
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			list.visible = true;
+		}
+		
+	};
+	
 	/*public static final Program STEERING_X = new Program(){
 		@Override public String getId(){ return "fvtm:steering_x"; }
 		//

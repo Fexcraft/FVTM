@@ -186,7 +186,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
             catch(Exception e){ e.printStackTrace(); }
 		}
 		if(obj.has("Scripts")){
-			JsonArray array = obj.get("scripts").getAsJsonArray();
+			JsonArray array = obj.get("Scripts").getAsJsonArray();
 			for(JsonElement elm : array){
 	            try{ scripts.add((Class<? extends VehicleScript>)Class.forName(elm.getAsString().replace(".class", ""))); }
 	            catch(Exception e){ e.printStackTrace(); }

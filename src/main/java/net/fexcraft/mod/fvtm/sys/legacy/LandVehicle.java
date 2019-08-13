@@ -1211,12 +1211,12 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public void setupCapability(ContainerHolder capability){
-		if(vehicle == null) return;
-		for(PartData data : vehicle.getParts().values()){
-			if(!data.hasFunction("fvtm:container")) continue;
-			capability.addContainerSlot(data.getFunction(ContainerFunction.class, "fvtm:container").getAsNewSlot());
-			Print.debug("Added Container Slot from: " + data.getType().getName());
-		} ((Implementation)capability).setup = true; if(!world.isRemote) capability.sync(false);
+		if(vehicle == null) return; if(world.isRemote){ capability.sync(true); return; }
+		for(java.util.Map.Entry<String, PartData> entry : vehicle.getParts().entrySet()){
+			if(!entry.getValue().hasFunction("fvtm:container")) continue;
+			capability.addContainerSlot(entry.getValue().getFunction(ContainerFunction.class, "fvtm:container").getAsNewSlot(entry.getKey()));
+			Print.debug("Added Container Slot from: " + entry.getValue().getType().getName() + " / " + entry.getKey());
+		} ((Implementation)capability).setup = true;
 	}
 
 	@Override

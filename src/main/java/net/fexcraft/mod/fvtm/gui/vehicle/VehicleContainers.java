@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -59,9 +58,7 @@ public class VehicleContainers extends GenericGui<VehicleContainer> {
 		if(button.name.startsWith("inv")){
 			int i = Integer.parseInt(button.name.replace("inv", ""));
 			if(i < 0 || (i + (page * 8)) >= inv_names.length) return true;
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("container", inv_names[i + (page * 8)]);
-			openGenericGui(938, new int[]{ entity.getEntityId(), 0, 0 }, compound);
+			openGui("fvtm", 938, new int[]{ entity.getEntityId(), i + (page * 8), 938 });
 			return true;
 		}
 		return false;

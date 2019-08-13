@@ -18,7 +18,7 @@ public class ContainerFunction extends StaticFuntion {
 	private ContainerType onlytype;
 	private Pos position;
 	private int rotation;
-	private String name;
+	//private String name;
 	private int length;
 
 	public ContainerFunction(JsonObject obj){
@@ -26,8 +26,7 @@ public class ContainerFunction extends StaticFuntion {
 		if(obj.has("Type")){ onlytype = ContainerType.valueOf(JsonUtil.getIfExists(obj, "type", "MEDIUM")); length = onlytype.length(); }
 		position = Pos.fromJson(obj, false); rotation = JsonUtil.getIfExists(obj, "rot", 0).intValue();
 		length = JsonUtil.getIfExists(obj, "length", 6).intValue(); if(length < 1) length = 6;
-		name = JsonUtil.getIfExists(obj, "name", "unnamed");
-		
+		//name = JsonUtil.getIfExists(obj, "name", "unnamed");
 	}
 
 	@Override
@@ -35,8 +34,8 @@ public class ContainerFunction extends StaticFuntion {
 		return "fvtm:container";
 	}
 
-	public ContainerSlot getAsNewSlot(){
-		return new ContainerSlot(name, (byte)length, position.to16Double(), rotation, onlytype);
+	public ContainerSlot getAsNewSlot(String category){
+		return new ContainerSlot(category, (byte)length, position.to16Double(), rotation, onlytype);
 	}
 
 }

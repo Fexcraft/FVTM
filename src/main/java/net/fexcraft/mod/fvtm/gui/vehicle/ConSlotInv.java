@@ -23,13 +23,13 @@ public class ConSlotInv implements IInventory {
     public ConSlotInv(ContainerSlot slot, Entity entity){
         this.slot = slot; this.entity = entity; array = new ItemStack[slot.length];
     	for(int i = 0; i < slot.length; i++){
-        	array[i] = slot.containers[i] == null ? null : slot.containers[i].newItemStack();
+        	array[i] = slot.getContainers()[i] == null ? null : slot.getContainers()[i].newItemStack();
         }
     }
 
     private void copytoslot(){
     	for(int i = 0; i < array.length; i++){
-    		slot.containers[i] = array[i] == null || array[i].isEmpty() ? null : ((ContainerItem)array[i].getItem()).getData(array[i]);
+    		slot.setContainer(i, array[i] == null || array[i].isEmpty() ? null : ((ContainerItem)array[i].getItem()).getData(array[i]));
     	}
 	}
 
@@ -55,7 +55,7 @@ public class ConSlotInv implements IInventory {
 
     @Override
     public boolean isEmpty(){
-    	for(ContainerData data : slot.containers) if(data != null) return false; return true;
+    	for(ContainerData data : slot.getContainers()) if(data != null) return false; return true;
     }
 
     @Override

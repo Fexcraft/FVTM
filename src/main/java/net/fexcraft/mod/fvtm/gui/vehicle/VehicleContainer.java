@@ -80,20 +80,10 @@ public class VehicleContainer extends GenericContainer {
 	            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
 	        }
 		}
-	}
-	
-	public VehicleContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(player); initpacket = compound; if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-		//
-		if(compound.hasKey("inventory")){ invmode = true;
-			SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
-			invpart = veh.getVehicleData().getPart(inv_id = compound.getString("inventory"));
-			function = invpart.getFunction("fvtm:inventory");
-			this.populateSlots();
-		}
-		if(compound.hasKey("container")){ invmode = true;
-			entity = player.world.getEntityByID(xyz[0]); slotid = compound.getString("container");
+		if(z == 938){
+			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
+			entity = player.world.getEntityByID(x); this.inventoryItemStacks.clear(); this.inventorySlots.clear();
+			slotid = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlotIds()[y];
 			slot = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlot(slotid);
 			//
 			slotInv = new ConSlotInv(slot, entity); slots = slot.length;
@@ -111,12 +101,23 @@ public class VehicleContainer extends GenericContainer {
 	        }
 		}
 	}
+	
+	public VehicleContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
+		super(player); initpacket = compound; if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
+		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
+		//
+		if(compound.hasKey("inventory")){ invmode = true;
+			SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
+			invpart = veh.getVehicleData().getPart(inv_id = compound.getString("inventory"));
+			function = invpart.getFunction("fvtm:inventory");
+			this.populateSlots();
+		}
+	}
 
 	protected void populateSlots(){
 		this.inventoryItemStacks.clear(); this.inventorySlots.clear(); this.empty_index = -1; slots = 0;
 		switch(function.getInventoryType()){
-			case CONTAINER:
-				break;
+			case CONTAINER: return;
 			case ENERGY:
 				break;
 			case FLUID:{
@@ -328,7 +329,7 @@ public class VehicleContainer extends GenericContainer {
                 if(ItemStack.areItemStacksEqual(itemstack1, itemstack)) continue;
                 boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
                 itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy(); this.inventoryItemStacks.set(i, itemstack1);
-                if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, i, itemstack1)); if(!clientStackChanged) continue;
+                if(!clientStackChanged) continue; if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, i, itemstack1));
                 for(int j = 0; j < this.listeners.size(); ++j){ this.listeners.get(j).sendSlotContents(this, i, itemstack1); }
             }
         }

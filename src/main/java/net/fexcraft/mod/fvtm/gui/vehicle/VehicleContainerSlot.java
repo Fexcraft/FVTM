@@ -7,8 +7,8 @@ import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 public class VehicleContainerSlot extends GenericGui<VehicleContainer> {
 	
@@ -17,14 +17,15 @@ public class VehicleContainerSlot extends GenericGui<VehicleContainer> {
 	private Integer coverx;
 	private int covery, coversx, coversy;
 
-	public VehicleContainerSlot(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(texture, new VehicleContainer(player, xyz, compound), player);
+	public VehicleContainerSlot(EntityPlayer player, World world, int x, int y, int z){
+		super(texture, new VehicleContainer(player, world, x, y, z), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this; this.xSize = 230; this.ySize = 144;
 	}
 
 	@Override
 	protected void init(){
-		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 212, MapColor.SNOW.colorIndex, container.slotid + " / [" + container.slot.length + "]"));
+		String string = container.slot.onlytype == null ? null : container.slot.onlytype.name();
+		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 212, MapColor.SNOW.colorIndex, container.slotid + " / [" + container.slot.length + "]" + (string == null ? "" : " / " + string)));
 		if(container.slot.length < 12){
 			coverx = guiLeft + 7 + (18 * container.slot.length); covery = guiTop + 21;
 			coversx = (12 - container.slot.length) * 18; coversy = 18;

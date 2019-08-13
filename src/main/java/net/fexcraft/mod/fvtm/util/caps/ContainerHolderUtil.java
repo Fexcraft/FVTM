@@ -89,10 +89,11 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			NBTTagCompound compound = new NBTTagCompound();
 			for(int i = 0; i < slots.length; i++){
 				compound.setTag("Slot" + i, slots[i].write(null));
-			} compound.setInteger("Slots", slots.length); return compound;
+			} compound.setInteger("Slots", slots.length); Print.debug(compound, slots); return compound;
 		}
 		
 		public void read(EnumFacing side, NBTTagCompound compound){
+			Print.debug(compound);
 			slots = new ContainerSlot[compound.getInteger("Slots")];
 			for(int i = 0; i < slots.length; i++){
 				if(!compound.hasKey("Slot" + i)) continue;//this rather bad
@@ -124,14 +125,25 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		@Override
 		public void addContainerSlot(ContainerSlot slot){
 			if(setup){ Print.log(entity.getName() + " --> Tried to register a new Container Slot, but setup is already over."); return; }
+			if(contains(slot.id)){
+				ContainerSlot con = getContainerSlot(slot.id);
+				con.position = slot.position; con.rotation = slot.rotation; return;
+			}
 			ContainerSlot[] arr = new ContainerSlot[slots.length + 1];
 			for(int i = 0; i < slots.length; i++) arr[i] = slots[i];
 			arr[slots.length] = slot; slots = arr; this.sync(false);
 		}
 
+		private boolean contains(String id){
+			for(String str : this.getContainerSlotIds()) if(str.equals(id)) return true; return false;
+		}
+
 		@SideOnly(Side.CLIENT) @Override
 		public void render(double x, double y, double z){
-			//TODO
+			org.lwjgl.opengl.GL11.glPushMatrix();
+			if(x != 0d || y != 0d || z != 0d) org.lwjgl.opengl.GL11.glTranslated(x, y, z);
+			for(ContainerSlot slot : slots) slot.render(entity);
+			org.lwjgl.opengl.GL11.glPopMatrix();
 		}
 
 		@Override
@@ -155,8 +167,9 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public void dropContents(){
+			if(entity.world.isRemote) return;
 			for(ContainerSlot slot : slots){
-				for(ContainerData data : slot.containers){
+				for(ContainerData data : slot.getContainers()){
 					if(data == null) continue;
 					EntityItem stack = new EntityItem(entity.world);
 					stack.setItem(data.newItemStack());

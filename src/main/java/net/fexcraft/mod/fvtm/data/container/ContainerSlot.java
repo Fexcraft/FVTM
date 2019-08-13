@@ -1,15 +1,18 @@
 package net.fexcraft.mod.fvtm.data.container;
 
-import com.sun.istack.internal.Nullable;
+import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**  @author Ferdinand Calo' (FEX___96) */
 public class ContainerSlot {
 	
-	public ContainerData[] containers;
+	private ContainerData[] containers;
 	public ContainerType onlytype;
 	public Vec3d position;
 	public float rotation;
@@ -32,7 +35,7 @@ public class ContainerSlot {
 		compound.setString("Name", id);
 		compound.setDouble("PositionX", position.x);
 		compound.setDouble("PositionY", position.y);
-		compound.setDouble("PositionX", position.z);
+		compound.setDouble("PositionZ", position.z);
 		compound.setFloat("RotationY", rotation);
 		for(byte i = 0; i < containers.length; i++){
 			if(containers[i] == null) continue;
@@ -52,7 +55,7 @@ public class ContainerSlot {
 		for(byte i = 0; i < containers.length; i++){
 			if(!compound.hasKey("Slot" + i)) continue;
 			containers[i] = Resources.getContainerData(compound.getCompoundTag("Slot" + i));
-		} return this;
+		} renderoffset = null; return this;
 	}
 
 	public void clear(){
@@ -79,6 +82,43 @@ public class ContainerSlot {
 				else{ bools[i] = true; }
 			}
 		} return bools;
+	}
+	
+	public ContainerData[] getContainers(){
+		return containers;
+	}
+	
+	public void setContainer(int index, ContainerData con){
+		containers[index] = con; renderoffset = null;
+	}
+	
+	private float[] renderoffset;
+	
+	@SideOnly(Side.CLIENT)
+	public void render(Entity entity){
+        if(renderoffset == null) loadRenderOffset();
+        org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 1f, 0f);
+        org.lwjgl.opengl.GL11.glTranslated(position.x, position.y, position.z);
+        org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 0f, 1f);
+        org.lwjgl.opengl.GL11.glRotatef(rotation, 0, 1, 0);
+        for(int i = 0; i < containers.length; i++){
+        	if(containers[i] != null){
+        		//Print.debug("Rendering Slot Sub " + i);
+	        	if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(renderoffset[i], 0, 0);
+	        	net.fexcraft.lib.tmt.ModelBase.bindTexture(containers[i].getTexture());
+        		containers[i].getType().getModel().render(containers[i], null, entity, i);
+	        	if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(-renderoffset[i], 0, 0);
+        	}
+        }
+        org.lwjgl.opengl.GL11.glTranslated(-position.x, -position.y, -position.z);
+	}
+
+	private void loadRenderOffset(){
+		renderoffset = new float[length];
+		for(int i = 0; i < containers.length; i++){
+			if(containers[i] == null) continue;
+			renderoffset[i] = i + (containers[i].getContainerType().length() / 2f) - (length / 2f);
+		}
 	}
 	
 }

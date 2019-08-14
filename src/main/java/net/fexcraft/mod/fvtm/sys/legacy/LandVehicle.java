@@ -361,6 +361,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	}
             	return true;
             }
+            case MOUSE_MAIN: case MOUSE_RIGHT: return false;
             default:{ Print.chat(player, String.format("Task for keypress %s not found.", key)); return false; }
         }
     }

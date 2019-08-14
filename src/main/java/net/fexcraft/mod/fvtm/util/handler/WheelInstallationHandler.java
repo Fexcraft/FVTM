@@ -48,8 +48,7 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 	}
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		data.getParts().put(cat, part);
-		part.setInstalledPos(data.getWheelSlots().get(cat).pos());
+		data.getParts().put(cat, part); part.setInstalledPos(data.getWheelSlots().get(cat).pos());
 		WheelFunction func = part.getFunction("fvtm:wheel");
 		if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
 		WheelData idata = part.getType().getInstallationHandlerData();

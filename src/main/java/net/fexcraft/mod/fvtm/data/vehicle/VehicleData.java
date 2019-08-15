@@ -139,9 +139,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//type = Resources.getVehicle(compound.getString("Vehicle"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		//
-		this.parts.entrySet().removeIf(pre -> !type.preinstalled.containsKey(pre.getKey()));
+		//this.parts.entrySet().removeIf(pre -> !type.preinstalled.containsKey(pre.getKey()));
 		NBTTagList list = (NBTTagList)compound.getTag("Parts");
 		if(list != null){
+			parts.clear();
 			for(NBTBase base : list){
 				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("InstalledAs")) continue;
 				this.parts.put(com.getString("InstalledAs"), Resources.getPartData(com));

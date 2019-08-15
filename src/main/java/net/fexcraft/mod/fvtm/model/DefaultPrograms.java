@@ -166,15 +166,38 @@ public class DefaultPrograms {
 	};
 	
 	public static final Program STEERING_WHEEL_Z = new SteeringWheel(2, 1f), STEERING_WHEEL_X = new SteeringWheel(0, 1f), STEERING_WHEEL_Y = new SteeringWheel(1, 1f);
+	public static final Program STEERING_WHEEL_CZ = new SteeringWheelCentered(2, 1f), STEERING_WHEEL_CX = new SteeringWheelCentered(0, 1f), STEERING_WHEEL_CY = new SteeringWheelCentered(1, 1f);
+	
+	public static class SteeringWheel implements Program {
+		
+		private byte axis; private float ratio; private String id;
+		
+		public SteeringWheel(int axis, float ratio){
+			this.axis = (byte)axis; this.ratio = ratio; id = "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
+		}
+
+		@Override public String getId(){ return id; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			list.rotateAxis(data.getAttribute("steering_angle").getFloatValue() * ratio, axis, true);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			list.rotateAxis(0, axis, true);
+		}
+		
+	};
 	
 	/** Only works with centered steering wheels and translated into position. */
-	public static class SteeringWheel implements Program {
+	public static class SteeringWheelCentered implements Program {
 		
 		private byte x, y, z; private float ratio; private String id;
 		
-		public SteeringWheel(int axis, float ratio){
+		public SteeringWheelCentered(int axis, float ratio){
 			x = (byte)(axis == 0 ? 1 : 0); y = (byte)(axis == 1 ? 1 : 0); z = (byte)(axis == 2 ? 1 : 0); this.ratio = ratio;
-			id = "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
+			id = "fvtm:steering_c" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
 		}
 
 		@Override public String getId(){ return id; }

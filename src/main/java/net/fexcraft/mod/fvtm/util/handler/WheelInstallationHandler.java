@@ -7,14 +7,12 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.math.Vec3d;
 
 public class WheelInstallationHandler extends PartInstallationHandler {
 	
@@ -51,9 +49,9 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 		data.getParts().put(cat, part); part.setInstalledPos(data.getWheelSlots().get(cat).pos());
 		WheelFunction func = part.getFunction("fvtm:wheel");
 		if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
-		WheelData idata = part.getType().getInstallationHandlerData();
-		Vec3d vec = part.getInstalledPos().to16Double();
-		data.getWheelPositions().put(cat, vec.addVector(0, -idata.radius * Static.sixteenth, (cat.contains("left") ? -idata.width : idata.width) * Static.sixteenth));
+		WheelData idata = part.getType().getInstallationHandlerData(); Pos partpos = part.getInstalledPos();
+		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.radius, -partpos.z + (cat.contains("left") ? idata.width : -idata.width)).to16Double());
+		Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 

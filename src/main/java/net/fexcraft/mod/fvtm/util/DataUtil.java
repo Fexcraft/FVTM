@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -135,6 +137,20 @@ public class DataUtil {
 		if(base instanceof NBTTagList == false) return null; NBTTagList list = (NBTTagList)base;
 		if(list.hasNoTags() || list.tagCount() < 3) return null;
 		return new Vec3d(list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2));
+	}
+
+	public static NBTBase writeVec3f(Vec3f vec){
+		NBTTagList list = new NBTTagList();
+		list.appendTag(new NBTTagFloat(vec.xCoord));
+		list.appendTag(new NBTTagFloat(vec.yCoord));
+		list.appendTag(new NBTTagFloat(vec.zCoord));
+		return list;
+	}
+
+	public static Vec3f readVec3f(NBTBase tag){
+		if(tag instanceof NBTTagList == false) return null; NBTTagList list = (NBTTagList)tag;
+		if(list.hasNoTags() || list.tagCount() < 3) return null;
+		return new Vec3f(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
 	}
 
 }

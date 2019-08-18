@@ -38,10 +38,12 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
+import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
@@ -56,6 +58,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
@@ -237,7 +240,7 @@ public class Resources {
 
 	private static Model<?, ?> getEmptyModelFromClass(Class<? extends Model<?, ?>> clazz){
 		//if(clazz == BlockModel.class) return BlockModel.EMPTY;
-		//if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
+		if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
 		if(clazz == PartModel.class) return PartModel.EMPTY;
 		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
 		if(clazz == RoadSignModel.class) return RoadSignModel.EMPTY;
@@ -356,11 +359,11 @@ public class Resources {
 		return ROADSIGNS.getValue(resloc);
 	}	
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
-		event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
-		event.addCapability(new ResourceLocation("fvtm:raildata"), new WorldRailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
-	}*/
+		//event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
+		event.addCapability(new ResourceLocation("fvtm:raildata"), new RailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+	}
 	
 	@SubscribeEvent
 	public void onEntityCapabilities(AttachCapabilitiesEvent<Entity> event){

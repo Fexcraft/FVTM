@@ -19,11 +19,17 @@ public class Junction {
 	public boolean crossing, switch0, switch1;
 	public RailData root;
 	
+	/** General Constructor */
 	public Junction(RailData root, Vec316f pos){
 		vecpos = pos; tracks = new ArrayList<Track>(); this.root = root;
 		this.switch0 = this.switch1 = false; crossing = false;
 	}
 	
+	/** Only to be used from RailRegion.class */
+	protected Junction(RailData world){
+		this.root = world;
+	}
+
 	public Junction setRoot(RailData data){
 		this.root = data; return this;
 	}
@@ -55,7 +61,11 @@ public class Junction {
 		return compound;
 	}
 	
-	public Vec3f getVecPos(){
+	public Vec316f getVec316f(){
+		return vecpos;
+	}
+	
+	public Vec3f getVec3f(){
 		return vecpos.vector;
 	}
 

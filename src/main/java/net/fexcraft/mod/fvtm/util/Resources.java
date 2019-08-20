@@ -18,6 +18,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
@@ -64,6 +65,8 @@ import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -369,6 +372,14 @@ public class Resources {
 	public void onEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
 		if(event.getObject() instanceof ContainerHoldingEntity){
 			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
+		}
+	}
+	
+	@SubscribeEvent //TODO make sure it runs on server side only, so far no client tasks exists
+	public void onServerTick(TickEvent.ServerTickEvent event){
+		if(event.phase != Phase.START) return;
+		for(World world : Static.getServer().worlds){
+			world.getCapability(Capabilities.RAILSYSTEM, null).updateTick();
 		}
 	}
 

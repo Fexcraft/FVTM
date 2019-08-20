@@ -1,5 +1,13 @@
 package net.fexcraft.mod.fvtm;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.Timer;
+
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.FCL;
 import net.fexcraft.lib.mc.gui.GuiHandler;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -51,6 +59,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -91,6 +100,8 @@ public class FVTM {
 	private static FVTM INSTANCE;
 	private static AutoRegisterer REGISTERER;
 	private static Resources RESOURCES;
+	
+	private static Timer RAILSYSTEM;
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
@@ -212,7 +223,12 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void onStart(FMLServerStartingEvent event){
-		//
+		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
+		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
+		while((mid += Config.UNLOAD_INTERVAL) < date);
+		if(RAILSYSTEM == null){
+			(RAILSYSTEM = new Timer()).schedule(new RailData.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
+		}
 	}
 
 	@Mod.EventHandler

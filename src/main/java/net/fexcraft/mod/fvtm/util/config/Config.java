@@ -17,6 +17,7 @@ public class Config {
     private static final String GENERAL = "General", LEGACYSYS = "Legacy", PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
     public static double VEHICLE_UPDATE_RANGE;
+	public static long UNLOAD_INTERVAL;
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
         config = new Configuration(file, "3.0", true);
@@ -47,6 +48,7 @@ public class Config {
         VEHICLE_DROP_CONTENTS = config.getBoolean("vehicle_drop_contents", LEGACYSYS, false, "If vehicles should drop their inventory contents upon being 'broken' or removed by hand.");
         RENDER_OUT_OF_VIEW = config.getBoolean("render_out_of_view", GENERAL, false, "If vehicles should be rendered out of default view.");
         RENDER_VEHILE_MODELS_AS_ITEMS = config.getBoolean("render_vehicle_models_as_items", GENERAL, true, "If the Vehicle's model should be rendered as Item. May cause laggs.");
+        UNLOAD_INTERVAL = config.getInt("unload_interval", GENERAL, 300000, 60000, 86400000, "Interval in which it is checked for trains/rails to be unloaded.");
     }
 
     public static void add(List<IConfigElement> list){

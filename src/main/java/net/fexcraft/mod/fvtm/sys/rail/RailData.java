@@ -1,8 +1,13 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TimerTask;
 
+import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,11 +15,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class RailData implements RailSystem {
-	
+
 	private World world;
 	private int dimension;
 	//
-	private RegionMap regions = new RegionMap();
+	private RegionMap regions = new RegionMap(this);
 	//private HashMap<String, Object> sections = new HashMap<>();
 
 	@Override
@@ -44,6 +49,9 @@ public class RailData implements RailSystem {
 	
 	public static class RegionMap extends HashMap<XZK, RailRegion> {
 		
+		private RailData root;
+		public RegionMap(RailData data){ this.root = data; }
+		
 		public RailRegion get(int x, int z){
 			for(XZK key : keySet()){
 				if(x == key.x && z == key.z) return get(key);
@@ -58,8 +66,7 @@ public class RailData implements RailSystem {
 		
 		public RailRegion get(int[] xz, boolean load){
 			RailRegion region = get(xz); if(region != null || !load) return region;
-			//TODO load region
-			return null;
+			put(new XZK(xz), region = new RailRegion(xz[0], xz[1], root)); return region;
 		}
 		
 	}
@@ -70,6 +77,10 @@ public class RailData implements RailSystem {
 		
 		public XZK(int x, int z){
 			this.x = x; this.z = z;
+		}
+		
+		public XZK(int[] arr){
+			this.x = arr[0]; this.z = arr[1];
 		}
 		
 		@Override
@@ -83,6 +94,11 @@ public class RailData implements RailSystem {
 			if(key.x > x) return 1; else if(key.x < x) return -1;
 			if(key.z > z) return 1; else if(key.z < z) return -1;
 			return 0;
+		}
+		
+		@Override
+		public String toString(){
+			return x + ", "+ z;
 		}
 		
 	}
@@ -104,17 +120,32 @@ public class RailData implements RailSystem {
 		RailRegion region = regions.get(getRegionXZ(vec));
 		if(region == null) return null; return region.getJunction(vec);
 	}
+	
+	public static class TimedTask extends TimerTask {
+
+		@Override
+		public void run(){
+			for(World world : Static.getServer().worlds){
+				if(world.isRemote) return; world.getCapability(Capabilities.RAILSYSTEM, null).scheduledCheck();
+			}
+		}
+
+	}
 
 	@Override
 	public void scheduledCheck(){
-		//TODO
+		ArrayList<RailRegion> regs = new ArrayList<>();
+		for(RailRegion region : regions.values()){
+			if(region.lastaccess < Time.getDate() - 60000) regs.add(region);
+		}
+		for(RailRegion region : regs){
+			region.save(); regions.remove(region.getKey());
+		}
 	}
 
 	@Override
 	public void updateTick(){
-		for(RailRegion region : regions.values()){
-			region.updateTick();
-		}
+		for(RailRegion region : regions.values()){ region.updateTick(); }
 	}
 
 	@Override

@@ -57,24 +57,36 @@ public class RailRenderer {
                 GL11.glTranslated(v.vector.xCoord, v.vector.yCoord, v.vector.zCoord);
                 model0.render(); GL11.glPopMatrix();
             }
+            //
+            GL11.glPushMatrix();
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.glLineWidth(2.0F);
+            GlStateManager.depthMask(false);
+    		Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
             if(vecs.length > 1){
-                GL11.glPushMatrix();
-                GlStateManager.enableBlend();
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                GlStateManager.glLineWidth(2.0F);
-                GlStateManager.depthMask(false);
-        		Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder bufferbuilder = tessellator.getBuffer();
                 for(int i = 1; i < vecs.length; i++){
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
                     bufferbuilder.pos(vecs[i - 1].vector.xCoord, vecs[i - 1].vector.yCoord, vecs[i - 1].vector.zCoord).color(0f, 1f, 0f, 1F).endVertex();
                     bufferbuilder.pos(vecs[i].vector.xCoord, vecs[i].vector.yCoord, vecs[i].vector.zCoord).color(0f, 1f, 0f, 1F).endVertex();
                     tessellator.draw();
                 }
-                GlStateManager.depthMask(true);
-                GlStateManager.disableBlend();
-                GL11.glPopMatrix();
             }
+            BlockPos pos = event.getTarget().getBlockPos();
+            float yy = vec.y == 0 ? 1 : vec.y * 0.0625f;
+            bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625), pos.getY() + yy + 0.01, pos.getZ()).color(0f, 1f, 0f, 1F).endVertex();
+            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625), pos.getY() + yy + 0.01, pos.getZ() + 1).color(0f, 1f, 0f, 1F).endVertex();
+            tessellator.draw();
+            bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+            bufferbuilder.pos(pos.getX(), pos.getY() + yy + 0.01, pos.getZ() + (vec.z * 0.0625)).color(0f, 1f, 0f, 1F).endVertex();
+            bufferbuilder.pos(pos.getX() + 1, pos.getY() + yy + 0.01, pos.getZ() + (vec.z * 0.0625)).color(0f, 1f, 0f, 1F).endVertex();
+            tessellator.draw();
+            GlStateManager.depthMask(true);
+            GlStateManager.disableBlend();
+            GL11.glPopMatrix();
+            //
             GlStateManager.enableTexture2D();
             GL11.glTranslated(x, y, z);
     	} else return;

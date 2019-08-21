@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import net.fexcraft.mod.fvtm.data.*;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -21,7 +22,8 @@ public enum DataType {
 	CONTAINER(".container", "containers", Container.class),
 	CONSUMABLE(".consumable", "consumables", Consumable.class),
 	FUEL(".fuel", "fuels", Fuel.class),
-	ROADSIGN(".sign", "roadsigns", RoadSign.class)
+	ROADSIGN(".sign", "roadsigns", RoadSign.class),
+	BLOCK(".block", "blocks", Block.class)
 	;
 	
 	public final String suffix, cfg_folder;
@@ -42,6 +44,7 @@ public enum DataType {
 			case ROADSIGN: return (IForgeRegistry<T>)Resources.ROADSIGNS;
 			case CONSUMABLE: return (IForgeRegistry<T>)Resources.CONSUMABLES;
 			case CONTAINER: return (IForgeRegistry<T>)Resources.CONTAINERS;
+			case BLOCK: return (IForgeRegistry<T>)Resources.BLOCKS;
 			default: return null;
 		}
 	}
@@ -66,12 +69,13 @@ public enum DataType {
 			case ROADSIGN:{ Resources.ROADSIGNS.register((RoadSign)core); return; }
 			case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
 			case CONTAINER:{ Resources.CONTAINERS.register((Container)core); return; }
+			case BLOCK:{ Resources.BLOCKS.register((Block)core); return; }
 			default: return;
 		}
 	}
 
 	public boolean has3DItemModel(){
-		return this == VEHICLE || this == CONTAINER || this == PART/* depends on part function */;
+		return this == VEHICLE || this == CONTAINER || this == PART/* depends on part function */ || this == BLOCK/** depends on block */;
 	}
 	
 }

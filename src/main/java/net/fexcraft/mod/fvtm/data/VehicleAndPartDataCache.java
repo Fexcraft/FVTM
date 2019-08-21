@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -25,6 +26,6 @@ public interface VehicleAndPartDataCache {
 
 	public @Nullable ContainerData getContainerData();
 
-	//public @Nullable BlockData getBlockData();
+	public @Nullable BlockData getBlockData();
 
 }

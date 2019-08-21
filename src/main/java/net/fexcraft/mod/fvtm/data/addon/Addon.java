@@ -14,6 +14,7 @@ import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -156,6 +157,11 @@ public class Addon extends TypeCore<Addon> {
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
 						}
 					}
+					else if(data == DataType.BLOCK){
+						Block block = (Block)core; if(!block.hasPlainModel()){
+							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
+						}
+					}
 				}
 			}
 		}
@@ -177,6 +183,11 @@ public class Addon extends TypeCore<Addon> {
 					}
 					else if(data == DataType.PART){
 						Part part = (Part)core; if(part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
+							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
+						}
+					}
+					else if(data == DataType.BLOCK){
+						Block block = (Block)core; if(!block.hasPlainModel()){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
 						}
 					}

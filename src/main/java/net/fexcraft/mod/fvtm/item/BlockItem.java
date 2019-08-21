@@ -33,9 +33,9 @@ public class BlockItem extends TypeCoreItem<Block> implements DataCoreItem<Block
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         if(type.isFunctional()) tooltip.add(Formatter.format("&b&oFunctional Block"));
         if(type.isDecoration()) tooltip.add(Formatter.format("&e&oDecoration Block"));
+        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
         }

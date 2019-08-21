@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
@@ -36,10 +37,12 @@ import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
@@ -188,6 +191,14 @@ public class Resources {
 		return CONTAINERS.getValue(resloc);
 	}
 
+	public static Block getBlock(String string){
+		return getBlock(new ResourceLocation(string));
+	}
+
+	public static Block getBlock(ResourceLocation resloc){
+		return BLOCKS.getValue(resloc);
+	}
+
 	@SideOnly(Side.CLIENT)
 	public static InputStream getModelInputStream(String string){
 		return getModelInputStream(new ResourceLocation(string));
@@ -253,6 +264,7 @@ public class Resources {
 		if(clazz == PartModel.class) return PartModel.EMPTY;
 		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
 		if(clazz == RoadSignModel.class) return RoadSignModel.EMPTY;
+		if(clazz == BlockModel.class) return BlockModel.EMPTY;
 		return null;
 	}
 
@@ -280,6 +292,16 @@ public class Resources {
 		if(!compound.hasKey("Container")) return null;
 		Container con = getContainer(compound.getString("Container"));
 		try{ return ((ContainerData)con.getDataClass().getConstructor(Container.class).newInstance(con)).read(compound); }
+		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
+			| InvocationTargetException| NoSuchMethodException | SecurityException e){
+			e.printStackTrace(); return null;
+		}
+	}
+
+	public static BlockData getBlockData(NBTTagCompound compound){
+		if(!compound.hasKey("Block")) return null;
+		Block block = getBlock(compound.getString("Block"));
+		try{ return ((BlockData)block.getDataClass().getConstructor(Block.class).newInstance(block)).read(compound); }
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
 			| InvocationTargetException| NoSuchMethodException | SecurityException e){
 			e.printStackTrace(); return null;
@@ -343,7 +365,7 @@ public class Resources {
 	@SubscribeEvent
 	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
 		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof RoadSignItem
-			|| event.getObject().getItem() instanceof ContainerItem){//|| event.getObject().getItem() instanceof BlockItem){
+			|| event.getObject().getItem() instanceof ContainerItem || event.getObject().getItem() instanceof BlockItem){
 			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
 		}
 	}

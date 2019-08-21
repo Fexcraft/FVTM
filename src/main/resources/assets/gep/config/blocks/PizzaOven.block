@@ -1,0 +1,8 @@
+{
+    "RegistryName": "gep:pizza_oven",
+    "Addon": "fvtm:gep",
+    "Name": "Pizza Oven",
+    "Description": "&7Original Pizza Oven from &2FRSM&7!",
+    "Model": "fvtm:models/block/pizza_oven",
+    "Texture": "fvtm:textures/blocks/pizza_oven.png"
+}

@@ -1,12 +1,15 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import java.util.List;
+import java.util.TreeMap;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -19,6 +22,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -33,6 +37,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected boolean functional, plain_model;
 	protected RGB primary, secondary;
 	protected byte maxstacksize;
+	protected TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
 	
 	public Block(){}
 
@@ -70,12 +75,24 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		if(modelid == null || modelid.equals("null")) plain_model = true;//in other words, json models
+		if(obj.has("AABBs")){
+			obj.get("AABBs").getAsJsonObject().entrySet().forEach(entry -> {
+				try{
+					JsonArray array = entry.getValue().getAsJsonArray();
+					aabbs.put(entry.getKey(), new AxisAlignedBB(array.get(0).getAsDouble(), array.get(1).getAsDouble(), array.get(2).getAsDouble(),
+						array.get(3).getAsDouble(), array.get(4).getAsDouble(), array.get(5).getAsDouble()));
+				}
+				catch(Exception e){
+					e.printStackTrace(); Print.log("Failed to load AABB for block '" + this.registryname.toString() + "' with JSON: " + entry.toString());
+				}
+			});
+		}
 		this.item = new BlockItem(this); return this;
 	}
 
 	@Override
 	public DataType getDataType(){
-		return DataType.PART;
+		return DataType.BLOCK;
 	}
 
 	@Override
@@ -134,6 +151,14 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	
 	public boolean hasPlainModel(){
 		return plain_model;
+	}
+	
+	public TreeMap<String, AxisAlignedBB> getAABBs(){
+		return aabbs;
+	}
+	
+	public AxisAlignedBB getAABB(String state){
+		return aabbs.containsKey(state) ? aabbs.get(state) : net.minecraft.block.Block.FULL_BLOCK_AABB;
 	}
 
 }

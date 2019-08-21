@@ -140,6 +140,7 @@ public class FVTM {
 			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());
 			Resources.CONTAINERS.getValuesCollection().forEach(con -> con.loadModel());
 			Resources.ROADSIGNS.getValuesCollection().forEach(sign -> sign.loadModel());
+			Resources.BLOCKS.getValuesCollection().forEach(block -> block.loadModel());
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(new ResourceLocation("fvtm:roadsign"), RoadSignModel.EMPTY);
 		}
 	}

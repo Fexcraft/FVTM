@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
@@ -159,7 +160,7 @@ public class Addon extends TypeCore<Addon> {
 					}
 					else if(data == DataType.BLOCK){
 						Block block = (Block)core; if(!block.hasPlainModel()){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
+							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
 						}
 					}
 				}
@@ -188,7 +189,7 @@ public class Addon extends TypeCore<Addon> {
 					}
 					else if(data == DataType.BLOCK){
 						Block block = (Block)core; if(!block.hasPlainModel()){
-							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
+							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
 						}
 					}
 				}

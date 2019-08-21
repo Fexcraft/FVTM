@@ -20,7 +20,7 @@ public class Capabilities {
 	public static final Capability<ContainerHolder> CONTAINER = null;
 	
 	/** Per-World RailSystem container. */
-	@CapabilityInject(ContainerHolder.class)
+	@CapabilityInject(RailSystem.class)
 	public static final Capability<RailSystem> RAILSYSTEM = null;
 	
 }

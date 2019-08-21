@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
@@ -48,9 +49,29 @@ public class Track {
 		this.gauge = gauge;
 	}
 	
+	public Track(Vec316f[] vec316fs, Vec316f vector, Object gauge){
+		start = vec316fs[0]; end = vector; id = start.toString() + "-" + end.toString();
+		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1];
+		if(vecpath.length == 2){
+			vecpath[0] = vec316fs[0].vector; vecpath[1] = vector.vector;
+			this.length = vecpath[0].distanceTo(vecpath[1]);
+		}
+		else{
+			for(int i = 0; i < vec316fs.length; i++){ vecpath[i] = vec316fs[i].vector; }
+			vecpath[vecpath.length - 1] = vector.vector;
+			//
+			Vec3f[] vecs = curve(vecpath); vecpath = new Vec3f[vecs.length + 2];
+			vecpath[0] = new Vec3f(start.vector);
+			for(int i = 0; i < vecs.length; i++){ vecpath[i + 1] = vecs[i]; }
+			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
+			this.length = this.calcLength();
+		}
+		this.gauge = gauge;
+	}
+	
 	/** Only for the READ process. */
 	public Track(){}
-	
+
 	private Vec3f[] curve(Vec3f[] vecpoints){
 		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
 		float length = getLength(vecpoints);
@@ -76,11 +97,12 @@ public class Track {
 	}
 	
 	public float getLength(Vec3f[] vecs){
-		return getLength(vecs == null ? vecpath : vecs);
+		vecs = vecs == null ? vecpath : vecs; float temp = 0;
+		for(int i = 0; i < vecs.length - 1; i++){ temp += vecs[i].distanceTo(vecs[i + 1]); } return temp;
 	}
 	
 	private float calcLength(){
-		float temp = 0; for(int i = 0; i < vecpath.length - 1; i++){ temp += vecpath[i].distanceTo(vecpath[i + 1]); } return temp;
+		return getLength(null);
 	}
 	
 	public Track read(NBTTagCompound compound){

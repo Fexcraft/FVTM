@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.rail;
+package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTTagCompound;
@@ -54,8 +54,14 @@ public class Vec316f implements Comparable<Vec316f>{
 	
 	@Override
 	public boolean equals(Object obj){
+		if(obj instanceof Vec3f) return ((Vec3f)obj).equals(vector);
 		if(obj instanceof Vec316f == false) return false; Vec316f vec = (Vec316f)obj;
 		if(vec.pos.equals(pos)){ return vec.x == x && vec.y == y && vec.z == z; } else return false;
+	}
+	
+	@Override
+	public String toString(){
+		return "(" + vector.xCoord + ", " + vector.yCoord + ", " + vector.zCoord + ")";
 	}
 
 }

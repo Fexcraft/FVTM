@@ -5,14 +5,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
 
+import javax.annotation.Nullable;
+
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
+import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 public class RailData implements RailSystem {
 
@@ -64,6 +69,11 @@ public class RailData implements RailSystem {
 			} return null;
 		}
 		
+		public RailRegion get(Vec316f vec, boolean load){
+			RailRegion region = get(getRegionXZ(vec)); if(region != null || !load) return region;
+			put(new XZK(vec), region = new RailRegion(vec, root)); return region;
+		}
+
 		public RailRegion get(int[] xz, boolean load){
 			RailRegion region = get(xz); if(region != null || !load) return region;
 			put(new XZK(xz), region = new RailRegion(xz[0], xz[1], root)); return region;
@@ -83,6 +93,10 @@ public class RailData implements RailSystem {
 			this.x = arr[0]; this.z = arr[1];
 		}
 		
+		public XZK(Vec316f vec){
+			this(getRegionXZ(vec));
+		}
+
 		@Override
 		public boolean equals(Object obj){
 			if(obj instanceof XZK == false) return false;
@@ -99,6 +113,10 @@ public class RailData implements RailSystem {
 		@Override
 		public String toString(){
 			return x + ", "+ z;
+		}
+
+		public int[] toArray(){
+			return new int[]{ x, z };
 		}
 		
 	}
@@ -120,6 +138,24 @@ public class RailData implements RailSystem {
 		RailRegion region = regions.get(getRegionXZ(vec));
 		if(region == null) return null; return region.getJunction(vec);
 	}
+
+	@Override
+	public Junction getJunction(Vec316f vec, boolean load){
+		RailRegion region = regions.get(vec, load); return region.getJunction(vec);
+	}
+
+	@Override
+	public boolean delJunction(Vec316f vector){
+		RailRegion region = regions.get(getRegionXZ(vector));
+		if(region == null || region.getJunction(vector) == null) return false;
+		region.getJunctions().remove(vector); region.setAccessed().updateClient(vector); return true;
+	}
+
+	@Override
+	public void addJunction(Vec316f vector){
+		RailRegion region = regions.get(vector, true); if(region == null) /** this rather an error*/ return;
+		region.getJunctions().put(vector, new Junction(this, vector)); region.setAccessed().updateClient(vector); return;
+	}
 	
 	public static class TimedTask extends TimerTask {
 
@@ -136,7 +172,7 @@ public class RailData implements RailSystem {
 	public void scheduledCheck(){
 		ArrayList<RailRegion> regs = new ArrayList<>();
 		for(RailRegion region : regions.values()){
-			if(region.lastaccess < Time.getDate() - 60000) regs.add(region);
+			if(region.lastaccess < Time.getDate() - 60000 && region.chucks.isEmpty()) regs.add(region);
 		}
 		for(RailRegion region : regs){
 			region.save(); regions.remove(region.getKey());
@@ -152,6 +188,30 @@ public class RailData implements RailSystem {
 	public File getRootFile(){
 		if(dimension != 0){ return new File(world.getSaveHandler().getWorldDirectory(), world.provider.getSaveFolder() + "/fvtm"); }
 		return new File(world.getSaveHandler().getWorldDirectory(), "/fvtm");
+	}
+
+	@Override
+	public void unload(){
+		if(!world.isRemote) regions.values().forEach(reg -> reg.save()); regions.clear();
+	}
+
+	public void updateRegion(boolean isRemote, int[] xz, NBTTagCompound compound, @Nullable EntityPlayerMP player){
+		if(isRemote){
+			RailRegion region = regions.get(xz); if(region == null) regions.put(new XZK(xz), region = new RailRegion(xz[0], xz[1], this)); region.read(compound);
+		}
+		else{
+			RailRegion region = regions.get(xz, true); region.updateClient(player);
+		}
+	}
+
+	@Override
+	public void onChunkLoad(Chunk chunk){
+		regions.get(getRegionXZ(chunk.x, chunk.z), true).chucks.add(new XZK(chunk.x, chunk.z));
+	}
+
+	@Override
+	public void onChunkUnload(Chunk chunk){
+		regions.get(getRegionXZ(chunk.x, chunk.z), true).chucks.removeIf(pre -> pre.x == chunk.x && pre.z == chunk.z);
 	}
 
 }

@@ -19,6 +19,8 @@ import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.block.material.MapColor;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -38,6 +40,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected RGB primary, secondary;
 	protected byte maxstacksize;
 	protected TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
+	protected BlockType blocktype;
+	//
+	protected Material material;
+	protected MapColor colour;
 	
 	public Block(){}
 
@@ -87,7 +93,57 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 				}
 			});
 		}
-		this.item = new BlockItem(this); return this;
+		this.blocktype = BlockType.valueOf(JsonUtil.getIfExists(obj, "BlockType", "GENERIC_4ROT"));
+		this.material = getMaterial(JsonUtil.getIfExists(obj, "Material", "ROCK").toLowerCase());
+		//TODO eventually allow creation of custom materials
+		this.colour = getMapColor(JsonUtil.getIfExists(obj, "MapColor", "STONE").toLowerCase());
+		try{ this.item = new BlockItem(this); } catch(Exception e){ e.printStackTrace(); } return this;
+	}
+
+	private Material getMaterial(String mat){
+		switch(mat){
+			case "air": return Material.AIR;
+			case "grass": return Material.GRASS;
+			case "ground": return Material.GROUND;
+			case "wood": return Material.WOOD;
+			case "rock": return Material.ROCK;
+			case "iron": return Material.IRON;
+			case "anvil": return Material.ANVIL;
+			case "water": return Material.WATER;
+			case "lava": return Material.LAVA;
+			case "leaves": return Material.LEAVES;
+			case "plants": return Material.PLANTS;
+			case "vine": return Material.VINE;
+			case "sponge": return Material.SPONGE;
+			case "cloth": return Material.CLOTH;
+			case "fire": return Material.FIRE;
+			case "sand": return Material.SAND;
+			case "circuits": return Material.CIRCUITS;
+			case "carpet": return Material.AIR;
+			case "glass": return Material.GLASS;
+			case "redstone_light": return Material.REDSTONE_LIGHT;
+			case "tnt": return Material.TNT;
+			case "coral": return Material.CORAL;
+			case "ice": return Material.ICE;
+			case "packed_ice": return Material.PACKED_ICE;
+			case "snow": return Material.SNOW;
+			case "crafted_snow": return Material.CRAFTED_SNOW;
+			case "cactus": return Material.CACTUS;
+			case "clay": return Material.CLAY;
+			case "gourd": return Material.GOURD;
+			//case "dragon_egg": return Material.DRAGON_EGG;
+			case "portal": return Material.PORTAL;
+			case "cake": return Material.CAKE;
+			case "web": return Material.WEB;
+			case "piston": return Material.PISTON;
+			case "barrier": return Material.BARRIER;
+			//case "scructure_void": return Material.STRUCTURE_VOID;
+		} return Material.ROCK;
+	}
+
+	private MapColor getMapColor(String lowerCase){
+		//TODO
+		return MapColor.STONE;
 	}
 
 	@Override
@@ -159,6 +215,18 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	
 	public AxisAlignedBB getAABB(String state){
 		return aabbs.containsKey(state) ? aabbs.get(state) : net.minecraft.block.Block.FULL_BLOCK_AABB;
+	}
+
+	public Material getMaterial(){
+		return material;
+	}
+
+	public MapColor getMapColor(){
+		return colour;
+	}
+	
+	public BlockType getBlockType(){
+		return blocktype;
 	}
 
 }

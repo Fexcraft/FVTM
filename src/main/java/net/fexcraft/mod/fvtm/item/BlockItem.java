@@ -3,13 +3,13 @@ package net.fexcraft.mod.fvtm.item;
 import java.util.List;
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
-import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,12 +20,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockItem extends TypeCoreItem<Block> implements DataCoreItem<BlockData> {
+public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
+	
+	private Block type;
 
-    public BlockItem(Block core){
-		super(core); this.setHasSubtypes(true); this.setMaxStackSize(type.getMaxStackSize());
+    public BlockItem(Block core) throws Exception {
+		super(core.getBlockType().blockclass.getConstructor(Block.class).newInstance(core));
+		this.setHasSubtypes(true); this.setMaxStackSize(type.getMaxStackSize());
         this.type.getAddon().getFCLRegisterer().addItem(
         	type.getRegistryName().getResourcePath(), this, 0, null);
+        this.type.getAddon().getFCLRegisterer().addBlock(
+        	type.getRegistryName().getResourcePath(), block, null, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}

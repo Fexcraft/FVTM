@@ -19,6 +19,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.DisplayBlock;
+import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
@@ -81,6 +82,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -115,6 +117,7 @@ public class FVTM {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		//
 		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
+		GameRegistry.registerTileEntity(BlockBase.TileEntity.class, new ResourceLocation("fvtm:blockbase"));
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(RailSystem.class, new RailDataSerializer.Storage(), new RailDataSerializer.Callable());
@@ -159,6 +162,7 @@ public class FVTM {
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());
 		Resources.CONSUMABLES.getValuesCollection().forEach(con -> con.linkContainerItem());
 		Resources.CONSUMABLES.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
+		Resources.BLOCKS.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
 		//
 		GuiHandler.register(MODID, this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());

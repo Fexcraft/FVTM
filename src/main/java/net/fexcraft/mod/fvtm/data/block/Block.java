@@ -6,8 +6,10 @@ import java.util.TreeMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -25,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -33,6 +36,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	
 	protected List<NamedResourceLocation> textures;
 	protected BlockItem item;
+	protected net.minecraft.block.Block block;
 	protected String modelid;
 	protected Model<BlockData, String> model;
 	//
@@ -41,6 +45,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected byte maxstacksize;
 	protected TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
 	protected BlockType blocktype;
+	protected int burntime;
+	protected String oredict;
 	//
 	protected Material material;
 	protected MapColor colour;
@@ -78,6 +84,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.primary = DataUtil.getColor(obj, "Primary");
 		this.secondary = DataUtil.getColor(obj, "Secondary");
 		this.maxstacksize = JsonUtil.getIfExists(obj, "MaxItemStackSize", 64).byteValue();
+		this.burntime = JsonUtil.getIfExists(obj, "ItemBurnTime", 0).intValue();
+		this.oredict = obj.has("OreDictionary") ? obj.get("OreDictionary").getAsString() : null;
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		if(modelid == null || modelid.equals("null")) plain_model = true;//in other words, json models
@@ -97,7 +105,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.material = getMaterial(JsonUtil.getIfExists(obj, "Material", "ROCK").toLowerCase());
 		//TODO eventually allow creation of custom materials
 		this.colour = getMapColor(JsonUtil.getIfExists(obj, "MapColor", "STONE").toLowerCase());
-		try{ this.item = new BlockItem(this); } catch(Exception e){ e.printStackTrace(); } return this;
+		try{
+			this.block = blocktype.blockclass.getConstructor(Block.class).newInstance(this);
+			this.item = (BlockItem)FCLRegistry.getItem(registryname);
+		} catch(Exception e){ e.printStackTrace(); Static.stop(); } return this;
 	}
 
 	private Material getMaterial(String mat){
@@ -214,7 +225,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	}
 	
 	public AxisAlignedBB getAABB(String state){
-		return aabbs.containsKey(state) ? aabbs.get(state) : net.minecraft.block.Block.FULL_BLOCK_AABB;
+		return aabbs.containsKey(state) ? aabbs.get(state) : aabbs.containsKey("normal") ? aabbs.get("normal") : net.minecraft.block.Block.FULL_BLOCK_AABB;
 	}
 
 	public Material getMaterial(){
@@ -227,6 +238,18 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	
 	public BlockType getBlockType(){
 		return blocktype;
+	}
+
+	public int getItemBurnTime(){
+		return burntime;
+	}
+	
+	public String getOreDictionaryId(){
+		return this.oredict;
+	}
+
+	public void registerIntoOreDictionary(){
+		if(getOreDictionaryId() != null) OreDictionary.registerOre(getOreDictionaryId(), item); else return;
 	}
 
 }

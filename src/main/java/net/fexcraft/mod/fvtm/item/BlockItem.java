@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -24,14 +25,13 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 	
 	private Block type;
 
-    public BlockItem(Block core) throws Exception {
-		super(core.getBlockType().blockclass.getConstructor(Block.class).newInstance(core));
+    public BlockItem(net.minecraft.block.Block block) throws Exception {
+		super(block); type = ((BlockBase)block).type;
 		this.setHasSubtypes(true); this.setMaxStackSize(type.getMaxStackSize());
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getResourcePath(), this, 0, null);
-        this.type.getAddon().getFCLRegisterer().addBlock(
-        	type.getRegistryName().getResourcePath(), block, null, 0, null);
+		this.setRegistryName(block.getRegistryName());
+		this.setUnlocalizedName(block.getUnlocalizedName());
         if(Static.side().isServer()) return;
+        block.setCreativeTab(type.getAddon().getCreativeTab());
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}
 
@@ -69,6 +69,11 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
     	}
+    }
+    
+    @Override
+    public int getItemBurnTime(ItemStack stack){
+    	return type.getItemBurnTime() * stack.getCount();
     }
 
 }

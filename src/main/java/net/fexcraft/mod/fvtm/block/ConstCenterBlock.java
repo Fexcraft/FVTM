@@ -87,7 +87,7 @@ public class ConstCenterBlock extends Block implements ITileEntityProvider {
 
     @Override
     protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[]{FACING});
+        return new BlockStateContainer(this, new IProperty[]{ FACING });
     }
 
     @Override

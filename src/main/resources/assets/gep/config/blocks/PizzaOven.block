@@ -4,5 +4,10 @@
     "Name": "Pizza Oven",
     "Description": "&7Original Pizza Oven from &2FRSM&7!",
     "Model": "fvtm:models/block/pizza_oven",
-    "Texture": "fvtm:textures/blocks/pizza_oven.png"
+    "Texture": "fvtm:textures/blocks/pizza_oven.png",
+    "BlockType": "GENERIC_4ROT",
+    "AABBs":{
+    	"normal": [ 0.0, 0.0, 0.0, 1.0, 0.5625, 1.0 ]
+    },
+    "Material": "IRON"
 }

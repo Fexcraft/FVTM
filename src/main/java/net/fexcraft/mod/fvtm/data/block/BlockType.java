@@ -12,4 +12,19 @@ public enum BlockType {
 		this.blockclass = clazz;
 	}
 
+	public double getRotationForMeta(int meta){
+		switch(this){
+			case GENERIC_4ROT:{
+		        switch(meta){
+		            case 2: return 0;
+		            case 3: return -180d;
+		            case 4: return -90;
+		            case 5: return -270d;
+		        }
+			}
+			default: return 0;
+		
+		}
+	}
+
 }

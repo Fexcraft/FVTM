@@ -2,9 +2,12 @@ package net.fexcraft.mod.fvtm.block.generated;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -15,11 +18,14 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -34,6 +40,9 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
 		super(type.getMaterial(), type.getMapColor()); this.type = type;
 		type.getAddon().getFCLRegisterer().addBlock(
 			type.getRegistryName().getResourcePath(), this, BlockItem.class, 0, null);
+		if(Static.side().isClient()){
+	        this.setCreativeTab(type.getAddon().getCreativeTab());
+		}
 	}
 	
 	@Override
@@ -45,6 +54,19 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
         item.setItem(((TileEntity)te).getBlockData().newItemStack()); world.spawnEntity(item);
         harvesters.set(null);
 	}
+
+	@Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
+        if(world.isRemote) return false; if(player.isSneaking()) return true;
+        ItemStack held = player.getHeldItem(hand); if(held.isEmpty()) return true;
+        if(held.getItem() instanceof ItemDye){
+        	RGB colour = new RGB(ItemDye.DYE_COLORS[held.getMetadata()]); held.shrink(1);
+        	TileEntity tile = (TileEntity)world.getTileEntity(pos); if(tile == null) return true;
+        	if(hand == EnumHand.MAIN_HAND){ tile.getBlockData().setPrimaryColor(colour); }
+        	else{ tile.getBlockData().setSecondaryColor(colour); }
+        	tile.sendUpdate(); Print.chat(player, "&eColour applied. &7[" + (hand == EnumHand.MAIN_HAND ? "primary" : "secondary") + "]"); return true;
+        } return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+    }
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta){

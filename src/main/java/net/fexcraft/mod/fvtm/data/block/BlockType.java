@@ -1,10 +1,13 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.mod.fvtm.block.generated.Generic4RotBlock;
+import net.fexcraft.mod.fvtm.block.generated.Generic16RotBlock;
 
 public enum BlockType {
 	
-	GENERIC_4ROT(Generic4RotBlock.class);
+	GENERIC_4ROT(Generic4RotBlock.class),
+	GENERIC_16ROT(Generic16RotBlock.class),
+	;
 	
 	public final Class<? extends net.minecraft.block.Block> blockclass;
 	
@@ -22,8 +25,8 @@ public enum BlockType {
 		            case 5: return -270d;
 		        }
 			}
+			case GENERIC_16ROT: return meta * 22.5 + 180;
 			default: return 0;
-		
 		}
 	}
 

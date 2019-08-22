@@ -31,7 +31,6 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 		this.setRegistryName(block.getRegistryName());
 		this.setUnlocalizedName(block.getUnlocalizedName());
         if(Static.side().isServer()) return;
-        block.setCreativeTab(type.getAddon().getCreativeTab());
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}
 

@@ -152,8 +152,61 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		} return Material.ROCK;
 	}
 
-	private MapColor getMapColor(String lowerCase){
-		//TODO
+	private MapColor getMapColor(String mapcol){
+		switch(mapcol){
+			case "air": return MapColor.AIR;
+			case "grass": return MapColor.GRASS;
+			case "sand": return MapColor.SAND;
+			case "cloth": return MapColor.CLOTH;
+			case "tnt": return MapColor.TNT;
+			case "ice": return MapColor.ICE;
+			case "iron": return MapColor.IRON;
+			case "foliage": return MapColor.FOLIAGE;
+			case "snow": return MapColor.SNOW;
+			case "clay": return MapColor.CLAY;
+			case "dirt": return MapColor.DIRT;
+			case "stone": return MapColor.STONE;
+			case "water": return MapColor.WATER;
+			case "wood": return MapColor.WOOD;
+			case "quartz": return MapColor.QUARTZ;
+			case "adobe": return MapColor.ADOBE;
+			case "magenta": return MapColor.MAGENTA;
+			case "light_blue": return MapColor.LIGHT_BLUE;
+			case "yellow": return MapColor.YELLOW;
+			case "lime": return MapColor.LIME;
+			case "pink": return MapColor.PINK;
+			case "gray": return MapColor.GRAY;
+			case "silver": return MapColor.SILVER;
+			case "cyan": return MapColor.CYAN;
+			case "purple": return MapColor.PURPLE;
+			case "blue": return MapColor.BLUE;
+			case "brown": return MapColor.BROWN;
+			case "green": return MapColor.GREEN;
+			case "red": return MapColor.RED;
+			case "black": return MapColor.BLACK;
+			case "gold": return MapColor.GOLD;
+			case "diamond": return MapColor.DIAMOND;
+			case "lapis": return MapColor.LAPIS;
+			case "emerald": return MapColor.EMERALD;
+			case "obsidian": return MapColor.OBSIDIAN;
+			case "netherrack": return MapColor.NETHERRACK;
+			case "white_stained_hardenen_clay": return MapColor.WHITE_STAINED_HARDENED_CLAY;
+			case "orange_stained_hardenen_clay": return MapColor.ORANGE_STAINED_HARDENED_CLAY;
+			case "magenta_stained_hardenen_clay": return MapColor.MAGENTA_STAINED_HARDENED_CLAY;
+			case "light_blue_stained_hardenen_clay": return MapColor.LIGHT_BLUE_STAINED_HARDENED_CLAY;
+			case "yellow_stained_hardenen_clay": return MapColor.YELLOW_STAINED_HARDENED_CLAY;
+			case "lime_stained_hardenen_clay": return MapColor.LIME_STAINED_HARDENED_CLAY;
+			case "pink_stained_hardenen_clay": return MapColor.PINK_STAINED_HARDENED_CLAY;
+			case "gray_stained_hardenen_clay": return MapColor.GRAY_STAINED_HARDENED_CLAY;
+			case "silver_stained_hardenen_clay": return MapColor.SILVER_STAINED_HARDENED_CLAY;
+			case "cyan_stained_hardenen_clay": return MapColor.CYAN_STAINED_HARDENED_CLAY;
+			case "purple_stained_hardenen_clay": return MapColor.PURPLE_STAINED_HARDENED_CLAY;
+			case "blue_stained_hardenen_clay": return MapColor.BLUE_STAINED_HARDENED_CLAY;
+			case "brown_stained_hardenen_clay": return MapColor.BROWN_STAINED_HARDENED_CLAY;
+			case "green_stained_hardenen_clay": return MapColor.GREEN_STAINED_HARDENED_CLAY;
+			case "red_stained_hardenen_clay": return MapColor.RED_STAINED_HARDENED_CLAY;
+			case "black_stained_hardenen_clay": return MapColor.BLACK_STAINED_HARDENED_CLAY;
+		}
 		return MapColor.STONE;
 	}
 

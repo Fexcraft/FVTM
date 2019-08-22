@@ -40,6 +40,11 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
 		super(type.getMaterial(), type.getMapColor()); this.type = type;
 		type.getAddon().getFCLRegisterer().addBlock(
 			type.getRegistryName().getResourcePath(), this, BlockItem.class, 0, null);
+		this.setHardness(type.getHardness());
+		this.setLightLevel(type.getLightLevel());
+		this.setResistance(type.getResistance());
+		this.setLightOpacity(type.getLightOpacity());
+		this.setHarvestLevel(type.getHarverestToolClass(), type.getHarverestToolLevel());
 		if(Static.side().isClient()){
 	        this.setCreativeTab(type.getAddon().getCreativeTab());
 		}

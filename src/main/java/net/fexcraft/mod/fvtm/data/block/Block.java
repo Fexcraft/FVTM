@@ -50,6 +50,9 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	//
 	protected Material material;
 	protected MapColor colour;
+	protected float hardness, lightlevel, resistance;
+	protected int lightopacity, harveresttoollevel;
+	protected String harveresttoolclass;
 	
 	public Block(){}
 
@@ -105,6 +108,12 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.material = getMaterial(JsonUtil.getIfExists(obj, "Material", "ROCK").toLowerCase());
 		//TODO eventually allow creation of custom materials
 		this.colour = getMapColor(JsonUtil.getIfExists(obj, "MapColor", "STONE").toLowerCase());
+		this.hardness = JsonUtil.getIfExists(obj, "Hardness", 1f).floatValue();
+		this.lightlevel = JsonUtil.getIfExists(obj, "LightLevel", 0f).floatValue();
+		this.resistance = JsonUtil.getIfExists(obj, "Resistance", 0f).floatValue();
+		this.lightopacity = JsonUtil.getIfExists(obj, "LightOpacity", 0f).byteValue();
+		this.harveresttoolclass = JsonUtil.getIfExists(obj, "HarverestToolClass", "pickaxe");
+		this.harveresttoollevel = JsonUtil.getIfExists(obj, "HarverestToolLevel", 0).intValue();
 		try{
 			this.block = blocktype.blockclass.getConstructor(Block.class).newInstance(this);
 			this.item = (BlockItem)FCLRegistry.getItem(registryname);
@@ -303,6 +312,30 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public void registerIntoOreDictionary(){
 		if(getOreDictionaryId() != null) OreDictionary.registerOre(getOreDictionaryId(), item); else return;
+	}
+
+	public float getHardness(){
+		return hardness;
+	}
+
+	public float getLightLevel(){
+		return lightlevel;
+	}
+
+	public float getResistance(){
+		return resistance;
+	}
+
+	public int getLightOpacity(){
+		return lightopacity;
+	}
+
+	public String getHarverestToolClass(){
+		return harveresttoolclass;
+	}
+
+	public int getHarverestToolLevel(){
+		return harveresttoollevel;
 	}
 
 }

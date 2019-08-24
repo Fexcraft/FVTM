@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
@@ -54,7 +55,7 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerE
         if(condata != null){
             if(condata.getType().getModel() != null){
                 ModelBase.bindTexture(condata.getTexture());
-                condata.getType().getModel().render(condata, null);
+                condata.getType().getModel().render(condata, null, null, te.getCapability(Capabilities.RENDERCACHE, null), 0);
             }
         }
         GL11.glPopMatrix();

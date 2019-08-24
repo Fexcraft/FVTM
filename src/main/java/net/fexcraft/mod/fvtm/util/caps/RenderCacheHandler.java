@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.util.caps;
 import java.util.TreeMap;
 
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
+import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -75,13 +75,18 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 		}
 
 		@Override
-		public float getValue(String id){
+		public Float getValue(String id){
 			return cache.get(id);
 		}
 
 		@Override
-		public float setValue(String id, Float value){
-			if(id == null) return 0; if(value == null) cache.remove(id); return cache.put(id, value);
+		public Float getValue(String id, Float def){
+			return cache.containsKey(id) ? cache.get(id) : def;
+		}
+
+		@Override
+		public Float setValue(String id, Float value){
+			if(id == null) return 0f; if(value == null) cache.remove(id); return cache.put(id, value);
 		}
 		
 	}

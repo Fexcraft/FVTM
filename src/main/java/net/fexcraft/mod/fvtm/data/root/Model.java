@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.data.root;
 import java.util.Collection;
 import javax.annotation.Nullable;
 
-import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.minecraft.entity.Entity;
 
 /**

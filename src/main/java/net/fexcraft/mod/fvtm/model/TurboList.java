@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.lang.ArrayList;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
+import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.entity.Entity;
 

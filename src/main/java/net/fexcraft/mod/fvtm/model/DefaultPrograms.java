@@ -278,155 +278,6 @@ public class DefaultPrograms {
 		
 	};
 	
-	/*public static final Program STEERING_X = new Program(){
-		@Override public String getId(){ return "fvtm:steering_x"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        if(ent == null) return; list.rotateAxis(ent.getWheelsYaw() * 3F, 0, true);
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			//
-		}
-	};
-	
-	public static final Program STEERING_Y = new Program(){
-		@Override public String getId(){ return "fvtm:steering_y"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        if(ent == null) return; list.rotateAxis(ent.getWheelsYaw() * 3F, 1, true);
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			//
-		}
-	};
-	
-	public static final Program DEF_WHEEL_ROTATE = new Program(){
-		@Override public String getId(){ return "fvtm:default_wheel"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null) return; list.rotateAxis(ent.getWheelsAngle(), 2, true);
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null) return; list.rotateAxis(-ent.getWheelsAngle(), 2, true);
-		}
-	};
-	
-	public static final Program ROTATED_WHEEL_ROTATE = new Program(){
-		@Override public String getId(){ return "fvtm:rotated_wheel"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null) return; list.rotateAxis(ent.getWheelsAngle(), 2, false);
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null) return; list.rotateAxis(-ent.getWheelsAngle(), 2, false);
-		}
-	};
-	
-	public static final Program ADJUSTABLE_WHEEL = new Program(){
-		private net.fexcraft.lib.mc.utils.Pos lastpos;
-		@Override public String getId(){ return "fvtm:adjustable_wheel"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        lastpos = data.getType().getWheelPositions().get(part);
-	        lastpos = lastpos == null ? Pos.NULL : lastpos;
-	        lastpos.translate();
-	        if(part.contains("right")){ GL11.glRotated(180, 0, 1, 0); }
-	        if(ent != null && data.getVehicle().getSteeringWheels().contains(part))
-	        	list.rotateAxis(ent.getWheelsYaw() * 3F, 1, true);
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        if(ent != null && data.getVehicle().getSteeringWheels().contains(part)) list.rotateAxis(0, 1, true);
-			if(part.contains("right")){ GL11.glRotated(-180, 0, 1, 0); }
-			lastpos.translateR();
-		}
-	};
-	
-	public static final Program ADJUSTABLE_BOGIE = new Program(){
-		private net.fexcraft.lib.mc.utils.Pos lastpos;
-		@Override public String getId(){ return "fvtm:adjustable_wheel"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        lastpos = data.getVehicle().getWheelPositions().get(part);
-	        lastpos = lastpos == null ? Pos.NULL : lastpos;
-	        lastpos.translate();
-	        if(ent != null){
-	        	GL11.glPushMatrix();
-	        	GL11.glRotatef(ent.getBogieYaw()[part.contains("front") ? 0 : 1], 0, 1, 0);
-	        }
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        if(ent != null) GL11.glPopMatrix();
-			lastpos.translateR();
-		}
-	};
-	
-	public static final Program IMPORTED_WHEEL = new Program(){
-		private boolean bool;
-		@Override public String getId(){ return "fvtm:imported_wheel"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			switch(part){
-				case "right_front_wheel": bool = list.name.equals("wheel_front_right"); break;
-				case "left_front_wheel": bool = list.name.equals("wheel_front_left"); break;
-				case "right_back_wheel": bool = list.name.equals("wheel_back_right"); break;
-				case "left_back_wheel": bool = list.name.equals("wheel_back_left"); break;
-				default: bool = true;
-			} list.visible = bool;
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        list.visible = true;
-		}
-	};
-	
-	public static final Program DOOR_OPEN = new Program(){
-		@Override public String getId(){ return "fvtm:door_open"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.visible = data.doorsOpen();
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        list.visible = true;
-		}
-	};
-	
-	public static final Program DOOR_CLOSE = new Program(){
-		@Override public String getId(){ return "fvtm:door_close"; }
-		//
-		@Override
-		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.visible = !data.doorsOpen();
-		}
-		//
-		@Override
-		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        list.visible = true;
-		}
-	};*/
-	
 	public static abstract class AlwaysGlow implements Program {
 		
 		private boolean didglow; private float lx, ly;
@@ -508,5 +359,47 @@ public class DefaultPrograms {
             GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 	};
+	
+	public static class Scale implements Program {
+		
+		private float scale;
+		
+		public Scale(float scale){ this.scale = scale; }
+
+		@Override
+		public String getId(){ return "fvtm:scale"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glPushMatrix(); GL11.glScalef(scale, scale, scale);
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glPopMatrix();
+		}
+		
+	}
+	
+	public static class Scale3D implements Program {
+		
+		private float x, y, z;
+		
+		public Scale3D(float x, float y, float z){ this.x = x; this.y = y; this.z = z; }
+
+		@Override
+		public String getId(){ return "fvtm:scale"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glPushMatrix(); GL11.glScalef(x, y, z);
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glPopMatrix();
+		}
+		
+	}
 	
 }

@@ -22,7 +22,7 @@ public abstract class Attribute<V> {
 		@Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
 	};
 	private TreeSet<Modifier<V>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
-	private String id, target, origin, seat;
+	private String id, target, origin, seat, group;
 	private boolean iscopy, editable;
 	private float min, max;
 	private Type type;
@@ -38,6 +38,7 @@ public abstract class Attribute<V> {
 	public String id(){ return id; }
 	public String target(){ return target; }
 	public String origin(){ return origin; }
+	public String group(){ return group; }
 	public String seat(){ return seat; }
 	public Type type(){ return type; }
 	public float min(){ return min; }
@@ -56,6 +57,7 @@ public abstract class Attribute<V> {
 	//
 	public Attribute<V> setTarget(String string){ this.target = string; return this; }
 	public Attribute<V> setOrigin(String string){ this.origin = string; return this; }
+	public Attribute<V> setGroup(String string){ this.group = string; return this; }
 	public Attribute<V> setSeat(String string){ this.seat = string; return this; }
 	public Attribute<V> setMinMax(float min, float max){ this.min = min; this.max = max; return this; }
 	public Attribute<V> setEditable(boolean bool){ this.editable = bool; return this; }
@@ -123,6 +125,7 @@ public abstract class Attribute<V> {
 		compound.setFloat("min", min); compound.setFloat("max", max);
 		if(target != null) compound.setString("target", target);
 		if(origin != null) compound.setString("origin", origin);
+		if(group != null) compound.setString("group", group);
 		if(seat != null) compound.setString("seat", seat);
 		compound.setBoolean("editable", editable);
 		compound.setTag("initial", this.writeValue(true));
@@ -141,6 +144,7 @@ public abstract class Attribute<V> {
 		min = compound.getFloat("min"); max = compound.getFloat("max");
 		if(compound.hasKey("target")) this.target = compound.getString("target");
 		if(compound.hasKey("origin")) this.origin = compound.getString("origin");
+		if(compound.hasKey("group")) this.group = compound.getString("group");
 		if(compound.hasKey("seat")) this.seat = compound.getString("seat");
 		editable = compound.hasKey("editable") ? compound.getBoolean("editable") : true;
 		init = this.readValue(compound.getTag("initial"));
@@ -189,7 +193,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<String> copy(String origin){
-			return new StringAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setOrigin(origin).setEditable(editable());
+			return new StringAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
 		}
 		
 		@Override public int getIntegerValue(){ return 0; }
@@ -217,7 +221,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Float> copy(String origin){
-			return new FloatAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setOrigin(origin).setEditable(editable());
+			return new FloatAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
 		}
 		
 		@Override public int getIntegerValue(){ return (int) + value(); }
@@ -270,7 +274,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Integer> copy(String origin){
-			return new IntegerAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setOrigin(origin).setEditable(editable());
+			return new IntegerAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
 		}
 		
 		@Override public int getIntegerValue(){ return value(); }
@@ -325,7 +329,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new BooleanAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setOrigin(origin).setEditable(editable());
+			return new BooleanAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
 		}
 		
 		@Override public int getIntegerValue(){ return value() ? 1 : 0; }

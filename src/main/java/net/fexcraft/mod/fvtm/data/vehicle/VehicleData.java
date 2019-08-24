@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -582,6 +583,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			if(front) front_conn = type.getDefaultFrontConnector();
 			else rear_conn = type.getDefaultRearConnector();
 		else if(front) front_conn = newcon; else rear_conn = newcon;
+	}
+	
+	public List<Attribute<?>> getAttributes(String group){
+		return attributes.values().stream().filter(pre -> pre.group() != null && pre.group().equals(group)).collect(Collectors.toList());
 	}
 
 }

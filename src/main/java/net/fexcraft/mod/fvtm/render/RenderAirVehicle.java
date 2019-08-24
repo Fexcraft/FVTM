@@ -3,8 +3,10 @@ package net.fexcraft.mod.fvtm.render;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.minecraft.client.renderer.entity.Render;
@@ -46,18 +48,18 @@ public class RenderAirVehicle extends Render<AirVehicle> implements IRenderFacto
 	            GL11.glRotatef(180f - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
 	            GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
 	            GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
-	            GL11.glPushMatrix();
+	            GL11.glPushMatrix(); RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
 	            {
 		            GL11.glRotatef(180f, 0f, 0f, 1f); GL11.glRotatef(180f, 0f, 1f, 0f);
 		            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getType().getModel();
 		            if(modVehicle != null){
 		                this.bindTexture(vehicle.getVehicleData().getTexture());
-		                modVehicle.render(vehicle.getVehicleData(), null, vehicle, -1);
+		                modVehicle.render(vehicle.getVehicleData(), null, vehicle, cache, -1);
 		                if(vehicle.getVehicleData().getParts().size() > 0){
 		                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 		                    	ModelBase.bindTexture(entry.getValue().getTexture());
 		                    	entry.getValue().getInstalledPos().translate();
-		                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, -1);
+		                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache, -1);
 		                        entry.getValue().getInstalledPos().translateR();
 		                	}
 		                }

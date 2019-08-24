@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
@@ -184,11 +185,11 @@ public class StandardRefrigeratorContainer extends ContainerModel {
 		);
 		fan.addProgram(new TurboList.Program(){
 			@Override
-			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 	            list.rotate(Static.rad1, 0, 0, false);
 			}
 			@Override
-			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 				//list.rotate(-Static.rad1, 0, 0, false);
 			}
 			@Override public String getId(){ return "hcp:refrigerator_container_fan"; }
@@ -220,7 +221,7 @@ public class StandardRefrigeratorContainer extends ContainerModel {
 		    private RGB color = new RGB(128, 128, 128, 0.67f);
 			@Override public String getId(){ return "hcp:refrigerator_container_fan_cover"; }
 			@Override
-			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 	            GlStateManager.pushMatrix();
 	            GL11.glEnable(GL11.GL_BLEND);
 	            GL11.glDepthMask(false);
@@ -228,7 +229,7 @@ public class StandardRefrigeratorContainer extends ContainerModel {
 	            this.color.glColorApply();
 			}
 			@Override
-			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part){
+			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 	            RGB.glColorReset();
 	            GL11.glDisable(GL11.GL_ALPHA_TEST);
 	            GL11.glDepthMask(true);

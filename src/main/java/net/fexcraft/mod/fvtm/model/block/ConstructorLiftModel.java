@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model.block;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.entity.Entity;
@@ -95,7 +96,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, BlockP
 	}
 
 	@Override
-	public void render(ConstCenterEntity data, BlockPos key, Entity ent, int meta){
+	public void render(ConstCenterEntity data, BlockPos key, Entity ent, RenderCache cache, int meta){
 		this.render(data, key); return;
 	}
 

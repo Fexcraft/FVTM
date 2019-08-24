@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
@@ -42,16 +43,12 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 
 	@Override
 	public void render(VehicleData data, Object key){
-		for(TurboList list : groups){
-			list.render(null, data, data, null);
-		}
+		for(TurboList list : groups){ list.render(null, data, data, null, null); }
 	}
 
 	@Override
-	public void render(VehicleData data, Object key, Entity ent, int meta){
-		for(TurboList list : groups){
-			list.render(ent, data, data, null);
-		}
+	public void render(VehicleData data, Object key, Entity ent, RenderCache cache, int meta){
+		for(TurboList list : groups){ list.render(ent, data, data, null, cache); }
 	}
 	
 	////-///---/---///-////
@@ -116,11 +113,11 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 			GL11.glPushMatrix();
 			GL11.glRotated(180d, 1, 0, 0);
 			bindTexture(data.getTexture());
-			model.render(data, null, null, 0);
+			model.render(data, null, null, null, 0);
 			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
 				bindTexture(entry.getValue().getTexture());
             	entry.getValue().getInstalledPos().translate();
-                entry.getValue().getType().getModel().render(data, entry.getKey(), null, -1);
+                entry.getValue().getType().getModel().render(data, entry.getKey(), null, null, -1);
                 entry.getValue().getInstalledPos().translateR();
 			}
 			GL11.glPopMatrix();

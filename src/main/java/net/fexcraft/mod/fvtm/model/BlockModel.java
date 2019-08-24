@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
@@ -38,15 +39,13 @@ public class BlockModel extends GenericModel<BlockData, Object> implements FCLIt
 	@Override
 	public void render(BlockData data, Object key){
 		for(TurboList list : groups){
-			list.render(null, null, data, null);
+			list.render(null, null, data, null, null);
 		}
 	}
 
 	@Override
-	public void render(BlockData data, Object key, Entity ent, int meta){
-		for(TurboList list : groups){
-			list.render(ent, null, data, null);
-		}
+	public void render(BlockData data, Object key, Entity ent, RenderCache cache, int meta){
+		for(TurboList list : groups){ list.render(ent, null, data, null, cache); }
 	}
 	
 	@Override
@@ -103,7 +102,7 @@ public class BlockModel extends GenericModel<BlockData, Object> implements FCLIt
                 GL11.glPushMatrix();
                 GL11.glRotatef(180f, 1, 0, 0); GL11.glRotatef(180f, 0, 1, 0);
                 super.bindTexture(data.getTexture());
-                model.render(data, null, null, -1);
+                model.render(data, null, null, null, -1);
                 GL11.glPopMatrix();
             }
             GL11.glScalef(-scal[0], -scal[1], -scal[2]);

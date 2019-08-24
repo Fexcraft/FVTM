@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.lang.ArrayList;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.entity.Entity;
 
@@ -32,13 +33,13 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		this(name); for(ModelRendererTurbo mrt : mrts){ this.add(mrt); }
 	}
 
-	public void render(Entity ent, VehicleData data, Colorable color, String part){
+	public void render(Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 		/*GL11.glPushMatrix();
 		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
 		if(rotX != 0f) GL11.glRotatef(rotX, 1, 0, 0); if(rotY != 0f) GL11.glRotatef(rotY, 0, 1, 0); if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);*/
-		if(hasprog) for(Program program : programs) program.preRender(this, ent, data, color, part);
+		if(hasprog) for(Program program : programs) program.preRender(this, ent, data, color, part, cache);
 		if(visible) for(ModelRendererTurbo turbo : this){ turbo.render(scale); }
-		if(hasprog) for(Program program : programs) program.postRender(this, ent, data, color, part);
+		if(hasprog) for(Program program : programs) program.postRender(this, ent, data, color, part, cache);
 		/*if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(-offX, -offY, -offZ);
 		GL11.glPopMatrix();*/
 	}
@@ -106,11 +107,11 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	
 	public static interface Program {
 		
-		public String getId();
+		public default String getId(){ return "idless"; }
 		
-		public void preRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part);
+		public void preRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache);
 		
-		public void postRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part);
+		public void postRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache);
 		
 	}
 	

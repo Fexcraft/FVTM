@@ -18,6 +18,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
@@ -37,6 +38,7 @@ import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -49,6 +51,7 @@ import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
+import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
@@ -62,6 +65,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -361,14 +365,6 @@ public class Resources {
 	public static TargetPoint getTargetPoint(int dim, BlockPos pos){
 		return new NetworkRegistry.TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), Config.VEHICLE_UPDATE_RANGE);
 	}
-	
-	@SubscribeEvent
-	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
-		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof RoadSignItem
-			|| event.getObject().getItem() instanceof ContainerItem || event.getObject().getItem() instanceof BlockItem){
-			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
-		}
-	}
 
 	public static Fuel getFuel(String id){
 		return getFuel(new ResourceLocation(id));
@@ -395,15 +391,33 @@ public class Resources {
 	}	
 	
 	@SubscribeEvent
+	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
+		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof RoadSignItem
+			|| event.getObject().getItem() instanceof ContainerItem || event.getObject().getItem() instanceof BlockItem){
+			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
+		}
+	}
+	
+	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		//event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
 		event.addCapability(new ResourceLocation("fvtm:raildata"), new RailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
 	}
 	
 	@SubscribeEvent
-	public void onEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
+	public void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
 		if(event.getObject() instanceof ContainerHoldingEntity){
 			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
+		}
+		if(event.getObject().world.isRemote && event.getObject() instanceof VehicleEntity){
+			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
+		}
+	}
+	
+	@SubscribeEvent
+	public void onAttachTileEntityCapabilities(AttachCapabilitiesEvent<TileEntity> event){
+		if(Static.side().isClient() && event.getObject() instanceof DisplayEntity){
+			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data;
 
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -10,6 +11,10 @@ public class Capabilities {
 	/** For Vehicle, Part and Container Items. */
 	@CapabilityInject(VehicleAndPartDataCache.class)
 	public static final Capability<VehicleAndPartDataCache> VAPDATA = null;
+	
+	/** For VehicleEntities and eventually other, client side only.  */
+	@CapabilityInject(RenderCache.class)
+	public static final Capability<RenderCache> RENDERCACHE = null;
 	
 	/** Usually stored in the World. */
 	/*@CapabilityInject(Resources.class)

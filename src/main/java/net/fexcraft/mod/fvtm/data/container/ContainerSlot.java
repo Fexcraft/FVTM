@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.container;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -106,7 +107,7 @@ public class ContainerSlot {
         		//Print.debug("Rendering Slot Sub " + i);
 	        	if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(renderoffset[i], 0, 0);
 	        	net.fexcraft.lib.tmt.ModelBase.bindTexture(containers[i].getTexture());
-        		containers[i].getType().getModel().render(containers[i], null, entity, i);
+        		containers[i].getType().getModel().render(containers[i], null, entity, entity.getCapability(Capabilities.RENDERCACHE, null), i);
 	        	if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(-renderoffset[i], 0, 0);
         	}
         }

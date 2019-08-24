@@ -30,7 +30,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
             if(modvec != null){
                 ModelBase.bindTexture(vehicledata.getTexture());
                 GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * 0.0625f), 0);
-                modvec.render(vehicledata, null, null, te.getBlockMetadata());
+                modvec.render(vehicledata, null, null, null, te.getBlockMetadata());
                 vehicledata.getParts().forEach((key, partdata) -> {
                     ModelBase.bindTexture(partdata.getTexture());
                     partdata.getInstalledPos().translate();

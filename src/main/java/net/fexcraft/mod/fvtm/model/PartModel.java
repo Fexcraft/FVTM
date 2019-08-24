@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
@@ -50,16 +51,12 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 
 	@Override
 	public void render(VehicleData data, String key){
-		for(TurboList list : groups){
-			list.render(null, data, data, key);
-		}
+		for(TurboList list : groups){ list.render(null, data, data, key, null); }
 	}
 
 	@Override
-	public void render(VehicleData data, String key, Entity ent, int meta){
-		for(TurboList list : groups){
-			list.render(ent, data, data, key);
-		}
+	public void render(VehicleData data, String key, Entity ent, RenderCache cache, int meta){
+		for(TurboList list : groups){ list.render(ent, data, data, key, cache); }
 	}
 	
 	@Override

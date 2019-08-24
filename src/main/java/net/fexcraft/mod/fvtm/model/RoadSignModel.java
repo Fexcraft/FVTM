@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RoadSign;
+import net.fexcraft.mod.fvtm.data.vehicle.RenderCache;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.model.GenericModel;
@@ -35,7 +36,7 @@ public class RoadSignModel extends GenericModel<RoadSignEntity, RoadSign> implem
 	}
 
 	@Override
-	public void render(RoadSignEntity data, RoadSign key, Entity ent, int meta){
+	public void render(RoadSignEntity data, RoadSign key, Entity ent, RenderCache cache, int meta){
 		for(TurboList list : groups){ list.renderPlain(); }
 	}
 	

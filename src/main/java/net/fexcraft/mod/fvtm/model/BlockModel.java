@@ -17,7 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockModel extends GenericModel<BlockData, String> implements FCLItemModel {
+public class BlockModel extends GenericModel<BlockData, Object> implements FCLItemModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
     //public static boolean PREVIEW = false;
@@ -36,16 +36,16 @@ public class BlockModel extends GenericModel<BlockData, String> implements FCLIt
 	public BlockModel(String type, ResourceLocation loc){ super(type, loc); }
 
 	@Override
-	public void render(BlockData data, String key){
+	public void render(BlockData data, Object key){
 		for(TurboList list : groups){
-			list.render(null, null, data, key);
+			list.render(null, null, data, null);
 		}
 	}
 
 	@Override
-	public void render(BlockData data, String key, Entity ent, int meta){
+	public void render(BlockData data, Object key, Entity ent, int meta){
 		for(TurboList list : groups){
-			list.render(ent, null, data, key);
+			list.render(ent, null, data, null);
 		}
 	}
 	

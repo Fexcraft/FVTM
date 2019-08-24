@@ -38,7 +38,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected BlockItem item;
 	protected net.minecraft.block.Block block;
 	protected String modelid;
-	protected Model<BlockData, String> model;
+	protected Model<BlockData, Object> model;
 	//
 	protected boolean functional, plain_model;
 	protected RGB primary, secondary;
@@ -242,7 +242,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return new ItemStack(item, 1);
 	}
 	
-	public Model<BlockData, String> getModel(){
+	public Model<BlockData, Object> getModel(){
 		return model;
 	}
 	

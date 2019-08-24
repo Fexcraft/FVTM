@@ -218,11 +218,11 @@ public class DefaultPrograms {
 	public static class AttributeRotator implements Program {
 		
 		private Attribute<?> attr; private String attribute;
-		private float min, max, step, /*lastcurr,*/ current; private int axis;
+		private float min, max, step; private Float current; private int axis;
 		private boolean boolstatebased, override; private float defrot;
 		
 		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot){
-			this.attribute = attribute; this.boolstatebased = boolstatebased; current = 0; /*lastcurr = 0;*/ override = true;
+			this.attribute = attribute; this.boolstatebased = boolstatebased; override = true;
 			this.min = min; this.max = max; this.step = step; this.axis = axis; this.defrot = defrot;
 			if(min == max || (min == 0f && max == 0f)){ min = -360; max = 360; }
 		}
@@ -235,22 +235,16 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null) return; /*if(attr == null)*/ attr = data.getAttribute(attribute); if(attr == null) return;
-			//attr.setCurrentValue(Time.getSecond() % 2);
-			/*if(!boolstatebased){
-				attr.setCurrentValue(attr.getCurrentFloat() + 0.1f);
-				if(attr.getCurrentFloat() >= attr.getMax()) attr.setCurrentValue(attr.getMin());
-			}*/
+			if(cache == null) return; if((attr = data.getAttribute(attribute)) == null) return;
+			current = cache.getValue(attribute); if(current == null) current = 0f;
 			current = boolstatebased ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
 			if(current > max) current = max; if(current < min) current = min;
-			/*if(current != lastcurr)*/ list.rotateAxis(current + defrot, axis, override);
+			list.rotateAxis(current + defrot, axis, override); cache.setValue(attribute, current);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null || attr == null) return;
-			/*if(current != lastcurr)*/ list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
-			//lastcurr = current;
+			if(cache == null || attr == null) return; list.rotateAxis(override ? defrot : -(current + defrot), axis, override); current = 0f;
 		}
 		
 	};

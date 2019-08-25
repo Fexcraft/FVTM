@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -163,7 +165,7 @@ public class DataUtil {
         	HttpURLConnection urlconn = (HttpURLConnection)(new URL(url)).openConnection(Minecraft.getMinecraft().getProxy());
             urlconn.setDoInput(true); urlconn.setDoOutput(false); urlconn.connect();
             if(urlconn.getResponseCode() == 200){
-                return TextureUtil.readBufferedImage(urlconn.getInputStream());
+                return ImageIO.read(urlconn.getInputStream());
             } urlconn.disconnect();
         } catch (Exception e){ e.printStackTrace(); }
 		return null;

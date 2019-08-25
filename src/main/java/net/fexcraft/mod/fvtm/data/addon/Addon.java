@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,6 +9,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import javax.imageio.ImageIO;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
@@ -41,7 +44,7 @@ public class Addon extends TypeCore<Addon> {
 	
 	protected ArrayList<String> authors = new ArrayList<>();
 	protected String version, url, license, update_id;
-	protected boolean enabled = true, generatelang, generatejson;
+	protected boolean enabled = true, generatelang, generatejson, generateicon;
 	protected File file, lang;
 	protected ContainerType contype;
 	//
@@ -69,6 +72,7 @@ public class Addon extends TypeCore<Addon> {
 		update_id = JsonUtil.getIfExists(obj, "UpdateID", "null");
 		generatelang = JsonUtil.getIfExists(obj, "GenerateLang", false);
 		generatejson = JsonUtil.getIfExists(obj, "GenerateItemJson", false);
+		generateicon = JsonUtil.getIfExists(obj, "GenerateItemIcon", false);
 		//
 		if(Static.side().isClient()){ this.creativetab = new AddonTab(this); }
 		this.registerer = new AutoRegisterer(this.getRegistryName().getResourcePath());
@@ -174,6 +178,7 @@ public class Addon extends TypeCore<Addon> {
 				if(Static.dev()){
 					if(generatelang) checkLangFile(core);
 					if(generatejson) checkItemJson(core, data);
+					if(generateicon) checkItemIcon(core, data);
 				}
 			}
 		}
@@ -231,6 +236,34 @@ public class Addon extends TypeCore<Addon> {
 			Print.log("Generated item json for '" + core.getRegistryName().toString() + "'!");
 		}
 		//TODO eventually an alternative model for blocks?
+	}
+	
+	private static final String gitph = "https://raw.githubusercontent.com/Fexcraft/FVTM/1.12.2/placeholders/ph_%s.png";
+	private static BufferedImage img, img_veh, img_part;
+
+	private void checkItemIcon(TypeCore<?> core, DataType data){
+		File icon = new File(file.getParentFile(), "/src/main/resources/assets/" + core.getRegistryName().getResourceDomain() + "/textures/items/" + core.getRegistryName().getResourcePath() + ".png");
+		if(!icon.exists()){ if(!icon.getParentFile().exists()) icon.getParentFile().mkdirs();
+			BufferedImage image = null;
+			if(data == DataType.VEHICLE){
+				if(img_veh == null){
+					img_veh = DataUtil.tryDownload(String.format(gitph, "vehicle"));
+				} image = img_veh;
+			}
+			else if(data == DataType.PART){
+				if(img_part == null){
+					img_part = DataUtil.tryDownload(String.format(gitph, "part"));
+				} image = img_part;
+			}
+			else{
+				if(img == null){
+					img = DataUtil.tryDownload(String.format(gitph, "general"));
+				} image = img;
+			}
+			try{ ImageIO.write(image, "png", icon); }
+			catch(IOException e){ e.printStackTrace(); }
+			Print.log("Generated item icon for '" + core.getRegistryName().toString() + "'!");
+		}
 	}
 
 	private boolean containsLangEntry(String regname){

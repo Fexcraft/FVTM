@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.util;
 
+import java.awt.image.BufferedImage;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,8 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -151,6 +156,17 @@ public class DataUtil {
 		if(tag instanceof NBTTagList == false) return null; NBTTagList list = (NBTTagList)tag;
 		if(list.hasNoTags() || list.tagCount() < 3) return null;
 		return new Vec3f(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
+	}
+	
+	public static BufferedImage tryDownload(String url){
+        try{
+        	HttpURLConnection urlconn = (HttpURLConnection)(new URL(url)).openConnection(Minecraft.getMinecraft().getProxy());
+            urlconn.setDoInput(true); urlconn.setDoOutput(false); urlconn.connect();
+            if(urlconn.getResponseCode() == 200){
+                return TextureUtil.readBufferedImage(urlconn.getInputStream());
+            } urlconn.disconnect();
+        } catch (Exception e){ e.printStackTrace(); }
+		return null;
 	}
 
 }

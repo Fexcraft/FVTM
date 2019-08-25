@@ -1,8 +1,13 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
@@ -36,8 +41,8 @@ public class Addon extends TypeCore<Addon> {
 	
 	protected ArrayList<String> authors = new ArrayList<>();
 	protected String version, url, license, update_id;
-	protected boolean enabled = true;
-	protected File file;
+	protected boolean enabled = true, generatelang;
+	protected File file, lang;
 	protected ContainerType contype;
 	//
 	@SideOnly(Side.CLIENT)
@@ -62,6 +67,7 @@ public class Addon extends TypeCore<Addon> {
 		url = JsonUtil.getIfExists(obj, "URL", "http://fexcraft.net/not_found");
 		license = JsonUtil.getIfExists(obj, "License", "http://fexcraft.net/not_found");
 		update_id = JsonUtil.getIfExists(obj, "UpdateID", "null");
+		generatelang = JsonUtil.getIfExists(obj, "GenerateLang", false);
 		//
 		if(Static.side().isClient()){ this.creativetab = new AddonTab(this); }
 		this.registerer = new AutoRegisterer(this.getRegistryName().getResourcePath());
@@ -164,6 +170,7 @@ public class Addon extends TypeCore<Addon> {
 						}
 					}
 				}
+				if(Static.dev() && generatelang) checkLangFile(core);
 			}
 		}
 		else{ //assume it's a jar.
@@ -195,6 +202,27 @@ public class Addon extends TypeCore<Addon> {
 				}
 			}
 		}
+	}
+
+	private void checkLangFile(TypeCore<?> core){
+		if(lang == null) lang = new File(file.getParentFile(), "/src/main/resources/assets/" + registryname.getResourcePath() + "/lang/en_us.lang");
+		String regname = "item." + core.getRegistryName().toString() + ".name=";
+		if(!containsLangEntry(regname)){
+			try{ Files.write(lang.toPath(), ("\n" + regname).getBytes(), StandardOpenOption.APPEND); }
+			catch(IOException e){ e.printStackTrace(); }
+			Print.log("Added lang entry '" + regname.replace("=", "") + "'!");
+		}
+	}
+
+	private boolean containsLangEntry(String regname){
+		try{
+			@SuppressWarnings("resource")
+			Scanner scanner = new Scanner(lang);
+			while(scanner.hasNext()){
+				if(scanner.nextLine().startsWith(regname)) return true;
+			} scanner.close();
+		}
+		catch(FileNotFoundException e){ e.printStackTrace(); } return false;
 	}
 
 	private ArrayList<File> findFiles(File file, String suffix){

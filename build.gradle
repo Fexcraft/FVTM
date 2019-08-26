@@ -56,17 +56,17 @@ processResources {
     inputs.property "mcversion", project.minecraft.version
 
     // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
+    /*from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
                 
         // replace version and mcversion
         expand 'version':modversion, 'mcversion':project.minecraft.version
-    }
+    }*/
         
     // copy everything else except the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
+    /*from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-    }
+    }*/
 }
 
 task fvtm(type: Jar) {

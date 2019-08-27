@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -15,7 +16,7 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 	
 	private RenderCache instance;
 	
-	public RenderCacheHandler(){ instance = new Instance(); }
+	public RenderCacheHandler(World world){ instance = new Instance(world); }
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing){
@@ -60,7 +61,7 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public RenderCache call() throws Exception {
-			return new Instance();
+			return new Instance(null);
 		}
 		
 	}
@@ -68,6 +69,9 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 	public static class Instance implements RenderCache {
 		
 		protected TreeMap<String, Float> cache = new TreeMap<>();
+		protected World world;
+
+		public Instance(World world){ this.world = world; }
 
 		@Override
 		public TreeMap<String, Float> getValues(){
@@ -87,6 +91,11 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public Float setValue(String id, Float value){
 			if(id == null) return 0f; if(value == null) cache.remove(id); return cache.put(id, value);
+		}
+
+		@Override
+		public World getWorld(){
+			return world;
 		}
 		
 	}

@@ -9,12 +9,18 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 
+/**
+ * 
+ * @author Ferdinand Calo' (FEX___96)
+ *
+ */
 public class DefaultPrograms {
 
 	public static boolean DIDLOAD = false;
@@ -392,6 +398,40 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			GL11.glPopMatrix();
+		}
+		
+	}
+	
+	/** Unfinished Prototype. */
+	public static class ParticleEmitter implements Program {
+		
+		private net.minecraft.util.EnumParticleTypes particle;
+		private boolean ignore; private float x, y, z, sx, sy, sz;
+		private int[] params;
+		
+		public ParticleEmitter(net.minecraft.util.EnumParticleTypes particle, boolean ignorerange, float x, float y, float z, float sx, float sy, float sz, int... params){
+			this.particle = particle; this.ignore = ignorerange; this.x = x; this.y = y; this.z = z; this.sx = sx; this.sy = sy; this.sz = sz; this.params = params;
+		}
+		
+		@Override
+		public String getId(){ return "fvtm:particle_emitter"; }
+
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			//
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(cache != null){
+				if(ent != null && ent instanceof VehicleEntity){
+					//TODO apply rotation
+					ent.world.spawnParticle(particle, ignore, x, y, z, sx, sy, sz, params);
+				}
+				else{
+					cache.getWorld().spawnParticle(particle, ignore, x, y, z, sx, sy, sz, params);
+				}
+			}
 		}
 		
 	}

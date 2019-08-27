@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 
@@ -31,8 +32,15 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
 				if(attr.type().isBoolean()){
-					attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue()); Print.debug("sending back");
+					attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue());
 					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
+					if(veh.getRearCoupledEntity() != null){
+						attr = veh.getRearCoupledEntity().getVehicleData().getAttribute(packet.nbt.getString("attr"));
+						if(attr != null && attr.type().isBoolean()){
+							attr.setValue(bool); NBTTagCompound compound = packet.nbt.copy(); compound.setBoolean("bool", attr.getBooleanValue());
+							PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(veh.getRearCoupledEntity().getEntity()));
+						}
+					}
 				}
 				else{
 					//TODO

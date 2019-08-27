@@ -14,17 +14,23 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 
 public class VehicleSteeringOverlay extends GuiScreen {
 
@@ -223,24 +229,49 @@ public class VehicleSteeringOverlay extends GuiScreen {
     public boolean isKeyDown(int keycode){
         return keycode < 0 ? Mouse.isButtonDown(keycode + 100) : keycode > 255 ? /* invalid code - PASS */ false : Keyboard.isKeyDown(keycode);
     }
+    
+	public static final ResourceLocation ENGINE_MISSING = new ResourceLocation("fvtm:textures/gui/icons/engine_missing.png");
+	public static final ResourceLocation ENGINE_ON = new ResourceLocation("fvtm:textures/gui/icons/engine_on.png");
+	public static final ResourceLocation ENGINE_OFF = new ResourceLocation("fvtm:textures/gui/icons/engine_off.png");
+	public static final ResourceLocation INDICATOR_LEFT_OFF = new ResourceLocation("fvtm:textures/gui/icons/indicator_left.png");
+	public static final ResourceLocation INDICATOR_LEFT_ON = new ResourceLocation("fvtm:textures/gui/icons/indicator_left_glow.png");
+	public static final ResourceLocation INDICATOR_RIGHT_OFF = new ResourceLocation("fvtm:textures/gui/icons/indicator_right.png");
+	public static final ResourceLocation INDICATOR_RIGHT_ON = new ResourceLocation("fvtm:textures/gui/icons/indicator_right_glow.png");
+	public static final ResourceLocation LIGHTS_LOW_OFF = new ResourceLocation("fvtm:textures/gui/icons/lights_low_off.png");
+	public static final ResourceLocation LIGHTS_LOW_ON = new ResourceLocation("fvtm:textures/gui/icons/lights_low_on.png");
+	public static final ResourceLocation LIGHTS_HIGH_OFF = new ResourceLocation("fvtm:textures/gui/icons/lights_high_off.png");
+	public static final ResourceLocation LIGHTS_HIGH_ON = new ResourceLocation("fvtm:textures/gui/icons/lights_high_on.png");
+	public static final ResourceLocation LIGHTS_FOG_OFF = new ResourceLocation("fvtm:textures/gui/icons/lights_fog_off.png");
+	public static final ResourceLocation LIGHTS_FOG_ON = new ResourceLocation("fvtm:textures/gui/icons/lights_fog_on.png");
+
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
     	GenericVehicle ent = seat.getVehicle(); if(ent == null){ return; }
-        if(!ent.getVehicleData().hasPart("engine")){
-            mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff);
-            return;
-        }
-        mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity())), 7, 7, 0xffffff);
-        mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 21, 0xffffff);
-        mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 35, 0xffffff);
-        if(ent.getCoupledEntity(false) != null){
-        	mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 49, 0xffffff);
-        }
+    	VehicleData data = ent.getVehicleData(); if(data == null) return;
+    	this.mc.getTextureManager().bindTexture(ConstructorGui.STONE);
+		this.drawTexturedModalRect(0, 0, 0, 0, this.width, 34); boolean noengine = false;
+		if(!data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine")){
+			this.mc.getTextureManager().bindTexture(ENGINE_MISSING); noengine = true;
+		}
+		else{
+			this.mc.getTextureManager().bindTexture(data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() ? ENGINE_ON : ENGINE_OFF);
+		} drawRectIcon(width - 33, 1, 32, 32);
+		//
+		this.mc.getTextureManager().bindTexture(ConstructorGui.ANVIL); drawRectIcon(width - 97 - 16, 1, 80, 16);
+		boolean turnleft = DefaultPrograms.checkSignalSec() && data.getAttribute("turn_light_left").getBooleanValue();
+		mc.getTextureManager().bindTexture(turnleft ? INDICATOR_LEFT_ON : INDICATOR_LEFT_OFF); drawRectIcon(width - 97 - 16, 1, 16, 16);
+		boolean turnright = DefaultPrograms.checkSignalSec() && data.getAttribute("turn_light_right").getBooleanValue();
+		mc.getTextureManager().bindTexture(turnright ? INDICATOR_RIGHT_ON : INDICATOR_RIGHT_OFF); drawRectIcon(width - 65 + 16, 1, 16, 16);
+		//
+		mc.getTextureManager().bindTexture(data.getAttribute("lights").getBooleanValue() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF); drawRectIcon(width - 97 + 32, 1, 16, 16);
+		mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getBooleanValue() ? LIGHTS_HIGH_ON : LIGHTS_HIGH_OFF); drawRectIcon(width - 97 + 16, 1, 16, 16);
+		mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getBooleanValue() ? LIGHTS_FOG_ON : LIGHTS_FOG_OFF); drawRectIcon(width - 97, 1, 16, 16);
+		//
         if(!attributes.isEmpty()){
         	int offset = 0;
         	for(int i = 0; i < 16; i++){
-        		if(i >= attributes.size()) break; Attribute<?> attr = attributes.get(i); offset = i * 12;
+        		if(i >= attributes.size()) break; Attribute<?> attr = attributes.get(i); offset = i * 12 + 34;
         		mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
         		if(attr.type().isBoolean()){
             		int width = fontRenderer.getStringWidth(attr.id());
@@ -263,6 +294,25 @@ public class VehicleSteeringOverlay extends GuiScreen {
         }
         //
         if(timer > 0) timer--; if(clicktimer > 0) clicktimer--;
+        //
+        if(noengine){ mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff); return; }
+        mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity())), 7, 3, 0xffffff);
+        mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
+        mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
+        if(ent.getCoupledEntity(false) != null){
+        	mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
+        }
+    }
+    
+    public static void drawRectIcon(int x, int y, int width, int height){
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, 0).tex(0, 1).endVertex();
+        bufferbuilder.pos(x + width, y + height, 0).tex(1, 1).endVertex();
+        bufferbuilder.pos(x + width, y, 0).tex(1, 0).endVertex();
+        bufferbuilder.pos(x, y, 0).tex(0, 0).endVertex();
+        tessellator.draw();
     }
 
     private String fuelColour(VehicleData data){

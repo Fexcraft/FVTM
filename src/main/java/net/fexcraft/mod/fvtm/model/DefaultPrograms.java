@@ -84,7 +84,7 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:reverse_lights"; }
 	};
 	
-	private static final boolean checkSignalSec(){//temporary solution;
+	public static final boolean checkSignalSec(){//temporary solution;
 		return Time.getSecond() % 2 == 1;
 	}
 	

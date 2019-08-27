@@ -13,8 +13,8 @@ import net.minecraft.world.World;
 
 public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	
-	private static final ResourceLocation STONE = new ResourceLocation("minecraft:textures/blocks/stone.png");
-	private static final ResourceLocation ANVIL = new ResourceLocation("minecraft:textures/blocks/anvil_base.png");
+	public static final ResourceLocation STONE = new ResourceLocation("minecraft:textures/blocks/stone.png");
+	public static final ResourceLocation ANVIL = new ResourceLocation("minecraft:textures/blocks/anvil_base.png");
 	protected static final ResourceLocation ICON_LEFT = new ResourceLocation("fvtm:textures/gui/icons/arrow_left.png");
 	protected static final ResourceLocation ICON_RIGHT = new ResourceLocation("fvtm:textures/gui/icons/arrow_right.png");
 	protected static final ResourceLocation ICON_CHECK = new ResourceLocation("fvtm:textures/gui/icons/check.png");

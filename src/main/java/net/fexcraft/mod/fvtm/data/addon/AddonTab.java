@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.addon;
 
+import java.util.Collection;
 import java.util.TreeMap;
 
 import net.fexcraft.lib.common.math.Time;
@@ -49,5 +50,9 @@ public class AddonTab extends CreativeTab {
     public static final AddonTab getTab(ResourceLocation addonid){
     	return TABS.get(addonid);
     }
+
+	public static Collection<AddonTab> getTabs(){
+		return TABS.values();
+	}
 
 }

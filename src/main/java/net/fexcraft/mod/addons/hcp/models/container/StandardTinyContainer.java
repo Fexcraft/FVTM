@@ -11,7 +11,7 @@ import net.fexcraft.mod.fvtm.model.TurboList;
  *  FMT (Fex's Modelling Toolbox) v.1.0.6-test &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-@fModel(registryname = "hcp:models/container/tiny") //TODO adjust as needed
+@fModel(registryname = "hcp:models/container/tiny")
 public class StandardTinyContainer extends ContainerModel {
 
 	public StandardTinyContainer(){

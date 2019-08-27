@@ -160,6 +160,7 @@ public class FVTM {
 			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			FCLRegistry.getItem("fvtm:streetsign").setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			RailItemTemp.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			Resources.BLOCKS.getValuesCollection().forEach(block -> block.linkItem());
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());

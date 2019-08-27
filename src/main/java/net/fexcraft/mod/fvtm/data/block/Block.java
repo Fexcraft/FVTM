@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -116,7 +115,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.harveresttoollevel = JsonUtil.getIfExists(obj, "HarverestToolLevel", 0).intValue();
 		try{
 			this.block = blocktype.blockclass.getConstructor(Block.class).newInstance(this);
-			this.item = (BlockItem)FCLRegistry.getItem(registryname);
 		} catch(Exception e){ e.printStackTrace(); Static.stop(); } return this;
 	}
 
@@ -336,6 +334,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public int getHarverestToolLevel(){
 		return harveresttoollevel;
+	}
+
+	public void linkItem(){
+		item = (BlockItem)Item.REGISTRY.getObject(registryname);
 	}
 
 }

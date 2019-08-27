@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -30,8 +29,6 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 		this.setHasSubtypes(true); this.setMaxStackSize(type.getMaxStackSize());
 		this.setRegistryName(block.getRegistryName());
 		this.setUnlocalizedName(block.getUnlocalizedName());
-        if(Static.side().isServer()) return;
-        this.setCreativeTab(type.getAddon().getCreativeTab());
 	}
 
     @SideOnly(Side.CLIENT)
@@ -65,9 +62,14 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 	
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
-    	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
+    	if(tab == CreativeTabs.SEARCH || tab == type.getAddon().getCreativeTab()){
     		items.add(type.newItemStack());
     	}
+    }
+    
+    @Override
+    public CreativeTabs getCreativeTab(){
+        return type.getAddon().getCreativeTab();
     }
     
     @Override

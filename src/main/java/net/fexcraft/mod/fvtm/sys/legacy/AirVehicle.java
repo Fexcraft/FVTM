@@ -15,6 +15,7 @@ import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
@@ -172,16 +173,13 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
             	//TODO fluid handler alternative
             }
         }
-        //this.getCapability(FVTMCaps.CONTAINER, null).dropContents(); //TODO
+        this.getCapability(Capabilities.CONTAINER, null).dropContents();
         //
         super.setDead();
         if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
         if(wheels != null) for(WheelEntity wheel : wheels) if(wheel != null) wheel.setDead();
         //
         vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicle));
-        if(world.isRemote){
-        	//TODO ? net.fexcraft.mod.fvtm.util.RenderCache.removeEntity(this);
-        }
     }
 
 	@Override

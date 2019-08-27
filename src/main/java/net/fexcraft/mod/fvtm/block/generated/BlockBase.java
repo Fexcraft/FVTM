@@ -7,7 +7,6 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -45,9 +44,6 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
 		this.setResistance(type.getResistance());
 		this.setLightOpacity(type.getLightOpacity());
 		this.setHarvestLevel(type.getHarverestToolClass(), type.getHarverestToolLevel());
-		if(Static.side().isClient()){
-	        this.setCreativeTab(type.getAddon().getCreativeTab());
-		}
 	}
 	
 	@Override
@@ -147,6 +143,10 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
 	        return oldState.getBlock() != newState.getBlock();
 	    }
 
+	}
+
+	public void linkCreativeTab(){
+		this.setCreativeTab(type.getAddon().getCreativeTab());
 	}
 
 }

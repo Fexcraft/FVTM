@@ -429,7 +429,7 @@ public class DefaultPrograms {
 					ent.world.spawnParticle(particle, ignore, x, y, z, sx, sy, sz, params);
 				}
 				else{
-					cache.getWorld().spawnParticle(particle, ignore, x, y, z, sx, sy, sz, params);
+					//cache.getWorld().spawnParticle(particle, ignore, x, y, z, sx, sy, sz, params);
 				}
 			}
 		}

@@ -2,8 +2,6 @@ package net.fexcraft.mod.fvtm.data.root;
 
 import java.util.TreeMap;
 
-import net.minecraft.world.World;
-
 /**
  * @author Ferdinand Calo' (FEX___96)
  * 
@@ -21,8 +19,5 @@ public interface RenderCache {
 	
 	/** Set value to `null` to remove the entry. Otherwise, it updates the cache. */
 	public Float setValue(String id, Float value);
-
-	/** Client world, if needed. */
-	public World getWorld();
 
 }

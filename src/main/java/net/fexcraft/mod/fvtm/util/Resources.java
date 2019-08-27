@@ -411,8 +411,8 @@ public class Resources {
 		if(event.getObject() instanceof ContainerHoldingEntity){
 			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
 		}
-		if(event.getObject().world.isRemote && event.getObject() instanceof VehicleEntity){
-			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler(event.getObject().getEntityWorld()));
+		if(Static.side().isClient() && event.getObject() instanceof VehicleEntity){
+			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 	}
 	
@@ -421,7 +421,7 @@ public class Resources {
 		if(Static.side().isClient() && (event.getObject() instanceof DisplayEntity ||
 			event.getObject() instanceof BlockBase.TileEntity || event.getObject() instanceof ContainerEntity)){
 			if(!event.getObject().hasWorld()) Print.debug("TileEntity has no world! " + event.getObject().toString());
-			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler(event.getObject().getWorld()));
+			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 	}
 	

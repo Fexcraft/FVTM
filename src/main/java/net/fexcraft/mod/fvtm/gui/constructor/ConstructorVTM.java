@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui.constructor;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
@@ -29,9 +30,14 @@ public class ConstructorVTM extends ConstructorGui {
 	
 	@Override
 	public void init(){
-		super.init(); this.menutitle.string = (part == null ? "Vehicle " : "Part [" + part + "] ") + "Texture Management";
-		VehicleData vdata = container.getTileEntity().getVehicleData();
-		Textureable textur = part == null ? vdata == null ? container.getTileEntity().getContainerData() : vdata : vdata.getPart(part);
+		super.init(); String title = null;
+		if(part == null){
+			if(container.getTileEntity().getBlockData() != null) title = "Block"; 
+			if(container.getTileEntity().getContainerData() != null) title = "Container"; 
+			if(container.getTileEntity().getVehicleData() != null) title = "Vehicle"; 
+		} else title = "Part [" + part + "]";
+		this.menutitle.string = title + " Texture Management";
+		Textureable textur = getTextureable();
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_supplied", prev = new IconButton("prev_supplied", 3, 1, false, ICON_LEFT));
 		this.buttons.put("in_apply", new IconButton("in_apply", 6, 0, false, ICON_RIGHT));
@@ -45,9 +51,14 @@ public class ConstructorVTM extends ConstructorGui {
 		cfields[10].setText(textur == null ? "no data" : !textur.isExternalTexture() ? "" : textur.getCustomTextureString());
 	}
 	
-	private void updateIconsAndButtons(){
+	private Textureable getTextureable(){
 		VehicleData vdata = container.getTileEntity().getVehicleData();
-		Textureable textur = part == null ? vdata == null ? container.getTileEntity().getContainerData() : vdata : vdata.getPart(part);
+		ContainerData condata = container.getTileEntity().getContainerData();
+		return part == null ? vdata == null ? condata == null ? container.getTileEntity().getBlockData() : condata : vdata : vdata.getPart(part);
+	}
+
+	private void updateIconsAndButtons(){
+		Textureable textur = getTextureable();
 		if(textur.getSelectedTexture() < 0){
 			tbuttons[1].string = textur.isExternalTexture() ? "external" : "internal"; cfields[4].setText(" - - - - ");
 		}
@@ -68,7 +79,7 @@ public class ConstructorVTM extends ConstructorGui {
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button12")) openGui(modid, 900, xyz);
 		else if(button.name.endsWith("_supplied")){
-			Textureable textur = part == null ? container.getTileEntity().getVehicleData() : container.getTileEntity().getVehicleData().getPart(part);
+			Textureable textur = getTextureable();
 			int i = textur.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);
 			if(i >= textur.getHolder().getDefaultTextures().size() || i < 0){
 				Print.debug("invalid id " + i); return true;

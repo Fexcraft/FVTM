@@ -158,7 +158,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 
 	@Override
 	public String getCustomTextureString(){
-		return isTextureExternal ? extex : seltex.toString();
+		return isTextureExternal ? extex : seltex == null ? "" : seltex.toString();
 	}
 
 	@Override

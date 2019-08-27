@@ -12,16 +12,17 @@ public class ConstructorMain extends ConstructorGui {
 	public ConstructorMain(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		this.buttontext = new String[]{
-			"Const. Status", "Vehicle Info", "",
+			"Const. Status", "Content Info", "",
 			"Part Cache", "Part Manager", "Part Installer",
 			"", "Texture Manager", "Spraying Tool", "", "Exit"};
 	}
 	
 	@Override
-	public void init(){ super.init();
+	public void init(){
 		this.buttons.put("icon_part", new IconButton("icon_part", 3, 0, false, ICON_REMOVE));
 		this.buttons.put("icon_spawn", new IconButton("icon_spawn", 1, 1, false, ICON_EDIT0));
 		this.buttons.put("icon_veh", new IconButton("icon_veh", 1, 0, false, ICON_CHECK));
+		super.init();
 	}
 
 	@Override
@@ -35,7 +36,7 @@ public class ConstructorMain extends ConstructorGui {
 		if(button.name.equals("button10")){ player.closeScreen(); return true; }
 		if(button.name.equals("icon_veh")){
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("cargo", "drop"); compound.setString("what", "vehicle"); 
+			compound.setString("cargo", "drop"); compound.setString("what", "any"); 
 			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 			this.container.send(Side.SERVER, compound); return true;
 		}

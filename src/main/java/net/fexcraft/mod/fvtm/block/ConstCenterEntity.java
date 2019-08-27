@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,6 +45,11 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 	public ContainerData getContainerData(){
 		return conpos == null ? null : tile == null ? tryLinkC() : tile.getContainerData();
 	}
+
+	/** This for the renderer, */
+	public BlockData getBlockData(){
+		return conpos == null ? null : tile == null ? tryLinkB() : tile.getBlockData();
+	}
 	
 	@SideOnly(Side.CLIENT)
 	private long lasttry;
@@ -65,6 +71,11 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 	@SideOnly(Side.CLIENT)
 	public ContainerData tryLinkC(){
 		tryLink(); return tile.getContainerData();
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public BlockData tryLinkB(){
+		tryLink(); return tile.getBlockData();
 	}
 
 	public void setLinkPos(BlockPos pos, boolean update){

@@ -28,7 +28,11 @@ public class ConstructorVP extends ConstructorGui {
 	
 	@Override
 	public void init(){
-		super.init(); this.menutitle.string = "Vehicle Color Painter";
+		super.init(); String title = null;
+		if(container.getTileEntity().getBlockData() != null) title = "Block"; 
+		if(container.getTileEntity().getContainerData() != null) title = "Container"; 
+		if(container.getTileEntity().getVehicleData() != null) title = "Vehicle"; 
+		this.menutitle.string = title + " Color Painter";
 		this.buttons.put("icon_rgb", new IconButton("icon_rgb", 0, 0, false, ICON_CHECK));
 		this.buttons.put("icon_hex", new IconButton("icon_hex", 2, 0, false, ICON_CHECK));
 		this.buttons.put("icon_try", new IconButton("icon_try", 10, 2, false, ICON_QMARK).setEnabled(false));
@@ -42,11 +46,17 @@ public class ConstructorVP extends ConstructorGui {
 		this.fields.put("rgb", rgb = cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10));
 		this.fields.put("hex", hex = cfields[3] = new TextField(2, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10));
 		//
-		Colorable colorable = container.getTileEntity().getVehicleData() == null ? container.getTileEntity().getContainerData() : container.getTileEntity().getVehicleData();
+		Colorable colorable = getColorable();
 		this.updateColorTo(primary ? colorable.getPrimaryColor() : colorable.getSecondaryColor(), true);
 		org_p = colorable.getPrimaryColor().copy(); org_s = colorable.getSecondaryColor().copy();
 	}
 	
+	private Colorable getColorable(){
+		if(container.getTileEntity().getVehicleData() == null){
+			return container.getTileEntity().getContainerData() == null ? container.getTileEntity().getBlockData() : container.getTileEntity().getContainerData();
+		} return container.getTileEntity().getVehicleData();
+	}
+
 	private void updateIconsAndButtons(){
 		tbuttons[11].string = "T: " + (primary ? "primary" : "secondary");
 	}

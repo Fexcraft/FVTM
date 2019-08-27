@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -91,7 +92,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
 
     @Override
     protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[]{FACING});
+        return new BlockStateContainer(this, new IProperty[]{ FACING });
     }
 
     @Override
@@ -128,6 +129,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	if(te.getContainerData() != null) te.dropContainer(true);
         	if(te.getVehicleData() != null) te.dropVehicle(true);
         	if(te.getPartData() != null) te.dropPart(true);
+        	if(te.getBlockData() != null) te.dropBlock(true);
         	te.setVehicleData(((VehicleItem)held.getItem()).getData(held), false);
         	te.updateClient(null); held.shrink(1);
         	Print.chat(player, "Vehicle put into Constructor.");
@@ -136,9 +138,19 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	if(te.getContainerData() != null) te.dropContainer(true);
         	if(te.getVehicleData() != null) te.dropVehicle(true);
         	if(te.getPartData() != null) te.dropPart(true);
+        	if(te.getBlockData() != null) te.dropBlock(true);
         	te.setContainerData(((ContainerItem)held.getItem()).getData(held), false);
         	te.updateClient(null); held.shrink(1);
-        	Print.chat(player, "Vehicle put into Constructor.");
+        	Print.chat(player, "Container put into Constructor.");
+        }
+        else if(held.getItem() instanceof BlockItem){
+        	if(te.getContainerData() != null) te.dropContainer(true);
+        	if(te.getVehicleData() != null) te.dropVehicle(true);
+        	if(te.getPartData() != null) te.dropPart(true);
+        	if(te.getBlockData() != null) te.dropBlock(true);
+        	te.setBlockData(((BlockItem)held.getItem()).getData(held), false);
+        	te.updateClient(null); held.shrink(1);
+        	Print.chat(player, "Block put into Constructor.");
         }
         //
         /*else*/ return true;

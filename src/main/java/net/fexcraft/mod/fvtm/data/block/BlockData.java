@@ -96,7 +96,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 
 	@Override
 	public String getCustomTextureString(){
-		return isTextureExternal ? extex : seltex.toString();
+		return isTextureExternal ? extex : seltex == null ? "" : seltex.toString();
 	}
 
 	@Override

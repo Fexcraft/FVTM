@@ -105,6 +105,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		return this.hasprog = this.programs.size() > 0;
 	}
 	
+	/** @author Ferdinand Calo' (FEX___96) */
 	public static interface Program {
 		
 		public default String getId(){ return "idless"; }

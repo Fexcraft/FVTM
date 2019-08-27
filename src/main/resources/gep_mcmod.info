@@ -1,0 +1,16 @@
+[
+	{
+	  "modid": "gep",
+	  "name": "\u00a72General Essentials Pack",
+	  "description": "\u00a77The generic general essentials pack.",
+	  "version": "${version}",
+	  "mcversion": "${mcversion}",
+	  "url": "http://fexcraft.net/",
+	  "authorList": ["FEX___96"],
+	  "credits": "",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": ["fcl", "fvtm"],
+	  "parent": "fvtm"
+	}
+]

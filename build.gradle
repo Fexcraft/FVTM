@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 version = "1.12.2"
-def modversion = "3.0.36"
+def modversion = "3.0.36b"
 def gepversion = "2.0.0"
 def hcpversion = "2.0.0"
 group = "net.fexcraft.mod.fvtm"
@@ -73,8 +73,11 @@ task fvtm(type: Jar) {
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/fvtm/'}
     from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/fvtm/'}
     from(sourceSets.main.resources){
-        include 'mcmod.info'
-        expand 'fvtm_version':modversion, 'mcversion':project.minecraft.version
+        include 'fvtm_mcmod.info'
+        expand 'version':modversion, 'mcversion':project.minecraft.version
+        rename { 'mcmod.info' }
+    }
+    from(sourceSets.main.resources){
         include 'LICENSE.txt'
         include 'pack.mcmeta'
     }
@@ -85,8 +88,11 @@ task gep(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
     from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/gep/'}
     from(sourceSets.main.resources){
-        include 'mcmod.info'
-        expand 'gep_version':gepversion, 'mcversion':project.minecraft.version
+        include 'gep_mcmod.info'
+        expand 'version':gepversion, 'mcversion':project.minecraft.version
+        rename { 'mcmod.info' }
+    }
+    from(sourceSets.main.resources){
         include 'LICENSE.txt'
         include 'pack.mcmeta'
     }
@@ -97,8 +103,11 @@ task hcp(type: Jar){
     from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/hcp/'}
     from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/hcp/'}
     from(sourceSets.main.resources){
-        include 'mcmod.info'
-        expand 'hcp_version':hcpversion, 'mcversion':project.minecraft.version
+        include 'hcp_mcmod.info'
+        expand 'version':hcpversion, 'mcversion':project.minecraft.version
+        rename { 'mcmod.info' }
+    }
+    from(sourceSets.main.resources){
         include 'LICENSE.txt'
         include 'pack.mcmeta'
     }

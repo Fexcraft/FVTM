@@ -1,0 +1,16 @@
+[
+	{
+	  "modid": "hcp",
+	  "name": "\u00a73Heavy Cargo Pack",
+	  "description": "\u00a77A pack featuring Cargo related Content.",
+	  "version": "${version}",
+	  "mcversion": "${mcversion}",
+	  "url": "http://fexcraft.net/",
+	  "authorList": ["FEX___96","GolddolphinSKB"],
+	  "credits": "",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": ["fcl", "fvtm"],
+	  "parent": "fvtm"
+	}
+]

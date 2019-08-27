@@ -1,0 +1,15 @@
+[
+	{
+	  "modid": "fvtm",
+	  "name": "\u00a79Fex's Vehicle and Transportation Mod",
+	  "description": "\u00a77Version 3 of the not popular at all Vehicle Mod!",
+	  "version": "${version}",
+	  "mcversion": "${mcversion}",
+	  "url": "http://fexcraft.net/",
+	  "authorList": ["FEX___96"],
+	  "credits": "",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": ["fcl"]
+	}
+]

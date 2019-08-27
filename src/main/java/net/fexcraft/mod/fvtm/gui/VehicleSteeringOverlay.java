@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -35,10 +36,11 @@ import net.minecraft.util.ResourceLocation;
 public class VehicleSteeringOverlay extends GuiScreen {
 
 	public static boolean toggables;
-	public static int scroll = -1, timer, clicktimer;//TODO replace to something fps independent
+	public static int scroll = 0, page, timer, clicktimer;//TODO replace to something fps independent
     private SeatEntity seat;
     //
     private static final RGB HOVER = new RGB(RGB.GREEN); static{ HOVER.alpha = 0.5f; }
+    private static final int perpage = 8;
     private static VehicleSteeringOverlay instance;
     private static ArrayList<Attribute<?>> attributes = new ArrayList<>();
 
@@ -49,7 +51,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
     @Override
     public void initGui(){
         //TODO see about alternative camera
-    	scroll = -1; attributes.clear(); toggables = false;
+    	scroll = 0; page = 0; attributes.clear(); toggables = false;
     }
 
     @Override
@@ -77,15 +79,21 @@ public class VehicleSteeringOverlay extends GuiScreen {
     private void scroll(int wheel, boolean usetimer){
     	if(usetimer) if(timer > 0) return;
     	scroll += wheel > 0 ? -1 : 1;
-    	if(scroll >= attributes.size()) scroll = 0;
+    	if(scroll >= perpage) scroll = 0;
     	if(scroll < 0) scroll = 0; //0 was -1;
     	if(usetimer) timer = 10;
 	}
 
+    private void page(int am){
+    	if(timer > 0) return; page += am;
+    	if(page > attributes.size() / perpage) page = 0;
+    	if(page < 0) page = 0; timer = 15; scroll = 0;
+	}
+
 	private void processToggleClick(int i){
-		if(scroll < 0 || scroll > attributes.size()) return;
+		if(scroll < 0 || scroll > perpage) return;
 		if(clicktimer > 0) return;
-		NBTTagCompound packet = new NBTTagCompound(); Attribute<?> attr = attributes.get(scroll);
+		NBTTagCompound packet = new NBTTagCompound(); Attribute<?> attr = attributes.get((page * perpage) + scroll);
 		packet.setString("target_listener", "fvtm:gui"); packet.setString("task", "attr_toggle");
 		packet.setString("attr", attr.id()); packet.setBoolean("bool", i > 0);
 		packet.setInteger("entity", seat.getVehicle().getEntityId()); Print.debug(packet);
@@ -181,16 +189,16 @@ public class VehicleSteeringOverlay extends GuiScreen {
                 seat.onKeyPress(KeyPress.TURN_RIGHT, player);
             }
             if(isKeyDown(KeyHandler.arrow_up.getKeyCode())){
-                seat.onKeyPress(KeyPress.ACCELERATE, player);
+            	if(toggables) scroll(1, true); else seat.onKeyPress(KeyPress.ACCELERATE, player);
             }
             if(isKeyDown(KeyHandler.arrow_down.getKeyCode())){
-                seat.onKeyPress(KeyPress.DECELERATE, player);
+            	if(toggables) scroll(-1, true); else seat.onKeyPress(KeyPress.DECELERATE, player);
             }
             if(isKeyDown(KeyHandler.arrow_left.getKeyCode())){
-                if(toggables) scroll(1, true); else seat.onKeyPress(KeyPress.ROLL_LEFT, player);
+                if(toggables) page(-1); else seat.onKeyPress(KeyPress.ROLL_LEFT, player);
             }
             if(isKeyDown(KeyHandler.arrow_right.getKeyCode())){
-            	if(toggables) scroll(-1, true); else seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
+            	if(toggables) page(1); else seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
             }
             if(isKeyDown(mc.gameSettings.keyBindJump.getKeyCode())){
                 seat.onKeyPress(KeyPress.BRAKE, player);
@@ -249,6 +257,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
     	GenericVehicle ent = seat.getVehicle(); if(ent == null){ return; }
     	VehicleData data = ent.getVehicleData(); if(data == null) return;
+    	GL11.glPushMatrix();
     	this.mc.getTextureManager().bindTexture(ConstructorGui.STONE);
 		this.drawTexturedModalRect(0, 0, 0, 0, this.width, 34); boolean noengine = false;
 		if(!data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine")){
@@ -270,38 +279,46 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		//
         if(!attributes.isEmpty()){
         	int offset = 0;
-        	for(int i = 0; i < 16; i++){
-        		if(i >= attributes.size()) break; Attribute<?> attr = attributes.get(i); offset = i * 12 + 34;
+        	for(int j = 0; j < perpage; j++){ int i = page * perpage + j;
+        		if(i >= attributes.size()){ scroll = j - 1; break; }
+        		Attribute<?> attr = attributes.get(i); offset = j * 12 + 34;
         		mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
         		if(attr.type().isBoolean()){
             		int width = fontRenderer.getStringWidth(attr.id());
-            		if(scroll == i) HOVER.glColorApply();
+            		if(scroll == j) HOVER.glColorApply();
             		this.drawTexturedModalRect(this.width - width - 14, offset, 0, 0, width + 2, 12);
-            		if(scroll == i) RGB.glColorReset();
+            		if(scroll == j) RGB.glColorReset();
                     mc.fontRenderer.drawString(attr.id(), this.width - width - 12, offset + 3, 0xffffff);
             		mc.renderEngine.bindTexture(attr.getBooleanValue() ? ConstructorGui.ICON_BOOL_TRUE : ConstructorGui.ICON_BOOL_FALSE);
-            		drawModalRectWithCustomSizedTexture(this.width - 12, offset, 0, 0, 12, 12, 16, 16);
+            		drawRectIcon(this.width - 12, offset, 12, 12);
         		}
         		else{
         			String str = attr.id() + " - " + attr.getFloatValue();
             		int width = fontRenderer.getStringWidth(str);
-            		if(scroll == i) HOVER.glColorApply();
+            		if(scroll == j) HOVER.glColorApply();
             		this.drawTexturedModalRect(this.width - width - 2, offset, 0, 0, width + 2, 12);
-            		if(scroll == i) RGB.glColorReset();
+            		if(scroll == j) RGB.glColorReset();
                     mc.fontRenderer.drawString(str, this.width - width, offset + 3, 0xffffff);
         		}
+        	}
+        	if(attributes.size() > 8){
+        		mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
+        		String string = "Page " + (page + 1) + "/" + (attributes.size() / perpage + 1); int width = fontRenderer.getStringWidth(string) + 4;
+        		this.drawTexturedModalRect(this.width - width, offset + 12, 0, 0, width, 12);
+                mc.fontRenderer.drawString(string, this.width - width + 2, offset + 15, 0xffffff);
         	}
         }
         //
         if(timer > 0) timer--; if(clicktimer > 0) clicktimer--;
         //
-        if(noengine){ mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff); return; }
+        if(noengine){ mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff); GL11.glPopMatrix(); return; }
         mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity())), 7, 3, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
         if(ent.getCoupledEntity(false) != null){
         	mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
         }
+        GL11.glPopMatrix();
     }
     
     public static void drawRectIcon(int x, int y, int width, int height){

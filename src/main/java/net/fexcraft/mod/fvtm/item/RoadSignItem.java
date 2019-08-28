@@ -9,7 +9,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RoadSign;
-import net.fexcraft.mod.fvtm.data.RoadSign.RoadSignsTab;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -34,7 +33,7 @@ public class RoadSignItem extends Item {
     public RoadSignItem(){
 		super(); INSTANCE = this; this.setHasSubtypes(true); this.setMaxStackSize(1);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(RoadSignsTab.INSTANCE);
+        this.setCreativeTab(net.fexcraft.mod.fvtm.data.RoadSign.RoadSignsTab.INSTANCE);
 	}
 
     @SideOnly(Side.CLIENT)

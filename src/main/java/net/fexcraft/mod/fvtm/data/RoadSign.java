@@ -135,7 +135,6 @@ public class RoadSign extends TypeCore<RoadSign> {
 		return stack;
 	}
 	
-	@SideOnly(Side.CLIENT)
 	public static class RoadSignsTab extends CreativeTab {
 		
 		public static RoadSignsTab INSTANCE = new RoadSignsTab();

@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.lang.BitList;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
-import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -357,7 +357,7 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
             return true;
         }
         if(stack.isEmpty()){
-        	GenericGui.openGui("fvtm", 700, new int[]{ this.getEntityId(), 0, 0 }, player); return true;
+        	GenericContainer.openGui("fvtm", 700, new int[]{ this.getEntityId(), 0, 0 }, player); return true;
         }
         return false;
     }

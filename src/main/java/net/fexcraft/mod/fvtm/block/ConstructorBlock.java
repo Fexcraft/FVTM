@@ -3,10 +3,11 @@ package net.fexcraft.mod.fvtm.block;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
-import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.gui.GenericContainer;
+import net.fexcraft.lib.mc.gui.ServerReceiver;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
@@ -111,7 +112,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
             compound.setString("guimod", "fvtm");
             compound.setInteger("gui", 900);
             compound.setIntArray("args", new int[]{ pos.getX(), pos.getY(), pos.getZ() });
-            ServerReceiver.INSTANCE.process(compound, player);
+            ServerReceiver.INSTANCE.process(new PacketNBTTagCompound(compound), new Object[]{ player });
             return true;
         }
         else if(held.getItem() instanceof MaterialItem){
@@ -122,7 +123,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	te.setPartData(((PartItem)held.getItem()).getData(held), true);
         	Print.chat(player, "Part put into Constructor."); held.shrink(1);
         	//
-        	GenericGui.openGui("fvtm", 906, new int[]{ pos.getX(), pos.getY(), pos.getZ() }, player);
+        	GenericContainer.openGui("fvtm", 906, new int[]{ pos.getX(), pos.getY(), pos.getZ() }, player);
         }
         else if(held.getItem() instanceof VehicleItem){
         	if(te.getContainerData() != null) te.dropContainer(true);

@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
-import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
@@ -158,10 +158,10 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		@SideOnly(Side.CLIENT) @Override
 		public void openGUI(EntityPlayer player){
 			if(entity.world.isRemote){
-				GenericGui.openGui("fvtm", 937, new int[]{ entity.getEntityId(), 0, 0 }); return;
+				net.fexcraft.lib.mc.gui.GenericGui.openGui("fvtm", 937, new int[]{ entity.getEntityId(), 0, 0 }); return;
 			}
 			if(player == null) Static.exception(new Exception("Tried to open GUI on server side, but no player specified / is NULL."), false);
-			GenericGui.openGui("fvtm", 937, new int[]{ entity.getEntityId(), 0, 0 }, player);
+			GenericContainer.openGui("fvtm", 937, new int[]{ entity.getEntityId(), 0, 0 }, player);
 		}
 
 		@Override

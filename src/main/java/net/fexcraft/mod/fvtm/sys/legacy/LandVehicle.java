@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
-import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -577,7 +577,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(vehicle.isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
         if(!stack.isEmpty()){
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
-            	GenericGui.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }, player); return true;
+            	GenericContainer.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }, player); return true;
             }
             if(stack.getItem() instanceof VehicleItem){
                 VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);

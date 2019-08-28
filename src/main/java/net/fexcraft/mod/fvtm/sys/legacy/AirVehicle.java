@@ -4,9 +4,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
@@ -33,6 +30,8 @@ import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.fexcraft.mod.fvtm.util.vector.Matrix4f;
+import net.fexcraft.mod.fvtm.util.vector.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
-import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
@@ -171,11 +171,11 @@ public class ContainerBlock extends BlockContainer {
                 }
                 BlockPos corepos = te.getCore().getPos();
                 if(te.getContainerData().getType().getInventoryType() == InventoryType.ITEM){
-                    GenericGui.openGui("fvtm", 941, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() }, player);
+                	GenericContainer.openGui("fvtm", 941, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() }, player);
                 }
                 else if(te.getContainerData().getType().getInventoryType() == InventoryType.FLUID){
                     te.sendFluidTankUpdate(player);
-                    GenericGui.openGui("fvtm", 942, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() }, player);
+                    GenericContainer.openGui("fvtm", 942, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() }, player);
                 }
                 else{
                     Print.chat(player, "Currently not supported Inventory Type.");

@@ -577,7 +577,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(vehicle.isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
         if(!stack.isEmpty()){
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
-            	GenericGui.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }); return true;
+            	GenericGui.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }, player); return true;
             }
             if(stack.getItem() instanceof VehicleItem){
                 VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);

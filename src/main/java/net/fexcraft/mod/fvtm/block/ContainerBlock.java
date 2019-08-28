@@ -171,11 +171,11 @@ public class ContainerBlock extends BlockContainer {
                 }
                 BlockPos corepos = te.getCore().getPos();
                 if(te.getContainerData().getType().getInventoryType() == InventoryType.ITEM){
-                    GenericGui.openGui("fvtm", 941, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() });
+                    GenericGui.openGui("fvtm", 941, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() }, player);
                 }
                 else if(te.getContainerData().getType().getInventoryType() == InventoryType.FLUID){
                     te.sendFluidTankUpdate(player);
-                    GenericGui.openGui("fvtm", 942, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() });
+                    GenericGui.openGui("fvtm", 942, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() }, player);
                 }
                 else{
                     Print.chat(player, "Currently not supported Inventory Type.");

@@ -12,10 +12,14 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
+	
+	public static ServerReceiver INSTANCE;
+	public ServerReceiver(){ INSTANCE = this; }
 
 	@Override
 	public String getId(){
@@ -69,6 +73,10 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 			}
 			default: return;
 		}
+	}
+
+	public void process(NBTTagCompound compound, EntityPlayer player){
+		this.process(new PacketNBTTagCompound(compound), new Object[]{ player });
 	}
 
 }

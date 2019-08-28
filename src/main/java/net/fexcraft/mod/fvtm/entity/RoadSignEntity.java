@@ -133,7 +133,7 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
             return true;
         }
         if(stack.isEmpty()){
-        	//GenericGui.openGui("fvtm", 700, new int[]{ this.getEntityId(), 0, 0 }); return true;
+        	//GenericGui.openGui("fvtm", 700, new int[]{ this.getEntityId(), 0, 0 }, player); return true;
         }
         return false;
     }

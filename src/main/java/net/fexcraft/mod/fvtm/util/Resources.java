@@ -420,7 +420,6 @@ public class Resources {
 	public void onAttachTileEntityCapabilities(AttachCapabilitiesEvent<TileEntity> event){
 		if(Static.side().isClient() && (event.getObject() instanceof DisplayEntity ||
 			event.getObject() instanceof BlockBase.TileEntity || event.getObject() instanceof ContainerEntity)){
-			if(!event.getObject().hasWorld()) Print.debug("TileEntity has no world! " + event.getObject().toString());
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 	}

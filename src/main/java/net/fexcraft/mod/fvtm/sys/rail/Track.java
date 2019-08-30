@@ -18,7 +18,7 @@ public class Track {
 	public Vec316f start, end;
 	public boolean copy;
 	public Vec3f[] vecpath;
-	public String id;
+	public TrackKey id;
 	public Object gauge;
 	public float length;
 	//
@@ -49,7 +49,7 @@ public class Track {
 	}*/
 	
 	public Track(Vec316f[] vec316fs, Vec316f vector, Object gauge){
-		start = vec316fs[0]; end = vector; id = start.asIDString() + "-" + end.asIDString();
+		start = vec316fs[0]; end = vector; id = new TrackKey(start, end);
 		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1];
 		if(vecpath.length == 2){
 			vecpath[0] = vec316fs[0].vector; vecpath[1] = vector.vector;
@@ -105,7 +105,7 @@ public class Track {
 	}
 	
 	public Track read(NBTTagCompound compound){
-		this.id = compound.getString("id");
+		this.id = new TrackKey(compound);
 		this.line = compound.hasKey("section") ? compound.getString("section") : null;
 		if(section != null) this.getSection();
 		if(compound.hasKey("gauge")){
@@ -131,8 +131,7 @@ public class Track {
 
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
-		compound.setString("id", id);
-		if(line != null) compound.setString("section", line);
+		id.write(compound); if(line != null) compound.setString("section", line);
 		//compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
 		compound.setBoolean("copy", copy);
 		compound.setTag("start", start.write());
@@ -153,13 +152,13 @@ public class Track {
 		return vecpath.length == 0 ? null : vecpath[vecpath.length - 1];
 	}
 	
-	public String getId(){
+	public TrackKey getId(){
 		return id;
 	}
 	
 	public Track createOppositeCopy(){
 		Track track = new Track();
-		track.id = this.getOppositeId();
+		track.id = new TrackKey(id, true);
 		track.line = line;
 		track.gauge = gauge;
 		track.start = end;
@@ -175,8 +174,8 @@ public class Track {
 		return copy;
 	}
 
-	public String getOppositeId(){
-		return end.asIDString() + "-" + start.asIDString();
+	public TrackKey getOppositeId(){
+		return new TrackKey(id, true);
 	}
 
 	public boolean isCompatibleGauge(Object gauge){
@@ -239,6 +238,51 @@ public class Track {
 
 	public double oppositePassed(double sec){
 		return sec >= length ? 0 : sec <= 0 ? length : this.length - sec;
+	}
+	
+	public static class TrackKey implements Comparable<TrackKey> {
+		
+		private static final int[] order = new int[]{ 1, 0, 2, 4, 3, 5 };
+		protected int[] pos = new int[6];
+		protected byte[] xyz = new byte[6];
+		
+		public TrackKey(Vec316f start, Vec316f end){
+			pos[0] = start.pos.getX(); pos[1] = start.pos.getY(); pos[2] = start.pos.getZ();
+			pos[3] = end.pos.getX(); pos[4] = end.pos.getY(); pos[5] = end.pos.getZ();
+			xyz[0] = start.x; xyz[1] = start.y; xyz[2] = start.z; xyz[3] = end.x; xyz[4] = end.y; xyz[5] = end.z;
+		}
+
+		public TrackKey(NBTTagCompound compound){
+			if(compound.hasKey("key_pos")) pos = compound.getIntArray("key_pos");
+			if(compound.hasKey("key_xyz")) xyz = compound.getByteArray("key_xyz");
+		}
+		
+		public NBTTagCompound write(NBTTagCompound compound){
+			compound.setIntArray("key_pos", pos); compound.setByteArray("key_xyz", xyz); return compound;
+		}
+
+		public TrackKey(TrackKey key, boolean opposite){
+			if(opposite){
+				pos[0] = key.pos[3]; pos[1] = key.pos[4]; pos[2] = key.pos[5];
+				pos[3] = key.pos[0]; pos[4] = key.pos[1]; pos[5] = key.pos[2];
+				xyz[0] = key.xyz[3]; xyz[1] = key.xyz[4]; xyz[2] = key.xyz[5];
+				xyz[3] = key.xyz[0]; xyz[4] = key.xyz[1]; xyz[5] = key.xyz[2];
+			} else{ pos = key.pos; xyz = key.xyz; }
+		}
+
+		@Override
+		public int compareTo(TrackKey o){
+			for(int i = 0; i < 6; i++){ if(o.pos[order[i]] > pos[order[i]]) return 1; if(o.pos[order[i]] < pos[order[i]]) return -1; }
+			for(int i = 0; i < 6; i++){ if(o.xyz[order[i]] > xyz[order[i]]) return 1; if(o.xyz[order[i]] < xyz[order[i]]) return -1; }
+			return 0;
+		}
+		
+		@Override
+		public boolean equals(Object obj){
+			if(obj instanceof TrackKey == false) return false; TrackKey key = (TrackKey)obj;
+			for(int i = 0; i < 6; i++){ if(key.pos[i] != pos[i] || key.xyz[i] != xyz[i]) return false; } return true;
+		}
+		
 	}
 
 }

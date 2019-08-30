@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -87,7 +88,7 @@ public class Junction {
 		root.getRegions().get(RailData.getRegionXZ(vecpos)).updateClient(vecpos);
 	}
 
-	public void remove(String trackid, boolean firstcall){
+	public void remove(TrackKey trackid, boolean firstcall){
 		Track track = null;
 		for(int i = 0; i < tracks.size(); i++){
 			if(tracks.get(i).getId().equals(trackid)){ track = tracks.remove(i); break; }
@@ -108,7 +109,7 @@ public class Junction {
 	}
 	
 	@Nullable
-	public Track getNext(String track){
+	public Track getNext(TrackKey track){
 		switch(tracks.size()){
 			case 0: return null;
 			case 1: return eqCopy(track, 0) ? null : tracks.get(0);
@@ -136,7 +137,7 @@ public class Junction {
 		return null;
 	}
 
-	private boolean eqCopy(String track, int i){
+	private boolean eqCopy(TrackKey track, int i){
 		return tracks.get(i).getId().equals(track);
 	}
 	

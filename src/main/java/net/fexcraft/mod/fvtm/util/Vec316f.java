@@ -14,22 +14,22 @@ import net.minecraft.util.math.Vec3d;
 public class Vec316f implements Comparable<Vec316f>{
 	
 	public final BlockPos pos;
-	public final int x, y, z;
+	public final byte x, y, z;
 	public final Vec3f vector;
 
 	public Vec316f(Vec3d pos){
 		this.pos = new BlockPos(pos);
-		x = (int)((pos.x - this.pos.getX()) / 0.0625);
-		y = (int)((pos.y - this.pos.getY()) / 0.0625);
-		z = (int)((pos.z - this.pos.getZ()) / 0.0625);
+		x = (byte)((pos.x - this.pos.getX()) / 0.0625);
+		y = (byte)((pos.y - this.pos.getY()) / 0.0625);
+		z = (byte)((pos.z - this.pos.getZ()) / 0.0625);
 		vector = toVec3f();
 	}
 
 	public Vec316f(Vec3d pos, int rgs){
 		this.pos = new BlockPos(pos);
-		int x = (int)((pos.x - this.pos.getX()) / 0.0625);
-		int y = (int)((pos.y - this.pos.getY()) / 0.0625);
-		int z = (int)((pos.z - this.pos.getZ()) / 0.0625);
+		byte x = (byte)((pos.x - this.pos.getX()) / 0.0625);
+		byte y = (byte)((pos.y - this.pos.getY()) / 0.0625);
+		byte z = (byte)((pos.z - this.pos.getZ()) / 0.0625);
 		switch(rgs){
 			case 1: x = y = z = 0; break;
 			case 2:{
@@ -64,8 +64,8 @@ public class Vec316f implements Comparable<Vec316f>{
 	public NBTTagCompound write(){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("vec_pos", pos.toLong());
-		compound.setByte("pos_x", (byte)x); compound.setByte("pos_y", (byte)y);
-		compound.setByte("pos_z", (byte)z); return compound;
+		compound.setByte("pos_x", x); compound.setByte("pos_y", y);
+		compound.setByte("pos_z", z); return compound;
 	}
 
 	private Vec3f toVec3f(){

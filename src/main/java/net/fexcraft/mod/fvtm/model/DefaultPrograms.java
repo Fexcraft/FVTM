@@ -171,6 +171,38 @@ public class DefaultPrograms {
 		}
 		
 	};
+
+	public static final Program BOGIE_AXLE_WHEEL = new Program(){
+		
+		@Override public String getId(){ return "fvtm:bogie_axle_wheel"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			//
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			//
+		}
+		
+	};
+
+	public static final Program BOGIE_AUTO = new Program(){
+		
+		@Override public String getId(){ return "fvtm:bogie_auto"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glRotatef(data.getAttribute(part + "_angle").getFloatValue(), 0, 1, 0);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glRotatef(-data.getAttribute(part + "_angle").getFloatValue(), 0, 1, 0);
+		}
+		
+	};
 	
 	public static final Program STEERING_WHEEL_Z = new SteeringWheel(2, 1f), STEERING_WHEEL_X = new SteeringWheel(0, 1f), STEERING_WHEEL_Y = new SteeringWheel(1, 1f);
 	public static final Program STEERING_WHEEL_CZ = new SteeringWheelCentered(2, 1f), STEERING_WHEEL_CX = new SteeringWheelCentered(0, 1f), STEERING_WHEEL_CY = new SteeringWheelCentered(1, 1f);

@@ -70,7 +70,7 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
 	}
 	
-	/** Default Part Install Handler Data */
+	/** Wheel Part Install Handler Data */
 	public static class WheelData {
 		
 		private float radius, width, connector;

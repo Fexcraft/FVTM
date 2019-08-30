@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.handler.BogieInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.ConnectorInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
@@ -169,6 +170,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 			else if(handler.equals("connector")){
 				this.installhandler = ConnectorInstallationHandler.INSTANCE;
 				this.installhandler_data = new ConnectorInstallationHandler.ConnectorData(inst);
+			}
+			else if(handler.equals("bogie")){
+				this.installhandler = BogieInstallationHandler.INSTANCE;
+				this.installhandler_data = new BogieInstallationHandler.BogieData(inst);
 			}
 			else{
 				//try to load the class

@@ -56,6 +56,7 @@ import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.function.BogieFunction;
 import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -165,6 +166,7 @@ public class Resources {
 		registerFunction("fvtm:engine", EngineFunction.class, true);
 		registerFunction("fvtm:inventory", InventoryFunction.class, true);
 		registerFunction("fvtm:container", ContainerFunction.class, true);
+		registerFunction("fvtm:bogie", BogieFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){

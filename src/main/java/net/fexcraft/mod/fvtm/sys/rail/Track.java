@@ -158,7 +158,7 @@ public class Track {
 		return id;
 	}
 	
-	public Track createCopy(){
+	public Track createOppositeCopy(){
 		Track track = new Track();
 		track.id = this.getOppositeId();
 		track.line = line;

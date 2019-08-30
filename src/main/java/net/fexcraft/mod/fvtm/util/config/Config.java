@@ -17,6 +17,7 @@ public class Config {
     private static final String GENERAL = "General", LEGACYSYS = "Legacy", PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
     public static double VEHICLE_UPDATE_RANGE;
+    public static int RAIL_PLACING_GRID;
 	public static long UNLOAD_INTERVAL;
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
@@ -49,6 +50,14 @@ public class Config {
         RENDER_OUT_OF_VIEW = config.getBoolean("render_out_of_view", GENERAL, false, "If vehicles should be rendered out of default view.");
         RENDER_VEHILE_MODELS_AS_ITEMS = config.getBoolean("render_vehicle_models_as_items", GENERAL, true, "If the Vehicle's model should be rendered as Item. May cause laggs.");
         UNLOAD_INTERVAL = config.getInt("unload_interval", GENERAL, 300000, 60000, 86400000, "Interval in which it is checked for trains/rails to be unloaded.");
+        {
+        	RAIL_PLACING_GRID = config.getInt("rail_placing_grid", GENERAL, 4, 0, 16, "Grid size for when using the rail/junction creation tool, valid are 16 ('per-pixel accuracy'), 8, 4, 2 or 1 (full block)");
+            if(RAIL_PLACING_GRID > 16) RAIL_PLACING_GRID = 16;
+            if(RAIL_PLACING_GRID > 8 && RAIL_PLACING_GRID < 16) RAIL_PLACING_GRID = 8;
+            if(RAIL_PLACING_GRID > 4 && RAIL_PLACING_GRID < 8) RAIL_PLACING_GRID = 4;
+            if(RAIL_PLACING_GRID > 2 && RAIL_PLACING_GRID < 4) RAIL_PLACING_GRID = 2;
+            if(RAIL_PLACING_GRID < 1) RAIL_PLACING_GRID = 1;
+        }
     }
 
     public static void add(List<IConfigElement> list){

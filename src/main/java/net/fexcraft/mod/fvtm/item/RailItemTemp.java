@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -56,7 +57,7 @@ public class RailItemTemp extends Item {
 	        return EnumActionResult.FAIL;
         }
         ItemStack stack = player.getHeldItem(hand);
-        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ));
+        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
         if(player.isSneaking()){
 			if(syscap.delJunction(vector)) Print.chat(player, "&c&oResetting Junction...");
 			else{
@@ -81,14 +82,18 @@ public class RailItemTemp extends Item {
 				Print.chat(player, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
-			Track track = new Track(getVectors(list), vector, null); junk.addnew(track); 
-			Junction second = syscap.getJunction(getFirstVector(list)); if(second != null) second.addnew(track.createCopy());
-			Print.chat(player, "&aTrack Created!");stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.SUCCESS;
+			Track track = new Track(getVectors(list), vector, null);
+			Junction second = syscap.getJunction(track.start);
+			if(second != null){
+				second.addnew(track); junk.addnew(track.createOppositeCopy());
+				Print.chat(player, "&aTrack Created!");stack.getTagCompound().removeTag("fvtm:railpoints");
+			} else{ Print.chat(player, "&cNo Junction at starting point found!"); }
+			return EnumActionResult.SUCCESS;
 		}
     }
 
 	private boolean createdJunction(RailSystem syscap, EntityPlayer player, NBTTagList list, Vec316f vector){
-		if(list.tagCount() != 1) return false; Vec316f[] vec = getVectors(list); if(!vec[0].equals(vector)) return false;
+		if(list.tagCount() != 1) return false; Vec316f vec = getFirstVector(list); if(!vec.equals(vector)) return false;
 		syscap.addJunction(vector); Print.chat(player, "Junction Created!"); return true;
 	}
 

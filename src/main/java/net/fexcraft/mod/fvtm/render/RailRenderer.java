@@ -7,12 +7,14 @@ import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.RailItemTemp;
+import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.opengl.GL11;
@@ -38,9 +40,10 @@ public class RailRenderer {
 	@SubscribeEvent
     public void preview(DrawBlockHighlightEvent event){
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
-    	//else if(event.getTarget() == null || event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK) return;
-    	if(stack.getItem() instanceof RailItemTemp){
-    		vecs = ((RailItemTemp)stack.getItem()).getVectors(stack); Vec316f vec = new Vec316f(event.getTarget().hitVec);
+    	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
+    	if(stack.getItem() instanceof RailItemTemp || stack.getItem() instanceof RailItemTest){
+    		vecs = stack.getItem() instanceof RailItemTest ? new Vec316f[0] : ((RailItemTemp)stack.getItem()).getVectors(stack);
+    		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
         	//
     		EntityPlayer player = event.getPlayer(); GlStateManager.disableTexture2D();
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();

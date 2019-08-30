@@ -27,6 +27,7 @@ import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
+import net.fexcraft.mod.fvtm.entity.RailTestEntity;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
@@ -54,11 +55,13 @@ import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventory;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleMain;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleToggables;
 import net.fexcraft.mod.fvtm.item.RailItemTemp;
+import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.render.RenderAirVehicle;
 import net.fexcraft.mod.fvtm.render.RenderEmpty;
 import net.fexcraft.mod.fvtm.render.RenderLandVehicle;
+import net.fexcraft.mod.fvtm.render.RenderRailTestEnt;
 import net.fexcraft.mod.fvtm.render.RenderRoadSign;
 import net.fexcraft.mod.fvtm.render.RenderStreetSign;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
@@ -138,6 +141,13 @@ public class FVTM {
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSign.class, RenderStreetSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RoadSignEntity.class, RenderRoadSign::new);
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());
+		}
+		if(Static.dev()){
+			EntityRegistry.registerModEntity(new ResourceLocation("fvtm:test_rail_ent"), RailTestEntity.class, "fvtm.test_rail_ent", 6000, this, 256, 1, true);
+			REGISTERER.addItem("railtestent", RailItemTest.INSTANCE, 0, null);
+			if(event.getSide().isClient()){
+				net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailTestEntity.class, RenderRailTestEnt::new);
+			}
 		}
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));

@@ -107,9 +107,9 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
 		private TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
 		private TreeMap<String, ArrayList<String>> required = new TreeMap<>();
-		private boolean removable, custom_cat;
+		private boolean removable = true, custom_cat;
 		
-		public DPIHData(JsonObject obj){
+		public DPIHData(JsonObject obj){  if(obj == null) return;
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
 			custom_cat = JsonUtil.getIfExists(obj, "CustomCategory", false);
 			if(obj.has("Compatible")){

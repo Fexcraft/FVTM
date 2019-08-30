@@ -18,6 +18,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * 
@@ -131,6 +132,14 @@ public class RailRegion {
 
 	public TreeMap<UUID, RailEntity> getEntities(){
 		return entities;
+	}
+
+	public void spawnEntity(RailEntity ent){
+		if(world.getWorld().isRemote) return; entities.put(ent.getUUID(), ent);
+		NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:gui");
+		compound.setString("task", "spawn_railentity"); compound.setIntArray("XZ", key.toArray());
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
+			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.current.start.pos)));
 	}
 
 }

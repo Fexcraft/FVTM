@@ -9,6 +9,8 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.entity.RailTestEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,8 +55,13 @@ public class RailItemTest extends Item {
 			Print.bar(player, "&c&oJunction has no tracks attached.");
 		}
 		else{
-			RailTestEntity ent = new RailTestEntity(world, junk.tracks.get(0));
-			world.spawnEntity(ent); Print.bar(player, "&a&oEntity Spawned!");
+			if(hand == EnumHand.MAIN_HAND){
+				RailTestEntity ent = new RailTestEntity(world, junk.tracks.get(0));
+				world.spawnEntity(ent); Print.bar(player, "&a&oEntity Spawned!");
+			}
+			else{
+				syscap.registerEntity(new RailEntity((RailData)syscap, junk.tracks.get(0)));
+			}
 		}
 		return EnumActionResult.SUCCESS;
     }

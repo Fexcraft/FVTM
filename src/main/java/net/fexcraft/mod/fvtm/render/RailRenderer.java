@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.item.RailItemTemp;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -94,7 +95,7 @@ public class RailRenderer {
     	} else return;
     }
     
-	protected static final ModelRendererTurbo model, model0, model1, junction_core;
+	protected static final ModelRendererTurbo model, model0, model1, junction_core, railentcore;
 	static{
 		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addCylinder(0, 0, 0, 0.4f, 8, 32, 1, 1, ModelRendererTurbo.MR_TOP);
@@ -104,6 +105,8 @@ public class RailRenderer {
 			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(123, 245, 126));
 		junction_core = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addCylinder(0, -.5f, 0, 0.9f, 1, 8, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(35, 35, 35));
+		railentcore = new ModelRendererTurbo(null, 0, 0, 32, 32)
+			.addHollowCylinder(0, -4, 0, 8, 4, 8, 8, 0, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(128, 128, 128));
 	}
 	
 	private static RailData raildata;
@@ -123,19 +126,26 @@ public class RailRenderer {
         ModelBase.bindTexture(Resources.NULL_TEXTURE);
         for(RailRegion reg : raildata.getRegions().values()){
         	//if(reg.READING) continue;
-        	for(int i = 0; i < reg.getJunctions().size(); i++){
-        		Junction junk = reg.getJunctions().values().toArray(new Junction[0])[i];
-        		//if(junk.tracks.isEmpty()){
-            		GL11.glPushMatrix();
-                    GlStateManager.disableTexture2D();
-            		GL11.glTranslatef(junk.getVec3f().xCoord, junk.getVec3f().yCoord, junk.getVec3f().zCoord);
-            		if(junk.tracks.isEmpty()){ RGB.RED.glColorApply(); model.render(); RGB.glColorReset(); }
-            		else junction_core.render();
-                    GlStateManager.enableTexture2D();
-            		GL11.glPopMatrix();
-        		//}
-        		renderLines(junk);
+        	Junction[] junctions = reg.getJunctions().values().toArray(new Junction[0]);
+        	for(int i = 0; i < junctions.length; i++){
+            	GL11.glPushMatrix();
+                GlStateManager.disableTexture2D();
+            	GL11.glTranslatef(junctions[i].getVec3f().xCoord, junctions[i].getVec3f().yCoord, junctions[i].getVec3f().zCoord);
+            	if(junctions[i].tracks.isEmpty()){ RGB.RED.glColorApply(); model.render(); RGB.glColorReset(); }
+            	else junction_core.render();
+                GlStateManager.enableTexture2D();
+            	GL11.glPopMatrix();
+        		renderLines(junctions[i]);
         	}
+        	RailEntity[] entities = reg.getEntities().values().toArray(new RailEntity[0]);
+        	for(int i = 0; i < entities.length; i++){
+            	GL11.glPushMatrix();
+                GlStateManager.disableTexture2D();
+            	GL11.glTranslatef(entities[i].pos.xCoord, entities[i].pos.yCoord, entities[i].pos.zCoord);
+            	railentcore.render();
+                GlStateManager.enableTexture2D();
+            	GL11.glPopMatrix();
+        	}//debug rendering
         }
 		GL11.glPopMatrix();
     }

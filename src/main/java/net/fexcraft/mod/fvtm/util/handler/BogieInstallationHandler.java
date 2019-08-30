@@ -51,7 +51,7 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 		
 		private boolean removable;
 		
-		public BogieData(JsonObject obj){
+		public BogieData(JsonObject obj){ if(obj == null) return;
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
 		}
 		

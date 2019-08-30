@@ -7,6 +7,8 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.minecraft.entity.Entity;
@@ -57,6 +59,14 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "update_railregion":{
 				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, null);
+				return;
+			}
+			case "spawn_railentity":{
+				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailRegion region = system.getRegions().get(packet.nbt.getIntArray("XZ"));
+				RailEntity entity = new RailEntity().read(packet.nbt);
+				region.getEntities().put(entity.getUUID(), entity);
+				return;
 			}
 			default: return;
 		}

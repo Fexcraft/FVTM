@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -26,6 +27,7 @@ import net.minecraft.nbt.NBTTagList;
 public class RailRegion {
 	
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
+	private TreeMap<UUID, RailEntity> entities = new TreeMap<>();
 	public ArrayList<XZK> chucks = new ArrayList<>();
 	public long lastaccess;
 	private final RailData world;
@@ -125,6 +127,10 @@ public class RailRegion {
 		NBTTagCompound compound = this.write(); compound.setString("target_listener", "fvtm:gui");
 		compound.setString("task", "update_railregion"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound), player);
+	}
+
+	public TreeMap<UUID, RailEntity> getEntities(){
+		return entities;
 	}
 
 }

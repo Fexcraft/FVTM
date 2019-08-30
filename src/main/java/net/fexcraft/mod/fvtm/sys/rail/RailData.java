@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -26,6 +28,7 @@ public class RailData implements RailSystem {
 	//
 	private RegionMap regions = new RegionMap(this);
 	//private HashMap<String, Object> sections = new HashMap<>();
+	private HashMap<UUID, XZK> entities = new HashMap<>();
 
 	@Override
 	public void setWorld(World world, int dimension){
@@ -43,13 +46,24 @@ public class RailData implements RailSystem {
 	}
 
 	@Override
-	public NBTBase write(EnumFacing side){ //TODO
-		return new NBTTagCompound();
+	public NBTBase write(EnumFacing side){
+		NBTTagCompound compound = new NBTTagCompound();
+		if(!entities.isEmpty()){
+			NBTTagCompound enty = new NBTTagCompound();
+			entities.forEach((key, value) -> { enty.setLong(key.toString(), value.toLong()); });
+			compound.setTag("Entities", enty);
+		} return compound;
 	}
 
 	@Override
-	public void read(EnumFacing side, NBTTagCompound compound){ //TODO
-		//
+	public void read(EnumFacing side, NBTTagCompound compound){
+		if(compound == null || compound.hasNoTags()) return;
+		if(compound.hasKey("Entities")){
+			NBTTagCompound enty = compound.getCompoundTag("Entities");
+			for(String str : enty.getKeySet()){
+				entities.put(UUID.fromString(str), new XZK(enty.getLong(str)));
+			}
+		}
 	}
 	
 	public static class RegionMap extends HashMap<XZK, RailRegion> {
@@ -78,6 +92,11 @@ public class RailData implements RailSystem {
 			RailRegion region = get(xz); if(region != null || !load) return region;
 			put(new XZK(xz), region = new RailRegion(xz[0], xz[1], root)); return region;
 		}
+
+		public RailRegion get(XZK xz, boolean load){
+			RailRegion region = get(xz); if(region != null || !load) return region;
+			put(new XZK(xz.x, xz.z), region = new RailRegion(xz.x, xz.z, root)); return region;
+		}
 		
 	}
 	
@@ -95,6 +114,15 @@ public class RailData implements RailSystem {
 		
 		public XZK(Vec316f vec){
 			this(getRegionXZ(vec));
+		}
+
+		public XZK(long leng){//TODO replace this someday
+			ByteBuffer buffer = ByteBuffer.allocate(8).putLong(leng);
+			x = buffer.getInt(0); z = buffer.getInt(4);
+		}
+		
+		public long toLong(){
+			return ByteBuffer.allocate(8).putInt(x).putInt(z).getLong(0);
 		}
 
 		@Override
@@ -153,7 +181,7 @@ public class RailData implements RailSystem {
 		region.setAccessed().updateClient(vector); return true;
 	}
 
-	@Override
+	@Override //does not send update packed as of now, since only used via delJunction so far
 	public boolean delTrack(Track track){
 		if(track == null) return false; Junction junction = null;
 		RailRegion region = regions.get(getRegionXZ(track.start));
@@ -227,6 +255,30 @@ public class RailData implements RailSystem {
 	@Override
 	public void onChunkUnload(Chunk chunk){
 		regions.get(getRegionXZ(chunk.x, chunk.z), true).chucks.removeIf(pre -> pre.x == chunk.x && pre.z == chunk.z);
+	}
+
+	@Override
+	public boolean registerEntity(RailEntity entity){
+		entities.put(entity.getUUID(), entity.getRegion().getKey());
+		return true;
+	}
+
+	@Override
+	public RailEntity getEntity(UUID uuid, boolean load){
+		for(RailRegion region : regions.values()){
+			if(region.getEntities().containsKey(uuid)){
+				return region.getEntities().get(uuid);
+			}
+		}
+		if(load && entities.containsKey(uuid)){
+			RailRegion region = regions.get(entities.get(uuid), true);
+			if(region != null) return region.getEntities().get(uuid);
+		} return null;
+	}
+
+	@Override
+	public void updateEntityEntry(UUID uuid, int x, int z){
+		entities.put(uuid, new XZK(x, z));
 	}
 
 }

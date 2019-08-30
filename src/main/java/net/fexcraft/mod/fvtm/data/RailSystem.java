@@ -1,8 +1,10 @@
 package net.fexcraft.mod.fvtm.data;
 
 import java.io.File;
+import java.util.UUID;
 
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTBase;
@@ -47,5 +49,12 @@ public interface RailSystem {
 	public void onChunkLoad(Chunk chunk);
 	
 	public void onChunkUnload(Chunk chunk);
+	
+	public boolean registerEntity(RailEntity entity);
+	
+	/** Update the last region this entity was seen/active in. */
+	public void updateEntityEntry(UUID uuid, int x, int z);
+	
+	public RailEntity getEntity(UUID uuid, boolean load);
 	
 }

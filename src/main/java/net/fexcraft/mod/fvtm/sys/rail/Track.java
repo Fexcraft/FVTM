@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
 
 /**
  * 
@@ -26,7 +25,7 @@ public class Track {
 	protected String line;
 	protected Object section;
 	
-	public Track(Vec3d start, Vec3d end, Object gauge, Vec3d... subs){
+	/*public Track(Vec3d start, Vec3d end, Object gauge, Vec3d... subs){
 		this.id = start.toString() + "-" + end.toString();
 		this.start = new Vec316f(start); this.end = new Vec316f(end);
 		vecpath = new Vec3f[(subs == null || subs.length == 0 ? 0 : subs.length) + 2];
@@ -47,10 +46,10 @@ public class Track {
 			this.length = this.calcLength();
 		}
 		this.gauge = gauge;
-	}
+	}*/
 	
 	public Track(Vec316f[] vec316fs, Vec316f vector, Object gauge){
-		start = vec316fs[0]; end = vector; id = start.toString() + "-" + end.toString();
+		start = vec316fs[0]; end = vector; id = start.asIDString() + "-" + end.asIDString();
 		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1];
 		if(vecpath.length == 2){
 			vecpath[0] = vec316fs[0].vector; vecpath[1] = vector.vector;
@@ -177,7 +176,7 @@ public class Track {
 	}
 
 	public String getOppositeId(){
-		return end.toString() + "-" + start.toString();
+		return end.asIDString() + "-" + start.asIDString();
 	}
 
 	public boolean isCompatibleGauge(Object gauge){

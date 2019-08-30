@@ -94,4 +94,8 @@ public class Vec316f implements Comparable<Vec316f>{
 		return "(" + vector.xCoord + ", " + vector.yCoord + ", " + vector.zCoord + ")";
 	}
 
+	public String asIDString(){
+		return pos.getX() + "," + pos.getY() + "," + pos.getZ() + "|" + x + "," + y + "," + z;
+	}
+
 }

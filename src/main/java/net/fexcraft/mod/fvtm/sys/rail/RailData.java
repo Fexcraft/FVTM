@@ -148,7 +148,22 @@ public class RailData implements RailSystem {
 	public boolean delJunction(Vec316f vector){
 		RailRegion region = regions.get(getRegionXZ(vector));
 		if(region == null || region.getJunction(vector) == null) return false;
-		region.getJunctions().remove(vector); region.setAccessed().updateClient(vector); return true;
+		Junction junc = region.getJunctions().remove(vector);
+		if(junc != null){ for(Track track : junc.tracks){ delTrack(track); } }
+		region.setAccessed().updateClient(vector); return true;
+	}
+
+	@Override
+	public boolean delTrack(Track track){
+		if(track == null) return false; Junction junction = null;
+		RailRegion region = regions.get(getRegionXZ(track.start));
+		if(region != null && (junction = region.getJunction(track.start)) != null){
+			junction.tracks.removeIf(tr -> tr.getId().equals(track.getId()) || tr.getId().equals(track.getOppositeId()));
+		}
+		region = regions.get(getRegionXZ(track.end));
+		if(region != null && (junction = region.getJunction(track.end)) != null){
+			junction.tracks.removeIf(tr -> tr.getId().equals(track.getId()) || tr.getId().equals(track.getOppositeId()));
+		} return true;
 	}
 
 	@Override

@@ -23,6 +23,9 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 		if(data.getParts().containsKey(cat)){
 			Print.chatnn(sender, "There is already another part with that category installed."); return false;
 		}
+		if(!data.getWheelSlots().containsKey(cat)){
+			Print.chatnn(sender, "This Vehicle does not have the required WheelSlot configured."); return false;
+		}
 		WheelData idata = part.getType().getInstallationHandlerData();
 		WheelSlot slot = data.getWheelSlots().get(cat);
 		if(slot == null){ Print.chatnn(sender, "Error, slot not found."); return false;}

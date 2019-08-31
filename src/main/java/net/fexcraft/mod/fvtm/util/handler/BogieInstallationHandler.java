@@ -22,12 +22,18 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 		if(data.getParts().containsKey(cat)){
 			Print.chatnn(sender, "There is already another part with that category installed."); return false;
 		}
+		if(!data.getWheelSlots().containsKey(cat)){
+			Print.chatnn(sender, "This Vehicle does not have the required BogieSlot configured."); return false;
+		}
 		Print.chatnn(sender, "Installation check passed."); return true;
 	}
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part); part.setInstalledPos(data.getWheelSlots().get(cat).pos());
 		BogieFunction func = part.getFunction("fvtm:bogie"); if(func != null) func.setBogie(cat);
+		BogieData idata = part.getType().getInstallationHandlerData(); Pos partpos = part.getInstalledPos();
+		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.height, -partpos.z).to16Double());
+		Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 
@@ -50,9 +56,11 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 	public static class BogieData {
 		
 		private boolean removable;
+		private float height;
 		
 		public BogieData(JsonObject obj){ if(obj == null) return;
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
+			height = JsonUtil.getIfExists(obj, "Height", 8).floatValue();
 		}
 		
 	}

@@ -1,0 +1,45 @@
+[
+	{
+	  "modid": "fvtm",
+	  "name": "\u00a79Fex's Vehicle and Transportation Mod",
+	  "description": "\u00a77Version 3 of the not popular at all Vehicle Mod!",
+	  "version": "devversion",
+	  "mcversion": "1.12.2",
+	  "url": "http://fexcraft.net/",
+	  "authorList": ["FEX___96"],
+	  "credits": "",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": ["fcl"]
+	}
+	,
+	{
+	  "modid": "gep",
+	  "name": "\u00a72General Essentials Pack",
+	  "description": "\u00a77The generic general essentials pack.",
+	  "version": "devversion",
+	  "mcversion": "1.12.2",
+	  "url": "http://fexcraft.net/",
+	  "authorList": ["FEX___96"],
+	  "credits": "",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": ["fcl", "fvtm"],
+	  "parent": "fvtm"
+	}
+	,
+	{
+	  "modid": "hcp",
+	  "name": "\u00a73Heavy Cargo Pack",
+	  "description": "\u00a77A pack featuring Cargo related Content.",
+	  "version": "devversion",
+	  "mcversion": "1.12.2",
+	  "url": "http://fexcraft.net/",
+	  "authorList": ["FEX___96","GolddolphinSKB"],
+	  "credits": "",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": ["fcl", "fvtm"],
+	  "parent": "fvtm"
+	}
+]

@@ -56,6 +56,7 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 	public static class BogieData {
 		
 		private boolean removable;
+		/** from 0 (connection/install) point to rail (e.g. wheel base) */
 		private float height;
 		
 		public BogieData(JsonObject obj){ if(obj == null) return;

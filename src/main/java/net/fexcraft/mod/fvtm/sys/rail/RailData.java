@@ -292,4 +292,9 @@ public class RailData implements RailSystem {
 		return globalcounter++;
 	}
 
+	public void delEntity(RailEntity entity){
+		entity.region.getEntities().remove(entity.getUID());
+		entities.remove(entity.getUID());
+	}
+
 }

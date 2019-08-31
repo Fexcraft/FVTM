@@ -6,15 +6,11 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.RailItemTemp;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
-import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -26,8 +22,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -147,7 +141,7 @@ public class RailRenderer {
             	GL11.glPopMatrix();
         		renderLines(junctions[i]);
         	}
-        	RailEntity[] entities = reg.getEntities().values().toArray(new RailEntity[0]);
+        	/*RailEntity[] entities = reg.getEntities().values().toArray(new RailEntity[0]);
         	for(int i = 0; i < entities.length; i++){
             	GL11.glPushMatrix();
             	GL11.glTranslatef(entities[i].pos.xCoord, entities[i].pos.yCoord, entities[i].pos.zCoord);
@@ -183,7 +177,7 @@ public class RailRenderer {
 	            GL11.glPopMatrix();
             	//
             	GL11.glPopMatrix();
-        	}//debug rendering
+        	}*///debug rendering
         }
 		GL11.glPopMatrix();
     }

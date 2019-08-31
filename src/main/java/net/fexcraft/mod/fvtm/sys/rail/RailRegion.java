@@ -110,7 +110,7 @@ public class RailRegion {
 	}
 
 	public void updateTick(){
-		//
+		for(RailEntity ent : entities.values()){ ent.onUpdate(); }
 	}
 	
 	public RailRegion setAccessed(){
@@ -144,13 +144,13 @@ public class RailRegion {
 		return entities;
 	}
 
-	/*public void spawnEntity(RailEntity ent){
+	public void spawnEntity(RailEntity ent){
 		if(world.getWorld().isRemote) return; entities.put(ent.getUID(), ent);
 		NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:gui");
 		compound.setString("task", "spawn_railentity"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
-			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.current.start.pos)));
-	}*/
+			Resources.getTargetPoint(world.getDimension(), new net.minecraft.util.math.BlockPos(ent.current.start.pos)));
+	}
 	
 	public RailData getWorld(){
 		return world;

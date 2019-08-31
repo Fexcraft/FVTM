@@ -56,5 +56,7 @@ public interface RailSystem {
 	public void updateEntityEntry(long uid, XZK key);
 	
 	public RailEntity getEntity(long uid, boolean load);
+
+	public void delEntity(RailEntity railentity);
 	
 }

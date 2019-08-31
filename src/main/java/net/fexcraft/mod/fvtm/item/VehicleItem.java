@@ -114,7 +114,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     		}
     		else{
     			Print.bar(player, "&a&oSpawning vehicle...");
-				syscap.registerEntity(new RailEntity((RailData)syscap, data, junk.tracks.get(0)));
+				syscap.registerEntity(new RailEntity((RailData)syscap, data, junk.tracks.get(0), player.getGameProfile().getId()));
     		}
     		return EnumActionResult.SUCCESS;
     	}

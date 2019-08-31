@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TreeMap;
-import java.util.UUID;
-
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -18,7 +16,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.math.BlockPos;
 
 /**
  * 
@@ -28,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 public class RailRegion {
 	
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
-	private TreeMap<UUID, RailEntity> entities = new TreeMap<>();
+	private TreeMap<Long, RailEntity> entities = new TreeMap<>();
 	public ArrayList<XZK> chucks = new ArrayList<>();
 	public long lastaccess;
 	private final RailData world;
@@ -66,7 +63,14 @@ public class RailRegion {
 				junctions.put(junk.getVec316f(), junk);
 			}
 		}
-		//TODO entities
+		if(compound.hasKey("Entities")){
+			if(!entities.isEmpty()) entities.clear();
+			NBTTagList list = (NBTTagList)compound.getTag("Entities");
+			for(NBTBase base : list){
+				RailEntity entity = new RailEntity(this).read((NBTTagCompound)base);
+				entities.put(entity.uid, entity);
+			}
+		}
 		return this;
 	}
 	
@@ -91,7 +95,13 @@ public class RailRegion {
 			}
 			compound.setTag("Junctions", list);
 		}
-		//TODO entities
+		if(!entities.isEmpty()){
+			NBTTagList list = new NBTTagList();
+			for(RailEntity entity : entities.values()){
+				list.appendTag(entity.write(null));
+			}
+			compound.setTag("Entities", list);
+		}
 		return compound;
 	}
 
@@ -130,16 +140,20 @@ public class RailRegion {
 		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound), player);
 	}
 
-	public TreeMap<UUID, RailEntity> getEntities(){
+	public TreeMap<Long, RailEntity> getEntities(){
 		return entities;
 	}
 
-	public void spawnEntity(RailEntity ent){
-		if(world.getWorld().isRemote) return; entities.put(ent.getUUID(), ent);
+	/*public void spawnEntity(RailEntity ent){
+		if(world.getWorld().isRemote) return; entities.put(ent.getUID(), ent);
 		NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:gui");
 		compound.setString("task", "spawn_railentity"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
 			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.current.start.pos)));
+	}*/
+	
+	public RailData getWorld(){
+		return world;
 	}
 
 }

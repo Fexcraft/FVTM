@@ -5,8 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
-import java.util.UUID;
-
+import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
@@ -25,10 +24,11 @@ public class RailData implements RailSystem {
 
 	private World world;
 	private int dimension;
+	private long globalcounter;
 	//
 	private RegionMap regions = new RegionMap(this);
 	//private HashMap<String, Object> sections = new HashMap<>();
-	private HashMap<UUID, XZK> entities = new HashMap<>();
+	private TreeMap<Long, XZK> entities = new TreeMap<>();
 
 	@Override
 	public void setWorld(World world, int dimension){
@@ -48,9 +48,10 @@ public class RailData implements RailSystem {
 	@Override
 	public NBTBase write(EnumFacing side){
 		NBTTagCompound compound = new NBTTagCompound();
+		compound.setLong("GlobalCounter", globalcounter);
 		if(!entities.isEmpty()){
 			NBTTagCompound enty = new NBTTagCompound();
-			entities.forEach((key, value) -> { enty.setLong(key.toString(), value.toLong()); });
+			entities.forEach((key, value) -> { enty.setLong(Long.toHexString(key), value.toLong()); });
 			compound.setTag("Entities", enty);
 		} return compound;
 	}
@@ -58,10 +59,12 @@ public class RailData implements RailSystem {
 	@Override
 	public void read(EnumFacing side, NBTTagCompound compound){
 		if(compound == null || compound.hasNoTags()) return;
+		globalcounter = compound.getLong("GlobalCounter");
 		if(compound.hasKey("Entities")){
 			NBTTagCompound enty = compound.getCompoundTag("Entities");
 			for(String str : enty.getKeySet()){
-				entities.put(UUID.fromString(str), new XZK(enty.getLong(str)));
+				try{ entities.put(Long.parseLong(str, 16), new XZK(enty.getLong(str))); }
+				catch(Exception e){ e.printStackTrace(); }
 			}
 		}
 	}
@@ -258,27 +261,35 @@ public class RailData implements RailSystem {
 	}
 
 	@Override
-	public boolean registerEntity(RailEntity entity){
-		entities.put(entity.getUUID(), entity.getRegion().getKey());
-		return true;
+	public void registerEntity(RailEntity entity){
+		entities.put(entity.getUID(), entity.getRegion().getKey());
 	}
 
 	@Override
-	public RailEntity getEntity(UUID uuid, boolean load){
+	public RailEntity getEntity(long uid, boolean load){
 		for(RailRegion region : regions.values()){
-			if(region.getEntities().containsKey(uuid)){
-				return region.getEntities().get(uuid);
+			if(region.getEntities().containsKey(uid)){
+				return region.getEntities().get(uid);
 			}
 		}
-		if(load && entities.containsKey(uuid)){
-			RailRegion region = regions.get(entities.get(uuid), true);
-			if(region != null) return region.getEntities().get(uuid);
+		if(load && entities.containsKey(uid)){
+			RailRegion region = regions.get(entities.get(uid), true);
+			if(region != null) return region.getEntities().get(uid);
 		} return null;
 	}
 
 	@Override
-	public void updateEntityEntry(UUID uuid, int x, int z){
-		entities.put(uuid, new XZK(x, z));
+	public void updateEntityEntry(long uid, int x, int z){
+		entities.put(uid, new XZK(x, z));
+	}
+
+	@Override
+	public void updateEntityEntry(long uid, XZK key){
+		entities.put(uid, key);
+	}
+
+	public long getNewEntityId(){
+		return globalcounter++;
 	}
 
 }

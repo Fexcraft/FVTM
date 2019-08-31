@@ -4,15 +4,21 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -94,6 +100,23 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
     	if(data.getType().getVehicleType().isAirVehicle()){
     		world.spawnEntity(new AirVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
+    	}
+    	else if(data.getType().getVehicleType().isRailVehicle()){
+            RailSystem syscap = world.getCapability(Capabilities.RAILSYSTEM, null);
+            if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.PASS; }
+            Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ));
+    		Junction junk = syscap.getJunction(vector, true);
+    		if(junk == null){
+    			Print.bar(player, "&c&oNo Junction found at this position.");
+    		}
+    		else if(junk.tracks.isEmpty()){
+    			Print.bar(player, "&c&oJunction has no tracks attached.");
+    		}
+    		else{
+    			Print.bar(player, "&a&oSpawning vehicle...");
+				syscap.registerEntity(new RailEntity((RailData)syscap, data, junk.tracks.get(0)));
+    		}
+    		return EnumActionResult.SUCCESS;
     	}
     	else{
     		world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.up(2)), player, -1));

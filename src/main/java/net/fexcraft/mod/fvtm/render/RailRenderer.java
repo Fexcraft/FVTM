@@ -6,8 +6,12 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.RailItemTemp;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
@@ -22,6 +26,8 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -42,8 +48,8 @@ public class RailRenderer {
     public void preview(DrawBlockHighlightEvent event){
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
-    	if(stack.getItem() instanceof RailItemTemp || stack.getItem() instanceof RailItemTest){
-    		vecs = stack.getItem() instanceof RailItemTest ? new Vec316f[0] : ((RailItemTemp)stack.getItem()).getVectors(stack);
+    	if(stack.getItem() instanceof RailItemTemp || stack.getItem() instanceof RailItemTest || isRailVehicleItem(stack)){
+    		vecs = stack.getItem() instanceof RailItemTemp ? ((RailItemTemp)stack.getItem()).getVectors(stack) : new Vec316f[0];
     		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
         	//
     		EntityPlayer player = event.getPlayer(); GlStateManager.disableTexture2D();
@@ -95,6 +101,10 @@ public class RailRenderer {
     	} else return;
     }
     
+	private boolean isRailVehicleItem(ItemStack stack){
+		return stack.getItem() instanceof VehicleItem && ((VehicleItem)stack.getItem()).getType().getVehicleType().isRailVehicle();
+	}
+
 	protected static final ModelRendererTurbo model, model0, model1, junction_core, railentcore;
 	static{
 		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
@@ -140,10 +150,38 @@ public class RailRenderer {
         	RailEntity[] entities = reg.getEntities().values().toArray(new RailEntity[0]);
         	for(int i = 0; i < entities.length; i++){
             	GL11.glPushMatrix();
-                GlStateManager.disableTexture2D();
             	GL11.glTranslatef(entities[i].pos.xCoord, entities[i].pos.yCoord, entities[i].pos.zCoord);
-            	railentcore.render();
-                GlStateManager.enableTexture2D();
+            	//
+	            GL11.glPushMatrix();
+            	Minecraft.getMinecraft().entityRenderer.enableLightmap();
+            	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            	GL11.glEnable(GL11.GL_LIGHTING);
+            	GL11.glDisable(GL11.GL_BLEND);
+            	RenderHelper.enableStandardItemLighting();
+    	        int br = getBrightness(entities[i].pos.xCoord, entities[i].pos.yCoord, entities[i].pos.zCoord), j = br % 65536, k = br / 65536;
+    	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+    	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	            {
+		            GL11.glRotatef(180f, 0f, 0f, 1f);
+		            Model<VehicleData, Object> modVehicle = entities[i].vehdata.getType().getModel();
+		            if(modVehicle != null){
+		                ModelBase.bindTexture(entities[i].vehdata.getTexture());
+		                modVehicle.render(entities[i].vehdata, null);
+		                if(entities[i].vehdata.getParts().size() > 0){
+		                	for(java.util.Map.Entry<String, PartData> entry : entities[i].vehdata.getParts().entrySet()){
+		                    	ModelBase.bindTexture(entry.getValue().getTexture());
+		                    	entry.getValue().getInstalledPos().translate();
+		                        entry.getValue().getType().getModel().render(entities[i].vehdata, entry.getKey());
+		                        entry.getValue().getInstalledPos().translateR();
+		                	}
+		                }
+		            }
+	            }
+        		Minecraft.getMinecraft().entityRenderer.disableLightmap();
+        		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        		GL11.glDisable(GL11.GL_LIGHTING);
+	            GL11.glPopMatrix();
+            	//
             	GL11.glPopMatrix();
         	}//debug rendering
         }

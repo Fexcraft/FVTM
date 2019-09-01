@@ -108,7 +108,7 @@ public class RailEntity {
 			if(junk == null) return new TRO(track, 0);
 			Track newtrack = junk.getNext(track.getId());
 			if(newtrack != null){
-				passed += newtrack.length; track = newtrack;
+				passed += newtrack.length; track = newtrack.createOppositeCopy();
 			} else return new TRO(track, 0);
 			
 		} return new TRO(track, passed);

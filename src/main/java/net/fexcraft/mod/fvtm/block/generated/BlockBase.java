@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -45,6 +47,15 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
 		this.setLightOpacity(type.getLightOpacity());
 		this.setHarvestLevel(type.getHarverestToolClass(), type.getHarverestToolLevel());
 	}
+	
+    @Override
+    public boolean isFullBlock(IBlockState state){ return type.isFullBlock(); }
+
+    @Override
+    public boolean isFullCube(IBlockState state){ return type.isFullCube(); }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state){ return type == null ? false : type.isOpaque(); }
 	
 	@Override
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable net.minecraft.tileentity.TileEntity te, ItemStack stack){
@@ -73,6 +84,12 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
 	public TileEntity createNewTileEntity(World world, int meta){
 		return new BlockBase.TileEntity(this);
 	}
+	
+	@Override
+    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity){
+		if(type.getCollisionDamage() > 0) entity.attackEntityFrom(DamageSource.CACTUS, type.getCollisionDamage());
+		if(type.isWebLike()) entity.setInWeb(); return;
+    }
 	
 	public static class TileEntity extends net.minecraft.tileentity.TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 		

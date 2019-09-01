@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import javax.annotation.Nullable;
+
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
@@ -23,22 +25,18 @@ public class Generic4RotBlock extends BlockBase {
     }
 
     @Override
-    public boolean isFullBlock(IBlockState state){ return true; }
-
-    @Override
-    public boolean isFullCube(IBlockState state){ return true; }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state){ return false; }
-
-    @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("facing=" + state.getValue(FACING).getName());
+        return type.getAABB("default", "facing=" + state.getValue(FACING).getName());
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("facing=" + state.getValue(FACING).getName()).offset(pos);
+        return type.getAABB("selection", "facing=" + state.getValue(FACING).getName()).offset(pos);
+    }
+    
+    @Nullable @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
+        return type.getAABB("collision", "facing=" + state.getValue(FACING).getName());
     }
 
     @Override

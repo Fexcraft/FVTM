@@ -49,9 +49,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	//
 	protected Material material;
 	protected MapColor colour;
-	protected float hardness, lightlevel, resistance;
+	protected float hardness, lightlevel, resistance, damage;
 	protected int lightopacity, harveresttoollevel;
 	protected String harveresttoolclass;
+	protected boolean isweblike, fullblock, fullcube, opaque;
 	
 	public Block(){}
 
@@ -113,6 +114,11 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.lightopacity = JsonUtil.getIfExists(obj, "LightOpacity", 0f).byteValue();
 		this.harveresttoolclass = JsonUtil.getIfExists(obj, "HarverestToolClass", "pickaxe");
 		this.harveresttoollevel = JsonUtil.getIfExists(obj, "HarverestToolLevel", 0).intValue();
+		this.damage = JsonUtil.getIfExists(obj, "CollisionDamage", 0).floatValue();
+		this.isweblike = JsonUtil.getIfExists(obj, "WebLike", false);
+		this.fullblock = JsonUtil.getIfExists(obj, "FullBlock", true);
+		this.fullcube = JsonUtil.getIfExists(obj, "FullCube", true);
+		this.opaque = JsonUtil.getIfExists(obj, "Opaque", false);
 		try{
 			this.block = blocktype.blockclass.getConstructor(Block.class).newInstance(this);
 		} catch(Exception e){ e.printStackTrace(); Static.stop(); } return this;
@@ -284,7 +290,15 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return aabbs;
 	}
 	
-	public AxisAlignedBB getAABB(String state){
+	public AxisAlignedBB getAABB(String type, String state){
+		if(type.equals("selection")){
+			if(aabbs.containsKey("selection#" + state)) return aabbs.get("selection#" + state);
+			if(aabbs.containsKey("selection#normal")) return aabbs.get("selection#normal");
+		}
+		else if(type.equals("collision")){
+			if(aabbs.containsKey("collision#" + state)) return aabbs.get("collision#" + state);
+			if(aabbs.containsKey("collision#normal")) return aabbs.get("collision#normal");
+		}
 		return aabbs.containsKey(state) ? aabbs.get(state) : aabbs.containsKey("normal") ? aabbs.get("normal") : net.minecraft.block.Block.FULL_BLOCK_AABB;
 	}
 
@@ -338,6 +352,26 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public void linkItem(){
 		item = (BlockItem)Item.REGISTRY.getObject(registryname);
+	}
+
+	public float getCollisionDamage(){
+		return damage;
+	}
+
+	public boolean isWebLike(){
+		return isweblike;
+	}
+
+	public boolean isFullBlock(){
+		return fullblock;
+	}
+
+	public boolean isFullCube(){
+		return fullcube;
+	}
+
+	public boolean isOpaque(){
+		return opaque;
 	}
 
 }

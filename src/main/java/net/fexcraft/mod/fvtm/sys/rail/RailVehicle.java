@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -70,14 +71,13 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	//
 	public SeatEntity[] seats;
 	//
-	public float wheelsAngle, serverWY;//, wheelsYaw;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
     public static final int servtick = 5;
     public int sptt;
-    public static final String[] BOOGIEINDEX = new String[]{ "bogie_front", "bogie_rear", "right_front_wheel", "left_front_wheel" };
+    public static final String[] BOOGIEINDEX = new String[]{ "bogie_front", "bogie_rear" };
 
 	public RailVehicle(World world){
 		super(world); axes = new Axis3D(); prevaxes = new Axis3D();
@@ -391,7 +391,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             setRotation(yaw, pitch, roll);
         }
         motionX = motX; motionY = motY; motionZ = motZ; angularVelocity = avel;
-        railentity.throttle = (float)(this.throttle = throttle); serverWY = (float)steeringYaw;
+        railentity.throttle = (float)(this.throttle = throttle);
         railentity.vehdata.getAttribute("fuel_stored").setValue(fuel);
 	}
 
@@ -586,8 +586,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             toggletimer--;
         }
         //
-        if(!world.isRemote){ wheelsYaw *= 0.95F;  }
-        if(wheelsYaw > 30){ wheelsYaw = 30; } if(wheelsYaw < -30){ wheelsYaw = -30; }
         if(world.isRemote){
             if(sptt > 0){
                 double x = posX + (serverPosX - posX) / sptt;
@@ -601,14 +599,16 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 float rotationRoll = (float)(axes.getRoll() + dRoll / sptt);
                 --sptt; setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
-                float old = wheelsYaw; wheelsYaw = wheelsYaw + (serverWY - wheelsYaw) / sptt;
-                if(wheelsYaw != wheelsYaw) wheelsYaw = old;
             }
-            //railentity.vehdata.getAttribute("steering_angle").setValue(wheelsYaw);
-            //double cir = ((WheelData)railentity.vehdata.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
-            //wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
-            //railentity.vehdata.getAttribute("wheel_angle").setValue(wheelsAngle);
         	railentity.vehdata.getAttribute("throttle").setValue(railentity.throttle);
+        	//
+        	Vec3f bf0 = railentity.move(railentity.passed + railentity.frbogiedis + 0.1f);
+        	Vec3f bf1 = railentity.move(railentity.passed + railentity.frbogiedis - 0.1f);
+        	Vec3f br0 = railentity.move(railentity.passed - railentity.rrbogiedis + 0.1f);
+        	Vec3f br1 = railentity.move(railentity.passed - railentity.rrbogiedis - 0.1f);
+    		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - (axes.getRadianYaw() * 180F / 3.14159F));
+    		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - (axes.getRadianYaw() * 180F / 3.14159F));
+    		railentity.vehdata.getAttribute("bogie_front_angle").setValue(front); railentity.vehdata.getAttribute("bogie_rear_angle").setValue(rear);
         }
         if(!world.isRemote){
             if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || true/*vehicle.getFuelTankContent() > 0*/) /*&& lata.max_throttle != 0*/){
@@ -822,6 +822,14 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                         trailer.vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
                     }*/
                     break;
+                }
+                case "update_track":{
+                	railentity.current = new Track().read(pkt.nbt.getCompoundTag("track"));
+                	break;
+                }
+                case "update_passed":{
+                	railentity.passed = pkt.nbt.getFloat("passed");
+                	break;
                 }
             }
         }

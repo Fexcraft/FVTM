@@ -60,17 +60,18 @@ public enum VehicleType {
 		attrs.add(new Attribute.FloatAttribute(true, "fuel_quality", 0f).setMinMax(0, 10f));
 		attrs.add(new Attribute.IntegerAttribute(true, "fuel_stored", 0).setMinMax(0, Integer.MAX_VALUE));
 		//animation
-		attrs.add(new Attribute.FloatAttribute(true, "throttle", 0f).setMinMax(-10f, 10f));
 		attrs.add(new Attribute.BooleanAttribute(true, "lights", false).setSeat("driver"));
-		attrs.add(new Attribute.BooleanAttribute(true, "lights_fog", false).setSeat("driver"));
-		attrs.add(new Attribute.BooleanAttribute(true, "lights_long", false).setSeat("driver"));
-		attrs.add(new Attribute.BooleanAttribute(true, "lights_other", false).setSeat("driver"));
-		attrs.add(new Attribute.BooleanAttribute(true, "turn_light_left", false).setSeat("driver"));
-		attrs.add(new Attribute.BooleanAttribute(true, "turn_light_right", false).setSeat("driver"));
+		attrs.add(new Attribute.FloatAttribute(true, "throttle", 0f).setMinMax(-10f, 10f));
 		attrs.add(new Attribute.BooleanAttribute(true, "front_connected", false).setEditable(false));
 		attrs.add(new Attribute.BooleanAttribute(true, "rear_connected", false).setEditable(false));
 		switch(this){
 			case LAND:{
+				attrs.add(new Attribute.BooleanAttribute(true, "lights_fog", false).setSeat("driver"));
+				attrs.add(new Attribute.BooleanAttribute(true, "lights_long", false).setSeat("driver"));
+				attrs.add(new Attribute.BooleanAttribute(true, "lights_other", false).setSeat("driver"));
+				attrs.add(new Attribute.BooleanAttribute(true, "turn_light_left", false).setSeat("driver"));
+				attrs.add(new Attribute.BooleanAttribute(true, "turn_light_right", false).setSeat("driver"));
+				//
 				attrs.add(new Attribute.FloatAttribute(true, "steering_angle", 0f).setMinMax(-40f, 40f));
 				attrs.add(new Attribute.FloatAttribute(true, "wheel_angle", 0f).setMinMax(-360f, 360f));
 				break;

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.util.UUID;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -22,7 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
  */
 public class RailEntity {
 	
-	public Track current;
+	public Track current, last;
 	public RailVehicle entity;
 	public long uid, fcid, rcid;
 	public RailRegion region;
@@ -71,7 +72,8 @@ public class RailEntity {
 			//
 			//TODO collision/path check
 			TRO tro = getTrack(current, passed + (forward ? throttle : -throttle));//TODO calc via engine speed
-			current = tro.track; passed = tro.passed;
+			last = current; current = tro.track; passed = tro.passed;
+			if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
 			if(!region.isInRegion(current.start)) this.updateRegion(current.start);
 			prev.copyFrom(pos); pos = move(passed);
 			cfront = move(passed + frconndis);
@@ -84,13 +86,30 @@ public class RailEntity {
 		region.getWorld().updateEntityEntry(uid, region.getKey());
 	}
 
+	private void updateClient(String string){
+		if(entity == null) return; NBTTagCompound compound = new NBTTagCompound();
+		switch(string){
+			case "track":{
+				compound.setString("task", "update_track");
+				compound.setTag("track", current.write(null));
+				break;
+			}
+			case "passed":{
+				compound.setString("task", "update_passed");
+				compound.setFloat("passed", passed);
+				break;
+			}
+		}
+		ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
+	}
+
 	private void updateRegion(Vec316f start){
 		region.getEntities().remove(uid);
 		region = region.getWorld().getRegions().get(RailData.getRegionXZ(start), true);
 		region.getEntities().put(uid, this);
 	}
 
-	private Vec3f move(float passed){
+	public Vec3f move(float passed){
 		TRO tro = getTrack(current, passed); return tro.track.getVectorPosition(tro.passed, false);
 	}
 
@@ -114,7 +133,7 @@ public class RailEntity {
 		} return new TRO(track, passed);
 	}
 	
-	private static class TRO {//track return object
+	public static class TRO {//track return object
 		public TRO(Track track, float passed){
 			this.track = track; this.passed = passed;
 		} Track track; float passed;

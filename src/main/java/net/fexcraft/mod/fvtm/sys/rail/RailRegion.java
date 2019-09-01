@@ -106,10 +106,17 @@ public class RailRegion {
 	}
 
 	public Junction getJunction(Vec316f vec){
+		if(!isInRegion(vec)) return world.getJunction(vec);
 		return junctions.get(vec);
 	}
 
+	public boolean isInRegion(Vec316f vec){
+		int[] id = RailData.getRegionXZ(vec);
+		return id[0] == key.x && id[1] == key.z;
+	}
+
 	public void updateTick(){
+		if(!entities.isEmpty()) this.setAccessed();
 		for(RailEntity ent : entities.values()){ ent.onUpdate(); }
 	}
 	

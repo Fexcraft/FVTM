@@ -112,24 +112,24 @@ public class Junction {
 	public Track getNext(TrackKey track){
 		switch(tracks.size()){
 			case 0: return null;
-			case 1: return eqCopy(track, 0) ? null : tracks.get(0);
-			case 2: return eqCopy(track, 0) ? tracks.get(1) : tracks.get(0);
+			case 1: return eqTrack(track, 0) ? null : tracks.get(0);
+			case 2: return eqTrack(track, 0) ? tracks.get(1) : tracks.get(0);
 			case 3:{
-				if(eqCopy(track, 0)){
+				if(eqTrack(track, 0)){
 					return tracks.get(switch0 ? 1 : 2);
 				} else return tracks.get(0);
 			}
 			case 4:{
-				if(eqCopy(track, 0)){
+				if(eqTrack(track, 0)){
 					return type.isCrossing() ? tracks.get(1) : tracks.get(switch0 ? 1 : 2);
 				}
-				if(eqCopy(track, 1)){
+				if(eqTrack(track, 1)){
 					return type.isCrossing() ? tracks.get(0) : tracks.get(switch1 ? 0 : 3);
 				}
-				if(eqCopy(track, 2)){
+				if(eqTrack(track, 2)){
 					return type.isCrossing() ? tracks.get(3) : tracks.get(switch1 ? 0 : 3);
 				}
-				if(eqCopy(track, 3)){
+				if(eqTrack(track, 3)){
 					return type.isCrossing() ? tracks.get(2) : tracks.get(switch0 ? 1 : 2);
 				}
 			}
@@ -137,7 +137,7 @@ public class Junction {
 		return null;
 	}
 
-	private boolean eqCopy(TrackKey track, int i){
+	private boolean eqTrack(TrackKey track, int i){
 		return tracks.get(i).getId().equals(track);
 	}
 	

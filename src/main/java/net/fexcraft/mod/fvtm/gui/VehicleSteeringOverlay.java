@@ -267,15 +267,17 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			this.mc.getTextureManager().bindTexture(data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() ? ENGINE_ON : ENGINE_OFF);
 		} drawRectIcon(width - 33, 1, 32, 32);
 		//
-		this.mc.getTextureManager().bindTexture(ConstructorGui.ANVIL); drawRectIcon(width - 97 - 16, 1, 80, 16);
-		boolean turnleft = DefaultPrograms.checkSignalSec() && data.getAttribute("turn_light_left").getBooleanValue();
-		mc.getTextureManager().bindTexture(turnleft ? INDICATOR_LEFT_ON : INDICATOR_LEFT_OFF); drawRectIcon(width - 97 - 16, 1, 16, 16);
-		boolean turnright = DefaultPrograms.checkSignalSec() && data.getAttribute("turn_light_right").getBooleanValue();
-		mc.getTextureManager().bindTexture(turnright ? INDICATOR_RIGHT_ON : INDICATOR_RIGHT_OFF); drawRectIcon(width - 65 + 16, 1, 16, 16);
-		//
-		mc.getTextureManager().bindTexture(data.getAttribute("lights").getBooleanValue() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF); drawRectIcon(width - 97 + 32, 1, 16, 16);
-		mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getBooleanValue() ? LIGHTS_HIGH_ON : LIGHTS_HIGH_OFF); drawRectIcon(width - 97 + 16, 1, 16, 16);
-		mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getBooleanValue() ? LIGHTS_FOG_ON : LIGHTS_FOG_OFF); drawRectIcon(width - 97, 1, 16, 16);
+		if(!ent.isRailType()){
+			this.mc.getTextureManager().bindTexture(ConstructorGui.ANVIL); drawRectIcon(width - 97 - 16, 1, 80, 16);
+			boolean turnleft = DefaultPrograms.checkSignalSec() && data.getAttribute("turn_light_left").getBooleanValue();
+			mc.getTextureManager().bindTexture(turnleft ? INDICATOR_LEFT_ON : INDICATOR_LEFT_OFF); drawRectIcon(width - 97 - 16, 1, 16, 16);
+			boolean turnright = DefaultPrograms.checkSignalSec() && data.getAttribute("turn_light_right").getBooleanValue();
+			mc.getTextureManager().bindTexture(turnright ? INDICATOR_RIGHT_ON : INDICATOR_RIGHT_OFF); drawRectIcon(width - 65 + 16, 1, 16, 16);
+			//
+			mc.getTextureManager().bindTexture(data.getAttribute("lights").getBooleanValue() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF); drawRectIcon(width - 97 + 32, 1, 16, 16);
+			mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getBooleanValue() ? LIGHTS_HIGH_ON : LIGHTS_HIGH_OFF); drawRectIcon(width - 97 + 16, 1, 16, 16);
+			mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getBooleanValue() ? LIGHTS_FOG_ON : LIGHTS_FOG_OFF); drawRectIcon(width - 97, 1, 16, 16);
+		}
 		//
         if(!attributes.isEmpty()){
         	int offset = 0;
@@ -313,9 +315,9 @@ public class VehicleSteeringOverlay extends GuiScreen {
         //
         if(noengine){ mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff); GL11.glPopMatrix(); return; }
         mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity())), 7, 3, 0xffffff);
-        mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
+    	mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
-        if(ent.getCoupledEntity(false) != null){
+        if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
         	mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
         }
         GL11.glPopMatrix();

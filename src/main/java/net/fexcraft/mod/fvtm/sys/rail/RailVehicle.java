@@ -63,7 +63,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, ContainerHoldingEntity {
 
-	private RailEntity railentity;
+	public RailEntity railentity;
 	private long railentid = -1;
 	public Axis3D axes, prevaxes;
 	private byte toggletimer;
@@ -206,31 +206,33 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         switch(key){
             case ACCELERATE:{
-                throttle += throttle < 0 ? 0.02f : 0.01F;
-                if(throttle > 1F){ throttle = 1F; }
+                railentity.throttle += railentity.throttle < 0 ? 0.02f : 0.01F;
+                if(railentity.throttle > 1F){ railentity.throttle = 1F; }
                 return true;
             }
             case DECELERATE:{
-                throttle -= throttle > 0 ? 0.02f : 0.01F;
-                if(throttle < -1F){ throttle = -1F; }
+            	railentity.throttle -= railentity.throttle > 0 ? 0.02f : 0.01F;
+                if(railentity.throttle < 0){ railentity.throttle = 0; }
                 return true;
             }
             case TURN_LEFT:{
-                wheelsYaw -= 1F;//TODO
+                railentity.forward = false;
+                Print.bar(player, "&e&oDirection set to REVERSE");
                 return true;
             }
             case TURN_RIGHT:{
-                wheelsYaw += 1F;//TODO
+            	railentity.forward = true;
+                Print.bar(player, "&e&oDirection set to FORWARD");
                 return true;
             }
             case BRAKE:{
-                throttle *= 0.8F;
+            	railentity.throttle *= 0.8F;
                 if(onGround){
                     motionX *= 0.8F;
                     motionZ *= 0.8F;
                 }
                 if(throttle < -0.0001){
-                    throttle = 0;
+                	railentity.throttle = 0;
                 }
                 return true;
             }
@@ -389,7 +391,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             setRotation(yaw, pitch, roll);
         }
         motionX = motX; motionY = motY; motionZ = motZ; angularVelocity = avel;
-        this.throttle = throttle; serverWY = (float)steeringYaw;
+        railentity.throttle = (float)(this.throttle = throttle); serverWY = (float)steeringYaw;
         railentity.vehdata.getAttribute("fuel_stored").setValue(fuel);
 	}
 
@@ -575,7 +577,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         prevRotationRoll = axes.getRoll();
         prevaxes = axes.clone();
         this.ticksExisted++;
-        if(this.ticksExisted > Integer.MAX_VALUE){
+        if(this.ticksExisted >= Integer.MAX_VALUE){
             this.ticksExisted = 0;
         }
         //
@@ -606,13 +608,29 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             //double cir = ((WheelData)railentity.vehdata.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
             //wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
             //railentity.vehdata.getAttribute("wheel_angle").setValue(wheelsAngle);
-        	railentity.vehdata.getAttribute("throttle").setValue((float)throttle);
+        	railentity.vehdata.getAttribute("throttle").setValue(railentity.throttle);
         }
         if(!world.isRemote){
             if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || true/*vehicle.getFuelTankContent() > 0*/) /*&& lata.max_throttle != 0*/){
-                throttle *= 0.98F;
+            	railentity.throttle *= 0.98F;
             }
-            this.onUpdateMovement();
+            railentity.alignEntity(false);
+            //
+            Vec3d front = new Vec3d(railentity.bfront.xCoord, railentity.bfront.yCoord, railentity.bfront.zCoord);
+            Vec3d back = new Vec3d(railentity.brear.xCoord, railentity.brear.yCoord, railentity.brear.zCoord);
+            Vec3d left = new Vec3d((front.x + back.x) / 2F, (front.y + back.y) / 2F, (front.x + back.z) / 2F);
+            Vec3d right = new Vec3d((front.x + back.x) / 2F, (front.y + back.y) / 2F, (front.x + back.z) / 2F);
+            //
+            double dx = front.x - back.x, dy = front.y - back.y, dz = front.z - back.z;
+            double drx = left.x - right.x, dry = left.y - right.y, drz = left.z - right.z;
+            double dxz = Math.sqrt(dx * dx + dz * dz);
+            double drxz = Math.sqrt(drx * drx + drz * drz);
+            //
+            double yaw = Math.atan2(dz, dx);
+            double pitch = -Math.atan2(dy, dxz);
+            double roll = 0F;
+            roll = -(float) Math.atan2(dry, drxz);
+            axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
         }
         else{
         	
@@ -624,14 +642,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
         }*/
-        if(!world.isRemote && ticksExisted % 5 == 0){
+        if(!world.isRemote && ticksExisted % 5 == 0){ throttle = railentity.throttle;
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
         }
     }
-
-	public void onUpdateMovement(){
-		//
-	}
 	
 	private byte accumulator;
 	private float consumed;
@@ -643,11 +657,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     		if(!engine.isOn()){
     			//pass
     		}
-    		else if(throttle == 0f || (throttle < 0.05f && throttle > -0.05f)){
+    		else if(railentity.throttle == 0f || (railentity.throttle < 0.05f && railentity.throttle > -0.05f)){
     			consumed += engine.getIdleFuelConsumption();
     		}
     		else{
-    			consumed += engine.getFuelConsumption(railentity.vehdata.getAttribute("fuel_secondary").getStringValue()) * throttle;
+    			consumed += engine.getFuelConsumption(railentity.vehdata.getAttribute("fuel_secondary").getStringValue()) * railentity.throttle;
     		}
     		accumulator++; return true;
     	}
@@ -660,7 +674,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     			NBTTagCompound compound  = new NBTTagCompound();
     			compound.setString("task", "engine_toggle");
     			compound.setBoolean("engine_toggle_result", false);
-            	compound.setBoolean("no_fuel", true); throttle = 0;
+            	compound.setBoolean("no_fuel", true); railentity.throttle = 0;
                 ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
     		}
     		accumulator = 0; consumed = 0; return true;
@@ -751,7 +765,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                         pkt.nbt.setBoolean("no_fuel", nf = true);
                     }
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
-                    throttle = 0;
+                    railentity.throttle = 0;
                     //
                     /*SoundEvent event = vehicledata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
                     if(event != null){
@@ -792,7 +806,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                             Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");
                         }
                     }
-                    throttle = 0;
+                    railentity.throttle = 0;
                     break;
                 }
                 case "resync":
@@ -826,6 +840,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	@Override
 	public double[] getEntityRotationForFvtmContainers(){
 		return axes.toDoubles();//radians?
+	}
+
+	@Override
+	public boolean isRailType(){
+		return true;
 	}
 
 }

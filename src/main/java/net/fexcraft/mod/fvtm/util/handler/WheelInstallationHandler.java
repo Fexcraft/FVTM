@@ -54,7 +54,7 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 		if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
 		WheelData idata = part.getType().getInstallationHandlerData(); Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.radius, -partpos.z + (cat.contains("left") ? idata.width : -idata.width)).to16Double());
-		Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
+		//Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 

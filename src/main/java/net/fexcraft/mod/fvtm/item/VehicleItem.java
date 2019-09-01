@@ -103,7 +103,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	}
     	else if(data.getType().getVehicleType().isRailVehicle()){
             RailSystem syscap = world.getCapability(Capabilities.RAILSYSTEM, null);
-            if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.PASS; }
+            if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
             Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ));
     		Junction junk = syscap.getJunction(vector, true);
     		if(junk == null){
@@ -113,6 +113,10 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     			Print.bar(player, "&c&oJunction has no tracks attached.");
     		}
     		else{
+    			double length = data.getWheelPositions().get("bogie_front").x + -data.getWheelPositions().get("bogie_rear").x;
+    			if(junk.tracks.get(0).length < length){
+        			Print.bar(player, "&c&oFirst Track of Junction too short to spawn this vehicle."); return EnumActionResult.FAIL;
+    			}
     			Print.bar(player, "&a&oSpawning vehicle...");
 				syscap.registerEntity(new RailEntity((RailData)syscap, data, junk.tracks.get(0), player.getGameProfile().getId()));
     		}

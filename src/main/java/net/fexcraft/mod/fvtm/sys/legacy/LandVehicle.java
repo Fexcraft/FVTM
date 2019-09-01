@@ -1225,4 +1225,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		return axes.toDoubles();//radians?
 	}
 
+	@Override
+	public boolean isRailType(){
+		return false;
+	}
+
 }

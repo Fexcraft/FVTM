@@ -33,7 +33,7 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 		BogieFunction func = part.getFunction("fvtm:bogie"); if(func != null) func.setBogie(cat);
 		BogieData idata = part.getType().getInstallationHandlerData(); Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.height, -partpos.z).to16Double());
-		Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
+		//Print.debug("New BogiePos: " + data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 

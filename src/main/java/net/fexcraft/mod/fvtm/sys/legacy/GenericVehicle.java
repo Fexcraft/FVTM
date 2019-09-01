@@ -75,4 +75,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity {
 		return this.getVehicleData() == null ? null : this.getVehicleData().getType();
 	}
 
+	public abstract boolean isRailType();
+
+	public abstract void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, Vec3d avel, double throttle, double steeringYaw, int fuel);
+
 }

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -40,8 +40,8 @@ public class PKTH_VehControl {
     }
 
     private static void updatevehicle(Entity entity, PKT_VehControl pkt){
-        if(entity == null || entity instanceof LandVehicle == false){ return; }
-        ((LandVehicle)entity).setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll,
+        if(entity == null || entity instanceof GenericVehicle == false){ return; }
+        ((GenericVehicle)entity).setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll,
         	pkt.motX, pkt.motY, pkt.motZ, pkt.avel, pkt.throttle, pkt.steeringYaw, pkt.fuel);
     }
 

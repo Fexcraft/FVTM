@@ -68,7 +68,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private long railentid = -1;
 	public Axis3D axes, prevaxes;
 	private byte toggletimer;
-	//
 	public SeatEntity[] seats;
 	//
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
@@ -274,11 +273,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case SCRIPTS: {
-                /*if(!world.isRemote){
-                    player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_SCRIPTSGUI, world, this.getEntityId(), seat, 0);
-                    //open scripts gui
-                }
-                return true;*/
+                //
+            	return true;
             }
             case LIGHTS: {//TODO replace with rail lights type
                 if(!world.isRemote){
@@ -295,7 +291,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     	else{
                     		railentity.vehdata.getAttribute("lights").setValue(false);
                     	}
-                    	//TODO find a way for fog lights
                         toggletimer = 10;
                         NBTTagCompound nbt = new NBTTagCompound();
                         nbt.setString("task", "toggle_lights");
@@ -311,25 +306,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	return true;
             }
             case COUPLER_REAR: {
-            	/*if(!world.isRemote){
-            		if(throttle > 0 || throttle < 0){
-            			Print.chat(player, "Please stop the vehicle first!");
-            			return true;
-            		}
-            		if(this.railentity.vehdata.getRearConnector() == null){
-            			Print.chat(player, "This vehicle does not have a rear connector installed.");
-            			return true;
-            		}
-                    if(toggletimer <= 0){
-                    	if(this.getCoupledEntity(false) == null){
-                    		this.tryAttach(player);
-                    	}
-                    	else{
-                    		this.tryDetach(player);
-                    	}
-                        toggletimer = 10;
-                    }
-            	}*/
     			Print.chat(player, "//TODO");
             	return true;
             }
@@ -397,20 +373,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){
-        return; /*if(ticksExisted > 1){ Print.debug("setPositionAndRotationDirect"); return; }
-        if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
-            //
-        }
-        else{
-            double xx = x - posX, yy = y - posY, zz = z - posZ;
-            double xyz = xx * xx + yy * yy + zz * zz; if(xyz <= 1.0D){ return; }
-            serverPositionTransitionTicker = servtick / 2;
-            serverPosX = x; serverPosY = y; serverPosZ = z;
-            serverYaw = yaw; serverPitch = pitch;
-        }*/
+        return;
     }
-
-	//-- Vanilla --//
 	
     @Override
     protected boolean canTriggerWalking(){
@@ -429,7 +393,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public boolean isNonBoss(){
-        return false;
+        return true;
     }
 
     @Override
@@ -482,8 +446,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public AxisAlignedBB getCollisionBoundingBox(){
         return this.getCollisionBox(this);
     }
-    
-	//-- Vanilla END --//
 	
 	@Override
 	public VehicleEntity getCoupledEntity(boolean front){
@@ -581,7 +543,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             this.ticksExisted = 0;
         }
         //
-        //if(seats == null || (!vehicle.getType().isTrailerOrWagon() && seats.length == 0)){ this.setDead(); return; }
         if(toggletimer > 0){
             toggletimer--;
         }
@@ -611,7 +572,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     		railentity.vehdata.getAttribute("bogie_front_angle").setValue(front); railentity.vehdata.getAttribute("bogie_rear_angle").setValue(rear);
         }
         if(!world.isRemote){
-            if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || true/*vehicle.getFuelTankContent() > 0*/) /*&& lata.max_throttle != 0*/){
+            if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null)
+            	|| !(isDriverInGM1() || railentity.vehdata.getAttribute("fuel_stored").getIntegerValue() > 0)){
             	railentity.throttle *= 0.98F;
             }
             railentity.alignEntity(false);
@@ -638,10 +600,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         railentity.vehdata.getScripts().forEach((script) -> script.onUpdate(this, railentity.vehdata));
         checkForCollisions();
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }
-        /*if(drivenByPlayer){
-            PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
-            serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
-        }*/
         if(!world.isRemote && ticksExisted % 5 == 0){ throttle = railentity.throttle;
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
         }
@@ -687,15 +645,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     
     @Override
     public void updatePassenger(Entity passenger){
-        //if(passenger instanceof LandVehicle){ ((VehicleEntity)passenger).moveTrailer(); }
+        //
     }
 
 	@Override
     public boolean attackEntityFrom(DamageSource source, float amount){
-        //Print.debug(damagesource.damageType, damagesource.getImmediateSource().toString());
-        if(world.isRemote || isDead){
-            return true;
-        }
+        if(world.isRemote || isDead){ return true; }
         if(source.damageType.equals("player") && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
             if(railentity.vehdata.isLocked()){
                 Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
@@ -817,10 +772,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 case "toggle_lights": {
                 	railentity.vehdata.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
                 	railentity.vehdata.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
-                    /*if(trailer != null){
-                        trailer.vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
-                        trailer.vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
-                    }*/
+                    //TODO sync to waggons
                     break;
                 }
                 case "update_track":{
@@ -847,7 +799,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public double[] getEntityRotationForFvtmContainers(){
-		return axes.toDoubles();//radians?
+		return axes.toDoubles();
 	}
 
 	@Override

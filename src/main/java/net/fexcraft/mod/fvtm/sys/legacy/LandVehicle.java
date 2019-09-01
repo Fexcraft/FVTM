@@ -693,7 +693,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             this.ticksExisted = 0;
         }
         //
-        //if(seats == null || (!vehicle.getType().isTrailerOrWagon() && seats.length == 0)){ this.setDead(); return; }
         if(doorToggleTimer > 0){
             doorToggleTimer--;
         }
@@ -730,7 +729,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 //wheelsAngle += throttle * 20; if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;
                 //animation stuff }*/
             //
-            if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null) || !(isDriverInGM1() || true/*vehicle.getFuelTankContent() > 0*/) && lata.max_throttle != 0){
+            if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null)
+            	|| !(isDriverInGM1() || vehicle.getAttribute("fuel_stored").getIntegerValue() > 0) && lata.max_throttle != 0){
                 throttle *= 0.98F;
             }
             this.onUpdateMovement(); if(trailer != null){ trailer.alignTrailer(); }

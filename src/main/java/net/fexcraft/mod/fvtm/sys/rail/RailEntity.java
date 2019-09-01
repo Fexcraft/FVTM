@@ -39,6 +39,8 @@ public class RailEntity {
 	//
 	private short lastcheck = 0;//for entity despawn/spawning;
 	
+	//TODO make the train "bogie centered", if applicable
+	
 	public RailEntity(RailData data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
 		uid = data.getNewEntityId(); data.updateEntityEntry(uid, region.getKey()); vehdata = vdata;

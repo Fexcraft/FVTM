@@ -454,10 +454,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         vehicle.getAttribute("fuel_stored").setValue(fuel);
 	}
 	
-	@Override
+	/*@Override
     public void setPosition(double x, double y, double z){
-        super.setPosition(x, y, z); if(vehicle != null) vehicle.getCollisionGrid().update(axes);
-    }
+        super.setPosition(x, y, z);
+    }*/
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){

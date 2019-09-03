@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -35,11 +36,9 @@ public class RailEntity {
 	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
 	public RailEntity front_coupler, rear_coupler;
 	public VehicleData vehdata;
-	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length; 
+	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length, push_rq, pull_rq; 
 	//
-	private short lastcheck = 0;//for entity despawn/spawning;
-	
-	//TODO make the train "bogie centered", if applicable
+	private short lastcheck = 20;//for entity despawn/spawning;
 	
 	public RailEntity(RailData data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
@@ -47,12 +46,17 @@ public class RailEntity {
 		frbogiedis = (float)vdata.getWheelPositions().get("bogie_front").x;
 		rrbogiedis  = (float)-vdata.getWheelPositions().get("bogie_rear").x;
 		frconndis = (float)vdata.getFrontConnector().x; rrconndis = (float)-vdata.getRearConnector().x;
-		cfront = track.getVectorPosition(rrconndis + frconndis, false);
+		//
 		bfront = track.getVectorPosition(rrconndis + frbogiedis, false);
-		pos = track.getVectorPosition(rrconndis, false);
 		brear = track.getVectorPosition(rrconndis - rrbogiedis, false);
+		pos = medium(bfront, brear); push_rq = 0.002f;
+		cfront = track.getVectorPosition(rrconndis + frconndis, false);
 		crear = track.getVectorPosition(0, false);
 		region.spawnEntity(this);
+	}
+
+	private Vec3f medium(Vec3f vec0, Vec3f vec1){
+		return new Vec3f((vec0.xCoord + vec1.xCoord) * 0.5f, (vec0.yCoord + vec1.yCoord) * 0.5f, (vec0.zCoord + vec1.zCoord) * 0.5f);
 	}
 
 	/** only to use with read() afterwards */
@@ -73,16 +77,20 @@ public class RailEntity {
 			checkIfShouldHaveEntity();
 			//
 			//TODO collision/path check
-			TRO tro = getTrack(current, passed + (forward ? throttle : -throttle));//TODO calc via engine speed
-			last = current; current = tro.track; passed = tro.passed;
-			if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
-			if(!region.isInRegion(current.start)) this.updateRegion(current.start);
-			prev.copyFrom(pos); pos = move(passed);
-			cfront = move(passed + frconndis);
-			bfront = move(passed + frbogiedis);
-			crear = move(passed - rrconndis);
-			brear = move(passed - rrbogiedis);
-			//Print.debug(prev, pos, prev.distanceTo(pos));
+			float am = vehdata.getType().isTrailerOrWagon() ? 0 : throttle * vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getLegacyEngineSpeed();
+			if(!forward) am = -am; am += push_rq + pull_rq; pull_rq = 0; push_rq = 0;
+			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations
+				TRO tro = getTrack(current, passed + am);
+				last = current; current = tro.track; passed = tro.passed;
+				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
+				if(!region.isInRegion(current.start)) this.updateRegion(current.start);
+				bfront = move(passed);
+				brear = move(passed - frbogiedis - rrbogiedis);
+				cfront = move(passed + (frconndis - frbogiedis));
+				crear = move(passed - frbogiedis - rrconndis);
+				prev.copyFrom(pos); pos = medium(bfront, brear);
+				//net.fexcraft.lib.mc.utils.Print.debug(pos, bfront, brear);
+			}
 		}
 		//
 		region.getWorld().updateEntityEntry(uid, region.getKey());

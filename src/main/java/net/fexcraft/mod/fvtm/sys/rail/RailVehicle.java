@@ -564,12 +564,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
         	railentity.vehdata.getAttribute("throttle").setValue(railentity.throttle);
         	//
-        	Vec3f bf0 = railentity.move(railentity.passed + railentity.frbogiedis + 0.1f);
-        	Vec3f bf1 = railentity.move(railentity.passed + railentity.frbogiedis - 0.1f);
-        	Vec3f br0 = railentity.move(railentity.passed - railentity.rrbogiedis + 0.1f);
-        	Vec3f br1 = railentity.move(railentity.passed - railentity.rrbogiedis - 0.1f);
-    		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - (axes.getRadianYaw() * 180F / 3.14159F));
-    		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - (axes.getRadianYaw() * 180F / 3.14159F));
+        	Vec3f bf0 = railentity.move(railentity.passed + 0.1f), bf1 = railentity.move(railentity.passed - 0.1f);
+        	Vec3f br0 = railentity.move(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis + 0.1f);
+        	Vec3f br1 = railentity.move(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis - 0.1f);
+    		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - axes.getYaw());
+    		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - axes.getYaw());
     		railentity.vehdata.getAttribute("bogie_front_angle").setValue(front); railentity.vehdata.getAttribute("bogie_rear_angle").setValue(rear);
         }
         if(!world.isRemote){

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -10,6 +11,8 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.CollisionGrid.AABB;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -30,6 +33,8 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
     public void bindTexture(ResourceLocation rs){
         ModelBase.bindTexture(rs);
     }
+    
+    private static final ModelRendererTurbo turbo = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-2, -2, -2, 4, 4, 4);
 
     @Override
     public void doRender(LandVehicle vehicle, double x, double y, double z, float entity_yaw, float ticks){
@@ -72,6 +77,24 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	            if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0);
             }
             GL11.glPopMatrix();
+            if(Command.DEBUG && vehicle.getVehicleData() != null){
+				GL11.glDisable(GL11.GL_TEXTURE_2D);
+				GL11.glEnable(GL11.GL_BLEND);
+				GL11.glDisable(GL11.GL_DEPTH_TEST);
+				GL11.glColor4f(0.5F, 0.5F, 0F, 0.3F);
+				//
+				for(AABB aabb : vehicle.getVehicleData().getCollisionGrid().getAABBs()){
+			        GL11.glTranslated(aabb.getCurrentPos().x, aabb.getCurrentPos().y, aabb.getCurrentPos().z);
+			        turbo.render();
+			        GL11.glTranslated(-aabb.getCurrentPos().x, -aabb.getCurrentPos().y, -aabb.getCurrentPos().z);
+				}
+		        //
+				GL11.glEnable(GL11.GL_TEXTURE_2D);
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
+				GL11.glDisable(GL11.GL_BLEND);
+				GL11.glColor4f(1F, 1F, 1F, 1F);
+			
+            }
             /*if(Command.DEBUG){
                 if(tempholder != null){
                 	GL11.glPushMatrix();

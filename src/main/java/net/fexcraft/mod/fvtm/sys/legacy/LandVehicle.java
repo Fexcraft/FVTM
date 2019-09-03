@@ -453,6 +453,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         this.throttle = throttle; serverWY = (float)steeringYaw;
         vehicle.getAttribute("fuel_stored").setValue(fuel);
 	}
+	
+	@Override
+    public void setPosition(double x, double y, double z){
+        super.setPosition(x, y, z); if(vehicle != null) vehicle.getCollisionGrid().update(axes);
+    }
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){
@@ -561,7 +566,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public void applyEntityCollision(Entity entity){
-    	Print.debug(entity); return;
+    	//Print.debug(entity); return;
     }
     
     @Override

@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.util.CollisionGrid;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
@@ -47,6 +48,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected boolean trailer;
 	protected Vec3d def_front_conn, def_rear_conn;
 	protected HashMap<String, ResourceLocation> preinstalled;
+	protected CollisionGrid defaultgrid = new CollisionGrid();
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -144,6 +146,17 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				preinstalled.put(entry.getKey(), new ResourceLocation(entry.getValue().getAsString()));
 			}
 		}
+		if(obj.has("CollisionGrid")){
+			JsonArray grids = obj.get("CollisionGrid").isJsonArray() ? obj.get("CollisionGrid").getAsJsonArray() : new JsonArray();
+			if(!obj.get("CollisionGrid").isJsonArray()) grids.add(obj.get("CollisionGrid").getAsJsonObject());
+			for(JsonElement elm : grids){
+				JsonObject grid = elm.getAsJsonObject();
+				Pos from = grid.has("from") ? Pos.fromJson(grid.get("from"), grid.get("from").isJsonArray()) : new Pos(0, 0, 0);
+				Pos size = grid.has("size") ? Pos.fromJson(grid.get("size"), grid.get("size").isJsonArray()) : new Pos(1, 1, 1);
+				from = new Pos(from.x, -from.y, -from.z);
+				defaultgrid.addGrid(from, size, grid.has("unit") ? grid.get("unit").getAsFloat() : 1f, null);
+			}
+		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -237,6 +250,11 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	@Nullable
 	public HashMap<String, ResourceLocation> getPreInstalledParts(){
 		return preinstalled;
+	}
+	
+	/** Only use this one for cloning! */
+	public CollisionGrid getDefaultGrid(){
+		return defaultgrid;
 	}
 
 }

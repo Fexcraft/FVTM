@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.util.CollisionGrid;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
@@ -54,9 +55,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected ArrayList<String> inventories = new ArrayList<>();
 	protected ArrayList<VehicleScript> scripts = new ArrayList<>();
 	protected Vec3d front_conn, rear_conn;
+	protected CollisionGrid collisiongrid;
 
 	public VehicleData(Vehicle type){
-		super(type);
+		super(type); this.collisiongrid = type.getDefaultGrid().clone();
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
 			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
 		}
@@ -587,6 +589,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	
 	public List<Attribute<?>> getAttributes(String group){
 		return attributes.values().stream().filter(pre -> pre.group() != null && pre.group().equals(group)).collect(Collectors.toList());
+	}
+	
+	public CollisionGrid getCollisionGrid(){
+		return collisiongrid;
 	}
 
 }

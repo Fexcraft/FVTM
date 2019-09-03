@@ -147,6 +147,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     
     @Override
     public void setDead(){
+    	if(railentity == null || railentity.vehdata == null){ super.setDead(); return; }
         if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
             for(String part : railentity.vehdata.getInventories()){
             	InventoryFunction func = railentity.vehdata.getPart(part).getFunction("fvtm:inventory"); if(func == null) continue;

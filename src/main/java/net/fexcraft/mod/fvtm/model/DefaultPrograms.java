@@ -287,6 +287,33 @@ public class DefaultPrograms {
 		
 	};
 	
+	/*public static class AttributeTranslator implements Program {
+		
+		private Attribute<?> attr; private String attribute; private boolean bool;
+		private float min, max, step; private Float current; private int axis;
+		
+		public AttributeTranslator(String attribute, boolean boolstatebased, int axis, float min, float max, float step){
+			this.attribute = attribute; bool = boolstatebased; this.axis = axis; this.step = step; this.min = min; this.max = max;
+		}
+
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(cache == null) return; if((attr = data.getAttribute(attribute)) == null) return;
+			current = cache.getValue(attribute); if(current == null) current = 0f;
+			current = bool ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
+			if(current > max) current = max; if(current < min) current = min;
+			GL11.glPushMatrix();
+			GL11.glTranslatef(axis == 0 ? current * Static.sixteenth : 0,
+				axis == 1 ? current * Static.sixteenth : 0, axis == 2 ? current * Static.sixteenth : 0);
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glPopMatrix();
+		}
+
+	}*/
+	
 	public static class AttributeVisible implements Program {
 		
 		private Attribute<?> attr; private String attribute; boolean ifis;

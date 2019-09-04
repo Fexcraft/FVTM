@@ -37,14 +37,14 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void writeSpawnData(ByteBuf buffer){
     	buffer.writeDouble(posX); buffer.writeDouble(posY); buffer.writeDouble(posZ);
-        if(current != null) ByteBufUtils.writeTag(buffer, current.write(null));
+        if(current != null) ByteBufUtils.writeTag(buffer, current.getId().write(new NBTTagCompound()));
     }
 
     @Override
     public void readSpawnData(ByteBuf buffer){
     	setPosition(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     	if(buffer.isReadable()){
-    		current = new Track().read(ByteBufUtils.readTag(buffer));
+    		current = world.getCapability(Capabilities.RAILSYSTEM, null).getTrack(new Track.TrackKey(ByteBufUtils.readTag(buffer)));
     	}
     	Print.debug(current, posX, posY, posZ);
     }

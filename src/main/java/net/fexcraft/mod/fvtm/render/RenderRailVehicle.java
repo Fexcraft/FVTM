@@ -72,22 +72,6 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0);
             }
             GL11.glPopMatrix();
-            /*if(Command.DEBUG){
-                if(tempholder != null){
-                	GL11.glPushMatrix();
-                	ContainerType type = ContainerType.values()[tempo / 5];
-                	if(last != Time.getSecond()){
-                		last = Time.getSecond(); tempo++; if(tempo == 25) tempo = 0;
-                	}
-            		Map<String, AxisAlignedBB> map = tempholder.getContainerAABBs(type);
-            		for(AxisAlignedBB axis : map.values()){
-            			GL11.glTranslated(((axis.minX + axis.maxX) / 2), ((axis.minY + axis.maxY) / 2), ((axis.minZ + axis.maxZ) / 2));
-            			temp.render();
-            			GL11.glTranslated(-((axis.minX + axis.maxX) / 2), -((axis.minY + axis.maxY) / 2), -((axis.minZ + axis.maxZ) / 2));
-            		}
-                	GL11.glPopMatrix();
-                }
-            }*/
         }
         GL11.glPopMatrix();
     }

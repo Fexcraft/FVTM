@@ -22,8 +22,9 @@ public class Track {
 	public Object gauge;
 	public float length;
 	//
-	protected String line;
-	protected Object section;
+	//protected String line;
+	protected Section section;
+	protected Junction junction;
 	
 	/*public Track(Vec3d start, Vec3d end, Object gauge, Vec3d... subs){
 		this.id = start.toString() + "-" + end.toString();
@@ -48,8 +49,8 @@ public class Track {
 		this.gauge = gauge;
 	}*/
 	
-	public Track(Vec316f[] vec316fs, Vec316f vector, Object gauge){
-		start = vec316fs[0]; end = vector; id = new TrackKey(start, end);
+	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, Object gauge){
+		this.junction = junction; start = vec316fs[0]; end = vector; id = new TrackKey(start, end);
 		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1];
 		if(vecpath.length == 2){
 			vecpath[0] = vec316fs[0].vector; vecpath[1] = vector.vector;
@@ -65,11 +66,11 @@ public class Track {
 			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
 			this.length = this.calcLength();
 		}
-		this.gauge = gauge;
+		this.gauge = gauge; section = getSection(null);
 	}
 	
-	/** Only for the READ process. */
-	public Track(){}
+	/** Only for the READ process. @param junk just to make sure it's not used elsewhere */
+	public Track(Junction junk){ this.junction = junk; }
 
 	private Vec3f[] curve(Vec3f[] vecpoints){
 		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
@@ -106,8 +107,8 @@ public class Track {
 	
 	public Track read(NBTTagCompound compound){
 		this.id = new TrackKey(compound);
-		this.line = compound.hasKey("section") ? compound.getString("section") : null;
-		if(section != null) this.getSection();
+		//this.line = compound.hasKey("section") ? compound.getString("section") : null;
+		section = getSection(compound.hasKey("section") ? compound.getString("section") : null);
 		if(compound.hasKey("gauge")){
 			//gauge = Resources.GAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
 		}
@@ -125,13 +126,13 @@ public class Track {
 		return this;
 	}
 
-	private void getSection(){
-		//TODO
+	public Section getSection(String key){
+		return junction.root.getSections().get(key == null ? id.toSectionId(copy) : key, true);
 	}
 
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
-		id.write(compound); if(line != null) compound.setString("section", line);
+		id.write(compound); if(section != null) compound.setString("section", section.id);
 		//compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
 		compound.setBoolean("copy", copy);
 		compound.setTag("start", start.write());
@@ -157,9 +158,9 @@ public class Track {
 	}
 	
 	public Track createOppositeCopy(){
-		Track track = new Track();
+		Track track = new Track(junction);
 		track.id = new TrackKey(id, true);
-		track.line = line;
+		track.section = section;
 		track.gauge = gauge;
 		track.start = end;
 		track.end = start;
@@ -252,6 +253,17 @@ public class Track {
 			xyz[0] = start.x; xyz[1] = start.y; xyz[2] = start.z; xyz[3] = end.x; xyz[4] = end.y; xyz[5] = end.z;
 		}
 
+		public String toSectionId(boolean opposite){
+			if(opposite){
+				return pos[3] + "," + pos[4] + "," + pos[5] + ";" + xyz[3] + "," + xyz[4] + "," + xyz[5]
+					+ ":" + pos[0] + "," + pos[1] + "," + pos[2] + ";" + xyz[0] + "," + xyz[1] + "," + xyz[2];
+			}
+			else{
+				return pos[0] + "," + pos[1] + "," + pos[2] + ";" + xyz[0] + "," + xyz[1] + "," + xyz[2]
+					+ ":" + pos[3] + "," + pos[4] + "," + pos[5] + ";" + xyz[3] + "," + xyz[4] + "," + xyz[5];
+			}
+		}
+
 		public TrackKey(NBTTagCompound compound){
 			if(compound.hasKey("key_pos")) pos = compound.getIntArray("key_pos");
 			if(compound.hasKey("key_xyz")) xyz = compound.getByteArray("key_xyz");
@@ -281,6 +293,10 @@ public class Track {
 		public boolean equals(Object obj){
 			if(obj instanceof TrackKey == false) return false; TrackKey key = (TrackKey)obj;
 			for(int i = 0; i < 6; i++){ if(key.pos[i] != pos[i] || key.xyz[i] != xyz[i]) return false; } return true;
+		}
+
+		public Vec316f toVec3f(int i){
+			return new Vec316f(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
 		}
 		
 	}

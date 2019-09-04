@@ -1,12 +1,16 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
@@ -22,11 +26,11 @@ import net.minecraft.util.math.AxisAlignedBB;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class RailEntity {
+public class RailEntity implements Comparable<RailEntity>{
 	
 	public Track current, last;
 	public RailVehicle entity;
-	public long uid, fcid, rcid;
+	public long uid;
 	public RailRegion region;
 	public boolean active, forward = true;
 	public float throttle, passed;
@@ -34,11 +38,14 @@ public class RailEntity {
 		cfront = new Vec3f(), crear = new Vec3f(),
 		bfront = new Vec3f(), brear = new Vec3f();
 	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
-	public RailEntity front_coupler, rear_coupler;
+	public Coupler front = new Coupler(this), rear = new Coupler(this);
 	public VehicleData vehdata;
-	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length, push_rq, pull_rq; 
+	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length, push_rq, pull_rq;
+	public Section[] sectionson = new Section[4];
 	//
 	private short lastcheck = 20;//for entity despawn/spawning;
+	private static final short interval = 100;//300
+	private MiniBB ccalc = new MiniBB();//coupler calc bb
 	
 	public RailEntity(RailData data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
@@ -47,11 +54,12 @@ public class RailEntity {
 		rrbogiedis  = (float)-vdata.getWheelPositions().get("bogie_rear").x;
 		frconndis = (float)vdata.getFrontConnector().x; rrconndis = (float)-vdata.getRearConnector().x;
 		//
-		bfront = track.getVectorPosition(rrconndis + frbogiedis, false);
-		brear = track.getVectorPosition(rrconndis - rrbogiedis, false);
+		bfront = move(rrconndis + frbogiedis, TrainPoint.BOGIE_FRONT);
+		brear = move(rrconndis - rrbogiedis, TrainPoint.BOGIE_REAR);
 		pos = medium(bfront, brear); push_rq = 0.002f;
-		cfront = track.getVectorPosition(rrconndis + frconndis, false);
-		crear = track.getVectorPosition(0, false);
+		cfront = move(rrconndis + frconndis, TrainPoint.COUPLER_FRONT);
+		crear = move(0, TrainPoint.COUPLER_REAR);
+		//
 		region.spawnEntity(this);
 	}
 
@@ -74,34 +82,119 @@ public class RailEntity {
 	
 	public void onUpdate(){
 		if(!region.getWorld().getWorld().isRemote){
+			if(current == null) this.dispose();
 			checkIfShouldHaveEntity();
 			//
-			//TODO collision/path check
 			float am = vehdata.getType().isTrailerOrWagon() ? 0 : throttle * vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getLegacyEngineSpeed();
 			if(!forward) am = -am; am += push_rq + pull_rq; pull_rq = 0; push_rq = 0;
-			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations
-				TRO tro = getTrack(current, passed + am);
+			//if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations
+				TRO tro = getTrack(current, passed + am); boolean coupled = false;
+				//
+				if(!front.hasEntity() || !rear.hasEntity()){
+					Collection<RailEntity> ents = getEntitiesOnTrackAndNext(tro.track, forward);
+					Coupler[] couplers = new Coupler[]{ front, rear };
+					for(int i = 0; i < 2; i++){
+						if(couplers[i].hasEntity()) continue; Vec3f coucen = couplers[i].mbb.center;
+						for(RailEntity ent : ents){
+							if(ent == this || ent == front.entity || ent == rear.entity) continue;
+							ccalc.update(ent.cfront, ent.crear, 0.125f);//TODO check this
+							if(!ccalc.contains(coucen)){ Print.debug("not in bb"); continue; }//hah!
+							if(ent.rear.mbb.contains(coucen)){
+								float entpos = ent.pos.distanceTo(pos);
+								float coupos = ent.crear.distanceTo(pos);
+								if(entpos < coupos) continue;//we're probably inside the other entity, abort!
+								coupled = true; couplers[i].couple(ent, false, false); am = coucen.distanceTo(ent.crear); 
+								if(ent.brear.distanceTo(coucen) < ent.crear.distanceTo(coucen)) am = -am;
+								Print.debugChat("coupling " + (i == 0 ? "front" : "rear") + " to rear");
+							}
+							else{
+								Print.debug("not rear");
+							}
+							if(ent.front.mbb.contains(coucen)){
+								float entpos = ent.pos.distanceTo(pos);
+								float coupos = ent.cfront.distanceTo(pos);
+								if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
+								coupled = true; couplers[i].couple(ent, true, false); am = coucen.distanceTo(ent.cfront);
+								if(ent.bfront.distanceTo(coucen) < ent.cfront.distanceTo(coucen)) am = -am;
+								Print.debugChat("coupling " + (i == 0 ? "front" : "rear") + " to front");
+							}
+							else{
+								Print.debug("not front");
+							}
+						}
+					}
+						/*float fc = ent.cfront.distanceTo(coupler0), rc = ent.crear.distanceTo(coupler0);
+						if(fc > abs && rc > abs) continue;
+						else if(fc < rc){//front
+							Print.debugChat("coupling " + (am > 0 ? "front" : "rear") + " to front");
+							(am > 0 ? front : rear).couple(ent, true, false); coupled = true;
+							if(ent.bfront.distanceTo(coupler0) > fc){
+								ent.push_rq -= abs - fc; am = am > 0 ? fc : -fc;
+							} else{ ent.push_rq -= abs; am -= am > 0 ? abs - fc : -(abs - fc); }
+						}
+						else if(rc < fc){//rear
+							Print.debugChat("coupling " + (am > 0 ? "front" : "rear") + " to rear");
+							(am > 0 ? front : rear).couple(ent, false, false); coupled = true;
+							if(ent.brear.distanceTo(coupler0) > rc){
+								ent.push_rq += abs - rc; am -= am > 0 ? rc : -rc;
+							} else{ ent.push_rq += abs; am -= am > 0 ? abs - rc : -(abs - rc); }
+						}*/
+				}
+				if(!coupled){
+					if(am > 0){//front
+						if(rear.hasEntity()){
+							if(rear.coupled){
+								rear.entity.pull_rq += rear.isFront() ? am : -am;
+							} else if(!rear.inRange()){ Print.debugChat("decoupling rear"); rear.decouple(); }
+						}
+						if(front.hasEntity()){
+							front.entity.push_rq += front.isFront() ? -am : am;
+						}
+					}
+					else{//rear
+						if(front.hasEntity()){
+							if(front.coupled){
+								front.entity.pull_rq -= front.isFront() ? am : -am;
+							} else if(!front.inRange()){ Print.debugChat("decoupling front"); front.decouple(); }
+						}
+						if(rear.hasEntity()){
+							rear.entity.push_rq -= rear.isFront() ? -am : am;
+						}
+					}
+					tro = getTrack(current, passed + am);
+				} else tro = getTrack(current, passed);
+				//
 				last = current; current = tro.track; passed = tro.passed;
 				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
 				if(!region.isInRegion(current.start)) this.updateRegion(current.start);
-				bfront = move(passed);
-				brear = move(passed - frbogiedis - rrbogiedis);
-				cfront = move(passed + (frconndis - frbogiedis));
-				crear = move(passed - frbogiedis - rrconndis);
+				bfront = move(passed, TrainPoint.BOGIE_FRONT);
+				brear = move(passed - frbogiedis - rrbogiedis, TrainPoint.BOGIE_REAR);
+				cfront = move(passed + (frconndis - frbogiedis), TrainPoint.COUPLER_FRONT);
+				crear = move(passed - frbogiedis - rrconndis, TrainPoint.COUPLER_REAR);
 				prev.copyFrom(pos); pos = medium(bfront, brear);
+				front.mbb.update(cfront, 0.125f); rear.mbb.update(crear, 0.125f);
 				//net.fexcraft.lib.mc.utils.Print.debug(pos, bfront, brear);
-			}
+			//}
 		}
 		//
 		region.getWorld().updateEntityEntry(uid, region.getKey());
+	}
+
+	private ArrayList<RailEntity> railentlist = new ArrayList<>();
+
+	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track, boolean forward){
+		railentlist.clear(); railentlist.addAll(track.section.getEntities().values());
+		track = track.junction.getNext(forward ? track.getOppositeId() : track.getId());
+		if(track != null) railentlist.addAll(track.section.getEntities().values());
+		track = track.junction.getNext(forward ? track.getId() : track.getOppositeId());
+		if(track != null) railentlist.addAll(track.section.getEntities().values()); return railentlist;
 	}
 
 	private void updateClient(String string){
 		if(entity == null) return; NBTTagCompound compound = new NBTTagCompound();
 		switch(string){
 			case "track":{
-				compound.setString("task", "update_track");
-				compound.setTag("track", current.write(null));
+				compound.setString("task", "update_track"); current.getId().write(compound);
 				break;
 			}
 			case "passed":{
@@ -119,7 +212,19 @@ public class RailEntity {
 		region.getEntities().put(uid, this);
 	}
 
-	public Vec3f move(float passed){
+	public Vec3f move(float passed, TrainPoint point){
+		TRO tro = getTrack(current, passed);
+		if(sectionson[point.index] == null){
+			(sectionson[point.index] = tro.track.section).update(this, true);
+		}
+		else{
+			sectionson[point.index].update(this, false);
+			(sectionson[point.index] = tro.track.section).update(this, true);
+		}
+		return tro.track.getVectorPosition(tro.passed, false);
+	}
+
+	public Vec3f moveOnly(float passed){
 		TRO tro = getTrack(current, passed); return tro.track.getVectorPosition(tro.passed, false);
 	}
 
@@ -153,12 +258,12 @@ public class RailEntity {
 		if(lastcheck > 0){ lastcheck--; return; }
 		if(entity != null){
 			if(entity.seats != null) for(SeatEntity seat : entity.seats)
-				if(seat != null && seat.hasPassenger()){ lastcheck = 300; return; }
-			if(isInPlayerRange()){ lastcheck = 300; return; }
-			entity.setDead(); entity = null; lastcheck = 300; return;
+				if(seat != null && seat.hasPassenger()){ lastcheck = interval; return; }
+			if(isInPlayerRange()){ lastcheck = interval; return; }
+			entity.setDead(); entity = null; lastcheck = interval; return;
 		}
 		else{
-			if(!isInPlayerRange()){ lastcheck = 300; return; }
+			if(!isInPlayerRange()){ lastcheck = interval; return; }
 			region.getWorld().getWorld().spawnEntity(new RailVehicle(this));
 		}
 	}
@@ -172,7 +277,7 @@ public class RailEntity {
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
 		compound.setLong("uid", uid);
-		compound.setTag("track", current.write(null));
+		current.getId().write(compound);
 		compound.setTag("pos", DataUtil.writeVec3f(pos));
 		compound.setTag("prev", DataUtil.writeVec3f(prev));
 		compound.setTag("cfront", DataUtil.writeVec3f(cfront));
@@ -182,12 +287,20 @@ public class RailEntity {
 		compound.setBoolean("forward", forward);
 		compound.setLong("Placer0", placer.getMostSignificantBits());
 		compound.setLong("Placer1", placer.getLeastSignificantBits());
+		if(front.entity != null && front.coupled){
+			compound.setLong("front_coupled", front.entity.uid);
+			compound.setBoolean("front_coupler", front.isFront());
+		}
+		if(rear.entity != null && rear.coupled){
+			compound.setLong("rear_coupled", rear.entity.uid);
+			compound.setBoolean("rear_coupler", rear.isFront());
+		}
 		return vehdata.write(compound);
 	}
 	
 	public RailEntity read(NBTTagCompound compound){
 		uid = compound.getLong("uid");
-		current = new Track().read(compound.getCompoundTag("track"));
+		current = region.getTrack(new Track.TrackKey(compound));
 		pos = DataUtil.readVec3f(compound.getTag("pos"));
 		prev = DataUtil.readVec3f(compound.getTag("prev"));
 		cfront = DataUtil.readVec3f(compound.getTag("cfront"));
@@ -198,13 +311,26 @@ public class RailEntity {
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
 		if(vehdata == null) vehdata = Resources.getVehicleData(compound);
 		else vehdata.read(compound);
+		if(compound.hasKey("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
+		if(compound.hasKey("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));
 		//
 		frbogiedis = (float)vehdata.getWheelPositions().get("bogie_front").x;
 		rrbogiedis  = (float)-vehdata.getWheelPositions().get("bogie_rear").x;
 		frconndis = (float)vehdata.getFrontConnector().x;
 		rrconndis = (float)-vehdata.getRearConnector().x;
 		//
+		bfront = move(passed, TrainPoint.BOGIE_FRONT);
+		brear = move(passed - frbogiedis - rrbogiedis, TrainPoint.BOGIE_REAR);
+		cfront = move(passed + (frconndis - frbogiedis), TrainPoint.COUPLER_FRONT);
+		crear = move(passed - frbogiedis - rrconndis, TrainPoint.COUPLER_REAR);
+		prev.copyFrom(pos); pos = medium(bfront, brear);
 		return this;
+	}
+
+	public void loadCouple(boolean frontcoupler, long uid, boolean asfront){
+		RailEntity ent = region.getWorld().getEntity(uid, true); if(ent == null) return;
+		Coupler coupler = frontcoupler ? front : rear; coupler.coupled = true; coupler.entity = ent;
+		coupler = asfront ? ent.front : ent.rear; coupler.coupled = true; coupler.entity = this;
 	}
 
 	public void alignEntity(boolean initial){
@@ -220,17 +346,27 @@ public class RailEntity {
 	}
 
 	public void dispose(){
-		if(front_coupler != null)
-			if(front_coupler.front_coupler == this) front_coupler.front_coupler = null;
-			else front_coupler.rear_coupler = null;
-		if(rear_coupler != null)
-			if(rear_coupler.front_coupler == this) rear_coupler.front_coupler = null;
-			else rear_coupler.rear_coupler = null;
+		Print.debug("Disposing of TrackEntity " + uid + "!"); front.decouple(); rear.decouple();
 		region.getWorld().delEntity(this); if(entity != null && !entity.isDead) entity.setDead();
 	}
 
 	public UUID getPlacer(){
 		return placer;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		if(obj instanceof RailEntity == false) return false;
+		return ((RailEntity)obj).getUID() == this.getUID();
+	}
+	
+	@Override
+	public int compareTo(RailEntity obj){
+		return Long.compare(obj.getUID(), getUID());
+	}
+	
+	public static enum TrainPoint {
+		COUPLER_FRONT(0), BOGIE_FRONT(1), BOGIE_REAR(2), COUPLER_REAR(3); int index; TrainPoint(int idx){ this.index = idx; }
 	}
 
 }

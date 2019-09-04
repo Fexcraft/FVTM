@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.RailData.XZK;
+import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,7 +28,7 @@ import net.minecraft.nbt.NBTTagList;
 public class RailRegion {
 	
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
-	private TreeMap<Long, RailEntity> entities = new TreeMap<>();
+	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ArrayList<XZK> chucks = new ArrayList<>();
 	public long lastaccess;
 	private final RailData world;
@@ -68,7 +71,7 @@ public class RailRegion {
 			NBTTagList list = (NBTTagList)compound.getTag("Entities");
 			for(NBTBase base : list){
 				RailEntity entity = new RailEntity(this).read((NBTTagCompound)base);
-				entities.put(entity.uid, entity);
+				entities.put(entity.getUID(), entity);
 			}
 		}
 		return this;
@@ -147,7 +150,7 @@ public class RailRegion {
 		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound), player);
 	}
 
-	public TreeMap<Long, RailEntity> getEntities(){
+	public ConcurrentHashMap<Long, RailEntity> getEntities(){
 		return entities;
 	}
 
@@ -161,6 +164,11 @@ public class RailRegion {
 	
 	public RailData getWorld(){
 		return world;
+	}
+
+	public Track getTrack(TrackKey key){
+		Junction junction = getJunction(key.toVec3f(0));
+		return junction == null ? null : junction.getTrack(key);
 	}
 
 }

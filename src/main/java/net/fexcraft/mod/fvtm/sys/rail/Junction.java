@@ -46,7 +46,7 @@ public class Junction {
 		int trackam = compound.getInteger("Tracks");
 		if(trackam > 0){
 			for(int i = 0; i < trackam; i++){
-				try{ tracks.add(new Track().read(compound.getCompoundTag("Track" + i))); }
+				try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
 				catch(Exception e){ e.printStackTrace(); }
 			}
 		}
@@ -143,6 +143,10 @@ public class Junction {
 	
 	public boolean allowsSpawningOn(){
 		return true;
+	}
+
+	public Track getTrack(TrackKey key){
+		for(Track track : tracks) if(track.getId().equals(key)) return track; return null;
 	}
 
 }

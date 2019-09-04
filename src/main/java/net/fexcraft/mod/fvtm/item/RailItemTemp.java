@@ -82,7 +82,7 @@ public class RailItemTemp extends Item {
 				Print.chat(player, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
-			Track track = new Track(getVectors(list), vector, null);
+			Track track = new Track(junk, getVectors(list), vector, null);
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
 				second.addnew(track); junk.addnew(track.createOppositeCopy());

@@ -12,6 +12,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
+import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
@@ -27,7 +28,7 @@ public class RailData implements RailSystem {
 	private long globalcounter;
 	//
 	private RegionMap regions = new RegionMap(this);
-	//private HashMap<String, Object> sections = new HashMap<>();
+	private SectionMap sections = new SectionMap();
 	private TreeMap<Long, XZK> entities = new TreeMap<>();
 
 	@Override
@@ -66,6 +67,14 @@ public class RailData implements RailSystem {
 				try{ entities.put(Long.parseLong(str, 16), new XZK(enty.getLong(str))); }
 				catch(Exception e){ e.printStackTrace(); }
 			}
+		}
+	}
+	
+	public static class SectionMap extends TreeMap<String, Section> {
+		
+		public Section get(String str, boolean create){
+			if(!create) return super.get(str); Section sec = super.get(str);
+			if(sec == null) this.put(str, sec = new Section(str)); return sec;
 		}
 	}
 	
@@ -158,6 +167,10 @@ public class RailData implements RailSystem {
 	
 	public static int[] getRegionXZ(Vec316f vec){
 		return getRegionXZ((int)vec.pos.getX() >> 4, (int)vec.pos.getZ() >> 4);
+	}
+
+	private int[] getRegionXZ(TrackKey key){
+		return getRegionXZ(key.pos[0] >> 4, key.pos[2] >> 4);
 	}
 	
 	public RegionMap getRegions(){
@@ -295,6 +308,16 @@ public class RailData implements RailSystem {
 	public void delEntity(RailEntity entity){
 		entity.region.getEntities().remove(entity.getUID());
 		entities.remove(entity.getUID());
+	}
+
+	@Override
+	public Track getTrack(TrackKey key){
+		RailRegion region = regions.get(getRegionXZ(key), true);
+		return region == null ? null : region.getTrack(key);
+	}
+	
+	public SectionMap getSections(){
+		return sections;
 	}
 
 }

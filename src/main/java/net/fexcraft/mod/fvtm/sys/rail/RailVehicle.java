@@ -31,6 +31,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
+import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -450,17 +451,17 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
 	@Override
 	public VehicleEntity getCoupledEntity(boolean front){
-		return front ? railentity.front_coupler.entity : railentity.rear_coupler.entity;
+		return front ? railentity.front.entity.entity : railentity.rear.entity.entity;
 	}
 	
 	@Override
 	public VehicleEntity getFrontCoupledEntity(){
-		return railentity.front_coupler.entity;
+		return railentity.front.entity.entity;
 	}
 	
 	@Override
 	public VehicleEntity getRearCoupledEntity(){
-		return railentity.rear_coupler.entity;
+		return railentity.rear.entity.entity;
 	}
 
     @Override
@@ -510,7 +511,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     public boolean isDrivenByPlayer(){
         if(railentity.vehdata.getType().isTrailerOrWagon()){
-            return getFrontCoupledEntity() != null && railentity.front_coupler.entity.getSeats()[0] != null && SeatEntity.isPassengerThePlayer(railentity.front_coupler.entity.getSeats()[0]);
+            return getFrontCoupledEntity() != null && railentity.front.entity.entity.getSeats()[0] != null && SeatEntity.isPassengerThePlayer(railentity.front.entity.entity.getSeats()[0]);
         }
         else{
             return seats[0] != null && SeatEntity.isPassengerThePlayer((SeatEntity)seats[0]);
@@ -564,9 +565,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
         	railentity.vehdata.getAttribute("throttle").setValue(railentity.throttle);
         	//
-        	Vec3f bf0 = railentity.move(railentity.passed + 0.1f), bf1 = railentity.move(railentity.passed - 0.1f);
-        	Vec3f br0 = railentity.move(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis + 0.1f);
-        	Vec3f br1 = railentity.move(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis - 0.1f);
+        	Vec3f bf0 = railentity.moveOnly(railentity.passed + 0.1f), bf1 = railentity.moveOnly(railentity.passed - 0.1f);
+        	Vec3f br0 = railentity.moveOnly(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis + 0.1f);
+        	Vec3f br1 = railentity.moveOnly(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis - 0.1f);
     		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - axes.getYaw());
     		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - axes.getYaw());
     		railentity.vehdata.getAttribute("bogie_front_angle").setValue(front); railentity.vehdata.getAttribute("bogie_rear_angle").setValue(rear);
@@ -776,7 +777,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     break;
                 }
                 case "update_track":{
-                	railentity.current = new Track().read(pkt.nbt.getCompoundTag("track"));
+                	railentity.current = railentity.region.getTrack(new TrackKey(pkt.nbt));
                 	break;
                 }
                 case "update_passed":{

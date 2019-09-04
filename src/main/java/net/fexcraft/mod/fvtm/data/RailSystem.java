@@ -5,6 +5,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData.XZK;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,10 +31,12 @@ public interface RailSystem {
 	public Junction getJunction(Vec316f vector, boolean load);
 
 	public boolean delJunction(Vec316f vector);
+
+	public void addJunction(Vec316f vector);
 	
 	public boolean delTrack(Track track);
 
-	public void addJunction(Vec316f vector);
+	public Track getTrack(TrackKey trackKey);
 	
 	/** For timed tasks, do not use this one. */
 	public void scheduledCheck();

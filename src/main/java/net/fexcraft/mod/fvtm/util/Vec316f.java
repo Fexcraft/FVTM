@@ -61,6 +61,10 @@ public class Vec316f implements Comparable<Vec316f>{
 		z = compound.getByte("pos_z"); vector = toVec3f();
 	}
 
+	public Vec316f(int px, int py, int pz, byte x, byte y, byte z){
+		pos = new BlockPos(px, py, pz); this.x = x; this.y = y; this.z = z; vector = toVec3f();
+	}
+
 	public NBTTagCompound write(){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("vec_pos", pos.toLong());

@@ -10,8 +10,11 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
+import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
@@ -20,7 +23,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	private ContainerHolder tempholder;
 
     public RenderRailVehicle(RenderManager renderManager){
-        super(renderManager); shadowSize = 0.5F;
+        super(renderManager); shadowSize = 0.125F;
     }
 
     public void bindTexture(RailVehicle ent){
@@ -30,6 +33,8 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
     public void bindTexture(ResourceLocation rs){
         ModelBase.bindTexture(rs);
     }
+    
+    //private static final ModelRendererTurbo turbo = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-2, -2, -2, 4, 4, 4);
 
     @Override
     public void doRender(RailVehicle vehicle, double x, double y, double z, float entity_yaw, float ticks){
@@ -72,6 +77,25 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0);
             }
             GL11.glPopMatrix();
+            if(Command.DEBUG && vehicle.railentity != null){
+				GL11.glDisable(GL11.GL_TEXTURE_2D);
+				GL11.glEnable(GL11.GL_BLEND);
+				GL11.glDisable(GL11.GL_DEPTH_TEST);
+				GL11.glColor4f(0.5F, 0.5F, 0F, 0.3F);
+				vehicle.railentity.updatePosition();
+				//
+				for(MiniBB aabb : vehicle.railentity.getCouplerMBBs()){
+			        //GL11.glTranslatef(aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord);
+			        //turbo.render();
+			        //GL11.glTranslatef(-aabb.center.xCoord, -aabb.center.yCoord, -aabb.center.zCoord);
+					vehicle.world.spawnParticle(EnumParticleTypes.FLAME, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
+				}
+		        //
+				GL11.glEnable(GL11.GL_TEXTURE_2D);
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
+				GL11.glDisable(GL11.GL_BLEND);
+				GL11.glColor4f(1F, 1F, 1F, 1F);
+            }
         }
         GL11.glPopMatrix();
     }

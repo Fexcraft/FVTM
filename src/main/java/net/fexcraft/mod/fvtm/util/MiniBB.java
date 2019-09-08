@@ -23,9 +23,9 @@ public class MiniBB {
     public MiniBB(){}
 
 	public boolean contains(Vec3f vec){
-        if(vec.xCoord >= this.x0 && vec.xCoord <= this.x1){
-            if (vec.yCoord >= this.y0 && vec.yCoord <= this.y1){
-                return vec.zCoord >= this.z0 && vec.zCoord <= this.z1;
+        if(vec.xCoord > this.x0 && vec.xCoord < this.x1){
+            if(vec.yCoord > this.y0 && vec.yCoord < this.y1){
+                return vec.zCoord > this.z0 && vec.zCoord < this.z1;
             }
         } return false;
     }
@@ -34,7 +34,7 @@ public class MiniBB {
 		x0 = pos.xCoord - radius; x1 = pos.xCoord + radius;
 		y0 = pos.yCoord - radius; y1 = pos.yCoord + radius;
 		z0 = pos.zCoord - radius; z1 = pos.zCoord + radius;
-		center = new Vec3f(pos); return this;
+		center = pos/*new Vec3f(pos)*/; return this;
     }
     
     public MiniBB update(Vec3f one, Vec3f two){

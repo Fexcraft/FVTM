@@ -14,7 +14,6 @@ import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -75,7 +74,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
-    public static final int servtick = 5;
+    public static final int servtick = 1;
     public int sptt;
     public static final String[] BOOGIEINDEX = new String[]{ "bogie_front", "bogie_rear" };
 
@@ -102,7 +101,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void initializeVehicle(boolean remote){
 		if(railentity == null){
 			railentity = world.getCapability(Capabilities.RAILSYSTEM, null).getEntity(railentid, true);
-			railentity.entity = this;
+			if(railentity != null) railentity.entity = this;
 		}
 		if(railentity == null){ Print.log("Failed to load RailEntity for '" + this + "', aborting init."); return;}
         seats = new SeatEntity[railentity.vehdata.getSeats().size()];
@@ -304,12 +303,14 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case COUPLER_FRONT: {
-    			Print.chat(player, "//TODO");
-            	return true;
+            	if(toggletimer > 0) return true;
+    			railentity.tryCoupling(player, true);
+    			toggletimer = 10; return true;
             }
             case COUPLER_REAR: {
-    			Print.chat(player, "//TODO");
-            	return true;
+            	if(toggletimer > 0) return true;
+    			railentity.tryCoupling(player, true);
+            	toggletimer = 10; return true;
             }
             case MOUSE_MAIN: case MOUSE_RIGHT: return false;
             default:{ Print.chat(player, String.format("Task for keypress %s not found.", key)); return false; }
@@ -375,7 +376,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){
-        return;
+        return;//sptt = 1; serverPosX = x; serverPosY = y; serverPosZ = z; serverYaw = yaw; serverPitch = pitch;
     }
 	
     @Override
@@ -527,7 +528,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	//railentity = world.getCapability(Capabilities.RAILSYSTEM, null).getEntity(railentid, true);
         	this.initializeVehicle(world.isRemote);
         }
-        if(railentity.vehdata == null){ Print.log("VehicleData is NULL; Not ticking vehicle."); Static.stop(); return; }
+        if(railentity == null || railentity.vehdata == null){
+        	Print.log("VehicleData OR RailEntity is NULL; Not ticking vehicle. Removing Vehicle."); this.setDead(); return;
+        }
         if(!world.isRemote){
         	for(int i = 0; i < railentity.vehdata.getSeats().size(); i++){
         		Seat seat = railentity.vehdata.getSeat(i);
@@ -601,7 +604,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         railentity.vehdata.getScripts().forEach((script) -> script.onUpdate(this, railentity.vehdata));
         checkForCollisions();
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }
-        if(!world.isRemote && ticksExisted % 5 == 0){ throttle = railentity.throttle;
+        if(!world.isRemote /*&& ticksExisted % servtick == 0*/){ throttle = railentity.throttle;
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
         }
     }
@@ -777,7 +780,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     break;
                 }
                 case "update_track":{
+                	railentity.last = railentity.current;
                 	railentity.current = railentity.region.getTrack(new TrackKey(pkt.nbt));
+    				if(!railentity.region.isInRegion(railentity.current.start))
+    					railentity.updateRegion(railentity.current.start);
                 	break;
                 }
                 case "update_passed":{

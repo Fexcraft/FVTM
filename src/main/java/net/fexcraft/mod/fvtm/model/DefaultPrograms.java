@@ -44,6 +44,11 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(STEERING_WHEEL_X);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_Y);
 		//
+		TurboList.PROGRAMS.add(LIGHTS_FRONT_FORWARD);
+		TurboList.PROGRAMS.add(LIGHTS_FRONT_BACKWARD);
+		TurboList.PROGRAMS.add(LIGHTS_REAR_FORWARD);
+		TurboList.PROGRAMS.add(LIGHTS_REAR_BACKWARD);
+		//
 		DIDLOAD = true;
 	}
 
@@ -88,6 +93,26 @@ public class DefaultPrograms {
 	public static final Program REVERSE_LIGHTS = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getThrottle() < -0.01; }
 		@Override public String getId(){ return "fvtm:reverse_lights"; }
+	};
+	
+	public static final Program LIGHTS_FRONT_FORWARD = new AlwaysGlow(){
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").getBooleanValue(); }
+		@Override public String getId(){ return "fvtm:lights_front_forward"; }
+	};
+	
+	public static final Program LIGHTS_FRONT_BACKWARD = new AlwaysGlow(){
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").getBooleanValue(); }
+		@Override public String getId(){ return "fvtm:lights_front_backward"; }
+	};
+	
+	public static final Program LIGHTS_REAR_FORWARD = new AlwaysGlow(){
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").getBooleanValue(); }
+		@Override public String getId(){ return "fvtm:lights_rear_forward"; }
+	};
+	
+	public static final Program LIGHTS_REAR_BACKWARD = new AlwaysGlow(){
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").getBooleanValue(); }
+		@Override public String getId(){ return "fvtm:lights_rear_backward"; }
 	};
 	
 	public static final boolean checkSignalSec(){//temporary solution;

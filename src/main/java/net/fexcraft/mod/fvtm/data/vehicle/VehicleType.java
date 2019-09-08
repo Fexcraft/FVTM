@@ -79,6 +79,8 @@ public enum VehicleType {
 			case RAIL:{
 				attrs.add(new Attribute.FloatAttribute(true, "bogie_front_angle", 0f).setMinMax(-360f, 360f));
 				attrs.add(new Attribute.FloatAttribute(true, "bogie_rear_angle", 0f).setMinMax(-360f, 360f));
+				attrs.add(new Attribute.BooleanAttribute(true, "forward", true).setEditable(false));
+				attrs.add(new Attribute.BooleanAttribute(true, "active", true).setEditable(false));
 				break;
 			}
 			default: break;

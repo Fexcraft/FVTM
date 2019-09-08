@@ -216,13 +216,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case TURN_LEFT:{
-                railentity.forward = false;
-                Print.bar(player, "&e&oDirection set to REVERSE");
+                railentity.setForward(false); Print.bar(player, "&e&oDirection set to REVERSE");
                 return true;
             }
             case TURN_RIGHT:{
-            	railentity.forward = true;
-                Print.bar(player, "&e&oDirection set to FORWARD");
+            	railentity.setForward(true); Print.bar(player, "&e&oDirection set to FORWARD");
                 return true;
             }
             case BRAKE:{
@@ -280,23 +278,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             case LIGHTS: {//TODO replace with rail lights type
                 if(!world.isRemote){
                     if(toggletimer <= 0){
-                    	if(railentity.vehdata.getAttribute("lights").getBooleanValue()){
-                    		if(railentity.vehdata.getAttribute("lights_long").getBooleanValue()){
-                    			railentity.vehdata.getAttribute("lights").setValue(false);
-                    			railentity.vehdata.getAttribute("lights_long").setValue(false);
-                    		}
-                    		else{
-                    			railentity.vehdata.getAttribute("lights_long").setValue(true);
-                    		}
-                    	}
-                    	else{
-                    		railentity.vehdata.getAttribute("lights").setValue(false);
-                    	}
+            			railentity.vehdata.getAttribute("lights").setValue(!railentity.vehdata.getAttribute("lights").getBooleanValue());
                         toggletimer = 10;
                         NBTTagCompound nbt = new NBTTagCompound();
                         nbt.setString("task", "toggle_lights");
                         nbt.setBoolean("lights", railentity.vehdata.getAttribute("lights").getBooleanValue());
-                        nbt.setBoolean("lights_long", railentity.vehdata.getAttribute("lights_long").getBooleanValue());
                         ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                     }
                 }
@@ -775,7 +761,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "toggle_lights": {
                 	railentity.vehdata.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
-                	railentity.vehdata.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
                     //TODO sync to waggons
                     break;
                 }

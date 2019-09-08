@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.UUID;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -32,7 +34,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public RailVehicle entity;
 	public long uid;
 	public RailRegion region;
-	public boolean active, forward = true;
+	private boolean active, forward = true;
 	public float throttle, passed;
 	public Vec3f pos = new Vec3f(), prev = new Vec3f(),
 		cfront = new Vec3f(), crear = new Vec3f(),
@@ -87,7 +89,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			checkIfShouldHaveEntity();
 			//
 			float am = vehdata.getType().isTrailerOrWagon() ? 0 : throttle * vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getLegacyEngineSpeed();
-			if(!forward) am = -am; am += push_rq + pull_rq; pull_rq = 0; push_rq = 0;
+			if(!forward) am = -am; am += push_rq + pull_rq;
 			//if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations
 				TRO tro = getTrack(current, passed + am); boolean coupled = false;
 				//
@@ -115,7 +117,7 @@ public class RailEntity implements Comparable<RailEntity>{
 								if(ent.bfront.distanceTo(coucen) < ent.cfront.distanceTo(coucen)) am = -am;
 								Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to front");
 							}
-						}
+						}//TODO align the freshly connected entities
 					}
 					/*float fc = ent.cfront.distanceTo(coupler0), rc = ent.crear.distanceTo(coupler0);
 					if(fc > abs && rc > abs) continue;
@@ -157,6 +159,8 @@ public class RailEntity implements Comparable<RailEntity>{
 					}
 					tro = getTrack(current, passed + am);
 				} else tro = getTrack(current, passed);
+				//
+				pull_rq = 0; push_rq = 0;
 				//
 				last = current; current = tro.track; passed = tro.passed;
 				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
@@ -371,7 +375,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void tryCoupling(EntityPlayer player, boolean thefront){
 		Coupler coupler = thefront ? front : rear; Vec3f vec = thefront ? cfront : crear;
-		if(coupler.hasEntity()){
+		if(coupler.hasEntity() && coupler.coupled){
 			coupler.decouple(); Print.chat(player, (thefront ? "Front" : "Rear") + " disconnected.");
 		}
 		else{
@@ -401,6 +405,36 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public MiniBB[] getCouplerMBBs(){
 		return new MiniBB[]{ front.mbb, rear.mbb };
+	}
+
+	public void setForward(boolean bool){
+		vehdata.getAttribute("forward").setValue(forward = bool);
+		if(entity != null && !region.getWorld().getWorld().isRemote){
+			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
+			packet.setString("task", "attr_update"); packet.setString("attr", "forward");
+			packet.setString("value", vehdata.getAttribute("forward").getBooleanValue() + "");
+			packet.setInteger("entity", entity.getEntityId());
+			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+		}
+	}
+
+	public void setActive(boolean bool){
+		vehdata.getAttribute("active").setValue(active = bool);
+		if(entity != null && !region.getWorld().getWorld().isRemote){
+			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
+			packet.setString("task", "attr_update"); packet.setString("attr", "active");
+			packet.setString("value", vehdata.getAttribute("active").getBooleanValue() + "");
+			packet.setInteger("entity", entity.getEntityId());
+			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+		}
+	}
+	
+	public boolean isHeadingForward(){
+		return forward;
+	}
+	
+	public boolean isActive(){
+		return active;
 	}
 
 }

@@ -39,7 +39,7 @@ public class Coupler {
 
 	public boolean inRange(){
 		if(isFront()) return entity.front.mbb.contains(mbb.center);
-		if(isRear())return entity.rear.mbb.contains(mbb.center);
+		if(isRear()) return entity.rear.mbb.contains(mbb.center);
 		return false;
 	}
 

@@ -256,7 +256,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	                    compound.setString("task", "open_gui");
 	                    compound.setString("guimod", "fvtm");
 	                    compound.setInteger("gui", 930);
-	                    compound.setIntArray("args", new int[]{ 0, 0, 0 });
+	                    compound.setIntArray("args", new int[]{ 0, this.getEntityId(), 0 });
 	                    PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
                     }
                     //open inventory
@@ -438,17 +438,18 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
 	@Override
 	public VehicleEntity getCoupledEntity(boolean front){
-		return front ? railentity.front.entity.entity : railentity.rear.entity.entity;
+		return front ? railentity.front.hasEntity() ? railentity.front.entity.entity : null
+			: railentity.rear.hasEntity() ? railentity.rear.entity.entity : null;
 	}
 	
 	@Override
 	public VehicleEntity getFrontCoupledEntity(){
-		return railentity.front.entity.entity;
+		return railentity.front.hasEntity() ? railentity.front.entity.entity : null;
 	}
 	
 	@Override
 	public VehicleEntity getRearCoupledEntity(){
-		return railentity.rear.entity.entity;
+		return railentity.rear.hasEntity() ? railentity.rear.entity.entity : null;
 	}
 
     @Override
@@ -475,6 +476,14 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	this.getCapability(Capabilities.CONTAINER, null).openGUI(player);
             }
             //space for other item interaction
+        }
+        else{
+            if(railentity.vehdata.getPart("engine") != null && railentity.vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                Print.chat(player, "Turn engine off first!");
+            }
+            else{
+            	GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
+            }
         }
         if(!railentity.vehdata.getScripts().isEmpty()){
             for(VehicleScript script : railentity.vehdata.getScripts()){
@@ -773,6 +782,15 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "update_passed":{
                 	railentity.passed = pkt.nbt.getFloat("passed");
+                	break;
+                }
+                case "update_coupled":{
+                	long cou = pkt.nbt.getLong("front");
+                	railentity.front.entity = cou == -1 ? null : railentity.region.getWorld().getEntity(cou, true);
+                	railentity.front.coupled = pkt.nbt.getBoolean("front_static");
+                	cou = pkt.nbt.getLong("rear");
+                	railentity.rear.entity = cou == -1 ? null : railentity.region.getWorld().getEntity(cou, true);
+                	railentity.rear.coupled = pkt.nbt.getBoolean("rear_static");
                 	break;
                 }
             }

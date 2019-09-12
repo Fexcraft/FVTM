@@ -46,6 +46,7 @@ import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
 import net.fexcraft.mod.fvtm.gui.container.ContainerItemInventory;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
+import net.fexcraft.mod.fvtm.gui.vehicle.VehicleConnectors;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainer;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainerSlot;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainers;
@@ -207,6 +208,7 @@ public class FVTM {
 			GuiHandler.insert(936, VehicleInventory.class, VehicleContainer.class);
 			GuiHandler.insert(937, VehicleContainers.class, VehicleContainer.class);
 			GuiHandler.insert(938, VehicleContainerSlot.class, VehicleContainer.class);
+			GuiHandler.insert(939, VehicleConnectors.class, VehicleContainer.class);
 			//
 			GuiHandler.insert(941, ContainerItemInventory.class, ContainerInvContainer.class);
 			GuiHandler.insert(942, ContainerFluidInventory.class, ContainerInvContainer.class);
@@ -229,6 +231,7 @@ public class FVTM {
 			GuiHandler.insert(936, VehicleContainer.class);
 			GuiHandler.insert(937, VehicleContainer.class);
 			GuiHandler.insert(938, VehicleContainer.class);
+			GuiHandler.insert(939, VehicleContainer.class);
 			//
 			GuiHandler.insert(941, ContainerInvContainer.class);
 			GuiHandler.insert(942, ContainerInvContainer.class);

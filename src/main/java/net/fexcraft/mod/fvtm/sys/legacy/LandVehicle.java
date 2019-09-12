@@ -366,7 +366,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
     }
 
-	private void tryAttach(EntityPlayer player){
+	public void tryAttach(EntityPlayer player){
 		Vec3d vec = this.axes.getRelativeVector(this.getVehicleData().getRearConnector()).add(this.getPositionVector());
 		AxisAlignedBB aabb = new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
 		List<Entity> list = world.getEntitiesInAABBexcluding(this, aabb, (ent) -> ent instanceof LandVehicle);
@@ -390,7 +390,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
 	}
 
-	private void tryDetach(EntityPlayer player){
+	public void tryDetach(EntityPlayer player){
 		if(this.getCoupledEntity(false) == null) return;
 		trailer.truck = null; LandVehicle trailer = this.trailer; this.trailer = null;
 		trailer.sendConnectionUpdate(); this.sendConnectionUpdate();

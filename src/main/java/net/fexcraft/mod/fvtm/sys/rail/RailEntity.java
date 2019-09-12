@@ -222,7 +222,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		} return railentlist;
 	}
 
-	private void updateClient(String string){
+	protected void updateClient(String string){
 		if(entity == null) return; NBTTagCompound compound = new NBTTagCompound();
 		switch(string){
 			case "track":{
@@ -232,6 +232,14 @@ public class RailEntity implements Comparable<RailEntity>{
 			case "passed":{
 				compound.setString("task", "update_passed");
 				compound.setFloat("passed", passed);
+				break;
+			}
+			case "couplers":{
+				compound.setString("task", "update_coupled");
+				compound.setLong("front", front.hasEntity() ? front.entity.uid : -1l);
+				compound.setBoolean("front_static", front.coupled);
+				compound.setLong("rear", rear.hasEntity() ? rear.entity.uid : -1l);
+				compound.setBoolean("rear_static", rear.coupled);
 				break;
 			}
 		}

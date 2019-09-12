@@ -31,6 +31,9 @@ public class Coupler {
 	public void couple(RailEntity ent, boolean front, boolean solid){
 		(front ? ent.front : ent.rear).coupled = coupled = solid;
 		entity = ent; (front ? ent.front : ent.rear).entity = root;
+		if(!root.region.getWorld().getWorld().isRemote){
+			root.updateClient("couplers"); ent.updateClient("couplers");
+		}
 	}
 
 	public boolean hasEntity(){

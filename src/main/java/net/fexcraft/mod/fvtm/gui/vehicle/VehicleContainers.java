@@ -21,7 +21,7 @@ public class VehicleContainers extends GenericGui<VehicleContainer> {
 	public VehicleContainers(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this; this.xSize = 194; this.ySize = 134;
-		entity = world.getEntityByID(x); inv_names = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlotIds();
+		entity = world.getEntityByID(y); inv_names = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlotIds();
 		for(int i = 0; i < 8; i++) colors[i] = InventoryType.CONTAINER.getColor();
 	}
 

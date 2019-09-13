@@ -12,6 +12,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.MiniBB;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.EnumParticleTypes;
@@ -84,12 +86,18 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 				GL11.glColor4f(0.5F, 0.5F, 0F, 0.3F);
 				vehicle.railentity.updatePosition();
 				//
-				for(MiniBB aabb : vehicle.railentity.getCouplerMBBs()){
-			        //GL11.glTranslatef(aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord);
-			        //turbo.render();
-			        //GL11.glTranslatef(-aabb.center.xCoord, -aabb.center.yCoord, -aabb.center.zCoord);
-					vehicle.world.spawnParticle(EnumParticleTypes.FLAME, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
-				}
+				GlStateManager.alphaFunc(516, 0.1F);
+				MiniBB aabb = vehicle.railentity.front.mbb;
+				vehicle.world.spawnParticle(EnumParticleTypes.FLAME, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
+	            String str = vehicle.railentity.front.hasEntity() ? "static" : "temp";
+	            EntityRenderer.drawNameplate(this.getFontRendererFromRenderManager(), str, aabb.center.xCoord - (float)x, aabb.center.yCoord + 1f - (float)y, aabb.center.zCoord - (float)z,
+	            	0, renderManager.playerViewY, renderManager.playerViewX, this.renderManager.options.thirdPersonView == 2, false);
+	            //
+				aabb = vehicle.railentity.rear.mbb;
+				vehicle.world.spawnParticle(EnumParticleTypes.REDSTONE, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
+	            str = vehicle.railentity.rear.hasEntity() ? "static" : "temp";
+	            EntityRenderer.drawNameplate(this.getFontRendererFromRenderManager(), str, aabb.center.xCoord - (float)x, aabb.center.yCoord + 1f - (float)y, aabb.center.zCoord - (float)z,
+	            	0, renderManager.playerViewY, renderManager.playerViewX, this.renderManager.options.thirdPersonView == 2, false);
 		        //
 				GL11.glEnable(GL11.GL_TEXTURE_2D);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);

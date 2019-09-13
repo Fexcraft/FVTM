@@ -40,7 +40,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		cfront = new Vec3f(), crear = new Vec3f(),
 		bfront = new Vec3f(), brear = new Vec3f();
 	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
-	public Coupler front = new Coupler(this), rear = new Coupler(this);
+	public Coupler front = new Coupler(this, true), rear = new Coupler(this, false);
 	public VehicleData vehdata;
 	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length, moverq;//push_rq, pull_rq;
 	public Section[] sectionson = new Section[4];
@@ -49,6 +49,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private static final short interval = 100;//300
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
+	protected Chain chain;
 	
 	public RailEntity(RailData data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
@@ -59,7 +60,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		//
 		bfront = move(rrconndis + frbogiedis, TrainPoint.BOGIE_FRONT);
 		brear = move(rrconndis - rrbogiedis, TrainPoint.BOGIE_REAR);
-		pos = medium(bfront, brear);
+		pos = medium(bfront, brear); moverq += 0.02f;
 		cfront = move(rrconndis + frconndis, TrainPoint.COUPLER_FRONT);
 		crear = move(0, TrainPoint.COUPLER_REAR);
 		front.mbb.update(cfront, 0.125f); rear.mbb.update(crear, 0.125f);
@@ -86,24 +87,20 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public void onUpdate(){
 		if(!region.getWorld().getWorld().isRemote){
-			if(current == null) this.dispose();
+			if(current == null || vehdata == null){ this.dispose(); return; }
 			checkIfShouldHaveEntity();
 			//
 			if(!vehdata.getType().isTrailerOrWagon() && throttle > 0.001f){
 				float eng = throttle * vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getLegacyEngineSpeed();
-				if(eng > 0){ RailEntity head = getHead(); head.moverq += head.forward ? eng : -eng; }
+				if(eng > 0){ RailEntity head = chain == null ? this : chain.getHead(); head.moverq += head.forward ? eng : -eng; }
 			}
 			float am = moverq;
 			//TODO check path
 			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
 				TRO tro = getTrack(current, passed + am); am = checkForPushCoupling(tro, am);
 				//
-				if(!hascoupled && (front.hasEntity() || rear.hasEntity())){
-					if(am > 0 ? !front.hasEntity() : !rear.hasEntity()){//check if is "head"
-						if(am > 0 && rear.hasEntity()) rear.entity.moverq += rear.isFront() ? am : -am;
-						if(am < 0 && front.hasEntity()) front.entity.moverq += front.isFront() ? am : -am;
-						//TODO copy to next wagons.
-					}
+				if(chain != null && !hascoupled && (front.hasEntity() || rear.hasEntity())){
+					if(am > 0 ? chain.isFirstUnit(this) : chain.isLastUnit(this)) chain.moveAll(am);
 					if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
 					if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
 					/*if(am > 0){//front
@@ -141,62 +138,68 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private float checkForPushCoupling(TRO tro, float am){
-		if(!front.hasEntity() || !rear.hasEntity()){
-			Collection<RailEntity> ents = getEntitiesOnTrackAndNext(tro.track, forward);
-			Coupler[] couplers = new Coupler[]{ front, rear };
-			for(int i = 0; i < 2; i++){
-				if(couplers[i].hasEntity()) continue; Vec3f coucen = i == 0 ? cfront : crear;
-				for(RailEntity ent : ents){
-					if(ent == this || ent == front.entity || ent == rear.entity) continue;
-					ccalc.update(ent.cfront, ent.crear, 0.125f); if(!ccalc.contains(coucen)) continue;
-					if(ent.rear.mbb.contains(coucen)){
-						float entpos = ent.pos.distanceTo(pos);
-						float coupos = ent.crear.distanceTo(pos);
-						if(entpos < coupos) continue;//we're probably inside the other entity, abort!
-						hascoupled = true; couplers[i].couple(ent, false, false); am = coucen.distanceTo(ent.crear); 
-						if(ent.brear.distanceTo(coucen) < ent.crear.distanceTo(coucen)) am = -am;
-						Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to rear");
-					}
-					if(ent.front.mbb.contains(coucen)){
-						float entpos = ent.pos.distanceTo(pos);
-						float coupos = ent.cfront.distanceTo(pos);
-						if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
-						hascoupled = true; couplers[i].couple(ent, true, false); am = coucen.distanceTo(ent.cfront);
-						if(ent.bfront.distanceTo(coucen) < ent.cfront.distanceTo(coucen)) am = -am;
-						Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to front");
-					}
-				}//TODO align the freshly connected entities
-			}
-			/*float fc = ent.cfront.distanceTo(coupler0), rc = ent.crear.distanceTo(coupler0);
-			if(fc > abs && rc > abs) continue;
-			else if(fc < rc){//front
-				Print.debugChat("coupling " + (am > 0 ? "front" : "rear") + " to front");
-				(am > 0 ? front : rear).couple(ent, true, false); coupled = true;
-				if(ent.bfront.distanceTo(coupler0) > fc){
-					ent.push_rq -= abs - fc; am = am > 0 ? fc : -fc;
-				} else{ ent.push_rq -= abs; am -= am > 0 ? abs - fc : -(abs - fc); }
-			}
-			else if(rc < fc){//rear
-				Print.debugChat("coupling " + (am > 0 ? "front" : "rear") + " to rear");
-				(am > 0 ? front : rear).couple(ent, false, false); coupled = true;
-				if(ent.brear.distanceTo(coupler0) > rc){
-					ent.push_rq += abs - rc; am -= am > 0 ? rc : -rc;
-				} else{ ent.push_rq += abs; am -= am > 0 ? abs - rc : -(abs - rc); }
-			}*/
+		if(front.hasEntity() && rear.hasEntity()) return am;
+		Collection<RailEntity> ents = getEntitiesOnTrackAndNext(tro.track, forward);
+		Coupler[] couplers = new Coupler[]{ front, rear };
+		for(int i = 0; i < 2; i++){
+			if(couplers[i].hasEntity()) continue; Vec3f coucen = i == 0 ? cfront : crear;
+			for(RailEntity ent : ents){
+				if(ent == this || ent == front.entity || ent == rear.entity) continue;
+				ccalc.update(ent.cfront, ent.crear, 0.125f); if(!ccalc.contains(coucen)) continue;
+				if(ent.rear.mbb.contains(coucen)){
+					float entpos = ent.pos.distanceTo(pos);
+					float coupos = ent.crear.distanceTo(pos);
+					if(entpos < coupos) continue;//we're probably inside the other entity, abort!
+					hascoupled = true; couplers[i].couple(ent, false, false); am = coucen.distanceTo(ent.crear); 
+					if(ent.brear.distanceTo(coucen) < ent.crear.distanceTo(coucen)) am = -am;
+					Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to rear");
+				}
+				if(ent.front.mbb.contains(coucen)){
+					float entpos = ent.pos.distanceTo(pos);
+					float coupos = ent.cfront.distanceTo(pos);
+					if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
+					hascoupled = true; couplers[i].couple(ent, true, false); am = coucen.distanceTo(ent.cfront);
+					if(ent.bfront.distanceTo(coucen) < ent.cfront.distanceTo(coucen)) am = -am;
+					Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to front");
+				}
+			}//TODO align the freshly connected entities
 		}
+		/*float fc = ent.cfront.distanceTo(coupler0), rc = ent.crear.distanceTo(coupler0);
+		if(fc > abs && rc > abs) continue;
+		else if(fc < rc){//front
+			Print.debugChat("coupling " + (am > 0 ? "front" : "rear") + " to front");
+			(am > 0 ? front : rear).couple(ent, true, false); coupled = true;
+			if(ent.bfront.distanceTo(coupler0) > fc){
+				ent.push_rq -= abs - fc; am = am > 0 ? fc : -fc;
+			} else{ ent.push_rq -= abs; am -= am > 0 ? abs - fc : -(abs - fc); }
+		}
+		else if(rc < fc){//rear
+			Print.debugChat("coupling " + (am > 0 ? "front" : "rear") + " to rear");
+			(am > 0 ? front : rear).couple(ent, false, false); coupled = true;
+			if(ent.brear.distanceTo(coupler0) > rc){
+				ent.push_rq += abs - rc; am -= am > 0 ? rc : -rc;
+			} else{ ent.push_rq += abs; am -= am > 0 ? abs - rc : -(abs - rc); }
+		}*/
 		return am;
 	}
 
-	public final RailEntity getHead(){
-		RailEntity ent = this; boolean bool = forward/*, dir = forward*/; Coupler cou;
+	/*public final RailEntity getHead(){
+		/*RailEntity ent = this; boolean bool = forward; Coupler cou;
 		while((cou = bool ? ent.front : ent.rear).hasEntity()){
-			bool = cou.isRear(); ent = cou.entity; //if(bool != dir) dir = !dir;
-		} return ent;
-	}
+			bool = cou.isRear(); ent = cou.entity;
+		} return ent;*/ /*return chain == null ? this : chain.getHead();
+	}*/
 	
 	/*private static class HeadResult {
 		private boolean dir; private RailEntity entity;
 		private HeadResult(RailEntity ent, boolean bool){ dir = bool; entity = ent; }
+	}*/
+	
+	/*Coupler cou = am > 0 ? front : rear, cop; boolean last = am > 0;
+	while(cou.getOpposite().hasEntity()){
+		cop = cou.getOpposite().getCounterpart(); if(cop == null) break;
+		if(cou.frontal == cop.frontal) last = !last;
+		(cou = cop).root.moverq += last ? am : -am;
 	}*/
 
 	public void updatePosition(){
@@ -353,6 +356,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
 		if(vehdata == null) vehdata = Resources.getVehicleData(compound);
 		else vehdata.read(compound);
+		if(vehdata == null){ this.dispose(); return this; }
 		//if(compound.hasKey("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
 		//if(compound.hasKey("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));
 		//TODO try coupling later, to prevent overflow

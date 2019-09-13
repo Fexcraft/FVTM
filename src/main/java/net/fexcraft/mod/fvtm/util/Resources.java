@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -280,40 +279,28 @@ public class Resources {
 		if(!compound.hasKey("Part")) return null;
 		Part part = getPart(compound.getString("Part"));
 		try{ return ((PartData)part.getDataClass().getConstructor(Part.class).newInstance(part)).read(compound); }
-		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
-			| InvocationTargetException| NoSuchMethodException | SecurityException e){
-			e.printStackTrace(); return null;
-		}
+		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 
 	public static VehicleData getVehicleData(NBTTagCompound compound){
 		if(!compound.hasKey("Vehicle")) return null;
 		Vehicle veh = getVehicle(compound.getString("Vehicle"));
 		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
-		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
-			| InvocationTargetException| NoSuchMethodException | SecurityException e){
-			e.printStackTrace(); return null;
-		}
+		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 
 	public static ContainerData getContainerData(NBTTagCompound compound){
 		if(!compound.hasKey("Container")) return null;
 		Container con = getContainer(compound.getString("Container"));
 		try{ return ((ContainerData)con.getDataClass().getConstructor(Container.class).newInstance(con)).read(compound); }
-		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
-			| InvocationTargetException| NoSuchMethodException | SecurityException e){
-			e.printStackTrace(); return null;
-		}
+		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 
 	public static BlockData getBlockData(NBTTagCompound compound){
 		if(!compound.hasKey("Block")) return null;
 		Block block = getBlock(compound.getString("Block"));
 		try{ return ((BlockData)block.getDataClass().getConstructor(Block.class).newInstance(block)).read(compound); }
-		catch(InstantiationException | IllegalAccessException | IllegalArgumentException
-			| InvocationTargetException| NoSuchMethodException | SecurityException e){
-			e.printStackTrace(); return null;
-		}
+		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 	
 	/** Registers a Functon class into FVTM Resources.*/

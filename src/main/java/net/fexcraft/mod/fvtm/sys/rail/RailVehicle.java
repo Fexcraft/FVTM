@@ -472,17 +472,18 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
             	GenericContainer.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }, player); return true;
             }
-            if(stack.getItem() instanceof ContainerItem){
-            	this.getCapability(Capabilities.CONTAINER, null).openGUI(player);
+            else if(stack.getItem() instanceof ContainerItem){
+            	this.getCapability(Capabilities.CONTAINER, null).openGUI(player); return true;
             }
             //space for other item interaction
-        }
-        else{
-            if(railentity.vehdata.getPart("engine") != null && railentity.vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
-                Print.chat(player, "Turn engine off first!");
-            }
             else{
-            	GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
+                if(railentity.vehdata.getPart("engine") != null && railentity.vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                    Print.chat(player, "Turn engine off first!");
+                }
+                else{
+                	GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
+                }
+                return true;
             }
         }
         if(!railentity.vehdata.getScripts().isEmpty()){

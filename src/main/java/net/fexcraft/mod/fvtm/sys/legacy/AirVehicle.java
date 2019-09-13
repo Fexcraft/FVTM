@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
@@ -20,6 +21,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -559,13 +562,25 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
         //TODO keyitem/lock check
         if(vehicle.isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
         if(!stack.isEmpty()){
-            /*if(stack.getItem() instanceof FuelItem){//TODO fuel
-                player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 2, 0, 0);
-                return true; }*/
-            if(stack.getItem() instanceof VehicleItem){
+            if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
+            	GenericContainer.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }, player); return true;
+            }
+            else if(stack.getItem() instanceof VehicleItem){
                 //TODO append trailer
             }
-            //TODO other Item interaction
+            else if(stack.getItem() instanceof ContainerItem){
+            	this.getCapability(Capabilities.CONTAINER, null).openGUI(player); return true;
+            }
+            //space for other item interaction
+            else{
+                if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                    Print.chat(player, "Turn engine off first!");
+                }
+                else{
+                	GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
+                }
+                return true;
+            }
         }
         if(!vehicle.getScripts().isEmpty()){
             for(VehicleScript script : vehicle.getScripts()){

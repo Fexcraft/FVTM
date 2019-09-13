@@ -584,7 +584,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
             	GenericContainer.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }, player); return true;
             }
-            if(stack.getItem() instanceof VehicleItem){
+            else if(stack.getItem() instanceof VehicleItem){
                 VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
                 if(data.getType().isTrailerOrWagon()){
                 	if(vehicle.getRearConnector() == null){
@@ -601,10 +601,19 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 	return true;
                 }
             }
-            if(stack.getItem() instanceof ContainerItem){
-            	this.getCapability(Capabilities.CONTAINER, null).openGUI(player);
+            else if(stack.getItem() instanceof ContainerItem){
+            	this.getCapability(Capabilities.CONTAINER, null).openGUI(player); return true;
             }
             //space for other item interaction
+            else{
+                if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                    Print.chat(player, "Turn engine off first!");
+                }
+                else{
+                	GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
+                }
+                return true;
+            }
         }
         if(!vehicle.getScripts().isEmpty()){
             for(VehicleScript script : vehicle.getScripts()){

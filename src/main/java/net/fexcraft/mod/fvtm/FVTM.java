@@ -104,7 +104,7 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 @Mod(modid = FVTM.MODID, name = "Fex's Vehicle and Transportation Mod", version = FVTM.VERSION,
 	acceptableRemoteVersions = "*", acceptedMinecraftVersions = "*", dependencies = "required-after:fcl"
-	/*, guiFactory = "net.fexcraft.mod.fvtm.util.config.GuiFactory"*/)
+	, guiFactory = "net.fexcraft.mod.fvtm.util.config.GuiFactory")
 public class FVTM {
 
 	public static final String MODID = "fvtm";

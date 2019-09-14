@@ -216,11 +216,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case TURN_LEFT:{
-                railentity.setForward(false); Print.bar(player, "&e&oDirection set to REVERSE");
+                railentity.setForward(player, false);
                 return true;
             }
             case TURN_RIGHT:{
-            	railentity.setForward(true); Print.bar(player, "&e&oDirection set to FORWARD");
+            	railentity.setForward(player, true);
                 return true;
             }
             case BRAKE:{

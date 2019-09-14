@@ -32,8 +32,7 @@ public class GuiFactory implements IModGuiFactory {
 
         public static List<IConfigElement> getList(){
             List<IConfigElement> list = new ArrayList<IConfigElement>();
-            Config.add(list);
-            return list;
+            Config.add(list); return list;
         }
 
     }

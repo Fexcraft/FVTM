@@ -34,7 +34,8 @@ public class RailEntity implements Comparable<RailEntity>{
 	public RailVehicle entity;
 	public long uid;
 	public RailRegion region;
-	private boolean active, forward = true;
+	private boolean active;
+	protected boolean forward = true;
 	public float throttle, passed;
 	public Vec3f pos = new Vec3f(), prev = new Vec3f(),
 		cfront = new Vec3f(), crear = new Vec3f(),
@@ -49,7 +50,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private static final short interval = 100;//300
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
-	protected Chain chain;
+	protected REC recom;
 	
 	public RailEntity(RailData data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
@@ -92,49 +93,45 @@ public class RailEntity implements Comparable<RailEntity>{
 			//
 			if(!vehdata.getType().isTrailerOrWagon() && throttle > 0.001f){
 				float eng = throttle * vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getLegacyEngineSpeed();
-				if(eng > 0){ RailEntity head = chain == null ? this : chain.getHead(); head.moverq += head.forward ? eng : -eng; }
+				if(recom != null) recom.accumulator += eng; else moverq = forward ? eng : -eng;
 			}
-			float am = moverq;
-			//TODO check path
+			float am = moverq; boolean move = false;
+			if(recom != null && (recom.forward() ? recom.isHead(this) : recom.isEnd(this))){
+				float amount = recom.accumulator;
+				if(recom.forward() && recom.isHead(this)){
+					am += front.hasEntity() ? -amount : amount; recom.accumulator = 0; move = true;
+				}
+				else if(!recom.forward() && recom.isEnd(this)){
+					am += rear.hasEntity() ? -amount : amount; recom.accumulator = 0; move = true;
+				}
+			}
 			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
 				TRO tro = getTrack(current, passed + am); am = checkForPushCoupling(tro, am);
 				//
-				if(chain != null && !hascoupled && (front.hasEntity() || rear.hasEntity())){
-					if(am > 0 ? chain.isFirstUnit(this) : chain.isLastUnit(this)) chain.moveAll(am);
-					if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
-					if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
-					/*if(am > 0){//front
-						if(rear.hasEntity()){
-							if(rear.coupled){
-								rear.entity.moverq += rear.isFront() ? am : -am;
-							} else if(!rear.inRange()){ Print.debug("decoupling rear"); rear.decouple(); }
-						}
-						if(front.hasEntity()){
-							front.entity.moverq += front.isFront() ? -am : am;
-						}
-					}
-					else{//rear
-						if(front.hasEntity()){
-							if(front.coupled){
-								front.entity.moverq -= front.isFront() ? am : -am;
-							} else if(!front.inRange()){ Print.debug("decoupling front"); front.decouple(); }
-						}
-						if(rear.hasEntity()){
-							rear.entity.moverq -= rear.isFront() ? -am : am;
-						}
-					}*///OLD
-				}
-				tro = getTrack(current, passed + am); hascoupled = false; moverq = 0;
-				//
+				tro = getTrack(current, passed + am);
 				last = current; current = tro.track; passed = tro.passed;
 				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
 				if(!region.isInRegion(current.start)) this.updateRegion(current.start);
 				updatePosition();
-				//net.fexcraft.lib.mc.utils.Print.debug(pos, bfront, brear);
+				//
+				if(!hascoupled && (front.hasEntity() || rear.hasEntity())){
+					if(recom != null && move) moveCompound(am);
+					//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
+					//if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
+				} hascoupled = false; moverq = 0;
 			}
 		}
 		//
 		region.getWorld().updateEntityEntry(uid, region.getKey());
+	}
+
+	//Well, only do this as "head" of the compound.
+	public final void moveCompound(float amount){
+		Coupler cou = front.hasEntity() ? rear : front; //boolean dir, far = amount > 0;
+		while(cou.getOpposite().hasEntity()){
+			if(cou.getOpposite().frontal ? cou.getOpposite().isRear() : cou.getOpposite().isFront()) amount = -amount;
+			cou = cou.getOpposite().getCounterpart(); cou.entity.moverq += amount;//cou.isRear() ? dir ? amount : -amount : dir ? -amount : amount;
+		}
 	}
 
 	private float checkForPushCoupling(TRO tro, float am){
@@ -183,32 +180,13 @@ public class RailEntity implements Comparable<RailEntity>{
 		return am;
 	}
 
-	/*public final RailEntity getHead(){
-		/*RailEntity ent = this; boolean bool = forward; Coupler cou;
-		while((cou = bool ? ent.front : ent.rear).hasEntity()){
-			bool = cou.isRear(); ent = cou.entity;
-		} return ent;*/ /*return chain == null ? this : chain.getHead();
-	}*/
-	
-	/*private static class HeadResult {
-		private boolean dir; private RailEntity entity;
-		private HeadResult(RailEntity ent, boolean bool){ dir = bool; entity = ent; }
-	}*/
-	
-	/*Coupler cou = am > 0 ? front : rear, cop; boolean last = am > 0;
-	while(cou.getOpposite().hasEntity()){
-		cop = cou.getOpposite().getCounterpart(); if(cop == null) break;
-		if(cou.frontal == cop.frontal) last = !last;
-		(cou = cop).root.moverq += last ? am : -am;
-	}*/
-
 	public void updatePosition(){
 		bfront = move(passed, TrainPoint.BOGIE_FRONT);
 		brear = move(passed - frbogiedis - rrbogiedis, TrainPoint.BOGIE_REAR);
 		cfront = move(passed + (frconndis - frbogiedis), TrainPoint.COUPLER_FRONT);
 		crear = move(passed - frbogiedis - rrconndis, TrainPoint.COUPLER_REAR);
 		prev.copyFrom(pos); pos = medium(bfront, brear);
-		front.mbb.update(cfront, 0.125f); rear.mbb.update(crear, 0.125f);
+		front.mbb.update(cfront, 0.25f); rear.mbb.update(crear, 0.25f);
 	}
 
 	private ArrayList<RailEntity> railentlist = new ArrayList<>();
@@ -390,6 +368,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void dispose(){
 		Print.debug("Disposing of TrackEntity " + uid + "!"); front.decouple(); rear.decouple();
 		region.getWorld().delEntity(this); if(entity != null && !entity.isDead) entity.setDead();
+		for(Section section : sectionson) if(section != null) section.getEntities().remove(uid);
 	}
 
 	public UUID getPlacer(){
@@ -436,7 +415,12 @@ public class RailEntity implements Comparable<RailEntity>{
 				Print.chat(player, "&7&o" + found.vehdata.getType().getName());
 			}
 			else{
-				Print.chat(player, "Nothing found to connect to.");
+				if(coupler.hasEntity() && !coupler.coupled){
+					coupler.decouple(); Print.chat(player, (thefront ? "Front" : "Rear") + " disconnected.");
+				}
+				else{
+					Print.chat(player, "Nothing found to connect to.");
+				}
 			}
 		}
 	}
@@ -445,8 +429,10 @@ public class RailEntity implements Comparable<RailEntity>{
 		return new MiniBB[]{ front.mbb, rear.mbb };
 	}
 
-	public void setForward(boolean bool){
+	public void setForward(EntityPlayer player, boolean bool){
 		vehdata.getAttribute("forward").setValue(forward = bool);
+		if(recom != null) recom.entities.get(0).forward = bool;
+		Print.bar(player, "&e&oDirection set to " + (forward ? "FORWARD" : "REVERSE"));
 		if(entity != null && !region.getWorld().getWorld().isRemote){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
 			packet.setString("task", "attr_update"); packet.setString("attr", "forward");
@@ -473,6 +459,11 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public boolean isActive(){
 		return active;
+	}
+	
+	@Override
+	public String toString(){
+		return "RE['" + vehdata.getType().getName() + "', '" + pos.toString() + "']";
 	}
 
 }

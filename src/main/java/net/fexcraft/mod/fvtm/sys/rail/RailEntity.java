@@ -131,10 +131,10 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	//Well, only do this as "head" of the compound.
 	public final void moveCompound(float amount){
-		Coupler cou = front.hasEntity() ? front : rear; //boolean dir, far = amount > 0; 
-		while(cou.hasEntity()){
-			if(cou.frontal ? cou.isFront() : cou.isRear()) amount = -amount;
-			cou = cou.getCounterpart().getOpposite(); cou.entity.moverq += amount;
+		Coupler cou = front.hasEntity() ? rear : front; //boolean dir, far = amount > 0; 
+		while(cou.getOpposite().hasEntity()){
+			cou = cou.getOpposite(); if(cou.frontal ? cou.isFront() : cou.isRear()) amount = -amount;
+			cou = cou.getCounterpart(); cou.entity.moverq += amount;
 			//cou.isRear() ? dir ? amount : -amount : dir ? -amount : amount;
 		} cou.root.moverq += amount;
 	}

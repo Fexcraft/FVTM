@@ -657,6 +657,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return false;
             }
             else{
+            	EntityPlayer player = (EntityPlayer)source.getTrueSource();
+            	if(player.isSneaking()){
+            		Print.bar(player, "&4&oRemoving entity without dropping item...."); railentity.dispose(); return true;
+            	}
                 if(railentity.vehdata.hasPart("engine") && railentity.vehdata.getPart("engine").hasFunction("fvtm:engine")){
                 	railentity.vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(false);
                 }

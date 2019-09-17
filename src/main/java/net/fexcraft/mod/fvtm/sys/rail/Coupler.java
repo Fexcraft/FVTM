@@ -20,11 +20,11 @@ public class Coupler {
 	}
 
 	public boolean isFront(){
-		return entity == null ? false : entity.front.entity.uid == root.uid;
+		return entity == null ? false : entity.front.entity == root;
 	}
 
 	public boolean isRear(){
-		return entity == null ? false : entity.rear.entity.uid == root.uid;
+		return entity == null ? false : entity.rear.entity == root;
 	}
 
 	/** Usually called from the vehicle that does currently calcs. */

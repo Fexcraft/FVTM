@@ -173,8 +173,11 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void checkIfShouldStop(){
 		if(entity == null) return; boolean decrease = false;
-		if(!isActive() && entity.seats.length > 0 && entity.seats[0] != null && entity.seats[0].getControllingPassenger() == null) decrease = true;
-		if(!entity.isDriverInGM1() || vehdata.getAttribute("fuel_stored").getIntegerValue() <= 0) decrease = true;
+		if(!isActive() && entity.seats.length > 0 && entity.seats[0] != null){
+			if(entity.seats[0].getControllingPassenger() instanceof EntityPlayer == false) decrease = true;
+			else if(!((EntityPlayer)entity.seats[0].getControllingPassenger()).capabilities.isCreativeMode
+				&& vehdata.getAttribute("fuel_stored").getIntegerValue() <= 0) decrease = true;
+		}
 		if(decrease) throttle *= 0.98F;
 	}
 

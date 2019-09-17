@@ -739,8 +739,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "toggle_lights": {
                 	railentity.vehdata.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
-                    //TODO sync to waggons
-                    break;
+                    if(railentity.recom != null){ boolean bool = pkt.nbt.getBoolean("lights");
+                    	railentity.recom.entities.forEach(ent -> ent.vehdata.getAttribute("lights").setValue(bool));
+                    } break;
                 }
                 case "update_track":{
                 	railentity.last = railentity.current;

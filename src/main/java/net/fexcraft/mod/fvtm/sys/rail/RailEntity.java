@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +35,6 @@ public class RailEntity implements Comparable<RailEntity>{
 	public RailVehicle entity;
 	public long uid;
 	public RailRegion region;
-	private boolean active;
 	protected boolean forward = true;
 	public float throttle, passed;
 	public Vec3f pos = new Vec3f(), prev = new Vec3f(),
@@ -89,11 +89,15 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void onUpdate(){
 		if(!region.getWorld().getWorld().isRemote){
 			if(current == null || vehdata == null){ this.dispose(); return; }
-			checkIfShouldHaveEntity();
+			checkIfShouldHaveEntity(); checkIfShouldStop();
 			//
 			if(!vehdata.getType().isTrailerOrWagon() && throttle > 0.001f){
-				float eng = throttle * vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getLegacyEngineSpeed();
-				if(recom != null) recom.accumulator += eng; else moverq = forward ? eng : -eng;
+				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
+				if(CMODE() || processConsumption(engine)){
+					float eng = throttle * engine.getLegacyEngineSpeed();
+					if(recom != null) recom.accumulator += eng;
+					else moverq = forward ? eng : -eng;
+				}
 			}
 			float am = moverq; boolean move = false;
 			if(recom != null && (recom.forward() ? recom.isHead(this) : recom.isEnd(this))){
@@ -123,6 +127,55 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		//
 		region.getWorld().updateEntityEntry(uid, region.getKey());
+	}
+	
+	private boolean CMODE(){
+		if(!Config.VEHICLES_NEED_FUEL) return true;
+		if(entity != null){
+			return entity.seats != null && entity.seats[0] != null
+	        	&& entity.seats[0].getControllingPassenger() instanceof EntityPlayer
+	        	&& ((EntityPlayer)entity.seats[0].getControllingPassenger()).capabilities.isCreativeMode;
+		} else return false;
+	}
+
+	private byte fuel_accu;
+	private float consumed;
+
+	private boolean processConsumption(EngineFunction engine){
+    	if(engine == null) return false;
+    	if(fuel_accu < 20){
+    		if(!engine.isOn()){
+    			//pass
+    		}
+    		else if(throttle == 0f || (throttle < 0.05f && throttle > -0.05f)){
+    			consumed += engine.getIdleFuelConsumption();
+    		}
+    		else{
+    			consumed += engine.getFuelConsumption(vehdata.getAttribute("fuel_secondary").getStringValue()) * throttle;
+    		}
+    		fuel_accu++; return true;
+    	}
+    	else{
+    		if(consumed > 0){
+    			int con = (int)(consumed / 20f);
+    			vehdata.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
+    		}
+    		if(entity != null && engine.isOn() && vehdata.getAttribute("fuel_stored").getFloatValue() <= 0){
+    			NBTTagCompound compound  = new NBTTagCompound();
+    			compound.setString("task", "engine_toggle");
+    			compound.setBoolean("engine_toggle_result", false);
+            	compound.setBoolean("no_fuel", true); throttle = 0; engine.setState(false);
+                ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
+    		}
+    		fuel_accu = 0; consumed = 0; return true;
+    	}
+	}
+
+	public void checkIfShouldStop(){
+		if(entity == null) return; boolean decrease = false;
+		if(!isActive() && entity.seats.length > 0 && entity.seats[0] != null && entity.seats[0].getControllingPassenger() == null) decrease = true;
+		if(!entity.isDriverInGM1() || vehdata.getAttribute("fuel_stored").getIntegerValue() <= 0) decrease = true;
+		if(decrease) throttle *= 0.98F;
 	}
 
 	private boolean isCoupled(){
@@ -447,7 +500,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void setActive(boolean bool){
-		vehdata.getAttribute("active").setValue(active = bool);
+		vehdata.getAttribute("active").setValue(bool);
 		if(entity != null && !region.getWorld().getWorld().isRemote){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
 			packet.setString("task", "attr_update"); packet.setString("attr", "active");
@@ -462,7 +515,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public boolean isActive(){
-		return active;
+		return vehdata.getAttribute("active").getBooleanValue();
 	}
 	
 	@Override

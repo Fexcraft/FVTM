@@ -314,7 +314,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
         if(timer > 0) timer--; if(clicktimer > 0) clicktimer--;
         //
         if(noengine){ mc.fontRenderer.drawString("No Engine installed.", 7, 7, 0xffffff); GL11.glPopMatrix(); return; }
-        mc.fontRenderer.drawString(Formatter.format("Speed: " + calculateSpeed(ent.getEntity())), 7, 3, 0xffffff);
+        mc.fontRenderer.drawString(Formatter.format("Speed: " + format(calculateSpeed(ent.getEntity()))), 7, 3, 0xffffff);
     	mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
         mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
         if(!ent.isRailType() && ent.getCoupledEntity(false) != null){

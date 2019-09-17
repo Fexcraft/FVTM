@@ -216,11 +216,13 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case TURN_LEFT:{
-                railentity.setForward(player, false);
+            	if(throttle > 0.05f) Print.bar(player, "&cDecreate the throttle before switching direction.");
+            	else railentity.setForward(player, false);
                 return true;
             }
             case TURN_RIGHT:{
-            	railentity.setForward(player, true);
+            	if(throttle > 0.05f) Print.bar(player, "&cDecreate the throttle before switching direction.");
+            	else railentity.setForward(player, true);
                 return true;
             }
             case BRAKE:{
@@ -572,10 +574,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     		railentity.vehdata.getAttribute("bogie_front_angle").setValue(front); railentity.vehdata.getAttribute("bogie_rear_angle").setValue(rear);
         }
         if(!world.isRemote){
-            if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null)
-            	|| !(isDriverInGM1() || railentity.vehdata.getAttribute("fuel_stored").getIntegerValue() > 0)){
-            	railentity.throttle *= 0.98F;
-            }
             railentity.alignEntity(false);
             //
             Vec3d front = new Vec3d(railentity.bfront.xCoord, railentity.bfront.yCoord, railentity.bfront.zCoord);
@@ -604,40 +602,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
         }
     }
-	
-	private byte accumulator;
-	private float consumed;
-
-    @SuppressWarnings("unused")
-	private boolean processConsumption(EngineFunction engine){
-    	if(engine == null) return false;
-    	if(accumulator < 20){
-    		if(!engine.isOn()){
-    			//pass
-    		}
-    		else if(railentity.throttle == 0f || (railentity.throttle < 0.05f && railentity.throttle > -0.05f)){
-    			consumed += engine.getIdleFuelConsumption();
-    		}
-    		else{
-    			consumed += engine.getFuelConsumption(railentity.vehdata.getAttribute("fuel_secondary").getStringValue()) * railentity.throttle;
-    		}
-    		accumulator++; return true;
-    	}
-    	else{
-    		if(consumed > 0){
-    			int con = (int)(consumed / 20f);
-    			railentity.vehdata.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
-    		}
-    		if(engine.isOn() && railentity.vehdata.getAttribute("fuel_stored").getFloatValue() <= 0){
-    			NBTTagCompound compound  = new NBTTagCompound();
-    			compound.setString("task", "engine_toggle");
-    			compound.setBoolean("engine_toggle_result", false);
-            	compound.setBoolean("no_fuel", true); railentity.throttle = 0;
-                ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
-    		}
-    		accumulator = 0; consumed = 0; return true;
-    	}
-	}
 
 	private void checkForCollisions(){
 		// You expected anything here? Uff.

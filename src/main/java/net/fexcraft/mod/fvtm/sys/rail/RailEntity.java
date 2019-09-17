@@ -102,7 +102,7 @@ public class RailEntity implements Comparable<RailEntity>{
 					am += front.hasEntity() ? -amount : amount; recom.accumulator = 0; move = true;
 				}
 				else if(!recom.forward() && recom.isEnd(this)){
-					am += rear.hasEntity() ? -amount : amount; recom.accumulator = 0; move = true;
+					am += rear.hasEntity() ? amount : -amount; recom.accumulator = 0; move = true;
 				}
 			}
 			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
@@ -114,10 +114,10 @@ public class RailEntity implements Comparable<RailEntity>{
 				if(!region.isInRegion(current.start)) this.updateRegion(current.start);
 				updatePosition();
 				//
-				if(!hascoupled && (front.hasEntity() || rear.hasEntity())){
+				if(!hascoupled && isCoupled()){
 					if(recom != null && move) moveCompound(am);
-					//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
-					//if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
+					//if(front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
+					//if(rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
 				} hascoupled = false; moverq = 0;
 			}
 		}
@@ -125,13 +125,18 @@ public class RailEntity implements Comparable<RailEntity>{
 		region.getWorld().updateEntityEntry(uid, region.getKey());
 	}
 
+	private boolean isCoupled(){
+		return front.hasEntity() || rear.hasEntity();
+	}
+
 	//Well, only do this as "head" of the compound.
 	public final void moveCompound(float amount){
-		Coupler cou = front.hasEntity() ? rear : front; //boolean dir, far = amount > 0;
-		while(cou.getOpposite().hasEntity()){
-			if(cou.getOpposite().frontal ? cou.getOpposite().isRear() : cou.getOpposite().isFront()) amount = -amount;
-			cou = cou.getOpposite().getCounterpart(); cou.entity.moverq += amount;//cou.isRear() ? dir ? amount : -amount : dir ? -amount : amount;
-		}
+		Coupler cou = front.hasEntity() ? front : rear; //boolean dir, far = amount > 0; 
+		while(cou.hasEntity()){
+			if(cou.frontal ? cou.isFront() : cou.isRear()) amount = -amount;
+			cou = cou.getCounterpart().getOpposite(); cou.entity.moverq += amount;
+			//cou.isRear() ? dir ? amount : -amount : dir ? -amount : amount;
+		} cou.root.moverq += amount;
 	}
 
 	private float checkForPushCoupling(TRO tro, float am){
@@ -463,7 +468,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	@Override
 	public String toString(){
-		return "RE['" + vehdata.getType().getName() + "', '" + pos.toString() + "']";
+		return "RE['" + uid + "', '" + vehdata.getType().getName() + "', '" + pos.toString() + "']";
 	}
 
 }

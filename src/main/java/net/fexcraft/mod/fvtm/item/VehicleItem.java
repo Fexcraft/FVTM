@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -104,7 +105,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	else if(data.getType().getVehicleType().isRailVehicle()){
             RailSystem syscap = world.getCapability(Capabilities.RAILSYSTEM, null);
             if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
-            Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ));
+            Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
     		Junction junk = syscap.getJunction(vector, true);
     		if(junk == null){
     			Print.bar(player, "&c&oNo Junction found at this position.");

@@ -115,9 +115,9 @@ public class RailEntity implements Comparable<RailEntity>{
 				updatePosition();
 				//
 				if(!hascoupled && isCoupled()){
+					//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
+					//if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
 					if(recom != null && move) moveCompound(am);
-					//if(front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
-					//if(rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
 				} hascoupled = false; moverq = 0;
 			}
 		}
@@ -131,12 +131,11 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	//Well, only do this as "head" of the compound.
 	public final void moveCompound(float amount){
-		Coupler cou = front.hasEntity() ? rear : front; //boolean dir, far = amount > 0; 
-		while(cou.getOpposite().hasEntity()){
-			cou = cou.getOpposite(); if(cou.frontal ? cou.isFront() : cou.isRear()) amount = -amount;
-			cou = cou.getCounterpart(); cou.entity.moverq += amount;
-			//cou.isRear() ? dir ? amount : -amount : dir ? -amount : amount;
-		} cou.root.moverq += amount;
+		Coupler coupler = front.hasEntity() ? rear : front; boolean rev = false;
+		while(coupler.getOpposite().hasEntity()){
+			coupler = coupler.getOpposite(); if(coupler.isFrontal() ? coupler.isFront() : coupler.isRear()) rev = !rev;
+			coupler = coupler.getCounterpart(); coupler.root.moverq += rev ? -amount : amount;
+		}
 	}
 
 	private float checkForPushCoupling(TRO tro, float am){

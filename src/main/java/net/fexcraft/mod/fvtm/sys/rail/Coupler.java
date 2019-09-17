@@ -41,7 +41,11 @@ public class Coupler {
 			root.recom.entities.remove(root.recom.size() - 1); root.recom = null;
 		}
 		else{//split
-			
+			int idx0 = root.recom.getIndex(root), idx1 = root.recom.getIndex(entity), lesser, notlesser;
+			if(idx0 < idx1){ lesser = idx0; notlesser = idx1; } else{ lesser = idx1; notlesser = idx0; }
+			REC rec0 = new REC(root.recom, 0, lesser + 1); REC rec1 = new REC(root.recom, notlesser, root.recom.entities.size());
+			if(rec0.size() < 2) rec0.entities.forEach(ent -> ent.recom = null);
+			if(rec1.size() < 2) rec1.entities.forEach(ent -> ent.recom = null);
 		}
 		//
 		if(isFront()){ entity.front.entity = null; entity.front.coupled = false; entity = null; }
@@ -114,6 +118,10 @@ public class Coupler {
 
 	public Coupler getCounterpart(){
 		return isFront() ? entity.front : isRear() ? entity.rear : null;
+	}
+
+	public boolean isFrontal(){
+		return frontal;
 	}
 
 }

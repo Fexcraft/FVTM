@@ -20,6 +20,11 @@ public class REC {
 		entities.add(root); entities.add(entity);
 	}
 
+	public REC(REC recom, int start, int end){
+		for(int i = start; i < end; i++){ entities.add(recom.entities.get(i)); }
+		for(RailEntity ent : entities) ent.recom = this;
+	}
+
 	public boolean isHead(RailEntity root){
 		return entities.get(0).uid == root.uid;
 	}
@@ -32,6 +37,10 @@ public class REC {
 
 	public boolean forward(){
 		return entities.get(0).forward;
+	}
+
+	public int getIndex(RailEntity root){
+		return entities.indexOf(root);
 	}
 
 }

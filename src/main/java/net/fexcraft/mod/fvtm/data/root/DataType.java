@@ -23,7 +23,8 @@ public enum DataType {
 	CONSUMABLE(".consumable", "consumables", Consumable.class),
 	FUEL(".fuel", "fuels", Fuel.class),
 	ROADSIGN(".sign", "roadsigns", RoadSign.class),
-	BLOCK(".block", "blocks", Block.class)
+	BLOCK(".block", "blocks", Block.class),
+	RAILGAUGE(".gauge", "railgauges", RailGauge.class)
 	;
 	
 	public final String suffix, cfg_folder;
@@ -45,6 +46,7 @@ public enum DataType {
 			case CONSUMABLE: return (IForgeRegistry<T>)Resources.CONSUMABLES;
 			case CONTAINER: return (IForgeRegistry<T>)Resources.CONTAINERS;
 			case BLOCK: return (IForgeRegistry<T>)Resources.BLOCKS;
+			case RAILGAUGE: return (IForgeRegistry<T>)Resources.RAILGAUGES;
 			default: return null;
 		}
 	}
@@ -70,6 +72,7 @@ public enum DataType {
 			case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
 			case CONTAINER:{ Resources.CONTAINERS.register((Container)core); return; }
 			case BLOCK:{ Resources.BLOCKS.register((Block)core); return; }
+			case RAILGAUGE:{ Resources.RAILGAUGES.register((RailGauge)core); return; }
 			default: return;
 		}
 	}

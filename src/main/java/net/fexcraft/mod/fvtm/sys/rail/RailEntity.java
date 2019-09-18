@@ -398,6 +398,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		//if(compound.hasKey("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
 		//if(compound.hasKey("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));
 		//TODO try coupling later, to prevent overflow
+		//TODO add REC loading instead later
 		//
 		frbogiedis = (float)vehdata.getWheelPositions().get("bogie_front").x;
 		rrbogiedis  = (float)-vehdata.getWheelPositions().get("bogie_rear").x;

@@ -5,15 +5,18 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RailSystem;
+import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -26,16 +29,30 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Deprecated //@fItem(modid = "fvtm", name = "railitem")
-public class RailItemTemp extends Item {
+public class RailGaugeItem extends TypeCoreItem<RailGauge> {
 
-    public static RailItemTemp INSTANCE;
-
-    public RailItemTemp(){ INSTANCE = this; }
+    public RailGaugeItem(RailGauge core){
+		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
+        this.type.getAddon().getFCLRegisterer().addItem(
+        	type.getRegistryName().getResourcePath(), this, 0, null);
+        if(Static.side().isServer()) return;
+        this.setCreativeTab(type.getAddon().getCreativeTab());
+    }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
+        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
+        for(String s : type.getDescription()){
+            tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
+        }
+        if(type.getCompatible().size() > 0){
+            tooltip.add(Formatter.format("&9Compatible with:"));
+            for(String str : type.getCompatible()){
+                tooltip.add(Formatter.format("&7 - " + str));
+            }
+        }
+        tooltip.add(Formatter.format("&9- - - - - - &7-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railpoints")){
         	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints");
     		for(int k = 0; k < list.tagCount(); k++){
@@ -77,11 +94,15 @@ public class RailItemTemp extends Item {
 			else{ stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.SUCCESS; }
 		}
 		else{
+			if(!junk.tracks.isEmpty() && junk.tracks.size() < 2 && !junk.tracks.get(0).isCompatibleGauge(type)){
+				Print.chat(player, "&9Junction ");
+				return EnumActionResult.FAIL;
+			}
 			if(junk.tracks.size() >= 4){
 				Print.chat(player, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
-			Track track = new Track(junk, getVectors(list), vector, null);
+			Track track = new Track(junk, getVectors(list), vector, type);
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
 				second.addnew(track); junk.addnew(track.createOppositeCopy());

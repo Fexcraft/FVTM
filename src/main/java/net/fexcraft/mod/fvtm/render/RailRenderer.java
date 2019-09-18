@@ -6,7 +6,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.item.RailItemTemp;
+import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -42,8 +42,8 @@ public class RailRenderer {
     public void preview(DrawBlockHighlightEvent event){
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
-    	if(stack.getItem() instanceof RailItemTemp || stack.getItem() instanceof RailItemTest || isRailVehicleItem(stack)){
-    		vecs = stack.getItem() instanceof RailItemTemp ? ((RailItemTemp)stack.getItem()).getVectors(stack) : new Vec316f[0];
+    	if(stack.getItem() instanceof RailGaugeItem || stack.getItem() instanceof RailItemTest || isRailVehicleItem(stack)){
+    		vecs = stack.getItem() instanceof RailGaugeItem ? ((RailGaugeItem)stack.getItem()).getVectors(stack) : new Vec316f[0];
     		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
         	//
     		EntityPlayer player = event.getPlayer(); GlStateManager.disableTexture2D();

@@ -3,10 +3,14 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.InternalAddon;
+import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * 
@@ -19,14 +23,14 @@ public class Track {
 	public boolean copy;
 	public Vec3f[] vecpath;
 	public TrackKey id;
-	public Object gauge;
+	public RailGauge gauge;
 	public float length;
 	//
 	//protected String line;
 	protected Section section;
 	protected Junction junction;
 	
-	/*public Track(Vec3d start, Vec3d end, Object gauge, Vec3d... subs){
+	/*public Track(Vec3d start, Vec3d end, RailGauge gauge, Vec3d... subs){
 		this.id = start.toString() + "-" + end.toString();
 		this.start = new Vec316f(start); this.end = new Vec316f(end);
 		vecpath = new Vec3f[(subs == null || subs.length == 0 ? 0 : subs.length) + 2];
@@ -49,7 +53,7 @@ public class Track {
 		this.gauge = gauge;
 	}*/
 	
-	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, Object gauge){
+	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, RailGauge gauge){
 		this.junction = junction; start = vec316fs[0]; end = vector; id = new TrackKey(start, end);
 		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1];
 		if(vecpath.length == 2){
@@ -110,10 +114,10 @@ public class Track {
 		//this.line = compound.hasKey("section") ? compound.getString("section") : null;
 		section = getSection(compound.hasKey("section") ? compound.getString("section") : null);
 		if(compound.hasKey("gauge")){
-			//gauge = Resources.GAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
+			gauge = Resources.RAILGAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
 		}
 		if(gauge == null){
-			//gauge = Resources.GAUGES.getValue(InternalAddon.STANDARD_GAUGE);
+			gauge = Resources.RAILGAUGES.getValue(InternalAddon.STANDARD_GAUGE);
 		}
 		this.copy = compound.getBoolean("copy");
 		this.start = new Vec316f(compound.getCompoundTag("start"));
@@ -133,7 +137,7 @@ public class Track {
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
 		id.write(compound); if(section != null) compound.setString("section", section.id);
-		//compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
+		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
 		compound.setBoolean("copy", copy);
 		compound.setTag("start", start.write());
 		compound.setTag("end", end.write());
@@ -179,11 +183,11 @@ public class Track {
 		return new TrackKey(id, true);
 	}
 
-	public boolean isCompatibleGauge(Object gauge){
-		return gauge == this.gauge;//this.gauge.width() == gauge.width();
+	public boolean isCompatibleGauge(RailGauge gauge){
+		return this.gauge.width() == gauge.width() || this.gauge.getCompatible().contains(gauge.getRegistryName().toString());
 	}
 
-	public Object getGauge(){
+	public RailGauge getGauge(){
 		return gauge;
 	}
 	

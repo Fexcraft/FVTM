@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
@@ -48,6 +49,7 @@ import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
+import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -98,6 +100,7 @@ public class Resources {
 	public static IForgeRegistry<Consumable> CONSUMABLES;
 	public static IForgeRegistry<Container> CONTAINERS;
 	public static IForgeRegistry<Block> BLOCKS;
+	public static IForgeRegistry<RailGauge> RAILGAUGES;
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
@@ -118,8 +121,8 @@ public class Resources {
 		CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
 		CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
 		BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
-		/*PALLETS = new RegistryBuilder<Pallet>().setName(new ResourceLocation("fvtm:pallets")).setType(Pallet.class).create();
-		GAUGES = new RegistryBuilder<Gauge>().setName(new ResourceLocation("fvtm:railgauges")).setType(Gauge.class).create();*/
+		RAILGAUGES = new RegistryBuilder<RailGauge>().setName(new ResourceLocation("fvtm:railgauges")).setType(RailGauge.class).create();
+		/*PALLETS = new RegistryBuilder<Pallet>().setName(new ResourceLocation("fvtm:pallets")).setType(Pallet.class).create();*/
 		//
 		String addonclass = AddonClass.class.getCanonicalName();
 		Set<ASMData> addons = event.getAsmData().getAll(addonclass);
@@ -150,6 +153,7 @@ public class Resources {
 		searchInAddonsFor(DataType.FUEL);
 		searchInAddonsFor(DataType.MATERIAL);
 		searchInAddonsFor(DataType.CONSUMABLE);
+		searchInAddonsFor(DataType.RAILGAUGE);
 		searchInAddonsFor(DataType.CONTAINER);
 		searchInAddonsFor(DataType.BLOCK);
 		searchInAddonsFor(DataType.PART);
@@ -272,6 +276,7 @@ public class Resources {
 		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
 		if(clazz == RoadSignModel.class) return RoadSignModel.EMPTY;
 		if(clazz == BlockModel.class) return BlockModel.EMPTY;
+		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
 		return null;
 	}
 

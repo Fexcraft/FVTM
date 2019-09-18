@@ -6,7 +6,6 @@ import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -17,7 +16,6 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -207,8 +205,7 @@ public class RailRenderer {
                 GlStateManager.disableTexture2D();
                 GlStateManager.depthMask(false);
     			for(int j = 0; j < conn.vecpath.length - 1; j++){
-    				vec0 = conn.vecpath[j];//.subtract(pos);
-    				vec1 = conn.vecpath[j + 1];//.subtract(pos);
+    				vec0 = conn.vecpath[j]; vec1 = conn.vecpath[j + 1];
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
                     bufferbuilder.pos(vec0.xCoord, vec0.zCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec0.zCoord).color(0f, glgl, flfl, 1F).endVertex();
                     bufferbuilder.pos(vec1.xCoord, vec1.zCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec1.zCoord).color(0f, glgl, flfl, 1F).endVertex();
@@ -223,7 +220,7 @@ public class RailRenderer {
                 if(vec.length == 1){ /*Print.debug(vec[0], conn.length);*/ continue; }
                 GL11.glPushMatrix();
                 GL11.glTranslatef(vec[0], vec[1] + (conn.isOppositeCopy() ? 0.1f : 0), vec[2]);
-                (conn.isOppositeCopy() ? model1 : model0).render();// GL11.glTranslatef(-vec[0], -vec[1], -vec[2]);
+                (conn.isOppositeCopy() ? model1 : model0).render();
                 GL11.glPopMatrix();
     		}
         }
@@ -263,41 +260,6 @@ public class RailRenderer {
         	}
 			GlStateManager.enableCull();
         }
-        	//if(value.displaylist == null){
-        		//value.displaylist = GL11.glGenLists(1);
-        		//GL11.glNewList(value.displaylist, GL11.GL_COMPILE);
-        		//
-            	/*GL11.glPushMatrix();
-            	Minecraft.getMinecraft().entityRenderer.enableLightmap();
-            	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            	GL11.glEnable(GL11.GL_LIGHTING);
-            	GL11.glDisable(GL11.GL_BLEND);
-            	RenderHelper.enableStandardItemLighting();
-        		for(Track conn : value.tracks){
-        			if(conn.isOppositeCopy()) continue;
-        			//ModelBase.bindTexture(conn.getGauge().getTexture());
-        			boolean b = false;
-        			for(int k = 0; k < conn.vecpath.length - 1; k++){
-        				vec0 = conn.vecpath[k];//.subtract(pos);
-        				vec1 = conn.vecpath[k + 1];//.subtract(pos);//TODO replace with translate
-        				double dis = vec1.distanceTo(vec0);
-        				/* renderpiece(vec1, vec, dis); while(dis > 0.5){ dis -= 0.5; renderpiece(vec1, vec, dis); } if(dis > 0) renderpiece(vec1, vec, dis); */
-        				/*if(b = !b) GL11.glTranslated(0, -0.01, 0);
-        				GL11.glTranslatef(0, -0.5f, 0);
-        				while(dis > 0){ RailGaugeModel.renderpiece(((RailGaugeModel)conn.getGauge().getModel()).base, vec0, vec1, dis, true); dis -= 0.5; }
-        				GL11.glTranslatef(0,  0.5f, 0);
-        				if(b) GL11.glTranslated(0, 0.01, 0);
-        			}
-        		}
-        		Minecraft.getMinecraft().entityRenderer.disableLightmap();
-        		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        		GL11.glDisable(GL11.GL_LIGHTING);
-        		GL11.glPopMatrix();*/
-        		//
-				//GL11.glEndList();
-        	//}
-			//GL11.glCallList(value.displaylist);
-        //}
 	}
 	
 	private static final Vec3f grv(float rad, Vec3f vec){

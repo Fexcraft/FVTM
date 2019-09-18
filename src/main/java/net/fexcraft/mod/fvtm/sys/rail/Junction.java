@@ -149,4 +149,8 @@ public class Junction {
 		for(Track track : tracks) if(track.getId().equals(key)) return track; return null;
 	}
 
+	public int size(){
+		return tracks.size();
+	}
+
 }

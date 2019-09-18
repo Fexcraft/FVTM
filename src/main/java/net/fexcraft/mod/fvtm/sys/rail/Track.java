@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -29,6 +30,7 @@ public class Track {
 	//protected String line;
 	protected Section section;
 	protected Junction junction;
+	public ModelRendererTurbo turbomodel;
 	
 	/*public Track(Vec3d start, Vec3d end, RailGauge gauge, Vec3d... subs){
 		this.id = start.toString() + "-" + end.toString();
@@ -184,7 +186,7 @@ public class Track {
 	}
 
 	public boolean isCompatibleGauge(RailGauge gauge){
-		return this.gauge.width() == gauge.width() || this.gauge.getCompatible().contains(gauge.getRegistryName().toString());
+		return this.gauge.innerWidth() == gauge.innerWidth() || this.gauge.getCompatible().contains(gauge.getRegistryName().toString());
 	}
 
 	public RailGauge getGauge(){

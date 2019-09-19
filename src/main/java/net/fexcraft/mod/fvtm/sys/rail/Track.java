@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.ArrayList;
-
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.InternalAddon;
@@ -12,6 +11,8 @@ import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * 
@@ -30,6 +31,7 @@ public class Track {
 	//protected String line;
 	protected Section section;
 	protected Junction junction;
+	@SideOnly(Side.CLIENT)
 	public ModelRendererTurbo turbomodel;
 	
 	/*public Track(Vec3d start, Vec3d end, RailGauge gauge, Vec3d... subs){
@@ -212,7 +214,7 @@ public class Track {
 		return start.vector.toFloatArray();
 	}
 	
-	private Vec3f getVectorPosition0(float distance, boolean reverse){
+	public Vec3f getVectorPosition0(float distance, boolean reverse){
 		if(reverse) distance = (float)this.oppositePassed(distance);
 		if(distance >= this.length){
 			//if(distance == this.length) blkposToVec3f(end).toFloatArray();

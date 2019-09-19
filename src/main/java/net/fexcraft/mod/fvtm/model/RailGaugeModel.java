@@ -18,6 +18,7 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		{ new Vec3f(-1.0625, 0.375, 0), new Vec3f(-0.9375, 0.375, 0) },
 		{ new Vec3f( 0.9375, 0.375, 0), new Vec3f( 1.0625, 0.375, 0) }
 	};
+	public float ties_distance = 0.5f;
 	
 	////-///---/---///-////
 	

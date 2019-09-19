@@ -24,7 +24,6 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.BufferBuilder;
@@ -192,11 +191,10 @@ public class RailRenderer {
     }
 
 	private void renderLines(Junction value){
-		Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        Vec3f vec0, vec1; float flfl, glgl;
-        //
         if(Command.DEBUG){
+    		Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            Vec3f vec0, vec1; float flfl, glgl;
     		for(int o = 0; o < value.tracks.size(); o++){
     			Track conn = value.tracks.get(o);
     	        flfl = conn.isOppositeCopy() ? 1 : 0;
@@ -232,12 +230,12 @@ public class RailRenderer {
         		if(value.tracks.get(i).isOppositeCopy()) continue;
         		Track track = value.tracks.get(i); RailGaugeModel model = track.gauge.getModel();
         		if(track.turbomodel == null){
-        			ModelRendererTurbo turbo = new ModelRendererTurbo(track, 0, 0, 0, 0).setColor(RGB.WHITE).setTextured(false);
+        			ModelRendererTurbo turbo = new ModelRendererTurbo(track, 0, 0, 0, 0).setColor(MIDDLE_GRAY).setTextured(false);
         			float angle; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
-        			TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly;
+        			TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly0;
         			//
         			for(int p = 0; p < model.rails.length; p++){
-        				path.clear(); vec = track.getVectorPosition(0.001f, false);
+        				path.clear(); vec = track.getVectorPosition0(0.001f, false);
         				angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
         				angle += Static.rad90;
         				path.add(track.vecpath[0].add(grv(angle, model.rails[p][0])));
@@ -254,13 +252,40 @@ public class RailRenderer {
             				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 0);
             				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
             				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 0, 0);
-            				poly = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
-            				turbo.copyTo(poly.getVertices(), new TexturedPolygon[]{ poly });
+            				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
+            				turbo.copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0 });
             			}
         			}
+        			/*if(track.length >  model.ties_distance * 2){
+        				float half = model.ties_distance * .5f, accu = -half;
+        				while((accu + half) < track.length){
+        					last = track.getVectorPosition(accu - 0.1f, false); vec = track.getVectorPosition(accu + 0.1f, false);
+            				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord); angle += Static.rad90;
+            				vec = track.getVectorPosition(accu, false);;
+        					for(ModelRendererTurbo mrt : model.get("ties")){
+        						//TODO
+        					} accu += model.ties_distance;
+        				}
+        			}*/
         			track.turbomodel = turbo;
         		}
+                GlStateManager.disableTexture2D();
     			track.turbomodel.render(1f);
+                GlStateManager.enableTexture2D();
+    			ModelBase.bindTexture(track.gauge.getTexture());
+    			if(track.length >  model.ties_distance){
+    				float half = model.ties_distance * .5f, accu = half, angle = 0; Vec3f last, vec;
+					while(accu < track.length){
+						last = track.getVectorPosition0(accu - 0.1f, false); vec = track.getVectorPosition0(accu + 0.1f, false);
+	    				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+	    				vec = track.getVectorPosition0(accu, false);
+	    				GL11.glPushMatrix();
+						GL11.glTranslatef(vec.xCoord, vec.yCoord, vec.zCoord); GL11.glRotated(180f, 0, 0, 1);
+						GL11.glRotated(Math.toDegrees(angle), 0, 1, 0); model.get("ties").renderPlain();
+						GL11.glPopMatrix();
+						accu += model.ties_distance;
+					}
+				}
         	}
         }
 	}

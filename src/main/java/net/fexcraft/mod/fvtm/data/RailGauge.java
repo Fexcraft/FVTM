@@ -28,6 +28,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 	protected int height; protected float height16;
 	protected RailGaugeItem item;
 	protected List<String> compatible;
+	protected ResourceLocation texture;
 	//
 	protected String modelid;
 	protected RailGaugeModel model;
@@ -61,6 +62,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 		this.width = JsonUtil.getIfExists(obj, "Width", 30).intValue();
 		this.height = JsonUtil.getIfExists(obj, "Height", 6).intValue();
 		this.height16 = height * Static.sixteenth;
+		this.texture = DataUtil.getTextures(obj).get(0);
 		/*if(obj.has("RailWidth") && !obj.get("RailWidth").isJsonPrimitive()){
 			JsonArray array = obj.get("RailWidth").getAsJsonArray();
 			rail_widths = new float[rails = array.size() / 2];
@@ -126,6 +128,10 @@ public class RailGauge extends TypeCore<RailGauge> {
 	@Override
 	public void loadModel(){
 		this.model = (RailGaugeModel)Resources.getModel(modelid, RailGaugeModel.class);
+	}
+	
+	public ResourceLocation getTexture(){
+		return texture;
 	}
 
 }

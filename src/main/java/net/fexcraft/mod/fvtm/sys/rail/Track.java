@@ -186,7 +186,7 @@ public class Track {
 	}
 
 	public boolean isCompatibleGauge(RailGauge gauge){
-		return this.gauge.innerWidth() == gauge.innerWidth() || this.gauge.getCompatible().contains(gauge.getRegistryName().toString());
+		return this.gauge.width() == gauge.width() || this.gauge.getCompatible().contains(gauge.getRegistryName().toString());
 	}
 
 	public RailGauge getGauge(){
@@ -212,7 +212,7 @@ public class Track {
 		return start.vector.toFloatArray();
 	}
 	
-	public Vec3f getVectorPosition(float distance, boolean reverse){
+	private Vec3f getVectorPosition0(float distance, boolean reverse){
 		if(reverse) distance = (float)this.oppositePassed(distance);
 		if(distance >= this.length){
 			//if(distance == this.length) blkposToVec3f(end).toFloatArray();
@@ -231,6 +231,11 @@ public class Track {
 			}
 		}
 		return start.vector;
+	}
+	
+	public Vec3f getVectorPosition(float distance, boolean reverse){
+		Vec3f vec = this.getVectorPosition0(distance, reverse);
+		vec.yCoord += gauge.height16(); return vec;
 	}
 	
 	@Override

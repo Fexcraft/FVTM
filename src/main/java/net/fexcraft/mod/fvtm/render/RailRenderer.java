@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
@@ -43,6 +44,8 @@ public class RailRenderer {
     
     private ItemStack stack;
     private Vec316f[] vecs;
+	//
+	public static final RGB MIDDLE_GRAY = new RGB(127, 127, 127);
 
 	@SubscribeEvent
     public void preview(DrawBlockHighlightEvent event){
@@ -58,12 +61,12 @@ public class RailRenderer {
             double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
     		GL11.glTranslated(-x, -y, -z); GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     		GL11.glPushMatrix();
-            GL11.glTranslated(vec.vector.xCoord, vec.vector.zCoord, vec.vector.zCoord);
+            GL11.glTranslated(vec.vector.xCoord, vec.vector.yCoord, vec.vector.zCoord);
             model1.render(); GL11.glPopMatrix();
             //
             for(Vec316f v : vecs){
         		GL11.glPushMatrix();
-                GL11.glTranslated(v.vector.xCoord, v.vector.zCoord, v.vector.zCoord);
+                GL11.glTranslated(v.vector.xCoord, v.vector.yCoord, v.vector.zCoord);
                 model0.render(); GL11.glPopMatrix();
             }
             //
@@ -77,8 +80,8 @@ public class RailRenderer {
             if(vecs.length > 1){
                 for(int i = 1; i < vecs.length; i++){
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vecs[i - 1].vector.xCoord, vecs[i - 1].vector.zCoord, vecs[i - 1].vector.zCoord).color(0f, 1f, 0f, 1F).endVertex();
-                    bufferbuilder.pos(vecs[i].vector.xCoord, vecs[i].vector.zCoord, vecs[i].vector.zCoord).color(0f, 1f, 0f, 1F).endVertex();
+                    bufferbuilder.pos(vecs[i - 1].vector.xCoord, vecs[i - 1].vector.yCoord, vecs[i - 1].vector.zCoord).color(0f, 1f, 0f, 1F).endVertex();
+                    bufferbuilder.pos(vecs[i].vector.xCoord, vecs[i].vector.yCoord, vecs[i].vector.zCoord).color(0f, 1f, 0f, 1F).endVertex();
                     tessellator.draw();
                 }
             }
@@ -140,7 +143,7 @@ public class RailRenderer {
         	for(int i = 0; i < junctions.length; i++){
             	GL11.glPushMatrix();
                 GlStateManager.disableTexture2D();
-            	GL11.glTranslatef(junctions[i].getVec3f().xCoord, junctions[i].getVec3f().zCoord, junctions[i].getVec3f().zCoord);
+            	GL11.glTranslatef(junctions[i].getVec3f().xCoord, junctions[i].getVec3f().yCoord, junctions[i].getVec3f().zCoord);
             	if(junctions[i].tracks.isEmpty()){ RGB.RED.glColorApply(); model.render(); RGB.glColorReset(); }
             	else junction_core.render();
                 GlStateManager.enableTexture2D();
@@ -207,8 +210,8 @@ public class RailRenderer {
     			for(int j = 0; j < conn.vecpath.length - 1; j++){
     				vec0 = conn.vecpath[j]; vec1 = conn.vecpath[j + 1];
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vec0.xCoord, vec0.zCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec0.zCoord).color(0f, glgl, flfl, 1F).endVertex();
-                    bufferbuilder.pos(vec1.xCoord, vec1.zCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec1.zCoord).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec0.xCoord, vec0.yCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec0.zCoord).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec1.xCoord, vec1.yCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec1.zCoord).color(0f, glgl, flfl, 1F).endVertex();
                     tessellator.draw();
     			}
                 GlStateManager.depthMask(true);
@@ -225,40 +228,40 @@ public class RailRenderer {
     		}
         }
         else{
-    		GlStateManager.disableCull();
         	for(int i = 0; i < value.size(); i++){
         		if(value.tracks.get(i).isOppositeCopy()) continue;
-        		Track track = value.tracks.get(i);
+        		Track track = value.tracks.get(i); RailGaugeModel model = track.gauge.getModel();
         		if(track.turbomodel == null){
         			ModelRendererTurbo turbo = new ModelRendererTurbo(track, 0, 0, 0, 0).setColor(RGB.WHITE).setTextured(false);
         			float angle; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
-        			Vec3f offxn = new Vec3f(-.125, 0.1, 0), offxp = new Vec3f(0.125, 0.1, 0);
         			TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly;
         			//
-        			for(int v = 0; v < track.vecpath.length - 1; v++){
-        				last = track.vecpath[v]; vec = track.vecpath[v + 1];
-        				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+        			for(int p = 0; p < model.rails.length; p++){
+        				path.clear(); vec = track.getVectorPosition(0.001f, false);
+        				angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
         				angle += Static.rad90;
-        				if(path.isEmpty()){
-            				path.add(last.add(grv(angle, offxn)));
-            				path.add(last.add(grv(angle, offxp)));
-        				}
-        				path.add(vec.add(grv(angle, offxn)));
-        				path.add(vec.add(grv(angle, offxp)));
-        			}
-        			for(int k = 0; k < track.vecpath.length - 1; k++){
-        				vert0 = new TexturedVertex(path.get(k * 2), 0, 0);
-        				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 0);
-        				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
-        				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 0, 0);
-        				poly = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
-        				turbo.copyTo(poly.getVertices(), new TexturedPolygon[]{ poly });
+        				path.add(track.vecpath[0].add(grv(angle, model.rails[p][0])));
+        				path.add(track.vecpath[0].add(grv(angle, model.rails[p][1])));
+            			for(int v = 0; v < track.vecpath.length - 1; v++){
+            				last = track.vecpath[v]; vec = track.vecpath[v + 1];
+            				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+            				angle += Static.rad90;
+            				path.add(vec.add(grv(angle, model.rails[p][0])));
+            				path.add(vec.add(grv(angle, model.rails[p][1])));
+            			}
+            			for(int k = 0; k < track.vecpath.length - 1; k++){
+            				vert0 = new TexturedVertex(path.get(k * 2), 0, 0);
+            				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 0);
+            				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
+            				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 0, 0);
+            				poly = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
+            				turbo.copyTo(poly.getVertices(), new TexturedPolygon[]{ poly });
+            			}
         			}
         			track.turbomodel = turbo;
         		}
     			track.turbomodel.render(1f);
         	}
-			GlStateManager.enableCull();
         }
 	}
 	
@@ -267,10 +270,9 @@ public class RailRenderer {
 	}
 
 	public static int getBrightness(double x, double y, double z){
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(MathHelper.floor(x), 0, MathHelper.floor(z));
-        if(Minecraft.getMinecraft().world.isBlockLoaded(blockpos$mutableblockpos)){
-            blockpos$mutableblockpos.setY(MathHelper.floor(y));
-            return Minecraft.getMinecraft().world.getCombinedLight(blockpos$mutableblockpos, 0);
+        BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(x), 0, MathHelper.floor(z));
+        if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){
+            mutblk.setY(MathHelper.floor(y)); return Minecraft.getMinecraft().world.getCombinedLight(mutblk, 0);
         } else { return 0; }
 	}
 

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.model;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
@@ -12,6 +13,11 @@ import net.minecraft.util.ResourceLocation;
 public class RailGaugeModel extends GenericModel<Track, Integer> {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
+	//public float[][] rails = new float[][]{ { -17, -15 }, { 15, 17 } };
+	public Vec3f[][] rails = new Vec3f[][]{
+		{ new Vec3f(-1.0625, 0.375, 0), new Vec3f(-0.9375, 0.375, 0) },
+		{ new Vec3f( 0.9375, 0.375, 0), new Vec3f( 1.0625, 0.375, 0) }
+	};
 	
 	////-///---/---///-////
 	

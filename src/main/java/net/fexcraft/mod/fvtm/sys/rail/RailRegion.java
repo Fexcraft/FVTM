@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,10 +51,23 @@ public class RailRegion {
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound)); return this;
 		}
 		File file = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + ".dat");
-		NBTTagCompound compound = null;
+		NBTTagCompound compound = null; boolean failed = false;
 		if(file.exists()){
-			try{ compound = CompressedStreamTools.read(file); } catch(IOException e){ e.printStackTrace(); }
-		} else compound = new NBTTagCompound();
+			try{ compound = CompressedStreamTools.read(file); }
+			catch(Throwable e){
+				failed = true; e.printStackTrace();
+				Print.log("FAILED TO LOAD RAIL REGION [ " + key.x +  ", " + key.z + " ]! THIS MAY BE NOT GOOD.");
+				try{
+					File newfile = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + "_" + Time.getAsString(null, true) + ".dat");
+					Files.copy(file.toPath(), newfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					Print.log("If things gone well, created a backup copy of the 'broken' file!");
+				}
+				catch(Throwable thr){
+					thr.printStackTrace();
+					Print.log("FAILED TO CREATE BACKUP OF BROKEN RAIL REGION");
+				}
+			}
+		} if(!file.exists() || failed) compound = new NBTTagCompound();
 		//
 		return this.read(compound).setAccessed();
 	}

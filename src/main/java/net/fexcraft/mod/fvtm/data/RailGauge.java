@@ -2,14 +2,16 @@ package net.fexcraft.mod.fvtm.data;
 
 import java.util.List;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
+import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -20,10 +22,15 @@ import net.minecraft.util.ResourceLocation;
 public class RailGauge extends TypeCore<RailGauge> {
 	
 	/** In "micro blocks" (1 = 1/16th of a block). */
-	protected int inner_width, rails;
-	protected float[] rail_widths, rail_offsets;
+	protected int width;
+	/** In "micro blocks" (1 = 1/16th of a block).
+	 * Height between the placed track point and the actual position of the wheels on the rail. */
+	protected int height; protected float height16;
 	protected RailGaugeItem item;
 	protected List<String> compatible;
+	//
+	protected String modelid;
+	protected RailGaugeModel model;
 	
 	public RailGauge(){}
 
@@ -51,8 +58,10 @@ public class RailGauge extends TypeCore<RailGauge> {
 		//
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Rail Gauge");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
-		this.inner_width = JsonUtil.getIfExists(obj, "InnerWidth", 30).intValue();
-		if(obj.has("RailWidth") && !obj.get("RailWidth").isJsonPrimitive()){
+		this.width = JsonUtil.getIfExists(obj, "Width", 30).intValue();
+		this.height = JsonUtil.getIfExists(obj, "Height", 6).intValue();
+		this.height16 = height * Static.sixteenth;
+		/*if(obj.has("RailWidth") && !obj.get("RailWidth").isJsonPrimitive()){
 			JsonArray array = obj.get("RailWidth").getAsJsonArray();
 			rail_widths = new float[rails = array.size() / 2];
 			for(int i = 0; i < array.size(); i++){
@@ -64,8 +73,9 @@ public class RailGauge extends TypeCore<RailGauge> {
 			float fl = JsonUtil.getIfExists(obj, "RailWidth", 2f).floatValue();
 			rail_widths = new float[]{ -fl, fl }; rails = 2;
 			rail_offsets = new float[]{ -(inner_width / 2), inner_width / 2 }; 
-		}
+		}*/
 		this.compatible = DataUtil.getStringArray(obj, "Compatible", false, true);
+		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		//
 		this.item = new RailGaugeItem(this); return this;
 	}
@@ -93,24 +103,29 @@ public class RailGauge extends TypeCore<RailGauge> {
 		return new ItemStack(item, 1);
 	}
 
-	public int innerWidth(){
-		return inner_width;
-	}
-
-	public float[] railWidths(){
-		return rail_widths;
-	}
-
-	public float[] railOffsets(){
-		return rail_widths;
+	public int width(){
+		return width;
 	}
 	
-	public int rails(){
-		return rails;
+	public int height(){
+		return height;
+	}
+	
+	public float height16(){
+		return height16;
 	}
 
 	public List<String> getCompatible(){
 		return compatible;
+	}
+
+	public RailGaugeModel getModel(){
+		return model;
+	}
+	
+	@Override
+	public void loadModel(){
+		this.model = (RailGaugeModel)Resources.getModel(modelid, RailGaugeModel.class);
 	}
 
 }

@@ -227,10 +227,11 @@ public class RailRenderer {
         }
         else{
         	for(int i = 0; i < value.size(); i++){
+        		if(i > 2) GL11.glTranslatef(0, 0.01f, 0);
         		if(value.tracks.get(i).isOppositeCopy()) continue;
         		Track track = value.tracks.get(i); RailGaugeModel model = track.gauge.getModel();
-        		if(track.turbomodel == null){
-        			ModelRendererTurbo turbo = new ModelRendererTurbo(track, 0, 0, 0, 0).setColor(MIDDLE_GRAY).setTextured(false);
+        		if(track.railmodel == null){
+        			ModelRendererTurbo turbo = new ModelRendererTurbo(track, 0, 0, 16, 16).setColor(MIDDLE_GRAY);
         			float angle; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
         			TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly0;
         			//
@@ -256,42 +257,44 @@ public class RailRenderer {
             				turbo.copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0 });
             			}
         			}
-        			/*if(track.length >  model.ties_distance * 2){
-        				float half = model.ties_distance * .5f, accu = -half;
-        				while((accu + half) < track.length){
-        					last = track.getVectorPosition(accu - 0.1f, false); vec = track.getVectorPosition(accu + 0.1f, false);
-            				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord); angle += Static.rad90;
-            				vec = track.getVectorPosition(accu, false);;
-        					for(ModelRendererTurbo mrt : model.get("ties")){
-        						//TODO
+        			track.railmodel = turbo;
+        			turbo = new ModelRendererTurbo(track, 0, 0, 0, 0);
+        			if(track.length >  model.ties_distance){
+        				float half = model.ties_distance * .5f, accu = half;
+        				while(accu < track.length){
+        					last = track.getVectorPosition0(accu - 0.1f, false); vec = track.getVectorPosition0(accu + 0.1f, false);
+            				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+            				vec = track.getVectorPosition0(accu, false);;
+        					for(ModelRendererTurbo mrt : model.get("ties", false)){
+        						for(TexturedPolygon poly : mrt.getFaces()){
+            						TexturedVertex[] verts = new TexturedVertex[poly.getVertices().length];
+            						for(int m = 0; m < verts.length; m++){
+            							TexturedVertex org = poly.getVertices()[m];
+            							verts[m] = new TexturedVertex(grv(angle, org.vector), org.textureX, org.textureY);
+            							verts[m].vector = verts[m].vector.scale(Static.sixteenth).add(vec);
+            						}
+            						turbo.copyTo(verts, new TexturedPolygon[]{ new TexturedPolygon(verts) });
+        						}
         					} accu += model.ties_distance;
         				}
-        			}*/
-        			track.turbomodel = turbo;
+        			}
+        			track.restmodel = turbo;
         		}
-                GlStateManager.disableTexture2D();
-    			track.turbomodel.render(1f);
-                GlStateManager.enableTexture2D();
-    			ModelBase.bindTexture(track.gauge.getTexture());
-    			if(track.length >  model.ties_distance){
-    				float half = model.ties_distance * .5f, accu = half, angle = 0; Vec3f last, vec;
-					while(accu < track.length){
-						last = track.getVectorPosition0(accu - 0.1f, false); vec = track.getVectorPosition0(accu + 0.1f, false);
-	    				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
-	    				vec = track.getVectorPosition0(accu, false);
-	    				GL11.glPushMatrix();
-						GL11.glTranslatef(vec.xCoord, vec.yCoord, vec.zCoord); GL11.glRotated(180f, 0, 0, 1);
-						GL11.glRotated(Math.toDegrees(angle), 0, 1, 0); model.get("ties").renderPlain();
-						GL11.glPopMatrix();
-						accu += model.ties_distance;
-					}
-				}
+        		GlStateManager.disableTexture2D(); track.railmodel.render(1f); GlStateManager.enableTexture2D();
+        		ModelBase.bindTexture(track.gauge.getTexture()); track.restmodel.render(1f);
         	}
         }
 	}
 	
 	private static final Vec3f grv(float rad, Vec3f vec){
         double co = Math.cos(rad), si = Math.sin(rad); return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);
+	}
+
+	public static int getBrightness(Vec3f vec){
+        BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(vec.xCoord), 0, MathHelper.floor(vec.zCoord));
+        if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){
+            mutblk.setY(MathHelper.floor(vec.yCoord)); return Minecraft.getMinecraft().world.getCombinedLight(mutblk, 0);
+        } else { return 0; }
 	}
 
 	public static int getBrightness(double x, double y, double z){

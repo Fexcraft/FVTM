@@ -25,7 +25,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 	protected int width;
 	/** In "micro blocks" (1 = 1/16th of a block).
 	 * Height between the placed track point and the actual position of the wheels on the rail. */
-	protected int height; protected float height16;
+	protected float height; protected float height16;
 	protected RailGaugeItem item;
 	protected List<String> compatible;
 	protected ResourceLocation texture;
@@ -60,7 +60,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Rail Gauge");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.width = JsonUtil.getIfExists(obj, "Width", 30).intValue();
-		this.height = JsonUtil.getIfExists(obj, "Height", 6).intValue();
+		this.height = JsonUtil.getIfExists(obj, "Height", 6).floatValue();
 		this.height16 = height * Static.sixteenth;
 		this.texture = DataUtil.getTextures(obj).get(0);
 		/*if(obj.has("RailWidth") && !obj.get("RailWidth").isJsonPrimitive()){
@@ -109,7 +109,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 		return width;
 	}
 	
-	public int height(){
+	public float height(){
 		return height;
 	}
 	

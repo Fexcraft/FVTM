@@ -129,6 +129,10 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	public TurboList get(String key){
 		return groups.get(key);
 	}
+
+	public TurboList get(String string, boolean allownull){
+		TurboList list = get(string); return list == null ? allownull ? list : TurboList.EMPTY : list;
+	}
 	
 	public void render(ModelRendererTurbo[] mrts){
 		for(ModelRendererTurbo mrt : mrts) mrt.render();

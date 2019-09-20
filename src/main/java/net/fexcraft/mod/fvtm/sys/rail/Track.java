@@ -32,7 +32,9 @@ public class Track {
 	protected Section section;
 	protected Junction junction;
 	@SideOnly(Side.CLIENT)
-	public ModelRendererTurbo turbomodel;
+	public ModelRendererTurbo railmodel;
+	@SideOnly(Side.CLIENT)
+	public ModelRendererTurbo restmodel;
 	
 	/*public Track(Vec3d start, Vec3d end, RailGauge gauge, Vec3d... subs){
 		this.id = start.toString() + "-" + end.toString();

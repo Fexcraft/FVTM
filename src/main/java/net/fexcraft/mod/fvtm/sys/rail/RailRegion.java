@@ -32,7 +32,7 @@ public class RailRegion {
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ArrayList<XZK> chucks = new ArrayList<>();
-	public long lastaccess;
+	public long lastaccess; private int timer = 0;
 	private final RailData world;
 	private final XZK key;
 
@@ -74,10 +74,10 @@ public class RailRegion {
 
 	public RailRegion read(NBTTagCompound compound){
 		if(compound.hasKey("Junctions")){
-			if(!junctions.isEmpty()) junctions.clear();
+			if(!junctions.isEmpty()) junctions.values().removeIf(pre -> { if(pre.entity != null) pre.entity.setDead(); return true; });
 			NBTTagList list = (NBTTagList)compound.getTag("Junctions");
 			for(NBTBase base : list){
-				Junction junk = new Junction(world).read((NBTTagCompound)base);
+				Junction junk = new Junction(this).read((NBTTagCompound)base);
 				junctions.put(junk.getVec316f(), junk);
 			}
 		}
@@ -136,6 +136,9 @@ public class RailRegion {
 	public void updateTick(){
 		if(!entities.isEmpty()) this.setAccessed();
 		for(RailEntity ent : entities.values()){ ent.onUpdate(); }
+		if(timer > 20){ timer = -1;
+			for(Junction junction : junctions.values()){ junction.onUpdate(); }
+		} timer++;
 	}
 	
 	public RailRegion setAccessed(){
@@ -150,12 +153,38 @@ public class RailRegion {
 		return junctions;
 	}
 	
-	public void updateClient(Vec316f vector){//TODO fine tuned methods in the future
-		if(world.getWorld().isRemote) return;
-		NBTTagCompound compound = this.write(); compound.setString("target_listener", "fvtm:gui");
-		compound.setString("task", "update_railregion"); compound.setIntArray("XZ", key.toArray());
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
-			Resources.getTargetPoint(world.getDimension(), vector.pos));
+	public void updateClient(Vec316f vector){
+		updateClient("all", vector);
+	}
+	
+	public void updateClient(String kind, Vec316f vector){//TODO fine tuned methods in the future
+		if(world.getWorld().isRemote) return; NBTTagCompound compound = null;
+		switch(kind){
+			case "all":{
+				compound = this.write(); compound.setString("target_listener", "fvtm:gui");
+				compound.setString("task", "update_railregion"); compound.setIntArray("XZ", key.toArray());
+				break;
+			}
+			case "junction":{
+				Junction junction = getJunction(vector); if(junction == null) return;
+				compound = junction.write(new NBTTagCompound());
+				compound.setString("target_listener", "fvtm:gui");
+				compound.setString("task", "update_junction");
+				break;
+			}
+			case "junction_state":{
+				Junction junction = getJunction(vector); if(junction == null) return;
+				compound = new NBTTagCompound();
+				compound.setString("target_listener", "fvtm:gui");
+				compound.setString("task", "update_junction_state");
+				compound.setTag("pos", junction.getVec316f().write());
+				compound.setBoolean("switch0", junction.switch0);
+				compound.setBoolean("switch1", junction.switch1);
+				break;
+			}
+		}
+		if(compound == null) return;
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(), vector.pos));
 	}
 
 	public void updateClient(EntityPlayerMP player){

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.ArrayList;
+
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -133,6 +134,9 @@ public class Track {
 			vecpath[i] = DataUtil.readVec3f(compound.getTag("vector-" + i));
 		}
 		this.length = compound.hasKey("length") ? compound.getFloat("length") : calcLength();
+		if(junction.root.getWorld().isRemote){
+			railmodel = null; restmodel = null;
+		}
 		return this;
 	}
 

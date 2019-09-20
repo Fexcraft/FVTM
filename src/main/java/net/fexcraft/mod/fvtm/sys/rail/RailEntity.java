@@ -110,9 +110,9 @@ public class RailEntity implements Comparable<RailEntity>{
 				}
 			}
 			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
-				TRO tro = getTrack(current, passed + am); am = checkForPushCoupling(tro, am);
+				TRO tro = getTrack(current, passed + am, false); am = checkForPushCoupling(tro, am);
 				//
-				tro = getTrack(current, passed + am);
+				tro = getTrack(current, passed + am, true);
 				last = current; current = tro.track; passed = tro.passed;
 				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
 				if(!region.isInRegion(current.start)) this.updateRegion(current.start);
@@ -254,11 +254,11 @@ public class RailEntity implements Comparable<RailEntity>{
 	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track, boolean forward){
 		railentlist.clear(); railentlist.addAll(track.section.getEntities().values());
 		Junction junction = region.getJunction(track.start); Track track0;
-		if(junction != null){ track0 = junction.getNext(track.getId());
+		if(junction != null){ track0 = junction.getNext(track.getId(), false);
 			if(track0 != null)railentlist.addAll(track0.section.getEntities().values());
 		}
 		junction = region.getJunction(track.end);
-		if(junction != null){ track0 = junction.getNext(track.getOppositeId());
+		if(junction != null){ track0 = junction.getNext(track.getOppositeId(), false);
 			if(track0 != null)railentlist.addAll(track0.section.getEntities().values());
 		} return railentlist;
 	}
@@ -294,7 +294,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public Vec3f move(float passed, TrainPoint point){
-		TRO tro = getTrack(current, passed);
+		TRO tro = getTrack(current, passed, true);
 		if(sectionson[point.index] == null){
 			(sectionson[point.index] = tro.track.section).update(this, true);
 		}
@@ -306,14 +306,14 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public Vec3f moveOnly(float passed){
-		TRO tro = getTrack(current, passed); return tro.track.getVectorPosition(tro.passed, false);
+		TRO tro = getTrack(current, passed, true); return tro.track.getVectorPosition(tro.passed, false);
 	}
 
-	private TRO getTrack(Track track, float passed){
+	private TRO getTrack(Track track, float passed, boolean apply){
 		while(passed > track.length){
 			Junction junk = region.getJunction(track.end);
 			if(junk == null) new TRO(track, track.length);
-			Track newtrack = junk.getNext(track.getOppositeId());
+			Track newtrack = junk.getNext(track.getOppositeId(), apply);
 			if(newtrack != null){
 				passed -= track.length; track = newtrack;
 			} else return new TRO(track, track.length);
@@ -321,7 +321,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		while(passed < 0){
 			Junction junk = region.getJunction(track.start);
 			if(junk == null) return new TRO(track, 0);
-			Track newtrack = junk.getNext(track.getId());
+			Track newtrack = junk.getNext(track.getId(), apply);
 			if(newtrack != null){
 				passed += newtrack.length; track = newtrack.createOppositeCopy();
 			} else return new TRO(track, 0);

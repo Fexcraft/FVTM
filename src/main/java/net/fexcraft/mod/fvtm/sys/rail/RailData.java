@@ -193,7 +193,7 @@ public class RailData implements RailSystem {
 		RailRegion region = regions.get(getRegionXZ(vector));
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
-		if(junc != null){ for(Track track : junc.tracks){ delTrack(track); } }
+		if(junc != null){ for(Track track : junc.tracks){ delTrack(track); } if(junc.entity != null) junc.entity.setDead(); }
 		region.setAccessed().updateClient(vector); return true;
 	}
 
@@ -213,7 +213,13 @@ public class RailData implements RailSystem {
 	@Override
 	public void addJunction(Vec316f vector){
 		RailRegion region = regions.get(vector, true); if(region == null) /** this rather an error*/ return;
-		region.getJunctions().put(vector, new Junction(this, vector)); region.setAccessed().updateClient(vector); return;
+		region.getJunctions().put(vector, new Junction(region, vector)); region.setAccessed().updateClient(vector); return;
+	}
+
+	@Override
+	public void updateJuncton(Vec316f vector){
+		RailRegion region = regions.get(vector, true); if(region == null) /** This is rather bad. */ return;
+		region.setAccessed().updateClient("junction", vector);
 	}
 	
 	public static class TimedTask extends TimerTask {

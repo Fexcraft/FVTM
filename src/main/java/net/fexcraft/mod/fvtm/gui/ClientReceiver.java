@@ -6,9 +6,11 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
+import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.minecraft.entity.Entity;
@@ -60,6 +62,19 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, null);
 				return;
+			}
+			case "update_junction":{
+				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("Pos")));
+				if(junction != null) junction.read(packet.nbt); return;
+			}
+			case "update_junction_state":{
+				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
+				if(junction != null){
+					junction.switch0 = packet.nbt.getBoolean("switch0");
+					junction.switch1 = packet.nbt.getBoolean("switch1");
+				} return;
 			}
 			case "spawn_railentity":{
 				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);

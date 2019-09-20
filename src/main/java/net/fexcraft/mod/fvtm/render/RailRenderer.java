@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -52,7 +53,7 @@ public class RailRenderer {
     public void preview(DrawBlockHighlightEvent event){
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
-    	if(stack.getItem() instanceof RailGaugeItem || stack.getItem() instanceof RailItemTest || isRailVehicleItem(stack)){
+    	if(stack.getItem() instanceof RailGaugeItem || stack.getItem() instanceof RailItemTest || stack.getItem() instanceof JunctionToolItem || isRailVehicleItem(stack)){
     		vecs = stack.getItem() instanceof RailGaugeItem ? ((RailGaugeItem)stack.getItem()).getVectors(stack) : new Vec316f[0];
     		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
         	//

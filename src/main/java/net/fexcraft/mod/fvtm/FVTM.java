@@ -27,6 +27,7 @@ import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
+import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.entity.RailTestEntity;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
@@ -55,11 +56,13 @@ import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventories;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventory;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleMain;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleToggables;
+import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.render.RenderAirVehicle;
 import net.fexcraft.mod.fvtm.render.RenderEmpty;
+import net.fexcraft.mod.fvtm.render.RenderJunctionSwitch;
 import net.fexcraft.mod.fvtm.render.RenderLandVehicle;
 import net.fexcraft.mod.fvtm.render.RenderRailTestEnt;
 import net.fexcraft.mod.fvtm.render.RenderRailVehicle;
@@ -136,6 +139,7 @@ public class FVTM {
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:roadsign"), RoadSignEntity.class, "fvtm.roadsign", 7001, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicle.class, "fvtm.railvehicle", 9001, this, 256, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:junctionswitch"), JunctionSwitchEntity.class, "fvtm.junctionswitch", 7002, this, 256, 600, false);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderLandVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(AirVehicle.class, RenderAirVehicle::new);
@@ -144,6 +148,7 @@ public class FVTM {
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSign.class, RenderStreetSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RoadSignEntity.class, RenderRoadSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailVehicle.class, RenderRailVehicle::new);
+			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(JunctionSwitchEntity.class, RenderJunctionSwitch::new);
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());
 		}
 		if(Static.dev()){
@@ -176,6 +181,7 @@ public class FVTM {
 			FCLRegistry.getItem("fvtm:streetsign").setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			//RailItemTemp.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			Resources.BLOCKS.getValuesCollection().forEach(block -> block.linkItem());
+			JunctionToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());

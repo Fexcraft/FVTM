@@ -18,6 +18,8 @@ tile.fvtm:streetpost.name=Streetpost
 
 # Items
 item.fvtm:streetsign.name=Streetsign
+item.fvtm:standard.name=Standard FVTM Rail Gauge
+item.fvtm:junction_tool.name=Junction Tool
 
 
 # Entities

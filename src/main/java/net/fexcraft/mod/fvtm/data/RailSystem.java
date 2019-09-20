@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data;
 
 import java.io.File;
+
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData.XZK;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
@@ -31,11 +32,13 @@ public interface RailSystem {
 	public Junction getJunction(Vec316f vector, boolean load);
 
 	public boolean delJunction(Vec316f vector);
+	
+	public void updateJuncton(Vec316f vector);
 
 	public void addJunction(Vec316f vector);
 	
 	public boolean delTrack(Track track);
-
+	
 	public Track getTrack(TrackKey trackKey);
 	
 	/** For timed tasks, do not use this one. */

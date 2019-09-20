@@ -5,9 +5,15 @@ import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 
 /**
  * 
@@ -20,19 +26,23 @@ public class Junction {
 	public ArrayList<Track> tracks;
 	public boolean switch0, switch1;
 	public RailData root;
+	public RailRegion region;
 	public Signal signal;
 	public JunctionType type;
-	public Vec3f switchlocation;
+	//
+	private Vec3f switchlocation;
+	public JunctionSwitchEntity entity;
+	public EnumFacing entityFacing;
 	
 	/** General Constructor */
-	public Junction(RailData root, Vec316f pos){
-		vecpos = pos; tracks = new ArrayList<Track>(); this.root = root;
-		this.switch0 = this.switch1 = false; type = JunctionType.STRAIGHT;
+	public Junction(RailRegion region, Vec316f pos){
+		vecpos = pos; tracks = new ArrayList<Track>(); this.root = region.getWorld();
+		this.region = region; this.switch0 = this.switch1 = false; type = JunctionType.STRAIGHT;
 	}
 	
 	/** Only to be used from RailRegion.class */
-	protected Junction(RailData world){
-		this.root = world; tracks = new ArrayList<>();
+	protected Junction(RailRegion region){
+		this.root = region.getWorld(); this.region = region; tracks = new ArrayList<>();
 	}
 
 	public Junction setRoot(RailData data){
@@ -46,15 +56,27 @@ public class Junction {
 		//this.crossing = compound.getBoolean("Crossing");
 		int trackam = compound.getInteger("Tracks");
 		if(trackam > 0){
-			for(int i = 0; i < trackam; i++){
-				try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
-				catch(Exception e){ e.printStackTrace(); }
+			if(trackam != tracks.size()){
+				tracks.clear();//TODO dispose of the models
+				for(int i = 0; i < trackam; i++){
+					try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
+					catch(Exception e){ e.printStackTrace(); }
+				}
+			}
+			else{
+				for(int i = 0; i < trackam; i++){
+					tracks.get(i).read(compound.getCompoundTag("Track" + i));
+				}
 			}
 		}
 		if(compound.hasKey("Signal")) signal = Signal.valueOf(compound.getString("Signal"));
 		if(tracks.size() > 2) type = compound.hasKey("Type") ? JunctionType.valueOf(compound.getString("Type"))
 			: tracks.size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
 		else type = JunctionType.STRAIGHT;
+		if(compound.hasKey("SwitchPos")) this.switchlocation = DataUtil.readVec3f(compound.getTag("SwitchPos"));
+		if(compound.hasKey("SwitchFacing")) this.entityFacing = EnumFacing.getFront(compound.getInteger("SwitchFacing"));
+		if(switchlocation != null && entityFacing == null) entityFacing = EnumFacing.NORTH;
+		if(entity != null) entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
 		return this;
 	}
 	
@@ -70,6 +92,8 @@ public class Junction {
 		compound.setTag("Pos", vecpos.write());
 		if(signal != null) compound.setString("Signal", signal.name());
 		if(tracks.size() > 2) compound.setString("Type", type.name());
+		if(switchlocation != null) compound.setTag("SwitchPos", DataUtil.writeVec3f(switchlocation));
+		if(entityFacing != null) compound.setInteger("SwitchFacing", entityFacing.getIndex());
 		return compound;
 	}
 	
@@ -82,9 +106,12 @@ public class Junction {
 	}
 
 	public void addnew(Track track){
-		tracks.add(track); updateClient();
+		tracks.add(track);
+		type = tracks.size() <= 2 ? JunctionType.STRAIGHT
+			: tracks.size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
+		updateClient();
 	}
-	
+
 	private void updateClient(){
 		root.getRegions().get(RailData.getRegionXZ(vecpos)).updateClient(vecpos);
 	}
@@ -110,7 +137,7 @@ public class Junction {
 	}
 	
 	@Nullable
-	public Track getNext(TrackKey track){
+	public Track getNext(TrackKey track, boolean test){
 		switch(tracks.size()){
 			case 0: return null;
 			case 1: return eqTrack(track, 0) ? null : tracks.get(0);
@@ -118,7 +145,11 @@ public class Junction {
 			case 3:{
 				if(eqTrack(track, 0)){
 					return tracks.get(switch0 ? 1 : 2);
-				} else return tracks.get(0);
+				} else {
+					if(!test){ boolean bool = eqTrack(track, 1);
+						if(switch0 != bool){ switch0 = bool; region.updateClient("junction_state", vecpos); }
+					} return tracks.get(0);
+				}
 			}
 			case 4:{
 				if(eqTrack(track, 0)){
@@ -133,6 +164,7 @@ public class Junction {
 				if(eqTrack(track, 3)){
 					return type.isCrossing() ? tracks.get(2) : tracks.get(switch0 ? 1 : 2);
 				}
+				//TODO test bool application
 			}
 		}
 		return null;
@@ -152,6 +184,63 @@ public class Junction {
 
 	public int size(){
 		return tracks.size();
+	}
+	
+	private byte checktimer = 0;
+
+	public void onUpdate(){
+		if(checktimer == 0){
+			if(switchlocation != null){
+				if(entity != null && !isInPlayerRange()){
+					entity.setDead(); entity = null;
+				}
+				else{
+					if(isInPlayerRange()){
+						entity = new JunctionSwitchEntity(root.getWorld(), this);
+						entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
+						root.getWorld().spawnEntity(entity);
+					}
+				}
+			}
+			checktimer = 5;
+		} checktimer--;
+	}
+	
+	private boolean isInPlayerRange(){
+		for(EntityPlayer pl : root.getWorld().playerEntities){
+			if(vecpos.vector.distanceTo(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 256) return true;
+		} return false;
+	}
+
+	public void updateSwitchLocation(Vec3f vector, EnumFacing opposite){
+		this.switchlocation = vector; entityFacing = opposite;
+		if(entity != null) entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
+	}
+
+	public boolean onSwitchInteract(EntityPlayer player, EnumHand hand, JunctionSwitchEntity entity){
+		if(type == JunctionType.STRAIGHT){
+			Print.chat(player, "&cThis Junction has only 2 tracks! It cannot be switched."); return true;
+		}
+		if(type.isCrossing()){
+			Print.chat(player, "&cThis Junction is a Crossing. It cannot be switched!"); return true;
+		}
+		if(type.isSwitch()){
+			if(type == JunctionType.FORK_2){
+				switch0 = !switch0; Print.bar(player, "&aChanged Junction State.");
+			}
+			else{
+				if(switch1){ switch1 = false; switch0 = true; }
+				else if(switch0){ switch1 = false; switch0 = false; }
+				else if(!switch1){ switch0 = false; switch1 = true; }
+				Print.bar(player, "&aChanged Junction State.");
+			}
+		}
+		//TODO 4 side (not crossing) implementation
+		region.updateClient("junction_state", vecpos); return true;
+	}
+
+	public void resetSwitchPosition(){
+		this.switchlocation = null; entityFacing = null; if(entity != null) entity.setDead(); region.updateClient("junction", vecpos);
 	}
 
 }

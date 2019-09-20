@@ -4,8 +4,10 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -39,13 +41,15 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	@Override
 	public void render(Track data, Integer index){
 		for(TurboList list : groups){ list.renderPlain(); }
-		//TODO custom rendering
 	}
 
 	@Override
 	public void render(Track data, Integer index, Entity ent, RenderCache cache, int meta){
 		for(TurboList list : groups){ list.renderPlain(); }
-		//TODO custom rendering
+	}
+
+	public void renderSwitch(JunctionSwitchEntity entity, Junction junction){
+		//TODO
 	}
 	
 }

@@ -28,6 +28,8 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -226,17 +228,24 @@ public class RailRenderer {
     		}
         }
         else{
+        	GL11.glPushMatrix();
+        	Minecraft.getMinecraft().entityRenderer.enableLightmap();
+        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        	GL11.glEnable(GL11.GL_LIGHTING);
+        	GL11.glDisable(GL11.GL_BLEND);
+        	RenderHelper.enableStandardItemLighting();
+        	//
         	for(int i = 0; i < value.size(); i++){
         		if(i > 2) GL11.glTranslatef(0, 0.01f, 0);
         		if(value.tracks.get(i).isOppositeCopy()) continue;
         		Track track = value.tracks.get(i); RailGaugeModel model = track.gauge.getModel();
         		if(track.railmodel == null){
-        			ModelRendererTurbo turbo = new ModelRendererTurbo(track, 0, 0, 16, 16).setColor(MIDDLE_GRAY);
-        			float angle; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
+        			TurboArrayPositioned tarp = new TurboArrayPositioned(track, MIDDLE_GRAY);
+        			float angle, passed = 0; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
         			TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly0;
         			//
         			for(int p = 0; p < model.rails.length; p++){
-        				path.clear(); vec = track.getVectorPosition0(0.001f, false);
+        				path.clear(); vec = track.getVectorPosition0(0.001f, false); passed = 0;
         				angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
         				angle += Static.rad90;
         				path.add(track.vecpath[0].add(grv(angle, model.rails[p][0])));
@@ -254,11 +263,12 @@ public class RailRenderer {
             				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
             				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 0, 0);
             				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
-            				turbo.copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0 });
+            				tarp.turbos[(int)passed].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
+            				passed += track.vecpath[k].distanceTo(track.vecpath[k + 1]);
             			}
         			}
-        			track.railmodel = turbo;
-        			turbo = new ModelRendererTurbo(track, 0, 0, 0, 0);
+        			track.railmodel = tarp;
+        			tarp = new TurboArrayPositioned(track, null);
         			if(track.length >  model.ties_distance){
         				float half = model.ties_distance * .5f, accu = half;
         				while(accu < track.length){
@@ -273,17 +283,47 @@ public class RailRenderer {
             							verts[m] = new TexturedVertex(grv(angle, org.vector), org.textureX, org.textureY);
             							verts[m].vector = verts[m].vector.scale(Static.sixteenth).add(vec);
             						}
-            						turbo.copyTo(verts, new TexturedPolygon[]{ new TexturedPolygon(verts) });
+            						tarp.turbos[(int)accu].copyTo(verts, new TexturedPolygon[]{ new TexturedPolygon(verts) });
         						}
         					} accu += model.ties_distance;
         				}
         			}
-        			track.restmodel = turbo;
+        			track.restmodel = tarp;
         		}
-        		GlStateManager.disableTexture2D(); track.railmodel.render(1f); GlStateManager.enableTexture2D();
-        		ModelBase.bindTexture(track.gauge.getTexture()); track.restmodel.render(1f);
+        		ModelBase.bindTexture(Resources.NULL_TEXTURE); track.railmodel.render();
+        		ModelBase.bindTexture(track.gauge.getTexture()); track.restmodel.render();
         	}
+        	//
+    		Minecraft.getMinecraft().entityRenderer.disableLightmap();
+    		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    		GL11.glDisable(GL11.GL_LIGHTING);
+    		GL11.glPopMatrix();
         }
+	}
+	
+	public static class TurboArrayPositioned {
+		
+		private ModelRendererTurbo[] turbos;
+		private Vec3f[] positions;
+		
+		public TurboArrayPositioned(Track track, RGB colour){
+			int i = (int)track.getLength(null); if(track.length % 1f > 0) i++;
+			turbos = new ModelRendererTurbo[i]; positions = new Vec3f[i];
+			for(int k = 0; k < i; k++){
+				turbos[k] = new ModelRendererTurbo(track, 0, 0, 16, 16);
+				if(colour != null) turbos[k].setColor(colour);
+				positions[k] = track.getVectorPosition(k, false);
+			}
+		}
+
+		public void render(){
+			for(int m = 0; m < turbos.length; m++){
+		        int i = getBrightness(positions[m]), j = i % 65536, k = i / 65536;
+		        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F); turbos[m].render(1f);
+			}
+		}
+		
 	}
 	
 	private static final Vec3f grv(float rad, Vec3f vec){

@@ -2,9 +2,9 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.ArrayList;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -32,9 +32,9 @@ public class Track {
 	protected Section section;
 	protected Junction junction;
 	@SideOnly(Side.CLIENT)
-	public ModelRendererTurbo railmodel;
+	public TurboArrayPositioned railmodel;
 	@SideOnly(Side.CLIENT)
-	public ModelRendererTurbo restmodel;
+	public TurboArrayPositioned restmodel;
 	
 	/*public Track(Vec3d start, Vec3d end, RailGauge gauge, Vec3d... subs){
 		this.id = start.toString() + "-" + end.toString();

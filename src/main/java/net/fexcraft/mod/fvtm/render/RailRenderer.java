@@ -236,7 +236,7 @@ public class RailRenderer {
         	RenderHelper.enableStandardItemLighting();
         	//
         	for(int i = 0; i < value.size(); i++){
-        		if(i > 2) GL11.glTranslatef(0, 0.01f, 0);
+        		if(i > 2) GL11.glTranslatef(0, -0.02f, 0);
         		if(value.tracks.get(i).isOppositeCopy()) continue;
         		Track track = value.tracks.get(i); RailGaugeModel model = track.gauge.getModel();
         		if(track.railmodel == null){
@@ -307,7 +307,7 @@ public class RailRenderer {
 		private Vec3f[] positions;
 		
 		public TurboArrayPositioned(Track track, RGB colour){
-			int i = (int)track.getLength(null); if(track.length % 1f > 0) i++;
+			int i = (int)track.getLength(null); if(track.length % 1f > 0) i++; if(i == 0) i = 1;
 			turbos = new ModelRendererTurbo[i]; positions = new Vec3f[i];
 			for(int k = 0; k < i; k++){
 				turbos[k] = new ModelRendererTurbo(track, 0, 0, 16, 16);

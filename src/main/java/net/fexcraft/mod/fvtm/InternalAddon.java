@@ -38,7 +38,9 @@ public class InternalAddon extends Addon {
 			obj.addProperty("Addon", REGNAME.toString());
 			obj.addProperty("Name", "30px Standard Gauge");
 			obj.addProperty("Description", "fvtm:standard.gauge_desc");
-			obj.addProperty("Width", 30); //obj.addProperty("RailWidth", 2);
+			obj.addProperty("Width", 30); obj.addProperty("Height", 4);
+			obj.addProperty("Model", "fvtm:models/gauges/standard");
+			obj.addProperty("Texture", "fvtm:textures/blocks/standard_gauge.png");
 			data.register(new RailGauge().parse(obj));
 		}
 		return;

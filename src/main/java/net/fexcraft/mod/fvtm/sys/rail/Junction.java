@@ -22,6 +22,7 @@ public class Junction {
 	public RailData root;
 	public Signal signal;
 	public JunctionType type;
+	public Vec3f switchlocation;
 	
 	/** General Constructor */
 	public Junction(RailData root, Vec316f pos){

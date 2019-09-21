@@ -250,7 +250,7 @@ public class Junction {
 		if(entity != null) entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
 	}
 
-	public boolean onSwitchInteract(EntityPlayer player, EnumHand hand, JunctionSwitchEntity entity){
+	public boolean onSwitchInteract(EntityPlayer player, JunctionSwitchEntity entity, boolean left){
 		if(type == JunctionType.STRAIGHT){
 			Print.chat(player, "&cThis Junction has only 2 tracks! It cannot be switched."); return true;
 		}
@@ -269,8 +269,8 @@ public class Junction {
 			}
 		}
 		if(type.isDouble()){
-			//TODO
-			Print.chat(player, "&cThis Junction type has not been fully iplemented yet.");
+			if(left){ switch1 = !switch1; Print.bar(player, "&aChanged Junction State. [1]"); }
+			else{ switch0 = !switch0; Print.bar(player, "&aChanged Junction State. [0]"); }
 			return true;
 		}
 		region.updateClient("junction_state", vecpos); return true;

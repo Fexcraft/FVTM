@@ -95,7 +95,7 @@ public class JunctionSwitchEntity extends Entity implements IEntityAdditionalSpa
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
         if(isDead || world.isRemote || hand == EnumHand.OFF_HAND){ return false; }
         if(player.getHeldItem(hand).isEmpty()){
-        	return junction.onSwitchInteract(player, hand, this);
+        	return junction.onSwitchInteract(player, this, false);
         } return false;
     }
     
@@ -103,7 +103,10 @@ public class JunctionSwitchEntity extends Entity implements IEntityAdditionalSpa
     public boolean attackEntityFrom(DamageSource damagesource, float i){
         if(world.isRemote || isDead){ return true;  }
         if(damagesource.damageType.equals("player")){
-        	this.setDead(); if(junction != null) junction.resetSwitchPosition();
+        	if(((EntityPlayer)damagesource.getTrueSource()).isSneaking()){
+            	this.setDead(); if(junction != null) junction.resetSwitchPosition();
+        	}
+        	else return junction.onSwitchInteract((EntityPlayer)damagesource.getTrueSource(), this, true);
         }
         return true;
     }

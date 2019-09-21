@@ -181,10 +181,22 @@ public class Junction {
 				break;
 			}
 			case DOUBLE:{
-				if(eqTrack(track, 0)){ return tracks.get(switch0 ? 1 : 2); }
-				if(eqTrack(track, 1)){ return tracks.get(switch1 ? 0 : 3); }
-				if(eqTrack(track, 2)){ return tracks.get(switch1 ? 0 : 3); }
-				if(eqTrack(track, 3)){ return tracks.get(switch0 ? 1 : 2); }
+				if(eqTrack(track, 0)){
+					if(applystate && !switch1){ switch1 = true; region.updateClient("junction_state", vecpos); }
+					return tracks.get(switch0 ? 1 : 2);
+				}
+				if(eqTrack(track, 1)){
+					if(applystate && !switch0){ switch0 = true; region.updateClient("junction_state", vecpos); }
+					return tracks.get(switch1 ? 0 : 3);
+				}
+				if(eqTrack(track, 2)){
+					if(applystate && switch0){ switch0 = false; region.updateClient("junction_state", vecpos); }
+					return tracks.get(switch1 ? 0 : 3);
+				}
+				if(eqTrack(track, 3)){
+					if(applystate && switch1){ switch1 = false; region.updateClient("junction_state", vecpos); }
+					return tracks.get(switch0 ? 1 : 2);
+				}
 				break;
 			}
 		}

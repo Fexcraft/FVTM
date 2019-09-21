@@ -291,8 +291,8 @@ public class RailRenderer {
         			}
         			track.restmodel = tarp;
         		}
-        		ModelBase.bindTexture(Resources.NULL_TEXTURE); track.railmodel.render();
-        		ModelBase.bindTexture(track.gauge.getTexture()); track.restmodel.render();
+        		ModelBase.bindTexture(track.gauge.getRailTexture()); track.railmodel.render();
+        		ModelBase.bindTexture(track.gauge.getTiesTexture()); track.restmodel.render();
         	}
         	//
     		Minecraft.getMinecraft().entityRenderer.disableLightmap();

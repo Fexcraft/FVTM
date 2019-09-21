@@ -28,7 +28,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 	protected float height; protected float height16;
 	protected RailGaugeItem item;
 	protected List<String> compatible;
-	protected ResourceLocation texture;
+	protected ResourceLocation rail_texture, ties_texture, model_texture;
 	//
 	protected String modelid;
 	protected RailGaugeModel model;
@@ -62,7 +62,9 @@ public class RailGauge extends TypeCore<RailGauge> {
 		this.width = JsonUtil.getIfExists(obj, "Width", 30).intValue();
 		this.height = JsonUtil.getIfExists(obj, "Height", 4).floatValue();
 		this.height16 = height * Static.sixteenth;
-		this.texture = DataUtil.getTextures(obj).get(0);
+		this.rail_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "RailTexture", "fvtm:textures/entity/null.png"));
+		this.ties_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "TiesTexture", "minecraft:textures/blocks/anvil_base.png"));
+		this.model_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "ModelTexture", "fvtm:textures/entity/null.png"));
 		/*if(obj.has("RailWidth") && !obj.get("RailWidth").isJsonPrimitive()){
 			JsonArray array = obj.get("RailWidth").getAsJsonArray();
 			rail_widths = new float[rails = array.size() / 2];
@@ -130,8 +132,16 @@ public class RailGauge extends TypeCore<RailGauge> {
 		this.model = (RailGaugeModel)Resources.getModel(modelid, RailGaugeModel.class);
 	}
 	
-	public ResourceLocation getTexture(){
-		return texture;
+	public ResourceLocation getRailTexture(){
+		return rail_texture;
+	}
+	
+	public ResourceLocation getTiesTexture(){
+		return ties_texture;
+	}
+	
+	public ResourceLocation getModelTexture(){
+		return model_texture;
 	}
 
 }

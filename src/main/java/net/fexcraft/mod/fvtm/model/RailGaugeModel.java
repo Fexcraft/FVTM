@@ -29,6 +29,12 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		{ new Vec3f(0.9375, 0.25, 0), new Vec3f(1.0625, 0.25, 0) }
 	};
 	public float ties_distance = 0.5f;
+	//
+	public TurboList fork2_base, fork2_lever;
+	public TurboList fork3_base, fork3_lever;
+	public TurboList double_base, double_lever0, double_lever1;
+	//
+	//signals
 	
 	////-///---/---///-////
 	
@@ -48,8 +54,27 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		for(TurboList list : groups){ list.renderPlain(); }
 	}
 
+	//TODO rotation programs for levers
 	public void renderSwitch(JunctionSwitchEntity entity, Junction junction){
-		//TODO
+		switch(junction.type){
+			case DOUBLE:{
+				double_base.renderPlain();
+				double_lever0.renderPlain();
+				double_lever1.renderPlain();
+				break;
+			}
+			case FORK_2:{
+				fork2_base.renderPlain();
+				fork2_lever.renderPlain();
+				break;
+			}
+			case FORK_3:{
+				fork3_base.renderPlain();
+				fork3_lever.renderPlain();
+				break;
+			}
+			case CROSSING: case STRAIGHT: default: return;
+		}
 	}
 	
 }

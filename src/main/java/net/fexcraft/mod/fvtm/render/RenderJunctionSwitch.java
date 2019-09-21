@@ -45,7 +45,7 @@ public class RenderJunctionSwitch extends Render<JunctionSwitchEntity> implement
 
     @Override
     protected ResourceLocation getEntityTexture(JunctionSwitchEntity entity){
-        return entity.junction.tracks.get(0).gauge.getTexture();
+        return entity.junction.tracks.get(0).gauge.getModelTexture();
     }
     
     @Override

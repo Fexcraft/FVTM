@@ -70,8 +70,7 @@ public class Junction {
 			}
 		}
 		if(compound.hasKey("Signal")) signal = Signal.valueOf(compound.getString("Signal"));
-		if(tracks.size() > 2) type = compound.hasKey("Type") ? JunctionType.valueOf(compound.getString("Type"))
-			: tracks.size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
+		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
 		else type = JunctionType.STRAIGHT;
 		if(compound.hasKey("SwitchPos")) this.switchlocation = DataUtil.readVec3f(compound.getTag("SwitchPos"));
 		if(compound.hasKey("SwitchFacing")) this.entityFacing = EnumFacing.getFront(compound.getInteger("SwitchFacing"));
@@ -106,14 +105,11 @@ public class Junction {
 	}
 
 	public void addnew(Track track){
-		tracks.add(track);
-		type = tracks.size() <= 2 ? JunctionType.STRAIGHT
-			: tracks.size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
-		updateClient();
+		tracks.add(track); type = JunctionType.byTracksAmount(size()); updateClient();
 	}
 
-	private void updateClient(){
-		root.getRegions().get(RailData.getRegionXZ(vecpos)).updateClient(vecpos);
+	public void updateClient(){
+		root.getRegions().get(RailData.getRegionXZ(vecpos)).updateClient("junction", vecpos);
 	}
 
 	public void remove(TrackKey trackid, boolean firstcall){
@@ -137,34 +133,59 @@ public class Junction {
 	}
 	
 	@Nullable
-	public Track getNext(TrackKey track, boolean test){
-		switch(tracks.size()){
-			case 0: return null;
-			case 1: return eqTrack(track, 0) ? null : tracks.get(0);
-			case 2: return eqTrack(track, 0) ? tracks.get(1) : tracks.get(0);
-			case 3:{
-				if(eqTrack(track, 0)){
-					return tracks.get(switch0 ? 1 : 2);
-				} else {
-					if(!test){ boolean bool = eqTrack(track, 1);
-						if(switch0 != bool){ switch0 = bool; region.updateClient("junction_state", vecpos); }
-					} return tracks.get(0);
+	public Track getNext(TrackKey track, boolean applystate){
+		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
+		switch(type){
+			case STRAIGHT:{
+				switch(size()){
+					case 0: return null;
+					case 1: return eqTrack(track, 0) ? null : tracks.get(0);
+					case 2: return eqTrack(track, 0) ? tracks.get(1) : tracks.get(0);
+				} break;
+			}
+			case FORK_2:{
+				if(eqTrack(track, 0)) return tracks.get(switch0 ? 1 : 2);
+				else{
+					if(applystate){
+						boolean bool = eqTrack(track, 1);
+						if(switch0 != bool){ switch0 = bool;
+							region.updateClient("junction_state", vecpos);
+						}
+					}
+					return tracks.get(0);
 				}
 			}
-			case 4:{
-				if(eqTrack(track, 0)){
-					return type.isCrossing() ? tracks.get(1) : tracks.get(switch0 ? 1 : 2);
+			case FORK_3:{
+				if(eqTrack(track, 0)) return tracks.get(switch0 ? 1 : switch1 ? 3 : 2);
+				else{
+					if(applystate){
+						boolean bool0 = eqTrack(track, 1), bool1 = eqTrack(track, 2);
+						if(bool0 && !switch0){
+							switch0 = true; switch1 = false; region.updateClient("junction_state", vecpos);
+						}
+						if(bool1 && (switch0 || switch1)){
+							switch0 = false; switch1 = false; region.updateClient("junction_state", vecpos);
+						}
+						if(!bool1 && !switch1){
+							switch0 = false; switch1 = true; region.updateClient("junction_state", vecpos);
+						}
+					}
+					return tracks.get(0);
 				}
-				if(eqTrack(track, 1)){
-					return type.isCrossing() ? tracks.get(0) : tracks.get(switch1 ? 0 : 3);
-				}
-				if(eqTrack(track, 2)){
-					return type.isCrossing() ? tracks.get(3) : tracks.get(switch1 ? 0 : 3);
-				}
-				if(eqTrack(track, 3)){
-					return type.isCrossing() ? tracks.get(2) : tracks.get(switch0 ? 1 : 2);
-				}
-				//TODO test bool application
+			}
+			case CROSSING:{
+				if(eqTrack(track, 0)){ return tracks.get(1); }
+				if(eqTrack(track, 1)){ return tracks.get(0); }
+				if(eqTrack(track, 2)){ return tracks.get(3); }
+				if(eqTrack(track, 3)){ return tracks.get(2); }
+				break;
+			}
+			case DOUBLE:{
+				if(eqTrack(track, 0)){ return tracks.get(switch0 ? 1 : 2); }
+				if(eqTrack(track, 1)){ return tracks.get(switch1 ? 0 : 3); }
+				if(eqTrack(track, 2)){ return tracks.get(switch1 ? 0 : 3); }
+				if(eqTrack(track, 3)){ return tracks.get(switch0 ? 1 : 2); }
+				break;
 			}
 		}
 		return null;
@@ -235,7 +256,11 @@ public class Junction {
 				Print.bar(player, "&aChanged Junction State.");
 			}
 		}
-		//TODO 4 side (not crossing) implementation
+		if(type.isDouble()){
+			//TODO
+			Print.chat(player, "&cThis Junction type has not been fully iplemented yet.");
+			return true;
+		}
 		region.updateClient("junction_state", vecpos); return true;
 	}
 

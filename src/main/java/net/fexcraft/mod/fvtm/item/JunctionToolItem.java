@@ -59,38 +59,45 @@ public class JunctionToolItem extends Item {
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking()){
 			stack.getTagCompound().removeTag("fvtm:junction");
-			Print.chat(player, "&bResetting Cached Position.");
+			Print.chat(player, "&cResetting Cached Position.");
 			return EnumActionResult.SUCCESS;
 		}
-        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID), cached;
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-        if(stack.getTagCompound().hasKey("fvtm:junction")){
-        	Vec316f cached = new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:junction"));
-        	if(cached.equals(vector)){
-        		Print.chat(player, "&7//TODO open GUI");
-        	}
-        	else{
-        		Junction junk = syscap.getJunction(cached, true);
-        		junk.updateSwitchLocation(vector.vector, player.getHorizontalFacing().getOpposite()); junk.root.updateJuncton(junk.getVec316f());
-        		Print.chat(player, "&9&oNew Switch Location for Junction set!");
-        	}
-        }
-        else{
-    		Junction junk = syscap.getJunction(vector, true);
-    		if(junk == null){
+		Junction junk = syscap.getJunction(vector, true);
+		if(junk == null){
+	        if(stack.getTagCompound().hasKey("fvtm:junction")){
+	        	cached = new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:junction"));
+        		junk = syscap.getJunction(cached, true);
+        		junk.updateSwitchLocation(vector.vector, player.getHorizontalFacing().getOpposite());
+        		junk.updateClient(); Print.chat(player, "&9&oNew Switch Location for Junction set!");
+    			Print.chat(player, "&7&oResetting Cached Position.");
+	        }
+	        else{
     			Print.chat(player, "&cNo Junction at this Position.");
-    		}
-    		else{
-    			if(junk.tracks.size() < 2){
-            		Print.chat(player, "&7//TODO open GUI");
-    			}
-    			else{
-    				stack.getTagCompound().setTag("fvtm:junction", vector.write());
-        			Print.chat(player, "&a&lJunction Position Cached.");
-    			}
-    		}
-        }
-        return EnumActionResult.SUCCESS;
+	        }
+	        return EnumActionResult.SUCCESS;
+		}
+		else{
+	        if(stack.getTagCompound().hasKey("fvtm:junction")){
+	        	cached = new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:junction"));
+	        	if(cached.equals(vector)){
+	        		Print.chat(player, "&7//TODO open GUI");
+	                return EnumActionResult.SUCCESS;
+	        	}
+	        	if(junk.tracks.size() < 2){
+	    			Print.chat(player, "&7&oResetting previous Cached Position.");
+	        	}
+	        }
+			if(junk.tracks.size() < 2){
+        		Print.chat(player, "&7//TODO open GUI");
+			}
+			else{
+				stack.getTagCompound().setTag("fvtm:junction", vector.write());
+    			Print.chat(player, "&a&lJunction Position Cached.");
+			}
+            return EnumActionResult.SUCCESS;
+		}
     }
 
 }

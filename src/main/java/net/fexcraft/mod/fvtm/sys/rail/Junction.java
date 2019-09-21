@@ -13,7 +13,6 @@ import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 
 /**
  * 

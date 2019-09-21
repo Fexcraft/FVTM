@@ -122,7 +122,7 @@ public class Junction {
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
 			if(junk != null) junk.remove(track.getOppositeId(), false);
 		}
-		this.updateClient();
+		type = JunctionType.byTracksAmount(size()); this.updateClient();
 	}
 
 	public void clear(){

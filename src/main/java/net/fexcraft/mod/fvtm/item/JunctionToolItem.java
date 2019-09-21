@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fItem;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -70,7 +71,7 @@ public class JunctionToolItem extends Item {
 	        	cached = new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:junction"));
         		junk = syscap.getJunction(cached, true);
         		junk.updateSwitchLocation(vector.vector, player.getHorizontalFacing().getOpposite());
-        		junk.updateClient(); Print.chat(player, "&9&oNew Switch Location for Junction set!");
+        		junk.updateClient(); Print.chat(player, "&aNew Switch Location for Junction set!");
     			Print.chat(player, "&7&oResetting Cached Position.");
 	        }
 	        else{
@@ -82,15 +83,15 @@ public class JunctionToolItem extends Item {
 	        if(stack.getTagCompound().hasKey("fvtm:junction")){
 	        	cached = new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:junction"));
 	        	if(cached.equals(vector)){
-	        		Print.chat(player, "&7//TODO open GUI");
+	        		GenericContainer.openGenericGui(701, new int[]{ 0, 0, 0 }, cached.write(), player);
 	                return EnumActionResult.SUCCESS;
 	        	}
-	        	if(junk.tracks.size() < 2){
+	        	if(junk.tracks.size() <= 2){
 	    			Print.chat(player, "&7&oResetting previous Cached Position.");
 	        	}
 	        }
-			if(junk.tracks.size() < 2){
-        		Print.chat(player, "&7//TODO open GUI");
+			if(junk.tracks.size() <= 2){
+        		GenericContainer.openGenericGui(701, new int[]{ 0, 0, 0 }, vector.write(), player);
 			}
 			else{
 				stack.getTagCompound().setTag("fvtm:junction", vector.write());

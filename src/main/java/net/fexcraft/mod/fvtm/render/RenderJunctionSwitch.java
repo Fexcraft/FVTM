@@ -24,11 +24,13 @@ public class RenderJunctionSwitch extends Render<JunctionSwitchEntity> implement
         GL11.glPushMatrix();
         {
         	float rot = 60;
-        	switch(entity.junction.entityFacing.getIndex()){
-	        	case 2:{ rot = 180; break; }
-	        	case 3:{ rot = 0; break; }
-	        	case 4:{ rot = 270; break; }
-	        	case 5:{ rot = 90; break; }
+        	if(entity.junction.entityFacing != null){
+            	switch(entity.junction.entityFacing.getIndex()){
+    	        	case 2:{ rot = 180; break; }
+    	        	case 3:{ rot = 0; break; }
+    	        	case 4:{ rot = 270; break; }
+    	        	case 5:{ rot = 90; break; }
+            	}
         	}
         	GL11.glTranslated(x, y, z);
             GL11.glRotatef(180, 1f, 0f, 0f);

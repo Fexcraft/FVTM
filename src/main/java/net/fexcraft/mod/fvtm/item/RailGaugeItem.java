@@ -95,7 +95,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> {
 		}
 		else{
 			if(!junk.tracks.isEmpty() && junk.tracks.size() < 2 && !junk.tracks.get(0).isCompatibleGauge(type)){
-				Print.chat(player, "&9Junction ");
+				Print.chat(player, "&9Item Gauge not compatible with the &7Junction's Gauge&9.");
 				return EnumActionResult.FAIL;
 			}
 			if(junk.tracks.size() >= 4){

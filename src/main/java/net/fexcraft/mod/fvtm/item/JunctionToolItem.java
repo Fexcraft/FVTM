@@ -72,6 +72,7 @@ public class JunctionToolItem extends Item {
         		junk = syscap.getJunction(cached, true);
         		junk.updateSwitchLocation(vector.vector, player.getHorizontalFacing().getOpposite());
         		junk.updateClient(); Print.chat(player, "&aNew Switch Location for Junction set!");
+        		stack.getTagCompound().removeTag("fvtm:junction");
     			Print.chat(player, "&7&oResetting Cached Position.");
 	        }
 	        else{
@@ -87,6 +88,7 @@ public class JunctionToolItem extends Item {
 	                return EnumActionResult.SUCCESS;
 	        	}
 	        	if(junk.tracks.size() <= 2){
+	        		stack.getTagCompound().removeTag("fvtm:junction");
 	    			Print.chat(player, "&7&oResetting previous Cached Position.");
 	        	}
 	        }

@@ -28,6 +28,7 @@ public class Junction {
 	public RailRegion region;
 	public Signal signal;
 	public JunctionType type;
+	public String station;
 	//
 	private Vec3f switchlocation;
 	public JunctionSwitchEntity entity;
@@ -72,9 +73,14 @@ public class Junction {
 		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
 		else type = JunctionType.STRAIGHT;
 		if(compound.hasKey("SwitchPos")) this.switchlocation = DataUtil.readVec3f(compound.getTag("SwitchPos"));
+		else this.switchlocation = null;
 		if(compound.hasKey("SwitchFacing")) this.entityFacing = EnumFacing.getFront(compound.getInteger("SwitchFacing"));
 		if(switchlocation != null && entityFacing == null) entityFacing = EnumFacing.NORTH;
-		if(entity != null) entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
+		if(entity != null){
+			if(switchlocation != null) entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
+			else entity.setDead();
+		}
+		station = compound.hasKey("Station") ? compound.getString("Station") : null;
 		return this;
 	}
 	
@@ -90,8 +96,11 @@ public class Junction {
 		compound.setTag("Pos", vecpos.write());
 		if(signal != null) compound.setString("Signal", signal.name());
 		if(tracks.size() > 2) compound.setString("Type", type.name());
-		if(switchlocation != null) compound.setTag("SwitchPos", DataUtil.writeVec3f(switchlocation));
-		if(entityFacing != null) compound.setInteger("SwitchFacing", entityFacing.getIndex());
+		if(switchlocation != null){
+			compound.setTag("SwitchPos", DataUtil.writeVec3f(switchlocation));
+			compound.setInteger("SwitchFacing", entityFacing == null ? EnumFacing.NORTH.getIndex() : entityFacing.getIndex());
+		}
+		if(station != null) compound.setString("Station", station);
 		return compound;
 	}
 	
@@ -270,7 +279,6 @@ public class Junction {
 		if(type.isDouble()){
 			if(left){ switch1 = !switch1; Print.bar(player, "&aChanged Junction State. [1]"); }
 			else{ switch0 = !switch0; Print.bar(player, "&aChanged Junction State. [0]"); }
-			return true;
 		}
 		region.updateClient("junction_state", vecpos); return true;
 	}

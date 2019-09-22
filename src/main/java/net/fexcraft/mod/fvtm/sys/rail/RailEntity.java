@@ -458,7 +458,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		COUPLER_FRONT(0), BOGIE_FRONT(1), BOGIE_REAR(2), COUPLER_REAR(3); int index; TrainPoint(int idx){ this.index = idx; }
 		
 		public boolean updatesJunction(boolean forward){
-			return (this == COUPLER_FRONT && forward || this == COUPLER_REAR && !forward);
+			return true;//(this == COUPLER_FRONT && forward || this == COUPLER_REAR && !forward);
 		}
 		
 	}

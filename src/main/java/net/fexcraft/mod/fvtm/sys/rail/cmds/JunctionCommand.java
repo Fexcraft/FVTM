@@ -65,7 +65,7 @@ public abstract class JunctionCommand {
 	public abstract void processSwitch(RailEntity entity, Junction junction, TrackKey track, int index, boolean applystate);
 
 	public boolean isTarget(RailEntity entity){
-		String id = "id:" + entity.uid;
+		if(targets.isEmpty()) return true; String id = "id:" + entity.uid;
 		for(String str : targets){
 			if(entity.lines.contains(str) || id.equals(id)){// || entity.vehdata.getType().getRegistryName().toString().equals(id))
 				return true;

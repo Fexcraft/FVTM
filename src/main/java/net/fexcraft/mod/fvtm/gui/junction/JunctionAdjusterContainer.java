@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.junction;
 
+import java.util.Collections;
+
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
@@ -23,16 +25,43 @@ public class JunctionAdjusterContainer extends GenericContainer {
 	@Override
 	protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
 		if(junction == null){ Print.chat(player, "Error, Junction is null."); return; }
-		int type = packet.getByte("type");
-		if(type < 2){
-			Print.chat(player, "Type `" + type + "` cannot be set automatically."); return;
+		if(packet.hasKey("type")){
+			int type = packet.getByte("type");
+			if(type < 2){
+				Print.chat(player, "Type `" + type + "` cannot be set manually."); return;
+			}
+			if(junction.size() != 4){
+				Print.chat(player, "Type `" + type + "` not applicable to a junction bellow 4 tracks."); return;
+			}
+			junction.type = type == 2 ? JunctionType.FORK_3 : type == 3 ? JunctionType.CROSSING
+				: type == 4 ? JunctionType.DOUBLE : JunctionType.byTracksAmount(junction.size());
+			junction.updateClient(); Print.chat(player, "&a&lJunction Type Updated.");
 		}
-		if(junction.size() != 4){
-			Print.chat(player, "Type `" + type + "` not applicable to a junction bellow 4 tracks."); return;
+		else if(packet.hasKey("del")){
+			int del = packet.getByte("del");
+			if(del < 0 || del >= junction.size()) return;
+			Print.debug("delpack: " + packet);
+			junction.remove(del, true); return;
 		}
-		junction.type = type == 2 ? JunctionType.FORK_3 : type == 3 ? JunctionType.CROSSING
-			: type == 4 ? JunctionType.DOUBLE : JunctionType.byTracksAmount(junction.size());
-		junction.updateClient(); Print.chat(player, "&a&lJunction Type Updated.");
+		else if(packet.hasKey("dw")){
+			int dw = packet.getByte("dw");
+			if(dw < 0 || dw >= junction.size()) return;
+			Collections.swap(junction.tracks, dw, dw + 1);
+			junction.updateClient(); return;
+		}
+		else if(packet.hasKey("up")){
+			int up = packet.getByte("up");
+			if(up < 0 || up >= junction.size()) return;
+			Collections.swap(junction.tracks, up, up - 1);
+			junction.updateClient(); return;
+		}
+		else if(packet.hasKey("station")){
+			String station = packet.getString("station");
+			if(station.equals("null") || station.equals("no station")){
+				junction.station = null;
+			} else junction.station = station;
+			junction.updateClient(); return;
+		}
 	}
 
     @Override

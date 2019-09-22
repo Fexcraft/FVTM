@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JunctionCommand;
@@ -60,7 +61,7 @@ public class Junction {
 		int trackam = compound.getInteger("Tracks");
 		if(trackam > 0){
 			if(trackam != tracks.size()){
-				tracks.clear();//TODO dispose of the models
+				tracks.clear();//TODO dispose of the models properly
 				for(int i = 0; i < trackam; i++){
 					try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
 					catch(Exception e){ e.printStackTrace(); }
@@ -69,6 +70,9 @@ public class Junction {
 			else{
 				for(int i = 0; i < trackam; i++){
 					tracks.get(i).read(compound.getCompoundTag("Track" + i));
+					if(Static.side().isClient()){//TODO dispose of the models properly
+						tracks.get(i).railmodel = tracks.get(i).restmodel = null;
+					}
 				}
 			}
 		}
@@ -129,6 +133,15 @@ public class Junction {
 			if(tracks.get(i).getId().equals(trackid)){ track = tracks.remove(i); break; }
 		}
 		if(track == null) return;
+		if(firstcall){
+			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
+			if(junk != null) junk.remove(track.getOppositeId(), false);
+		}
+		type = JunctionType.byTracksAmount(size()); this.updateClient();
+	}
+
+	public void remove(int index, boolean firstcall){
+		Track track = tracks.remove(index); Print.debug(index, track) ;if(track == null) return;
 		if(firstcall){
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
 			if(junk != null) junk.remove(track.getOppositeId(), false);

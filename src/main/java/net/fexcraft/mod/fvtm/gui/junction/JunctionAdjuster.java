@@ -14,7 +14,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	public JunctionAdjuster(EntityPlayer player, int[] xyz, NBTTagCompound compound){
 		super(texture, new JunctionAdjusterContainer(player, xyz, compound), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
-		this.xSize = 248; this.ySize = 218;
+		this.xSize = 248; this.ySize = 192;
 	}
 
 	@Override
@@ -26,7 +26,6 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		}
 		texts.put("type", new BasicText(guiLeft + 9, guiTop + 43, 230, MapColor.SNOW.colorValue, " . . . "));
 		texts.put("signal", new BasicText(guiLeft + 9, guiTop + 57, 230, MapColor.SNOW.colorValue, " . . . "));
-		texts.put("script", new BasicText(guiLeft + 9, guiTop + 78, 230, MapColor.SNOW.colorValue, "Scripts are not available yet!"));
 	}
 
 	@Override

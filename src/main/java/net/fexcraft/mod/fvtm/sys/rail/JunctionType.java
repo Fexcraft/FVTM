@@ -35,4 +35,8 @@ public enum JunctionType {
 		return size <= 2 ? JunctionType.STRAIGHT : size == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
 	}
 
+	public boolean isStraight(){
+		return this == STRAIGHT;
+	}
+
 }

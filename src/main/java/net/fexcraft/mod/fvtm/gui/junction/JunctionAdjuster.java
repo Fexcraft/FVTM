@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.junction;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,13 +22,19 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 
 	@Override
 	protected void init(){
-		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 230, MapColor.SNOW.colorValue, "Junction: " + container.junction.getVec316f().asIDString()));
+		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 218, MapColor.SNOW.colorValue, "ID: " + container.junction.getVec316f().asIDString()));
 		for(int i = 0; i < 5; i ++){
 			buttons.put("type" + i, new BasicButton("type" + i, guiLeft + 7 + (i * 18), guiTop + 21, 7 + (i * 18), 21, 18, 18,
 				i == 0 ? container.junction.size() <= 2 : i == 1 ? container.junction.size() == 3 : container.junction.size() == 4));
 		}
 		texts.put("type", new BasicText(guiLeft + 9, guiTop + 43, 230, MapColor.SNOW.colorValue, " . . . "));
 		texts.put("signal", new BasicText(guiLeft + 9, guiTop + 57, 230, MapColor.SNOW.colorValue, " . . . "));
+		for(int i = 0; i < 7; i ++){
+			buttons.put("command" + i, new BasicButton("command" + i, guiLeft + 7 + (i * 18), guiTop + 167, 7 + (i * 18), 167, 18, 18, true));
+		}
+		buttons.put("copy", new BasicButton("copy", guiLeft + 229, guiTop + 7, 229, 7, 12, 12, true));
+		fields.put("station", new TextField(0, fontRenderer, guiLeft + 7, guiTop + 69, 234, 12));
+		fields.get("station").setText("no station");
 	}
 
 	@Override
@@ -41,19 +50,35 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		int i = -1; try{ i = Integer.parseInt(button.name.replace("type", "")); } catch(Exception e){ e.printStackTrace(); }
-		if(i < 0 || i > 5) return false;
-		switch(i){
-			case 0:{ return true; }//skip, this type is automatic
-			case 1:{ return true; }//skip, this type is semi-automatic
-			case 2: case 3: case 4:{
-				if(container.junction.size() < 4) return true;//only applicable to 4 track junctions
-				NBTTagCompound compound = new NBTTagCompound();
-				compound.setByte("type", (byte)i); this.container.send(Side.SERVER, compound);
-				return true;
-			}
-			default: return false;
+		if(button.name.equals("copy")){
+			texts.get("title").string = "Position Copied to clipboard!";
+			StringSelection selection = new StringSelection(container.junction.getVec316f().asIDString());
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
+			return true;
 		}
+		int i = -1; try{ i = Integer.parseInt(button.name.replace("type", "").replace("command", "")); } catch(Exception e){ e.printStackTrace(); }
+		if(button.name.startsWith("type")){
+			if(i < 0 || i > 5) return false;
+			switch(i){
+				case 0:{ return true; }//skip, this type is automatic
+				case 1:{ return true; }//skip, this type is semi-automatic
+				case 2: case 3: case 4:{
+					if(container.junction.size() < 4) return true;//only applicable to 4 track junctions
+					NBTTagCompound compound = new NBTTagCompound();
+					compound.setByte("type", (byte)i); this.container.send(Side.SERVER, compound);
+					return true;
+				}
+				default: break;
+			}
+		}
+		else if(button.name.startsWith("command")){
+			if(i < 0 || i > 7) return false;
+			switch(i){
+				//TODO
+				default: break;
+			}
+		}
+		return false;
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.JunctionCommand;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -51,6 +52,8 @@ public class RailEntity implements Comparable<RailEntity>{
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
 	protected REC recom;
+	protected ArrayList<JunctionCommand> commands = new ArrayList<>();
+	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
 	
 	public RailEntity(RailData data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
@@ -90,6 +93,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(!region.getWorld().getWorld().isRemote){
 			if(current == null || vehdata == null){ this.dispose(); return; }
 			checkIfShouldHaveEntity(); checkIfShouldStop();
+			for(JunctionCommand command : commands) command.processEntity(this);
+			commands.removeIf(cmd -> cmd.isDone());
 			//
 			if(!vehdata.getType().isTrailerOrWagon() && throttle > 0.001f){
 				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
@@ -254,11 +259,12 @@ public class RailEntity implements Comparable<RailEntity>{
 	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track, boolean forward){
 		railentlist.clear(); railentlist.addAll(track.section.getEntities().values());
 		Junction junction = region.getJunction(track.start); Track track0;
-		if(junction != null){ track0 = junction.getNext(track.getId(), false);
+		//TODO alternative for when a specific path is followed
+		if(junction != null){ track0 = junction.getNext(null, track.getId(), false);
 			if(track0 != null)railentlist.addAll(track0.section.getEntities().values());
 		}
 		junction = region.getJunction(track.end);
-		if(junction != null){ track0 = junction.getNext(track.getOppositeId(), false);
+		if(junction != null){ track0 = junction.getNext(null, track.getOppositeId(), false);
 			if(track0 != null)railentlist.addAll(track0.section.getEntities().values());
 		} return railentlist;
 	}
@@ -294,7 +300,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public Vec3f move(float passed, TrainPoint point){
-		TRO tro = getTrack(current, passed, true);
+		TRO tro = getTrack(current, passed, point.updatesJunction(passed > 0));
 		if(sectionson[point.index] == null){
 			(sectionson[point.index] = tro.track.section).update(this, true);
 		}
@@ -313,7 +319,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		while(passed > track.length){
 			Junction junk = region.getJunction(track.end);
 			if(junk == null) new TRO(track, track.length);
-			Track newtrack = junk.getNext(track.getOppositeId(), apply);
+			Track newtrack = junk.getNext(this, track.getOppositeId(), apply);
 			if(newtrack != null){
 				passed -= track.length; track = newtrack;
 			} else return new TRO(track, track.length);
@@ -321,7 +327,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		while(passed < 0){
 			Junction junk = region.getJunction(track.start);
 			if(junk == null) return new TRO(track, 0);
-			Track newtrack = junk.getNext(track.getId(), apply);
+			Track newtrack = junk.getNext(this, track.getId(), apply);
 			if(newtrack != null){
 				passed += newtrack.length; track = newtrack.createOppositeCopy();
 			} else return new TRO(track, 0);
@@ -448,7 +454,13 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public static enum TrainPoint {
+		
 		COUPLER_FRONT(0), BOGIE_FRONT(1), BOGIE_REAR(2), COUPLER_REAR(3); int index; TrainPoint(int idx){ this.index = idx; }
+		
+		public boolean updatesJunction(boolean forward){
+			return (this == COUPLER_FRONT && forward || this == COUPLER_REAR && !forward);
+		}
+		
 	}
 
 	public void tryCoupling(EntityPlayer player, boolean thefront){

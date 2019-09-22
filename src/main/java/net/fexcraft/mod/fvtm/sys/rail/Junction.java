@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.JunctionCommand;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,13 +27,15 @@ public class Junction {
 	public boolean switch0, switch1;
 	public RailData root;
 	public RailRegion region;
-	public Signal signal;
+	public SignalType signal;
 	public JunctionType type;
 	public String station;
 	//
 	private Vec3f switchlocation;
 	public JunctionSwitchEntity entity;
 	public EnumFacing entityFacing;
+	private ArrayList<JunctionCommand> fortrains = new ArrayList<>();
+	private ArrayList<JunctionCommand> forswitch = new ArrayList<>();
 	
 	/** General Constructor */
 	public Junction(RailRegion region, Vec316f pos){
@@ -69,7 +72,7 @@ public class Junction {
 				}
 			}
 		}
-		if(compound.hasKey("Signal")) signal = Signal.valueOf(compound.getString("Signal"));
+		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
 		else type = JunctionType.STRAIGHT;
 		if(compound.hasKey("SwitchPos")) this.switchlocation = DataUtil.readVec3f(compound.getTag("SwitchPos"));
@@ -94,7 +97,7 @@ public class Junction {
 		compound.setBoolean("Switch1", switch1);
 		//compound.setBoolean("Crossing", crossing);
 		compound.setTag("Pos", vecpos.write());
-		if(signal != null) compound.setString("Signal", signal.name());
+		if(signal != null) compound.setString("SignalType", signal.name());
 		if(tracks.size() > 2) compound.setString("Type", type.name());
 		if(switchlocation != null){
 			compound.setTag("SwitchPos", DataUtil.writeVec3f(switchlocation));
@@ -141,8 +144,22 @@ public class Junction {
 	}
 	
 	@Nullable
-	public Track getNext(TrackKey track, boolean applystate){
+	public Track getNext(@Nullable RailEntity entity, TrackKey track, boolean applystate){
+		if(entity != null && fortrains.size() > 0){
+			Track track0 = getNext0(entity, track, applystate);
+			for(JunctionCommand cmd : fortrains){
+				if(cmd.isTarget(entity)) entity.commands.add(cmd.copy());
+			} return track0;
+			
+		} else return getNext0(entity, track, applystate);
+	}
+	
+	@Nullable
+	public Track getNext0(@Nullable RailEntity entity, TrackKey track, boolean applystate){
 		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
+		if(entity != null){
+			for(JunctionCommand cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
+		}
 		switch(type){
 			case STRAIGHT:{
 				switch(size()){
@@ -171,10 +188,10 @@ public class Junction {
 						if(bool0 && !switch0){
 							switch0 = true; switch1 = false; region.updateClient("junction_state", vecpos);
 						}
-						if(bool1 && (switch0 || switch1)){
+						else if(bool1 && (switch0 || switch1)){
 							switch0 = false; switch1 = false; region.updateClient("junction_state", vecpos);
 						}
-						if(!bool1 && !switch1){
+						else if(!bool1 && !switch1){
 							switch0 = false; switch1 = true; region.updateClient("junction_state", vecpos);
 						}
 					}
@@ -285,6 +302,10 @@ public class Junction {
 
 	public void resetSwitchPosition(){
 		this.switchlocation = null; entityFacing = null; if(entity != null) entity.setDead(); region.updateClient("junction", vecpos);
+	}
+
+	public int getIndex(TrackKey key){
+		for(int i = 0; i < tracks.size(); i++) if(eqTrack(key, i)) return i; return -1;
 	}
 
 }

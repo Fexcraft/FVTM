@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JunctionCommand;
@@ -15,6 +14,7 @@ import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 
 /**
  * 
@@ -37,6 +37,8 @@ public class Junction {
 	public EnumFacing entityFacing;
 	private ArrayList<JunctionCommand> fortrains = new ArrayList<>();
 	private ArrayList<JunctionCommand> forswitch = new ArrayList<>();
+	//
+	protected AxisAlignedBB frustumbb;
 	
 	/** General Constructor */
 	public Junction(RailRegion region, Vec316f pos){
@@ -61,7 +63,14 @@ public class Junction {
 		int trackam = compound.getInteger("Tracks");
 		if(trackam > 0){
 			if(trackam != tracks.size()){
-				tracks.clear();//TODO dispose of the models properly
+				if(root.getWorld().isRemote){
+					for(Track track : tracks){
+						track.railmodel.clearDisplayLists();
+						track.restmodel.clearDisplayLists();
+						track.railmodel = track.restmodel = null;
+					}
+				}
+				tracks.clear();
 				for(int i = 0; i < trackam; i++){
 					try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
 					catch(Exception e){ e.printStackTrace(); }
@@ -70,12 +79,15 @@ public class Junction {
 			else{
 				for(int i = 0; i < trackam; i++){
 					tracks.get(i).read(compound.getCompoundTag("Track" + i));
-					if(Static.side().isClient()){//TODO dispose of the models properly
-						tracks.get(i).railmodel = tracks.get(i).restmodel = null;
+					if(root.getWorld().isRemote){
+						Track track = tracks.get(i);
+						track.railmodel.clearDisplayLists();
+						track.restmodel.clearDisplayLists();
+						track.railmodel = track.restmodel = null;
 					}
 				}
 			}
-		}
+		} frustumbb = null;
 		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
 		else type = JunctionType.STRAIGHT;
@@ -103,7 +115,7 @@ public class Junction {
 		compound.setTag("Pos", vecpos.write());
 		if(signal != null) compound.setString("SignalType", signal.name());
 		if(tracks.size() > 2) compound.setString("Type", type.name());
-		if(switchlocation != null){
+		if(switchlocation != null && tracks.size() > 2){
 			compound.setTag("SwitchPos", DataUtil.writeVec3f(switchlocation));
 			compound.setInteger("SwitchFacing", entityFacing == null ? EnumFacing.NORTH.getIndex() : entityFacing.getIndex());
 		}
@@ -319,6 +331,28 @@ public class Junction {
 
 	public int getIndex(TrackKey key){
 		for(int i = 0; i < tracks.size(); i++) if(eqTrack(key, i)) return i; return -1;
+	}
+
+	public AxisAlignedBB getAABB(){
+		if(frustumbb != null) return frustumbb;
+		Vec3f min = new Vec3f(), max = new Vec3f(), other;
+		for(Track track : tracks){
+			other = track.start.vector;
+			if(other.xCoord < min.xCoord) min.xCoord = other.xCoord;
+			if(other.yCoord < min.yCoord) min.yCoord = other.yCoord;
+			if(other.zCoord < min.zCoord) min.zCoord = other.zCoord;
+			if(other.xCoord > max.xCoord) max.xCoord = other.xCoord;
+			if(other.yCoord > max.yCoord) max.yCoord = other.yCoord;
+			if(other.zCoord > max.zCoord) max.zCoord = other.zCoord;
+			other = track.end.vector;
+			if(other.xCoord < min.xCoord) min.xCoord = other.xCoord;
+			if(other.yCoord < min.yCoord) min.yCoord = other.yCoord;
+			if(other.zCoord < min.zCoord) min.zCoord = other.zCoord;
+			if(other.xCoord > max.xCoord) max.xCoord = other.xCoord;
+			if(other.yCoord > max.yCoord) max.yCoord = other.yCoord;
+			if(other.zCoord > max.zCoord) max.zCoord = other.zCoord;
+		}
+		return frustumbb = new AxisAlignedBB(min.xCoord, min.yCoord, min.zCoord, max.xCoord, max.yCoord, max.zCoord);
 	}
 
 }

@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,13 +49,14 @@ public class RailRenderer {
     private Vec316f[] vecs;
 	//
 	public static final RGB MIDDLE_GRAY = new RGB(127, 127, 127);
+	//public static boolean HOLDING;
 
 	@SubscribeEvent
-    public void preview(DrawBlockHighlightEvent event){
+    public void preview(DrawBlockHighlightEvent event){ //HOLDING = false;
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
     	if(stack.getItem() instanceof RailGaugeItem || stack.getItem() instanceof RailItemTest || stack.getItem() instanceof JunctionToolItem || isRailVehicleItem(stack)){
-    		vecs = stack.getItem() instanceof RailGaugeItem ? ((RailGaugeItem)stack.getItem()).getVectors(stack) : new Vec316f[0];
+    		vecs = stack.getItem() instanceof RailGaugeItem ? ((RailGaugeItem)stack.getItem()).getVectors(stack) : new Vec316f[0]; //HOLDING = true;
     		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
         	//
     		EntityPlayer player = event.getPlayer(); GlStateManager.disableTexture2D();
@@ -125,6 +127,7 @@ public class RailRenderer {
 	}
 	
 	private static RailData raildata;
+    private static Frustum fru = new Frustum();
     
     @SubscribeEvent
     public void renderRails(RenderWorldLastEvent event){
@@ -134,6 +137,7 @@ public class RailRenderer {
         double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();
         double y = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * event.getPartialTicks();
         double z = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * event.getPartialTicks();
+        fru.setPosition(x, y, z);
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -143,6 +147,7 @@ public class RailRenderer {
         	//if(reg.READING) continue;
         	Junction[] junctions = reg.getJunctions().values().toArray(new Junction[0]);
         	for(int i = 0; i < junctions.length; i++){
+        		if(!fru.isBoundingBoxInFrustum(junctions[i].getAABB())) continue;
             	GL11.glPushMatrix();
                 GlStateManager.disableTexture2D();
             	GL11.glTranslatef(junctions[i].getVec3f().xCoord, junctions[i].getVec3f().yCoord, junctions[i].getVec3f().zCoord);
@@ -323,6 +328,10 @@ public class RailRenderer {
 		        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
 		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F); turbos[m].render(1f);
 			}
+		}
+
+		public void clearDisplayLists(){
+			for(ModelRendererTurbo turbo : turbos) if(turbo != null && turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
 		}
 		
 	}

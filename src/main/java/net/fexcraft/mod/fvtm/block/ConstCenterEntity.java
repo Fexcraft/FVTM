@@ -65,17 +65,17 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 	
 	@SideOnly(Side.CLIENT)
 	public VehicleData tryLinkV(){
-		tryLink(); return tile.getVehicleData();
+		tryLink(); return tile == null ? null : tile.getVehicleData();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public ContainerData tryLinkC(){
-		tryLink(); return tile.getContainerData();
+		tryLink(); return tile == null ? null : tile.getContainerData();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public BlockData tryLinkB(){
-		tryLink(); return tile.getBlockData();
+		tryLink(); return tile == null ? null : tile.getBlockData();
 	}
 
 	public void setLinkPos(BlockPos pos, boolean update){

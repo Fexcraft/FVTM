@@ -8,11 +8,13 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.JunctionCommand;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -35,8 +37,8 @@ public class Junction {
 	private Vec3f switchlocation;
 	public JunctionSwitchEntity entity;
 	public EnumFacing entityFacing;
-	private ArrayList<JunctionCommand> fortrains = new ArrayList<>();
-	private ArrayList<JunctionCommand> forswitch = new ArrayList<>();
+	private ArrayList<JEC> fortrains = new ArrayList<>();
+	private ArrayList<JEC> forswitch = new ArrayList<>();
 	//
 	protected AxisAlignedBB frustumbb;
 	
@@ -100,6 +102,20 @@ public class Junction {
 			else entity.setDead();
 		}
 		station = compound.hasKey("Station") ? compound.getString("Station") : null;
+		if(compound.hasKey("JunctionCommands")){
+			forswitch.clear(); NBTTagList list = (NBTTagList)compound.getTag("JunctionCommands");
+			for(NBTBase base : list){
+				JEC cmd = JEC.read((NBTTagCompound)base);
+				if(cmd != null) forswitch.add(cmd);
+			}
+		}
+		if(compound.hasKey("EntityCommands")){
+			forswitch.clear(); NBTTagList list = (NBTTagList)compound.getTag("EntityCommands");
+			for(NBTBase base : list){
+				JEC cmd = JEC.read((NBTTagCompound)base);
+				if(cmd != null) fortrains.add(cmd);
+			}
+		}
 		return this;
 	}
 	
@@ -120,6 +136,16 @@ public class Junction {
 			compound.setInteger("SwitchFacing", entityFacing == null ? EnumFacing.NORTH.getIndex() : entityFacing.getIndex());
 		}
 		if(station != null) compound.setString("Station", station);
+		if(!forswitch.isEmpty()){
+			NBTTagList list = new NBTTagList();
+			for(JEC cmd : forswitch) list.appendTag(cmd.write(null));
+			compound.setTag("JunctionCommands", list);
+		}
+		if(!fortrains.isEmpty()){
+			NBTTagList list = new NBTTagList();
+			for(JEC cmd : fortrains) list.appendTag(cmd.write(null));
+			compound.setTag("EntityCommands", list);
+		}
 		return compound;
 	}
 	
@@ -172,7 +198,7 @@ public class Junction {
 	public Track getNext(@Nullable RailEntity entity, TrackKey track, boolean applystate){
 		if(entity != null && fortrains.size() > 0){
 			Track track0 = getNext0(entity, track, applystate);
-			for(JunctionCommand cmd : fortrains){
+			for(JEC cmd : fortrains){
 				if(cmd.isTarget(entity)) entity.commands.add(cmd.copy());
 			} return track0;
 			
@@ -183,7 +209,7 @@ public class Junction {
 	public Track getNext0(@Nullable RailEntity entity, TrackKey track, boolean applystate){
 		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
 		if(entity != null){
-			for(JunctionCommand cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
+			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
 		}
 		switch(type){
 			case STRAIGHT:{

@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail.cmds;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public enum JCType {
+public enum JECType {
 	
 	SIGNAL_WAIT(true, 20),//check if signal changed once per second
 	GOTO(true, -1),//path finding, only search if in need
@@ -20,9 +20,17 @@ public enum JCType {
 	public final int interval;
 	public final boolean fortrain;
 	
-	JCType(boolean bool, int interval){
+	JECType(boolean bool, int interval){
 		this.fortrain = bool;
 		this.interval = interval;
+	}
+
+	public Class<? extends JEC> getJCClass(){
+		switch(this){
+			case SET_SIGNAL: return CMD_SetSignal.class;
+			case SET_STATE: return CMD_SetSwitch.class;
+			default: return null;
+		}
 	}
 	
 }

@@ -11,7 +11,7 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.JunctionCommand;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -19,7 +19,9 @@ import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
 
 /**
@@ -52,7 +54,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
 	protected REC recom;
-	protected ArrayList<JunctionCommand> commands = new ArrayList<>();
+	protected ArrayList<JEC> commands = new ArrayList<>();
 	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
 	
 	public RailEntity(RailData data, VehicleData vdata, Track track, UUID placer){
@@ -93,8 +95,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(!region.getWorld().getWorld().isRemote){
 			if(current == null || vehdata == null){ this.dispose(); return; }
 			checkIfShouldHaveEntity(); checkIfShouldStop();
-			for(JunctionCommand command : commands) command.processEntity(this);
-			commands.removeIf(cmd -> cmd.isDone());
+			//for(JunctionCommand command : commands) command.processEntity(this);
+			commands.removeIf(cmd -> cmd.processEntity(this));
 			//
 			if(!vehdata.getType().isTrailerOrWagon() && throttle > 0.001f){
 				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
@@ -289,6 +291,13 @@ public class RailEntity implements Comparable<RailEntity>{
 				compound.setBoolean("rear_static", rear.coupled);
 				break;
 			}
+			case "commands":{
+				compound.setString("task", "update_commands");
+				NBTTagList list = new NBTTagList();
+				for(JEC cmd : commands) list.appendTag(cmd.write(null));
+				compound.setTag("commands", list);
+				break;
+			}
 		}
 		ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
 	}
@@ -383,6 +392,11 @@ public class RailEntity implements Comparable<RailEntity>{
 			compound.setLong("rear_coupled", rear.entity.uid);
 			compound.setBoolean("rear_coupler", rear.isFront());
 		}
+		if(!commands.isEmpty()){
+			NBTTagList list = new NBTTagList();
+			for(JEC cmd : commands) list.appendTag(cmd.write(null));
+			compound.setTag("Commands", list);
+		}
 		return vehdata.write(compound);
 	}
 	
@@ -397,6 +411,16 @@ public class RailEntity implements Comparable<RailEntity>{
 		brear = DataUtil.readVec3f(compound.getTag("brear"));
 		forward = compound.hasKey("forward") ? compound.getBoolean("forward") : true;
 		passed = compound.getFloat("passed");
+		//
+		if(compound.hasKey("Commands")){
+			commands.clear(); NBTTagList cmds = (NBTTagList)compound.getTag("Commands");
+			for(NBTBase base : cmds){
+				if(base instanceof NBTTagCompound == false) continue;
+				JEC command = JEC.read((NBTTagCompound)base);
+				if(command != null) commands.add(command);
+			}
+		}
+		//
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
 		if(vehdata == null) vehdata = Resources.getVehicleData(compound);
 		else vehdata.read(compound);

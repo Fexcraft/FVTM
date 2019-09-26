@@ -31,6 +31,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -45,7 +46,9 @@ import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -761,6 +764,17 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 	cou = pkt.nbt.getLong("rear");
                 	railentity.rear.entity = cou == -1 ? null : railentity.region.getWorld().getEntity(cou, true);
                 	railentity.rear.coupled = pkt.nbt.getBoolean("rear_static");
+                	break;
+                }
+                case "update_commands":{
+            		if(pkt.nbt.hasKey("commands")){
+            			railentity.commands.clear(); NBTTagList cmds = (NBTTagList)pkt.nbt.getTag("commands");
+            			for(NBTBase base : cmds){
+            				if(base instanceof NBTTagCompound == false) continue;
+            				JEC command = JEC.read((NBTTagCompound)base);
+            				if(command != null) railentity.commands.add(command);
+            			}
+            		}
                 	break;
                 }
             }

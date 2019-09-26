@@ -8,23 +8,23 @@ import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class JC_SetSignal extends JunctionCommand {
+public class CMD_SetSignal extends JEC {
 	
 	private Vec316f signal;
 	private byte state;
 	private int timed;
 
-	public JC_SetSignal(String label, JCType type, EntryDirection dir, Vec316f optional, byte state, int timed, String[] targets){
-		super(label, JCType.SET_SIGNAL, dir, targets); signal = optional; this.state = state; this.timed = timed;
+	public CMD_SetSignal(String label, JECType type, EntryDirection dir, Vec316f optional, byte state, int timed, String[] targets){
+		super(label, JECType.SET_SIGNAL, dir, targets); signal = optional; this.state = state; this.timed = timed;
 	}
 
-	public JC_SetSignal(NBTTagCompound compound){
+	public CMD_SetSignal(NBTTagCompound compound){
 		super(compound);
 	}
 
 	@Override
-	public JunctionCommand copy(){
-		return new JC_SetSignal(write(null));
+	public JEC copy(){
+		return new CMD_SetSignal(write(null));
 	}
 
 	@Override
@@ -42,13 +42,13 @@ public class JC_SetSignal extends JunctionCommand {
 	}
 
 	@Override
-	public void processEntity(RailEntity entity){
-		return;//this is not an entity command.
+	public boolean processEntity(RailEntity entity){
+		return false;//this is not an entity command.
 	}
 
 	@Override
 	public void processSwitch(RailEntity entity, Junction junction, TrackKey track, int index, boolean applystate){
-		if(junction.type.isStraight() && type == JCType.SET_SIGNAL){
+		if(junction.type.isStraight() && type == JECType.SET_SIGNAL){
 			if(signal == null){
 				if(!junction.signal.is(SignalType.Kind.CUSTOM)) return;
 				//TODO set signal state

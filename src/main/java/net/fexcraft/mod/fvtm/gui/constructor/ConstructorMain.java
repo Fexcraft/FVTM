@@ -49,7 +49,24 @@ public class ConstructorMain extends ConstructorGui {
 		if(button.name.equals("icon_spawn")){
 			this.titletext.update("Not available yet! Sorry!", null); return true;
 		}
-		openGui(modid, Integer.parseInt(button.name.replace("button", "")) + 901, xyz); return true;
+		int gui = Integer.parseInt(button.name.replace("button", ""));
+		if(gui == 7){
+			if(container.getTileEntity().getVehicleData() == null
+				&& container.getTileEntity().getContainerData() == null
+				&& container.getTileEntity().getBlockData() == null){
+				titletext.update("No Vehicle|Container|Block in Constructor.", null);
+				return true;
+			}
+		}
+		else if(gui == 8){
+			if(container.getTileEntity().getVehicleData() == null
+				&& container.getTileEntity().getContainerData() == null
+				&& container.getTileEntity().getBlockData() == null){
+				titletext.update("No Vehicle|Container|Block in Constructor.", null);
+				return true;
+			}
+		}
+		openGui(modid, gui + 901, xyz); return true;
 	}
 
 	@Override

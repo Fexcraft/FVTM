@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
@@ -29,7 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class RailGaugeItem extends TypeCoreItem<RailGauge> {
+public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGridItem {
 
     public RailGaugeItem(RailGauge core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);

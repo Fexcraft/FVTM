@@ -9,15 +9,14 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.item.JunctionToolItem;
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
-import net.fexcraft.mod.fvtm.item.RailItemTest;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -55,7 +54,7 @@ public class RailRenderer {
     public void preview(DrawBlockHighlightEvent event){ //HOLDING = false;
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
-    	if(stack.getItem() instanceof RailGaugeItem || stack.getItem() instanceof RailItemTest || stack.getItem() instanceof JunctionToolItem || isRailVehicleItem(stack)){
+    	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
     		vecs = stack.getItem() instanceof RailGaugeItem ? ((RailGaugeItem)stack.getItem()).getVectors(stack) : new Vec316f[0]; //HOLDING = true;
     		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
         	//
@@ -81,23 +80,30 @@ public class RailRenderer {
             GlStateManager.depthMask(false);
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
+        	float[][] color =  ((JunctionGridItem)stack.getItem()).getGridColours();
             if(vecs.length > 1){
                 for(int i = 1; i < vecs.length; i++){
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vecs[i - 1].vector.xCoord, vecs[i - 1].vector.yCoord, vecs[i - 1].vector.zCoord).color(0f, 1f, 0f, 1F).endVertex();
-                    bufferbuilder.pos(vecs[i].vector.xCoord, vecs[i].vector.yCoord, vecs[i].vector.zCoord).color(0f, 1f, 0f, 1F).endVertex();
+                    bufferbuilder.pos(vecs[i - 1].vector.xCoord, vecs[i - 1].vector.yCoord, vecs[i - 1].vector.zCoord)
+                    	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
+                    bufferbuilder.pos(vecs[i].vector.xCoord, vecs[i].vector.yCoord, vecs[i].vector.zCoord)
+                    	.color(color[1][0], color[1][1], color[1][2], color[1][3]).endVertex();
                     tessellator.draw();
                 }
             }
             BlockPos pos = event.getTarget().getBlockPos();
             float yy = vec.y == 0 ? 1 : vec.y * 0.0625f;
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625), pos.getY() + yy + 0.01, pos.getZ()).color(0f, 1f, 0f, 1F).endVertex();
-            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625), pos.getY() + yy + 0.01, pos.getZ() + 1).color(0f, 1f, 0f, 1F).endVertex();
+            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625), pos.getY() + yy + 0.01, pos.getZ())
+            	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
+            bufferbuilder.pos(pos.getX() + (vec.x * 0.0625), pos.getY() + yy + 0.01, pos.getZ() + 1)
+            	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
             tessellator.draw();
             bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-            bufferbuilder.pos(pos.getX(), pos.getY() + yy + 0.01, pos.getZ() + (vec.z * 0.0625)).color(0f, 1f, 0f, 1F).endVertex();
-            bufferbuilder.pos(pos.getX() + 1, pos.getY() + yy + 0.01, pos.getZ() + (vec.z * 0.0625)).color(0f, 1f, 0f, 1F).endVertex();
+            bufferbuilder.pos(pos.getX(), pos.getY() + yy + 0.01, pos.getZ() + (vec.z * 0.0625))
+            	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
+            bufferbuilder.pos(pos.getX() + 1, pos.getY() + yy + 0.01, pos.getZ() + (vec.z * 0.0625))
+            	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
             tessellator.draw();
             GlStateManager.depthMask(true);
             GlStateManager.disableBlend();
@@ -107,10 +113,6 @@ public class RailRenderer {
             GL11.glTranslated(x, y, z);
     	} else return;
     }
-    
-	private boolean isRailVehicleItem(ItemStack stack){
-		return stack.getItem() instanceof VehicleItem && ((VehicleItem)stack.getItem()).getType().getVehicleType().isRailVehicle();
-	}
 
 	protected static final ModelRendererTurbo model, model0, model1, junction_core, railentcore;
 	static{
@@ -274,6 +276,7 @@ public class RailRenderer {
             			}
         			}
         			track.railmodel = tarp;
+        			//
         			tarp = new TurboArrayPositioned(track, null);
         			if(track.length >  model.ties_distance){
         				float half = model.ties_distance * .5f, accu = half;
@@ -299,6 +302,35 @@ public class RailRenderer {
         		ModelBase.bindTexture(track.gauge.getRailTexture()); track.railmodel.render();
         		ModelBase.bindTexture(track.gauge.getTiesTexture()); track.restmodel.render();
         	}
+    		if(value.signal != null && value.size() == 2){
+    			if(value.signalpos0 == null || value.signal_dir.isBoth() ? value.signalpos1 == null : false){
+    				Track track = value.tracks.get(value.signal_dir.isBoth() ? 0 : value.signal_dir.isForward() ? 1 : 0);
+    				Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+    				value.signalrot0 = (float)Math.atan2(vec0.zCoord - vec1.zCoord, vec0.xCoord - vec1.xCoord);
+    				value.signalrot0 += Static.rad90;
+    				value.signalpos0 = vec0.add(grv(value.signalrot0, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
+    				value.signalrot0 = (float)Math.toDegrees(value.signalrot0);
+    				if(value.signal_dir.isBoth() && value.signalpos1 == null){
+    					
+    				}
+    			}
+    			ModelBase.bindTexture(value.tracks.get(0).gauge.getModelTexture());
+    			if(value.signalpos0 != null){
+        			GL11.glPushMatrix();
+        			GL11.glTranslatef(value.signalpos0.xCoord, value.signalpos0.yCoord, value.signalpos0.zCoord);
+        			GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(value.signalrot0, 0, 1, 0);
+        			value.tracks.get(value.signal_dir.getTrackId()).gauge.getModel()
+        				.renderSignal(value, value.signal_dir.isBoth() ? EntryDirection.BACKWARD : EntryDirection.FORWARD);
+        			GL11.glPopMatrix();
+    			}
+    			if(value.signalpos1 != null){
+        			GL11.glPushMatrix();
+        			GL11.glTranslatef(value.signalpos1.xCoord, value.signalpos1.yCoord, value.signalpos1.zCoord);
+        			GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(value.signalrot1, 0, 1, 0);
+        			value.tracks.get(1).gauge.getModel().renderSignal(value, EntryDirection.FORWARD);
+        			GL11.glPopMatrix();
+    			}
+    		}
         	//
     		Minecraft.getMinecraft().entityRenderer.disableLightmap();
     		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

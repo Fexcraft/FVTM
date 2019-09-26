@@ -29,6 +29,7 @@ public enum JECType {
 		switch(this){
 			case SET_SIGNAL: return CMD_SetSignal.class;
 			case SET_STATE: return CMD_SetSwitch.class;
+			case REVERSE: return CMD_ChangeDirection.class;
 			default: return null;
 		}
 	}

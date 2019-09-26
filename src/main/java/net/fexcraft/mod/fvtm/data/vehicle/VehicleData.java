@@ -131,6 +131,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		compound.setBoolean("Locked", locked);
 		if(front_conn != null) compound.setTag("FrontConnector", DataUtil.writeVec3d(front_conn));
 		if(rear_conn != null) compound.setTag("RearConnector", DataUtil.writeVec3d(rear_conn));
+		//if(customname != null) compound.setString("CustomName", customname);
 		/*Print.debug("write", compound);*/ return compound;
 	}
 
@@ -197,6 +198,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(front_conn == null) front_conn = type.getDefaultFrontConnector();
 		this.rear_conn = DataUtil.readVec3d(compound.getTag("RearConnector"));
 		if(rear_conn == null) rear_conn = type.getDefaultRearConnector();
+		//if(compound.hasKey("CustomName")) customname = compound.getString("CustomName");
 		//
 		/*Print.debug("read", compound);*/ return this;
 	}

@@ -251,11 +251,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case TURN_LEFT:{
-                wheelsYaw -= 1F;
+                wheelsYaw -= 1F / 4f;
                 return true;
             }
             case TURN_RIGHT:{
-                wheelsYaw += 1F;
+                wheelsYaw += 1F / 4f;
                 return true;
             }
             case BRAKE:{

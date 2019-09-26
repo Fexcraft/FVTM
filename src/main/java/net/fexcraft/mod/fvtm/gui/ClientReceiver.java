@@ -10,6 +10,8 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
+import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
@@ -74,6 +76,20 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				if(junction != null){
 					junction.switch0 = packet.nbt.getBoolean("switch0");
 					junction.switch1 = packet.nbt.getBoolean("switch1");
+				} return;
+			}
+			case "update_junction_signal":{
+				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
+				if(junction != null){
+					if(packet.nbt.hasKey("nosignal") && packet.nbt.getBoolean("nosignal")){
+						junction.signal = null; junction.signal_dir = EntryDirection.FORWARD;
+					}
+					else{
+						junction.signal = SignalType.values()[packet.nbt.getInteger("signal")];
+						junction.signal_dir = EntryDirection.values()[packet.nbt.getInteger("signal_dir")];
+					}
+					junction.signalpos0 = junction.signalpos1 = null;
 				} return;
 			}
 			case "spawn_railentity":{

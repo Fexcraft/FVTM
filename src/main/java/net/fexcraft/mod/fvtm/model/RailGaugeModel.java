@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
@@ -29,10 +30,12 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		{ new Vec3f(0.9375, 0.25, 0), new Vec3f(1.0625, 0.25, 0) }
 	};
 	public float ties_distance = 0.5f;
+	public float signal_offset = 0.5f;
 	//
 	public TurboList fork2_base, fork2_lever;
 	public TurboList fork3_base, fork3_lever;
 	public TurboList double_base, double_lever0, double_lever1;
+	public TurboList simple_signal_base, simple_signal_stop, simple_signal_clear;
 	//
 	//signals
 	
@@ -74,6 +77,28 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 				break;
 			}
 			case CROSSING: case STRAIGHT: default: return;
+		}
+	}
+	
+	//TODO
+	public void renderSignal(Junction junction, EntryDirection dir){
+		if(junction.signal == null) return;
+		switch(junction.signal){
+			case TWO_WAY_BLOCK:
+				break;
+			case ONE_WAY_BLOCK:
+				simple_signal_base.renderPlain();
+				simple_signal_stop.renderPlain();
+				simple_signal_clear.renderPlain();
+				break;
+			case CONTROLLED:
+				break;
+			case PROGRAMMED:
+				break;
+			case TWO_WAY_PATH:
+				break;
+			default:
+				break;
 		}
 	}
 	

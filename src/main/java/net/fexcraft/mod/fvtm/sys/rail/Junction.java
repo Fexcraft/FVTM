@@ -8,7 +8,9 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
+import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +19,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * 
@@ -31,6 +35,7 @@ public class Junction {
 	public RailData root;
 	public RailRegion region;
 	public SignalType signal;
+	public EntryDirection signal_dir = EntryDirection.FORWARD;
 	public JunctionType type;
 	public String station;
 	//
@@ -41,6 +46,11 @@ public class Junction {
 	private ArrayList<JEC> forswitch = new ArrayList<>();
 	//
 	protected AxisAlignedBB frustumbb;
+	//
+	@SideOnly(Side.CLIENT)
+	public Vec3f signalpos0, signalpos1;
+	@SideOnly(Side.CLIENT)
+	public float signalrot0, signalrot1;
 	
 	/** General Constructor */
 	public Junction(RailRegion region, Vec316f pos){
@@ -64,20 +74,21 @@ public class Junction {
 		//this.crossing = compound.getBoolean("Crossing");
 		int trackam = compound.getInteger("Tracks");
 		if(trackam > 0){
-			if(trackam != tracks.size()){
+			//if(trackam != tracks.size()){
 				if(root.getWorld().isRemote){
 					for(Track track : tracks){
 						track.railmodel.clearDisplayLists();
 						track.restmodel.clearDisplayLists();
 						track.railmodel = track.restmodel = null;
 					}
+					signalpos0 = signalpos1 = null;
 				}
 				tracks.clear();
 				for(int i = 0; i < trackam; i++){
 					try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
 					catch(Exception e){ e.printStackTrace(); }
 				}
-			}
+			/*}
 			else{
 				for(int i = 0; i < trackam; i++){
 					tracks.get(i).read(compound.getCompoundTag("Track" + i));
@@ -86,9 +97,10 @@ public class Junction {
 						track.railmodel.clearDisplayLists();
 						track.restmodel.clearDisplayLists();
 						track.railmodel = track.restmodel = null;
+						signalpos0 = signalpos1 = null;
 					}
 				}
-			}
+			}*/
 		} frustumbb = null;
 		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
@@ -162,7 +174,7 @@ public class Junction {
 	}
 
 	public void updateClient(){
-		root.getRegions().get(RailData.getRegionXZ(vecpos)).updateClient("junction", vecpos);
+		region.updateClient("junction", vecpos);
 	}
 
 	public void remove(TrackKey trackid, boolean firstcall){
@@ -379,6 +391,12 @@ public class Junction {
 			if(other.zCoord > max.zCoord) max.zCoord = other.zCoord;
 		}
 		return frustumbb = new AxisAlignedBB(min.xCoord, min.yCoord, min.zCoord, max.xCoord, max.yCoord, max.zCoord);
+	}
+
+	public void setSignal(SignalType signal, EntryDirection entrydir){
+		if(signal == null){ this.signal = null; this.signal_dir = EntryDirection.BOTH; }
+		else{ this.signal = signal; this.signal_dir = EntryDirection.FORWARD; }
+		region.updateClient("junction_signal", vecpos);
 	}
 
 }

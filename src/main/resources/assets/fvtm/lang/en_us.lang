@@ -20,6 +20,7 @@ tile.fvtm:streetpost.name=Streetpost
 item.fvtm:streetsign.name=Streetsign
 item.fvtm:standard.name=Standard FVTM Rail Gauge
 item.fvtm:junction_tool.name=Junction Tool
+item.fvtm:simple_signal.name=Simple Signal (BLOCK)
 
 
 # Entities

@@ -1,19 +1,24 @@
 package net.fexcraft.mod.fvtm.sys.rail.cmds;
 
+import javax.annotation.Nullable;
+
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.JunctionType;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class CMD_SetSwitch extends JEC {
 	
+	private Vec316f junction;
 	private byte entry, state;
 
-	public CMD_SetSwitch(String label, EntryDirection dir, byte entry, byte state, String[] targets){
+	public CMD_SetSwitch(String label, EntryDirection dir, byte entry, byte state, @Nullable String junction, String[] targets){
 		super(label, JECType.SET_STATE, dir, targets); this.entry = entry; this.state = state;
+		this.junction = junction == null || junction.length() == 0 || junction.equals("this") ? null : Vec316f.fromIDString(junction, true);
 	}
 
 	public CMD_SetSwitch(NBTTagCompound compound){
@@ -27,15 +32,28 @@ public class CMD_SetSwitch extends JEC {
 
 	@Override
 	public NBTBase writeData(){
-		return new NBTTagByteArray(new byte[]{ entry, state });
+		if(junction == null){
+			return new NBTTagByteArray(new byte[]{ entry, state });
+		}
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setByteArray("State", new byte[]{ entry, state });
+		compound.setString("Junction", junction.asIDString());
+		return compound;
 	}
 
 	@Override
 	public void readData(NBTBase base){
-		try{
-			byte[] arr = ((NBTTagByteArray)base).getByteArray();
-			entry = arr[0]; state = arr[1];
-		} catch(Exception e){ e.printStackTrace(); }
+		byte[] arr = null;
+		if(base instanceof NBTTagCompound){
+			NBTTagCompound compound = (NBTTagCompound)base;
+			junction = Vec316f.fromIDString(compound.getString("Junction"));
+			arr = compound.getByteArray("State");
+		}
+		else{
+			try{ arr = ((NBTTagByteArray)base).getByteArray(); } catch(Exception e){ e.printStackTrace(); }
+		}
+		//
+		entry = arr[0]; state = arr[1];
 	}
 
 	@Override
@@ -45,7 +63,12 @@ public class CMD_SetSwitch extends JEC {
 
 	@Override
 	public void processSwitch(RailEntity entity, Junction junction, TrackKey track, int index, boolean applystate){
-		if(!junction.type.isStraight() && type == JECType.SET_STATE && index == entry){
+		if(index != entry) return;
+		if(this.junction != null){
+			junction = junction.root.getJunction(this.junction);
+			if(junction == null) return;
+		}
+		if(!junction.type.isStraight() && index == entry){
 			if(junction.type.isSwitch()){
 				if(junction.type == JunctionType.FORK_2){
 					junction.switch0 = state == 1;

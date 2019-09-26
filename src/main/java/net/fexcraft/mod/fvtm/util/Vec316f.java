@@ -102,11 +102,20 @@ public class Vec316f implements Comparable<Vec316f>{
 		return pos.getX() + "," + pos.getY() + "," + pos.getZ() + "|" + x + "," + y + "," + z;
 	}
 	
-	public Vec316f fromIDString(String str){
+	public static Vec316f fromIDString(String str){
 		String[] arr0 = str.split("|"), arr1 = arr0[1].split(","); arr0 = arr0[0].split(",");
 		int[] pxyz = new int[3]; byte[] xyz = new byte[3];
 		for(int i = 0; i < 3; i++){ pxyz[i] = Integer.parseInt(arr0[i]); xyz[i] = Byte.parseByte(arr1[i]); }
 		return new Vec316f(pxyz[0], pxyz[1], pxyz[2], xyz[0], xyz[1], xyz[2]);
+	}
+	
+	public static Vec316f fromIDString(String str, boolean safe){
+		if(!safe) return fromIDString(str); try{
+			String[] arr0 = str.split("|"), arr1 = arr0[1].split(","); arr0 = arr0[0].split(",");
+			int[] pxyz = new int[3]; byte[] xyz = new byte[3];
+			for(int i = 0; i < 3; i++){ pxyz[i] = Integer.parseInt(arr0[i]); xyz[i] = Byte.parseByte(arr1[i]); }
+			return new Vec316f(pxyz[0], pxyz[1], pxyz[2], xyz[0], xyz[1], xyz[2]);
+		} catch(Exception e){ e.printStackTrace(); return null; }
 	}
 
 }

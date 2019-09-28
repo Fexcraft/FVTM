@@ -30,6 +30,7 @@ public enum JECType {
 			case SET_SIGNAL: return CMD_SetSignal.class;
 			case SET_STATE: return CMD_SetSwitch.class;
 			case REVERSE: return CMD_ChangeDirection.class;
+			case SIGNAL_WAIT: return CMD_SignalWait.class;
 			default: return null;
 		}
 	}

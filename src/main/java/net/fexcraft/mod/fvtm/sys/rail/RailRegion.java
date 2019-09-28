@@ -197,6 +197,16 @@ public class RailRegion {
 				}
 				break;
 			}
+			case "junction_signal_state":{
+				Junction junction = getJunction(vector); if(junction == null) return;
+				compound = new NBTTagCompound();
+				compound.setString("target_listener", "fvtm:gui");
+				compound.setString("task", "update_junction_signal_state");
+				compound.setTag("pos", junction.getVec316f().write());
+				compound.setBoolean("signal0", junction.signal0);
+				compound.setBoolean("signal1", junction.signal1);
+				break;
+			}
 		}
 		if(compound == null) return;
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(), vector.pos));

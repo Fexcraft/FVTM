@@ -67,21 +67,21 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 			return EnumActionResult.SUCCESS;
 		}
         if(junction.signal != null){
-        	if(junction.signal.type == SignalType.Kind.BLOCK){
+        	if(junction.signal.type == SignalType.Kind.BLOCK){ byte b = 0;
         		if(junction.signal.oneway && junction.signal_dir == EntryDirection.FORWARD){
-        			junction.setSignal(SignalType.ONE_WAY_BLOCK, EntryDirection.BACKWARD);
+        			junction.setSignal(SignalType.ONE_WAY_BLOCK, EntryDirection.BACKWARD); b = 0;
         		}
         		else if(junction.signal.oneway && junction.signal_dir == EntryDirection.BACKWARD){
-        			junction.setSignal(SignalType.TWO_WAY_BLOCK, EntryDirection.BOTH);
+        			junction.setSignal(SignalType.TWO_WAY_BLOCK, EntryDirection.BOTH); b = -1;
         		}
         		else if(!junction.signal.oneway){
-        			junction.setSignal(SignalType.ONE_WAY_BLOCK, EntryDirection.FORWARD);
+        			junction.setSignal(SignalType.ONE_WAY_BLOCK, EntryDirection.FORWARD); b = 1;
         		}
         		else{
         			Print.chat(player, "A strange error happened, see location in log.");
         			Static.exception(null, false);
         		}
-        		Print.chat(player, "&bJunction Signal &aupdated&b.");
+        		Print.chat(player, "&bJunction Signal &aupdated&b. [" + b + "]");
     	        return EnumActionResult.SUCCESS;
         	}
         	else{
@@ -93,7 +93,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
         	Print.chat(player, "&cOnly Junctions with 2 Tracks can have Signals.");
 			return EnumActionResult.FAIL;
         }
-		junction.setSignal(SignalType.TWO_WAY_BLOCK, null);Print.chat(player, "&bJunction Signal &7set&b.");
+		junction.setSignal(SignalType.TWO_WAY_BLOCK, EntryDirection.BOTH); Print.chat(player, "&bJunction Signal &7set&b.");
         return EnumActionResult.SUCCESS;
     }
 	

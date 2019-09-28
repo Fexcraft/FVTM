@@ -20,4 +20,8 @@ public class Section {
 		return entities;
 	}
 
+	public boolean hasEntities(){
+		return entities.size() > 0;
+	}
+
 }

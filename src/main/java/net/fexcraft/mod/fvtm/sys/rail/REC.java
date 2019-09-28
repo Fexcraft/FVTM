@@ -13,6 +13,7 @@ public class REC {
 	
 	protected float accumulator;
 	protected ArrayList<RailEntity> entities = new ArrayList<>();
+	public boolean paused;
 	
 	public REC(){}
 

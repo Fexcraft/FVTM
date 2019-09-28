@@ -6,34 +6,39 @@ import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class CMD_ChangeDirection extends JEC {
+public class CMD_SignalWait extends JEC {
+	
+	private Junction junction;
 
-	public CMD_ChangeDirection(String label, EntryDirection dir, String[] targets){
-		super(label, JECType.SET_SIGNAL, dir, targets);
+	public CMD_SignalWait(String label, Junction junction, EntryDirection dir){
+		super(label, JECType.SIGNAL_WAIT, dir, new String[0]);
 	}
 
-	public CMD_ChangeDirection(NBTTagCompound compound){
+	public CMD_SignalWait(NBTTagCompound compound){
 		super(compound);
 	}
 
 	@Override
 	public JEC copy(){
-		return new CMD_ChangeDirection(write(null));
+		return new CMD_SignalWait(write(null));
 	}
 
 	@Override
 	public NBTBase writeData(){
-		return new NBTTagCompound();
+		return junction.getVec316f().write();
 	}
 
 	@Override
 	public void readData(NBTBase base){
-		//
+		//TODO
 	}
 
 	@Override
 	public boolean processEntity(RailEntity entity){
-		entity.setForward(null, !entity.isHeadingForward()); return true;
+		if(junction == null || !entity.isPaused()) return true;
+		if(junction.getSignalState(this.diron)){
+			entity.setPaused(false); return true;
+		} return false;
 	}
 
 	@Override

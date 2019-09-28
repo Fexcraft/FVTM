@@ -311,7 +311,11 @@ public class RailRenderer {
     				value.signalpos0 = vec0.add(grv(value.signalrot0, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
     				value.signalrot0 = (float)Math.toDegrees(value.signalrot0);
     				if(value.signal_dir.isBoth() && value.signalpos1 == null){
-    					
+    					track = value.tracks.get(1); vec0 = track.start.vector; vec1 = track.getVectorPosition0(0.001f, false);
+        				value.signalrot1 = (float)Math.atan2(vec0.zCoord - vec1.zCoord, vec0.xCoord - vec1.xCoord);
+        				value.signalrot1 += Static.rad90;
+        				value.signalpos1 = vec0.add(grv(value.signalrot1, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
+        				value.signalrot1 = (float)Math.toDegrees(value.signalrot1);
     				}
     			}
     			ModelBase.bindTexture(value.tracks.get(0).gauge.getModelTexture());
@@ -320,14 +324,14 @@ public class RailRenderer {
         			GL11.glTranslatef(value.signalpos0.xCoord, value.signalpos0.yCoord, value.signalpos0.zCoord);
         			GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(value.signalrot0, 0, 1, 0);
         			value.tracks.get(value.signal_dir.getTrackId()).gauge.getModel()
-        				.renderSignal(value, value.signal_dir.isBoth() ? EntryDirection.BACKWARD : EntryDirection.FORWARD);
+        				.renderSignal(value, value.signal_dir.isBoth() ? EntryDirection.BACKWARD : EntryDirection.FORWARD, value.signal0);
         			GL11.glPopMatrix();
     			}
     			if(value.signalpos1 != null){
         			GL11.glPushMatrix();
         			GL11.glTranslatef(value.signalpos1.xCoord, value.signalpos1.yCoord, value.signalpos1.zCoord);
         			GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(value.signalrot1, 0, 1, 0);
-        			value.tracks.get(1).gauge.getModel().renderSignal(value, EntryDirection.FORWARD);
+        			value.tracks.get(1).gauge.getModel().renderSignal(value, EntryDirection.FORWARD, value.signal1);
         			GL11.glPopMatrix();
     			}
     		}

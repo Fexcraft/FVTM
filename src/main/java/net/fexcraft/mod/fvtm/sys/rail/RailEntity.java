@@ -98,7 +98,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			//for(JunctionCommand command : commands) command.processEntity(this);
 			commands.removeIf(cmd -> cmd.processEntity(this));
 			//
-			if(!vehdata.getType().isTrailerOrWagon() && throttle > 0.001f){
+			if(!vehdata.getType().isTrailerOrWagon() && !isPaused() && throttle > 0.001f){
 				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
 				if(CMODE() || processConsumption(engine)){
 					float eng = throttle * engine.getLegacyEngineSpeed();
@@ -561,6 +561,22 @@ public class RailEntity implements Comparable<RailEntity>{
 	@Override
 	public String toString(){
 		return "RE['" + uid + "', '" + vehdata.getType().getName() + "', '" + pos.toString() + "']";
+	}
+
+	public void setPaused(boolean bool){
+		vehdata.getAttribute("paused").setValue(bool);
+		if(recom != null) recom.paused = bool;
+		if(entity != null && !region.getWorld().getWorld().isRemote){
+			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
+			packet.setString("task", "attr_update"); packet.setString("attr", "paused");
+			packet.setString("value", vehdata.getAttribute("paused").getBooleanValue() + "");
+			packet.setInteger("entity", entity.getEntityId());
+			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+		}
+	}
+	
+	public boolean isPaused(){
+		return recom == null ? vehdata.getAttribute("paused").getBooleanValue() : recom.paused;
 	}
 
 }

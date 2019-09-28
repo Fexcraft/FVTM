@@ -14,7 +14,7 @@ public class CMD_SetSignal extends JEC {
 	private byte state;
 	private int timed;
 
-	public CMD_SetSignal(String label, JECType type, EntryDirection dir, Vec316f optional, byte state, int timed, String[] targets){
+	public CMD_SetSignal(String label, EntryDirection dir, Vec316f optional, byte state, int timed, String[] targets){
 		super(label, JECType.SET_SIGNAL, dir, targets); signal = optional; this.state = state; this.timed = timed;
 	}
 

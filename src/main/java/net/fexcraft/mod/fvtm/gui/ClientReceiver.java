@@ -92,6 +92,14 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 					junction.signalpos0 = junction.signalpos1 = null;
 				} return;
 			}
+			case "update_junction_signal_state":{
+				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
+				if(junction != null){
+					junction.signal0 = packet.nbt.getBoolean("signal0");
+					junction.signal1 = packet.nbt.getBoolean("signal1");
+				} return;
+			}
 			case "spawn_railentity":{
 				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				RailRegion region = system.getRegions().get(packet.nbt.getIntArray("XZ"));

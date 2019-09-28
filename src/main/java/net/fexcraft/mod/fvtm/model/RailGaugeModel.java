@@ -81,21 +81,17 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	}
 	
 	//TODO
-	public void renderSignal(Junction junction, EntryDirection dir){
+	public void renderSignal(Junction junction, EntryDirection dir, boolean state){
 		if(junction.signal == null) return;
-		switch(junction.signal){
-			case TWO_WAY_BLOCK:
-				break;
-			case ONE_WAY_BLOCK:
+		switch(junction.signal.type){
+			case BLOCK:
 				simple_signal_base.renderPlain();
-				simple_signal_stop.renderPlain();
-				simple_signal_clear.renderPlain();
+				if(!state) simple_signal_stop.renderPlain();
+				if(state) simple_signal_clear.renderPlain();
 				break;
-			case CONTROLLED:
+			case CUSTOM:
 				break;
-			case PROGRAMMED:
-				break;
-			case TWO_WAY_PATH:
+			case PATH:
 				break;
 			default:
 				break;

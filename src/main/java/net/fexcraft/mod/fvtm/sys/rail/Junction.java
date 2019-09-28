@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
@@ -35,6 +36,7 @@ public class Junction {
 	public RailData root;
 	public RailRegion region;
 	public SignalType signal;
+	public boolean signal0, signal1;
 	public EntryDirection signal_dir = EntryDirection.FORWARD;
 	public JunctionType type;
 	public String station;
@@ -128,6 +130,10 @@ public class Junction {
 				if(cmd != null) fortrains.add(cmd);
 			}
 		}
+		if(signal != null){
+			signal0 = compound.getBoolean("Signal0");
+			signal1 = compound.getBoolean("Signal1");
+		}
 		return this;
 	}
 	
@@ -157,6 +163,10 @@ public class Junction {
 			NBTTagList list = new NBTTagList();
 			for(JEC cmd : fortrains) list.appendTag(cmd.write(null));
 			compound.setTag("EntityCommands", list);
+		}
+		if(signal != null){
+			compound.setBoolean("Signal0", signal0);
+			compound.setBoolean("Signal1", signal1);
 		}
 		return compound;
 	}
@@ -222,6 +232,13 @@ public class Junction {
 		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
 		if(entity != null){
 			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
+			if(signal != null && (signal_dir.isBoth() || eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward())){
+				if(!(signal_dir.isBoth() ? eqTrack(track, 0) ? signal0 : signal1 : signal0)){
+					pollSignal();
+					entity.commands.add(new CMD_SignalWait("signal_wait", this, eqTrack(track, 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
+					entity.setPaused(true);
+				}
+			}
 		}
 		switch(type){
 			case STRAIGHT:{
@@ -310,6 +327,7 @@ public class Junction {
 	private byte checktimer = 0;
 
 	public void onUpdate(){
+		pollSignal();
 		if(checktimer == 0){
 			if(switchlocation != null){
 				if(entity != null && !isInPlayerRange()){
@@ -327,6 +345,22 @@ public class Junction {
 		} checktimer--;
 	}
 	
+	private void pollSignal(){
+		if(signal == null) return;
+		boolean oldsig0 = signal0, oldsig1 = signal1;
+		if(signal.type == SignalType.Kind.BLOCK){
+			if(signal_dir.isBoth()){
+				signal0 = !tracks.get(0).section.hasEntities();
+				signal1 = !tracks.get(1).section.hasEntities();
+			}
+			else{
+				signal0 = !tracks.get(signal_dir.isForward() ? 1 : 0).section.hasEntities();
+			}
+		}
+		//
+		if(oldsig0 != signal0 || oldsig1 != signal1) this.region.updateClient("junction_signal_state", vecpos);
+	}
+
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : root.getWorld().playerEntities){
 			if(vecpos.vector.distanceTo(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 256) return true;
@@ -394,9 +428,15 @@ public class Junction {
 	}
 
 	public void setSignal(SignalType signal, EntryDirection entrydir){
-		if(signal == null){ this.signal = null; this.signal_dir = EntryDirection.BOTH; }
-		else{ this.signal = signal; this.signal_dir = EntryDirection.FORWARD; }
+		if(entrydir == null) entrydir = EntryDirection.FORWARD;
+		if(signal == null){ this.signal = null; this.signal_dir = entrydir; }
+		else{ this.signal = signal; this.signal_dir = entrydir; }
 		region.updateClient("junction_signal", vecpos);
+	}
+
+	/** @return true, if entry dir differs junction signal dir */
+	public boolean getSignalState(EntryDirection dir){
+		if(signal_dir.isBoth()) return dir.isForward() ? signal1 : signal0; return dir == signal_dir ? signal0 : true;
 	}
 
 }

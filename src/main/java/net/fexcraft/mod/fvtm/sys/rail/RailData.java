@@ -223,17 +223,20 @@ public class RailData implements RailSystem {
 		region.setAccessed().updateClient(vector); return true;
 	}
 
-	@Override //does not send update packed as of now, since only used via delJunction so far
+	@Override
 	public boolean delTrack(Track track){
-		if(track == null) return false; Junction junction = null;
-		RailRegion region = regions.get(getRegionXZ(track.start));
-		if(region != null && (junction = region.getJunction(track.start)) != null){
+		if(track == null) return false;
+		Junction junction = getJunction(track.start);
+		if(junction != null){
 			junction.tracks.removeIf(tr -> tr.getId().equals(track.getId()) || tr.getId().equals(track.getOppositeId()));
+			junction.updateClient();
 		}
-		region = regions.get(getRegionXZ(track.end));
-		if(region != null && (junction = region.getJunction(track.end)) != null){
+		junction = getJunction(track.end);
+		if(junction != null){
 			junction.tracks.removeIf(tr -> tr.getId().equals(track.getId()) || tr.getId().equals(track.getOppositeId()));
-		} return true;
+			junction.updateClient();
+		}
+		track.unit.section().splitAt(track); return true;
 	}
 
 	@Override

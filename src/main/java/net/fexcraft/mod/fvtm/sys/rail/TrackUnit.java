@@ -44,5 +44,14 @@ public class TrackUnit {
 	public Section section(){
 		return section;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof TrackUnit) return false; return ((TrackUnit)o).uid.equals(uid) || super.equals(o);
+	}
+
+	public TrackUnit setSection(Section section){
+		this.section = section; return this;
+	}
 
 }

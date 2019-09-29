@@ -79,8 +79,8 @@ public class Junction {
 			//if(trackam != tracks.size()){
 				if(root.getWorld().isRemote){
 					for(Track track : tracks){
-						track.railmodel.clearDisplayLists();
-						track.restmodel.clearDisplayLists();
+						if(track.railmodel != null) track.railmodel.clearDisplayLists();
+						if(track.restmodel != null) track.restmodel.clearDisplayLists();
 						track.railmodel = track.restmodel = null;
 					}
 					signalpos0 = signalpos1 = null;
@@ -96,8 +96,8 @@ public class Junction {
 					tracks.get(i).read(compound.getCompoundTag("Track" + i));
 					if(root.getWorld().isRemote){
 						Track track = tracks.get(i);
-						track.railmodel.clearDisplayLists();
-						track.restmodel.clearDisplayLists();
+						if(track.railmodel != null) track.railmodel.clearDisplayLists();
+						if(track.restmodel != null) track.restmodel.clearDisplayLists();
 						track.railmodel = track.restmodel = null;
 						signalpos0 = signalpos1 = null;
 					}
@@ -193,6 +193,7 @@ public class Junction {
 			if(tracks.get(i).getId().equals(trackid)){ track = tracks.remove(i); break; }
 		}
 		if(track == null) return;
+		if(signal != null){ this.signal = null; this.signal_dir = EntryDirection.FORWARD; }
 		if(firstcall){
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
 			if(junk != null) junk.remove(track.getOppositeId(), false);

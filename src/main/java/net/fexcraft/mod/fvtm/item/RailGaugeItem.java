@@ -99,6 +99,10 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				Print.chat(player, "&9Item Gauge not compatible with the &7Junction's Gauge&9.");
 				return EnumActionResult.FAIL;
 			}
+			if(junk.signal != null){
+				Print.chat(player, "&9Please remove the signal first.");
+				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
+			}
 			if(junk.tracks.size() >= 4){
 				Print.chat(player, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;

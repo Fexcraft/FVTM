@@ -77,7 +77,7 @@ public class Track {
 			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
 			this.length = this.calcLength();
 		}
-		this.gauge = gauge; unit = getUnit(null);
+		this.gauge = gauge; unit = getUnit(junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId());
 	}
 	
 	/** Only for the READ process. @param junk just to make sure it's not used elsewhere */
@@ -118,8 +118,7 @@ public class Track {
 	
 	public Track read(NBTTagCompound compound){
 		this.id = new TrackKey(compound);
-		//this.line = compound.hasKey("section") ? compound.getString("section") : null;
-		unit = compound.hasKey("section") ? getUnit(compound.getLong("section")) : getUnit(null);
+		unit = getUnit(compound.getLong("section"));
 		if(compound.hasKey("gauge")){
 			gauge = Resources.RAILGAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
 		}

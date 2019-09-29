@@ -30,7 +30,7 @@ public class Track {
 	public float length;
 	//
 	//protected String line;
-	protected Section section;
+	protected TrackUnit unit;
 	protected Junction junction;
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned railmodel;
@@ -77,7 +77,7 @@ public class Track {
 			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
 			this.length = this.calcLength();
 		}
-		this.gauge = gauge; section = getSection(null);
+		this.gauge = gauge; unit = getUnit(null);
 	}
 	
 	/** Only for the READ process. @param junk just to make sure it's not used elsewhere */
@@ -119,7 +119,7 @@ public class Track {
 	public Track read(NBTTagCompound compound){
 		this.id = new TrackKey(compound);
 		//this.line = compound.hasKey("section") ? compound.getString("section") : null;
-		section = getSection(compound.hasKey("section") ? compound.getString("section") : null);
+		unit = compound.hasKey("section") ? getUnit(compound.getLong("section")) : getUnit(null);
 		if(compound.hasKey("gauge")){
 			gauge = Resources.RAILGAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
 		}
@@ -140,13 +140,13 @@ public class Track {
 		return this;
 	}
 
-	public Section getSection(String key){
-		return junction.root.getSections().get(key == null ? id.toSectionId(copy) : key, true);
+	public TrackUnit getUnit(Long knownid){
+		return junction.root.getTrackUnits().get(id.toSectionId(copy), knownid, true);
 	}
 
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
-		id.write(compound); if(section != null) compound.setString("section", section.id);
+		id.write(compound); if(unit != null) compound.setLong("section", unit.getSectionId());
 		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
 		compound.setBoolean("copy", copy);
 		compound.setTag("start", start.write());
@@ -174,7 +174,7 @@ public class Track {
 	public Track createOppositeCopy(){
 		Track track = new Track(junction);
 		track.id = new TrackKey(id, true);
-		track.section = section;
+		track.unit = unit;
 		track.gauge = gauge;
 		track.start = end;
 		track.end = start;

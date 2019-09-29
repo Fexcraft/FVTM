@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.rail.cmds;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
@@ -36,8 +37,9 @@ public class CMD_SignalWait extends JEC {
 	@Override
 	public boolean processEntity(RailEntity entity){
 		if(junction == null || !entity.isPaused()) return true;
+		junction.pollSignal(entity);
 		if(junction.getSignalState(this.diron)){
-			entity.setPaused(false); return true;
+			entity.setPaused(false); Print.debug("removing command"); return true;
 		} return false;
 	}
 

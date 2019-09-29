@@ -232,9 +232,9 @@ public class Junction {
 		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
 		if(entity != null){
 			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
-			if(signal != null && (signal_dir.isBoth() || eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward())){
+			if(signal != null && entity.isActiveEnd() && (signal_dir.isBoth() || eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward())){
 				if(!(signal_dir.isBoth() ? eqTrack(track, 0) ? signal0 : signal1 : signal0)){
-					pollSignal();
+					pollSignal(entity);
 					entity.commands.add(new CMD_SignalWait("signal_wait", this, eqTrack(track, 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					entity.setPaused(true);
 				}
@@ -327,7 +327,7 @@ public class Junction {
 	private byte checktimer = 0;
 
 	public void onUpdate(){
-		pollSignal();
+		pollSignal(null);
 		if(checktimer == 0){
 			if(switchlocation != null){
 				if(entity != null && !isInPlayerRange()){
@@ -345,16 +345,16 @@ public class Junction {
 		} checktimer--;
 	}
 	
-	private void pollSignal(){
+	public void pollSignal(RailEntity ent){
 		if(signal == null) return;
 		boolean oldsig0 = signal0, oldsig1 = signal1;
 		if(signal.type == SignalType.Kind.BLOCK){
 			if(signal_dir.isBoth()){
-				signal0 = !tracks.get(0).section.hasEntities();
-				signal1 = !tracks.get(1).section.hasEntities();
+				signal0 = !tracks.get(0).unit.hasEntities(ent);
+				signal1 = !tracks.get(1).unit.hasEntities(ent);
 			}
 			else{
-				signal0 = !tracks.get(signal_dir.isForward() ? 1 : 0).section.hasEntities();
+				signal0 = !tracks.get(signal_dir.isForward() ? 1 : 0).unit.hasEntities(ent);
 			}
 		}
 		//

@@ -47,7 +47,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public Coupler front = new Coupler(this, true), rear = new Coupler(this, false);
 	public VehicleData vehdata;
 	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length, moverq;//push_rq, pull_rq;
-	public Section[] sectionson = new Section[4];
+	public TrackUnit[] sectionson = new TrackUnit[4];
 	//
 	private short lastcheck = 20;//for entity despawn/spawning;
 	private static final short interval = 100;//300
@@ -259,15 +259,15 @@ public class RailEntity implements Comparable<RailEntity>{
 	private ArrayList<RailEntity> railentlist = new ArrayList<>();
 
 	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track, boolean forward){
-		railentlist.clear(); railentlist.addAll(track.section.getEntities().values());
+		railentlist.clear(); railentlist.addAll(track.unit.getEntities().values());
 		Junction junction = region.getJunction(track.start); Track track0;
 		//TODO alternative for when a specific path is followed
 		if(junction != null){ track0 = junction.getNext(null, track.getId(), false);
-			if(track0 != null)railentlist.addAll(track0.section.getEntities().values());
+			if(track0 != null)railentlist.addAll(track0.unit.getEntities().values());
 		}
 		junction = region.getJunction(track.end);
 		if(junction != null){ track0 = junction.getNext(null, track.getOppositeId(), false);
-			if(track0 != null)railentlist.addAll(track0.section.getEntities().values());
+			if(track0 != null)railentlist.addAll(track0.unit.getEntities().values());
 		} return railentlist;
 	}
 
@@ -311,11 +311,11 @@ public class RailEntity implements Comparable<RailEntity>{
 	public Vec3f move(float passed, TrainPoint point){
 		TRO tro = getTrack(current, passed, point.updatesJunction(passed > 0));
 		if(sectionson[point.index] == null){
-			(sectionson[point.index] = tro.track.section).update(this, true);
+			(sectionson[point.index] = tro.track.unit).update(this, true);
 		}
 		else{
 			sectionson[point.index].update(this, false);
-			(sectionson[point.index] = tro.track.section).update(this, true);
+			(sectionson[point.index] = tro.track.unit).update(this, true);
 		}
 		return tro.track.getVectorPosition(tro.passed, false);
 	}
@@ -459,7 +459,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void dispose(){
 		Print.debug("Disposing of TrackEntity " + uid + "!"); front.decouple(); rear.decouple();
 		region.getWorld().delEntity(this); if(entity != null && !entity.isDead) entity.setDead();
-		for(Section section : sectionson) if(section != null) section.getEntities().remove(uid);
+		for(TrackUnit section : sectionson) if(section != null) section.getEntities().remove(uid);
 	}
 
 	public UUID getPlacer(){
@@ -577,6 +577,12 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public boolean isPaused(){
 		return recom == null ? vehdata.getAttribute("paused").getBooleanValue() : recom.paused;
+	}
+
+	public boolean isActiveEnd(){
+		if(recom == null) return true;
+		return (recom.forward() && recom.isHead(this))
+			|| (!recom.forward() && recom.isEnd(this));
 	}
 
 }

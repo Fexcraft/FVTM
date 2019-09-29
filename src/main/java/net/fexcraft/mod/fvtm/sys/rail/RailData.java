@@ -25,10 +25,11 @@ public class RailData implements RailSystem {
 
 	private World world;
 	private int dimension;
-	private long globalcounter;
+	private long globalcounter_entities, globalcounter_sections;
 	//
 	private RegionMap regions = new RegionMap(this);
-	private SectionMap sections = new SectionMap();
+	private TrackMap trackunits = new TrackMap(this);
+	private SectionMap sections = new SectionMap(this);
 	private TreeMap<Long, XZK> entities = new TreeMap<>();
 
 	@Override
@@ -49,7 +50,8 @@ public class RailData implements RailSystem {
 	@Override
 	public NBTBase write(EnumFacing side){
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setLong("GlobalCounter", globalcounter);
+		compound.setLong("GlobalCounterEntities", globalcounter_entities);
+		compound.setLong("GlobalCounterSections", globalcounter_sections);
 		if(!entities.isEmpty()){
 			NBTTagCompound enty = new NBTTagCompound();
 			entities.forEach((key, value) -> { enty.setLong(Long.toHexString(key), value.toLong()); });
@@ -60,7 +62,8 @@ public class RailData implements RailSystem {
 	@Override
 	public void read(EnumFacing side, NBTTagCompound compound){
 		if(compound == null || compound.hasNoTags()) return;
-		globalcounter = compound.getLong("GlobalCounter");
+		globalcounter_entities = compound.getLong("GlobalCounterEntities");
+		globalcounter_sections = compound.getLong("GlobalCounterSections");
 		if(compound.hasKey("Entities")){
 			NBTTagCompound enty = compound.getCompoundTag("Entities");
 			for(String str : enty.getKeySet()){
@@ -70,12 +73,35 @@ public class RailData implements RailSystem {
 		}
 	}
 	
-	public static class SectionMap extends TreeMap<String, Section> {
+	public static class TrackMap extends TreeMap<String, TrackUnit> {
 		
-		public Section get(String str, boolean create){
-			if(!create) return super.get(str); Section sec = super.get(str);
-			if(sec == null) this.put(str, sec = new Section(str)); return sec;
+		private RailData data;
+		
+		public TrackMap(RailData raildata){
+			super(); data = raildata;
 		}
+		
+		public TrackUnit get(String str, Long knownid, boolean create){
+			if(!create) return super.get(str); TrackUnit trk = super.get(str);
+			if(trk == null) this.put(str, trk = new TrackUnit(data, str, knownid)); return trk;
+		}
+		
+	}
+	
+	public static class SectionMap extends TreeMap<Long, Section> {
+		
+		private RailData data;
+		
+		public SectionMap(RailData raildata){
+			super(); data = raildata;
+		}
+		
+		public Section get(Long sid, boolean create){
+			if(create && sid == null){ Section sec = new Section(data, null); this.put(sec.getUID(), sec); return sec; }
+			if(sid == null) return null; if(!create) return super.get(sid); Section sec = super.get(sid);
+			if(sec == null) this.put(sid, sec = new Section(data, sid)); return sec;
+		}
+		
 	}
 	
 	public static class RegionMap extends HashMap<XZK, RailRegion> {
@@ -308,7 +334,11 @@ public class RailData implements RailSystem {
 	}
 
 	public long getNewEntityId(){
-		return globalcounter++;
+		return globalcounter_entities++;
+	}
+
+	public long getNewSectionId(){
+		return globalcounter_sections++;
 	}
 
 	public void delEntity(RailEntity entity){
@@ -322,8 +352,16 @@ public class RailData implements RailSystem {
 		return region == null ? null : region.getTrack(key);
 	}
 	
+	public TrackMap getTrackUnits(){
+		return trackunits;
+	}
+	
 	public SectionMap getSections(){
 		return sections;
+	}
+
+	public Section getSection(Long sid){
+		return sections.get(sid, true);
 	}
 
 }

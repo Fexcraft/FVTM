@@ -1,27 +1,40 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
-import java.util.TreeMap;
+import java.util.Collection;
+import java.util.HashSet;
 
+import net.fexcraft.lib.common.math.RGB;
+
+/**
+ * 
+ * @author Ferdinand Calo' (FEX___96)
+ *
+ */
 public class Section {
 	
-	private TreeMap<Long, RailEntity> entities = new TreeMap<>();
-	public String id;
+	private long uid;
+	private HashSet<TrackUnit> units = new HashSet<>();
+	public Long reserved;
+	public RGB color = RGB.random();
 	
-	public Section(String id){
-		this.id = id;
+	public Section(RailData data, Long sid){
+		uid = sid == null ? data.getNewSectionId() : sid;
 	}
 	
-	public void update(RailEntity ent, boolean add){
-		if(add) entities.put(ent.getUID(), ent);
-		else entities.remove(ent.getUID());
+	public Section fill(TrackUnit... tracks){
+		for(TrackUnit track : tracks) units.add(track); return this;
 	}
 	
-	public TreeMap<Long, RailEntity> getEntities(){
-		return entities;
+	public Section fill(Collection<TrackUnit> tracks){
+		units.addAll(tracks); return this;
 	}
 
-	public boolean hasEntities(){
-		return entities.size() > 0;
+	public void insert(TrackUnit unit){
+		units.add(unit);
+	}
+	
+	public long getUID(){
+		return uid;
 	}
 
 }

@@ -4,6 +4,9 @@ import java.util.Collections;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.util.MiniBB;
+import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
+import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
+
 
 public class Coupler {
 	
@@ -30,22 +33,26 @@ public class Coupler {
 	/** Usually called from the vehicle that does currently calcs. */
 	public void decouple(){
 		if(entity == null) return;
-		if(root.recom == null || entity.recom == null){}//pass
-		else if(root.recom.size() <= 2 || entity.recom.size() <= 2){
-			root.recom = entity.recom = null;
+		if(root.com == null || entity.com == null){}//pass
+		else if(root.com.size() <= 2 || entity.com.size() <= 2){
+			root.com = entity.com = null;
 		}
-		else if(root.recom.isHead(root)){
-			root.recom.entities.remove(0); root.recom = null;
+		else if(root.com.isHead(root)){
+			root.com.entities.remove(0); root.com = null;
 		}
-		else if(root.recom.isEnd(root)){
-			root.recom.entities.remove(root.recom.size() - 1); root.recom = null;
+		else if(root.com.isEnd(root)){
+			root.com.entities.remove(root.com.size() - 1); root.com = null;
 		}
 		else{//split
-			int idx0 = root.recom.getIndex(root), idx1 = root.recom.getIndex(entity), lesser, notlesser;
+			int idx0 = root.com.getIndex(root), idx1 = root.com.getIndex(entity), lesser, notlesser;
 			if(idx0 < idx1){ lesser = idx0; notlesser = idx1; } else{ lesser = idx1; notlesser = idx0; }
-			REC rec0 = new REC(root.recom, 0, lesser + 1); REC rec1 = new REC(root.recom, notlesser, root.recom.entities.size());
+			/*Compound rec0 = new Compound(root.recom, 0, lesser + 1); Compound rec1 = new Compound(root.recom, notlesser, root.recom.entities.size());
 			if(rec0.size() < 2) rec0.entities.forEach(ent -> ent.recom = null);
-			if(rec1.size() < 2) rec1.entities.forEach(ent -> ent.recom = null);
+			if(rec1.size() < 2) rec1.entities.forEach(ent -> ent.recom = null);*/
+			Compound old = root.com;
+			if(lesser == 0) new Singular(root); else new Multiple(old, 0, lesser + 1);
+			if(old.entities.size() - 1 == notlesser) new Singular(old.entities.get(notlesser));
+			else new Multiple(old, notlesser, old.entities.size());
 		}
 		//
 		if(isFront()){ entity.front.entity = null; entity.front.coupled = false; entity = null; }
@@ -53,51 +60,51 @@ public class Coupler {
 	}
 
 	public void couple(RailEntity ent, boolean front, boolean solid){
-		if(root.recom != null && ent.recom != null && root.recom.equals(ent.recom)) return;//abort, we don't want such.
+		if(root.com != null && ent.com != null && root.com.equals(ent.com)) return;//abort, we don't want such.
 		(front ? ent.front : ent.rear).coupled = coupled = solid;
 		entity = ent; (front ? ent.front : ent.rear).entity = root;
 		if(!root.region.getWorld().getWorld().isRemote){
 			root.updateClient("couplers"); ent.updateClient("couplers");
 		}
-		if(root.recom == null && entity.recom == null){
-			root.recom = entity.recom = new REC(solid ? root : entity, solid ? entity : root);
+		if(root.com.isSingular() && entity.com.isSingular()){
+			root.com = entity.com = new Multiple(solid ? root : entity, solid ? entity : root);
 			Print.debug("REC: created new");
 		}
-		else if(root.recom != null && entity.recom != null){
-			if(root.recom.isEnd(root)){
-				if(!entity.recom.isHead(entity)){
-					Collections.reverse(entity.recom.entities);
+		else if(!root.com.isSingular() && !entity.com.isSingular()){
+			if(root.com.isEnd(root)){
+				if(!entity.com.isHead(entity)){
+					Collections.reverse(entity.com.entities);
 				}
-				root.recom.entities.addAll(entity.recom.entities);
-				root.recom.entities.forEach(e -> e.recom = root.recom);
+				root.com.entities.addAll(entity.com.entities);
+				root.com.entities.forEach(e -> e.com = root.com);
 			}
 			else{
-				if(entity.recom.isHead(entity)){
-					Collections.reverse(entity.recom.entities);
+				if(entity.com.isHead(entity)){
+					Collections.reverse(entity.com.entities);
 				}
-				root.recom.entities.addAll(0, entity.recom.entities);
-				root.recom.entities.forEach(e -> e.recom = root.recom);
+				root.com.entities.addAll(0, entity.com.entities);
+				root.com.entities.forEach(e -> e.com = root.com);
 			}
 			Print.debug("REC: fused");
 		}
-		else if(root.recom == null){
-			if(entity.recom.isHead(root)){
-				entity.recom.entities.add(0, root);
+		else if(root.com.isSingular()){
+			if(entity.com.isHead(root)){
+				entity.com.entities.add(0, root);
 			}
 			else{//assume end
-				entity.recom.entities.add(root);
+				entity.com.entities.add(root);
 			}
-			root.recom = entity.recom;
+			root.com = entity.com;
 			Print.debug("REC: attached root");
 		}
-		else if(root.recom != null){
-			if(root.recom.isHead(root)){
-				root.recom.entities.add(0, entity);
+		else if(root.com.isSingular()){
+			if(root.com.isHead(root)){
+				root.com.entities.add(0, entity);
 			}
 			else{//assume end
-				root.recom.entities.add(entity);
+				root.com.entities.add(entity);
 			}
-			entity.recom = root.recom;
+			entity.com = root.com;
 			Print.debug("REC: attached entity");
 		}
 	}

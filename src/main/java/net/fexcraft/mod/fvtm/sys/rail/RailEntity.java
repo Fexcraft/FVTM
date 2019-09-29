@@ -53,7 +53,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private static final short interval = 100;//300
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
-	protected REC recom;
+	protected Compound com;
 	protected ArrayList<JEC> commands = new ArrayList<>();
 	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
 	
@@ -71,7 +71,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		crear = move(0, TrainPoint.COUPLER_REAR);
 		front.mbb.update(cfront, 0.125f); rear.mbb.update(crear, 0.125f);
 		//
-		region.spawnEntity(this);
+		com = new Compound.Singular(this); region.spawnEntity(this);
 	}
 
 	private Vec3f medium(Vec3f vec0, Vec3f vec1){
@@ -102,18 +102,18 @@ public class RailEntity implements Comparable<RailEntity>{
 				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
 				if(CMODE() || processConsumption(engine)){
 					float eng = throttle * engine.getLegacyEngineSpeed();
-					if(recom != null) recom.accumulator += eng;
+					if(com.isMultiple()) com.accumulator += eng;
 					else moverq = forward ? eng : -eng;
 				}
 			}
 			float am = moverq; boolean move = false;
-			if(recom != null && (recom.forward() ? recom.isHead(this) : recom.isEnd(this))){
-				float amount = recom.accumulator;
-				if(recom.forward() && recom.isHead(this)){
-					am += front.hasEntity() ? -amount : amount; recom.accumulator = 0; move = true;
+			if(com.isMultiple() && (com.forward ? com.isHead(this) : com.isEnd(this))){
+				float amount = com.accumulator;
+				if(com.forward && com.isHead(this)){
+					am += front.hasEntity() ? -amount : amount; com.accumulator = 0; move = true;
 				}
-				else if(!recom.forward() && recom.isEnd(this)){
-					am += rear.hasEntity() ? amount : -amount; recom.accumulator = 0; move = true;
+				else if(!com.forward && com.isEnd(this)){
+					am += rear.hasEntity() ? amount : -amount; com.accumulator = 0; move = true;
 				}
 			}
 			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
@@ -123,12 +123,12 @@ public class RailEntity implements Comparable<RailEntity>{
 				last = current; current = tro.track; passed = tro.passed;
 				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
 				if(!region.isInRegion(current.start)) this.updateRegion(current.start);
-				updatePosition();
+				updatePosition(); vehdata.getAttribute("forward").setValue(am > 0);//TODO attr sync
 				//
 				if(!hascoupled && isCoupled()){
 					//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
 					//if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
-					if(recom != null && move) moveCompound(am);
+					if(com.isMultiple() && move) moveCompound(am);
 				} hascoupled = false; moverq = 0;
 			}
 		}
@@ -527,8 +527,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void setForward(EntityPlayer player, boolean bool){
-		vehdata.getAttribute("forward").setValue(forward = bool);
-		if(recom != null) recom.entities.get(0).forward = bool;
+		vehdata.getAttribute("forward").setValue(forward = com.forward = bool);
 		Print.bar(player, "&e&oDirection set to " + (forward ? "FORWARD" : "REVERSE"));
 		if(entity != null && !region.getWorld().getWorld().isRemote){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
@@ -564,8 +563,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void setPaused(boolean bool){
-		vehdata.getAttribute("paused").setValue(bool);
-		if(recom != null) recom.paused = bool;
+		vehdata.getAttribute("paused").setValue(com.paused = bool);
 		if(entity != null && !region.getWorld().getWorld().isRemote){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
 			packet.setString("task", "attr_update"); packet.setString("attr", "paused");
@@ -576,13 +574,11 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public boolean isPaused(){
-		return recom == null ? vehdata.getAttribute("paused").getBooleanValue() : recom.paused;
+		return com.paused;
 	}
 
 	public boolean isActiveEnd(){
-		if(recom == null) return true;
-		return (recom.forward() && recom.isHead(this))
-			|| (!recom.forward() && recom.isEnd(this));
+		if(com.isSingular()) return true; return (com.forward && com.isHead(this)) || (!com.forward && com.isEnd(this));
 	}
 
 }

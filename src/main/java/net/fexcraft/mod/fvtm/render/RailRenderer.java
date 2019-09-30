@@ -373,6 +373,10 @@ public class RailRenderer {
 			}
 		}
 
+		public void renderPlain(){
+			for(int m = 0; m < turbos.length; m++){ turbos[m].render(1f); }
+		}
+
 		public void clearDisplayLists(){
 			for(ModelRendererTurbo turbo : turbos) if(turbo != null && turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
 		}

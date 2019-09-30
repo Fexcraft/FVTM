@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -20,6 +21,9 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 	
 	private ConstructorEntity tile;
 	private BlockPos conpos;
+	
+	@SideOnly(Side.CLIENT)
+	public Track track;
 	
 	public ConstCenterEntity(){}
 	

@@ -79,6 +79,7 @@ public enum VehicleType {
 			case RAIL:{
 				attrs.add(new Attribute.FloatAttribute(true, "bogie_front_angle", 0f).setMinMax(-360f, 360f));
 				attrs.add(new Attribute.FloatAttribute(true, "bogie_rear_angle", 0f).setMinMax(-360f, 360f));
+				attrs.add(new Attribute.IntegerAttribute(true, "gauge", 30).setMinMax(Integer.MIN_VALUE, Integer.MAX_VALUE).setEditable(false).setSeat("driver"));
 				attrs.add(new Attribute.BooleanAttribute(true, "forward", true).setEditable(false));
 				attrs.add(new Attribute.BooleanAttribute(true, "active", false).setEditable(true));//for automatic/steered/AI traffic
 				attrs.add(new Attribute.BooleanAttribute(true, "paused", false).setEditable(true));//for automatic/steered/AI traffic

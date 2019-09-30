@@ -216,10 +216,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         //
         if(packet.nbt.hasKey("VehicleData")){
-        	this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData"));
+        	this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData")); this.resetCenterRails();
         }
         else if(packet.nbt.hasKey("VehicleDataReset") && packet.nbt.getBoolean("VehicleDataReset")){
-        	this.vdata = null;
+        	this.vdata = null; this.resetCenterRails();
         }
         //
         if(packet.nbt.hasKey("ContainerData")){
@@ -248,7 +248,16 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
     }
     
-    public void updateClient(String type){
+    private void resetCenterRails(){
+		if(center == null) return; TileEntity center = world.getTileEntity(this.center); if(center == null) return;
+		if(center instanceof ConstCenterEntity == false) return;
+		ConstCenterEntity cent = (ConstCenterEntity)center; if(cent.track == null) return;
+		if(cent.track.railmodel != null) cent.track.railmodel.clearDisplayLists();
+		if(cent.track.restmodel != null) cent.track.restmodel.clearDisplayLists();
+		cent.track.railmodel = cent.track.restmodel = null; cent.track.gauge = null;
+	}
+
+	public void updateClient(String type){
     	if(type == null){
         	ApiUtil.sendTileEntityUpdatePacket(world, pos, this.writeToNBT(new NBTTagCompound()));
         	return;

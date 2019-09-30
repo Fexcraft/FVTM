@@ -62,7 +62,7 @@ public class Track {
 	
 	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, RailGauge gauge){
 		this.junction = junction; start = vec316fs[0]; end = vector; id = new TrackKey(start, end);
-		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1];
+		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1]; this.gauge = gauge;
 		if(vecpath.length == 2){
 			vecpath[0] = vec316fs[0].vector; vecpath[1] = vector.vector;
 			this.length = vecpath[0].distanceTo(vecpath[1]);
@@ -77,7 +77,7 @@ public class Track {
 			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
 			this.length = this.calcLength();
 		}
-		this.gauge = gauge; unit = getUnit(junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId());
+		if(junction != null) unit = getUnit(junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId());
 	}
 	
 	/** Only for the READ process. @param junk just to make sure it's not used elsewhere */

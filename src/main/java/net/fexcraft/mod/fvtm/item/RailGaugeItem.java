@@ -47,6 +47,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
         }
+        tooltip.add(Formatter.format("&9Width: &7" + type.width() + "mb"));
         if(type.getCompatible().size() > 0){
             tooltip.add(Formatter.format("&9Compatible with:"));
             for(String str : type.getCompatible()){

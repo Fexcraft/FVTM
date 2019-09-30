@@ -25,6 +25,14 @@ public class Vec316f implements Comparable<Vec316f>{
 		vector = toVec3f();
 	}
 
+	public Vec316f(Vec3f pos){
+		this.pos = new BlockPos(pos.xCoord, pos.yCoord, pos.zCoord);
+		x = (byte)((pos.xCoord - this.pos.getX()) / 0.0625);
+		y = (byte)((pos.yCoord - this.pos.getY()) / 0.0625);
+		z = (byte)((pos.zCoord - this.pos.getZ()) / 0.0625);
+		vector = toVec3f();
+	}
+
 	public Vec316f(Vec3d pos, int rgs){
 		this.pos = new BlockPos(pos);
 		byte x = (byte)((pos.x - this.pos.getX()) / 0.0625);

@@ -289,6 +289,18 @@ public class RailRenderer {
         			GL11.glPopMatrix();
     			}
     		}
+    		if(value.size() == 1){
+    			if(value.bufferrot == null){
+    				Track track = value.tracks.get(0); Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+    				value.bufferrot = (float)Math.atan2(vec0.zCoord - vec1.zCoord, vec0.xCoord - vec1.xCoord);
+    				value.bufferrot += Static.rad90; value.bufferrot = (float)Math.toDegrees(-value.bufferrot);
+    			}
+    			GL11.glPushMatrix();
+    			GL11.glTranslatef(value.getVec3f().xCoord, value.getVec3f().yCoord, value.getVec3f().zCoord);
+    			GL11.glRotatef(value.bufferrot, 0, 1, 0);
+    			value.tracks.get(0).gauge.getModel().renderBuffer(value);
+    			GL11.glPopMatrix();
+    		}
         	//
     		Minecraft.getMinecraft().entityRenderer.disableLightmap();
     		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -53,6 +53,8 @@ public class Junction {
 	public Vec3f signalpos0, signalpos1;
 	@SideOnly(Side.CLIENT)
 	public float signalrot0, signalrot1;
+	@SideOnly(Side.CLIENT)
+	public Float bufferrot;
 	
 	/** General Constructor */
 	public Junction(RailRegion region, Vec316f pos){
@@ -83,7 +85,7 @@ public class Junction {
 						if(track.restmodel != null) track.restmodel.clearDisplayLists();
 						track.railmodel = track.restmodel = null;
 					}
-					signalpos0 = signalpos1 = null;
+					signalpos0 = signalpos1 = null; bufferrot = null;
 				}
 				tracks.clear();
 				for(int i = 0; i < trackam; i++){

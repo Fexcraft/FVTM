@@ -172,6 +172,12 @@ public class RailRegion {
 				compound.setString("task", "update_junction");
 				break;
 			}
+			case "no_junction":{
+				compound = vector.write();
+				compound.setString("target_listener", "fvtm:gui");
+				compound.setString("task", "rem_junction");
+				break;
+			}
 			case "junction_state":{
 				Junction junction = getJunction(vector); if(junction == null) return;
 				compound = new NBTTagCompound();

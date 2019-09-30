@@ -58,6 +58,7 @@ public class Junction {
 	public Junction(RailRegion region, Vec316f pos){
 		vecpos = pos; tracks = new ArrayList<Track>(); this.root = region.getWorld();
 		this.region = region; this.switch0 = this.switch1 = false; type = JunctionType.STRAIGHT;
+		this.updateClient();
 	}
 	
 	/** Only to be used from RailRegion.class */
@@ -424,6 +425,10 @@ public class Junction {
 			if(other.xCoord > max.xCoord) max.xCoord = other.xCoord;
 			if(other.yCoord > max.yCoord) max.yCoord = other.yCoord;
 			if(other.zCoord > max.zCoord) max.zCoord = other.zCoord;
+		}
+		if(tracks.isEmpty()){
+			min = vecpos.vector.addVector(-.5f,-.5f,-.5f);
+			max = vecpos.vector.addVector(+.5f,+.5f,+.5f);
 		}
 		return frustumbb = new AxisAlignedBB(min.xCoord, min.yCoord, min.zCoord, max.xCoord, max.yCoord, max.zCoord);
 	}

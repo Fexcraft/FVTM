@@ -220,7 +220,7 @@ public class RailData implements RailSystem {
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
 		if(junc != null){ for(Track track : junc.tracks){ delTrack(track); } if(junc.entity != null) junc.entity.setDead(); }
-		region.setAccessed().updateClient(vector); return true;
+		region.setAccessed().updateClient("no_junction", vector); return true;
 	}
 
 	@Override
@@ -242,7 +242,7 @@ public class RailData implements RailSystem {
 	@Override
 	public void addJunction(Vec316f vector){
 		RailRegion region = regions.get(vector, true); if(region == null) /** this rather an error*/ return;
-		region.getJunctions().put(vector, new Junction(region, vector)); region.setAccessed().updateClient(vector); return;
+		region.getJunctions().put(vector, new Junction(region, vector)); region.setAccessed(); return;
 	}
 
 	@Override

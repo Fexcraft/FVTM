@@ -67,8 +67,17 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			}
 			case "update_junction":{
 				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
-				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("Pos")));
-				if(junction != null) junction.read(packet.nbt); return;
+				Vec316f vec = new Vec316f(packet.nbt.getCompoundTag("Pos"));
+				Junction junction = system.getJunction(vec); if(junction != null) junction.read(packet.nbt);
+				else{
+					RailRegion region = system.getRegions().get(vec, false);
+					if(region != null) region.getJunctions().put(vec, new Junction(region, vec).read(packet.nbt));
+				} return;
+			}
+			case "rem_junction":{
+				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				Vec316f vec = new Vec316f(packet.nbt); RailRegion region = system.getRegions().get(vec, false);
+				if(region != null) region.getJunctions().remove(vec); return;
 			}
 			case "update_junction_state":{
 				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);

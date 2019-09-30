@@ -117,13 +117,13 @@ public class RailRenderer {
 	protected static final ModelRendererTurbo model, model0, model1, junction_core, railentcore;
 	static{
 		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addCylinder(0, 0, 0, 0.4f, 8, 32, 1, 1, ModelRendererTurbo.MR_TOP);
+			.addCylinder(0, 0, 0, 0.4f, 8, 32, 1, 1, ModelRendererTurbo.MR_TOP).setColor(RGB.RED);
 		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(245, 234, 128));
 		model1 = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(123, 245, 126));
 		junction_core = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addCylinder(0, -.5f, 0, 0.9f, 1, 8, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(35, 35, 35));
+			.addCylinder(0, -.5f, 0, 0.9f, 1, 8, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(120, 120, 120));//35rgb
 		railentcore = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addHollowCylinder(0, -4, 0, 8, 4, 8, 8, 0, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(128, 128, 128));
 	}
@@ -153,8 +153,7 @@ public class RailRenderer {
             	GL11.glPushMatrix();
                 GlStateManager.disableTexture2D();
             	GL11.glTranslatef(junctions[i].getVec3f().xCoord, junctions[i].getVec3f().yCoord, junctions[i].getVec3f().zCoord);
-            	if(junctions[i].tracks.isEmpty()){ RGB.RED.glColorApply(); model.render(); RGB.glColorReset(); }
-            	else junction_core.render();
+            	if(junctions[i].tracks.isEmpty()){ model.render(); } else{ junction_core.render(); }
                 GlStateManager.enableTexture2D();
             	GL11.glPopMatrix();
         		renderLines(junctions[i]);

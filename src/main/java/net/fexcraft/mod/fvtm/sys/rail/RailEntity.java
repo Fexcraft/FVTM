@@ -78,9 +78,10 @@ public class RailEntity implements Comparable<RailEntity>{
 		return new Vec3f((vec0.xCoord + vec1.xCoord) * 0.5f, (vec0.yCoord + vec1.yCoord) * 0.5f, (vec0.zCoord + vec1.zCoord) * 0.5f);
 	}
 
-	/** only to use with read() afterwards */
-	public RailEntity(RailRegion railregion){
-		region = railregion;
+	/** only to use with read() afterwards 
+	 * @param singular */
+	public RailEntity(RailRegion railregion, Compound compound){
+		region = railregion; this.com = compound;
 	}
 
 	public long getUID(){
@@ -397,6 +398,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			for(JEC cmd : commands) list.appendTag(cmd.write(null));
 			compound.setTag("Commands", list);
 		}
+		if(com.isSingular()) compound.setLong("Compound", com.getUID());
 		return vehdata.write(compound);
 	}
 	

@@ -12,6 +12,8 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
+import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.rail.RailData.XZK;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -20,7 +22,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
 
 /**
  * 
@@ -85,8 +89,27 @@ public class RailRegion {
 			if(!entities.isEmpty()) entities.clear();
 			NBTTagList list = (NBTTagList)compound.getTag("Entities");
 			for(NBTBase base : list){
-				RailEntity entity = new RailEntity(this).read((NBTTagCompound)base);
-				entities.put(entity.getUID(), entity);
+				if(base instanceof NBTTagCompound){
+					NBTTagCompound com = (NBTTagCompound)base;
+					Singular singular = new Singular(this, com.getLong("Compound"), com);
+					entities.put(singular.entities.get(0).getUID(), singular.entities.get(0));
+				}
+				else if(base instanceof NBTTagList){
+					Multiple multiple = new Multiple(this, (NBTTagList)base);
+					int[] arr = null;
+					for(RailEntity entity : multiple.entities){
+						arr = RailData.getRegionXZ(entity.pos);
+						if(key.x == arr[0] && key.z == arr[1]) entities.put(entity.getUID(), entity);
+						else{
+							RailRegion reg = world.getRegions().get(arr, true);
+							reg.getEntities().put(entity.getUID(), entity);
+						}
+					}
+				}
+				else if(base instanceof NBTTagIntArray){
+					//TODO
+				}
+				else continue;
 			}
 		}
 		return this;
@@ -116,7 +139,21 @@ public class RailRegion {
 		if(!entities.isEmpty()){
 			NBTTagList list = new NBTTagList();
 			for(RailEntity entity : entities.values()){
-				list.appendTag(entity.write(null));
+				if(entity.com.isSingular()){
+					list.appendTag(entity.write(null));
+				}
+				else if(entity.com.isHead(entity)){
+					NBTTagList ents = new NBTTagList();
+					ents.appendTag(new NBTTagLong(entity.com.getUID()));
+					for(RailEntity ent : entity.com.entities){
+						ents.appendTag(ent.write(null));
+					}
+					list.appendTag(ents);
+				}
+				else if(entity.com.isEnd(entity)){
+					list.appendTag(new NBTTagIntArray(RailData.getRegionXZ(entity.pos)));
+				}
+				else continue;
 			}
 			compound.setTag("Entities", list);
 		}

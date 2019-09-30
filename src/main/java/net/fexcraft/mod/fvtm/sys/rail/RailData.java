@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
@@ -25,7 +26,7 @@ public class RailData implements RailSystem {
 
 	private World world;
 	private int dimension;
-	private long globalcounter_entities, globalcounter_sections;
+	private long globalcounter_entities, globalcounter_sections, globalcounter_compounds;
 	//
 	private RegionMap regions = new RegionMap(this);
 	private TrackMap trackunits = new TrackMap(this);
@@ -52,6 +53,7 @@ public class RailData implements RailSystem {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("GlobalCounterEntities", globalcounter_entities);
 		compound.setLong("GlobalCounterSections", globalcounter_sections);
+		compound.setLong("GlobalCounterCompounds", globalcounter_compounds);
 		if(!entities.isEmpty()){
 			NBTTagCompound enty = new NBTTagCompound();
 			entities.forEach((key, value) -> { enty.setLong(Long.toHexString(key), value.toLong()); });
@@ -64,6 +66,7 @@ public class RailData implements RailSystem {
 		if(compound == null || compound.hasNoTags()) return;
 		globalcounter_entities = compound.getLong("GlobalCounterEntities");
 		globalcounter_sections = compound.getLong("GlobalCounterSections");
+		globalcounter_compounds = compound.getLong("GlobalCounterCompounds");
 		if(compound.hasKey("Entities")){
 			NBTTagCompound enty = compound.getCompoundTag("Entities");
 			for(String str : enty.getKeySet()){
@@ -193,6 +196,10 @@ public class RailData implements RailSystem {
 	
 	public static int[] getRegionXZ(Vec316f vec){
 		return getRegionXZ((int)vec.pos.getX() >> 4, (int)vec.pos.getZ() >> 4);
+	}
+
+	public static int[] getRegionXZ(Vec3f pos){
+		return getRegionXZ((int)pos.xCoord >> 4, (int)pos.zCoord >> 4);
 	}
 
 	private int[] getRegionXZ(TrackKey key){
@@ -343,6 +350,10 @@ public class RailData implements RailSystem {
 
 	public long getNewSectionId(){
 		return globalcounter_sections++;
+	}
+
+	public long getNewCompoundId(){
+		return globalcounter_compounds++;
 	}
 
 	public void delEntity(RailEntity entity){

@@ -35,13 +35,13 @@ public class Coupler {
 		if(entity == null) return;
 		if(root.com == null || entity.com == null){}//pass
 		else if(root.com.size() <= 2 || entity.com.size() <= 2){
-			root.com = entity.com = null;
+			root.com = new Singular(root); entity.com = new Singular(entity);
 		}
 		else if(root.com.isHead(root)){
-			root.com.entities.remove(0); root.com = null;
+			root.com.entities.remove(0); root.com = new Singular(root);
 		}
 		else if(root.com.isEnd(root)){
-			root.com.entities.remove(root.com.size() - 1); root.com = null;
+			root.com.entities.remove(root.com.size() - 1); root.com = new Singular(root);
 		}
 		else{//split
 			int idx0 = root.com.getIndex(root), idx1 = root.com.getIndex(entity), lesser, notlesser;

@@ -242,7 +242,8 @@ public class RailData implements RailSystem {
 	@Override
 	public void addJunction(Vec316f vector){
 		RailRegion region = regions.get(vector, true); if(region == null) /** this rather an error*/ return;
-		region.getJunctions().put(vector, new Junction(region, vector)); region.setAccessed(); return;
+		Junction junction = new Junction(region, vector); region.getJunctions().put(vector, junction);
+		junction.updateClient(); region.setAccessed(); return;
 	}
 
 	@Override

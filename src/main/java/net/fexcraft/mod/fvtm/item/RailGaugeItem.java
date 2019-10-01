@@ -112,7 +112,8 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
 				second.addnew(track); junk.addnew(track.createOppositeCopy());
-				Print.chat(player, "&aTrack Created!");stack.getTagCompound().removeTag("fvtm:railpoints");
+				second.checkTrackSectionConsistency();
+				Print.chat(player, "&aTrack Created!"); stack.getTagCompound().removeTag("fvtm:railpoints");
 			} else{ Print.chat(player, "&cNo Junction at starting point found!"); }
 			return EnumActionResult.SUCCESS;
 		}

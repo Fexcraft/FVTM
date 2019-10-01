@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagString;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
+//@Deprecated
 public abstract class JEC {
 	
 	protected JECType type;

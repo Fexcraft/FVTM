@@ -64,6 +64,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 		if(junction == null){ return EnumActionResult.PASS; }
         if(player.isSneaking()){
         	junction.setSignal(null, null); Print.chat(player, "&bJunction Signal &creset&b.");
+        	junction.checkTrackSectionConsistency();
 			return EnumActionResult.SUCCESS;
 		}
         if(junction.signal != null){
@@ -94,6 +95,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 			return EnumActionResult.FAIL;
         }
 		junction.setSignal(SignalType.TWO_WAY_BLOCK, EntryDirection.BOTH); Print.chat(player, "&bJunction Signal &7set&b.");
+		junction.checkTrackSectionConsistency();
         return EnumActionResult.SUCCESS;
     }
 	

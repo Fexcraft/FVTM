@@ -106,6 +106,7 @@ public class Junction {
 				}
 			}*/
 		} frustumbb = null;
+		checkTrackSectionConsistency();
 		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
 		else type = JunctionType.STRAIGHT;
@@ -138,7 +139,7 @@ public class Junction {
 		}
 		return this;
 	}
-	
+
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
 		for(int i = 0; i < tracks.size(); i++){
@@ -184,6 +185,23 @@ public class Junction {
 	public void addnew(Track track){
 		tracks.add(track); type = JunctionType.byTracksAmount(size()); updateClient();
 	}
+	
+	public void checkTrackSectionConsistency(){
+		if(tracks.size() < 2) return;
+		if(tracks.size() == 2 && signal != null){
+			Section sec0 = tracks.get(0).unit.section(), sec1 = tracks.get(1).unit.section();
+			if(sec0.getUID() == sec1.getUID()){ sec0.splitAtSignal(this); }
+			return;
+		}
+		Track zero = tracks.get(0);
+		for(int i = 1; i < tracks.size(); i++){
+			if(zero.unit.getSectionId() != tracks.get(i).unit.getSectionId()){
+				Section sec0 = zero.unit.section(), sec1 = tracks.get(i).unit.section();
+				if(sec0.size() > sec1.size()) sec0.insert(sec1); else sec1.insert(sec0);
+				//try fusion;
+			}
+		}
+	}
 
 	public void updateClient(){
 		region.updateClient("junction", vecpos);
@@ -193,23 +211,31 @@ public class Junction {
 		Track track = null;
 		for(int i = 0; i < tracks.size(); i++){
 			if(tracks.get(i).getId().equals(trackid)){ track = tracks.remove(i); break; }
-		}
-		if(track == null) return;
+		} if(track == null) return;
 		if(signal != null){ this.signal = null; this.signal_dir = EntryDirection.FORWARD; }
+		//
+		track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
+		type = JunctionType.byTracksAmount(size());
+		this.checkTrackSectionConsistency(); this.updateClient();
+		//
 		if(firstcall){
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
 			if(junk != null) junk.remove(track.getOppositeId(), false);
 		}
-		type = JunctionType.byTracksAmount(size()); this.updateClient();
 	}
 
 	public void remove(int index, boolean firstcall){
-		Track track = tracks.remove(index); Print.debug(index, track) ;if(track == null) return;
+		Track track = tracks.remove(index); if(track == null) return;
+		if(signal != null){ this.signal = null; this.signal_dir = EntryDirection.FORWARD; }
+		//
+		track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
+		type = JunctionType.byTracksAmount(size());
+		this.checkTrackSectionConsistency(); this.updateClient();
+		//
 		if(firstcall){
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
 			if(junk != null) junk.remove(track.getOppositeId(), false);
 		}
-		type = JunctionType.byTracksAmount(size()); this.updateClient();
 	}
 
 	public void clear(){
@@ -353,11 +379,11 @@ public class Junction {
 		boolean oldsig0 = signal0, oldsig1 = signal1;
 		if(signal.type == SignalType.Kind.BLOCK){
 			if(signal_dir.isBoth()){
-				signal0 = !tracks.get(0).unit.hasEntities(ent);
-				signal1 = !tracks.get(1).unit.hasEntities(ent);
+				signal0 = tracks.get(0).unit.section().isFree(ent);
+				signal1 = tracks.get(1).unit.section().isFree(ent);
 			}
 			else{
-				signal0 = !tracks.get(signal_dir.isForward() ? 1 : 0).unit.hasEntities(ent);
+				signal0 = tracks.get(signal_dir.isForward() ? 1 : 0).unit.section().isFree(ent);
 			}
 		}
 		//

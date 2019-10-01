@@ -9,6 +9,7 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
@@ -63,6 +64,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		frbogiedis = (float)vdata.getWheelPositions().get("bogie_front").x;
 		rrbogiedis  = (float)-vdata.getWheelPositions().get("bogie_rear").x;
 		frconndis = (float)vdata.getFrontConnector().x; rrconndis = (float)-vdata.getRearConnector().x;
+		com = new Compound.Singular(this); 
 		//
 		bfront = move(rrconndis + frbogiedis, TrainPoint.BOGIE_FRONT);
 		brear = move(rrconndis - rrbogiedis, TrainPoint.BOGIE_REAR);
@@ -71,7 +73,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		crear = move(0, TrainPoint.COUPLER_REAR);
 		front.mbb.update(cfront, 0.125f); rear.mbb.update(crear, 0.125f);
 		//
-		com = new Compound.Singular(this); region.spawnEntity(this);
+		region.spawnEntity(this);
 	}
 
 	private Vec3f medium(Vec3f vec0, Vec3f vec1){
@@ -79,9 +81,17 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	/** only to use with read() afterwards 
-	 * @param singular */
+	 * @param compound */
 	public RailEntity(RailRegion railregion, Compound compound){
 		region = railregion; this.com = compound;
+	}
+	
+	/** only to use with read() afterwards 
+	 * @param compound */
+	public RailEntity(RailRegion railregion, NBTTagCompound compound){
+		region = railregion; long uid = compound.getLong("Compound");
+		if(compound.getBoolean("Singular")) com = Compound.get(this, uid);
+		else Static.exception(new Exception("Cannot remote spawn unit of multi compound."), false);
 	}
 
 	public long getUID(){
@@ -398,7 +408,8 @@ public class RailEntity implements Comparable<RailEntity>{
 			for(JEC cmd : commands) list.appendTag(cmd.write(null));
 			compound.setTag("Commands", list);
 		}
-		if(com.isSingular()) compound.setLong("Compound", com.getUID());
+		compound.setLong("Compound", com.getUID());
+		compound.setBoolean("Singular", com.isSingular());
 		return vehdata.write(compound);
 	}
 	
@@ -580,7 +591,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public boolean isActiveEnd(){
-		if(com.isSingular()) return true; return (com.forward && com.isHead(this)) || (!com.forward && com.isEnd(this));
+		if(com.isSingular()) return true; return com.forward ? com.isHead(this) : com.isEnd(this);
 	}
 
 }

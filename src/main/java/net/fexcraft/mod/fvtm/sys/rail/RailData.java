@@ -227,7 +227,7 @@ public class RailData implements RailSystem {
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
 		if(junc != null){ for(Track track : junc.tracks){ delTrack(track); } if(junc.entity != null) junc.entity.setDead(); }
-		region.setAccessed().updateClient("no_junction", vector); return true;
+		region.setAccessed().updateClient("no_junction", vector); region.updateClient("no_junction", vector); return true;
 	}
 
 	@Override
@@ -235,15 +235,9 @@ public class RailData implements RailSystem {
 		if(track == null) return false;
 		Junction junction = getJunction(track.start);
 		if(junction != null){
-			junction.tracks.removeIf(tr -> tr.getId().equals(track.getId()) || tr.getId().equals(track.getOppositeId()));
+			junction.remove(track.getId(), false);
 			junction.updateClient();
-		}
-		junction = getJunction(track.end);
-		if(junction != null){
-			junction.tracks.removeIf(tr -> tr.getId().equals(track.getId()) || tr.getId().equals(track.getOppositeId()));
-			junction.updateClient();
-		}
-		track.unit.section().splitAt(track); return true;
+		} return true;
 	}
 
 	@Override

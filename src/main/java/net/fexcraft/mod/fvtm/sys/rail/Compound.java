@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
@@ -14,6 +16,9 @@ import net.minecraft.nbt.NBTTagLong;
  */
 public abstract class Compound {
 	
+	//TODO removal of unused/unliked compounds from list;
+	public static final TreeMap<Long, Compound> COMPOUNDS = new TreeMap<>();
+	//
 	protected float accumulator;
 	protected ArrayList<RailEntity> entities = new ArrayList<>();
 	public boolean forward, paused;
@@ -23,12 +28,16 @@ public abstract class Compound {
 		
 		public Singular(RailEntity root){
 			super(root.region.getWorld().getNewCompoundId());
-			entities.add(root); root.com = this;
+			entities.add(root); root.com = this; COMPOUNDS.put(uid, this);
 		}
 
 		public Singular(RailRegion region, long uid, NBTTagCompound compound){
 			super(uid); RailEntity root = new RailEntity(region, this);
-			entities.add(root.read(compound));
+			entities.add(root.read(compound)); COMPOUNDS.put(uid, this);
+		}
+
+		public Singular(RailEntity ent, long uid){
+			super(uid); entities.add(ent); COMPOUNDS.put(uid, this);
 		}
 
 		@Override
@@ -67,20 +76,20 @@ public abstract class Compound {
 
 		public Multiple(RailEntity root, RailEntity entity){
 			super(root.region.getWorld().getNewCompoundId());
-			entities.add(root); entities.add(entity);
+			entities.add(root); entities.add(entity); COMPOUNDS.put(uid, this);
 		}
 
 		public Multiple(Compound recom, int start, int end){
 			super(recom.entities.get(start).region.getWorld().getNewCompoundId());
 			for(int i = start; i < end; i++){ entities.add(recom.entities.get(i)); }
-			for(RailEntity ent : entities) ent.com = this;
+			for(RailEntity ent : entities) ent.com = this; COMPOUNDS.put(uid, this);
 		}
 
 		public Multiple(RailRegion region, NBTTagList list){
 			super(((NBTTagLong)list.get(0)).getLong());
 			for(int i = 1; i < list.tagCount(); i++){
 				entities.add(new RailEntity(region, this).read((NBTTagCompound)list.get(i)));
-			}
+			} COMPOUNDS.put(uid, this);
 		}
 
 		@Override
@@ -131,6 +140,10 @@ public abstract class Compound {
 	
 	public long getUID(){
 		return uid;
+	}
+
+	public static Compound get(RailEntity ent, long uid){
+		if(COMPOUNDS.containsKey(uid)) return COMPOUNDS.get(uid); return new Singular(ent, uid);
 	}
 
 }

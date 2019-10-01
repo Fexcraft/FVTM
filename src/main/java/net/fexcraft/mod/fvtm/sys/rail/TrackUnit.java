@@ -26,11 +26,11 @@ public class TrackUnit {
 		return entities;
 	}
 
-	public boolean hasEntities(RailEntity except){
-		if(except != null && entities.containsKey(except.getUID())){
-			for(Long leng : entities.keySet()) if(leng != except.getUID()) return true;
-		}
-		return entities.size() > 0;
+	public boolean hasCompound(Compound except){
+		if(except == null) return entities.size() > 0;
+		for(RailEntity ent : entities.values()){
+			if(ent.com.getUID() != except.getUID()) return true;
+		} return false;
 	}
 
 	public String getUID(){

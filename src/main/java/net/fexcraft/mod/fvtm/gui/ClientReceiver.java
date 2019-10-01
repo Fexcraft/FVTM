@@ -112,7 +112,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "spawn_railentity":{
 				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				RailRegion region = system.getRegions().get(packet.nbt.getIntArray("XZ"));
-				RailEntity entity = new RailEntity(region, null).read(packet.nbt);
+				RailEntity entity = new RailEntity(region, packet.nbt).read(packet.nbt);
 				region.getEntities().put(entity.getUID(), entity);
 				return;
 			}

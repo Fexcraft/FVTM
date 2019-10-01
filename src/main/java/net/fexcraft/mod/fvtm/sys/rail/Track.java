@@ -141,7 +141,7 @@ public class Track {
 	}
 
 	public TrackUnit getUnit(Long knownid){
-		return junction.root.getTrackUnits().get(id.toSectionId(copy), knownid, true);
+		return junction.root.getTrackUnits().get(id.toUnitId(copy), knownid, true);
 	}
 
 	public NBTTagCompound write(NBTTagCompound compound){
@@ -272,7 +272,7 @@ public class Track {
 			xyz[0] = start.x; xyz[1] = start.y; xyz[2] = start.z; xyz[3] = end.x; xyz[4] = end.y; xyz[5] = end.z;
 		}
 
-		public String toSectionId(boolean opposite){
+		public String toUnitId(boolean opposite){
 			if(opposite){
 				return pos[3] + "," + pos[4] + "," + pos[5] + ";" + xyz[3] + "," + xyz[4] + "," + xyz[5]
 					+ ":" + pos[0] + "," + pos[1] + "," + pos[2] + ";" + xyz[0] + "," + xyz[1] + "," + xyz[2];

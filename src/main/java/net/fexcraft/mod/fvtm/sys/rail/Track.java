@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.Vector3D;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -86,7 +87,7 @@ public class Track {
 	private Vec3f[] curve(Vec3f[] vecpoints){
 		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
 		float length = getLength(vecpoints);
-		float increment = 1 / length / 8;
+		float increment = 1 / length / Config.RAIL_SEGMENTATOR;
 		double d = 0; while(d < 1){
 			Vec3f[] moved = vecpoints;
 			while(moved.length > 2){

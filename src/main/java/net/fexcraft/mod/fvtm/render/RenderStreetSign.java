@@ -45,13 +45,13 @@ public class RenderStreetSign extends Render<StreetSign> implements IRenderFacto
             for(int i = 0; i < 4; i++){
             	GL11.glTranslated(0, -0.25, 0);
             	if(entity.text[i] == null || entity.text[i].equals("")){ continue; }
-            	drawString(entity.text[i], 0, -0.05, 0, entity.centered[i], true, 0.8f, entity.texture > 1 ? 0xffffff : 0);
+            	drawString(entity.text[i], 0, -0.05, 0, entity.centered[i], true, 0.8f, entity.texture > 1 ? 0xffffff : 0, null);
             }
         }
         GL11.glPopMatrix();
     }
     
-    public static void drawString(String str, double x, double y, double z, boolean centered, boolean glow, float scale, int color){
+    public static void drawString(String str, double x, double y, double z, boolean centered, boolean glow, float scale, int color, Float yaw){
         FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
         GlStateManager.pushMatrix(); GlStateManager.translate(x, y, z);
         GlStateManager.scale(-0.025F, -0.025F, 0.025F);
@@ -61,6 +61,7 @@ public class RenderStreetSign extends Render<StreetSign> implements IRenderFacto
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.depthMask(true);
+        if(yaw != null) GL11.glRotatef(yaw, 0, 1, 0);
         fontRenderer.drawString(str, centered ? -fontRenderer.getStringWidth(str) / 2 : -24, 0, color);
         if(glow){ GlStateManager.enableLighting(); }
         GlStateManager.disableBlend();

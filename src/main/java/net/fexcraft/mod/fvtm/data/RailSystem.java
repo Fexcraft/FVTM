@@ -37,7 +37,7 @@ public interface RailSystem {
 
 	public void addJunction(Vec316f vector);
 	
-	public boolean delTrack(Track track);
+	public boolean delTrack(Track track, boolean remjunk);
 	
 	public Track getTrack(TrackKey trackKey);
 	

@@ -47,11 +47,16 @@ public class TrackUnit {
 	
 	@Override
 	public boolean equals(Object o){
-		if(o instanceof TrackUnit) return false; return ((TrackUnit)o).uid.equals(uid) || super.equals(o);
+		if(o instanceof TrackUnit == false) return false; return ((TrackUnit)o).uid.equals(uid);
 	}
 
 	public TrackUnit setSection(Section section){
 		this.section = section; return this;
+	}
+	
+	@Override
+	public String toString(){
+		return "TrackUnit[" + uid + "/" + (section == null ? "NULL" : section.getUID()) + "]";
 	}
 
 }

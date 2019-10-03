@@ -8,7 +8,6 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
@@ -183,15 +182,16 @@ public class Junction {
 	}
 
 	public void addnew(Track track){
-		tracks.add(track); type = JunctionType.byTracksAmount(size()); updateClient();
+		tracks.add(track); type = JunctionType.byTracksAmount(size());
+		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
+		updateClient(); return;
 	}
 	
 	public void checkTrackSectionConsistency(){
 		if(tracks.size() < 2) return;
 		if(tracks.size() == 2 && signal != null){
 			Section sec0 = tracks.get(0).unit.section(), sec1 = tracks.get(1).unit.section();
-			if(sec0.getUID() == sec1.getUID()){ sec0.splitAtSignal(this); }
-			return;
+			if(sec0.getUID() == sec1.getUID()){ sec0.splitAtSignal(this); } return;
 		}
 		Track zero = tracks.get(0);
 		for(int i = 1; i < tracks.size(); i++){
@@ -207,20 +207,24 @@ public class Junction {
 		region.updateClient("junction", vecpos);
 	}
 
-	public void remove(TrackKey trackid, boolean firstcall){
+	/** To be called from `delTrack`! */
+	public void remove(TrackKey trackid, boolean firstcall, boolean remjunk){
 		Track track = null;
 		for(int i = 0; i < tracks.size(); i++){
 			if(tracks.get(i).getId().equals(trackid)){ track = tracks.remove(i); break; }
 		} if(track == null) return;
 		if(signal != null){ this.signal = null; this.signal_dir = EntryDirection.FORWARD; }
 		//
-		track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
+		if(!firstcall){
+			track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
+		}
 		type = JunctionType.byTracksAmount(size());
-		this.checkTrackSectionConsistency(); this.updateClient();
+		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
+		if(!remjunk) this.updateClient();
 		//
 		if(firstcall){
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
-			if(junk != null) junk.remove(track.getOppositeId(), false);
+			if(junk != null) junk.remove(track.getOppositeId(), false, false);
 		}
 	}
 
@@ -228,20 +232,24 @@ public class Junction {
 		Track track = tracks.remove(index); if(track == null) return;
 		if(signal != null){ this.signal = null; this.signal_dir = EntryDirection.FORWARD; }
 		//
-		track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
+		if(!firstcall){
+			track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
+		}
 		type = JunctionType.byTracksAmount(size());
-		this.checkTrackSectionConsistency(); this.updateClient();
+		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
+		this.updateClient();
 		//
 		if(firstcall){
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
-			if(junk != null) junk.remove(track.getOppositeId(), false);
+			if(junk != null) junk.remove(track.getOppositeId(), false, false);
+			this.checkTrackSectionConsistency();
 		}
 	}
 
 	public void clear(){
 		ArrayList<Track> trecks = new ArrayList<Track>();
 		for(Track track : tracks){ trecks.add(track); }
-		for(Track track : trecks) this.remove(track.getId(), true);
+		for(Track track : trecks) this.remove(track.getId(), true, true);
 		tracks.clear(); this.updateClient();
 	}
 	
@@ -261,13 +269,13 @@ public class Junction {
 		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
 		if(entity != null){
 			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
-			if(signal != null && entity.isActiveEnd() && (signal_dir.isBoth() || eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward())){
+			/*if(signal != null && entity.isActiveEnd() && (signal_dir.isBoth() || eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward())){
 				if(!(signal_dir.isBoth() ? eqTrack(track, 0) ? signal0 : signal1 : signal0)){
 					pollSignal(entity);
 					entity.commands.add(new CMD_SignalWait("signal_wait", this, eqTrack(track, 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					entity.setPaused(true);
 				}
-			}
+			}*///TODO re-add later
 		}
 		switch(type){
 			case STRAIGHT:{

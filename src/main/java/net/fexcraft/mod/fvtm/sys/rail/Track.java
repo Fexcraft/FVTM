@@ -319,5 +319,9 @@ public class Track {
 		}
 		
 	}
+	
+	public TrackUnit getUnit(){
+		return unit;
+	}
 
 }

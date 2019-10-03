@@ -40,6 +40,7 @@ public class Section {
 	public void insert(Section other){
 		for(TrackUnit unit : other.units){ units.add(unit.setSection(this)); }
 		other.units.clear(); data.getSections().remove(other.getUID());
+		Print.debug("Removing section '" + other.getUID() + "'!");
 	}
 	
 	public long getUID(){
@@ -48,10 +49,10 @@ public class Section {
 
 	/** Called after a track was removed via {@link net.fexcraft.mod.fvtm.sys.rail.RailData#delTrack(Track) delTrack} .*/
 	public void splitAtTrack(Track track){
-		Junction end = data.getJunction(track.end); if(end == null) return;
+		Print.debug("Splitting section at track: " + track);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), /*more,*/ less;
-		list0 = explore(track.junction.getNext(null, track.id, false), list0);
-		list1 = explore(end.getNext(null, track.getOppositeId(), false), list1);
+		list0 = explore(data.getJunction(track.start), list0);
+		list1 = explore(data.getJunction(track.end), list1);
 		for(TrackUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
@@ -61,29 +62,29 @@ public class Section {
 		for(TrackUnit unit : less){
 			unit.setSection(section);//assign new section to the smaller list
 		}
+		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 	}
 	
 	public void splitAtSignal(Junction junction){
+		Print.debug("Splitting section at junction: " + junction);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0.add(junction.tracks.get(0).unit); list1.add(junction.tracks.get(1).unit);
-		Junction end0 = data.getJunction(junction.tracks.get(0).end);
-		Junction end1 = data.getJunction(junction.tracks.get(1).end);
-		list0 = explore(end0.getNext(null, junction.tracks.get(0).getOppositeId(), false), list0);
-		list1 = explore(end1.getNext(null, junction.tracks.get(1).getOppositeId(), false), list1);
+		list0 = explore(data.getJunction(junction.tracks.get(0).end), list0);
+		list1 = explore(data.getJunction(junction.tracks.get(1).end), list1);
 		for(TrackUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
 		if(list0.size() > list1.size()){ less = list1; } else{ less = list0; } if(less.isEmpty()) return;
 		Section section = data.getSection(null); for(TrackUnit unit : less){ unit.setSection(section); }
+		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 	}
 
-	private ArrayList<TrackUnit> explore(Track next, ArrayList<TrackUnit> list){
-		if(next == null) return list; ArrayList<Track> tracks = new ArrayList<>();
-		for(Track track : next.junction.tracks){ if(track.unit.getSectionId() == uid) tracks.add(track); }
+	private ArrayList<TrackUnit> explore(Junction junction, ArrayList<TrackUnit> list){
+		if(junction == null) return list; ArrayList<Track> tracks = new ArrayList<>();
+		for(Track track : junction.tracks){ if(track.unit.getSectionId() == uid) tracks.add(track); }
 		for(Track track : tracks){
 			if(list.contains(track.unit)) continue; list.add(track.unit);
-			Junction junc = data.getJunction(track.end); if(junc == null) continue;
-			list = explore(junc.getNext(null, track.getOppositeId(), false), list);
+			list = explore(data.getJunction(track.end), list);
 		} return list;
 	}
 

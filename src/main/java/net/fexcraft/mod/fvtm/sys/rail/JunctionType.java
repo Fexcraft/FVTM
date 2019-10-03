@@ -38,5 +38,9 @@ public enum JunctionType {
 	public boolean isStraight(){
 		return this == STRAIGHT;
 	}
+	
+	public boolean hasEntity(){
+		return isSwitch() || isDouble();
+	}
 
 }

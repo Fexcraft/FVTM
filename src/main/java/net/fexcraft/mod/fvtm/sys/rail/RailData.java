@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
 import java.util.TreeMap;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
@@ -223,20 +225,20 @@ public class RailData implements RailSystem {
 
 	@Override
 	public boolean delJunction(Vec316f vector){
-		RailRegion region = regions.get(getRegionXZ(vector));
+		Print.log("Junction deletion is currently disabled. Call from: " + vector);
+		/*RailRegion region = regions.get(getRegionXZ(vector));
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
-		if(junc != null){ for(Track track : junc.tracks){ delTrack(track); } if(junc.entity != null) junc.entity.setDead(); }
-		region.setAccessed().updateClient("no_junction", vector); region.updateClient("no_junction", vector); return true;
+		if(junc != null){ for(Track track : junc.tracks){ delTrack(track, true); } if(junc.entity != null) junc.entity.setDead(); }
+		region.setAccessed().updateClient("no_junction", vector); return true;*/ return false;
 	}
 
 	@Override
-	public boolean delTrack(Track track){
-		if(track == null) return false;
-		Junction junction = getJunction(track.start);
+	public boolean delTrack(Track track, boolean remjunk){
+		if(track == null) return false; Junction junction = getJunction(track.start);
 		if(junction != null){
-			junction.remove(track.getId(), false);
-			junction.updateClient();
+			junction.remove(track.getId(), false, remjunk);
+			junction.checkTrackSectionConsistency();
 		} return true;
 	}
 

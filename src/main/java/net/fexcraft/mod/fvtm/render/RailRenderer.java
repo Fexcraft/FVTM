@@ -1,10 +1,13 @@
 package net.fexcraft.mod.fvtm.render;
 
+import java.util.ArrayList;
+
+import org.lwjgl.opengl.GL11;
+
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
-import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -22,10 +25,6 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
-
-import java.util.ArrayList;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -206,7 +205,7 @@ public class RailRenderer {
     }
 
 	private void renderLines(Junction value){
-        if(Command.DEBUG){
+        /*if(Command.DEBUG){
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             Vec3f vec0, vec1; float flfl, glgl;
@@ -233,14 +232,14 @@ public class RailRenderer {
                 GL11.glPopMatrix();
                 //
                 float[] vec = conn.getPosition(conn.length * (Time.getSecond() / 60f));
-                if(vec.length == 1){ /*Print.debug(vec[0], conn.length);*/ continue; }
+                if(vec.length == 1){ /*Print.debug(vec[0], conn.length);*//* continue; }
                 GL11.glPushMatrix();
                 GL11.glTranslatef(vec[0], vec[1] + (conn.isOppositeCopy() ? 0.1f : 0), vec[2]);
                 (conn.isOppositeCopy() ? model1 : model0).render();
                 GL11.glPopMatrix();
     		}
         }
-        else{
+        else{*/
         	GL11.glPushMatrix();
         	Minecraft.getMinecraft().entityRenderer.enableLightmap();
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -255,6 +254,11 @@ public class RailRenderer {
         		if(track.railmodel == null){ generateTrackModel(track, model); }
         		ModelBase.bindTexture(track.gauge.getRailTexture()); track.railmodel.render();
         		ModelBase.bindTexture(track.gauge.getTiesTexture()); track.restmodel.render();
+        		if(Command.DEBUG){
+        			Vec3f pos = track.getVectorPosition(track.length * 0.5f, false);
+        			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
+        			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.xCoord, pos.yCoord + 0.5, pos.zCoord, true, true, 0.8f, 0xffffff, deg);
+        		}
         	}
     		if(value.signal != null && value.size() == 2){
     			if(value.signalpos0 == null || value.signal_dir.isBoth() ? value.signalpos1 == null : false){
@@ -306,7 +310,7 @@ public class RailRenderer {
     		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     		GL11.glDisable(GL11.GL_LIGHTING);
     		GL11.glPopMatrix();
-        }
+        /*}*/
 	}
 	
 	public static final void generateTrackModel(Track track, RailGaugeModel model){

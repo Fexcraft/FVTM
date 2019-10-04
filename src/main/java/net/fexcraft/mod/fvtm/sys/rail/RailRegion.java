@@ -194,7 +194,7 @@ public class RailRegion {
 		updateClient("all", vector);
 	}
 	
-	public void updateClient(String kind, Vec316f vector){//TODO fine tuned methods in the future
+	public void updateClient(String kind, Vec316f vector){
 		if(world.getWorld().isRemote) return; NBTTagCompound compound = null;
 		switch(kind){
 			case "all":{
@@ -248,6 +248,20 @@ public class RailRegion {
 				compound.setTag("pos", junction.getVec316f().write());
 				compound.setBoolean("signal0", junction.signal0);
 				compound.setBoolean("signal1", junction.signal1);
+				break;
+			}
+			case "sections":{
+				compound = new NBTTagCompound();
+				compound.setString("target_listener", "fvtm:gui");
+				compound.setString("task", "update_sections");
+				NBTTagList list = new NBTTagList();
+				for(TrackUnit unit : world.getTrackUnits().values()){
+					NBTTagCompound com = new NBTTagCompound();
+					com.setString("unit", unit.getUID());
+					com.setLong("section", unit.getSectionId());
+					list.appendTag(com);
+				}
+				compound.setTag("units", list);
 				break;
 			}
 		}

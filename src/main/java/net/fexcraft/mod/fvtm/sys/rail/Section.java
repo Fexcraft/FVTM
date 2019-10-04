@@ -36,15 +36,29 @@ public class Section {
 	public void insert(TrackUnit unit){
 		units.add(unit);
 	}
-
-	public void insert(Section other){
-		for(TrackUnit unit : other.units){ units.add(unit.setSection(this)); }
-		other.units.clear(); data.getSections().remove(other.getUID());
-		Print.debug("Removing section '" + other.getUID() + "'!");
-	}
 	
 	public long getUID(){
 		return uid;
+	}
+
+	public void fuseAtTrack(Track zero){
+		Print.debug("Fusing sections at track: " + zero); Section old = null;
+		ArrayList<TrackUnit> list = new ArrayList<>(); list.add(zero.unit);
+		list = explore(data.getJunction(zero.start), list);
+		list = explore(data.getJunction(zero.end), list);
+		//TODO check which section is the largest, and fuse with that one instead
+		for(TrackUnit unit : list){
+			if(unit.getSectionId() != uid){
+				old = unit.section(); old.units.remove(unit); unit.setSection(this);
+				Print.debug("Added into section '" + uid + "': " + unit);
+				if(old.units.size() == 0){
+					data.getSections().remove(old.getUID());
+					Print.debug("Removing section '" + old.getUID() + "'!");
+				}
+			}
+		}
+		zero.junction.region.updateClient("sections", zero.junction.getVec316f());
+		//TODO fine tuned method that only sends updated
 	}
 
 	/** Called after a track was removed via {@link net.fexcraft.mod.fvtm.sys.rail.RailData#delTrack(Track) delTrack} .*/
@@ -63,6 +77,8 @@ public class Section {
 			unit.setSection(section);//assign new section to the smaller list
 		}
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
+		track.junction.region.updateClient("sections", track.junction.getVec316f());
+		//TODO fine tuned method that only sends updated
 	}
 	
 	public void splitAtSignal(Junction junction){
@@ -77,11 +93,14 @@ public class Section {
 		if(list0.size() > list1.size()){ less = list1; } else{ less = list0; } if(less.isEmpty()) return;
 		Section section = data.getSection(null); for(TrackUnit unit : less){ unit.setSection(section); }
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
+		junction.region.updateClient("sections", junction.getVec316f());
+		//TODO fine tuned method that only sends updated
 	}
 
 	private ArrayList<TrackUnit> explore(Junction junction, ArrayList<TrackUnit> list){
 		if(junction == null) return list; ArrayList<Track> tracks = new ArrayList<>();
-		for(Track track : junction.tracks){ if(track.unit.getSectionId() == uid) tracks.add(track); }
+		//for(Track track : junction.tracks){ if(track.unit.getSectionId() == uid) tracks.add(track); }
+		if(!junction.hasSignal()) tracks.addAll(junction.tracks);
 		for(Track track : tracks){
 			if(list.contains(track.unit)) continue; list.add(track.unit);
 			list = explore(data.getJunction(track.end), list);

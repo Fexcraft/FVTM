@@ -11,16 +11,17 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -204,6 +205,10 @@ public class RailData implements RailSystem {
 		return getRegionXZ((int)pos.xCoord >> 4, (int)pos.zCoord >> 4);
 	}
 
+	private int[] getRegionXZ(Vec3d vec){
+		return getRegionXZ((int)vec.x >> 4, (int)vec.z >> 4);
+	}
+
 	private int[] getRegionXZ(TrackKey key){
 		return getRegionXZ(key.pos[0] >> 4, key.pos[2] >> 4);
 	}
@@ -225,12 +230,12 @@ public class RailData implements RailSystem {
 
 	@Override
 	public boolean delJunction(Vec316f vector){
-		Print.log("Junction deletion is currently disabled. Call from: " + vector);
-		/*RailRegion region = regions.get(getRegionXZ(vector));
+		//Print.log("Junction deletion is currently disabled. Call from: " + vector);
+		RailRegion region = regions.get(getRegionXZ(vector));
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
 		if(junc != null){ for(Track track : junc.tracks){ delTrack(track, true); } if(junc.entity != null) junc.entity.setDead(); }
-		region.setAccessed().updateClient("no_junction", vector); return true;*/ return false;
+		region.setAccessed().updateClient(vector); return true;
 	}
 
 	@Override
@@ -373,6 +378,11 @@ public class RailData implements RailSystem {
 
 	public Section getSection(Long sid){
 		return sections.get(sid, true);
+	}
+
+	public void sendReload(String string, ICommandSender sender){
+		RailRegion region = regions.get(getRegionXZ(sender.getPositionVector()));
+		if(region != null) region.updateClient(string, new Vec316f(sender.getPositionVector()));
 	}
 
 }

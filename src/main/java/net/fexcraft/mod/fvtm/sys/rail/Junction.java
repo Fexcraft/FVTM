@@ -193,13 +193,15 @@ public class Junction {
 			Section sec0 = tracks.get(0).unit.section(), sec1 = tracks.get(1).unit.section();
 			if(sec0.getUID() == sec1.getUID()){ sec0.splitAtSignal(this); } return;
 		}
-		Track zero = tracks.get(0);
-		for(int i = 1; i < tracks.size(); i++){
-			if(zero.unit.getSectionId() != tracks.get(i).unit.getSectionId()){
-				Section sec0 = zero.unit.section(), sec1 = tracks.get(i).unit.section();
-				if(sec0.size() > sec1.size()) sec0.insert(sec1); else sec1.insert(sec0);
-				//try fusion;
+		else{
+			boolean fuse = false;
+			Track zero = tracks.get(0);
+			for(int i = 1; i < tracks.size(); i++){
+				if(zero.unit.getSectionId() != tracks.get(i).unit.getSectionId()){
+					fuse = true; break;
+				}
 			}
+			if(fuse) zero.unit.section().fuseAtTrack(zero);
 		}
 	}
 
@@ -478,6 +480,10 @@ public class Junction {
 	/** @return true, if entry dir differs junction signal dir */
 	public boolean getSignalState(EntryDirection dir){
 		if(signal_dir.isBoth()) return dir.isForward() ? signal1 : signal0; return dir == signal_dir ? signal0 : true;
+	}
+
+	public boolean hasSignal(){
+		return signal != null;
 	}
 
 }

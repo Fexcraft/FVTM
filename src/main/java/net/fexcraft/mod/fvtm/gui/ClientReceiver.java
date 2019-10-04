@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
+import net.fexcraft.mod.fvtm.sys.rail.TrackUnit;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -17,6 +18,9 @@ import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 
@@ -114,6 +118,15 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				RailRegion region = system.getRegions().get(packet.nbt.getIntArray("XZ"));
 				RailEntity entity = new RailEntity(region, packet.nbt).read(packet.nbt);
 				region.getEntities().put(entity.getUID(), entity);
+				return;
+			}
+			case "update_sections":{
+				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				NBTTagList list = (NBTTagList)packet.nbt.getTag("units"); TrackUnit unit; NBTTagCompound com;
+				for(NBTBase base : list){
+					com = (NBTTagCompound)base; unit = system.getTrackUnits().get(com.getString("unit"));
+					if(unit != null) unit.setSection(system.getSection(com.getLong("section")));
+				}
 				return;
 			}
 			default: return;

@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -43,6 +45,14 @@ public class Command extends CommandBase {
             	//TODO
                 break;
             }
+            case "rrr": case "reload-railregion":{
+            	((RailData)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("all", sender);
+            	break;
+            }
+            case "rrs": case "reload-railsections":{
+            	((RailData)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("sections", sender);
+            	break;
+            }
             case "debug":{
             	Print.chat(sender, "&7Debug: " + ((DEBUG = !DEBUG) ? "&cenabled" : "&adisabled") + "&7.");
             	break;
@@ -52,7 +62,7 @@ public class Command extends CommandBase {
                 break;
             }
         }
-        
+        //
     }
 
 }

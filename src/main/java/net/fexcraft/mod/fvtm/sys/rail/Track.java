@@ -30,7 +30,6 @@ public class Track {
 	public RailGauge gauge;
 	public float length;
 	//
-	//protected String line;
 	protected TrackUnit unit;
 	protected Junction junction;
 	@SideOnly(Side.CLIENT)

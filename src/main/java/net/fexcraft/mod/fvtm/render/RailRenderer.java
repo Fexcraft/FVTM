@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
@@ -254,27 +255,33 @@ public class RailRenderer {
         		if(track.railmodel == null){ generateTrackModel(track, model); }
         		ModelBase.bindTexture(track.gauge.getRailTexture()); track.railmodel.render();
         		ModelBase.bindTexture(track.gauge.getTiesTexture()); track.restmodel.render();
-        		if(Command.DEBUG){
+            	if(Command.DEBUG){
         			Vec3f pos = track.getVectorPosition(track.length * 0.5f, false);
         			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
-        			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.xCoord, pos.yCoord + 0.5, pos.zCoord, true, true, 0.8f, 0xffffff, deg);
-        		}
+        			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.xCoord, pos.yCoord + 0.5, pos.zCoord, true, true, 0.8f, 0x32a852, deg);
+        			//
+        			if(track.getUnit().getEntities().size() > 0){
+        				RailEntity[] ents = track.getUnit().getEntities().values().toArray(new RailEntity[0]);
+        				String str = ents[0].uid + ""; for(int j = 1; j < ents.length; j++) str += ", " + ents[j].uid;
+            			RenderStreetSign.drawString(str, pos.xCoord, pos.yCoord + 0.75, pos.zCoord, true, true, 0.8f, 0x4287f5, deg);
+        			}
+            	}
         	}
     		if(value.signal != null && value.size() == 2){
-    			if(value.signalpos0 == null || value.signal_dir.isBoth() ? value.signalpos1 == null : false){
-    				Track track = value.tracks.get(value.signal_dir.isBoth() ? 0 : value.signal_dir.isForward() ? 1 : 0);
+    			if(value.signalpos0 == null){
+    				Track track = value.tracks.get(value.signal_dir.getTrackId());
     				Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
     				value.signalrot0 = (float)Math.atan2(vec0.zCoord - vec1.zCoord, vec0.xCoord - vec1.xCoord);
     				value.signalrot0 += Static.rad90;
     				value.signalpos0 = vec0.add(grv(value.signalrot0, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
     				value.signalrot0 = (float)Math.toDegrees(value.signalrot0);
-    				if(value.signal_dir.isBoth() && value.signalpos1 == null){
-    					track = value.tracks.get(1); vec0 = track.start.vector; vec1 = track.getVectorPosition0(0.001f, false);
-        				value.signalrot1 = (float)Math.atan2(vec0.zCoord - vec1.zCoord, vec0.xCoord - vec1.xCoord);
-        				value.signalrot1 += Static.rad90;
-        				value.signalpos1 = vec0.add(grv(value.signalrot1, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
-        				value.signalrot1 = (float)Math.toDegrees(value.signalrot1);
-    				}
+    			}
+    			if(value.signal_dir.isBoth() && value.signalpos1 == null){
+					Track track = value.tracks.get(1); Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
+    				value.signalrot1 = (float)Math.atan2(vec0.zCoord - vec1.zCoord, vec0.xCoord - vec1.xCoord);
+    				value.signalrot1 += Static.rad90;
+    				value.signalpos1 = vec0.add(grv(value.signalrot1, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
+    				value.signalrot1 = (float)Math.toDegrees(value.signalrot1);
     			}
     			ModelBase.bindTexture(value.tracks.get(0).gauge.getModelTexture());
     			if(value.signalpos0 != null){
@@ -282,7 +289,7 @@ public class RailRenderer {
         			GL11.glTranslatef(value.signalpos0.xCoord, value.signalpos0.yCoord, value.signalpos0.zCoord);
         			GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(value.signalrot0, 0, 1, 0);
         			value.tracks.get(value.signal_dir.getTrackId()).gauge.getModel()
-        				.renderSignal(value, value.signal_dir.isBoth() ? EntryDirection.BACKWARD : EntryDirection.FORWARD, value.signal0);
+        				.renderSignal(value, value.signal_dir.isBoth() ? EntryDirection.BACKWARD : value.signal_dir, value.signal0);
         			GL11.glPopMatrix();
     			}
     			if(value.signalpos1 != null){
@@ -291,6 +298,15 @@ public class RailRenderer {
         			GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(value.signalrot1, 0, 1, 0);
         			value.tracks.get(1).gauge.getModel().renderSignal(value, EntryDirection.FORWARD, value.signal1);
         			GL11.glPopMatrix();
+    			}
+    			if(Command.DEBUG){
+        			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
+        			long uid = value.tracks.get(value.signal_dir.getTrackId()).getUnit().section().getUID(); Vec3f pos = value.signalpos0;
+        			RenderStreetSign.drawString(uid + "/" + value.signal0, pos.xCoord, pos.yCoord + 1, pos.zCoord, true, true, 0.8f, 0xffffff, deg);
+    				if(value.signal_dir.isBoth()){
+    					uid = value.tracks.get(1).getUnit().section().getUID(); pos = value.signalpos1;
+            			RenderStreetSign.drawString(uid + "/" + value.signal1, pos.xCoord, pos.yCoord + 1, pos.zCoord, true, true, 0.8f, 0xffffff, deg);
+    				}
     			}
     		}
     		if(value.size() == 1){

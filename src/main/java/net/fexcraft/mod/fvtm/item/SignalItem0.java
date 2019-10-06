@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -64,7 +65,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 		if(junction == null){ return EnumActionResult.PASS; }
         if(player.isSneaking()){
         	junction.setSignal(null, null); Print.chat(player, "&bJunction Signal &creset&b.");
-        	junction.checkTrackSectionConsistency();
+        	junction.checkTrackSectionConsistency(); junction.pollSignal(null);
 			return EnumActionResult.SUCCESS;
 		}
         if(junction.signal != null){
@@ -81,7 +82,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
         		else{
         			Print.chat(player, "A strange error happened, see location in log.");
         			Static.exception(null, false);
-        		}
+        		} junction.pollSignal(null);
         		Print.chat(player, "&bJunction Signal &aupdated&b. [" + b + "]");
     	        return EnumActionResult.SUCCESS;
         	}
@@ -95,7 +96,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 			return EnumActionResult.FAIL;
         }
 		junction.setSignal(SignalType.TWO_WAY_BLOCK, EntryDirection.BOTH); Print.chat(player, "&bJunction Signal &7set&b.");
-		junction.checkTrackSectionConsistency();
+		junction.checkTrackSectionConsistency(); junction.pollSignal(null);
         return EnumActionResult.SUCCESS;
     }
 	

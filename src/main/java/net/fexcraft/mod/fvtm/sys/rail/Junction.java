@@ -184,7 +184,7 @@ public class Junction {
 	public void addnew(Track track){
 		tracks.add(track); type = JunctionType.byTracksAmount(size());
 		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
-		updateClient(); return;
+		if(signal != null){ this.setSignal(null, null); } updateClient(); return;
 	}
 	
 	public void checkTrackSectionConsistency(){
@@ -215,10 +215,10 @@ public class Junction {
 		for(int i = 0; i < tracks.size(); i++){
 			if(tracks.get(i).getId().equals(trackid)){ track = tracks.remove(i); break; }
 		} if(track == null) return;
-		if(signal != null){ this.signal = null; this.signal_dir = EntryDirection.FORWARD; }
+		if(signal != null){ this.setSignal(null, null); }
 		//
 		if(!firstcall){
-			track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
+			 track.unit.section().remove(track); track.unit.section().splitAtTrack(track);
 		}
 		type = JunctionType.byTracksAmount(size());
 		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
@@ -232,7 +232,7 @@ public class Junction {
 
 	public void remove(int index, boolean firstcall){
 		Track track = tracks.remove(index); if(track == null) return;
-		if(signal != null){ this.signal = null; this.signal_dir = EntryDirection.FORWARD; }
+		if(signal != null){ this.setSignal(null, null); }
 		//
 		if(!firstcall){
 			track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
@@ -244,7 +244,7 @@ public class Junction {
 		if(firstcall){
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
 			if(junk != null) junk.remove(track.getOppositeId(), false, false);
-			this.checkTrackSectionConsistency();
+			//this.checkTrackSectionConsistency();
 		}
 	}
 

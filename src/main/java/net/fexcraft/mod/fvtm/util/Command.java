@@ -47,11 +47,11 @@ public class Command extends CommandBase {
             }
             case "rrr": case "reload-railregion":{
             	((RailData)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("all", sender);
-            	break;
+            	Print.chat(sender, "&oRail-Regions Reloading."); break;
             }
             case "rrs": case "reload-railsections":{
             	((RailData)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("sections", sender);
-            	break;
+            	Print.chat(sender, "&oRail-Sections Reloading."); break;
             }
             case "debug":{
             	Print.chat(sender, "&7Debug: " + ((DEBUG = !DEBUG) ? "&cenabled" : "&adisabled") + "&7.");

@@ -48,7 +48,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public Coupler front = new Coupler(this, true), rear = new Coupler(this, false);
 	public VehicleData vehdata;
 	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length, moverq;//push_rq, pull_rq;
-	public TrackUnit[] sectionson = new TrackUnit[4];
+	public TrackUnit[] unitson = new TrackUnit[4];
 	//
 	private short lastcheck = 20;//for entity despawn/spawning;
 	private static final short interval = 100;//300
@@ -321,12 +321,12 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public Vec3f move(float passed, TrainPoint point){
 		TRO tro = getTrack(current, passed, point.updatesJunction(passed > 0));
-		if(sectionson[point.index] == null){
-			(sectionson[point.index] = tro.track.unit).update(this, true);
+		if(unitson[point.index] == null){
+			(unitson[point.index] = tro.track.unit).update(this, true);
 		}
 		else{
-			sectionson[point.index].update(this, false);
-			(sectionson[point.index] = tro.track.unit).update(this, true);
+			unitson[point.index].update(this, false);
+			(unitson[point.index] = tro.track.unit).update(this, true);
 		}
 		return tro.track.getVectorPosition(tro.passed, false);
 	}
@@ -472,7 +472,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void dispose(){
 		Print.debug("Disposing of TrackEntity " + uid + "!"); front.decouple(); rear.decouple();
 		region.getWorld().delEntity(this); if(entity != null && !entity.isDead) entity.setDead();
-		for(TrackUnit section : sectionson) if(section != null) section.getEntities().remove(uid);
+		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(uid);
 	}
 
 	public UUID getPlacer(){

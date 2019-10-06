@@ -1,0 +1,38 @@
+package net.fexcraft.mod.fvtm.util;
+
+import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.registry.CreativeTab;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+public class PresetTab extends CreativeTab {
+	
+	public static final PresetTab INSTANCE = new PresetTab();
+	private NonNullList<ItemStack> list;
+    private int icon, sec;
+
+	public PresetTab(){
+		super("fvtm:presets");
+	}
+
+    @Override
+    public ItemStack getTabIconItem(){
+        return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String getTranslatedTabLabel(){
+        return "FVTM - (Vehicle) Presets";
+    }
+
+    @Override
+    public ItemStack getIconItemStack(){
+        if(list == null){ list = NonNullList.create(); this.displayAllRelevantItems(list); }
+        if(sec != Time.getSecond()){
+        	sec = Time.getSecond(); this.icon++; if(icon >= list.size()){ icon = 0; }
+        } return icon >= list.size() ? ItemStack.EMPTY : list.get(icon);
+    }
+
+}

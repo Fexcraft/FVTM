@@ -111,7 +111,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public LandVehicle(World world, VehicleData data, EntityPlayer player, LandVehicle truck){
 		this(world, data, truck.getPositionVector(), player, 0);
-		this.truck = truck; truck.trailer = this;
+		this.truck = truck; truck.trailer = this; this.prevaxes = axes.clone();
+		axes.setAngles(truck.getAxes().getYaw(), axes.getPitch(), axes.getRoll());
 	}
 
 	@Override
@@ -197,7 +198,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(wheels != null) for(WheelEntity wheel : wheels) if(wheel != null) wheel.setDead();
         //
         vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicle));
-        if(truck != null){ truck.trailer = null;} if(trailer != null){ trailer.truck = null;}
+        if(truck != null){ truck.trailer = null; } if(trailer != null){ trailer.truck = null;}
     }
 
 	@Override

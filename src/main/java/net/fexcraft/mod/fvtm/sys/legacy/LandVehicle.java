@@ -86,6 +86,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public int serverPositionTransitionTicker;
     public static final int servtick = 5;
     public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
+    public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
 
 	public LandVehicle(World ilmondo){
 		super(ilmondo);

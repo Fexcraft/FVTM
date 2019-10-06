@@ -145,7 +145,8 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     }
     
     private boolean valid(EntityPlayer player, ItemStack stack, World world, VehicleData data, boolean plane){
-		String[] index = plane ? AirVehicle.WHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
+		String[] index = plane ? AirVehicle.WHEELINDEX : data.getType().isTrailerOrWagon()
+			? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
 		for(String str : index){
 			if(!data.getWheelPositions().containsKey(str)){
 				Print.chat(player, "&9Vehicle is missing a wheel! &7&o" + str); failed = true;

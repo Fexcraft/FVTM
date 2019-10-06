@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.util.config;
 
+import java.io.File;
+import java.util.List;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -8,16 +11,13 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.io.File;
-import java.util.List;
-
 public class Config {
 	
     private static Configuration config;
     private static final String GENERAL = "General", LEGACYSYS = "Legacy", PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
     public static double VEHICLE_UPDATE_RANGE;
-    public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR;
+    public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH;
 	public static long UNLOAD_INTERVAL;
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
@@ -66,6 +66,7 @@ public class Config {
             if(RAIL_SEGMENTATOR > 2 && RAIL_SEGMENTATOR < 4) RAIL_SEGMENTATOR = 2;
             if(RAIL_SEGMENTATOR < 1) RAIL_SEGMENTATOR = 1;
         }
+        MAX_RAIL_TRACK_LENGTH = config.getInt("rail_track_max_length", GENERAL, 32, 1, 128, "Max vector (total) length of new placed (rail) Tracks.");
     }
 
     public static void add(List<IConfigElement> list){

@@ -12,6 +12,8 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
+import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.MiniBB;
@@ -106,8 +108,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(!region.getWorld().getWorld().isRemote){
 			if(current == null || vehdata == null){ this.dispose(); return; }
 			checkIfShouldHaveEntity(); checkIfShouldStop();
-			//for(JunctionCommand command : commands) command.processEntity(this);
-			commands.removeIf(cmd -> cmd.processEntity(this));
+			for(JEC command : commands) command.processEntity(this);
+			commands.removeIf(cmd -> cmd.isDone());
 			//
 			if(!vehdata.getType().isTrailerOrWagon() && !isPaused() && throttle > 0.001f){
 				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
@@ -339,6 +341,14 @@ public class RailEntity implements Comparable<RailEntity>{
 		while(passed > track.length){
 			Junction junk = region.getJunction(track.end);
 			if(junk == null) new TRO(track, track.length);
+			if(junk.hasSignal(track.getOppositeId()) && !junk.getSignalState(track.getOppositeId())){
+				if(apply && !isPaused() && isActiveEnd()){
+					junk.pollSignal(this);
+					commands.add(new CMD_SignalWait("signal_wait", junk, junk.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
+					this.setPaused(true);
+				}
+				return new TRO(track, track.length);
+			}
 			Track newtrack = junk.getNext(this, track.getOppositeId(), apply);
 			if(newtrack != null){
 				passed -= track.length; track = newtrack;
@@ -347,6 +357,14 @@ public class RailEntity implements Comparable<RailEntity>{
 		while(passed < 0){
 			Junction junk = region.getJunction(track.start);
 			if(junk == null) return new TRO(track, 0);
+			if(junk.hasSignal(track.getId()) && !junk.getSignalState(track.getId())){
+				if(apply && !isPaused() && isActiveEnd()){
+					junk.pollSignal(this);
+					commands.add(new CMD_SignalWait("signal_wait", junk, junk.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
+					this.setPaused(true);
+				}
+				return new TRO(track, 0);
+			}
 			Track newtrack = junk.getNext(this, track.getId(), apply);
 			if(newtrack != null){
 				passed += newtrack.length; track = newtrack.createOppositeCopy();

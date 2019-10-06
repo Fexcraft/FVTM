@@ -42,8 +42,8 @@ public class CMD_SetSignal extends JEC {
 	}
 
 	@Override
-	public boolean processEntity(RailEntity entity){
-		return false;//this is not an entity command.
+	public void processEntity(RailEntity entity){
+		return;//this is not an entity command.
 	}
 
 	@Override

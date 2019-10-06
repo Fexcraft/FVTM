@@ -41,6 +41,7 @@ public abstract class JEC {
 		} compound.setTag("Targets", list);
 		compound.setTag("Data", writeData());
 		compound.setByte("EntryDir", (byte)diron.ordinal());
+		compound.setInteger("Interval", interval);
 		compound.setString("Label", label);
 		return compound;
 	}
@@ -51,6 +52,7 @@ public abstract class JEC {
 		for(NBTBase base : list){ targets.add(((NBTTagString)base).getString()); }
 		readData(compound.getTag("Data"));
 		diron = EntryDirection.values()[compound.getByte("EntryDir")];
+		interval = compound.getInteger("Interval");
 		label = compound.getString("Label");
 	}
 	
@@ -70,7 +72,7 @@ public abstract class JEC {
 	public abstract void readData(NBTBase base);
 	
 	/** Called from RailEntities in their update method. @returns true if the command is done and should be removed, false otherwise */
-	public abstract boolean processEntity(RailEntity entity);
+	public abstract void processEntity(RailEntity entity);
 
 	/** Called from Junctions when something asks for the next Track. */
 	public abstract void processSwitch(RailEntity entity, Junction junction, TrackKey track, int index, boolean applystate);
@@ -84,7 +86,7 @@ public abstract class JEC {
 		} return false;
 	}
 	
-	@Deprecated
+	//@Deprecated
 	public boolean isDone(){
 		return interval <= -1;
 	}

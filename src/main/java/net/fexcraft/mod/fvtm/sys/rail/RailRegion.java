@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * 
@@ -78,7 +79,11 @@ public class RailRegion {
 
 	public RailRegion read(NBTTagCompound compound){
 		if(compound.hasKey("Junctions")){
-			if(!junctions.isEmpty()) junctions.values().removeIf(pre -> { if(pre.entity != null) pre.entity.setDead(); return true; });
+			if(!junctions.isEmpty()){
+				for(Junction junction : junctions.values())
+					if(junction.entity != null) junction.entity.setDead();
+				junctions.clear();
+			}
 			NBTTagList list = (NBTTagList)compound.getTag("Junctions");
 			for(NBTBase base : list){
 				Junction junk = new Junction(this).read((NBTTagCompound)base);
@@ -267,6 +272,21 @@ public class RailRegion {
 		}
 		if(compound == null) return;
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(), vector.pos));
+	}
+
+	public void updateClient(String kind, RailEntity entity){
+		if(world.getWorld().isRemote) return; NBTTagCompound compound = null;
+		switch(kind){
+			case "removed":{
+				compound = new NBTTagCompound();
+				compound.setString("target_listener", "fvtm:gui");
+				compound.setString("task", "remove_entity");
+				compound.setLong("uid", entity.uid);
+			}
+		}
+		if(compound == null) return;
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(),
+			new BlockPos(entity.pos.xCoord, entity.pos.yCoord, entity.pos.zCoord)));
 	}
 
 	public void updateClient(EntityPlayerMP player){

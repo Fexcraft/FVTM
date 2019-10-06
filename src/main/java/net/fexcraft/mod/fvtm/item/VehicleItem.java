@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -122,11 +123,11 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     			Print.bar(player, "&a&oSpawning vehicle...");
 				syscap.registerEntity(new RailEntity((RailData)syscap, data, junk.tracks.get(0), player.getGameProfile().getId()));
     		}
-    		return EnumActionResult.SUCCESS;
     	}
     	else{
     		world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
     	}
+    	if(!player.capabilities.isCreativeMode) stack.shrink(1);
         return EnumActionResult.SUCCESS;
     }
     

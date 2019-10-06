@@ -79,32 +79,24 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0);
             }
             GL11.glPopMatrix();
-            if(Command.DEBUG && vehicle.railentity != null){
-				GL11.glDisable(GL11.GL_TEXTURE_2D);
-				GL11.glEnable(GL11.GL_BLEND);
-				GL11.glDisable(GL11.GL_DEPTH_TEST);
-				GL11.glColor4f(0.5F, 0.5F, 0F, 0.3F);
-				vehicle.railentity.updatePosition();
-				//
-    			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
-				GlStateManager.alphaFunc(516, 0.1F);
-				MiniBB aabb = vehicle.railentity.front.mbb;
-				vehicle.world.spawnParticle(EnumParticleTypes.FLAME, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
-	            String str = vehicle.railentity.front.hasEntity() ? "static" : "temp";
-    			RenderStreetSign.drawString(str, aabb.center.xCoord - (float)x, aabb.center.yCoord + 1f - (float)y, aabb.center.zCoord - (float)z, true, true, 0.8f, 0x32a852, deg);
-	            //
-				aabb = vehicle.railentity.rear.mbb;
-				vehicle.world.spawnParticle(EnumParticleTypes.REDSTONE, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
-	            str = vehicle.railentity.rear.hasEntity() ? "static" : "temp";
-    			RenderStreetSign.drawString(str, aabb.center.xCoord - (float)x, aabb.center.yCoord + 1f - (float)y, aabb.center.zCoord - (float)z, true, true, 0.8f, 0x32a852, deg);
-		        //
-				GL11.glEnable(GL11.GL_TEXTURE_2D);
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
-				GL11.glDisable(GL11.GL_BLEND);
-				GL11.glColor4f(1F, 1F, 1F, 1F);
-            }
         }
         GL11.glPopMatrix();
+        //
+        if(Command.DEBUG && vehicle.railentity != null){
+			//vehicle.railentity.updatePosition();
+			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
+			GlStateManager.alphaFunc(516, 0.1F);
+			//
+			MiniBB aabb = vehicle.railentity.front.mbb;
+			vehicle.world.spawnParticle(EnumParticleTypes.FLAME, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
+            String str = vehicle.railentity.front.hasEntity() ? "static" : "temp";
+			RenderStreetSign.drawString(str, aabb.center.xCoord - (float)x, aabb.center.yCoord + 1f - (float)y, aabb.center.zCoord - (float)z, true, true, 0.8f, 0x32a852, deg);
+            //
+			aabb = vehicle.railentity.rear.mbb;
+			vehicle.world.spawnParticle(EnumParticleTypes.REDSTONE, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
+            str = vehicle.railentity.rear.hasEntity() ? "static" : "temp";
+			RenderStreetSign.drawString(str, aabb.center.xCoord - (float)x, aabb.center.yCoord + 1f - (float)y, aabb.center.zCoord - (float)z, true, true, 0.8f, 0x32a852, deg);
+        }
     }
     
     @Override

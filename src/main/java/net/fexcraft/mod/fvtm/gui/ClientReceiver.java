@@ -129,6 +129,11 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				}
 				return;
 			}
+			case "remove_entity":{
+				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false); if(ent == null) return; ent.dispose();
+				return;
+			}
 			default: return;
 		}
 	}

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -109,11 +110,16 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
 			Track track = new Track(junk, getVectors(list), vector, type);
+			if(track.length > Config.MAX_RAIL_TRACK_LENGTH){
+				Print.chat(player, "&cTrack length exceeds the configured max length.");
+				return EnumActionResult.FAIL;
+			}
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
 				second.addnew(track); junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();
 				Print.chat(player, "&aTrack Created!"); stack.getTagCompound().removeTag("fvtm:railpoints");
+				if(!player.capabilities.isCreativeMode) stack.shrink(1);
 			} else{ Print.chat(player, "&cNo Junction at starting point found!"); }
 			return EnumActionResult.SUCCESS;
 		}

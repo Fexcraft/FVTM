@@ -359,7 +359,7 @@ public class RailData implements RailSystem {
 
 	public void delEntity(RailEntity entity){
 		entity.region.getEntities().remove(entity.getUID());
-		entities.remove(entity.getUID());
+		entities.remove(entity.getUID()); entity.region.updateClient("removed", entity);
 	}
 
 	@Override

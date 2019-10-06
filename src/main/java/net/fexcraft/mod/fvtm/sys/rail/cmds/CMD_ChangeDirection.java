@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public class CMD_ChangeDirection extends JEC {
 
 	public CMD_ChangeDirection(String label, EntryDirection dir, String[] targets){
-		super(label, JECType.SET_SIGNAL, dir, targets);
+		super(label, JECType.REVERSE, dir, targets);
 	}
 
 	public CMD_ChangeDirection(NBTTagCompound compound){
@@ -32,8 +32,8 @@ public class CMD_ChangeDirection extends JEC {
 	}
 
 	@Override
-	public boolean processEntity(RailEntity entity){
-		entity.setForward(null, !entity.isHeadingForward()); return true;
+	public void processEntity(RailEntity entity){
+		entity.setForward(null, !entity.isHeadingForward()); interval = -1; return;
 	}
 
 	@Override

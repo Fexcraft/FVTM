@@ -77,34 +77,20 @@ public class Junction {
 		//this.crossing = compound.getBoolean("Crossing");
 		int trackam = compound.getInteger("Tracks");
 		if(trackam > 0){
-			//if(trackam != tracks.size()){
-				if(root.getWorld().isRemote){
-					for(Track track : tracks){
-						if(track.railmodel != null) track.railmodel.clearDisplayLists();
-						if(track.restmodel != null) track.restmodel.clearDisplayLists();
-						track.railmodel = track.restmodel = null;
-					}
-					signalpos0 = signalpos1 = null; bufferrot = null;
+			if(root.getWorld().isRemote){
+				for(Track track : tracks){
+					if(track.railmodel != null) track.railmodel.clearDisplayLists();
+					if(track.restmodel != null) track.restmodel.clearDisplayLists();
+					track.railmodel = track.restmodel = null;
 				}
-				tracks.clear();
-				for(int i = 0; i < trackam; i++){
-					try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
-					catch(Exception e){ e.printStackTrace(); }
-				}
-			/*}
-			else{
-				for(int i = 0; i < trackam; i++){
-					tracks.get(i).read(compound.getCompoundTag("Track" + i));
-					if(root.getWorld().isRemote){
-						Track track = tracks.get(i);
-						if(track.railmodel != null) track.railmodel.clearDisplayLists();
-						if(track.restmodel != null) track.restmodel.clearDisplayLists();
-						track.railmodel = track.restmodel = null;
-						signalpos0 = signalpos1 = null;
-					}
-				}
-			}*/
-		} frustumbb = null;
+				signalpos0 = signalpos1 = null; bufferrot = null;
+			}
+			tracks.clear();
+			for(int i = 0; i < trackam; i++){
+				try{ tracks.add(new Track(this).read(compound.getCompoundTag("Track" + i))); }
+				catch(Exception e){ e.printStackTrace(); }
+			}
+		} else tracks.clear(); frustumbb = null;
 		checkTrackSectionConsistency();
 		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
@@ -277,7 +263,7 @@ public class Junction {
 					entity.commands.add(new CMD_SignalWait("signal_wait", this, eqTrack(track, 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					entity.setPaused(true);
 				}
-			}*///TODO re-add later
+			}*/ //got moved into entity movement methods
 		}
 		switch(type){
 			case STRAIGHT:{
@@ -347,7 +333,7 @@ public class Junction {
 		return null;
 	}
 
-	private boolean eqTrack(TrackKey track, int i){
+	public final boolean eqTrack(TrackKey track, int i){
 		return tracks.get(i).getId().equals(track);
 	}
 	
@@ -482,8 +468,13 @@ public class Junction {
 		if(signal_dir.isBoth()) return dir.isForward() ? signal1 : signal0; return dir == signal_dir ? signal0 : true;
 	}
 
-	public boolean hasSignal(){
-		return signal != null;
+	public boolean hasSignal(TrackKey track){
+		if(track == null || signal == null) return signal != null; if(signal_dir.isBoth()) return true;
+		return eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward();
+	}
+
+	public boolean getSignalState(TrackKey track){
+		return getSignalState(eqTrack(track, 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD);
 	}
 
 }

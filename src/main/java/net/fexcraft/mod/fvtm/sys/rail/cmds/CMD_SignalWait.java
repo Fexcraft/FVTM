@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.rail.cmds;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
@@ -12,7 +11,7 @@ public class CMD_SignalWait extends JEC {
 	private Junction junction;
 
 	public CMD_SignalWait(String label, Junction junction, EntryDirection dir){
-		super(label, JECType.SIGNAL_WAIT, dir, new String[0]);
+		super(label, JECType.SIGNAL_WAIT, dir, new String[0]); this.junction = junction;
 	}
 
 	public CMD_SignalWait(NBTTagCompound compound){
@@ -35,12 +34,10 @@ public class CMD_SignalWait extends JEC {
 	}
 
 	@Override
-	public boolean processEntity(RailEntity entity){
-		if(junction == null || !entity.isPaused()) return true;
-		junction.pollSignal(entity);
-		if(junction.getSignalState(this.diron)){
-			entity.setPaused(false); Print.debug("removing command"); return true;
-		} return false;
+	public void processEntity(RailEntity entity){
+		if(junction == null || !entity.isPaused()){ entity.setPaused(false); interval = -1; return; }
+		junction.pollSignal(entity); interval++;
+		if(junction.getSignalState(this.diron)){ entity.setPaused(false); interval = -1; return; }
 	}
 
 	@Override

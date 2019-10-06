@@ -97,6 +97,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
         }
 		junction.setSignal(SignalType.TWO_WAY_BLOCK, EntryDirection.BOTH); Print.chat(player, "&bJunction Signal &7set&b.");
 		junction.checkTrackSectionConsistency(); junction.pollSignal(null);
+		if(!player.capabilities.isCreativeMode) stack.shrink(1);
         return EnumActionResult.SUCCESS;
     }
 	

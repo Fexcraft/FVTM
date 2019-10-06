@@ -100,7 +100,7 @@ public class Section {
 	private ArrayList<TrackUnit> explore(Junction junction, ArrayList<TrackUnit> list){
 		if(junction == null) return list; ArrayList<Track> tracks = new ArrayList<>();
 		//for(Track track : junction.tracks){ if(track.unit.getSectionId() == uid) tracks.add(track); }
-		if(!junction.hasSignal()) tracks.addAll(junction.tracks);
+		if(!junction.hasSignal(null)) tracks.addAll(junction.tracks);
 		for(Track track : tracks){
 			if(list.contains(track.unit)) continue; list.add(track.unit);
 			list = explore(data.getJunction(track.end), list);

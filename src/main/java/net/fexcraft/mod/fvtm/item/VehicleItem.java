@@ -69,7 +69,12 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         		tooltip.add(Formatter.format("&9" + attr.getId() + ": &7" + attr.getCurrentString()));
         	}
         }*/
-        //TODO model data
+        if(type.getModel().getCreators().size() > 0){
+            tooltip.add(Formatter.format("&9Model by:"));
+            for(String str : type.getModel().getCreators()){
+            	tooltip.add(Formatter.format("&7- " + str));
+            }
+        }
         //TODO other data
     }
 
@@ -102,6 +107,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	if(world.getBlockState(pos).getBlock() instanceof ConstructorBlock) return EnumActionResult.PASS;
     	VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
     	if(data.getType().getVehicleType().isAirVehicle()){
+    		if(!valid(player, stack, world, data, true)){ return EnumActionResult.FAIL; }
     		world.spawnEntity(new AirVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
     	}
     	else if(data.getType().getVehicleType().isRailVehicle()){
@@ -125,13 +131,31 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     		}
     	}
     	else{
+    		if(!valid(player, stack, world, data, false)){ return EnumActionResult.FAIL; }
     		world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
     	}
     	if(!player.capabilities.isCreativeMode) stack.shrink(1);
         return EnumActionResult.SUCCESS;
     }
     
-    @Override
+    private boolean valid(EntityPlayer player, ItemStack stack, World world, VehicleData data, boolean plane){
+		String[] index = plane ? AirVehicle.WHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
+		for(String str : index){
+			if(!data.getWheelPositions().containsKey(str)){
+				Print.chat(player, "&9Vehicle is missing a wheel! &7&o" + str); failed = true;
+			}
+		}
+		if(!data.getType().isTrailerOrWagon() && !data.hasPart("engine")){
+			Print.chat(player, "Vehicle does not have an Engine installed!"); failed = true;
+		}
+		if(!data.getType().isTrailerOrWagon() && data.getSeats().size() < 1){
+			Print.chat(player, "Vehicle does not have any Seats!"); failed = true;
+		}
+		//TODO add later more checks if necessary
+		return !failed;
+	}
+
+	@Override
     public boolean showJunctionGrid(){
     	return type.getVehicleType().isRailVehicle();
     }

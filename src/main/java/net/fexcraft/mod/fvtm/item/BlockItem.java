@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.registry.ItemBlock16;
@@ -42,6 +43,12 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
         }
         BlockData data = stack.getCapability(Capabilities.VAPDATA, null).getBlockData(); if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
+        if(type.getModel().getCreators().size() > 0){
+            tooltip.add(Formatter.format("&9Model by:"));
+            for(String str : type.getModel().getCreators()){
+            	tooltip.add(Formatter.format("&7- " + str));
+            }
+        }
     }
 
 	private String getTexTitle(BlockData data){

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -64,10 +65,12 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         if(type.getDefaultFunctions().size() > 0){
         	tooltip.add(Formatter.format("&0&bThis part has &7%s &bFunction/s.", type.getDefaultFunctions().size()));
         }
-        //TODO texture/pos data
-        //TODO model data
-        //TODO attribute data
-        //TODO script data
+        if(type.getModel().getCreators().size() > 0){
+            tooltip.add(Formatter.format("&9Model by:"));
+            for(String str : type.getModel().getCreators()){
+            	tooltip.add(Formatter.format("&7- " + str));
+            }
+        }
     }
 
 	private String getTexTitle(PartData data){

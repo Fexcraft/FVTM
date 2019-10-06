@@ -26,12 +26,17 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.PresetTab;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.relauncher.Side;
@@ -296,6 +301,41 @@ public class Addon extends TypeCore<Addon> {
 	@SideOnly(Side.CLIENT)
 	public CreativeTabs getCreativeTab(){
 		return this.creativetab;
+	}
+
+	public void loadPresets(){
+		if(!this.isEnabled()){
+			Print.log("Skipping PRESET search for Addon '" + registryname.toString() + "' since it's marked as not enabled!");
+			return;
+		}
+		if(contype == ContainerType.DIR){
+			if(!file.isDirectory()) return;
+			//
+			File folder = new File(file, "assets/" + registryname.getResourcePath() + "/config/presets/");
+			if(!folder.exists()){ folder.mkdirs(); }
+			ArrayList<File> candidates = findFiles(folder, ".json");
+			for(File file : candidates){
+				try{
+					JsonObject obj = JsonUtil.get(file); if(obj.entrySet().isEmpty()) continue;
+					Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
+					VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
+					data.read(JsonToNBT.getTagFromJson(obj.toString())); data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
+					PresetTab.INSTANCE.add(data.newItemStack());
+				} catch(Exception e){ e.printStackTrace(); }
+			}
+		}
+		else{ //assume it's a jar.
+			JsonArray array = ZipUtil.getJsonObjectsAt(file, "assets/" + registryname.getResourcePath() + "/config/presets/", ".json");
+			for(JsonElement elm : array){
+				try{
+					JsonObject obj = elm.getAsJsonObject(); if(obj.entrySet().isEmpty()) continue;
+					Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
+					VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
+					data.read(JsonToNBT.getTagFromJson(obj.toString())); data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
+					PresetTab.INSTANCE.add(data.newItemStack());
+				} catch(Exception e){ e.printStackTrace(); }
+			}
+		}
 	}
 
 }

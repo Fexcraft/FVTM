@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -12,11 +12,14 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
+import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
@@ -26,8 +29,6 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
-import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -45,7 +46,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected RGB primary, secondary;
 	protected int selected_texture;
-	protected String extex;
+	protected String extex, preset;
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal, locked;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
@@ -132,6 +133,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(front_conn != null) compound.setTag("FrontConnector", DataUtil.writeVec3d(front_conn));
 		if(rear_conn != null) compound.setTag("RearConnector", DataUtil.writeVec3d(rear_conn));
 		//if(customname != null) compound.setString("CustomName", customname);
+		if(preset != null) compound.setString("Preset", preset);
 		/*Print.debug("write", compound);*/ return compound;
 	}
 
@@ -199,6 +201,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		this.rear_conn = DataUtil.readVec3d(compound.getTag("RearConnector"));
 		if(rear_conn == null) rear_conn = type.getDefaultRearConnector();
 		//if(compound.hasKey("CustomName")) customname = compound.getString("CustomName");
+		if(compound.hasKey("Preset")) preset = compound.getString("Preset"); else preset = null;
 		//
 		/*Print.debug("read", compound);*/ return this;
 	}
@@ -247,10 +250,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	@Override
 	public JsonObject toJson(){
-		JsonObject obj = new JsonObject();
-		obj.addProperty("Vehicle", type.getRegistryName().toString());
-		//
-		return obj;
+		return NBTToJson.getJsonFromTag(write(null));
 	}
 	
 	public Attribute<?> getAttribute(String id){
@@ -589,6 +589,18 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	
 	public List<Attribute<?>> getAttributes(String group){
 		return attributes.values().stream().filter(pre -> pre.group() != null && pre.group().equals(group)).collect(Collectors.toList());
+	}
+	
+	public boolean isPreset(){
+		return preset != null;
+	}
+	
+	public String getPreset(){
+		return preset;
+	}
+	
+	public void setPreset(String str){
+		this.preset = str;
 	}
 
 }

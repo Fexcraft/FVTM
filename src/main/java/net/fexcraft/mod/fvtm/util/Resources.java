@@ -67,6 +67,7 @@ import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
@@ -75,8 +76,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -160,6 +161,22 @@ public class Resources {
 		searchInAddonsFor(DataType.VEHICLE);
 		//
 		searchInAddonsFor(DataType.ROADSIGN);
+	}
+
+	public static final void loadPresets(){
+		for(Addon addon : ADDONS.getValuesCollection()){ addon.loadPresets(); }
+		File file = new File("./config/fvtm/presets/");
+		if(!file.exists()) file.mkdirs();
+		File[] files = file.listFiles();
+		for(File fl : files){
+			try{
+				JsonObject obj = JsonUtil.get(fl); if(obj.entrySet().isEmpty()) continue;
+				Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
+				VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
+				data.read(JsonToNBT.getTagFromJson(obj.toString())); data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
+				PresetTab.INSTANCE.add(data.newItemStack());
+			} catch(Exception e){ e.printStackTrace(); Static.stop(); }
+		}
 	}
 
 	private void registerFunctions(){

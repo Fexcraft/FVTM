@@ -1093,8 +1093,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target){
-        ItemStack stack = vehicle.getType().newItemStack();
-        stack.setItemDamage(0); return stack;
+        ItemStack stack = vehicle.newItemStack(); stack.setItemDamage(0); return stack;
     }
 
     //--- PACKETS ---//

@@ -10,7 +10,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class PresetTab extends CreativeTab {
 	
 	public static final PresetTab INSTANCE = new PresetTab();
-	private NonNullList<ItemStack> list;
+	private NonNullList<ItemStack> list, collection = NonNullList.create();
+	public NonNullList<ItemStack> ITEMS;
     private int icon, sec;
 
 	public PresetTab(){
@@ -29,10 +30,18 @@ public class PresetTab extends CreativeTab {
 
     @Override
     public ItemStack getIconItemStack(){
-        if(list == null){ list = NonNullList.create(); this.displayAllRelevantItems(list); }
+        if(list == null){ list = NonNullList.create(); displayAllRelevantItems(list); }
         if(sec != Time.getSecond()){
         	sec = Time.getSecond(); this.icon++; if(icon >= list.size()){ icon = 0; }
         } return icon >= list.size() ? ItemStack.EMPTY : list.get(icon);
     }
+
+	public void add(ItemStack stack){
+        collection.add(stack); if(ITEMS != null){ ITEMS.add(stack); list = ITEMS; }
+	}
+
+	public NonNullList<ItemStack> get(){
+		return collection;
+	}
 
 }

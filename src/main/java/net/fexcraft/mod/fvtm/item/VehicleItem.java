@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
@@ -55,6 +56,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
         VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData(); if(data == null) return;
+        if(data.isPreset()) tooltip.add(Formatter.format("&6Preset: &7" + data.getPreset()));
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(data.hasPart("engine")){
             tooltip.add(Formatter.format("&9Engine: &7" + data.getPart("engine").getType().getName()));
@@ -98,6 +100,10 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == this.getCreativeTab()){
     		items.add(type.newItemStack());
+    	}
+    	if(tab == PresetTab.INSTANCE){
+    		(PresetTab.INSTANCE.ITEMS = items).clear();
+    		for(ItemStack stack : PresetTab.INSTANCE.get()){ items.add(stack); }
     	}
     }
     

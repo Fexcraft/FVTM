@@ -1157,10 +1157,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
                     if(net.minecraft.client.Minecraft.getMinecraft().player.isRiding() && this.seats[0] == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
-                        Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
+                    	boolean state = pkt.nbt.getBoolean("engine_toggle_result"); EntityPlayer player = net.minecraft.client.Minecraft.getMinecraft().player;
+                        Print.chat(player, "Engine toggled " + (vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
-                            Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");
-                        }
+                            Print.chat(player, "Out of fuel!"); vehicle.playSound(this, "engine_fail");
+                        } else vehicle.playSound(this, state ? "engine_start" : "engine_stop");
                     }
                     throttle = 0;
                     if(vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){

@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -634,6 +635,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	@Override
 	public Sound getSound(String event){
 		return sounds.get(event);
+	}
+
+	@Override
+	public void playSound(Entity at, String event){
+		Sound sound = getSound(event); if(sound == null) return;
+		at.playSound(sound.event, sound.volume, sound.pitch);
 	}
 
 }

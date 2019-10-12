@@ -9,9 +9,7 @@ import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.gui.GenericContainer;
-import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -233,7 +231,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && !key.dismount() && !key.scripts() && !key.toggables() && !key.inventory()){
-            return false;
+            return true;
         }
         if(world.isRemote && !key.toggables() /*&& key.dismount() */){
             Packets.sendToServer(new PKT_VehKeyPress(key));
@@ -254,11 +252,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case TURN_LEFT:{
-                wheelsYaw -= 1F / 4f;
+                wheelsYaw -= 0.5f;//1F
                 return true;
             }
             case TURN_RIGHT:{
-                wheelsYaw += 1F / 4f;
+                wheelsYaw += 0.5f;//1F
                 return true;
             }
             case BRAKE:{
@@ -273,10 +271,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case ENGINE: {
-                NBTTagCompound nbt = new NBTTagCompound();
-                nbt.setString("task", "engine_toggle");
-                ApiUtil.sendEntityUpdatePacketToServer(this, nbt);
-                return true;
+                NBTTagCompound compound = new NBTTagCompound();
+                compound.setString("task", "engine_toggle");
+                this.toggleEngine(compound); return true;
             }
             case DISMOUNT: {
                 Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
@@ -285,18 +282,12 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case INVENTORY: {
                 if(!world.isRemote){
-                    if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                    /*if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
                         Print.chat(player, "Turn engine off first!");
                     }
-                    else{
-                    	NBTTagCompound compound = new NBTTagCompound();
-	                    compound.setString("target_listener", "fcl_gui");
-	                    compound.setString("task", "open_gui");
-	                    compound.setString("guimod", "fvtm");
-	                    compound.setInteger("gui", 930);
-	                    compound.setIntArray("args", new int[]{ 0, 0, 0 });
-	                    PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
-                    }
+                    else{*/
+	                    GenericContainer.openGui("fvtm", 930, new int[]{ 0, 0, 0 }, player);
+                    /*}*/
                     //open inventory
                 }
                 return true;
@@ -329,8 +320,15 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     		}
                     	}
                     	else{
-                    		vehicle.getAttribute("lights").setValue(false);
+                    		vehicle.getAttribute("lights").setValue(true);
                     	}
+                    	//
+                        LandVehicle trailer = this.trailer;
+                        while(trailer != null){
+                            trailer.vehicle.getAttribute("lights").setValue(vehicle.getAttribute("lights").getBooleanValue());
+                            trailer.vehicle.getAttribute("lights_long").setValue(vehicle.getAttribute("lights_long").getBooleanValue());
+                            trailer = trailer.trailer;
+                        }
                     	//TODO find a way for fog lights
                         doorToggleTimer = 10;
                         NBTTagCompound nbt = new NBTTagCompound();
@@ -1113,26 +1111,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
-                    if(lr + 1000 >= Time.getDate()){ break; }
-                    lr = Time.getDate(); boolean on = false, nf = false; EngineFunction engine = vehicle.getPart("engine").getFunction("fvtm:engine");
-                    pkt.nbt.setBoolean("engine_toggle_result", on = engine.toggle());
-                    if(vehicle.getStoredFuel() == 0){
-                        pkt.nbt.setBoolean("engine_toggle_result", on = false);
-                        pkt.nbt.setBoolean("no_fuel", nf = true);
-                    }
-                    ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
-                    throttle = 0;
-                    //
-                    /*SoundEvent event = vehicledata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
-                    if(event != null){
-                        this.playSound(event, 0.5f, 1f);
-                        //this.world.playSound(null, this.posX, this.posY, this.posZ, event, this.getSoundCategory(), 1f, 1f);
-                        Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Playing!");
-                    }
-                    else{
-                        Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Not found.");
-                    }*///TODO SOUND
-                    break;
+                	this.toggleEngine(pkt.nbt); break;
                 }
                 case "resync": {
                     NBTTagCompound nbt = this.vehicle.write(new NBTTagCompound());
@@ -1143,7 +1122,26 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    private void toggleEngine(NBTTagCompound compound){
+        if(lr + 1000 >= Time.getDate()){ return; }
+        lr = Time.getDate(); /*boolean on = false, nf = false;*/ EngineFunction engine = vehicle.getPart("engine").getFunction("fvtm:engine");
+        compound.setBoolean("engine_toggle_result", /*on =*/ engine.toggle());
+        if(vehicle.getStoredFuel() == 0){
+        	compound.setBoolean("engine_toggle_result", /*on =*/ false);
+            compound.setBoolean("no_fuel", /*nf =*/ true);
+        }
+        ApiUtil.sendEntityUpdatePacketToAllAround(this, compound); throttle = 0;
+        /*Sound sound = vehicle.getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
+        if(sound != null){
+            this.playSound(sound.event, 0.5f, 1f);
+            Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Playing!");
+        }
+        else{
+            Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Not found.");
+        }*///Think that's already done client side?
+	}
+
+	@SideOnly(Side.CLIENT)
     @Override
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
@@ -1185,9 +1183,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 case "toggle_lights": {
                     vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
                     vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
-                    if(trailer != null){
+                    LandVehicle trailer = this.trailer;
+                    while(trailer != null){
                         trailer.vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
                         trailer.vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
+                        trailer = trailer.trailer;
                     }
                     break;
                 }

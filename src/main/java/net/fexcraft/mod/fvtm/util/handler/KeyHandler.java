@@ -35,7 +35,7 @@ public class KeyHandler {
         ClientRegistry.registerKeyBinding(other = new KeyBinding("fvtm:other", Keyboard.KEY_COLON, category));
     }
 
-    //TODO sunscribe keyinput event
+    //TODO subscribe key-input event
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event){
         switch(event.phase){

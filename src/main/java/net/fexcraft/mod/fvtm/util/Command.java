@@ -104,7 +104,7 @@ public class Command extends CommandBase {
             		else{
             			data.setPreset(str); JsonUtil.write(file, data.toJson());
             			PresetTab.INSTANCE.add(data.newItemStack());
-            			Print.chat(sender, "&6File saved!");
+            			Print.chat(sender, "&6File saved! &9[" + str + "]");
             		}
             	}
             	break;

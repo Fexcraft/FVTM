@@ -37,12 +37,17 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "attr_toggle":{
 				boolean bool = packet.nbt.getBoolean("bool");
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
+				String attribute = packet.nbt.getString("attr");
+				Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
 				if(attr.type().isBoolean()){
 					attr.setValue(bool);
-					if(veh.getRearCoupledEntity() != null){
-						attr = veh.getRearCoupledEntity().getVehicleData().getAttribute(packet.nbt.getString("attr"));
-						if(attr != null && attr.type().isBoolean()) attr.setValue(bool);
+					if(!veh.getVehicleType().isRailVehicle()){
+						VehicleEntity trailer = veh.getRearCoupledEntity();
+						while(trailer != null){
+							attr = trailer.getVehicleData().getAttribute(attribute);
+							if(attr != null && attr.type().isBoolean()){ attr.setValue(bool); }
+							trailer = trailer.getRearCoupledEntity();
+						}
 					}
 				}
 				else{

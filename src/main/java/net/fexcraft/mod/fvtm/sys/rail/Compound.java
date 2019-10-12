@@ -145,5 +145,9 @@ public abstract class Compound {
 	public static Compound get(RailEntity ent, long uid){
 		if(COMPOUNDS.containsKey(uid)) return COMPOUNDS.get(uid); return new Singular(ent, uid);
 	}
+	
+	public ArrayList<RailEntity> getEntitites(){
+		return entities;
+	}
 
 }

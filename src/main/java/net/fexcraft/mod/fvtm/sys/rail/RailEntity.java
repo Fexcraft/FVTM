@@ -611,5 +611,9 @@ public class RailEntity implements Comparable<RailEntity>{
 	public boolean isActiveEnd(){
 		if(com.isSingular()) return true; return com.forward ? com.isHead(this) : com.isEnd(this);
 	}
+	
+	public Compound getCompound(){
+		return com;
+	}
 
 }

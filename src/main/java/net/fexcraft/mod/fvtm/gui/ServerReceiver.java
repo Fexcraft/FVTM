@@ -7,7 +7,10 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.rail.Compound;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
@@ -34,15 +37,33 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "attr_toggle":{
 				boolean bool = packet.nbt.getBoolean("bool");
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
+				String attribute = packet.nbt.getString("attr");
+				Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
 				if(attr.type().isBoolean()){
 					attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue());
 					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
-					if(veh.getRearCoupledEntity() != null){
-						attr = veh.getRearCoupledEntity().getVehicleData().getAttribute(packet.nbt.getString("attr"));
-						if(attr != null && attr.type().isBoolean()){
-							attr.setValue(bool); NBTTagCompound compound = packet.nbt.copy(); compound.setBoolean("bool", attr.getBooleanValue());
-							PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(veh.getRearCoupledEntity().getEntity()));
+					if(veh.getVehicleType().isRailVehicle()){
+						Compound com = ((RailVehicle)veh).railentity.getCompound();
+						if(!com.isHead((RailEntity)veh) && !com.isEnd((RailEntity)veh)) return;
+						for(RailEntity ent : com.getEntitites()){
+							if(ent.entity != null){
+								attr = ent.vehdata.getAttribute(attribute);
+								if(attr != null && attr.type().isBoolean()){
+									attr.setValue(bool); NBTTagCompound compound = packet.nbt.copy(); compound.setBoolean("bool", attr.getBooleanValue());
+									PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
+								}
+							}
+						}
+					}
+					else{
+						VehicleEntity trailer = veh.getRearCoupledEntity();
+						while(trailer != null){
+							attr = trailer.getVehicleData().getAttribute(attribute);
+							if(attr != null && attr.type().isBoolean()){
+								attr.setValue(bool); NBTTagCompound compound = packet.nbt.copy(); compound.setBoolean("bool", attr.getBooleanValue());
+								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
+							}
+							trailer = trailer.getRearCoupledEntity();
 						}
 					}
 				}

@@ -30,6 +30,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
@@ -49,6 +50,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -79,7 +81,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public LandVehicle truck, trailer;
     //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
     protected byte doorToggleTimer;
-    protected Object engineloop;//TODO sound
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
@@ -1163,15 +1164,15 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     }
                     throttle = 0;
                     if(vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
-                        /*SoundEvent event = vehicledata.getPart("engine").getPart().getSound("engine_running");
+                        SoundEvent event = vehicle.getSound("engine_running").event;
                         if(event != null){
-                            this.engineloop = new EngineLoopSound(event, SoundCategory.NEUTRAL, this);
+                            this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
                             net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
                             Print.debug("engine_running -> Playing! (LOOP)");
                         }
                         else{
                             Print.debug("engine_running -> Not found.");
-                        }*///TODO sound
+                        }
                     }
                     break;
                 }

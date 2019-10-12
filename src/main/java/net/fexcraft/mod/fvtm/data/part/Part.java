@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.data.part;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
@@ -18,6 +20,8 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
+import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -37,7 +41,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
+public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder {
 	
 	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	protected ArrayList<Modifier<?>> modifiers = new ArrayList<>();
@@ -50,6 +54,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	protected Object installhandler_data;
 	protected ArrayList<Function> functions = new ArrayList<>();
 	protected ArrayList<Class<? extends VehicleScript>> scripts = new ArrayList<>();
+	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	
 	public Part(){}
 
@@ -197,6 +202,15 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	            catch(Exception e){ e.printStackTrace(); }
 			}
 		}
+		if(obj.has("Sounds")){
+            for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
+                JsonObject json = elm.getAsJsonObject();
+                this.sounds.put(json.get("event").getAsString(),
+                	new Sound(new ResourceLocation(json.get("sound").getAsString()),
+                		JsonUtil.getIfExists(obj, "volume", 1f).floatValue(),
+                		JsonUtil.getIfExists(obj, "pitch", 1f).floatValue()));
+            }
+		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new PartItem(this); return this;
@@ -272,6 +286,11 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder {
 	
 	public List<Class<? extends VehicleScript>> getVehicleScripts(){
 		return scripts;
+	}
+
+	@Override
+	public Map<String, Sound> getSounds(){
+		return sounds;
 	}
 
 }

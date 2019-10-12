@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -23,6 +24,8 @@ import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
+import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.data.root.Soundable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -35,12 +38,13 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable, Lockable {
+public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable, Lockable, Soundable {
 	
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
@@ -55,6 +59,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected ArrayList<String> inventories = new ArrayList<>();
 	protected ArrayList<VehicleScript> scripts = new ArrayList<>();
 	protected Vec3d front_conn, rear_conn;
+	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 
 	public VehicleData(Vehicle type){
 		super(type);
@@ -74,6 +79,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				this.installPart(null, new PartData(part), entry.getKey());
 			}
 		}
+		sounds.putAll(type.getSounds());
 	}
 
 	@Override
@@ -222,6 +228,13 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		//
 		inventories.clear(); parts.forEach((key, value) -> { if(value.hasFunction("fvtm:inventory")) inventories.add(key); });
+		//
+		sounds.clear(); sounds.putAll(type.getSounds());
+		for(PartData data : parts.values()){
+			for(Map.Entry<String, Sound> entry : data.getType().getSounds().entrySet()){
+				if(!sounds.containsKey(entry.getKey()) || entry.getValue().override) sounds.put(entry.getKey(), entry.getValue());
+			}
+		}
 		//
 		for(PartData part : parts.values()){
 			if(part.getType().getVehicleScripts().size() > 0){
@@ -601,6 +614,26 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	
 	public void setPreset(String str){
 		this.preset = str;
+	}
+
+	@Override
+	public SoundEvent getSoundEvent(String event){
+		Sound sound = getSound(event); return sound == null ? null : sound.event;
+	}
+
+	@Override
+	public float getSoundVolume(String event){
+		Sound sound = getSound(event); return sound == null ? 1f : sound.volume;
+	}
+
+	@Override
+	public float getSoundPitch(String event){
+		Sound sound = getSound(event); return sound == null ? 1f : sound.pitch;
+	}
+
+	@Override
+	public Sound getSound(String event){
+		return sounds.get(event);
 	}
 
 }

@@ -72,9 +72,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -451,6 +453,34 @@ public class Resources {
 	@SubscribeEvent
 	public void onChunkUnload(ChunkEvent.Unload event){
 		event.getWorld().getCapability(Capabilities.RAILSYSTEM, null).onChunkUnload(event.getChunk());
+	}
+	
+
+
+	@SubscribeEvent
+	public void regSounds(RegistryEvent.Register<SoundEvent> event){
+		VEHICLES.getValuesCollection().forEach(vehicle -> {
+			vehicle.getSounds().values().forEach(sound -> {
+				if(event.getRegistry().containsKey(sound.soundid)){
+					sound.event = event.getRegistry().getValue(sound.soundid);
+				}
+				else{
+					SoundEvent soundevent = new SoundEvent(sound.soundid).setRegistryName(sound.soundid);
+					event.getRegistry().register(sound.event = soundevent);
+				}
+			});
+		});
+		PARTS.getValuesCollection().forEach(part -> {
+			part.getSounds().values().forEach(sound -> {
+				if(event.getRegistry().containsKey(sound.soundid)){
+					sound.event = event.getRegistry().getValue(sound.soundid);
+				}
+				else{
+					SoundEvent soundevent = new SoundEvent(sound.soundid).setRegistryName(sound.soundid);
+					event.getRegistry().register(sound.event = soundevent);
+				}
+			});
+		});
 	}
 
 }

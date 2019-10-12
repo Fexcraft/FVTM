@@ -23,5 +23,20 @@
     		"e10": 6.7
     	},
     	"fuel_group": "petrol"
-    }
+    },
+    "Sounds":[
+    	{
+    		"event": "engine_start",
+    		"sound": "minecraft:block.dispenser.dispense"
+    	},
+    	{
+    		"event": "engine_stop",
+    		"sound": "minecraft:block.dispenser.fail"
+    	},
+    	{
+    		"event": "engine_running",
+    		"sound": "minecraft:entity.minecart.riding",
+    		"volume": 0.2
+    	}
+    ]
 }

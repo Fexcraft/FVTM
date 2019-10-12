@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +27,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity {
 	public double throttle;
 	public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
 	public WheelEntity[] wheels;
+	public LoopSound engineloop;
 
 	public GenericVehicle(World world){ super(world); }
 	

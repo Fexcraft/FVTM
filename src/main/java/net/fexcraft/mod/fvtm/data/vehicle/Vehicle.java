@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,8 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.data.root.Soundable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -34,7 +37,7 @@ import net.minecraft.util.math.Vec3d;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder {
+public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder {
 
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
@@ -47,6 +50,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected boolean trailer;
 	protected Vec3d def_front_conn, def_rear_conn;
 	protected HashMap<String, ResourceLocation> preinstalled;
+	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -144,6 +148,15 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				preinstalled.put(entry.getKey(), new ResourceLocation(entry.getValue().getAsString()));
 			}
 		}
+		if(obj.has("Sounds")){
+            for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
+                JsonObject json = elm.getAsJsonObject();
+                this.sounds.put(json.get("event").getAsString(),
+                	new Sound(new ResourceLocation(json.get("sound").getAsString()),
+                		JsonUtil.getIfExists(obj, "volume", 1f).floatValue(),
+                		JsonUtil.getIfExists(obj, "pitch", 1f).floatValue()));
+            }
+		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this); return this;
@@ -237,6 +250,11 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	@Nullable
 	public HashMap<String, ResourceLocation> getPreInstalledParts(){
 		return preinstalled;
+	}
+
+	@Override
+	public Map<String, Sound> getSounds(){
+		return sounds;
 	}
 
 }

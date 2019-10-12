@@ -56,6 +56,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						}
 					}
 					else{
+						if(veh.getFrontCoupledEntity() != null) return;
 						VehicleEntity trailer = veh.getRearCoupledEntity();
 						while(trailer != null){
 							attr = trailer.getVehicleData().getAttribute(attribute);

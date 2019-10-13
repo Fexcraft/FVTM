@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -86,22 +87,26 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				Print.chat(player, "&cRoad vector length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
 			}
-			int width = stack.getCount(), height; float angle, passed = 0; Vec3f last, vec;
-			ArrayList<Vec316f> path = new ArrayList<>(); IBlockState state; BlockPos blk;
+			int width = stack.getCount(), height; float angle, passed = 0, half = (width * 0.5f) - 0.5f; Vec3f last, vec;
+			ArrayList<Vec316f> path = new ArrayList<>(), border = new ArrayList<>(); IBlockState state; BlockPos blk;
 			vec = track.getVectorPosition0(0.001f, false); passed = 0;
 			angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
 			angle += Static.rad90;
-			for(int i = 0; i < width; i++){
-				path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(-(width * 0.5f) + i, 0, 0)))));
+			for(float fl = -half; fl <= half; fl += 0.25f){
+				path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
 			}
+			border.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
+			border.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
 			//Print.log(passed + "/" + track.length + " " + path.get(path.size() - 1) + " START");
 			while(passed < track.length){ passed += 0.125f;
 				last = vec; vec = track.getVectorPosition0(passed, false);
 				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
 				angle += Static.rad90;
-				for(int i = 0; i < width; i++){
-					path.add(new Vec316f(vec.add(grv(angle, new Vec3f(-(width * 0.5f) + i, 0, 0)))));
+				for(float fl = -half; fl <= half; fl += 0.25f){
+					path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
 				}
+				border.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
+				border.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1, 0, 0)))));
 				//Print.log(passed + " " + path.get(path.size() - 1));
 			}
 			for(Vec316f v : path){
@@ -110,11 +115,22 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 					if(world.getBlockState(blk.up()).getBlock() instanceof Asphalt) height = 0;
 					world.setBlockState(blk, Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, height), 2);
 				}
-				/*if((height <= 8 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
+				if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
 					world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0), 2);
-				}*/
-				if(world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
-					world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0), 2);
+				}
+				for(int i = 1; i < 4; i++){
+					if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+						world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+					}
+				}
+			}
+			for(Vec316f v : border){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				for(int i = 1; i < 4; i++){
+					if(i == 1 && height > 8) continue;
+					if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+						world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+					}
 				}
 			}
 			//

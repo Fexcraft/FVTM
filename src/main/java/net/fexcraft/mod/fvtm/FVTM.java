@@ -17,6 +17,7 @@ import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.DisplayBlock;
@@ -60,6 +61,7 @@ import net.fexcraft.mod.fvtm.gui.vehicle.VehicleMain;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleToggables;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
+import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
@@ -191,6 +193,8 @@ public class FVTM {
 			Resources.BLOCKS.getValuesCollection().forEach(block -> block.linkItem());
 			JunctionToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			SignalItem0.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());

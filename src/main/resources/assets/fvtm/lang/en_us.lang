@@ -14,6 +14,7 @@ tile.fvtm:constructor.name=Constructor Block
 tile.fvtm:constructor_lift.name=Constructor Center/Lift
 tile.fvtm:display_block.name=Display Block (Vehicles)
 tile.fvtm:streetpost.name=Streetpost
+tile.fvtm:asphalt.name=FVTM Asphalt
 
 
 # Items
@@ -21,6 +22,7 @@ item.fvtm:streetsign.name=Streetsign
 item.fvtm:standard.name=Standard FVTM Rail Gauge
 item.fvtm:junction_tool.name=Junction Tool
 item.fvtm:simple_signal.name=Simple Signal (BLOCK)
+item.fvtm:road_tool.name=Road Tool
 
 
 # Entities

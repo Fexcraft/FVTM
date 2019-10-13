@@ -17,7 +17,7 @@ public class Config {
     private static final String GENERAL = "General", LEGACYSYS = "Legacy", PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
     public static double VEHICLE_UPDATE_RANGE;
-    public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH;
+    public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH;
 	public static long UNLOAD_INTERVAL;
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
@@ -67,6 +67,15 @@ public class Config {
             if(RAIL_SEGMENTATOR < 1) RAIL_SEGMENTATOR = 1;
         }
         MAX_RAIL_TRACK_LENGTH = config.getInt("rail_track_max_length", GENERAL, 32, 1, 128, "Max vector (total) length of new placed (rail) Tracks.");
+        {
+        	ROAD_PLACING_GRID = config.getInt("road_placing_grid", GENERAL, 4, 1, 16, "Grid size for when using the road placing tool, valid are 16 ('per-pixel accuracy'), 8, 4, 2 or 1 (full block)");
+            if(ROAD_PLACING_GRID > 16) ROAD_PLACING_GRID = 16;
+            if(ROAD_PLACING_GRID > 8 && ROAD_PLACING_GRID < 16) ROAD_PLACING_GRID = 8;
+            if(ROAD_PLACING_GRID > 4 && ROAD_PLACING_GRID < 8) ROAD_PLACING_GRID = 4;
+            if(ROAD_PLACING_GRID > 2 && ROAD_PLACING_GRID < 4) ROAD_PLACING_GRID = 2;
+            if(ROAD_PLACING_GRID < 1) ROAD_PLACING_GRID = 1;
+        }
+        MAX_ROAD_LENGTH = config.getInt("road_max_length", GENERAL, 256, 1, 4096, "Max vector (total) length of new placed roads (with the placing tool).");
     }
 
     public static void add(List<IConfigElement> list){

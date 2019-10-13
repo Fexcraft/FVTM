@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;

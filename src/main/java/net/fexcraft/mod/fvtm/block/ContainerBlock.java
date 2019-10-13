@@ -120,7 +120,7 @@ public class ContainerBlock extends BlockContainer {
 
     @Override
     public int getMetaFromState(IBlockState state){
-        return ((EnumFacing) state.getValue(FACING)).getIndex();
+        return ((EnumFacing)state.getValue(FACING)).getIndex();
     }
 
     @Override

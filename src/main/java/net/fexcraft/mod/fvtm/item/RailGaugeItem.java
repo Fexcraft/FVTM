@@ -133,7 +133,8 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 	private String getSuffix(int tagCount){
 		if(tagCount < 4) return tagCount == 1 ? "st" : tagCount == 2 ? "nd" : "rd"; else return "th";
 	}
-
+	
+	@Override
 	public Vec316f[] getVectors(ItemStack stack){
 		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:railpoints")) return new Vec316f[0];
 		return getVectors((NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints"));
@@ -148,6 +149,11 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 
 	private Vec316f getFirstVector(NBTTagList list){
 		return new Vec316f(list.getCompoundTagAt(0));
+	}
+
+	@Override
+	public boolean hasVectors(){
+		return true;
 	}
 
 }

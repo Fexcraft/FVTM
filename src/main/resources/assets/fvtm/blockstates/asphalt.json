@@ -1,0 +1,21 @@
+{
+    "variants": {
+        "normal": { "model": "fvtm:asphalt_0" },
+        "height=0": { "model": "fvtm:asphalt_0" },
+        "height=1": { "model": "fvtm:asphalt_1" },
+        "height=2": { "model": "fvtm:asphalt_2" },
+        "height=3": { "model": "fvtm:asphalt_3" },
+        "height=4": { "model": "fvtm:asphalt_4" },
+        "height=5": { "model": "fvtm:asphalt_5" },
+        "height=6": { "model": "fvtm:asphalt_6" },
+        "height=7": { "model": "fvtm:asphalt_7" },
+        "height=8": { "model": "fvtm:asphalt_8" },
+        "height=9": { "model": "fvtm:asphalt_9" },
+        "height=10": { "model": "fvtm:asphalt_10" },
+        "height=11": { "model": "fvtm:asphalt_11" },
+        "height=12": { "model": "fvtm:asphalt_12" },
+        "height=13": { "model": "fvtm:asphalt_13" },
+        "height=14": { "model": "fvtm:asphalt_14" },
+        "height=15": { "model": "fvtm:asphalt_15" }
+    }
+}

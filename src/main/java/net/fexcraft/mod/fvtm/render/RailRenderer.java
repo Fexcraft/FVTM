@@ -13,7 +13,6 @@ import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailData;
@@ -55,7 +54,7 @@ public class RailRenderer {
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
-    		vecs = stack.getItem() instanceof RailGaugeItem ? ((RailGaugeItem)stack.getItem()).getVectors(stack) : new Vec316f[0]; //HOLDING = true;
+    		vecs = ((JunctionGridItem)stack.getItem()).getVectors(stack); //HOLDING = true;
     		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
         	//
     		EntityPlayer player = event.getPlayer(); GlStateManager.disableTexture2D();

@@ -1099,7 +1099,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     //--- PACKETS ---//
     private long lr = -1;
 
-    @SuppressWarnings("unused") @Override
+    @Override
     public void processServerPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
             for(VehicleScript script : vehicle.getScripts()){

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.registry.fItem;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -46,21 +47,46 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
         tooltip.add(Formatter.format("&9Road Placing Toolbox"));
         tooltip.add(Formatter.format("&9Current Width: &7" + stack.getCount() + " blocks"));
-        tooltip.add(Formatter.format("&9- - - - - - &7-"));
-        if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:roadpoints")){
-        	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints");
-    		for(int k = 0; k < list.tagCount(); k++){
-            	tooltip.add(Formatter.format("&9PT" + k + " POS:" + new Vec316f(list.getCompoundTagAt(k)).toString()));
-    		}
+        if(stack.getTagCompound() == null){
+        	tooltip.add("No Compound Data.");
         }
         else{
-        	tooltip.add("No points cached.");
+        	ItemStack stack0 = null;
+        	if(stack.getTagCompound().hasKey("BottomFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
+                tooltip.add(Formatter.format("&9Ground Fill: &7" + stack0.toString()));
+        	}
+        	if(stack.getTagCompound().hasKey("TopFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
+                tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.toString()));
+        	}
+        	if(stack.getTagCompound().hasKey("SideRFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRFill"));
+                tooltip.add(Formatter.format("&9R Border Fill: &7" + stack0.toString()));
+        	}
+        	if(stack.getTagCompound().hasKey("SideLFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLFill"));
+                tooltip.add(Formatter.format("&9L Border Fill: &7" + stack0.toString()));
+        	}
+            tooltip.add(Formatter.format("&9- - - - - - &7-"));
+            if(stack.getTagCompound().hasKey("fvtm:roadpoints")){
+            	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints");
+        		for(int k = 0; k < list.tagCount(); k++){
+                	tooltip.add(Formatter.format("&9PT" + k + " POS:" + new Vec316f(list.getCompoundTagAt(k)).toString()));
+        		}
+            }
+            else{
+            	tooltip.add("No points cached.");
+            }
         }
     }
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote){ return EnumActionResult.PASS; }
+        if(hand == EnumHand.OFF_HAND){
+        	GenericContainer.openGui("fvtm", 702, new int[]{ 0, 0, 0 }, player); return EnumActionResult.SUCCESS;
+        }
         if(!player.capabilities.isCreativeMode){
         	Print.chat(player, "&9This is a &6CREATIVE &9mode tool."); return EnumActionResult.FAIL;
         }

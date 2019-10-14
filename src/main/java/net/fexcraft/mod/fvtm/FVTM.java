@@ -48,6 +48,8 @@ import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
 import net.fexcraft.mod.fvtm.gui.container.ContainerItemInventory;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
+import net.fexcraft.mod.fvtm.gui.road.RoadContainer;
+import net.fexcraft.mod.fvtm.gui.road.RoadPlacingTool;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleConnectors;
@@ -205,7 +207,8 @@ public class FVTM {
 		//
 		GuiHandler.register(MODID, this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());
-		//900 - main
+		//700 - other
+		//900 - const main
 		//910 - part cache
 		//920 - installed part
 		//930 - vehicle
@@ -213,6 +216,7 @@ public class FVTM {
 		if(event.getSide().isClient()){
 			GuiHandler.insert(700, StreetSignAdjuster.class, StreetSignAdjusterContainer.class);
 			GuiHandler.insert(701, JunctionAdjuster.class, JunctionAdjusterContainer.class);
+			GuiHandler.insert(702, RoadPlacingTool.class, RoadContainer.class);
 			GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);
 			GuiHandler.insert(901, ConstructorStatus.class, ConstructorContainer.class);
 			GuiHandler.insert(902, ConstructorVehicleInfo.class, ConstructorContainer.class);
@@ -237,6 +241,7 @@ public class FVTM {
 		else{
 			GuiHandler.insert(700, StreetSignAdjusterContainer.class);
 			GuiHandler.insert(701, JunctionAdjusterContainer.class);
+			GuiHandler.insert(702, RoadContainer.class);
 			GuiHandler.insert(900, ConstructorContainer.class);
 			GuiHandler.insert(901, ConstructorContainer.class);
 			GuiHandler.insert(902, ConstructorContainer.class);

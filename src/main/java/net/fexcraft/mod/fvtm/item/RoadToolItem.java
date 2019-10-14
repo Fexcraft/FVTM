@@ -21,6 +21,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -81,7 +82,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         }
     }
 	
-	@Override
+	@SuppressWarnings("deprecation") @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote){ return EnumActionResult.PASS; }
         if(hand == EnumHand.OFF_HAND){
@@ -113,27 +114,54 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				Print.chat(player, "&cRoad vector length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
 			}
+			IBlockState top = null, bot = null, righ = null, left = null;
+			ArrayList<Vec316f> border_r = null, border_l = null, roof = null, ground = null;
+        	ItemStack stack0 = null; int borderheight_l = 0, borderheight_r = 0, topheight = 0;
+        	if(stack.getTagCompound().hasKey("BottomFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
+                bot = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+                ground = new ArrayList<>();
+        	}
+        	if(stack.getTagCompound().hasKey("TopFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
+                top = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+                roof = new ArrayList<>();
+        	}
+        	if(stack.getTagCompound().hasKey("SideRFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRFill"));
+                righ = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+                borderheight_r = stack0.getCount(); border_r = new ArrayList<>();
+        	}
+        	if(stack.getTagCompound().hasKey("SideLFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLFill"));
+                left = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+                borderheight_l = stack0.getCount(); border_l = new ArrayList<>();
+        	}
+        	topheight = borderheight_l > borderheight_r ? borderheight_l : borderheight_r;
+			//
 			int width = stack.getCount(), height; float angle, passed = 0, half = (width * 0.5f) - 0.5f; Vec3f last, vec;
-			ArrayList<Vec316f> path = new ArrayList<>(), border = new ArrayList<>(); IBlockState state; BlockPos blk;
+			ArrayList<Vec316f> path = new ArrayList<>(); IBlockState state; BlockPos blk;
 			vec = track.getVectorPosition0(0.001f, false); passed = 0;
 			angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
 			angle += Static.rad90;
 			for(float fl = -half; fl <= half; fl += 0.25f){
 				path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
+				if(ground != null) ground.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
+				if(roof != null) roof.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, topheight, 0)))));
 			}
-			border.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
-			border.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
-			//Print.log(passed + "/" + track.length + " " + path.get(path.size() - 1) + " START");
+			if(border_l != null) border_l.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
+			if(border_r != null) border_r.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
 			while(passed < track.length){ passed += 0.125f;
 				last = vec; vec = track.getVectorPosition0(passed, false);
 				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
 				angle += Static.rad90;
 				for(float fl = -half; fl <= half; fl += 0.25f){
 					path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
+					if(ground != null) ground.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, -1, 0)))));
+					if(roof != null) roof.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, topheight, 0)))));
 				}
-				border.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
-				border.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1, 0, 0)))));
-				//Print.log(passed + " " + path.get(path.size() - 1));
+				if(border_l != null) border_l.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
+				if(border_r != null) border_r.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1, 0, 0)))));
 			}
 			for(Vec316f v : path){
 				height = v.y; state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
@@ -144,20 +172,41 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
 					world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0), 2);
 				}
-				for(int i = 1; i < 4; i++){
+				for(int i = 1; i < topheight; i++){
 					if(world.getBlockState(blk.up(i)).isOpaqueCube()){
 						world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
 					}
 				}
 			}
-			for(Vec316f v : border){
+			for(Vec316f v : border_l){
 				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-				for(int i = 1; i < 4; i++){
-					if(i == 1 && height > 8) continue;
-					if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-						world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
-					}
+				for(int i = 0/*1*/; i < borderheight_l; i++){
+					//if(i == 1 && height > 8) continue;
+					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+						world.setBlockState(blk.up(i), left, 2);
+					//}
 				}
+			}
+			for(Vec316f v : border_r){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				for(int i = 0/*1*/; i < borderheight_r; i++){
+					//if(i == 1 && height > 8) continue;
+					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+						world.setBlockState(blk.up(i), righ, 2);
+					//}
+				}
+			}
+			for(Vec316f v : ground){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				//if(world.getBlockState(blk).isOpaqueCube()){
+					world.setBlockState(blk, bot, 2);
+				//}
+			}
+			for(Vec316f v : roof){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				//if(world.getBlockState(blk).isOpaqueCube()){
+					world.setBlockState(blk, top, 2);
+				//}
 			}
 			//
 			Print.bar(player, "&bRoad placed!");

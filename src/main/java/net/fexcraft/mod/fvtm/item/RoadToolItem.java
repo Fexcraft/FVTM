@@ -172,41 +172,50 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
 					world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0), 2);
 				}
-				for(int i = 1; i < topheight; i++){
+				int checkheight = topheight == 0 ? 4 : topheight;
+				for(int i = 1; i < checkheight; i++){
 					if(world.getBlockState(blk.up(i)).isOpaqueCube()){
 						world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
 					}
 				}
 			}
-			for(Vec316f v : border_l){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-				for(int i = 0/*1*/; i < borderheight_l; i++){
-					//if(i == 1 && height > 8) continue;
-					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-						world.setBlockState(blk.up(i), left, 2);
+			if(border_l != null){
+				for(Vec316f v : border_l){
+					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+					for(int i = 0/*1*/; i < borderheight_l; i++){
+						//if(i == 1 && height > 8) continue;
+						//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+							world.setBlockState(blk.up(i), left, 2);
+						//}
+					}
+				}
+			}
+			if(border_r != null){
+				for(Vec316f v : border_r){
+					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+					for(int i = 0/*1*/; i < borderheight_r; i++){
+						//if(i == 1 && height > 8) continue;
+						//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+							world.setBlockState(blk.up(i), righ, 2);
+						//}
+					}
+				}
+			}
+			if(ground != null){
+				for(Vec316f v : ground){
+					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+					//if(world.getBlockState(blk).isOpaqueCube()){
+						world.setBlockState(blk, bot, 2);
 					//}
 				}
 			}
-			for(Vec316f v : border_r){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-				for(int i = 0/*1*/; i < borderheight_r; i++){
-					//if(i == 1 && height > 8) continue;
-					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-						world.setBlockState(blk.up(i), righ, 2);
+			if(roof != null){
+				for(Vec316f v : roof){
+					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+					//if(world.getBlockState(blk).isOpaqueCube()){
+						world.setBlockState(blk, top, 2);
 					//}
 				}
-			}
-			for(Vec316f v : ground){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-				//if(world.getBlockState(blk).isOpaqueCube()){
-					world.setBlockState(blk, bot, 2);
-				//}
-			}
-			for(Vec316f v : roof){
-				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-				//if(world.getBlockState(blk).isOpaqueCube()){
-					world.setBlockState(blk, top, 2);
-				//}
 			}
 			//
 			Print.bar(player, "&bRoad placed!");

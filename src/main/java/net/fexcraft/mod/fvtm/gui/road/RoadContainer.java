@@ -79,16 +79,16 @@ public class RoadContainer extends GenericContainer {
         	//roadinv.closeInventory(player);
         	if(!roadinv.getStackInSlot(0).isEmpty()){
         		stack.getTagCompound().setTag("BottomFill", roadinv.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
-        	}
+        	} else stack.getTagCompound().removeTag("BottomFill");
         	if(!roadinv.getStackInSlot(3).isEmpty()){
         		stack.getTagCompound().setTag("TopFill", roadinv.getStackInSlot(3).writeToNBT(new NBTTagCompound()));
-        	}
+        	} else stack.getTagCompound().removeTag("TopFill");
         	if(!roadinv.getStackInSlot(6).isEmpty()){
         		stack.getTagCompound().setTag("SideLFill", roadinv.getStackInSlot(6).writeToNBT(new NBTTagCompound()));
-        	}
+        	} else stack.getTagCompound().removeTag("SideLFill");
         	if(!roadinv.getStackInSlot(7).isEmpty()){
         		stack.getTagCompound().setTag("SideRFill", roadinv.getStackInSlot(7).writeToNBT(new NBTTagCompound()));
-        	}
+        	} else stack.getTagCompound().removeTag("SideRFill");
         	roadinv.clear();
         }
     }

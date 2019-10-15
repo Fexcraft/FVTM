@@ -49,25 +49,42 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         tooltip.add(Formatter.format("&9Road Placing Toolbox"));
         tooltip.add(Formatter.format("&9Current Width: &7" + stack.getCount() + " blocks"));
         if(stack.getTagCompound() == null){
+            tooltip.add(Formatter.format("&6Road Fill: &bSOLID ASPHALT &7x" + stack.getCount()));
         	tooltip.add("No Compound Data.");
         }
         else{
         	ItemStack stack0 = null;
         	if(stack.getTagCompound().hasKey("BottomFill")){
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
-                tooltip.add(Formatter.format("&9Ground Fill: &7" + stack0.toString()));
+                tooltip.add(Formatter.format("&9Ground Fill: &7" + stack0.getDisplayName()));
         	}
         	if(stack.getTagCompound().hasKey("TopFill")){
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
-                tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.toString()));
+                tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.getDisplayName()));
         	}
         	if(stack.getTagCompound().hasKey("SideRFill")){
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRFill"));
-                tooltip.add(Formatter.format("&9R Border Fill: &7" + stack0.toString()));
+                tooltip.add(Formatter.format("&9R Border Fill: &7" + stack0.getDisplayName() + " x" + stack0.getCount()));
         	}
         	if(stack.getTagCompound().hasKey("SideLFill")){
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLFill"));
-                tooltip.add(Formatter.format("&9L Border Fill: &7" + stack0.toString()));
+                tooltip.add(Formatter.format("&9L Border Fill: &7" + stack0.getDisplayName() + " x" + stack0.getCount()));
+        	}
+        	if(stack.getTagCompound().hasKey("RoadFill")){
+        		NBTTagList fill = (NBTTagList)stack.getTagCompound().getTag("RoadFill");
+        		NBTTagList half = (NBTTagList)stack.getTagCompound().getTag("RoadFillHalf");
+                tooltip.add(Formatter.format("&6Road Fill:")); NBTTagCompound com;
+                for(int i = 0; i < fill.tagCount(); i++){
+                	com = (NBTTagCompound)fill.get(i);
+                	stack0 = com.hasKey("Empty") ? ItemStack.EMPTY : new ItemStack(com);
+                    tooltip.add(Formatter.format("&2-> &7" + stack0.getDisplayName()));
+                	com = (NBTTagCompound)half.get(i);
+                	stack0 = com.hasKey("Empty") ? ItemStack.EMPTY : new ItemStack(com);
+                    tooltip.add(Formatter.format("&2\\> &7" + stack0.getDisplayName()));
+                }
+        	}
+        	else{
+                tooltip.add(Formatter.format("&6Road Fill: &bSOLID ASPHALT &7x" + stack.getCount()));
         	}
             tooltip.add(Formatter.format("&9- - - - - - &7-"));
             if(stack.getTagCompound().hasKey("fvtm:roadpoints")){
@@ -182,7 +199,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			if(border_l != null){
 				for(Vec316f v : border_l){
 					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-					for(int i = 0/*1*/; i < borderheight_l; i++){
+					for(int i = -1/*1*/; i < borderheight_l + 1; i++){
 						//if(i == 1 && height > 8) continue;
 						//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
 							world.setBlockState(blk.up(i), left, 2);
@@ -193,7 +210,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			if(border_r != null){
 				for(Vec316f v : border_r){
 					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-					for(int i = 0/*1*/; i < borderheight_r; i++){
+					for(int i = -1/*1*/; i < borderheight_r + 1; i++){
 						//if(i == 1 && height > 8) continue;
 						//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
 							world.setBlockState(blk.up(i), righ, 2);

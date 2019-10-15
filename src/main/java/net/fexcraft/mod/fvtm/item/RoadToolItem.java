@@ -270,9 +270,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			if(ground != null){
 				for(Vec316f v : ground){
 					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-					//if(world.getBlockState(blk).isOpaqueCube()){
+					if(world.getBlockState(blk).getBlock() != Asphalt.INSTANCE){
 						world.setBlockState(blk, bot, 2);
-					//}
+					}
 				}
 			}
 			if(roof != null){

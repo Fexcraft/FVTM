@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui.road;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -13,36 +14,56 @@ public class RoadContainer extends GenericContainer {
 	
 	protected GenericGui<RoadContainer> gui;
 	protected RoadInventory roadinv;
+	protected GenericIInventory inv;
 	protected ItemStack stack;
 	protected int slots;
 
 	public RoadContainer(EntityPlayer player, World world, int x, int y, int z){
-		super(player); roadinv = new RoadInventory(slots = 8); stack = player.getHeldItemOffhand();
-        for(int i = 0; i < 3; i++){ addSlotToContainer(new Slot(roadinv, 0 + i, 26 + (i * 18), 48)); }
-        for(int i = 0; i < 3; i++){ addSlotToContainer(new Slot(roadinv, 3 + i, 26 + (i * 18),  8)); }
-    	addSlotToContainer(new Slot(roadinv, 6, 8 , 28)); addSlotToContainer(new Slot(roadinv, 7, 80, 28));
-		//
-        for(int row = 0; row < 3; row++){
+		super(player); stack = player.getHeldItemOffhand();
+        if(x == 0){
+    		roadinv = new RoadInventory(slots = 8);
+            for(int i = 0; i < 3; i++){ addSlotToContainer(new Slot(roadinv, 0 + i, 26 + (i * 18), 48)); }
+            for(int i = 0; i < 3; i++){ addSlotToContainer(new Slot(roadinv, 3 + i, 26 + (i * 18),  8)); }
+        	addSlotToContainer(new Slot(roadinv, 6, 8 , 28)); addSlotToContainer(new Slot(roadinv, 7, 80, 28));
+    		//
+            for(int row = 0; row < 3; row++){
+                for(int col = 0; col < 9; col++){
+                    addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 72 + row * 18));
+                }
+            }
             for(int col = 0; col < 9; col++){
-                addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 72 + row * 18));
+                addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 128));
+            }
+            //
+        	if(stack.getTagCompound().hasKey("BottomFill")){
+                roadinv.setInventorySlotContents(0, new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill")));
+        	}
+        	if(stack.getTagCompound().hasKey("TopFill")){
+                roadinv.setInventorySlotContents(3, new ItemStack(stack.getTagCompound().getCompoundTag("TopFill")));
+        	}
+        	if(stack.getTagCompound().hasKey("SideRFill")){
+        		roadinv.setInventorySlotContents(7, new ItemStack(stack.getTagCompound().getCompoundTag("SideRFill")));
+        	}
+        	if(stack.getTagCompound().hasKey("SideLFill")){
+        		roadinv.setInventorySlotContents(6, new ItemStack(stack.getTagCompound().getCompoundTag("SideLFill")));
+        	}
+        }
+        else if(x == 1){
+        	inv = new GenericIInventory(null, slots = 18, 1);
+            for(int row = 0; row < 2; row++){
+                for(int col = 0; col < 9; col++){
+                    addSlotToContainer(new Slot(inv, col + row * 9 + 9, 8 + col * 18, 26 + row * 18));
+                }
+            }
+            for(int row = 0; row < 3; row++){
+                for(int col = 0; col < 9; col++){
+                    addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 68 + row * 18));
+                }
+            }
+            for(int col = 0; col < 9; col++){
+                addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 124));
             }
         }
-        for(int col = 0; col < 9; col++){
-            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 128));
-        }
-        //
-    	if(stack.getTagCompound().hasKey("BottomFill")){
-            roadinv.setInventorySlotContents(0, new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill")));
-    	}
-    	if(stack.getTagCompound().hasKey("TopFill")){
-            roadinv.setInventorySlotContents(3, new ItemStack(stack.getTagCompound().getCompoundTag("TopFill")));
-    	}
-    	if(stack.getTagCompound().hasKey("SideRFill")){
-    		roadinv.setInventorySlotContents(7, new ItemStack(stack.getTagCompound().getCompoundTag("SideRFill")));
-    	}
-    	if(stack.getTagCompound().hasKey("SideLFill")){
-    		roadinv.setInventorySlotContents(6, new ItemStack(stack.getTagCompound().getCompoundTag("SideLFill")));
-    	}
 	}
 
 	@Override
@@ -90,6 +111,9 @@ public class RoadContainer extends GenericContainer {
         		stack.getTagCompound().setTag("SideRFill", roadinv.getStackInSlot(7).writeToNBT(new NBTTagCompound()));
         	} else stack.getTagCompound().removeTag("SideRFill");
         	roadinv.clear();
+        }
+        if(inv != null){
+        	//TODO
         }
     }
     

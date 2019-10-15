@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.gui.road;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -150,11 +149,12 @@ public class RoadInventory implements IInventory {
             super(inventory, index, xPosition, yPosition);
         }
 
-        @SuppressWarnings("deprecation") @Override
+        @Override
         public boolean isItemValid(ItemStack stack){
-        	if(stack.getItem() instanceof ItemBlock == false) return false;
-            Block block = ((ItemBlock)stack.getItem()).getBlock();
-            return block.isFullBlock(block.getDefaultState());
+        	return stack.getItem() instanceof ItemBlock;
+        	//if(stack.getItem() instanceof ItemBlock == false) return false;
+            //Block block = ((ItemBlock)stack.getItem()).getBlock();
+            //return block.isFullBlock(block.getDefaultState());
         }
 
     }

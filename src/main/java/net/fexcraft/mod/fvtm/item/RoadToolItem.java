@@ -46,7 +46,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-        tooltip.add(Formatter.format("&9Road Placing Toolbox"));
+        tooltip.add(Formatter.format("&aRoad Placing Toolbox"));
         tooltip.add(Formatter.format("&9Current Width: &7" + stack.getCount() + " blocks"));
         if(stack.getTagCompound() == null){
             tooltip.add(Formatter.format("&6Road Fill: &bSOLID ASPHALT &7x" + stack.getCount()));
@@ -73,14 +73,15 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	if(stack.getTagCompound().hasKey("RoadFill")){
         		NBTTagList fill = (NBTTagList)stack.getTagCompound().getTag("RoadFill");
         		NBTTagList half = (NBTTagList)stack.getTagCompound().getTag("RoadFillHalf");
-                tooltip.add(Formatter.format("&6Road Fill:")); NBTTagCompound com;
+                tooltip.add(Formatter.format("&6Road Fill:")); NBTTagCompound com; String str;
                 for(int i = 0; i < fill.tagCount(); i++){
                 	com = (NBTTagCompound)fill.get(i);
                 	stack0 = com.hasKey("Empty") ? ItemStack.EMPTY : new ItemStack(com);
-                    tooltip.add(Formatter.format("&2-> &7" + stack0.getDisplayName()));
+                    str = Formatter.format("&2-> &7" + stack0.getDisplayName());
                 	com = (NBTTagCompound)half.get(i);
                 	stack0 = com.hasKey("Empty") ? ItemStack.EMPTY : new ItemStack(com);
-                    tooltip.add(Formatter.format("&2\\> &7" + stack0.getDisplayName()));
+                	str += stack0.isEmpty() ? "" : Formatter.format(" &2/ &7" + stack0.getDisplayName());
+                	tooltip.add(str);
                 }
         	}
         	else{

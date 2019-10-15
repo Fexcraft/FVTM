@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -22,9 +23,9 @@ public class RoadContainer extends GenericContainer {
 		super(player); stack = player.getHeldItemOffhand();
         if(x == 0){
     		roadinv = new RoadInventory(slots = 8);
-            for(int i = 0; i < 3; i++){ addSlotToContainer(new Slot(roadinv, 0 + i, 26 + (i * 18), 48)); }
-            for(int i = 0; i < 3; i++){ addSlotToContainer(new Slot(roadinv, 3 + i, 26 + (i * 18),  8)); }
-        	addSlotToContainer(new Slot(roadinv, 6, 8 , 28)); addSlotToContainer(new Slot(roadinv, 7, 80, 28));
+            for(int i = 0; i < 3; i++){ addSlotToContainer(new RoadInventory.RoadSlot(roadinv, 0 + i, 26 + (i * 18), 48)); }
+            for(int i = 0; i < 3; i++){ addSlotToContainer(new RoadInventory.RoadSlot(roadinv, 3 + i, 26 + (i * 18),  8)); }
+        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, 6, 8 , 28)); addSlotToContainer(new RoadInventory.RoadSlot(roadinv, 7, 80, 28));
     		//
             for(int row = 0; row < 3; row++){
                 for(int col = 0; col < 9; col++){
@@ -52,7 +53,7 @@ public class RoadContainer extends GenericContainer {
         	inv = new GenericIInventory(null, slots = 18, 1);
             for(int row = 0; row < 2; row++){
                 for(int col = 0; col < 9; col++){
-                    addSlotToContainer(new Slot(inv, col + row * 9 + 9, 8 + col * 18, 26 + row * 18));
+                    addSlotToContainer(new RoadInventory.RoadSlot(inv, col + row * 9, 8 + col * 18, 26 + row * 18));
                 }
             }
             for(int row = 0; row < 3; row++){
@@ -62,6 +63,20 @@ public class RoadContainer extends GenericContainer {
             }
             for(int col = 0; col < 9; col++){
                 addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 124));
+            }
+            if(stack.getTagCompound().hasKey("RoadFill")){
+            	NBTTagList fill = (NBTTagList)stack.getTagCompound().getTag("RoadFill");
+            	for(int i = 0; i < fill.tagCount(); i++){ if(i >= 9) break;
+            		NBTTagCompound com = fill.getCompoundTagAt(i);
+            		if(!com.hasKey("Empty")){ inv.setInventorySlotContents(i, new ItemStack(com)); }
+            	}
+            }
+            if(stack.getTagCompound().hasKey("RoadFillHalf")){
+            	NBTTagList half = (NBTTagList)stack.getTagCompound().getTag("RoadFillHalf");
+            	for(int i = 0; i < half.tagCount(); i++){ if(i >= 9) break;
+            		NBTTagCompound com = half.getCompoundTagAt(i);
+            		if(!com.hasKey("Empty")){ inv.setInventorySlotContents(i + 9, new ItemStack(com)); }
+            	}
             }
         }
 	}
@@ -113,7 +128,43 @@ public class RoadContainer extends GenericContainer {
         	roadinv.clear();
         }
         if(inv != null){
-        	//TODO
+        	int size = 0, last = -1;
+        	for(int i = 0; i < 9; i++){
+        		if(inv.getStackInSlot(i).isEmpty()){
+        			if(i == last){ size = last; break; }
+        			else last = i;
+        		} else size = i;
+        	} size++;
+        	if(size == 0){
+        		stack.getTagCompound().removeTag("RoadFill");
+        		stack.getTagCompound().removeTag("RoadFillHalf");
+        	}
+        	else{
+            	NBTTagList fill = new NBTTagList(), half = new NBTTagList(); ItemStack istack;
+            	for(int i = 0; i < size; i++){
+            		istack = inv.getStackInSlot(i);
+            		if(istack.isEmpty()){
+            			NBTTagCompound compound = new NBTTagCompound();
+            			compound.setBoolean("Empty", true);
+            			fill.appendTag(compound);
+            		}
+            		else{
+            			fill.appendTag(istack.writeToNBT(new NBTTagCompound()));
+            		}
+            		istack = inv.getStackInSlot(9 + i);
+            		if(istack.isEmpty()){
+            			NBTTagCompound compound = new NBTTagCompound();
+            			compound.setBoolean("Empty", true);
+            			half.appendTag(compound);
+            		}
+            		else{
+            			half.appendTag(istack.writeToNBT(new NBTTagCompound()));
+            		}
+            	}
+            	stack.getTagCompound().setTag("RoadFill", fill);
+            	stack.getTagCompound().setTag("RoadFillHalf", half);
+        	}
+        	inv.clear();
         }
     }
     

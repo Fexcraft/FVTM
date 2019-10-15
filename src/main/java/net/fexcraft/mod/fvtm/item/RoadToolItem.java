@@ -135,6 +135,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			IBlockState top = null, bot = null, righ = null, left = null;
 			ArrayList<Vec316f> border_r = null, border_l = null, roof = null, ground = null;
         	ItemStack stack0 = null; int borderheight_l = 0, borderheight_r = 0, topheight = 0;
+        	ArrayList<ArrayList<Vec316f>> fill = null;
         	if(stack.getTagCompound().hasKey("BottomFill")){
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
                 bot = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
@@ -156,16 +157,34 @@ public class RoadToolItem extends Item implements JunctionGridItem {
                 borderheight_l = stack0.getCount(); border_l = new ArrayList<>();
         	}
         	topheight = borderheight_l > borderheight_r ? borderheight_l : borderheight_r;
+        	ArrayList<IBlockState> blockfill = null, blockhalf = null;
+        	if(stack.getTagCompound().hasKey("RoadFill")){
+        		fill = new ArrayList<>(); blockfill = new ArrayList<>(); blockhalf = new ArrayList<>();
+        		NBTTagList filllist = (NBTTagList)stack.getTagCompound().getTag("RoadFill");
+        		NBTTagList halflist = (NBTTagList)stack.getTagCompound().getTag("RoadFillHalf");
+        		for(int i = 0; i < filllist.tagCount(); i++){
+        			fill.add(new ArrayList<>());
+        			stack0 = new ItemStack(filllist.getCompoundTagAt(i));
+        			blockfill.add(((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata()));
+        			stack0 = new ItemStack(halflist.getCompoundTagAt(i));
+        			blockhalf.add(((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata()));
+        		}
+        	}
 			//
 			int width = stack.getCount(), height; float angle, passed = 0, half = (width * 0.5f) - 0.5f; Vec3f last, vec;
-			ArrayList<Vec316f> path = new ArrayList<>(); IBlockState state; BlockPos blk;
+			ArrayList<Vec316f> path = fill == null ? new ArrayList<>() : null; IBlockState state; BlockPos blk;
 			vec = track.getVectorPosition0(0.001f, false); passed = 0;
 			angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
 			angle += Static.rad90;
 			for(float fl = -half; fl <= half; fl += 0.25f){
-				path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
+				if(path != null) path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
 				if(ground != null) ground.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
 				if(roof != null) roof.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, topheight, 0)))));
+			}
+			if(fill != null){
+				for(int i = 0; i < fill.size(); i++){
+					fill.get(i).add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+				}
 			}
 			if(border_l != null) border_l.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
 			if(border_r != null) border_r.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
@@ -174,26 +193,55 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
 				angle += Static.rad90;
 				for(float fl = -half; fl <= half; fl += 0.25f){
-					path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
+					if(path != null) path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
 					if(ground != null) ground.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, -1, 0)))));
 					if(roof != null) roof.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, topheight, 0)))));
+				}
+				if(fill != null){
+					for(int i = 0; i < fill.size(); i++){
+						fill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+					}
 				}
 				if(border_l != null) border_l.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
 				if(border_r != null) border_r.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1, 0, 0)))));
 			}
-			for(Vec316f v : path){
-				height = v.y; state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
-				if(state.getBlock() != Asphalt.INSTANCE || state.getValue(Asphalt.HEIGHT) < height){
-					if(world.getBlockState(blk.up()).getBlock() instanceof Asphalt) height = 0;
-					world.setBlockState(blk, Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, height), 2);
+			if(path != null){
+				for(Vec316f v : path){
+					height = v.y; state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
+					if(state.getBlock() != Asphalt.INSTANCE || state.getValue(Asphalt.HEIGHT) < height){
+						if(world.getBlockState(blk.up()).getBlock() instanceof Asphalt) height = 0;
+						world.setBlockState(blk, Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, height), 2);
+					}
+					if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
+						world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0), 2);
+					}
+					int checkheight = topheight == 0 ? 4 : topheight;
+					for(int i = 1; i < checkheight; i++){
+						if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+							world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+						}
+					}
 				}
-				if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
-					world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0), 2);
-				}
-				int checkheight = topheight == 0 ? 4 : topheight;
-				for(int i = 1; i < checkheight; i++){
-					if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-						world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+			}
+			if(fill != null){
+				IBlockState block = null;
+				for(int i = 0; i < fill.size(); i++){
+					for(Vec316f v : fill.get(i)){
+						height = v.y; state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
+						block = height <= 8 && blockhalf.get(i).getBlock() != Blocks.AIR ? blockhalf.get(i) : blockfill.get(i);
+						//
+						if(state != block){
+							world.setBlockState(blk, block, 2);
+						}
+						if((height < 9 && height != 0) || world.getBlockState(blk.down()) != blockfill.get(i)){
+							world.setBlockState(blk.down(), blockfill.get(i), 2);
+						}
+						int checkheight = topheight == 0 ? 4 : topheight;
+						for(int j = 1; j < checkheight; j++){
+							if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+								world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+							}
+						}
 					}
 				}
 			}

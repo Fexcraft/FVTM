@@ -11,7 +11,7 @@ public enum BlockType {
 	
 	GENERIC_4ROT(G_4ROT_TE.class, G_4ROT.class),
 	GENERIC_16ROT(G_16ROT_TE.class, G_16ROT.class),
-	GENRIC_ROAD(G_ROAD_TE.class, G_ROAD.class);
+	GENERIC_ROAD(G_ROAD_TE.class, G_ROAD.class);
 	;
 	
 	public final Class<? extends net.minecraft.block.Block> blockclass, plainclass;

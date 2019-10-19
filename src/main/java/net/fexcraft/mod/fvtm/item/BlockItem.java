@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.mod.fvtm.block.generated.BlockBase;
+import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -26,7 +26,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 	private Block type;
 
     public BlockItem(net.minecraft.block.Block block) throws Exception {
-		super(block); type = ((BlockBase)block).type;
+		super(block); type = ((PlainBase)block).type;
 		this.setHasSubtypes(true); this.setMaxStackSize(type.getMaxStackSize());
 		this.setRegistryName(block.getRegistryName());
 		this.setUnlocalizedName(block.getUnlocalizedName());

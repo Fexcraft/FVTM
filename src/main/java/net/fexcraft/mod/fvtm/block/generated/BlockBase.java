@@ -9,12 +9,10 @@ import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
@@ -24,7 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -33,29 +31,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockBase extends net.minecraft.block.Block implements ITileEntityProvider {
-
-	public final Block type;
+public class BlockBase extends PlainBase implements ITileEntityProvider {
 	
 	public BlockBase(Block type){
-		super(type.getMaterial(), type.getMapColor()); this.type = type;
-		type.getAddon().getFCLRegisterer().addBlock(
-			type.getRegistryName().getResourcePath(), this, BlockItem.class, 0, null);
-		this.setHardness(type.getHardness());
-		this.setLightLevel(type.getLightLevel());
-		this.setResistance(type.getResistance());
-		this.setLightOpacity(type.getLightOpacity());
-		this.setHarvestLevel(type.getHarverestToolClass(), type.getHarverestToolLevel());
+		super(type);
 	}
-	
-    @Override
-    public boolean isFullBlock(IBlockState state){ return type.isFullBlock(); }
-
-    @Override
-    public boolean isFullCube(IBlockState state){ return type.isFullCube(); }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state){ return type == null ? false : type.isOpaque(); }
 	
 	@Override
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable net.minecraft.tileentity.TileEntity te, ItemStack stack){
@@ -84,11 +64,10 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
 	public TileEntity createNewTileEntity(World world, int meta){
 		return new BlockBase.TileEntity(this);
 	}
-	
-	@Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity){
-		if(type.getCollisionDamage() > 0) entity.attackEntityFrom(DamageSource.CACTUS, type.getCollisionDamage());
-		if(type.isWebLike()) entity.setInWeb(); return;
+    
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state){
+        return type.hasPlainModel() ? EnumBlockRenderType.MODEL : EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 	
 	public static class TileEntity extends net.minecraft.tileentity.TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
@@ -160,10 +139,6 @@ public class BlockBase extends net.minecraft.block.Block implements ITileEntityP
 	        return oldState.getBlock() != newState.getBlock();
 	    }
 
-	}
-
-	public void linkCreativeTab(){
-		this.setCreativeTab(type.getAddon().getCreativeTab());
 	}
 
 }

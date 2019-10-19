@@ -120,7 +120,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.fullcube = JsonUtil.getIfExists(obj, "FullCube", true);
 		this.opaque = JsonUtil.getIfExists(obj, "Opaque", false);
 		try{
-			this.block = blocktype.blockclass.getConstructor(Block.class).newInstance(this);
+			this.block = blocktype.getApplicableClass(functional, plain_model).getConstructor(Block.class).newInstance(this);
 		} catch(Exception e){ e.printStackTrace(); Static.stop(); } return this;
 	}
 

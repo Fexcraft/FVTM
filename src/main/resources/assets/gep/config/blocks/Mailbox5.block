@@ -1,0 +1,10 @@
+{
+    "RegistryName": "gep:mailbox5",
+    "Addon": "fvtm:gep",
+    "Name": "Mailbox 5",
+    "Description": "&7The never implemented &2Mailbox5 &7from &6States&7!",
+    "Model": "null",
+    "BlockType": "GENERIC_4ROT",
+    "Material": "IRON",
+    "MapColor": "CLAY"
+}

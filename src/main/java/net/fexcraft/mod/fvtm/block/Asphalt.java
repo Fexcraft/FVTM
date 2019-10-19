@@ -44,7 +44,7 @@ public class Asphalt extends Block {
 	}
 	
     public static final PropertyInteger HEIGHT = PropertyInteger.create("height", 0, 15);
-    protected static final AxisAlignedBB[] BOUNDING_BOXES = new AxisAlignedBB[16];
+    public static final AxisAlignedBB[] BOUNDING_BOXES = new AxisAlignedBB[16];
     static{
     	BOUNDING_BOXES[0] = FULL_BLOCK_AABB;
     	for(int i = 1; i < 16; i++){
@@ -155,4 +155,5 @@ public class Asphalt extends Block {
     public boolean isReplaceable(IBlockAccess world, BlockPos pos){
         return false;
     }
+    
 }

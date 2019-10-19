@@ -41,8 +41,11 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
         }
+        if(type.getBlockType().isGenericRoad()){
+        	tooltip.add(Formatter.format("&9Height: &7" + (stack.getMetadata() == 0 ? 16 : stack.getMetadata())));
+        }
         BlockData data = stack.getCapability(Capabilities.VAPDATA, null).getBlockData(); if(data == null) return;
-        tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
+        if(!data.getType().hasPlainModel()) tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(type.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));
             for(String str : type.getModel().getCreators()){
@@ -70,7 +73,14 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(tab == CreativeTabs.SEARCH || tab == type.getAddon().getCreativeTab()){
-    		items.add(type.newItemStack());
+    		if(type.getBlockType().isGenericRoad()){
+	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));
+	    		items.add(new ItemStack(this, 1, 8)); items.add(new ItemStack(this, 1, 4));
+	    		items.add(new ItemStack(this, 1, 2)); items.add(new ItemStack(this, 1, 1));
+    		}
+    		else{
+        		items.add(type.newItemStack());
+    		}
     	}
     }
     

@@ -6,13 +6,14 @@
 #>
 #>
 
-#Items (Parts)
+# Items (/Parts)
 item.gep:engine_diesel.name=Diesel General Purpose Engine
 item.gep:engine_petrol.name=Petrol General Purpose Engine
 item.gep:fuel_tank.name=General Purpose Fuel Tank
 item.gep:glue.name=General Purpose Glue
 item.gep:key.name=GEP Vehicle Key
 
-
-
-
+# Blocks
+tile.gep:pizza_oven.name=FRSM Pizza Oven
+tile.gep:pizza_oven2.name=FRSM Pizza Oven
+tile.gep:mailbox5.name=Mailbox (5)

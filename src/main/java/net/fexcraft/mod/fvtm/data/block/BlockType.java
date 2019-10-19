@@ -39,4 +39,8 @@ public enum BlockType {
 		return plain_model && !functional ? plainclass : blockclass;
 	}
 
+	public boolean isGenericRoad(){
+		return this == GENERIC_ROAD;
+	}
+
 }

@@ -25,11 +25,17 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-public class RailData implements RailSystem {
-
-	private World world;
+/**
+ * "Rail System Data"
+ * 
+ * @author Ferdinand Calo' (FEX___96)
+ *
+ */
+public class RailCompound implements RailSystem {
+	
+	private long gc_entities, gc_sections, gc_compounds;
 	private int dimension;
-	private long globalcounter_entities, globalcounter_sections, globalcounter_compounds;
+	private World world;
 	//
 	private RegionMap regions = new RegionMap(this);
 	private TrackMap trackunits = new TrackMap(this);
@@ -54,9 +60,9 @@ public class RailData implements RailSystem {
 	@Override
 	public NBTBase write(EnumFacing side){
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setLong("GlobalCounterEntities", globalcounter_entities);
-		compound.setLong("GlobalCounterSections", globalcounter_sections);
-		compound.setLong("GlobalCounterCompounds", globalcounter_compounds);
+		compound.setLong("GlobalCounterEntities", gc_entities);
+		compound.setLong("GlobalCounterSections", gc_sections);
+		compound.setLong("GlobalCounterCompounds", gc_compounds);
 		if(!entities.isEmpty()){
 			NBTTagCompound enty = new NBTTagCompound();
 			entities.forEach((key, value) -> { enty.setLong(Long.toHexString(key), value.toLong()); });
@@ -67,9 +73,9 @@ public class RailData implements RailSystem {
 	@Override
 	public void read(EnumFacing side, NBTTagCompound compound){
 		if(compound == null || compound.hasNoTags()) return;
-		globalcounter_entities = compound.getLong("GlobalCounterEntities");
-		globalcounter_sections = compound.getLong("GlobalCounterSections");
-		globalcounter_compounds = compound.getLong("GlobalCounterCompounds");
+		gc_entities = compound.getLong("GlobalCounterEntities");
+		gc_sections = compound.getLong("GlobalCounterSections");
+		gc_compounds = compound.getLong("GlobalCounterCompounds");
 		if(compound.hasKey("Entities")){
 			NBTTagCompound enty = compound.getCompoundTag("Entities");
 			for(String str : enty.getKeySet()){
@@ -81,9 +87,9 @@ public class RailData implements RailSystem {
 	
 	public static class TrackMap extends TreeMap<String, TrackUnit> {
 		
-		private RailData data;
+		private RailCompound data;
 		
-		public TrackMap(RailData raildata){
+		public TrackMap(RailCompound raildata){
 			super(); data = raildata;
 		}
 		
@@ -96,9 +102,9 @@ public class RailData implements RailSystem {
 	
 	public static class SectionMap extends TreeMap<Long, Section> {
 		
-		private RailData data;
+		private RailCompound data;
 		
-		public SectionMap(RailData raildata){
+		public SectionMap(RailCompound raildata){
 			super(); data = raildata;
 		}
 		
@@ -112,8 +118,8 @@ public class RailData implements RailSystem {
 	
 	public static class RegionMap extends HashMap<XZK, RailRegion> {
 		
-		private RailData root;
-		public RegionMap(RailData data){ this.root = data; }
+		private RailCompound root;
+		public RegionMap(RailCompound data){ this.root = data; }
 		
 		public RailRegion get(int x, int z){
 			for(XZK key : keySet()){
@@ -219,8 +225,7 @@ public class RailData implements RailSystem {
 
 	@Override
 	public Junction getJunction(Vec316f vec){
-		RailRegion region = regions.get(getRegionXZ(vec));
-		if(region == null) return null; return region.getJunction(vec);
+		RailRegion region = regions.get(vec, false); return region == null ? null : region.getJunction(vec);
 	}
 
 	@Override
@@ -230,8 +235,7 @@ public class RailData implements RailSystem {
 
 	@Override
 	public boolean delJunction(Vec316f vector){
-		//Print.log("Junction deletion is currently disabled. Call from: " + vector);
-		RailRegion region = regions.get(getRegionXZ(vector));
+		RailRegion region = regions.get(vector, false);
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
 		if(junc != null){ for(Track track : junc.tracks){ delTrack(track, true); } if(junc.entity != null) junc.entity.setDead(); }
@@ -346,15 +350,15 @@ public class RailData implements RailSystem {
 	}
 
 	public long getNewEntityId(){
-		return globalcounter_entities++;
+		return gc_entities++;
 	}
 
 	public long getNewSectionId(){
-		return globalcounter_sections++;
+		return gc_sections++;
 	}
 
 	public long getNewCompoundId(){
-		return globalcounter_compounds++;
+		return gc_compounds++;
 	}
 
 	public void delEntity(RailEntity entity){

@@ -14,7 +14,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
-import net.fexcraft.mod.fvtm.sys.rail.RailData.XZK;
+import net.fexcraft.mod.fvtm.sys.rail.RailCompound.XZK;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -38,14 +38,14 @@ public class RailRegion {
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ArrayList<XZK> chucks = new ArrayList<>();
 	public long lastaccess; private int timer = 0;
-	private final RailData world;
+	private final RailCompound world;
 	private final XZK key;
 
-	public RailRegion(int i, int j, RailData root){
+	public RailRegion(int i, int j, RailCompound root){
 		key = new XZK(i, j); world = root; load();
 	}
 
-	public RailRegion(Vec316f vec, RailData root){
+	public RailRegion(Vec316f vec, RailCompound root){
 		key = new XZK(vec); world = root; load().updateClient(vec);
 	}
 
@@ -103,7 +103,7 @@ public class RailRegion {
 					Multiple multiple = new Multiple(this, (NBTTagList)base);
 					int[] arr = null;
 					for(RailEntity entity : multiple.entities){
-						arr = RailData.getRegionXZ(entity.pos);
+						arr = RailCompound.getRegionXZ(entity.pos);
 						if(key.x == arr[0] && key.z == arr[1]) entities.put(entity.getUID(), entity);
 						else{
 							RailRegion reg = world.getRegions().get(arr, true);
@@ -156,7 +156,7 @@ public class RailRegion {
 					list.appendTag(ents);
 				}
 				else if(entity.com.isEnd(entity)){
-					list.appendTag(new NBTTagIntArray(RailData.getRegionXZ(entity.pos)));
+					list.appendTag(new NBTTagIntArray(RailCompound.getRegionXZ(entity.pos)));
 				}
 				else continue;
 			}
@@ -171,7 +171,7 @@ public class RailRegion {
 	}
 
 	public boolean isInRegion(Vec316f vec){
-		int[] id = RailData.getRegionXZ(vec);
+		int[] id = RailCompound.getRegionXZ(vec);
 		return id[0] == key.x && id[1] == key.z;
 	}
 
@@ -308,7 +308,7 @@ public class RailRegion {
 			Resources.getTargetPoint(world.getDimension(), new net.minecraft.util.math.BlockPos(ent.current.start.pos)));
 	}
 	
-	public RailData getWorld(){
+	public RailCompound getWorld(){
 		return world;
 	}
 

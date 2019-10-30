@@ -7,7 +7,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailCompound;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.TrackUnit;
@@ -70,12 +70,12 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 					else impl.read(null, packet.nbt); return;
 			}
 			case "update_railregion":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, null);
 				return;
 			}
 			case "update_junction":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Vec316f vec = new Vec316f(packet.nbt.getCompoundTag("Pos"));
 				Junction junction = system.getJunction(vec); if(junction != null) junction.read(packet.nbt);
 				else{
@@ -84,12 +84,12 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				} return;
 			}
 			case "rem_junction":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Vec316f vec = new Vec316f(packet.nbt); RailRegion region = system.getRegions().get(vec, false);
 				if(region != null) region.getJunctions().remove(vec); return;
 			}
 			case "update_junction_state":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
 				if(junction != null){
 					junction.switch0 = packet.nbt.getBoolean("switch0");
@@ -97,7 +97,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				} return;
 			}
 			case "update_junction_signal":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
 				if(junction != null){
 					if(packet.nbt.hasKey("nosignal") && packet.nbt.getBoolean("nosignal")){
@@ -111,7 +111,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				} return;
 			}
 			case "update_junction_signal_state":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
 				if(junction != null){
 					junction.signal0 = packet.nbt.getBoolean("signal0");
@@ -119,14 +119,14 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				} return;
 			}
 			case "spawn_railentity":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				RailRegion region = system.getRegions().get(packet.nbt.getIntArray("XZ"));
 				RailEntity entity = new RailEntity(region, packet.nbt).read(packet.nbt);
 				region.getEntities().put(entity.getUID(), entity);
 				return;
 			}
 			case "update_sections":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				NBTTagList list = (NBTTagList)packet.nbt.getTag("units"); TrackUnit unit; NBTTagCompound com;
 				for(NBTBase base : list){
 					com = (NBTTagCompound)base; unit = system.getTrackUnits().get(com.getString("unit"));
@@ -135,7 +135,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				return;
 			}
 			case "remove_entity":{
-				RailData system = (RailData)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false); if(ent == null) return; ent.dispose();
 				return;
 			}

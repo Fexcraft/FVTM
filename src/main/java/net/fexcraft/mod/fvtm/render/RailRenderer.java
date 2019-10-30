@@ -15,7 +15,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailData;
+import net.fexcraft.mod.fvtm.sys.rail.RailCompound;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -134,12 +134,12 @@ public class RailRenderer {
 		}
 	}
 	
-	private static RailData raildata;
+	private static RailCompound raildata;
     private static Frustum fru = new Frustum();
     
     @SubscribeEvent
     public void renderRails(RenderWorldLastEvent event){
-	    raildata = (RailData)Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null);
+	    raildata = (RailCompound)Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null);
         //if(raildata.isLoading()) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();

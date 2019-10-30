@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.data;
 import java.io.File;
 
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailData.XZK;
+import net.fexcraft.mod.fvtm.sys.rail.RailCompound.XZK;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;

@@ -13,7 +13,7 @@ public class TrackUnit {
 	private Section section;
 	private String uid;
 	
-	public TrackUnit(RailData data, String str, Long sid){
+	public TrackUnit(RailCompound data, String str, Long sid){
 		uid = str; section = data.getSection(sid); section.insert(this);
 	}
 	

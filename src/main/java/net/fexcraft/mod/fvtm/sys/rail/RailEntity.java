@@ -60,7 +60,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	protected ArrayList<JEC> commands = new ArrayList<>();
 	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
 	
-	public RailEntity(RailData data, VehicleData vdata, Track track, UUID placer){
+	public RailEntity(RailCompound data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
 		uid = data.getNewEntityId(); data.updateEntityEntry(uid, region.getKey()); vehdata = vdata;
 		frbogiedis = (float)vdata.getWheelPositions().get("bogie_front").x;
@@ -130,9 +130,9 @@ public class RailEntity implements Comparable<RailEntity>{
 				}
 			}
 			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
-				TRO tro = getTrack(current, passed + am, false); am = checkForPushCoupling(tro, am);
+				TRO tro = getTrack(current, passed + am, false, true); am = checkForPushCoupling(tro, am);
 				//
-				tro = getTrack(current, passed + am, true);
+				tro = getTrack(current, passed + am, true, true);
 				last = current; current = tro.track; passed = tro.passed;
 				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
 				if(!region.isInRegion(current.start)) this.updateRegion(current.start);
@@ -276,11 +276,11 @@ public class RailEntity implements Comparable<RailEntity>{
 		Junction junction = region.getJunction(track.start); Track track0;
 		//TODO alternative for when a specific path is followed
 		if(junction != null){ track0 = junction.getNext(null, track.getId(), false);
-			if(track0 != null)railentlist.addAll(track0.unit.getEntities().values());
+			if(track0 != null) railentlist.addAll(track0.unit.getEntities().values());
 		}
 		junction = region.getJunction(track.end);
 		if(junction != null){ track0 = junction.getNext(null, track.getOppositeId(), false);
-			if(track0 != null)railentlist.addAll(track0.unit.getEntities().values());
+			if(track0 != null) railentlist.addAll(track0.unit.getEntities().values());
 		} return railentlist;
 	}
 
@@ -317,12 +317,12 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	protected void updateRegion(Vec316f start){
 		region.getEntities().remove(uid);
-		region = region.getWorld().getRegions().get(RailData.getRegionXZ(start), true);
+		region = region.getWorld().getRegions().get(RailCompound.getRegionXZ(start), true);
 		region.getEntities().put(uid, this);
 	}
 
 	public Vec3f move(float passed, TrainPoint point){
-		TRO tro = getTrack(current, passed, point.updatesJunction(passed > 0));
+		TRO tro = getTrack(current, passed, point.updatesJunction(passed > 0), false);
 		if(unitson[point.index] == null){
 			(unitson[point.index] = tro.track.unit).update(this, true);
 		}
@@ -334,15 +334,15 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public Vec3f moveOnly(float passed){
-		TRO tro = getTrack(current, passed, true); return tro.track.getVectorPosition(tro.passed, false);
+		TRO tro = getTrack(current, passed, true, false); return tro.track.getVectorPosition(tro.passed, false);
 	}
 
-	private TRO getTrack(Track track, float passed, boolean apply){
+	private TRO getTrack(Track track, float passed, boolean apply, boolean signal){
 		while(passed > track.length){
 			Junction junk = region.getJunction(track.end);
 			if(junk == null) new TRO(track, track.length);
-			if(junk.hasSignal(track.getOppositeId()) && !junk.getSignalState(track.getOppositeId())){
-				if(apply && !isPaused() && isActiveEnd()){
+			if(signal && junk.hasSignal(track.getOppositeId()) && !junk.getSignalState(track.getOppositeId())){
+				if(/*apply &&*/ !isPaused() && isActiveEnd()){
 					junk.pollSignal(this);
 					commands.add(new CMD_SignalWait("signal_wait", junk, junk.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					this.setPaused(true);
@@ -357,8 +357,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		while(passed < 0){
 			Junction junk = region.getJunction(track.start);
 			if(junk == null) return new TRO(track, 0);
-			if(junk.hasSignal(track.getId()) && !junk.getSignalState(track.getId())){
-				if(apply && !isPaused() && isActiveEnd()){
+			if(signal && junk.hasSignal(track.getId()) && !junk.getSignalState(track.getId())){
+				if(/*apply &&*/ !isPaused() && isActiveEnd()){
 					junk.pollSignal(this);
 					commands.add(new CMD_SignalWait("signal_wait", junk, junk.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					this.setPaused(true);

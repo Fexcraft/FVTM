@@ -26,7 +26,7 @@ public class Track {
 	public Vec316f start, end;
 	public boolean copy;
 	public Vec3f[] vecpath;
-	public TrackKey id;
+	public TrackKey id, op;
 	public RailGauge gauge;
 	public float length;
 	//
@@ -61,7 +61,8 @@ public class Track {
 	}*/
 	
 	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, RailGauge gauge){
-		this.junction = junction; start = vec316fs[0]; end = vector; id = new TrackKey(start, end);
+		this.junction = junction; start = vec316fs[0]; end = vector;
+		id = new TrackKey(start, end); op = new TrackKey(id, true);
 		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1]; this.gauge = gauge;
 		if(vecpath.length == 2){
 			vecpath[0] = vec316fs[0].vector; vecpath[1] = vector.vector;
@@ -117,7 +118,7 @@ public class Track {
 	}
 	
 	public Track read(NBTTagCompound compound){
-		this.id = new TrackKey(compound);
+		this.id = new TrackKey(compound); op = new TrackKey(id, true);
 		unit = getUnit(compound.getLong("section"));
 		if(compound.hasKey("gauge")){
 			gauge = Resources.RAILGAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
@@ -173,6 +174,7 @@ public class Track {
 	public Track createOppositeCopy(){
 		Track track = new Track(junction);
 		track.id = new TrackKey(id, true);
+		track.op = new TrackKey(id, false);
 		track.unit = unit;
 		track.gauge = gauge;
 		track.start = end;
@@ -189,7 +191,7 @@ public class Track {
 	}
 
 	public TrackKey getOppositeId(){
-		return new TrackKey(id, true);
+		return op;
 	}
 
 	public boolean isCompatibleGauge(RailGauge gauge){

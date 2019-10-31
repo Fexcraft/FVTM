@@ -128,11 +128,12 @@ public class RailEntity implements Comparable<RailEntity>{
 				else if(!com.forward && com.isEnd(this)){
 					am += rear.hasEntity() ? amount : -amount; com.accumulator = 0; move = true;
 				}
-			}
+			} else if(com.isSingular()) move = true;
 			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
-				TRO tro = getTrack(current, passed + am, false, true); am = checkForPushCoupling(tro, am);
+				TRO tro = getTrack(current, passed + am, false, false); am = checkForPushCoupling(tro, am);
 				//
-				tro = getTrack(current, passed + am, true, true);
+				if(move){ getTrack(current, passed + (am > 0 ? frconndis - frbogiedis : rrconndis + frbogiedis) + am, true, true); }
+				tro = getTrack(current, passed + am, true, false);
 				last = current; current = tro.track; passed = tro.passed;
 				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
 				if(!region.isInRegion(current.start)) this.updateRegion(current.start);

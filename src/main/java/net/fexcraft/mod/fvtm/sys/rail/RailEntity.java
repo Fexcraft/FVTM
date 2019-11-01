@@ -132,7 +132,12 @@ public class RailEntity implements Comparable<RailEntity>{
 			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
 				TRO tro = getTrack(current, passed + am, false, false); am = checkForPushCoupling(tro, am);
 				//
-				if(move){ getTrack(current, passed + (am > 0 ? frconndis - frbogiedis : rrconndis + frbogiedis) + am, true, true); }
+				if(move){
+					tro = getTrack(current, passed + (am > 0 ? frconndis - frbogiedis : -rrconndis - frbogiedis) + am, true, true);
+					if(com.last_stop != null && tro.track != com.last_stop)
+						if(tro.passed > com.last_stop_passed || tro.passed < com.last_stop_passed)
+							{ com.last_stop = null; com.last_stop_passed = tro.passed;}
+				}
 				tro = getTrack(current, passed + am, true, false);
 				last = current; current = tro.track; passed = tro.passed;
 				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
@@ -341,7 +346,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private TRO getTrack(Track track, float passed, boolean apply, boolean signal){
 		while(passed > track.length){
 			Junction junk = region.getJunction(track.end);
-			if(junk == null) new TRO(track, track.length);
+			if(junk == null){ com.stop(track, track.length); new TRO(track, track.length); }
 			if(signal && junk.hasSignal(track.getOppositeId()) && !junk.getSignalState(track.getOppositeId())){
 				if(/*apply &&*/ !isPaused() && isActiveEnd()){
 					junk.pollSignal(this);
@@ -353,11 +358,15 @@ public class RailEntity implements Comparable<RailEntity>{
 			Track newtrack = junk.getNext(this, track.getOppositeId(), apply);
 			if(newtrack != null){
 				passed -= track.length; track = newtrack;
-			} else return new TRO(track, track.length);
+			}
+			else{
+				if(signal){ com.stop(track, track.length); }
+				return new TRO(track, track.length);
+			}
 		}
 		while(passed < 0){
 			Junction junk = region.getJunction(track.start);
-			if(junk == null) return new TRO(track, 0);
+			if(junk == null){ com.stop(track, 0); return new TRO(track, 0); }
 			if(signal && junk.hasSignal(track.getId()) && !junk.getSignalState(track.getId())){
 				if(/*apply &&*/ !isPaused() && isActiveEnd()){
 					junk.pollSignal(this);
@@ -369,7 +378,11 @@ public class RailEntity implements Comparable<RailEntity>{
 			Track newtrack = junk.getNext(this, track.getId(), apply);
 			if(newtrack != null){
 				passed += newtrack.length; track = newtrack.createOppositeCopy();
-			} else return new TRO(track, 0);
+			}
+			else{
+				if(signal){ com.stop(track, 0); }
+				return new TRO(track, 0);
+			}
 			
 		} return new TRO(track, passed);
 	}
@@ -560,7 +573,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public void setForward(EntityPlayer player, boolean bool){
 		vehdata.getAttribute("forward").setValue(forward = com.forward = bool);
-		Print.bar(player, "&e&oDirection set to " + (forward ? "FORWARD" : "REVERSE"));
+		if(player != null) Print.bar(player, "&e&oDirection set to " + (forward ? "FORWARD" : "REVERSE"));
 		if(entity != null && !region.getWorld().getWorld().isRemote){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
 			packet.setString("task", "attr_update"); packet.setString("attr", "forward");

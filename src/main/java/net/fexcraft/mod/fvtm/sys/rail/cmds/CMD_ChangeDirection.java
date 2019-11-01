@@ -11,6 +11,10 @@ public class CMD_ChangeDirection extends JEC {
 	public CMD_ChangeDirection(String label, EntryDirection dir, String[] targets){
 		super(label, JECType.REVERSE, dir, targets);
 	}
+	
+	/*public CMD_ChangeDirection(String label, EntryDirection dir){
+		super(label, JECType.REVERSE, dir, new String[]{});
+	}*/
 
 	public CMD_ChangeDirection(NBTTagCompound compound){
 		super(compound);

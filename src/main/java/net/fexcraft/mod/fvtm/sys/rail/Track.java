@@ -226,20 +226,20 @@ public class Track {
 		if(distance >= this.length){
 			//if(distance == this.length) blkposToVec3f(end).toFloatArray();
 			//return new float[]{ distance - length };
-			return end.vector;
+			return new Vec3f(end.vector);
 		}
 		float traveled = 0, temp, multi;
 		for(int i = 0; i < vecpath.length - 1; i++){
 			temp = traveled + (multi = vecpath[i].distanceTo(vecpath[i + 1]));
 			if(temp >= distance){
-				if(temp == distance) return vecpath[i + 1];
+				if(temp == distance) return new Vec3f(vecpath[i + 1]);
 				return vecpath[i + 1].distance(vecpath[i], temp - distance);
 			}
 			else{
 				traveled += multi;
 			}
 		}
-		return start.vector;
+		return new Vec3f(start.vector);
 	}
 	
 	public Vec3f getVectorPosition(float distance, boolean reverse){

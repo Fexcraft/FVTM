@@ -23,6 +23,9 @@ public abstract class Compound {
 	protected ArrayList<RailEntity> entities = new ArrayList<>();
 	public boolean forward, paused;
 	protected final long uid;
+	//
+	protected Track last_stop;
+	protected float last_stop_passed;
 	
 	public static class Singular extends Compound {
 		
@@ -148,6 +151,10 @@ public abstract class Compound {
 	
 	public ArrayList<RailEntity> getEntitites(){
 		return entities;
+	}
+
+	protected void stop(Track track, float pass){
+		if(last_stop == null || last_stop != track) for(RailEntity ent : entities) ent.throttle = 0; last_stop = track; last_stop_passed = pass;
 	}
 
 }

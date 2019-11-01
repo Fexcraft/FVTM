@@ -257,13 +257,6 @@ public class Junction {
 		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
 		if(entity != null){
 			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
-			/*if(signal != null && entity.isActiveEnd() && (signal_dir.isBoth() || eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward())){
-				if(!(signal_dir.isBoth() ? eqTrack(track, 0) ? signal0 : signal1 : signal0)){
-					pollSignal(entity);
-					entity.commands.add(new CMD_SignalWait("signal_wait", this, eqTrack(track, 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
-					entity.setPaused(true);
-				}
-			}*/ //got moved into entity movement methods
 		}
 		switch(type){
 			case STRAIGHT:{

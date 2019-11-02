@@ -91,7 +91,7 @@ public class Junction {
 				catch(Exception e){ e.printStackTrace(); }
 			}
 		} else tracks.clear(); frustumbb = null;
-		checkTrackSectionConsistency();
+		if(!root.getWorld().isRemote) checkTrackSectionConsistency();
 		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
 		else type = JunctionType.STRAIGHT;

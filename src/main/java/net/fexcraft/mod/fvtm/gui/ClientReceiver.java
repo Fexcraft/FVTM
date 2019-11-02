@@ -85,8 +85,9 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			}
 			case "rem_junction":{
 				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
-				Vec316f vec = new Vec316f(packet.nbt); RailRegion region = system.getRegions().get(vec, false);
-				if(region != null) region.getJunctions().remove(vec); return;
+				Vec316f vec = new Vec316f(packet.nbt); //RailRegion region = system.getRegions().get(vec, false);
+				//if(region != null) region.getJunctions().remove(vec); return;
+				system.delJunction(vec); return;
 			}
 			case "update_junction_state":{
 				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
@@ -137,6 +138,12 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "remove_entity":{
 				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false); if(ent == null) return; ent.dispose();
+				return;
+			}
+			case "update_unit_section":{
+				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				TrackUnit unit = system.getTrackUnits().get(packet.nbt.getString("unit"));
+				if(unit != null) unit.setSection(system.getSection(packet.nbt.getLong("section")));
 				return;
 			}
 			default: return;

@@ -141,7 +141,8 @@ public class Track {
 	}
 
 	public TrackUnit getUnit(Long knownid){
-		return junction.root.getTrackUnits().get(id.toUnitId(copy), knownid, true);
+		TrackUnit unit = junction.root.getTrackUnits().get(id.toUnitId(copy), knownid, true);
+		if(copy) unit.copy = this; else unit.orig = this; return unit;
 	}
 
 	public NBTTagCompound write(NBTTagCompound compound){

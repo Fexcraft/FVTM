@@ -254,17 +254,22 @@ public class RailRenderer {
         		if(track.railmodel == null){ generateTrackModel(track, model); }
         		ModelBase.bindTexture(track.gauge.getRailTexture()); track.railmodel.render();
         		ModelBase.bindTexture(track.gauge.getTiesTexture()); track.restmodel.render();
-            	if(Command.DEBUG){
-        			Vec3f pos = track.getVectorPosition(track.length * 0.5f, false);
-        			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
-        			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.xCoord, pos.yCoord + 0.5, pos.zCoord, true, true, 0.8f, 0x32a852, deg);
-        			//
-        			if(track.getUnit().getEntities().size() > 0){
-        				RailEntity[] ents = track.getUnit().getEntities().values().toArray(new RailEntity[0]);
-        				String str = ents[0].uid + ""; for(int j = 1; j < ents.length; j++) str += ", " + ents[j].uid;
-            			RenderStreetSign.drawString(str, pos.xCoord, pos.yCoord + 0.75, pos.zCoord, true, true, 0.8f, 0x4287f5, deg);
-        			}
-            	}
+        	}
+        	if(Command.DEBUG){ Track track;
+        		for(int i = 0; i < value.size(); i++){ track = value.tracks.get(i);
+	    			Vec3f pos = track.getVectorPosition(track.length * 0.5f, false); float off = track.isOppositeCopy() ? 0.125f : -0.125f;
+	    			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
+	    			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.xCoord + off, pos.yCoord + 0.5, pos.zCoord, true, true, 0.8f, track.isOppositeCopy() ? 0xb8bc38 : 0x32a852, deg);
+	    			//
+	    			if(!track.isOppositeCopy() && track.getUnit().getEntities().size() > 0){
+	    				RailEntity[] ents = track.getUnit().getEntities().values().toArray(new RailEntity[0]);
+	    				String str = ents[0].uid + ""; for(int j = 1; j < ents.length; j++) str += ", " + ents[j].uid;
+	        			RenderStreetSign.drawString(str, pos.xCoord, pos.yCoord + 0.75, pos.zCoord, true, true, 0.8f, 0x4287f5, deg);
+	    			}
+	    			/*if(!track.isOppositeCopy()){
+	        			RenderStreetSign.drawString(track.getId().toUnitId(false), pos.xCoord, pos.yCoord + 1, pos.zCoord, true, true, 0.8f, 0xb8bc38, deg);
+	    			}*/
+        		}
         	}
     		if(value.signal != null && value.size() == 2){
     			if(value.signalpos0 == null){

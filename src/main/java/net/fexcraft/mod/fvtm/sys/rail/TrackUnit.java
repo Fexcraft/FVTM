@@ -2,6 +2,11 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.TreeMap;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.nbt.NBTTagCompound;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -10,6 +15,7 @@ import java.util.TreeMap;
 public class TrackUnit {
 	
 	private TreeMap<Long, RailEntity> entities = new TreeMap<>();
+	protected Track orig, copy;
 	private Section section;
 	private String uid;
 	
@@ -51,12 +57,28 @@ public class TrackUnit {
 	}
 
 	public TrackUnit setSection(Section section){
-		this.section = section; return this;
+		this.section = section; this.updateClient(); return this;
 	}
 	
 	@Override
 	public String toString(){
 		return "TrackUnit[" + uid + "/" + (section == null ? "NULL" : section.getUID()) + "]";
+	}
+
+	private void updateClient(){
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("target_listener", "fvtm:gui");
+		compound.setString("task", "update_unit_section");
+		compound.setString("unit", getUID());
+		compound.setLong("section", getSectionId());
+		if(orig == null && copy == null){
+			PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(compound));
+		}
+		else{
+			Track track = orig == null ? copy : orig;
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
+				Resources.getTargetPoint(track.junction.root.getDimension(), track.start.pos));
+		}
 	}
 
 }

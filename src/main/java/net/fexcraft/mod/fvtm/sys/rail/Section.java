@@ -57,8 +57,6 @@ public class Section {
 				}
 			}
 		}
-		zero.junction.region.updateClient("sections", zero.junction.getVec316f());
-		//TODO fine tuned method that only sends updated
 	}
 
 	/** Called after a track was removed via {@link net.fexcraft.mod.fvtm.sys.rail.RailCompound#delTrack(Track) delTrack} .*/

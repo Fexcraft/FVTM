@@ -78,6 +78,10 @@ public class TrackUnit {
 			Track track = orig == null ? copy : orig;
 			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
 				Resources.getTargetPoint(track.junction.root.getDimension(), track.start.pos));
+			if(track.length > 16){
+				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
+					Resources.getTargetPoint(track.junction.root.getDimension(), track.end.pos));
+			}
 		}
 	}
 

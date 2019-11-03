@@ -347,9 +347,9 @@ public class RailEntity implements Comparable<RailEntity>{
 		while(passed > track.length){
 			Junction junk = region.getJunction(track.end);
 			if(junk == null){ com.stop(track, track.length); new TRO(track, track.length); }
-			if(signal && junk.hasSignal(track.getOppositeId()) && !junk.getSignalState(track.getOppositeId())){
-				if(/*apply &&*/ !isPaused() && isActiveEnd()){
-					junk.pollSignal(this);
+			if(signal && junk.hasSignal(track.getId()) && isActiveEnd()){
+				junk.pollSignal(this);
+				if(!junk.getSignalState(track.getId()) && !isPaused()){
 					commands.add(new CMD_SignalWait("signal_wait", junk, junk.eqTrack(track.getOppositeId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					this.setPaused(true);
 				}
@@ -367,9 +367,9 @@ public class RailEntity implements Comparable<RailEntity>{
 		while(passed < 0){
 			Junction junk = region.getJunction(track.start);
 			if(junk == null){ com.stop(track, 0); return new TRO(track, 0); }
-			if(signal && junk.hasSignal(track.getId()) && !junk.getSignalState(track.getId())){
-				if(/*apply &&*/ !isPaused() && isActiveEnd()){
-					junk.pollSignal(this);
+			if(signal && junk.hasSignal(track.getId()) && isActiveEnd()){
+				junk.pollSignal(this);
+				if(!junk.getSignalState(track.getId()) && !isPaused()){
 					commands.add(new CMD_SignalWait("signal_wait", junk, junk.eqTrack(track.getId(), 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD));
 					this.setPaused(true);
 				}

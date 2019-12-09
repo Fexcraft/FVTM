@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -43,6 +44,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class RailRenderer {
     
+	private JunctionGridItem jitem;
     private ItemStack stack;
     private Vec316f[] vecs;
 	//
@@ -54,8 +56,20 @@ public class RailRenderer {
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
-    		vecs = ((JunctionGridItem)stack.getItem()).getVectors(stack); //HOLDING = true;
     		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
+    		jitem = (JunctionGridItem)stack.getItem();  //HOLDING = true;
+    		if(jitem.offsetVectors()){
+        		vecs = new Vec316f[jitem.getVectors(stack).length];
+    			float seg = 360f / jitem.getSegments();
+    			int con = (int)(((event.getPlayer().rotationYaw + 90) * jitem.getSegments()) / 360);
+    			for(int i = 0; i < vecs.length; i++){
+    				vecs[i] = new Vec316f(grv(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector));
+    			}
+				Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
+    		}
+    		else{
+    			vecs = jitem.getVectors(stack);
+    		}
         	//
     		EntityPlayer player = event.getPlayer(); GlStateManager.disableTexture2D();
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
@@ -83,9 +97,9 @@ public class RailRenderer {
             if(vecs.length > 1){
                 for(int i = 1; i < vecs.length; i++){
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vecs[i - 1].vector.xCoord, vecs[i - 1].vector.yCoord, vecs[i - 1].vector.zCoord)
+                    bufferbuilder.pos(vecs[i - 1].vector.xCoord, vecs[i - 1].vector.yCoord + 0.01, vecs[i - 1].vector.zCoord)
                     	.color(color[0][0], color[0][1], color[0][2], color[0][3]).endVertex();
-                    bufferbuilder.pos(vecs[i].vector.xCoord, vecs[i].vector.yCoord, vecs[i].vector.zCoord)
+                    bufferbuilder.pos(vecs[i].vector.xCoord, vecs[i].vector.yCoord + 0.01, vecs[i].vector.zCoord)
                     	.color(color[1][0], color[1][1], color[1][2], color[1][3]).endVertex();
                     tessellator.draw();
                 }

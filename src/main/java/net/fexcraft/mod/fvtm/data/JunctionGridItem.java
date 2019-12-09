@@ -19,5 +19,9 @@ public interface JunctionGridItem {
 	public default boolean hasVectors(){ return false; }
 	
 	public default Vec316f[] getVectors(ItemStack stack){ return EMPTY; }
+	
+	public default boolean offsetVectors(){ return false; }
+	
+	public default int getSegments(){ return 4; }
 
 }

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -153,6 +154,10 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 
 		public TurboList get(String key){
 			for(TurboList list : this) if(list.name.equals(key)) return list; return null;
+		}
+		
+		public boolean contains(String key){
+			return get(key) != null;
 		}
 		
 	}

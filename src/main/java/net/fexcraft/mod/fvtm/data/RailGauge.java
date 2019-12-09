@@ -1,17 +1,26 @@
 package net.fexcraft.mod.fvtm.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
+import net.fexcraft.mod.fvtm.item.RailPresetItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -32,6 +41,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 	//
 	protected String modelid;
 	protected RailGaugeModel model;
+	protected ArrayList<RailPresetItem> presets;
 	
 	public RailGauge(){}
 
@@ -80,6 +90,30 @@ public class RailGauge extends TypeCore<RailGauge> {
 		}*/
 		this.compatible = DataUtil.getStringArray(obj, "Compatible", false, true);
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		if(obj.has("PreSets")){
+			presets = new ArrayList<>();
+			for(JsonElement element : obj.get("PreSets").getAsJsonArray()){
+				try{
+					JsonObject jsn = element.getAsJsonObject();
+					JsonArray array = jsn.get("path").getAsJsonArray(), temp;
+					Vec316f[] vecs = new Vec316f[array.size()];
+					for(int i = 0; i < vecs.length; i++){
+						temp = array.get(i).getAsJsonArray();
+						float x = temp.get(0).getAsFloat();
+						float y = temp.get(1).getAsFloat();
+						float z = temp.get(1).getAsFloat();
+						vecs[i] = new Vec316f(new Vec3f(x, y, z));
+					}
+					RailPresetItem item = new RailPresetItem(this, jsn.get("name").getAsString().toLowerCase(), vecs);
+					item.setSegmentation(JsonUtil.getIfExists(jsn, "segmentation", 4).intValue());
+					presets.add(item); continue;
+				}
+				catch(Exception e){
+					Print.log("Failed to load a RailGauge Preset for '" + registryname.toString() + "'!");
+					Print.log("JSON: " + element); e.printStackTrace(); Static.halt();
+				}
+			}
+		}
 		//
 		this.item = new RailGaugeItem(this); return this;
 	}
@@ -142,6 +176,11 @@ public class RailGauge extends TypeCore<RailGauge> {
 	
 	public ResourceLocation getModelTexture(){
 		return model_texture;
+	}
+	
+	@Nullable
+	public ArrayList<RailPresetItem> getPresets(){
+		return presets;
 	}
 
 }

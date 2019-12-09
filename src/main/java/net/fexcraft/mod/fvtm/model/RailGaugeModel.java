@@ -8,8 +8,6 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
-import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -108,6 +106,7 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	}
 
 	public void renderBuffer(Junction junc){
+		if(!groups.contains("buffer")) return;
 		if(buffer_track == null){
 			buffer_track = new Track(null, new Vec316f[]{ new Vec316f(new Vec3d(0, 0, 0)) },
 				new Vec316f(new Vec3d(buffer_length, 0, 0)), junc.tracks.get(0).gauge);

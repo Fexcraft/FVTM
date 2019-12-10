@@ -101,7 +101,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 						temp = array.get(i).getAsJsonArray();
 						float x = temp.get(0).getAsFloat();
 						float y = temp.get(1).getAsFloat();
-						float z = temp.get(1).getAsFloat();
+						float z = temp.get(2).getAsFloat();
 						vecs[i] = new Vec316f(new Vec3f(x, y, z));
 					}
 					RailPresetItem item = new RailPresetItem(this, jsn.get("name").getAsString().toLowerCase(), vecs);

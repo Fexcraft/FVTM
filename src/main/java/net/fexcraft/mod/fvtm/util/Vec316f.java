@@ -132,4 +132,8 @@ public class Vec316f implements Comparable<Vec316f>{
 		} catch(Exception e){ e.printStackTrace(); return null; }
 	}
 
+	public Vec316f copy(){
+		return new Vec316f(this);
+	}
+
 }

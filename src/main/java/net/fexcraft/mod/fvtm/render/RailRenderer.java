@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -49,21 +50,21 @@ public class RailRenderer {
     private Vec316f[] vecs;
 	//
 	public static final RGB MIDDLE_GRAY = new RGB(127, 127, 127);
-	//public static boolean HOLDING;
+	public static boolean HOLDING;
 
 	@SubscribeEvent
-    public void preview(DrawBlockHighlightEvent event){ //HOLDING = false;
+    public void preview(DrawBlockHighlightEvent event){ HOLDING = false;
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
     		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
-    		jitem = (JunctionGridItem)stack.getItem();  //HOLDING = true;
+    		jitem = (JunctionGridItem)stack.getItem();  HOLDING = true;
     		if(jitem.offsetVectors()){
         		vecs = new Vec316f[jitem.getVectors(stack).length];
     			float seg = 360f / jitem.getSegments();
     			int con = (int)(((event.getPlayer().rotationYaw + 90) * jitem.getSegments()) / 360);
     			for(int i = 0; i < vecs.length; i++){
-    				vecs[i] = new Vec316f(grv(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector));
+    				vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector));
     			}
 				Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
     		}
@@ -80,10 +81,12 @@ public class RailRenderer {
             GL11.glTranslated(vec.vector.xCoord, vec.vector.yCoord, vec.vector.zCoord);
             model1.render(); GL11.glPopMatrix();
             //
-            for(Vec316f v : vecs){
+            for(int v = 0; v < vecs.length; v++){
         		GL11.glPushMatrix();
-                GL11.glTranslated(v.vector.xCoord, v.vector.yCoord, v.vector.zCoord);
-                model0.render(); GL11.glPopMatrix();
+                GL11.glTranslated(vecs[v].vector.xCoord, vecs[v].vector.yCoord, vecs[v].vector.zCoord);
+                model0.render();
+                if(jitem.offsetVectors() && (v == 0 || v == vecs.length - 1)) model.render();
+                GL11.glPopMatrix();
             }
             //
             GL11.glPushMatrix();
@@ -173,7 +176,7 @@ public class RailRenderer {
             	GL11.glPushMatrix();
             	ModelBase.bindTexture(Resources.NULL_TEXTURE);
             	GL11.glTranslatef(junctions[i].getVec3f().xCoord, junctions[i].getVec3f().yCoord, junctions[i].getVec3f().zCoord);
-            	if(junctions[i].tracks.isEmpty()){ model.render(); } else{ junction_core.render(); }
+            	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
         		renderLines(junctions[i]);
         	}
@@ -291,14 +294,14 @@ public class RailRenderer {
     				Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
     				value.signalrot0 = (float)Math.atan2(vec0.zCoord - vec1.zCoord, vec0.xCoord - vec1.xCoord);
     				value.signalrot0 += Static.rad90;
-    				value.signalpos0 = vec0.add(grv(value.signalrot0, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
+    				value.signalpos0 = vec0.add(VecUtil.rotByRad(value.signalrot0, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
     				value.signalrot0 = (float)Math.toDegrees(value.signalrot0);
     			}
     			if(value.signal_dir.isBoth() && value.signalpos1 == null){
 					Track track = value.tracks.get(1); Vec3f vec0 = track.start.vector, vec1 = track.getVectorPosition0(0.001f, false);
     				value.signalrot1 = (float)Math.atan2(vec0.zCoord - vec1.zCoord, vec0.xCoord - vec1.xCoord);
     				value.signalrot1 += Static.rad90;
-    				value.signalpos1 = vec0.add(grv(value.signalrot1, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
+    				value.signalpos1 = vec0.add(VecUtil.rotByRad(value.signalrot1, new Vec3f(track.gauge.getModel().signal_offset, 0, 0)));
     				value.signalrot1 = (float)Math.toDegrees(value.signalrot1);
     			}
     			ModelBase.bindTexture(value.tracks.get(0).gauge.getModelTexture());
@@ -356,14 +359,14 @@ public class RailRenderer {
 			path.clear(); vec = track.getVectorPosition0(0.001f, false); passed = 0;
 			angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
 			angle += Static.rad90;
-			path.add(track.vecpath[0].add(grv(angle, model.rails[p][0])));
-			path.add(track.vecpath[0].add(grv(angle, model.rails[p][1])));
+			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rails[p][0])));
+			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rails[p][1])));
 			for(int v = 0; v < track.vecpath.length - 1; v++){
 				last = track.vecpath[v]; vec = track.vecpath[v + 1];
 				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
 				angle += Static.rad90;
-				path.add(vec.add(grv(angle, model.rails[p][0])));
-				path.add(vec.add(grv(angle, model.rails[p][1])));
+				path.add(vec.add(VecUtil.rotByRad(angle, model.rails[p][0])));
+				path.add(vec.add(VecUtil.rotByRad(angle, model.rails[p][1])));
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
 				vert0 = new TexturedVertex(path.get(k * 2), 0, 0);
@@ -389,7 +392,7 @@ public class RailRenderer {
 						TexturedVertex[] verts = new TexturedVertex[poly.getVertices().length];
 						for(int m = 0; m < verts.length; m++){
 							TexturedVertex org = poly.getVertices()[m];
-							verts[m] = new TexturedVertex(grv(angle, org.vector), org.textureX, org.textureY);
+							verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector), org.textureX, org.textureY);
 							verts[m].vector = verts[m].vector.scale(Static.sixteenth).add(vec);
 						}
 						tarp.turbos[(int)accu].copyTo(verts, new TexturedPolygon[]{ new TexturedPolygon(verts) });
@@ -431,10 +434,6 @@ public class RailRenderer {
 			for(ModelRendererTurbo turbo : turbos) if(turbo != null && turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
 		}
 		
-	}
-	
-	private static final Vec3f grv(float rad, Vec3f vec){
-        double co = Math.cos(rad), si = Math.sin(rad); return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);
 	}
 
 	public static int getBrightness(Vec3f vec){

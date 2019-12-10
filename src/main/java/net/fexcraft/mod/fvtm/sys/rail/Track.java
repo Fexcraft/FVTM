@@ -81,6 +81,26 @@ public class Track {
 		if(junction != null) unit = getUnit(junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId());
 	}
 	
+	public Track(Junction junction, Vec316f[] vec316fs, RailGauge gauge){
+		this.junction = junction; start = vec316fs[0]; end = vec316fs[vec316fs.length - 1];
+		id = new TrackKey(start, end); op = new TrackKey(id, true);
+		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length]; this.gauge = gauge;
+		if(vecpath.length == 2){
+			vecpath[0] = vec316fs[0].vector; vecpath[1] = vec316fs[vec316fs.length - 1].vector;
+			this.length = vecpath[0].distanceTo(vecpath[1]);
+		}
+		else{
+			for(int i = 0; i < vec316fs.length; i++){ vecpath[i] = vec316fs[i].vector; }
+			//
+			Vec3f[] vecs = curve(vecpath); vecpath = new Vec3f[vecs.length + 2];
+			vecpath[0] = new Vec3f(start.vector);
+			for(int i = 0; i < vecs.length; i++){ vecpath[i + 1] = vecs[i]; }
+			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
+			this.length = this.calcLength();
+		}
+		if(junction != null) unit = getUnit(junction.size() == 0 ? null : junction.tracks.get(0).unit.getSectionId());
+	}
+	
 	/** Only for the READ process. @param junk just to make sure it's not used elsewhere */
 	public Track(Junction junk){ this.junction = junk; }
 

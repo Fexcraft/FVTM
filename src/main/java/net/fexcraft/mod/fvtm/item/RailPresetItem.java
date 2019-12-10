@@ -12,7 +12,11 @@ import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.VecUtil;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +25,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -68,12 +73,44 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
         if(world.isRemote || player.isSneaking()){ return EnumActionResult.PASS; }
         RailSystem syscap = world.getCapability(Capabilities.RAILSYSTEM, null);
         if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
-        //ItemStack stack = player.getHeldItem(hand);
-        //Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
-        //TODO
+        ItemStack stack = player.getHeldItem(hand);
+        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        Junction start = syscap.getJunction(vector);
+        if(start != null && start.tracks.size() >= 4){
+        	Print.chat(player, "&7Junction at Start point has reached max allowed connections.");
+            return EnumActionResult.FAIL;
+        }
+        Vec316f[] vecs = copyAndRotate(vector, path, player.rotationYaw);
+        Junction end = syscap.getJunction(vecs[vecs.length - 1]);
+        if(end != null && end.tracks.size() >= 4){
+        	Print.chat(player, "&7Junction at End point has reached max allowed connections.");
+            return EnumActionResult.FAIL;
+        }
+        if(start == null){
+        	syscap.addJunction(vector.copy());
+        	start = syscap.getJunction(vector);
+        }
+        if(end == null){
+        	syscap.addJunction(vecs[vecs.length - 1]);
+        	end = syscap.getJunction(vecs[vecs.length - 1]);
+        }
+        Track track = new Track(start, vecs, type);
+        start.addnew(track); end.addnew(track.createOppositeCopy());
+        start.checkTrackSectionConsistency(); end.checkTrackSectionConsistency();
+        Print.bar(player, "&7Track of type &e'" + title + "' &7placed!");
+        if(!player.capabilities.isCreativeMode) stack.shrink(1);
 		return EnumActionResult.SUCCESS;
     }
 	
+	public Vec316f[] copyAndRotate(Vec316f pos, Vec316f[] path, float yaw){
+		Vec316f[] vecs = new Vec316f[path.length];
+		for(int i = 0; i < vecs.length; i++) vecs[i] = path[i];
+		float seg = 360f / rotations; int con = (int)(((yaw + 90) * rotations) / 360);
+		for(int i = 0; i < vecs.length; i++){
+			vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector));
+		} return vecs;
+	}
+
 	@Override
 	public Vec316f[] getVectors(ItemStack stack){
 		return path;

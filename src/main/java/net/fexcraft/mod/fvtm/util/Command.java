@@ -120,7 +120,7 @@ public class Command extends CommandBase {
                 	if(args[1].equals("copy")){
                 		String str = new String(); Vec316f vec = null;
                 		for(int i = 0; i < vecs.length; i++){ vec = vecs[i];
-                    		str += "[ " + vec.vector.xCoord + ", " + vec.vector.yCoord + ", " + vec.vector.zCoord + (i == vecs.length - 1 ? "]" : "],") + "\n";
+                    		str += "[ " + vec.vector.xCoord + ", " + vec.vector.yCoord + ", " + vec.vector.zCoord + (i == vecs.length - 1 ? "]" : "],\n");
                 		}
                 		StringSelection stringSelection = new StringSelection(str);
                 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);

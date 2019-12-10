@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.addon.AddonTab;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 
@@ -44,11 +45,26 @@ public class InternalAddon extends Addon {
 			obj.addProperty("Width", 30); obj.addProperty("Height", 4);
 			obj.addProperty("Model", "fvtm:models/gauges/standard");
 			obj.addProperty("Texture", "fvtm:textures/blocks/standard_gauge.png");
-			obj.add("PreSets", new JsonArray()); data.register(gauge = new RailGauge().parse(obj));
-			gauge.getPresets().add(new RailPresetItem(gauge, "4_straight", new Vec316f(0, 0, 0, 0), new Vec316f(4, 0, 0, 0)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "8_straight", new Vec316f(0, 0, 0, 0), new Vec316f(8, 0, 0, 0)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight", new Vec316f(0, 0, 0, 0), new Vec316f(16, 0, 0, 0)).setSegmentation(8));
-			gauge.getPresets().add(new RailPresetItem(gauge, "32_straight", new Vec316f(0, 0, 0, 0), new Vec316f(32, 0, 0, 0)).setSegmentation(8));
+			obj.add("PreSets", new JsonArray()); data.register(gauge = new RailGauge().parse(obj)); int r = Config.RAIL_PLACING_GRID;
+			gauge.getPresets().add(new RailPresetItem(gauge, "3_straight", new Vec316f(0, 0, 0, r), new Vec316f(4, 0, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "4_straight", new Vec316f(0, 0, 0, r), new Vec316f(4, 0, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "8_straight", new Vec316f(0, 0, 0, r), new Vec316f(8, 0, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight", new Vec316f(0, 0, 0, r), new Vec316f(16, 0, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "32_straight", new Vec316f(0, 0, 0, r), new Vec316f(32, 0, 0, r)).setSegmentation(8));
+			//
+			gauge.getPresets().add(new RailPresetItem(gauge, "14_curve_90_right",
+				new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),
+				new Vec316f(4, 0, 0, r), new Vec316f(8, 0, 2, r),
+				new Vec316f(12, 0, 6, r), new Vec316f(14, 0, 10, r),
+				new Vec316f(14, 0, 12, r), new Vec316f(14, 0, 14, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "14_curve_90_left",
+				new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),
+				new Vec316f(4, 0, 0, r), new Vec316f(8, 0, -2, r),
+				new Vec316f(12, 0, -6, r), new Vec316f(14, 0, -10, r),
+				new Vec316f(14, 0, -12, r), new Vec316f(14, 0, -14, r)).setSegmentation(8));
+			//
+			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_up", new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),new Vec316f(14, 1, 0, r), new Vec316f(16, 1, 0, r)).setSegmentation(8));
+			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_down", new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),new Vec316f(14, -1, 0, r), new Vec316f(16, -1, 0, r)).setSegmentation(8));
 		}
 		return;
 	}

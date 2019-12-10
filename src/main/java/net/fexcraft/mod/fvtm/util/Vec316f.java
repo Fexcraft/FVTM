@@ -11,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class Vec316f implements Comparable<Vec316f>{
+public class Vec316f implements Comparable<Vec316f> {
 	
 	public final BlockPos pos;
 	public final byte x, y, z;
@@ -34,10 +34,18 @@ public class Vec316f implements Comparable<Vec316f>{
 	}
 
 	public Vec316f(Vec3d pos, int rgs){
-		this.pos = new BlockPos(pos);
-		byte x = (byte)((pos.x - this.pos.getX()) / 0.0625);
-		byte y = (byte)((pos.y - this.pos.getY()) / 0.0625);
-		byte z = (byte)((pos.z - this.pos.getZ()) / 0.0625);
+		this(pos.x, pos.y, pos.z, rgs);
+	}
+
+	public Vec316f(Vec3f pos, int rgs){
+		this(pos.xCoord, pos.yCoord, pos.zCoord, rgs);
+	}
+
+	public Vec316f(double posx, double posy, double posz, int rgs){
+		this.pos = new BlockPos(posx, posy, posz);
+		byte x = (byte)((posx - this.pos.getX()) / 0.0625);
+		byte y = (byte)((posy - this.pos.getY()) / 0.0625);
+		byte z = (byte)((posz - this.pos.getZ()) / 0.0625);
 		switch(rgs){
 			case 1: x = y = z = 0; break;
 			case 2:{

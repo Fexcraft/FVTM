@@ -107,7 +107,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		for(int i = 0; i < vecs.length; i++) vecs[i] = path[i];
 		float seg = 360f / rotations; int con = (int)(((yaw + 90) * rotations) / 360);
 		for(int i = 0; i < vecs.length; i++){
-			vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector));
+			vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector), Config.RAIL_PLACING_GRID);
 		} return vecs;
 	}
 

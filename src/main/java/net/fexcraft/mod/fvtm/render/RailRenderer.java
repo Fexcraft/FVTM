@@ -64,7 +64,7 @@ public class RailRenderer {
     			float seg = 360f / jitem.getSegments();
     			int con = (int)(((event.getPlayer().rotationYaw + 90) * jitem.getSegments()) / 360);
     			for(int i = 0; i < vecs.length; i++){
-    				vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector));
+    				vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector), Config.RAIL_PLACING_GRID);
     			}
 				Print.bar(event.getPlayer(), seg + " " + con + " " + (seg * con) + " " + (seg * con * Static.rad1));
     		}

@@ -36,7 +36,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 	private String title;
 	private int rotations;
 
-    public RailPresetItem(RailGauge core, String name, Vec316f[] vecs){
+    public RailPresetItem(RailGauge core, String name, Vec316f... vecs){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
         this.type.getAddon().getFCLRegisterer().addItem(
         	type.getRegistryName().getResourcePath() + "." + (title = name), this, 0, null);

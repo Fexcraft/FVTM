@@ -85,7 +85,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		super(world); axes = new Axis3D(); prevaxes = new Axis3D();
 		preventEntitySpawning = true; setSize(0.5f, 0.5f); ignoreFrustumCheck = true;
         if(world.isRemote){
-            setRenderDistanceWeight(1d);
+            setRenderDistanceWeight(1D);
         }
         Print.debug("SPAWNING " + world.isRemote + " " + this.getEntityId());
 	}
@@ -430,8 +430,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         return railentity == null ? "noent" : railentity.vehdata == null ? "novehdata" : railentity.vehdata.getType().getName();
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
+    @SideOnly(Side.CLIENT) @Override
     public boolean isInRangeToRenderDist(double dist){
         return Config.RENDER_OUT_OF_VIEW ? true : super.isInRangeToRenderDist(dist);
     }

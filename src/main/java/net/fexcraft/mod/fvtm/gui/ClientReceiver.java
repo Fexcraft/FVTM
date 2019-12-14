@@ -4,8 +4,12 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
@@ -48,7 +52,13 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				attr.setValue(attr.type().tryParse(packet.nbt.getString("value")));
 				break;
 			}
-			case "update_container_holder":
+			case "update_container_holder":{
+				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				if(ent == null){ Print.debug("Entity not found. CHP " + packet.nbt.getInteger("entity")); return; }
+				ContainerHolderUtil.Implementation impl = (Implementation)ent.getCapability(Capabilities.CONTAINER, null);
+				if(impl == null) Print.debug("Capability is null. CHP " + packet.nbt.getInteger("entity"));
+				else impl.read(null, packet.nbt); return;
+			}
 			case "update_railregion":
 			case "update_junction":
 			case "rem_junction":
@@ -58,7 +68,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "spawn_railentity":
 			case "update_sections":
 			case "remove_entity":
-			case "update_unit_section": Static.stop(); return;
+			case "update_unit_section":{ Print.debug("task: " + task + " " + packet.nbt);Static.stop(); return; }
 			default: return;
 		}
 	}

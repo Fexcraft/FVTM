@@ -28,7 +28,7 @@ import net.minecraft.world.chunk.Chunk;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class System implements RailSystem {
+public class RailSys implements RailSystem {
 	
 	private long gc_entities, gc_sections, gc_compounds;
 	private int dimension;
@@ -84,9 +84,9 @@ public class System implements RailSystem {
 	
 	public static class TrackMap extends TreeMap<String, TrackUnit> {
 		
-		private System data;
+		private RailSys data;
 		
-		public TrackMap(System raildata){
+		public TrackMap(RailSys raildata){
 			super(); data = raildata;
 		}
 		
@@ -99,9 +99,9 @@ public class System implements RailSystem {
 	
 	public static class SectionMap extends TreeMap<Long, Section> {
 		
-		private System data;
+		private RailSys data;
 		
-		public SectionMap(System raildata){
+		public SectionMap(RailSys raildata){
 			super(); data = raildata;
 		}
 		
@@ -115,8 +115,8 @@ public class System implements RailSystem {
 	
 	public static class RegionMap extends HashMap<RegionKey, Region> {
 		
-		private System root;
-		public RegionMap(System data){ this.root = data; }
+		private RailSys root;
+		public RegionMap(RailSys data){ this.root = data; }
 		
 		public Region get(int x, int z){
 			for(RegionKey key : keySet()){
@@ -315,6 +315,10 @@ public class System implements RailSystem {
 	public void sendReload(String string, ICommandSender sender){
 		Region region = regions.get(RegionKey.getRegionXZ(sender.getPositionVector()));
 		if(region != null) region.updateClient(string, new Vec316f(sender.getPositionVector()));
+	}
+
+	public boolean isRemote(){
+		return world.isRemote;
 	}
 
 }

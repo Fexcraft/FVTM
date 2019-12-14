@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.util.caps;
 
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
-import net.fexcraft.mod.fvtm.sys.rail.System;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -59,7 +59,7 @@ public class RailDataSerializer implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public RailSystem call() throws Exception {
-			return new System();
+			return new RailSys();
 		}
 		
 	}

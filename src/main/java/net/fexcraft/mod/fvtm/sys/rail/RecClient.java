@@ -23,12 +23,12 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 		EntityPlayer player = (EntityPlayer)objs[0];
 		switch(task){
 			case "update_railregion":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, null);
 				return;
 			}
 			case "update_junction":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Vec316f vec = new Vec316f(packet.nbt.getCompoundTag("Pos"));
 				Junction junction = system.getJunction(vec); if(junction != null) junction.read(packet.nbt);
 				else{
@@ -37,13 +37,13 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				} return;
 			}
 			case "rem_junction":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Vec316f vec = new Vec316f(packet.nbt); //RailRegion region = system.getRegions().get(vec, false);
 				//if(region != null) region.getJunctions().remove(vec); return;
 				system.delJunction(vec); return;
 			}
 			case "update_junction_state":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
 				if(junction != null){
 					junction.switch0 = packet.nbt.getBoolean("switch0");
@@ -51,7 +51,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				} return;
 			}
 			case "update_junction_signal":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
 				if(junction != null){
 					if(packet.nbt.hasKey("nosignal") && packet.nbt.getBoolean("nosignal")){
@@ -65,7 +65,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				} return;
 			}
 			case "update_junction_signal_state":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
 				if(junction != null){
 					junction.signal0 = packet.nbt.getBoolean("signal0");
@@ -73,14 +73,14 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				} return;
 			}
 			case "spawn_railentity":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				Region region = system.getRegions().get(packet.nbt.getIntArray("XZ"));
 				RailEntity entity = new RailEntity(region, packet.nbt).read(packet.nbt);
 				region.getEntities().put(entity.getUID(), entity);
 				return;
 			}
 			case "update_sections":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				NBTTagList list = (NBTTagList)packet.nbt.getTag("units"); TrackUnit unit; NBTTagCompound com;
 				for(NBTBase base : list){
 					com = (NBTTagCompound)base; unit = system.getTrackUnits().get(com.getString("unit"));
@@ -89,12 +89,12 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				return;
 			}
 			case "remove_entity":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false); if(ent == null) return; ent.dispose();
 				return;
 			}
 			case "update_unit_section":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				TrackUnit unit = system.getTrackUnits().get(packet.nbt.getString("unit"));
 				if(unit != null) unit.setSection(system.getSection(packet.nbt.getLong("section")));
 				return;

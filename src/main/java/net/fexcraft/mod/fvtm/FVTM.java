@@ -80,7 +80,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
-import net.fexcraft.mod.fvtm.sys.rail.System;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RecClient;
 import net.fexcraft.mod.fvtm.sys.rail.RecServer;
@@ -294,7 +294,7 @@ public class FVTM {
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
 		while((mid += Config.UNLOAD_INTERVAL) < date);
 		if(RAILSYSTEM == null){
-			(RAILSYSTEM = new Timer()).schedule(new System.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
+			(RAILSYSTEM = new Timer()).schedule(new RailSys.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
 		}
 	}
 

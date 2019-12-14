@@ -15,12 +15,12 @@ import net.fexcraft.lib.mc.utils.Print;
 public class Section {
 	
 	private long uid;
-	private System data;
+	private RailSys data;
 	private HashSet<TrackUnit> units = new HashSet<>();
 	public Long reserved;
 	public RGB color = RGB.random();
 	
-	public Section(System data, Long sid){
+	public Section(RailSys data, Long sid){
 		this.data = data; uid = sid == null ? data.getNewSectionId() : sid;
 		Print.debug("Created Section [" + sid + "] " + (sid == null));
 	}
@@ -59,7 +59,7 @@ public class Section {
 		}
 	}
 
-	/** Called after a track was removed via {@link net.fexcraft.mod.fvtm.sys.rail.System#delTrack(Track) delTrack} .*/
+	/** Called after a track was removed via {@link net.fexcraft.mod.fvtm.sys.rail.RailSys#delTrack(Track) delTrack} .*/
 	public void splitAtTrack(Track track){
 		Print.debug("Splitting section at track: " + track);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), /*more,*/ less;

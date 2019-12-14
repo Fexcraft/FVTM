@@ -15,12 +15,13 @@ import net.minecraft.nbt.NBTTagCompound;
 public class TrackUnit {
 	
 	private TreeMap<Long, RailEntity> entities = new TreeMap<>();
+	private RailSys data;
 	protected Track orig, copy;
 	private Section section;
 	private String uid;
 	
-	public TrackUnit(System data, String str, Long sid){
-		uid = str; section = data.getSection(sid); section.insert(this);
+	public TrackUnit(RailSys data, String str, Long sid){
+		uid = str; section = (this.data = data).getSection(sid); section.insert(this);
 	}
 	
 	public void update(RailEntity ent, boolean add){
@@ -66,6 +67,7 @@ public class TrackUnit {
 	}
 
 	private void updateClient(){
+		if(!data.isRemote()) return;
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "update_unit_section");

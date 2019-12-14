@@ -37,14 +37,14 @@ public class Region {
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ArrayList<RegionKey> chucks = new ArrayList<>();
 	public long lastaccess; private int timer = 0;
-	private final System world;
+	private final RailSys world;
 	private final RegionKey key;
 
-	public Region(int i, int j, System root){
+	public Region(int i, int j, RailSys root){
 		key = new RegionKey(i, j); world = root; load();
 	}
 
-	public Region(Vec316f vec, System root){
+	public Region(Vec316f vec, RailSys root){
 		key = new RegionKey(vec); world = root; load().updateClient(vec);
 	}
 
@@ -307,7 +307,7 @@ public class Region {
 			Resources.getTargetPoint(world.getDimension(), new net.minecraft.util.math.BlockPos(ent.current.start.pos)));
 	}
 	
-	public System getWorld(){
+	public RailSys getWorld(){
 		return world;
 	}
 

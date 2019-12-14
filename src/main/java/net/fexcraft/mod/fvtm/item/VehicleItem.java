@@ -18,7 +18,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.System;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -133,7 +133,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         			Print.bar(player, "&c&oFirst Track of Junction too short to spawn this vehicle."); return EnumActionResult.FAIL;
     			}
     			Print.bar(player, "&a&oSpawning vehicle...");
-				syscap.registerEntity(new RailEntity((System)syscap, data, junk.tracks.get(0), player.getGameProfile().getId()));
+				syscap.registerEntity(new RailEntity((RailSys)syscap, data, junk.tracks.get(0), player.getGameProfile().getId()));
     		}
     	}
     	else{

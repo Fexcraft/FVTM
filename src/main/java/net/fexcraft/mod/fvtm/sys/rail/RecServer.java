@@ -20,7 +20,7 @@ public class RecServer implements IPacketListener<PacketNBTTagCompound> {
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
 		switch(task){
 			case "update_railregion":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RailSys system = (RailSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, player);
 			}
 			default: return;

@@ -17,9 +17,9 @@ import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.System;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Region;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -62,7 +62,7 @@ public class RailRenderer {
     		if(jitem.offsetVectors()){
         		vecs = new Vec316f[jitem.getVectors(stack).length];
     			float seg = 360f / jitem.getSegments();
-    			int con = (int)(((event.getPlayer().rotationYaw + 90) * jitem.getSegments()) / 360);
+    			int con = (int)((((int)event.getPlayer().rotationYaw + 90f) * jitem.getSegments()) / 360f);
     			for(int i = 0; i < vecs.length; i++){
     				vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, jitem.getVectors(stack)[i].vector).add(vec.vector), Config.RAIL_PLACING_GRID);
     			}
@@ -151,12 +151,12 @@ public class RailRenderer {
 		}
 	}
 	
-	private static System raildata;
+	private static RailSys raildata;
     private static Frustum fru = new Frustum();
     
     @SubscribeEvent
     public void renderRails(RenderWorldLastEvent event){
-	    raildata = (System)Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null);
+	    raildata = (RailSys)Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null);
         //if(raildata.isLoading()) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();

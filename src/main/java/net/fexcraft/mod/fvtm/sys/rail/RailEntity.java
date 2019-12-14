@@ -59,7 +59,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	protected ArrayList<JEC> commands = new ArrayList<>();
 	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
 	
-	public RailEntity(System data, VehicleData vdata, Track track, UUID placer){
+	public RailEntity(RailSys data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
 		uid = data.getNewEntityId(); data.updateEntityEntry(uid, region.getKey()); vehdata = vdata;
 		frbogiedis = (float)vdata.getWheelPositions().get("bogie_front").x;

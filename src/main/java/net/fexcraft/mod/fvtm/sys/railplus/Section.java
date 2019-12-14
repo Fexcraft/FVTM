@@ -1,13 +1,13 @@
-package net.fexcraft.mod.fvtm.sys.eisen;
+package net.fexcraft.mod.fvtm.sys.railplus;
 
 import java.util.ArrayList;
 
-public class Abschnitt {
+public class Section {
 
 	public ArrayList<Gleis> gleise = new ArrayList<>();
 	public final long id;
 	
-	public Abschnitt(long id){
+	public Section(long id){
 		this.id = id;
 	}
 

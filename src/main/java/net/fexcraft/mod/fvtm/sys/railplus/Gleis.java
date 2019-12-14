@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.eisen;
+package net.fexcraft.mod.fvtm.sys.railplus;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.InternalAddon;
@@ -23,7 +23,7 @@ public class Gleis {
 	public GleisID id;
 	public Vec3f[] pfad;
 	private float länge;
-	public Abschnitt abschnitt;
+	public Section abschnitt;
 	public RailGauge spurtyp;
 	//
 	@SideOnly(Side.CLIENT)
@@ -31,7 +31,7 @@ public class Gleis {
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned restmodel;
 	
-	public Gleis(RailGauge typ, Abschnitt abschnitt, Vec316f... punkte){
+	public Gleis(RailGauge typ, Section abschnitt, Vec316f... punkte){
 		typ = spurtyp; start = punkte[0]; ende = punkte[punkte.length - 1];
 		id = new GleisID(start, ende); this.abschnitt = abschnitt; pfad = new Vec3f[punkte.length];
 		if(punkte.length == 2){
@@ -67,7 +67,7 @@ public class Gleis {
 	
 	public Gleis read(NBTTagCompound compound, boolean fernwelt){
 		this.id = new GleisID(compound);
-		abschnitt = BahnSystem.getAbschnitt(compound.getLong("section"));
+		abschnitt = System.getAbschnitt(compound.getLong("section"), true);
 		if(compound.hasKey("gauge")){
 			spurtyp = Resources.RAILGAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
 		}

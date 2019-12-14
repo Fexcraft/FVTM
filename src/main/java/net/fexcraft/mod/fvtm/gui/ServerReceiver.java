@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -8,7 +9,6 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Compound;
-import net.fexcraft.mod.fvtm.sys.rail.System;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -89,10 +89,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				if(impl == null) Print.debug("Capability is null. CHP " + packet.nbt.getInteger("entity"));
 					else impl.sync(false); return;
 			}
-			case "update_railregion":{
-				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
-				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, player);
-			}
+			case "update_railregion": Static.stop(); return;
 			default: return;
 		}
 	}

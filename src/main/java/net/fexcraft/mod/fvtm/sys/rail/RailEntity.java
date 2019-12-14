@@ -574,7 +574,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		vehdata.getAttribute("forward").setValue(forward = com.forward = bool);
 		if(player != null) Print.bar(player, "&e&oDirection set to " + (forward ? "FORWARD" : "REVERSE"));
 		if(entity != null && !region.getWorld().getWorld().isRemote){
-			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
+			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
 			packet.setString("task", "attr_update"); packet.setString("attr", "forward");
 			packet.setString("value", vehdata.getAttribute("forward").getBooleanValue() + "");
 			packet.setInteger("entity", entity.getEntityId());
@@ -585,7 +585,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void setActive(boolean bool){
 		vehdata.getAttribute("active").setValue(bool);
 		if(entity != null && !region.getWorld().getWorld().isRemote){
-			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
+			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
 			packet.setString("task", "attr_update"); packet.setString("attr", "active");
 			packet.setString("value", vehdata.getAttribute("active").getBooleanValue() + "");
 			packet.setInteger("entity", entity.getEntityId());
@@ -609,7 +609,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void setPaused(boolean bool){
 		vehdata.getAttribute("paused").setValue(com.paused = bool);
 		if(entity != null && !region.getWorld().getWorld().isRemote){
-			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
+			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
 			packet.setString("task", "attr_update"); packet.setString("attr", "paused");
 			packet.setString("value", vehdata.getAttribute("paused").getBooleanValue() + "");
 			packet.setInteger("entity", entity.getEntityId());

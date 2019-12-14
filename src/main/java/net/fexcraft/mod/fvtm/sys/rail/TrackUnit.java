@@ -67,7 +67,7 @@ public class TrackUnit {
 
 	private void updateClient(){
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("target_listener", "fvtm:gui");
+		compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "update_unit_section");
 		compound.setString("unit", getUID());
 		compound.setLong("section", getSectionId());

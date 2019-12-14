@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.data;
 import java.io.File;
 
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailCompound.XZK;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RegionKey;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -59,7 +59,7 @@ public interface RailSystem {
 	
 	/** Update the last region this entity was seen/active in. */
 	public void updateEntityEntry(long uid, int x, int z);
-	public void updateEntityEntry(long uid, XZK key);
+	public void updateEntityEntry(long uid, RegionKey key);
 	
 	public RailEntity getEntity(long uid, boolean load);
 

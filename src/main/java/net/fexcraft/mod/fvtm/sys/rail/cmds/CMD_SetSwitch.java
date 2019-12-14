@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail.cmds;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.JunctionType;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail.cmds;
 
 import java.util.ArrayList;
 
+import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;

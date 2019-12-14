@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.rail.cmds;
+package net.fexcraft.mod.fvtm.sys.rail;
 
 /** Only usable on JunctionType.STRAIGHT which can hold signals. */
 public enum EntryDirection {

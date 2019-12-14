@@ -34,7 +34,7 @@ public abstract class Compound {
 			entities.add(root); root.com = this; COMPOUNDS.put(uid, this);
 		}
 
-		public Singular(RailRegion region, long uid, NBTTagCompound compound){
+		public Singular(Region region, long uid, NBTTagCompound compound){
 			super(uid); RailEntity root = new RailEntity(region, this);
 			entities.add(root.read(compound)); COMPOUNDS.put(uid, this);
 		}
@@ -88,7 +88,7 @@ public abstract class Compound {
 			for(RailEntity ent : entities) ent.com = this; COMPOUNDS.put(uid, this);
 		}
 
-		public Multiple(RailRegion region, NBTTagList list){
+		public Multiple(Region region, NBTTagList list){
 			super(((NBTTagLong)list.get(0)).getLong());
 			for(int i = 1; i < list.tagCount(); i++){
 				entities.add(new RailEntity(region, this).read((NBTTagCompound)list.get(i)));

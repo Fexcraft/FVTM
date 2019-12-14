@@ -13,7 +13,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.MiniBB;
@@ -40,7 +39,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public Track current, last;
 	public RailVehicle entity;
 	public long uid;
-	public RailRegion region;
+	public Region region;
 	protected boolean forward = true;
 	public float throttle, passed;
 	public Vec3f pos = new Vec3f(), prev = new Vec3f(),
@@ -60,7 +59,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	protected ArrayList<JEC> commands = new ArrayList<>();
 	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
 	
-	public RailEntity(RailCompound data, VehicleData vdata, Track track, UUID placer){
+	public RailEntity(System data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
 		uid = data.getNewEntityId(); data.updateEntityEntry(uid, region.getKey()); vehdata = vdata;
 		frbogiedis = (float)vdata.getWheelPositions().get("bogie_front").x;
@@ -84,13 +83,13 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	/** only to use with read() afterwards 
 	 * @param compound */
-	public RailEntity(RailRegion railregion, Compound compound){
+	public RailEntity(Region railregion, Compound compound){
 		region = railregion; this.com = compound;
 	}
 	
 	/** only to use with read() afterwards 
 	 * @param compound */
-	public RailEntity(RailRegion railregion, NBTTagCompound compound){
+	public RailEntity(Region railregion, NBTTagCompound compound){
 		region = railregion; long uid = compound.getLong("Compound");
 		if(compound.getBoolean("Singular")) com = Compound.get(this, uid);
 		else Static.exception(new Exception("Cannot remote spawn unit of multi compound."), false);
@@ -100,7 +99,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		return uid;
 	}
 
-	public RailRegion getRegion(){
+	public Region getRegion(){
 		return region;
 	}
 	
@@ -323,7 +322,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	protected void updateRegion(Vec316f start){
 		region.getEntities().remove(uid);
-		region = region.getWorld().getRegions().get(RailCompound.getRegionXZ(start), true);
+		region = region.getWorld().getRegions().get(RegionKey.getRegionXZ(start), true);
 		region.getEntities().put(uid, this);
 	}
 

@@ -25,14 +25,15 @@ public class Gleis {
 	private float länge;
 	public Section abschnitt;
 	public RailGauge spurtyp;
+	public Junction junction;
 	//
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned railmodel;
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned restmodel;
 	
-	public Gleis(RailGauge typ, Section abschnitt, Vec316f... punkte){
-		typ = spurtyp; start = punkte[0]; ende = punkte[punkte.length - 1];
+	public Gleis(Junction root, RailGauge typ, Section abschnitt, Vec316f... punkte){
+		this.junction = root; typ = spurtyp; start = punkte[0]; ende = punkte[punkte.length - 1];
 		id = new GleisID(start, ende); this.abschnitt = abschnitt; pfad = new Vec3f[punkte.length];
 		if(punkte.length == 2){
 			pfad[0] = start.vector; pfad[1] = ende.vector; länge = pfad[0].distanceTo(pfad[1]);
@@ -65,9 +66,9 @@ public class Gleis {
 		return compound;
 	}
 	
-	public Gleis read(NBTTagCompound compound, boolean fernwelt){
+	public Gleis read(NBTTagCompound compound){
 		this.id = new GleisID(compound);
-		abschnitt = System.getAbschnitt(compound.getLong("section"), true);
+		abschnitt = junction.root.getSection(compound.getLong("section"), true);
 		if(compound.hasKey("gauge")){
 			spurtyp = Resources.RAILGAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
 		}
@@ -81,7 +82,7 @@ public class Gleis {
 			pfad[i] = DataUtil.readVec3f(compound.getTag("vector-" + i));
 		}
 		this.länge = compound.hasKey("length") ? compound.getFloat("length") : GleisHelfer.längeBerechnen(pfad);
-		if(fernwelt){
+		if(junction.root.isRemote()){
 			railmodel = null; restmodel = null;
 		} return this;
 	}

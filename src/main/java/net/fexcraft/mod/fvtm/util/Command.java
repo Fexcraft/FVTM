@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.sys.rail.RailCompound;
+import net.fexcraft.mod.fvtm.sys.rail.System;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -57,11 +57,11 @@ public class Command extends CommandBase {
                 break;
             }
             case "rrr": case "reload-railregion":{
-            	((RailCompound)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("all", sender);
+            	((System)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("all", sender);
             	Print.chat(sender, "&oRail-Regions Reloading."); break;
             }
             case "rrs": case "reload-railsections":{
-            	((RailCompound)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("sections", sender);
+            	((System)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("sections", sender);
             	Print.chat(sender, "&oRail-Sections Reloading."); break;
             }
             case "debug":{

@@ -8,7 +8,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Compound;
-import net.fexcraft.mod.fvtm.sys.rail.RailCompound;
+import net.fexcraft.mod.fvtm.sys.rail.System;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -90,7 +90,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 					else impl.sync(false); return;
 			}
 			case "update_railregion":{
-				RailCompound system = (RailCompound)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				System system = (System)player.world.getCapability(Capabilities.RAILSYSTEM, null);
 				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, player);
 			}
 			default: return;

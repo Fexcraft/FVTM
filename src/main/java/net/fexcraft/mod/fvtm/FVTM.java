@@ -80,8 +80,10 @@ import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailCompound;
+import net.fexcraft.mod.fvtm.sys.rail.System;
 import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
+import net.fexcraft.mod.fvtm.sys.rail.RecClient;
+import net.fexcraft.mod.fvtm.sys.rail.RecServer;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -273,8 +275,10 @@ public class FVTM {
 		Packets.init(); SimpleUpdateHandler.register(MODID, 1, VERSION);
 		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
+		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new RecServer());
 		if(event.getSide().isClient()){
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
+			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new RecClient());
 			MinecraftForge.EVENT_BUS.register(new RailRenderer());
 		}
 	}
@@ -290,7 +294,7 @@ public class FVTM {
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
 		while((mid += Config.UNLOAD_INTERVAL) < date);
 		if(RAILSYSTEM == null){
-			(RAILSYSTEM = new Timer()).schedule(new RailCompound.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
+			(RAILSYSTEM = new Timer()).schedule(new System.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
 		}
 	}
 

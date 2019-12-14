@@ -15,12 +15,12 @@ import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
+import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailCompound;
+import net.fexcraft.mod.fvtm.sys.rail.System;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailRegion;
+import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -151,12 +151,12 @@ public class RailRenderer {
 		}
 	}
 	
-	private static RailCompound raildata;
+	private static System raildata;
     private static Frustum fru = new Frustum();
     
     @SubscribeEvent
     public void renderRails(RenderWorldLastEvent event){
-	    raildata = (RailCompound)Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null);
+	    raildata = (System)Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null);
         //if(raildata.isLoading()) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();
@@ -168,7 +168,7 @@ public class RailRenderer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(-x, -y, -z);
         //ModelBase.bindTexture(Resources.NULL_TEXTURE);
-        for(RailRegion reg : raildata.getRegions().values()){
+        for(Region reg : raildata.getRegions().values()){
         	//if(reg.READING) continue;
         	Junction[] junctions = reg.getJunctions().values().toArray(new Junction[0]);
         	for(int i = 0; i < junctions.length; i++){

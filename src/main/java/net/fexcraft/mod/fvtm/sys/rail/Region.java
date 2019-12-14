@@ -14,7 +14,6 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
-import net.fexcraft.mod.fvtm.sys.rail.RailCompound.XZK;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -32,24 +31,24 @@ import net.minecraft.util.math.BlockPos;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class RailRegion {
+public class Region {
 	
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
-	public ArrayList<XZK> chucks = new ArrayList<>();
+	public ArrayList<RegionKey> chucks = new ArrayList<>();
 	public long lastaccess; private int timer = 0;
-	private final RailCompound world;
-	private final XZK key;
+	private final System world;
+	private final RegionKey key;
 
-	public RailRegion(int i, int j, RailCompound root){
-		key = new XZK(i, j); world = root; load();
+	public Region(int i, int j, System root){
+		key = new RegionKey(i, j); world = root; load();
 	}
 
-	public RailRegion(Vec316f vec, RailCompound root){
-		key = new XZK(vec); world = root; load().updateClient(vec);
+	public Region(Vec316f vec, System root){
+		key = new RegionKey(vec); world = root; load().updateClient(vec);
 	}
 
-	public RailRegion load(){
+	public Region load(){
 		if(world.getWorld().isRemote){
 			NBTTagCompound compound = new NBTTagCompound(); compound.setString("target_listener", "fvtm:gui");
 			compound.setString("task", "update_railregion"); compound.setIntArray("XZ", key.toArray());
@@ -77,7 +76,7 @@ public class RailRegion {
 		return this.read(compound).setAccessed();
 	}
 
-	public RailRegion read(NBTTagCompound compound){
+	public Region read(NBTTagCompound compound){
 		if(compound.hasKey("Junctions")){
 			if(!junctions.isEmpty()){
 				for(Junction junction : junctions.values())
@@ -103,10 +102,10 @@ public class RailRegion {
 					Multiple multiple = new Multiple(this, (NBTTagList)base);
 					int[] arr = null;
 					for(RailEntity entity : multiple.entities){
-						arr = RailCompound.getRegionXZ(entity.pos);
+						arr = RegionKey.getRegionXZ(entity.pos);
 						if(key.x == arr[0] && key.z == arr[1]) entities.put(entity.getUID(), entity);
 						else{
-							RailRegion reg = world.getRegions().get(arr, true);
+							Region reg = world.getRegions().get(arr, true);
 							reg.getEntities().put(entity.getUID(), entity);
 						}
 					}
@@ -120,7 +119,7 @@ public class RailRegion {
 		return this;
 	}
 	
-	public RailRegion save(){
+	public Region save(){
 		File file = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + ".dat");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		NBTTagCompound compound = write();
@@ -156,7 +155,7 @@ public class RailRegion {
 					list.appendTag(ents);
 				}
 				else if(entity.com.isEnd(entity)){
-					list.appendTag(new NBTTagIntArray(RailCompound.getRegionXZ(entity.pos)));
+					list.appendTag(new NBTTagIntArray(RegionKey.getRegionXZ(entity.pos)));
 				}
 				else continue;
 			}
@@ -171,7 +170,7 @@ public class RailRegion {
 	}
 
 	public boolean isInRegion(Vec316f vec){
-		int[] id = RailCompound.getRegionXZ(vec);
+		int[] id = RegionKey.getRegionXZ(vec);
 		return id[0] == key.x && id[1] == key.z;
 	}
 
@@ -183,11 +182,11 @@ public class RailRegion {
 		} timer++;
 	}
 	
-	public RailRegion setAccessed(){
+	public Region setAccessed(){
 		lastaccess = Time.getDate(); return this;
 	}
 
-	public XZK getKey(){
+	public RegionKey getKey(){
 		return key;
 	}
 
@@ -308,7 +307,7 @@ public class RailRegion {
 			Resources.getTargetPoint(world.getDimension(), new net.minecraft.util.math.BlockPos(ent.current.start.pos)));
 	}
 	
-	public RailCompound getWorld(){
+	public System getWorld(){
 		return world;
 	}
 

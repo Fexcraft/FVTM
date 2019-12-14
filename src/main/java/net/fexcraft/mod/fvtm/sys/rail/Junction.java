@@ -8,7 +8,6 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -32,8 +31,8 @@ public class Junction {
 	private Vec316f vecpos;
 	public ArrayList<Track> tracks;
 	public boolean switch0, switch1;
-	public RailCompound root;
-	public RailRegion region;
+	public System root;
+	public Region region;
 	public SignalType signal;
 	public boolean signal0, signal1;
 	public EntryDirection signal_dir = EntryDirection.FORWARD;
@@ -56,17 +55,17 @@ public class Junction {
 	public Float bufferrot;
 	
 	/** General Constructor */
-	public Junction(RailRegion region, Vec316f pos){
+	public Junction(Region region, Vec316f pos){
 		vecpos = pos; tracks = new ArrayList<Track>(); this.root = region.getWorld();
 		this.region = region; this.switch0 = this.switch1 = false; type = JunctionType.STRAIGHT;
 	}
 	
 	/** Only to be used from RailRegion.class */
-	protected Junction(RailRegion region){
+	protected Junction(Region region){
 		this.root = region.getWorld(); this.region = region; tracks = new ArrayList<>();
 	}
 
-	public Junction setRoot(RailCompound data){
+	public Junction setRoot(System data){
 		this.root = data; return this;
 	}
 	

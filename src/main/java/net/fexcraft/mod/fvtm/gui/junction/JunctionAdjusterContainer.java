@@ -19,7 +19,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 	protected Junction junction;
 	
 	public JunctionAdjusterContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(player); junction = player.world.getCapability(Capabilities.RAILSYSTEM, null).getJunction(new Vec316f(compound));
+		super(player); junction = player.world.getCapability(Capabilities.RAILSYSTEM, null).get().getJunction(new Vec316f(compound));
 	}
 
 	@Override

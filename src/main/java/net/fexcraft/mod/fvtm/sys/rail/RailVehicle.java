@@ -103,7 +103,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	private void initializeVehicle(boolean remote){
 		if(railentity == null){
-			railentity = world.getCapability(Capabilities.RAILSYSTEM, null).getEntity(railentid, true);
+			railentity = world.getCapability(Capabilities.RAILSYSTEM, null).get().getEntity(railentid, true);
 			if(railentity != null) railentity.entity = this;
 		}
 		if(railentity == null){ Print.log("Failed to load RailEntity for '" + this + "', aborting init."); return;}

@@ -37,7 +37,7 @@ public class JunctionSwitchEntity extends Entity implements IEntityAdditionalSpa
     @Override
     public void readSpawnData(ByteBuf buffer){
     	try{ Vec316f vector = new Vec316f(ByteBufUtils.readTag(buffer));
-        	junction = world.getCapability(Capabilities.RAILSYSTEM, null).getJunction(vector);
+        	junction = world.getCapability(Capabilities.RAILSYSTEM, null).get().getJunction(vector);
     	} catch(Exception e){ e.printStackTrace(); }
     }
 

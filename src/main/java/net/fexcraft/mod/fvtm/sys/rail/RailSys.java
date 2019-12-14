@@ -151,17 +151,17 @@ public class RailSys implements RailSystem {
 		return regions;
 	}
 
-	@Override
+	@Deprecated
 	public Junction getJunction(Vec316f vec){
 		Region region = regions.get(vec, false); return region == null ? null : region.getJunction(vec);
 	}
 
-	@Override
+	@Deprecated
 	public Junction getJunction(Vec316f vec, boolean load){
 		Region region = regions.get(vec, load); return region.getJunction(vec);
 	}
 
-	@Override
+	@Deprecated
 	public boolean delJunction(Vec316f vector){
 		Region region = regions.get(vector, false);
 		if(region == null || region.getJunction(vector) == null) return false;
@@ -170,7 +170,7 @@ public class RailSys implements RailSystem {
 		region.setAccessed().updateClient(vector); return true;
 	}
 
-	@Override
+	@Deprecated
 	public boolean delTrack(Track track, boolean remjunk){
 		if(track == null) return false; Junction junction = getJunction(track.start);
 		if(junction != null){
@@ -179,14 +179,14 @@ public class RailSys implements RailSystem {
 		} return true;
 	}
 
-	@Override
+	@Deprecated
 	public void addJunction(Vec316f vector){
 		Region region = regions.get(vector, true); if(region == null) /** this rather an error*/ return;
 		Junction junction = new Junction(region, vector); region.getJunctions().put(vector, junction);
 		junction.updateClient(); region.setAccessed(); return;
 	}
 
-	@Override
+	@Deprecated
 	public void updateJuncton(Vec316f vector){
 		Region region = regions.get(vector, true); if(region == null) /** This is rather bad. */ return;
 		region.setAccessed().updateClient("junction", vector);
@@ -249,12 +249,12 @@ public class RailSys implements RailSystem {
 		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.removeIf(pre -> pre.x == chunk.x && pre.z == chunk.z);
 	}
 
-	@Override
+	@Deprecated
 	public void registerEntity(RailEntity entity){
 		entities.put(entity.getUID(), entity.getRegion().getKey());
 	}
 
-	@Override
+	@Deprecated
 	public RailEntity getEntity(long uid, boolean load){
 		for(Region region : regions.values()){
 			if(region.getEntities().containsKey(uid)){
@@ -267,12 +267,12 @@ public class RailSys implements RailSystem {
 		} return null;
 	}
 
-	@Override
+	@Deprecated
 	public void updateEntityEntry(long uid, int x, int z){
 		entities.put(uid, new RegionKey(x, z));
 	}
 
-	@Override
+	@Deprecated
 	public void updateEntityEntry(long uid, RegionKey key){
 		entities.put(uid, key);
 	}
@@ -294,7 +294,7 @@ public class RailSys implements RailSystem {
 		entities.remove(entity.getUID()); entity.region.updateClient("removed", entity);
 	}
 
-	@Override
+	@Deprecated
 	public Track getTrack(TrackKey key){
 		Region region = regions.get(RegionKey.getRegionXZ(key), true);
 		return region == null ? null : region.getTrack(key);

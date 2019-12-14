@@ -2,12 +2,7 @@ package net.fexcraft.mod.fvtm.data;
 
 import java.io.File;
 
-import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RegionKey;
-import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -27,7 +22,7 @@ public interface RailSystem {
 
 	public void read(EnumFacing side, NBTTagCompound compound);
 
-	public Junction getJunction(Vec316f object);
+	/*public Junction getJunction(Vec316f object);
 	
 	public Junction getJunction(Vec316f vector, boolean load);
 
@@ -55,14 +50,18 @@ public interface RailSystem {
 	
 	public void onChunkUnload(Chunk chunk);
 
-	public void registerEntity(RailEntity railentity);
+	/*public void registerEntity(RailEntity railentity);
 	
 	/** Update the last region this entity was seen/active in. */
-	public void updateEntityEntry(long uid, int x, int z);
+	/*public void updateEntityEntry(long uid, int x, int z);
 	public void updateEntityEntry(long uid, RegionKey key);
 	
 	public RailEntity getEntity(long uid, boolean load);
 
-	public void delEntity(RailEntity railentity);
+	public void delEntity(RailEntity railentity);*/
+	
+	public default RailSys get(){
+		return (RailSys)this;
+	}
 	
 }

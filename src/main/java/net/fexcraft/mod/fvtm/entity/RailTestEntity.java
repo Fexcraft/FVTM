@@ -44,7 +44,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     public void readSpawnData(ByteBuf buffer){
     	setPosition(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     	if(buffer.isReadable()){
-    		current = world.getCapability(Capabilities.RAILSYSTEM, null).getTrack(new Track.TrackKey(ByteBufUtils.readTag(buffer)));
+    		current = world.getCapability(Capabilities.RAILSYSTEM, null).get().getTrack(new Track.TrackKey(ByteBufUtils.readTag(buffer)));
     	}
     	Print.debug(current, posX, posY, posZ);
     }
@@ -92,7 +92,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
         	if(world.isRemote) return;
     		passed += speed;
     		if(passed >= current.length){
-    			Junction junc = world.getCapability(Capabilities.RAILSYSTEM, null).getJunction(current.end);
+    			Junction junc = world.getCapability(Capabilities.RAILSYSTEM, null).get().getJunction(current.end);
     			if(junc == null){
     				current = current.createOppositeCopy(); Print.debug(this, "No junction, returning.");
     			}

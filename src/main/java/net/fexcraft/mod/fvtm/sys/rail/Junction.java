@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
+ * <i>Junctions are essential!</i>
  * 
  * @author Ferdinand Calo' (FEX___96)
  *

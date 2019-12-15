@@ -59,7 +59,7 @@ public class Section {
 		}
 	}
 
-	/** Called after a track was removed via {@link net.fexcraft.mod.fvtm.sys.rail.RailSys#delTrack(Track) delTrack} .*/
+	/** Called after a track was removed via {@link net.fexcraft.mod.fvtm.sys.rail.RailSys#delTrackCopy(Track, boolean, boolean) delTrackCopy} .*/
 	public void splitAtTrack(Track track){
 		Print.debug("Splitting section at track: " + track);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), /*more,*/ less;
@@ -121,6 +121,10 @@ public class Section {
 
 	public boolean remove(Track track){
 		return units.remove(track.unit);
+	}
+
+	public boolean remove(TrackUnit unit){
+		return units.remove(unit);
 	}
 
 }

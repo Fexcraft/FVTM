@@ -191,6 +191,10 @@ public class Track {
 	public TrackKey getId(){
 		return id;
 	}
+
+	public TrackKey getId(boolean opp){
+		return opp ? getOppositeId() : getId();
+	}
 	
 	public Track createOppositeCopy(){
 		Track track = new Track(junction);

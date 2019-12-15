@@ -72,6 +72,11 @@ public abstract class Compound {
 		public boolean isMultiple(){
 			return false;
 		}
+
+		@Override
+		protected boolean isActive(){
+			return entities.get(0).isActive();
+		}
 		
 	}
 	
@@ -124,6 +129,11 @@ public abstract class Compound {
 		public boolean isMultiple(){
 			return true;
 		}
+
+		@Override
+		protected boolean isActive(){
+			for(RailEntity ent : entities) if(ent.isActive()) return true; return false;
+		}
 		
 	}
 	
@@ -156,5 +166,7 @@ public abstract class Compound {
 	protected void stop(Track track, float pass){
 		if(last_stop == null || last_stop != track) for(RailEntity ent : entities) ent.throttle = 0; last_stop = track; last_stop_passed = pass;
 	}
+
+	protected abstract boolean isActive();
 
 }

@@ -151,45 +151,49 @@ public class RailSys implements RailSystem {
 		return regions;
 	}
 
-	@Deprecated
 	public Junction getJunction(Vec316f vec){
 		Region region = regions.get(vec, false); return region == null ? null : region.getJunction(vec);
 	}
 
-	@Deprecated
 	public Junction getJunction(Vec316f vec, boolean load){
 		Region region = regions.get(vec, load); return region.getJunction(vec);
 	}
 
-	@Deprecated
 	public boolean delJunction(Vec316f vector){
 		Region region = regions.get(vector, false);
 		if(region == null || region.getJunction(vector) == null) return false;
 		Junction junc = region.getJunctions().remove(vector);
-		if(junc != null){ for(Track track : junc.tracks){ delTrack(track, true); } if(junc.entity != null) junc.entity.setDead(); }
-		region.setAccessed().updateClient(vector); return true;
+		if(world.isRemote){
+			return junc != null;
+		}
+		else{
+			if(junc != null){
+				if(!junc.tracks.isEmpty()) return false;
+				if(junc.entity != null) junc.entity.setDead();
+			}
+			region.setAccessed().updateClient("no_junction", vector); return true;
+		}
 	}
 
-	@Deprecated
-	public boolean delTrack(Track track, boolean remjunk){
-		if(track == null) return false; Junction junction = getJunction(track.start);
+	/** Used when a junction is being deleted. */
+	/*protected boolean delTrack(Track track, boolean isOpposite, boolean remjunk){
+		if(track == null) return false; Junction junction;
+		junction = getJunction(isOpposite ? track.end : track.start);
 		if(junction != null){
-			junction.remove(track.getId(), false, remjunk);
+			junction.remove(track.getId(isOpposite), false, remjunk);
 			junction.checkTrackSectionConsistency();
 		} return true;
-	}
+	}*/
 
-	@Deprecated
 	public void addJunction(Vec316f vector){
 		Region region = regions.get(vector, true); if(region == null) /** this rather an error*/ return;
 		Junction junction = new Junction(region, vector); region.getJunctions().put(vector, junction);
-		junction.updateClient(); region.setAccessed(); return;
+		region.setAccessed().updateClient("junction", vector); return;
 	}
 
-	@Deprecated
 	public void updateJuncton(Vec316f vector){
 		Region region = regions.get(vector, true); if(region == null) /** This is rather bad. */ return;
-		region.setAccessed().updateClient("junction", vector);
+		region.setAccessed().updateClient("junction", vector); return;
 	}
 	
 	public static class TimedTask extends TimerTask {
@@ -207,7 +211,7 @@ public class RailSys implements RailSystem {
 	public void scheduledCheck(){
 		ArrayList<Region> regs = new ArrayList<>();
 		for(Region region : regions.values()){
-			if(region.lastaccess < Time.getDate() - 60000 && region.chucks.isEmpty()) regs.add(region);
+			if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
 		}
 		for(Region region : regs){
 			region.save(); regions.remove(region.getKey());

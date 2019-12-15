@@ -59,13 +59,19 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
+        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID), cached;
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking()){
-			stack.getTagCompound().removeTag("fvtm:junction");
-			Print.chat(player, "&cResetting Cached Position.");
+        	Junction junc = syscap.getJunction(vector);
+        	if(junc.size() > 0){
+				Print.chat(player, "&cDisconnect all tracks before removing a Junction.");
+        	}
+        	else{
+            	syscap.delJunction(vector);
+            	Print.chat(player, "&c&oRemoving Junction...");
+        	}
 			return EnumActionResult.SUCCESS;
 		}
-        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID), cached;
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		Junction junk = syscap.getJunction(vector, true);
 		if(junk == null){

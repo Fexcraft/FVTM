@@ -78,12 +78,9 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         ItemStack stack = player.getHeldItem(hand);
         Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
         if(player.isSneaking()){
-			if(syscap.delJunction(vector)) Print.chat(player, "&c&oResetting Junction...");
-			else{
-				Print.chat(player, "&9&oNo Junction found here.");
-				stack.getTagCompound().removeTag("fvtm:railpoints");
-				Print.chat(player, "&bResetting Item Point(s) Cache.");
-			} return EnumActionResult.SUCCESS;
+			stack.getTagCompound().removeTag("fvtm:railpoints");
+			Print.chat(player, "&bItem Point(s) Cache reset.");
+			return EnumActionResult.SUCCESS;
 		}
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		Junction junk = syscap.getJunction(vector, true);

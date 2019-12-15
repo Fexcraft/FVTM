@@ -51,16 +51,14 @@ public class InternalAddon extends Addon {
 			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight", new Vec316f(0, 0, 0, r), new Vec316f(16, 0, 0, r)).setSegmentation(8));
 			gauge.getPresets().add(new RailPresetItem(gauge, "32_straight", new Vec316f(0, 0, 0, r), new Vec316f(32, 0, 0, r)).setSegmentation(8));
 			//
-			/*gauge.getPresets().add(new RailPresetItem(gauge, "14_curve_90_right",
+			/*gauge.getPresets().add(new RailPresetItem(gauge, "16_curve_90_right",
 				new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),
-				new Vec316f(4, 0, 0, r), new Vec316f(8, 0, 2, r),
-				new Vec316f(12, 0, 6, r), new Vec316f(14, 0, 10, r),
-				new Vec316f(14, 0, 12, r), new Vec316f(14, 0, 14, r)).setSegmentation(4));
-			gauge.getPresets().add(new RailPresetItem(gauge, "14_curve_90_left",
+				new Vec316f(16, 0, 0, r), new Vec316f(16, 0, 14, r),
+				new Vec316f(16, 0, 16, r)).setSegmentation(4));
+			gauge.getPresets().add(new RailPresetItem(gauge, "16_curve_90_left",
 				new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),
-				new Vec316f(4, 0, 0, r), new Vec316f(8, 0, -2, r),
-				new Vec316f(12, 0, -6, r), new Vec316f(14, 0, -10, r),
-				new Vec316f(14, 0, -12, r), new Vec316f(14, 0, -14, r)).setSegmentation(4));*/
+				new Vec316f(16, 0, 0, r), new Vec316f(16, 0, -14, r),
+				new Vec316f(16, 0, -16, r)).setSegmentation(4));*/
 			//
 			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_up", new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),new Vec316f(14, 1, 0, r), new Vec316f(16, 1, 0, r)).setSegmentation(8));
 			gauge.getPresets().add(new RailPresetItem(gauge, "16_straight_slope_down", new Vec316f(0, 0, 0, r), new Vec316f(2, 0, 0, r),new Vec316f(14, -1, 0, r), new Vec316f(16, -1, 0, r)).setSegmentation(8));

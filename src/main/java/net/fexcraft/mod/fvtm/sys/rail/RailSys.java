@@ -253,12 +253,12 @@ public class RailSys implements RailSystem {
 		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.removeIf(pre -> pre.x == chunk.x && pre.z == chunk.z);
 	}
 
-	@Deprecated
+	//@Deprecated
 	public void registerEntity(RailEntity entity){
 		entities.put(entity.getUID(), entity.getRegion().getKey());
 	}
 
-	@Deprecated
+	//@Deprecated
 	public RailEntity getEntity(long uid, boolean load){
 		for(Region region : regions.values()){
 			if(region.getEntities().containsKey(uid)){
@@ -271,12 +271,12 @@ public class RailSys implements RailSystem {
 		} return null;
 	}
 
-	@Deprecated
+	//@Deprecated
 	public void updateEntityEntry(long uid, int x, int z){
 		entities.put(uid, new RegionKey(x, z));
 	}
 
-	@Deprecated
+	//@Deprecated
 	public void updateEntityEntry(long uid, RegionKey key){
 		entities.put(uid, key);
 	}
@@ -298,7 +298,6 @@ public class RailSys implements RailSystem {
 		entities.remove(entity.getUID()); entity.region.updateClient("removed", entity);
 	}
 
-	@Deprecated
 	public Track getTrack(TrackKey key){
 		Region region = regions.get(RegionKey.getRegionXZ(key), true);
 		return region == null ? null : region.getTrack(key);

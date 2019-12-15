@@ -195,27 +195,6 @@ public class Junction {
 		region.updateClient("junction", vecpos);
 	}
 
-	/** To be called from `delTrack`! */
-	public void remove(TrackKey trackid, boolean firstcall, boolean remjunk){
-		Track track = null;
-		for(int i = 0; i < tracks.size(); i++){
-			if(tracks.get(i).getId().equals(trackid)){ track = tracks.remove(i); break; }
-		} if(track == null) return;
-		if(signal != null){ this.setSignal(null, null); }
-		//
-		if(!firstcall){
-			 track.unit.section().remove(track); track.unit.section().splitAtTrack(track);
-		}
-		type = JunctionType.byTracksAmount(size());
-		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
-		if(!remjunk) this.updateClient();
-		//
-		if(firstcall){
-			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
-			if(junk != null) junk.remove(track.getOppositeId(), false, false);
-		}
-	}
-
 	public void remove(int index, boolean firstcall){
 		Track track = tracks.remove(index); if(track == null) return;
 		if(signal != null){ this.setSignal(null, null); }
@@ -229,15 +208,21 @@ public class Junction {
 		//
 		if(firstcall){
 			Junction junk = root.getJunction(track.start.equals(vecpos) ? track.end : track.start);
-			if(junk != null) junk.remove(track.getOppositeId(), false, false);
+			if(junk != null) junk.remove(track.getOppositeId(), false);
 			//this.checkTrackSectionConsistency();
-		}
+		} else this.checkTrackSectionConsistency();
+	}
+
+	private void remove(TrackKey key, boolean firstcall){
+		for(int i = 0; i < tracks.size(); i++){
+			if(tracks.get(i).getId().equals(key)){ remove(i, firstcall); return; }
+		} return;
 	}
 
 	public void clear(){
 		ArrayList<Track> trecks = new ArrayList<Track>();
 		for(Track track : tracks){ trecks.add(track); }
-		for(Track track : trecks) this.remove(track.getId(), true, true);
+		for(Track track : trecks) this.remove(track.getId(), true);
 		tracks.clear(); this.updateClient();
 	}
 	

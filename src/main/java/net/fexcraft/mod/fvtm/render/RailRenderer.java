@@ -18,8 +18,8 @@ import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -374,7 +374,8 @@ public class RailRenderer {
 				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
 				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 0, 0);
 				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
-				tarp.turbos[(int)passed].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
+				int pess = (int)passed; if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
+				tarp.turbos[pess].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
 				passed += track.vecpath[k].distanceTo(track.vecpath[k + 1]);
 			}
 		}

@@ -23,9 +23,9 @@ public class MiniBB {
     public MiniBB(){}
 
 	public boolean contains(Vec3f vec){
-        if(vec.xCoord > this.x0 && vec.xCoord < this.x1){
-            if(vec.yCoord > this.y0 && vec.yCoord < this.y1){
-                return vec.zCoord > this.z0 && vec.zCoord < this.z1;
+        if(vec.xCoord >= this.x0 && vec.xCoord <= this.x1){
+            if(vec.yCoord >= this.y0 && vec.yCoord <= this.y1){
+                return vec.zCoord >= this.z0 && vec.zCoord <= this.z1;
             }
         } return false;
     }

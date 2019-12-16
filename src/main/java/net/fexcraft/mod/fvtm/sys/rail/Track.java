@@ -340,8 +340,8 @@ public class Track {
 			for(int i = 0; i < 6; i++){ if(key.pos[i] != pos[i] || key.xyz[i] != xyz[i]) return false; } return true;
 		}
 
-		public Vec316f toVec3f(boolean bool){
-			int i = bool ? 0 : 3; return new Vec316f(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
+		public Vec316f toVec3f(int i){
+			return new Vec316f(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
 		}
 		
 	}

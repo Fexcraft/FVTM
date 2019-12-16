@@ -104,51 +104,51 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public void onUpdate(){
-		if(!region.getWorld().getWorld().isRemote){
-			if(current == null || vehdata == null){ this.dispose(); return; }
-			checkIfShouldHaveEntity(); checkIfShouldStop();
-			for(JEC command : commands) command.processEntity(this);
-			commands.removeIf(cmd -> cmd.isDone());
+		if(region.getWorld().isRemote()) return;
+		//
+		if(current == null || vehdata == null){ this.dispose(); return; }
+		checkIfShouldHaveEntity(); checkIfShouldStop();
+		for(JEC command : commands) command.processEntity(this);
+		commands.removeIf(cmd -> cmd.isDone());
+		//
+		if(!vehdata.getType().isTrailerOrWagon() && !isPaused() && throttle > 0.001f){
+			EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
+			if(CMODE() || processConsumption(engine)){
+				float eng = throttle * engine.getLegacyEngineSpeed();
+				if(com.isMultiple()) com.accumulator += eng;
+				else moverq = forward ? eng : -eng;
+			}
+		}
+		float am = moverq; boolean move = false;
+		if(com.isMultiple() && (com.forward ? com.isHead(this) : com.isEnd(this))){
+			float amount = com.accumulator;
+			if(com.forward && com.isHead(this)){
+				am += front.hasEntity() ? -amount : amount; com.accumulator = 0; move = true;
+			}
+			else if(!com.forward && com.isEnd(this)){
+				am += rear.hasEntity() ? amount : -amount; com.accumulator = 0; move = true;
+			}
+		} else if(com.isSingular()) move = true;
+		if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
+			TRO tro = getTrack(current, passed + am, false, false); am = checkForPushCoupling(tro, am);
 			//
-			if(!vehdata.getType().isTrailerOrWagon() && !isPaused() && throttle > 0.001f){
-				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
-				if(CMODE() || processConsumption(engine)){
-					float eng = throttle * engine.getLegacyEngineSpeed();
-					if(com.isMultiple()) com.accumulator += eng;
-					else moverq = forward ? eng : -eng;
-				}
+			if(move){
+				tro = getTrack(current, passed + (am > 0 ? frconndis - frbogiedis : -rrconndis - frbogiedis) + am, true, true);
+				if(com.last_stop != null && tro.track != com.last_stop)
+					if(tro.passed > com.last_stop_passed || tro.passed < com.last_stop_passed)
+						{ com.last_stop = null; com.last_stop_passed = tro.passed;}
 			}
-			float am = moverq; boolean move = false;
-			if(com.isMultiple() && (com.forward ? com.isHead(this) : com.isEnd(this))){
-				float amount = com.accumulator;
-				if(com.forward && com.isHead(this)){
-					am += front.hasEntity() ? -amount : amount; com.accumulator = 0; move = true;
-				}
-				else if(!com.forward && com.isEnd(this)){
-					am += rear.hasEntity() ? amount : -amount; com.accumulator = 0; move = true;
-				}
-			} else if(com.isSingular()) move = true;
-			if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
-				TRO tro = getTrack(current, passed + am, false, false); am = checkForPushCoupling(tro, am);
-				//
-				if(move){
-					tro = getTrack(current, passed + (am > 0 ? frconndis - frbogiedis : -rrconndis - frbogiedis) + am, true, true);
-					if(com.last_stop != null && tro.track != com.last_stop)
-						if(tro.passed > com.last_stop_passed || tro.passed < com.last_stop_passed)
-							{ com.last_stop = null; com.last_stop_passed = tro.passed;}
-				}
-				tro = getTrack(current, passed + am, true, false);
-				last = current; current = tro.track; passed = tro.passed;
-				if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
-				if(!region.isInRegion(current.start)) this.updateRegion(current.start);
-				updatePosition(); vehdata.getAttribute("forward").setValue(am > 0);//TODO attr sync
-				//
-				if(!hascoupled && isCoupled()){
-					//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
-					//if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
-					if(com.isMultiple() && move) moveCompound(am);
-				} hascoupled = false; moverq = 0;
-			}
+			tro = getTrack(current, passed + am, true, false);
+			last = current; current = tro.track; passed = tro.passed;
+			if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
+			if(!region.isInRegion(current.start)) this.updateRegion(current.start);
+			updatePosition(); vehdata.getAttribute("forward").setValue(am > 0);//TODO attr sync
+			//
+			if(!hascoupled && isCoupled()){
+				//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
+				//if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
+				if(com.isMultiple() && move) moveCompound(am);
+			} hascoupled = false; moverq = 0;
 		}
 		//
 		region.getWorld().updateEntityEntry(uid, region.getKey());
@@ -447,6 +447,8 @@ public class RailEntity implements Comparable<RailEntity>{
 	public RailEntity read(NBTTagCompound compound){
 		uid = compound.getLong("uid");
 		current = region.getTrack(new Track.TrackKey(compound));
+		if(current == null) Print.log("track not found! " + new Track.TrackKey(compound).toString());
+		if(current == null){ this.dispose(); return this; }
 		pos = DataUtil.readVec3f(compound.getTag("pos"));
 		prev = DataUtil.readVec3f(compound.getTag("prev"));
 		cfront = DataUtil.readVec3f(compound.getTag("cfront"));

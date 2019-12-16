@@ -1,8 +1,10 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
+import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
@@ -11,9 +13,9 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.packet.PKT_SeatDismount;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
-import net.fexcraft.mod.fvtm.util.packet.PKT_SeatDismount;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -29,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import io.netty.buffer.ByteBuf;
 
 public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
@@ -74,7 +75,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     	this.vehicleid = buffer.readInt(); seatindex = buffer.readInt(); long pos = buffer.readLong();
         this.vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
     	//Print.debug(world.isRemote + "", this.getEntityId(), vehicleid, vehicle);
-        if(vehicle == null || vehicle.getSeats().length == 0){
+        if(vehicle == null || vehicle.getSeats() == null || vehicle.getSeats().length == 0){
             Print.debug("VEHICLE SEATS NULL? ", seatdata == null ? "no seatdata" : seatdata.name,
             	vehicle, vehicleid, world.getEntityByID(vehicleid)); Print.debug(world.loadedEntityList);
             BlockPos blk = BlockPos.fromLong(pos); setPosition(blk.getX(), blk.getY(), blk.getZ()); return;

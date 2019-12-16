@@ -312,7 +312,7 @@ public class Region {
 	}
 
 	public Track getTrack(TrackKey key){
-		Junction junction = getJunction(key.toVec3f(false));
+		Junction junction = getJunction(key.toVec3f(0));
 		return junction == null ? null : junction.getTrack(key);
 	}
 

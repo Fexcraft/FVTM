@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.block.DisplayBlock;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
+import net.fexcraft.mod.fvtm.data.RoadSystem;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
@@ -84,11 +85,13 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RecClient;
 import net.fexcraft.mod.fvtm.sys.rail.RecServer;
+import net.fexcraft.mod.fvtm.sys.road.RoadSys;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
+import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.LegacySpawnSystem;
@@ -133,7 +136,7 @@ public class FVTM {
 	private static AutoRegisterer REGISTERER;
 	private static Resources RESOURCES;
 	
-	private static Timer RAILSYSTEM;
+	private static Timer RAILSYSTEM, ROADSYSTEM;
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
@@ -147,6 +150,7 @@ public class FVTM {
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(RailSystem.class, new RailDataSerializer.Storage(), new RailDataSerializer.Callable());
 		CapabilityManager.INSTANCE.register(RenderCache.class, new RenderCacheHandler.Storage(), new RenderCacheHandler.Callable());
+		CapabilityManager.INSTANCE.register(RoadSystem.class, new RoadDataSerializer.Storage(), new RoadDataSerializer.Callable());
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_landvehicle"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_airvehicle"), AirVehicle.class, "fvtm.airvehicle", 8997, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
@@ -296,13 +300,17 @@ public class FVTM {
 		if(RAILSYSTEM == null){
 			(RAILSYSTEM = new Timer()).schedule(new RailSys.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
 		}
+		if(ROADSYSTEM == null){
+			(ROADSYSTEM = new Timer()).schedule(new RoadSys.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
+		}
 	}
 
 	@Mod.EventHandler
 	public void onStop(FMLServerStoppingEvent event){
-		if(RAILSYSTEM != null) RAILSYSTEM.cancel();
+		if(RAILSYSTEM != null) RAILSYSTEM.cancel(); if(ROADSYSTEM != null) ROADSYSTEM.cancel();
 		for(World world : Static.getServer().worlds){
 			world.getCapability(Capabilities.RAILSYSTEM, null).unload();
+			world.getCapability(Capabilities.ROADSYSTEM, null).unload();
 		}
 	}
 

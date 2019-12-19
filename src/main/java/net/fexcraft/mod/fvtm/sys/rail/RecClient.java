@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -99,7 +100,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				if(unit != null) unit.setSection(system.getSection(packet.nbt.getLong("section")));
 				return;
 			}
-			default: return;
+			default: Print.debug(packet.nbt); return;
 		}
 	}
 

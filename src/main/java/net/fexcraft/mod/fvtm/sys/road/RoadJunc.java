@@ -18,7 +18,7 @@ import net.minecraft.util.math.AxisAlignedBB;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class RoadPoint {
+public class RoadJunc {
 	
 	public ArrayList<Road> roads = new ArrayList<>();
 	protected AxisAlignedBB frustumbb;
@@ -30,16 +30,16 @@ public class RoadPoint {
 	public RoadSys root;
 	
 	/** General Constructor */
-	public RoadPoint(Region region, Vec316f pos){
+	public RoadJunc(Region region, Vec316f pos){
 		this.region = region; vecpos = pos; root = region.getWorld();
 	}
 	
 	/** Only to used with read() afterwards! */
-	public RoadPoint(Region region){
+	public RoadJunc(Region region){
 		this.region = region; root = region.getWorld();
 	}
 	
-	public RoadPoint read(NBTTagCompound compound){
+	public RoadJunc read(NBTTagCompound compound){
 		this.vecpos = new Vec316f(compound.getCompoundTag("Pos"));
 		int roadam = compound.getInteger("Roads");
 		if(roadam > 0){
@@ -187,7 +187,7 @@ public class RoadPoint {
 		type = PathJuncType.byTracksAmount(size()); this.updateClient();
 		//
 		if(firstcall){
-			RoadPoint point = root.getRoadPoint(road.start.equals(vecpos) ? road.end : road.start);
+			RoadJunc point = root.getRoadPoint(road.start.equals(vecpos) ? road.end : road.start);
 			if(point != null) point.remove(road.getOppositeId(), false);
 			//this.checkTrackSectionConsistency();
 		} else this.checkRoadSectionConsistency();

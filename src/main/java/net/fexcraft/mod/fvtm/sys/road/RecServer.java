@@ -20,7 +20,7 @@ public class RecServer implements IPacketListener<PacketNBTTagCompound> {
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
 		switch(task){
 			case "update_region":{
-				RoadSys system = (RoadSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RoadSys system = player.world.getCapability(Capabilities.ROADSYSTEM, null).get();
 				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, player);
 			}
 			default: return;

@@ -11,7 +11,6 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -20,7 +19,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.math.BlockPos;
 
 /**
  * Road Region
@@ -30,7 +28,7 @@ import net.minecraft.util.math.BlockPos;
  */
 public class Region {
 
-	public TreeMap<Vec316f, RoadPoint> points = new TreeMap<>();
+	public TreeMap<Vec316f, RoadJunc> points = new TreeMap<>();
 	public ArrayList<RegionKey> chucks = new ArrayList<>();
 	private final RegionKey key;
 	private final RoadSys world;
@@ -78,7 +76,7 @@ public class Region {
 			if(!points.isEmpty()) points.clear();
 			NBTTagList list = (NBTTagList)compound.getTag("RoadPoints");
 			for(NBTBase base : list){
-				RoadPoint point = new RoadPoint(this).read((NBTTagCompound)base);
+				RoadJunc point = new RoadJunc(this).read((NBTTagCompound)base);
 				points.put(point.getVec316f(), point);
 			}
 		}
@@ -101,7 +99,7 @@ public class Region {
 		compound.setLong("Saved", Time.getDate());
 		if(!points.isEmpty()){
 			NBTTagList list = new NBTTagList();
-			for(RoadPoint point : points.values()){
+			for(RoadJunc point : points.values()){
 				list.appendTag(point.write(null));
 			}
 			compound.setTag("RoadPoints", list);
@@ -122,9 +120,9 @@ public class Region {
 				break;
 			}
 			case "point":{
-				RoadPoint point = getRoadPoint(vector); if(point == null) return;
+				RoadJunc point = getRoadPoint(vector); if(point == null) return;
 				compound = point.write(new NBTTagCompound());
-				compound.setString("target_listener", "fvtm:railsys");
+				compound.setString("target_listener", "fvtm:roadsys");
 				compound.setString("task", "update_point");
 				break;
 			}
@@ -133,16 +131,16 @@ public class Region {
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(), vector.pos));
 	}
 
-	public TreeMap<Vec316f, RoadPoint> getRoadPoints(){
+	public TreeMap<Vec316f, RoadJunc> getRoadPoints(){
 		return points;
 	}
 
-	public RoadPoint getRoadPoint(Vec316f vector){
+	public RoadJunc getRoadPoint(Vec316f vector){
 		if(!key.isInRegion(vector)) return world.getRoadPoint(vector);
 		return points.get(vector);
 	}
 
-	public void updateClient(String kind, RailEntity entity){
+	/*public void updateClient(String kind, Object entity){
 		if(world.getWorld().isRemote) return; NBTTagCompound compound = null;
 		switch(kind){
 			case "removed":{
@@ -155,7 +153,7 @@ public class Region {
 		if(compound == null) return;
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(),
 			new BlockPos(entity.pos.xCoord, entity.pos.yCoord, entity.pos.zCoord)));
-	}
+	}*/
 
 	public void updateClient(EntityPlayerMP player){
 		if(world.getWorld().isRemote) return;

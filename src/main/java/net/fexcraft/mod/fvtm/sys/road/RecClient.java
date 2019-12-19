@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.road;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,20 +20,20 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 		EntityPlayer player = (EntityPlayer)objs[0];
 		switch(task){
 			case "update_region":{
-				RoadSys system = (RoadSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RoadSys system = player.world.getCapability(Capabilities.ROADSYSTEM, null).get();
 				system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, null);
 				return;
 			}
 			case "update_point":{
-				RoadSys system = (RoadSys)player.world.getCapability(Capabilities.RAILSYSTEM, null);
+				RoadSys system = player.world.getCapability(Capabilities.ROADSYSTEM, null).get();
 				Vec316f vec = new Vec316f(packet.nbt.getCompoundTag("Pos"));
-				RoadPoint junction = system.getRoadPoint(vec); if(junction != null) junction.read(packet.nbt);
+				RoadJunc point = system.getRoadPoint(vec); if(point != null) point.read(packet.nbt);
 				else{
 					Region region = system.getRegions().get(vec, false);
-					if(region != null) region.getRoadPoints().put(vec, new RoadPoint(region, vec).read(packet.nbt));
+					if(region != null) region.getRoadPoints().put(vec, new RoadJunc(region, vec).read(packet.nbt));
 				} return;
 			}
-			default: return;
+			default: Print.debug(packet.nbt); return;
 		}
 	}
 

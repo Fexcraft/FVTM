@@ -138,19 +138,16 @@ public abstract class Path {
 		return opp ? getOppositeId() : getId();
 	}
 	
-	public <T extends Path> T createOppositeCopy(Class<T> clazz){
-		try{
-			T track = (T)clazz.newInstance();
-			track.id = new PathKey(id, true);
-			track.op = new PathKey(id, false);
-			track.start = end;
-			track.end = start;
-			track.copy = true;
-			track.vecpath = new Vec3f[vecpath.length]; int j = vecpath.length - 1;
-			for(int i = 0; i < track.vecpath.length; i++){ track.vecpath[i] = vecpath[j--]; }
-			track.length = track.calcLength();
-			return (T)track;
-		} catch(InstantiationException | IllegalAccessException e){ e.printStackTrace(); return null; }
+	public <T extends Path> T createOppositeCopy(T instance){
+		instance.id = new PathKey(id, true);
+		instance.op = new PathKey(id, false);
+		instance.start = end;
+		instance.end = start;
+		instance.copy = true;
+		instance.vecpath = new Vec3f[vecpath.length]; int j = vecpath.length - 1;
+		for(int i = 0; i < instance.vecpath.length; i++){ instance.vecpath[i] = vecpath[j--]; }
+		instance.length = instance.calcLength();
+		return instance;
 	}
 	
 	public boolean isOppositeCopy(){

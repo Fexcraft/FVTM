@@ -71,9 +71,8 @@ public class Track extends Path {
 	}
 	
 	public Track createOppositeCopy(){
-		Track track = super.createOppositeCopy(Track.class);
-		track.unit = unit; track.gauge = gauge;
-		return track;
+		Track track = super.createOppositeCopy(new Track(junction));
+		track.unit = unit; track.gauge = gauge; return track;
 	}
 
 	public boolean isCompatibleGauge(RailGauge gauge){

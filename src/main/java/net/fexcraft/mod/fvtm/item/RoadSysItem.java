@@ -10,7 +10,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.road.Road;
-import net.fexcraft.mod.fvtm.sys.road.RoadPoint;
+import net.fexcraft.mod.fvtm.sys.road.RoadJunc;
 import net.fexcraft.mod.fvtm.sys.road.RoadSys;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -70,7 +70,7 @@ public class RoadSysItem extends Item implements JunctionGridItem {
 			return EnumActionResult.SUCCESS;
 		}
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		RoadPoint point = syscap.getRoadPoint(vector, true);
+		RoadJunc point = syscap.getRoadPoint(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:roadpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints") : new NBTTagList();
 		if(point == null || list.hasNoTags()){
 			if(list.hasNoTags() || !createdRoadPoint(syscap, player, list, vector)){
@@ -94,7 +94,7 @@ public class RoadSysItem extends Item implements JunctionGridItem {
 				Print.chat(player, "&cRoad length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
 			}
-			RoadPoint second = syscap.getRoadPoint(road.start);
+			RoadJunc second = syscap.getRoadPoint(road.start);
 			if(second != null){
 				second.addnew(road); point.addnew(road.createOppositeCopy());
 				second.checkRoadSectionConsistency();

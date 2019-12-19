@@ -13,17 +13,17 @@ import net.minecraft.nbt.NBTTagCompound;
 public class Road extends Path {
 	
 	protected Boolean oneway;//null=no, true=forward, false=backward
-	protected RoadPoint root;
+	protected RoadJunc root;
 
-	public Road(RoadPoint point){
+	public Road(RoadJunc point){
 		super(); root = point;
 	}
 	
-	public Road(RoadPoint point, Vec316f[] vec316fs){
+	public Road(RoadJunc point, Vec316f[] vec316fs){
 		super(vec316fs); root = point;
 	}
 	
-	public Road(RoadPoint point, Vec316f[] vec316fs, Vec316f vector){
+	public Road(RoadJunc point, Vec316f[] vec316fs, Vec316f vector){
 		super(vec316fs, vector); root = point;
 	}
 	
@@ -51,7 +51,7 @@ public class Road extends Path {
 	}
 	
 	public Road createOppositeCopy(){
-		Road road = super.createOppositeCopy(Road.class);
+		Road road = super.createOppositeCopy(new Road(root));
 		road.oneway = oneway; return road;
 	}
 	

@@ -156,7 +156,7 @@ public class RailRenderer {
     
     @SubscribeEvent
     public void renderRails(RenderWorldLastEvent event){
-	    raildata = (RailSys)Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null);
+	    raildata = Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null).get();
         //if(raildata.isLoading()) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * event.getPartialTicks();

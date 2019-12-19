@@ -77,6 +77,7 @@ import net.fexcraft.mod.fvtm.render.RenderRailTestEnt;
 import net.fexcraft.mod.fvtm.render.RenderRailVehicle;
 import net.fexcraft.mod.fvtm.render.RenderRoadSign;
 import net.fexcraft.mod.fvtm.render.RenderStreetSign;
+import net.fexcraft.mod.fvtm.render.RoadRenderer;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
@@ -283,7 +284,7 @@ public class FVTM {
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.rail.RecClient());
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.road.RecClient());
-			MinecraftForge.EVENT_BUS.register(new RailRenderer());
+			MinecraftForge.EVENT_BUS.register(new RailRenderer()); MinecraftForge.EVENT_BUS.register(new RoadRenderer());
 		}
 	}
 

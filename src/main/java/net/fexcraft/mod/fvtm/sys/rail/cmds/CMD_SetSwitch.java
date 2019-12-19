@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.JunctionType;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTBase;
@@ -71,7 +71,7 @@ public class CMD_SetSwitch extends JEC {
 		}
 		if(!junction.type.isStraight() && index == entry){
 			if(junction.type.isSwitch()){
-				if(junction.type == JunctionType.FORK_2){
+				if(junction.type == PathJuncType.FORK_2){
 					junction.switch0 = state == 1;
 				}
 				else{

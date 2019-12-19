@@ -9,6 +9,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
+import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -37,7 +38,7 @@ public class Junction {
 	public SignalType signal;
 	public boolean signal0, signal1;
 	public EntryDirection signal_dir = EntryDirection.FORWARD;
-	public JunctionType type;
+	public PathJuncType type;
 	public String station;
 	//
 	private Vec3f switchlocation;
@@ -58,7 +59,7 @@ public class Junction {
 	/** General Constructor */
 	public Junction(Region region, Vec316f pos){
 		vecpos = pos; tracks = new ArrayList<Track>(); this.root = region.getWorld();
-		this.region = region; this.switch0 = this.switch1 = false; type = JunctionType.STRAIGHT;
+		this.region = region; this.switch0 = this.switch1 = false; type = PathJuncType.STRAIGHT;
 	}
 	
 	/** Only to be used from RailRegion.class */
@@ -93,8 +94,8 @@ public class Junction {
 		} else tracks.clear(); frustumbb = null;
 		if(!root.getWorld().isRemote) checkTrackSectionConsistency();
 		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
-		if(tracks.size() > 2) type = compound.hasKey("Type")? JunctionType.valueOf(compound.getString("Type")) : JunctionType.byTracksAmount(size());
-		else type = JunctionType.STRAIGHT;
+		if(tracks.size() > 2) type = compound.hasKey("Type")? PathJuncType.valueOf(compound.getString("Type")) : PathJuncType.byTracksAmount(size());
+		else type = PathJuncType.STRAIGHT;
 		if(compound.hasKey("SwitchPos")) this.switchlocation = DataUtil.readVec3f(compound.getTag("SwitchPos"));
 		else this.switchlocation = null;
 		if(compound.hasKey("SwitchFacing")) this.entityFacing = EnumFacing.getFront(compound.getInteger("SwitchFacing"));
@@ -168,7 +169,7 @@ public class Junction {
 	}
 
 	public void addnew(Track track){
-		tracks.add(track); type = JunctionType.byTracksAmount(size());
+		tracks.add(track); type = PathJuncType.byTracksAmount(size());
 		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
 		if(signal != null){ this.setSignal(null, null); } updateClient(); return;
 	}
@@ -202,7 +203,7 @@ public class Junction {
 		if(!firstcall){
 			track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
 		}
-		type = JunctionType.byTracksAmount(size());
+		type = PathJuncType.byTracksAmount(size());
 		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
 		this.updateClient();
 		//
@@ -239,7 +240,7 @@ public class Junction {
 	
 	@Nullable
 	public Track getNext0(@Nullable RailEntity entity, PathKey track, boolean applystate){
-		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
+		if(type == null) type = size() <= 2 ? PathJuncType.STRAIGHT : size() == 3 ? PathJuncType.FORK_2 : PathJuncType.CROSSING;
 		if(entity != null){
 			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
 		}
@@ -376,14 +377,14 @@ public class Junction {
 	}
 
 	public boolean onSwitchInteract(EntityPlayer player, JunctionSwitchEntity entity, boolean left){
-		if(type == JunctionType.STRAIGHT){
+		if(type == PathJuncType.STRAIGHT){
 			Print.chat(player, "&cThis Junction has only 2 tracks! It cannot be switched."); return true;
 		}
 		if(type.isCrossing()){
 			Print.chat(player, "&cThis Junction is a Crossing. It cannot be switched!"); return true;
 		}
 		if(type.isSwitch()){
-			if(type == JunctionType.FORK_2){
+			if(type == PathJuncType.FORK_2){
 				switch0 = !switch0; Print.bar(player, "&aChanged Junction State.");
 			}
 			else{

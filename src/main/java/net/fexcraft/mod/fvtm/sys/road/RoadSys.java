@@ -163,4 +163,12 @@ public class RoadSys implements RoadSystem {
 		return world.isRemote;
 	}
 
+	public RoadPoint getRoadPoint(Vec316f vec){
+		Region region = regions.get(vec, false); return region == null ? null : region.getRoadPoint(vec);
+	}
+
+	public RoadPoint getRoadPoint(Vec316f vec, boolean load){
+		Region region = regions.get(vec, load); return region.getRoadPoint(vec);
+	}
+
 }

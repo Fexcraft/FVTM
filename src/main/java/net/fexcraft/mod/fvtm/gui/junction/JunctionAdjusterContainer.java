@@ -7,7 +7,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.JunctionType;
+import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,8 +33,8 @@ public class JunctionAdjusterContainer extends GenericContainer {
 			if(junction.size() != 4){
 				Print.chat(player, "Type `" + type + "` not applicable to a junction bellow 4 tracks."); return;
 			}
-			junction.type = type == 2 ? JunctionType.FORK_3 : type == 3 ? JunctionType.CROSSING
-				: type == 4 ? JunctionType.DOUBLE : JunctionType.byTracksAmount(junction.size());
+			junction.type = type == 2 ? PathJuncType.FORK_3 : type == 3 ? PathJuncType.CROSSING
+				: type == 4 ? PathJuncType.DOUBLE : PathJuncType.byTracksAmount(junction.size());
 			junction.updateClient(); Print.chat(player, "&a&lJunction Type Updated.");
 		}
 		else if(packet.hasKey("del")){

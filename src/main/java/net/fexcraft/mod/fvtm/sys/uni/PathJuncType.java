@@ -1,11 +1,11 @@
-package net.fexcraft.mod.fvtm.sys.rail;
+package net.fexcraft.mod.fvtm.sys.uni;
 
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public enum JunctionType {
+public enum PathJuncType {
 	
 	/** Junctions with 2 tracks or less. */
 	STRAIGHT,
@@ -31,8 +31,8 @@ public enum JunctionType {
 	}
 
 	/** Default method in case the type is missing in a Junction. */
-	public static JunctionType byTracksAmount(int size){
-		return size <= 2 ? JunctionType.STRAIGHT : size == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
+	public static PathJuncType byTracksAmount(int size){
+		return size <= 2 ? PathJuncType.STRAIGHT : size == 3 ? PathJuncType.FORK_2 : PathJuncType.CROSSING;
 	}
 
 	public boolean isStraight(){

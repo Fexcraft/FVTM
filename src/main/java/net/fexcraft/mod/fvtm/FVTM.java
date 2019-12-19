@@ -65,6 +65,7 @@ import net.fexcraft.mod.fvtm.gui.vehicle.VehicleMain;
 import net.fexcraft.mod.fvtm.gui.vehicle.VehicleToggables;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
+import net.fexcraft.mod.fvtm.item.RoadSysItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
@@ -203,6 +204,7 @@ public class FVTM {
 			SignalItem0.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			RoadSysItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());

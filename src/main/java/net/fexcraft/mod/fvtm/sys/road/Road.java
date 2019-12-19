@@ -19,12 +19,12 @@ public class Road extends Path {
 		super(); root = point;
 	}
 	
-	public Road(RoadPoint point, Vec316f[] vec316fs, Vec316f vector){
-		super(vec316fs, vector); root = point;
-	}
-	
 	public Road(RoadPoint point, Vec316f[] vec316fs){
 		super(vec316fs); root = point;
+	}
+	
+	public Road(RoadPoint point, Vec316f[] vec316fs, Vec316f vector){
+		super(vec316fs, vector); root = point;
 	}
 	
 	public Road setOneWay(Boolean bool){
@@ -38,9 +38,26 @@ public class Road extends Path {
 	
 	@Override
 	public Road read(NBTTagCompound compound){
-		
-		
+		super.read(compound);
+		oneway = compound.hasKey("oneway") ? compound.getBoolean("oneway") : null;
 		return this;
+	}
+
+	@Override
+	public NBTTagCompound write(NBTTagCompound compound){
+		compound = super.write(compound);
+		if(oneway != null) compound.setBoolean("oneway", oneway);
+		return compound;
+	}
+	
+	public Road createOppositeCopy(){
+		Road road = super.createOppositeCopy(Road.class);
+		road.oneway = oneway; return road;
+	}
+	
+	@Override
+	public String toString(){
+		return String.format("Road[%s-%s, %s, %s]", start, end, vecpath.length, copy ? "copy" : "original");
 	}
 
 }

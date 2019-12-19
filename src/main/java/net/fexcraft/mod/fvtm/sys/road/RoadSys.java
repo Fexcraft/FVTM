@@ -171,4 +171,10 @@ public class RoadSys implements RoadSystem {
 		Region region = regions.get(vec, load); return region.getRoadPoint(vec);
 	}
 
+	public void addRoadPoint(Vec316f vector){
+		Region region = regions.get(vector, true); if(region == null) return;
+		RoadPoint roadpoint = new RoadPoint(region, vector); region.getRoadPoints().put(vector, roadpoint);
+		region.setAccessed().updateClient("point", vector); return;
+	}
+
 }

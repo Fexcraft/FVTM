@@ -40,7 +40,8 @@ public class Track extends Path {
 	
 	/** Only for the READ process. @param junk just to make sure it's not used elsewhere */
 	public Track(Junction junk){ super(); this.junction = junk; }
-	
+
+	@Override
 	public Track read(NBTTagCompound compound){
 		super.read(compound);
 		unit = getUnit(compound.getLong("section"));
@@ -61,6 +62,7 @@ public class Track extends Path {
 		if(copy) unit.copy = this; else unit.orig = this; return unit;
 	}
 
+	@Override
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound = super.write(compound);
 		if(unit != null) compound.setLong("section", unit.getSectionId());

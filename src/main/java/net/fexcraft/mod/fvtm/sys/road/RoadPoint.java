@@ -48,7 +48,7 @@ public class RoadPoint {
 				catch(Exception e){ e.printStackTrace(); }
 			}
 		} else roads.clear(); frustumbb = null;
-		//TODO if(!root.getWorld().isRemote) checkTrackSectionConsistency();
+		if(!root.getWorld().isRemote) checkRoadSectionConsistency();
 		//if(compound.hasKey("SignalBox") signalbox = root.getSignalBox(compound.getLong("SignalBox"));
 		channel = compound.hasKey("Channel") ? compound.getInteger("channel") : null;
 		if(roads.size() > 2) type = compound.hasKey("Type")? PathJuncType.valueOf(compound.getString("Type")) : PathJuncType.byTracksAmount(size());
@@ -164,6 +164,46 @@ public class RoadPoint {
 			max = vecpos.vector.addVector(+.5f,+.5f,+.5f);
 		}
 		return frustumbb = new AxisAlignedBB(min.xCoord, min.yCoord, min.zCoord, max.xCoord, max.yCoord, max.zCoord);
+	}
+
+	public void addnew(Road road){
+		roads.add(road); type = PathJuncType.byTracksAmount(size());
+		//TODO if(signalbox != null) signalbox = null;
+		updateClient(); return;
+	}
+
+	public void checkRoadSectionConsistency(){
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void remove(int index, boolean firstcall){
+		Road road = roads.remove(index); if(road == null) return;
+		//TODO if(signalbox != null) signalbox = null;
+		//
+		if(!firstcall){
+			//TODO road.unit.section().splitAtTrack(road); road.unit.section().remove(road);
+		}
+		type = PathJuncType.byTracksAmount(size()); this.updateClient();
+		//
+		if(firstcall){
+			RoadPoint point = root.getRoadPoint(road.start.equals(vecpos) ? road.end : road.start);
+			if(point != null) point.remove(road.getOppositeId(), false);
+			//this.checkTrackSectionConsistency();
+		} else this.checkRoadSectionConsistency();
+	}
+
+	private void remove(PathKey key, boolean firstcall){
+		for(int i = 0; i < roads.size(); i++){
+			if(roads.get(i).getId().equals(key)){ remove(i, firstcall); return; }
+		} return;
+	}
+
+	public void clear(){
+		ArrayList<Road> reads = new ArrayList<Road>();
+		for(Road road : roads){ reads.add(road); }
+		for(Road road : reads) this.remove(road.getId(), true);
+		roads.clear(); this.updateClient();
 	}
 
 }

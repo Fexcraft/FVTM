@@ -14,6 +14,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
+import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -446,8 +448,8 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public RailEntity read(NBTTagCompound compound){
 		uid = compound.getLong("uid");
-		current = region.getTrack(new Track.TrackKey(compound));
-		if(current == null) Print.log("track not found! " + new Track.TrackKey(compound).toString());
+		current = region.getTrack(new PathKey(compound));
+		if(current == null) Print.log("track not found! " + new PathKey(compound).toString());
 		if(current == null){ this.dispose(); return this; }
 		pos = DataUtil.readVec3f(compound.getTag("pos"));
 		prev = DataUtil.readVec3f(compound.getTag("prev"));

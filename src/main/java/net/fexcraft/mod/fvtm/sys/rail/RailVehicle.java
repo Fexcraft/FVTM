@@ -30,8 +30,8 @@ import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -749,7 +749,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "update_track":{
                 	railentity.last = railentity.current;
-                	railentity.current = railentity.region.getTrack(new TrackKey(pkt.nbt));
+                	railentity.current = railentity.region.getTrack(new PathKey(pkt.nbt));
     				if(!railentity.region.isInRegion(railentity.current.start))
     					railentity.updateRegion(railentity.current.start);
                 	break;

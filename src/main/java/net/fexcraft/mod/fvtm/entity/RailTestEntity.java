@@ -9,6 +9,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,7 +45,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     public void readSpawnData(ByteBuf buffer){
     	setPosition(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     	if(buffer.isReadable()){
-    		current = world.getCapability(Capabilities.RAILSYSTEM, null).get().getTrack(new Track.TrackKey(ByteBufUtils.readTag(buffer)));
+    		current = world.getCapability(Capabilities.RAILSYSTEM, null).get().getTrack(new PathKey(ByteBufUtils.readTag(buffer)));
     	}
     	Print.debug(current, posX, posY, posZ);
     }

@@ -1,9 +1,8 @@
-package net.fexcraft.mod.fvtm.sys.rail;
+package net.fexcraft.mod.fvtm.sys.uni;
 
 import java.nio.ByteBuffer;
 
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.util.math.Vec3d;
 
@@ -72,7 +71,7 @@ public class RegionKey implements Comparable<RegionKey> {
 		return getRegionXZ((int)vec.x >> 4, (int)vec.z >> 4);
 	}
 
-	public static int[] getRegionXZ(TrackKey key){
+	public static int[] getRegionXZ(PathKey key){
 		return getRegionXZ(key.pos[0] >> 4, key.pos[2] >> 4);
 	}
 	

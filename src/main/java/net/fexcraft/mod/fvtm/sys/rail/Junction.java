@@ -7,9 +7,9 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
@@ -213,7 +213,7 @@ public class Junction {
 		} else this.checkTrackSectionConsistency();
 	}
 
-	private void remove(TrackKey key, boolean firstcall){
+	private void remove(PathKey key, boolean firstcall){
 		for(int i = 0; i < tracks.size(); i++){
 			if(tracks.get(i).getId().equals(key)){ remove(i, firstcall); return; }
 		} return;
@@ -227,7 +227,7 @@ public class Junction {
 	}
 	
 	@Nullable
-	public Track getNext(@Nullable RailEntity entity, TrackKey track, boolean applystate){
+	public Track getNext(@Nullable RailEntity entity, PathKey track, boolean applystate){
 		if(entity != null && fortrains.size() > 0){
 			Track track0 = getNext0(entity, track, applystate);
 			for(JEC cmd : fortrains){
@@ -238,7 +238,7 @@ public class Junction {
 	}
 	
 	@Nullable
-	public Track getNext0(@Nullable RailEntity entity, TrackKey track, boolean applystate){
+	public Track getNext0(@Nullable RailEntity entity, PathKey track, boolean applystate){
 		if(type == null) type = size() <= 2 ? JunctionType.STRAIGHT : size() == 3 ? JunctionType.FORK_2 : JunctionType.CROSSING;
 		if(entity != null){
 			for(JEC cmd : forswitch) cmd.processSwitch(entity, this, track, getIndex(track), applystate);
@@ -311,7 +311,7 @@ public class Junction {
 		return null;
 	}
 
-	public final boolean eqTrack(TrackKey track, int i){
+	public final boolean eqTrack(PathKey track, int i){
 		return tracks.get(i).getId().equals(track);
 	}
 	
@@ -319,7 +319,7 @@ public class Junction {
 		return true;
 	}
 
-	public Track getTrack(TrackKey key){
+	public Track getTrack(PathKey key){
 		for(Track track : tracks) if(track.getId().equals(key)) return track; return null;
 	}
 
@@ -404,7 +404,7 @@ public class Junction {
 		this.switchlocation = null; entityFacing = null; if(entity != null) entity.setDead(); region.updateClient("junction", vecpos);
 	}
 
-	public int getIndex(TrackKey key){
+	public int getIndex(PathKey key){
 		for(int i = 0; i < tracks.size(); i++) if(eqTrack(key, i)) return i; return -1;
 	}
 
@@ -446,12 +446,12 @@ public class Junction {
 		if(signal_dir.isBoth()) return dir.isForward() ? signal1 : signal0; return dir == signal_dir ? signal0 : true;
 	}
 
-	public boolean hasSignal(TrackKey track){
+	public boolean hasSignal(PathKey track){
 		if(track == null || signal == null) return signal != null; if(signal_dir.isBoth()) return true;
 		return eqTrack(track, 0) ? signal_dir.isForward() : signal_dir.isBackward();
 	}
 
-	public boolean getSignalState(TrackKey track){
+	public boolean getSignalState(PathKey track){
 		return getSignalState(eqTrack(track, 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD);
 	}
 

@@ -3,9 +3,9 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.util.Collections;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
+import net.fexcraft.mod.fvtm.util.MiniBB;
 
 
 public class Coupler {

@@ -14,7 +14,8 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -311,7 +312,7 @@ public class Region {
 		return world;
 	}
 
-	public Track getTrack(TrackKey key){
+	public Track getTrack(PathKey key){
 		Junction junction = getJunction(key.toVec3f(0));
 		return junction == null ? null : junction.getTrack(key);
 	}

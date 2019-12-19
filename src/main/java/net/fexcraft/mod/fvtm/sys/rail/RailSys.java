@@ -12,7 +12,8 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -298,7 +299,7 @@ public class RailSys implements RailSystem {
 		entities.remove(entity.getUID()); entity.region.updateClient("removed", entity);
 	}
 
-	public Track getTrack(TrackKey key){
+	public Track getTrack(PathKey key){
 		Region region = regions.get(RegionKey.getRegionXZ(key), true);
 		return region == null ? null : region.getTrack(key);
 	}

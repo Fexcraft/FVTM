@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -76,7 +76,7 @@ public abstract class JEC {
 	public abstract void processEntity(RailEntity entity);
 
 	/** Called from Junctions when something asks for the next Track. */
-	public abstract void processSwitch(RailEntity entity, Junction junction, TrackKey track, int index, boolean applystate);
+	public abstract void processSwitch(RailEntity entity, Junction junction, PathKey track, int index, boolean applystate);
 
 	public boolean isTarget(RailEntity entity){
 		if(targets.isEmpty()) return true; String id = "id:" + entity.uid;

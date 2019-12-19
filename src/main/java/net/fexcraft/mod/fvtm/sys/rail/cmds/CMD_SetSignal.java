@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.sys.rail.cmds;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,7 +48,7 @@ public class CMD_SetSignal extends JEC {
 	}
 
 	@Override
-	public void processSwitch(RailEntity entity, Junction junction, TrackKey track, int index, boolean applystate){
+	public void processSwitch(RailEntity entity, Junction junction, PathKey track, int index, boolean applystate){
 		if(junction.type.isStraight() && type == JECType.SET_SIGNAL){
 			if(signal == null){
 				if(!junction.signal.is(SignalType.Kind.CUSTOM)) return;

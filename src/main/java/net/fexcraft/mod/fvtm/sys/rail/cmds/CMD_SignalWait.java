@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail.cmds;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.Track.TrackKey;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -42,7 +42,7 @@ public class CMD_SignalWait extends JEC {
 	}
 
 	@Override
-	public void processSwitch(RailEntity entity, Junction junction, TrackKey track, int index, boolean applystate){
+	public void processSwitch(RailEntity entity, Junction junction, PathKey track, int index, boolean applystate){
 		//this is not a junction command.
 	}
 	

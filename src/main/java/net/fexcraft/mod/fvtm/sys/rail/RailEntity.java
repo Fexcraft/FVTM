@@ -14,8 +14,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
-import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -143,7 +143,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			tro = getTrack(current, passed + am, true, false);
 			last = current; current = tro.track; passed = tro.passed;
 			if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
-			if(!region.isInRegion(current.start)) this.updateRegion(current.start);
+			if(!region.getKey().isInRegion(current.start)) this.updateRegion(current.start);
 			updatePosition(); vehdata.getAttribute("forward").setValue(am > 0);//TODO attr sync
 			//
 			if(!hascoupled && isCoupled()){

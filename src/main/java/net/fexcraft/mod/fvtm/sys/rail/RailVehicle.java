@@ -750,7 +750,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 case "update_track":{
                 	railentity.last = railentity.current;
                 	railentity.current = railentity.region.getTrack(new PathKey(pkt.nbt));
-    				if(!railentity.region.isInRegion(railentity.current.start))
+    				if(!railentity.region.getKey().isInRegion(railentity.current.start))
     					railentity.updateRegion(railentity.current.start);
                 	break;
                 }

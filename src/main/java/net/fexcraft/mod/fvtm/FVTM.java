@@ -83,8 +83,6 @@ import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
-import net.fexcraft.mod.fvtm.sys.rail.RecClient;
-import net.fexcraft.mod.fvtm.sys.rail.RecServer;
 import net.fexcraft.mod.fvtm.sys.road.RoadSys;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -279,10 +277,12 @@ public class FVTM {
 		Packets.init(); SimpleUpdateHandler.register(MODID, 1, VERSION);
 		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new RecServer());
+		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.rail.RecServer());
+		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.road.RecServer());
 		if(event.getSide().isClient()){
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
-			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new RecClient());
+			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.rail.RecClient());
+			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.road.RecClient());
 			MinecraftForge.EVENT_BUS.register(new RailRenderer());
 		}
 	}

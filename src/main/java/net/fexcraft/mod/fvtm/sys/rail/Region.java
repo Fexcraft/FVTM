@@ -14,8 +14,8 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
-import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -166,13 +166,8 @@ public class Region {
 	}
 
 	public Junction getJunction(Vec316f vec){
-		if(!isInRegion(vec)) return world.getJunction(vec);
+		if(!key.isInRegion(vec)) return world.getJunction(vec);
 		return junctions.get(vec);
-	}
-
-	public boolean isInRegion(Vec316f vec){
-		int[] id = RegionKey.getRegionXZ(vec);
-		return id[0] == key.x && id[1] == key.z;
 	}
 
 	public void updateTick(){

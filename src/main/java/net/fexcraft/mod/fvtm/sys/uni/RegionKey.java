@@ -74,5 +74,9 @@ public class RegionKey implements Comparable<RegionKey> {
 	public static int[] getRegionXZ(PathKey key){
 		return getRegionXZ(key.pos[0] >> 4, key.pos[2] >> 4);
 	}
+
+	public boolean isInRegion(Vec316f vec){
+		int[] id = getRegionXZ(vec); return id[0] == x && id[1] == z;
+	}
 	
 }

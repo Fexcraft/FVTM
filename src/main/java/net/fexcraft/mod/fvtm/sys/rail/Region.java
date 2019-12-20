@@ -24,7 +24,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -144,9 +143,9 @@ public class Region {
 		if(!entities.isEmpty()){
 			NBTTagList list = new NBTTagList();
 			for(RailEntity entity : entities.values()){
-				if(entity.com.isSingular()){
+				//if(entity.com.isSingular()){
 					list.appendTag(entity.write(null));
-				}
+				/*}
 				else if(entity.com.isHead(entity)){
 					NBTTagList ents = new NBTTagList();
 					ents.appendTag(new NBTTagLong(entity.com.getUID()));
@@ -158,7 +157,7 @@ public class Region {
 				else if(entity.com.isEnd(entity)){
 					list.appendTag(new NBTTagIntArray(RegionKey.getRegionXZ(entity.pos)));
 				}
-				else continue;
+				else continue;*/
 			}
 			compound.setTag("Entities", list);
 		}

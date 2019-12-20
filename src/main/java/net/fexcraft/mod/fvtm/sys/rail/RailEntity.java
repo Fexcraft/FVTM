@@ -228,20 +228,20 @@ public class RailEntity implements Comparable<RailEntity>{
 		for(int i = 0; i < 2; i++){
 			if(couplers[i].hasEntity()) continue; Vec3f coucen = i == 0 ? cfront : crear;
 			for(RailEntity ent : ents){
-				if(ent == this || ent == front.entity || ent == rear.entity) continue;
+				if(ent == this || ent == front.entity || ent == rear.entity || ent.com == com) continue;
 				ccalc.update(ent.cfront, ent.crear, 0.125f); if(!ccalc.contains(coucen)) continue;
 				if(ent.rear.mbb.contains(coucen)){
-					float entpos = ent.pos.distanceTo(pos);
-					float coupos = ent.crear.distanceTo(pos);
-					if(entpos < coupos) continue;//we're probably inside the other entity, abort!
+					//float entpos = ent.pos.distanceTo(pos);
+					//float coupos = ent.crear.distanceTo(pos);
+					//if(entpos < coupos) continue;//we're probably inside the other entity, abort!
 					hascoupled = true; couplers[i].couple(ent, false, false); am = coucen.distanceTo(ent.crear); 
 					if(ent.brear.distanceTo(coucen) < ent.crear.distanceTo(coucen)) am = -am;
 					Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to rear");
 				}
 				if(ent.front.mbb.contains(coucen)){
-					float entpos = ent.pos.distanceTo(pos);
-					float coupos = ent.cfront.distanceTo(pos);
-					if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
+					//float entpos = ent.pos.distanceTo(pos);
+					//float coupos = ent.cfront.distanceTo(pos);
+					//if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
 					hascoupled = true; couplers[i].couple(ent, true, false); am = coucen.distanceTo(ent.cfront);
 					if(ent.bfront.distanceTo(coucen) < ent.cfront.distanceTo(coucen)) am = -am;
 					Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to front");

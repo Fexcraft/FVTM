@@ -67,7 +67,7 @@ public class Coupler {
 			root.updateClient("couplers"); ent.updateClient("couplers");
 		}
 		if(root.com.isSingular() && entity.com.isSingular()){
-			root.com = entity.com = new Multiple(solid ? root : entity, solid ? entity : root);
+			root.com = entity.com = new Multiple(root, entity);//solid ? root : entity, solid ? entity : root);
 			Print.debug("REC: created new");
 		}
 		else if(!root.com.isSingular() && !entity.com.isSingular()){
@@ -88,7 +88,7 @@ public class Coupler {
 			Print.debug("REC: fused");
 		}
 		else if(root.com.isSingular()){
-			if(entity.com.isHead(root)){
+			if(entity.com.isHead(entity)){
 				entity.com.entities.add(0, root);
 			}
 			else{//assume end
@@ -97,7 +97,7 @@ public class Coupler {
 			root.com = entity.com;
 			Print.debug("REC: attached root");
 		}
-		else if(root.com.isSingular()){
+		else if(entity.com.isSingular()){
 			if(root.com.isHead(root)){
 				root.com.entities.add(0, entity);
 			}

@@ -44,7 +44,8 @@ public class InternalAddon extends Addon {
 			obj.addProperty("Description", "fvtm:standard.gauge_desc");
 			obj.addProperty("Width", 30); obj.addProperty("Height", 4);
 			obj.addProperty("Model", "fvtm:models/gauges/standard");
-			obj.addProperty("Texture", "fvtm:textures/blocks/standard_gauge.png");
+			obj.addProperty("TiesTexture", "fvtm:textures/blocks/standard_gauge.png");
+			obj.addProperty("ModelTexture", "fvtm:textures/blocks/30px_standard_gauge.png");
 			obj.add("PreSets", new JsonArray()); data.register(gauge = new RailGauge().parse(obj)); int r = Config.RAIL_PLACING_GRID;
 			gauge.getPresets().add(new RailPresetItem(gauge, "4_straight", new Vec316f(0, 0, 0, r), new Vec316f(4, 0, 0, r)).setSegmentation(8));
 			gauge.getPresets().add(new RailPresetItem(gauge, "8_straight", new Vec316f(0, 0, 0, r), new Vec316f(8, 0, 0, r)).setSegmentation(8));

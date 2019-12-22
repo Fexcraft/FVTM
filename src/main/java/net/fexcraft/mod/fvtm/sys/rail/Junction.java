@@ -92,7 +92,7 @@ public class Junction {
 				catch(Exception e){ e.printStackTrace(); }
 			}
 		} else tracks.clear(); frustumbb = null;
-		if(!root.getWorld().isRemote) checkTrackSectionConsistency();
+		//TODO see if necessary //if(!root.getWorld().isRemote) checkTrackSectionConsistency();
 		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
 		if(compound.hasKey("SignalDir")) signal_dir = EntryDirection.getFromSaveByte(compound.getByte("SignalDir"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? PathJuncType.valueOf(compound.getString("Type")) : PathJuncType.byTracksAmount(size());

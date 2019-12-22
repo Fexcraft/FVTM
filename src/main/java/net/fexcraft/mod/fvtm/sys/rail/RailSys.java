@@ -12,8 +12,8 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
-import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -133,17 +133,17 @@ public class RailSys implements RailSystem {
 		
 		public Region get(Vec316f vec, boolean load){
 			Region region = get(RegionKey.getRegionXZ(vec)); if(region != null || !load) return region;
-			put(new RegionKey(vec), region = new Region(vec, root)); return region;
+			put(new RegionKey(vec), region = new Region(vec, root, false)); region.load().updateClient(vec); return region;
 		}
 
 		public Region get(int[] xz, boolean load){
 			Region region = get(xz); if(region != null || !load) return region;
-			put(new RegionKey(xz), region = new Region(xz[0], xz[1], root)); return region;
+			put(new RegionKey(xz), region = new Region(xz[0], xz[1], root, false)); region.load(); return region;
 		}
 
 		public Region get(RegionKey xz, boolean load){
 			Region region = get(xz); if(region != null || !load) return region;
-			put(new RegionKey(xz.x, xz.z), region = new Region(xz.x, xz.z, root)); return region;
+			put(new RegionKey(xz.x, xz.z), region = new Region(xz.x, xz.z, root, false)); region.load(); return region;
 		}
 		
 	}
@@ -237,7 +237,7 @@ public class RailSys implements RailSystem {
 
 	public void updateRegion(boolean isRemote, int[] xz, NBTTagCompound compound, @Nullable EntityPlayerMP player){
 		if(isRemote){
-			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this)); region.read(compound);
+			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this, false)); region.read(compound);
 		}
 		else{
 			Region region = regions.get(xz, true); region.updateClient(player);

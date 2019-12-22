@@ -22,7 +22,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 
@@ -40,12 +39,12 @@ public class Region {
 	private final RailSys world;
 	private final RegionKey key;
 
-	public Region(int i, int j, RailSys root){
-		key = new RegionKey(i, j); world = root; load();
+	public Region(int i, int j, RailSys root, boolean load){
+		key = new RegionKey(i, j); world = root; if(load) load();
 	}
 
-	public Region(Vec316f vec, RailSys root){
-		key = new RegionKey(vec); world = root; load().updateClient(vec);
+	public Region(Vec316f vec, RailSys root, boolean load){
+		key = new RegionKey(vec); world = root; if(load) load().updateClient(vec);
 	}
 
 	public Region load(){
@@ -92,28 +91,36 @@ public class Region {
 		if(compound.hasKey("Entities")){
 			if(!entities.isEmpty()) entities.clear();
 			NBTTagList list = (NBTTagList)compound.getTag("Entities");
+			ArrayList<RailEntity> fill = new ArrayList<>();
 			for(NBTBase base : list){
-				if(base instanceof NBTTagCompound){
-					NBTTagCompound com = (NBTTagCompound)base;
+				NBTTagCompound com = (NBTTagCompound)base;
+				boolean single = com.hasKey("Singular") ? com.getBoolean("Singular") : true;
+				if(single){
 					Singular singular = new Singular(this, com.getLong("Compound"), com);
-					entities.put(singular.entities.get(0).getUID(), singular.entities.get(0));
+					fill.add(singular.entities.get(0));
+					//entities.put(singular.entities.get(0).getUID(), singular.entities.get(0));
 				}
-				else if(base instanceof NBTTagList){
-					Multiple multiple = new Multiple(this, (NBTTagList)base);
-					int[] arr = null;
-					for(RailEntity entity : multiple.entities){
-						arr = RegionKey.getRegionXZ(entity.pos);
-						if(key.x == arr[0] && key.z == arr[1]) entities.put(entity.getUID(), entity);
-						else{
-							Region reg = world.getRegions().get(arr, true);
-							reg.getEntities().put(entity.getUID(), entity);
-						}
+				else if(com.hasKey("Head") && com.getBoolean("Head")){
+					Multiple multiple = new Multiple(this, com.getLong("Compound"), (NBTTagList)com.getTag("Entities"));
+					fill.addAll(multiple.entities);
+				}
+				else if(com.hasKey("End") && com.getBoolean("End")){
+					world.getRegions().get(com.getIntArray("HeadRegion"), true);
+				}
+				else{
+					Print.debug("Error, could not load following entity compound because of missing instructions: " + com);
+				}
+			}
+			if(!fill.isEmpty()){
+				int[] arr = null;
+				for(RailEntity entity : fill){
+					arr = RegionKey.getRegionXZ(entity.pos);
+					if(key.x == arr[0] && key.z == arr[1]) entities.put(entity.getUID(), entity);
+					else{
+						Region reg = world.getRegions().get(arr, true);
+						reg.getEntities().put(entity.getUID(), entity);
 					}
 				}
-				else if(base instanceof NBTTagIntArray){
-					//TODO
-				}
-				else continue;
 			}
 		}
 		return this;
@@ -126,13 +133,13 @@ public class Region {
 		if(compound.hasNoTags()){
 			Print.log("RailRegion [" + key.toString() + "] has no data to save, skipping."); return this;
 		}
+		compound.setLong("Saved", Time.getDate());
 		try{ CompressedStreamTools.write(compound, file); } catch(IOException e){ e.printStackTrace(); }
 		Print.log("Saved RailRegion [" + key.toString() + "]."); return this;
 	}
 
 	private NBTTagCompound write(){
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setLong("Saved", Time.getDate());
 		if(!junctions.isEmpty()){
 			NBTTagList list = new NBTTagList();
 			for(Junction junk : junctions.values()){
@@ -143,21 +150,32 @@ public class Region {
 		if(!entities.isEmpty()){
 			NBTTagList list = new NBTTagList();
 			for(RailEntity entity : entities.values()){
-				//if(entity.com.isSingular()){
+				if(entity.com.isSingular()){
 					list.appendTag(entity.write(null));
-				/*}
-				else if(entity.com.isHead(entity)){
-					NBTTagList ents = new NBTTagList();
-					ents.appendTag(new NBTTagLong(entity.com.getUID()));
-					for(RailEntity ent : entity.com.entities){
-						ents.appendTag(ent.write(null));
+				}
+				else if(entity.com.isMultiple()){
+					if(entity.com.isHead(entity)){
+						NBTTagCompound com = new NBTTagCompound();
+						com.setLong("Compound", entity.com.uid);
+						com.setBoolean("Singular", false);
+						com.setBoolean("Head", true);
+						NBTTagList ents = new NBTTagList();
+						for(RailEntity ent : entity.com.entities){
+							ents.appendTag(ent.write(null));
+						}
+						com.setTag("Entities", ents);
+						list.appendTag(com);
 					}
-					list.appendTag(ents);
+					else if(entity.com.isEnd(entity)){
+						NBTTagCompound com = new NBTTagCompound(); com.setBoolean("End", true);
+						com.setLong("Compound", entity.com.uid); com.setBoolean("Singular", false);
+						com.setIntArray("HeadRegion", RegionKey.getRegionXZ(entity.com.getEntitites().get(0).pos));
+						list.appendTag(com);
+					}
 				}
-				else if(entity.com.isEnd(entity)){
-					list.appendTag(new NBTTagIntArray(RegionKey.getRegionXZ(entity.pos)));
+				else{
+					Print.log("Error, could not save following entity compound because of missing instructions: " + entity);
 				}
-				else continue;*/
 			}
 			compound.setTag("Entities", list);
 		}

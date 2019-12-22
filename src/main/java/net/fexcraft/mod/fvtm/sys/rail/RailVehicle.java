@@ -173,7 +173,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public VehicleData getVehicleData(){
-		return railentity.vehdata;
+		return railentity == null ? null : railentity.vehdata;
 	}
 
 	@Override

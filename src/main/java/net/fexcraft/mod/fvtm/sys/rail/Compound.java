@@ -5,7 +5,6 @@ import java.util.TreeMap;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagLong;
 
 /**
  * "Rail Entities Compound"
@@ -93,11 +92,24 @@ public abstract class Compound {
 			for(RailEntity ent : entities) ent.com = this; COMPOUNDS.put(uid, this);
 		}
 
-		public Multiple(Region region, NBTTagList list){
-			super(((NBTTagLong)list.get(0)).getLong());
+		public Multiple(Region region, Long id, NBTTagList list){
+			super(id); RailEntity prev = null, curr; NBTTagCompound compound;
 			for(int i = 1; i < list.tagCount(); i++){
-				entities.add(new RailEntity(region, this).read((NBTTagCompound)list.get(i)));
-			} COMPOUNDS.put(uid, this);
+				compound = (NBTTagCompound)list.get(i);
+				curr = new RailEntity(region, this).read(compound);
+				if(prev != null){
+					if(compound.hasKey("front_coupled") && compound.getLong("front_coupled") == prev.uid){
+						(compound.getBoolean("front_coupler") ? prev.front : prev.rear).entity = curr;
+						curr.front.entity = prev;
+					}
+					else if(compound.hasKey("rear_coupled") && compound.getLong("rear_coupled") == prev.uid){
+						(compound.getBoolean("rear_coupler") ? prev.front : prev.rear).entity = curr;
+						curr.rear.entity = prev;
+					}
+				}
+				entities.add(prev = curr);
+			}
+			COMPOUNDS.put(uid, this);
 		}
 
 		@Override

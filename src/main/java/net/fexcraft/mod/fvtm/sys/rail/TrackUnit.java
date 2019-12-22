@@ -67,7 +67,7 @@ public class TrackUnit {
 	}
 
 	private void updateClient(){
-		if(!data.isRemote()) return;
+		if(data.isRemote()) return;
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "update_unit_section");

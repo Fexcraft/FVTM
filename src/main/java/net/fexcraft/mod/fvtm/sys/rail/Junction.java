@@ -94,6 +94,7 @@ public class Junction {
 		} else tracks.clear(); frustumbb = null;
 		if(!root.getWorld().isRemote) checkTrackSectionConsistency();
 		if(compound.hasKey("SignalType")) signal = SignalType.valueOf(compound.getString("SignalType"));
+		if(compound.hasKey("SignalDir")) signal_dir = EntryDirection.getFromSaveByte(compound.getByte("SignalDir"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? PathJuncType.valueOf(compound.getString("Type")) : PathJuncType.byTracksAmount(size());
 		else type = PathJuncType.STRAIGHT;
 		if(compound.hasKey("SwitchPos")) this.switchlocation = DataUtil.readVec3f(compound.getTag("SwitchPos"));
@@ -137,6 +138,7 @@ public class Junction {
 		//compound.setBoolean("Crossing", crossing);
 		compound.setTag("Pos", vecpos.write());
 		if(signal != null) compound.setString("SignalType", signal.name());
+		if(signal_dir != null) compound.setByte("SignalDir", signal_dir.getSaveByte());
 		if(tracks.size() > 2) compound.setString("Type", type.name());
 		if(switchlocation != null && tracks.size() > 2){
 			compound.setTag("SwitchPos", DataUtil.writeVec3f(switchlocation));

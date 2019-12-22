@@ -29,4 +29,12 @@ public enum EntryDirection {
 		return isBoth() ? 0 : isForward() ? 1 : 0;
 	}
 
+	public static EntryDirection getFromSaveByte(byte bute){
+		return bute == 0 ? BOTH : bute > 0 ? FORWARD : BACKWARD;
+	}
+
+	public byte getSaveByte(){
+		return (byte)(this == BOTH ? 0 : this == FORWARD ? 1 : -1);
+	}
+
 }

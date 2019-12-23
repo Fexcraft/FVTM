@@ -105,16 +105,16 @@ public class Region {
 					fillqueue.add(singular.entities.get(0));
 					//entities.put(singular.entities.get(0).getUID(), singular.entities.get(0));
 				}
-				else if(com.hasKey("Head") && com.getBoolean("Head")){
+				else /*if(com.hasKey("Head") && com.getBoolean("Head"))*/{
 					Multiple multiple = new Multiple(this, com.getLong("Compound"), (NBTTagList)com.getTag("Entities"));
 					fillqueue.addAll(multiple.entities);
 				}
-				else if(com.hasKey("End") && com.getBoolean("End")){
+				/*else if(com.hasKey("End") && com.getBoolean("End")){
 					world.getRegions().get(com.getIntArray("HeadRegion"), true);
-				}
-				else{
+				}*/
+				/*else{
 					Print.debug("Error, could not load following entity compound because of missing instructions: " + com);
-				}
+				}*/
 			}
 		}
 		return this;
@@ -153,7 +153,7 @@ public class Region {
 						NBTTagCompound com = new NBTTagCompound();
 						com.setLong("Compound", entity.com.uid);
 						com.setBoolean("Singular", false);
-						com.setBoolean("Head", true);
+						//com.setBoolean("Head", true);
 						NBTTagList ents = new NBTTagList();
 						for(RailEntity ent : entity.com.entities){
 							ents.appendTag(ent.write(null));
@@ -161,12 +161,12 @@ public class Region {
 						com.setTag("Entities", ents);
 						list.appendTag(com);
 					}
-					else if(entity.com.isEnd(entity)){
+					/*else if(entity.com.isEnd(entity)){
 						NBTTagCompound com = new NBTTagCompound(); com.setBoolean("End", true);
 						com.setLong("Compound", entity.com.uid); com.setBoolean("Singular", false);
 						com.setIntArray("HeadRegion", RegionKey.getRegionXZ(entity.com.getEntitites().get(0).pos));
 						list.appendTag(com);
-					}
+					}*/
 				}
 				else{
 					Print.log("Error, could not save following entity compound because of missing instructions: " + entity);

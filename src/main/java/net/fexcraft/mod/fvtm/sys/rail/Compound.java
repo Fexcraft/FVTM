@@ -95,7 +95,7 @@ public abstract class Compound {
 
 		public Multiple(Region region, Long id, NBTTagList list){
 			super(id); RailEntity prev = null, curr; NBTTagCompound compound;
-			for(int i = 1; i < list.tagCount(); i++){
+			for(int i = 0; i < list.tagCount(); i++){
 				compound = (NBTTagCompound)list.get(i);
 				curr = new RailEntity(region, this).read(compound);
 				if(prev != null){

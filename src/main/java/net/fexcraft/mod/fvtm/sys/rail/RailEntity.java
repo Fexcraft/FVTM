@@ -428,11 +428,11 @@ public class RailEntity implements Comparable<RailEntity>{
 		compound.setFloat("passed", passed);
 		compound.setLong("Placer0", placer.getMostSignificantBits());
 		compound.setLong("Placer1", placer.getLeastSignificantBits());
-		if(front.entity != null && front.coupled){
+		if(front.entity != null /*&& front.coupled*/){
 			compound.setLong("front_coupled", front.entity.uid);
 			compound.setBoolean("front_coupler", front.isFront());
 		}
-		if(rear.entity != null && rear.coupled){
+		if(rear.entity != null /*&& rear.coupled*/){
 			compound.setLong("rear_coupled", rear.entity.uid);
 			compound.setBoolean("rear_coupler", rear.isFront());
 		}

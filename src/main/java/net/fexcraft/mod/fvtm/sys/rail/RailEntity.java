@@ -443,6 +443,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		}
 		compound.setLong("Compound", com.getUID());
 		compound.setBoolean("Singular", com.isSingular());
+		compound.setFloat("throttle", throttle);
 		return vehdata.write(compound);
 	}
 	
@@ -459,6 +460,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		brear = DataUtil.readVec3f(compound.getTag("brear"));
 		forward = compound.hasKey("forward") ? compound.getBoolean("forward") : true;
 		passed = compound.getFloat("passed");
+		throttle = compound.getFloat("throttle");
 		//
 		if(compound.hasKey("Commands")){
 			commands.clear(); NBTTagList cmds = (NBTTagList)compound.getTag("Commands");

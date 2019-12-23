@@ -45,7 +45,7 @@ public class Config {
 
     private static final void refresh(){
         VEHICLES_NEED_FUEL = config.getBoolean("vehicles_need_fuel", LEGACYSYS, false, "If vehicles need Fuel (in survival mode) to function.");
-        VEHICLE_UPDATE_RANGE = config.getFloat("vehicle_update_range", LEGACYSYS, 256, 8, 1024, "Range to which Update Packets will be sent.");
+        VEHICLE_UPDATE_RANGE = config.getFloat("vehicle_update_range", LEGACYSYS, 256, 8, 4096, "Range to which Update Packets will be sent.");
         VEHICLE_DROP_CONTENTS = config.getBoolean("vehicle_drop_contents", LEGACYSYS, false, "If vehicles should drop their inventory contents upon being 'broken' or removed by hand.");
         RENDER_OUT_OF_VIEW = config.getBoolean("render_out_of_view", GENERAL, false, "If vehicles should be rendered out of default view.");
         RENDER_VEHILE_MODELS_AS_ITEMS = config.getBoolean("render_vehicle_models_as_items", GENERAL, true, "If the Vehicle's model should be rendered as Item. May cause laggs.");

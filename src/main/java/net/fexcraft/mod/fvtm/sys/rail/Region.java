@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,10 +34,13 @@ import net.minecraft.util.math.BlockPos;
  */
 public class Region {
 	
+	public static final Queue<RailEntity> fillqueue = new LinkedList<>();
+	public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ArrayList<RegionKey> chucks = new ArrayList<>();
 	public long lastaccess; private int timer = 0;
+	public boolean loaded;
 	private final RailSys world;
 	private final RegionKey key;
 
@@ -44,13 +49,13 @@ public class Region {
 	}
 
 	public Region(Vec316f vec, RailSys root, boolean load){
-		key = new RegionKey(vec); world = root; if(load) load().updateClient(vec);
+		key = new RegionKey(vec); world = root; if(load) load();//.updateClient(vec);
 	}
 
 	public Region load(){
 		if(world.getWorld().isRemote){
 			NBTTagCompound compound = new NBTTagCompound(); compound.setString("target_listener", "fvtm:railsys");
-			compound.setString("task", "update_railregion"); compound.setIntArray("XZ", key.toArray());
+			compound.setString("task", "update_region"); compound.setIntArray("XZ", key.toArray());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound)); return this;
 		}
 		File file = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + ".dat");
@@ -87,39 +92,28 @@ public class Region {
 				Junction junk = new Junction(this).read((NBTTagCompound)base);
 				junctions.put(junk.getVec316f(), junk);
 			}
-		}
+		} loaded = true;
+		//
 		if(compound.hasKey("Entities")){
 			if(!entities.isEmpty()) entities.clear();
 			NBTTagList list = (NBTTagList)compound.getTag("Entities");
-			ArrayList<RailEntity> fill = new ArrayList<>();
 			for(NBTBase base : list){
 				NBTTagCompound com = (NBTTagCompound)base;
 				boolean single = com.hasKey("Singular") ? com.getBoolean("Singular") : true;
 				if(single){
 					Singular singular = new Singular(this, com.getLong("Compound"), com);
-					fill.add(singular.entities.get(0));
+					fillqueue.add(singular.entities.get(0));
 					//entities.put(singular.entities.get(0).getUID(), singular.entities.get(0));
 				}
 				else if(com.hasKey("Head") && com.getBoolean("Head")){
 					Multiple multiple = new Multiple(this, com.getLong("Compound"), (NBTTagList)com.getTag("Entities"));
-					fill.addAll(multiple.entities);
+					fillqueue.addAll(multiple.entities);
 				}
 				else if(com.hasKey("End") && com.getBoolean("End")){
 					world.getRegions().get(com.getIntArray("HeadRegion"), true);
 				}
 				else{
 					Print.debug("Error, could not load following entity compound because of missing instructions: " + com);
-				}
-			}
-			if(!fill.isEmpty()){
-				int[] arr = null;
-				for(RailEntity entity : fill){
-					arr = RegionKey.getRegionXZ(entity.pos);
-					if(key.x == arr[0] && key.z == arr[1]) entities.put(entity.getUID(), entity);
-					else{
-						Region reg = world.getRegions().get(arr, true);
-						reg.getEntities().put(entity.getUID(), entity);
-					}
 				}
 			}
 		}
@@ -129,7 +123,7 @@ public class Region {
 	public Region save(){
 		File file = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + ".dat");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-		NBTTagCompound compound = write();
+		NBTTagCompound compound = write(false);
 		if(compound.hasNoTags()){
 			Print.log("RailRegion [" + key.toString() + "] has no data to save, skipping."); return this;
 		}
@@ -138,7 +132,7 @@ public class Region {
 		Print.log("Saved RailRegion [" + key.toString() + "]."); return this;
 	}
 
-	private NBTTagCompound write(){
+	private NBTTagCompound write(boolean clientpacket){
 		NBTTagCompound compound = new NBTTagCompound();
 		if(!junctions.isEmpty()){
 			NBTTagList list = new NBTTagList();
@@ -147,6 +141,7 @@ public class Region {
 			}
 			compound.setTag("Junctions", list);
 		}
+		if(clientpacket) return compound;
 		if(!entities.isEmpty()){
 			NBTTagList list = new NBTTagList();
 			for(RailEntity entity : entities.values()){
@@ -215,8 +210,8 @@ public class Region {
 		if(world.getWorld().isRemote) return; NBTTagCompound compound = null;
 		switch(kind){
 			case "all":{
-				compound = this.write(); compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "update_railregion"); compound.setIntArray("XZ", key.toArray());
+				compound = this.write(true); compound.setString("target_listener", "fvtm:railsys");
+				compound.setString("task", "update_region"); compound.setIntArray("XZ", key.toArray());
 				break;
 			}
 			case "junction":{
@@ -303,8 +298,8 @@ public class Region {
 
 	public void updateClient(EntityPlayerMP player){
 		if(world.getWorld().isRemote) return;
-		NBTTagCompound compound = this.write(); compound.setString("target_listener", "fvtm:railsys");
-		compound.setString("task", "update_railregion"); compound.setIntArray("XZ", key.toArray());
+		NBTTagCompound compound = this.write(true); compound.setString("target_listener", "fvtm:railsys");
+		compound.setString("task", "update_region"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(compound), player);
 	}
 
@@ -313,11 +308,11 @@ public class Region {
 	}
 
 	public void spawnEntity(RailEntity ent){
-		if(world.getWorld().isRemote) return; entities.put(ent.getUID(), ent);
+		Print.debug("Spawning Entity " + ent.uid + "!"); entities.put(ent.getUID(), ent); if(world.getWorld().isRemote) return;
 		NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "spawn_railentity"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
-			Resources.getTargetPoint(world.getDimension(), new net.minecraft.util.math.BlockPos(ent.current.start.pos)));
+			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.pos.xCoord, ent.pos.yCoord, ent.pos.zCoord)));
 	}
 	
 	public RailSys getWorld(){

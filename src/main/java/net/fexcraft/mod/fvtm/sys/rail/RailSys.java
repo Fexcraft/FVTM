@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
@@ -39,10 +40,13 @@ public class RailSys implements RailSystem {
 	private TrackMap trackunits = new TrackMap(this);
 	private SectionMap sections = new SectionMap(this);
 	private TreeMap<Long, RegionKey> entities = new TreeMap<>();
+	//
+	public static boolean SINGLEPLAYER, PLAYERON;
 
 	@Override
 	public void setWorld(World world, int dimension){
 		this.world = world; this.dimension = dimension;
+		SINGLEPLAYER = Static.getServer().isSinglePlayer();
 	}
 
 	@Override
@@ -220,7 +224,28 @@ public class RailSys implements RailSystem {
 	}
 
 	@Override
-	public void updateTick(){
+	public void updateTick(boolean remote){
+		if(remote && !Region.clientqueue.isEmpty()){
+			Print.debug("Processing <NBT> Entities in Queue " + Region.clientqueue.size());
+			ArrayList<Long> torem = new ArrayList<>();
+			for(Long uid : Region.clientqueue.keySet()){
+				NBTTagCompound compound = Region.clientqueue.get(uid);
+				Region region = getRegions().get(compound.getIntArray("XZ"));
+				if(region == null || !region.loaded) continue;
+				Print.debug("Processing " + compound.getLong("uid") + " - " + region.getKey().x + "/" + region.getKey().z);
+				region.spawnEntity(new RailEntity(region, compound.getLong("uid")).read(compound));
+				torem.add(uid);
+			} torem.forEach(rem -> Region.clientqueue.remove(rem)); torem.clear();
+		}
+		if(!remote && !Region.fillqueue.isEmpty() && (SINGLEPLAYER ? PLAYERON : true)){
+			Print.debug("Processing Entities in Queue " + Region.fillqueue.size());
+			while(!Region.fillqueue.isEmpty()){
+				RailEntity entity = Region.fillqueue.poll();
+				int[] arr = RegionKey.getRegionXZ(entity.pos);
+				Print.debug("Processing " + entity.uid + " - " + arr[0] + "/" + arr[1]);
+				regions.get(arr, true).spawnEntity(entity.start());
+			}
+		}
 		for(Region region : regions.values()){ region.updateTick(); }
 	}
 
@@ -235,8 +260,9 @@ public class RailSys implements RailSystem {
 		if(!world.isRemote) regions.values().forEach(reg -> reg.save()); regions.clear();
 	}
 
-	public void updateRegion(boolean isRemote, int[] xz, NBTTagCompound compound, @Nullable EntityPlayerMP player){
-		if(isRemote){
+	public void updateRegion(NBTTagCompound compound, @Nullable EntityPlayerMP player){
+		int[] xz = compound.getIntArray("XZ");
+		if(world.isRemote){
 			Region region = regions.get(xz); if(region == null) regions.put(new RegionKey(xz), region = new Region(xz[0], xz[1], this, false)); region.read(compound);
 		}
 		else{

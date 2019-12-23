@@ -52,6 +52,7 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
@@ -83,6 +84,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -439,12 +441,20 @@ public class Resources {
 		}
 	}
 	
-	@SubscribeEvent //TODO make sure it runs on server side only, so far no client tasks exists
+	@SubscribeEvent
 	public void onServerTick(TickEvent.ServerTickEvent event){
 		if(event.phase != Phase.START) return;
 		for(World world : Static.getServer().worlds){
-			world.getCapability(Capabilities.RAILSYSTEM, null).updateTick();
+			world.getCapability(Capabilities.RAILSYSTEM, null).updateTick(false);
 		}
+	}
+	
+	@SideOnly(Side.CLIENT) @SubscribeEvent
+	public void onClientTick(TickEvent.ClientTickEvent event){
+		if(event.phase != Phase.START) return;
+		if(net.minecraft.client.Minecraft.getMinecraft().world == null) return;
+		if(net.minecraft.client.Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null) == null) return;
+		net.minecraft.client.Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null).updateTick(true);
 	}
 	
 	@SubscribeEvent
@@ -456,8 +466,6 @@ public class Resources {
 	public void onChunkUnload(ChunkEvent.Unload event){
 		event.getWorld().getCapability(Capabilities.RAILSYSTEM, null).onChunkUnload(event.getChunk());
 	}
-	
-
 
 	@SubscribeEvent
 	public void regSounds(RegistryEvent.Register<SoundEvent> event){
@@ -483,6 +491,16 @@ public class Resources {
 				}
 			});
 		});
+	}
+	
+	@SubscribeEvent
+	public void onPlayerIn(PlayerEvent.PlayerLoggedInEvent event){
+		if(!Static.getServer().isSinglePlayer()) return; RailSys.PLAYERON = true;
+	}
+	
+	@SubscribeEvent
+	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event){
+		if(!Static.getServer().isSinglePlayer()) return; RailSys.PLAYERON = false;
 	}
 
 }

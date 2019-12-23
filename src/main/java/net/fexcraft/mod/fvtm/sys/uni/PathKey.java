@@ -60,5 +60,10 @@ public class PathKey implements Comparable<PathKey> {
 	public Vec316f toVec3f(int i){
 		return new Vec316f(pos[0 + i], pos[1 + i], pos[2 + i], xyz[0 + i], xyz[1 + i], xyz[2 + i]);
 	}
+	
+	@Override
+	public String toString(){
+		return String.format("[ %s,%s - %s,%s - %s,%s / %s,%s - %s,%s - %s,%s ]", pos[0], xyz[0], pos[1], xyz[1], pos[2], xyz[2], pos[3], xyz[3], pos[4], xyz[4], pos[5], xyz[5]);
+	}
 
 }

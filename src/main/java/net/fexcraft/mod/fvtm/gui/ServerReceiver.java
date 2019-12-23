@@ -89,7 +89,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				if(impl == null) Print.debug("Capability is null. CHP " + packet.nbt.getInteger("entity"));
 					else impl.sync(false); return;
 			}
-			case "update_railregion": Static.stop(); return;
+			case "update_region": Static.stop(); return;
 			default: return;
 		}
 	}

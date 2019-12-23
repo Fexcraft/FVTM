@@ -59,7 +59,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				if(impl == null) Print.debug("Capability is null. CHP " + packet.nbt.getInteger("entity"));
 				else impl.read(null, packet.nbt); return;
 			}
-			case "update_railregion":
+			case "update_region":
 			case "update_junction":
 			case "rem_junction":
 			case "update_junction_state":
@@ -68,7 +68,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "spawn_railentity":
 			case "update_sections":
 			case "remove_entity":
-			case "update_unit_section":{ Print.debug("task: " + task + " " + packet.nbt);Static.stop(); return; }
+			case "update_unit_section":{ Print.debug("task: " + task + " " + packet.nbt); Static.stop(); return; }
 			default: return;
 		}
 	}

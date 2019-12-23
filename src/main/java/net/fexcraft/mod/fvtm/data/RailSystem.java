@@ -39,7 +39,7 @@ public interface RailSystem {
 	/** For timed tasks, do not use this one. */
 	public void scheduledCheck();
 	
-	public void updateTick();
+	public void updateTick(boolean remote);
 	
 	/** WorldSave/fvtm folder. */
 	public File getRootFile();

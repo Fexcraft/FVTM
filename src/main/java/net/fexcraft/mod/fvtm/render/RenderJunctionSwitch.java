@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.render;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.minecraft.client.renderer.entity.Render;
@@ -22,7 +21,7 @@ public class RenderJunctionSwitch extends Render<JunctionSwitchEntity> implement
 
     @Override
     public void doRender(JunctionSwitchEntity entity, double x, double y, double z, float entity_yaw, float ticks){
-    	if(entity.junction == null){ Print.debug("ENTITY JUNCTION NULL " + entity); return; }
+    	if(entity.junction == null){ /*Print.debug("ENTITY JUNCTION NULL " + entity);*/ return; }
         GL11.glPushMatrix();
         {
         	float rot = 60;

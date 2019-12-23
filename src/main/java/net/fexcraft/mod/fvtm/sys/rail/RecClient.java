@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
@@ -21,14 +22,13 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 
 	@Override
 	public void process(PacketNBTTagCompound packet, Object[] objs){
-		String task = packet.nbt.getString("task");
-		EntityPlayer player = (EntityPlayer)objs[0];
+		String task = packet.nbt.getString("task"); EntityPlayer player = (EntityPlayer)objs[0];
 		RailSystem sys = player.world.getCapability(Capabilities.RAILSYSTEM, null);
-		if(sys == null){ Print.log("Received packet but no capability found, aborting!\n" + packet.nbt);return; } RailSys system = sys.get();
+		if(sys == null){ Print.log("Received packet but no capability found, aborting!\n" + packet.nbt); return; } RailSys system = sys.get();
 		try{
 			switch(task){
-				case "update_railregion":{
-					system.updateRegion(player.world.isRemote, packet.nbt.getIntArray("XZ"), packet.nbt, null);
+				case "update_region":{
+					system.updateRegion(packet.nbt, null);
 					return;
 				}
 				case "update_junction":{
@@ -72,9 +72,10 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					} return;
 				}
 				case "spawn_railentity":{
-					Region region = system.getRegions().get(packet.nbt.getIntArray("XZ"));
-					RailEntity entity = new RailEntity(region, packet.nbt).read(packet.nbt);
-					region.getEntities().put(entity.getUID(), entity);
+					Print.debug("Receiving entity spawn request.");
+					Region region = system.getRegions().get(packet.nbt.getIntArray("XZ"), true);
+					if(region != null && region.loaded) region.spawnEntity(new RailEntity(region, packet.nbt.getLong("uid")).read(packet.nbt));
+					else Region.clientqueue.put(packet.nbt.getLong("uid"), packet.nbt.copy());
 					return;
 				}
 				case "update_sections":{
@@ -96,7 +97,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				}
 				default: Print.debug(packet.nbt); return;
 			}
-		} catch(Exception e){ e.printStackTrace(); }
+		} catch(Exception e){ e.printStackTrace(); Print.debug(packet.nbt); Static.stop(); }
 	}
 
 }

@@ -9,7 +9,6 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
@@ -27,6 +26,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * First prototype of RailEntity system.
@@ -53,7 +54,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public float frbogiedis, rrbogiedis, frconndis, rrconndis, length, moverq;//push_rq, pull_rq;
 	public TrackUnit[] unitson = new TrackUnit[4];
 	//
-	private short lastcheck = 20;//for entity despawn/spawning;
+	private Short lastcheck = null;//for entity despawn/spawning;
 	private static final short interval = 100;//300
 	private MiniBB ccalc = new MiniBB();
 	private boolean hascoupled;
@@ -76,7 +77,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		crear = move(0, TrainPoint.COUPLER_REAR);
 		front.mbb.update(cfront, 0.125f); rear.mbb.update(crear, 0.125f);
 		//
-		region.spawnEntity(this);
+		region.spawnEntity(this.start());
 	}
 
 	private Vec3f medium(Vec3f vec0, Vec3f vec1){
@@ -89,12 +90,11 @@ public class RailEntity implements Comparable<RailEntity>{
 		region = railregion; this.com = compound;
 	}
 	
-	/** only to use with read() afterwards 
-	 * @param compound */
-	public RailEntity(Region railregion, NBTTagCompound compound){
-		region = railregion; long uid = compound.getLong("Compound");
-		if(compound.getBoolean("Singular")) com = Compound.get(this, uid);
-		else Static.exception(new Exception("Cannot remote spawn unit of multi compound."), false);
+	/** only to use with read() afterwards || CLIENT SIDE METHOD */
+	@SideOnly(Side.CLIENT)
+	public RailEntity(Region railregion, long uid){
+		region = railregion; this.uid = uid;
+		com = Compound.getNewClientCompound(this);
 	}
 
 	public long getUID(){
@@ -395,7 +395,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private void checkIfShouldHaveEntity(){
-		if(lastcheck > 0){ lastcheck--; return; }
+		if(lastcheck == null) return; if(lastcheck > 0){ lastcheck--; return; }
 		if(entity != null){
 			if(entity.seats != null) for(SeatEntity seat : entity.seats)
 				if(seat != null && seat.hasPassenger()){ lastcheck = interval; return; }
@@ -447,7 +447,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public RailEntity read(NBTTagCompound compound){
-		uid = compound.getLong("uid");
+		uid = compound.getLong("uid"); if(region == null) Print.debug("region is NULL");
 		current = region.getTrack(new PathKey(compound));
 		if(current == null) Print.log("track not found! " + new PathKey(compound).toString());
 		if(current == null){ this.dispose(); return this; }
@@ -631,6 +631,10 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	public Compound getCompound(){
 		return com;
+	}
+
+	public RailEntity start(){
+		lastcheck = interval / 2; return this;
 	}
 
 }

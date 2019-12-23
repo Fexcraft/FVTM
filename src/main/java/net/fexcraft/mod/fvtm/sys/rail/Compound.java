@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -169,6 +170,12 @@ public abstract class Compound {
 
 	public static Compound get(RailEntity ent, long uid){
 		if(COMPOUNDS.containsKey(uid)) return COMPOUNDS.get(uid); return new Singular(ent, uid);
+	}
+
+	public static Compound getNewClientCompound(RailEntity entity){
+		long id = COMPOUNDS.size(); while(COMPOUNDS.containsKey(id)) id++;
+		Print.debug("Creating new placeholder client compound for '" + entity.uid + "'/" + id + "!");
+		return new Singular(entity, id);
 	}
 	
 	public ArrayList<RailEntity> getEntitites(){

@@ -93,7 +93,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public RailVehicle(RailEntity ent){
 		this(ent.getRegion().getWorld().getWorld()); ent.entity = this;
 		(railentity = ent).alignEntity(true); this.railentid = ent.getUID();
-		initializeVehicle(false); Print.debug(this, railentid, this.getPositionVector());
+		initializeVehicle(false); Print.debug(this +  " " + railentid + " " + this.getPositionVector());
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	@Override
 	public void writeSpawnData(ByteBuf buffer){
         NBTTagCompound compound = axes.write(this, new NBTTagCompound());
-        compound.setLong("RailEntity", railentity == null ? railentid : railentity.getUID());
+        compound.setLong("RailEntity", railentity.getUID());
 		ByteBufUtils.writeTag(buffer, compound); Print.debug("sent: " + compound);
 	}
 
@@ -173,7 +173,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public VehicleData getVehicleData(){
-		return railentity == null ? null : railentity.vehdata;
+		return railentity.vehdata;
 	}
 
 	@Override

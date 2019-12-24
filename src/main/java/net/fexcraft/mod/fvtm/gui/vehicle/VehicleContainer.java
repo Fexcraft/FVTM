@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
@@ -104,10 +105,11 @@ public class VehicleContainer extends GenericContainer {
 	
 	public VehicleContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
 		super(player); initpacket = compound; if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
+		if(xyz[1] == 0 && (!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false)){ player.closeScreen(); return; }
 		//
 		if(compound.hasKey("inventory")){ invmode = true;
-			SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
+			SeatEntity ent = (SeatEntity)player.getRidingEntity();
+			veh = ent == null ? (GenericVehicle)player.world.getEntityByID(xyz[1]) : ent.getVehicle();
 			invpart = veh.getVehicleData().getPart(inv_id = compound.getString("inventory"));
 			function = invpart.getFunction("fvtm:inventory");
 			this.populateSlots();

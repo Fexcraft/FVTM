@@ -77,7 +77,7 @@ public class InventoryFunction extends Function {
 	/** Functional Copy in PartData. */
 	public InventoryFunction(InventoryFunction root){
 		super(null); type = root.type; capacity = root.capacity; /*stacksize = root.stacksize;*/
-		fluid = root.fluid; this.whitelist = root.whitelist; this.blacklist = root.blacklist;
+		fluid = root.fluid; this.whitelist = root.whitelist; this.blacklist = root.blacklist; this.seats = root.seats;
 		switch(type){
 			case CONTAINER: break;
 			case ENERGY: break;

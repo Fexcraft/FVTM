@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.block.material.MapColor;
@@ -29,12 +30,12 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 194; this.ySize = 134;
-		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-		SeatEntity seat = (SeatEntity)player.getRidingEntity(); veh = seat.getVehicle();
+		//if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
+		SeatEntity seat = (SeatEntity)player.getRidingEntity(); veh = seat == null ? (GenericVehicle)world.getEntityByID(y) : seat.getVehicle();
 		for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
 			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
-			if(inv == null) continue; if(inv.getInventoryType() == InventoryType.CONTAINER) continue;
-			if(seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name))){
+			if(inv == null || inv.getInventoryType() == InventoryType.CONTAINER) continue;
+			if(seat == null ? inv.getSeats().contains("external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
 				inventories.add(entry.getValue()); inv_names.add(entry.getKey());
 			}
 		} for(int i = 0; i < 8; i++) colors[i] = RGB.WHITE;
@@ -75,7 +76,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 			if(i < 0 || (i + (page * 8)) >= inventories.size()) return true;
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("inventory", inv_names.get(i));
-			openGenericGui(936, new int[]{ 0, 0, 0 }, compound);
+			openGenericGui(936, new int[]{ 0, veh.getEntity().getEntityId(), 0 }, compound);
 			return true;
 		}
 		return false;

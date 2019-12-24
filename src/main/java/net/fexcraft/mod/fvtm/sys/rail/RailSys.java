@@ -261,8 +261,8 @@ public class RailSys implements RailSystem {
 					}
 					if(allregionsloaded){
 						Compound.Multiple multiple = new Compound.Multiple(this, null, uid, ents);
+						multiple.forward = com.getBoolean("Forward"); torem.add(uid);
 						for(RailEntity ent : multiple.entities) ent.region.spawnEntity(ent.start());
-						torem.add(uid);
 					}
 				}
 			} torem.forEach(rem -> Region.fillqueue.remove(rem)); torem.clear();

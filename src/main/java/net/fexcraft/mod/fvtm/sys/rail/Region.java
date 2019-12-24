@@ -129,25 +129,18 @@ public class Region {
 				if(entity.com.isSingular()){
 					list.appendTag(entity.write(null));
 				}
-				else if(entity.com.isMultiple()){
-					if(entity.com.isHead(entity)){
-						NBTTagCompound com = new NBTTagCompound();
-						com.setLong("Compound", entity.com.uid);
-						com.setBoolean("Singular", false);
-						//com.setBoolean("Head", true);
-						NBTTagList ents = new NBTTagList();
-						for(RailEntity ent : entity.com.entities){
-							ents.appendTag(ent.write(null));
-						}
-						com.setTag("Entities", ents);
-						list.appendTag(com);
+				else if(entity.com.isMultiple() && entity.com.isHead(entity)){
+					NBTTagCompound com = new NBTTagCompound();
+					com.setLong("Compound", entity.com.uid);
+					com.setBoolean("Forward", entity.com.forward);
+					com.setBoolean("Singular", false);
+					//com.setBoolean("Head", true);
+					NBTTagList ents = new NBTTagList();
+					for(RailEntity ent : entity.com.entities){
+						ents.appendTag(ent.write(null));
 					}
-					/*else if(entity.com.isEnd(entity)){
-						NBTTagCompound com = new NBTTagCompound(); com.setBoolean("End", true);
-						com.setLong("Compound", entity.com.uid); com.setBoolean("Singular", false);
-						com.setIntArray("HeadRegion", RegionKey.getRegionXZ(entity.com.getEntitites().get(0).pos));
-						list.appendTag(com);
-					}*/
+					com.setTag("Entities", ents);
+					list.appendTag(com);
 				}
 				else{
 					Print.log("Error, could not save following entity compound because of missing instructions: " + entity);

@@ -417,6 +417,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
 		compound.setLong("uid", uid);
+		compound.setIntArray("region", region.getKey().toArray());
 		current.getId().write(compound);
 		compound.setTag("pos", DataUtil.writeVec3f(pos));
 		compound.setTag("prev", DataUtil.writeVec3f(prev));

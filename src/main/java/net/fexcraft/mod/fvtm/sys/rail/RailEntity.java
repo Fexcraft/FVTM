@@ -75,7 +75,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		pos = medium(bfront, brear); moverq += 0.02f;
 		cfront = move(rrconndis + frconndis, TrainPoint.COUPLER_FRONT);
 		crear = move(0, TrainPoint.COUPLER_REAR);
-		front.mbb.update(cfront, 0.125f); rear.mbb.update(crear, 0.125f);
+		front.mbb.update(cfront, vehdata.getType().getCouplerRange() / 2); rear.mbb.update(crear, vehdata.getType().getCouplerRange() / 2);
 		//
 		region.spawnEntity(this.start());
 	}
@@ -273,7 +273,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		cfront = move(passed + (frconndis - frbogiedis), TrainPoint.COUPLER_FRONT);
 		crear = move(passed - frbogiedis - rrconndis, TrainPoint.COUPLER_REAR);
 		prev.copyFrom(pos); pos = medium(bfront, brear);
-		front.mbb.update(cfront, 0.25f); rear.mbb.update(crear, 0.25f);
+		front.mbb.update(cfront, vehdata.getType().getCouplerRange()); rear.mbb.update(crear, vehdata.getType().getCouplerRange());
 	}
 
 	private ArrayList<RailEntity> railentlist = new ArrayList<>();

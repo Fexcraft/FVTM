@@ -51,6 +51,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected Vec3d def_front_conn, def_rear_conn;
 	protected HashMap<String, ResourceLocation> preinstalled;
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
+	protected float coupler_range = 0.25f;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -141,6 +142,9 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		if(obj.has("RearConnector")){
 			this.def_rear_conn = Pos.fromJson(obj.get("RearConnector"), obj.get("RearConnector").isJsonArray()).to16Double();
+		}
+		if(obj.has("CouplerRange")){
+			this.coupler_range = obj.get("CouplerRange").getAsFloat();
 		}
 		if(obj.has("PreInstalled")){
 			preinstalled = new HashMap<>(); JsonObject pre = obj.get("PreInstalled").getAsJsonObject();
@@ -255,6 +259,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	@Override
 	public Map<String, Sound> getSounds(){
 		return sounds;
+	}
+
+	public float getCouplerRange(){
+		return coupler_range;
 	}
 
 }

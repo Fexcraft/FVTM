@@ -48,7 +48,7 @@ public class RailSys implements RailSystem {
 	@Override
 	public void setWorld(World world, int dimension){
 		this.world = world; this.dimension = dimension;
-		SINGLEPLAYER = Static.getServer().isSinglePlayer();
+		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
 	}
 
 	@Override

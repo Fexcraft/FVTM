@@ -369,7 +369,7 @@ public class Junction {
 
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : root.getWorld().playerEntities){
-			if(vecpos.vector.distanceTo(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 256) return true;
+			if(vecpos.vector.distanceTo(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
 		} return false;
 	}
 

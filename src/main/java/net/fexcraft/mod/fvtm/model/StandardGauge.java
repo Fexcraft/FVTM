@@ -32,8 +32,8 @@ public class StandardGauge extends RailGaugeModel {
 			{ new Vec3f(0.9375, 0.25, 0), new Vec3f(1.0625, 0.25, 0) }
 		};
 		TurboList ties = new TurboList("ties"); this.groups.add(ties);
-		ties.add(new ModelRendererTurbo(ties, 0, 0, textureX, textureY).addBox(-2, 0, -20, 4, 2, 40)
-			.setRotationPoint(0, -4, 0).setRotationAngle(0, 0, -0).setName("center_ties"));
+		ties.add(new ModelRendererTurbo(ties, 0, 0, textureX, textureY).addBox(-2, 2, -20, 4, 2, 40)
+			.setRotationPoint(0, -4, 0).setRotationAngle(0, 0, 0).setName("center_ties"));
 		//
 		simple_signal_base = new TurboList("simple_signal_base");
 		simple_signal_base.add(new ModelRendererTurbo(simple_signal_base, 101, 0, textureX, textureY).addBox(0, 0, 0, 6, 12, 5)

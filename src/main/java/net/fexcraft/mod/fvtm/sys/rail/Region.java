@@ -142,9 +142,6 @@ public class Region {
 					com.setTag("Entities", ents);
 					list.appendTag(com);
 				}
-				else{
-					Print.log("Error, could not save following entity compound because of missing instructions: " + entity);
-				}
 			}
 			compound.setTag("Entities", list);
 		}

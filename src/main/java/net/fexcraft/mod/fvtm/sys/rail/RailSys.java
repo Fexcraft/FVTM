@@ -232,6 +232,7 @@ public class RailSys implements RailSystem {
 			ArrayList<Long> torem = new ArrayList<>();
 			for(Long uid : Region.clientqueue.keySet()){
 				NBTTagCompound compound = Region.clientqueue.get(uid);
+				Print.debug("Checking " + compound.getLong("uid"));
 				Region region = getRegions().get(compound.getIntArray("XZ"));
 				if(region == null || !region.loaded) continue;
 				Print.debug("Processing " + compound.getLong("uid") + " - " + region.getKey().x + "/" + region.getKey().z);

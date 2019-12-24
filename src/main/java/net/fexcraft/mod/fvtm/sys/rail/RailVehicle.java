@@ -93,7 +93,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public RailVehicle(RailEntity ent){
 		this(ent.getRegion().getWorld().getWorld()); ent.entity = this;
 		(railentity = ent).alignEntity(true); this.railentid = ent.getUID();
-		initializeVehicle(false); Print.debug(this +  " " + railentid + " " + this.getPositionVector());
+		initializeVehicle(false, null); Print.debug(this +  " " + railentid + " " + this.getPositionVector());
 	}
 
 	@Override
@@ -101,12 +101,16 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		//
 	}
 
-	private void initializeVehicle(boolean remote){
+	private void initializeVehicle(boolean remote, NBTTagCompound compound){
 		if(railentity == null){
 			railentity = world.getCapability(Capabilities.RAILSYSTEM, null).get().getEntity(railentid, true);
 			if(railentity != null) railentity.entity = this;
 		}
-		if(railentity == null){ Print.log("Failed to load RailEntity for '" + this + "', aborting init."); return;}
+		if(railentity == null){
+			Print.log("Failed to load RailEntity for '" + this + "', attepting to load from spawndata.");
+			Region region = world.getCapability(Capabilities.RAILSYSTEM, null).get().getRegions().get(compound.getIntArray("region"), true);
+			if(region != null && region.loaded) region.spawnEntity(new RailEntity(region, compound.getLong("Compound")).read(compound).start());
+		}
         seats = new SeatEntity[railentity.vehdata.getSeats().size()];
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
@@ -128,6 +132,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public void writeSpawnData(ByteBuf buffer){
         NBTTagCompound compound = axes.write(this, new NBTTagCompound());
         compound.setLong("RailEntity", railentity.getUID());
+        compound.setTag("Entity", railentity.write(new NBTTagCompound()));
 		ByteBufUtils.writeTag(buffer, compound); Print.debug("sent: " + compound);
 	}
 
@@ -140,7 +145,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             prevRotationYaw = axes.getYaw();
             prevRotationPitch = axes.getPitch();
             prevRotationRoll = axes.getRoll();
-            initializeVehicle(true);
+            initializeVehicle(true, compound.getCompoundTag("Entity"));
         }
         catch(Exception e){
             e.printStackTrace();
@@ -526,7 +531,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(railentity == null){
         	if(railentid == -1){ Print.log("No RailEntity ID linked, despawning!");this.setDead(); }
         	//railentity = world.getCapability(Capabilities.RAILSYSTEM, null).getEntity(railentid, true);
-        	this.initializeVehicle(world.isRemote);
+        	this.initializeVehicle(world.isRemote, null);
         }
         if(railentity == null || railentity.vehdata == null){
         	Print.log("VehicleData OR RailEntity is NULL; Not ticking vehicle. Removing Vehicle."); this.setDead(); return;

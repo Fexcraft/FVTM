@@ -249,8 +249,8 @@ public class RailSys implements RailSystem {
 					region = getRegions().get(com.getIntArray("region"), true);
 					if(region == null || !region.loaded) continue;
 					Singular singular = new Singular(region, com.getLong("Compound"), com);
+					singular.forward = com.getBoolean("forward"); torem.add(uid);
 					region.spawnEntity(singular.getEntitites().get(0).start());
-					torem.add(uid);
 				}
 				else{
 					NBTTagList ents = (NBTTagList)com.getTag("Entities"); boolean allregionsloaded = true;

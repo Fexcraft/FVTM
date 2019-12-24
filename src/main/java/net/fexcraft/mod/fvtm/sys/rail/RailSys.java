@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
+import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -20,6 +21,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -239,12 +241,31 @@ public class RailSys implements RailSystem {
 		}
 		if(!remote && !Region.fillqueue.isEmpty() && (SINGLEPLAYER ? PLAYERON : true)){
 			Print.debug("Processing Entities in Queue " + Region.fillqueue.size());
-			while(!Region.fillqueue.isEmpty()){
-				RailEntity entity = Region.fillqueue.poll();
-				int[] arr = RegionKey.getRegionXZ(entity.pos);
-				Print.debug("Processing " + entity.uid + " - " + arr[0] + "/" + arr[1]);
-				regions.get(arr, true).spawnEntity(entity.start());
-			}
+			ArrayList<Long> torem = new ArrayList<>(); Region region;
+			for(Long uid : Region.fillqueue.keySet()){
+				NBTTagCompound com = Region.fillqueue.get(uid);
+				boolean single = com.hasKey("Singular") ? com.getBoolean("Singular") : true;
+				if(single){
+					region = getRegions().get(com.getIntArray("region"), true);
+					if(region == null || !region.loaded) continue;
+					Singular singular = new Singular(region, com.getLong("Compound"), com);
+					region.spawnEntity(singular.getEntitites().get(0).start());
+					torem.add(uid);
+				}
+				else{
+					NBTTagList ents = (NBTTagList)com.getTag("Entities"); boolean allregionsloaded = true;
+					for(NBTBase bas : ents){
+						NBTTagCompound nbt = (NBTTagCompound)bas; if(!nbt.hasKey("region")) continue;
+						region = getRegions().get(nbt.getIntArray("region"), true);
+						if(region == null || !region.loaded){ allregionsloaded = false; break; }
+					}
+					if(allregionsloaded){
+						Compound.Multiple multiple = new Compound.Multiple(this, null, uid, ents);
+						for(RailEntity ent : multiple.entities) ent.region.spawnEntity(ent.start());
+						torem.add(uid);
+					}
+				}
+			} torem.forEach(rem -> Region.fillqueue.remove(rem)); torem.clear();
 		}
 		for(Region region : regions.values()){ region.updateTick(); }
 	}

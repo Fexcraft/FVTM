@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,8 +12,6 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
-import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -34,7 +30,7 @@ import net.minecraft.util.math.BlockPos;
  */
 public class Region {
 	
-	public static final Queue<RailEntity> fillqueue = new LinkedList<>();
+	public static final TreeMap<Long, NBTTagCompound> fillqueue = new TreeMap<>();
 	public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
@@ -99,22 +95,7 @@ public class Region {
 			NBTTagList list = (NBTTagList)compound.getTag("Entities");
 			for(NBTBase base : list){
 				NBTTagCompound com = (NBTTagCompound)base;
-				boolean single = com.hasKey("Singular") ? com.getBoolean("Singular") : true;
-				if(single){
-					Singular singular = new Singular(this, com.getLong("Compound"), com);
-					fillqueue.add(singular.entities.get(0));
-					//entities.put(singular.entities.get(0).getUID(), singular.entities.get(0));
-				}
-				else /*if(com.hasKey("Head") && com.getBoolean("Head"))*/{
-					Multiple multiple = new Multiple(this, com.getLong("Compound"), (NBTTagList)com.getTag("Entities"));
-					fillqueue.addAll(multiple.entities);
-				}
-				/*else if(com.hasKey("End") && com.getBoolean("End")){
-					world.getRegions().get(com.getIntArray("HeadRegion"), true);
-				}*/
-				/*else{
-					Print.debug("Error, could not load following entity compound because of missing instructions: " + com);
-				}*/
+				fillqueue.put(com.getLong("Compound"), com);
 			}
 		}
 		return this;

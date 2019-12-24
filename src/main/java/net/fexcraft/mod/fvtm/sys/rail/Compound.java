@@ -93,11 +93,11 @@ public abstract class Compound {
 			for(RailEntity ent : entities) ent.com = this; COMPOUNDS.put(uid, this);
 		}
 
-		public Multiple(Region region, Long id, NBTTagList list){
+		public Multiple(RailSys system, Region region, Long id, NBTTagList list){
 			super(id); RailEntity prev = null, curr; NBTTagCompound compound;
 			for(int i = 0; i < list.tagCount(); i++){
 				compound = (NBTTagCompound)list.get(i); if(!compound.hasKey("region")) return;
-				curr = new RailEntity(region.getWorld().getRegions().get(compound.getIntArray("region")), this).read(compound);
+				curr = new RailEntity(region == null ? system.getRegions().get(compound.getIntArray("region")) : region, this).read(compound);
 				if(prev != null){
 					if(compound.hasKey("front_coupled") && compound.getLong("front_coupled") == prev.uid){
 						(compound.getBoolean("front_coupler") ? prev.front : prev.rear).entity = curr;

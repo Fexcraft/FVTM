@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
+import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.MiniBB;
 import net.minecraft.client.Minecraft;

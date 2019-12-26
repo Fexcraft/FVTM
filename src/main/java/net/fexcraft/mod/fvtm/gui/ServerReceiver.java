@@ -10,7 +10,7 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Compound;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
+import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;

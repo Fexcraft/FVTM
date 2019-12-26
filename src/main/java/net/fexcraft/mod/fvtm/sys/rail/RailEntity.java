@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
+import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -322,7 +323,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
 	}
 
-	protected void updateRegion(Vec316f start){
+	public void updateRegion(Vec316f start){
 		region.getEntities().remove(uid);
 		region = region.getWorld().getRegions().get(RegionKey.getRegionXZ(start), true);
 		region.getEntities().put(uid, this);
@@ -638,6 +639,10 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public RailEntity start(){
 		lastcheck = interval / 2; return this;
+	}
+
+	public ArrayList<JEC> getCommands(){
+		return commands;
 	}
 
 }

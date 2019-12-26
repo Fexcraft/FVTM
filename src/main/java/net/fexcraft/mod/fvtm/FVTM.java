@@ -84,7 +84,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
-import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
+import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.road.RoadSys;
 import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.Resources;

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.rail;
+package net.fexcraft.mod.fvtm.sys.rail.vis;
 
 import java.util.UUID;
 
@@ -30,6 +30,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Axis3D;
@@ -67,8 +68,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, ContainerHoldingEntity {
 
-	public RailEntity railentity;
-	private long railentid = -1;
+	public Reltrs rek;
 	public Axis3D axes, prevaxes;
 	private byte toggletimer;
 	public SeatEntity[] seats;
@@ -92,8 +92,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public RailVehicle(RailEntity ent){
 		this(ent.getRegion().getWorld().getWorld()); ent.entity = this;
-		(railentity = ent).alignEntity(true); this.railentid = ent.getUID();
-		initializeVehicle(false, null); Print.debug(this +  " " + railentid + " " + this.getPositionVector());
+		(rek = new Reltrs(ent, null)).ent().alignEntity(true);
+		initializeVehicle(false, null); Print.debug(this +  " " + rek.uid + " " + this.getPositionVector());
 	}
 
 	@Override
@@ -102,20 +102,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
-		if(railentity == null){
-			railentity = world.getCapability(Capabilities.RAILSYSTEM, null).get().getEntity(railentid, true);
-			if(railentity != null) railentity.entity = this;
-		}
-		if(railentity == null){
-			Print.log("Failed to load RailEntity for '" + this + "', attepting to load from spawndata.");
-			Region region = world.getCapability(Capabilities.RAILSYSTEM, null).get().getRegions().get(compound.getIntArray("region"), true);
-			if(region != null && region.loaded) region.spawnEntity(new RailEntity(region, compound.getLong("Compound")).read(compound).start());
-		}
-        seats = new SeatEntity[railentity.vehdata.getSeats().size()];
+		if(compound != null) rek.read(compound);
+        seats = new SeatEntity[rek.data().getSeats().size()];
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
-        else{ Print.debug("No ContainerCap Implementation Found!");}
-        railentity.vehdata.getScripts().forEach((script) -> script.onSpawn(this, railentity.vehdata));
+        else{ Print.debug("No ContainerCapability Implementation Found!");}
+        rek.data().getScripts().forEach((script) -> script.onSpawn(this, rek.data()));
 	}
 	
 	@Override
@@ -125,22 +117,20 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
-		compound.setLong("RailEntity", railentity == null ? railentid : railentity.getUID());
+		compound.setLong("RailEntity", rek.uid);
 	}
 
 	@Override
 	public void writeSpawnData(ByteBuf buffer){
         NBTTagCompound compound = axes.write(this, new NBTTagCompound());
-        compound.setLong("RailEntity", railentity.getUID());
-        compound.setTag("Entity", railentity.write(new NBTTagCompound()));
-		ByteBufUtils.writeTag(buffer, compound); Print.debug("sent: " + compound);
+        compound.setTag("Entity", rek.write(new NBTTagCompound()));
+		ByteBufUtils.writeTag(buffer, compound); //Print.debug("sent: " + compound);
 	}
 
 	@Override
 	public void readSpawnData(ByteBuf buffer){
         try{
-            NBTTagCompound compound = ByteBufUtils.readTag(buffer);  Print.debug("recd: " + compound);
-    		railentid = compound.getLong("RailEntity");
+            NBTTagCompound compound = ByteBufUtils.readTag(buffer); //Print.debug("recd: " + compound);
             axes = Axis3D.read(this, compound);
             prevRotationYaw = axes.getYaw();
             prevRotationPitch = axes.getPitch();
@@ -155,10 +145,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     
     @Override
     public void setDead(){
-    	if(railentity == null || railentity.vehdata == null){ super.setDead(); return; }
+    	if(rek == null || rek.data() == null){ super.setDead(); return; }
         if(Config.VEHICLE_DROP_CONTENTS && !world.isRemote){
-            for(String part : railentity.vehdata.getInventories()){
-            	InventoryFunction func = railentity.vehdata.getPart(part).getFunction("fvtm:inventory"); if(func == null) continue;
+            for(String part : rek.data().getInventories()){
+            	InventoryFunction func = rek.data().getPart(part).getFunction("fvtm:inventory"); if(func == null) continue;
             	if(func.isInventoryType(InventoryType.ITEM)){
             		for(int i = 0; i < func.getStacks().size(); i++){
                         this.entityDropItem(func.getStacks().get(i), 0.5f);
@@ -170,20 +160,20 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         this.getCapability(Capabilities.CONTAINER, null).dropContents();
         //
-        super.setDead(); railentity.entity = null;
+        super.setDead(); if(!world.isRemote) rek.ent().entity = null;
         if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
         //
-        railentity.vehdata.getScripts().forEach((script) -> script.onRemove(this, railentity.vehdata));
+        rek.data().getScripts().forEach((script) -> script.onRemove(this, rek.data()));
     }
 
 	@Override
 	public VehicleData getVehicleData(){
-		return railentity.vehdata;
+		return rek.data();
 	}
 
 	@Override
 	public VehicleType getVehicleType(){
-		return railentity.vehdata.getType().getVehicleType();
+		return rek.data().getType().getVehicleType();
 	}
 
 	@Override
@@ -204,7 +194,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
-		for(VehicleScript script : railentity.vehdata.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
+		for(VehicleScript script : rek.data().getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && !key.dismount() && !key.scripts() && !key.toggables() && !key.inventory()){
             return false;
         }
@@ -214,37 +204,38 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         switch(key){
             case ACCELERATE:{
-                railentity.throttle += railentity.throttle < 0 ? 0.02f : 0.01F;
-                if(railentity.throttle > 1F){ railentity.throttle = 1F; }
+                rek.ent().throttle += rek.ent().throttle < 0 ? 0.02f : 0.01F;
+                if(rek.ent().throttle > 1F){ rek.ent().throttle = 1F; }
                 return true;
             }
             case DECELERATE:{
-            	railentity.throttle -= railentity.throttle > 0 ? 0.02f : 0.01F;
-                if(railentity.throttle < 0){ railentity.throttle = 0; }
+            	rek.ent().throttle -= rek.ent().throttle > 0 ? 0.02f : 0.01F;
+                if(rek.ent().throttle < 0){ rek.ent().throttle = 0; }
                 return true;
             }
             case TURN_LEFT:{
             	if(throttle > 0.05f) Print.bar(player, "&cDecreate the throttle before switching direction.");
-            	else railentity.setForward(player, false);
+            	else rek.ent().setForward(player, false);
                 return true;
             }
             case TURN_RIGHT:{
             	if(throttle > 0.05f) Print.bar(player, "&cDecreate the throttle before switching direction.");
-            	else railentity.setForward(player, true);
+            	else rek.ent().setForward(player, true);
                 return true;
             }
             case BRAKE:{
-            	railentity.throttle *= 0.8F;
+            	rek.ent().throttle *= 0.8F;
                 if(onGround){
                     motionX *= 0.8F;
                     motionZ *= 0.8F;
                 }
                 if(throttle < -0.0001){
-                	railentity.throttle = 0;
+                	rek.ent().throttle = 0;
                 }
                 return true;
             }
             case ENGINE: {
+            	//TODO check this (server/client)
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setString("task", "engine_toggle");
                 ApiUtil.sendEntityUpdatePacketToServer(this, nbt);
@@ -257,7 +248,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case INVENTORY: {
                 if(!world.isRemote){
-                    if(railentity.vehdata.getPart("engine") != null && railentity.vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                    if(rek.data().getPart("engine") != null && rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
                         Print.chat(player, "Turn engine off first!");
                     }
                     else{
@@ -288,11 +279,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             case LIGHTS: {//TODO replace with rail lights type
                 if(!world.isRemote){
                     if(toggletimer <= 0){
-            			railentity.vehdata.getAttribute("lights").setValue(!railentity.vehdata.getAttribute("lights").getBooleanValue());
+                    	rek.data().getAttribute("lights").setValue(!rek.data().getAttribute("lights").getBooleanValue());
                         toggletimer = 10;
                         NBTTagCompound nbt = new NBTTagCompound();
                         nbt.setString("task", "toggle_lights");
-                        nbt.setBoolean("lights", railentity.vehdata.getAttribute("lights").getBooleanValue());
+                        nbt.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
                         ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                     }
                 }
@@ -300,12 +291,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case COUPLER_FRONT: {
             	if(toggletimer > 0) return true;
-    			railentity.tryCoupling(player, true);
+    			rek.ent().tryCoupling(player, true);
     			toggletimer = 10; return true;
             }
             case COUPLER_REAR: {
             	if(toggletimer > 0) return true;
-    			railentity.tryCoupling(player, true);
+    			rek.ent().tryCoupling(player, true);
             	toggletimer = 10; return true;
             }
             case MOUSE_MAIN: case MOUSE_RIGHT: return false;
@@ -315,7 +306,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public UUID getPlacer(){
-		return railentity.getPlacer();
+		return world.isRemote ? null : rek.ent().getPlacer();
 	}
 	
     public void rotateYaw(float rotateBy){
@@ -366,8 +357,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             setRotation(yaw, pitch, roll);
         }
         motionX = motX; motionY = motY; motionZ = motZ; angularVelocity = avel;
-        railentity.throttle = (float)(this.throttle = throttle);
-        railentity.vehdata.getAttribute("fuel_stored").setValue(fuel);
+        this.throttle = throttle; rek.data().getAttribute("fuel_stored").setValue(fuel);
 	}
 
     @Override
@@ -432,7 +422,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public String getName(){
-        return railentity == null ? "noent" : railentity.vehdata == null ? "novehdata" : railentity.vehdata.getType().getName();
+        return world.isRemote && rek.ent() == null ? "noent" : rek.data() == null ? "novehdata" : rek.data().getType().getName();
     }
 
     @SideOnly(Side.CLIENT) @Override
@@ -447,18 +437,18 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
 	@Override
 	public VehicleEntity getCoupledEntity(boolean front){
-		return front ? railentity.front.hasEntity() ? railentity.front.entity.entity : null
-			: railentity.rear.hasEntity() ? railentity.rear.entity.entity : null;
+		return world.isRemote ? null : front ? rek.ent().front.hasEntity() ? rek.ent().front.entity.entity : null
+			: rek.ent().rear.hasEntity() ? rek.ent().rear.entity.entity : null;
 	}
 	
 	@Override
 	public VehicleEntity getFrontCoupledEntity(){
-		return railentity.front.hasEntity() ? railentity.front.entity.entity : null;
+		return world.isRemote ? null : rek.ent().front.hasEntity() ? rek.ent().front.entity.entity : null;
 	}
 	
 	@Override
 	public VehicleEntity getRearCoupledEntity(){
-		return railentity.rear.hasEntity() ? railentity.rear.entity.entity : null;
+		return world.isRemote ? null : rek.ent().rear.hasEntity() ? rek.ent().rear.entity.entity : null;
 	}
 
     @Override
@@ -476,7 +466,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(isDead || world.isRemote || hand == EnumHand.OFF_HAND){ return false; }
         ItemStack stack = player.getHeldItem(hand);
         //TODO keyitem/lock check
-        if(railentity.vehdata.isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
+        if(rek.data().isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
         if(!stack.isEmpty()){
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
             	GenericContainer.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }, player); return true;
@@ -486,7 +476,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             //space for other item interaction
             else{
-                if(railentity.vehdata.getPart("engine") != null && railentity.vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                if(rek.data().getPart("engine") != null && rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
                     Print.chat(player, "Turn engine off first!");
                 }
                 else{
@@ -495,9 +485,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
         }
-        if(!railentity.vehdata.getScripts().isEmpty()){
-            for(VehicleScript script : railentity.vehdata.getScripts()){
-                if(script.onInteract(this, railentity.vehdata, player, hand)){
+        if(!rek.data().getScripts().isEmpty()){
+            for(VehicleScript script : rek.data().getScripts()){
+                if(script.onInteract(this, rek.data(), player, hand)){
                     return true;
                 }
             }
@@ -515,9 +505,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         return isDriverInGM1() || true;//(vehicle != null && vehicle.getPart("engine") != null && vehicledata.getFuelTankContent() > vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle);
     }
 
+    @Deprecated //TODO check server/client matters
     public boolean isDrivenByPlayer(){
-        if(railentity.vehdata.getType().isTrailerOrWagon()){
-            return getFrontCoupledEntity() != null && railentity.front.entity.entity.getSeats()[0] != null && SeatEntity.isPassengerThePlayer(railentity.front.entity.entity.getSeats()[0]);
+        if(rek.data().getType().isTrailerOrWagon()){
+            return getFrontCoupledEntity() != null && rek.ent().front.entity.entity.getSeats()[0] != null && SeatEntity.isPassengerThePlayer(rek.ent().front.entity.entity.getSeats()[0]);
         }
         else{
             return seats[0] != null && SeatEntity.isPassengerThePlayer((SeatEntity)seats[0]);
@@ -528,17 +519,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	@Override
     public void onUpdate(){
         super.onUpdate();
-        if(railentity == null){
-        	if(railentid == -1){ Print.log("No RailEntity ID linked, despawning!");this.setDead(); }
-        	//railentity = world.getCapability(Capabilities.RAILSYSTEM, null).getEntity(railentid, true);
-        	this.initializeVehicle(world.isRemote, null);
-        }
-        if(railentity == null || railentity.vehdata == null){
-        	Print.log("VehicleData OR RailEntity is NULL; Not ticking vehicle. Removing Vehicle."); this.setDead(); return;
+        if(rek.data() == null){
+        	Print.log("VehicleData is NULL; Not ticking vehicle. Removing Vehicle."); this.setDead(); return;
         }
         if(!world.isRemote){
-        	for(int i = 0; i < railentity.vehdata.getSeats().size(); i++){
-        		Seat seat = railentity.vehdata.getSeat(i);
+        	for(int i = 0; i < rek.data().getSeats().size(); i++){
+        		Seat seat = rek.data().getSeat(i);
             	if(seats[i] == null || !seats[i].addedToChunk){
             		seats[i] = new SeatEntity(this, i); world.spawnEntity(seats[i]);
             	}
@@ -571,14 +557,14 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 --sptt; setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
             }
-        	railentity.vehdata.getAttribute("throttle").setValue(railentity.throttle);
+        	rek.data().getAttribute("throttle").setValue(throttle);
         	//
         	Vec3f bf0 = railentity.moveOnly(railentity.passed + 0.1f), bf1 = railentity.moveOnly(railentity.passed - 0.1f);
         	Vec3f br0 = railentity.moveOnly(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis + 0.1f);
         	Vec3f br1 = railentity.moveOnly(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis - 0.1f);
     		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - axes.getYaw());
     		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - axes.getYaw());
-    		railentity.vehdata.getAttribute("bogie_front_angle").setValue(front); railentity.vehdata.getAttribute("bogie_rear_angle").setValue(rear);
+    		rek.data().getAttribute("bogie_front_angle").setValue(front); rek.data().getAttribute("bogie_rear_angle").setValue(rear);
     		//
     		/*if(Command.DEBUG)*/ railentity.updatePosition();
         }
@@ -604,10 +590,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         else{
         	
         }
-        railentity.vehdata.getScripts().forEach((script) -> script.onUpdate(this, railentity.vehdata));
+        rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }
-        if(!world.isRemote /*&& ticksExisted % servtick == 0*/){ throttle = railentity.throttle;
+        if(!world.isRemote /*&& ticksExisted % servtick == 0*/){ throttle = rek.ent().throttle;
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
         }
     }
@@ -625,19 +611,19 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public boolean attackEntityFrom(DamageSource source, float amount){
         if(world.isRemote || isDead){ return true; }
         if(source.damageType.equals("player") && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
-            if(railentity.vehdata.isLocked()){
+            if(rek.data().isLocked()){
                 Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
                 return false;
             }
             else{
             	EntityPlayer player = (EntityPlayer)source.getTrueSource();
             	if(player.isSneaking()){
-            		Print.bar(player, "&4&oRemoving entity without dropping item...."); railentity.dispose(); return true;
+            		Print.bar(player, "&4&oRemoving entity without dropping item...."); rek.ent().dispose(); return true;
             	}
-                if(railentity.vehdata.hasPart("engine") && railentity.vehdata.getPart("engine").hasFunction("fvtm:engine")){
-                	railentity.vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(false);
+                if(rek.data().hasPart("engine") && rek.data().getPart("engine").hasFunction("fvtm:engine")){
+                	rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(false);
                 }
-                ItemStack stack = railentity.vehdata.newItemStack();
+                ItemStack stack = rek.data().newItemStack();
                 //
                 /*if(PermissionAPI.hasPermission((EntityPlayer)source.getImmediateSource(), FvtmPermissions.VEHICLE_BREAK)
                 	|| PermissionAPI.hasPermission((EntityPlayer)source.getImmediateSource(), FvtmPermissions.permBreak(stack))){
@@ -655,7 +641,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                         ent.dismountRidingEntity();
                     }*///TODO
                     //
-                    entityDropItem(stack, 0.5F); setDead(); railentity.dispose();
+                    entityDropItem(stack, 0.5F); setDead(); rek.ent().dispose();
                     Print.debug(stack.toString());
                     return true;
                 /*}
@@ -670,7 +656,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target){
-        ItemStack stack = railentity.vehdata.getType().newItemStack();
+        ItemStack stack = rek.data().getType().newItemStack();
         stack.setItemDamage(0); return stack;
     }
 
@@ -680,9 +666,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @SuppressWarnings("unused") @Override
     public void processServerPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : railentity.vehdata.getScripts()){
+            for(VehicleScript script : rek.data().getScripts()){
                 if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
-                    script.onDataPacket(this, railentity.vehdata, pkt.nbt, Side.SERVER);
+                    script.onDataPacket(this, rek.data(), pkt.nbt, Side.SERVER);
                 }
             }
         }
@@ -690,14 +676,14 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
                     if(lr + 1000 >= Time.getDate()){ break; }
-                    lr = Time.getDate(); boolean on = false, nf = false; EngineFunction engine = railentity.vehdata.getPart("engine").getFunction("fvtm:engine");
+                    lr = Time.getDate(); boolean on = false, nf = false; EngineFunction engine = rek.data().getPart("engine").getFunction("fvtm:engine");
                     pkt.nbt.setBoolean("engine_toggle_result", on = engine.toggle());
-                    if(railentity.vehdata.getStoredFuel() == 0){
+                    if(rek.data().getStoredFuel() == 0){
                         pkt.nbt.setBoolean("engine_toggle_result", on = false);
                         pkt.nbt.setBoolean("no_fuel", nf = true);
                     }
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
-                    railentity.throttle = 0;
+                    rek.ent().throttle = 0;
                     //
                     /*SoundEvent event = vehicledata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
                     if(event != null){
@@ -711,7 +697,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     break;
                 }
                 case "resync": {
-                    NBTTagCompound nbt = this.railentity.vehdata.write(new NBTTagCompound());
+                    NBTTagCompound nbt = this.rek.data().write(new NBTTagCompound());
                     nbt.setString("task", "update_vehicledata");
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                 }
@@ -723,9 +709,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @Override
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
-            for(VehicleScript script : railentity.vehdata.getScripts()){
+            for(VehicleScript script : rek.data().getScripts()){
                 if(script.getId().toString().equals(pkt.nbt.getString("ScriptId"))){
-                    script.onDataPacket(this, railentity.vehdata, pkt.nbt, Side.SERVER);
+                    script.onDataPacket(this, rek.data(), pkt.nbt, Side.SERVER);
                 }
             }
         }
@@ -733,7 +719,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
                     if(net.minecraft.client.Minecraft.getMinecraft().player.isRiding() && this.seats[0] == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
-                        Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (railentity.vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
+                        Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");
                         }
@@ -743,13 +729,13 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "resync":
                 case "update_vehicledata": {
-                    this.railentity.vehdata.read(pkt.nbt);
+                    this.rek.data().read(pkt.nbt);
                     break;
                 }
                 case "toggle_lights": {
-                	railentity.vehdata.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
-                    if(railentity.com.isMultiple()){ boolean bool = pkt.nbt.getBoolean("lights");
-                    	railentity.com.entities.forEach(ent -> ent.vehdata.getAttribute("lights").setValue(bool));
+                	rek.data().getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
+                    if(railentity.getCompound().isMultiple()){ boolean bool = pkt.nbt.getBoolean("lights");
+                    	railentity.getCompound().getEntitites().forEach(ent -> ent.vehdata.getAttribute("lights").setValue(bool));
                     } break;
                 }
                 case "update_track":{
@@ -774,11 +760,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "update_commands":{
             		if(pkt.nbt.hasKey("commands")){
-            			railentity.commands.clear(); NBTTagList cmds = (NBTTagList)pkt.nbt.getTag("commands");
+            			railentity.getCommands().clear(); NBTTagList cmds = (NBTTagList)pkt.nbt.getTag("commands");
             			for(NBTBase base : cmds){
             				if(base instanceof NBTTagCompound == false) continue;
             				JEC command = JEC.read((NBTTagCompound)base);
-            				if(command != null) railentity.commands.add(command);
+            				if(command != null) railentity.getCommands().add(command);
             			}
             		}
                 	break;
@@ -789,8 +775,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public void setupCapability(ContainerHolder capability){
-		if(railentity == null || railentity.vehdata == null) return; if(world.isRemote){ capability.sync(true); return; }
-		for(java.util.Map.Entry<String, PartData> entry : railentity.vehdata.getParts().entrySet()){
+		if(rek.data() == null) return; if(world.isRemote){ capability.sync(true); return; }
+		for(java.util.Map.Entry<String, PartData> entry : rek.data().getParts().entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:container")) continue;
 			capability.addContainerSlot(entry.getValue().getFunction(ContainerFunction.class, "fvtm:container").getAsNewSlot(entry.getKey()));
 			Print.debug("Added Container Slot from: " + entry.getValue().getType().getName() + " / " + entry.getKey());

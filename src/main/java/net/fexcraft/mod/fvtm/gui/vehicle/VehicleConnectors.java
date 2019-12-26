@@ -5,7 +5,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailVehicle;
+import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;

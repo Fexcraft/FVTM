@@ -445,17 +445,17 @@ public class Resources {
 	public void onServerTick(TickEvent.ServerTickEvent event){
 		if(event.phase != Phase.START) return;
 		for(World world : Static.getServer().worlds){
-			world.getCapability(Capabilities.RAILSYSTEM, null).updateTick(false);
+			world.getCapability(Capabilities.RAILSYSTEM, null).updateTick();
 		}
 	}
 	
-	@SideOnly(Side.CLIENT) @SubscribeEvent
+	/*@SideOnly(Side.CLIENT) @SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event){
 		if(event.phase != Phase.START) return;
 		if(net.minecraft.client.Minecraft.getMinecraft().world == null) return;
 		if(net.minecraft.client.Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null) == null) return;
 		net.minecraft.client.Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null).updateTick(true);
-	}
+	}*/
 	
 	@SubscribeEvent
 	public void onChunkLoad(ChunkEvent.Load event){

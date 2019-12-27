@@ -226,7 +226,7 @@ public class RailSys implements RailSystem {
 	}
 
 	@Override
-	public void updateTick(boolean remote){
+	public void updateTick(){
 		/*if(remote && !Region.clientqueue.isEmpty()){
 			Print.debug("Processing <NBT> Entities in Queue " + Region.clientqueue.size());
 			ArrayList<Long> torem = new ArrayList<>();
@@ -240,7 +240,7 @@ public class RailSys implements RailSystem {
 				torem.add(uid);
 			} torem.forEach(rem -> Region.clientqueue.remove(rem)); torem.clear();
 		}*/
-		if(!remote && !Region.fillqueue.isEmpty() && (SINGLEPLAYER ? PLAYERON : true)){
+		if(!Region.fillqueue.isEmpty() && (SINGLEPLAYER ? PLAYERON : true)){
 			Print.debug("Processing Entities in Queue " + Region.fillqueue.size());
 			ArrayList<Long> torem = new ArrayList<>(); Region region;
 			for(Long uid : Region.fillqueue.keySet()){

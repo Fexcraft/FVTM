@@ -87,7 +87,7 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					return;
 				}
 				case "remove_entity":{
-					RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false); if(ent == null) return; ent.dispose();
+					//RailEntity ent = system.getEntity(packet.nbt.getLong("uid"), false); if(ent == null) return; ent.dispose();
 					return;
 				}
 				case "update_unit_section":{

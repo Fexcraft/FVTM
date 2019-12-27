@@ -304,28 +304,28 @@ public class Resources {
 
 	public static PartData getPartData(NBTTagCompound compound){
 		if(!compound.hasKey("Part")) return null;
-		Part part = getPart(compound.getString("Part"));
+		Part part = getPart(compound.getString("Part")); if(part == null) return null;
 		try{ return ((PartData)part.getDataClass().getConstructor(Part.class).newInstance(part)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 
 	public static VehicleData getVehicleData(NBTTagCompound compound){
 		if(!compound.hasKey("Vehicle")) return null;
-		Vehicle veh = getVehicle(compound.getString("Vehicle"));
+		Vehicle veh = getVehicle(compound.getString("Vehicle")); if(veh == null) return null;
 		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 
 	public static ContainerData getContainerData(NBTTagCompound compound){
 		if(!compound.hasKey("Container")) return null;
-		Container con = getContainer(compound.getString("Container"));
+		Container con = getContainer(compound.getString("Container")); if(con == null) return null;
 		try{ return ((ContainerData)con.getDataClass().getConstructor(Container.class).newInstance(con)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 
 	public static BlockData getBlockData(NBTTagCompound compound){
 		if(!compound.hasKey("Block")) return null;
-		Block block = getBlock(compound.getString("Block"));
+		Block block = getBlock(compound.getString("Block")); if(block == null) return null;
 		try{ return ((BlockData)block.getDataClass().getConstructor(Block.class).newInstance(block)).read(compound); }
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}

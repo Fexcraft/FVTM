@@ -10,13 +10,8 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
-import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.MiniBB;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
@@ -82,7 +77,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
         }
         GL11.glPopMatrix();
         //
-        if(Command.DEBUG && vehicle.railentity != null){
+        /*if(Command.DEBUG && vehicle.rek != null){
 			//vehicle.railentity.updatePosition();
 			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
 			GlStateManager.alphaFunc(516, 0.1F);
@@ -96,7 +91,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 			vehicle.world.spawnParticle(EnumParticleTypes.REDSTONE, aabb.center.xCoord, aabb.center.yCoord, aabb.center.zCoord, 0, 0, 0);
             str = vehicle.railentity.rear.hasEntity() ? "static" : "temp";
 			RenderStreetSign.drawString(str, aabb.center.xCoord - (float)x, aabb.center.yCoord + 1f - (float)y, aabb.center.zCoord - (float)z, true, true, 0.8f, 0x32a852, deg);
-        }
+        }*/
     }
     
     @Override

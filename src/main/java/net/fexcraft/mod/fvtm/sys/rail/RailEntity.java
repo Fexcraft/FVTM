@@ -392,7 +392,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public static class TRO {//track return object
 		public TRO(Track track, float passed){
 			this.track = track; this.passed = passed;
-		} Track track; float passed;
+		} public Track track; public float passed;
 	}
 
 	private void checkIfShouldHaveEntity(){
@@ -476,7 +476,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		placer = new UUID(compound.getLong("Placer0"), compound.getLong("Placer1"));
 		if(vehdata == null) vehdata = Resources.getVehicleData(compound);
 		else vehdata.read(compound);
-		if(vehdata == null){ this.dispose(); return this; }
+		if(vehdata == null){ this.dispose(); return null; }
 		//if(compound.hasKey("front_coupled")) loadCouple(true, compound.getLong("front_coupled"), compound.getBoolean("front_coupler"));
 		//if(compound.hasKey("rear_coupled")) loadCouple(false, compound.getLong("rear_coupled"), compound.getBoolean("rear_coupler"));
 		//TODO try coupling later, to prevent overflow
@@ -509,7 +509,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void dispose(){
-		Print.debug("Disposing of TrackEntity " + uid + "!"); front.decouple(); rear.decouple();
+		Print.debug("Disposing of TrackEntity " + uid + "!"); front.decouple(); rear.decouple(); lastcheck = null;
 		region.getWorld().delEntity(this); if(entity != null && !entity.isDead) entity.setDead();
 		for(TrackUnit section : unitson) if(section != null) section.getEntities().remove(uid);
 	}

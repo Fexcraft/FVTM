@@ -43,7 +43,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 					attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue());
 					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 					if(veh.getVehicleType().isRailVehicle()){
-						Compound com = ((RailVehicle)veh).railentity.getCompound();
+						Compound com = ((RailVehicle)veh).rek.ent().getCompound();
 						if(!com.isHead((RailEntity)veh) && !com.isEnd((RailEntity)veh)) return;
 						for(RailEntity ent : com.getEntitites()){
 							if(ent.entity != null){

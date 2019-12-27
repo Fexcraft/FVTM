@@ -31,7 +31,6 @@ import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -47,9 +46,7 @@ import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -92,7 +89,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public RailVehicle(RailEntity ent){
 		this(ent.getRegion().getWorld().getWorld()); ent.entity = this;
-		(rek = new Reltrs(ent, null)).ent().alignEntity(true);
+		(rek = new Reltrs(ent.getRegion().getWorld(), ent, null)).ent().alignEntity(true);
 		initializeVehicle(false, null); Print.debug(this +  " " + rek.uid + " " + this.getPositionVector());
 	}
 
@@ -102,8 +99,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
-		if(compound != null) rek.read(compound);
-        seats = new SeatEntity[rek.data().getSeats().size()];
+		if(compound != null) rek = new Reltrs(world.getCapability(Capabilities.RAILSYSTEM, null).get(), compound);
+		seats = new SeatEntity[rek.data().getSeats().size()];
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCapability Implementation Found!");}
@@ -279,12 +276,23 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             case LIGHTS: {//TODO replace with rail lights type
                 if(!world.isRemote){
                     if(toggletimer <= 0){
-                    	rek.data().getAttribute("lights").setValue(!rek.data().getAttribute("lights").getBooleanValue());
-                        toggletimer = 10;
-                        NBTTagCompound nbt = new NBTTagCompound();
-                        nbt.setString("task", "toggle_lights");
+                    	boolean bool = !rek.data().getAttribute("lights").getBooleanValue();
+                    	rek.data().getAttribute("lights").setValue(bool);
+                        NBTTagCompound nbt = new NBTTagCompound(); nbt.setString("task", "toggle_lights");
                         nbt.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
                         ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+                        toggletimer = 10;
+                        //
+                        if(rek.ent().getCompound().isMultiple()){
+                        	for(RailEntity ent : rek.ent().getCompound().getEntitites()){
+                        		ent.vehdata.getAttribute("lights").setValue(bool);
+                        		if(ent.entity != null){
+        	                        NBTTagCompound com = new NBTTagCompound(); com.setString("task", "toggle_lights");
+        	                        com.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
+        	                        ApiUtil.sendEntityUpdatePacketToAllAround(ent.entity, com);
+                        		}
+                        	}
+	                    }
                     }
                 }
                 return true;
@@ -557,22 +565,22 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 --sptt; setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
             }
-        	rek.data().getAttribute("throttle").setValue(throttle);
+        	rek.data().getAttribute("throttle").setValue((float)throttle);
         	//
-        	Vec3f bf0 = railentity.moveOnly(railentity.passed + 0.1f), bf1 = railentity.moveOnly(railentity.passed - 0.1f);
-        	Vec3f br0 = railentity.moveOnly(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis + 0.1f);
-        	Vec3f br1 = railentity.moveOnly(railentity.passed - railentity.frbogiedis - railentity.rrbogiedis - 0.1f);
+        	Vec3f bf0 = rek.moveOnly(rek.passed + 0.1f), bf1 = rek.moveOnly(rek.passed - 0.1f);
+        	Vec3f br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
+        	Vec3f br1 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis - 0.1f);
     		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - axes.getYaw());
     		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - axes.getYaw());
     		rek.data().getAttribute("bogie_front_angle").setValue(front); rek.data().getAttribute("bogie_rear_angle").setValue(rear);
     		//
-    		/*if(Command.DEBUG)*/ railentity.updatePosition();
+    		/*if(Command.DEBUG)*/ rek.updatePosition();
         }
         if(!world.isRemote){
-            railentity.alignEntity(false);
+            rek.ent().alignEntity(false);
             //
-            Vec3d front = new Vec3d(railentity.bfront.xCoord, railentity.bfront.yCoord, railentity.bfront.zCoord);
-            Vec3d back = new Vec3d(railentity.brear.xCoord, railentity.brear.yCoord, railentity.brear.zCoord);
+            Vec3d front = new Vec3d(rek.ent().bfront.xCoord, rek.ent().bfront.yCoord, rek.ent().bfront.zCoord);
+            Vec3d back = new Vec3d(rek.ent().brear.xCoord, rek.ent().brear.yCoord, rek.ent().brear.zCoord);
             Vec3d left = new Vec3d((front.x + back.x) / 2F, (front.y + back.y) / 2F, (front.x + back.z) / 2F);
             Vec3d right = new Vec3d((front.x + back.x) / 2F, (front.y + back.y) / 2F, (front.x + back.z) / 2F);
             //
@@ -705,8 +713,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
+    @SideOnly(Side.CLIENT) @Override
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
             for(VehicleScript script : rek.data().getScripts()){
@@ -723,8 +730,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");
                         }
-                    }
-                    railentity.throttle = 0;
+                    } throttle = 0;
                     break;
                 }
                 case "resync":
@@ -734,39 +740,34 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "toggle_lights": {
                 	rek.data().getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
-                    if(railentity.getCompound().isMultiple()){ boolean bool = pkt.nbt.getBoolean("lights");
-                    	railentity.getCompound().getEntitites().forEach(ent -> ent.vehdata.getAttribute("lights").setValue(bool));
-                    } break;
+                	break;
                 }
                 case "update_track":{
-                	railentity.last = railentity.current;
-                	railentity.current = railentity.region.getTrack(new PathKey(pkt.nbt));
-    				if(!railentity.region.getKey().isInRegion(railentity.current.start))
-    					railentity.updateRegion(railentity.current.start);
+                	rek.last = rek.current; rek.current = rek.sys.getTrack(new PathKey(pkt.nbt));
                 	break;
                 }
                 case "update_passed":{
-                	railentity.passed = pkt.nbt.getFloat("passed");
+                	rek.passed = pkt.nbt.getFloat("passed");
                 	break;
                 }
                 case "update_coupled":{
-                	long cou = pkt.nbt.getLong("front");
+                	/*long cou = pkt.nbt.getLong("front");
                 	railentity.front.entity = cou == -1 ? null : railentity.region.getWorld().getEntity(cou, true);
                 	railentity.front.coupled = pkt.nbt.getBoolean("front_static");
                 	cou = pkt.nbt.getLong("rear");
                 	railentity.rear.entity = cou == -1 ? null : railentity.region.getWorld().getEntity(cou, true);
-                	railentity.rear.coupled = pkt.nbt.getBoolean("rear_static");
+                	railentity.rear.coupled = pkt.nbt.getBoolean("rear_static");*/
                 	break;
                 }
                 case "update_commands":{
-            		if(pkt.nbt.hasKey("commands")){
+            		/*if(pkt.nbt.hasKey("commands")){
             			railentity.getCommands().clear(); NBTTagList cmds = (NBTTagList)pkt.nbt.getTag("commands");
             			for(NBTBase base : cmds){
             				if(base instanceof NBTTagCompound == false) continue;
             				JEC command = JEC.read((NBTTagCompound)base);
             				if(command != null) railentity.getCommands().add(command);
             			}
-            		}
+            		}*/
                 	break;
                 }
             }
@@ -775,7 +776,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public void setupCapability(ContainerHolder capability){
-		if(rek.data() == null) return; if(world.isRemote){ capability.sync(true); return; }
+		if(rek == null || rek.data() == null) return; if(world.isRemote){ capability.sync(true); return; }
 		for(java.util.Map.Entry<String, PartData> entry : rek.data().getParts().entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:container")) continue;
 			capability.addContainerSlot(entry.getValue().getFunction(ContainerFunction.class, "fvtm:container").getAsNewSlot(entry.getKey()));

@@ -72,11 +72,11 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					} return;
 				}
 				case "spawn_railentity":{
-					Print.debug("Receiving entity spawn request.");
+					/*Print.debug("Receiving entity spawn request.");
 					Region region = system.getRegions().get(packet.nbt.getIntArray("XZ"), true);
 					if(region != null && region.loaded) region.spawnEntity(new RailEntity(region, packet.nbt.getLong("uid")).read(packet.nbt));
-					else Region.clientqueue.put(packet.nbt.getLong("uid"), packet.nbt.copy());
-					return;
+					else Region.clientqueue.put(packet.nbt.getLong("uid"), packet.nbt.copy());*/
+					Static.stop(); return;
 				}
 				case "update_sections":{
 					NBTTagList list = (NBTTagList)packet.nbt.getTag("units"); TrackUnit unit; NBTTagCompound com;

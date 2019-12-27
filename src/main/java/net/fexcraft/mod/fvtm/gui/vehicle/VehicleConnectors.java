@@ -70,8 +70,9 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
 			}
 		}
 		else if(vehicle instanceof RailVehicle){
-			RailVehicle railveh = (RailVehicle)vehicle;
-			railveh.railentity.tryCoupling(player, front);
+			/*RailVehicle railveh = (RailVehicle)vehicle;
+			railveh.rek.ent().tryCoupling(player, front);*/
+			//TODO isn't this client side?
 		}
 		else {
 			Print.chat(player, "There is no connector/coupler function for this vehicle type yet.");

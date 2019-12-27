@@ -31,7 +31,7 @@ import net.minecraft.util.math.BlockPos;
 public class Region {
 	
 	public static final TreeMap<Long, NBTTagCompound> fillqueue = new TreeMap<>();
-	public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
+	//public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
 	public ArrayList<RegionKey> chucks = new ArrayList<>();
@@ -280,10 +280,10 @@ public class Region {
 
 	public void spawnEntity(RailEntity ent){
 		Print.debug("Spawning Entity " + ent.uid + "!"); entities.put(ent.getUID(), ent); if(world.getWorld().isRemote) return;
-		NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:railsys");
+		/*NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "spawn_railentity"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
-			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.pos.xCoord, ent.pos.yCoord, ent.pos.zCoord)));
+			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.pos.xCoord, ent.pos.yCoord, ent.pos.zCoord)));*/
 	}
 	
 	public RailSys getWorld(){

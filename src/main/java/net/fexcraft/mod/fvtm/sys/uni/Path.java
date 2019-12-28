@@ -33,8 +33,8 @@ public abstract class Path {
 	public Path(Vec316f[] vec316fs){
 		start = vec316fs[0]; end = vec316fs[vec316fs.length - 1];
 		id = new PathKey(start, end); op = new PathKey(id, true);
-		rootpath = new Vec316f[vec316fs.length + 1];
-		for(int i = 0; i < rootpath.length - 1; i++) rootpath[i] = vec316fs[i].copy();
+		rootpath = new Vec316f[vec316fs.length];
+		for(int i = 0; i < rootpath.length; i++) rootpath[i] = vec316fs[i].copy();
 		construct();
 	}
 	

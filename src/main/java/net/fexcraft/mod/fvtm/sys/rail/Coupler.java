@@ -12,15 +12,11 @@ public class Coupler {
 	
 	public final RailEntity root;
 	public RailEntity entity;
-	public boolean coupled;
+	public boolean autocoupler;
 	public final boolean frontal;
 	public MiniBB mbb = new MiniBB();
 	
 	public Coupler(RailEntity root, boolean bool){ this.root = root; this.frontal = bool; }
-	
-	public Coupler set(RailEntity ent, boolean solid){
-		entity = ent; coupled = solid; return this;
-	}
 
 	public boolean isFront(){
 		return entity == null ? false : entity.front.entity == root;
@@ -54,13 +50,13 @@ public class Coupler {
 			else new Multiple(old, notlesser, old.entities.size()); old.dispose();
 		}
 		//
-		if(isFront()){ entity.front.entity = null; entity.front.coupled = false; entity = null; }
-		if(isRear()){ entity.rear.entity = null; entity.rear.coupled = false; entity = null; }
+		if(isFront()){ entity.front.entity = null; entity = null; }
+		if(isRear()){ entity.rear.entity = null; entity = null; }
 	}
 
-	public void couple(RailEntity ent, boolean front, boolean solid){
+	public void couple(RailEntity ent, boolean front){
 		if(root.com != null && ent.com != null && root.com.equals(ent.com)) return;//abort, we don't want such.
-		(front ? ent.front : ent.rear).coupled = coupled = solid;
+		//(front ? ent.front : ent.rear).coupled = coupled = solid;
 		entity = ent; (front ? ent.front : ent.rear).entity = root;
 		if(!root.region.getWorld().getWorld().isRemote){
 			root.updateClient("couplers"); ent.updateClient("couplers");

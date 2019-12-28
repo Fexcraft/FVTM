@@ -138,9 +138,9 @@ public abstract class Path {
 		instance.start = end;
 		instance.end = start;
 		instance.copy = true;
-		instance.vecpath = new Vec3f[vecpath.length]; int j = vecpath.length - 1;
-		for(int i = 0; i < instance.vecpath.length; i++){ instance.vecpath[i] = vecpath[j--]; }
-		instance.length = instance.calcLength();
+		instance.rootpath = new Vec316f[rootpath.length]; int j = rootpath.length - 1;
+		for(int i = 0; i < instance.rootpath.length; i++){ instance.rootpath[i] = rootpath[j--].copy(); }
+		instance.construct(); instance.length = instance.calcLength();
 		return instance;
 	}
 	

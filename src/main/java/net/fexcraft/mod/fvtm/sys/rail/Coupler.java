@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.util.Collections;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.util.MiniBB;
@@ -65,6 +66,7 @@ public class Coupler {
 			root.com.dispose(); entity.com.dispose();
 			root.com = entity.com = new Multiple(root, entity);//solid ? root : entity, solid ? entity : root);
 			Print.debug("REC: created new");
+			notifyDriver("Coupled at " + (frontal ? "front." : "rear."));
 		}
 		else if(!root.com.isSingular() && !entity.com.isSingular()){
 			if(root.com.isEnd(root)){
@@ -74,6 +76,7 @@ public class Coupler {
 				entity.com.dispose();
 				root.com.entities.addAll(entity.com.entities);
 				root.com.entities.forEach(e -> e.com = root.com);
+				notifyDriver("Coupled a compound to end.");
 			}
 			else{
 				if(entity.com.isHead(entity)){
@@ -82,6 +85,7 @@ public class Coupler {
 				entity.com.dispose();
 				root.com.entities.addAll(0, entity.com.entities);
 				root.com.entities.forEach(e -> e.com = root.com);
+				notifyDriver("Coupled a compound to begin.");
 			}
 			Print.debug("REC: fused");
 		}
@@ -94,6 +98,7 @@ public class Coupler {
 			}
 			root.com.dispose(); root.com = entity.com;
 			Print.debug("REC: attached root");
+			notifyDriver("Coupled to another compound.");
 		}
 		else if(entity.com.isSingular()){
 			if(root.com.isHead(root)){
@@ -104,6 +109,18 @@ public class Coupler {
 			}
 			entity.com.dispose(); entity.com = root.com;
 			Print.debug("REC: attached entity");
+			notifyDriver("RollingStock coupled to compound.");
+		}
+	}
+
+	private void notifyDriver(String string){
+		for(RailEntity ent : root.com.entities){
+			if(ent.entity == null || ent.entity.seats == null) continue;
+			for(SeatEntity seat : ent.entity.seats){
+				if(!seat.seatdata.driver) continue;
+				if(seat.getControllingPassenger() == null) continue;
+				Print.chat(seat.getControllingPassenger(), "&e&7" + string);
+			}
 		}
 	}
 

@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.sys.uni;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.Vector3D;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -17,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public abstract class Path {
 	
 	public Vec316f start, end;
+	public Vec316f[] rootpath;
 	public boolean copy;
 	public Vec3f[] vecpath;
 	public PathKey id, op;
@@ -25,33 +25,29 @@ public abstract class Path {
 	public Path(Vec316f[] vec316fs, Vec316f vector){
 		start = vec316fs[0]; end = vector;
 		id = new PathKey(start, end); op = new PathKey(id, true);
-		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length + 1];
-		if(vecpath.length == 2){
-			vecpath[0] = vec316fs[0].vector; vecpath[1] = vector.vector;
-			this.length = vecpath[0].distanceTo(vecpath[1]);
-		}
-		else{
-			for(int i = 0; i < vec316fs.length; i++){ vecpath[i] = vec316fs[i].vector; }
-			vecpath[vecpath.length - 1] = vector.vector;
-			//
-			Vec3f[] vecs = curve(vecpath); vecpath = new Vec3f[vecs.length + 2];
-			vecpath[0] = new Vec3f(start.vector);
-			for(int i = 0; i < vecs.length; i++){ vecpath[i + 1] = vecs[i]; }
-			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
-			this.length = this.calcLength();
-		}
+		rootpath = new Vec316f[vec316fs.length + 1];
+		for(int i = 0; i < rootpath.length - 1; i++) rootpath[i] = vec316fs[i].copy();
+		rootpath[rootpath.length - 1] = vector.copy(); construct();
 	}
-	
+
 	public Path(Vec316f[] vec316fs){
 		start = vec316fs[0]; end = vec316fs[vec316fs.length - 1];
 		id = new PathKey(start, end); op = new PathKey(id, true);
-		vecpath = new Vec3f[vec316fs.length == 1 ? 2 : vec316fs.length];
+		rootpath = new Vec316f[vec316fs.length + 1];
+		for(int i = 0; i < rootpath.length - 1; i++) rootpath[i] = vec316fs[i].copy();
+		construct();
+	}
+	
+	public Path(){}
+	
+	protected void construct(){
+		vecpath = new Vec3f[rootpath.length == 1 ? 2 : rootpath.length];
 		if(vecpath.length == 2){
-			vecpath[0] = vec316fs[0].vector; vecpath[1] = vec316fs[vec316fs.length - 1].vector;
+			vecpath[0] = rootpath[0].vector; vecpath[1] = rootpath[rootpath.length - 1].vector;
 			this.length = vecpath[0].distanceTo(vecpath[1]);
 		}
 		else{
-			for(int i = 0; i < vec316fs.length; i++){ vecpath[i] = vec316fs[i].vector; }
+			for(int i = 0; i < rootpath.length; i++){ vecpath[i] = rootpath[i].vector; }
 			//
 			Vec3f[] vecs = curve(vecpath); vecpath = new Vec3f[vecs.length + 2];
 			vecpath[0] = new Vec3f(start.vector);
@@ -60,8 +56,6 @@ public abstract class Path {
 			this.length = this.calcLength();
 		}
 	}
-	
-	public Path(){}
 
 	private Vec3f[] curve(Vec3f[] vecpoints){
 		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
@@ -101,10 +95,10 @@ public abstract class Path {
 		this.copy = compound.getBoolean("copy");
 		this.start = new Vec316f(compound.getCompoundTag("start"));
 		this.end = new Vec316f(compound.getCompoundTag("end"));
-		this.vecpath = new Vec3f[compound.getInteger("vectors")];
-		for(int i = 0; i < vecpath.length; i++){
-			vecpath[i] = DataUtil.readVec3f(compound.getTag("vector-" + i));
-		}
+		this.rootpath = new Vec316f[compound.getInteger("vectors")];
+		for(int i = 0; i < rootpath.length; i++){
+			rootpath[i] = new Vec316f(compound.getCompoundTag("vector-" + i));
+		} construct();
 		this.length = compound.hasKey("length") ? compound.getFloat("length") : calcLength();
 		return this;
 	}
@@ -114,9 +108,9 @@ public abstract class Path {
 		compound.setBoolean("copy", copy);
 		compound.setTag("start", start.write());
 		compound.setTag("end", end.write());
-		compound.setInteger("vectors", vecpath.length);
-		for(int i = 0; i < vecpath.length; i++){
-			compound.setTag("vector-" + i, DataUtil.writeVec3f(vecpath[i]));
+		compound.setInteger("vectors", rootpath.length);
+		for(int i = 0; i < rootpath.length; i++){
+			compound.setTag("vector-" + i, rootpath[i].write());
 		}
 		compound.setFloat("length", length);
 		return compound;

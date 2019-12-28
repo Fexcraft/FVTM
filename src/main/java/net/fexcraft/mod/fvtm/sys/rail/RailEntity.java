@@ -229,7 +229,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		for(int i = 0; i < 2; i++){
 			if(couplers[i].hasEntity()) continue; Vec3f coucen = i == 0 ? cfront : crear;
 			for(RailEntity ent : ents){
-				if(ent == this || ent == front.entity || ent == rear.entity || ent.com == com) continue;
+				if(ent == this || ent == front.entity || ent == rear.entity || ent.com.uid == com.uid) continue;
 				ccalc.update(ent.cfront, ent.crear, 0.125f); if(!ccalc.contains(coucen)) continue;
 				if(ent.rear.mbb.contains(coucen)){
 					//float entpos = ent.pos.distanceTo(pos);

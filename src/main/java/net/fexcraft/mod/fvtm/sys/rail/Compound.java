@@ -45,17 +45,21 @@ public abstract class Compound {
 
 		@Override
 		public boolean isHead(RailEntity root){
-			return true;
+			return isThis(root);
 		}
 
 		@Override
 		public boolean isEnd(RailEntity root){
-			return true;
+			return isThis(root);
 		}
 
 		@Override
 		public int getIndex(RailEntity root){
-			return 0;
+			return isThis(root) ? 0 : -1;
+		}
+
+		private boolean isThis(RailEntity root){
+			return root.uid == entities.get(0).uid;
 		}
 
 		@Override
@@ -187,5 +191,9 @@ public abstract class Compound {
 	}
 
 	protected abstract boolean isActive();
+
+	protected void dispose(){
+		COMPOUNDS.remove(uid);
+	}
 
 }

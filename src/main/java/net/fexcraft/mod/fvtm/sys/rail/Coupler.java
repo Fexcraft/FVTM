@@ -33,8 +33,7 @@ public class Coupler {
 	/** Usually called from the vehicle that does currently calcs. */
 	public void decouple(){
 		if(entity == null) return;
-		if(root.com == null || entity.com == null){}//pass
-		else if(root.com.size() <= 2 || entity.com.size() <= 2){
+		if(root.com.size() <= 2 || entity.com.size() <= 2){
 			root.com = new Singular(root); entity.com = new Singular(entity);
 		}
 		else if(root.com.isHead(root)){
@@ -52,7 +51,7 @@ public class Coupler {
 			Compound old = root.com;
 			if(lesser == 0) new Singular(root); else new Multiple(old, 0, lesser + 1);
 			if(old.entities.size() - 1 == notlesser) new Singular(old.entities.get(notlesser));
-			else new Multiple(old, notlesser, old.entities.size());
+			else new Multiple(old, notlesser, old.entities.size()); old.dispose();
 		}
 		//
 		if(isFront()){ entity.front.entity = null; entity.front.coupled = false; entity = null; }
@@ -67,6 +66,7 @@ public class Coupler {
 			root.updateClient("couplers"); ent.updateClient("couplers");
 		}
 		if(root.com.isSingular() && entity.com.isSingular()){
+			root.com.dispose(); entity.com.dispose();
 			root.com = entity.com = new Multiple(root, entity);//solid ? root : entity, solid ? entity : root);
 			Print.debug("REC: created new");
 		}
@@ -75,6 +75,7 @@ public class Coupler {
 				if(!entity.com.isHead(entity)){
 					Collections.reverse(entity.com.entities);
 				}
+				entity.com.dispose();
 				root.com.entities.addAll(entity.com.entities);
 				root.com.entities.forEach(e -> e.com = root.com);
 			}
@@ -82,6 +83,7 @@ public class Coupler {
 				if(entity.com.isHead(entity)){
 					Collections.reverse(entity.com.entities);
 				}
+				entity.com.dispose();
 				root.com.entities.addAll(0, entity.com.entities);
 				root.com.entities.forEach(e -> e.com = root.com);
 			}
@@ -94,7 +96,7 @@ public class Coupler {
 			else{//assume end
 				entity.com.entities.add(root);
 			}
-			root.com = entity.com;
+			root.com.dispose(); root.com = entity.com;
 			Print.debug("REC: attached root");
 		}
 		else if(entity.com.isSingular()){
@@ -104,7 +106,7 @@ public class Coupler {
 			else{//assume end
 				root.com.entities.add(entity);
 			}
-			entity.com = root.com;
+			entity.com.dispose(); entity.com = root.com;
 			Print.debug("REC: attached entity");
 		}
 	}

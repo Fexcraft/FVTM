@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity.TRO;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -28,7 +27,8 @@ public class Reltrs {
 	
 	public Reltrs(RailSys system, NBTTagCompound compound){
 		uid = compound.getLong("UID"); sys = system;
-		current = sys.getTrack(new PathKey(compound));
+		//current = sys.getTrack(new PathKey(compound));
+		current = new Track(null).read(compound.getCompoundTag("Track"));
 		if(entity == null){
 			if(data == null){
 				data = Resources.getVehicleData(compound);
@@ -43,7 +43,8 @@ public class Reltrs {
 		compound.setLong("UID", entity.uid);
 		compound.setFloat("fr_bogie", frbogiedis);
 		compound.setFloat("rr_bogie", frbogiedis);
-		entity.current.id.write(compound);
+		//entity.current.id.write(compound);
+		compound.setTag("Track", entity.current.write(new NBTTagCompound()));
 		return compound;
 	}
 	
@@ -56,10 +57,11 @@ public class Reltrs {
 	}
 
 	public Vec3f moveOnly(float passed){
-		TRO tro = getTrack(current, passed); return tro.track.getVectorPosition(tro.passed, false);
+		TRO tro = getTrack(current, passed); return tro.track == null ? null : tro.track.getVectorPosition(tro.passed, false);
 	}
 
 	private TRO getTrack(Track track, float passed){
+		if(track == null) return new TRO(track, passed);
 		while(passed > track.length){
 			Junction junk = sys.getJunction(track.end);
 			if(junk == null){ new TRO(track, track.length); }

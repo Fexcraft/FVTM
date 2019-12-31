@@ -74,7 +74,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
-    public static final int servtick = 1;
+    public static final int servtick = 5;
     public int sptt;
     public static final String[] BOOGIEINDEX = new String[]{ "bogie_front", "bogie_rear" };
 
@@ -527,7 +527,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	@Override
     public void onUpdate(){
         super.onUpdate();
-        if(rek.data() == null){
+        if(rek == null || rek.data() == null){
         	Print.log("VehicleData is NULL; Not ticking vehicle. Removing Vehicle."); this.setDead(); return;
         }
         if(!world.isRemote){
@@ -570,9 +570,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	Vec3f bf0 = rek.moveOnly(rek.passed + 0.1f), bf1 = rek.moveOnly(rek.passed - 0.1f);
         	Vec3f br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
         	Vec3f br1 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis - 0.1f);
-    		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - axes.getYaw());
-    		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - axes.getYaw());
-    		rek.data().getAttribute("bogie_front_angle").setValue(front); rek.data().getAttribute("bogie_rear_angle").setValue(rear);
+        	if(bf0 != null && br0 != null && bf1 != null && br1 != null){
+        		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - axes.getYaw());
+        		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - axes.getYaw());
+        		rek.data().getAttribute("bogie_front_angle").setValue(front); rek.data().getAttribute("bogie_rear_angle").setValue(rear);
+        	}
     		//
     		/*if(Command.DEBUG)*/ rek.updatePosition();
         }
@@ -601,7 +603,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }
-        if(!world.isRemote /*&& ticksExisted % servtick == 0*/){ throttle = rek.ent().throttle;
+        if(!world.isRemote && ticksExisted % servtick == 0){ throttle = rek.ent().throttle;
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
         }
     }

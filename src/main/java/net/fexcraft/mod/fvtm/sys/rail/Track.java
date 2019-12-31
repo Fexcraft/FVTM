@@ -44,14 +44,14 @@ public class Track extends Path {
 	@Override
 	public Track read(NBTTagCompound compound){
 		super.read(compound);
-		unit = getUnit(compound.getLong("section"));
+		if(junction != null) unit = getUnit(compound.getLong("section"));
 		if(compound.hasKey("gauge")){
 			gauge = Resources.RAILGAUGES.getValue(new ResourceLocation(compound.getString("gauge")));
 		}
 		if(gauge == null){
 			gauge = Resources.RAILGAUGES.getValue(InternalAddon.STANDARD_GAUGE);
 		}
-		if(junction.root.getWorld().isRemote){
+		if(junction == null || junction.root.getWorld().isRemote){
 			railmodel = null; restmodel = null;
 		}
 		return this;

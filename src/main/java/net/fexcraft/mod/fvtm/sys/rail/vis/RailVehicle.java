@@ -255,7 +255,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 //
             	return true;
             }
-            case LIGHTS: {//TODO replace with rail lights type
+            case LIGHTS: {
                 if(toggletimer <= 0){
                 	boolean bool = !rek.data().getAttribute("lights").getBooleanValue();
                 	rek.data().getAttribute("lights").setValue(bool);
@@ -484,27 +484,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         return false;
     }
 
-    protected boolean isDriverInGM1(){
-        return seats != null && seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer
-        	&& ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode;
-    }
-
-    public boolean hasEnoughFuel(){
-        return isDriverInGM1() || true;//(vehicle != null && vehicle.getPart("engine") != null && vehicledata.getFuelTankContent() > vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle);
-    }
-
-    @Deprecated //TODO check server/client matters
-    public boolean isDrivenByPlayer(){
-        if(rek.data().getType().isTrailerOrWagon()){
-            return getFrontCoupledEntity() != null && rek.ent().front.entity.entity.getSeats()[0] != null && SeatEntity.isPassengerThePlayer(rek.ent().front.entity.entity.getSeats()[0]);
-        }
-        else{
-            return seats[0] != null && SeatEntity.isPassengerThePlayer((SeatEntity)seats[0]);
-        }
-    }
-
-    @SuppressWarnings("unused")
-	@Override
+    @Override
     public void onUpdate(){
         super.onUpdate();
         if(rek == null || rek.data() == null){
@@ -512,7 +492,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         if(!world.isRemote){
         	for(int i = 0; i < rek.data().getSeats().size(); i++){
-        		Seat seat = rek.data().getSeat(i);
+        		//Seat seat = rek.data().getSeat(i);
             	if(seats[i] == null || !seats[i].addedToChunk){
             		seats[i] = new SeatEntity(this, i); world.spawnEntity(seats[i]);
             	}

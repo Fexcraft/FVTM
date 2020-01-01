@@ -9,9 +9,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.gui.GenericContainer;
-import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -192,12 +190,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
 		for(VehicleScript script : rek.data().getScripts()) if(script.onKeyPress(key, seat, player)) return true;
-        if(!seat.driver && !key.dismount() && !key.scripts() && !key.toggables() && !key.inventory()){
-            return false;
-        }
-        if(world.isRemote && !key.toggables() /*&& key.dismount() */){
-            Packets.sendToServer(new PKT_VehKeyPress(key));
-            return true;
+        if(!seat.driver && key.driverOnly()) return false;
+        if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
+            Packets.sendToServer(new PKT_VehKeyPress(key)); return true;
         }
         switch(key){
             case ACCELERATE:{
@@ -211,12 +206,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case TURN_LEFT:{
-            	if(throttle > 0.05f) Print.bar(player, "&cDecreate the throttle before switching direction.");
+            	if(throttle > 0.05f) Print.bar(player, "&cDecrease the throttle before switching direction.");
             	else rek.ent().setForward(player, false);
                 return true;
             }
             case TURN_RIGHT:{
-            	if(throttle > 0.05f) Print.bar(player, "&cDecreate the throttle before switching direction.");
+            	if(throttle > 0.05f) Print.bar(player, "&cDecrease the throttle before switching direction.");
             	else rek.ent().setForward(player, true);
                 return true;
             }
@@ -244,29 +239,16 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case INVENTORY: {
-                if(!world.isRemote){
-                    if(rek.data().getPart("engine") != null && rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
-                        Print.chat(player, "Turn engine off first!");
-                    }
-                    else{
-                    	NBTTagCompound compound = new NBTTagCompound();
-	                    compound.setString("target_listener", "fcl_gui");
-	                    compound.setString("task", "open_gui");
-	                    compound.setString("guimod", "fvtm");
-	                    compound.setInteger("gui", 930);
-	                    compound.setIntArray("args", new int[]{ 0, this.getEntityId(), 0 });
-	                    PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
-                    }
-                    //open inventory
+                if(rek.data().getPart("engine") != null && rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                    Print.chat(player, "Turn engine off first!"); return true;
                 }
+                GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
                 return true;
             }
-            case TOGGABLES: {
-                if(world.isRemote){
-                	if(toggletimer > 0) return true;
-                	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.toggle();
-                	toggletimer += 10;
-                }
+            case TOGGABLES: {//client side
+            	if(toggletimer > 0) return true;
+            	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.toggle();
+            	toggletimer += 10;
                 return true;
             }
             case SCRIPTS: {
@@ -274,25 +256,23 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	return true;
             }
             case LIGHTS: {//TODO replace with rail lights type
-                if(!world.isRemote){
-                    if(toggletimer <= 0){
-                    	boolean bool = !rek.data().getAttribute("lights").getBooleanValue();
-                    	rek.data().getAttribute("lights").setValue(bool);
-                        NBTTagCompound nbt = new NBTTagCompound(); nbt.setString("task", "toggle_lights");
-                        nbt.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
-                        ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
-                        toggletimer = 10;
-                        //
-                        if(rek.ent().getCompound().isMultiple()){
-                        	for(RailEntity ent : rek.ent().getCompound().getEntitites()){
-                        		ent.vehdata.getAttribute("lights").setValue(bool);
-                        		if(ent.entity != null){
-        	                        NBTTagCompound com = new NBTTagCompound(); com.setString("task", "toggle_lights");
-        	                        com.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
-        	                        ApiUtil.sendEntityUpdatePacketToAllAround(ent.entity, com);
-                        		}
-                        	}
-	                    }
+                if(toggletimer <= 0){
+                	boolean bool = !rek.data().getAttribute("lights").getBooleanValue();
+                	rek.data().getAttribute("lights").setValue(bool);
+                    NBTTagCompound nbt = new NBTTagCompound(); nbt.setString("task", "toggle_lights");
+                    nbt.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
+                    ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+                    toggletimer = 10;
+                    //
+                    if(rek.ent().getCompound().isMultiple()){
+                    	for(RailEntity ent : rek.ent().getCompound().getEntitites()){
+                    		ent.vehdata.getAttribute("lights").setValue(bool);
+                    		if(ent.entity != null){
+    	                        NBTTagCompound com = new NBTTagCompound(); com.setString("task", "toggle_lights");
+    	                        com.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
+    	                        ApiUtil.sendEntityUpdatePacketToAllAround(ent.entity, com);
+                    		}
+                    	}
                     }
                 }
                 return true;

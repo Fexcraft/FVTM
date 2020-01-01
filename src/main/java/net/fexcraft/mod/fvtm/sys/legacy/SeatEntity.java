@@ -363,12 +363,11 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     public boolean onKeyPress(KeyPress key, EntityPlayer player){
         if(vehicle != null){
             if(key == null){
-                //this.vehicle.getVehicleData().getScripts().forEach((script) -> script.onKeyInput(key, this.seatid, this.vehicle));
-                //TODO
+                //this.vehicle.getVehicleData().getScripts().forEach((script) -> script.onKeyPress(key, seatdata, player));
                 return false;
             } else return vehicle.onKeyPress(key, seatdata, player);
         }
-        if(key.dismount() && hasPassenger()){ getControllingPassenger().dismountRidingEntity(); }
+        if(world.isRemote && key.dismount() && hasPassenger()){ getControllingPassenger().dismountRidingEntity(); }
         return false;
     }
 

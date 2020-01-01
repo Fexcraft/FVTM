@@ -16,7 +16,7 @@ public class PKTH_VehKeyPress implements IMessageHandler<PKT_VehKeyPress, IMessa
         ls.addScheduledTask(new Runnable() {
             @Override
             public void run(){
-                EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
+                EntityPlayerMP player = ctx.getServerHandler().player;
                 if(player.getRidingEntity() != null && player.getRidingEntity() instanceof SeatEntity){
                     ((SeatEntity)player.getRidingEntity()).onKeyPress(packet.keypress, player);
                 }

@@ -31,15 +31,15 @@ public class Packets {
 		instance.sendToServer(packet);
 	}
 
-	public static void sendToAllAround(IMessage packet, TargetPoint point){
+	public static final void sendToAllAround(IMessage packet, TargetPoint point){
 		instance.sendToAllAround(packet, point);
 	}
 
-	public static void sendToAllAround(IMessage packet, Entity ent){
+	public static final void sendToAllAround(IMessage packet, Entity ent){
 		instance.sendToAllAround(packet, Resources.getTargetPoint(ent));
 	}
 
-	public static void sendTo(IMessage packet, EntityPlayerMP player){
+	public static final void sendTo(IMessage packet, EntityPlayerMP player){
 		instance.sendTo(packet, player);
 	}
 	

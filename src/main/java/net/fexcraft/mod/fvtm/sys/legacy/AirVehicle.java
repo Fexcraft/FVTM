@@ -220,13 +220,10 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 	}
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
-		//Print.debug(key, seat.driver, key.dismount(), key.scripts(), player, seat);
-        if(!seat.driver && !key.dismount() && !key.scripts()){
-            return false;
-        }
-        if(world.isRemote /*&& key.dismount() */){
-            Packets.sendToServer(new PKT_VehKeyPress(key));
-            return true;
+		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
+        if(!seat.driver && key.driverOnly()) return false;
+        if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
+            Packets.sendToServer(new PKT_VehKeyPress(key)); return true;
         }
         switch(key){
             case ACCELERATE:{
@@ -285,6 +282,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setString("task", "engine_toggle");
                 ApiUtil.sendEntityUpdatePacketToServer(this, nbt);
+                //TODO correct this
                 return true;
             }
             case DISMOUNT: {
@@ -293,29 +291,16 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 return true;
             }
             case INVENTORY: {
-                /*if(!world.isRemote){
-                    if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getAttributeData(EngineAttributeData.class).isOn()){
-                        Print.chat(player, "Turn engine off first!");
-                    }
-                    else{
-                        player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_INVENTORY, world, 0, 0, 0);
-                    }
-                    //open inventory
-                }*/
-                return true;
+            	/*if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+	                Print.chat(player, "Turn engine off first!"); return true;
+	            }*/
+	            GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
+	            return true;
             }
-            case TOGGABLES: {
-                if(!world.isRemote){
-                    /*if(doorToggleTimer <= 0){
-                        vehicle.toggleDoors(null);
-                        if(this.trailer != null){
-                            this.trailer.getVehicleData().toggleDoors(vehicledata.doorsOpen());
-                        }
-                        player.sendMessage(new TextComponentString("Doors " + (vehicledata.doorsOpen() ? "opened" : "closed") + "."));
-                        doorToggleTimer = 10;
-                        PacketHandler.getInstance().sendToAllAround(new PacketVehicleControl(this), Resources.getTargetPoint(this));
-                    }*/
-                }
+            case TOGGABLES: {//client side
+            	if(doorToggleTimer > 0) return true;
+            	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.toggle();
+            	doorToggleTimer += 10;
                 return true;
             }
             case OTHER:{
@@ -333,61 +318,8 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 return true;*/
             }
             case LIGHTS: {
-                /*if(!world.isRemote){
-                    if(doorToggleTimer <= 0){
-                        int i = vehicledata.getLightsState();
-                        vehicledata.setLightsState(++i > 3 ? 0 : i < 0 ? 0 : i);
-                        if(this.getEntityAtRear() != null){
-                            this.getEntityAtRear().getVehicleData().setLightsState(vehicledata.getLightsState());
-                        }
-                        switch(vehicledata.getLightsState()){
-                            case 0: {
-                                Print.chat(player, "Lights Off.");
-                                break;
-                            }
-                            case 1: {
-                                Print.chat(player, "Lights On.");
-                                break;
-                            }
-                            case 2: {
-                                Print.chat(player, "(Long) Lights On.");
-                                break;
-                            }
-                            case 3: {
-                                Print.chat(player, "(Fog) Lights On.");
-                                break;
-                            }
-                        }
-                        doorToggleTimer = 10;
-                        NBTTagCompound nbt = new NBTTagCompound();
-                        nbt.setString("task", "lights_toggle");
-                        nbt.setInteger("lightsstate", vehicledata.getLightsState());
-                        ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
-                    }
-                }*/
+                Print.chat(player, "Feature not implemented yet.");
                 return true;
-            }
-            case COUPLER_REAR: {
-            	/*if(!world.isRemote){
-            		if(throttle > 0 || throttle < 0){
-            			Print.chat(player, "Please stop the vehicle first!");
-            			return true;
-            		}
-            		if(this.vehicledata.getRearConnectorPos() == null){
-            			Print.chat(player, "This vehicle does not have a rear connector installed.");
-            			return true;
-            		}
-                    if(doorToggleTimer <= 0){
-                    	if(this.getEntityAtRear() == null){
-                    		this.tryAttach(player);
-                    	}
-                    	else{
-                    		this.tryDetach(player);
-                    	}
-                        doorToggleTimer = 10;
-                    }
-            	}*/
-            	return true;
             }
             default:{ Print.chat(player, String.format("Task for keypress %s not found.", key)); return false; }
         }

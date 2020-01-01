@@ -22,4 +22,8 @@ public enum KeyPress {
 		return this == INVENTORY;
 	}
 
+	public boolean driverOnly(){
+		return !dismount() && !scripts() && !toggables() && !inventory();
+	}
+
 }

@@ -230,12 +230,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
-        if(!seat.driver && !key.dismount() && !key.scripts() && !key.toggables() && !key.inventory()){
-            return true;
-        }
-        if(world.isRemote && !key.toggables() /*&& key.dismount() */){
-            Packets.sendToServer(new PKT_VehKeyPress(key));
-            return true;
+        if(!seat.driver && key.driverOnly()) return false;
+        if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
+            Packets.sendToServer(new PKT_VehKeyPress(key)); return true;
         }
         switch(key){
             case ACCELERATE:{
@@ -281,23 +278,16 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case INVENTORY: {
-                if(!world.isRemote){
-                    /*if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
-                        Print.chat(player, "Turn engine off first!");
-                    }
-                    else{*/
-	                    GenericContainer.openGui("fvtm", 930, new int[]{ 0, 0, 0 }, player);
-                    /*}*/
-                    //open inventory
-                }
+                /*if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
+                    Print.chat(player, "Turn engine off first!"); return true;
+                }*/
+                GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
                 return true;
             }
-            case TOGGABLES: {
-                if(world.isRemote){
-                	if(doorToggleTimer > 0) return true;
-                	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.toggle();
-                	doorToggleTimer += 10;
-                }
+            case TOGGABLES: {//client side
+            	if(doorToggleTimer > 0) return true;
+            	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.toggle();
+            	doorToggleTimer += 10;
                 return true;
             }
             case SCRIPTS: {
@@ -308,58 +298,54 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;*/
             }
             case LIGHTS: {
-                if(!world.isRemote){
-                    if(doorToggleTimer <= 0){
-                    	if(vehicle.getAttribute("lights").getBooleanValue()){
-                    		if(vehicle.getAttribute("lights_long").getBooleanValue()){
-                        		vehicle.getAttribute("lights").setValue(false);
-                        		vehicle.getAttribute("lights_long").setValue(false);
-                    		}
-                    		else{
-                        		vehicle.getAttribute("lights_long").setValue(true);
-                    		}
-                    	}
-                    	else{
-                    		vehicle.getAttribute("lights").setValue(true);
-                    	}
-                    	//
-                        LandVehicle trailer = this.trailer;
-                        while(trailer != null){
-                            trailer.vehicle.getAttribute("lights").setValue(vehicle.getAttribute("lights").getBooleanValue());
-                            trailer.vehicle.getAttribute("lights_long").setValue(vehicle.getAttribute("lights_long").getBooleanValue());
-                            trailer = trailer.trailer;
-                        }
-                    	//TODO find a way for fog lights
-                        doorToggleTimer = 10;
-                        NBTTagCompound nbt = new NBTTagCompound();
-                        nbt.setString("task", "toggle_lights");
-                        nbt.setBoolean("lights", vehicle.getAttribute("lights").getBooleanValue());
-                        nbt.setBoolean("lights_long", vehicle.getAttribute("lights_long").getBooleanValue());
-                        ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
+                if(doorToggleTimer <= 0){
+                	if(vehicle.getAttribute("lights").getBooleanValue()){
+                		if(vehicle.getAttribute("lights_long").getBooleanValue()){
+                    		vehicle.getAttribute("lights").setValue(false);
+                    		vehicle.getAttribute("lights_long").setValue(false);
+                		}
+                		else{
+                    		vehicle.getAttribute("lights_long").setValue(true);
+                		}
+                	}
+                	else{
+                		vehicle.getAttribute("lights").setValue(true);
+                	}
+                	//
+                    LandVehicle trailer = this.trailer;
+                    while(trailer != null){
+                        trailer.vehicle.getAttribute("lights").setValue(vehicle.getAttribute("lights").getBooleanValue());
+                        trailer.vehicle.getAttribute("lights_long").setValue(vehicle.getAttribute("lights_long").getBooleanValue());
+                        trailer = trailer.trailer;
                     }
+                	//TODO find a way for fog lights
+                    doorToggleTimer = 10;
+                    NBTTagCompound nbt = new NBTTagCompound();
+                    nbt.setString("task", "toggle_lights");
+                    nbt.setBoolean("lights", vehicle.getAttribute("lights").getBooleanValue());
+                    nbt.setBoolean("lights_long", vehicle.getAttribute("lights_long").getBooleanValue());
+                    ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                 }
                 return true;
             }
             case COUPLER_REAR: {
-            	if(!world.isRemote){
-            		if(throttle > 0 || throttle < 0){
-            			Print.chat(player, "Please stop the vehicle first!");
-            			return true;
-            		}
-            		if(this.vehicle.getRearConnector() == null){
-            			Print.chat(player, "This vehicle does not have a rear connector installed.");
-            			return true;
-            		}
-                    if(doorToggleTimer <= 0){
-                    	if(this.getCoupledEntity(false) == null){
-                    		this.tryAttach(player);
-                    	}
-                    	else{
-                    		this.tryDetach(player);
-                    	}
-                        doorToggleTimer = 10;
-                    }
-            	}
+        		if(throttle > 0 || throttle < 0){
+        			Print.chat(player, "Please stop the vehicle first!");
+        			return true;
+        		}
+        		if(this.vehicle.getRearConnector() == null){
+        			Print.chat(player, "This vehicle does not have a rear connector installed.");
+        			return true;
+        		}
+                if(doorToggleTimer <= 0){
+                	if(this.getCoupledEntity(false) == null){
+                		this.tryAttach(player);
+                	}
+                	else{
+                		this.tryDetach(player);
+                	}
+                    doorToggleTimer = 10;
+                }
             	return true;
             }
             case MOUSE_MAIN: case MOUSE_RIGHT: return false;

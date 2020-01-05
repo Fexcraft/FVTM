@@ -34,20 +34,22 @@ public class ConstructorMain extends ConstructorGui {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button10")){ player.closeScreen(); return true; }
-		if(button.name.equals("icon_veh")){
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("cargo", "drop"); compound.setString("what", "any"); 
-			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
-			this.container.send(Side.SERVER, compound); return true;
+		if(button.name.equals("button1")){
+			if(buttons.get("icon_spawn").mousePressed(null, mouseX, mouseY)){
+				this.titletext.update("Not available yet! Sorry!", null); return true;
+			}
+			if(buttons.get("icon_veh").mousePressed(null, mouseX, mouseY)){
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("cargo", "drop"); compound.setString("what", "any"); 
+				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+				this.container.send(Side.SERVER, compound); return true;
+			}
 		}
-		if(button.name.equals("icon_part")){
+		if(button.name.equals("button3") && buttons.get("icon_part").mousePressed(null, mouseX, mouseY)){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "drop"); compound.setString("what", "part"); 
 			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 			this.container.send(Side.SERVER, compound); return true;
-		}
-		if(button.name.equals("icon_spawn")){
-			this.titletext.update("Not available yet! Sorry!", null); return true;
 		}
 		int gui = Integer.parseInt(button.name.replace("button", ""));
 		if(gui == 7){

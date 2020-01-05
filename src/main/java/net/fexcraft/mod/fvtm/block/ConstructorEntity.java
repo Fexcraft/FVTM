@@ -396,4 +396,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		return center;
 	}
 
+	public void dropIfContainsAnyThing(){
+		if(getContainerData() != null) dropContainer(true);
+    	if(getVehicleData() != null) dropVehicle(true);
+    	if(getBlockData() != null) dropBlock(true);
+    	if(getPartData() != null) dropPart(true);
+	}
+
 }

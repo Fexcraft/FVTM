@@ -126,28 +126,19 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	GenericContainer.openGui("fvtm", 906, new int[]{ pos.getX(), pos.getY(), pos.getZ() }, player);
         }
         else if(held.getItem() instanceof VehicleItem){
-        	if(te.getContainerData() != null) te.dropContainer(true);
-        	if(te.getVehicleData() != null) te.dropVehicle(true);
-        	if(te.getPartData() != null) te.dropPart(true);
-        	if(te.getBlockData() != null) te.dropBlock(true);
+        	te.dropIfContainsAnyThing();
         	te.setVehicleData(((VehicleItem)held.getItem()).getData(held), false);
         	te.updateClient(null); held.shrink(1);
         	Print.chat(player, "Vehicle put into Constructor.");
         }
         else if(held.getItem() instanceof ContainerItem){
-        	if(te.getContainerData() != null) te.dropContainer(true);
-        	if(te.getVehicleData() != null) te.dropVehicle(true);
-        	if(te.getPartData() != null) te.dropPart(true);
-        	if(te.getBlockData() != null) te.dropBlock(true);
+        	te.dropIfContainsAnyThing();
         	te.setContainerData(((ContainerItem)held.getItem()).getData(held), false);
         	te.updateClient(null); held.shrink(1);
         	Print.chat(player, "Container put into Constructor.");
         }
         else if(held.getItem() instanceof BlockItem){
-        	if(te.getContainerData() != null) te.dropContainer(true);
-        	if(te.getVehicleData() != null) te.dropVehicle(true);
-        	if(te.getPartData() != null) te.dropPart(true);
-        	if(te.getBlockData() != null) te.dropBlock(true);
+        	te.dropIfContainsAnyThing();
         	te.setBlockData(((BlockItem)held.getItem()).getData(held), false);
         	te.updateClient(null); held.shrink(1);
         	Print.chat(player, "Block put into Constructor.");

@@ -579,6 +579,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultRearConnector());
                 		return true;
                 	}
+                	if(!VehicleItem.validToSpawn(player, stack, world, data, false)) return true;
                 	if(trailer != null){
                 		Print.chat(player, "&cPlease disconnect the currently connected trailer first.");
                 		return true;
@@ -634,7 +635,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     @SuppressWarnings("unused")
 	@Override
     public void onUpdate(){
-        super.onUpdate();
+        super.onUpdate(); if(this.isDead) return;
         if(vehicle == null){ Print.log("VehicleData is NULL; Not ticking vehicle."); Static.stop(); return; }
         if(!world.isRemote){
         	for(int i = 0; i < vehicle.getSeats().size(); i++){

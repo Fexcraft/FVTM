@@ -5,6 +5,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -52,6 +53,14 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     	lata = vehicle.getVehicleData().getType().getLegacyData();
     	//Print.debug(wheelid, this, vehicle, vehicle.getVehicleData().getWheelPositions());
     	String index = vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid];
+    	if(vehicle.getVehicleData().getWheelPositions().isEmpty()){
+    		Print.log("Vehicle has no wheels installed, removing."); this.setDead();
+    		if(!vehicle.isDead){
+        		EntityItem itemstack = new EntityItem(world, vehicle.posX, vehicle.posY, vehicle.posZ);
+        		itemstack.setItem(vehicle.getVehicleData().newItemStack());
+        		world.spawnEntity(itemstack); vehicle.setDead();
+    		} return;
+    	}
     	Vec3d vec = null;
     	if(!vehicle.getVehicleData().getWheelPositions().containsKey(index) && !isTrailerWheel()){
     		Print.debug("Vehicle was missing an essential Wheel Position, skipping wheel[" + wheelid + "] init.");

@@ -112,7 +112,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	if(world.getBlockState(pos).getBlock() instanceof ConstructorBlock) return EnumActionResult.PASS;
     	VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
     	if(data.getType().getVehicleType().isAirVehicle()){
-    		if(!valid(player, stack, world, data, true)){ return EnumActionResult.FAIL; }
+    		if(!validToSpawn(player, stack, world, data, true)){ return EnumActionResult.FAIL; }
     		world.spawnEntity(new AirVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
     	}
     	else if(data.getType().getVehicleType().isRailVehicle()){
@@ -136,14 +136,14 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     		}
     	}
     	else{
-    		if(!valid(player, stack, world, data, false)){ return EnumActionResult.FAIL; }
+    		if(!validToSpawn(player, stack, world, data, false)){ return EnumActionResult.FAIL; }
     		world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
     	}
     	if(!player.capabilities.isCreativeMode) stack.shrink(1);
         return EnumActionResult.SUCCESS;
     }
     
-    private boolean valid(EntityPlayer player, ItemStack stack, World world, VehicleData data, boolean plane){
+    public static boolean validToSpawn(EntityPlayer player, ItemStack stack, World world, VehicleData data, boolean plane){
 		String[] index = plane ? AirVehicle.WHEELINDEX : data.getType().isTrailerOrWagon()
 			? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
 		for(String str : index){

@@ -148,7 +148,8 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
 			? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
 		for(String str : index){
 			if(!data.getWheelPositions().containsKey(str)){
-				Print.chat(player, "&9Vehicle is missing a wheel! &7&o" + str); failed = true;
+				String trailer = data.getType().isTrailerOrWagon() ? "&9Trailer" : "&9Vehicle";
+				Print.chat(player, trailer + " is missing a wheel! &7&o" + str); failed = true;
 			}
 		}
 		if(!data.getType().isTrailerOrWagon() && !data.hasPart("engine")){

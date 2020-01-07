@@ -372,7 +372,7 @@ public class DefaultPrograms {
 
 		private boolean didglow;
 		
-		public AlwaysGlow(){ super(238f, 238f); }
+		public AlwaysGlow(){ super(189f, 4f); }
 		
 		public abstract boolean shouldGlow(Entity ent, VehicleData data);
 
@@ -397,7 +397,7 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 	        GlStateManager.enableBlend(); GlStateManager.disableAlpha();
-	        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+	        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_DST_COLOR);
 	        //if(ent != null) GlStateManager.depthMask(!ent.isInvisible());
 	        lx = OpenGlHelper.lastBrightnessX; ly = OpenGlHelper.lastBrightnessY;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, x, y);

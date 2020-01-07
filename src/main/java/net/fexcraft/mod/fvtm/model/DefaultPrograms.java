@@ -49,6 +49,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(LIGHTS_REAR_FORWARD);
 		TurboList.PROGRAMS.add(LIGHTS_REAR_BACKWARD);
 		//
+		TurboList.PROGRAMS.add(TRANSPARENT);
+		//
 		DIDLOAD = true;
 	}
 
@@ -130,6 +132,10 @@ public class DefaultPrograms {
 	};
 	
 	public static final Program INDICATOR_LIGHT_LEFT = TURN_SIGNAL_LEFT, INDICATOR_LIGHT_RIGHT = TURN_SIGNAL_RIGHT;
+	
+	public static final Program TRANSPARENT = new Transparent(63f, 63f){
+		@Override public String getId(){ return "fvtm:transparent"; }
+	};
 	
 	public static final Program WINDOW = new Program(){
 		@Override public String getId(){ return "fvtm:window"; }
@@ -362,26 +368,44 @@ public class DefaultPrograms {
 		
 	};
 	
-	public static abstract class AlwaysGlow implements Program {
+	public static abstract class AlwaysGlow extends Transparent implements Program {
+
+		private boolean didglow;
 		
-		private boolean didglow; private float lx, ly;
+		public AlwaysGlow(){ super(238f, 238f); }
 		
 		public abstract boolean shouldGlow(Entity ent, VehicleData data);
 
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(!(didglow = shouldGlow(ent, data))) return;
+			if(!(didglow = shouldGlow(ent, data))) return; super.preRender(list, ent, data, color, part, cache);
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(!didglow) return; super.postRender(list, ent, data, color, part, cache);
+		}
+		
+	}
+	
+	public static abstract class Transparent implements Program {
+		
+		protected float lx, ly, x, y;
+		
+		public Transparent(float mapx, float mapy){ x = mapx; y = mapy; }
+
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 	        GlStateManager.enableBlend(); GlStateManager.disableAlpha();
 	        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-	        if(ent != null) GlStateManager.depthMask(!ent.isInvisible());
+	        //if(ent != null) GlStateManager.depthMask(!ent.isInvisible());
 	        lx = OpenGlHelper.lastBrightnessX; ly = OpenGlHelper.lastBrightnessY;
-	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 61680, 0.941162109375f);//238f, 238f);
+	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, x, y);
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(!didglow) return;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
 	        GlStateManager.disableBlend(); GlStateManager.enableAlpha();
 		}

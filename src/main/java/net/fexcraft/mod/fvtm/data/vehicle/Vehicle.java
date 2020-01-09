@@ -106,6 +106,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 					case "boolean": case "bool": {
 						attr = new Attribute.BooleanAttribute(true, id, json.get("value").getAsBoolean()); isbool = true; break;
 					}
+					//TODO tristate
 					default: continue;
 				}
 				if((json.has("max") || json.has("min") && !isbool)){
@@ -114,6 +115,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 					attr.setMinMax(min, max);
 				}
 				if(json.has("editable")) attr.setEditable(json.get("editable").getAsBoolean());
+				if(json.has("hitbox")){
+					JsonArray erray = json.get("hitbox").getAsJsonArray();
+					attr.addAABB("default", new float[]{ erray.get(0).getAsFloat(), erray.get(1).getAsFloat(), erray.get(2).getAsFloat(), erray.get(3).getAsFloat() });
+				}
 				attr.setSeat(json.has("seat") ? json.get("seat").getAsString() : null);
 				this.attributes.put(attr.id(), attr);
 			}

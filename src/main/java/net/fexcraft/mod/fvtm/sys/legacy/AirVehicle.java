@@ -303,13 +303,13 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
             	doorToggleTimer += 10;
                 return true;
             }
-            case OTHER:{
+            /*case OTHER:{
 				if(doorToggleTimer <= 0){ doorToggleTimer = 10;
 					gearout = !gearout; Print.chat(player, "Landing gear is now " + (gearout ? "down" : "up"));
 					//TODO gear packet
 				}
             	return true;
-            }
+            }*///TODO make this an attribute instead
             case SCRIPTS: {
                 /*if(!world.isRemote){
                     player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_SCRIPTSGUI, world, this.getEntityId(), seat, 0);

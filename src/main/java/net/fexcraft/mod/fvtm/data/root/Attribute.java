@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.data.root;
 
 import java.util.Comparator;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import net.minecraft.nbt.NBTBase;
@@ -22,6 +23,7 @@ public abstract class Attribute<V> {
 		@Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
 	};
 	private TreeSet<Modifier<V>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
+	private TreeMap<String, float[]> aabbs = null;
 	private String id, target, origin, seat, group;
 	private boolean iscopy, editable;
 	private float min, max;
@@ -78,6 +80,23 @@ public abstract class Attribute<V> {
 			if(mod.update() != call) continue;
 			setValue(mod.modify(this, call));
 		} return this;
+	}
+	
+	public boolean hasAABBs(){
+		return aabbs != null && aabbs.size() > 0;
+	}
+	
+	public float[] getAABB(String id){
+		if(!hasAABBs()) return null;
+		if(!aabbs.containsKey(id)){
+			if(!aabbs.containsKey("default")) return null;
+			return aabbs.get("default");
+		} return aabbs.get(id);
+	}
+	
+	public <T> Attribute<T> addAABB(String id, float[] aabb){
+		if(aabbs == null) aabbs = new TreeMap<>();
+		aabbs.put(id, aabb); return (Attribute<T>)this;
 	}
 	
 	public static enum Type {

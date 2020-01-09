@@ -1,17 +1,22 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatDismount;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
@@ -26,11 +31,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
@@ -365,11 +373,39 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
             if(key == null){
                 //this.vehicle.getVehicleData().getScripts().forEach((script) -> script.onKeyPress(key, seatdata, player));
                 return false;
-            } else return vehicle.onKeyPress(key, seatdata, player);
+            }
+            else if(key.toggableInput() && world.isRemote){
+            	List<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values()
+            		.stream().filter(pr -> pr.hasAABBs() && pr.type().isTristate() && (seatdata.driver || pr.seat().equals(seatdata.name))).collect(Collectors.toList());
+            	if(attributes.size() == 0) return false; Attribute<?> attr = getCollided(attributes); if(attr == null) return false;
+            	//TODO
+            	Print.bar(player, "&7Toggled: &6" + attr.id());
+            }
+            else return vehicle.onKeyPress(key, seatdata, player);
         }
         if(world.isRemote && key.dismount() && hasPassenger()){ getControllingPassenger().dismountRidingEntity(); }
         return false;
     }
+
+    @SideOnly(Side.CLIENT) //Eventually checks about which is closest?
+	private Attribute<?> getCollided(List<Attribute<?>> attributes){
+		Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
+		if(entity == null || entity.world == null) return null;
+        Vec3d vec = entity.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
+        Vec3d temp = entity.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
+        Vec3d vecto = vec.addVector(temp.x * 2, temp.y * 2, temp.z * 2);
+        Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
+        for(float f = 0; f < 2; f += Static.sixteenth / 2){
+        	Vec3f dis = vec0.distance(vec1, f); AxisAlignedBB aabb = null; vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
+            if(Command.DEBUG) world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);
+            for(Attribute<?> attr : attributes){
+            	float[] arr = attr.getAABB(attr.getStringValue()); temp = vehicle.getAxes().getRelativeVector(arr[0], arr[1], arr[2]);
+                if(Command.DEBUG) world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0); float te = arr[3] * Static.sixteenth;
+            	aabb = new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te);
+            	if(aabb.contains(vec)) return attr;
+            }
+        } return null;
+	}
 
 	@Override
     public boolean processInitialInteract(EntityPlayer entityplayer, EnumHand hand){

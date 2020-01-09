@@ -228,8 +228,8 @@ public class VehicleSteeringOverlay extends GuiScreen {
             if(isKeyDown(KeyHandler.wagonToggle.getKeyCode())){
             	seat.onKeyPress(KeyPress.COUPLER_FRONT, player);
             }
-            if(isKeyDown(KeyHandler.other.getKeyCode())){
-            	processToggleClick(2);
+            if(isKeyDown(KeyHandler.reset.getKeyCode())){
+            	if(toggables) processToggleClick(2); else seat.onKeyPress(KeyPress.RESET, player);
             }
             if(s > 0){ s--; } if(s == 0){ seat.onKeyPress(null, player); s = 4;/*//5//20//10//4*/ }
         }

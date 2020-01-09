@@ -282,7 +282,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
         if(!attributes.isEmpty()){
         	int offset = 0;
         	for(int j = 0; j < perpage; j++){ int i = page * perpage + j;
-        		if(i >= attributes.size()){ scroll = j - 1; break; }
+        		if(i >= attributes.size()){ if(scroll >= j) scroll = j - 1; break; }
         		Attribute<?> attr = attributes.get(i); offset = j * 12 + 34;
         		mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
         		if(attr.type().isBoolean()){

@@ -164,9 +164,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(alist != null){
 			for(NBTBase base : alist){
 				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("id")) continue;
+				if(com.getString("id").startsWith("turn_light_")) continue;
 				Attribute<?> attr = getAttribute(com.getString("id")); if(attr != null){ attr.read(com); }
 				else{ attr = Attribute.parse(com); if(attr != null) attributes.put(attr.id(), attr); }
 			}
+		}
+		for(Attribute<?> attr : type.getBaseAttributes().values()){
+			if(attributes.containsKey(attr.id())) continue;
+			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
 		}
 		//
 		this.selected_texture = compound.getInteger("SelectedTexture");
@@ -558,11 +563,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public boolean getTurnLightLeft(){
-		return getAttribute("turn_light_left").getBooleanValue();
+		return getAttribute("turn_lights").getTriStateValue() == false;
 	}
 
 	public boolean getTurnLightRight(){
-		return getAttribute("turn_light_right").getBooleanValue();
+		return getAttribute("turn_lights").getTriStateValue() == true;
+	}
+
+	public boolean getWarningLights(){
+		return getAttribute("warning_lights").getBooleanValue();
 	}
 
 	public int getStoredFuel(){

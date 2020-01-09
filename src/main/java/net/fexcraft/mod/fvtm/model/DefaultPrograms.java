@@ -36,6 +36,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(REVERSE_LIGHTS);
 		TurboList.PROGRAMS.add(TURN_SIGNAL_LEFT);
 		TurboList.PROGRAMS.add(TURN_SIGNAL_RIGHT);
+		TurboList.PROGRAMS.add(WARNING_LIGHTS);
 		TurboList.PROGRAMS.add(WINDOW);
 		TurboList.PROGRAMS.add(WHEEL_AUTO_ALL);
 		TurboList.PROGRAMS.add(WHEEL_AUTO_STEERING);
@@ -122,13 +123,18 @@ public class DefaultPrograms {
 	}
 	
 	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getTurnLightLeft() && checkSignalSec(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec() && (data.getTurnLightLeft() || data.getWarningLights()); }
 		@Override public String getId(){ return "fvtm:turn_signal_left"; }
 	};
 	
 	public static final Program TURN_SIGNAL_RIGHT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getTurnLightRight() && checkSignalSec(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec() && (data.getTurnLightRight() || data.getWarningLights()); }
 		@Override public String getId(){ return "fvtm:turn_signal_right"; }
+	};
+	
+	public static final Program WARNING_LIGHTS = new AlwaysGlow(){
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec() && data.getWarningLights(); }
+		@Override public String getId(){ return "fvtm:warning_lights"; }
 	};
 	
 	public static final Program INDICATOR_LIGHT_LEFT = TURN_SIGNAL_LEFT, INDICATOR_LIGHT_RIGHT = TURN_SIGNAL_RIGHT;

@@ -39,19 +39,28 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
 				Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
-				if(attr.type().isBoolean()){
-					attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue());
+				if(attr.type().isTristate()){
+					if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")){
+						attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue());
+					}
+					else{
+						attr.setValue(null); packet.nbt.setBoolean("reset", true);
+					}
 					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 					if(veh.getVehicleType().isRailVehicle()){
 						Compound com = ((RailVehicle)veh).rek.ent().getCompound();
 						if(!com.isHead((RailEntity)veh) && !com.isEnd((RailEntity)veh)) return;
 						for(RailEntity ent : com.getEntitites()){
 							if(ent.entity != null){
-								attr = ent.vehdata.getAttribute(attribute);
-								if(attr != null && attr.type().isBoolean()){
-									attr.setValue(bool); NBTTagCompound compound = packet.nbt.copy(); compound.setBoolean("bool", attr.getBooleanValue());
-									PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
+								attr = ent.vehdata.getAttribute(attribute); if(attr == null) continue;
+								NBTTagCompound compound = packet.nbt.copy(); 
+								if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")){
+									attr.setValue(bool); compound.setBoolean("bool", attr.getBooleanValue());
 								}
+								else{
+									attr.setValue(null); compound.setBoolean("reset", true);
+								}
+								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
 							}
 						}
 					}
@@ -60,8 +69,14 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						VehicleEntity trailer = veh.getRearCoupledEntity();
 						while(trailer != null){
 							attr = trailer.getVehicleData().getAttribute(attribute);
-							if(attr != null && attr.type().isBoolean()){
-								attr.setValue(bool); NBTTagCompound compound = packet.nbt.copy(); compound.setBoolean("bool", attr.getBooleanValue());
+							if(attr != null){
+								NBTTagCompound compound = packet.nbt.copy();
+								if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")){
+									attr.setValue(bool); compound.setBoolean("bool", attr.getBooleanValue());
+								}
+								else{
+									attr.setValue(null); compound.setBoolean("reset", true);
+								}
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
 							}
 							trailer = trailer.getRearCoupledEntity();

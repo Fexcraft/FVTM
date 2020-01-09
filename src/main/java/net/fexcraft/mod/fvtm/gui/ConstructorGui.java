@@ -26,6 +26,8 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	protected static final ResourceLocation ICON_BOOL_BACK = new ResourceLocation("fvtm:textures/gui/icons/bool_back.png");
 	protected static final ResourceLocation ICON_BOOL_TRUE = new ResourceLocation("fvtm:textures/gui/icons/bool_on.png");
 	protected static final ResourceLocation ICON_BOOL_FALSE = new ResourceLocation("fvtm:textures/gui/icons/bool_off.png");
+	protected static final ResourceLocation ICON_BOOL_TRI0 = new ResourceLocation("fvtm:textures/gui/icons/bool_tri0.png");
+	protected static final ResourceLocation ICON_BOOL_TRI1 = new ResourceLocation("fvtm:textures/gui/icons/bool_tri1.png");
 	//
 	protected static final String modid = FVTM.MODID;
 	protected static final int buttonheight = 12;

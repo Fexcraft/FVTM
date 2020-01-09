@@ -95,7 +95,8 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		if(clicktimer > 0) return;
 		NBTTagCompound packet = new NBTTagCompound(); Attribute<?> attr = attributes.get((page * perpage) + scroll);
 		packet.setString("target_listener", "fvtm:gui"); packet.setString("task", "attr_toggle");
-		packet.setString("attr", attr.id()); packet.setBoolean("bool", i > 0);
+		packet.setString("attr", attr.id()); if(i > 1) packet.setBoolean("reset", true);
+		packet.setBoolean("bool", attr.type().isTristate() ? i < 0 : i > 0);
 		packet.setInteger("entity", seat.getVehicle().getEntityId()); Print.debug(packet);
 		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 		clicktimer += 10;
@@ -227,6 +228,9 @@ public class VehicleSteeringOverlay extends GuiScreen {
             if(isKeyDown(KeyHandler.wagonToggle.getKeyCode())){
             	seat.onKeyPress(KeyPress.COUPLER_FRONT, player);
             }
+            if(isKeyDown(KeyHandler.other.getKeyCode())){
+            	processToggleClick(2);
+            }
             if(s > 0){ s--; } if(s == 0){ seat.onKeyPress(null, player); s = 4;/*//5//20//10//4*/ }
         }
         else{
@@ -285,13 +289,19 @@ public class VehicleSteeringOverlay extends GuiScreen {
         		if(i >= attributes.size()){ if(scroll >= j) scroll = j - 1; break; }
         		Attribute<?> attr = attributes.get(i); offset = j * 12 + 34;
         		mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
-        		if(attr.type().isBoolean()){
+        		if(attr.type().isTristate()){
             		int width = fontRenderer.getStringWidth(attr.id());
             		if(scroll == j) HOVER.glColorApply();
             		this.drawTexturedModalRect(this.width - width - 14, offset, 0, 0, width + 2, 12);
             		if(scroll == j) RGB.glColorReset();
                     mc.fontRenderer.drawString(attr.id(), this.width - width - 12, offset + 3, 0xffffff);
-            		mc.renderEngine.bindTexture(attr.getBooleanValue() ? ConstructorGui.ICON_BOOL_TRUE : ConstructorGui.ICON_BOOL_FALSE);
+                    if(attr.type().isBoolean()){
+                		mc.renderEngine.bindTexture(attr.getBooleanValue() ? ConstructorGui.ICON_BOOL_TRUE : ConstructorGui.ICON_BOOL_FALSE);
+                    }
+                    else{
+                    	Boolean bool = attr.getTriStateValue();
+                		mc.renderEngine.bindTexture(bool == null ? ConstructorGui.ICON_BOOL_FALSE : bool ? ConstructorGui.ICON_BOOL_TRI1 : ConstructorGui.ICON_BOOL_TRI0);
+                    }
             		drawRectIcon(this.width - 12, offset, 12, 12);
         		}
         		else{

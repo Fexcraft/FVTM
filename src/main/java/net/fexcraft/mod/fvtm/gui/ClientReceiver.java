@@ -29,13 +29,16 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
 				Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
-				if(attr.type().isBoolean()){
-					attr.setValue(bool);
+				if(attr.type().isTristate()){
+					if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")) attr.setValue(bool); else attr.setValue(null);
 					if(!veh.getVehicleType().isRailVehicle()){
 						VehicleEntity trailer = veh.getRearCoupledEntity();
 						while(trailer != null){
 							attr = trailer.getVehicleData().getAttribute(attribute);
-							if(attr != null && attr.type().isBoolean()){ attr.setValue(bool); }
+							if(attr != null){
+								if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")) attr.setValue(bool);
+								else attr.setValue(null);
+							}
 							trailer = trailer.getRearCoupledEntity();
 						}
 					}

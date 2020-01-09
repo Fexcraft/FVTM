@@ -33,7 +33,7 @@ public class KeyHandler {
         ClientRegistry.registerKeyBinding(arrow_down = new KeyBinding("key.fvtm.arrow_down", KeyConflictContex.VEHICLE, Keyboard.KEY_DOWN, category));
         ClientRegistry.registerKeyBinding(arrow_left = new KeyBinding("key.fvtm.arrow_left", KeyConflictContex.VEHICLE, Keyboard.KEY_LEFT, category));
         ClientRegistry.registerKeyBinding(arrow_right = new KeyBinding("key.fvtm.arrow_right", KeyConflictContex.VEHICLE, Keyboard.KEY_RIGHT, category));
-        ClientRegistry.registerKeyBinding(other = new KeyBinding("key.fvtm.other", KeyConflictContex.VEHICLE, Keyboard.KEY_COLON, category));
+        ClientRegistry.registerKeyBinding(other = new KeyBinding("key.fvtm.other", KeyConflictContex.VEHICLE, Keyboard.KEY_SEMICOLON, category));
     }
     
     public static enum KeyConflictContex implements IKeyConflictContext {

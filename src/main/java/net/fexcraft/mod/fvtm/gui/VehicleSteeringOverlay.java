@@ -269,9 +269,9 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		//
 		if(!ent.isRailType()){
 			this.mc.getTextureManager().bindTexture(ConstructorGui.ANVIL); drawRectIcon(width - 97 - 16, 1, 80, 16);
-			boolean turnleft = DefaultPrograms.checkSignalSec() && data.getAttribute("turn_light_left").getBooleanValue();
+			boolean turnleft = DefaultPrograms.checkSignalSec() && data.getTurnLightLeft();
 			mc.getTextureManager().bindTexture(turnleft ? INDICATOR_LEFT_ON : INDICATOR_LEFT_OFF); drawRectIcon(width - 97 - 16, 1, 16, 16);
-			boolean turnright = DefaultPrograms.checkSignalSec() && data.getAttribute("turn_light_right").getBooleanValue();
+			boolean turnright = DefaultPrograms.checkSignalSec() && data.getTurnLightRight();
 			mc.getTextureManager().bindTexture(turnright ? INDICATOR_RIGHT_ON : INDICATOR_RIGHT_OFF); drawRectIcon(width - 65 + 16, 1, 16, 16);
 			//
 			mc.getTextureManager().bindTexture(data.getAttribute("lights").getBooleanValue() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF); drawRectIcon(width - 97 + 32, 1, 16, 16);

@@ -563,11 +563,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public boolean getTurnLightLeft(){
-		return getAttribute("turn_lights").getTriStateValue() == false;
+		return Boolean.FALSE.equals(getAttribute("turn_lights").getTriStateValue());
 	}
 
 	public boolean getTurnLightRight(){
-		return getAttribute("turn_lights").getTriStateValue() == true;
+		return Boolean.TRUE.equals(getAttribute("turn_lights").getTriStateValue());
 	}
 
 	public boolean getWarningLights(){

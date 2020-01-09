@@ -5,15 +5,12 @@ import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
@@ -24,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 public class PartModel extends GenericModel<VehicleData, String> implements FCLItemModel {
 
 	public static final PartModel EMPTY = new PartModel();
-    public static final RGB windowcolor = new RGB(0x007208).setAlpha(0.3f);
+    //public static final RGB windowcolor = new RGB(0x007208).setAlpha(0.3f);
 	public static final String[] defval = new String[]{
 		"body", "body_colored_primary", "body_colored_secondary", "body_door_open", "body_door_close",
 		"body_door_open_colored_primary", "body_door_close_colored_primary", "turret", "steering",

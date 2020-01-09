@@ -137,18 +137,25 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:transparent"; }
 	};
 	
-	public static final Program WINDOW = new Program(){
-		@Override public String getId(){ return "fvtm:window"; }
-		//
+	public static final Window WINDOW = new Window();
+	
+	public static final class Window implements Program {
+		
+		protected RGB color = new RGB(0x007208).setAlpha(0.3f);
+		
+		public Window(){}
+		
+		public Window(int color){ this.color = new RGB(color).setAlpha(0.3f); }
+
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
             GlStateManager.pushMatrix();
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glDepthMask(false);
             GL11.glEnable(GL11.GL_ALPHA_TEST);
-            PartModel.windowcolor.glColorApply();
+            this.color.glColorApply();
 		}
-		//
+
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
             RGB.glColorReset();
@@ -157,7 +164,8 @@ public class DefaultPrograms {
             GL11.glDisable(GL11.GL_BLEND);
             GlStateManager.popMatrix();
 		}
-	};
+		
+	}
 	
 	public static final Program WHEEL_AUTO_ALL = new Program(){
 		
@@ -240,7 +248,7 @@ public class DefaultPrograms {
 	
 	public static class SteeringWheel implements Program {
 		
-		private byte axis; private float ratio; private String id;
+		private byte axis; private float ratio, rotated; private String id;
 		
 		public SteeringWheel(int axis, float ratio){
 			this.axis = (byte)axis; this.ratio = ratio; id = "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
@@ -250,12 +258,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.rotateAxis(data.getAttribute("steering_angle").getFloatValue() * ratio, axis, true);
+			list.rotateAxis(rotated = data.getAttribute("steering_angle").getFloatValue() * ratio, axis, true);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.rotateAxis(0, axis, true);
+			list.rotateAxis(-rotated, axis, true);
 		}
 		
 	};

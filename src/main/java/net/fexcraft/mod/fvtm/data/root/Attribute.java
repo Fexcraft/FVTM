@@ -71,6 +71,7 @@ public abstract class Attribute<V> {
 	public abstract float getFloatValue();
 	public abstract String getStringValue();
 	public abstract boolean getBooleanValue();
+	public Boolean getTriStateValue(){ return false; }
 	
 	public Attribute<?> updateValue(Update call){
 		for(Modifier<?> mod : modifiers){
@@ -81,12 +82,13 @@ public abstract class Attribute<V> {
 	
 	public static enum Type {
 		
-		STRING, INTEGER, FLOAT, BOOLEAN, STRING_ARRAY, INT_ARRAY, FLOAT_ARRAY, BOOL_ARRAY, OBJECT;
+		STRING, INTEGER, FLOAT, BOOLEAN, TRISTATE, STRING_ARRAY, INT_ARRAY, FLOAT_ARRAY, BOOL_ARRAY, OBJECT;
 		
 		public boolean isString(){ return this == STRING; }
 		public boolean isInteger(){ return this == INTEGER; }
 		public boolean isFloat(){ return this == FLOAT; }
 		public boolean isBoolean(){ return this == BOOLEAN; }
+		public boolean isTristate(){ return this == TRISTATE || this == BOOLEAN; }
 		//
 		public boolean isObject(){ return this == OBJECT; }
 		public boolean isNumber(){ return this == INTEGER || this == FLOAT || this == BOOLEAN; }
@@ -108,6 +110,10 @@ public abstract class Attribute<V> {
 				case OBJECT: return null;//TODO
 				case STRING: return string;
 				case STRING_ARRAY: break;
+				case TRISTATE:{
+					if(string == null || string.equals("null")) return null;
+					else return Boolean.parseBoolean(string);
+				}
 				default: return null;
 			} return null;
 		}
@@ -169,6 +175,7 @@ public abstract class Attribute<V> {
 			case OBJECT: break;//TODO
 			case STRING: attr = new StringAttribute(false, null,  null); break;
 			case STRING_ARRAY: break;
+			case TRISTATE: attr = new TriStateAttribute(false, null, null); break;
 			default: return null;
 		} attr.read(compound); return attr;
 	}
@@ -336,6 +343,37 @@ public abstract class Attribute<V> {
 		@Override public float getFloatValue(){ return value() ? 1 : 0; }
 		@Override public String getStringValue(){ return value() + ""; }
 		@Override public boolean getBooleanValue(){ return value(); }
+		
+	}
+	
+	public static class TriStateAttribute extends Attribute<Boolean> {
+
+		public TriStateAttribute(boolean original, String id, Boolean initvalue){
+			super(original, id, Type.TRISTATE, initvalue);
+		}
+
+		@Override
+		protected NBTBase writeValue(boolean initial){
+			Boolean bool = initial ? init() : value();
+			return new NBTTagByte(bool == null ? -1 : bool ? (byte)1 : (byte)0);
+		}
+
+		@Override
+		protected Boolean readValue(NBTBase basetag){
+			byte val = ((NBTPrimitive)basetag).getByte();
+			return val < 0 ? null : val > 0;
+		}
+
+		@Override
+		public Attribute<Boolean> copy(String origin){
+			return new TriStateAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
+		}
+		
+		@Override public int getIntegerValue(){ return value() == null ? -1 : value() ? 1 : 0; }
+		@Override public float getFloatValue(){ return value() == null ? -1 : value() ? 1 : 0; }
+		@Override public String getStringValue(){ return value() + ""; }
+		@Override public boolean getBooleanValue(){ return value() == null ? false : value(); }
+		@Override public Boolean getTriStateValue(){ return value(); }
 		
 	}
 

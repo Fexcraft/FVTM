@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -421,19 +422,19 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         Vec3d vec = entity.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
         Vec3d temp = entity.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
         Vec3d vecto = vec.addVector(temp.x * 2, temp.y * 2, temp.z * 2);
-        Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);//Print.chat(player, vec);
+        Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
+        TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
+        for(Attribute<?> attr : attributes){
+        	float[] arr = attr.getAABB(attr.getStringValue());
+        	temp = vehicle.getAxes().getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
+        	temp = temp.add(vehicle.getPositionVector()); float te = arr[3] * Static.sixteenth;
+            if(Command.DEBUG) world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
+        	aabbs.put(attr.id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
+        }
         for(float f = 0; f < 2; f += Static.sixteenth / 2){
-        	Vec3f dis = vec0.distance(vec1, f); AxisAlignedBB aabb = null; vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
+        	Vec3f dis = vec0.distance(vec1, f);vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
             if(Command.DEBUG) world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);
-            for(Attribute<?> attr : attributes){
-            	if(!attr.hasAABBs()) continue;//{ Print.debug("attr:" + attr.id() + " has no aabbs"); continue; }
-            	float[] arr = attr.getAABB(attr.getStringValue());
-            	temp = vehicle.getAxes().getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
-            	temp = temp.add(vehicle.getPositionVector()); //Print.chat(player, temp); if(true) return null;
-                if(Command.DEBUG) world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0); float te = arr[3] * Static.sixteenth;
-            	aabb = new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te);
-            	if(aabb.contains(vec)) return attr;
-            }
+            for(Attribute<?> attr : attributes) if(aabbs.get(attr.id()).contains(vec)) return attr;
         } return null;
 	}
 

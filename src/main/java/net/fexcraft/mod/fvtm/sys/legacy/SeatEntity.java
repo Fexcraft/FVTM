@@ -393,21 +393,24 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
             	switch(key){
 	            	case MOUSE_MAIN:{
 	            		packet.setBoolean("bool", !attr.type().isBoolean() ? false : true);
+	            		Print.bar(player, "&7Toggled: &6" + attr.id() + "& a> " + packet.getBoolean("bool")); 
 	            		break;
 	            	}
 	            	case MOUSE_RIGHT:{
 	            		packet.setBoolean("bool", !attr.type().isBoolean() ? true : false);
+	            		Print.bar(player, "&7Toggled: &6" + attr.id() + "& a> " + packet.getBoolean("bool")); 
 	            		break;
 	            	}
 	            	case RESET:{
 	            		packet.setBoolean("bool", false);
 	            		packet.setBoolean("reset", true);
+	            		Print.bar(player, "&7Reset: &6" + attr.id()); 
 	            		break;
 	            	}
 	            	default: return false;
             	}
         		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
-            	Print.bar(player, "&7Toggled: &6" + attr.id()); clicktimer += 10;return true;
+            	clicktimer += 10; return true;
             }
             else return vehicle.onKeyPress(key, seatdata, player);
         }

@@ -158,6 +158,11 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
 		if(!data.getType().isTrailerOrWagon() && data.getSeats().size() < 1){
 			Print.chat(player, "&9Vehicle does not have any Seats!"); failed = true;
 		}
+		for(String part : data.getType().getRequiredParts()){
+			if(data.getPart(part) == null){
+				Print.chat(player, "&9Vehicle is missing &6required part&9: &a" + part + "&9!"); failed = true;
+			}
+		}
 		//TODO add later more checks if necessary
 		return !failed;
 	}

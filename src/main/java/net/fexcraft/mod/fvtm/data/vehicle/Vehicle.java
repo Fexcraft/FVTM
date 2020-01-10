@@ -285,4 +285,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return coupler_range;
 	}
 
+	public ArrayList<String> getRequiredParts(){
+		return required;
+	}
+
 }

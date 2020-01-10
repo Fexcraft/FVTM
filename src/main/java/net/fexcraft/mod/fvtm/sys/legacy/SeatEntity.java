@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,9 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -128,7 +131,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 
     @Override
     public void onUpdate(){
-        super.onUpdate();
+        super.onUpdate(); if(clicktimer > 0) clicktimer--;
         //
         if(!world.isRemote && getControllingPassenger() instanceof EntityPlayerMP){
         	Resources.resetFlight((EntityPlayerMP)getControllingPassenger());
@@ -367,6 +370,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         Packets.sendToServer(new PKT_SeatUpdate(this));
         return;
     }
+    
+    private byte clicktimer;
 
     public boolean onKeyPress(KeyPress key, EntityPlayer player){
         if(vehicle != null){
@@ -375,11 +380,33 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
                 return false;
             }
             else if(key.toggableInput() && world.isRemote){
-            	List<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values()
+        		if(clicktimer > 0) return false;//TODO support for other attribute types, e.g. numbers
+            	Collection<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values()
             		.stream().filter(pr -> pr.hasAABBs() && pr.type().isTristate() && (seatdata.driver || pr.seat().equals(seatdata.name))).collect(Collectors.toList());
-            	if(attributes.size() == 0) return false; Attribute<?> attr = getCollided(attributes); if(attr == null) return false;
-            	//TODO
-            	Print.bar(player, "&7Toggled: &6" + attr.id());
+            	if(attributes.size() == 0){ /*Print.chat(player, "none found");*/ return false; }
+            	Attribute<?> attr = getCollided(player, attributes);
+            	if(attr == null){ /*Print.chat(player, "none hit");*/ return false; }
+        		NBTTagCompound packet = new NBTTagCompound();
+        		packet.setString("target_listener", "fvtm:gui"); packet.setString("task", "attr_toggle");
+        		packet.setString("attr", attr.id()); packet.setInteger("entity", vehicle.getEntityId());
+            	switch(key){
+	            	case MOUSE_MAIN:{
+	            		packet.setBoolean("bool", !attr.type().isBoolean() ? false : true);
+	            		break;
+	            	}
+	            	case MOUSE_RIGHT:{
+	            		packet.setBoolean("bool", !attr.type().isBoolean() ? true : false);
+	            		break;
+	            	}
+	            	case RESET:{
+	            		packet.setBoolean("bool", false);
+	            		packet.setBoolean("reset", true);
+	            		break;
+	            	}
+	            	default: return false;
+            	}
+        		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+            	Print.bar(player, "&7Toggled: &6" + attr.id()); clicktimer += 10;return true;
             }
             else return vehicle.onKeyPress(key, seatdata, player);
         }
@@ -388,18 +415,21 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     }
 
     @SideOnly(Side.CLIENT) //Eventually checks about which is closest?
-	private Attribute<?> getCollided(List<Attribute<?>> attributes){
+	private Attribute<?> getCollided(EntityPlayer player, Collection<Attribute<?>> attributes){
 		Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
 		if(entity == null || entity.world == null) return null;
         Vec3d vec = entity.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
         Vec3d temp = entity.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
         Vec3d vecto = vec.addVector(temp.x * 2, temp.y * 2, temp.z * 2);
-        Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
+        Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);//Print.chat(player, vec);
         for(float f = 0; f < 2; f += Static.sixteenth / 2){
         	Vec3f dis = vec0.distance(vec1, f); AxisAlignedBB aabb = null; vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
             if(Command.DEBUG) world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);
             for(Attribute<?> attr : attributes){
-            	float[] arr = attr.getAABB(attr.getStringValue()); temp = vehicle.getAxes().getRelativeVector(arr[0], arr[1], arr[2]);
+            	if(!attr.hasAABBs()) continue;//{ Print.debug("attr:" + attr.id() + " has no aabbs"); continue; }
+            	float[] arr = attr.getAABB(attr.getStringValue());
+            	temp = vehicle.getAxes().getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
+            	temp = temp.add(vehicle.getPositionVector()); //Print.chat(player, temp); if(true) return null;
                 if(Command.DEBUG) world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0); float te = arr[3] * Static.sixteenth;
             	aabb = new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te);
             	if(aabb.contains(vec)) return attr;

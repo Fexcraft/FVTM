@@ -98,6 +98,16 @@ public abstract class Attribute<V> {
 		if(aabbs == null) aabbs = new TreeMap<>();
 		aabbs.put(id, aabb); return (Attribute<T>)this;
 	}
+
+	protected <U> Attribute<U> copyAABBs(Attribute<?> original){
+		if(original.hasAABBs()){ this.aabbs = new TreeMap<>();
+			original.aabbs.forEach((key, value) -> {
+				float[] arr = new float[value.length];
+				for(int i = 0; i < arr.length; i++) arr[i] = value[i];
+				aabbs.put(key, arr);
+			});
+		} return (Attribute<U>)this;
+	}
 	
 	public static enum Type {
 		
@@ -204,7 +214,7 @@ public abstract class Attribute<V> {
 	public static class StringAttribute extends Attribute<String> {
 
 		public StringAttribute(boolean original, String id, String initvalue){
-			super(original, id, Type.STRING, initvalue);
+			super(original, id, Type.STRING, initvalue); 
 		}
 
 		@Override
@@ -219,7 +229,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<String> copy(String origin){
-			return new StringAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
+			return new StringAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return 0; }
@@ -247,7 +257,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Float> copy(String origin){
-			return new FloatAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
+			return new FloatAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return (int) + value(); }
@@ -300,7 +310,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Integer> copy(String origin){
-			return new IntegerAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
+			return new IntegerAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return value(); }
@@ -355,7 +365,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new BooleanAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
+			return new BooleanAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return value() ? 1 : 0; }
@@ -385,7 +395,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new TriStateAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable());
+			return new TriStateAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return value() == null ? -1 : value() ? 1 : 0; }

@@ -393,12 +393,12 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
             	switch(key){
 	            	case MOUSE_MAIN:{
 	            		packet.setBoolean("bool", !attr.type().isBoolean() ? false : true);
-	            		Print.bar(player, "&7Toggled: &6" + attr.id() + "& a> " + packet.getBoolean("bool")); 
+	            		Print.bar(player, "&7Toggled: &6" + attr.id() + " &a> " + packet.getBoolean("bool")); 
 	            		break;
 	            	}
 	            	case MOUSE_RIGHT:{
 	            		packet.setBoolean("bool", !attr.type().isBoolean() ? true : false);
-	            		Print.bar(player, "&7Toggled: &6" + attr.id() + "& a> " + packet.getBoolean("bool")); 
+	            		Print.bar(player, "&7Toggled: &6" + attr.id() + " &a> " + packet.getBoolean("bool")); 
 	            		break;
 	            	}
 	            	case RESET:{

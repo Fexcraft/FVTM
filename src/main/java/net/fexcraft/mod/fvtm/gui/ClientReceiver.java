@@ -43,6 +43,19 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 						}
 					}
 				}
+				else if(attr.type().isNumber()){
+					attr.setValue(attr.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+					if(!veh.getVehicleType().isRailVehicle()){
+						VehicleEntity trailer = veh.getRearCoupledEntity();
+						while(trailer != null){
+							attr = trailer.getVehicleData().getAttribute(attribute);
+							if(attr != null){
+								attr.setValue(attr.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+							}
+							trailer = trailer.getRearCoupledEntity();
+						}
+					}
+				}
 				else{
 					//TODO
 					Print.log("no code for toggling this attribute type yet");

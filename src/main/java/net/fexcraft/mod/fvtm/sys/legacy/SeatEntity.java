@@ -383,7 +383,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
             else if(key.toggableInput() && world.isRemote){
         		if(clicktimer > 0) return false;//TODO support for other attribute types, e.g. numbers
             	Collection<Attribute<?>> attributes = vehicle.getVehicleData().getAttributes().values()
-            		.stream().filter(pr -> pr.hasAABBs() && pr.type().isTristate() && (seatdata.driver || pr.seat().equals(seatdata.name))).collect(Collectors.toList());
+            		.stream().filter(pr -> pr.hasAABBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seatdata.driver || pr.seat().equals(seatdata.name))).collect(Collectors.toList());
             	if(attributes.size() == 0){ /*Print.chat(player, "none found");*/ return false; }
             	Attribute<?> attr = getCollided(player, attributes);
             	if(attr == null){ /*Print.chat(player, "none hit");*/ return false; }
@@ -392,19 +392,49 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         		packet.setString("attr", attr.id()); packet.setInteger("entity", vehicle.getEntityId());
             	switch(key){
 	            	case MOUSE_MAIN:{
-	            		packet.setBoolean("bool", !attr.type().isBoolean() ? false : true);
-	            		Print.bar(player, "&7Toggled: &6" + attr.id() + " &a> " + packet.getBoolean("bool")); 
+	            		if(attr.type().isTristate()){
+		            		packet.setBoolean("bool", !attr.type().isBoolean() ? false : true);
+		            		Print.bar(player, "&7Toggled: &6" + attr.id() + " &a> " + packet.getBoolean("bool")); 
+	            		}
+	            		else if(attr.type().isFloat()){
+	            			float flaot = attr.getFloatValue() + attr.getAABB(attr.getStringValue())[4];
+	            			packet.setFloat("value", flaot); attr.setValue(flaot);
+	            		}
+	            		else if(attr.type().isInteger()){
+	            			int ent = attr.getIntegerValue() + (int)attr.getAABB(attr.getStringValue())[4];
+	            			packet.setFloat("value", ent); attr.setValue(ent);
+	            		}
 	            		break;
 	            	}
 	            	case MOUSE_RIGHT:{
-	            		packet.setBoolean("bool", !attr.type().isBoolean() ? true : false);
-	            		Print.bar(player, "&7Toggled: &6" + attr.id() + " &a> " + packet.getBoolean("bool")); 
+	            		if(attr.type().isTristate()){
+		            		packet.setBoolean("bool", !attr.type().isBoolean() ? true : false);
+		            		Print.bar(player, "&7Toggled: &6" + attr.id() + " &a> " + packet.getBoolean("bool")); 
+	            		}
+	            		else if(attr.type().isFloat()){
+	            			float flaot = attr.getFloatValue() - attr.getAABB(attr.getStringValue())[5];
+	            			packet.setFloat("value", flaot); attr.setValue(flaot);
+	            		}
+	            		else if(attr.type().isInteger()){
+	            			int ent = attr.getIntegerValue() - (int)attr.getAABB(attr.getStringValue())[5];
+	            			packet.setFloat("value", ent); attr.setValue(ent);
+	            		}
 	            		break;
 	            	}
 	            	case RESET:{
-	            		packet.setBoolean("bool", false);
-	            		packet.setBoolean("reset", true);
-	            		Print.bar(player, "&7Reset: &6" + attr.id()); 
+	            		if(attr.type().isTristate()){
+		            		packet.setBoolean("bool", false);
+		            		packet.setBoolean("reset", true);
+		            		Print.bar(player, "&7Reset: &6" + attr.id()); 
+	            		}
+	            		else if(attr.type().isFloat()){
+	            			float flaot = attr.getAABB(attr.getStringValue())[6];
+	            			packet.setFloat("value", flaot); attr.setValue(flaot);
+	            		}
+	            		else if(attr.type().isInteger()){
+	            			int ent = (int)attr.getAABB(attr.getStringValue())[6];
+	            			packet.setFloat("value", ent); attr.setValue(ent);
+	            		}
 	            		break;
 	            	}
 	            	default: return false;

@@ -83,6 +83,35 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						}
 					}
 				}
+				else if(attr.type().isNumber()){
+					attr.setValue(attr.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
+					if(veh.getVehicleType().isRailVehicle()){
+						Compound com = ((RailVehicle)veh).rek.ent().getCompound();
+						if(!com.isHead((RailEntity)veh) && !com.isEnd((RailEntity)veh)) return;
+						for(RailEntity ent : com.getEntitites()){
+							if(ent.entity != null){
+								attr = ent.vehdata.getAttribute(attribute); if(attr == null) continue;
+								NBTTagCompound compound = packet.nbt.copy();
+								attr.setValue(attr.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
+							}
+						}
+					}
+					else{
+						if(veh.getFrontCoupledEntity() != null) return;
+						VehicleEntity trailer = veh.getRearCoupledEntity();
+						while(trailer != null){
+							attr = trailer.getVehicleData().getAttribute(attribute);
+							if(attr != null){
+								NBTTagCompound compound = packet.nbt.copy();
+								attr.setValue(attr.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
+							}
+							trailer = trailer.getRearCoupledEntity();
+						}
+					}
+				}
 				else{
 					//TODO
 					Print.log("no code for toggling this attribute type yet");

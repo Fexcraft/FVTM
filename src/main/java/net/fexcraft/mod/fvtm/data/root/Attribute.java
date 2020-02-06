@@ -102,12 +102,12 @@ public abstract class Attribute<V> {
 		aabbs.put(id, aabb); return (Attribute<T>)this;
 	}
 
-	protected <U> Attribute<U> copyAABBs(Attribute<?> original){
+	public <U> Attribute<U> copyAABBs(Attribute<?> original){
 		if(original.hasAABBs()){ this.aabbs = new TreeMap<>();
 			original.aabbs.forEach((key, value) -> {
 				float[] arr = new float[value.length];
 				for(int i = 0; i < arr.length; i++) arr[i] = value[i];
-				aabbs.put(key, arr);
+				this.aabbs.put(key, arr);
 			});
 		} return (Attribute<U>)this;
 	}
@@ -238,7 +238,8 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<String> copy(String origin){
-			return new StringAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
+			return new StringAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return 0; }
@@ -266,7 +267,8 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Float> copy(String origin){
-			return new FloatAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
+			return new FloatAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return (int) + value(); }
@@ -319,7 +321,8 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Integer> copy(String origin){
-			return new IntegerAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
+			return new IntegerAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return value(); }
@@ -374,7 +377,8 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new BooleanAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
+			return new BooleanAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return value() ? 1 : 0; }
@@ -404,7 +408,8 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new TriStateAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat()).setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).copyAABBs(this);
+			return new TriStateAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
 		@Override public int getIntegerValue(){ return value() == null ? -1 : value() ? 1 : 0; }

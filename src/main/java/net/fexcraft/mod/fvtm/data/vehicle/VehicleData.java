@@ -170,8 +170,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			}
 		}
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
-			if(attributes.containsKey(attr.id())) continue;
-			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
+			if(!attributes.containsKey(attr.id())){
+				Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
+			}
+			attributes.get(attr.id()).copyAABBs(attr);
 		}
 		//
 		this.selected_texture = compound.getInteger("SelectedTexture");
@@ -253,6 +255,18 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 					catch(InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e){
 						e.printStackTrace();
 					}
+				}
+			}
+		}
+		//
+		for(Attribute<?> attr : attributes.values()){
+			if(attr.origin() == null) continue;
+			String origin = attr.origin().split("\\|")[0];
+			PartData part = parts.get(origin);
+			if(part == null) continue;
+			for(Attribute<?> ettr : part.getType().getBaseAttributes()){
+				if(ettr.id().equals(attr.id())){
+					attr.copyAABBs(ettr); break;
 				}
 			}
 		}

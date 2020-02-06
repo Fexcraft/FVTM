@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.FCL;
@@ -54,31 +55,14 @@ import net.fexcraft.mod.fvtm.gui.road.RoadPlacingTool;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacingToolFill;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleConnectors;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainer;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainerSlot;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleContainers;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleFuel;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventories;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleInventory;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleMain;
-import net.fexcraft.mod.fvtm.gui.vehicle.VehicleToggables;
+import net.fexcraft.mod.fvtm.gui.vehicle.*;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.item.RoadSysItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
-import net.fexcraft.mod.fvtm.render.RailRenderer;
-import net.fexcraft.mod.fvtm.render.RenderAirVehicle;
-import net.fexcraft.mod.fvtm.render.RenderEmpty;
-import net.fexcraft.mod.fvtm.render.RenderJunctionSwitch;
-import net.fexcraft.mod.fvtm.render.RenderLandVehicle;
-import net.fexcraft.mod.fvtm.render.RenderRailTestEnt;
-import net.fexcraft.mod.fvtm.render.RenderRailVehicle;
-import net.fexcraft.mod.fvtm.render.RenderRoadSign;
-import net.fexcraft.mod.fvtm.render.RenderStreetSign;
-import net.fexcraft.mod.fvtm.render.RoadRenderer;
+import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
@@ -205,6 +189,18 @@ public class FVTM {
 			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			RoadSysItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			//
+			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
+				LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
+				long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
+				while((mid += Config.BLINKER_INTERVAL) < date);
+				(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER = new Timer()).schedule(new TimerTask(){
+					@Override
+					public void run(){
+						net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE = !net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
+					}
+				}, new Date(mid), Config.BLINKER_INTERVAL);
+			}
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.registerIntoOreDictionary());

@@ -17,7 +17,7 @@ public class Config {
     private static final String GENERAL = "General", LEGACYSYS = "Legacy", PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
     public static double VEHICLE_UPDATE_RANGE;
-    public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH;
+    public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL;
 	public static long UNLOAD_INTERVAL;
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
@@ -76,6 +76,7 @@ public class Config {
             if(ROAD_PLACING_GRID < 1) ROAD_PLACING_GRID = 1;
         }
         MAX_ROAD_LENGTH = config.getInt("road_max_length", GENERAL, 256, 1, 4096, "Max vector (total) length of new placed roads (with the placing tool).");
+        BLINKER_INTERVAL = config.getInt("blinker_interval", GENERAL, 750, 100, 2000, "Blinker/Turn Signal toggle interval, in milliseconds.");
     }
 
     public static void add(List<IConfigElement> list){

@@ -1,9 +1,10 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.Timer;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -23,7 +24,8 @@ import net.minecraft.entity.Entity;
  */
 public class DefaultPrograms {
 
-	public static boolean DIDLOAD = false;
+	public static boolean DIDLOAD = false, BLINKER_TOGGLE;
+	public static Timer BLINKER_TIMER;
 	
 	public static void init(){
 		TurboList.PROGRAMS.add(RGB_PRIMARY);
@@ -121,22 +123,18 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:lights_rear_backward"; }
 	};
 	
-	public static final boolean checkSignalSec(){//temporary solution;
-		return Time.getSecond() % 2 == 1;
-	}
-	
 	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec() && (data.getTurnLightLeft() || data.getWarningLights()); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return BLINKER_TOGGLE && (data.getTurnLightLeft() || data.getWarningLights()); }
 		@Override public String getId(){ return "fvtm:turn_signal_left"; }
 	};
 	
 	public static final Program TURN_SIGNAL_RIGHT = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec() && (data.getTurnLightRight() || data.getWarningLights()); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return BLINKER_TOGGLE && (data.getTurnLightRight() || data.getWarningLights()); }
 		@Override public String getId(){ return "fvtm:turn_signal_right"; }
 	};
 	
 	public static final Program WARNING_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return checkSignalSec() && data.getWarningLights(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return BLINKER_TOGGLE && data.getWarningLights(); }
 		@Override public String getId(){ return "fvtm:warning_lights"; }
 	};
 	
@@ -144,7 +142,7 @@ public class DefaultPrograms {
 	
 	public static final Program BACK_LIGHTS_SIGNAL_LEFT = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){
-			if(data.getTurnLightLeft() || data.getWarningLights()) return checkSignalSec();
+			if(data.getTurnLightLeft() || data.getWarningLights()) return BLINKER_TOGGLE;
 			else return data.getLightsState() || data.getThrottle() < -0.01;
 		}
 		@Override public String getId(){ return "fvtm:back_lights_signal_left"; }
@@ -152,7 +150,7 @@ public class DefaultPrograms {
 	
 	public static final Program BACK_LIGHTS_SIGNAL_RIGHT = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){
-			if(data.getTurnLightRight() || data.getWarningLights()) return checkSignalSec();
+			if(data.getTurnLightRight() || data.getWarningLights()) return BLINKER_TOGGLE;
 			else return data.getLightsState() || data.getThrottle() < -0.01;
 		}
 		@Override public String getId(){ return "fvtm:back_lights_signal_right"; }

@@ -3,10 +3,13 @@ package net.fexcraft.mod.fvtm.util.handler;
 import org.lwjgl.input.Keyboard;
 
 import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
+import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -33,7 +36,7 @@ public class KeyHandler {
         ClientRegistry.registerKeyBinding(arrow_down = new KeyBinding("key.fvtm.arrow_down", KeyConflictContex.VEHICLE, Keyboard.KEY_DOWN, category));
         ClientRegistry.registerKeyBinding(arrow_left = new KeyBinding("key.fvtm.arrow_left", KeyConflictContex.VEHICLE, Keyboard.KEY_LEFT, category));
         ClientRegistry.registerKeyBinding(arrow_right = new KeyBinding("key.fvtm.arrow_right", KeyConflictContex.VEHICLE, Keyboard.KEY_RIGHT, category));
-        ClientRegistry.registerKeyBinding(reset = new KeyBinding("key.fvtm.reset", KeyConflictContex.VEHICLE, Keyboard.KEY_SEMICOLON, category));
+        ClientRegistry.registerKeyBinding(reset = new KeyBinding("key.fvtm.reset", KeyConflictContex.TOGGABLE, Keyboard.KEY_SEMICOLON, category));
     }
     
     public static enum KeyConflictContex implements IKeyConflictContext {
@@ -42,6 +45,16 @@ public class KeyHandler {
     		@Override
     		public boolean isActive(){
     			return minecraft.player != null && minecraft.player.getRidingEntity() instanceof SeatEntity;
+    		}
+    		@Override
+    		public boolean conflicts(IKeyConflictContext other){
+    			return other == this;
+    		}
+    	},
+    	TOGGABLE {
+    		@Override
+    		public boolean isActive(){
+    			return ToggableHandler.handleClick(KeyPress.RESET);
     		}
     		@Override
     		public boolean conflicts(IKeyConflictContext other){
@@ -64,5 +77,20 @@ public class KeyHandler {
             }
         }
     }
+
+    @SubscribeEvent
+    public void clickEmpty(RightClickEmpty event){
+    	if(!event.getItemStack().isEmpty()) return;
+        ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT);
+    }
+
+    @SubscribeEvent
+    public void clickEmpty(LeftClickEmpty event){
+    	if(!event.getItemStack().isEmpty()) return;
+        ToggableHandler.handleClick(KeyPress.MOUSE_MAIN);
+    }
+
+    /*@SubscribeEvent
+    public void clickEmpty(EntityInteract event){}*/
 
 }

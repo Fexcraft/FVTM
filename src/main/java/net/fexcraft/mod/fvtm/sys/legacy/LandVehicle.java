@@ -125,6 +125,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         wheels = new WheelEntity[WHEELINDEX.length];
         seats = new SeatEntity[vehicle.getSeats().size()];
         stepHeight = lata.wheel_step_height;
+        this.setSize(vehicle.getAttribute("hitbox_width").getFloatValue(), vehicle.getAttribute("hitbox_height").getFloatValue());
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCap Implementation Found!");}
@@ -134,6 +135,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
         }
 	}
+	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicle == null){ vehicle = Resources.getVehicleData(compound); }
@@ -1039,7 +1041,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         if(source.damageType.equals("player") && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
             if(vehicle.isLocked()){
-                Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
+                Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock if you want to remove it.");
                 return false;
             }
             else{

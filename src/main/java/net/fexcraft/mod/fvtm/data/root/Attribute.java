@@ -25,7 +25,7 @@ public abstract class Attribute<V> {
 	private TreeSet<Modifier<V>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	private TreeMap<String, float[]> aabbs = null;
 	private String id, target, origin, seat, group;
-	private boolean iscopy, editable;
+	private boolean iscopy, editable, external;
 	private float min, max;
 	private Type type;
 	private V value, init;
@@ -36,6 +36,7 @@ public abstract class Attribute<V> {
 	
 	public boolean isCopy(){ return iscopy; }
 	public boolean editable(){ return editable; }
+	public boolean external(){ return external; }
 	//
 	public String id(){ return id; }
 	public String target(){ return target; }
@@ -63,6 +64,7 @@ public abstract class Attribute<V> {
 	public Attribute<V> setSeat(String string){ this.seat = string; return this; }
 	public Attribute<V> setMinMax(float min, float max){ this.min = min; this.max = max; return this; }
 	public Attribute<V> setEditable(boolean bool){ this.editable = bool; return this; }
+	public Attribute<V> setExternal(boolean bool){ this.external = bool; return this; }
 	//
 	public Attribute<V> addModifier(Modifier<?> mod){
 		if(mod.type() == type() || mod.type().isNumber() == type().isNumber()) modifiers.add((Modifier<V>)mod); return this;
@@ -89,6 +91,7 @@ public abstract class Attribute<V> {
 	public float[] getAABB(String id){
 		if(!hasAABBs()) return null;
 		if(!aabbs.containsKey(id)){
+			if(id.equals("external-")) return getAABB("external");
 			if(!aabbs.containsKey("default")) return null;
 			return aabbs.get("default");
 		} return aabbs.get(id);
@@ -107,6 +110,10 @@ public abstract class Attribute<V> {
 				aabbs.put(key, arr);
 			});
 		} return (Attribute<U>)this;
+	}
+	
+	public TreeMap<String, float[]> getAABBs(){
+		return aabbs;
 	}
 	
 	public static enum Type {
@@ -163,6 +170,7 @@ public abstract class Attribute<V> {
 		if(group != null) compound.setString("group", group);
 		if(seat != null) compound.setString("seat", seat);
 		compound.setBoolean("editable", editable);
+		compound.setBoolean("external", external);
 		compound.setTag("initial", this.writeValue(true));
 		compound.setTag("value", this.writeValue(false));
 		if(!modifiers.isEmpty()){
@@ -182,6 +190,7 @@ public abstract class Attribute<V> {
 		if(compound.hasKey("group")) this.group = compound.getString("group");
 		if(compound.hasKey("seat")) this.seat = compound.getString("seat");
 		editable = compound.hasKey("editable") ? compound.getBoolean("editable") : true;
+		editable = compound.hasKey("external") ? compound.getBoolean("external") : false;
 		init = this.readValue(compound.getTag("initial"));
 		value = compound.hasKey("value") ? this.readValue(compound.getTag("value")) : init;
 		modifiers.clear(); if(compound.hasKey("modifiers")){

@@ -119,6 +119,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 					attr.setMinMax(min, max);
 				}
 				if(json.has("editable")) attr.setEditable(json.get("editable").getAsBoolean());
+				if(json.has("external")) attr.setExternal(json.get("external").getAsBoolean());
 				if(json.has("hitbox")){
 					if(json.get("hitbox").isJsonArray()){
 						JsonArray erray = json.get("hitbox").getAsJsonArray();

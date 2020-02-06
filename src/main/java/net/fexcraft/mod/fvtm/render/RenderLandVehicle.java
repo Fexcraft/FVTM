@@ -2,7 +2,9 @@ package net.fexcraft.mod.fvtm.render;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -10,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -32,6 +35,7 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
     }
     
     //private static final ModelRendererTurbo turbo = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-2, -2, -2, 4, 4, 4);
+    public static final ModelRendererTurbo centersphere = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setTextured(false).setLines(new RGB(0xcdcdcd));
 
     @Override
     public void doRender(LandVehicle vehicle, double x, double y, double z, float entity_yaw, float ticks){
@@ -72,6 +76,7 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	            }
 	            GL11.glPopMatrix();
 	            if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0);
+	            if(Command.DEBUG) centersphere.render(vehicle.getVehicleData().getAttribute("collision_range").getFloatValue());
             }
             GL11.glPopMatrix();
             /*if(Command.DEBUG && vehicle.getVehicleData() != null){

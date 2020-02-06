@@ -51,6 +51,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(LIGHTS_FRONT_BACKWARD);
 		TurboList.PROGRAMS.add(LIGHTS_REAR_FORWARD);
 		TurboList.PROGRAMS.add(LIGHTS_REAR_BACKWARD);
+		TurboList.PROGRAMS.add(BOGIE_AUTO);
 		//
 		TurboList.PROGRAMS.add(TRANSPARENT);
 		//
@@ -190,6 +191,11 @@ public class DefaultPrograms {
             GL11.glDepthMask(true);
             GL11.glDisable(GL11.GL_BLEND);
             GlStateManager.popMatrix();
+		}
+		
+		@Override
+		public String getId(){
+			return "fvtm:window";
 		}
 		
 	}

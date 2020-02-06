@@ -190,7 +190,7 @@ public abstract class Attribute<V> {
 		if(compound.hasKey("group")) this.group = compound.getString("group");
 		if(compound.hasKey("seat")) this.seat = compound.getString("seat");
 		editable = compound.hasKey("editable") ? compound.getBoolean("editable") : true;
-		editable = compound.hasKey("external") ? compound.getBoolean("external") : false;
+		external = compound.hasKey("external") ? compound.getBoolean("external") : false;
 		init = this.readValue(compound.getTag("initial"));
 		value = compound.hasKey("value") ? this.readValue(compound.getTag("value")) : init;
 		modifiers.clear(); if(compound.hasKey("modifiers")){

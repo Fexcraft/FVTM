@@ -1,13 +1,17 @@
 package net.fexcraft.mod.fvtm.render;
 
+import java.util.Map;
+
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -15,7 +19,9 @@ import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFactory<LandVehicle> {
@@ -76,7 +82,19 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	            }
 	            GL11.glPopMatrix();
 	            if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0);
-	            if(Command.DEBUG) centersphere.render(vehicle.getVehicleData().getAttribute("collision_range").getFloatValue());
+	            if(Command.DEBUG){
+	            	centersphere.render(vehicle.getVehicleData().getAttribute("collision_range").getFloatValue());
+	            	if(Static.dev()){
+	            		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){
+	            			if(!attr.hasAABBs()) continue;
+	            			for(Map.Entry<String, float[]> box : attr.getAABBs().entrySet()){
+	            				Vec3d temp = vehicle.getAxes().getRelativeVector(box.getValue()[0] * Static.sixteenth, -box.getValue()[1] * Static.sixteenth, -box.getValue()[2] * Static.sixteenth);
+	            	        	temp = temp.add(vehicle.getEntity().getPositionVector());
+	            	        	vehicle.world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
+	            			}
+	            		}
+	            	}
+	            }
             }
             GL11.glPopMatrix();
             /*if(Command.DEBUG && vehicle.getVehicleData() != null){

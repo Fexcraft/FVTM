@@ -11,6 +11,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.Command;
@@ -86,7 +87,12 @@ public class ToggableHandler {
         	}
         	default: return false;
     	}
-		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+    	if(player.world.isRemote){
+    		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+    	}
+    	else{
+    		ServerReceiver.INSTANCE.process(packet, player);
+    	}
 		return true;
 	}
 

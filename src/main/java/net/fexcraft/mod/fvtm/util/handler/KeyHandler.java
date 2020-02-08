@@ -8,7 +8,9 @@ import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -82,17 +84,27 @@ public class KeyHandler {
     public void clickEmpty(RightClickEmpty event){
     	if(!event.getItemStack().isEmpty()) return;
         ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT);
-        //Static.exception(null, true);
     }
 
     @SubscribeEvent
     public void clickEmpty(LeftClickEmpty event){
     	if(!event.getItemStack().isEmpty()) return;
         ToggableHandler.handleClick(KeyPress.MOUSE_MAIN);
-        //Static.exception(null, true);
+    }
+    
+    //unsure if those 2 bellow won't be processing intensive
+    //TODO remove if we manage to get larger bounding boxes instead
+
+    @SubscribeEvent
+    public void clickEmpty(RightClickBlock event){
+    	if(!event.getItemStack().isEmpty()) return;
+        if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT)) event.setCanceled(true);
     }
 
-    /*@SubscribeEvent
-    public void clickEmpty(EntityInteract event){}*/
+    @SubscribeEvent
+    public void clickEmpty(LeftClickBlock event){
+    	if(!event.getItemStack().isEmpty()) return;
+        if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) event.setCanceled(true);
+    }
 
 }

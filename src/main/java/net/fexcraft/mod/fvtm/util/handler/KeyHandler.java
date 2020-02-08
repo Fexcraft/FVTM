@@ -82,12 +82,14 @@ public class KeyHandler {
     public void clickEmpty(RightClickEmpty event){
     	if(!event.getItemStack().isEmpty()) return;
         ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT);
+        //Static.exception(null, true);
     }
 
     @SubscribeEvent
     public void clickEmpty(LeftClickEmpty event){
     	if(!event.getItemStack().isEmpty()) return;
         ToggableHandler.handleClick(KeyPress.MOUSE_MAIN);
+        //Static.exception(null, true);
     }
 
     /*@SubscribeEvent

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.item;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -35,7 +36,7 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
     public ContainerItem(Container core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
         this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getResourcePath(), this, 0, null);
+        	type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}

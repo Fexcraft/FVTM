@@ -30,7 +30,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         //this.setRegistryName(core.getRegistryName());
         //this.setUnlocalizedName(this.getRegistryName().toString());
         this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getResourcePath(), this, 0, null);
+        	type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}

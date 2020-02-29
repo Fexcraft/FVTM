@@ -75,7 +75,7 @@ public class ConstCenterBlock extends Block implements ITileEntityProvider {
 
     @Override
     public IBlockState getStateFromMeta(int meta){
-        EnumFacing facing = EnumFacing.getFront(meta);
+        EnumFacing facing = EnumFacing.byIndex(meta);
         facing = facing.getAxis() == EnumFacing.Axis.Y ? EnumFacing.NORTH : facing;
         return this.getDefaultState().withProperty(FACING, facing);
     }

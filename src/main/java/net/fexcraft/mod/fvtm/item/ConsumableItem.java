@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -28,7 +29,7 @@ public class ConsumableItem extends ItemFood {
     public ConsumableItem(Consumable consumable){
 		super(consumable.getHealAmount(), consumable.isAlwaysEdible()); this.type = consumable;
 		this.setMaxStackSize(consumable.getMaxStackSize()); this.setHasSubtypes(true);
-        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getResourcePath(), this, 0, null);
+        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}

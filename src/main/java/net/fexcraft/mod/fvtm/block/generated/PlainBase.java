@@ -15,7 +15,7 @@ public class PlainBase extends net.minecraft.block.Block {
 	public PlainBase(Block type){
 		super(type.getMaterial(), type.getMapColor()); this.type = type;
 		type.getAddon().getFCLRegisterer().addBlock(
-			type.getRegistryName().getResourcePath(), this, BlockItem.class, 0, null);
+			type.getRegistryName().getPath(), this, BlockItem.class, 0, null);
 		this.setHardness(type.getHardness());
 		this.setLightLevel(type.getLightLevel());
 		this.setResistance(type.getResistance());
@@ -33,7 +33,7 @@ public class PlainBase extends net.minecraft.block.Block {
     public boolean isOpaqueCube(IBlockState state){ return type == null ? false : type.isOpaque(); }
 	
 	@Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity){
+    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity){
 		if(type.getCollisionDamage() > 0) entity.attackEntityFrom(DamageSource.CACTUS, type.getCollisionDamage());
 		if(type.isWebLike()) entity.setInWeb(); return;
     }

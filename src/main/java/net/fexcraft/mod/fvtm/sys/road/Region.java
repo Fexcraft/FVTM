@@ -87,7 +87,7 @@ public class Region {
 		File file = new File(world.getRootFile(), "/roadregions/" + key.x + "_" + key.z + ".dat");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		NBTTagCompound compound = write();
-		if(compound.hasNoTags()){
+		if(compound.isEmpty()){
 			Print.log("RoadRegion [" + key.toString() + "] has no data to save, skipping."); return this;
 		}
 		try{ CompressedStreamTools.write(compound, file); } catch(IOException e){ e.printStackTrace(); }

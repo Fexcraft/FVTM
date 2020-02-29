@@ -11,15 +11,7 @@ import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
-import net.fexcraft.mod.fvtm.model.block.RS_Diamond;
-import net.fexcraft.mod.fvtm.model.block.RS_DiamondFlat;
-import net.fexcraft.mod.fvtm.model.block.RS_Octagon;
-import net.fexcraft.mod.fvtm.model.block.RS_OctagonBorderless;
-import net.fexcraft.mod.fvtm.model.block.RS_Quad;
-import net.fexcraft.mod.fvtm.model.block.RS_Round;
-import net.fexcraft.mod.fvtm.model.block.RS_RoundBorderless;
-import net.fexcraft.mod.fvtm.model.block.RS_TriangleDown;
-import net.fexcraft.mod.fvtm.model.block.RS_TriangleUp;
+import net.fexcraft.mod.fvtm.model.block.*;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
@@ -146,7 +138,7 @@ public class RoadSign extends TypeCore<RoadSign> {
 		}
 
 	    @Override
-	    public ItemStack getTabIconItem(){
+	    public ItemStack createIcon(){
 	        return null;
 	    }
 
@@ -156,7 +148,7 @@ public class RoadSign extends TypeCore<RoadSign> {
 	    }
 
 	    @Override
-	    public ItemStack getIconItemStack(){
+	    public ItemStack getIcon(){
 	        if(list == null){ list = NonNullList.create(); this.displayAllRelevantItems(list); }
 	        if(sec != Time.getSecond()){
 	        	sec = Time.getSecond(); this.icon++; if(icon >= list.size()){ icon = 0; }

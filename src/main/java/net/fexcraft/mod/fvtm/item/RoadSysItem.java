@@ -63,7 +63,7 @@ public class RoadSysItem extends Item implements JunctionGridItem {
 	        return EnumActionResult.FAIL;
         }
         ItemStack stack = player.getHeldItem(hand);
-        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        Vec316f vector = new Vec316f(new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
         if(player.isSneaking()){
 			stack.getTagCompound().removeTag("fvtm:roadpoints");
 			Print.chat(player, "&bItem Point(s) Cache reset.");
@@ -72,8 +72,8 @@ public class RoadSysItem extends Item implements JunctionGridItem {
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		RoadJunc point = syscap.getRoadPoint(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:roadpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints") : new NBTTagList();
-		if(point == null || list.hasNoTags()){
-			if(list.hasNoTags() || !createdRoadPoint(syscap, player, list, vector)){
+		if(point == null || list.isEmpty()){
+			if(list.isEmpty() || !createdRoadPoint(syscap, player, list, vector)){
 				list.appendTag(vector.write()); stack.getTagCompound().setTag("fvtm:roadpoints", list);
 				Print.bar(player, list.tagCount() + (getSuffix(list.tagCount())) +" Point Added!");
 				return EnumActionResult.SUCCESS;

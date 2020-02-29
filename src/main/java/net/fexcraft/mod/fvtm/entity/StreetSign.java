@@ -89,7 +89,7 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
 
     @Override
     public void readSpawnData(ByteBuf buffer){
-    	facing = EnumFacing.getFront(buffer.readByte());
+    	facing = EnumFacing.byIndex(buffer.readByte());
     	locked = buffer.readBoolean();
     	texture = buffer.readByte();
     	//
@@ -261,7 +261,7 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
 
 	@Override
     protected void readEntityFromNBT(NBTTagCompound compound){
-    	facing = EnumFacing.getFront(compound.getByte("facing"));
+    	facing = EnumFacing.byIndex(compound.getByte("facing"));
         locked = compound.getBoolean("locked");
         texture = compound.getByte("texture");
         //

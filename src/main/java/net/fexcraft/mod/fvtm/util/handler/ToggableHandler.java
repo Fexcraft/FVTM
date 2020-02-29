@@ -102,7 +102,7 @@ public class ToggableHandler {
 		if(entity == null || entity.world == null) return null;
         Vec3d vec = entity.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
         Vec3d temp = entity.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
-        Vec3d vecto = vec.addVector(temp.x * 2, temp.y * 2, temp.z * 2);
+        Vec3d vecto = vec.add(temp.x * 2, temp.y * 2, temp.z * 2);
         Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
         TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
         for(Attribute<?> attr : attributes){

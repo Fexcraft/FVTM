@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
@@ -31,7 +32,7 @@ public class MaterialItem extends TypeCoreItem<Material> {
 		super(material); this.setHasSubtypes(true);
 		this.setMaxStackSize(type.isFuelContainer() ? 1 : material.getMaxStackSize());
 		this.setMaxDamage(material.getMaxDamage());
-        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getResourcePath(), this, 0, null);
+        this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}

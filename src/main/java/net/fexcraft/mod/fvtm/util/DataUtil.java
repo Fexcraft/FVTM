@@ -125,7 +125,7 @@ public class DataUtil {
                 list.appendTag(compound);
             }
         }
-        if(!list.hasNoTags() || saveEmpty){
+        if(!list.isEmpty() || saveEmpty){
             tag.setTag("Items", list);
         }
         return tag;
@@ -141,7 +141,7 @@ public class DataUtil {
 
 	public static Vec3d readVec3d(NBTBase base){
 		if(base instanceof NBTTagList == false) return null; NBTTagList list = (NBTTagList)base;
-		if(list.hasNoTags() || list.tagCount() < 3) return null;
+		if(list.isEmpty() || list.tagCount() < 3) return null;
 		return new Vec3d(list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2));
 	}
 
@@ -155,7 +155,7 @@ public class DataUtil {
 
 	public static Vec3f readVec3f(NBTBase tag){
 		if(tag instanceof NBTTagList == false) return null; NBTTagList list = (NBTTagList)tag;
-		if(list.hasNoTags() || list.tagCount() < 3) return null;
+		if(list.isEmpty() || list.tagCount() < 3) return null;
 		return new Vec3f(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
 	}
 	

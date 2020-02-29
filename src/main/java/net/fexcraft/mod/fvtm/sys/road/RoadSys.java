@@ -52,7 +52,7 @@ public class RoadSys implements RoadSystem {
 
 	@Override
 	public void read(EnumFacing side, NBTTagCompound compound){
-		if(compound == null || compound.hasNoTags()) return;
+		if(compound == null || compound.isEmpty()) return;
 		gc_entities = compound.getLong("GlobalCounterEntities");
 		gc_sections = compound.getLong("GlobalCounterSections");
 	}

@@ -129,12 +129,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			NBTTagList scrap = new NBTTagList();
 			for(VehicleScript script : scripts){
 				NBTTagCompound com = script.write(this, new NBTTagCompound());
-				if(com != null && !com.hasNoTags()){
+				if(com != null && !com.isEmpty()){
 					com.setString("id", script.getId());
 					scrap.appendTag(com);
 				}
 			}
-			if(!scrap.hasNoTags()) compound.setTag("Scripts", scrap);
+			if(!scrap.isEmpty()) compound.setTag("Scripts", scrap);
 		}
 		compound.setBoolean("Locked", locked);
 		if(front_conn != null) compound.setTag("FrontConnector", DataUtil.writeVec3d(front_conn));

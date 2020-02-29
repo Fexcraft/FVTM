@@ -44,7 +44,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     public VehicleItem(Vehicle core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
         this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getResourcePath(), this, 0, null);
+        	type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
 	}
@@ -118,7 +118,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	else if(data.getType().getVehicleType().isRailVehicle()){
             RailSys syscap = world.getCapability(Capabilities.RAILSYSTEM, null).get();
             if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
-            Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+            Vec316f vector = new Vec316f(new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
     		Junction junk = syscap.getJunction(vector, true);
     		if(junk == null){
     			Print.bar(player, "&c&oNo Junction found at this position.");

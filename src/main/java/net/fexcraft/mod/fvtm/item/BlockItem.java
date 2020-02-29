@@ -29,7 +29,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 		super(block); type = ((PlainBase)block).type;
 		this.setHasSubtypes(true); this.setMaxStackSize(type.getMaxStackSize());
 		this.setRegistryName(block.getRegistryName());
-		this.setUnlocalizedName(block.getUnlocalizedName());
+		this.setTranslationKey(block.getTranslationKey());
 	}
 
     @SideOnly(Side.CLIENT)

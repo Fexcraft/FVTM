@@ -113,7 +113,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	Print.chat(player, "&cYou need to be OPERATOR to use this item."); return EnumActionResult.FAIL;
         }
         ItemStack stack = player.getHeldItem(hand);
-        Vec316f vector = new Vec316f(new Vec3d(pos.down()).addVector(hitX, hitY, hitZ), Config.ROAD_PLACING_GRID);
+        Vec316f vector = new Vec316f(new Vec3d(pos.down()).add(hitX, hitY, hitZ), Config.ROAD_PLACING_GRID);
         if(player.isSneaking()){
 			stack.getTagCompound().removeTag("fvtm:roadpoints");
 			Print.chat(player, "&bResetting Item Point(s) Cache.");
@@ -295,7 +295,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	private boolean lastEquals(NBTTagList list, Vec316f vector){
-		if(list.hasNoTags() || list.tagCount() < 2) return false; return getLastVector(list).equals(vector);
+		if(list.isEmpty() || list.tagCount() < 2) return false; return getLastVector(list).equals(vector);
 	}
 
 	private String getSuffix(int tagCount){

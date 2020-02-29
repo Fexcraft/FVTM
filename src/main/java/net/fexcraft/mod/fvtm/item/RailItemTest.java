@@ -46,7 +46,7 @@ public class RailItemTest extends Item implements JunctionGridItem {
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
-        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ));
+        Vec316f vector = new Vec316f(new Vec3d(pos).add(hitX, hitY, hitZ));
 		Junction junk = syscap.getJunction(vector, true);
 		if(junk == null){
 			Print.bar(player, "&c&oNo Junction found at this position.");

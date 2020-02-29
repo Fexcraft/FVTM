@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import java.nio.charset.StandardCharsets;
+
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.RoadSign;
@@ -48,7 +49,7 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void readSpawnData(ByteBuf buffer){
     	try{
-        	facing = EnumFacing.getFront(buffer.readByte()); locked = buffer.readBoolean();
+        	facing = EnumFacing.byIndex(buffer.readByte()); locked = buffer.readBoolean();
         	sign = Resources.getRoadSign(buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString());
     	}
     	catch(Exception e){
@@ -58,7 +59,7 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
 
 	@Override
     protected void readEntityFromNBT(NBTTagCompound compound){
-    	facing = EnumFacing.getFront(compound.getByte("facing"));
+    	facing = EnumFacing.byIndex(compound.getByte("facing"));
         locked = compound.getBoolean("locked");
         sign = Resources.getRoadSign(compound.getString("fvtm:roadsign"));
         if(sign == null){

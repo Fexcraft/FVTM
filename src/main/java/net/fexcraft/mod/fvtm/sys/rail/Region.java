@@ -105,7 +105,7 @@ public class Region {
 		File file = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + ".dat");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		NBTTagCompound compound = write(false);
-		if(compound.hasNoTags()){
+		if(compound.isEmpty()){
 			Print.log("RailRegion [" + key.toString() + "] has no data to save, skipping."); return this;
 		}
 		compound.setLong("Saved", Time.getDate());

@@ -36,7 +36,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
     public RailGaugeItem(RailGauge core){
 		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
         this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getResourcePath(), this, 0, null);
+        	type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
     }
@@ -76,7 +76,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 	        return EnumActionResult.FAIL;
         }
         ItemStack stack = player.getHeldItem(hand);
-        Vec316f vector = new Vec316f(new Vec3d(pos).addVector(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        Vec316f vector = new Vec316f(new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
         if(player.isSneaking()){
 			stack.getTagCompound().removeTag("fvtm:railpoints");
 			Print.chat(player, "&bItem Point(s) Cache reset.");
@@ -85,8 +85,8 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		Junction junk = syscap.getJunction(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
-		if(junk == null || list.hasNoTags()){
-			if(list.hasNoTags() || !createdJunction(syscap, player, list, vector)){
+		if(junk == null || list.isEmpty()){
+			if(list.isEmpty() || !createdJunction(syscap, player, list, vector)){
 				list.appendTag(vector.write()); stack.getTagCompound().setTag("fvtm:railpoints", list);
 				Print.bar(player, list.tagCount() + (getSuffix(list.tagCount())) +" Point Added!");
 				return EnumActionResult.SUCCESS;

@@ -50,7 +50,7 @@ public class RenderCacheHandler implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public void readNBT(Capability<RenderCache> capability, RenderCache instance, EnumFacing side, NBTBase nbt){
 			if(nbt == null || nbt instanceof NBTTagCompound == false) return;
-			NBTTagCompound compound = (NBTTagCompound)nbt; if(compound.hasNoTags()) return;
+			NBTTagCompound compound = (NBTTagCompound)nbt; if(compound.isEmpty()) return;
 			for(String str : compound.getKeySet()){ instance.setValue(str, compound.getFloat(str)); }
 		}
 		

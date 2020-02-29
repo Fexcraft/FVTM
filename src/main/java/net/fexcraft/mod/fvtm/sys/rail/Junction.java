@@ -99,7 +99,7 @@ public class Junction {
 		else type = PathJuncType.STRAIGHT;
 		if(compound.hasKey("SwitchPos")) this.switchlocation = DataUtil.readVec3f(compound.getTag("SwitchPos"));
 		else this.switchlocation = null;
-		if(compound.hasKey("SwitchFacing")) this.entityFacing = EnumFacing.getFront(compound.getInteger("SwitchFacing"));
+		if(compound.hasKey("SwitchFacing")) this.entityFacing = EnumFacing.byIndex(compound.getInteger("SwitchFacing"));
 		if(switchlocation != null && entityFacing == null) entityFacing = EnumFacing.NORTH;
 		if(entity != null){
 			if(switchlocation != null) entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);

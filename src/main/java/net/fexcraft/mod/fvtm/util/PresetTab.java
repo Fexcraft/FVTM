@@ -19,7 +19,7 @@ public class PresetTab extends CreativeTab {
 	}
 
     @Override
-    public ItemStack getTabIconItem(){
+    public ItemStack createIcon(){
         return null;
     }
 
@@ -29,7 +29,7 @@ public class PresetTab extends CreativeTab {
     }
 
     @Override
-    public ItemStack getIconItemStack(){
+    public ItemStack getIcon(){
         if(list == null){ list = NonNullList.create(); displayAllRelevantItems(list); }
         if(sec != Time.getSecond()){
         	sec = Time.getSecond(); this.icon++; if(icon >= list.size()){ icon = 0; }

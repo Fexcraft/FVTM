@@ -11,12 +11,12 @@ public class CrashCallable implements ICrashCallable {
 		String[] lines = new String[Resources.ADDONS.getValues().size()];
 		int size = 0;
 		for(int i = 0; i < lines.length; i++){
-			if(Resources.ADDONS.getValues().get(i).getRegistryName().getResourcePath().length() > size){
-				size = Resources.ADDONS.getValues().get(i).getRegistryName().getResourcePath().length();
+			if(Resources.ADDONS.getValues().get(i).getRegistryName().getPath().length() > size){
+				size = Resources.ADDONS.getValues().get(i).getRegistryName().getPath().length();
 			}
 		}
 		for(int i = 0; i < lines.length; i++){
-			lines[i] = "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.getValues().get(i).getRegistryName().getResourcePath());
+			lines[i] = "| " + String.format("%-" + (size + 1) + "s", Resources.ADDONS.getValues().get(i).getRegistryName().getPath());
 		}
 		//
 		size = 0;

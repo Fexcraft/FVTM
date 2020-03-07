@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -13,11 +14,13 @@ import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFactory<RailVehicle> {
 	
 	private ContainerHolder tempholder;
+	private Vec3d temp;
 
     public RenderRailVehicle(RenderManager renderManager){
         super(renderManager); shadowSize = 0.125F;
@@ -63,9 +66,22 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 		                if(vehicle.getVehicleData().getParts().size() > 0){
 		                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 		                    	ModelBase.bindTexture(entry.getValue().getTexture());
-		                    	entry.getValue().getInstalledPos().translate();
-		                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache, -1);
-		                        entry.getValue().getInstalledPos().translateR();
+		                    	if(entry.getValue().isInstalledOnSwivelPoint()){
+		                    		SwivelPoint point = vehicle.getVehicleData().getRotationPoint(entry.getValue().getSwivelPointInstalledOn());
+		                    		temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true);
+		                    		GL11.glPushMatrix();
+		                            GL11.glTranslated(temp.x, temp.y, temp.z);
+		            	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);
+		            	            GL11.glRotated(point.getRelativeRot().y, 0.0F, 0.0F, 1.0F);
+		            	            GL11.glRotated(point.getRelativeRot().z, 1.0F, 0.0F, 0.0F);
+			                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache, -1);
+		            	            GL11.glPopMatrix();
+		                    	}
+		                    	else{
+			                    	entry.getValue().getInstalledPos().translate();
+			                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache, -1);
+			                        entry.getValue().getInstalledPos().translateR();
+		                    	}
 		                	}
 		                }
 		            }

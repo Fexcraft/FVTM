@@ -176,19 +176,19 @@ public class SwivelPoint {
 		}
 		return rel;
 	}
-	
-	//UNTESTED
+
+	// UNTESTED
 	private Vec3d calcRelativeRot(Vec3d root){
 		if(root == null){
 			root = new Vec3d(axe.getYaw(), axe.getPitch(), axe.getRoll());
 		}
 		else{
-			root = root.subtract(axe.getYaw(), axe.getPitch(), axe.getRoll());
+			root = root.add(axe.getYaw(), axe.getPitch(), axe.getRoll());
 		}
 		if(parent != null) root = calcRelativeRot(root);
 		return root;
 	}
-	
+
 	public Vec3d getRelativeRot(){
 		return prerot;
 	}

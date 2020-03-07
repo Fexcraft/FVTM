@@ -11,6 +11,7 @@ import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
@@ -145,7 +146,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         prev_pass_pitch = pass_pitch;
         //prev_pass_roll = pass_roll;
 
-        Vec3d relpos = vehicle.getRotPoint().getAxes().getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
+        SwivelPoint point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
+        Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
         setPosition(vehicle.getEntity().posX + relpos.x, vehicle.getEntity().posY + relpos.y, vehicle.getEntity().posZ + relpos.z);
         this.lastTickPosX = this.prevPosX = posX;
         this.lastTickPosY = this.prevPosY = posY;

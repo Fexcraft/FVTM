@@ -20,7 +20,14 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.*;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.DataCore;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.root.Modifier;
+import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.data.root.Soundable;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
@@ -56,10 +63,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected Vec3d front_conn, rear_conn;
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
+	protected SwivelPoint rootpoint;
 
 	public VehicleData(Vehicle type){
 		super(type);
-		rotpoints.put("vehicle", new SwivelPoint("vehicle", null));
+		rotpoints.put("vehicle", rootpoint = new SwivelPoint("vehicle", null));
 		for(SwivelPoint point : type.getDefaultSwivelPoints().values()){
 			rotpoints.put(point.id, point);
 		}
@@ -712,9 +720,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	
 	/** Falls back to "vehicle" rotpoint if the specified one isn't found. */
 	public SwivelPoint getRotationPoint(String id){
-		if(id == null) return getRotationPoint("vehicle");
+		if(id == null) return rootpoint;
 		SwivelPoint point = rotpoints.get(id);
-		if(point == null) return getRotationPoint("vehicle");
+		if(point == null) return rootpoint;
 		return point;
 	}
 

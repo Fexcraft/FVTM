@@ -26,9 +26,9 @@ public class SwivelPoint {
 	public final String id, parid;
 	public String origin;
 	public SwivelPoint parent;
-	protected Vec3d position, prevpos; 
+	protected Vec3d position, prevpos;
 	private Axis3D axe = new Axis3D(), prevaxe = new Axis3D();
-	//sync
+	// sync
 	private static final int ticker = LandVehicle.servtick;
 	private int servticker;
 	private Vec3d servpos, servrot;
@@ -38,6 +38,7 @@ public class SwivelPoint {
 		this.position = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true).to16Double() : new Vec3d(0, 0, 0);
 		this.prevpos = new Vec3d(position.x, position.y, position.z);
 		this.parid = obj.has("parent") ? obj.get("parent").getAsString() : "vehicle";
+		axe.setAngles(JsonUtil.getIfExists(obj, "yaw", 0).doubleValue(), JsonUtil.getIfExists(obj, "pitch", 0).doubleValue(), JsonUtil.getIfExists(obj, "roll", 0).doubleValue());
 	}
 
 	public SwivelPoint(String id, String parid){
@@ -46,7 +47,7 @@ public class SwivelPoint {
 		position = new Vec3d(0, 0, 0);
 		prevpos = new Vec3d(0, 0, 0);
 	}
-	
+
 	public SwivelPoint(NBTTagCompound com){
 		this.id = com.getString("id");
 		this.parid = com.hasKey("parent") ? com.getString("parent") : null;
@@ -56,7 +57,7 @@ public class SwivelPoint {
 	public Axis3D getAxes(){
 		return axe;
 	}
-	
+
 	public Axis3D getPrevAxes(){
 		return prevaxe;
 	}
@@ -88,7 +89,8 @@ public class SwivelPoint {
 		SwivelPoint point = new SwivelPoint(com.getString("id"), com.getString("parent"));
 		point.position = new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z"));
 		point.prevpos = new Vec3d(position.x, position.y, position.z);
-		point.axe = Axis3D.read(null, com); point.prevaxe = point.axe.clone();
+		point.axe = Axis3D.read(null, com);
+		point.prevaxe = point.axe.clone();
 		return point;
 	}
 
@@ -106,11 +108,11 @@ public class SwivelPoint {
 		point.prevaxe = this.prevaxe.clone();
 		return point;
 	}
-	
+
 	public Vec3d getPos(){
 		return position;
 	}
-	
+
 	public Vec3d getPrevPos(){
 		return prevpos;
 	}
@@ -119,7 +121,7 @@ public class SwivelPoint {
 		prevpos = new Vec3d(prevpos.x, prevpos.y, prevpos.z);
 		position = new Vec3d(posX, posY, posZ);
 	}
-	
+
 	public void updateClient(Entity entity){
 		if(!entity.world.isRemote) return;
 		Packets.sendToAllAround(new PKT_SPUpdate(entity, this), entity);
@@ -128,14 +130,15 @@ public class SwivelPoint {
 	public void update(VehicleEntity entity){
 		this.updatePrevAxe();
 		if(servticker == 0) return;
-        double x = position.x + (servpos.x - position.x) / servticker;
-        double y = position.y + (servpos.y - position.y) / servticker;
-        double z = position.z + (servpos.z - position.z) / servticker;
+		double x = position.x + (servpos.x - position.x) / servticker;
+		double y = position.y + (servpos.y - position.y) / servticker;
+		double z = position.z + (servpos.z - position.z) / servticker;
 		double yaw = MathHelper.wrapDegrees(servrot.x - axe.getYaw());
-        double pitch = MathHelper.wrapDegrees(servrot.y - axe.getPitch());
-        double roll = MathHelper.wrapDegrees(servrot.z - axe.getRoll());
-        --servticker; setPos(x, y, z);
-        axe.setAngles(axe.getYaw() + yaw / servticker, axe.getPitch() + pitch / servticker, axe.getRoll() + roll / servticker);
+		double pitch = MathHelper.wrapDegrees(servrot.y - axe.getPitch());
+		double roll = MathHelper.wrapDegrees(servrot.z - axe.getRoll());
+		--servticker;
+		setPos(x, y, z);
+		axe.setAngles(axe.getYaw() + yaw / servticker, axe.getPitch() + pitch / servticker, axe.getRoll() + roll / servticker);
 	}
 
 	public void processPacket(PKT_SPUpdate pkt, boolean side){
@@ -145,10 +148,22 @@ public class SwivelPoint {
 			servticker = ticker;
 		}
 		else{
-	        setPos(pkt.posX, pkt.posY, pkt.posZ);
-	        updatePrevAxe();
-	        getAxes().setAngles(pkt.yaw, pkt.pitch, pkt.roll);
+			setPos(pkt.posX, pkt.posY, pkt.posZ);
+			updatePrevAxe();
+			getAxes().setAngles(pkt.yaw, pkt.pitch, pkt.roll);
 		}
+	}
+
+	public Vec3d getRelativeVector(double x, double y, double z){
+		Vec3d rel = axe.getRelativeVector((float)x, (float)y, (float)z);
+		if(parent != null) return parent.getRelativeVector(rel.x, rel.y, rel.z);
+		return rel;
+	}
+
+	public Vec3d getRelativeVector(Vec3d root){
+		Vec3d rel = axe.getRelativeVector(root);
+		if(parent != null) return parent.getRelativeVector(rel);
+		return rel;
 	}
 
 }

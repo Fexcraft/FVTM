@@ -354,7 +354,7 @@ public class Resources {
 	public static void resetFlight(EntityPlayerMP passenger){
 		if(flightdata == null && !flightdata_failed){
 			try{
-				flightdata = ReflectionHelper.findField(NetHandlerPlayServer.class,  "floatingTickCount", "field_147365_f");
+				flightdata = ReflectionHelper.findField(NetHandlerPlayServer.class, "floatingTickCount", "field_147365_f");
 			}
 			catch(Exception e){
 				Print.log("Failed to get field. [FLIGHTDATA:ERR:0]");

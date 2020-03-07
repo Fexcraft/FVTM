@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
@@ -116,8 +117,10 @@ public class ToggableHandler {
 		Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
 		TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
 		for(Attribute<?> attr : attributes){
-			float[] arr = attr.getAABB((external ? "external-" : "") + attr.getStringValue());
-			temp = vehicle.getRotPoint().getAxes().getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
+			String attrid = (external ? "external-" : "") + attr.getStringValue();
+			float[] arr = attr.getAABB(attrid);
+			SwivelPoint point = vehicle.getVehicleData().getRotationPoint(attr.getAABBSP(attrid));
+			temp = point.getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
 			temp = temp.add(vehicle.getEntity().getPositionVector());
 			float te = arr[3] * Static.sixteenth;
 			if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);

@@ -125,16 +125,22 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 				if(json.has("hitbox")){
 					if(json.get("hitbox").isJsonArray()){
 						JsonArray erray = json.get("hitbox").getAsJsonArray();
-						float[] arr = new float[erray.size()];
-						for(int i = 0; i < arr.length; i++) arr[i] = erray.get(i).getAsFloat();
-						attr.addAABB("default", arr);
+						int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
+						float[] arr = new float[expected];
+						for(int i = 0; i < expected; i++){
+							arr[i] = erray.get(i).getAsFloat();
+						}
+						attr.addAABB("default", arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
 					}
 					else if(json.get("hitbox").isJsonObject()){
 						for(Map.Entry<String, JsonElement> entry : json.get("hitbox").getAsJsonObject().entrySet()){
 							JsonArray erray = entry.getValue().getAsJsonArray();
-							float[] arr = new float[erray.size()];
-							for(int i = 0; i < arr.length; i++) arr[i] = erray.get(i).getAsFloat();
-							attr.addAABB(entry.getKey(), arr);
+							int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
+							float[] arr = new float[expected];
+							for(int i = 0; i < expected; i++){
+								arr[i] = erray.get(i).getAsFloat();
+							}
+							attr.addAABB(entry.getKey(), arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
 						}
 					}
 				}

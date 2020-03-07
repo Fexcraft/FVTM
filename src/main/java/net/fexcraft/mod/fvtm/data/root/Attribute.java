@@ -23,6 +23,7 @@ public abstract class Attribute<V> {
 		@Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
 	};
 	private TreeSet<Modifier<V>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
+	private TreeMap<String, String> aabbsp = null;
 	private TreeMap<String, float[]> aabbs = null;
 	private String id, target, origin, seat, group;
 	private boolean iscopy, editable, external;
@@ -96,20 +97,43 @@ public abstract class Attribute<V> {
 			return aabbs.get("default");
 		} return aabbs.get(id);
 	}
+
+	public String getAABBSP(String id){
+		if(!hasAABBs()) return null;
+		if(!aabbsp.containsKey(id)){
+			if(id.equals("external-")) return getAABBSP("external");
+			if(!aabbsp.containsKey("default")) return null;
+			return aabbsp.get("default");
+		} return aabbsp.get(id);
+	}
 	
-	public <T> Attribute<T> addAABB(String id, float[] aabb){
+	public <T> Attribute<T> addAABB(String id, float[] aabb, String point){
 		if(aabbs == null) aabbs = new TreeMap<>();
-		aabbs.put(id, aabb); return (Attribute<T>)this;
+		aabbs.put(id, aabb);
+		if(point != null){
+			if(aabbsp == null) aabbsp = new TreeMap<>();
+			aabbsp.put(id, point);
+		}
+		return (Attribute<T>)this;
 	}
 
 	public <U> Attribute<U> copyAABBs(Attribute<?> original){
-		if(original.hasAABBs()){ this.aabbs = new TreeMap<>();
+		if(original.hasAABBs()){
+			this.aabbs = new TreeMap<>();
 			original.aabbs.forEach((key, value) -> {
 				float[] arr = new float[value.length];
-				for(int i = 0; i < arr.length; i++) arr[i] = value[i];
+				for(int i = 0; i < arr.length; i++)
+					arr[i] = value[i];
 				this.aabbs.put(key, arr);
 			});
-		} return (Attribute<U>)this;
+			if(original.aabbsp != null){
+				aabbsp = new TreeMap<>();
+				original.aabbsp.forEach((key, value) -> {
+					this.aabbsp.put(key, value);
+				});
+			}
+		}
+		return (Attribute<U>)this;
 	}
 	
 	public TreeMap<String, float[]> getAABBs(){

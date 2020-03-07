@@ -19,7 +19,14 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
-import net.fexcraft.mod.fvtm.data.root.*;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.data.root.Soundable;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -134,18 +141,22 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				if(json.has("hitbox")){
 					if(json.get("hitbox").isJsonArray()){
 						JsonArray erray = json.get("hitbox").getAsJsonArray();
-						float[] arr = new float[erray.size()];
-						for(int i = 0; i < arr.length; i++)
+						int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
+						float[] arr = new float[expected];
+						for(int i = 0; i < expected; i++){
 							arr[i] = erray.get(i).getAsFloat();
-						attr.addAABB("default", arr);
+						}
+						attr.addAABB("default", arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
 					}
 					else if(json.get("hitbox").isJsonObject()){
 						for(Map.Entry<String, JsonElement> entry : json.get("hitbox").getAsJsonObject().entrySet()){
 							JsonArray erray = entry.getValue().getAsJsonArray();
-							float[] arr = new float[erray.size()];
-							for(int i = 0; i < arr.length; i++)
+							int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
+							float[] arr = new float[expected];
+							for(int i = 0; i < expected; i++){
 								arr[i] = erray.get(i).getAsFloat();
-							attr.addAABB(entry.getKey(), arr);
+							}
+							attr.addAABB(entry.getKey(), arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
 						}
 					}
 				}

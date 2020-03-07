@@ -12,40 +12,50 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PKTH_SPUpdate {
 
-    public static class Server implements IMessageHandler<PKT_SPUpdate, IMessage> {
+	public static class Server implements IMessageHandler<PKT_SPUpdate, IMessage> {
 
-        @Override
-        public IMessage onMessage(final PKT_SPUpdate packet, final MessageContext ctx){
-            Static.getServer().addScheduledTask(() -> {
-                EntityPlayerMP player = Static.getServer().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
-                for(Entity ent : player.world.loadedEntityList){
-                    if(ent.getEntityId() == packet.entid){ updatesp(ent, packet); return; }
-                } return;
-            }); return null;
-        }
-    }
+		@Override
+		public IMessage onMessage(final PKT_SPUpdate packet, final MessageContext ctx){
+			Static.getServer().addScheduledTask(() -> {
+				EntityPlayerMP player = Static.getServer().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
+				for(Entity ent : player.world.loadedEntityList){
+					if(ent.getEntityId() == packet.entid){
+						updatesp(ent, packet, false);
+						return;
+					}
+				}
+				return;
+			});
+			return null;
+		}
 
-    public static class Client implements IMessageHandler<PKT_SPUpdate, IMessage> {
+	}
 
-        @Override
-        public IMessage onMessage(final PKT_SPUpdate packet, final MessageContext ctx){
-            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-                @Override
-                public void run(){
-                    for(Entity ent : Minecraft.getMinecraft().world.getLoadedEntityList()){
-                        if(ent.getEntityId() == packet.entid){ updatesp(ent, packet); return; }
-                    } return;
-                }
-            }); return null;
-        }
-    }
+	public static class Client implements IMessageHandler<PKT_SPUpdate, IMessage> {
 
-    private static void updatesp(Entity entity, PKT_SPUpdate pkt){
-        if(entity == null || entity instanceof VehicleEntity == false){ return; }
-        SwivelPoint point = ((VehicleEntity)entity).getVehicleData().getRotationPoints().get(pkt.pointid);
-        point.setPos(pkt.posX, pkt.posY, pkt.posZ);
-        point.updatePrevAxe();
-        point.getAxes().setAngles(pkt.yaw, pkt.pitch, pkt.roll);
-    }
+		@Override
+		public IMessage onMessage(final PKT_SPUpdate packet, final MessageContext ctx){
+			Minecraft.getMinecraft().addScheduledTask(new Runnable(){
+				@Override
+				public void run(){
+					for(Entity ent : Minecraft.getMinecraft().world.getLoadedEntityList()){
+						if(ent.getEntityId() == packet.entid){
+							updatesp(ent, packet, true);
+							return;
+						}
+					}
+					return;
+				}
+			});
+			return null;
+		}
+
+	}
+
+	private static void updatesp(Entity entity, PKT_SPUpdate pkt, boolean client){
+		if(entity == null || entity instanceof VehicleEntity == false){ return; }
+		SwivelPoint point = ((VehicleEntity)entity).getVehicleData().getRotationPoints().get(pkt.pointid);
+		if(point != null) point.processPacket(pkt, client);
+	}
 
 }

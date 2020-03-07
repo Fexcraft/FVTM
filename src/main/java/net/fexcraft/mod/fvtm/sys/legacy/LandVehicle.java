@@ -728,6 +728,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
         	vehicle.getAttribute("throttle").setValue((float)throttle);
+            for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         }
         for(WheelEntity wheel : wheels){
             if(wheel != null){ wheel.prevPosX = wheel.posX; wheel.prevPosY = wheel.posY; wheel.prevPosZ = wheel.posZ; }

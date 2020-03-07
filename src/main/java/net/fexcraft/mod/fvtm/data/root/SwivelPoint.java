@@ -5,9 +5,13 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.packet.PKT_SPUpdate;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -23,6 +27,10 @@ public class SwivelPoint {
 	public SwivelPoint parent;
 	protected Vec3d position, prevpos; 
 	private Axis3D axe = new Axis3D(), prevaxe = new Axis3D();
+	//sync
+	private static final int ticker = LandVehicle.servtick;
+	private int servticker;
+	private Vec3d servpos, servrot;
 
 	public SwivelPoint(JsonObject obj){
 		this.id = JsonUtil.getIfExists(obj, "id", "vehicle");
@@ -109,6 +117,32 @@ public class SwivelPoint {
 	public void setPos(double posX, double posY, double posZ){
 		prevpos = new Vec3d(prevpos.x, prevpos.y, prevpos.z);
 		position = new Vec3d(posX, posY, posZ);
+	}
+	
+	public void update(VehicleEntity entity){
+		this.updatePrevAxe();
+		if(servticker == 0) return;
+        double x = position.x + (servpos.x - position.x) / servticker;
+        double y = position.y + (servpos.y - position.y) / servticker;
+        double z = position.z + (servpos.z - position.z) / servticker;
+		double yaw = MathHelper.wrapDegrees(servrot.x - axe.getYaw());
+        double pitch = MathHelper.wrapDegrees(servrot.y - axe.getPitch());
+        double roll = MathHelper.wrapDegrees(servrot.z - axe.getRoll());
+        --servticker; setPos(x, y, z);
+        axe.setAngles(axe.getYaw() + yaw / servticker, axe.getPitch() + pitch / servticker, axe.getRoll() + roll / servticker);
+	}
+
+	public void processPacket(PKT_SPUpdate pkt, boolean side){
+		if(side){
+			servpos = new Vec3d(pkt.posX, pkt.posY, pkt.posZ);
+			servrot = new Vec3d(pkt.yaw, pkt.pitch, pkt.roll);
+			servticker = ticker;
+		}
+		else{
+	        setPos(pkt.posX, pkt.posY, pkt.posZ);
+	        updatePrevAxe();
+	        getAxes().setAngles(pkt.yaw, pkt.pitch, pkt.roll);
+		}
 	}
 
 }

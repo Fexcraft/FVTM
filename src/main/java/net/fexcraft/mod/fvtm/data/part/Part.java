@@ -22,6 +22,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
+import net.fexcraft.mod.fvtm.data.root.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -55,6 +56,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	protected ArrayList<Function> functions = new ArrayList<>();
 	protected ArrayList<Class<? extends VehicleScript>> scripts = new ArrayList<>();
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
+	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	
 	public Part(){}
 
@@ -223,6 +225,18 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	            catch(Exception e){ e.printStackTrace(); }
 			}
 		}
+		if(obj.has("SwivelPoints") && obj.get("SwivelPoints").isJsonArray()){
+			obj.get("SwivelPoints").getAsJsonArray().forEach(elm -> {
+				try{
+					SwivelPoint point = new SwivelPoint(elm.getAsJsonObject());
+					rotpoints.put(point.id, point);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					Static.stop();
+				}
+			});
+		}
 		if(obj.has("Sounds")){
             for(JsonElement elm : obj.get("Sounds").getAsJsonArray()){
                 JsonObject json = elm.getAsJsonObject();
@@ -312,6 +326,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	@Override
 	public Map<String, Sound> getSounds(){
 		return sounds;
+	}
+
+	public TreeMap<String, SwivelPoint> getDefaultSwivelPoints(){
+		return rotpoints;
 	}
 
 }

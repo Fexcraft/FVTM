@@ -67,11 +67,11 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     		return;
     	}
     	if(isTrailerWheel()){
-            vec = vehicle.getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid == 2 ? 1 : 0]));
+            vec = vehicle.getRotPoint().getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid == 2 ? 1 : 0]));
             vec = new Vec3d(0, vec.y, vec.z);
     	}
     	else{
-            vec = vehicle.getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(index));
+            vec = vehicle.getRotPoint().getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(index));
     	}
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         stepHeight = lata.wheel_step_height;

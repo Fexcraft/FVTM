@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
@@ -30,7 +31,6 @@ import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
@@ -65,7 +65,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, ContainerHoldingEntity {
 
 	public Reltrs rek;
-	public Axis3D axes, prevaxes;
+	public SwivelPoint rotpoint;
 	private byte toggletimer;
 	public SeatEntity[] seats;
 	//
@@ -78,7 +78,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public static final String[] BOOGIEINDEX = new String[]{ "bogie_front", "bogie_rear" };
 
 	public RailVehicle(World world){
-		super(world); axes = new Axis3D(); prevaxes = new Axis3D();
+		super(world); rotpoint = new SwivelPoint("vehicle", null);
 		preventEntitySpawning = true; setSize(0.5f, 0.5f); ignoreFrustumCheck = true;
         if(world.isRemote){
             setRenderDistanceWeight(1D);
@@ -99,6 +99,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
 		if(compound != null) rek = new Reltrs(world.getCapability(Capabilities.RAILSYSTEM, null).get(), compound);
+		rotpoint = rek.data().getRotationPoint("vehicle");
 		seats = new SeatEntity[rek.data().getSeats().size()];
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
@@ -118,7 +119,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public void writeSpawnData(ByteBuf buffer){
-        NBTTagCompound compound = axes.write(this, new NBTTagCompound());
+        NBTTagCompound compound = rotpoint.getAxes().write(this, new NBTTagCompound());
         compound.setTag("Entity", rek.write(new NBTTagCompound()));
 		ByteBufUtils.writeTag(buffer, compound); //Print.debug("sent: " + compound);
 	}
@@ -127,10 +128,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public void readSpawnData(ByteBuf buffer){
         try{
             NBTTagCompound compound = ByteBufUtils.readTag(buffer); //Print.debug("recd: " + compound);
-            axes = Axis3D.read(this, compound);
-            prevRotationYaw = axes.getYaw();
-            prevRotationPitch = axes.getPitch();
-            prevRotationRoll = axes.getRoll();
+            rotpoint.loadAxes(this, compound);
+            prevRotationYaw = rotpoint.getAxes().getYaw();
+            prevRotationPitch = rotpoint.getAxes().getPitch();
+            prevRotationRoll = rotpoint.getAxes().getRoll();
             initializeVehicle(true, compound.getCompoundTag("Entity"));
         }
         catch(Exception e){
@@ -177,8 +178,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		return this;
 	}
 
-	public Axis3D getAxes(){
-		return axes;
+	@Override
+	public SwivelPoint getRotPoint(){
+		return rotpoint;
 	}
 	
 	public WheelEntity[] getWheels(){
@@ -300,36 +302,36 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
     public void rotateYaw(float rotateBy){
         if(Math.abs(rotateBy) < 0.01F){ return; }
-        axes.rotateYawD(rotateBy);
+        rotpoint.getAxes().rotateYawD(rotateBy);
         updatePrevAngles();
     }
 
     public void rotatePitch(float rotateBy){
         if(Math.abs(rotateBy) < 0.01F){ return; }
-        axes.rotatePitchD(rotateBy);
+        rotpoint.getAxes().rotatePitchD(rotateBy);
         updatePrevAngles();
     }
 
     public void rotateRoll(float rotateBy){
         if(Math.abs(rotateBy) < 0.01F){ return; }
-        axes.rotateRollD(rotateBy);
+        rotpoint.getAxes().rotateRollD(rotateBy);
         updatePrevAngles();
     }
 
     public void updatePrevAngles(){
-        double yaw = axes.getYaw() - prevRotationYaw;
+        double yaw = rotpoint.getAxes().getYaw() - prevRotationYaw;
         if(yaw > 180){ prevRotationYaw += 360F; }
         if(yaw < -180){ prevRotationYaw -= 360F; }
-        double pitch = axes.getPitch() - prevRotationPitch;
+        double pitch = rotpoint.getAxes().getPitch() - prevRotationPitch;
         if(pitch > 180){ prevRotationPitch += 360F; }
         if(pitch < -180){ prevRotationPitch -= 360F; }
-        double roll = axes.getRoll() - prevRotationRoll;
+        double roll = rotpoint.getAxes().getRoll() - prevRotationRoll;
         if(roll > 180){ prevRotationRoll += 360F; }
         if(roll < -180){ prevRotationRoll -= 360F; }
     }
 
     public void setRotation(float rotYaw, float rotPitch, float rotRoll){
-        axes.setAngles(rotYaw, rotPitch, rotRoll);
+    	rotpoint.getAxes().setAngles(rotYaw, rotPitch, rotRoll);
     }
 
 	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, Vec3d avel, double throttle, double steeringYaw, int fuel){
@@ -500,10 +502,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	}
         	}
         }
-        prevRotationYaw = axes.getYaw();
-        prevRotationPitch = axes.getPitch();
-        prevRotationRoll = axes.getRoll();
-        prevaxes = axes.clone();
+        prevRotationYaw = rotpoint.getAxes().getYaw();
+        prevRotationPitch = rotpoint.getAxes().getPitch();
+        prevRotationRoll = rotpoint.getAxes().getRoll();
+        rotpoint.updatePrevAxe();
         this.ticksExisted++;
         if(this.ticksExisted >= Integer.MAX_VALUE){
             this.ticksExisted = 0;
@@ -518,12 +520,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 double x = posX + (serverPosX - posX) / sptt;
                 double y = posY + (serverPosY - posY) / sptt;
                 double z = posZ + (serverPosZ - posZ) / sptt;
-                double dYaw = MathHelper.wrapDegrees(serverYaw - axes.getYaw());
-                double dPitch = MathHelper.wrapDegrees(serverPitch - axes.getPitch());
-                double dRoll = MathHelper.wrapDegrees(serverRoll - axes.getRoll());
-                rotationYaw = (float)(axes.getYaw() + dYaw / sptt);
-                rotationPitch = (float)(axes.getPitch() + dPitch / sptt);
-                float rotationRoll = (float)(axes.getRoll() + dRoll / sptt);
+                double dYaw = MathHelper.wrapDegrees(serverYaw - rotpoint.getAxes().getYaw());
+                double dPitch = MathHelper.wrapDegrees(serverPitch - rotpoint.getAxes().getPitch());
+                double dRoll = MathHelper.wrapDegrees(serverRoll - rotpoint.getAxes().getRoll());
+                rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / sptt);
+                rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / sptt);
+                float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / sptt);
                 --sptt; setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
             }
@@ -533,8 +535,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	Vec3f br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
         	Vec3f br1 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis - 0.1f);
         	if(bf0 != null && br0 != null && bf1 != null && br1 != null){
-        		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - axes.getYaw());
-        		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - axes.getYaw());
+        		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - rotpoint.getAxes().getYaw());
+        		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - rotpoint.getAxes().getYaw());
         		rek.data().getAttribute("bogie_front_angle").setValue(front); rek.data().getAttribute("bogie_rear_angle").setValue(rear);
         	}
     		//
@@ -557,7 +559,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             double pitch = -Math.atan2(dy, dxz);
             double roll = 0F;
             roll = -(float) Math.atan2(dry, drxz);
-            axes.setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+            rotpoint.getAxes().setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
         }
         else{
         	
@@ -751,12 +753,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public double[] getEntityRotationForFvtmContainers(){
-		return axes.toDoubles();
+		return rotpoint.getAxes().toDoubles();
 	}
 
 	@Override
 	public boolean isRailType(){
 		return true;
 	}
-
 }

@@ -41,13 +41,13 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
             GL11.glTranslated(x, y, z);
             GL11.glPushMatrix();
             {
-	            float yaw = (vehicle.axes.getYaw() - vehicle.prevRotationYaw);
+	            float yaw = (vehicle.rotpoint.getAxes().getYaw() - vehicle.prevRotationYaw);
 	            for(; yaw > 180F; yaw -= 360F){ }
 	            for(; yaw <= -180F; yaw += 360F){ }
-	            float pitch = (vehicle.axes.getPitch() - vehicle.prevRotationPitch);
+	            float pitch = (vehicle.rotpoint.getAxes().getPitch() - vehicle.prevRotationPitch);
 	            for(; pitch > 180F; pitch -= 360F){ }
 	            for(; pitch <= -180F; pitch += 360F){ }
-	            float roll = (vehicle.axes.getRoll() - vehicle.prevRotationRoll);
+	            float roll = (vehicle.rotpoint.getAxes().getRoll() - vehicle.prevRotationRoll);
 	            for(; roll > 180F; roll -= 360F){ }
 	            for(; roll <= -180F; roll += 360F){ }
 	            GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);

@@ -19,7 +19,7 @@ public class PKT_VehControl implements IPacket, IMessage {
 
     public PKT_VehControl(GenericVehicle veh){
     	entid = veh.getEntityId(); posX = veh.posX; posY = veh.posY; posZ = veh.posZ;
-        yaw = veh.getAxes().getYaw(); pitch = veh.getAxes().getPitch(); roll = veh.getAxes().getRoll();
+        yaw = veh.getRotPoint().getAxes().getYaw(); pitch = veh.getRotPoint().getAxes().getPitch(); roll = veh.getRotPoint().getAxes().getRoll();
         motX = veh.motionX; motY = veh.motionY; motZ = veh.motionZ; fuel = veh.getVehicleData().getAttribute("fuel_stored").getIntegerValue();
         steeringYaw = veh.wheelsYaw; avel = veh.angularVelocity; throttle = veh.throttle;
     }

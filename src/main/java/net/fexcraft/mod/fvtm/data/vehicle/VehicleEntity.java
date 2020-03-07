@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.UUID;
 
-import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.data.root.SwivelPoint;
 
 public interface VehicleEntity {
 	
@@ -20,6 +20,6 @@ public interface VehicleEntity {
 	
 	public boolean isLocked();
 
-	public Axis3D getAxes();
+	public SwivelPoint getRotPoint();
 
 }

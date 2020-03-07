@@ -86,7 +86,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         this.vehicle.getSeats()[seatindex] = this;
         looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
         prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-        Vec3d relpos = vehicle.getAxes().getRelativeVector(seatdata.toVec3d());
+        Vec3d relpos = vehicle.getRotPoint().getAxes().getRelativeVector(seatdata.toVec3d());
         pass_x = prev_pass_x = prevPosX = posX = vehicle.getEntity().posX + relpos.x;
         pass_y = prev_pass_y = prevPosY = posY = vehicle.getEntity().posY + relpos.y;
         pass_z = prev_pass_z = prevPosZ = posZ = vehicle.getEntity().posZ + relpos.z;
@@ -145,7 +145,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         prev_pass_pitch = pass_pitch;
         //prev_pass_roll = pass_roll;
 
-        Vec3d relpos = vehicle.getAxes().getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
+        Vec3d relpos = vehicle.getRotPoint().getAxes().getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
         setPosition(vehicle.getEntity().posX + relpos.x, vehicle.getEntity().posY + relpos.y, vehicle.getEntity().posZ + relpos.z);
         this.lastTickPosX = this.prevPosX = posX;
         this.lastTickPosY = this.prevPosY = posY;
@@ -157,7 +157,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
             pass_z = posZ;
             this.updatePassenger();
             //
-            Axis3D glookaxes = vehicle.getAxes().getRelativeVector(passlooking);
+            Axis3D glookaxes = vehicle.getRotPoint().getAxes().getRelativeVector(passlooking);
             pass_yaw = -90F + glookaxes.getYaw();
             pass_pitch = glookaxes.getPitch();
             //
@@ -230,7 +230,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
                     //
                     looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
                     prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-                    Vec3d relpos = vehicle.getAxes().getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
+                    Vec3d relpos = vehicle.getRotPoint().getAxes().getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
                     pass_x = prev_pass_x = prevPosX = posX = vehicle.getEntity().posX + relpos.x;
                     pass_y = prev_pass_y = prevPosY = posY = vehicle.getEntity().posY + relpos.y;
                     pass_z = prev_pass_z = prevPosZ = posZ = vehicle.getEntity().posZ + relpos.z;

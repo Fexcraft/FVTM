@@ -16,6 +16,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.root.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -63,6 +64,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 
 	private LegacyData lata;
 	private VehicleData vehicle;
+	public SwivelPoint rotpoint;
 	public Axis3D axes, prevaxes;
 	//
 	public SeatEntity[] seats;
@@ -200,8 +202,8 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 		return this;
 	}
 
-	public Axis3D getAxes(){
-		return axes;
+	public SwivelPoint getRotPoint(){
+		return rotpoint;
 	}
 	
 	public WheelEntity[] getWheels(){

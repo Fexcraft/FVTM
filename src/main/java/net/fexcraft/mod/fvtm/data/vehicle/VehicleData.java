@@ -19,14 +19,7 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
-import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.DataCore;
-import net.fexcraft.mod.fvtm.data.root.Lockable;
-import net.fexcraft.mod.fvtm.data.root.Modifier;
-import net.fexcraft.mod.fvtm.data.root.Sound;
-import net.fexcraft.mod.fvtm.data.root.Soundable;
-import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.*;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
@@ -61,9 +54,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected ArrayList<VehicleScript> scripts = new ArrayList<>();
 	protected Vec3d front_conn, rear_conn;
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
+	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 
 	public VehicleData(Vehicle type){
 		super(type);
+		rotpoints.put("vehicle", new SwivelPoint("vehicle", null));
+		for(SwivelPoint point : type.getDefaultSwivelPoints().values()){
+			rotpoints.put(point.id, point);
+		}
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
 			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
 		}
@@ -135,6 +133,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				}
 			}
 			if(!scrap.isEmpty()) compound.setTag("Scripts", scrap);
+		}
+		if(rotpoints.size() > 1){
+			NBTTagList points = new NBTTagList();
+			for(SwivelPoint point : rotpoints.values()){
+				if(point.id.equals("vehicle")) continue;
+				points.appendTag(point.write(new NBTTagCompound()));
+			}
+			if(!points.isEmpty()) compound.setTag("SwivelPoints", points);
 		}
 		compound.setBoolean("Locked", locked);
 		if(front_conn != null) compound.setTag("FrontConnector", DataUtil.writeVec3d(front_conn));
@@ -210,6 +216,20 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				if(getVehicleScript(com.getString("id")) != null) getVehicleScript(com.getString("id")).read(this, com);
 			}
 		}
+		NBTTagList points = (NBTTagList)compound.getTag("SwivelPoints");
+		if(points != null){
+			for(NBTBase base : points){
+				NBTTagCompound com = (NBTTagCompound)base;
+				if(rotpoints.containsKey(com.getString("id"))){
+					rotpoints.get(com.getString("id")).read(com);
+				}
+				else{
+					SwivelPoint point = new SwivelPoint(com);
+					rotpoints.put(point.id, point);
+				}
+			}
+		}
+		rotpoints.values().forEach(point -> point.linkToParent(this));
 		this.locked = compound.getBoolean("Locked");
 		this.front_conn = DataUtil.readVec3d(compound.getTag("FrontConnector"));
 		if(front_conn == null) front_conn = type.getDefaultFrontConnector();
@@ -305,6 +325,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(!data.getType().getInstallationHandler().allowInstall(engineer, data, category, this)) return data;
 		//if(parts.containsKey(category)) return data;//<- actually, let's let the handler check that
 		if(data.getType().getInstallationHandler().processInstall(engineer, data, category, this)){
+			this.insertSwivelPointsFromPart(data, category);
 			this.insertAttributesFromPart(data, category);
 			//
 			this.parts.values().forEach(part -> part.resetAttributes());
@@ -323,6 +344,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(part == null){ Print.chatnn(sender, "No part in that category."); return false; }
 		if(!part.getType().getInstallationHandler().allowUninstall(sender, part, category, this)) return false;
 		if(part.getType().getInstallationHandler().processUninstall(sender, part, category, this)){
+			this.removeSwivelPointsFromPart(part, category);
 			this.removeAttributesFromPart(part, category);
 			part.clearAttributes(); part.clearModifiers();
 			//
@@ -335,6 +357,22 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			this.refreshModificableDataByParts();
 			return true;
 		} else return false;
+	}
+
+	private void insertSwivelPointsFromPart(PartData data, String category){
+		if(data.getType().getDefaultSwivelPoints().isEmpty()) return;
+		for(SwivelPoint point : data.getType().getDefaultSwivelPoints().values()){
+			if(!rotpoints.containsKey(point.id)){
+				rotpoints.put(point.id, point.clone(category + "|" + data.getType().getRegistryName().toString()));
+			}
+		}
+		rotpoints.values().forEach(point -> point.linkToParent(this));
+	}
+
+	private void removeSwivelPointsFromPart(PartData data, String category){
+		String dataid = category + "|" + data.getType().getRegistryName().toString();
+		rotpoints.values().removeIf(filter -> filter.origin != null && filter.origin.equals(dataid));
+		rotpoints.values().forEach(point -> point.linkToParent(this));
 	}
 
 	private void insertAttributesFromPart(PartData data, String catin){
@@ -665,6 +703,17 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	public void playSound(Entity at, String event){
 		Sound sound = getSound(event); if(sound == null) return;
 		at.playSound(sound.event, sound.volume, sound.pitch);
+	}
+	
+	public TreeMap<String, SwivelPoint> getRotationPoints(){
+		return rotpoints;
+	}
+	
+	public SwivelPoint getRotationPoint(String id){
+		if(id == null) return getRotationPoint("vehicle");
+		SwivelPoint point = rotpoints.get(id);
+		if(point == null) return getRotationPoint("vehicle");
+		return point;
 	}
 
 }

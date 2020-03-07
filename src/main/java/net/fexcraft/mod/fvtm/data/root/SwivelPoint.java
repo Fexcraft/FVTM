@@ -97,5 +97,18 @@ public class SwivelPoint {
 		point.prevaxe = this.prevaxe.clone();
 		return point;
 	}
+	
+	public Vec3d getPos(){
+		return position;
+	}
+	
+	public Vec3d getPrevPos(){
+		return prevpos;
+	}
+
+	public void setPos(double posX, double posY, double posZ){
+		prevpos = new Vec3d(prevpos.x, prevpos.y, prevpos.z);
+		position = new Vec3d(posX, posY, posZ);
+	}
 
 }

@@ -709,6 +709,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return rotpoints;
 	}
 	
+	/** Falls back to "vehicle" rotpoint if the specified one isn't found. */
 	public SwivelPoint getRotationPoint(String id){
 		if(id == null) return getRotationPoint("vehicle");
 		SwivelPoint point = rotpoints.get(id);

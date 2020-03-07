@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.data.root;
+package net.fexcraft.mod.fvtm.data;
 
 import com.google.gson.JsonObject;
 
@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SPUpdate;
+import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
@@ -119,6 +120,11 @@ public class SwivelPoint {
 		position = new Vec3d(posX, posY, posZ);
 	}
 	
+	public void updateClient(Entity entity){
+		if(!entity.world.isRemote) return;
+		Packets.sendToAllAround(new PKT_SPUpdate(entity, this), entity);
+	}
+
 	public void update(VehicleEntity entity){
 		this.updatePrevAxe();
 		if(servticker == 0) return;

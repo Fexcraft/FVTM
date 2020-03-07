@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.UUID;
 
-import net.fexcraft.mod.fvtm.data.root.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 
 public interface VehicleEntity {
 	

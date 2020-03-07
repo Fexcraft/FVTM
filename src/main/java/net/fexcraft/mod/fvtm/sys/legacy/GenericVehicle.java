@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.root.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.LoopSound;

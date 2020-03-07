@@ -26,7 +26,7 @@ public class SwivelPoint {
 	public final String id, parid;
 	public String origin;
 	public SwivelPoint parent;
-	protected Vec3d position, prevpos;
+	protected Vec3d position, prevpos, precalc, prerot;
 	private Axis3D axe = new Axis3D(), prevaxe = new Axis3D();
 	// sync
 	private static final int ticker = LandVehicle.servtick;
@@ -129,6 +129,10 @@ public class SwivelPoint {
 
 	public void update(VehicleEntity entity){
 		this.updatePrevAxe();
+		if(parent != null){
+			precalc = parent.getRelativeVector(position, false);
+			prerot = parent.calcRelativeRot(null);
+		}
 		if(servticker == 0) return;
 		double x = position.x + (servpos.x - position.x) / servticker;
 		double y = position.y + (servpos.y - position.y) / servticker;
@@ -156,14 +160,37 @@ public class SwivelPoint {
 
 	public Vec3d getRelativeVector(double x, double y, double z){
 		Vec3d rel = axe.getRelativeVector((float)x, (float)y, (float)z);
-		if(parent != null) return parent.getRelativeVector(rel.x, rel.y, rel.z);
+		if(parent != null) return parent.getRelativeVector(position.x + rel.x, position.y + rel.y, position.z + rel.z);
 		return rel;
 	}
 
 	public Vec3d getRelativeVector(Vec3d root){
+		return getRelativeVector(root, false);
+	}
+
+	public Vec3d getRelativeVector(Vec3d root, boolean usepc){
 		Vec3d rel = axe.getRelativeVector(root);
-		if(parent != null) return parent.getRelativeVector(rel);
+		if(parent != null){
+			if(usepc) return precalc.add(rel);
+			return parent.getRelativeVector(position.add(rel), false);
+		}
 		return rel;
+	}
+	
+	//UNTESTED
+	private Vec3d calcRelativeRot(Vec3d root){
+		if(root == null){
+			root = new Vec3d(axe.getYaw(), axe.getPitch(), axe.getRoll());
+		}
+		else{
+			root = root.subtract(axe.getYaw(), axe.getPitch(), axe.getRoll());
+		}
+		if(parent != null) root = calcRelativeRot(root);
+		return root;
+	}
+	
+	public Vec3d getRelativeRot(){
+		return prerot;
 	}
 
 }

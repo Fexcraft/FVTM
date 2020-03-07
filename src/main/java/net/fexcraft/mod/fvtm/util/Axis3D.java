@@ -237,4 +237,8 @@ public class Axis3D {
 		return new double[]{ yaw, pitch, roll };
 	}
 
+	public Vec3d toVec3d(){
+		return new Vec3d(yaw, pitch, roll);
+	}
+
 }

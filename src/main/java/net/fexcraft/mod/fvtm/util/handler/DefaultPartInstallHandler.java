@@ -38,6 +38,10 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		if(!containsRequired(idata, data)){
 			Print.chatnn(sender, "Vehicle does not contain all required parts."); return false;
 		}
+		if(idata.sp_req && !data.getRotationPoints().containsKey(idata.swivel_point)){
+			Print.chatnn(sender, "Vehicle does not contain a required swivel/rotation point. Missing: " + idata.swivel_point);
+			return false;
+		}
 		Print.chatnn(sender, "Installation check passed."); return true;
 	}
 
@@ -62,12 +66,16 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		data.getParts().put(cat, part); part.setInstalledPos(getPosForPart(part, data.getType().getRegistryName().toString()));
-		data.getAttributes().values().forEach(attr ->{
+		data.getParts().put(cat, part);
+		part.setInstalledPos(getPosForPart(part, data.getType().getRegistryName().toString()));
+		if(data.getRotationPoints().containsKey(((DPIHData)part.getType().getInstallationHandlerData()).swivel_point)){
+			part.setInstalledOnSwivelPoint(((DPIHData)part.getType().getInstallationHandlerData()).swivel_point);
+		}
+		/*data.getAttributes().values().forEach(attr ->{
 			attr.getModifiers().forEach(mod -> {
 				Print.debug(mod.id(), mod.origin(), mod.target());
 			});
-		});
+		});*/
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 
@@ -107,11 +115,14 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
 		private TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
 		private TreeMap<String, ArrayList<String>> required = new TreeMap<>();
-		private boolean removable = true, custom_cat;
+		private boolean removable = true, custom_cat, sp_req;
+		private String swivel_point;
 		
 		public DPIHData(JsonObject obj){  if(obj == null) return;
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
 			custom_cat = JsonUtil.getIfExists(obj, "CustomCategory", false);
+			swivel_point = JsonUtil.getIfExists(obj, "SwivelPoint", "vehicle");
+			sp_req = JsonUtil.getIfExists(obj, "SwivelPointRequired", false);
 			if(obj.has("Compatible")){
 				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
 					JsonObject jsn = elm.getAsJsonObject();

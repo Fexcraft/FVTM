@@ -29,6 +29,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	protected boolean isTextureExternal;
 	protected Pos currentpos = new Pos(0, 0, 0);
 	//protected Vec3f currentrot = new Vec3f();//TODO add this?
+	protected String rotpoint;
 
 	public PartData(Part type){
 		super(type); this.clearAttributes();
@@ -42,6 +43,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		if(compound == null) compound = new NBTTagCompound();
 		compound.setString("Part", type.getRegistryName().toString());
 		currentpos.toNBT("CurrentPos", compound);
+		if(rotpoint != null && !rotpoint.equals("vehicle")) compound.setString("SwivelPoint", rotpoint);
 		//
 		compound.setInteger("SelectedTexture", selected_texture);
 		if(seltex != null || extex != null || selected_texture < 0){
@@ -64,6 +66,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		//type = Resources.getPart(compound.getString("Part"));
 		//if(type == null) return null;//TODO add "placeholder" for "missing" items
 		currentpos = Pos.fromNBT("CurrentPos", compound);
+		rotpoint = compound.hasKey("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		//
 		this.selected_texture = compound.getInteger("SelectedTexture");
 		if(selected_texture < 0){
@@ -172,6 +175,18 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
 	public void setInstalledPos(Pos pos){
 		this.currentpos = pos; return;
+	}
+
+	public void setInstalledOnSwivelPoint(String rotpoint){
+		this.rotpoint = rotpoint;
+	}
+	
+	public String getSwivelPointInstalledOn(){
+		return rotpoint;
+	}
+
+	public boolean isInstalledOnSwivelPoint(){
+		return rotpoint != null;
 	}
 
 	@Override

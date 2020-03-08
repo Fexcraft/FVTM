@@ -28,24 +28,24 @@ public class LargeContainerCraneGauge extends RailGaugeModel {
 			{ new Vec3f(174.5, 2, 0), new Vec3f(175.5, 2, 0) },
 			{ new Vec3f(182.5, 2, 0), new Vec3f(183.5, 2, 0) },
 			//
-			{ new Vec3f(-176, 0, 0), new Vec3f(-175.5, 2, 0) },
-			{ new Vec3f(-174.5, 2, 0), new Vec3f(-174, 0, 0) },
-			{ new Vec3f(-184, 0, 0), new Vec3f(-183.5, 2, 0) },
-			{ new Vec3f(-182.5, 2, 0), new Vec3f(-182, 0, 0) },
-			{ new Vec3f(174, 0, 0), new Vec3f(174.5, 2, 0) },
-			{ new Vec3f(175.5, 2, 0), new Vec3f(176, 0, 0) },
-			{ new Vec3f(182, 0, 0), new Vec3f(182.5, 2, 0) },
-			{ new Vec3f(183.5, 2, 0), new Vec3f(184, 0, 0) },
+			{ new Vec3f(-174, 0, 0), new Vec3f(-175.5, 2, 0) },
+			{ new Vec3f(-174.5, 2, 0), new Vec3f(-173, 0, 0) },
+			{ new Vec3f(-183, 0, 0), new Vec3f(-183.5, 2, 0) },
+			{ new Vec3f(-182.5, 2, 0), new Vec3f(-181, 0, 0) },
+			{ new Vec3f(173, 0, 0), new Vec3f(174.5, 2, 0) },
+			{ new Vec3f(175.5, 2, 0), new Vec3f(175, 0, 0) },
+			{ new Vec3f(181, 0, 0), new Vec3f(182.5, 2, 0) },
+			{ new Vec3f(183.5, 2, 0), new Vec3f(183, 0, 0) },
 			//
-			{ new Vec3f(-176, 0, 0), new Vec3f(-174, 0, 0) },
-			{ new Vec3f(-184, 0, 0), new Vec3f(-182, 0, 0) },
-			{ new Vec3f(174, 0, 0), new Vec3f(176, 0, 0) },
-			{ new Vec3f(182, 0, 0), new Vec3f(184, 0, 0) },
+			{ new Vec3f(-175, 0, 0), new Vec3f(-173, 0, 0) },
+			{ new Vec3f(-183, 0, 0), new Vec3f(-181, 0, 0) },
+			{ new Vec3f(173, 0, 0), new Vec3f(175, 0, 0) },
+			{ new Vec3f(181, 0, 0), new Vec3f(183, 0, 0) },
 		};
 		rail_tempcull = true;
 		for(int i = 0; i < rails.length; i++){
 			for(int j = 0; j < rails[i].length; j++){
-				rails[i][j].xCoord = (179 - rails[i][j].xCoord) * Static.sixteenth;
+				rails[i][j].xCoord /*= (179 - rails[i][j].xCoord) **/*= Static.sixteenth;
 				rails[i][j].yCoord *= Static.sixteenth;
 			}
 		}

@@ -1,0 +1,32 @@
+{
+    "RegistryName": "hcp:lcc_cabin",
+    "Addon": "fvtm:hcp",
+    "Model": "hcp:models/part/lcc_cabin",
+    "Name": "Large Container Crane Cabin",
+    "Category": "cabin",
+    "Texture": "hcp:textures/vehicles/lcc.png",
+    "Installation":{
+    	"Handler": "default", "Removable": true,
+    	"SwivelPoint": "lcc_main", "SwivelPointRequired": true
+    },
+    "Function":{
+    	"id": "fvtm:seats",
+    	"seats":[
+    		{
+    			"driver": true,
+    			"x": 0, "y": 55, "z": 0,
+    			"name": "driver",
+    			"min_yaw": -180,
+    			"max_yaw": 180,
+    			"rot_point": "lcc_main"
+    		}
+    	]
+    },
+	"SwivelPoints":[
+		{
+			"id": "lcc_holder",
+			"parent": "lcc_main",
+			"pos": [ 0, 0, 0 ]
+		}
+	]
+}

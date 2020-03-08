@@ -1,0 +1,37 @@
+{
+    "RegistryName": "hcp:large_container_crane",
+    "Addon": "fvtm:hcp",
+    "Name": "Large Container Crane",
+    "Model": "hcp:models/vehicle/large_container_crane",
+    "Textures": [
+        "Default;hcp:textures/vehicles/lcc.png"
+    ],
+    "Attributes": [
+    	{ "id":"weight", "type": "float", "value": 5000 },
+    	{ "id":"constructor_length", "type": "float", "value": 6 },
+    	{ "id":"constructor_height", "type": "float", "value": 0 },
+    	{ "id": "gauge", "type": "integer", "value": -358 }
+    ],
+    "WheelPositions":[
+        { "x":  8, "y": 0, "z": 0, "id": "bogie_front" },
+        { "x": -8, "y": 0, "z": 0, "id": "bogie_rear" }
+    ],
+    "RearConnector": [ -96, 0, 0 ],
+    "FrontConnector": [ 96, 0, 0 ],
+    "PreInstalled":{
+		"engine": "hcp:lcc_engine",
+        "bogie_front": "hcp:lcc_wheels",
+        "bogie_rear": "hcp:lcc_wheels",
+        "cabin": "hcp:lcc_cabin",
+        "holder": "hcp:lcc_holder"
+	},
+	"VehicleType": "RAIL",
+	"CouplerRange": 1,
+	"SwivelPoints":[
+		{
+			"id": "lcc_main",
+			"parent": "vehicle",
+			"pos": [ 0, 112, 0 ]
+		}
+	]
+}

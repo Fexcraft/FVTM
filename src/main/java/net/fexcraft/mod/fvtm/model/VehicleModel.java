@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -15,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 public class VehicleModel extends GenericModel<VehicleData, Object> implements FCLItemModel {
 	
@@ -114,9 +116,22 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 			model.render(data, null, null, null, 0);
 			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
 				bindTexture(entry.getValue().getTexture());
-            	entry.getValue().getInstalledPos().translate();
-                entry.getValue().getType().getModel().render(data, entry.getKey(), null, null, -1);
-                entry.getValue().getInstalledPos().translateR();
+            	if(entry.getValue().isInstalledOnSwivelPoint()){
+            		SwivelPoint point = data.getRotationPoint(entry.getValue().getSwivelPointInstalledOn());
+            		Vec3d temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true, true);
+            		GL11.glPushMatrix();
+                    GL11.glTranslated(temp.x, temp.y, temp.z);
+    	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);
+    	            GL11.glRotated(point.getRelativeRot().y, 0.0F, 0.0F, 1.0F);
+    	            GL11.glRotated(point.getRelativeRot().z, 1.0F, 0.0F, 0.0F);
+                    entry.getValue().getType().getModel().render(data, entry.getKey(), null, null, -1);
+    	            GL11.glPopMatrix();
+            	}
+            	else{
+                	entry.getValue().getInstalledPos().translate();
+                    entry.getValue().getType().getModel().render(data, entry.getKey(), null, null, -1);
+                    entry.getValue().getInstalledPos().translateR();
+            	}
 			}
 			GL11.glPopMatrix();
 		}

@@ -1,0 +1,12 @@
+{
+    "RegistryName": "hcp:lcc_holder",
+    "Addon": "fvtm:hcp",
+    "Model": "hcp:models/part/lcc_holder",
+    "Name": "Large Container Crane Holder",
+    "Category": "holder",
+    "Texture": "hcp:textures/vehicles/lcc.png",
+    "Installation":{
+    	"Handler": "default", "Removable": true,
+    	"SwivelPoint": "lcc_holder", "SwivelPointRequired": true
+    }
+}

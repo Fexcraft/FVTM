@@ -42,7 +42,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                     ModelBase.bindTexture(partdata.getTexture());
                 	if(partdata.isInstalledOnSwivelPoint()){
                 		SwivelPoint point = vehicledata.getRotationPoint(partdata.getSwivelPointInstalledOn());
-                		temp = point.getRelativeVector(partdata.getInstalledPos().to16Double(), true);
+                		temp = point.getRelativeVector(partdata.getInstalledPos().to16Double(), true, true);
                 		GL11.glPushMatrix();
                         GL11.glTranslated(temp.x, temp.y, temp.z);
         	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);

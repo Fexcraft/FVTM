@@ -82,7 +82,7 @@ public class SwivelPoint {
 		compound.setDouble("pos_x", position.x);
 		compound.setDouble("pos_y", position.y);
 		compound.setDouble("pos_z", position.z);
-		return null;
+		return compound;
 	}
 
 	public SwivelPoint read(NBTTagCompound com){
@@ -131,7 +131,7 @@ public class SwivelPoint {
 		if(this.id.equals("vehicle")) return;
 		this.updatePrevAxe();
 		if(parent != null){
-			precalc = parent.getRelativeVector(position, false);
+			precalc = parent.getRelativeVector(position, false, false);
 			prerot = parent.calcRelativeRot(null);
 		}
 		if(servticker == 0) return;
@@ -165,16 +165,21 @@ public class SwivelPoint {
 		return rel;
 	}
 
-	public Vec3d getRelativeVector(Vec3d root){
-		return getRelativeVector(root, false);
+	public Vec3d getRelativeVectorL(Vec3d root){
+		return getRelativeVector(root, false, false);
 	}
 
-	public Vec3d getRelativeVector(Vec3d root, boolean usepc){
+	public Vec3d getRelativeVectorR(Vec3d root){
+		return getRelativeVector(root, false, true);
+	}
+
+	public Vec3d getRelativeVector(Vec3d root, boolean usepc, boolean render){
 		Vec3d rel = axe.getRelativeVector(root);
 		if(parent != null){
-			if(usepc) return precalc.add(rel);
-			return parent.getRelativeVector(position.add(rel), false);
+			if(usepc && precalc != null) return precalc.add(rel);
+			return parent.getRelativeVector(position.add(rel), false, render);
 		}
+		if(render) rel = new Vec3d(rel.x, -rel.y, -rel.z);
 		return rel;
 	}
 
@@ -186,11 +191,12 @@ public class SwivelPoint {
 		else{
 			root = root.add(axe.getYaw(), axe.getPitch(), axe.getRoll());
 		}
-		if(parent != null) root = calcRelativeRot(root);
+		if(parent != null) root = parent.calcRelativeRot(root);
 		return root;
 	}
 
 	public Vec3d getRelativeRot(){
+		if(prerot == null) prerot = parent.calcRelativeRot(null);;
 		return prerot;
 	}
 

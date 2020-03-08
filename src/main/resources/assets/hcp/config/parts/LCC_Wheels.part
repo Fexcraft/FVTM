@@ -1,0 +1,12 @@
+{
+    "RegistryName": "hcp:lcc_wheels",
+    "Addon": "fvtm:lcc",
+    "Model": "null",
+    "Name": "Large Container Crane Wheels",
+    "Category": "technical_bogie",
+    "Texture": "hcp:textures/vehicles/lcc.png",
+    "Installation":{
+    	"Handler": "bogie", "Height": 0
+    },
+    "Function": "fvtm:bogie"
+}

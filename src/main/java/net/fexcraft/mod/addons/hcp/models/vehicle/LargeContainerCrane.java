@@ -1114,6 +1114,27 @@ public class LargeContainerCrane extends VehicleModel {
 		);
 		this.groups.add(wheels_left);
 		//
+		TurboList outer_controls = new TurboList("outer_controls");
+		outer_controls.add(new ModelRendererTurbo(outer_controls, 379, 38, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
+			.setRotationPoint(-44, -4.5f, -184.25f).setRotationAngle(0, 0, 0)
+		);
+		outer_controls.add(new ModelRendererTurbo(outer_controls, 374, 27, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
+			.setRotationPoint(-44, -2.75f, -184.25f).setRotationAngle(0, 0, 0)
+		);
+		outer_controls.add(new ModelRendererTurbo(outer_controls, 291, 27, textureX, textureY).addBox(0, -3, 0, 1, 3, 1)
+			.setRotationPoint(-40.5f, -1.5f, -184.25f).setRotationAngle(0, 0, 0)
+		);
+		outer_controls.add(new ModelRendererTurbo(outer_controls, 975, 24, textureX, textureY).addBox(0, -3, 0, 1, 3, 1)
+			.setRotationPoint(-37.5f, -1.5f, -184.25f).setRotationAngle(0, 0, 0)
+		);
+		outer_controls.add(new ModelRendererTurbo(outer_controls, 975, 21, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
+			.setRotationPoint(-34, -4.5f, -184.25f).setRotationAngle(0, 0, 0)
+		);
+		outer_controls.add(new ModelRendererTurbo(outer_controls, 516, 14, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
+			.setRotationPoint(-34, -2.75f, -184.25f).setRotationAngle(0, 0, 0)
+		);
+		this.groups.add(outer_controls);
+		//
 		translate(0, -10, 0);
 	}
 

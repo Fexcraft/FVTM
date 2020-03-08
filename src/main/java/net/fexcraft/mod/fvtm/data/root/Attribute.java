@@ -100,6 +100,7 @@ public abstract class Attribute<V> {
 
 	public String getAABBSP(String id){
 		if(!hasAABBs()) return null;
+		if(aabbsp == null) return null;
 		if(!aabbsp.containsKey(id)){
 			if(id.equals("external-")) return getAABBSP("external");
 			if(!aabbsp.containsKey("default")) return null;

@@ -38,7 +38,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		if(!containsRequired(idata, data)){
 			Print.chatnn(sender, "Vehicle does not contain all required parts."); return false;
 		}
-		if(idata.sp_req && !data.getRotationPoints().containsKey(idata.swivel_point)){
+		if(idata != null && idata.sp_req && !data.getRotationPoints().containsKey(idata.swivel_point)){
 			Print.chatnn(sender, "Vehicle does not contain a required swivel/rotation point. Missing: " + idata.swivel_point);
 			return false;
 		}
@@ -68,8 +68,11 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
 		part.setInstalledPos(getPosForPart(part, data.getType().getRegistryName().toString()));
-		if(data.getRotationPoints().containsKey(((DPIHData)part.getType().getInstallationHandlerData()).swivel_point)){
-			part.setInstalledOnSwivelPoint(((DPIHData)part.getType().getInstallationHandlerData()).swivel_point);
+		if(part.getType().getInstallationHandlerData() != null){
+			String point = ((DPIHData)part.getType().getInstallationHandlerData()).swivel_point;
+			if(point != null && !point.equals("vehicle") && data.getRotationPoints().containsKey(point)){
+				part.setInstalledOnSwivelPoint(point);
+			}
 		}
 		/*data.getAttributes().values().forEach(attr ->{
 			attr.getModifiers().forEach(mod -> {
@@ -112,13 +115,14 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	/** Default Part Install Handler Data */
 	public static class DPIHData {
 		
-		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
-		private TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
-		private TreeMap<String, ArrayList<String>> required = new TreeMap<>();
-		private boolean removable = true, custom_cat, sp_req;
-		private String swivel_point;
+		public TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
+		public TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
+		public TreeMap<String, ArrayList<String>> required = new TreeMap<>();
+		public boolean removable = true, custom_cat, sp_req = false;
+		public String swivel_point = "vehicle";
 		
-		public DPIHData(JsonObject obj){  if(obj == null) return;
+		public DPIHData(JsonObject obj){
+			if(obj == null) return;
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
 			custom_cat = JsonUtil.getIfExists(obj, "CustomCategory", false);
 			swivel_point = JsonUtil.getIfExists(obj, "SwivelPoint", "vehicle");

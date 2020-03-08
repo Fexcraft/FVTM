@@ -269,8 +269,12 @@ public class RailRenderer {
         		if(value.tracks.get(i).isOppositeCopy()) continue;
         		Track track = value.tracks.get(i); RailGaugeModel model = track.gauge.getModel();
         		if(track.railmodel == null){ generateTrackModel(track, model); }
-        		ModelBase.bindTexture(track.gauge.getRailTexture()); track.railmodel.render();
-        		ModelBase.bindTexture(track.gauge.getTiesTexture()); track.restmodel.render();
+        		ModelBase.bindTexture(track.gauge.getRailTexture());
+        		if(track.getGauge().getModel().rail_tempcull) GlStateManager.disableCull();
+        		track.railmodel.render();
+        		if(track.getGauge().getModel().rail_tempcull) GlStateManager.enableCull();
+        		ModelBase.bindTexture(track.gauge.getTiesTexture());
+        		track.restmodel.render();
         	}
         	if(Command.DEBUG){ Track track;
         		for(int i = 0; i < value.size(); i++){ track = value.tracks.get(i);

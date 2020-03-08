@@ -1,0 +1,44 @@
+{
+    "RegistryName": "hcp:container_crane",
+    "Addon": "fvtm:hcp",
+    "Model": "hcp:models/gauges/container_crane",
+    "Name": "Large Container Crane Rails",
+    "Width": -358, "Height": 0,
+    "Compatible": [],
+    "TiesTexture": "minecraft:textures/blocks/anvil_base.png",
+    "ModelTexture": "minecraft:textures/blocks/anvil_base.png",
+    "PreSets":[
+    	{
+    		"name": "4_straight",
+    		"segmentation": 8,
+    		"path":[
+    			[ 0, 0, 0 ],
+    			[ 4, 0, 0 ]
+    		]
+    	},
+    	{
+    		"name": "1_straight",
+    		"segmentation": 8,
+    		"path":[
+    			[ 0, 0, 0 ],
+    			[ 1, 0, 0 ]
+    		]
+    	},
+    	{
+    		"name": "8_straight",
+    		"segmentation": 8,
+    		"path":[
+    			[ 0, 0, 0 ],
+    			[ 8, 0, 0 ]
+    		]
+    	},
+    	{
+    		"name": "16_straight",
+    		"segmentation": 8,
+    		"path":[
+    			[ 0, 0, 0 ],
+    			[ 16, 0, 0 ]
+    		]
+    	}
+    ]
+}

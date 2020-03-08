@@ -33,6 +33,7 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		{ new Vec3f(-1.0625, 0.25, 0), new Vec3f(-0.9375, 0.25, 0) },
 		{ new Vec3f(0.9375, 0.25, 0), new Vec3f(1.0625, 0.25, 0) }
 	};
+	public boolean rail_tempcull = false;
 	public float ties_distance = 0.5f;
 	public float signal_offset = 0.5f;
 	public float buffer_length = 2f;

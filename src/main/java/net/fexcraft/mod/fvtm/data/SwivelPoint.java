@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data;
 
+import java.util.ArrayList;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -8,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.handler.SPM_DI;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SPUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.entity.Entity;
@@ -32,13 +35,32 @@ public class SwivelPoint {
 	private static final int ticker = LandVehicle.servtick;
 	private int servticker;
 	private Vec3d servpos, servrot;
+	//
+	public ArrayList<SwivelPointMover> movers;
 
+	@SuppressWarnings("unchecked")
 	public SwivelPoint(JsonObject obj){
 		this.id = JsonUtil.getIfExists(obj, "id", "vehicle");
 		this.position = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true).to16Double() : new Vec3d(0, 0, 0);
 		this.prevpos = new Vec3d(position.x, position.y, position.z);
 		this.parid = obj.has("parent") ? obj.get("parent").getAsString() : "vehicle";
 		axe.setAngles(JsonUtil.getIfExists(obj, "yaw", 0).doubleValue(), JsonUtil.getIfExists(obj, "pitch", 0).doubleValue(), JsonUtil.getIfExists(obj, "roll", 0).doubleValue());
+		if(obj.has("movers")){
+			movers = new ArrayList<>();
+			obj.get("movers").getAsJsonArray().forEach(elm -> {
+				JsonObject json = elm.getAsJsonObject();
+				if(json.has("class")){
+		            try{
+		            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
+		            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(json));
+		            }
+		            catch(Exception e){
+		            	e.printStackTrace();
+		            }
+				}
+				else movers.add(new SPM_DI(json.getAsJsonObject()));
+			});
+		}
 	}
 
 	public SwivelPoint(String id, String parid){
@@ -106,6 +128,12 @@ public class SwivelPoint {
 		point.origin = string;
 		point.axe = this.axe.clone();
 		point.prevaxe = this.prevaxe.clone();
+		if(movers != null){
+			point.movers = new ArrayList<>();
+			for(SwivelPointMover mover : movers){
+				point.movers.add(mover.clone());
+			}
+		}
 		return point;
 	}
 
@@ -130,6 +158,9 @@ public class SwivelPoint {
 	public void update(VehicleEntity entity){
 		if(this.id.equals("vehicle")) return;
 		this.updatePrevAxe();
+		if(movers != null){
+			for(SwivelPointMover mover : movers) mover.update(entity, this);
+		}
 		if(parent != null){
 			precalc = parent.getRelativeVector(position, false, false);
 			prerot = parent.calcRelativeRot(null);

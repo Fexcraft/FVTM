@@ -128,6 +128,7 @@ public class SwivelPoint {
 	}
 
 	public void update(VehicleEntity entity){
+		if(this.id.equals("vehicle")) return;
 		this.updatePrevAxe();
 		if(parent != null){
 			precalc = parent.getRelativeVector(position, false);

@@ -90,7 +90,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public LandVehicle(World ilmondo){
 		super(ilmondo);
-		rotpoint = new SwivelPoint("landvehicle", null);//temporary till vehicle data is loaded in
 		preventEntitySpawning = true; setSize(1f, 1f);
 		ignoreFrustumCheck = true; stepHeight = 1f;
         if(world.isRemote){
@@ -106,8 +105,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public LandVehicle(World world, VehicleData data, Vec3d pos, @Nullable EntityPlayer placer, int meta){
 		this(world); this.setPosition(pos.x, pos.y, pos.z); this.vehicle = data;
 		if(placer != null) this.placer = placer.getGameProfile().getId();
-		this.rotateYaw((placer == null || meta >= 0 ? (meta * 90f) : placer.rotationYaw) + 90f);
 		initializeVehicle(false);
+		this.rotateYaw((placer == null || meta >= 0 ? (meta * 90f) : placer.rotationYaw) + 90f);
 	}
 
 	public LandVehicle(World world, VehicleData data, EntityPlayer player, LandVehicle truck){
@@ -141,13 +140,18 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
-		if(vehicle == null){ vehicle = Resources.getVehicleData(compound); }
-		else{ vehicle.read(compound); }
-        prevRotationYaw = compound.getFloat("RotationYaw");
-        prevRotationPitch = compound.getFloat("RotationPitch");
-        prevRotationRoll = compound.getFloat("RotationRoll");
-        rotpoint.loadAxes(this, compound);
-        initializeVehicle(true); //Print.debug(compound.toString());
+		if(vehicle == null){
+			vehicle = Resources.getVehicleData(compound);
+		}
+		else{
+			vehicle.read(compound);
+		}
+		rotpoint = vehicle.getRotationPoint("vehicle");
+		prevRotationYaw = compound.getFloat("RotationYaw");
+		prevRotationPitch = compound.getFloat("RotationPitch");
+		prevRotationRoll = compound.getFloat("RotationRoll");
+		rotpoint.loadAxes(this, compound);
+		initializeVehicle(true); // Print.debug(compound.toString());
 	}
 
 	@Override
@@ -167,6 +171,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         try{
             NBTTagCompound compound = ByteBufUtils.readTag(buffer);
     		vehicle = Resources.getVehicleData(compound);
+    		rotpoint = vehicle.getRotationPoint("vehicle");
             rotpoint.loadAxes(this, compound);
             prevRotationYaw = rotpoint.getAxes().getYaw();
             prevRotationPitch = rotpoint.getAxes().getPitch();
@@ -728,7 +733,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
         	vehicle.getAttribute("throttle").setValue((float)throttle);
-            for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         }
         for(WheelEntity wheel : wheels){
             if(wheel != null){ wheel.prevPosX = wheel.posX; wheel.prevPosY = wheel.posY; wheel.prevPosZ = wheel.posZ; }
@@ -769,6 +773,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         else{
         	
         }
+        for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }

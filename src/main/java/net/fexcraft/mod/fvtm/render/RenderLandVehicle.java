@@ -47,7 +47,7 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 
     @Override
     public void doRender(LandVehicle vehicle, double x, double y, double z, float entity_yaw, float ticks){
-        if(vehicle.getVehicleData() == null){ return; }
+        if(vehicle.getVehicleData() == null || vehicle.rotpoint == null){ return; }
         GL11.glPushMatrix();
         {
             GL11.glTranslated(x, y, z);

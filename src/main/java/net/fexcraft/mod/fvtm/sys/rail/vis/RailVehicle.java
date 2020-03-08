@@ -78,7 +78,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public static final String[] BOOGIEINDEX = new String[]{ "bogie_front", "bogie_rear" };
 
 	public RailVehicle(World world){
-		super(world); rotpoint = new SwivelPoint("vehicle", null);
+		super(world);
 		preventEntitySpawning = true; setSize(0.5f, 0.5f); ignoreFrustumCheck = true;
         if(world.isRemote){
             setRenderDistanceWeight(1D);
@@ -128,11 +128,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public void readSpawnData(ByteBuf buffer){
         try{
             NBTTagCompound compound = ByteBufUtils.readTag(buffer); //Print.debug("recd: " + compound);
+            initializeVehicle(true, compound.getCompoundTag("Entity"));
             rotpoint.loadAxes(this, compound);
             prevRotationYaw = rotpoint.getAxes().getYaw();
             prevRotationPitch = rotpoint.getAxes().getPitch();
             prevRotationRoll = rotpoint.getAxes().getRoll();
-            initializeVehicle(true, compound.getCompoundTag("Entity"));
         }
         catch(Exception e){
             e.printStackTrace();

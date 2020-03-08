@@ -23,8 +23,8 @@ public class Packets {
 		instance.registerMessage(PKTH_VehKeyPress.class, PKT_VehKeyPress.class, 3, Side.SERVER);
 		instance.registerMessage(PKTH_VehControl.Client.class, PKT_VehControl.class, 4, Side.CLIENT);
 		instance.registerMessage(PKTH_VehControl.Server.class, PKT_VehControl.class, 5, Side.SERVER);
-		instance.registerMessage(PKTH_SPUpdate.Client.class, PKT_SPUpdate.class, 5, Side.CLIENT);
-		instance.registerMessage(PKTH_SPUpdate.Server.class, PKT_SPUpdate.class, 6, Side.SERVER);
+		instance.registerMessage(PKTH_SPUpdate.Client.class, PKT_SPUpdate.class, 6, Side.CLIENT);
+		instance.registerMessage(PKTH_SPUpdate.Server.class, PKT_SPUpdate.class, 7, Side.SERVER);
 		//
 		Print.log("[FVTM] Done initialising Packet Handler.");
 	}

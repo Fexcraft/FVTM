@@ -352,77 +352,6 @@ public class LCCCabin extends PartModel {
 		cart_chassis.addProgram("//TODO");
 		this.groups.add(cart_chassis);
 		//
-		TurboList holder = new TurboList("holder");
-		holder.add(new ModelRendererTurbo(holder, 0, 20, textureX, textureY).addBox(0.5f, 0, 0, 192, 2, 4)
-			.setRotationPoint(-96, -152, -24).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 517, 14, textureX, textureY).addBox(0.5f, 0, 0, 192, 2, 4)
-			.setRotationPoint(-96, -152, 20).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 517, 7, textureX, textureY).addBox(0.5f, 0, 0, 192, 2, 4)
-			.setRotationPoint(-96, -152, 12).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 517, 0, textureX, textureY).addBox(0.5f, 0, 0, 192, 2, 4)
-			.setRotationPoint(-96, -152, -16).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 101, 596, textureX, textureY).addBox(0.5f, 0, 0, 8, 1, 47)
-			.setRotationPoint(-95.5f, -151.5f, -23.5f).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 715, 588, textureX, textureY).addBox(0.5f, 0, 0, 8, 1, 47)
-			.setRotationPoint(87.5f, -151.5f, -23.5f).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 540, 588, textureX, textureY).addBox(0.5f, 0, 0, 8, 1, 47)
-			.setRotationPoint(39, -151.5f, -23.5f).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 899, 586, textureX, textureY).addBox(0.5f, 0, 0, 8, 1, 47)
-			.setRotationPoint(-48, -151.5f, -23.5f).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 371, 584, textureX, textureY).addBox(0.5f, 0, 0, 8, 1, 47)
-			.setRotationPoint(7, -151.5f, -23.5f).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 835, 569, textureX, textureY).addBox(0.5f, 0, 0, 8, 1, 47)
-			.setRotationPoint(-16, -151.5f, -23.5f).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 692, 93, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(-95, -150, -23).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 1015, 87, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(-95, -150, 21).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 830, 83, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(-47, -150, -23).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 184, 71, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(-47, -150, 21).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 380, 68, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(-15, -150, -23).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 512, 60, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(-15, -150, 21).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 668, 47, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(12, -150, -23).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 635, 46, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(12, -150, 21).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 512, 46, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(44, -150, -23).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 282, 35, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(44, -150, 21).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 159, 35, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(93, -150, -23).setRotationAngle(0, 0, 0)
-		);
-		holder.add(new ModelRendererTurbo(holder, 1004, 26, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
-			.setRotationPoint(93, -150, 21).setRotationAngle(0, 0, 0)
-		);
-		holder.addProgram("//TODO");
-		holder.addProgram("//TODO");
-		this.groups.add(holder);
-		//
 		TurboList cart_windows = new TurboList("cart_windows");
 		cart_windows.add(new ModelRendererTurbo(cart_windows, 633, 21, textureX, textureY).addBox(0.5f, 0, 0, 69, 1, 46)
 			.setRotationPoint(-35, -153, -23).setRotationAngle(0, 0, 0)
@@ -463,7 +392,7 @@ public class LCCCabin extends PartModel {
 			.addShapeBox(0.5f, 0, 0, 19, 8, 1, 0, -6, 0, 0, 0, 0, 0, 0, 0, 0, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-34, -179, -23.5f).setRotationAngle(0, 0, 0)
 		);
-		cart_windows.addProgram(new DefaultPrograms.Window(0x0ff0f0));
+		cart_windows.addProgram(new DefaultPrograms.Window(0xbbeded));
 		this.groups.add(cart_windows);
 		//
 		TurboList inner_controls = new TurboList("inner_controls");
@@ -482,26 +411,6 @@ public class LCCCabin extends PartModel {
 		inner_controls.addProgram("//TODO");
 		this.groups.add(inner_controls);
 		//
-		TurboList outer_controls = new TurboList("outer_controls");
-		outer_controls.add(new ModelRendererTurbo(outer_controls, 379, 38, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
-			.setRotationPoint(-44, -4.5f, -184.25f).setRotationAngle(0, 0, 0)
-		);
-		outer_controls.add(new ModelRendererTurbo(outer_controls, 374, 27, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
-			.setRotationPoint(-44, -2.75f, -184.25f).setRotationAngle(0, 0, 0)
-		);
-		outer_controls.add(new ModelRendererTurbo(outer_controls, 291, 27, textureX, textureY).addBox(0, -3, 0, 1, 3, 1)
-			.setRotationPoint(-40.5f, -1.5f, -184.25f).setRotationAngle(0, 0, 0)
-		);
-		outer_controls.add(new ModelRendererTurbo(outer_controls, 975, 24, textureX, textureY).addBox(0, -3, 0, 1, 3, 1)
-			.setRotationPoint(-37.5f, -1.5f, -184.25f).setRotationAngle(0, 0, 0)
-		);
-		outer_controls.add(new ModelRendererTurbo(outer_controls, 975, 21, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
-			.setRotationPoint(-34, -4.5f, -184.25f).setRotationAngle(0, 0, 0)
-		);
-		outer_controls.add(new ModelRendererTurbo(outer_controls, 516, 14, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
-			.setRotationPoint(-34, -2.75f, -184.25f).setRotationAngle(0, 0, 0)
-		);
-		this.groups.add(outer_controls);
 		translate(0, -10 + 112, 0);
 	}
 

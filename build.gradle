@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 version = "1.12.2"
 def modversion = "3.3.41"
 def gepversion = "2.0.2"
-def hcpversion = "2.0.2"
+def hcpversion = "2.1.0"
 group = "net.fexcraft.mod.fvtm"
 archivesBaseName = "FVTM-ALL"
 

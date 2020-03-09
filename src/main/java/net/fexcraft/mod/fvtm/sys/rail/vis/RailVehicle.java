@@ -564,6 +564,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         else{
         	
         }
+        for(SwivelPoint point : rek.data().getRotationPoints().values()) point.update(this);
         rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }

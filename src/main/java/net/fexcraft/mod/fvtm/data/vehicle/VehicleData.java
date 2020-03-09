@@ -69,7 +69,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		super(type);
 		rotpoints.put("vehicle", rootpoint = new SwivelPoint("vehicle", null));
 		for(SwivelPoint point : type.getDefaultSwivelPoints().values()){
-			rotpoints.put(point.id, point);
+			rotpoints.put(point.id, point.clone(null));
 		}
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
 			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
@@ -87,6 +87,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				this.installPart(null, new PartData(part), entry.getKey());
 			}
 		}
+		rotpoints.values().forEach(point -> point.linkToParent(this));
 		sounds.putAll(type.getSounds());
 	}
 
@@ -143,7 +144,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			}
 			if(!scrap.isEmpty()) compound.setTag("Scripts", scrap);
 		}
-		if(rotpoints.size() > 1){
+		if(!rotpoints.isEmpty()){
 			NBTTagList points = new NBTTagList();
 			for(SwivelPoint point : rotpoints.values()){
 				if(point.id.equals("vehicle")) continue;
@@ -230,10 +231,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			for(NBTBase base : points){
 				NBTTagCompound com = (NBTTagCompound)base;
 				if(rotpoints.containsKey(com.getString("id"))){
-					rotpoints.get(com.getString("id")).read(com);
+					rotpoints.get(com.getString("id")).read(this, com);
 				}
 				else{
-					SwivelPoint point = new SwivelPoint(com);
+					SwivelPoint point = new SwivelPoint(this, com);
 					rotpoints.put(point.id, point);
 				}
 			}

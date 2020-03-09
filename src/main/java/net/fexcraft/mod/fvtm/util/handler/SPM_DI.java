@@ -13,14 +13,14 @@ public class SPM_DI implements SwivelPointMover {
 	
 	private Attribute<Float> attr;
 	private String attribute;
-	private float rate, last;
+	private float last;
 	private int axe;
 	private boolean pos;
 	
 	public SPM_DI(JsonObject obj){
 		attribute = JsonUtil.getIfExists(obj, "attribute", "none");
 		if(attribute.equals("none")) Static.stop();
-		rate = JsonUtil.getIfExists(obj, "rate", 1f / 20f).floatValue();
+		//rate = JsonUtil.getIfExists(obj, "rate", 1f / 20f).floatValue();
 		String var = obj.get("var").getAsString();
 		switch(var){
 			case "x":{
@@ -51,7 +51,7 @@ public class SPM_DI implements SwivelPointMover {
 	}
 	
 	public SPM_DI(String attr, float rate){
-		attribute = attr; this.rate = rate;
+		attribute = attr; //this.rate = rate;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -61,9 +61,11 @@ public class SPM_DI implements SwivelPointMover {
 			attr = (Attribute<Float>)entity.getVehicleData().getAttribute(attribute);
 			last = attr.getValue();
 			move(point, axe, pos, last);
+			//Print.bar(Minecraft.getMinecraft().player, get(point) + "=" + last);
 		}
 		if(last != attr.getFloatValue()){
-			move(point, axe, pos, (attr.getFloatValue() - last) * rate);
+			//Print.bar(Minecraft.getMinecraft().player, last + "/" + attr.getFloatValue());
+			move(point, axe, pos, last + (attr.getFloatValue() - last));
 			last = (float)get(point);
 			point.updateClient(entity.getEntity());
 		}
@@ -124,6 +126,6 @@ public class SPM_DI implements SwivelPointMover {
 
 	@Override
 	public SwivelPointMover clone(){
-		return new SPM_DI(attribute, rate);
+		return new SPM_DI(attribute, 0/*rate*/);
 	}
 }

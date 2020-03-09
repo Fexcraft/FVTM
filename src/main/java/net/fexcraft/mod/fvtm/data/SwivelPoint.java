@@ -1,11 +1,13 @@
 package net.fexcraft.mod.fvtm.data;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
@@ -70,10 +72,10 @@ public class SwivelPoint {
 		prevpos = new Vec3d(0, 0, 0);
 	}
 
-	public SwivelPoint(NBTTagCompound com){
+	public SwivelPoint(VehicleData data, NBTTagCompound com){
 		this.id = com.getString("id");
 		this.parid = com.hasKey("parent") ? com.getString("parent") : null;
-		this.read(com);
+		this.read(data, com);
 	}
 
 	public Axis3D getAxes(){
@@ -100,6 +102,7 @@ public class SwivelPoint {
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound.setString("id", id);
 		compound.setString("parent", parent == null ? parid : parent.id);
+		if(origin != null) compound.setString("origin", origin);
 		axe.write(null, compound);
 		compound.setDouble("pos_x", position.x);
 		compound.setDouble("pos_y", position.y);
@@ -107,13 +110,33 @@ public class SwivelPoint {
 		return compound;
 	}
 
-	public SwivelPoint read(NBTTagCompound com){
+	public SwivelPoint read(VehicleData data, NBTTagCompound com){
 		SwivelPoint point = new SwivelPoint(com.getString("id"), com.getString("parent"));
+		point.origin = com.hasKey("origin") ? com.getString("origin") : null;
 		point.position = new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z"));
 		point.prevpos = new Vec3d(position.x, position.y, position.z);
 		point.axe = Axis3D.read(null, com);
 		point.prevaxe = point.axe.clone();
+		if(origin != null){
+			PartData part = data.getPart(origin.split("\\|")[0]);
+			if(part != null){
+				cloneMovers(part.getType().getDefaultSwivelPoints());
+			}
+		}
+		else{
+			cloneMovers(data.getType().getDefaultSwivelPoints());
+		}
 		return point;
+	}
+
+	private void cloneMovers(TreeMap<String, SwivelPoint> points){
+		SwivelPoint orig = points.get(id);
+		if(orig != null){
+			movers = orig.movers == null ? null : new ArrayList<>();
+			if(movers != null){
+				orig.movers.forEach(mover -> movers.add(mover.clone()));
+			}
+		}
 	}
 
 	public void linkToParent(VehicleData data){

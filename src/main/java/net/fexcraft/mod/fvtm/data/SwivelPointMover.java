@@ -7,5 +7,7 @@ public interface SwivelPointMover {
 	public void update(VehicleEntity entity, SwivelPoint point);
 	
 	public SwivelPointMover clone();
+	
+	public boolean shouldSendPacket();
 
 }

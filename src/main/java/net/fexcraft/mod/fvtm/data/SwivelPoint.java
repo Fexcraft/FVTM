@@ -31,7 +31,7 @@ public class SwivelPoint {
 	public final String id, parid;
 	public String origin;
 	public SwivelPoint parent;
-	protected Vec3d position, prevpos, precalc, prerot;
+	protected Vec3d position, prevpos, prerot;//, precalc;
 	private Axis3D axe = new Axis3D(), prevaxe = new Axis3D();
 	// sync
 	private static final int ticker = LandVehicle.servtick;
@@ -49,18 +49,32 @@ public class SwivelPoint {
 		axe.setAngles(JsonUtil.getIfExists(obj, "yaw", 0).doubleValue(), JsonUtil.getIfExists(obj, "pitch", 0).doubleValue(), JsonUtil.getIfExists(obj, "roll", 0).doubleValue());
 		if(obj.has("movers")){
 			movers = new ArrayList<>();
-			obj.get("movers").getAsJsonArray().forEach(elm -> {
-				JsonObject json = elm.getAsJsonObject();
-				if(json.has("class")){
-		            try{
-		            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
-		            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(json));
-		            }
-		            catch(Exception e){
-		            	e.printStackTrace();
-		            }
+			obj.get("movers").getAsJsonObject().entrySet().forEach(entry -> {
+				if(entry.getValue().isJsonObject()){
+					JsonObject json = entry.getValue().getAsJsonObject();
+					if(json.has("class")){
+			            try{
+			            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
+			            	movers.add(clazz.getConstructor(String.class, JsonObject.class).newInstance(entry.getKey(), json));
+			            }
+			            catch(Exception e){
+			            	e.printStackTrace();
+			            }
+					}
+					else movers.add(new SPM_DI(json.getAsJsonObject()));
 				}
-				else movers.add(new SPM_DI(json.getAsJsonObject()));
+				else if(entry.getValue().isJsonPrimitive()){
+					if(entry.getKey().equals("class")){
+			            try{
+			            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(entry.getValue().getAsString().replace(".class", ""));
+			            	movers.add(clazz.newInstance());
+			            }
+			            catch(Exception e){
+			            	e.printStackTrace();
+			            }
+					}
+					else movers.add(new SPM_DI(entry.getKey(), entry.getValue().getAsString()));
+				}
 			});
 		}
 	}
@@ -169,24 +183,24 @@ public class SwivelPoint {
 	}
 
 	public void setPos(double posX, double posY, double posZ){
-		prevpos = new Vec3d(prevpos.x, prevpos.y, prevpos.z);
+		prevpos = new Vec3d(position.x, position.y, position.z);
 		position = new Vec3d(posX, posY, posZ);
 	}
 
 	public void updateClient(Entity entity){
-		if(!entity.world.isRemote) return;
+		if(entity.world.isRemote) return;
 		Packets.sendToAllAround(new PKT_SPUpdate(entity, this), entity);
 	}
 
 	public void update(VehicleEntity entity){
-		if(this.id.equals("vehicle")) return;
+		if(isVehicle()) return;
 		this.updatePrevAxe();
-		if(movers != null){
-			for(SwivelPointMover mover : movers) mover.update(entity, this);
-		}
 		if(parent != null){
-			precalc = parent.getRelativeVector(position, false, false);
-			prerot = parent.calcRelativeRot(null);
+			//precalc = parent.getRelativeVector(position, false, false);
+			prerot = calcRelativeRot(null);
+		}
+		if(!entity.getEntity().world.isRemote && movers != null){
+			for(SwivelPointMover mover : movers) mover.update(entity, this);
 		}
 		if(servticker == 0) return;
 		double x = position.x + (servpos.x - position.x) / servticker;
@@ -195,9 +209,9 @@ public class SwivelPoint {
 		double yaw = MathHelper.wrapDegrees(servrot.x - axe.getYaw());
 		double pitch = MathHelper.wrapDegrees(servrot.y - axe.getPitch());
 		double roll = MathHelper.wrapDegrees(servrot.z - axe.getRoll());
-		--servticker;
 		setPos(x, y, z);
 		axe.setAngles(axe.getYaw() + yaw / servticker, axe.getPitch() + pitch / servticker, axe.getRoll() + roll / servticker);
+		--servticker;
 	}
 
 	public void processPacket(PKT_SPUpdate pkt, boolean side){
@@ -215,22 +229,24 @@ public class SwivelPoint {
 
 	public Vec3d getRelativeVector(double x, double y, double z){
 		Vec3d rel = axe.getRelativeVector((float)x, (float)y, (float)z);
-		if(parent != null) return parent.getRelativeVector(position.x + rel.x, position.y + rel.y, position.z + rel.z);
+		if(parent != null){
+			return parent.getRelativeVector(position.x + rel.x, position.y + rel.y, position.z + rel.z);
+		}
 		return rel;
 	}
 
-	public Vec3d getRelativeVectorL(Vec3d root){
+	/*public Vec3d getRelativeVectorL(Vec3d root){
 		return getRelativeVector(root, false, false);
 	}
 
 	public Vec3d getRelativeVectorR(Vec3d root){
 		return getRelativeVector(root, false, true);
-	}
+	}*/
 
 	public Vec3d getRelativeVector(Vec3d root, boolean usepc, boolean render){
 		Vec3d rel = axe.getRelativeVector(root);
 		if(parent != null){
-			if(usepc && precalc != null) return precalc.add(rel);
+			//if(usepc && precalc != null) return precalc.add(rel);
 			return parent.getRelativeVector(position.add(rel), false, render);
 		}
 		if(render) rel = new Vec3d(rel.x, -rel.y, -rel.z);
@@ -245,13 +261,26 @@ public class SwivelPoint {
 		else{
 			root = root.add(axe.getYaw(), axe.getPitch(), axe.getRoll());
 		}
-		if(parent != null) root = parent.calcRelativeRot(root);
+		if(parent != null && !parent.isVehicle()) root = parent.calcRelativeRot(root);
 		return root;
 	}
 
 	public Vec3d getRelativeRot(){
-		if(prerot == null) prerot = parent.calcRelativeRot(null);;
+		if(prerot == null) prerot = calcRelativeRot(null);
 		return prerot;
+	}
+
+	public final boolean isVehicle(){
+		return id.equals("vehicle");
+	}
+
+	public void sendClientUpdate(Entity entity){
+    	if(movers == null) return;
+    	boolean should = false;
+    	for(SwivelPointMover mover : movers){
+    		if(mover.shouldSendPacket()) should = true;
+    	}
+    	if(should) this.updateClient(entity);
 	}
 
 }

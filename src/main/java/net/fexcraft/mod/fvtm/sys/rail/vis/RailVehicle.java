@@ -568,8 +568,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();
         for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }
-        if(!world.isRemote && ticksExisted % servtick == 0){ throttle = rek.ent().throttle;
+        if(!world.isRemote && ticksExisted % servtick == 0){
+        	throttle = rek.ent().throttle;
+        	rek.data().getAttribute("throttle").setValue((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
+            for(SwivelPoint point : rek.data().getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }
 

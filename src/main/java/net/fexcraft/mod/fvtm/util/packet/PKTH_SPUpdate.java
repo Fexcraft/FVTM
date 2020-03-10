@@ -53,7 +53,7 @@ public class PKTH_SPUpdate {
 	}
 
 	private static void updatesp(Entity entity, PKT_SPUpdate pkt, boolean client){
-		if(entity == null || entity instanceof VehicleEntity == false){ return; }
+		if(entity instanceof VehicleEntity == false){ return; }
 		SwivelPoint point = ((VehicleEntity)entity).getVehicleData().getRotationPoints().get(pkt.pointid);
 		if(point != null) point.processPacket(pkt, client);
 	}

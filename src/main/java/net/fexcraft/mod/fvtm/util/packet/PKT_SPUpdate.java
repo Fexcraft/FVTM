@@ -51,7 +51,8 @@ public class PKT_SPUpdate implements IPacket, IMessage {
 		yaw = buf.readFloat();
 		pitch = buf.readFloat();
 		roll = buf.readFloat();
-		pointid = buf.toString(buf.readerIndex(), buf.readInt(), StandardCharsets.UTF_8);;
+		int index = buf.readInt();
+		pointid = buf.toString(buf.readerIndex(), index, StandardCharsets.UTF_8);;
 	}
 
 }

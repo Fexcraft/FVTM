@@ -17,8 +17,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderAirVehicle extends Render<AirVehicle> implements IRenderFactory<AirVehicle> {
-	
-	private Vec3d temp;
 
     public RenderAirVehicle(RenderManager renderManager){
         super(renderManager); shadowSize = 0.5F;
@@ -64,7 +62,7 @@ public class RenderAirVehicle extends Render<AirVehicle> implements IRenderFacto
 		                    	ModelBase.bindTexture(entry.getValue().getTexture());
 		                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 		                    		SwivelPoint point = vehicle.getVehicleData().getRotationPoint(entry.getValue().getSwivelPointInstalledOn());
-		                    		temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true, true);
+		                    		Vec3d temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true, true);
 		                    		GL11.glPushMatrix();
 		                            GL11.glTranslated(temp.x, temp.y, temp.z);
 		            	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);

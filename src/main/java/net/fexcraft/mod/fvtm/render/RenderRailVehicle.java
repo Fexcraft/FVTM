@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
@@ -11,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -20,7 +22,6 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFactory<RailVehicle> {
 	
 	private ContainerHolder tempholder;
-	private Vec3d temp;
 
     public RenderRailVehicle(RenderManager renderManager){
         super(renderManager); shadowSize = 0.125F;
@@ -68,7 +69,8 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 		                    	ModelBase.bindTexture(entry.getValue().getTexture());
 		                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 		                    		SwivelPoint point = vehicle.getVehicleData().getRotationPoint(entry.getValue().getSwivelPointInstalledOn());
-		                    		temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true, true);
+		                    		Vec3d temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true, true);
+		                    		Print.bar(Minecraft.getMinecraft().player, point.getPos().toString() + " / " + temp);
 		                    		GL11.glPushMatrix();
 		                            GL11.glTranslated(temp.x, temp.y, temp.z);
 		            	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);

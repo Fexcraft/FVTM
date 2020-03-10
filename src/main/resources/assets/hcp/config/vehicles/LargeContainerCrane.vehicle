@@ -32,12 +32,9 @@
 			"id": "lcc_main",
 			"parent": "vehicle",
 			"pos": [ 0, 112, 0 ],
-			"movers":[
-				{
-					"attribute": "throttle",
-					"var": "x"
-				}
-			]
+			"movers":{
+				"throttle":"z"
+			}
 		}
 	]
 }

@@ -2,8 +2,6 @@ package net.fexcraft.mod.fvtm.util.handler;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.SwivelPointMover;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -16,13 +14,15 @@ public class SPM_DI implements SwivelPointMover {
 	private float last;
 	private int axe;
 	private boolean pos;
+	public boolean moved;
 	
 	public SPM_DI(JsonObject obj){
-		attribute = JsonUtil.getIfExists(obj, "attribute", "none");
-		if(attribute.equals("none")) Static.stop();
-		//rate = JsonUtil.getIfExists(obj, "rate", 1f / 20f).floatValue();
-		String var = obj.get("var").getAsString();
-		switch(var){
+		this(obj.get("attribute").getAsString(), obj.get("var").getAsString());
+	}
+	
+	public SPM_DI(String key, String value){
+		attribute = key;
+		switch(value){
 			case "x":{
 				axe = 0; pos = true;
 				break;
@@ -49,11 +49,7 @@ public class SPM_DI implements SwivelPointMover {
 			}
 		}
 	}
-	
-	public SPM_DI(String attr, float rate){
-		attribute = attr; //this.rate = rate;
-	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(VehicleEntity entity, SwivelPoint point){
@@ -65,13 +61,13 @@ public class SPM_DI implements SwivelPointMover {
 		}
 		if(last != attr.getFloatValue()){
 			//Print.bar(Minecraft.getMinecraft().player, last + "/" + attr.getFloatValue());
-			move(point, axe, pos, last + (attr.getFloatValue() - last));
-			last = (float)get(point);
-			point.updateClient(entity.getEntity());
+			move(point, axe, pos, last = attr.getFloatValue());
+			//point.updateClient(entity.getEntity());
 		}
 	}
 	
 	private void move(SwivelPoint point, int axe, boolean pos, float last){
+		moved = true;
 		if(pos){
 			switch(axe){
 				case 0:{//x
@@ -106,7 +102,7 @@ public class SPM_DI implements SwivelPointMover {
 		}
 	}
 
-	private double get(SwivelPoint point){//, int axe, boolean pos){
+	public double get(SwivelPoint point){//, int axe, boolean pos){
 		if(pos){
 			switch(axe){
 				case 0: return point.getPos().x;
@@ -126,6 +122,32 @@ public class SPM_DI implements SwivelPointMover {
 
 	@Override
 	public SwivelPointMover clone(){
-		return new SPM_DI(attribute, 0/*rate*/);
+		return new SPM_DI(attribute, varString());
+	}
+
+	private String varString(){
+		if(pos){
+			switch(axe){
+				case 0: return "x";
+				case 1: return "y";
+				case 2: return "z";
+			}
+		}
+		else{
+			switch(axe){
+				case 0: return "yaw";
+				case 1: return "pitch";
+				case 2: return "roll";
+			}
+		}
+		return "null";
+	}
+
+	@Override
+	public boolean shouldSendPacket(){
+		if(moved){
+			return !(moved = false);
+		}
+		return false;
 	}
 }

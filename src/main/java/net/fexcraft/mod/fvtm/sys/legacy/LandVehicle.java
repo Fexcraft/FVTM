@@ -782,7 +782,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
         }*/
         if(!world.isRemote && ticksExisted % 5 == 0){
+        	vehicle.getAttribute("throttle").setValue((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
+            for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }
 

@@ -46,34 +46,38 @@ public class ToggableHandler {
 			case MOUSE_MAIN:{
 				if(attr.type().isTristate()){
 					packet.setBoolean("bool", !attr.type().isBoolean() ? false : true);
-					Print.bar(player, "&7Toggled: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
+					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.type().isFloat()){
 					float flaot = attr.getFloatValue() + attr.getAABB(attr.getStringValue())[4];
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
+					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.type().isInteger()){
 					int ent = attr.getIntegerValue() + (int)attr.getAABB(attr.getStringValue())[4];
 					packet.setFloat("value", ent);
 					attr.setValue(ent);
+					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				break;
 			}
 			case MOUSE_RIGHT:{
 				if(attr.type().isTristate()){
 					packet.setBoolean("bool", !attr.type().isBoolean() ? true : false);
-					Print.bar(player, "&7Toggled: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
+					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.type().isFloat()){
 					float flaot = attr.getFloatValue() - attr.getAABB(attr.getStringValue())[5];
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
+					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.type().isInteger()){
 					int ent = attr.getIntegerValue() - (int)attr.getAABB(attr.getStringValue())[5];
 					packet.setFloat("value", ent);
 					attr.setValue(ent);
+					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				break;
 			}
@@ -81,17 +85,19 @@ public class ToggableHandler {
 				if(attr.type().isTristate()){
 					packet.setBoolean("bool", false);
 					packet.setBoolean("reset", true);
-					Print.bar(player, "&7Reset: &6" + attr.id());
+					Print.bar(player, "&7Resetting: &6" + attr.id());
 				}
 				else if(attr.type().isFloat()){
 					float flaot = attr.getAABB(attr.getStringValue())[6];
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
+					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.type().isInteger()){
 					int ent = (int)attr.getAABB(attr.getStringValue())[6];
 					packet.setFloat("value", ent);
 					attr.setValue(ent);
+					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				break;
 			}

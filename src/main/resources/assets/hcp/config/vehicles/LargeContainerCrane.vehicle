@@ -33,7 +33,7 @@
 			"parent": "vehicle",
 			"pos": [ 0, 112, 0 ],
 			"movers":{
-				"throttle":"z"
+				"lcc_h":"z"
 			}
 		}
 	]

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.fvtm.data.Seat;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
@@ -37,6 +38,8 @@ public abstract class VehicleScript {
 	
 	/** Return true to skip/override default entity methods. */
 	public abstract boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player);
+	
+	public void onAttributeToggle(Attribute<?> attr, String value, EntityPlayer player){};
 
 	/** On player interaction with the Entity */
 	public abstract boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand);

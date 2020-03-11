@@ -133,8 +133,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     
     @Override
     public void setPosition(double x, double y, double z){
-        this.posX = x; this.posY = y; this.posZ = z; float f = this.width / 2.0F, f1 = this.height;
-        this.setEntityBoundingBox(new AxisAlignedBB(x - f, y, z - f, x + f, y + f1, z + f));
+        this.posX = x; this.posY = y; this.posZ = z; float f = width / 2.0F;
+        this.setEntityBoundingBox(new AxisAlignedBB(x - f, y, z - f, x + f, y + height, z + f));
     }
 
     public void updatePosition(){
@@ -232,7 +232,8 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
                     //
                     looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
                     prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-                    Vec3d relpos = vehicle.getRotPoint().getAxes().getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
+                    SwivelPoint point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
+                    Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
                     pass_x = prev_pass_x = prevPosX = posX = vehicle.getEntity().posX + relpos.x;
                     pass_y = prev_pass_y = prevPosY = posY = vehicle.getEntity().posY + relpos.y;
                     pass_z = prev_pass_z = prevPosZ = posZ = vehicle.getEntity().posZ + relpos.z;

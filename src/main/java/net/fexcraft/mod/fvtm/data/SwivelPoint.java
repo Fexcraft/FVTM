@@ -244,7 +244,7 @@ public class SwivelPoint {
 	}*/
 
 	public Vec3d getRelativeVector(Vec3d root, boolean usepc, boolean render){
-		Vec3d rel = axe.getRelativeVector(root);
+		Vec3d rel = axe.getRelativeVector(root, isVehicle() ? 90 : 0);
 		if(parent != null){
 			//if(usepc && precalc != null) return precalc.add(rel);
 			return parent.getRelativeVector(position.add(rel), false, render);

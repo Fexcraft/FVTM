@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 
 public class SPM_DI implements SwivelPointMover {
 	
-	private Attribute<Float> attr;
+	private Attribute<?> attr;
 	private String attribute;
 	private float last;
 	private int axe;
@@ -50,12 +50,11 @@ public class SPM_DI implements SwivelPointMover {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void update(VehicleEntity entity, SwivelPoint point){
 		if(attr == null){
-			attr = (Attribute<Float>)entity.getVehicleData().getAttribute(attribute);
-			last = attr.getValue();
+			attr = entity.getVehicleData().getAttribute(attribute);
+			last = attr.getFloatValue();
 			move(point, axe, pos, last);
 			//Print.bar(Minecraft.getMinecraft().player, get(point) + "=" + last);
 		}
@@ -146,7 +145,8 @@ public class SPM_DI implements SwivelPointMover {
 	@Override
 	public boolean shouldSendPacket(){
 		if(moved){
-			return !(moved = false);
+			moved = false;
+			return true;
 		}
 		return false;
 	}

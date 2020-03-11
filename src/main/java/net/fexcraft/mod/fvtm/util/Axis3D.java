@@ -45,13 +45,17 @@ public class Axis3D {
 	}
 
 	public Vec3d getRelativeVector(Vec3d vec){
+		return getRelativeVector(vec, 0);
+	}
+
+	public Vec3d getRelativeVector(Vec3d vec, float yawmod){
 		Matrix4f mat = new Matrix4f();
 		mat.m00 = (float)vec.x;
 		mat.m10 = (float)vec.y;
 		mat.m20 = (float)vec.z;
 		Matrix4f.rotate((float)(roll * 3.14159265F / 180D), new Vector3f(1F, 0F, 0F), mat, mat);
 		Matrix4f.rotate((float)(pitch * 3.14159265F / 180D), new Vector3f(0F, 0F, 1F), mat, mat);
-		Matrix4f.rotate((float)(yaw * 3.14159265F / 180D), new Vector3f(0F, 1F, 0F), mat, mat);
+		Matrix4f.rotate((float)((yaw + yawmod) * 3.14159265F / 180D), new Vector3f(0F, 1F, 0F), mat, mat);
 		return new Vec3d(mat.m00, mat.m10, mat.m20);
 	}
 

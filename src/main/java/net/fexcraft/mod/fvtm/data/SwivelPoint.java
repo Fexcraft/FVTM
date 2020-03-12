@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -49,33 +50,40 @@ public class SwivelPoint {
 		axe.setAngles(JsonUtil.getIfExists(obj, "yaw", 0).doubleValue(), JsonUtil.getIfExists(obj, "pitch", 0).doubleValue(), JsonUtil.getIfExists(obj, "roll", 0).doubleValue());
 		if(obj.has("movers")){
 			movers = new ArrayList<>();
-			obj.get("movers").getAsJsonObject().entrySet().forEach(entry -> {
-				if(entry.getValue().isJsonObject()){
-					JsonObject json = entry.getValue().getAsJsonObject();
-					if(json.has("class")){
-			            try{
-			            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
-			            	movers.add(clazz.getConstructor(String.class, JsonObject.class).newInstance(entry.getKey(), json));
-			            }
-			            catch(Exception e){
-			            	e.printStackTrace();
-			            }
+			JsonElement movs = obj.get("movers");
+			if(movs.isJsonObject()){
+				movs.getAsJsonObject().entrySet().forEach(entry -> {
+					if(entry.getValue().isJsonPrimitive()){
+						if(entry.getKey().equals("class")){
+				            try{
+				            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(entry.getValue().getAsString().replace(".class", ""));
+				            	movers.add(clazz.newInstance());
+				            }
+				            catch(Exception e){
+				            	e.printStackTrace();
+				            }
+						}
+						else movers.add(new SPM_DI(entry.getKey(), entry.getValue().getAsString()));
 					}
-					else movers.add(new SPM_DI(json.getAsJsonObject()));
-				}
-				else if(entry.getValue().isJsonPrimitive()){
-					if(entry.getKey().equals("class")){
-			            try{
-			            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(entry.getValue().getAsString().replace(".class", ""));
-			            	movers.add(clazz.newInstance());
-			            }
-			            catch(Exception e){
-			            	e.printStackTrace();
-			            }
+				});
+			}
+			else if(movs.isJsonArray()){
+				movs.getAsJsonArray().forEach(elm -> {
+					if(elm.isJsonObject()){
+						JsonObject json = elm.getAsJsonObject();
+						if(json.has("class")){
+				            try{
+				            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
+				            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(json));
+				            }
+				            catch(Exception e){
+				            	e.printStackTrace();
+				            }
+						}
+						else movers.add(new SPM_DI(json.getAsJsonObject()));
 					}
-					else movers.add(new SPM_DI(entry.getKey(), entry.getValue().getAsString()));
-				}
-			});
+				});
+			}
 		}
 	}
 

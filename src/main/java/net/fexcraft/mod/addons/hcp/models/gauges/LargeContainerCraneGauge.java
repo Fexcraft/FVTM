@@ -23,19 +23,19 @@ public class LargeContainerCraneGauge extends RailGaugeModel {
 		this.ties_distance = 0.5f;
 		this.buffer_length = 0.2f;
 		this.rails = new Vec3f[][]{
-			{ new Vec3f(-175.5, 2, 0), new Vec3f(-174.5, 2, 0) },
-			{ new Vec3f(-183.5, 2, 0), new Vec3f(-182.5, 2, 0) },
-			{ new Vec3f(174.5, 2, 0), new Vec3f(175.5, 2, 0) },
-			{ new Vec3f(182.5, 2, 0), new Vec3f(183.5, 2, 0) },
+			{ new Vec3f(-174.5, 2, 0), new Vec3f(-173.5, 2, 0) },
+			{ new Vec3f(-182.5, 2, 0), new Vec3f(-181.5, 2, 0) },
+			{ new Vec3f(173.5, 2, 0), new Vec3f(174.5, 2, 0) },
+			{ new Vec3f(181.5, 2, 0), new Vec3f(182.5, 2, 0) },
 			//
-			{ new Vec3f(-174, 0, 0), new Vec3f(-175.5, 2, 0) },
-			{ new Vec3f(-174.5, 2, 0), new Vec3f(-173, 0, 0) },
-			{ new Vec3f(-183, 0, 0), new Vec3f(-183.5, 2, 0) },
-			{ new Vec3f(-182.5, 2, 0), new Vec3f(-181, 0, 0) },
-			{ new Vec3f(173, 0, 0), new Vec3f(174.5, 2, 0) },
-			{ new Vec3f(175.5, 2, 0), new Vec3f(175, 0, 0) },
-			{ new Vec3f(181, 0, 0), new Vec3f(182.5, 2, 0) },
-			{ new Vec3f(183.5, 2, 0), new Vec3f(183, 0, 0) },
+			{ new Vec3f(-175, 0, 0), new Vec3f(-174.5, 2, 0) },
+			{ new Vec3f(-173.5, 2, 0), new Vec3f(-173, 0, 0) },
+			{ new Vec3f(-183, 0, 0), new Vec3f(-182.5, 2, 0) },
+			{ new Vec3f(-181.5, 2, 0), new Vec3f(-181, 0, 0) },
+			{ new Vec3f(173, 0, 0), new Vec3f(173.5, 2, 0) },
+			{ new Vec3f(174.5, 2, 0), new Vec3f(175, 0, 0) },
+			{ new Vec3f(181, 0, 0), new Vec3f(181.5, 2, 0) },
+			{ new Vec3f(182.5, 2, 0), new Vec3f(183, 0, 0) },
 			//
 			{ new Vec3f(-175, 0, 0), new Vec3f(-173, 0, 0) },
 			{ new Vec3f(-183, 0, 0), new Vec3f(-181, 0, 0) },

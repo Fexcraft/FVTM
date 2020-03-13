@@ -32,7 +32,7 @@ public class SwivelPoint {
 	public final String id, parid;
 	public String origin;
 	public SwivelPoint parent;
-	protected Vec3d position, prevpos, prerot;//, precalc;
+	protected Vec3d position, prevpos, prerot;
 	private Axis3D axe = new Axis3D(), prevaxe = new Axis3D();
 	// sync
 	private static final int ticker = LandVehicle.servtick;
@@ -203,6 +203,7 @@ public class SwivelPoint {
 	public void update(VehicleEntity entity){
 		if(isVehicle()) return;
 		this.updatePrevAxe();
+		prevpos = position;
 		if(parent != null){
 			//precalc = parent.getRelativeVector(position, false, false);
 			prerot = calcRelativeRot(null);
@@ -245,19 +246,19 @@ public class SwivelPoint {
 		return rel;
 	}
 
-	/*public Vec3d getRelativeVectorL(Vec3d root){
-		return getRelativeVector(root, false, false);
-	}
-
-	public Vec3d getRelativeVectorR(Vec3d root){
-		return getRelativeVector(root, false, true);
-	}*/
-
-	public Vec3d getRelativeVector(Vec3d root, boolean usepc, boolean render){
+	public Vec3d getRelativeVector(Vec3d root, boolean render){
 		Vec3d rel = axe.getRelativeVector(root, isVehicle() ? 90 : 0);
 		if(parent != null){
-			//if(usepc && precalc != null) return precalc.add(rel);
-			return parent.getRelativeVector(position.add(rel), false, render);
+			return parent.getRelativeVector(position.add(rel), render);
+		}
+		if(render) rel = new Vec3d(rel.x, -rel.y, -rel.z);
+		return rel;
+	}
+
+	public Vec3d getPrevRelativeVector(Vec3d root, boolean render){
+		Vec3d rel = prevaxe.getRelativeVector(root, isVehicle() ? 90 : 0);
+		if(parent != null){
+			return parent.getPrevRelativeVector(prevpos.add(rel), render);
 		}
 		if(render) rel = new Vec3d(rel.x, -rel.y, -rel.z);
 		return rel;

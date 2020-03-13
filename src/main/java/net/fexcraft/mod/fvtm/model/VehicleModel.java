@@ -118,7 +118,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 				bindTexture(entry.getValue().getTexture());
             	if(entry.getValue().isInstalledOnSwivelPoint()){
             		SwivelPoint point = data.getRotationPoint(entry.getValue().getSwivelPointInstalledOn());
-            		Vec3d temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true, true);
+            		Vec3d temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true);
             		GL11.glPushMatrix();
                     GL11.glTranslated(temp.x, temp.y, temp.z);
     	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);

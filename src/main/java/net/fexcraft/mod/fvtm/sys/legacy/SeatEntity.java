@@ -87,7 +87,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         this.vehicle.getSeats()[seatindex] = this;
         looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
         prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-        Vec3d relpos = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point).getRelativeVector(seatdata.toVec3d(), true, false);
+        Vec3d relpos = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point).getRelativeVector(seatdata.toVec3d(), false);
         pass_x = prev_pass_x = prevPosX = posX = vehicle.getEntity().posX + relpos.x;
         pass_y = prev_pass_y = prevPosY = posY = vehicle.getEntity().posY + relpos.y;
         pass_z = prev_pass_z = prevPosZ = posZ = vehicle.getEntity().posZ + relpos.z;

@@ -62,9 +62,10 @@ public class RenderAirVehicle extends Render<AirVehicle> implements IRenderFacto
 		                    	ModelBase.bindTexture(entry.getValue().getTexture());
 		                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 		                    		SwivelPoint point = vehicle.getVehicleData().getRotationPoint(entry.getValue().getSwivelPointInstalledOn());
-		                    		Vec3d temp = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true, true);
+		                    		Vec3d temp0 = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true);
+		                    		Vec3d temp1 = point.getPrevRelativeVector(entry.getValue().getInstalledPos().to16Double(), true);
 		                    		GL11.glPushMatrix();
-		                            GL11.glTranslated(temp.x, temp.y, temp.z);
+		                            GL11.glTranslated(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
 		            	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);
 		            	            GL11.glRotated(point.getRelativeRot().y, 0.0F, 0.0F, 1.0F);
 		            	            GL11.glRotated(point.getRelativeRot().z, 1.0F, 0.0F, 0.0F);

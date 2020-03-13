@@ -3,9 +3,13 @@ package net.fexcraft.mod.addons.hcp.models.parts;
 
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
+import net.minecraft.entity.Entity;
 
 /** This file was exported via the FVTM Exporter V1.4 of<br>
  *  FMT (Fex's Modelling Toolbox) v.2.0.5 &copy; 2020 - Fexcraft.net<br>
@@ -349,7 +353,7 @@ public class LCCCabin extends PartModel {
 		cart_chassis.add(new ModelRendererTurbo(cart_chassis, 906, 0, textureX, textureY).addCylinder(0, 0, 0, 1, 1, 16, 0.9f, 0.9f, 3, null)
 			.setRotationPoint(21.85f, -170, -2.75f).setRotationAngle(0, 0, 0)
 		);
-		cart_chassis.addProgram("//TODO");
+		cart_chassis.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(cart_chassis);
 		//
 		TurboList cart_windows = new TurboList("cart_windows");
@@ -408,7 +412,21 @@ public class LCCCabin extends PartModel {
 		inner_controls.add(new ModelRendererTurbo(inner_controls, 1016, 72, textureX, textureY).addBox(0, 0, 0, 1, 2, 2)
 			.setRotationPoint(19, -168, 15).setRotationAngle(0, 0, 37)
 		);
-		inner_controls.addProgram("//TODO");
+		inner_controls.addProgram(new TurboList.Program(){
+
+			@Override
+			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+				if(ent == null) return;
+				list.get(0).rotationAngleZ = -27 + (data.getAttribute("lcc_h").getIntegerValue() * 4.5f);
+				list.get(1).rotationAngleZ = -35 + (data.getAttribute("lcc_v").getIntegerValue() * -7);
+			}
+
+			@Override
+			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+				//
+			}
+			
+		});
 		this.groups.add(inner_controls);
 		//
 		translate(0, -10 + 112, 0);

@@ -3,8 +3,13 @@ package net.fexcraft.mod.addons.hcp.models.vehicle;
 
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.minecraft.entity.Entity;
 
 /** This file was exported via the FVTM Exporter V1.4 of<br>
  *  FMT (Fex's Modelling Toolbox) v.2.0.5 &copy; 2020 - Fexcraft.net<br>
@@ -143,6 +148,7 @@ public class LargeContainerCrane extends VehicleModel {
 			.addShapeBox(0.5f, 0, 0, 12, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-45, -5, -184).setRotationAngle(0, 0, 0)
 		);
+		chassis_right.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(chassis_right);
 		//
 		TurboList chassis_left = new TurboList("chassis_left");
@@ -266,6 +272,7 @@ public class LargeContainerCrane extends VehicleModel {
 		chassis_left.add(new ModelRendererTurbo(chassis_left, 625, 245, textureX, textureY).addBox(0.5f, 0, 0, 29, 6, 6)
 			.setRotationPoint(17, -1, 171).setRotationAngle(0, 0, 0)
 		);
+		chassis_left.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(chassis_left);
 		//
 		TurboList top_front = new TurboList("top_front");
@@ -350,6 +357,7 @@ public class LargeContainerCrane extends VehicleModel {
 		top_front.add(new ModelRendererTurbo(top_front, 792, 343, textureX, textureY).addBox(0.5f, 0, 0, 41, 4, 30)
 			.setRotationPoint(43, -162, 168).setRotationAngle(0, 0, 0)
 		);
+		top_front.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(top_front);
 		//
 		TurboList top_rear = new TurboList("top_rear");
@@ -434,6 +442,7 @@ public class LargeContainerCrane extends VehicleModel {
 		top_rear.add(new ModelRendererTurbo(top_rear, 405, 332, textureX, textureY).addBox(0.5f, 0, 0, 41, 4, 30)
 			.setRotationPoint(-85, -162, 168).setRotationAngle(0, 0, 0)
 		);
+		top_rear.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(top_rear);
 		//
 		TurboList ladder = new TurboList("ladder");
@@ -621,6 +630,7 @@ public class LargeContainerCrane extends VehicleModel {
 			.addShapeBox(0, 0, 0, 35, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-17.5f, -1, 186).setRotationAngle(0, 0, 0)
 		);
+		wheel_chassis_left.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(wheel_chassis_left);
 		//
 		TurboList wheel_chassis_right = new TurboList("wheel_chassis_right");
@@ -675,6 +685,7 @@ public class LargeContainerCrane extends VehicleModel {
 			.addShapeBox(0, 0, 0, 35, 4, 1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			.setRotationPoint(-17.5f, -1, -187).setRotationAngle(0, 0, 0)
 		);
+		wheel_chassis_right.addProgram(DefaultPrograms.RGB_PRIMARY);
 		this.groups.add(wheel_chassis_right);
 		TurboList wheels_right = new TurboList("wheels_right");
 		wheels_right.add(new ModelRendererTurbo(wheels_right, 996, 170, textureX, textureY).addHollowCylinder(0, 0, 0, 5, 3, 2, 16, 0, 1, 1, 1, null)
@@ -1133,6 +1144,21 @@ public class LargeContainerCrane extends VehicleModel {
 		outer_controls.add(new ModelRendererTurbo(outer_controls, 516, 14, textureX, textureY).addBox(0, 0, 0, 1, 1, 1)
 			.setRotationPoint(-34, -2.75f, -184.25f).setRotationAngle(0, 0, 0)
 		);
+		outer_controls.addProgram(new TurboList.Program(){
+
+			@Override
+			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+				if(ent == null) return;
+				list.get(2).rotationAngleX = (data.getAttribute("lcc_h").getIntegerValue() + 9) * 2.25f;
+				list.get(3).rotationAngleX = data.getAttribute("lcc_v").getIntegerValue() * -6;
+			}
+
+			@Override
+			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+				//
+			}
+			
+		});
 		this.groups.add(outer_controls);
 		//
 		translate(0, -10, 0);

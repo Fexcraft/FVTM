@@ -87,7 +87,7 @@ public class LCCHolder extends PartModel {
 		holder.addProgram("//TODO");
 		this.groups.add(holder);
 		//
-		translate(0, -10 + 112, 0);
+		translate(0, -10 + 112.0625f, 0);
 	}
 
 }

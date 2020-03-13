@@ -113,7 +113,7 @@ public class ToggableHandler {
 		}
 		if(player.world.isRemote){
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
-			last = attr.id(); tilltime = Time.getDate() + 100;
+			last = attr.id(); tilltime = Time.getDate() + 20;
 		}
 		else{
 			ServerReceiver.INSTANCE.process(packet, player);

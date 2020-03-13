@@ -353,7 +353,7 @@ public class LCCCabin extends PartModel {
 		cart_chassis.add(new ModelRendererTurbo(cart_chassis, 906, 0, textureX, textureY).addCylinder(0, 0, 0, 1, 1, 16, 0.9f, 0.9f, 3, null)
 			.setRotationPoint(21.85f, -170, -2.75f).setRotationAngle(0, 0, 0)
 		);
-		cart_chassis.addProgram(DefaultPrograms.RGB_PRIMARY);
+		cart_chassis.addProgram(DefaultPrograms.RGB_SECONDARY);
 		this.groups.add(cart_chassis);
 		//
 		TurboList cart_windows = new TurboList("cart_windows");

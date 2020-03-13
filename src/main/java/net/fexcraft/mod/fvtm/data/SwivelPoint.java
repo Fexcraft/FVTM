@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Pos;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -211,15 +210,16 @@ public class SwivelPoint {
 		if(!entity.getEntity().world.isRemote && movers != null){
 			for(SwivelPointMover mover : movers) mover.update(entity, this);
 		}
-		if(servticker == 0) return;
-		Print.debug("update: " + servticker);
+		if(servticker <= 0) return;
+		//Print.debug("update: " + servticker);
+		//Print.debug(position + " / " + servpos);
 		double x = position.x + (servpos.x - position.x) / servticker;
 		double y = position.y + (servpos.y - position.y) / servticker;
 		double z = position.z + (servpos.z - position.z) / servticker;
+		setPos(x, y, z);
 		double yaw = MathHelper.wrapDegrees(servrot.x - axe.getYaw());
 		double pitch = MathHelper.wrapDegrees(servrot.y - axe.getPitch());
 		double roll = MathHelper.wrapDegrees(servrot.z - axe.getRoll());
-		setPos(x, y, z);
 		axe.setAngles(axe.getYaw() + yaw / servticker, axe.getPitch() + pitch / servticker, axe.getRoll() + roll / servticker);
 		--servticker;
 	}
@@ -228,7 +228,7 @@ public class SwivelPoint {
 		if(side){
 			servpos = new Vec3d(pkt.posX, pkt.posY, pkt.posZ);
 			servrot = new Vec3d(pkt.yaw, pkt.pitch, pkt.roll);
-			servticker = ticker + 1;
+			servticker = ticker;
 		}
 		else{
 			setPos(pkt.posX, pkt.posY, pkt.posZ);

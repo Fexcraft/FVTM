@@ -35,14 +35,14 @@ public class ToggableHandler {
 	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatEntity seat, EntityPlayer player){// TODO support for other attribute types, e.g. numbers
 		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasAABBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
-			Print.debug(player, "none found"); return false;
+			/*Print.debug(player, "none found");*/ return false;
 		}
 		Attribute<?> attr = getCollided(seat == null, entity, player, attributes);
 		if(attr == null){
-			Print.debug(player, "none hit"); return false;
+			/*Print.debug(player, "none hit");*/ return false;
 		}
 		if(attr.id().equals(last) && Time.getDate() < tilltime){
-			Print.debug(player, "skipping till cooldown"); return false;
+			/*Print.debug(player, "skipping till cooldown");*/ return true;
 		}
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", "fvtm:gui");

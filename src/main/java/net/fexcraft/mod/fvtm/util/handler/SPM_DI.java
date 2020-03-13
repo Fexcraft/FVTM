@@ -12,14 +12,14 @@ public class SPM_DI implements SwivelPointMover {
 	
 	private Attribute<?> attr;
 	private String attribute;
-	private float last, speed;
+	private float last, speed = 1;
 	private int axe;
 	private boolean pos;
 	public boolean moved;
 	
 	public SPM_DI(JsonObject obj){
 		this(obj.get("attribute").getAsString(), obj.get("var").getAsString());
-		speed = JsonUtil.getIfExists(obj, "speed", 1).intValue();
+		speed = JsonUtil.getIfExists(obj, "speed", 1).floatValue();
 	}
 	
 	public SPM_DI(String key, String value){
@@ -50,7 +50,10 @@ public class SPM_DI implements SwivelPointMover {
 				break;
 			}
 		}
-		speed = 1;
+	}
+
+	public SPM_DI(String attr, String var, float speed){
+		this(attr, var); this.speed = speed;
 	}
 
 	@Override
@@ -132,7 +135,7 @@ public class SPM_DI implements SwivelPointMover {
 
 	@Override
 	public SwivelPointMover clone(){
-		return new SPM_DI(attribute, varString());
+		return new SPM_DI(attribute, varString(), speed);
 	}
 
 	private String varString(){

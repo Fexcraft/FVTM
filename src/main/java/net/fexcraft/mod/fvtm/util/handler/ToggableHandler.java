@@ -5,6 +5,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -27,15 +28,21 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ToggableHandler {
+	
+	private static String last;
+	private static long tilltime = 0;
 
 	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatEntity seat, EntityPlayer player){// TODO support for other attribute types, e.g. numbers
 		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasAABBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
-			/* Print.chat(player, "none found"); */ return false;
+			Print.debug(player, "none found"); return false;
 		}
 		Attribute<?> attr = getCollided(seat == null, entity, player, attributes);
 		if(attr == null){
-			/* Print.chat(player, "none hit"); */ return false;
+			Print.debug(player, "none hit"); return false;
+		}
+		if(attr.id().equals(last) && Time.getDate() < tilltime){
+			Print.debug(player, "skipping till cooldown"); return false;
 		}
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", "fvtm:gui");
@@ -106,6 +113,7 @@ public class ToggableHandler {
 		}
 		if(player.world.isRemote){
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+			last = attr.id(); tilltime = Time.getDate() + 100;
 		}
 		else{
 			ServerReceiver.INSTANCE.process(packet, player);

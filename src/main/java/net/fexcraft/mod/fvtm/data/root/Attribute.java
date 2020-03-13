@@ -92,7 +92,7 @@ public abstract class Attribute<V> {
 	public float[] getAABB(String id){
 		if(!hasAABBs()) return null;
 		if(!aabbs.containsKey(id)){
-			if(id.equals("external-")) return getAABB("external");
+			if(id.startsWith("external-")) return getAABB("external");
 			if(!aabbs.containsKey("default")) return null;
 			return aabbs.get("default");
 		} return aabbs.get(id);
@@ -102,7 +102,7 @@ public abstract class Attribute<V> {
 		if(!hasAABBs()) return null;
 		if(aabbsp == null) return null;
 		if(!aabbsp.containsKey(id)){
-			if(id.equals("external-")) return getAABBSP("external");
+			if(id.startsWith("external-")) return getAABBSP("external");
 			if(!aabbsp.containsKey("default")) return null;
 			return aabbsp.get("default");
 		} return aabbsp.get(id);

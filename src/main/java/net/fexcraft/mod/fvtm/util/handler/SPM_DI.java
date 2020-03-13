@@ -64,6 +64,7 @@ public class SPM_DI implements SwivelPointMover {
 		if(last != attr.getFloatValue()){
 			//Print.bar(Minecraft.getMinecraft().player, last + "/" + attr.getFloatValue());
 			float diff = attr.getFloatValue() - last;
+			if(diff < 0.001 && diff > -0.001) return;
 			if(Math.abs(diff) <= speed){
 				move(point, axe, pos, last = attr.getFloatValue());
 			}

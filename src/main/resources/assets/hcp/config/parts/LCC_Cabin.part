@@ -13,16 +13,18 @@
     	{
     		"id":"lcc_h", "type": "integer", "value": 0, "min": -9, "max": 9,
     		"hitbox":{
-    			"default": [ 20, -68, 4.5, 2, 1, 1, 0, "lcc_main" ],
-    			"external": [ -40, -3, 184.25, 2, 1, 1, 0, "vehicle" ]
-    		}
+    			"default": [   20, -68,    4.5,  2, 1, 1, 0, "lcc_main" ],
+    			"external": [ -40, -13, -184.25, 1, 1, 1, 0, "vehicle" ]
+    		},
+    		"external": true, "seat": "driver"
     	},
     	{
     		"id":"lcc_v", "type": "integer", "value": 0, "min": -7, "max": 0,
     		"hitbox":{
-    			"default": [ 20, -68, -4.5, 2, 1, 1, 0, "lcc_main" ],
-    			"external": [ -37, -3, 184.25, 2, 1, 1, 0, "vehicle" ]
-    		}
+    			"default": [   20, -68,   -4.5,  2, 1, 1, 0, "lcc_main" ],
+    			"external": [ -37, -13, -184.25, 1, 1, 1, 0, "vehicle" ]
+    		},
+    		"external": true, "seat": "driver"
     	}
     ],
     "Function":{

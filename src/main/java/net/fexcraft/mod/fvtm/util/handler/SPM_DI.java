@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util.handler;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.SwivelPointMover;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -11,13 +12,14 @@ public class SPM_DI implements SwivelPointMover {
 	
 	private Attribute<?> attr;
 	private String attribute;
-	private float last;
+	private float last, speed;
 	private int axe;
 	private boolean pos;
 	public boolean moved;
 	
 	public SPM_DI(JsonObject obj){
 		this(obj.get("attribute").getAsString(), obj.get("var").getAsString());
+		speed = JsonUtil.getIfExists(obj, "speed", 1).intValue();
 	}
 	
 	public SPM_DI(String key, String value){
@@ -48,6 +50,7 @@ public class SPM_DI implements SwivelPointMover {
 				break;
 			}
 		}
+		speed = 1;
 	}
 
 	@Override
@@ -60,7 +63,14 @@ public class SPM_DI implements SwivelPointMover {
 		}
 		if(last != attr.getFloatValue()){
 			//Print.bar(Minecraft.getMinecraft().player, last + "/" + attr.getFloatValue());
-			move(point, axe, pos, last = attr.getFloatValue());
+			float diff = attr.getFloatValue() - last;
+			if(Math.abs(diff) <= speed){
+				move(point, axe, pos, last = attr.getFloatValue());
+			}
+			else{
+				last += diff > 0 ? speed : -speed;
+				move(point, axe, pos, last);
+			}
 			//point.updateClient(entity.getEntity());
 		}
 	}

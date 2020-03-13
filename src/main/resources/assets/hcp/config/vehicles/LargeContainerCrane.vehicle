@@ -10,7 +10,8 @@
     	{ "id":"weight", "type": "float", "value": 5000 },
     	{ "id":"constructor_length", "type": "float", "value": 6 },
     	{ "id":"constructor_height", "type": "float", "value": 0 },
-    	{ "id": "gauge", "type": "integer", "value": -358 }
+    	{ "id": "gauge", "type": "integer", "value": -358 },
+    	{ "id": "collision_range", "type": "float", "value": 14 }
     ],
     "WheelPositions":[
         { "x":  8, "y": 0, "z": 0, "id": "bogie_front" },
@@ -32,9 +33,13 @@
 			"id": "lcc_main",
 			"parent": "vehicle",
 			"pos": [ 0, 112, 0 ],
-			"movers":{
-				"lcc_h":"z"
-			}
+			"movers":[
+				{
+					"attribute": "lcc_h",
+					"var": "z",
+					"speed": 0.05
+				}
+			]
 		}
 	]
 }

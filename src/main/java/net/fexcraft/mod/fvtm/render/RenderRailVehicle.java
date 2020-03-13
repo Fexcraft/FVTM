@@ -95,7 +95,11 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            GL11.glPopMatrix();
 	            if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0);
 	            if(Command.DEBUG){
-	            	RenderLandVehicle.centersphere.render(vehicle.getVehicleData().getAttribute("collision_range").getFloatValue());
+	            	GL11.glPushMatrix();
+	            	float scal = vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() * 16;
+	            	GL11.glScalef(scal, scal, scal);
+	            	RenderLandVehicle.centersphere.render();
+	            	GL11.glPopMatrix();
 	            	if(Static.dev()){
 	            		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){
 	            			if(!attr.hasAABBs()) continue;

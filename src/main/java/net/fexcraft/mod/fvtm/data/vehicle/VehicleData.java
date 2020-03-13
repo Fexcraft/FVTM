@@ -72,7 +72,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			rotpoints.put(point.id, point.clone(null));
 		}
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
-			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
+			Attribute<?> copy = attr.copy(null);
+			attributes.put(copy.id(), copy);
 		}
 		for(Entry<String, WheelSlot> entry: type.getDefaultWheelPositions().entrySet()){
 			this.wheels.put(entry.getKey(), entry.getValue().copy());

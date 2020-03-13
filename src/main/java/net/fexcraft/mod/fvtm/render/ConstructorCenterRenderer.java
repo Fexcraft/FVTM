@@ -8,6 +8,7 @@ import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -92,9 +93,22 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     modvec.render(vehicledata, null, null, null, te.getBlockMetadata());
                     vehicledata.getParts().forEach((key, partdata) -> {
                         ModelBase.bindTexture(partdata.getTexture());
-                        partdata.getInstalledPos().translate();
-                        partdata.getType().getModel().render(vehicledata, key);
-                        partdata.getInstalledPos().translateR();
+                        if(partdata.isInstalledOnSwivelPoint()){
+                    		SwivelPoint point = vehicledata.getRotationPoint(partdata.getSwivelPointInstalledOn());
+                    		Vec3d temp = point.getRelativeVector(partdata.getInstalledPos().to16Double(), true);
+                    		GL11.glPushMatrix();
+                            GL11.glTranslated(temp.x, temp.y, temp.z);
+            	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);
+            	            GL11.glRotated(point.getRelativeRot().y, 0.0F, 0.0F, 1.0F);
+            	            GL11.glRotated(point.getRelativeRot().z, 1.0F, 0.0F, 0.0F);
+            	            partdata.getType().getModel().render(vehicledata, key, null, null, -1);
+            	            GL11.glPopMatrix();
+                    	}
+                    	else{
+                    		partdata.getInstalledPos().translate();
+                    		partdata.getType().getModel().render(vehicledata, key, null, null, -1);
+                    		partdata.getInstalledPos().translateR();
+                    	}
                     });
                     GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * -0.0625f) + te.getLiftState(), 0);
                 }

@@ -22,30 +22,30 @@ public abstract class VehicleScript {
 	public abstract String getName();
 	
 	/** Called on the Entity's `onUpdate` call. */
-	public abstract void onUpdate(Entity entity, VehicleData data);
+	public void onUpdate(Entity entity, VehicleData data){}
 	
 	/** Called when the VehicleData is loaded/read. */
-	public abstract VehicleScript read(VehicleData data, NBTTagCompound compound);
+	public VehicleScript read(VehicleData data, NBTTagCompound compound){ return this; }
 	
 	/** Called when the VehicleData is saved/written. */
-	public abstract NBTTagCompound write(VehicleData data, NBTTagCompound compound);
+	public NBTTagCompound write(VehicleData data, NBTTagCompound compound){ return null; }
 	
 	/** Called soon after the Entity is spawned. */
-	public abstract void onSpawn(Entity entity, VehicleData data);
+	public void onSpawn(Entity entity, VehicleData data){}
 	
 	/** Called on the Entity's `setDead` method. */
-	public abstract void onRemove(Entity entity, VehicleData data);
+	public void onRemove(Entity entity, VehicleData data){}
 	
 	/** Return true to skip/override default entity methods. */
-	public abstract boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player);
+	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){ return false; }
 	
 	public void onAttributeToggle(Attribute<?> attr, Object oldvalue, EntityPlayer player){};
 
 	/** On player interaction with the Entity */
-	public abstract boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand);
+	public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand){ return false; }
 
 	/** Receiver method to receive Script Packets. */
-	public abstract void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side);
+	public void onDataPacket(Entity entity, VehicleData data, NBTTagCompound compound, Side side){}
 	
 	/** Method to send packets to scripts. */
 	public void sendPacket(Entity entity, NBTTagCompound compound, Side destination){

@@ -25,6 +25,22 @@
     			"external": [ -37, -13, -184.25, 1, 1, 1, 0, "vehicle" ]
     		},
     		"external": true, "seat": "driver"
+    	},
+    	{
+    		"id":"lcc_catch", "type": "boolean", "value": false,
+    		"hitbox":{
+    			"default": [     18,    -67,      20,   1, "lcc_main" ],
+    			"external": [ -43.5, -12.25, -184.25, 0.5, "vehicle" ]
+    		},
+    		"external": true, "seat": "driver"
+    	},
+    	{
+    		"id":"lcc_release", "type": "boolean", "value": false,
+    		"hitbox":{
+    			"default": [     18, -67,      16,   1, "lcc_main" ],
+    			"external": [ -43.5, -14, -184.25, 0.5, "vehicle" ]
+    		},
+    		"external": true, "seat": "driver"
     	}
     ],
     "Function":{

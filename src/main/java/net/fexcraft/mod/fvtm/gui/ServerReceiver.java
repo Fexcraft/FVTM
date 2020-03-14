@@ -38,7 +38,8 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				boolean bool = packet.nbt.getBoolean("bool");
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
-				Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
+				final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
+				Object old = attr.getValue();
 				if(attr.type().isTristate()){
 					if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")){
 						attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue());
@@ -53,13 +54,13 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						if(!com.isHead(reil.rek.ent()) && !com.isEnd(reil.rek.ent())) return;
 						for(RailEntity ent : com.getEntitites()){
 							if(ent.entity != null){
-								attr = ent.vehdata.getAttribute(attribute); if(attr == null) continue;
+								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute); if(attr0 == null) continue;
 								NBTTagCompound compound = packet.nbt.copy(); 
-								if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")){
-									attr.setValue(bool); compound.setBoolean("bool", attr.getBooleanValue());
+								if(attr0.type().isBoolean() || !packet.nbt.hasKey("reset")){
+									attr0.setValue(bool); compound.setBoolean("bool", attr0.getBooleanValue());
 								}
 								else{
-									attr.setValue(null); compound.setBoolean("reset", true);
+									attr0.setValue(null); compound.setBoolean("reset", true);
 								}
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
 							}
@@ -69,14 +70,14 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						if(veh.getFrontCoupledEntity() != null) return;
 						VehicleEntity trailer = veh.getRearCoupledEntity();
 						while(trailer != null){
-							attr = trailer.getVehicleData().getAttribute(attribute);
-							if(attr != null){
+							Attribute<?> attr0 = trailer.getVehicleData().getAttribute(attribute);
+							if(attr0 != null){
 								NBTTagCompound compound = packet.nbt.copy();
-								if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")){
-									attr.setValue(bool); compound.setBoolean("bool", attr.getBooleanValue());
+								if(attr0.type().isBoolean() || !packet.nbt.hasKey("reset")){
+									attr0.setValue(bool); compound.setBoolean("bool", attr0.getBooleanValue());
 								}
 								else{
-									attr.setValue(null); compound.setBoolean("reset", true);
+									attr0.setValue(null); compound.setBoolean("reset", true);
 								}
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
 							}
@@ -93,9 +94,9 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						if(!com.isHead(reil.rek.ent()) && !com.isEnd(reil.rek.ent())) return;
 						for(RailEntity ent : com.getEntitites()){
 							if(ent.entity != null){
-								attr = ent.vehdata.getAttribute(attribute); if(attr == null) continue;
+								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute); if(attr0 == null) continue;
 								NBTTagCompound compound = packet.nbt.copy();
-								attr.setValue(attr.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								attr0.setValue(attr0.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
 							}
 						}
@@ -104,10 +105,10 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						if(veh.getFrontCoupledEntity() != null) return;
 						VehicleEntity trailer = veh.getRearCoupledEntity();
 						while(trailer != null){
-							attr = trailer.getVehicleData().getAttribute(attribute);
-							if(attr != null){
+							Attribute<?> attr0 = trailer.getVehicleData().getAttribute(attribute);
+							if(attr0 != null){
 								NBTTagCompound compound = packet.nbt.copy();
-								attr.setValue(attr.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								attr0.setValue(attr0.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
 							}
 							trailer = trailer.getRearCoupledEntity();
@@ -118,6 +119,9 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 					//TODO
 					Print.log("no code for toggling this attribute type yet");
 				}
+				veh.getVehicleData().getScripts().forEach(script -> {
+					script.onAttributeToggle(attr, old, player);
+				});
 				break;
 			}
 			case "attr_update":{

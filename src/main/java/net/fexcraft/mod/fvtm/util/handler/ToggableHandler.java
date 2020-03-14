@@ -49,6 +49,7 @@ public class ToggableHandler {
 		packet.setString("task", "attr_toggle");
 		packet.setString("attr", attr.id());
 		packet.setInteger("entity", entity.getEntity().getEntityId());
+		Object old = attr.getValue();
 		switch(press){
 			case MOUSE_MAIN:{
 				if(attr.type().isTristate()){
@@ -111,12 +112,16 @@ public class ToggableHandler {
 			default:
 				return false;
 		}
+		entity.getVehicleData().getScripts().forEach(script -> {
+			script.onAttributeToggle(attr, old, player);
+		});
 		if(player.world.isRemote){
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 			last = attr.id(); tilltime = Time.getDate() + 20;
 		}
 		else{
 			ServerReceiver.INSTANCE.process(packet, player);
+			Static.stop();
 		}
 		return true;
 	}

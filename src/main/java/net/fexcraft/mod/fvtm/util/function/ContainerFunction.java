@@ -1,24 +1,20 @@
 package net.fexcraft.mod.fvtm.util.function;
 
-import java.util.ArrayList;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Pos;
-import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
-import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
-import net.minecraft.nbt.NBTTagCompound;
 
-@SuppressWarnings("unused")
 public class ContainerFunction extends StaticFuntion {
 	
 	private ContainerType onlytype;
 	private Pos position;
 	private int rotation;
 	//private String name;
+	private String rotpoint;
 	private int length;
 
 	public ContainerFunction(JsonObject obj){
@@ -27,6 +23,7 @@ public class ContainerFunction extends StaticFuntion {
 		position = Pos.fromJson(obj, false); rotation = JsonUtil.getIfExists(obj, "rot", 0).intValue();
 		length = JsonUtil.getIfExists(obj, "length", 6).intValue(); if(length < 1) length = 6;
 		//name = JsonUtil.getIfExists(obj, "name", "unnamed");
+		rotpoint = obj.has("rot_point") ? obj.get("rot_point").getAsString() : null;
 	}
 
 	@Override
@@ -35,7 +32,7 @@ public class ContainerFunction extends StaticFuntion {
 	}
 
 	public ContainerSlot getAsNewSlot(String category){
-		return new ContainerSlot(category, (byte)length, position.to16Double(), rotation, onlytype);
+		return new ContainerSlot(category, (byte)length, position.to16Double(), rotation, onlytype, rotpoint);
 	}
 
 }

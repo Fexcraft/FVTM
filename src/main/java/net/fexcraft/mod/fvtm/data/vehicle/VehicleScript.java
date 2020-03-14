@@ -39,7 +39,7 @@ public abstract class VehicleScript {
 	/** Return true to skip/override default entity methods. */
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){ return false; }
 	
-	public void onAttributeToggle(Attribute<?> attr, Object oldvalue, EntityPlayer player){};
+	public void onAttributeToggle(Entity entity, Attribute<?> attr, Object oldvalue, EntityPlayer player){};
 
 	/** On player interaction with the Entity */
 	public boolean onInteract(Entity entity, VehicleData data, EntityPlayer player, EnumHand hand){ return false; }

@@ -1,7 +1,9 @@
 package net.fexcraft.mod.addons.hcp.scripts;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class LCCScript extends VehicleScript {
@@ -17,8 +19,8 @@ public class LCCScript extends VehicleScript {
 	}
 	
 	@Override
-	public void onAttributeToggle(Attribute<?> attr, Object oldvalue, EntityPlayer player){
-		//
+	public void onAttributeToggle(Entity entity, Attribute<?> attr, Object oldvalue, EntityPlayer player){
+		if(entity.world.isRemote) Print.chat(player, "toggled: " + attr + " != " + oldvalue);
 	};
 
 }

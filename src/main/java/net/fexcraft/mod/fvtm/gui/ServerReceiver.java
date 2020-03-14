@@ -120,7 +120,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 					Print.log("no code for toggling this attribute type yet");
 				}
 				veh.getVehicleData().getScripts().forEach(script -> {
-					script.onAttributeToggle(attr, old, player);
+					script.onAttributeToggle(veh.getEntity(), attr, old, player);
 				});
 				break;
 			}

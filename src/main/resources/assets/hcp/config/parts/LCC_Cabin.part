@@ -29,7 +29,7 @@
     	{
     		"id":"lcc_catch", "type": "boolean", "value": false,
     		"hitbox":{
-    			"default": [     18,    -67,      20,   1, "lcc_main" ],
+    			"default": [    18.5, -66.2,      15,   1, "lcc_main" ],
     			"external": [ -43.5, -12.25, -184.25, 0.5, "vehicle" ]
     		},
     		"external": true, "seat": "driver"
@@ -37,8 +37,8 @@
     	{
     		"id":"lcc_release", "type": "boolean", "value": false,
     		"hitbox":{
-    			"default": [     18, -67,      16,   1, "lcc_main" ],
-    			"external": [ -43.5, -14, -184.25, 0.5, "vehicle" ]
+    			"default": [   18.5, -66.2,      11,   1, "lcc_main" ],
+    			"external": [ -43.5,   -14, -184.25, 0.5, "vehicle" ]
     		},
     		"external": true, "seat": "driver"
     	}

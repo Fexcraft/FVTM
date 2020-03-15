@@ -407,10 +407,10 @@ public class LCCCabin extends PartModel {
 			.setRotationPoint(20, -167, -4).setRotationAngle(0, 0, 0)
 		);
 		inner_controls.add(new ModelRendererTurbo(inner_controls, 175, 134, textureX, textureY).addBox(0, 0, 0, 1, 2, 2)
-			.setRotationPoint(19, -168, 19).setRotationAngle(0, 0, 37)
+			.setRotationPoint(19, -168, 14).setRotationAngle(0, 0, 37)
 		);
 		inner_controls.add(new ModelRendererTurbo(inner_controls, 1016, 72, textureX, textureY).addBox(0, 0, 0, 1, 2, 2)
-			.setRotationPoint(19, -168, 15).setRotationAngle(0, 0, 37)
+			.setRotationPoint(19, -168, 10).setRotationAngle(0, 0, 37)
 		);
 		inner_controls.addProgram(new TurboList.Program(){
 

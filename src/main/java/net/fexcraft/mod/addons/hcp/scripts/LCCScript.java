@@ -20,7 +20,7 @@ public class LCCScript extends VehicleScript {
 	
 	@Override
 	public void onAttributeToggle(Entity entity, Attribute<?> attr, Object oldvalue, EntityPlayer player){
-		if(entity.world.isRemote) Print.chat(player, "toggled: " + attr + " != " + oldvalue);
+		if(entity.world.isRemote) Print.chat(player, "toggled: " + attr.getStringValue() + " != " + oldvalue);
 	};
 
 }

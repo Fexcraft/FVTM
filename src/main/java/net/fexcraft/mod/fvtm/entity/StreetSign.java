@@ -1,9 +1,6 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.lang.BitList;
@@ -11,11 +8,8 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.StreetSignItem;
-import net.fexcraft.mod.fvtm.model.TurboList;
-import net.fexcraft.mod.fvtm.model.block.StreetSignModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -53,10 +47,13 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
     public byte texture = 0;
     //
     @SideOnly(Side.CLIENT)
-	public TurboList cachedmodel = new TurboList("cache");
+	public net.fexcraft.mod.fvtm.model.block.StreetSignCachedModel model;
 
     public StreetSign(World world){
         super(world); stepHeight = 0; setSize(0.75f, 0.75f); locked = false;
+        if(world.isRemote){
+        	model = new net.fexcraft.mod.fvtm.model.block.StreetSignCachedModel();
+        }
     }
 
     public StreetSign(World world, EnumFacing facing){
@@ -111,7 +108,7 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
         }
         //
         if(world.isRemote){
-        	this.recollectModel();
+        	model.recollectModel(this);
         }
     }
 	
@@ -139,124 +136,8 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
         //TODO eventually scan for nearby sign entities to match their sides and corners.
         //
         if(world.isRemote){
-        	recollectModel();
+        	model.recollectModel(this);
         }
-	}
-
-    @SideOnly(Side.CLIENT)
-	private void recollectModel(){
-		for(ModelRendererTurbo turbo : cachedmodel)
-			if(turbo.displaylist() != null)
-				GL11.glDeleteLists(turbo.displaylist(), 1);
-		cachedmodel.clear();
-		//
-		//Print.debug(StreetSignModel.INSTANCE.groups);
-		//
-		if(panels[0]){
-			cachedmodel.addAll(copyGroup("row3"));
-			if(sides[3]) cachedmodel.add(copyTurbo("right", 3));
-			if(sides[1]) cachedmodel.add(copyTurbo("left", 3));
-		}
-		if(panels[1]){
-			cachedmodel.addAll(copyGroup("row2"));
-			if(sides[3]) cachedmodel.add(copyTurbo("right", 2));
-			if(sides[1]) cachedmodel.add(copyTurbo("left", 2));
-		}
-		if(panels[2]){
-			cachedmodel.addAll(copyGroup("row1"));
-			if(sides[3]) cachedmodel.add(copyTurbo("right", 1));
-			if(sides[1]) cachedmodel.add(copyTurbo("left", 1));
-		}
-		if(panels[3]){
-			cachedmodel.addAll(copyGroup("row0"));
-			if(sides[3]) cachedmodel.add(copyTurbo("right", 0));
-			if(sides[1]) cachedmodel.add(copyTurbo("left", 0));
-		}
-		//
-		if(sides[0] && sides[1]){
-			ArrayList<ModelRendererTurbo> list = copyGroup("corner_bl");
-			int j = panels[0] ? 0 : panels[1] ? 1 : panels[2] ? 2 : panels[3] ? 3 : -1;
-			if(j != -1){
-				if(j > 0) list.forEach(turbo -> turbo.rotationPointY -= (j * 4));
-				cachedmodel.addAll(list);
-			}
-		}
-		if(sides[1] && sides[2]){
-			ArrayList<ModelRendererTurbo> list = copyGroup("corner_tl");
-			int j = panels[3] ? 0 : panels[2] ? 1 : panels[1] ? 2 : panels[0] ? 3 : -1;
-			if(j != -1){
-				if(j > 0) list.forEach(turbo -> turbo.rotationPointY += (j * 4));
-				cachedmodel.addAll(list);
-			}
-		}
-		if(sides[2] && sides[3]){
-			ArrayList<ModelRendererTurbo> list = copyGroup("corner_tr");
-			int j = panels[3] ? 0 : panels[2] ? 1 : panels[1] ? 2 : panels[0] ? 3 : -1;
-			if(j != -1){
-				if(j > 0) list.forEach(turbo -> turbo.rotationPointY += (j * 4));
-				cachedmodel.addAll(list);
-			}
-		}
-		if(sides[3] && sides[0]){
-			ArrayList<ModelRendererTurbo> list = copyGroup("corner_br");
-			int j = panels[0] ? 0 : panels[1] ? 1 : panels[2] ? 2 : panels[3] ? 3 : -1;
-			if(j != -1){
-				if(j > 0) list.forEach(turbo -> turbo.rotationPointY -= (j * 4));
-				cachedmodel.addAll(list);
-			}
-		}
-		if(sides[0]){
-			ModelRendererTurbo turbo = copyTurbo("top_bot", 0);
-			int j = panels[0] ? 0 : panels[1] ? 1 : panels[2] ? 2 : panels[3] ? 3 : -1;
-			if(j != -1){
-				if(j > 0) turbo.rotationPointY -= (j * 4);
-				cachedmodel.add(turbo);
-			}
-		}
-		if(sides[2]){
-			ModelRendererTurbo turbo = copyTurbo("top_bot", 1);
-			int j = panels[3] ? 0 : panels[2] ? 1 : panels[1] ? 2 : panels[0] ? 3 : -1;
-			if(j != -1){
-				if(j > 0) turbo.rotationPointY += (j * 4);
-				cachedmodel.add(turbo);
-			}
-		}
-		if(arrows[0] != null){ cachedmodel.add(copyTurbo("arrow_" + (arrows[0] ? "right" : "left"), 0)); }
-		if(arrows[1] != null){ cachedmodel.add(copyTurbo("arrow_" + (arrows[1] ? "right" : "left"), 3)); }
-		if(arrows[2] != null){ cachedmodel.add(copyTurbo("arrow_" + (arrows[2] ? "right" : "left"), 2)); }
-		if(arrows[3] != null){ cachedmodel.add(copyTurbo("arrow_" + (arrows[3] ? "right" : "left"), 1)); }
-		if(arrows[4] != null && arrows[4]){
-			ModelRendererTurbo turbo = copyTurbo("arrow_top_bot", 0);
-			int j = panels[0] ? 0 : panels[1] ? 1 : panels[2] ? 2 : panels[3] ? 3 : -1;
-			if(j != -1){
-				if(j > 0) turbo.rotationPointY -= (j * 4);
-				cachedmodel.add(turbo);
-			}
-		}
-		if(arrows[5] != null && arrows[5]){
-			ModelRendererTurbo turbo = copyTurbo("arrow_top_bot", 1);
-			int j = panels[3] ? 0 : panels[2] ? 1 : panels[1] ? 2 : panels[0] ? 3 : -1;
-			if(j != -1){
-				if(j > 0) turbo.rotationPointY += (j * 4);
-				cachedmodel.add(turbo);
-			}
-		}
-		//
-	}
-
-    private ModelRendererTurbo copyTurbo(String string, int i){
-    	ModelRendererTurbo turbo = StreetSignModel.INSTANCE.groups.get(string).get(i);
-		ModelRendererTurbo turbo0 = new ModelRendererTurbo(null).copyTo(turbo.getVertices(), turbo.getFaces());
-		return turbo0.setRotationPoint(turbo.rotationPointX, turbo.rotationPointY, turbo.rotationPointZ);
-	}
-
-	@SideOnly(Side.CLIENT)
-	private ArrayList<ModelRendererTurbo> copyGroup(String string){
-    	ArrayList<ModelRendererTurbo> list = new ArrayList<>();
-    	for(ModelRendererTurbo turbo : StreetSignModel.INSTANCE.groups.get(string)){
-    		ModelRendererTurbo turbo0 = new ModelRendererTurbo(null).copyTo(turbo.getVertices(), turbo.getFaces());
-			list.add(turbo0.setRotationPoint(turbo.rotationPointX, turbo.rotationPointY, turbo.rotationPointZ));
-		} return list;
 	}
 
 	@Override
@@ -276,7 +157,7 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
         }
         //
         if(world.isRemote){
-        	this.recollectModel();
+        	model.recollectModel(this);
         }
     }
 
@@ -298,7 +179,7 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
 	public void setDead(){
 		super.setDead();
 		if(world.isRemote){
-			for(ModelRendererTurbo turbo : cachedmodel) if(turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
+			model.delete();
 		}
 	}
 

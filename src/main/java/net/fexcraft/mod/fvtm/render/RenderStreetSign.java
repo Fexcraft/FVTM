@@ -38,7 +38,7 @@ public class RenderStreetSign extends Render<StreetSign> implements IRenderFacto
             GL11.glRotatef(rot, 0f, 1f, 0f);
             GL11.glPushMatrix();
             this.bindTexture(this.getEntityTexture(entity));
-            entity.cachedmodel.renderPlain();
+            entity.model.render();
             GL11.glPopMatrix();
         	GL11.glTranslated(0, -1, 0);
         	GL11.glTranslated(0, 1.25, -0.24);

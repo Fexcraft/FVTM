@@ -5,6 +5,7 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.EnumParticleTypes;
@@ -58,9 +60,9 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            float roll = (vehicle.rotpoint.getAxes().getRoll() - vehicle.prevRotationRoll);
 	            for(; roll > 180F; roll -= 360F){ }
 	            for(; roll <= -180F; roll += 360F){ }
-	            GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
-	            GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
-	            GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
+	            GL11.glRotatef(yaw = 180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
+	            GL11.glRotatef(pitch = vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
+	            GL11.glRotatef(roll = vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
 	            GL11.glPushMatrix(); RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
 	            {
 		            GL11.glRotatef(180f, 0f, 0f, 1f);
@@ -73,13 +75,18 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 		                    	ModelBase.bindTexture(entry.getValue().getTexture());
 		                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 		                    		SwivelPoint point = vehicle.getVehicleData().getRotationPoint(entry.getValue().getSwivelPointInstalledOn());
-		                    		Vec3d temp0 = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true);
-		                    		Vec3d temp1 = point.getPrevRelativeVector(entry.getValue().getInstalledPos().to16Double(), true);
+		                    		Vec3d pos = entry.getValue().getInstalledPos().to16Double();
+		                    		Vec3d temp0 = point.getRelativeVector(pos, true);
+		                    		Vec3d temp1 = point.getPrevRelativeVector(pos, true);
 		                    		GL11.glPushMatrix();
+		            	            GL11.glRotated(yaw + 90, 0.0F, 1.0F, 0.0F);
+		            	            GL11.glRotated(-pitch, 0.0F, 0.0F, 1.0F);
+		            	            GL11.glRotated(-roll, 1.0F, 0.0F, 0.0F);
 		                            GL11.glTranslated(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
-		            	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);
+		            	            GL11.glRotated(point.getRelativeRot().x + 90, 0.0F, 1.0F, 0.0F);
 		            	            GL11.glRotated(point.getRelativeRot().y, 0.0F, 0.0F, 1.0F);
 		            	            GL11.glRotated(point.getRelativeRot().z, 1.0F, 0.0F, 0.0F);
+		            	            Print.bar(Minecraft.getMinecraft().player, point.getRelativeRot().toString());
 			                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache, -1);
 		            	            GL11.glPopMatrix();
 		                    	}

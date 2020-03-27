@@ -32,7 +32,7 @@ public class SwivelPoint {
 	public final String id, parid;
 	public String origin;
 	public SwivelPoint parent;
-	protected Vec3d position, prevpos, prerot;
+	protected Vec3d position, prevpos;//, prerot;
 	private Axis3D axe = new Axis3D(), prevaxe = new Axis3D();
 	// sync
 	private static final int ticker = LandVehicle.servtick;
@@ -206,7 +206,7 @@ public class SwivelPoint {
 		prevpos = position;
 		if(parent != null){
 			//precalc = parent.getRelativeVector(position, false, false);
-			prerot = calcRelativeRot(null);
+			//prerot = calcRelativeRot(null);
 		}
 		if(!entity.getEntity().world.isRemote && movers != null){
 			for(SwivelPointMover mover : movers) mover.update(entity, this);
@@ -267,7 +267,7 @@ public class SwivelPoint {
 	}
 
 	// UNTESTED
-	private Vec3d calcRelativeRot(Vec3d root){
+	/*private Vec3d calcRelativeRot(Vec3d root){
 		if(root == null){
 			root = new Vec3d(axe.getYaw(), axe.getPitch(), axe.getRoll());
 		}
@@ -281,7 +281,7 @@ public class SwivelPoint {
 	public Vec3d getRelativeRot(){
 		if(prerot == null) prerot = calcRelativeRot(null);
 		return prerot;
-	}
+	}*/
 
 	public final boolean isVehicle(){
 		return id.equals("vehicle");

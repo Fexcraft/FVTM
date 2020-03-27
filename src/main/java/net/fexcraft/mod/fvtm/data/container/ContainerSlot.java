@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.data.container;
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -125,16 +124,10 @@ public class ContainerSlot {
 		org.lwjgl.opengl.GL11.glTranslated(position.x, position.y, position.z);
 		org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 0f, 1f);
 		org.lwjgl.opengl.GL11.glRotatef(rotation, 0, 1, 0);
-		if(rotpoint != null){
+		if(rotpoint != null && entity != null){
 			VehicleEntity ent = (VehicleEntity)entity;
 			PartData data = ent.getVehicleData().getPart(id);
-    		SwivelPoint point = ent.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());
-    		Vec3d temp = point.getRelativeVector(data.getInstalledPos().to16Double(), true);
-    		org.lwjgl.opengl.GL11.glPushMatrix();
-    		org.lwjgl.opengl.GL11.glTranslated(temp.x, temp.y, temp.z);
-    		org.lwjgl.opengl.GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);
-    		org.lwjgl.opengl.GL11.glRotated(point.getRelativeRot().y, 0.0F, 0.0F, 1.0F);
-    		org.lwjgl.opengl.GL11.glRotated(point.getRelativeRot().z, 1.0F, 0.0F, 0.0F);
+    		net.fexcraft.mod.fvtm.model.PartModel.translateAndRotatePartOnSwivelPoint(ent.getVehicleData(), data, net.minecraft.client.Minecraft.getMinecraft().getRenderPartialTicks());
 		}
 		for(int i = 0; i < containers.length; i++){
 			if(containers[i] != null){

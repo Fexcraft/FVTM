@@ -138,7 +138,7 @@ public class ContainerSlot {
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(-renderoffset[i], 0, 0);
 			}
 		}
-		if(rotpoint != null) org.lwjgl.opengl.GL11.glPopMatrix();
+		if(rotpoint != null && entity != null) org.lwjgl.opengl.GL11.glPopMatrix();
 		org.lwjgl.opengl.GL11.glTranslated(-position.x, -position.y, -position.z);
 	}
 

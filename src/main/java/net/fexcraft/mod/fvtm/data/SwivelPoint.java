@@ -34,7 +34,6 @@ public class SwivelPoint {
 	public SwivelPoint parent;
 	protected Vec3d position, prevpos, prerot;
 	private Axis3D axe = new Axis3D(), prevaxe = new Axis3D();
-	public static final Axis3D rectifier = new Axis3D(180, 180, 0);
 	// sync
 	private static final int ticker = LandVehicle.servtick;
 	private int servticker;
@@ -250,20 +249,20 @@ public class SwivelPoint {
 	public Vec3d getRelativeVector(Vec3d root, boolean render){
 		Vec3d rel = axe.getRelativeVector(root, isVehicle() ? 90 : 0);
 		if(parent != null){
-			return parent.getRelativeVector(position.add(rel), render);
+			Vec3d new0 = position.add(rel);
+			if(parent.isVehicle() && render) return new0;
+			return parent.getRelativeVector(new0, render);
 		}
-		//if(render) rel = new Vec3d(rel.x, -rel.y, -rel.z);
-		if(render) rel = rectifier.getRelativeVector(rel);
 		return rel;
 	}
 
 	public Vec3d getPrevRelativeVector(Vec3d root, boolean render){
 		Vec3d rel = prevaxe.getRelativeVector(root, isVehicle() ? 90 : 0);
 		if(parent != null){
-			return parent.getPrevRelativeVector(prevpos.add(rel), render);
+			Vec3d new0 = prevpos.add(rel);
+			if(parent.isVehicle() && render) return new0;
+			return parent.getPrevRelativeVector(new0, render);
 		}
-		//if(render) rel = new Vec3d(rel.x, -rel.y, -rel.z);
-		if(render) rel = rectifier.getRelativeVector(rel);
 		return rel;
 	}
 
@@ -275,7 +274,7 @@ public class SwivelPoint {
 		else{
 			root = root.add(axe.getYaw(), axe.getPitch(), axe.getRoll());
 		}
-		if(parent != null /*&& !parent.isVehicle()*/) root = parent.calcRelativeRot(root);
+		if(parent != null && !parent.isVehicle()) root = parent.calcRelativeRot(root);
 		return root;
 	}
 

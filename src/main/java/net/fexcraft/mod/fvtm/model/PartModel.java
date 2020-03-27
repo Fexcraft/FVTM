@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -17,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 public class PartModel extends GenericModel<VehicleData, String> implements FCLItemModel {
 
@@ -105,6 +107,28 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 		for(TurboList list : model.groups) list.renderPlain();
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
+	}
+
+	public static void translateAndRotatePartOnSwivelPoint(VehicleData vehicle, PartData data, float ticks){
+		SwivelPoint point = vehicle.getRotationPoint(data.getSwivelPointInstalledOn());
+		Vec3d pos = data.getInstalledPos().to16Double();
+		Vec3d temp0 = point.getRelativeVector(pos, true);
+		Vec3d temp1 = point.getPrevRelativeVector(pos, true);
+		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
+		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslated(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
+		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
+		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
+	}
+
+	public static void translateAndRotatePartOnSwivelPointFast(VehicleData vehicle, PartData data){
+		SwivelPoint point = vehicle.getRotationPoint(data.getSwivelPointInstalledOn());
+		Vec3d pos = point.getRelativeVector(data.getInstalledPos().to16Double(), true);
+		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
+		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslated(pos.x, pos.y, pos.z);
+		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
+		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
 	}
 	
 }

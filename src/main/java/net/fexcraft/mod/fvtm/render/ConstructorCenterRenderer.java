@@ -8,11 +8,11 @@ import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.InternalAddon;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -94,14 +94,9 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     vehicledata.getParts().forEach((key, partdata) -> {
                         ModelBase.bindTexture(partdata.getTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
-                    		SwivelPoint point = vehicledata.getRotationPoint(partdata.getSwivelPointInstalledOn());
-                    		Vec3d temp = point.getRelativeVector(partdata.getInstalledPos().to16Double(), true);
                     		GL11.glPushMatrix();
-                            GL11.glTranslated(temp.x, temp.y, temp.z);
-            	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);
-            	            GL11.glRotated(point.getRelativeRot().y, 0.0F, 0.0F, 1.0F);
-            	            GL11.glRotated(point.getRelativeRot().z, 1.0F, 0.0F, 0.0F);
-            	            partdata.getType().getModel().render(vehicledata, key, null, null, -1);
+                    		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
+	                        partdata.getType().getModel().render(vehicledata, key, null, null, -1);
             	            GL11.glPopMatrix();
                     	}
                     	else{

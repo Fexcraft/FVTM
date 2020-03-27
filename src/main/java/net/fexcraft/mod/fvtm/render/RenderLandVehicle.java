@@ -9,13 +9,13 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.minecraft.client.renderer.entity.Render;
@@ -75,14 +75,8 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 		                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 		                    	ModelBase.bindTexture(entry.getValue().getTexture());
 		                    	if(entry.getValue().isInstalledOnSwivelPoint()){
-		                    		SwivelPoint point = vehicle.getVehicleData().getRotationPoint(entry.getValue().getSwivelPointInstalledOn());
-		                    		Vec3d temp0 = point.getRelativeVector(entry.getValue().getInstalledPos().to16Double(), true);
-		                    		Vec3d temp1 = point.getPrevRelativeVector(entry.getValue().getInstalledPos().to16Double(), true);
 		                    		GL11.glPushMatrix();
-		                            GL11.glTranslated(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
-		            	            GL11.glRotated(point.getRelativeRot().x, 0.0F, 1.0F, 0.0F);
-		            	            GL11.glRotated(point.getRelativeRot().y, 0.0F, 0.0F, 1.0F);
-		            	            GL11.glRotated(point.getRelativeRot().z, 1.0F, 0.0F, 0.0F);
+		                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);
 			                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache, -1);
 		            	            GL11.glPopMatrix();
 		                    	}

@@ -120,6 +120,7 @@ public class ContainerSlot {
 	@SideOnly(Side.CLIENT)
 	public void render(Entity entity){
 		if(renderoffset == null) loadRenderOffset();
+		org.lwjgl.opengl.GL11.glPushMatrix();
 		org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 1f, 0f);
 		org.lwjgl.opengl.GL11.glTranslated(position.x, position.y, position.z);
 		org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 0f, 1f);
@@ -138,8 +139,7 @@ public class ContainerSlot {
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(-renderoffset[i], 0, 0);
 			}
 		}
-		if(rotpoint != null && entity != null) org.lwjgl.opengl.GL11.glPopMatrix();
-		org.lwjgl.opengl.GL11.glTranslated(-position.x, -position.y, -position.z);
+		org.lwjgl.opengl.GL11.glPopMatrix();
 	}
 
 	private void loadRenderOffset(){

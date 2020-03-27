@@ -6,28 +6,31 @@
 #>
 #>
 
+# Other
+itemGroup.fvtm:gep=General Essentials Pack
+
 # Items (/Parts)
 item.gep:engine_diesel.name=Diesel General Purpose Engine
 item.gep:engine_petrol.name=Petrol General Purpose Engine
 item.gep:fuel_tank.name=General Purpose Fuel Tank
 item.gep:glue.name=General Purpose Glue
 item.gep:key.name=GEP Vehicle Key
+item.gep:diesel.name=Diesel (GAS)
+item.gep:super95.name= Super 95 (Petrol)
+item.gep:super98.name= Super 98 (Petrol)
+item.gep:diesel_canister.name=Diesel Canister
+item.gep:petrol_canister.name=Petrol Canister
+item.gep:cola.name=Cola
+item.gep:mailbox5.name=Mailbox (5)
+item.gep:pizza_oven.name=FRSM Pizza Oven
+item.gep:pizza_oven2.name=FRSM Pizza Oven
+item.gep:ahead_only.name=Ahead Only
+item.gep:road_closed.name=Road Closed
+item.gep:stop.name=Stop Sign
+item.gep:turn_left.name=Turn Left
+item.gep:turn_right.name=Turn Right
 
 # Blocks
 tile.gep:pizza_oven.name=FRSM Pizza Oven
 tile.gep:pizza_oven2.name=FRSM Pizza Oven
 tile.gep:mailbox5.name=Mailbox (5)
-item.gep:diesel.name=
-item.gep:super95.name=
-item.gep:super98.name=
-item.gep:diesel_canister.name=
-item.gep:petrol_canister.name=
-item.gep:cola.name=
-item.gep:mailbox5.name=
-item.gep:pizza_oven.name=
-item.gep:pizza_oven2.name=
-item.gep:ahead_only.name=
-item.gep:road_closed.name=
-item.gep:stop.name=
-item.gep:turn_left.name=
-item.gep:turn_right.name=

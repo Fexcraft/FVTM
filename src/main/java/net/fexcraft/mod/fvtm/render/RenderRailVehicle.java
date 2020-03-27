@@ -61,7 +61,8 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
 	            GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
 	            GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
-	            GL11.glPushMatrix(); RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
+	            GL11.glPushMatrix();
+	            RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
 	            {
 		            GL11.glRotatef(180f, 0f, 0f, 1f);
 		            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getType().getModel();

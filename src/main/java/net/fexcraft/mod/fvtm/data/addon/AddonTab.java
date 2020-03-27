@@ -22,7 +22,9 @@ public class AddonTab extends CreativeTab {
 	private Addon addon;
 
 	public AddonTab(Addon addon){
-		super(addon.getName()); this.addon = addon; TABS.put(addon.getRegistryName(), this);
+		super(addon.getRegistryName().toString());
+		TABS.put(addon.getRegistryName(), this);
+		this.addon = addon;
 	}
 
     @Override

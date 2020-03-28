@@ -4,6 +4,9 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
+import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.LoopSound;
@@ -21,7 +24,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public abstract class GenericVehicle extends Entity implements VehicleEntity {
+public abstract class GenericVehicle extends Entity implements VehicleEntity, ContainerHoldingEntity {
 	
 	public float wheelsYaw;
 	public double throttle;
@@ -80,5 +83,14 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity {
 	public abstract boolean isRailType();
 
 	public abstract void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, Vec3d avel, double throttle, double steeringYaw, int fuel);
+	
+	@Override
+	public Vec3d getContainerSlotPosition(String slotid, ContainerHolder capability){
+		ContainerSlot slot = capability.getContainerSlot(slotid);
+		if(slot == null) return new Vec3d(0, 0, 0);
+        SwivelPoint point = getVehicleData().getRotationPoint(slot.rotpoint);
+        Vec3d relpos = point.getRelativeVector(slot.position.x, slot.position.y, slot.position.z);
+		return relpos.add(posX, posY, posZ);
+	}
 
 }

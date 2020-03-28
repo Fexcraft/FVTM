@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -118,11 +119,6 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
         this.setupCapability(null);//TODO this.getCapability(FVTMCaps.CONTAINER, null));
         vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
         Print.debug("INITIALIZED " + remote + " " + this.getEntityId());
-	}
-
-	//TODO
-	private void setupCapability(Object object){
-		//
 	}
 
 	@Override
@@ -1158,6 +1154,17 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 	@Override
 	public boolean isRailType(){
 		return false;
+	}
+
+	@Override
+	public void setupCapability(ContainerHolder capability){
+		//TODO
+	}
+
+	@Override
+	public double[] getEntityRotationForFvtmContainers(){
+		//TODO
+		return null;
 	}
 
 	/*@Override

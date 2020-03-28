@@ -1,12 +1,12 @@
 package net.fexcraft.mod.addons.hcp.scripts;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -16,7 +16,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class LCCScript extends VehicleScript {
 	
@@ -92,12 +94,34 @@ public class LCCScript extends VehicleScript {
 			if(!tile.isCore()) tile = null;
 		}
 		if(tile == null){
-			Print.bar(player, "&cNo Container found at position.");
-			if(Static.dev()){
-				Print.chat(player, vec0 + " " + block0);
-				Print.chat(player, vec1 + " " + block1);
+			Vec3d vec2 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(0, 0, 0));
+			ContainerHolder cap = null;
+			for(Entity entity : player.world.loadedEntityList){
+				if(cap != null) break;
+				if(entity == ent) break;
+				if((cap = entity.getCapability(Capabilities.CONTAINER, null)) == null) continue;
+				for(String str : cap.getContainerSlotIds()){
+					Vec3d capos = ((ContainerHoldingEntity)entity).getContainerSlotPosition(str, cap);
+					AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.5, 0, -.5), capos.add(0.5, 1, 0.5));
+					if(bb.contains(vec2)) break;
+					else {
+						Print.chat(player, "not colliding");
+						Print.debug(vec2, capos, bb);
+						cap = null;
+					}
+				}
 			}
-			return;
+			if(cap != null){
+				
+				
+				
+				
+				return;
+			}
+			else{
+				Print.bar(player, "&cNo Container found at position.");
+				return;
+			}
 		}
 		ContainerData data = tile.getContainerData();
 		//player.world.setBlockState(first ? vec0 : vec1, Blocks.AIR.getDefaultState());
@@ -122,7 +146,7 @@ public class LCCScript extends VehicleScript {
 			default:
 				break;
 		}
-		Print.bar(player, "&aLoaded Container: " + data.getType().getName());
+		Print.bar(player, "&6Loaded: &3" + data.getType().getName());
 		ch.sync(player.world.isRemote);
 	}
 

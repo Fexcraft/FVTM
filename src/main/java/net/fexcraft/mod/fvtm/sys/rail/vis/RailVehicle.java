@@ -764,4 +764,5 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public boolean isRailType(){
 		return true;
 	}
+	
 }

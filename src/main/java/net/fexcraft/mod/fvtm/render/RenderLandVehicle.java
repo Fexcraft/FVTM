@@ -10,6 +10,9 @@ import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
+import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
+import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -110,6 +113,19 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	            }
             }
             GL11.glPopMatrix();
+            if(Command.DEBUG){
+            	ContainerHolder cap = vehicle.getCapability(Capabilities.CONTAINER, null);
+            	if(cap != null){
+            		ContainerHoldingEntity ent = vehicle;
+            		for(String slotid : cap.getContainerSlotIds()){
+            			ContainerSlot slot = cap.getContainerSlot(slotid);
+                    	for(int i = 0; i < slot.length; i++){
+                    		Vec3d vec = ent.getContainerInSlotPosition(slot.id, cap, ContainerType.MICRO, i);
+                    		vehicle.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, vec.x, vec.y, vec.z, 0, 0, 0);
+                    	}
+            		}
+            	}
+            }
             /*if(Command.DEBUG && vehicle.getVehicleData() != null){
 				GL11.glDisable(GL11.GL_TEXTURE_2D);
 				GL11.glEnable(GL11.GL_BLEND);

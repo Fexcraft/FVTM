@@ -7,8 +7,10 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
+import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
@@ -92,5 +94,19 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
         Vec3d relpos = point.getRelativeVector(slot.position.x, slot.position.y, slot.position.z);
 		return relpos.add(posX, posY, posZ);
 	}
+	
+	@Override
+	public Vec3d getContainerInSlotPosition(String slotid, ContainerHolder capability, ContainerType type, int index){
+		ContainerSlot slot = capability.getContainerSlot(slotid);
+		if(slot == null) return new Vec3d(0, 0, 0);
+        SwivelPoint point = getVehicleData().getRotationPoint(slot.rotpoint);
+        float off = index + (type.length() / 2f) - (slot.length / 2f);
+        calcaxis.setAngles(slot.rotation, 0, 0);
+        Vec3d offv = calcaxis.getRelativeVector(off, 0, 0);
+        Vec3d relpos = point.getRelativeVector(slot.position.x + offv.x, slot.position.y + offv.y, slot.position.z + offv.z);
+		return relpos.add(posX, posY, posZ);
+	}
+	
+	private static final Axis3D calcaxis = new Axis3D();
 
 }

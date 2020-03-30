@@ -40,6 +40,8 @@ public interface ContainerHolder {
 		
 		public Vec3d getContainerSlotPosition(String slot, ContainerHolder capability);
 		
+		public Vec3d getContainerInSlotPosition(String slot, ContainerHolder capability, ContainerType type, int index);
+		
 	}
 	
 }

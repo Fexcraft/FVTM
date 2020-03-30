@@ -96,6 +96,8 @@ public class LCCScript extends VehicleScript {
 		if(tile == null){
 			Vec3d vec2 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(0, 0, 0));
 			ContainerHolder cap = null;
+			String slotid = null;
+			Entity capent = null;
 			for(Entity entity : player.world.loadedEntityList){
 				if(cap != null) break;
 				if(entity == ent) break;
@@ -103,19 +105,35 @@ public class LCCScript extends VehicleScript {
 				for(String str : cap.getContainerSlotIds()){
 					Vec3d capos = ((ContainerHoldingEntity)entity).getContainerSlotPosition(str, cap);
 					AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.5, 0, -.5), capos.add(0.5, 1, 0.5));
-					if(bb.contains(vec2)) break;
-					else {
-						Print.chat(player, "not colliding");
-						Print.debug(vec2, capos, bb);
+					if(bb.contains(vec2)){
+						slotid = str;
+						capent = entity;
+					}
+					else{
+						//Print.chat(player, "not colliding");
+						//Print.debug(vec2, capos, bb);
 						cap = null;
 					}
 				}
 			}
-			if(cap != null){
-				
-				
-				
-				
+			if(cap != null && slotid != null){
+				ContainerSlot slot = cap.getContainerSlot(slotid);
+				int off = 0;
+				switch(slot.length){
+					case 12: off = 0; break;
+					case 6: off = 3; break;
+					case 3: off = 5; break;
+					case 2:
+					case 1: off = 6; break;
+				}
+				for(int i = 0; i < slot.getContainers().length; i++){
+					if(slot.getContainers()[i] == null) continue;
+					holder.setContainer(i + off, slot.getContainers()[i]);
+					slot.setContainer(i, null);
+				}
+				cap.sync(false);
+				ch.sync(false);
+				Print.bar(player, "&6Loaded from: &3" + capent.getName());
 				return;
 			}
 			else{

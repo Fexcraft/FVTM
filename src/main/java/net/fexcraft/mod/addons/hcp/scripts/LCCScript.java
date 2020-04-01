@@ -83,8 +83,8 @@ public class LCCScript extends VehicleScript {
 				return;
 			}
 		}
-		BlockPos vec0 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-0.4, 0, 0)));
-		BlockPos vec1 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector( 0.4, 0, 0)));
+		BlockPos vec0 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-0.4, 0.1, 0)));
+		BlockPos vec1 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector( 0.4, 0.1, 0)));
 		Block block0 = player.world.getBlockState(vec0).getBlock();
 		Block block1 = player.world.getBlockState(vec1).getBlock();
 		boolean first = false;
@@ -356,7 +356,7 @@ public class LCCScript extends VehicleScript {
 			passed = true;
 			ContainerData condata = holder.getContainers()[i];
 			float offset = i - (holder.getContainers().length / 2) + (condata.getContainerType().length() / 2);
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(offset, 0, 0));
+			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(offset, 0.1, 0));
 			BlockPos vec0 = new BlockPos(vec1);//ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-0.4, 0, 0)));
 			Block block0 = player.world.getBlockState(vec0).getBlock();
 			if(block0 == Blocks.AIR || block0.isReplaceable(player.world, vec0)){
@@ -365,7 +365,7 @@ public class LCCScript extends VehicleScript {
 						Print.bar(player, "&cNot solid block bellow core Position.");
 					}
 					else{
-						Print.chat(player, "&cNot replaceable block bellow core Position." + (single ? "" : "&3slot:" + i));
+						Print.chat(player, "&cNot solid block bellow core Position." + (single ? "" : "&3slot:" + i));
 					}
 					return;
 				}

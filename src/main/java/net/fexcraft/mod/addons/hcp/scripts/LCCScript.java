@@ -24,6 +24,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+/**
+ * 
+ * @author Ferdinand Calo' (FEX___96)
+ *
+ */
 public class LCCScript extends VehicleScript {
 	
 	public boolean alright;
@@ -98,14 +103,14 @@ public class LCCScript extends VehicleScript {
 			if(!tile.isCore()) tile = null;
 		}
 		if(tile == null){
-			Vec3d vec2 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(0, 0, 0));
+			Vec3d vec2 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(0, .1, 0));
 			ContainerHolder cap = null;
 			String slotid = null;
 			Entity capent = null;
 			Integer index = null;
 			for(Entity entity : player.world.loadedEntityList){
 				if(cap != null) break;
-				if(entity == ent) break;
+				if(entity == ent) continue;
 				if((cap = entity.getCapability(Capabilities.CONTAINER, null)) == null) continue;
 				for(String str : cap.getContainerSlotIds()){
 					if(single){
@@ -114,6 +119,7 @@ public class LCCScript extends VehicleScript {
 						for(int i = 0; i < slot.length; i++){
 							if(slot.getContainers()[i] == null) continue;
 							ContainerData data = slot.getContainers()[i];
+							if(i + data.getContainerType().length() >= slot.length) break;
 							Vec3d capos = ((ContainerHoldingEntity)entity).getContainerInSlotPosition(str, cap, data.getContainerType(), i);
 							AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.45, 0, -.45), capos.add(0.45, 1, 0.45));
 							if(bb.contains(vec2)){
@@ -254,11 +260,11 @@ public class LCCScript extends VehicleScript {
 			for(ContainerData data : holder.getContainers()){
 				if(data != null) hlength += data.getContainerType().length();
 			}
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(0, 0, 0));
+			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(0, .1, 0));
 		}
 		else{
 			float offset = firstid - (holder.getContainers().length / 2) + (firstcon.getContainerType().length() / 2);
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-offset, 0, 0));
+			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-offset, .1, 0));
 		}
 		ContainerHolder cap = null;
 		String slotid = null;

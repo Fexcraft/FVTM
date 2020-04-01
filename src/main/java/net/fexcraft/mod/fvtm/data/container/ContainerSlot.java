@@ -150,4 +150,21 @@ public class ContainerSlot {
 		}
 	}
 
+	/**
+	 * @return last index
+	 */
+	public int reSort(){
+		int index = 0;
+		ContainerData[] newdat = new ContainerData[length];
+		for(ContainerData data : getContainers()){
+			if(data == null) continue;
+			newdat[index] = data;
+			index += data.getContainerType().length();
+		}
+		for(int i = 0; i < newdat.length; i++){
+			setContainer(i, newdat[i]);
+		}
+		return index;
+	}
+
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -116,8 +117,9 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
             		ContainerHoldingEntity ent = vehicle;
             		for(String slotid : cap.getContainerSlotIds()){
             			ContainerSlot slot = cap.getContainerSlot(slotid);
-                    	for(int i = 0; i < slot.length; i++){
-                    		Vec3d vec = ent.getContainerInSlotPosition(slot.id, cap, ContainerType.MICRO, i);
+            			ContainerType type = ContainerType.values()[Time.getSecond() % 5];
+                    	for(int i = 0; i < slot.length; i += type.length()){
+                    		Vec3d vec = ent.getContainerInSlotPosition(slot.id, cap, type, i);
                     		vehicle.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, vec.x, vec.y, vec.z, 0, 0, 0);
                     	}
             		}

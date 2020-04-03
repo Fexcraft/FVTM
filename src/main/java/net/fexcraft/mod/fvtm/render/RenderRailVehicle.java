@@ -17,9 +17,11 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.EnumParticleTypes;
@@ -94,10 +96,11 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            GL11.glPopMatrix();
 	            if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0);
 	            if(Command.DEBUG){
+	            	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug();
 	            	GL11.glPushMatrix();
 	            	float scal = vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() * 16;
 	            	GL11.glScalef(scal, scal, scal);
-	            	RenderLandVehicle.centersphere.render();
+	            	DebugModels.CENTERSPHERE.render();
 	            	GL11.glPopMatrix();
 	            	if(Static.dev()){
 	            		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){

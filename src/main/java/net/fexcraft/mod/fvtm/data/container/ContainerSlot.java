@@ -142,6 +142,33 @@ public class ContainerSlot {
 		org.lwjgl.opengl.GL11.glPopMatrix();
 	}
 
+	@SideOnly(Side.CLIENT)
+	public void renderDebug(Entity entity, ContainerType type){
+		if(type.length() > length) return;
+		org.lwjgl.opengl.GL11.glPushMatrix();
+		org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 1f, 0f);
+		org.lwjgl.opengl.GL11.glTranslated(position.x, position.y, position.z);
+		org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 0f, 1f);
+		org.lwjgl.opengl.GL11.glRotatef(rotation, 0, 1, 0);
+		if(rotpoint != null && entity != null){
+			VehicleEntity ent = (VehicleEntity)entity;
+			PartData data = ent.getVehicleData().getPart(id);
+    		net.fexcraft.mod.fvtm.model.PartModel.translateAndRotatePartOnSwivelPoint(ent.getVehicleData(), data, net.minecraft.client.Minecraft.getMinecraft().getRenderPartialTicks());
+		}
+		boolean bool = false;
+		for(int i = 0; i < length;){
+			float off = i + (type.length() / 2f) - (length / 2f);
+			org.lwjgl.opengl.GL11.glTranslatef(off, (bool ? .0625f : 0), 0);
+			net.fexcraft.lib.common.math.RGB.glColorReset();
+			net.fexcraft.mod.fvtm.model.DebugModels.CONTAINER[type.ordinal()].render();
+			org.lwjgl.opengl.GL11.glTranslatef(-off, (bool ? -.0625f : 0), 0);
+			i += type.length();
+			bool = !bool;
+		}
+		net.fexcraft.lib.common.math.RGB.glColorReset();
+		org.lwjgl.opengl.GL11.glPopMatrix();
+	}
+
 	private void loadRenderOffset(){
 		renderoffset = new float[length];
 		for(int i = 0; i < containers.length; i++){

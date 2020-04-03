@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -9,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
+import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -142,6 +144,13 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			org.lwjgl.opengl.GL11.glPushMatrix();
 			if(x != 0d || y != 0d || z != 0d) org.lwjgl.opengl.GL11.glTranslated(x, y, z);
 			for(ContainerSlot slot : slots) slot.render(entity);
+			org.lwjgl.opengl.GL11.glPopMatrix();
+		}
+
+		@SideOnly(Side.CLIENT)
+		public void renderDebug(){
+			org.lwjgl.opengl.GL11.glPushMatrix();
+			for(ContainerSlot slot : slots) slot.renderDebug(entity, ContainerType.values()[Time.getSecond() % 10 / 2]);
 			org.lwjgl.opengl.GL11.glPopMatrix();
 		}
 

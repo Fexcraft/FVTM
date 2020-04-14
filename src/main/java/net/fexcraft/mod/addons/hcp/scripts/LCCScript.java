@@ -109,17 +109,18 @@ public class LCCScript extends VehicleScript {
 			Entity capent = null;
 			Integer index = null;
 			for(Entity entity : player.world.loadedEntityList){
-				if(cap != null) break;
+				if(capent != null) break;
 				if(entity == ent) continue;
 				if((cap = entity.getCapability(Capabilities.CONTAINER, null)) == null) continue;
 				for(String str : cap.getContainerSlotIds()){
+					if(capent != null) break;
 					if(single){
 						ContainerSlot slot = cap.getContainerSlot(str);
 						if(slot == null) continue;
 						for(int i = 0; i < slot.length; i++){
 							if(slot.getContainers()[i] == null) continue;
 							ContainerData data = slot.getContainers()[i];
-							if(i + data.getContainerType().length() >= slot.length) break;
+							//if(i + data.getContainerType().length() >= slot.length) break;
 							Vec3d capos = ((ContainerHoldingEntity)entity).getContainerInSlotPosition(str, cap, data.getContainerType(), i);
 							AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.45, 0, -.45), capos.add(0.45, 1, 0.45));
 							if(bb.contains(vec2)){
@@ -129,7 +130,7 @@ public class LCCScript extends VehicleScript {
 								break;
 							}
 						}
-						if(index == null) cap = null;
+						if(index == null) capent = null;
 					}
 					else{
 						Vec3d capos = ((ContainerHoldingEntity)entity).getContainerSlotPosition(str, cap);
@@ -141,7 +142,7 @@ public class LCCScript extends VehicleScript {
 						else{
 							//Print.chat(player, "not colliding");
 							//Print.debug(vec2, capos, bb);
-							cap = null;
+							capent = null;
 						}
 					}
 				}
@@ -264,17 +265,18 @@ public class LCCScript extends VehicleScript {
 		}
 		else{
 			float offset = firstid - (holder.getContainers().length / 2) + (firstcon.getContainerType().length() / 2);
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-offset, .1, 0));
+			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(offset, .1, 0));
 		}
 		ContainerHolder cap = null;
 		String slotid = null;
 		Entity capent = null;
 		Integer index = null;
 		for(Entity entity : player.world.loadedEntityList){
-			if(cap != null) break;
-			if(entity == ent) break;
+			if(capent != null) break;
+			if(entity == ent) continue;
 			if((cap = entity.getCapability(Capabilities.CONTAINER, null)) == null) continue;
 			for(String str : cap.getContainerSlotIds()){
+				if(capent != null) break;
 				if(single){
 					ContainerSlot slot = cap.getContainerSlot(str);
 					if(slot == null || slot.length < firstcon.getContainerType().length()) continue;
@@ -305,7 +307,7 @@ public class LCCScript extends VehicleScript {
 					else{
 						//Print.chat(player, "not colliding");
 						//Print.debug(vec2, capos, bb);
-						cap = null;
+						capent = null;
 					}
 				}
 			}

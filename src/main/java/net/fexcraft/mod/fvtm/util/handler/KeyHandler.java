@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.EnumActionResult;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
@@ -98,13 +99,19 @@ public class KeyHandler {
     @SubscribeEvent
     public void clickEmpty(RightClickBlock event){
     	if(!event.getItemStack().isEmpty()) return;
-        if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT)) event.setCanceled(true);
+        if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT)){
+        	event.setCanceled(true);
+        	event.setCancellationResult(EnumActionResult.PASS);
+        }
     }
 
     @SubscribeEvent
     public void clickEmpty(LeftClickBlock event){
     	if(!event.getItemStack().isEmpty()) return;
-        if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) event.setCanceled(true);
+        if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)){
+        	event.setCanceled(true);
+        	event.setCancellationResult(EnumActionResult.PASS);
+        }
     }
 
 }

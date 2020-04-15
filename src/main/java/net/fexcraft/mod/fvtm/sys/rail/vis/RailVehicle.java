@@ -476,7 +476,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
         }
-        //TODO makes not sense || else if(ToggableHandler.handleClick(player, KeyPress.MOUSE_RIGHT)) return true;
+        //TODO else if(ToggableHandler.handleClick(player, KeyPress.MOUSE_RIGHT)) return true;
         if(!rek.data().getScripts().isEmpty()){
             for(VehicleScript script : rek.data().getScripts()){
                 if(script.onInteract(this, rek.data(), player, hand)){

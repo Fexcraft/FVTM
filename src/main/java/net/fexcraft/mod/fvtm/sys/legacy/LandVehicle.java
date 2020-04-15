@@ -613,7 +613,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
         }
-        else if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT)) return true;
+        //else if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT)) return true;
         if(!vehicle.getScripts().isEmpty()){
             for(VehicleScript script : vehicle.getScripts()){
                 if(script.onInteract(this, vehicle, player, hand)){

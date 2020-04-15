@@ -12,7 +12,7 @@
     ],
     "Function": {
     	"id": "fvtm:engine",
-    	"engine_speed": 1,
+    	"engine_speed": 0.2,
     	"idle_consumption": 4,
     	"active_consumption": 20,
     	"consumptions": {

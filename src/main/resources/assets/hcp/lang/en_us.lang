@@ -11,6 +11,10 @@ itemGroup.fvtm:hcp=Heavy Cargo Pack
 
 # Items
 item.hcp:container_crane.name=Container Crane Rails
+item.hcp:container_crane.1_straight.name=CCR 1 long
+item.hcp:container_crane.4_straight.name=CCR 4 long
+item.hcp:container_crane.8_straight.name=CCR 8 long
+item.hcp:container_crane.16_straight.name=CCR 16 long
 item.hcp:medium_fluid.name=Medium Fluid Container
 item.hcp:medium.name=Medium General Container
 item.hcp:medium_refrigerator.name=Medium Refrigerator Container

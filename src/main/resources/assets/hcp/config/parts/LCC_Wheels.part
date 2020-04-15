@@ -1,6 +1,6 @@
 {
     "RegistryName": "hcp:lcc_wheels",
-    "Addon": "fvtm:lcc",
+    "Addon": "fvtm:hcp",
     "Model": "null",
     "Name": "Large Container Crane Wheels",
     "Category": "technical_bogie",

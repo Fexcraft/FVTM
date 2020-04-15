@@ -315,13 +315,13 @@ public class LCCScript extends VehicleScript {
 		if(cap != null && slotid != null){
 			ContainerSlot slot = cap.getContainerSlot(slotid);
 			if(!single && hlength > slot.length){
-				Print.bar(player, "&cLoaded Containers are longer than the Slot. " + String.format("% > %",hlength, slot.length));
+				Print.bar(player, "&cLoaded Containers are longer than the Slot. " + String.format("%s > %s",hlength, slot.length));
 				return;
 			}
 			if(index != null){
 				for(int i = 0; i < firstcon.getContainerType().length(); i++){
 					if(index + i >= slot.getContainers().length || slot.getContainers()[index + i] != null){
-						Print.bar(player, "&cNo space to load Container into slot!" + String.format("% !> %", index, index + i));
+						Print.bar(player, "&cNo space to load Container into slot!" + String.format("%s !> %s", index, index + i));
 						return;
 					}
 				}
@@ -337,7 +337,7 @@ public class LCCScript extends VehicleScript {
 					else i += slot.getContainers()[i].getContainerType().length();
 				}
 				if(free < hlength){
-					Print.bar(player, "&cNo space to load all Containers into slot!" + String.format("% !> %", free, hlength));
+					Print.bar(player, "&cNo space to load all Containers into slot!" + String.format("%s !> %s", free, hlength));
 					return;
 				}
 				int last = slot.reSort();

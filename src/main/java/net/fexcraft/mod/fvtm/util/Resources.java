@@ -80,7 +80,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -505,9 +505,16 @@ public class Resources {
 		if(!Static.getServer().isSinglePlayer()) return; RailSys.PLAYERON = false;
 	}
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event){
 		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof SeatEntity){
+			event.setCanceled(true);
+		}
+	}*/
+	
+	@SubscribeEvent
+	public void onEntityAttack(LivingAttackEvent event){
+		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof SeatEntity){// && !event.getSource().isProjectile()){
 			event.setCanceled(true);
 		}
 	}

@@ -16,10 +16,13 @@ import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 /** 
@@ -108,5 +111,10 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	}
 	
 	private static final Axis3D calcaxis = new Axis3D();
+	
+	@SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox(){
+        return this.getEntityBoundingBox().grow(getVehicleData().getAttribute("collision_range").getFloatValue());
+    }
 
 }

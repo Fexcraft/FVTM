@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.render;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -22,8 +21,6 @@ public class RenderEmpty extends Render<Entity> implements IRenderFactory<Entity
     protected ResourceLocation getEntityTexture(Entity entity){
         return null;
     }
-
-    protected ModelBase model;
 
     @Override
     public Render<Entity> createRenderFor(RenderManager manager){

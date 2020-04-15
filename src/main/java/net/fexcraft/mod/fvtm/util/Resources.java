@@ -52,6 +52,7 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
@@ -79,6 +80,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -501,6 +503,13 @@ public class Resources {
 	@SubscribeEvent
 	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event){
 		if(!Static.getServer().isSinglePlayer()) return; RailSys.PLAYERON = false;
+	}
+	
+	@SubscribeEvent
+	public void onEntityDamage(LivingDamageEvent event){
+		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof SeatEntity){
+			event.setCanceled(true);
+		}
 	}
 
 }

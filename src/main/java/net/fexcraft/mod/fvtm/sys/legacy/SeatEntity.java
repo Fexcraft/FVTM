@@ -444,10 +444,16 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
 
     @Override
     public void removePassenger(Entity entity){ //Static.exception(null, false);
-        if(world.isRemote){ super.removePassenger(entity); Print.debug("RM => " + Time.getDate() + " " + seatindex + " [CLIENT] OK"); }
+        if(world.isRemote){
+        	super.removePassenger(entity);
+        	Print.debug("RM => " + Time.getDate() + " " + seatindex + " [CLIENT] OK");
+        	//
+        	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.resetView();
+        }
         else{
             Packets.sendToAllAround(new PKT_SeatDismount(entity), Resources.getTargetPoint(this));
-            super.removePassenger(entity); Print.debug("RM => " + Time.getDate() + " " + seatindex + " [SERVER]"); return;
+            super.removePassenger(entity);
+            Print.debug("RM => " + Time.getDate() + " " + seatindex + " [SERVER]"); return;
         }
     }
 

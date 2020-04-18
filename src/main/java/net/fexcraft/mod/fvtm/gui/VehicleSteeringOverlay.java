@@ -36,7 +36,7 @@ import net.minecraft.util.ResourceLocation;
 public class VehicleSteeringOverlay extends GuiScreen {
 
 	public static boolean toggables;
-	public static int scroll = 0, page, timer, clicktimer;//TODO replace to something fps independent
+	public static int scroll = 0, page, timer, clicktimer, oldview;//TODO replace to something fps independent
     private SeatEntity seat;
     //
     private static final RGB HOVER = new RGB(RGB.GREEN); static{ HOVER.alpha = 0.5f; }
@@ -52,11 +52,15 @@ public class VehicleSteeringOverlay extends GuiScreen {
     public void initGui(){
         //TODO see about alternative camera
     	scroll = 0; page = 0; attributes.clear(); toggables = false;
+        Print.debug(seat, seat.seatdata);
+        oldview = mc.gameSettings.thirdPersonView;
+		mc.gameSettings.thirdPersonView = seat.seatdata.getViewValue(oldview, false);
     }
 
     @Override
     public void onGuiClosed(){
         mc.mouseHelper.ungrabMouseCursor();
+		mc.gameSettings.thirdPersonView = oldview;
         mc.setRenderViewEntity(mc.player);
     }
 
@@ -119,13 +123,15 @@ public class VehicleSteeringOverlay extends GuiScreen {
                 return;
             }
             case 63: {
-                mc.gameSettings.thirdPersonView = (mc.gameSettings.thirdPersonView + 1) % 3;
-                if(mc.gameSettings.thirdPersonView == 1){
+        		mc.gameSettings.thirdPersonView = seat.seatdata.getViewValue(mc.gameSettings.thirdPersonView, true);
+                /*if(mc.gameSettings.thirdPersonView == 1){
                     mc.setRenderViewEntity(mc.player);
                 }
                 else{
                     mc.setRenderViewEntity(mc.player);
-                }
+                }*/
+                mc.setRenderViewEntity(mc.player);
+                //Print.chat(mc.player, mc.gameSettings.thirdPersonView);
                 return;
             }
             case 66: {

@@ -17,6 +17,7 @@ public class Seat {
 	public float minyaw, maxyaw;
 	public float minpitch, maxpitch;
 	public String swivel_point;
+	public boolean nofirst, nothird;
 
 	public Seat(JsonObject obj){
 		Pos pos = Pos.fromJson(obj, false);
@@ -31,9 +32,12 @@ public class Seat {
 		maxpitch = JsonUtil.getIfExists(obj, "max_pitch", 80f).floatValue();
 		sitting = JsonUtil.getIfExists(obj, "sitting", true);
 		swivel_point = JsonUtil.getIfExists(obj, "rot_point", "vehicle");
+		nofirst = JsonUtil.getIfExists(obj, "no_first_person", false);
+		nothird = JsonUtil.getIfExists(obj, "no_third_person", false);
+		if(nofirst && nothird) nothird = false;
 	}
 
-	public Seat(String name, float x, float y, float z, boolean driver, String point){
+	public Seat(String name, float x, float y, float z, boolean driver, String point, boolean nof, boolean not){
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -45,6 +49,8 @@ public class Seat {
 		maxpitch = 80;
 		sitting = true;
 		swivel_point = point;
+		nofirst = nof;
+		nothird = not;
 	}
 
 	public boolean isDriver(){
@@ -65,7 +71,18 @@ public class Seat {
 
 	@Override
 	public String toString(){
-		return String.format("Seat@[(%s, %s, %s), %s, %s-driver, %s-%sy, %s-%sp, %s-sit]", x, y, z, name, driver, minyaw, maxyaw, minpitch, maxpitch, sitting);
+		return String.format("Seat@[(%s, %s, %s), %s, %s-driver, %s-%sy, %s-%sp, %s-sit, %s-nof, %s-not]", x, y, z, name, driver, minyaw, maxyaw, minpitch, maxpitch, sitting, nofirst, nothird);
+	}
+
+	public int getViewValue(int current, boolean additive){
+		if(!additive){
+			if(nofirst) return 1;
+			if(nothird) return 0;
+			return current;
+		}
+		if(nofirst) return current > 1 ? 1 : 2;
+		else if(nothird) return 0;
+		else return (current + 1) % 3;
 	}
 
 }

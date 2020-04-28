@@ -3,9 +3,9 @@ package net.fexcraft.mod.fvtm.model.block;
 
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
+import net.fexcraft.mod.fvtm.model.TurboList;
 
 /** This file was exported via the FVTM Exporter V1.2 of<br>
  *  FMT (Fex's Modelling Toolbox) v.1.2.9 &copy; 2019 - Fexcraft.net<br>
@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 public class PizzaOven extends BlockModel {
 
 	public PizzaOven(){
-		super(); textureX = 256; textureY = 128;
+		super(); textureX = 256; textureY = 256;
 		this.addToCreators("Ferdinand (FEX___96)");
 		//
 		TurboList body = new TurboList("body");

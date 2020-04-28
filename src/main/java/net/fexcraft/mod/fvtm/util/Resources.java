@@ -261,6 +261,12 @@ public class Resources {
 		}
 		if(FCLRegistry.getModel(name) != null){
 			MODELS.put(name, FCLRegistry.getModel(name));
+			//Model<T, K> model = FCLRegistry.getModel(name);
+			/*if(model instanceof FCLBlockModel && model.getClass().getAnnotation(fModel.class) != null){
+				String resloc = model.getClass().getAnnotation(fModel.class).registryname();
+				FCLBlockModelLoader.addBlockModel(new ResourceLocation(resloc), (FCLBlockModel)model);
+				FCLBlockModelLoader.addBlockModel(new ResourceLocation(resloc.replace("/block/", "/item/")), (FCLBlockModel)model);
+			}*/
 			return FCLRegistry.getModel(name);
 		}
 		String ext = FilenameUtils.getExtension(name);

@@ -1,0 +1,9 @@
+{
+    "variants": {
+        "normal": { "model": "fvtm:pizza_oven" },
+        "facing=north": { "model": "fvtm:pizza_oven", "y": 0  , "custom": { "y": 0 } },
+        "facing=south": { "model": "fvtm:pizza_oven", "y": 180, "custom": { "y": 180 } },
+        "facing=west":  { "model": "fvtm:pizza_oven", "y": 270, "custom": { "y": -90 } },
+        "facing=east":  { "model": "fvtm:pizza_oven", "y": 90 , "custom": { "y": 90 } }
+    }
+}

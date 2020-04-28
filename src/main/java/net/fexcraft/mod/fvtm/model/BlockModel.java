@@ -1,24 +1,27 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.render.FCLBlockModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.item.BlockItem;
-import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockModel extends GenericModel<BlockData, Object> implements FCLItemModel {
+public class BlockModel extends GenericModel<BlockData, Object> implements FCLItemModel, FCLBlockModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
     //public static boolean PREVIEW = false;
@@ -109,5 +112,12 @@ public class BlockModel extends GenericModel<BlockData, Object> implements FCLIt
         }
         GL11.glPopMatrix();
     }
+
+	@Override
+	public Collection<ModelRendererTurbo> getPolygons(){
+		ArrayList<ModelRendererTurbo> list = new ArrayList<>();
+		for(TurboList tlist : groups) list.addAll(tlist);
+		return list;
+	}
 	
 }

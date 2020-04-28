@@ -9,5 +9,6 @@
     	"normal": [ 0.0, 0.0, 0.0, 1.0, 0.5625, 1.0 ]
     },
     "Material": "IRON",
-    "MapColor": "CLAY"
+    "MapColor": "CLAY",
+    "RenderCutout": true
 }

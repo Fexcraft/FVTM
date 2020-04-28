@@ -1,0 +1,63 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "fvtm:pizza_oven",
+    "transform": "forge:default-block",
+    "custom": {
+    	"t-x": 0.5,
+    	"t-z": 0.5
+    }
+  },
+  "variants": {
+    "rotation": {
+      "0": {
+        "custom": { "y": 0 }
+      },
+      "1": {
+        "custom": { "y": 22.5 }
+      },
+      "2": {
+        "custom": { "y": 45 }
+      },
+      "3": {
+        "custom": { "y": 67.5 }
+      },
+      "4": {
+        "custom": { "y": 90 }
+      },
+      "5": {
+        "custom": { "y": 112.5 }
+      },
+      "6": {
+        "custom": { "y": 135 }
+      },
+      "7": {
+        "custom": { "y": 157.5 }
+      },
+      "8": {
+        "custom": { "y": 180 }
+      },
+      "9": {
+        "custom": { "y": -157.5 }
+      },
+      "10": {
+        "custom": { "y": -135 }
+      },
+      "11": {
+        "custom": { "y": -112.5 }
+      },
+      "12": {
+        "custom": { "y": -90 }
+      },
+      "13": {
+        "custom": { "y": -67.5 }
+      },
+      "14": {
+        "custom": { "y": -45 }
+      },
+      "15": {
+        "custom": { "y": -22.5 }
+      }
+    }
+  }
+}

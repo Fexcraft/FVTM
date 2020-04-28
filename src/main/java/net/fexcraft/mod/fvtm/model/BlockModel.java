@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
@@ -114,7 +115,7 @@ public class BlockModel extends GenericModel<BlockData, Object> implements FCLIt
     }
 
 	@Override
-	public Collection<ModelRendererTurbo> getPolygons(){
+	public Collection<ModelRendererTurbo> getPolygons(Map<String, String> args){
 		ArrayList<ModelRendererTurbo> list = new ArrayList<>();
 		for(TurboList tlist : groups) list.addAll(tlist);
 		return list;

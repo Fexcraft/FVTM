@@ -16,10 +16,12 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.item.BlockItem;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 public class BlockModel extends GenericModel<BlockData, Object> implements FCLItemModel, FCLBlockModel {
@@ -115,7 +117,7 @@ public class BlockModel extends GenericModel<BlockData, Object> implements FCLIt
     }
 
 	@Override
-	public Collection<ModelRendererTurbo> getPolygons(Map<String, String> args){
+	public Collection<ModelRendererTurbo> getPolygons(IBlockState state, EnumFacing side, Map<String, String> arguments, long rand){
 		ArrayList<ModelRendererTurbo> list = new ArrayList<>();
 		for(TurboList tlist : groups) list.addAll(tlist);
 		return list;

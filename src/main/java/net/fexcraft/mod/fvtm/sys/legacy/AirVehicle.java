@@ -31,7 +31,6 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
@@ -984,7 +983,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
             return true;
         }
         if(source.damageType.equals("player") && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
-        	if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) return true;
+        	//if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) return true;
             if(vehicle.isLocked()){
                 Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
                 return false;

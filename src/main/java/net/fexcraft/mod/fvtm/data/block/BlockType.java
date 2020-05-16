@@ -6,12 +6,15 @@ import net.fexcraft.mod.fvtm.block.generated.G_4ROT;
 import net.fexcraft.mod.fvtm.block.generated.G_4ROT_TE;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD_TE;
+import net.fexcraft.mod.fvtm.block.generated.M_4ROT;
+import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
 
 public enum BlockType {
 	
 	GENERIC_4ROT(G_4ROT_TE.class, G_4ROT.class),
 	GENERIC_16ROT(G_16ROT_TE.class, G_16ROT.class),
-	GENERIC_ROAD(G_ROAD_TE.class, G_ROAD.class);
+	GENERIC_ROAD(G_ROAD_TE.class, G_ROAD.class),
+	MULTIBLOCK_4ROT(M_4ROT_TE.class, M_4ROT.class)
 	;
 	
 	public final Class<? extends net.minecraft.block.Block> blockclass, plainclass;

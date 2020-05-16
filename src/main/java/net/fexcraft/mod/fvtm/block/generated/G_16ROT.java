@@ -18,56 +18,57 @@ import net.minecraft.world.World;
 
 public class G_16ROT extends PlainBase {
 
-    public static final PropertyInteger ROTATION = PropertyInteger.create("rotation", 0, 15);
+	public static final PropertyInteger ROTATION = PropertyInteger.create("rotation", 0, 15);
 
-    public G_16ROT(Block type){
-        super(type); this.setDefaultState(this.blockState.getBaseState().withProperty(ROTATION, 0));
-    }
+	public G_16ROT(Block type){
+		super(type);
+		this.setDefaultState(this.blockState.getBaseState().withProperty(ROTATION, 0));
+	}
 
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
-        return type.getAABB("default", "rotation=" + state.getValue(ROTATION));
-    }
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos){
+		return type.getAABB("default", "rotation=" + state.getValue(ROTATION));
+	}
 
-    @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return type.getAABB("selection", "rotation=" + state.getValue(ROTATION)).offset(pos);
-    }
-    
-    @Nullable @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
-        return type.getAABB("collision", "rotation=" + state.getValue(ROTATION));
-    }
+	@Override
+	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
+		return type.getAABB("selection", "rotation=" + state.getValue(ROTATION)).offset(pos);
+	}
 
-    @Override
-    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
-        return this.getDefaultState().withProperty(ROTATION, MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15);
-    }
+	@Nullable
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos){
+		return type.getAABB("collision", "rotation=" + state.getValue(ROTATION));
+	}
 
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
-        worldIn.setBlockState(pos, state.withProperty(ROTATION, MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15), 2);
-    }
+	@Override
+	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
+		return this.getDefaultState().withProperty(ROTATION, MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15);
+	}
 
-    @Override
-    public IBlockState getStateFromMeta(int meta){
-        return this.getDefaultState().withProperty(ROTATION, meta);
-    }
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
+		worldIn.setBlockState(pos, state.withProperty(ROTATION, MathHelper.floor((double)((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15));
+	}
 
-    @Override
-    public int getMetaFromState(IBlockState state){
-        return state.getValue(ROTATION);
-    }
+	@Override
+	public IBlockState getStateFromMeta(int meta){
+		return this.getDefaultState().withProperty(ROTATION, meta);
+	}
 
-    @Override
-    protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, new IProperty[]{ ROTATION });
-    }
+	@Override
+	public int getMetaFromState(IBlockState state){
+		return state.getValue(ROTATION);
+	}
 
-    @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state){
-        super.breakBlock(world, pos, state);
-    }
+	@Override
+	protected BlockStateContainer createBlockState(){
+		return new BlockStateContainer(this, new IProperty[]{ ROTATION });
+	}
+
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState state){
+		super.breakBlock(world, pos, state);
+	}
 
 }
-

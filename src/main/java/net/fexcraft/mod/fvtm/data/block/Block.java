@@ -39,7 +39,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected String modelid;
 	protected Model<BlockData, Object> model;
 	//
-	protected boolean functional, plain_model;
+	protected boolean plain_model;
 	protected RGB primary, secondary;
 	protected byte maxstacksize;
 	protected TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
@@ -53,6 +53,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected int lightopacity, harveresttoollevel;
 	protected String harveresttoolclass;
 	protected boolean isweblike, fullblock, fullcube, opaque, cutout;
+	//
+	protected MultiBlock multiblock;
 	
 	public Block(){}
 
@@ -82,8 +84,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.textures = DataUtil.getTextures(obj);
 		//
-		if(obj.has("Functional")) functional = obj.get("Functional").getAsBoolean();
-		if(obj.has("Decoration")) functional = !obj.get("Decoration").getAsBoolean();
 		this.primary = DataUtil.getColor(obj, "Primary");
 		this.secondary = DataUtil.getColor(obj, "Secondary");
 		this.maxstacksize = JsonUtil.getIfExists(obj, "MaxItemStackSize", 64).byteValue();
@@ -120,8 +120,11 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.fullcube = JsonUtil.getIfExists(obj, "FullCube", true);
 		this.opaque = JsonUtil.getIfExists(obj, "Opaque", false);
 		this.cutout = JsonUtil.getIfExists(obj, "RenderCutout", false);
+		if(obj.has("MultiBlock")){
+			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
+		}
 		try{
-			this.block = blocktype.getApplicableClass(functional, plain_model).getConstructor(Block.class).newInstance(this);
+			this.block = blocktype.getApplicableClass(isFunctional(), plain_model).getConstructor(Block.class).newInstance(this);
 		} catch(Exception e){ e.printStackTrace(); Static.stop(); } return this;
 	}
 
@@ -272,11 +275,11 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	}
 
 	public boolean isFunctional(){
-		return functional;
+		return multiblock != null;
 	}
 
 	public boolean isDecoration(){
-		return !functional;
+		return multiblock == null;
 	}
 
 	public byte getMaxStackSize(){

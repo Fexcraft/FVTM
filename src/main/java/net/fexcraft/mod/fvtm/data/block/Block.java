@@ -123,8 +123,9 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
+		boolean sub = obj.has("MultiSubBlock") && obj.get("MultiSubBlock").getAsBoolean();
 		try{
-			this.block = blocktype.getApplicableClass(isFunctional(), plain_model).getConstructor(Block.class).newInstance(this);
+			this.block = blocktype.getApplicableClass(sub || isFunctional(), plain_model).getConstructor(Block.class).newInstance(this);
 		} catch(Exception e){ e.printStackTrace(); Static.stop(); } return this;
 	}
 

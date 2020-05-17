@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -31,7 +32,7 @@ public class MultiBlock {
 	private Map<String, InventoryType> inventories = new LinkedHashMap<>();
 	private Map<String, Integer> inventorysizes = new LinkedHashMap<>();
 	private Map<String, Object> inventorydata = new LinkedHashMap<>();
-	private ArrayList<Entry<ResourceLocation, Integer>> blocks = new ArrayList<>();
+	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
 	private ArrayList<MB_Trigger> triggers = new ArrayList<>();
 	private ArrayList<BlockPos> blockpos = new ArrayList<>();
 	private Class<? extends BlockScript> clazz;
@@ -68,19 +69,21 @@ public class MultiBlock {
 			}
 		}
 		if(obj.has("Blocks")){
-			JsonObject blks = obj.get("Blocks").getAsJsonObject();
-			for(Entry<String, JsonElement> entry : blks.entrySet()){
-				JsonArray values = entry.getValue().getAsJsonArray();
-				BlockPos pos = new BlockPos(values.get(0).getAsInt(), values.get(1).getAsInt(), values.get(2).getAsInt());
-				String value = values.size() >= 3 ? values.get(3).getAsString() : "0";
-				int val = 0;
-				if(NumberUtils.isCreatable(value)){
-					val = Integer.parseInt(value);
+			JsonArray blks = obj.get("Blocks").getAsJsonArray();
+			for(JsonElement entry : blks){
+				JsonArray values = entry.getAsJsonArray();
+				BlockPos pos = new BlockPos(values.get(1).getAsInt(), values.get(2).getAsInt(), values.get(3).getAsInt());
+				EnumFacing val = EnumFacing.NORTH;
+				if(values.size() > 4){
+					String value = values.get(4).getAsString();
+					if(NumberUtils.isCreatable(value)){
+						val = EnumFacing.byIndex(Integer.parseInt(value));
+					}
+					else{
+						val = EnumFacing.byName(value);
+					}
 				}
-				else{
-					val = EnumFacing.byName(value).getIndex();
-				}
-				blocks.add(new SimpleEntry<>(new ResourceLocation(entry.getKey()), val));
+				blocks.add(new SimpleEntry<>(new ResourceLocation(values.get(0).getAsString()), val));
 				blockpos.add(pos);
 			}
 		}
@@ -120,7 +123,7 @@ public class MultiBlock {
 		return inventorydata;
 	}
 
-	public ArrayList<Entry<ResourceLocation, Integer>> getBlocks(){
+	public ArrayList<Entry<ResourceLocation, EnumFacing>> getBlocks(){
 		return blocks;
 	}
 
@@ -138,6 +141,31 @@ public class MultiBlock {
 	
 	public boolean hasScript(){
 		return clazz != null;
+	}
+
+	public ArrayList<BlockPos> getPositions(Block type, BlockPos corepos, EnumFacing facing){
+		ArrayList<BlockPos> list = new ArrayList<>();
+		Rotation rot = getRotation(facing);
+		for(BlockPos pos : blockpos){
+			list.add(corepos.add(pos.rotate(rot)));
+		}
+		return list;
+	}
+
+	private Rotation getRotation(EnumFacing facing){
+		switch(facing){
+			case EAST:
+				return Rotation.CLOCKWISE_90;
+			case SOUTH:
+				return Rotation.CLOCKWISE_180;
+			case WEST:
+				return Rotation.COUNTERCLOCKWISE_90;
+			case UP:
+			case DOWN:
+			case NORTH:
+			default:
+				return Rotation.NONE;
+		}
 	}
 
 }

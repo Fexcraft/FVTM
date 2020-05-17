@@ -1,10 +1,11 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import static net.fexcraft.mod.fvtm.util.Properties.FACING;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,8 +17,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class G_4ROT extends PlainBase {
-
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public G_4ROT(Block type){
         super(type); this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));

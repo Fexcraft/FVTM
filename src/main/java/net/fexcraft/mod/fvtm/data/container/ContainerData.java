@@ -135,7 +135,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			compound.setBoolean("ExternalTexture", externaltex);
 		}
         if(type.getInventoryType() == InventoryType.ITEM){
-            compound = DataUtil.saveAllItems(compound, stacks, true);
+            compound = DataUtil.saveAllItems(compound, stacks, true, null);
         }
         else if(type.getInventoryType() == InventoryType.FLUID){
             fluidtank.writeToNBT(compound);

@@ -22,11 +22,13 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 	protected boolean isTextureExternal;
 	//
 	protected RGB primary, secondary;
+	protected MultiBlockData multidata;
 
 	public BlockData(Block type){
 		super(type);
 		primary = type.getDefaultPrimaryColor().copy();
 		secondary = type.getDefaultSecondaryColor().copy();
+		multidata = type.isFunctional() ? new MultiBlockData(this, type.getMultiBlock()) : null;
 	}
 
 	@Override
@@ -42,6 +44,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 		//
 		compound.setInteger("RGBPrimary", primary.packed);
 		compound.setInteger("RGBSecondary", secondary.packed);
+		if(multidata != null) compound.setTag("MultiBlock", multidata.write(null));
 		return compound;
 	}
 
@@ -56,6 +59,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 		//
 		if(compound.hasKey("RGBPrimary")) primary.packed = compound.getInteger("RGBPrimary");
 		if(compound.hasKey("RGBSecondary")) secondary.packed = compound.getInteger("RGBSecondary");
+		if(compound.hasKey("MultiBlock")) multidata.read(compound.getCompoundTag("MultiBlock"));
 		return this;
 	}
 

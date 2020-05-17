@@ -382,4 +382,8 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return cutout;
 	}
 
+	public MultiBlock getMultiBlock(){
+		return multiblock;
+	}
+
 }

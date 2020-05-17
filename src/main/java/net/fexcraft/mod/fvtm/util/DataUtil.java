@@ -114,7 +114,7 @@ public class DataUtil {
     }
     
     /** Allows for saving more than 256 slots. **/
-    public static NBTTagCompound saveAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks, boolean saveEmpty){
+    public static NBTTagCompound saveAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks, boolean saveEmpty, String customtag){
         NBTTagList list = new NBTTagList();
         for(int i = 0; i < stacks.size(); ++i){
             ItemStack stack = stacks.get(i);
@@ -126,7 +126,7 @@ public class DataUtil {
             }
         }
         if(!list.isEmpty() || saveEmpty){
-            tag.setTag("Items", list);
+            tag.setTag(customtag != null ? customtag : "Items", list);
         }
         return tag;
     }

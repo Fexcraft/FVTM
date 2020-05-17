@@ -39,25 +39,38 @@ public class BlockBase extends PlainBase implements ITileEntityProvider {
 	
 	@Override
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable net.minecraft.tileentity.TileEntity te, ItemStack stack){
-        player.addStat(StatList.getBlockStats(this)); player.addExhaustion(0.005F);
+        player.addStat(StatList.getBlockStats(this));
+        player.addExhaustion(0.005F);
         if(this.canSilkHarvest(world, pos, state, player) && EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0)
         harvesters.set(player);
         EntityItem item = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        item.setItem(((TileEntity)te).getBlockData().newItemStack()); world.spawnEntity(item);
+        item.setItem(((TileEntity)te).getBlockData().newItemStack());
+        world.spawnEntity(item);
         harvesters.set(null);
 	}
 
 	@Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-        if(world.isRemote) return false; if(player.isSneaking()) return true;
-        ItemStack held = player.getHeldItem(hand); if(held.isEmpty()) return true;
+        if(world.isRemote) return false;
+        if(player.isSneaking()) return true;
+        ItemStack held = player.getHeldItem(hand);
+        if(held.isEmpty()) return true;
         if(held.getItem() instanceof ItemDye){
-        	RGB colour = new RGB(ItemDye.DYE_COLORS[held.getMetadata()]); held.shrink(1);
-        	TileEntity tile = (TileEntity)world.getTileEntity(pos); if(tile == null) return true;
-        	if(hand == EnumHand.MAIN_HAND){ tile.getBlockData().setPrimaryColor(colour); }
-        	else{ tile.getBlockData().setSecondaryColor(colour); }
-        	tile.sendUpdate(); Print.chat(player, "&eColour applied. &7[" + (hand == EnumHand.MAIN_HAND ? "primary" : "secondary") + "]"); return true;
-        } return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+        	RGB colour = new RGB(ItemDye.DYE_COLORS[held.getMetadata()]);
+        	held.shrink(1);
+        	TileEntity tile = (TileEntity)world.getTileEntity(pos);
+        	if(tile == null) return true;
+        	if(hand == EnumHand.MAIN_HAND){
+        		tile.getBlockData().setPrimaryColor(colour);
+        	}
+        	else{
+        		tile.getBlockData().setSecondaryColor(colour);
+        	}
+        	tile.sendUpdate();
+        	Print.chat(player, "&eColour applied. &7[" + (hand == EnumHand.MAIN_HAND ? "primary" : "secondary") + "]");
+        	return true;
+        }
+        return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     }
 
 	@Override

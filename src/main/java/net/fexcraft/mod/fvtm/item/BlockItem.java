@@ -27,7 +27,8 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 
     public BlockItem(net.minecraft.block.Block block) throws Exception {
 		super(block); type = ((PlainBase)block).type;
-		this.setHasSubtypes(true); this.setMaxStackSize(type.getMaxStackSize());
+		this.setHasSubtypes(true);
+		this.setMaxStackSize(type.getMaxStackSize());
 		this.setRegistryName(block.getRegistryName());
 		this.setTranslationKey(block.getTranslationKey());
 	}
@@ -72,6 +73,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 	
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
+    	if(type.getBlockType().isMultiBlock() && !type.isFunctional()) return;
     	if(tab == CreativeTabs.SEARCH || tab == type.getAddon().getCreativeTab()){
     		if(type.getBlockType().isGenericRoad()){
 	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));

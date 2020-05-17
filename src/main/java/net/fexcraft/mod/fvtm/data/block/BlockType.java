@@ -46,4 +46,8 @@ public enum BlockType {
 		return this == GENERIC_ROAD;
 	}
 
+	public boolean isMultiBlock(){
+		return this == MULTIBLOCK_4ROT;
+	}
+
 }

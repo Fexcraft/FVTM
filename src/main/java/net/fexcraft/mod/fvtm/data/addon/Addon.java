@@ -170,12 +170,14 @@ public class Addon extends TypeCore<Addon> {
 						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
 					}
 					else if(data == DataType.PART){
-						Part part = (Part)core; if(part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
+						Part part = (Part)core;
+						if(part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
 						}
 					}
 					else if(data == DataType.BLOCK){
-						Block block = (Block)core; if(!block.hasPlainModel()){
+						Block block = (Block)core;
+						if(!block.hasPlainModel()){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
 						}
 					}
@@ -204,12 +206,14 @@ public class Addon extends TypeCore<Addon> {
 						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), ContainerModel.EMPTY);
 					}
 					else if(data == DataType.PART){
-						Part part = (Part)core; if(part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
+						Part part = (Part)core;
+						if(part.getDefaultFunctions().stream().filter(pre -> pre.getId().equals("fvtm:wheel")).count() > 0){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), PartModel.EMPTY);
 						}
 					}
 					else if(data == DataType.BLOCK){
-						Block block = (Block)core; if(!block.hasPlainModel()){
+						Block block = (Block)core;
+						if(!block.hasPlainModel()){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
 						}
 					}

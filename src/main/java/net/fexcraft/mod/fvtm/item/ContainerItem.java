@@ -81,7 +81,7 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
     }
     
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand){
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
         if(world.isRemote || !(side == EnumFacing.UP)){ return EnumActionResult.PASS; }
         ContainerData data = player.getHeldItem(hand).getCapability(Capabilities.VAPDATA, null).getContainerData();
         BlockPos core = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.add(0, 1, 0);

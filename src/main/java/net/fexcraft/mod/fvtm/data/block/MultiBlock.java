@@ -12,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
@@ -36,6 +37,7 @@ public class MultiBlock {
 	private ArrayList<MB_Trigger> triggers = new ArrayList<>();
 	private ArrayList<BlockPos> blockpos = new ArrayList<>();
 	private Class<? extends BlockScript> clazz;
+	private boolean tickable;
 
 	@SuppressWarnings("unchecked")
 	public MultiBlock(ResourceLocation registryname, JsonObject obj){
@@ -105,6 +107,7 @@ public class MultiBlock {
 				Static.stop();
 			}
 		}
+		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
 	}
 
 	public ResourceLocation getRegName(){

@@ -1,10 +1,10 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.lib.common.lang.ArrayList;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;

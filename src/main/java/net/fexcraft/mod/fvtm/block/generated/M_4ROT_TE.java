@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.block.generated;
 
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -17,6 +18,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -110,8 +112,29 @@ public class M_4ROT_TE extends BlockBase {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
+    	if(!world.isRemote){
+    		processBreak(world, pos, state);
+        }
         super.breakBlock(world, pos, state);
     }
+    
+	public static void processBreak(World world, BlockPos pos, IBlockState state){
+		MultiBlockData data = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
+		if(data == null) return;
+		ArrayList<BlockPos> positions = data.getType().getPositions(data.getData().getType(), pos, state.getValue(FACING));
+		positions.forEach(blkpos -> {
+			IBlockState posstate = world.getBlockState(blkpos);
+			if(posstate.getBlock() instanceof M_4ROT_TE || posstate.getBlock() instanceof M_4ROT){
+				TileEntity tile = (TileEntity)world.getTileEntity(blkpos);
+				if(tile != null && tile.iscore){
+					if(tile.iscore){
+						//TODO empty out inventories (drop)
+					}
+				}
+	            world.setBlockState(blkpos, Blocks.AIR.getDefaultState());
+			}
+		});
+	}
 
 	@Override
 	public net.minecraft.tileentity.TileEntity createNewTileEntity(World world, int meta){

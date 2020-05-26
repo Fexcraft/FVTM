@@ -71,7 +71,7 @@ public class MB_Trigger {
 	}
 	
 	public EnumFacing getSide(EnumFacing rotate){
-		if(rotate != null && rotate.getAxis() != EnumFacing.Axis.Y){
+		if(rotate != null && rotate.getAxis() != EnumFacing.Axis.Y && sidefrom.getAxis() != EnumFacing.Axis.Y){
 			switch(rotate){
 				case EAST:
 					return sidefrom.rotateY();

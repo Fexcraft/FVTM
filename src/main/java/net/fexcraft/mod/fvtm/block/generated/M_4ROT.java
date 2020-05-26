@@ -100,6 +100,7 @@ public class M_4ROT extends PlainBase {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
+    	if(!world.isRemote) M_4ROT_TE.processBreak(world, pos, state);
         super.breakBlock(world, pos, state);
     }
 

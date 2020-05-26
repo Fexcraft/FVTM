@@ -1,9 +1,10 @@
 {
-    "RegistryName": "gep:smeltery_body",
+    "RegistryName": "gep:smeltery_tank",
     "Addon": "fvtm:gep",
     "Name": "Smeltery",
     "Model": "null",
     "BlockType": "MULTIBLOCK_4ROT",
     "Material": "IRON",
-    "MapColor": "CLAY"
+    "MapColor": "CLAY",
+    "MultiSubBlock": true
 }

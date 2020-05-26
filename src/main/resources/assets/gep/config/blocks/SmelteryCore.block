@@ -14,24 +14,24 @@
     		"output": "item-27"
     	},
     	"Blocks":[
-    		[ "gep:smeltery_body", 0, 0, 2 ], 
+    		[ "gep:smeltery_tank", 0, 0, 2 ], 
     		[ "gep:smeltery_body", -1, 0, -1 ],
-    		[ "gep:smeltery_body", -1, 0,  0 ],
+    		[ "gep:smeltery_tank", -1, 0,  0 ],
     		[ "gep:smeltery_body", -1, 0,  1 ],
-    		[ "gep:smeltery_body",  0, 0, -1 ],
+    		[ "gep:smeltery_tank",  0, 0, -1 ],
     		[ "gep:smeltery_core",  0, 0,  0 ],
     		[ "gep:smeltery_body",  0, 0,  1 ],
     		[ "gep:smeltery_body",  1, 0, -1 ],
-    		[ "gep:smeltery_body",  1, 0,  0 ],
+    		[ "gep:smeltery_tank",  1, 0,  0 ],
     		[ "gep:smeltery_body",  1, 0,  1 ], 
     		[ "gep:smeltery_body", -1, 1, -1 ],
-    		[ "gep:smeltery_body", -1, 1,  0 ],
+    		[ "gep:smeltery_tank", -1, 1,  0 ],
     		[ "gep:smeltery_body", -1, 1,  1 ],
-    		[ "gep:smeltery_body",  0, 1, -1 ],
+    		[ "gep:smeltery_tank",  0, 1, -1 ],
     		[ "gep:smeltery_body",  0, 1,  0 ],
     		[ "gep:smeltery_body",  0, 1,  1 ],
     		[ "gep:smeltery_body",  1, 1, -1 ],
-    		[ "gep:smeltery_body",  1, 1,  0 ],
+    		[ "gep:smeltery_tank",  1, 1,  0 ],
     		[ "gep:smeltery_body",  1, 1,  1 ], 
     		[ "gep:smeltery_body", -1, 2, -1 ],
     		[ "gep:smeltery_body", -1, 2,  0 ],
@@ -99,22 +99,22 @@
     		},
     		{
     			"block": [ 1, 0, 0 ],
-    			"side": "SOUTH",
+    			"side": "WEST",
     			"target": "tank"
     		},
     		{
     			"block": [ 1, 1, 0 ],
-    			"side": "SOUTH",
+    			"side": "WEST",
     			"target": "input"
     		},
     		{
     			"block": [ -1, 0, 0 ],
-    			"side": "SOUTH",
+    			"side": "EAST",
     			"target": "tank"
     		},
     		{
     			"block": [ -1, 1, 0 ],
-    			"side": "SOUTH",
+    			"side": "EAST",
     			"target": "input"
     		}
     	],

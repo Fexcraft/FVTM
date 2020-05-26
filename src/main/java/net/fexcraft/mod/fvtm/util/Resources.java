@@ -20,6 +20,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
+import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
@@ -55,6 +56,7 @@ import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
+import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
 import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
@@ -429,6 +431,7 @@ public class Resources {
 		//event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
 		event.addCapability(new ResourceLocation("fvtm:raildata"), new RailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
 		event.addCapability(new ResourceLocation("fvtm:roaddata"), new RoadDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
 	}
 	
 	@SubscribeEvent
@@ -468,6 +471,11 @@ public class Resources {
 	@SubscribeEvent
 	public void onChunkLoad(ChunkEvent.Load event){
 		event.getWorld().getCapability(Capabilities.RAILSYSTEM, null).onChunkLoad(event.getChunk());
+		event.getChunk().getTileEntityMap().values().forEach(tile -> {
+			if(tile instanceof M_4ROT_TE.TileEntity){
+				((M_4ROT_TE.TileEntity)tile).setup();
+			}
+		});
 	}
 	
 	@SubscribeEvent

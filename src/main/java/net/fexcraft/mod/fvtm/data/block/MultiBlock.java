@@ -3,8 +3,10 @@ package net.fexcraft.mod.fvtm.data.block;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -13,6 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
@@ -160,21 +163,21 @@ public class MultiBlock {
 
 	public ArrayList<BlockPos> getPositions(Block type, BlockPos corepos, EnumFacing facing){
 		ArrayList<BlockPos> list = new ArrayList<>();
-		Rotation rot = getRotation(facing);
+		Rotation rot = getRotation(facing, false);
 		for(BlockPos pos : blockpos){
 			list.add(corepos.add(pos.rotate(rot)));
 		}
 		return list;
 	}
 
-	private Rotation getRotation(EnumFacing facing){
+	private Rotation getRotation(EnumFacing facing, boolean counter){
 		switch(facing){
 			case EAST:
-				return Rotation.CLOCKWISE_90;
+				return counter ? Rotation.COUNTERCLOCKWISE_90 : Rotation.CLOCKWISE_90;
 			case SOUTH:
 				return Rotation.CLOCKWISE_180;
 			case WEST:
-				return Rotation.COUNTERCLOCKWISE_90;
+				return counter ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90;
 			case UP:
 			case DOWN:
 			case NORTH:
@@ -185,6 +188,14 @@ public class MultiBlock {
 
 	public boolean isTickable(){
 		return tickable;
+	}
+
+	public List<MB_Trigger> getTriggers(EnumFacing facing, BlockPos pos, BlockPos core){
+		Print.debug(pos);
+		Print.debug(core.subtract(pos));
+		BlockPos rpos = core.subtract(pos).rotate(getRotation(facing, true));
+		Print.debug(rpos);
+		return triggers.stream().filter(trigger -> trigger.getBlockPos().equals(rpos)).collect(Collectors.toList());
 	}
 
 }

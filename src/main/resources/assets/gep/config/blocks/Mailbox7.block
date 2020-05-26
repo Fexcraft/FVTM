@@ -29,6 +29,11 @@
     			"hitbox": "DOWN",
     			"target": "secondary",
     			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 0, 0 ],
+    			"target": "nothing",
+    			"type": "script"
     		}
     	],
     	"Access":[
@@ -43,6 +48,7 @@
     			"target": "secondary"
     		}
     	],
-    	"Script0": "net.fexcraft.mod.accons.gep.scripts.BlockTestScript.class"
+    	"Script0": "net.fexcraft.mod.accons.gep.scripts.BlockTestScript.class",
+    	"Tickable": false
     }
 }

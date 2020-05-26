@@ -2,20 +2,30 @@ package net.fexcraft.mod.fvtm.block.generated;
 
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -42,6 +52,35 @@ public class M_4ROT_TE extends BlockBase {
     }
 
     @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
+    	if(player.getHeldItem(hand).getItem() instanceof ItemDye){
+    		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+    	}
+        if(!world.isRemote){
+            TileEntity te = (TileEntity)world.getTileEntity(pos);
+            if(te == null){
+                Print.chat(player, "No TileEntity found.");
+                return true;
+            }
+            MultiBlockData data = te.getMultiBlockData();
+            if(data == null){
+                Print.chat(player, "MultiBlockData not found.");
+                return true;
+            }
+            if(te.triggers == null) te.triggers = data.getType().getTriggers(state.getValue(FACING), pos, te.isCore() ? pos : te.getCore());
+            ItemStack stack = player.getHeldItem(hand);
+            te.triggers.forEach(trigger -> {
+            	boolean pass = trigger.isWholeBlock();
+            	if(!pass && trigger.getBB() != null) pass = trigger.getBB().contains(new Vec3d(hitX, hitY, hitZ));//TODO aabb rotation
+            	if(!pass && trigger.getSide() != null) pass = trigger.getSide(state.getValue(FACING)) == side;
+            	Print.debug(pass + " " + trigger.getTarget() + " " + trigger.forInventory());
+            });
+            return true;
+        }
+        return true;
+    }
+
+    @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
@@ -49,7 +88,7 @@ public class M_4ROT_TE extends BlockBase {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
         world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
-        ((TileEntity)world.getTileEntity(pos)).setCore(stack);
+        ((TileEntity)world.getTileEntity(pos)).setCore(pos, stack).setup();
     }
 
     @Override
@@ -81,25 +120,57 @@ public class M_4ROT_TE extends BlockBase {
 	
 	public static class TileEntity extends BlockBase.TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 		
+		public List<MB_Trigger> triggers;
 		private BlockPos core;
+		private boolean iscore;
 		
 		public TileEntity(BlockBase type){
 			super(type);
 		}
+
+		public TileEntity(){}
 		
-		public void setCore(ItemStack stack){
+		public TileEntity setCore(BlockPos pos, ItemStack stack){
 	        BlockPos core = BlockPos.fromLong(stack.getTagCompound().getLong("PlacedPos"));
 	        if(!pos.equals(core)){
 	            this.core = core;
 	        }
+	        else iscore = true;
+	        this.markDirty();
+	        return this;
+		}
+		
+		public BlockPos getCore(){
+			return core;
+		}
+		
+		public boolean isCore(){
+			return iscore;
 		}
 
-		public TileEntity(){}
+		public MultiBlockData getMultiBlockData(){
+			return iscore ? data.getMultiBlockData() : world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
+		}
+		
+		public void setup(){
+			Print.debug("pre-setup");
+			if(data == null || data.getMultiBlockData() == null) return;
+			Print.debug("setup");
+			world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()), data.getMultiBlockData());
+		}
+		
+		@Override
+		public void invalidate(){
+			super.invalidate();
+			if(data == null || data.getMultiBlockData() == null) return;
+			world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()), data.getMultiBlockData());
+		}
 
 	    @Override
 	    public void readFromNBT(NBTTagCompound compound){
 	        super.readFromNBT(compound);
-	        if(core != null) core = BlockPos.fromLong(compound.getLong("MultiBlockCore"));
+	        if(compound.hasKey("MultiBlockCore")) core = BlockPos.fromLong(compound.getLong("MultiBlockCore"));
+	        iscore = core == null;
 	    }
 
 	    @Override

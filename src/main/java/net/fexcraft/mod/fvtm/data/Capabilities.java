@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data;
 
+import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,5 +32,9 @@ public class Capabilities {
 	/** Per-World RoadSystem container. */
 	@CapabilityInject(RoadSystem.class)
 	public static final Capability<RoadSystem> ROADSYSTEM = null;
+	
+	/** Per-World MultiBlock Access Cache */
+	@CapabilityInject(MultiBlockCache.class)
+	public static final Capability<MultiBlockCache> MULTIBLOCKS = null;
 	
 }

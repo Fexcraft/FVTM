@@ -66,6 +66,30 @@ public class MB_Trigger {
 		return sidefrom == null && boundingbox == null;
 	}
 	
+	public AxisAlignedBB getBB(){
+		return boundingbox;
+	}
+	
+	public EnumFacing getSide(EnumFacing rotate){
+		if(rotate != null && rotate.getAxis() != EnumFacing.Axis.Y){
+			switch(rotate){
+				case EAST:
+					return sidefrom.rotateY();
+				case SOUTH:
+					return sidefrom.rotateY().rotateY();
+				case WEST:
+					return sidefrom.rotateYCCW();
+				default:
+					return sidefrom;
+			}
+		}
+		return sidefrom;
+	}
+
+	public EnumFacing getSide(){
+		return sidefrom;
+	}
+	
 	public BlockPos getBlockPos(){
 		return pos;
 	}

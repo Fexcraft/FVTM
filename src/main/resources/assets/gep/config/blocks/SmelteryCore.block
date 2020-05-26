@@ -1,0 +1,124 @@
+{
+    "RegistryName": "gep:smeltery_core",
+    "Addon": "fvtm:gep",
+    "Name": "Smeltery",
+    "Description": "&7The classic &2GEP &cSmeltery",
+    "Model": "null",
+    "BlockType": "MULTIBLOCK_4ROT",
+    "Material": "IRON",
+    "MapColor": "CLAY",
+    "MultiBlock":{
+    	"Inventories":{
+    		"input": "item-9",
+    		"tank": "fluid-5000-minecraft:lava",
+    		"output": "item-27"
+    	},
+    	"Blocks":[
+    		[ "gep:smeltery_body", 0, 0, 2 ], 
+    		[ "gep:smeltery_body", -1, 0, -1 ],
+    		[ "gep:smeltery_body", -1, 0,  0 ],
+    		[ "gep:smeltery_body", -1, 0,  1 ],
+    		[ "gep:smeltery_body",  0, 0, -1 ],
+    		[ "gep:smeltery_core",  0, 0,  0 ],
+    		[ "gep:smeltery_body",  0, 0,  1 ],
+    		[ "gep:smeltery_body",  1, 0, -1 ],
+    		[ "gep:smeltery_body",  1, 0,  0 ],
+    		[ "gep:smeltery_body",  1, 0,  1 ], 
+    		[ "gep:smeltery_body", -1, 1, -1 ],
+    		[ "gep:smeltery_body", -1, 1,  0 ],
+    		[ "gep:smeltery_body", -1, 1,  1 ],
+    		[ "gep:smeltery_body",  0, 1, -1 ],
+    		[ "gep:smeltery_body",  0, 1,  0 ],
+    		[ "gep:smeltery_body",  0, 1,  1 ],
+    		[ "gep:smeltery_body",  1, 1, -1 ],
+    		[ "gep:smeltery_body",  1, 1,  0 ],
+    		[ "gep:smeltery_body",  1, 1,  1 ], 
+    		[ "gep:smeltery_body", -1, 2, -1 ],
+    		[ "gep:smeltery_body", -1, 2,  0 ],
+    		[ "gep:smeltery_body", -1, 2,  1 ],
+    		[ "gep:smeltery_body",  0, 2, -1 ],
+    		[ "gep:smeltery_body",  0, 2,  0 ],
+    		[ "gep:smeltery_body",  0, 2,  1 ],
+    		[ "gep:smeltery_body",  1, 2, -1 ],
+    		[ "gep:smeltery_body",  1, 2,  0 ],
+    		[ "gep:smeltery_body",  1, 2,  1 ],
+    		[ "gep:smeltery_body",  0, 3,  0 ],
+    		[ "gep:smeltery_body",  0, 4,  0 ]
+    	],
+    	"Triggers":[
+    		{
+    			"block": [ -1, 1, 1 ],
+    			"hitbox": "NORTH",
+    			"target": "open",
+    			"type": "script"
+    		},
+    		{
+    			"block": [ 1, 1, 1 ],
+    			"hitbox": "NORTH",
+    			"target": "open",
+    			"type": "script"
+    		},
+    		{
+    			"block": [ 0, 0, 2 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 1, 1 ],
+    			"hitbox": "NORTH",
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ -1, 0, 1 ],
+    			"hitbox": "NORTH",
+    			"target": "tank",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 1, 0, 1 ],
+    			"hitbox": "NORTH",
+    			"target": "tank",
+    			"type": "inventory"
+    		}
+    	],
+    	"Access":[
+    		{
+    			"block": [ 0, 0, 2 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ 0, 0, -1 ],
+    			"side": "SOUTH",
+    			"target": "tank"
+    		},
+    		{
+    			"block": [ 0, 1, -1 ],
+    			"side": "SOUTH",
+    			"target": "input"
+    		},
+    		{
+    			"block": [ 1, 0, 0 ],
+    			"side": "SOUTH",
+    			"target": "tank"
+    		},
+    		{
+    			"block": [ 1, 1, 0 ],
+    			"side": "SOUTH",
+    			"target": "input"
+    		},
+    		{
+    			"block": [ -1, 0, 0 ],
+    			"side": "SOUTH",
+    			"target": "tank"
+    		},
+    		{
+    			"block": [ -1, 1, 0 ],
+    			"side": "SOUTH",
+    			"target": "input"
+    		}
+    	],
+    	"Script0": "net.fexcraft.mod.accons.gep.scripts.BlockTestScript.class",
+    	"Tickable": true
+    }
+}

@@ -20,7 +20,7 @@
     	"Triggers":[
     		{
     			"block": [ -1, 0, 0 ],
-    			"hitbox": "UP",
+    			"hitbox": "EAST",
     			"target": "main",
     			"type": "inventory"
     		},

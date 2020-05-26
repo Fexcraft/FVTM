@@ -193,8 +193,11 @@ public class MultiBlock {
 	public List<MB_Trigger> getTriggers(EnumFacing facing, BlockPos pos, BlockPos core){
 		Print.debug(pos);
 		Print.debug(core.subtract(pos));
-		BlockPos rpos = core.subtract(pos).rotate(getRotation(facing, true));
-		Print.debug(rpos);
+		pos = core.subtract(pos);
+		pos = pos.up(-pos.getY() * 2);
+		pos = pos.rotate(getRotation(facing, true));
+		Print.debug(pos);
+		BlockPos rpos = pos;
 		return triggers.stream().filter(trigger -> trigger.getBlockPos().equals(rpos)).collect(Collectors.toList());
 	}
 

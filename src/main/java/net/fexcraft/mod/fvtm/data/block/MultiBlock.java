@@ -35,6 +35,7 @@ public class MultiBlock {
 	private Map<String, Object> inventorydata = new LinkedHashMap<>();
 	private ArrayList<Entry<ResourceLocation, EnumFacing>> blocks = new ArrayList<>();
 	private ArrayList<MB_Trigger> triggers = new ArrayList<>();
+	private ArrayList<MB_Access> access = new ArrayList<>();
 	private ArrayList<BlockPos> blockpos = new ArrayList<>();
 	private Class<? extends BlockScript> clazz;
 	private boolean tickable;
@@ -96,6 +97,17 @@ public class MultiBlock {
 			JsonArray array = obj.get("Triggers").getAsJsonArray();
 			for(JsonElement elm : array){
 				triggers.add(new MB_Trigger(elm.getAsJsonObject()));
+			}
+		}
+		if(obj.has("Access")){
+			if(obj.get("Access").isJsonObject()){
+				access.add(new MB_Access(obj.get("Access").getAsJsonObject()));
+			}
+			else if(obj.get("Access").isJsonArray()){
+				JsonArray array = obj.get("Access").getAsJsonArray();
+				for(JsonElement elm : array){
+					access.add(new MB_Access(elm.getAsJsonObject()));
+				}
 			}
 		}
 		if(obj.has("Script")){
@@ -169,6 +181,10 @@ public class MultiBlock {
 			default:
 				return Rotation.NONE;
 		}
+	}
+
+	public boolean isTickable(){
+		return tickable;
 	}
 
 }

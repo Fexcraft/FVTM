@@ -146,4 +146,8 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 		this.secondary = color;
 	}
 
+	public MultiBlockData getMultiBlockData(){
+		return multidata;
+	}
+
 }

@@ -20,7 +20,8 @@ public enum BlockType {
 	public final Class<? extends net.minecraft.block.Block> blockclass, plainclass;
 	
 	BlockType(Class<? extends net.minecraft.block.Block> clazz, Class<? extends net.minecraft.block.Block> clazz0){
-		this.blockclass = clazz; this.plainclass = clazz0;
+		this.blockclass = clazz;
+		this.plainclass = clazz0;
 	}
 
 	public double getRotationForMeta(int meta){

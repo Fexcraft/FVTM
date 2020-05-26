@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.DisplayBlock;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
+import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.data.RoadSystem;
@@ -130,6 +131,8 @@ public class FVTM {
 		//
 		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
 		GameRegistry.registerTileEntity(BlockBase.TileEntity.class, new ResourceLocation("fvtm:blockbase"));
+		GameRegistry.registerTileEntity(M_4ROT_TE.TileEntity.class, new ResourceLocation("fvtm:multiblock"));
+		GameRegistry.registerTileEntity(M_4ROT_TE.TickableTE.class, new ResourceLocation("fvtm:multiblock_tickable"));
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(RailSystem.class, new RailDataSerializer.Storage(), new RailDataSerializer.Callable());

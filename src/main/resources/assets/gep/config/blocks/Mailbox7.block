@@ -31,6 +31,18 @@
     			"type": "inventory"
     		}
     	],
+    	"Access":[
+    		{
+    			"block": [ -1, 0, 0 ],
+    			"side": "UP",
+    			"target": "main"
+    		},
+    		{
+    			"block": [ 1, 0, 0 ],
+    			"side": "DOWN",
+    			"target": "secondary"
+    		}
+    	],
     	"Script0": "net.fexcraft.mod.accons.gep.scripts.BlockTestScript.class"
     }
 }

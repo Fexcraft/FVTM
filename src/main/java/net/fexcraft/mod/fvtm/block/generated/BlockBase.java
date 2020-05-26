@@ -74,7 +74,7 @@ public class BlockBase extends PlainBase implements ITileEntityProvider {
     }
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta){
+	public net.minecraft.tileentity.TileEntity createNewTileEntity(World world, int meta){
 		return new BlockBase.TileEntity(this);
 	}
     

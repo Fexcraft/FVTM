@@ -6,6 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -46,6 +47,11 @@ public class PlainBase extends net.minecraft.block.Block {
     @Override
     public BlockRenderLayer getRenderLayer(){
         return type.isCutout() ? BlockRenderLayer.CUTOUT : BlockRenderLayer.SOLID;
+    }
+    
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state){
+        return type.isInvisible() ? EnumBlockRenderType.INVISIBLE : EnumBlockRenderType.MODEL;
     }
 
 }

@@ -52,7 +52,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected float hardness, lightlevel, resistance, damage;
 	protected int lightopacity, harveresttoollevel;
 	protected String harveresttoolclass;
-	protected boolean isweblike, fullblock, fullcube, opaque, cutout;
+	protected boolean isweblike, fullblock, fullcube, opaque, cutout, invisible;
 	//
 	protected MultiBlock multiblock;
 	
@@ -120,6 +120,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.fullcube = JsonUtil.getIfExists(obj, "FullCube", true);
 		this.opaque = JsonUtil.getIfExists(obj, "Opaque", false);
 		this.cutout = JsonUtil.getIfExists(obj, "RenderCutout", false);
+		this.invisible = JsonUtil.getIfExists(obj, "Invisible", false);
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
@@ -385,6 +386,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public MultiBlock getMultiBlock(){
 		return multiblock;
+	}
+
+	public boolean isInvisible(){
+		return invisible;
 	}
 
 }

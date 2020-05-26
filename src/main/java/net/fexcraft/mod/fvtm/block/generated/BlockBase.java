@@ -80,7 +80,7 @@ public class BlockBase extends PlainBase implements ITileEntityProvider {
     
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state){
-        return type.hasPlainModel() ? EnumBlockRenderType.MODEL : EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+        return type.isInvisible() ? EnumBlockRenderType.INVISIBLE : type.hasPlainModel() ? EnumBlockRenderType.MODEL : EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 	
 	public static class TileEntity extends net.minecraft.tileentity.TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {

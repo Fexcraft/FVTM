@@ -6,5 +6,6 @@
     "BlockType": "MULTIBLOCK_4ROT",
     "Material": "IRON",
     "MapColor": "CLAY",
-    "MultiSubBlock": true
+    "MultiSubBlock": true,
+    "Invisible": true
 }

@@ -176,9 +176,7 @@ public class M_4ROT_TE extends BlockBase {
 		}
 		
 		public void setup(){
-			Print.debug("pre-setup");
 			if(data == null || data.getMultiBlockData() == null) return;
-			Print.debug("setup");
 			world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()), data.getMultiBlockData());
 		}
 		

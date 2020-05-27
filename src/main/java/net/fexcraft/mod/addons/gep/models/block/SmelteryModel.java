@@ -21,6 +21,7 @@ public class SmelteryModel extends BlockModel {
 	public SmelteryModel(){
 		super(); textureX = 512; textureY = 256;
 		this.addToCreators("Ferdinand (FEX___96)");
+	    gui_scale_x = gui_scale_y = gui_scale_z = 0.125f;
 		//
 		TurboList body = new TurboList("body");
 		body.add(new ModelRendererTurbo(body, 1, 1, textureX, textureY).addBox(-24, 0, -24, 48, 4, 48)

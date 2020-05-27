@@ -3,7 +3,9 @@ package net.fexcraft.mod.fvtm.block.generated;
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -14,6 +16,7 @@ import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.MB_Access;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.minecraft.block.state.BlockStateContainer;
@@ -32,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 
 public class M_4ROT_TE extends BlockBase {
 
@@ -230,6 +234,39 @@ public class M_4ROT_TE extends BlockBase {
 	        super.writeToNBT(compound);
 	        if(core != null) compound.setLong("MultiBlockCore", core.toLong());
 	        return compound;
+	    }
+	    
+	    private Map<EnumFacing, List<MB_Access.CapabilityContainer>> capabilities;
+
+	    private void loadCapabilities(){
+	    	MultiBlockData data = getMultiBlockData();
+	    	if(data == null) return;
+			capabilities = new HashMap<>();
+			data.getType().getCapabilities(data, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), pos, isCore() ? pos : getCore(), capabilities);
+		}
+
+	    @Override
+	    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
+	    	if(capabilities == null) loadCapabilities();
+	    	if(capabilities != null && capabilities.containsKey(facing)){
+    			for(MB_Access.CapabilityContainer con : capabilities.get(facing)){
+    				if(con.cap == capability) return true;
+    			}
+	    	}
+	        return super.hasCapability(capability, facing);
+	    }
+
+		@SuppressWarnings("unchecked")
+	    @Override
+	    @Nullable
+	    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
+	    	if(capabilities == null) loadCapabilities();
+	    	if(capabilities != null && capabilities.containsKey(facing)){
+    			for(MB_Access.CapabilityContainer con : capabilities.get(facing)){
+    				if(con.cap == capability) return (T)con.value;
+    			}
+	    	}
+	        return super.getCapability(capability, facing);
 	    }
 
 	}

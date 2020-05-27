@@ -1,12 +1,21 @@
 package net.fexcraft.mod.fvtm.data.block;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.InventoryType;
+import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 /**
  * 
@@ -48,6 +57,54 @@ public class MB_Access {
 	
 	public String getTarget(){
 		return target;
+	}
+
+	public EnumFacing getSide(){
+		return sidefrom;
+	}
+
+	public void fill(MultiBlockData data, EnumFacing facing, Map<EnumFacing, List<CapabilityContainer>> capabilities){
+		if(facing == null){
+			if(sidefrom == null){
+				for(EnumFacing face : EnumFacing.VALUES){
+					fill(data, face, capabilities);
+				}
+			}
+			else fill(data, sidefrom, capabilities);
+			return;
+		}
+		if(!capabilities.containsKey(facing)) capabilities.put(facing, new ArrayList<>());
+		InventoryType type = data.getType().getInventoryTypes().get(target);
+		Capability<?> cap = null;
+		Object value = null;
+		switch(type){
+			case ENERGY:
+				//TODO
+				break;
+			case FLUID:
+				cap = CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+				value = data.getFluidTank(target);
+				break;
+			case ITEM:
+				cap = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+				value = new ItemStackHandler(data.getInventory(target));
+				break;
+			default: return;
+			
+		}
+		capabilities.get(facing).add(new CapabilityContainer(cap, value));
+	}
+	
+	public static class CapabilityContainer {
+		
+		public CapabilityContainer(Capability<?> cap2, Object value2){
+			cap = cap2;
+			value = value2;
+		}
+		
+		public Capability<?> cap;
+		public Object value;
+		
 	}
 
 }

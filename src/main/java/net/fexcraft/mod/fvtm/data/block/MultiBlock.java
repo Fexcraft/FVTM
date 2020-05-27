@@ -15,7 +15,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
@@ -191,14 +190,26 @@ public class MultiBlock {
 	}
 
 	public List<MB_Trigger> getTriggers(EnumFacing facing, BlockPos pos, BlockPos core){
-		Print.debug(pos);
-		Print.debug(core.subtract(pos));
+		//Print.debug(pos);
+		//Print.debug(core.subtract(pos));
 		pos = core.subtract(pos);
 		pos = pos.up(-pos.getY() * 2);
 		pos = pos.rotate(getRotation(facing, true));
-		Print.debug(pos);
+		//Print.debug(pos);
 		BlockPos rpos = pos;
 		return triggers.stream().filter(trigger -> trigger.getBlockPos().equals(rpos)).collect(Collectors.toList());
+	}
+
+	public void getCapabilities(MultiBlockData data, EnumFacing facing, BlockPos pos, BlockPos core, Map<EnumFacing, List<MB_Access.CapabilityContainer>> capabilities){
+		pos = core.subtract(pos);
+		pos = pos.up(-pos.getY() * 2);
+		pos = pos.rotate(getRotation(facing, true));
+		BlockPos rpos = pos;
+		access.forEach(access -> {
+			if(access.getBlockPos().equals(rpos)){
+				access.fill(data, null, capabilities);
+			}
+		});
 	}
 
 }

@@ -58,7 +58,7 @@ public class M_4ROT extends PlainBase {
                 Print.chat(player, "MultiBlock Core not found.");
                 return true;
             }
-            if(M_4ROT_TE.processTriggers(data.getType().getTriggers(state.getValue(FACING), pos, core), data, player, hand, state, pos, side, hitX, hitY, hitZ)){
+            if(M_4ROT_TE.processTriggers(data.getType().getTriggers(state.getValue(FACING), pos, core), data, core, player, hand, state, pos, side, hitX, hitY, hitZ)){
             	return true;
             }
             return false;

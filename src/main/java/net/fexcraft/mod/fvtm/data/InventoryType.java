@@ -26,4 +26,12 @@ public enum InventoryType {
 		}
 	}
 
+	public boolean isFluid(){
+		return this == FLUID;
+	}
+
+	public boolean isItem(){
+		return this == ITEM;
+	}
+
 }

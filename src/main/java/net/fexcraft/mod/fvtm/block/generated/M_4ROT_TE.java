@@ -8,6 +8,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
+import net.fexcraft.lib.mc.gui.ServerReceiver;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -70,7 +72,7 @@ public class M_4ROT_TE extends BlockBase {
                 return true;
             }
             if(te.triggers == null) te.triggers = data.getType().getTriggers(state.getValue(FACING), pos, te.isCore() ? pos : te.getCore());
-            if(processTriggers(te.triggers, data, player, hand, state, pos, side, hitX, hitY, hitZ)){
+            if(processTriggers(te.triggers, data, te.isCore() ? pos : te.getCore(), player, hand, state, pos, side, hitX, hitY, hitZ)){
             	return true;
             }
             return false;
@@ -78,7 +80,7 @@ public class M_4ROT_TE extends BlockBase {
         return true;
     }
     
-    public static boolean processTriggers(List<MB_Trigger> triggers, MultiBlockData data, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
+    protected static boolean processTriggers(List<MB_Trigger> triggers, MultiBlockData data, BlockPos core, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
     	for(MB_Trigger trigger : triggers){
         	boolean pass = trigger.isWholeBlock();
         	Vec3d hit = new Vec3d(x, y, z);
@@ -86,12 +88,12 @@ public class M_4ROT_TE extends BlockBase {
         	if(!pass && trigger.getSide() != null) pass = trigger.getSide(state.getValue(FACING)) == side;
         	if(pass){
         		if(trigger.forInventory()){
-        			//TODO open inventory
+        			openInventory(player, trigger.getTarget(), core);
         			Print.chat(player, "'inventory \"" + trigger.getTarget() + "\" opens'");
         			return true;
         		}
-        		if(trigger.forScript()){
-        			//data.getScript().onTrigger(data, trigger, player, hand, pos, state, side, hit);
+        		if(trigger.forScript() && data.getScript() != null){
+        			data.getScript().onTrigger(data, trigger, player, hand, pos, state, side, hit);
         			Print.chat(player, "'script value \"" + trigger.getTarget() + "\" toggled'");
         			return true;
         		}
@@ -101,7 +103,19 @@ public class M_4ROT_TE extends BlockBase {
     	return false;
     }
 
-    @Override
+    protected static void openInventory(EntityPlayer player, String target, BlockPos corepos){
+    	NBTTagCompound packet = new NBTTagCompound();
+		packet.setString("inventory", target);
+		NBTTagCompound compound = new NBTTagCompound();
+        compound.setString("target_listener", "fcl_gui");
+        compound.setString("task", "open_guicontainer");
+        compound.setInteger("gui", 951);
+        compound.setTag("data", packet);
+        compound.setIntArray("args", new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() });
+        ServerReceiver.INSTANCE.process(new PacketNBTTagCompound(compound), new Object[]{ player });
+	}
+
+	@Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer){
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }

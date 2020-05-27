@@ -11,7 +11,7 @@
     "MultiBlock":{
     	"Inventories":{
     		"input": "item-9",
-    		"tank": "fluid-5000-minecraft:lava",
+    		"tank": "fluid-128000-minecraft:lava",
     		"output": "item-27"
     	},
     	"Blocks":[

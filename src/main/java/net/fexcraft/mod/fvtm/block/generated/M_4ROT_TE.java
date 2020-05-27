@@ -89,12 +89,10 @@ public class M_4ROT_TE extends BlockBase {
         	if(pass){
         		if(trigger.forInventory()){
         			openInventory(player, trigger.getTarget(), core);
-        			Print.chat(player, "'inventory \"" + trigger.getTarget() + "\" opens'");
         			return true;
         		}
         		if(trigger.forScript() && data.getScript() != null){
         			data.getScript().onTrigger(data, trigger, player, hand, pos, state, side, hit);
-        			Print.chat(player, "'script value \"" + trigger.getTarget() + "\" toggled'");
         			return true;
         		}
         	}

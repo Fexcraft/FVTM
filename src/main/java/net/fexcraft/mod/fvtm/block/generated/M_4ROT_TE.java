@@ -177,14 +177,14 @@ public class M_4ROT_TE extends BlockBase {
 		
 		public void setup(){
 			if(data == null || data.getMultiBlockData() == null) return;
-			world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()), data.getMultiBlockData());
+			world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
 		}
 		
 		@Override
 		public void invalidate(){
 			super.invalidate();
 			if(data == null || data.getMultiBlockData() == null) return;
-			world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()), data.getMultiBlockData());
+			world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
 		}
 
 	    @Override

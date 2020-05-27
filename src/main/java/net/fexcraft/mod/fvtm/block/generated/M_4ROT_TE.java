@@ -70,16 +70,35 @@ public class M_4ROT_TE extends BlockBase {
                 return true;
             }
             if(te.triggers == null) te.triggers = data.getType().getTriggers(state.getValue(FACING), pos, te.isCore() ? pos : te.getCore());
-            ItemStack stack = player.getHeldItem(hand);
-            te.triggers.forEach(trigger -> {
-            	boolean pass = trigger.isWholeBlock();
-            	if(!pass && trigger.getBB() != null) pass = trigger.getBB().contains(new Vec3d(hitX, hitY, hitZ));//TODO aabb rotation
-            	if(!pass && trigger.getSide() != null) pass = trigger.getSide(state.getValue(FACING)) == side;
-            	Print.debug(pass + " " + trigger.getTarget() + " " + trigger.forInventory());
-            });
-            return true;
+            if(processTriggers(te.triggers, data, player, hand, state, pos, side, hitX, hitY, hitZ)){
+            	return true;
+            }
+            return false;
         }
         return true;
+    }
+    
+    public static boolean processTriggers(List<MB_Trigger> triggers, MultiBlockData data, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
+    	for(MB_Trigger trigger : triggers){
+        	boolean pass = trigger.isWholeBlock();
+        	Vec3d hit = new Vec3d(x, y, z);
+        	if(!pass && trigger.getBB() != null) pass = trigger.getBB().contains(hit);//TODO aabb rotation
+        	if(!pass && trigger.getSide() != null) pass = trigger.getSide(state.getValue(FACING)) == side;
+        	if(pass){
+        		if(trigger.forInventory()){
+        			//TODO open inventory
+        			Print.chat(player, "'inventory \"" + trigger.getTarget() + "\" opens'");
+        			return true;
+        		}
+        		if(trigger.forScript()){
+        			//data.getScript().onTrigger(data, trigger, player, hand, pos, state, side, hit);
+        			Print.chat(player, "'script value \"" + trigger.getTarget() + "\" toggled'");
+        			return true;
+        		}
+        	}
+        	Print.debug(pass + " " + trigger.getTarget() + " " + trigger.forInventory());
+    	}
+    	return false;
     }
 
     @Override

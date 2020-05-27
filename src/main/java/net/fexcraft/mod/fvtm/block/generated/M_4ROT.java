@@ -18,7 +18,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -59,14 +58,10 @@ public class M_4ROT extends PlainBase {
                 Print.chat(player, "MultiBlock Core not found.");
                 return true;
             }
-            ItemStack stack = player.getHeldItem(hand);
-            data.getType().getTriggers(state.getValue(FACING), pos, core).forEach(trigger -> {
-            	boolean pass = trigger.isWholeBlock();
-            	if(!pass && trigger.getBB() != null) pass = trigger.getBB().contains(new Vec3d(hitX, hitY, hitZ));//TODO aabb rotation
-            	if(!pass && trigger.getSide() != null) pass = trigger.getSide(state.getValue(FACING)) == side;
-            	Print.debug(pass + " " + trigger.getTarget() + " " + trigger.forInventory());
-            });
-            return true;
+            if(M_4ROT_TE.processTriggers(data.getType().getTriggers(state.getValue(FACING), pos, core), data, player, hand, state, pos, side, hitX, hitY, hitZ)){
+            	return true;
+            }
+            return false;
         }
         return true;
     }

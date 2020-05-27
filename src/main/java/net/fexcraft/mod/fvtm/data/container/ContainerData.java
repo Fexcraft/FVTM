@@ -155,7 +155,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			extex = externaltex ? compound.getString("CustomTexture") : null;
 		} else{ seltex = null; extex = null; externaltex = false; }
         if(type.getInventoryType() == InventoryType.ITEM){
-            DataUtil.loadAllItems(compound, stacks);
+            DataUtil.loadAllItems(compound, stacks, null);
         }
         else if(type.getInventoryType() == InventoryType.FLUID){
             fluidtank.readFromNBT(compound);

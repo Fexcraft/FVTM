@@ -65,7 +65,7 @@ public class MultiBlockData {
 	public void read(NBTTagCompound compound){
 		for(Entry<String, NonNullList<ItemStack>> entry : inventories.entrySet()){
 			if(!compound.hasKey("inv-" + entry.getKey())) continue;
-			DataUtil.loadAllItems(compound.getCompoundTag("inv-" + entry.getKey()), entry.getValue());
+			DataUtil.loadAllItems(compound, entry.getValue(), "inv-" + entry.getKey());
 		}
 		for(Entry<String, FluidTank> entry : tanks.entrySet()){
 			if(!compound.hasKey("tank-" + entry.getKey())) continue;

@@ -102,8 +102,8 @@ public class DataUtil {
 	}
     
     /** Allows for loading more than 256 slots. **/
-    public static void loadAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks){
-        NBTTagList list = tag.getTagList("Items", 10);
+    public static void loadAllItems(NBTTagCompound tag, NonNullList<ItemStack> stacks, String customtag){
+        NBTTagList list = tag.getTagList(customtag == null ? "Items" : customtag, 10);
         for(int i = 0; i < list.tagCount(); ++i){
             NBTTagCompound compound = list.getCompoundTagAt(i);
             int j = compound.getShort("Slot");

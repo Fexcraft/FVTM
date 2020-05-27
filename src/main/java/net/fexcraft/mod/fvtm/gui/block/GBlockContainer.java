@@ -157,6 +157,7 @@ public class GBlockContainer extends GenericContainer {
 		if(fluid_io != null){
 			fluid_io.closeInventory(player);
 		}
+		tile.markDirty();
 	}
 
 	@Override

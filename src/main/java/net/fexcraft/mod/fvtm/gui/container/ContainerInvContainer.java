@@ -124,6 +124,7 @@ public class ContainerInvContainer extends GenericContainer {
     public void onContainerClosed(EntityPlayer player){
         super.onContainerClosed(player);
         if(fluid_io != null){ fluid_io.closeInventory(player); }
+        tile.markDirty();
     }
     
     @Override

@@ -1,15 +1,10 @@
 //FMT-Marker FVTM-1.4
 package net.fexcraft.mod.addons.gep.models.block;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
-import net.minecraft.entity.Entity;
 
 /** This file was exported via the FVTM Exporter V1.4 of<br>
  *  FMT (Fex's Modelling Toolbox) v.2.5.1 &copy; 2020 - Fexcraft.net<br>
@@ -227,19 +222,5 @@ public class SmelteryModel extends BlockModel {
 		);
 		this.groups.add(bars);
 	}
-
-	@Override
-	public void render(BlockData data, Object key){
-		GL11.glRotatef(90, 0, 1, 0);
-		super.render(data, key);
-		GL11.glRotatef(-90, 0, 1, 0);
-	}
-
-	@Override
-	public void render(BlockData data, Object key, Entity ent, RenderCache cache, int meta){
-		GL11.glRotatef(90, 0, 1, 0);
-		super.render(data, key, ent, cache, meta);
-		GL11.glRotatef(-90, 0, 1, 0);
-	}
-
+	
 }

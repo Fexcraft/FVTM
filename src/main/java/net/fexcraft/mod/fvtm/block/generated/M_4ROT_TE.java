@@ -179,6 +179,7 @@ public class M_4ROT_TE extends BlockBase {
 	public static class TileEntity extends BlockBase.TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 		
 		public List<MB_Trigger> triggers;
+		private TileEntity reference;
 		private BlockPos core;
 		private boolean iscore;
 		
@@ -207,11 +208,21 @@ public class M_4ROT_TE extends BlockBase {
 		}
 
 		public MultiBlockData getMultiBlockData(){
-			return iscore ? data.getMultiBlockData() : world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
+			return iscore ? data.getMultiBlockData() : getMultiBlockDataFromCore();
 		}
 		
+		private MultiBlockData getMultiBlockDataFromCore(){
+			if(reference != null) return reference.getMultiBlockData();
+			TileEntity tile = (TileEntity)world.getTileEntity(core);
+			return (reference = (tile == null ? null : tile)).getMultiBlockData();
+		}
+
 		public void setup(){
-			if(data == null || data.getMultiBlockData() == null) return;
+			if(data == null || data.getMultiBlockData() == null){
+				Print.debug("data is null");
+				return;
+			}
+			Print.debug("data is NOT null");
 			world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
 		}
 		
@@ -221,7 +232,7 @@ public class M_4ROT_TE extends BlockBase {
 			if(data == null || data.getMultiBlockData() == null) return;
 			world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
 		}
-
+	    
 	    @Override
 	    public void readFromNBT(NBTTagCompound compound){
 	        super.readFromNBT(compound);
@@ -240,9 +251,15 @@ public class M_4ROT_TE extends BlockBase {
 
 	    private void loadCapabilities(){
 	    	MultiBlockData data = getMultiBlockData();
-	    	if(data == null) return;
-			capabilities = new HashMap<>();
-			data.getType().getCapabilities(data, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), pos, isCore() ? pos : getCore(), capabilities);
+	    	if(data == null){
+	    		Print.debug("no data");
+	    		return;
+	    	}
+	    	if(reference == null){
+	    		Print.debug("no core");
+	    		return;
+	    	}
+			data.getType().getCapabilities(data, EnumFacing.byIndex(reference.getBlockMetadata()), pos, isCore() ? pos : getCore(), capabilities = new HashMap<>());
 		}
 
 	    @Override

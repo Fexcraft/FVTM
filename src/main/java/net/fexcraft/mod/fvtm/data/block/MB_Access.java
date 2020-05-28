@@ -35,6 +35,7 @@ public class MB_Access {
 			JsonArray array = obj.get("block").getAsJsonArray();
 			pos = new BlockPos(array.get(0).getAsInt(), array.get(1).getAsInt(), array.get(2).getAsInt());
 		}
+		else pos = new BlockPos(0, 0, 0);
 		if(obj.has("side")){
 			sidefrom = EnumFacing.byName(obj.get("side").getAsString());
 		}
@@ -73,6 +74,7 @@ public class MB_Access {
 			else fill(data, sidefrom, capabilities);
 			return;
 		}
+		Print.debug("filling " + facing);
 		if(!capabilities.containsKey(facing)) capabilities.put(facing, new ArrayList<>());
 		InventoryType type = data.getType().getInventoryTypes().get(target);
 		Capability<?> cap = null;

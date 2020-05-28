@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.util.caps;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;

@@ -26,6 +26,7 @@ public enum BlockType {
 
 	public double getRotationForMeta(int meta){
 		switch(this){
+			case MULTIBLOCK_4ROT:
 			case GENERIC_4ROT:{
 		        switch(meta){
 		            case 2: return 0;

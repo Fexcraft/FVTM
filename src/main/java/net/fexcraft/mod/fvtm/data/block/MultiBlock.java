@@ -40,6 +40,7 @@ public class MultiBlock {
 	private ArrayList<MB_Access> access = new ArrayList<>();
 	private ArrayList<BlockPos> blockpos = new ArrayList<>();
 	private Class<? extends BlockScript> clazz;
+	private JsonObject scriptdata;
 	private boolean tickable;
 
 	@SuppressWarnings("unchecked")
@@ -120,6 +121,9 @@ public class MultiBlock {
 				e.printStackTrace();
 				Static.stop();
 			}
+		}
+		if(obj.has("ScriptData")){
+			scriptdata = obj.get("ScriptData").getAsJsonObject();
 		}
 		tickable = JsonUtil.getIfExists(obj, "Tickable", false);
 	}
@@ -229,6 +233,10 @@ public class MultiBlock {
 				access.fill(data, null, facing, capabilities);
 			}
 		});
+	}
+
+	public JsonObject getScriptData(){
+		return scriptdata;
 	}
 
 }

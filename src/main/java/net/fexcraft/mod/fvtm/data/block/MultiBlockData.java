@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.data.block;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+
+import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
@@ -51,9 +54,9 @@ public class MultiBlockData {
 		    }
 		}
 		try{
-			script = block.hasScript() ? block.getScript().newInstance() : null;
+			script = block.hasScript() ? block.getScript().getConstructor(JsonObject.class).newInstance(block.getScriptData()) : null;
 		}
-		catch(InstantiationException | IllegalAccessException e){
+		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
 			e.printStackTrace();
 			Static.stop();
 		}

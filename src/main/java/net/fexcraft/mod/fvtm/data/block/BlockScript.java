@@ -19,7 +19,7 @@ public interface BlockScript {
 
 	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound);
 
-	public void onUpdate(TickableTE tickableTE);
+	public void onUpdate(TickableTE tile);
 
 	public void onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit);
 

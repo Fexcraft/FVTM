@@ -3,12 +3,14 @@ package net.fexcraft.mod.fvtm.data.block;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
+import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,8 +22,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.ItemStackHandler;
 
 /**
  * Base class for Crafter-Type MultiBlock Scripts.
@@ -70,22 +73,27 @@ public abstract class CraftBlockScript implements BlockScript {
 			tryCrafting(tile, selected);
 			return;
 		}
-		if(autoRecipeChooser() && (autosel == null || !autosel.canCraft(tile.getMultiBlockData()))){
+		if(autoRecipeChooser() && (autosel == null || !autosel.canCraft(this, tile.getMultiBlockData()))){
 			searchForRecipe();
 		}
 		if(autosel != null){
 			tryCrafting(tile, selected);
 			return;
 		}
-		cooldown += cooldown();
+		addCooldown();
 	}
 
 	protected void tryCrafting(TickableTE tile, Recipe recipe){
-		//TODO
+		if(!recipe.canCraft(this, tile.getMultiBlockData())) return;
+		//
 	}
 
 	protected void searchForRecipe(){
 		//TODO
+	}
+
+	protected void addCooldown(){
+		cooldown += cooldown();
 	}
 
 	@Override
@@ -119,8 +127,8 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public static class Recipe {
 		
-		protected HashMap<String, IngredientWrapper> input = new HashMap<>();
-		protected HashMap<String, IngredientWrapper> output = new HashMap<>();
+		protected HashMap<String, InputWrapper> input = new HashMap<>();
+		protected HashMap<String, OutputWrapper> output = new HashMap<>();
 		protected HashMap<String, Integer> consume = new HashMap<>();
 		protected String targetmachine, id;
 		protected int crafttime;
@@ -131,13 +139,13 @@ public abstract class CraftBlockScript implements BlockScript {
 			for(JsonElement entry : ingr){
 				JsonObject ingredient = entry.getAsJsonObject();
 				String inventory = ingredient.get("inventory").getAsString();
-				input.put(inventory, new IngredientWrapper(ingredient));
+				input.put(inventory, new InputWrapper(ingredient));
 			}
 			ingr = obj.get("output").getAsJsonArray();
 			for(JsonElement entry : ingr){
 				JsonObject ingredient = entry.getAsJsonObject();
 				String inventory = ingredient.get("inventory").getAsString();
-				output.put(inventory, new IngredientWrapper(ingredient));
+				output.put(inventory, new OutputWrapper(ingredient));
 			}
 			if(obj.has("consume")){
 				obj.get("consume").getAsJsonObject().entrySet().forEach(entry -> {
@@ -148,23 +156,94 @@ public abstract class CraftBlockScript implements BlockScript {
 			id = obj.get("id").getAsString();
 		}
 
-		public boolean canCraft(MultiBlockData data){
-			//TODO
-			return false;
+		public boolean canCraft(CraftBlockScript script, MultiBlockData data){
+			boolean fits = true;
+			ArrayList<Integer> ints = new ArrayList<>();
+			for(Entry<String, OutputWrapper> entry : output.entrySet()){
+				InventoryType local = entry.getValue().getInventoryType();
+				if(data.getType().getInventoryTypes().get(entry.getKey()) != local){
+					fits = false;
+					break;
+				}
+				if(entry.getValue().overflow) continue;
+				if(local.isFluid()){
+					if(data.getFluidTank(entry.getKey()).fill(entry.getValue().fluid, false) < entry.getValue().fluid.amount){
+						fits = false;
+						break;
+					}
+				}
+				else{
+					boolean found = false;
+					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
+					for(int i = 0; i < handler.getSlots(); i++){
+						if(ints.contains(i)) continue;
+						if(handler.insertItem(i, entry.getValue().stack, true).isEmpty()){
+							ints.add(i);
+							found = true;
+							break;
+						}
+					}
+					if(!found){
+						fits = false;
+						break;
+					}
+				}
+			}
+			if(!fits){
+				script.addCooldown();
+				return false;
+			}
+			boolean passed = true;
+			ints.clear();
+			for(Entry<String, InputWrapper> entry : input.entrySet()){
+				InventoryType local = entry.getValue().getInventoryType();
+				if(data.getType().getInventoryTypes().get(entry.getKey()) != local){
+					passed = false;
+					break;
+				}
+				if(local.isFluid()){
+					FluidStack drained = data.getFluidTank(entry.getKey()).drain(entry.getValue().fluid, false);
+					if(drained == null || drained.amount < entry.getValue().fluid.amount){
+						passed = false;
+						break;
+					}
+				}
+				else{
+					boolean found = false;
+					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
+					for(int i = 0; i < handler.getSlots(); i++){
+						if(ints.contains(i)) continue;
+						ItemStack stack = handler.getStackInSlot(i);
+						if(entry.getValue().ingredient.apply(stack) && stack.getCount() >= entry.getValue().amount){
+							ints.add(i);
+							found = true;
+							break;
+						}
+					}
+					if(!found){
+						passed = false;
+						break;
+					}
+				}
+			}
+			if(!passed){
+				script.addCooldown();
+				return false;
+			}
+			return true;
 		}
 		
 	}
 	
-	public static class IngredientWrapper {
+	public static class InputWrapper {
 
 		protected Ingredient ingredient;
-		protected Fluid fluid;
+		protected FluidStack fluid;
 		protected int amount;
 		
-		public IngredientWrapper(JsonObject obj) throws NBTException {
+		public InputWrapper(JsonObject obj) throws NBTException {
 			if(obj.has("fluid")){
-				fluid = FluidRegistry.getFluid(obj.get("fluid").getAsString());
-				amount = obj.get("amount").getAsInt();
+				fluid = new FluidStack(FluidRegistry.getFluid(obj.get("fluid").getAsString()), obj.get("amount").getAsInt());
 			}
 			else if(obj.has("item")){
 				ingredient = Ingredient.fromStacks(fromJson(obj.get("item")));
@@ -177,9 +256,14 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				ingredient = Ingredient.fromStacks(stacks);
 			}
+			amount = obj.has("amount") ? obj.get("amount").getAsInt() : 1;
 		}
 
-		private ItemStack fromJson(JsonElement elm) throws NBTException {
+		public InventoryType getInventoryType(){
+			return fluid != null ? InventoryType.FLUID : InventoryType.ITEM;
+		}
+
+		private static ItemStack fromJson(JsonElement elm) throws NBTException {
 			if(elm.isJsonPrimitive()){
 				return new ItemStack(Item.getByNameOrId(elm.getAsString()));
 			}
@@ -193,6 +277,28 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				return stack;
 			}
+		}
+		
+	}
+	
+	public static class OutputWrapper {
+
+		protected ItemStack stack;
+		protected FluidStack fluid;
+		protected boolean overflow;
+		
+		public OutputWrapper(JsonObject obj) throws NBTException {
+			if(obj.has("fluid")){
+				fluid = new FluidStack(FluidRegistry.getFluid(obj.get("fluid").getAsString()), obj.get("amount").getAsInt());
+			}
+			else if(obj.has("item")){
+				stack = InputWrapper.fromJson(obj.get("item"));
+			}
+			overflow = obj.has("overflow") ? obj.get("overflow").getAsBoolean() : false;
+		}
+
+		public InventoryType getInventoryType(){
+			return fluid != null ? InventoryType.FLUID : InventoryType.ITEM;
 		}
 		
 	}

@@ -255,7 +255,7 @@ public class M_4ROT_TE extends BlockBase {
 		private MultiBlockData getMultiBlockDataFromCore(){
 			if(reference != null) return reference.getMultiBlockData();
 			if(core == null){
-				Print.debug("no core from");
+				//Print.debug("no core from");
 				return null;
 			}
 			TileEntity tile = (TileEntity)world.getTileEntity(core);
@@ -264,10 +264,10 @@ public class M_4ROT_TE extends BlockBase {
 
 		public void setup(){
 			if(data == null || data.getMultiBlockData() == null){
-				Print.debug("data is null");
+				//Print.debug("data is null");
 				return;
 			}
-			Print.debug("data is NOT null");
+			//Print.debug("data is NOT null");
 			world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
 		}
 		
@@ -297,11 +297,11 @@ public class M_4ROT_TE extends BlockBase {
 	    private void loadCapabilities(){
 	    	MultiBlockData data = getMultiBlockData();
 	    	if(data == null){
-	    		Print.debug("no data");
+	    		//Print.debug("no data");
 	    		return;
 	    	}
 	    	if(reference == null){
-	    		Print.debug("no core");
+	    		//Print.debug("no core");
 	    		return;
 	    	}
 			data.getType().getCapabilities(data, EnumFacing.byIndex(reference.getBlockMetadata()), pos, isCore() ? pos : getCore(), capabilities = new HashMap<>());

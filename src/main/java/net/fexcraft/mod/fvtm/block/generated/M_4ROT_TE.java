@@ -158,15 +158,29 @@ public class M_4ROT_TE extends BlockBase {
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state){
     	if(!world.isRemote){
-    		processBreak(world, pos, state);
+    		processBreak(world, pos, true);
         }
         super.breakBlock(world, pos, state);
     }
     
-	public static void processBreak(World world, BlockPos pos, IBlockState state){
-		MultiBlockData data = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos);
-		if(data == null) return;
-		ArrayList<BlockPos> positions = data.getType().getPositions(data.getData().getType(), pos, state.getValue(FACING));
+	public static void processBreak(World world, BlockPos pos, boolean hastile){
+		TileEntity broken = hastile ? (TileEntity)world.getTileEntity(pos) : null;
+		MultiBlockData data = broken == null ? world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos) : broken.getMultiBlockData();
+		if(data == null){
+			//Print.debug("Multiblock at " + pos + " not found!");
+			return;
+		}
+		BlockPos corepos = broken == null ? world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos) : broken.getCore();
+		IBlockState core = world.getBlockState(corepos);
+		if(core == null){
+			//Print.debug("Multiblock at " + pos + " has no core!");
+			return;
+		}
+		if(core.getBlock() instanceof M_4ROT_TE == false){
+			//Print.debug("Block at " + pos + "is NOT a MultiBlock! " + core);
+			return;
+		}
+		ArrayList<BlockPos> positions = data.getType().getPositions(data.getData().getType(), corepos, core.getValue(FACING));
 		positions.forEach(blkpos -> {
 			IBlockState posstate = world.getBlockState(blkpos);
 			if(posstate.getBlock() instanceof M_4ROT_TE || posstate.getBlock() instanceof M_4ROT){
@@ -181,6 +195,7 @@ public class M_4ROT_TE extends BlockBase {
 	            world.setBlockState(blkpos, Blocks.AIR.getDefaultState());
 			}
 		});
+		//Print.debug("Removed MultiBlock at " + corepos + " / " + pos);
 	}
 
 	@Override
@@ -259,7 +274,8 @@ public class M_4ROT_TE extends BlockBase {
 				return null;
 			}
 			TileEntity tile = (TileEntity)world.getTileEntity(core);
-			return (reference = (tile == null ? null : tile)).getMultiBlockData();
+			reference = (tile == null ? null : tile);
+			return reference == null ? null : reference.getMultiBlockData();
 		}
 
 		public void setup(){

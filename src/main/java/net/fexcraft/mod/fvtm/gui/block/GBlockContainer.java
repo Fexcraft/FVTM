@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
+import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,6 +23,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class GBlockContainer extends GenericContainer {
 
@@ -31,7 +33,8 @@ public class GBlockContainer extends GenericContainer {
 	protected M_4ROT_TE.TileEntity tile;
 	//
 	protected String inv_id;
-	protected GenericIInventory temp, fluid_io;
+	protected ItemStackHandler temp;
+	protected GenericIInventory fluid_io;
 	protected int empty_index = -1, page, slots;
 	protected long fluid_date;
 	protected InventoryType invtype;
@@ -81,15 +84,16 @@ public class GBlockContainer extends GenericContainer {
 				break;
 			}
 			case ITEM:{
-				temp = new GenericIInventory(tile.getMultiBlockData().getInventory(inv_id), 0, 64);
+				temp = new ItemStackHandler(tile.getMultiBlockData().getInventory(inv_id));
+				int size = tile.getMultiBlockData().getInventory(inv_id).size();
 				for(int row = 0; row < 6; row++){
 					for(int col = 0; col < 13; col++){
-						int index = (col + row * 12) + (page * 78);
-						if(index >= temp.getSizeInventory()){
-							if(empty_index == -1) empty_index = (col + row * 12);
+						int index = (col + row * 13) + (page * 78);
+						if(index >= size){
+							if(empty_index == -1) empty_index = index;
 							break;
 						}
-						addSlotToContainer(new Slot(temp, index, 8 + col * 18, 22 + row * 18));
+						addSlotToContainer(new SlotItemHandler(temp, index, 8 + col * 18, 22 + row * 18));
 						slots++;
 					}
 				}
@@ -200,6 +204,19 @@ public class GBlockContainer extends GenericContainer {
 				}
 			}
 		}
+		//
+        for(int i = 0; i < this.inventorySlots.size(); ++i){
+            ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack();
+            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
+            if(!ItemStack.areItemStacksEqual(itemstack1, itemstack)){
+                boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
+                itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
+                this.inventoryItemStacks.set(i, itemstack1);
+                if(clientStackChanged){
+                	if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, i, itemstack1));
+                }
+            }
+        }
 	}
 
 }

@@ -68,7 +68,7 @@ public class GBlockInventory extends GenericGui<GBlockContainer> {
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
 		if(container.empty_index != -1){
 			for(int y = 0; y < 6; y++){
-				for(int x = 0; x < 13; x++){ if((x + y * 12) < container.empty_index) continue;
+				for(int x = 0; x < 13; x++){ if((x + y * 13) < container.empty_index) continue;
 					drawTexturedModalRect(guiLeft + 7 + x * 18, guiTop + 21 + y * 18, 0, 238, 18, 18);
 				}
 			}

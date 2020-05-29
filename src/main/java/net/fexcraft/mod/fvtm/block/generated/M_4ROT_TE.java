@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.gui.ServerReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
+import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -106,6 +107,9 @@ public class M_4ROT_TE extends BlockBase {
     }
 
     protected static void openInventory(EntityPlayer player, String target, BlockPos corepos){
+    	TileEntity core = (TileEntity)player.world.getTileEntity(corepos);
+    	ApiUtil.sendTileEntityUpdatePacket(core, core.writeToNBT(new NBTTagCompound()), 256);
+    	//
     	NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("inventory", target);
 		NBTTagCompound compound = new NBTTagCompound();
@@ -176,7 +180,7 @@ public class M_4ROT_TE extends BlockBase {
 		return type.getMultiBlock() != null && type.getMultiBlock().isTickable() ? new M_4ROT_TE.TickableTE(this) : new M_4ROT_TE.TileEntity(this);
 	}
 	
-	public static class TileEntity extends BlockBase.TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
+	public static class TileEntity extends BlockBase.TileEntity {
 		
 		public List<MB_Trigger> triggers;
 		private TileEntity reference;
@@ -213,6 +217,10 @@ public class M_4ROT_TE extends BlockBase {
 		
 		private MultiBlockData getMultiBlockDataFromCore(){
 			if(reference != null) return reference.getMultiBlockData();
+			if(core == null){
+				Print.debug("no core from");
+				return null;
+			}
 			TileEntity tile = (TileEntity)world.getTileEntity(core);
 			return (reference = (tile == null ? null : tile)).getMultiBlockData();
 		}
@@ -237,7 +245,7 @@ public class M_4ROT_TE extends BlockBase {
 	    public void readFromNBT(NBTTagCompound compound){
 	        super.readFromNBT(compound);
 	        if(compound.hasKey("MultiBlockCore")) core = BlockPos.fromLong(compound.getLong("MultiBlockCore"));
-	        iscore = core == null;
+	        if(iscore = core == null) reference = this;
 	    }
 
 	    @Override

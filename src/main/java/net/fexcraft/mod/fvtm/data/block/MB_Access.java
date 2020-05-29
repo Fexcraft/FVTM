@@ -10,7 +10,6 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
-import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -64,17 +63,18 @@ public class MB_Access {
 		return sidefrom;
 	}
 
-	public void fill(MultiBlockData data, EnumFacing facing, Map<EnumFacing, List<CapabilityContainer>> capabilities){
+	public void fill(MultiBlockData data, EnumFacing facing, EnumFacing rotateby, Map<EnumFacing, List<CapabilityContainer>> capabilities){
 		if(facing == null){
 			if(sidefrom == null){
 				for(EnumFacing face : EnumFacing.VALUES){
-					fill(data, face, capabilities);
+					fill(data, face, rotateby, capabilities);
 				}
 			}
-			else fill(data, sidefrom, capabilities);
+			else fill(data, sidefrom, rotateby, capabilities);
 			return;
 		}
 		Print.debug("filling " + facing);
+		facing = MultiBlock.rotate(facing, rotateby);
 		if(!capabilities.containsKey(facing)) capabilities.put(facing, new ArrayList<>());
 		InventoryType type = data.getType().getInventoryTypes().get(target);
 		Capability<?> cap = null;
@@ -89,7 +89,7 @@ public class MB_Access {
 				break;
 			case ITEM:
 				cap = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-				value = new ItemStackHandler(data.getInventory(target));
+				value = data.getInventoryHandler(target);
 				break;
 			default: return;
 			

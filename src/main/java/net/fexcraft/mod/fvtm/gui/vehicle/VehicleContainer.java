@@ -141,9 +141,13 @@ public class VehicleContainer extends GenericContainer {
 				temp = new TIFI(invpart, function);
 		        for(int row = 0; row < 6; row++){
 		            for(int col = 0; col < 13; col++){
-		                int index = (col + row * 12) + (page * 78);
-		                if(index >= temp.getSizeInventory()){ if(empty_index == -1) empty_index = (col + row * 12); break; }
-		                addSlotToContainer(new TIS(temp, index, 8 + col * 18, 22 + row * 18, temp.getData(), null)); slots++;
+		                int index = (col + row * 13) + (page * 78);
+						if(index >= temp.getSizeInventory()){
+							if(empty_index == -1) empty_index = index;
+							break;
+						}
+						addSlotToContainer(new TIS(temp, index, 8 + col * 18, 22 + row * 18, temp.getData(), null));
+						slots++;
 		            }
 		        }
 		        //

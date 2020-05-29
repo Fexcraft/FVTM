@@ -186,6 +186,24 @@ public class MultiBlock {
 		}
 	}
 
+	public static EnumFacing rotate(EnumFacing facing, EnumFacing rotateby){
+		if(facing.getAxis() == EnumFacing.Axis.Y) return facing;
+		switch(rotateby){
+			case EAST:
+				return facing.rotateY();
+			case SOUTH:
+				return facing.getOpposite();
+			case WEST:
+				return facing.rotateYCCW();
+			case NORTH:
+			case DOWN:
+			case UP:
+			default:
+				return facing;
+			
+		}
+	}
+
 	public boolean isTickable(){
 		return tickable;
 	}
@@ -209,7 +227,7 @@ public class MultiBlock {
 		access.forEach(access -> {
 			if(access.getBlockPos().equals(rpos)){
 				Print.debug("found " + rpos);
-				access.fill(data, null, capabilities);
+				access.fill(data, null, facing, capabilities);
 			}
 		});
 	}

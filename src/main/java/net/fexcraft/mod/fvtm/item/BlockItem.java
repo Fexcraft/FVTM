@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -123,7 +122,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
             for(int i = 0; i < poslist.size(); i++){
             	net.minecraft.block.Block block = net.minecraft.block.Block.REGISTRY.getObject(multi.getBlocks().get(i).getKey());
             	IBlockState state = block.getDefaultState().withProperty(Properties.FACING, multi.getBlocks().get(i).getValue());
-                state.getBlock().onBlockPlacedBy(world, poslist.get(i), state.withProperty(ContainerBlock.FACING, player.getHorizontalFacing()), player, stack);
+                state.getBlock().onBlockPlacedBy(world, poslist.get(i), state.withProperty(Properties.FACING, player.getHorizontalFacing()), player, stack);
             }
             stack.shrink(1);
             return EnumActionResult.SUCCESS;

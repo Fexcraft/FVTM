@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
+import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -22,6 +23,7 @@ public class MultiBlockData {
 	
 	private MultiBlock type;
 	private LinkedHashMap<String, NonNullList<ItemStack>> inventories = new LinkedHashMap<>();
+	private LinkedHashMap<String, ItemStackHandler> inv_handlers = new LinkedHashMap<>();
 	private LinkedHashMap<String, ContentFilter> invfilters = new LinkedHashMap<>();
 	private LinkedHashMap<String, FluidTank> tanks = new LinkedHashMap<>();
 	private BlockScript script;
@@ -108,6 +110,14 @@ public class MultiBlockData {
 	
 	public BlockData getData(){
 		return data;
+	}
+
+	public ItemStackHandler getInventoryHandler(String inv_id){
+		if(!inventories.containsKey(inv_id)) return null;
+		if(!inv_handlers.containsKey(inv_id)){
+			inv_handlers.put(inv_id, new ItemStackHandler(inventories.get(inv_id)));
+		}
+		return inv_handlers.get(inv_id);
 	}
 
 }

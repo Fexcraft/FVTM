@@ -88,16 +88,17 @@ public class M_4ROT_TE extends BlockBase {
     protected static boolean processTriggers(List<MB_Trigger> triggers, MultiBlockData data, BlockPos core, EntityPlayer player, EnumHand hand, IBlockState state, BlockPos pos, EnumFacing side, float x, float y, float z){
     	for(MB_Trigger trigger : triggers){
         	boolean pass = trigger.isWholeBlock();
+        	IBlockState corestate = player.world.getBlockState(core);
         	Vec3d hit = new Vec3d(x, y, z);
         	if(!pass && trigger.getBB() != null) pass = trigger.getBB().contains(hit);//TODO aabb rotation
-        	if(!pass && trigger.getSide() != null) pass = trigger.getSide(state.getValue(FACING)) == side;
+        	if(!pass && trigger.getSide() != null) pass = trigger.getSide(corestate.getValue(FACING)) == side;
         	if(pass){
         		if(trigger.forInventory()){
         			openInventory(player, trigger.getTarget(), core);
         			return true;
         		}
         		if(trigger.forScript() && data.getScript() != null){
-        			data.getScript().onTrigger(data, trigger, player, hand, pos, state, side, hit);
+        			data.getScript().onTrigger(data, trigger, player, hand, core, pos, side, hit);
         			return true;
         		}
         	}
@@ -204,7 +205,7 @@ public class M_4ROT_TE extends BlockBase {
 		}
 		
 		public BlockPos getCore(){
-			return core;
+			return iscore ? pos : core;
 		}
 		
 		public boolean isCore(){

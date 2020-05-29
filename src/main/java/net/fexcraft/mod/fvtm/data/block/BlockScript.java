@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -22,6 +21,6 @@ public interface BlockScript {
 
 	public void onUpdate(TickableTE tickableTE);
 
-	public void onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos pos, IBlockState state, EnumFacing side, Vec3d hit);
+	public void onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit);
 
 }

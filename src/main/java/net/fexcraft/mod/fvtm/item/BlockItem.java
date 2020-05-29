@@ -121,8 +121,9 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
             MultiBlock multi = type.getMultiBlock();
             for(int i = 0; i < poslist.size(); i++){
             	net.minecraft.block.Block block = net.minecraft.block.Block.REGISTRY.getObject(multi.getBlocks().get(i).getKey());
-            	IBlockState state = block.getDefaultState().withProperty(Properties.FACING, multi.getBlocks().get(i).getValue());
-                state.getBlock().onBlockPlacedBy(world, poslist.get(i), state.withProperty(Properties.FACING, player.getHorizontalFacing()), player, stack);
+            	EnumFacing facing = player.getHorizontalFacing();
+            	IBlockState state = block.getDefaultState().withProperty(Properties.FACING, MultiBlock.rotate(multi.getBlocks().get(i).getValue(), facing));
+                state.getBlock().onBlockPlacedBy(world, poslist.get(i), state.withProperty(Properties.FACING, facing), player, stack);
             }
             stack.shrink(1);
             return EnumActionResult.SUCCESS;

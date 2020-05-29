@@ -15,7 +15,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
@@ -226,7 +225,7 @@ public class MultiBlock {
 		BlockPos rpos = pos;
 		access.forEach(access -> {
 			if(access.getBlockPos().equals(rpos)){
-				Print.debug("found " + rpos);
+				//Print.debug("found " + rpos);
 				access.fill(data, null, facing, capabilities);
 			}
 		});

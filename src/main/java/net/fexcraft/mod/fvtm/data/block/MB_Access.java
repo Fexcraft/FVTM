@@ -73,7 +73,7 @@ public class MB_Access {
 			else fill(data, sidefrom, rotateby, capabilities);
 			return;
 		}
-		Print.debug("filling " + facing);
+		//Print.debug("filling " + facing);
 		facing = MultiBlock.rotate(facing, rotateby);
 		if(!capabilities.containsKey(facing)) capabilities.put(facing, new ArrayList<>());
 		InventoryType type = data.getType().getInventoryTypes().get(target);

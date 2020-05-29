@@ -211,6 +211,11 @@ public class M_4ROT_TE extends BlockBase {
         TileEntity tile = our.iscore ? our : our.reference;
         return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
     }
+    
+    @Override
+    public boolean isReplaceable(IBlockAccess world, BlockPos pos){
+        return false;
+    }
 	
 	public static class TileEntity extends BlockBase.TileEntity {
 		

@@ -126,6 +126,11 @@ public class M_4ROT extends PlainBase {
         TileEntity tile = (TileEntity)world.getTileEntity(world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos));
         return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
     }
+    
+    @Override
+    public boolean isReplaceable(IBlockAccess world, BlockPos pos){
+        return false;
+    }
 
 }
 

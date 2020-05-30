@@ -77,5 +77,11 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 		heat -= amount;
 		return true;
 	}
+	
+	@Override
+	public int getConsumable(String id){
+		if(id.equals("heat")) return heat;
+		return 0;
+	}
 
 }

@@ -148,7 +148,9 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public abstract boolean update_client();
 	
-	public abstract boolean consume(String value, int amount, boolean simulate);
+	public abstract boolean consume(String id, int amount, boolean simulate);
+	
+	public abstract int getConsumable(String id);
 	
 	public static class Recipe {
 		

@@ -73,13 +73,18 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public boolean consume(String value, int amount, boolean simulate){
+	public boolean consume(String id, int amount, boolean simulate){
 		return true;
 	}
 
 	@Override
 	public int process_time(){
 		return process_time;
+	}
+
+	@Override
+	public int getConsumable(String id){
+		return 0;
 	}
 
 }

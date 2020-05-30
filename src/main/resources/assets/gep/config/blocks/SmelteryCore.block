@@ -119,7 +119,7 @@
     			"target": "input"
     		}
     	],
-    	"Script": "net.fexcraft.mod.fvtm.util.script.DefaultCraftBlockScript.class",
+    	"Script": "net.fexcraft.mod.addons.gep.scripts.SmelteryScript.class",
     	"ScriptData":{
     		"auto_recipe_chooser": true,
     		"instant": false,
@@ -127,7 +127,8 @@
     		"process_speed": 1,
     		"cooldown_speed": 1,
     		"update_client": false,
-    		"process_time": 200
+    		"process_time": 200,
+    		"heat_per_tick": 10
     	},
     	"Tickable": true
     }

@@ -57,21 +57,21 @@ public abstract class CraftBlockScript implements BlockScript {
 		if(autosel != null) compound.setString("auto_selected", autosel.id);
 		compound.setInteger("cooldown", cooldown);
 		compound.setInteger("processed", processed);
-		return null;
+		return compound;
 	}
 
 	@Override
 	public void onUpdate(TickableTE tile){
 		if(tile.getWorld().isRemote) return;
+		if(!ready(tile)){
+			prepare(tile);
+			return;
+		}
+		running(tile);
 		if(cooldown > 0){
 			cooldown -= cooldown_speed();
 			return;
 		}
-		if(!ready()){
-			prepare();
-			return;
-		}
-		running();
 		if(selected != null){
 			tryCrafting(tile, selected);
 			return;
@@ -112,6 +112,10 @@ public abstract class CraftBlockScript implements BlockScript {
 	protected void addCooldown(){
 		cooldown += cooldown();
 	}
+	
+	protected boolean isCoolingDown(){
+		return cooldown > 0;
+	}
 
 	@Override
 	public void onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
@@ -128,13 +132,13 @@ public abstract class CraftBlockScript implements BlockScript {
 	public abstract boolean instant();
 	
 	/** If this block is ready to process recipes. */
-	public abstract boolean ready();
+	public abstract boolean ready(TickableTE tile);
 
 	/** If the block returned not to be ready this method is called and further recipe processing skipped.*/
-	public abstract void prepare();
+	public abstract void prepare(TickableTE tile);
 
 	/** This method is called after the ready check and before recipes are processed. */
-	public abstract void running();
+	public abstract void running(TickableTE tile);
 	
 	public abstract int process_speed();
 	

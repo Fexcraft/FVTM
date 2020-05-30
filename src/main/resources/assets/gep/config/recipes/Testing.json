@@ -15,15 +15,18 @@
 				{
 					"inventory": "output",
 					"item": "gep:glue",
-					"amount": 1,
-					"overflow": false
+					"amount": 1
 				},
 				{
 					"inventory": "tank",
 					"fluid": "lava",
-					"amount": 20
+					"amount": 20,
+					"overflow": true
 				}
 			],
+			"consume": {
+				"heat": 100
+			},
 			"craft_time": 100
 		}
 	]

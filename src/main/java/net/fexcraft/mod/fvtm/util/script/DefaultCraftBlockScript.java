@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.script;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 
 /**
@@ -42,7 +43,7 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public boolean ready(){
+	public boolean ready(TickableTE tile){
 		return true;
 	}
 
@@ -62,12 +63,12 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public void prepare(){
+	public void prepare(TickableTE tile){
 		//
 	}
 
 	@Override
-	public void running(){
+	public void running(TickableTE tile){
 		//
 	}
 

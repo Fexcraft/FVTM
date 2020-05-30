@@ -23,6 +23,7 @@ import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -316,28 +317,85 @@ public class Addon extends TypeCore<Addon> {
 			if(!file.isDirectory()) return;
 			//
 			File folder = new File(file, "assets/" + registryname.getPath() + "/config/presets/");
-			if(!folder.exists()){ folder.mkdirs(); }
+			if(!folder.exists()){
+				folder.mkdirs();
+			}
 			ArrayList<File> candidates = findFiles(folder, ".json");
 			for(File file : candidates){
 				try{
-					JsonObject obj = JsonUtil.get(file); if(obj.entrySet().isEmpty()) continue;
+					JsonObject obj = JsonUtil.get(file);
+					if(obj.entrySet().isEmpty()) continue;
 					Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
 					VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
-					data.read(JsonToNBT.getTagFromJson(obj.toString())); data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
+					data.read(JsonToNBT.getTagFromJson(obj.toString()));
+					data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
 					PresetTab.INSTANCE.add(data.newItemStack());
-				} catch(Exception e){ e.printStackTrace(); }
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
-		else{ //assume it's a jar.
+		else{ // assume it's a jar.
 			JsonArray array = ZipUtil.getJsonObjectsAt(file, "assets/" + registryname.getPath() + "/config/presets/", ".json");
 			for(JsonElement elm : array){
 				try{
-					JsonObject obj = elm.getAsJsonObject(); if(obj.entrySet().isEmpty()) continue;
+					JsonObject obj = elm.getAsJsonObject();
+					if(obj.entrySet().isEmpty()) continue;
 					Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
 					VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
-					data.read(JsonToNBT.getTagFromJson(obj.toString())); data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
+					data.read(JsonToNBT.getTagFromJson(obj.toString()));
+					data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
 					PresetTab.INSTANCE.add(data.newItemStack());
-				} catch(Exception e){ e.printStackTrace(); }
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public void loadRecipes(){
+		if(!this.isEnabled()){
+			Print.log("Skipping RECIPE search for Addon '" + registryname.toString() + "' since it's marked as not enabled!");
+			return;
+		}
+		if(contype == ContainerType.DIR){
+			if(!file.isDirectory()) return;
+			//
+			File folder = new File(file, "assets/" + registryname.getPath() + "/config/recipes/");
+			if(!folder.exists()){
+				folder.mkdirs();
+			}
+			ArrayList<File> candidates = findFiles(folder, ".json");
+			for(File file : candidates){
+				try{
+					JsonObject obj = JsonUtil.get(file);
+					if(obj.entrySet().isEmpty()) continue;
+					boolean override = JsonUtil.getIfExists(obj, "OverrideExisting", false);
+					if(obj.has("Recipes")){
+						CraftBlockScript.parseRecipes(this, file.getName(), override, obj.get("Recipes").getAsJsonArray());
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		else{ // assume it's a jar.
+			JsonArray array = ZipUtil.getJsonObjectsAt(file, "assets/" + registryname.getPath() + "/config/presets/", ".json");
+			for(JsonElement elm : array){
+				try{
+					JsonObject obj = elm.getAsJsonObject();
+					if(obj.entrySet().isEmpty()) continue;
+					boolean override = JsonUtil.getIfExists(obj, "OverrideExisting", false);
+					if(obj.has("Recipes")){
+						CraftBlockScript.parseRecipes(this, "ZIPENTRY", override, obj.get("Recipes").getAsJsonArray());
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
 	}

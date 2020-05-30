@@ -215,6 +215,7 @@ public class FVTM {
 		Resources.CONSUMABLES.getValuesCollection().forEach(con -> con.linkContainerItem());
 		Resources.CONSUMABLES.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
 		Resources.BLOCKS.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
+		Resources.loadRecipes();
 		Resources.loadPresets();
 		//
 		GuiHandler.register(MODID, this);

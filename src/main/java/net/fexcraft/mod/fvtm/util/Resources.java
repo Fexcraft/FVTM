@@ -188,6 +188,12 @@ public class Resources {
 		}
 	}
 
+	public static void loadRecipes(){
+		for(Addon addon : ADDONS.getValuesCollection()){
+			addon.loadRecipes();
+		}
+	}
+
 	private void registerFunctions(){
 		registerFunction("fvtm:wheel", WheelFunction.class, true);
 		registerFunction("fvtm:wheel_positions", WheelPositionsFunction.class, true);

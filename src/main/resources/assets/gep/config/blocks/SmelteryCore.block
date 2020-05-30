@@ -119,7 +119,16 @@
     			"target": "input"
     		}
     	],
-    	"Script0": "net.fexcraft.mod.accons.gep.scripts.BlockTestScript.class",
+    	"Script": "net.fexcraft.mod.fvtm.util.script.DefaultCraftBlockScript.class",
+    	"ScriptData":{
+    		"auto_recipe_chooser": true,
+    		"instant": false,
+    		"cooldown": 100,
+    		"process_speed": 1,
+    		"cooldown_speed": 1,
+    		"update_client": false,
+    		"process_time": 200
+    	},
     	"Tickable": true
     }
 }

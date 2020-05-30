@@ -9,8 +9,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
 import net.fexcraft.mod.fvtm.data.InventoryType;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -359,6 +361,24 @@ public abstract class CraftBlockScript implements BlockScript {
 			return fluid != null ? InventoryType.FLUID : InventoryType.ITEM;
 		}
 		
+	}
+
+	public static void parseRecipes(Addon addon, String filename, boolean override, JsonArray array){
+		for(JsonElement elm : array){
+			try{
+				Recipe recipe = new Recipe(elm.getAsJsonObject());
+				if(!override && RECIPE_REGISTRY.containsKey(recipe.id)){
+					Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), recipe.id, filename));
+					continue;
+				}
+				RECIPE_REGISTRY.put(recipe.id, recipe);
+				if(!SORTED_REGISTRY.containsKey(recipe.targetmachine)) SORTED_REGISTRY.put(recipe.targetmachine, new ArrayList<>());
+				SORTED_REGISTRY.get(recipe.targetmachine).add(recipe);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

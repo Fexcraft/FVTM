@@ -1,0 +1,30 @@
+{
+	"OverrideExisting": false,
+	"Recipes": [
+		{
+			"block": "gep:smeltery_core",
+			"id": "testing_glue",
+			"input":[
+				{
+					"inventory": "input",
+					"item": "minecraft:slime_ball",
+					"amount": 1
+				}
+			],
+			"output":[
+				{
+					"inventory": "output",
+					"item": "gep:glue",
+					"amount": 1,
+					"overflow": false
+				},
+				{
+					"inventory": "tank",
+					"fluid": "lava",
+					"amount": 20
+				}
+			],
+			"craft_time": 100
+		}
+	]
+}

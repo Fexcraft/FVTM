@@ -62,6 +62,7 @@ public abstract class CraftBlockScript implements BlockScript {
 
 	@Override
 	public void onUpdate(TickableTE tile){
+		if(tile.getWorld().isRemote) return;
 		if(cooldown > 0){
 			cooldown -= cooldown_speed();
 			return;
@@ -79,7 +80,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			searchForRecipe(tile.getMultiBlockData());
 		}
 		if(autosel != null){
-			tryCrafting(tile, selected);
+			tryCrafting(tile, autosel);
 			return;
 		}
 		addCooldown();
@@ -374,6 +375,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				RECIPE_REGISTRY.put(recipe.id, recipe);
 				if(!SORTED_REGISTRY.containsKey(recipe.targetmachine)) SORTED_REGISTRY.put(recipe.targetmachine, new ArrayList<>());
 				SORTED_REGISTRY.get(recipe.targetmachine).add(recipe);
+				Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
 			}
 			catch(Exception e){
 				e.printStackTrace();

@@ -74,7 +74,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			return;
 		}
 		if(autoRecipeChooser() && (autosel == null || !autosel.canCraft(this, tile.getMultiBlockData()))){
-			searchForRecipe();
+			searchForRecipe(tile.getMultiBlockData());
 		}
 		if(autosel != null){
 			tryCrafting(tile, selected);
@@ -96,8 +96,14 @@ public abstract class CraftBlockScript implements BlockScript {
 		processed = 0;
 	}
 
-	protected void searchForRecipe(){
-		//TODO
+	protected void searchForRecipe(MultiBlockData multidata){
+		ArrayList<Recipe> recipes = SORTED_REGISTRY.get(multidata.getData().getType().getRegistryName().toString());
+		if(recipes == null || recipes.isEmpty()) return;
+		for(Recipe recipe : recipes){
+			if(recipe.canCraft(this, multidata)){
+				autosel = recipe;
+			}
+		}
 	}
 
 	protected void addCooldown(){

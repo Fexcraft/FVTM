@@ -39,7 +39,7 @@ import net.fexcraft.mod.fvtm.entity.StreetSign;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
-import net.fexcraft.mod.fvtm.gui.block.GBlockContainer;
+import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
@@ -253,7 +253,7 @@ public class FVTM {
 			GuiHandler.insert(941, ContainerItemInventory.class, ContainerInvContainer.class);
 			GuiHandler.insert(942, ContainerFluidInventory.class, ContainerInvContainer.class);
 			//
-			GuiHandler.insert(951, GBlockInventory.class, GBlockContainer.class);
+			GuiHandler.insert(951, GBlockInventory.class, GBlockInvContainer.class);
 		}
 		else{
 			GuiHandler.insert(700, StreetSignAdjusterContainer.class);
@@ -281,7 +281,7 @@ public class FVTM {
 			GuiHandler.insert(941, ContainerInvContainer.class);
 			GuiHandler.insert(942, ContainerInvContainer.class);
 			//
-			GuiHandler.insert(951, GBlockContainer.class);
+			GuiHandler.insert(951, GBlockInvContainer.class);
 		}
 	}
 

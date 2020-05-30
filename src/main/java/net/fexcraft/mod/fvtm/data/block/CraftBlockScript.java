@@ -118,10 +118,10 @@ public abstract class CraftBlockScript implements BlockScript {
 	}
 
 	@Override
-	public void onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
+	public boolean onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
 		switch(trigger.getTarget()){
 			//TODO
-			default: return;
+			default: return false;
 		}
 	}
 	

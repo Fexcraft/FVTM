@@ -25,9 +25,9 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class GBlockContainer extends GenericContainer {
+public class GBlockInvContainer extends GenericContainer {
 
-	protected GenericGui<GBlockContainer> gui;
+	protected GenericGui<GBlockInvContainer> gui;
 	@Nullable
 	protected NBTTagCompound initpacket;
 	protected M_4ROT_TE.TileEntity tile;
@@ -44,11 +44,11 @@ public class GBlockContainer extends GenericContainer {
 	protected String slotid;
 	protected Entity entity;
 
-	public GBlockContainer(EntityPlayer player, World world, int x, int y, int z){
+	public GBlockInvContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
 	}
 
-	public GBlockContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
+	public GBlockInvContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
 		super(player);
 		initpacket = compound;
 		tile = (M_4ROT_TE.TileEntity)player.world.getTileEntity(new BlockPos(xyz[0], xyz[1], xyz[2]));

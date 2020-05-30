@@ -2,10 +2,17 @@ package net.fexcraft.mod.addons.gep.scripts;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
+import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.util.script.DefaultCraftBlockScript;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class SmelteryScript extends DefaultCraftBlockScript {
 	
@@ -52,6 +59,16 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 		if(isCoolingDown()) coolby /= 2;
 		if(coolby <= 0) return;
 		heat -= coolby;
+	}
+
+	@Override
+	public boolean onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
+		if(trigger.getTarget().equals("open")){
+			open = !open;
+			Print.chat(player, "state:" + open);
+			return true;
+		}
+		return super.onTrigger(data, trigger, player, hand, core, pos, side, hit);
 	}
 	
 	@Override

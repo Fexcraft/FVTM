@@ -8,13 +8,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class GBlockInventory extends GenericGui<GBlockContainer> {
+public class GBlockInventory extends GenericGui<GBlockInvContainer> {
 	
 	private static final ResourceLocation texture_item = new ResourceLocation("fvtm:textures/gui/vehicle_item_inventory.png");
 	private static final ResourceLocation texture_fluid = new ResourceLocation("fvtm:textures/gui/vehicle_fluid_inventory.png");
 	
 	public GBlockInventory(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(texture_item, new GBlockContainer(player, xyz, compound), player);
+		super(texture_item, new GBlockInvContainer(player, xyz, compound), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		switch(container.invtype){
 			case CONTAINER:

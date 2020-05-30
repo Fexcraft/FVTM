@@ -85,7 +85,15 @@ public abstract class CraftBlockScript implements BlockScript {
 
 	protected void tryCrafting(TickableTE tile, Recipe recipe){
 		if(!recipe.canCraft(this, tile.getMultiBlockData())) return;
-		//
+		if(!instant()){
+			int question = recipe.crafttime == 0 ? process_time() : recipe.crafttime;
+			if(processed < question){
+				processed += process_speed();
+				return;
+			}
+		}
+		recipe.craft(this, tile.getMultiBlockData());
+		processed = 0;
 	}
 
 	protected void searchForRecipe(){
@@ -121,9 +129,13 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public abstract int process_speed();
 	
+	public abstract int process_time();
+	
 	public abstract int cooldown_speed();
 	
 	public abstract boolean update_client();
+	
+	public abstract boolean consume(String value, int amount, boolean simulate);
 	
 	public static class Recipe {
 		
@@ -152,8 +164,45 @@ public abstract class CraftBlockScript implements BlockScript {
 					consume.put(entry.getKey(), entry.getValue().getAsInt());
 				});
 			}
-			crafttime = obj.has("craft_time") ? obj.get("craft_time").getAsInt() : 20;
+			crafttime = obj.has("craft_time") ? obj.get("craft_time").getAsInt() : 0;
 			id = obj.get("id").getAsString();
+		}
+
+		public void craft(CraftBlockScript script, MultiBlockData data){
+			for(Entry<String, Integer> cons : consume.entrySet()){
+				script.consume(cons.getKey(), cons.getValue(), false);
+			}
+			for(Entry<String, InputWrapper> entry : input.entrySet()){
+				InventoryType local = entry.getValue().getInventoryType();
+				if(local.isFluid()){
+					data.getFluidTank(entry.getKey()).drain(entry.getValue().fluid, true);
+				}
+				else{
+					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
+					for(int i = 0; i < handler.getSlots(); i++){
+						ItemStack stack = handler.getStackInSlot(i);
+						if(entry.getValue().ingredient.apply(stack) && stack.getCount() >= entry.getValue().amount){
+							handler.extractItem(i, entry.getValue().amount, false);
+							break;
+						}
+					}
+				}
+			}
+			for(Entry<String, OutputWrapper> entry : output.entrySet()){
+				InventoryType local = entry.getValue().getInventoryType();
+				if(local.isFluid()){
+					data.getFluidTank(entry.getKey()).fill(entry.getValue().fluid, true);
+				}
+				else{
+					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
+					ItemStack left = entry.getValue().stack;
+					for(int i = 0; i < handler.getSlots(); i++){
+						left = handler.insertItem(i, left, false);;
+						if(left.isEmpty()) break;
+					}
+				}
+			}
+			script.addCooldown();
 		}
 
 		public boolean canCraft(CraftBlockScript script, MultiBlockData data){
@@ -229,6 +278,9 @@ public abstract class CraftBlockScript implements BlockScript {
 			if(!passed){
 				script.addCooldown();
 				return false;
+			}
+			for(Entry<String, Integer> cons : consume.entrySet()){
+				if(!script.consume(cons.getKey(), cons.getValue(), true)) return false;
 			}
 			return true;
 		}

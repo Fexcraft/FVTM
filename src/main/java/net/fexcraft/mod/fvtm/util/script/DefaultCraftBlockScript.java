@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.util;
+package net.fexcraft.mod.fvtm.util.script;
 
 import com.google.gson.JsonObject;
 
@@ -14,7 +14,7 @@ import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 public class DefaultCraftBlockScript extends CraftBlockScript {
 	
 	protected boolean auto_recipe_chooser, instant, update_client;
-	protected int cooldown, process_speed, cooldown_speed;
+	protected int cooldown, process_speed, cooldown_speed, process_time;
 	
 	public DefaultCraftBlockScript(JsonObject obj){
 		auto_recipe_chooser = JsonUtil.getIfExists(obj, "auto_recipe_chooser", false);
@@ -23,6 +23,7 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 		process_speed = JsonUtil.getIfExists(obj, "process_speed", 1).intValue();
 		cooldown_speed = JsonUtil.getIfExists(obj, "cooldown_speed", 1).intValue();
 		update_client = JsonUtil.getIfExists(obj, "update_client", false);
+		process_time = JsonUtil.getIfExists(obj, "process_time", 100).intValue();
 	}
 
 	@Override
@@ -68,6 +69,16 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	@Override
 	public void running(){
 		//
+	}
+
+	@Override
+	public boolean consume(String value, int amount, boolean simulate){
+		return true;
+	}
+
+	@Override
+	public int process_time(){
+		return process_time;
 	}
 
 }

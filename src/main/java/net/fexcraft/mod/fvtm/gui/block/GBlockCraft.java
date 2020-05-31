@@ -1,7 +1,11 @@
 package net.fexcraft.mod.fvtm.gui.block;
 
+import java.util.List;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.GuiElement;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,6 +16,8 @@ import net.minecraftforge.fml.relauncher.Side;
 public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/block_craftscript.png");
+	public CraftBlockScript.GuiElement[] elements = {};
+	public List<Object[]> elementdata;
 
 	public GBlockCraft(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new GBlockCraftContainer(player, world, x, y, z), player);
@@ -19,22 +25,62 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		this.deftexrect = false;
 		container.gui = this;
 		this.xSize = 256;
-		this.ySize = 216;
-		container.init();
+		this.ySize = 176;
 	}
 
 	@Override
 	protected void init(){
 		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 192, MapColor.SNOW.colorValue, "loading...."));
-		texts.put("page", new BasicText(guiLeft + 203, guiTop + 6, 3028, MapColor.SNOW.colorValue, "0/pg"));
+		texts.put("page", new BasicText(guiLeft + 203, guiTop + 6, 28, MapColor.SNOW.colorValue, "1/pg"));
 		texts.put("status", new BasicText(guiLeft + 9, guiTop + 19, 238, MapColor.SNOW.colorValue, "loading...."));
-		texts.put("process", new BasicText(guiLeft + 9, guiTop + 33, 238, MapColor.SNOW.colorValue, "loading...."));
+		texts.put("process", new BasicText(guiLeft + 9, guiTop + 33, 136, MapColor.SNOW.colorValue, "loading...."));
 		buttons.put("prev", new BasicButton("prev", guiLeft + 233, guiTop + 6, 233, 6, 8, 8, true));
 		buttons.put("next", new BasicButton("next", guiLeft + 242, guiTop + 6, 242, 6, 8, 8, true));
 		buttons.put("choose", new BasicButton("choose", guiLeft + 7, guiTop + 45, 7, 45, 120, 12, true));
 		buttons.put("reset", new BasicButton("reset", guiLeft + 129, guiTop + 45, 129, 45, 120, 12, true));
 		texts.put("choose", new BasicText(guiLeft + 10, guiTop + 47, 114, MapColor.SNOW.colorValue, "Choose Recipe"));
 		texts.put("reset", new BasicText(guiLeft + 132, guiTop + 47, 114, MapColor.SNOW.colorValue, "Reset Recipe"));
+		initElements();
+	}
+
+	private void initElements(){
+		texts.entrySet().removeIf(entry -> entry.getKey().startsWith("e_"));
+		buttons.entrySet().removeIf(entry -> entry.getKey().startsWith("e_"));
+		//
+		List<Object[]> elms = container.script.getGuiElements();
+		if(elms == null || elms.isEmpty()){
+			elements = new GuiElement[]{};
+			elementdata = null;
+			return;
+		}
+		elements = new CraftBlockScript.GuiElement[elms.size()];
+		for(int i = 0; i < elms.size(); i++){
+			Object[] objs = elms.get(i);
+			elements[i] = (GuiElement)objs[0];
+			switch(elements[i]){
+				case BUTTONS:
+					buttons.put("e_" + i, new BasicButton("e_" + i, guiLeft + 7, guiTop + 59 + (i * 14), 7, 45, 120, 12, true));
+					texts.put("e_" + i, new BasicText(guiLeft + 10, guiTop + 61 + (i * 14), 114, MapColor.SNOW.colorValue, (String)objs[1]));
+					if(objs.length > 3){
+						buttons.put("e_" + i, new BasicButton("e_" + i, guiLeft + 129, guiTop + 59 + (i * 14), 7, 45, 120, 12, true));
+						texts.put("e_" + i, new BasicText(guiLeft + 132, guiTop + 61 + (i * 14), 114, MapColor.SNOW.colorValue, (String)objs[3]));
+					}
+					break;
+				case PROGRESS_BAR:
+					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 136, MapColor.SNOW.colorValue, (String)objs[1]));
+					texts.put("e_" + i + "v", new BasicText(guiLeft + 150, guiTop + 61 + (i * 14), 94, MapColor.SNOW.colorValue, "" + container.script.getConsumable((String)objs[2])));
+					break;
+				case TEXT:
+					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 238, MapColor.SNOW.colorValue, (String)objs[1]));
+					break;
+				case TEXT_VALUE:
+					texts.put("e_" + i, new BasicText(guiLeft + 9, guiTop + 61 + (i * 14), 238, MapColor.SNOW.colorValue, String.format((String)objs[1], container.script.getConsumable((String)objs[2]))));
+					break;
+				default:
+					break;
+			}
+		}
+		elementdata = elms;
 	}
 
 	@Override
@@ -49,14 +95,41 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, 58);
-		this.drawTexturedModalRect(guiLeft, guiTop + 58 + container.elements * 14, 0, 250, this.xSize, 6);
+		this.drawTexturedModalRect(guiLeft, guiTop + 58 + elements.length * 14, 0, 250, this.xSize, 6);
 		int proc = container.script.getCooldown() > 0 || container.script.getProcessed() <= 0 || container.crafttime == 0 ? 0 : (container.script.getProcessed() * 100) / container.crafttime;
 		if(proc > 0){
 			RGB.GREEN.glColorApply();
 			this.drawTexturedModalRect(guiLeft + 148, guiTop + 32, 148, 32, proc, 10);
 			RGB.glColorReset();
 		}
-		
+		for(int i = 0; i < elements.length; i++){
+			int offset = i * 14;
+			Object[] objs = elementdata.get(i);
+			switch(elements[i]){
+				case PROGRESS_BAR:{
+					texts.get("e_" + i + "v").string = "" + container.script.getConsumable((String)objs[2]);
+					this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 30, this.xSize, 14);
+					int max = (int)objs[3], val = container.script.getConsumable((String)objs[2]);
+					proc = max == 0 || val == 0 ? 0 : (val * 100) / max;
+					if(proc > 0){
+						(objs.length < 5 ? RGB.GREEN : (RGB)objs[4]).glColorApply();
+						this.drawTexturedModalRect(guiLeft + 148, guiTop + 60 + offset, 148, 32, proc, 10);
+						RGB.glColorReset();
+					}
+					break;
+				}
+				case TEXT_VALUE:
+					texts.get("e_" + i).string = String.format((String)objs[1], container.script.getConsumable((String)objs[2]));
+				case TEXT:
+					this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 16, this.xSize, 14);
+					break;
+				case BUTTONS:
+					this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 44, this.xSize, 14);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	@Override
@@ -87,7 +160,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		if(container.page < 0) container.page = 0;
 		texts.get("page").string = (container.page + 1) + "/pg";
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("cargo", "init");
+		compound.setString("cargo", "page");
 		compound.setInteger("page", container.page);
 		this.container.send(Side.SERVER, compound);
 	}

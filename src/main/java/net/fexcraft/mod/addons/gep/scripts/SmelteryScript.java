@@ -1,7 +1,11 @@
 package net.fexcraft.mod.addons.gep.scripts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
@@ -18,6 +22,7 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	
 	private static int heatincr;
 	private int heat;
+	private int lava;//just copying tank status, for the gui
 	private boolean open;
 
 	public SmelteryScript(JsonObject obj){
@@ -42,6 +47,7 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	
 	@Override
 	public boolean ready(TickableTE tile){
+		lava = tile.getMultiBlockData().getFluidTank("tank").getFluidAmount();
 		return heat > 1500;
 	}
 	
@@ -98,12 +104,13 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	@Override
 	public int getConsumable(String id){
 		if(id.equals("heat")) return heat;
+		if(id.equals("lava")) return lava;
 		return 0;
 	}
 
 	@Override
 	public String[] getConsumables(){
-		return new String[]{ "heat" };
+		return new String[]{ "heat", "lava" };
 	}
 
 	@Override
@@ -111,6 +118,17 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 		if(id.equals("heat")){
 			heat = value;
 		}
+		if(id.equals("lava")){
+			lava = value;
+		}
+	}
+
+	@Override
+	public List<Object[]> getGuiElements(){
+		ArrayList<Object[]> list = new ArrayList<>();
+		list.add(new Object[]{ GuiElement.PROGRESS_BAR, "Heat/Temp", "heat", 2000, RGB.RED });
+		list.add(new Object[]{ GuiElement.TEXT_VALUE, "Lava Tank: %smB", "lava" });
+		return list;
 	}
 
 }

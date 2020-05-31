@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.gui.block;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
@@ -25,9 +23,8 @@ public class GBlockCraftContainer extends GenericContainer {
 	protected CraftBlockScript script;
 	protected EntityPlayerMP mpp;
 	public int page;
-	public int elements, crafttime;
+	public int crafttime;
 	public String current;
-	private List<Object[]> elementdata;
 
 	public GBlockCraftContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
@@ -41,9 +38,9 @@ public class GBlockCraftContainer extends GenericContainer {
 		if(!packet.hasKey("cargo")) return;
 		if(side.isServer()){
 			switch(packet.getString("cargo")){
-				case "init":{
+				case "page":{
 					page = packet.hasKey("page") ? packet.getInteger("page") : 0;
-
+					//
 					break;
 				}
 				case "reset_recipe":{
@@ -57,9 +54,6 @@ public class GBlockCraftContainer extends GenericContainer {
 			switch(packet.getString("cargo")){
 				case "init":{
 					page = packet.hasKey("page") ? packet.getInteger("page") : 0;
-					List<Object[]> elements = script.getGuiElements();
-					this.elements = elements.size();
-					elementdata = elements;
 					break;
 				}
 				case "consumables":{
@@ -106,14 +100,6 @@ public class GBlockCraftContainer extends GenericContainer {
 		compound.setInteger("crafttime", script.getProcessTime());
 		compound.setString("cargo", "consumables");
 		send(Side.CLIENT, compound);
-	}
-
-	public void init(){
-		if(player.world.isRemote){
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("cargo", "init");
-			send(Side.SERVER, compound);
-		}
 	}
 
 }

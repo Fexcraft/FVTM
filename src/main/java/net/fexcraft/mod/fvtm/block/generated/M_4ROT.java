@@ -105,9 +105,11 @@ public class M_4ROT extends PlainBase {
         super.breakBlock(world, pos, state);
     }
 
-    @Override
+    @Override //I think it might be this method is client side only, so it will usually not find anything - as of now.
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
-        TileEntity tile = (TileEntity)world.getTileEntity(world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos));
+    	BlockPos core = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos);
+    	if(core == null) return ItemStack.EMPTY;
+        TileEntity tile = (TileEntity)world.getTileEntity(core);
         return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
     }
     

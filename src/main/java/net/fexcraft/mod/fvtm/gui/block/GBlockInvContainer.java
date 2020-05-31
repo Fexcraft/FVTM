@@ -210,19 +210,20 @@ public class GBlockInvContainer extends GenericContainer {
 				}
 			}
 		}
-		//
-        for(int i = 0; i < this.inventorySlots.size(); ++i){
-            ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack();
-            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
-            if(!ItemStack.areItemStacksEqual(itemstack1, itemstack)){
-                boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
-                itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
-                this.inventoryItemStacks.set(i, itemstack1);
-                if(clientStackChanged){
-                	if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, i, itemstack1));
-                }
-            }
-        }
+		else{
+	        for(int i = 0; i < this.inventorySlots.size(); ++i){
+	            ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack();
+	            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
+	            if(!ItemStack.areItemStacksEqual(itemstack1, itemstack)){
+	                boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
+	                itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
+	                this.inventoryItemStacks.set(i, itemstack1);
+	                if(clientStackChanged){
+	                	if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, i, itemstack1));
+	                }
+	            }
+	        }
+		}
 	}
 
 }

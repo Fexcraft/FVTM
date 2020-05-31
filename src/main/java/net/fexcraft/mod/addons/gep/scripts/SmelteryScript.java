@@ -64,8 +64,8 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 		int lavat = (int)(heatby * lavacon);
 		if(lavat < 1) lavat = 1;
 		if(lava < lavat){
-			if(processed > 0) processed--;
-			if(heat - heatby > 0) heat -= heatby; 
+			tile.getMultiBlockData().getFluidTank("tank").drain(lava, true);
+			heat += heatby > 2 ? heatby / 2 : 1;
 			return;
 		}
 		tile.getMultiBlockData().getFluidTank("tank").drain(lavat, true);

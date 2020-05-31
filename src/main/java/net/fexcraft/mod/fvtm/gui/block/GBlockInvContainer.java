@@ -36,7 +36,7 @@ public class GBlockInvContainer extends GenericContainer {
 	protected ItemStackHandler temp;
 	protected GenericIInventory fluid_io;
 	protected int empty_index = -1, page, slots;
-	protected long fluid_date;
+	protected long fluid_date, lastfluid;
 	protected InventoryType invtype;
 	/** When things have to be fixed by force. */
 	protected EntityPlayerMP mpp;
@@ -196,6 +196,10 @@ public class GBlockInvContainer extends GenericContainer {
 					}
 				}
 				//
+				if(!anychange && lastfluid != tile.getMultiBlockData().getFluidTank(inv_id).getFluidAmount()){
+					lastfluid = tile.getMultiBlockData().getFluidTank(inv_id).getFluidAmount();
+					anychange = true;
+				}
 				if(!player.world.isRemote && anychange){
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "update_fluid_tank");

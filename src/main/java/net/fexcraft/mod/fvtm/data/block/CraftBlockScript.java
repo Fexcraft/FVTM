@@ -79,6 +79,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			return;
 		}
 		if(autoRecipeChooser() && (autosel == null || !autosel.canCraft(this, tile.getMultiBlockData(), false))){
+			autosel = null;
 			searchForRecipe(tile.getMultiBlockData());
 		}
 		if(autosel != null){

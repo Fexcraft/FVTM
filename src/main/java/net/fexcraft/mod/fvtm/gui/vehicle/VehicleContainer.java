@@ -177,9 +177,12 @@ public class VehicleContainer extends GenericContainer {
 			else{
 				if(packet.getString("cargo").equals("update_fluid_tank")){
                     function.getFluidTank().readFromNBT(packet.getCompoundTag("state"));
+    				if(packet.hasKey("stack_0")) fluid_io.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack_0")));
+    				if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
 				}
 				if(packet.getString("cargo").equals("update_fuel_tank")){
                     veh.getVehicleData().getAttribute("fuel_stored").setValue(packet.getInteger("state"));
+    				if(packet.hasKey("stack")) fuel.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack")));
 				}
 				if(packet.getString("cargo").equals("update_fuel_data")){
                     veh.getVehicleData().getAttribute("fuel_primary").setValue(packet.getString("primary"));
@@ -233,7 +236,6 @@ public class VehicleContainer extends GenericContainer {
                         FluidActionResult result = FluidUtil.tryEmptyContainer(stack, function.getFluidTank(), 1000, player, true);
                         if(result.success){ anychange = true;
                         	fluid_io.setInventorySlotContents(0, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
-                            if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, 0, stack));
                         }
                     }
                 }
@@ -244,7 +246,6 @@ public class VehicleContainer extends GenericContainer {
                     	FluidActionResult result = FluidUtil.tryFillContainer(stack, function.getFluidTank(), 1000, player, true);
                         if(result.success){ anychange = true;
                         	fluid_io.setInventorySlotContents(1, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
-                            if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, 1, stack));
                         }
                     }
                 }
@@ -253,6 +254,8 @@ public class VehicleContainer extends GenericContainer {
                     NBTTagCompound compound = new NBTTagCompound();
                     compound.setString("cargo", "update_fluid_tank");
                     compound.setTag("state", function.getFluidTank().writeToNBT(new NBTTagCompound()));
+					compound.setTag("stack_0", fluid_io.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
+					compound.setTag("stack_1", fluid_io.getStackInSlot(1).writeToNBT(new NBTTagCompound()));
                 	this.send(Side.CLIENT, compound);
                 }
             }
@@ -278,7 +281,6 @@ public class VehicleContainer extends GenericContainer {
                         	if(cantake < stored) stored = cantake; if(stored > 100) stored = 100;
                         	if(stored > 0){
                             	item.extractFuel(stack, stored); veh.getVehicleData().getAttribute("fuel_stored").increase(stored);
-                                if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, 0, stack));
                             	anychange = true;
                                 //
                                 boolean morechanges = false;
@@ -321,6 +323,7 @@ public class VehicleContainer extends GenericContainer {
                     NBTTagCompound compound = new NBTTagCompound();
                     compound.setString("cargo", "update_fuel_tank");
                     compound.setInteger("state", veh.getVehicleData().getAttribute("fuel_stored").getIntegerValue());
+                    compound.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
                 	this.send(Side.CLIENT, compound);
                 }
             }

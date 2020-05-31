@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Basic implementation of CraftBlockScript, enough on itself or to be used to extend.
@@ -17,7 +19,7 @@ import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
  */
 public class DefaultCraftBlockScript extends CraftBlockScript {
 	
-	protected boolean auto_recipe_chooser, instant, update_client;
+	protected boolean auto_recipe_chooser, instant;//, update_client;
 	protected int cooldown, process_speed, cooldown_speed, process_time;
 	
 	public DefaultCraftBlockScript(JsonObject obj){
@@ -26,7 +28,7 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 		cooldown = JsonUtil.getIfExists(obj, "cooldown", 0).intValue();
 		process_speed = JsonUtil.getIfExists(obj, "process_speed", 1).intValue();
 		cooldown_speed = JsonUtil.getIfExists(obj, "cooldown_speed", 1).intValue();
-		update_client = JsonUtil.getIfExists(obj, "update_client", false);
+		//update_client = JsonUtil.getIfExists(obj, "update_client", false);//unused
 		process_time = JsonUtil.getIfExists(obj, "process_time", 100).intValue();
 	}
 
@@ -103,6 +105,11 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	@Override
 	public List<Object[]> getGuiElements(){
 		return Collections.emptyList();
+	}
+
+	@Override
+	public void onUpdatePacket(TileEntity tile, NBTTagCompound compound){
+		//
 	}
 
 }

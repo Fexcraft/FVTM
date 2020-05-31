@@ -347,6 +347,28 @@ public class M_4ROT_TE extends BlockBase {
 	        return super.getCapability(capability, facing);
 	    }
 
+	    @Override
+	    public void processClientPacket(PacketTileEntityUpdate pkt){
+	    	if(pkt.nbt.hasKey("target") && pkt.nbt.getString("target").equals("script")){
+	    		if(this.getMultiBlockData() != null && this.getMultiBlockData().getScript() != null){
+	    			this.getMultiBlockData().getScript().onUpdatePacket(this, pkt.nbt);
+	    		}
+	    		return;
+	    	}
+	    	super.processClientPacket(pkt);
+	    }
+
+	    @Override
+	    public void processServerPacket(PacketTileEntityUpdate pkt){
+	    	if(pkt.nbt.hasKey("target") && pkt.nbt.getString("target").equals("script")){
+	    		if(this.getMultiBlockData() != null && this.getMultiBlockData().getScript() != null){
+	    			this.getMultiBlockData().getScript().onUpdatePacket(this, pkt.nbt);
+	    		}
+	    		return;
+	    	}
+	    	super.processServerPacket(pkt);
+	    }
+
 	}
 	
 	public static class TickableTE extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, ITickable {

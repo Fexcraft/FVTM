@@ -144,7 +144,7 @@
     		"cooldown": 100,
     		"process_speed": 1,
     		"cooldown_speed": 1,
-    		"update_client": false,
+    		"update_client": true,
     		"process_time": 200,
     		"heat_per_tick": 8,
     		"lava_per_heat": 0.25

@@ -1,14 +1,18 @@
 //FMT-Marker FVTM-1.4
 package net.fexcraft.mod.addons.gep.models.block;
 
+import javax.annotation.Nullable;
+
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.addons.gep.scripts.SmelteryScript;
+import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
-import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 
 /** This file was exported via the FVTM Exporter V1.4 of<br>
  *  FMT (Fex's Modelling Toolbox) v.2.5.1 &copy; 2020 - Fexcraft.net<br>
@@ -186,6 +190,29 @@ public class SmelteryModel extends BlockModel {
 			.addShapeBox(12, 0, -17, 9, 12, 1, 0, 0, 0, 0, 0, 0, -9, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, -9, 0, 0, 9, 0, 0, 0)
 			.setRotationPoint(0, -32, 0).setRotationAngle(0, 0, 0).setName("Box 34")
 		);
+		door_right.addProgram(new TurboList.Program(){
+			
+			private boolean wasopen;
+
+			@Override
+			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+				if(tile == null) return;
+				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				if(multidata != null && multidata.getScript() != null && ((SmelteryScript)multidata.getScript()).isOpen()){
+					list.rotate(0, 90, 0, true);
+					wasopen = true;
+				}
+			}
+
+			@Override
+			public void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+				if(wasopen){
+					list.rotate(0, 0, 0, true);
+					wasopen = false;
+				}
+			}
+			
+		});
 		this.groups.add(door_right);
 		//
 		TurboList door_left = new TurboList("door_left");
@@ -198,16 +225,24 @@ public class SmelteryModel extends BlockModel {
 			.setRotationPoint(0, -32, 0).setRotationAngle(0, 0, 0).setName("Box 39")
 		);
 		door_left.addProgram(new TurboList.Program(){
+			
+			private boolean wasopen;
 
 			@Override
-			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-				// TODO Auto-generated method stub
-				
+			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				if(multidata != null && multidata.getScript() != null && ((SmelteryScript)multidata.getScript()).isOpen()){
+					list.rotate(0, -90, 0, true);
+					wasopen = true;
+				}
 			}
 
 			@Override
-			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-				//
+			public void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+				if(wasopen){
+					list.rotate(0, 0, 0, true);
+					wasopen = false;
+				}
 			}
 			
 		});

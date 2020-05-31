@@ -19,7 +19,7 @@ public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockBase.TileE
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         GL11.glRotated(tile.getBlockData().getType().getBlockType().getRotationForMeta(tile.getBlockMetadata()), 0, 1, 0);
-        tile.getBlockData().getType().getModel().render(tile.getBlockData(), null, null, tile.getCapability(Capabilities.RENDERCACHE, null));
+        tile.getBlockData().getType().getModel().render(tile.getBlockData(), tile, null, tile.getCapability(Capabilities.RENDERCACHE, null));
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }

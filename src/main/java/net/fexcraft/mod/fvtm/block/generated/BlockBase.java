@@ -102,7 +102,7 @@ public class BlockBase extends PlainBase implements ITileEntityProvider {
 	    }
 
 	    @Override
-	    public final void processClientPacket(PacketTileEntityUpdate pkt){
+	    public void processClientPacket(PacketTileEntityUpdate pkt){
 	        this.readFromNBT(pkt.nbt);
 	    }
 

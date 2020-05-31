@@ -6,13 +6,13 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.util.script.DefaultCraftBlockScript;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -84,10 +84,20 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	public boolean onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
 		if(trigger.getTarget().equals("open")){
 			open = !open;
-			Print.chat(player, "state:" + open);
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setBoolean("smeltery_open", open);
+			super.sendPacket(player.world.getTileEntity(core), compound);
 			return true;
 		}
 		return super.onTrigger(data, trigger, player, hand, core, pos, side, hit);
+	}
+
+
+	@Override
+	public void onUpdatePacket(TileEntity tile, NBTTagCompound compound){
+		if(tile.getWorld().isRemote){
+			open = compound.hasKey("smeltery_open") ? compound.getBoolean("smeltery_open") : false;
+		}
 	}
 	
 	@Override
@@ -142,6 +152,10 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 		list.add(new Object[]{ GuiElement.PROGRESS_BAR, "Heat/Temp", "heat", 2000, RGB.RED });
 		list.add(new Object[]{ GuiElement.TEXT_VALUE, "Lava Tank: %smB", "lava" });
 		return list;
+	}
+
+	public boolean isOpen(){
+		return open;
 	}
 
 }

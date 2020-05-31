@@ -125,10 +125,10 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		public default void postRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){}
 
 		/** Block Specific */
-		public default void preRender(TurboList turboList, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
+		public default void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
 		
 		/** Block Specific */
-		public default void postRender(TurboList turboList, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
+		public default void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
 		
 	}
 	

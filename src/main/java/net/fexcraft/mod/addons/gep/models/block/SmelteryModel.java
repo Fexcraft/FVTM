@@ -230,6 +230,7 @@ public class SmelteryModel extends BlockModel {
 
 			@Override
 			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+				if(tile == null) return;
 				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
 				if(multidata != null && multidata.getScript() != null && ((SmelteryScript)multidata.getScript()).isOpen()){
 					list.rotate(0, -90, 0, true);

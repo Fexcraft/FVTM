@@ -10,8 +10,6 @@ import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
-import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,7 +34,7 @@ public class RoadSignModel extends GenericModel<RoadSignEntity, RoadSign> implem
 	}
 
 	@Override
-	public void render(RoadSignEntity data, RoadSign key, Entity ent, RenderCache cache, int meta){
+	public void render(RoadSignEntity data, RoadSign key, Entity ent, RenderCache cache){
 		for(TurboList list : groups){ list.renderPlain(); }
 	}
 	

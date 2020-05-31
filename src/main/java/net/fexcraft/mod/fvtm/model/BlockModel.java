@@ -21,10 +21,11 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockModel extends GenericModel<BlockData, Object> implements FCLItemModel, FCLBlockModel {
+public class BlockModel extends GenericModel<BlockData, TileEntity> implements FCLItemModel, FCLBlockModel {
 
 	public static final BlockModel EMPTY = new BlockModel();
     //public static boolean PREVIEW = false;
@@ -43,15 +44,15 @@ public class BlockModel extends GenericModel<BlockData, Object> implements FCLIt
 	public BlockModel(String type, ResourceLocation loc){ super(type, loc); }
 
 	@Override
-	public void render(BlockData data, Object key){
+	public void render(BlockData data, TileEntity tile){
 		for(TurboList list : groups){
-			list.render(null, null, data, null, null);
+			list.renderBlock(tile, data, null);
 		}
 	}
 
 	@Override
-	public void render(BlockData data, Object key, Entity ent, RenderCache cache, int meta){
-		for(TurboList list : groups){ list.render(ent, null, data, null, cache); }
+	public void render(BlockData data, TileEntity tile, Entity ent, RenderCache cache){
+		for(TurboList list : groups){ list.renderBlock(tile, data, cache); }
 	}
 	
 	@Override
@@ -108,7 +109,7 @@ public class BlockModel extends GenericModel<BlockData, Object> implements FCLIt
                 GL11.glPushMatrix();
                 GL11.glRotatef(180f, 1, 0, 0); GL11.glRotatef(180f, 0, 1, 0);
                 super.bindTexture(data.getTexture());
-                model.render(data, null, null, null, -1);
+                model.render(data, null, null, null);
                 GL11.glPopMatrix();
             }
             GL11.glScalef(-scal[0], -scal[1], -scal[2]);

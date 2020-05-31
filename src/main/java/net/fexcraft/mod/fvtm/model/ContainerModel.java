@@ -10,8 +10,6 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
-import net.fexcraft.mod.fvtm.model.GenericModel;
-import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -41,11 +39,11 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
     
 	@Override
 	public void render(ContainerData data, Object key){
-		render(data, key, null, null, -2);
+		render(data, key, null, null);
 	}
 
 	@Override
-	public void render(ContainerData data, Object key, Entity ent, RenderCache cache, int meta){
+	public void render(ContainerData data, Object key, Entity ent, RenderCache cache){
 		for(TurboList list : groups){ list.render(ent, null, data, null, cache); }
 	}
 	

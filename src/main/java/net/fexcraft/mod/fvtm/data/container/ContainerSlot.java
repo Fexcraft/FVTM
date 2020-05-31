@@ -135,7 +135,7 @@ public class ContainerSlot {
 				// Print.debug("Rendering Slot Sub " + i);
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(renderoffset[i], 0, 0);
 				net.fexcraft.lib.tmt.ModelBase.bindTexture(containers[i].getTexture());
-				containers[i].getType().getModel().render(containers[i], null, entity, entity.getCapability(Capabilities.RENDERCACHE, null), i);
+				containers[i].getType().getModel().render(containers[i], null, entity, entity.getCapability(Capabilities.RENDERCACHE, null));
 				if(renderoffset[i] != 0f) org.lwjgl.opengl.GL11.glTranslatef(-renderoffset[i], 0, 0);
 			}
 		}

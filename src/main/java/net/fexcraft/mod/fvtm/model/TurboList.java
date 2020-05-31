@@ -6,10 +6,12 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Similar concept as the TurboList inside FMT-Standalone
@@ -42,6 +44,12 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		if(hasprog) for(Program program : programs) program.postRender(this, ent, data, color, part, cache);
 		/*if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(-offX, -offY, -offZ);
 		GL11.glPopMatrix();*/
+	}
+
+	public void renderBlock(TileEntity tile, BlockData data, RenderCache cache){
+		if(hasprog) for(Program program : programs) program.preRender(this, tile, data, cache);
+		if(visible) for(ModelRendererTurbo turbo : this){ turbo.render(scale); }
+		if(hasprog) for(Program program : programs) program.postRender(this, tile, data, cache);
 	}
 	
 	public void renderPlain(){
@@ -109,10 +117,18 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	public static interface Program {
 		
 		public default String getId(){ return "idless"; }
+
+		/** General Purpose */
+		public default void preRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){}
 		
-		public void preRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache);
+		/** General Purpose */
+		public default void postRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){}
+
+		/** Block Specific */
+		public default void preRender(TurboList turboList, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
 		
-		public void postRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache);
+		/** Block Specific */
+		public default void postRender(TurboList turboList, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
 		
 	}
 	

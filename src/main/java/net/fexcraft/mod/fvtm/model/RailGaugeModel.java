@@ -61,7 +61,7 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	}
 
 	@Override
-	public void render(Track data, Integer index, Entity ent, RenderCache cache, int meta){
+	public void render(Track data, Integer index, Entity ent, RenderCache cache){
 		for(TurboList list : groups){ list.renderPlain(); }
 	}
 

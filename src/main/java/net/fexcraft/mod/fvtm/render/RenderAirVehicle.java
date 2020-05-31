@@ -55,19 +55,19 @@ public class RenderAirVehicle extends Render<AirVehicle> implements IRenderFacto
 		            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getType().getModel();
 		            if(modVehicle != null){
 		                this.bindTexture(vehicle.getVehicleData().getTexture());
-		                modVehicle.render(vehicle.getVehicleData(), null, vehicle, cache, -1);
+		                modVehicle.render(vehicle.getVehicleData(), null, vehicle, cache);
 		                if(vehicle.getVehicleData().getParts().size() > 0){
 		                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 		                    	ModelBase.bindTexture(entry.getValue().getTexture());
 		                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 		                    		GL11.glPushMatrix();
 		                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);
-			                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache, -1);
+			                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache);
 		            	            GL11.glPopMatrix();
 		                    	}
 		                    	else{
 			                    	entry.getValue().getInstalledPos().translate();
-			                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache, -1);
+			                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache);
 			                        entry.getValue().getInstalledPos().translateR();
 		                    	}
 		                	}

@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * 
@@ -64,12 +66,16 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:rgb_primary"; }
 		@Override public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ color.getPrimaryColor().glColorApply(); }
 		@Override public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ RGB.glColorReset(); }
+		@Override public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ data.getPrimaryColor().glColorApply(); }
+		@Override public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ RGB.glColorReset(); }
 	};
 	
 	public static final Program RGB_SECONDARY = new Program(){
 		@Override public String getId(){ return "fvtm:rgb_secondary"; }
 		@Override public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ color.getSecondaryColor().glColorApply(); }
 		@Override public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ RGB.glColorReset(); }
+		@Override public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ data.getSecondaryColor().glColorApply(); }
+		@Override public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ RGB.glColorReset(); }
 	};
 	
 	public static final Program ALWAYS_GLOW = new AlwaysGlow(){
@@ -414,6 +420,7 @@ public class DefaultPrograms {
 		public AlwaysGlow(){ super(189f, 4f); }
 		
 		public abstract boolean shouldGlow(Entity ent, VehicleData data);
+		//TurboList list, TileEntity ent, BlockData data, RenderCache cache, int meta
 
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
@@ -423,6 +430,16 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			if(!didglow) return; super.postRender(list, ent, data, color, part, cache);
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			if(!(didglow = shouldGlow(null, null))) return; super.preRender(list, null, null, null, null, cache);
+		}
+
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			if(!didglow) return; super.postRender(list, null, null, null, null, cache);
 		}
 		
 	}

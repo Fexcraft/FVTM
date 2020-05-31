@@ -3,8 +3,12 @@ package net.fexcraft.mod.addons.gep.models.block;
 
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
+import net.minecraft.entity.Entity;
 
 /** This file was exported via the FVTM Exporter V1.4 of<br>
  *  FMT (Fex's Modelling Toolbox) v.2.5.1 &copy; 2020 - Fexcraft.net<br>
@@ -193,6 +197,20 @@ public class SmelteryModel extends BlockModel {
 			.addShapeBox(-21, 0, -17, 9, 12, 1, 0, 0, 0, -9, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, -9, 0, 0, 0, 0, 0, 0, 0, 0, 9)
 			.setRotationPoint(0, -32, 0).setRotationAngle(0, 0, 0).setName("Box 39")
 		);
+		door_left.addProgram(new TurboList.Program(){
+
+			@Override
+			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+				//
+			}
+			
+		});
 		this.groups.add(door_left);
 		//
 		TurboList bars = new TurboList("bars");

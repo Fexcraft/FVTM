@@ -55,7 +55,7 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerE
         if(condata != null){
             if(condata.getType().getModel() != null){
                 ModelBase.bindTexture(condata.getTexture());
-                condata.getType().getModel().render(condata, null, null, te.getCapability(Capabilities.RENDERCACHE, null), 0);
+                condata.getType().getModel().render(condata, null, null, te.getCapability(Capabilities.RENDERCACHE, null));
             }
         }
         GL11.glPopMatrix();

@@ -54,7 +54,7 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 	}
 
 	@Override
-	public void render(VehicleData data, String key, Entity ent, RenderCache cache, int meta){
+	public void render(VehicleData data, String key, Entity ent, RenderCache cache){
 		for(TurboList list : groups){ list.render(ent, data, data, key, cache); }
 	}
 	

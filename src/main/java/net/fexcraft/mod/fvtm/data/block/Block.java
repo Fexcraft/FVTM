@@ -24,6 +24,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.oredict.OreDictionary;
@@ -37,7 +38,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected BlockItem item;
 	protected net.minecraft.block.Block block;
 	protected String modelid;
-	protected Model<BlockData, Object> model;
+	protected Model<BlockData, TileEntity> model;
 	//
 	protected boolean plain_model;
 	protected RGB primary, secondary;
@@ -252,7 +253,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return new ItemStack(item, 1);
 	}
 	
-	public Model<BlockData, Object> getModel(){
+	public Model<BlockData, TileEntity> getModel(){
 		return model;
 	}
 	

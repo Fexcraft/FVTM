@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
@@ -90,18 +91,18 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                 if(modvec != null){
                     ModelBase.bindTexture(vehicledata.getTexture());
                     GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * 0.0625f) - te.getLiftState(), 0);
-                    modvec.render(vehicledata, null, null, null, te.getBlockMetadata());
+                    modvec.render(vehicledata, null, null, null);
                     vehicledata.getParts().forEach((key, partdata) -> {
                         ModelBase.bindTexture(partdata.getTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
                     		GL11.glPushMatrix();
                     		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
-	                        partdata.getType().getModel().render(vehicledata, key, null, null, -1);
+	                        partdata.getType().getModel().render(vehicledata, key, null, null);
             	            GL11.glPopMatrix();
                     	}
                     	else{
                     		partdata.getInstalledPos().translate();
-                    		partdata.getType().getModel().render(vehicledata, key, null, null, -1);
+                    		partdata.getType().getModel().render(vehicledata, key, null, null);
                     		partdata.getInstalledPos().translateR();
                     	}
                     });
@@ -122,7 +123,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             }
         }
         else if(te.getBlockData() != null){
-        	Model<BlockData, Object> model = te.getBlockData().getType().getModel();
+        	Model<BlockData, TileEntity> model = te.getBlockData().getType().getModel();
         	if(model != null){
                 ModelBase.bindTexture(te.getBlockData().getTexture());
                 model.render(te.getBlockData(), null);

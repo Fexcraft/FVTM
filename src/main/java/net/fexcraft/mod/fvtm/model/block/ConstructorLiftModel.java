@@ -96,7 +96,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, BlockP
 	}
 
 	@Override
-	public void render(ConstCenterEntity data, BlockPos key, Entity ent, RenderCache cache, int meta){
+	public void render(ConstCenterEntity data, BlockPos key, Entity ent, RenderCache cache){
 		this.render(data, key); return;
 	}
 

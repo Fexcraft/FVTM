@@ -45,7 +45,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	}
 
 	@Override
-	public void render(VehicleData data, Object key, Entity ent, RenderCache cache, int meta){
+	public void render(VehicleData data, Object key, Entity ent, RenderCache cache){
 		for(TurboList list : groups){ list.render(ent, data, data, null, cache); }
 	}
 	
@@ -111,18 +111,18 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 			GL11.glPushMatrix();
 			GL11.glRotated(180d, 1, 0, 0);
 			bindTexture(data.getTexture());
-			model.render(data, null, null, null, 0);
+			model.render(data, null, null, null);
 			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
 				bindTexture(entry.getValue().getTexture());
             	if(entry.getValue().isInstalledOnSwivelPoint()){
             		GL11.glPushMatrix();
     	            PartModel.translateAndRotatePartOnSwivelPointFast(data, entry.getValue());
-                    entry.getValue().getType().getModel().render(data, entry.getKey(), null, null, -1);
+                    entry.getValue().getType().getModel().render(data, entry.getKey(), null, null);
     	            GL11.glPopMatrix();
             	}
             	else{
                 	entry.getValue().getInstalledPos().translate();
-                    entry.getValue().getType().getModel().render(data, entry.getKey(), null, null, -1);
+                    entry.getValue().getType().getModel().render(data, entry.getKey(), null, null);
                     entry.getValue().getInstalledPos().translateR();
             	}
 			}

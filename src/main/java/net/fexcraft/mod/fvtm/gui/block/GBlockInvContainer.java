@@ -125,6 +125,8 @@ public class GBlockInvContainer extends GenericContainer {
 		else{
 			if(packet.getString("cargo").equals("update_fluid_tank")){
 				tile.getMultiBlockData().getFluidTank(inv_id).readFromNBT(packet.getCompoundTag("state"));
+				if(packet.hasKey("stack_0")) fluid_io.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack_0")));
+				if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
 			}
 		}
 	}
@@ -179,7 +181,6 @@ public class GBlockInvContainer extends GenericContainer {
 						if(result.success){
 							anychange = true;
 							fluid_io.setInventorySlotContents(0, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
-							if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, 0, stack));
 						}
 					}
 				}
@@ -191,7 +192,6 @@ public class GBlockInvContainer extends GenericContainer {
 						if(result.success){
 							anychange = true;
 							fluid_io.setInventorySlotContents(1, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
-							if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, 1, stack));
 						}
 					}
 				}
@@ -204,6 +204,8 @@ public class GBlockInvContainer extends GenericContainer {
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "update_fluid_tank");
 					compound.setTag("state", tile.getMultiBlockData().getFluidTank(inv_id).writeToNBT(new NBTTagCompound()));
+					compound.setTag("stack_0", fluid_io.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
+					compound.setTag("stack_1", fluid_io.getStackInSlot(1).writeToNBT(new NBTTagCompound()));
 					this.send(Side.CLIENT, compound);
 				}
 			}

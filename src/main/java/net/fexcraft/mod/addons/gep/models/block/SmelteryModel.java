@@ -199,7 +199,7 @@ public class SmelteryModel extends BlockModel {
 				if(tile == null) return;
 				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
 				if(multidata != null && multidata.getScript() != null && ((SmelteryScript)multidata.getScript()).isOpen()){
-					list.rotate(0, 90, 0, true);
+					list.rotate(0, -45, 0, true);
 					wasopen = true;
 				}
 			}
@@ -233,7 +233,7 @@ public class SmelteryModel extends BlockModel {
 				if(tile == null) return;
 				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
 				if(multidata != null && multidata.getScript() != null && ((SmelteryScript)multidata.getScript()).isOpen()){
-					list.rotate(0, -90, 0, true);
+					list.rotate(0, 45, 0, true);
 					wasopen = true;
 				}
 			}

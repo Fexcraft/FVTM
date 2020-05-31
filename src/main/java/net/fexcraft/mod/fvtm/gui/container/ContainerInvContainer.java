@@ -7,11 +7,9 @@ import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidActionResult;
@@ -26,7 +24,6 @@ public class ContainerInvContainer extends GenericContainer {
 	protected GenericGui<ContainerInvContainer> gui;
 	//
 	protected long fluid_date;
-	protected EntityPlayerMP mpp;
 	protected ItemStackHandler temp;
 	protected GenericIInventory fluid_io;
 	protected int empty_index = -1, page, slots;
@@ -36,7 +33,6 @@ public class ContainerInvContainer extends GenericContainer {
 	public ContainerInvContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
 		this.tile = (ContainerEntity)world.getTileEntity(new BlockPos(x, y, z));
-		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 		this.populateSlots();
 	}
 
@@ -105,6 +101,8 @@ public class ContainerInvContainer extends GenericContainer {
 		else{
 			if(packet.getString("cargo").equals("update_fluid_tank")){
 				tile.getContainerData().getFluidTank().readFromNBT(packet.getCompoundTag("state"));
+				if(packet.hasKey("stack_0")) fluid_io.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack_0")));
+				if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
 			}
 		}
 	}
@@ -159,7 +157,6 @@ public class ContainerInvContainer extends GenericContainer {
 						if(result.success){
 							anychange = true;
 							fluid_io.setInventorySlotContents(0, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
-							if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, 0, stack));
 						}
 					}
 				}
@@ -171,7 +168,6 @@ public class ContainerInvContainer extends GenericContainer {
 						if(result.success){
 							anychange = true;
 							fluid_io.setInventorySlotContents(1, stack = result.getResult() == null ? ItemStack.EMPTY : result.getResult());
-							if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, 1, stack));
 						}
 					}
 				}
@@ -180,6 +176,8 @@ public class ContainerInvContainer extends GenericContainer {
 					NBTTagCompound compound = new NBTTagCompound();
 					compound.setString("cargo", "update_fluid_tank");
 					compound.setTag("state", tile.getContainerData().getFluidTank().writeToNBT(new NBTTagCompound()));
+					compound.setTag("stack_0", fluid_io.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
+					compound.setTag("stack_1", fluid_io.getStackInSlot(1).writeToNBT(new NBTTagCompound()));
 					this.send(Side.CLIENT, compound);
 				}
 			}

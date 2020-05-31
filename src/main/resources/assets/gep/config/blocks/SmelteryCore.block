@@ -81,6 +81,24 @@
     			"hitbox": "NORTH",
     			"target": "tank",
     			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 2, 1 ],
+    			"hitbox": "NORTH",
+    			"target": "open_gui",
+    			"type": "script"
+    		},
+    		{
+    			"block": [ -1, 2, 1 ],
+    			"hitbox": "NORTH",
+    			"target": "open_gui",
+    			"type": "script"
+    		},
+    		{
+    			"block": [ 1, 2, 1 ],
+    			"hitbox": "NORTH",
+    			"target": "open_gui",
+    			"type": "script"
     		}
     	],
     	"Access":[

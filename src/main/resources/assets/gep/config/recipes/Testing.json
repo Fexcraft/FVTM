@@ -25,9 +25,32 @@
 				}
 			],
 			"consume": {
-				"heat": 50
+				"heat": 5
 			},
 			"craft_time": 100
+		},	
+		{
+			"block": "gep:smeltery_core",
+			"id": "testing_burnable",
+			"input":[
+				{
+					"inventory": "input",
+					"items":[
+						"minecraft:planks",
+						"minecraft:log",
+						"minecraft:log2"
+					],
+					"amount": 1
+				}
+			],
+			"output":[
+				{
+					"inventory": "tank",
+					"fluid": "lava",
+					"amount": 100
+				}
+			],
+			"craft_time": 20
 		}
 	]
 }

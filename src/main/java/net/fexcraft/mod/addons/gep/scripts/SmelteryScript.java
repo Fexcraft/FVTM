@@ -42,7 +42,7 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	
 	@Override
 	public boolean ready(TickableTE tile){
-		return heat > 1000;
+		return heat > 1500;
 	}
 	
 	@Override
@@ -83,7 +83,7 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	
 	@Override
 	public int cooldown_speed(){
-		return open ? cooldown_speed * 2 : cooldown_speed;
+		return open ? cooldown_speed / 2 : cooldown_speed;
 	}
 	
 	public boolean consume(String value, int amount, boolean simulate){
@@ -99,6 +99,18 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	public int getConsumable(String id){
 		if(id.equals("heat")) return heat;
 		return 0;
+	}
+
+	@Override
+	public String[] getConsumables(){
+		return new String[]{ "heat" };
+	}
+
+	@Override
+	public void setConsumable(String id, int value){
+		if(id.equals("heat")){
+			heat = value;
+		}
 	}
 
 }

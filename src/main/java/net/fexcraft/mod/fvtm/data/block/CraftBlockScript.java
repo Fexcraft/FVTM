@@ -3,12 +3,14 @@ package net.fexcraft.mod.fvtm.data.block;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
 import net.fexcraft.mod.fvtm.data.InventoryType;
@@ -76,18 +78,18 @@ public abstract class CraftBlockScript implements BlockScript {
 			tryCrafting(tile, selected);
 			return;
 		}
-		if(autoRecipeChooser() && (autosel == null || !autosel.canCraft(this, tile.getMultiBlockData()))){
+		if(autoRecipeChooser() && (autosel == null || !autosel.canCraft(this, tile.getMultiBlockData(), false))){
 			searchForRecipe(tile.getMultiBlockData());
 		}
 		if(autosel != null){
 			tryCrafting(tile, autosel);
 			return;
 		}
-		addCooldown();
+		else addCooldown();
 	}
 
 	protected void tryCrafting(TickableTE tile, Recipe recipe){
-		if(!recipe.canCraft(this, tile.getMultiBlockData())) return;
+		if(!recipe.canCraft(this, tile.getMultiBlockData(), true)) return;
 		if(!instant()){
 			int question = recipe.crafttime == 0 ? process_time() : recipe.crafttime;
 			if(processed < question){
@@ -103,7 +105,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		ArrayList<Recipe> recipes = SORTED_REGISTRY.get(multidata.getData().getType().getRegistryName().toString());
 		if(recipes == null || recipes.isEmpty()) return;
 		for(Recipe recipe : recipes){
-			if(recipe.canCraft(this, multidata)){
+			if(recipe.canCraft(this, multidata, false)){
 				autosel = recipe;
 			}
 		}
@@ -120,9 +122,22 @@ public abstract class CraftBlockScript implements BlockScript {
 	@Override
 	public boolean onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
 		switch(trigger.getTarget()){
-			//TODO
+			case "open_gui":{
+				GenericContainer.openGui("fvtm", 952, new int[]{ core.getX(), core.getY(), core.getZ() }, player);
+				return true;
+			}
+			case "select_recipe":{
+				GenericContainer.openGui("fvtm", 953, new int[]{ core.getX(), core.getY(), core.getZ() }, player);
+				return true;
+			}
 			default: return false;
 		}
+	}
+
+	public abstract List<Object[]> getGuiElements();
+
+	public String getCurrentRecipe(){
+		return selected == null ? autosel == null ? "none" : autosel.id : selected.id;
 	}
 	
 	public abstract boolean autoRecipeChooser();
@@ -151,6 +166,36 @@ public abstract class CraftBlockScript implements BlockScript {
 	public abstract boolean consume(String id, int amount, boolean simulate);
 	
 	public abstract int getConsumable(String id);
+	
+	public abstract String[] getConsumables();
+
+	/** For GUI/External */
+	public abstract void setConsumable(String id, int value);
+
+	public int getCooldown(){
+		return cooldown;
+	}
+
+	public int getProcessed(){
+		return processed;
+	}
+	
+	/** For GUI/External */
+	public int getProcessTime(){
+		if(selected == null && autosel == null) return 0;
+		Recipe recipe = selected == null ? autosel : selected;
+		return recipe.crafttime == 0 ? process_time() : recipe.crafttime;
+	}
+
+	/** For GUI/External */
+	public void setProcessed(int value){
+		processed = value;
+	}
+
+	/** For GUI/External */
+	public void setCooldown(int value){
+		cooldown = value;
+	}
 	
 	public static class Recipe {
 		
@@ -220,7 +265,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			script.addCooldown();
 		}
 
-		public boolean canCraft(CraftBlockScript script, MultiBlockData data){
+		public boolean canCraft(CraftBlockScript script, MultiBlockData data, boolean addcooldown){
 			boolean fits = true;
 			ArrayList<Integer> ints = new ArrayList<>();
 			for(Entry<String, OutputWrapper> entry : output.entrySet()){
@@ -254,7 +299,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 			}
 			if(!fits){
-				script.addCooldown();
+				if(addcooldown) script.addCooldown();
 				return false;
 			}
 			boolean passed = true;
@@ -291,7 +336,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 			}
 			if(!passed){
-				script.addCooldown();
+				if(addcooldown) script.addCooldown();
 				return false;
 			}
 			for(Entry<String, Integer> cons : consume.entrySet()){
@@ -387,6 +432,17 @@ public abstract class CraftBlockScript implements BlockScript {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void resetRecipe(){
+		if(selected == null && autosel == null) return;
+		selected = autosel = null;
+		processed = 0;
+		addCooldown();
+	}
+	
+	public static enum GuiElement {
+		TEXT, TEXT_VALUE, PROGRESS_BAR, BUTTONS
 	}
 
 }

@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.util.script;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -85,6 +88,21 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	@Override
 	public int getConsumable(String id){
 		return 0;
+	}
+
+	@Override
+	public String[] getConsumables(){
+		return new String[0];
+	}
+
+	@Override
+	public void setConsumable(String id, int value){
+		//
+	}
+
+	@Override
+	public List<Object[]> getGuiElements(){
+		return Collections.emptyList();
 	}
 
 }

@@ -55,11 +55,19 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	
 	@Override
 	public void prepare(TickableTE tile){
-		if(lava <= 0) return;
+		if(lava <= 0){
+			if(processed > 0) processed--;
+			if(heat > 0) heat--; 
+			return;
+		}
 		int heatby = open ? heatincr * 2 : heatincr;
 		int lavat = (int)(heatby * lavacon);
 		if(lavat < 1) lavat = 1;
-		if(lava < lavat) return;
+		if(lava < lavat){
+			if(processed > 0) processed--;
+			if(heat - heatby > 0) heat -= heatby; 
+			return;
+		}
 		tile.getMultiBlockData().getFluidTank("tank").drain(lavat, true);
 		heat += heatby;
 	}

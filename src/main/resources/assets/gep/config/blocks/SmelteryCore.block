@@ -146,7 +146,8 @@
     		"cooldown_speed": 1,
     		"update_client": false,
     		"process_time": 200,
-    		"heat_per_tick": 10
+    		"heat_per_tick": 8,
+    		"lava_per_heat": 0.25
     	},
     	"Tickable": true
     }

@@ -21,6 +21,7 @@ import net.minecraft.util.math.Vec3d;
 public class SmelteryScript extends DefaultCraftBlockScript {
 	
 	private static int heatincr;
+	private static float lavacon;
 	private int heat;
 	private int lava;//just copying tank status, for the gui
 	private boolean open;
@@ -28,6 +29,7 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	public SmelteryScript(JsonObject obj){
 		super(obj);
 		heatincr = obj.has("heat_per_tick") ? obj.get("heat_per_tick").getAsInt() : 10;
+		lavacon = obj.has("lava_per_heat") ? obj.get("lava_per_heat").getAsFloat() : 1f;
 	}
 
 	@Override
@@ -53,10 +55,13 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	
 	@Override
 	public void prepare(TickableTE tile){
+		if(lava <= 0) return;
 		int heatby = open ? heatincr * 2 : heatincr;
-		if(tile.getMultiBlockData().getFluidTank("tank").getFluidAmount() < heatby) return;
+		int lavat = (int)(heatby * lavacon);
+		if(lavat < 1) lavat = 1;
+		if(lava < lavat) return;
+		tile.getMultiBlockData().getFluidTank("tank").drain(lavat, true);
 		heat += heatby;
-		tile.getMultiBlockData().getFluidTank("tank").drain(heatby, true);
 	}
 	
 	@Override
@@ -84,12 +89,12 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	
 	@Override
 	public int process_time(){
-		return open ? process_time / 2 : process_time;
+		return open && process_time > 1 ? process_time / 2 : process_time;
 	}
 	
 	@Override
 	public int cooldown_speed(){
-		return open ? cooldown_speed / 2 : cooldown_speed;
+		return open && cooldown_speed > 1 ? cooldown_speed / 2 : cooldown_speed;
 	}
 	
 	public boolean consume(String value, int amount, boolean simulate){

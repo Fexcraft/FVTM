@@ -186,12 +186,16 @@ public class SmelteryModel extends BlockModel {
 			@Override
 			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 				if(tile == null) return;
+				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				if(multidata == null || multidata.getScript() == null) return;
 				float random = Static.random.nextFloat();
 				if(random > 0.5f) random -= 1f;
 	            double x = (double)tile.getPos().getX() + 0.5D + random;
 	            double z = (double)tile.getPos().getZ() + 0.5D + random;
                 tile.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, tile.getPos().getY() + 5.5, z, 0.0D, 0.0D, 0.0D);
-                tile.getWorld().spawnParticle(EnumParticleTypes.SMOKE_LARGE, x, tile.getPos().getY() + 4.5, z, 0.0D, 0.0D, 0.0D);
+                if(((SmelteryScript)multidata.getScript()).isOpen()){
+                	tile.getWorld().spawnParticle(EnumParticleTypes.SMOKE_LARGE, x, tile.getPos().getY() + 4.5, z, 0.0D, 0.0D, 0.0D);
+                }
 			}
 			
 		});

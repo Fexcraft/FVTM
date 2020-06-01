@@ -15,6 +15,24 @@
 				"id": "gep:rubber",
 				"count": 2
 			}
+		},
+		{
+			"block": "gep:smeltery_core",
+			"id": "slime_to_rubber",
+			"input":[
+				{
+					"inventory": "input",
+					"item": "minecraft:slime_ball",
+					"count": 4
+				}
+			],
+			"output":[
+				{
+					"inventory": "output",
+					"item": "gep:rubber",
+					"count": 2
+				}
+			]
 		}
 	]
 }

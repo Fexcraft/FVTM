@@ -257,9 +257,9 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				else{
 					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
-					ItemStack left = entry.getValue().stack;
+					ItemStack left = entry.getValue().stack.copy();
 					for(int i = 0; i < handler.getSlots(); i++){
-						left = handler.insertItem(i, left, false);;
+						left = handler.insertItem(i, left, false);
 						if(left.isEmpty()) break;
 					}
 				}
@@ -370,7 +370,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				ingredient = Ingredient.fromStacks(stacks);
 			}
-			amount = obj.has("amount") ? obj.get("amount").getAsInt() : 1;
+			amount = obj.has("amount") ? obj.get("amount").getAsInt() : obj.has("count") ? obj.get("count").getAsInt() : 1;
 		}
 
 		public InventoryType getInventoryType(){
@@ -391,6 +391,9 @@ public abstract class CraftBlockScript implements BlockScript {
 			}
 			else if(obj.has("item")){
 				stack = fromJson(obj.get("item"));
+				if(obj.has("amount") || obj.has("count")){
+					stack.setCount(obj.get(obj.has("amount") ? "amount" : "count").getAsInt());
+				}
 			}
 			overflow = obj.has("overflow") ? obj.get("overflow").getAsBoolean() : false;
 		}
@@ -414,6 +417,7 @@ public abstract class CraftBlockScript implements BlockScript {
 					}
 					RecipeRegistry.addBluePrintRecipe(obj.get("category").getAsString(), output, stacks);
 					//redirect recipe to FCL:BPT
+					continue;
 				}
 				Recipe recipe = new Recipe(obj);
 				if(!override && RECIPE_REGISTRY.containsKey(recipe.id)){

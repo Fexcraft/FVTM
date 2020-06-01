@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
@@ -375,22 +376,6 @@ public abstract class CraftBlockScript implements BlockScript {
 		public InventoryType getInventoryType(){
 			return fluid != null ? InventoryType.FLUID : InventoryType.ITEM;
 		}
-
-		private static ItemStack fromJson(JsonElement elm) throws NBTException {
-			if(elm.isJsonPrimitive()){
-				return new ItemStack(Item.getByNameOrId(elm.getAsString()));
-			}
-			else{
-				JsonObject obj = elm.getAsJsonObject();
-				ItemStack stack = new ItemStack(Item.getByNameOrId(obj.get("id").getAsString()));
-				stack.setCount(obj.has("count") ? obj.get("count").getAsInt() : 0);
-				stack.setItemDamage(obj.has("damage") ? obj.get("damage").getAsInt() : 0);
-				if(obj.has("tag")){
-					stack.setTagCompound(JsonToNBT.getTagFromJson(obj.get("tag").toString()));
-				}
-				return stack;
-			}
-		}
 		
 	}
 	
@@ -405,7 +390,7 @@ public abstract class CraftBlockScript implements BlockScript {
 				fluid = new FluidStack(FluidRegistry.getFluid(obj.get("fluid").getAsString()), obj.get("amount").getAsInt());
 			}
 			else if(obj.has("item")){
-				stack = InputWrapper.fromJson(obj.get("item"));
+				stack = fromJson(obj.get("item"));
 			}
 			overflow = obj.has("overflow") ? obj.get("overflow").getAsBoolean() : false;
 		}
@@ -419,7 +404,18 @@ public abstract class CraftBlockScript implements BlockScript {
 	public static void parseRecipes(Addon addon, String filename, boolean override, JsonArray array){
 		for(JsonElement elm : array){
 			try{
-				Recipe recipe = new Recipe(elm.getAsJsonObject());
+				JsonObject obj = elm.getAsJsonObject();
+				if(obj.get("block").getAsString().equals("fcl:bpt") || obj.get("block").getAsString().equals("fcl:blueprinttable")){
+					ItemStack output = fromJson(obj.get("output").getAsJsonObject());
+					JsonArray erray = obj.get("input").getAsJsonArray();
+					ItemStack[] stacks = new ItemStack[erray.size()];
+					for(int i = 0; i < stacks.length; i++){
+						stacks[i] = fromJson(erray.get(i));
+					}
+					RecipeRegistry.addBluePrintRecipe(obj.get("category").getAsString(), output, stacks);
+					//redirect recipe to FCL:BPT
+				}
+				Recipe recipe = new Recipe(obj);
 				if(!override && RECIPE_REGISTRY.containsKey(recipe.id)){
 					Print.log(String.format("Duplicate Recipe ID detected from addon '%s' with id '%s' from file '%s'!", addon.getRegistryName().toString(), recipe.id, filename));
 					continue;
@@ -432,6 +428,22 @@ public abstract class CraftBlockScript implements BlockScript {
 			catch(Exception e){
 				e.printStackTrace();
 			}
+		}
+	}
+
+	private static final ItemStack fromJson(JsonElement elm) throws NBTException {
+		if(elm.isJsonPrimitive()){
+			return new ItemStack(Item.getByNameOrId(elm.getAsString()));
+		}
+		else{
+			JsonObject obj = elm.getAsJsonObject();
+			ItemStack stack = new ItemStack(Item.getByNameOrId(obj.get("id").getAsString()));
+			stack.setCount(obj.has("count") ? obj.get("count").getAsInt() : 0);
+			stack.setItemDamage(obj.has("damage") ? obj.get("damage").getAsInt() : 0);
+			if(obj.has("tag")){
+				stack.setTagCompound(JsonToNBT.getTagFromJson(obj.get("tag").toString()));
+			}
+			return stack;
 		}
 	}
 

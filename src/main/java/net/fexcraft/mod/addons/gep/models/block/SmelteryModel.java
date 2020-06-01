@@ -3,6 +3,7 @@ package net.fexcraft.mod.addons.gep.models.block;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.SmelteryScript;
@@ -13,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumParticleTypes;
 
 /** This file was exported via the FVTM Exporter V1.4 of<br>
  *  FMT (Fex's Modelling Toolbox) v.2.5.1 &copy; 2020 - Fexcraft.net<br>
@@ -179,6 +181,20 @@ public class SmelteryModel extends BlockModel {
 			.setRotationPoint(-21, -36, -25).setRotationAngle(0, 0, 0).setName("Box 54")
 		);
 		body.add(new ModelRendererTurbo(body, 0, 0, textureX, textureY).addBox(0, 0, 0, 1, 1, 1).setName("Box 56"));
+		body.addProgram(new TurboList.Program(){
+			
+			@Override
+			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+				if(tile == null) return;
+				float random = Static.random.nextFloat();
+				if(random > 0.5f) random -= 1f;
+	            double x = (double)tile.getPos().getX() + 0.5D + random;
+	            double z = (double)tile.getPos().getZ() + 0.5D + random;
+                tile.getWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, tile.getPos().getY() + 5.5, z, 0.0D, 0.0D, 0.0D);
+                tile.getWorld().spawnParticle(EnumParticleTypes.SMOKE_LARGE, x, tile.getPos().getY() + 4.5, z, 0.0D, 0.0D, 0.0D);
+			}
+			
+		});
 		this.groups.add(body);
 		//
 		TurboList door_right = new TurboList("door_right");

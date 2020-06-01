@@ -1,0 +1,20 @@
+{
+	"OverrideExisting": false,
+	"Recipes": [
+		{
+			"block": "fcl:bpt",
+			"category": "GEP Materials",
+			"input":[
+				{
+					"id": "minecraft:slime_ball",
+					"count": 4
+				},
+				"minecraft:dye"
+			],
+			"output":{
+				"id": "gep:rubber",
+				"count": 2
+			}
+		}
+	]
+}

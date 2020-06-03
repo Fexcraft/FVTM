@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.gui.block;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
@@ -17,8 +15,6 @@ import net.minecraftforge.fml.relauncher.Side;
 public class GBlockCraftContainer extends GenericContainer {
 
 	protected GenericGui<GBlockCraftContainer> gui;
-	@Nullable
-	protected NBTTagCompound initpacket;
 	protected M_4ROT_TE.TileEntity tile;
 	protected CraftBlockScript script;
 	protected EntityPlayerMP mpp;
@@ -45,6 +41,10 @@ public class GBlockCraftContainer extends GenericContainer {
 				}
 				case "reset_recipe":{
 					script.resetRecipe();
+					break;
+				}
+				case "open_chooser":{
+					GenericContainer.openGui("fvtm", 953, new int[]{ tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ() }, player);
 					break;
 				}
 				default: return;
@@ -80,7 +80,7 @@ public class GBlockCraftContainer extends GenericContainer {
 	@Override
 	public void onContainerClosed(EntityPlayer player){
 		super.onContainerClosed(player);
-		//tile.markDirty();
+		tile.markDirty();
 	}
 	
 	private byte passed = 0;

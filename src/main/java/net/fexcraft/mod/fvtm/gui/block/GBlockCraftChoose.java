@@ -1,0 +1,109 @@
+package net.fexcraft.mod.fvtm.gui.block;
+
+import java.util.ArrayList;
+
+import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.Recipe;
+import net.minecraft.block.material.MapColor;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+
+public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
+
+	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/block_craftscript_choose_recipe.png");
+	public CraftBlockScript.GuiElement[] elements = {};
+	public Recipe[] recipes = new Recipe[16];
+
+	public GBlockCraftChoose(EntityPlayer player, World world, int x, int y, int z){
+		super(texture, new GBlockCraftChooseContainer(player, world, x, y, z), player);
+		this.defbackground = true;
+		this.deftexrect = true;
+		container.gui = this;
+		this.xSize = 256;
+		this.ySize = 246;
+	}
+
+	@Override
+	protected void init(){
+		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 192, MapColor.SNOW.colorValue, "loading...."));
+		texts.put("page", new BasicText(guiLeft + 203, guiTop + 6, 28, MapColor.SNOW.colorValue, "1/pg"));
+		buttons.put("prev", new BasicButton("prev", guiLeft + 233, guiTop + 6, 233, 6, 8, 8, true));
+		buttons.put("next", new BasicButton("next", guiLeft + 242, guiTop + 6, 242, 6, 8, 8, true));
+		for(int i = 0; i < 16; i++){
+			texts.put("t_" + i, new BasicText(guiLeft + 9, guiTop + 19 + (i * 14), 224, MapColor.SNOW.colorValue, "loading..."));
+			buttons.put("b_" + i, new BasicButton("b_" + i, guiLeft + 7, guiTop + 17 + (i * 14), 7, 17 + (i * 14), 228, 12, true));
+		}
+		loadRecipes();
+	}
+
+	private void loadRecipes(){
+		ArrayList<Recipe> recipes = CraftBlockScript.SORTED_REGISTRY.get(container.tile.getBlockData().getType().getRegistryName().toString());
+		for(int i = 0; i < 16; i++){
+			int j = i + 16 * container.page;
+			if(j >= recipes.size()){
+				texts.get("t_" + i).string = "";
+				buttons.get("b_" + i).enabled = false;
+				this.recipes[i] = null;
+			}
+			else{
+				texts.get("t_" + i).string = recipes.get(j).id();
+				buttons.get("b_" + i).enabled = true;
+				this.recipes[i] = recipes.get(j);
+			}
+		}
+	}
+
+	@Override
+	protected void predraw(float pticks, int mouseX, int mouseY){
+		if(container.tile != null){
+			texts.get("top").string = container.tile.getBlockData().getType().getName();
+		}
+	}
+
+	@Override
+	protected void drawbackground(float pticks, int mouseX, int mouseY){
+		//
+	}
+
+	@Override
+	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
+		if(button.name.equals("prev")){
+			updatePage(-1);
+			return true;
+		}
+		if(button.name.equals("next")){
+			updatePage(1);
+			return true;
+		}
+		if(button.name.startsWith("b_")){
+			int i = Integer.parseInt(button.name.substring(2));
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("cargo", "choose");
+			compound.setString("recipe", recipes[i].id());
+			this.container.send(Side.SERVER, compound);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	protected void scrollwheel(int am, int x, int y){
+		updatePage(am > 0 ? 1 : -1);
+	}
+
+	private void updatePage(int i){
+		container.page += i;
+		if(container.page < 0) container.page = 0;
+		texts.get("page").string = (container.page + 1) + "/pg";
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("cargo", "page");
+		compound.setInteger("page", container.page);
+		this.container.send(Side.SERVER, compound);
+		loadRecipes();
+	}
+
+}

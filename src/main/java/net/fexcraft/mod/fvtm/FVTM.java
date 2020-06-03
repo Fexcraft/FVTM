@@ -40,6 +40,8 @@ import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
+import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
+import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
 import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
@@ -257,6 +259,7 @@ public class FVTM {
 			//
 			GuiHandler.insert(951, GBlockInventory.class, GBlockInvContainer.class);
 			GuiHandler.insert(952, GBlockCraft.class, GBlockCraftContainer.class);
+			GuiHandler.insert(953, GBlockCraftChoose.class, GBlockCraftChooseContainer.class);
 		}
 		else{
 			GuiHandler.insert(700, StreetSignAdjusterContainer.class);
@@ -286,6 +289,7 @@ public class FVTM {
 			//
 			GuiHandler.insert(951, GBlockInvContainer.class);
 			GuiHandler.insert(952, GBlockCraftContainer.class);
+			GuiHandler.insert(953, GBlockCraftChooseContainer.class);
 		}
 	}
 

@@ -14,6 +14,7 @@ import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
+import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TileEntity;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,6 +43,7 @@ public abstract class CraftBlockScript implements BlockScript {
 	public static LinkedHashMap<String, Recipe> RECIPE_REGISTRY = new LinkedHashMap<>();
 	public static LinkedHashMap<String, ArrayList<Recipe>> SORTED_REGISTRY = new LinkedHashMap<>();
 	
+	protected String blockid;
 	protected Recipe selected, autosel;
 	protected int cooldown;
 	protected int processed;
@@ -104,7 +106,10 @@ public abstract class CraftBlockScript implements BlockScript {
 	}
 
 	protected void searchForRecipe(MultiBlockData multidata){
-		ArrayList<Recipe> recipes = SORTED_REGISTRY.get(multidata.getData().getType().getRegistryName().toString());
+		if(blockid == null){
+			blockid = multidata.getData().getType().getRegistryName().toString();
+		}
+		ArrayList<Recipe> recipes = SORTED_REGISTRY.get(blockid);
 		if(recipes == null || recipes.isEmpty()) return;
 		for(Recipe recipe : recipes){
 			if(recipe.canCraft(this, multidata, false)){
@@ -346,6 +351,10 @@ public abstract class CraftBlockScript implements BlockScript {
 			}
 			return true;
 		}
+
+		public String id(){
+			return id;
+		}
 		
 	}
 	
@@ -460,6 +469,20 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public static enum GuiElement {
 		TEXT, TEXT_VALUE, PROGRESS_BAR, BUTTONS
+	}
+
+	public void setSelectedRecipe(TileEntity tile, String string){
+		if(blockid == null){
+			blockid = tile.getMultiBlockData().getData().getType().getRegistryName().toString();
+		}
+		this.addCooldown();
+		for(Recipe recipe : SORTED_REGISTRY.get(blockid)){
+			if(recipe.id().equals(string)){
+				selected = recipe;
+				return;
+			}
+		}
+		selected = null;
 	}
 
 }

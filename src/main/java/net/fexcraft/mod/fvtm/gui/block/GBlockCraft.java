@@ -142,6 +142,11 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 			updatePage(1);
 			return true;
 		}
+		if(button.name.equals("choose")){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("cargo", "open_chooser");
+			this.container.send(Side.SERVER, compound);
+		}
 		if(button.name.equals("reset")){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "reset_recipe");

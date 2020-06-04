@@ -219,7 +219,6 @@ public class FVTM {
 		Resources.CONSUMABLES.getValuesCollection().forEach(con -> con.linkContainerItem());
 		Resources.CONSUMABLES.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
 		Resources.BLOCKS.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
-		Resources.loadRecipes();
 		Resources.loadPresets();
 		//
 		GuiHandler.register(MODID, this);
@@ -295,7 +294,9 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
-		Packets.init(); SimpleUpdateHandler.register(MODID, 1, VERSION);
+		Packets.init();
+		Resources.loadRecipes();
+		SimpleUpdateHandler.register(MODID, 1, VERSION);
 		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.rail.RecServer());

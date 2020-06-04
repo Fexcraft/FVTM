@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
@@ -17,20 +18,22 @@ import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TileEntity;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.InputWrapper.InputType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Base class for Crafter-Type MultiBlock Scripts.
@@ -206,8 +209,8 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public static class Recipe {
 		
-		protected HashMap<String, InputWrapper> input = new HashMap<>();
-		protected HashMap<String, OutputWrapper> output = new HashMap<>();
+		protected ArrayList<InputWrapper> input = new ArrayList<>();
+		protected ArrayList<OutputWrapper> output = new ArrayList<>();
 		protected HashMap<String, Integer> consume = new HashMap<>();
 		protected String targetmachine, id;
 		protected int crafttime;
@@ -216,15 +219,11 @@ public abstract class CraftBlockScript implements BlockScript {
 			targetmachine = obj.get("block").getAsString();
 			JsonArray ingr = obj.get("input").getAsJsonArray();
 			for(JsonElement entry : ingr){
-				JsonObject ingredient = entry.getAsJsonObject();
-				String inventory = ingredient.get("inventory").getAsString();
-				input.put(inventory, new InputWrapper(ingredient));
+				input.add(new InputWrapper(entry.getAsJsonObject()));
 			}
 			ingr = obj.get("output").getAsJsonArray();
 			for(JsonElement entry : ingr){
-				JsonObject ingredient = entry.getAsJsonObject();
-				String inventory = ingredient.get("inventory").getAsString();
-				output.put(inventory, new OutputWrapper(ingredient));
+				output.add(new OutputWrapper(entry.getAsJsonObject()));
 			}
 			if(obj.has("consume")){
 				obj.get("consume").getAsJsonObject().entrySet().forEach(entry -> {
@@ -239,30 +238,30 @@ public abstract class CraftBlockScript implements BlockScript {
 			for(Entry<String, Integer> cons : consume.entrySet()){
 				script.consume(cons.getKey(), cons.getValue(), false);
 			}
-			for(Entry<String, InputWrapper> entry : input.entrySet()){
-				InventoryType local = entry.getValue().getInventoryType();
-				if(local.isFluid()){
-					data.getFluidTank(entry.getKey()).drain(entry.getValue().fluid, true);
+			for(InputWrapper entry : input){
+				InputType local = entry.getInputType();
+				if(local.toInventory().isFluid()){
+					data.getFluidTank(entry.inventory).drain(entry.fluid, true);
 				}
 				else{
-					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
+					ItemStackHandler handler = data.getInventoryHandler(entry.inventory);
 					for(int i = 0; i < handler.getSlots(); i++){
 						ItemStack stack = handler.getStackInSlot(i);
-						if(entry.getValue().ingredient.apply(stack) && stack.getCount() >= entry.getValue().amount){
-							handler.extractItem(i, entry.getValue().amount, false);
+						if(entry.valid(stack) && stack.getCount() >= entry.amount){
+							handler.extractItem(i, entry.amount, false);
 							break;
 						}
 					}
 				}
 			}
-			for(Entry<String, OutputWrapper> entry : output.entrySet()){
-				InventoryType local = entry.getValue().getInventoryType();
+			for(OutputWrapper entry : output){
+				InventoryType local = entry.getInventoryType();
 				if(local.isFluid()){
-					data.getFluidTank(entry.getKey()).fill(entry.getValue().fluid, true);
+					data.getFluidTank(entry.inventory).fill(entry.fluid, true);
 				}
 				else{
-					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
-					ItemStack left = entry.getValue().stack.copy();
+					ItemStackHandler handler = data.getInventoryHandler(entry.inventory);
+					ItemStack left = entry.stack.copy();
 					for(int i = 0; i < handler.getSlots(); i++){
 						left = handler.insertItem(i, left, false);
 						if(left.isEmpty()) break;
@@ -275,25 +274,25 @@ public abstract class CraftBlockScript implements BlockScript {
 		public boolean canCraft(CraftBlockScript script, MultiBlockData data, boolean addcooldown){
 			boolean fits = true;
 			ArrayList<Integer> ints = new ArrayList<>();
-			for(Entry<String, OutputWrapper> entry : output.entrySet()){
-				InventoryType local = entry.getValue().getInventoryType();
-				if(data.getType().getInventoryTypes().get(entry.getKey()) != local){
+			for(OutputWrapper entry : output){
+				InventoryType local = entry.getInventoryType();
+				if(data.getType().getInventoryTypes().get(entry.inventory) != local){
 					fits = false;
 					break;
 				}
-				if(entry.getValue().overflow) continue;
+				if(entry.overflow) continue;
 				if(local.isFluid()){
-					if(data.getFluidTank(entry.getKey()).fill(entry.getValue().fluid, false) < entry.getValue().fluid.amount){
+					if(data.getFluidTank(entry.inventory).fill(entry.fluid, false) < entry.fluid.amount){
 						fits = false;
 						break;
 					}
 				}
 				else{
 					boolean found = false;
-					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
+					ItemStackHandler handler = data.getInventoryHandler(entry.inventory);
 					for(int i = 0; i < handler.getSlots(); i++){
 						if(ints.contains(i)) continue;
-						if(handler.insertItem(i, entry.getValue().stack, true).isEmpty()){
+						if(handler.insertItem(i, entry.stack, true).isEmpty()){
 							ints.add(i);
 							found = true;
 							break;
@@ -311,26 +310,26 @@ public abstract class CraftBlockScript implements BlockScript {
 			}
 			boolean passed = true;
 			ints.clear();
-			for(Entry<String, InputWrapper> entry : input.entrySet()){
-				InventoryType local = entry.getValue().getInventoryType();
-				if(data.getType().getInventoryTypes().get(entry.getKey()) != local){
+			for(InputWrapper entry : input){
+				InputType local = entry.getInputType();
+				if(data.getType().getInventoryTypes().get(entry.inventory) != local.toInventory()){
 					passed = false;
 					break;
 				}
-				if(local.isFluid()){
-					FluidStack drained = data.getFluidTank(entry.getKey()).drain(entry.getValue().fluid, false);
-					if(drained == null || drained.amount < entry.getValue().fluid.amount){
+				if(local.toInventory().isFluid()){
+					FluidStack drained = data.getFluidTank(entry.inventory).drain(entry.fluid, false);
+					if(drained == null || drained.amount < entry.fluid.amount){
 						passed = false;
 						break;
 					}
 				}
 				else{
 					boolean found = false;
-					ItemStackHandler handler = data.getInventoryHandler(entry.getKey());
+					ItemStackHandler handler = data.getInventoryHandler(entry.inventory);
 					for(int i = 0; i < handler.getSlots(); i++){
 						if(ints.contains(i)) continue;
 						ItemStack stack = handler.getStackInSlot(i);
-						if(entry.getValue().ingredient.apply(stack) && stack.getCount() >= entry.getValue().amount){
+						if(entry.valid(stack) && stack.getCount() >= entry.amount){
 							ints.add(i);
 							found = true;
 							break;
@@ -360,11 +359,15 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public static class InputWrapper {
 
+		protected static HashMap<String, NonNullList<ItemStack>> oredict = new HashMap<>();
 		protected Ingredient ingredient;
 		protected FluidStack fluid;
+		protected String inventory;
+		protected String oreid;
 		protected int amount;
 		
-		public InputWrapper(JsonObject obj) throws NBTException {
+		public InputWrapper(JsonObject obj) throws Exception {
+			inventory = obj.get("inventory").getAsString();
 			if(obj.has("fluid")){
 				fluid = new FluidStack(FluidRegistry.getFluid(obj.get("fluid").getAsString()), obj.get("amount").getAsInt());
 			}
@@ -379,11 +382,41 @@ public abstract class CraftBlockScript implements BlockScript {
 				}
 				ingredient = Ingredient.fromStacks(stacks);
 			}
+			else if(obj.has("oredict")){
+				String id = obj.get("oredict").getAsString();
+				if(!oredict.containsKey(id)){
+					oredict.put(id, OreDictionary.getOres(id, true));
+				}
+				if(oredict.get(id).size() < 1){
+					throw new Exception("OreDict for '" + id + "' is empty!");
+				}
+				oreid = id;
+			}
 			amount = obj.has("amount") ? obj.get("amount").getAsInt() : obj.has("count") ? obj.get("count").getAsInt() : 1;
 		}
+		
+		public boolean valid(ItemStack stack){
+			if(ingredient != null){
+				return ingredient.apply(stack);
+			}
+			if(oreid != null){
+				return OreDictionary.containsMatch(false, oredict.get(oreid), stack);
+			}
+			return false;
+		}
 
-		public InventoryType getInventoryType(){
-			return fluid != null ? InventoryType.FLUID : InventoryType.ITEM;
+		public static enum InputType {
+			
+			ITEM, FLUID, OREDICT;
+			
+			public InventoryType toInventory(){
+				return this == FLUID ? InventoryType.FLUID : InventoryType.ITEM;
+			}
+			
+		}
+
+		public InputType getInputType(){
+			return fluid != null ? InputType.FLUID : ingredient == null ? InputType.OREDICT : InputType.ITEM;
 		}
 		
 	}
@@ -393,8 +426,10 @@ public abstract class CraftBlockScript implements BlockScript {
 		protected ItemStack stack;
 		protected FluidStack fluid;
 		protected boolean overflow;
+		protected String inventory;
 		
-		public OutputWrapper(JsonObject obj) throws NBTException {
+		public OutputWrapper(JsonObject obj) throws Exception {
+			inventory = obj.get("inventory").getAsString();
 			if(obj.has("fluid")){
 				fluid = new FluidStack(FluidRegistry.getFluid(obj.get("fluid").getAsString()), obj.get("amount").getAsInt());
 			}
@@ -439,25 +474,32 @@ public abstract class CraftBlockScript implements BlockScript {
 				Print.debug("Added Recipe '" + recipe.id + "' to '" + recipe.targetmachine + "' from '" + addon.getRegistryName().toString() + "'!");
 			}
 			catch(Exception e){
-				e.printStackTrace();
+				if(Static.dev()){
+					e.printStackTrace();
+					Static.stop();
+				}
 			}
 		}
 	}
 
-	private static final ItemStack fromJson(JsonElement elm) throws NBTException {
+	private static final ItemStack fromJson(JsonElement elm) throws Exception {
+		ItemStack stack = null;
 		if(elm.isJsonPrimitive()){
-			return new ItemStack(Item.getByNameOrId(elm.getAsString()));
+			stack = new ItemStack(Item.getByNameOrId(elm.getAsString()));
 		}
 		else{
 			JsonObject obj = elm.getAsJsonObject();
-			ItemStack stack = new ItemStack(Item.getByNameOrId(obj.get("id").getAsString()));
+			stack = new ItemStack(Item.getByNameOrId(obj.get("id").getAsString()));
 			stack.setCount(obj.has("count") ? obj.get("count").getAsInt() : 0);
 			stack.setItemDamage(obj.has("damage") ? obj.get("damage").getAsInt() : 0);
 			if(obj.has("tag")){
 				stack.setTagCompound(JsonToNBT.getTagFromJson(obj.get("tag").toString()));
 			}
-			return stack;
 		}
+		if(stack.isEmpty()){
+			throw new Exception("Item not found: " + elm.toString());
+		}
+		return stack;
 	}
 
 	public void resetRecipe(){

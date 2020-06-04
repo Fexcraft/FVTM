@@ -21,12 +21,14 @@ public class GBlockCraftContainer extends GenericContainer {
 	public int page;
 	public int crafttime;
 	public String current;
+	public boolean tickable;
 
 	public GBlockCraftContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 		tile = (TileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		script = (CraftBlockScript)tile.getMultiBlockData().getScript();
+		tickable = tile.getMultiBlockData().getType().isTickable();
 	}
 
 	@Override
@@ -46,6 +48,9 @@ public class GBlockCraftContainer extends GenericContainer {
 				case "open_chooser":{
 					GenericContainer.openGui("fvtm", 953, new int[]{ tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ() }, player);
 					break;
+				}
+				case "craft_recipe":{
+					//TODO
 				}
 				default: return;
 			}

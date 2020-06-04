@@ -33,19 +33,20 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 192, MapColor.SNOW.colorValue, "loading...."));
 		texts.put("page", new BasicText(guiLeft + 203, guiTop + 6, 28, MapColor.SNOW.colorValue, "1/pg"));
 		texts.put("status", new BasicText(guiLeft + 9, guiTop + 19, 238, MapColor.SNOW.colorValue, "loading...."));
-		texts.put("process", new BasicText(guiLeft + 9, guiTop + 33, 136, MapColor.SNOW.colorValue, "loading...."));
+		texts.put("process", new BasicText(guiLeft + 9, guiTop + 33, container.tickable ? 136 : 238, MapColor.SNOW.colorValue, "loading...."));
 		buttons.put("prev", new BasicButton("prev", guiLeft + 233, guiTop + 6, 233, 6, 8, 8, true));
 		buttons.put("next", new BasicButton("next", guiLeft + 242, guiTop + 6, 242, 6, 8, 8, true));
 		buttons.put("choose", new BasicButton("choose", guiLeft + 7, guiTop + 45, 7, 45, 120, 12, true));
 		buttons.put("reset", new BasicButton("reset", guiLeft + 129, guiTop + 45, 129, 45, 120, 12, true));
 		texts.put("choose", new BasicText(guiLeft + 10, guiTop + 47, 114, MapColor.SNOW.colorValue, "Choose Recipe"));
-		texts.put("reset", new BasicText(guiLeft + 132, guiTop + 47, 114, MapColor.SNOW.colorValue, "Reset Recipe"));
+		texts.put("reset", new BasicText(guiLeft + 132, guiTop + 47, 114, MapColor.SNOW.colorValue, (container.tickable ? "Reset" : "Craft") + " Recipe"));
 		initElements();
 	}
 
 	private void initElements(){
 		texts.entrySet().removeIf(entry -> entry.getKey().startsWith("e_"));
 		buttons.entrySet().removeIf(entry -> entry.getKey().startsWith("e_"));
+		if(!container.tickable) return;
 		//
 		List<Object[]> elms = container.script.getGuiElements();
 		if(elms == null || elms.isEmpty()){
@@ -149,7 +150,7 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		}
 		if(button.name.equals("reset")){
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("cargo", "reset_recipe");
+			compound.setString("cargo", container.tickable ? "reset_recipe" : "craft_recipe");
 			this.container.send(Side.SERVER, compound);
 		}
 		return false;

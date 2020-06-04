@@ -1,0 +1,51 @@
+{
+	"OverrideExisting": false,
+	"Recipes": [
+		{
+			"block": "gep:smeltery_core",
+			"id": "steel_0",
+			"input":[
+				{
+					"inventory": "input",
+					"oredict": "ingotIron",
+					"count": 4
+				},
+				{
+					"inventory": "input",
+					"item": "minecraft:coal",
+					"count": 1
+				}
+			],
+			"output":[
+				{
+					"inventory": "output",
+					"item": "gep:steel_ingot",
+					"count": 4
+				}
+			]
+		},
+		{
+			"block": "gep:smeltery_core",
+			"id": "steel_1",
+			"input":[
+				{
+					"inventory": "input",
+					"oredict": "ingotIron",
+					"count": 8
+				},
+				{
+					"inventory": "input",
+					"item": "minecraft:coal",
+					"count": 2
+				}
+			],
+			"output":[
+				{
+					"inventory": "output",
+					"item": "gep:steel_ingot",
+					"count": 8
+				}
+			]
+		}
+	]
+}

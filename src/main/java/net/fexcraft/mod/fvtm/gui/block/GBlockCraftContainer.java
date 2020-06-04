@@ -18,10 +18,12 @@ public class GBlockCraftContainer extends GenericContainer {
 	protected M_4ROT_TE.TileEntity tile;
 	protected CraftBlockScript script;
 	protected EntityPlayerMP mpp;
-	public int page;
+	public int page, crafted;
 	public int crafttime;
 	public String current;
+	public String ntstatus;
 	public boolean tickable;
+	protected static String success = "Recipe Crafted.";
 
 	public GBlockCraftContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
@@ -50,7 +52,23 @@ public class GBlockCraftContainer extends GenericContainer {
 					break;
 				}
 				case "craft_recipe":{
-					//TODO
+					if(craft > 0) break;
+					NBTTagCompound compound = new NBTTagCompound();
+					if(script.getSelected() == null){
+						compound.setString("status", "No recipe selected.");
+					}
+					else{
+						if(script.getSelected().canCraft(script, tile.getMultiBlockData(), false)){
+							script.getSelected().craft(script, tile.getMultiBlockData());
+							compound.setString("status", success);
+						}
+						else{
+							compound.setString("status", "Recipe cannot be crafted.");
+						}
+					}
+					compound.setString("cargo", "craft_status");
+					send(Side.CLIENT, compound);
+					break;
 				}
 				default: return;
 			}
@@ -62,6 +80,9 @@ public class GBlockCraftContainer extends GenericContainer {
 					break;
 				}
 				case "consumables":{
+					if(!packet.getString("current").equals(current)){
+						crafted = 0;
+					}
 					current = packet.getString("current");
 					script.setProcessed(packet.getInteger("processed"));
 					script.setCooldown(packet.getInteger("cooldown"));
@@ -71,6 +92,12 @@ public class GBlockCraftContainer extends GenericContainer {
 						}
 					}
 					crafttime = packet.getInteger("crafttime");
+					break;
+				}
+				case "craft_status":{
+					ntstatus = packet.getString("status");
+					if(ntstatus.equals(success)) crafted++;
+					break;
 				}
 				default: return;
 			}
@@ -88,10 +115,11 @@ public class GBlockCraftContainer extends GenericContainer {
 		tile.markDirty();
 	}
 	
-	private byte passed = 0;
+	private byte passed = 0, craft = 0;
 
 	@Override
 	public void detectAndSendChanges(){
+		if(craft > 0) craft--;
 		passed++;
 		if(passed < 10) return;
 		passed = 0;

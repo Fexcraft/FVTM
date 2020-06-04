@@ -33,13 +33,13 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 192, MapColor.SNOW.colorValue, "loading...."));
 		texts.put("page", new BasicText(guiLeft + 203, guiTop + 6, 28, MapColor.SNOW.colorValue, "1/pg"));
 		texts.put("status", new BasicText(guiLeft + 9, guiTop + 19, 238, MapColor.SNOW.colorValue, "loading...."));
-		texts.put("process", new BasicText(guiLeft + 9, guiTop + 33, container.tickable ? 136 : 238, MapColor.SNOW.colorValue, "loading...."));
+		texts.put("process", new BasicText(guiLeft + 9, guiTop + 33, container.tickable ? 136 : 238, MapColor.SNOW.colorValue, ""));
 		buttons.put("prev", new BasicButton("prev", guiLeft + 233, guiTop + 6, 233, 6, 8, 8, true));
 		buttons.put("next", new BasicButton("next", guiLeft + 242, guiTop + 6, 242, 6, 8, 8, true));
 		buttons.put("choose", new BasicButton("choose", guiLeft + 7, guiTop + 45, 7, 45, 120, 12, true));
 		buttons.put("reset", new BasicButton("reset", guiLeft + 129, guiTop + 45, 129, 45, 120, 12, true));
 		texts.put("choose", new BasicText(guiLeft + 10, guiTop + 47, 114, MapColor.SNOW.colorValue, "Choose Recipe"));
-		texts.put("reset", new BasicText(guiLeft + 132, guiTop + 47, 114, MapColor.SNOW.colorValue, (container.tickable ? "Reset" : "Craft") + " Recipe"));
+		texts.put("reset", new BasicText(guiLeft + 132, guiTop + 47, 114, MapColor.SNOW.colorValue, container.tickable ? "Reset Recipe" : "Craft/Process"));
 		initElements();
 	}
 
@@ -90,45 +90,55 @@ public class GBlockCraft extends GenericGui<GBlockCraftContainer> {
 			texts.get("top").string = container.tile.getBlockData().getType().getName();
 		}
 		texts.get("status").string = "Current recipe: " + container.current;
-		texts.get("process").string = container.script.getCooldown() > 0  ? "Cooldown/Paused (" + container.script.getCooldown() + ")" : container.current == null || container.current.equals("none") ? "Idle" : "Working/Processing.";
+		if(container.tickable){
+			texts.get("process").string = container.script.getCooldown() > 0  ? "Cooldown/Paused (" + container.script.getCooldown() + ")" : container.current == null || container.current.equals("none") ? "Idle" : "Working/Processing.";
+		}
+		else{
+			texts.get("process").string = container.ntstatus == null ? "" : container.ntstatus.equals(GBlockCraftContainer.success) ? container.crafted + "x " + container.ntstatus : container.ntstatus;
+		}
 	}
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, 58);
 		this.drawTexturedModalRect(guiLeft, guiTop + 58 + elements.length * 14, 0, 250, this.xSize, 6);
-		int proc = container.script.getCooldown() > 0 || container.script.getProcessed() <= 0 || container.crafttime == 0 ? 0 : (container.script.getProcessed() * 100) / container.crafttime;
-		if(proc > 0){
-			RGB.GREEN.glColorApply();
-			this.drawTexturedModalRect(guiLeft + 148, guiTop + 32, 148, 32, proc, 10);
-			RGB.glColorReset();
+		if(!container.tickable){
+			this.drawTexturedModalRect(guiLeft, guiTop + 30, 0, 16, this.xSize, 14);
 		}
-		for(int i = 0; i < elements.length; i++){
-			int offset = i * 14;
-			Object[] objs = elementdata.get(i);
-			switch(elements[i]){
-				case PROGRESS_BAR:{
-					texts.get("e_" + i + "v").string = "" + container.script.getConsumable((String)objs[2]);
-					this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 30, this.xSize, 14);
-					int max = (int)objs[3], val = container.script.getConsumable((String)objs[2]);
-					proc = max == 0 || val == 0 ? 0 : (val * 100) / max;
-					if(proc > 0){
-						(objs.length < 5 ? RGB.GREEN : (RGB)objs[4]).glColorApply();
-						this.drawTexturedModalRect(guiLeft + 148, guiTop + 60 + offset, 148, 32, proc, 10);
-						RGB.glColorReset();
+		else{
+			int proc = container.script.getCooldown() > 0 || container.script.getProcessed() <= 0 || container.crafttime == 0 ? 0 : (container.script.getProcessed() * 100) / container.crafttime;
+			if(proc > 0){
+				RGB.GREEN.glColorApply();
+				this.drawTexturedModalRect(guiLeft + 148, guiTop + 32, 148, 32, proc, 10);
+				RGB.glColorReset();
+			}
+			for(int i = 0; i < elements.length; i++){
+				int offset = i * 14;
+				Object[] objs = elementdata.get(i);
+				switch(elements[i]){
+					case PROGRESS_BAR:{
+						texts.get("e_" + i + "v").string = "" + container.script.getConsumable((String)objs[2]);
+						this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 30, this.xSize, 14);
+						int max = (int)objs[3], val = container.script.getConsumable((String)objs[2]);
+						proc = max == 0 || val == 0 ? 0 : (val * 100) / max;
+						if(proc > 0){
+							(objs.length < 5 ? RGB.GREEN : (RGB)objs[4]).glColorApply();
+							this.drawTexturedModalRect(guiLeft + 148, guiTop + 60 + offset, 148, 32, proc, 10);
+							RGB.glColorReset();
+						}
+						break;
 					}
-					break;
+					case TEXT_VALUE:
+						texts.get("e_" + i).string = String.format((String)objs[1], container.script.getConsumable((String)objs[2]));
+					case TEXT:
+						this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 16, this.xSize, 14);
+						break;
+					case BUTTONS:
+						this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 44, this.xSize, 14);
+						break;
+					default:
+						break;
 				}
-				case TEXT_VALUE:
-					texts.get("e_" + i).string = String.format((String)objs[1], container.script.getConsumable((String)objs[2]));
-				case TEXT:
-					this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 16, this.xSize, 14);
-					break;
-				case BUTTONS:
-					this.drawTexturedModalRect(guiLeft, guiTop + 58 + offset, 0, 44, this.xSize, 14);
-					break;
-				default:
-					break;
 			}
 		}
 	}

@@ -544,4 +544,8 @@ public abstract class CraftBlockScript implements BlockScript {
 		selected = null;
 	}
 
+	public Recipe getSelected(){
+		return selected;
+	}
+
 }

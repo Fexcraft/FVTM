@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
@@ -354,17 +355,29 @@ public abstract class CraftBlockScript implements BlockScript {
 		public String id(){
 			return id;
 		}
+
+		public List<InputWrapper> getInputs(){
+			return input;
+		}
+
+		public List<OutputWrapper> getOutput(){
+			return output;
+		}
+
+		public Map<String, Integer> getConsume(){
+			return consume;
+		}
 		
 	}
 	
 	public static class InputWrapper {
 
 		protected static HashMap<String, NonNullList<ItemStack>> oredict = new HashMap<>();
-		protected Ingredient ingredient;
-		protected FluidStack fluid;
-		protected String inventory;
-		protected String oreid;
-		protected int amount;
+		public Ingredient ingredient;
+		public FluidStack fluid;
+		public String inventory;
+		public String oreid;
+		public int amount;
 		
 		public InputWrapper(JsonObject obj) throws Exception {
 			inventory = obj.get("inventory").getAsString();
@@ -423,10 +436,10 @@ public abstract class CraftBlockScript implements BlockScript {
 	
 	public static class OutputWrapper {
 
-		protected ItemStack stack;
-		protected FluidStack fluid;
-		protected boolean overflow;
-		protected String inventory;
+		public ItemStack stack;
+		public FluidStack fluid;
+		public boolean overflow;
+		public String inventory;
 		
 		public OutputWrapper(JsonObject obj) throws Exception {
 			inventory = obj.get("inventory").getAsString();
@@ -444,6 +457,10 @@ public abstract class CraftBlockScript implements BlockScript {
 
 		public InventoryType getInventoryType(){
 			return fluid != null ? InventoryType.FLUID : InventoryType.ITEM;
+		}
+
+		public int amount(){
+			return fluid == null ? stack.getCount() : fluid.amount;
 		}
 		
 	}

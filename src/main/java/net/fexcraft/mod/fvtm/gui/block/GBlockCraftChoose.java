@@ -1,9 +1,13 @@
 package net.fexcraft.mod.fvtm.gui.block;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.InputWrapper;
+import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.OutputWrapper;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.Recipe;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +21,8 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/block_craftscript_choose_recipe.png");
 	public CraftBlockScript.GuiElement[] elements = {};
 	public Recipe[] recipes = new Recipe[16];
+	private int hovered = -1;
+	private ArrayList<String> hoverlines = new ArrayList<>();
 
 	public GBlockCraftChoose(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new GBlockCraftChooseContainer(player, world, x, y, z), player);
@@ -66,8 +72,44 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		//
+		int newhovered = -1;
+		for(int i = 0; i < recipes.length; i++){
+			if(buttons.get("b_" + i).hovered){
+				newhovered = i;
+				break;
+			}
+		}
+		if(newhovered != hovered){
+			hovered = newhovered;
+			loadHoverlines();
+		}
 	}
+
+	private void loadHoverlines(){
+		hoverlines.clear();
+		if(hovered < 0 || recipes[hovered] == null) return;
+		Recipe recipe = recipes[hovered];
+		for(InputWrapper wrapper : recipe.getInputs()){
+			String name = wrapper.fluid == null ? wrapper.oreid == null ? "I:" + wrapper.ingredient.getMatchingStacks()[0].getDisplayName() : "O: " + wrapper.oreid : wrapper.fluid.getLocalizedName();
+			hoverlines.add(Formatter.format("&4- %s&7x&c%s &7-> &c%s", wrapper.amount, name, wrapper.inventory));
+		}
+		for(Entry<String, Integer> entry : recipe.getConsume().entrySet()){
+			hoverlines.add(Formatter.format("&b- &3%s &7-> &3%s", entry.getValue(), entry.getKey()));
+		}
+		for(OutputWrapper wrapper : recipe.getOutput()){
+			String name = wrapper.fluid == null ? wrapper.stack.getDisplayName() : wrapper.fluid.getLocalizedName();
+			hoverlines.add(Formatter.format("&a+ %s&7x&2%s &7-> &a%s", wrapper.amount(), name, wrapper.inventory));
+		}
+	}
+	
+	@Override
+    protected void drawGuiContainerBackgroundLayer(float pticks, int mouseX, int mouseY){
+		super.drawGuiContainerBackgroundLayer(pticks, mouseX, mouseY);
+		if(hovered >= 0 && !hoverlines.isEmpty()){
+			this.drawHoveringText(hoverlines, guiLeft + 7 + 64, guiTop + 17 + (hovered * 14));
+			this.mc.getTextureManager().bindTexture(texloc);
+		}
+    }
 
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){

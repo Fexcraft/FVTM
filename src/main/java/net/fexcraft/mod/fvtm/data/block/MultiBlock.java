@@ -63,7 +63,7 @@ public class MultiBlock {
 							data = FluidRegistry.getFluid(invdata);
 							break;
 						case ITEM:
-				        	data = ContentFilter.FILTER_REGISTRY.get(obj.get("ContentFilter").getAsString());
+				        	data = ContentFilter.FILTER_REGISTRY.get(invdata);
 							break;
 						default:
 							break;

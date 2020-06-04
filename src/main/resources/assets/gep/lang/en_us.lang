@@ -29,6 +29,9 @@ item.gep:road_closed.name=Road Closed
 item.gep:stop.name=Stop Sign
 item.gep:turn_left.name=Turn Left
 item.gep:turn_right.name=Turn Right
+item.gep:rubber.name=Rubber
+item.gep:steel_ingot.name=Steel Ingot
+item.gep:steel_place.name=Steel Plate
 
 # Blocks
 tile.gep:pizza_oven.name=FRSM Pizza Oven

@@ -1,0 +1,218 @@
+{
+	"RegistryName": "gep:crusher",
+	"Addon": "fvtm:gep",
+	"Model": "gep:models/block/crusher",
+	"Name": "3³ Rock Crusher",
+    "Description": "&7The former &2HCP &cCrusher",
+	"Texture": "hcp:textures/blocks/crusher.png",
+    "BlockType": "MULTIBLOCK_4ROT",
+    "Material": "IRON",
+    "MapColor": "CLAY",
+    "MultiBlock":{
+    	"Inventories":{
+    		"output": "item-16",
+    		"intput": "item-12"
+    	},
+		"Blocks":[
+			[ "gep:crusher_body",  1, 0, -1 ],
+			[ "gep:crusher_body",  0, 0, -1 ],
+			[ "gep:crusher_body", -1, 0, -1 ],
+			[ "gep:crusher_body",  1, 0,  0 ],
+			[ "gep:crusher",       0, 0,  0 ],
+			[ "gep:crusher_body", -1, 0,  0 ],
+			[ "gep:crusher_body",  1, 0,  1 ],
+			[ "gep:crusher_body",  0, 0,  1 ],
+			[ "gep:crusher_body", -1, 0,  1 ],
+			[ "gep:crusher_body",  0, 1,  0 ],
+			[ "gep:crusher_body",  1, 2, -1 ],
+			[ "gep:crusher_body",  0, 2, -1 ],
+			[ "gep:crusher_body", -1, 2, -1 ],
+			[ "gep:crusher_body",  1, 2,  0 ],
+			[ "gep:crusher_body",  0, 2,  0 ],
+			[ "gep:crusher_body", -1, 2,  0 ],
+			[ "gep:crusher_body",  1, 2,  1 ],
+			[ "gep:crusher_body",  0, 2,  1 ],
+			[ "gep:crusher_body", -1, 2,  1 ]
+		],
+    	"Triggers":[
+    		{
+    			"block": [ -1, 0, -1 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 0, -1 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 1, 0, -1 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ -1, 0, 0 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 0, 0 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 1, 0, 0 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ -1, 0, 1 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 0, 1 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 1, 0, 1 ],
+    			"target": "output",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 1, 0 ],
+    			"target": "open_gui",
+    			"type": "script"
+    		},
+    		{
+    			"block": [ -1, 2, -1 ],
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 2, -1 ],
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 1, 2, -1 ],
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ -1, 2, 0 ],
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 2, 0 ],
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 1, 2, 0 ],
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ -1, 2, 1 ],
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 0, 2, 1 ],
+    			"target": "input",
+    			"type": "inventory"
+    		},
+    		{
+    			"block": [ 1, 2, 1 ],
+    			"target": "input",
+    			"type": "inventory"
+    		}
+    	],
+    	"Access":[
+    		{
+    			"block": [ -1, 0, -1 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ 0, 0, -1 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ 1, 0, -1 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ -1, 0, 0 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ 0, 0, 0 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ 1, 0, 0 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ -1, 0, 1 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ 0, 0, 1 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ 1, 0, 1 ],
+    			"target": "output"
+    		},
+    		{
+    			"block": [ -1, 2, -1 ],
+    			"target": "input"
+    		},
+    		{
+    			"block": [ 0, 2, -1 ],
+    			"target": "input"
+    		},
+    		{
+    			"block": [ 1, 2, -1 ],
+    			"target": "input"
+    		},
+    		{
+    			"block": [ -1, 2, 0 ],
+    			"target": "input"
+    		},
+    		{
+    			"block": [ 0, 2, 0 ],
+    			"target": "input"
+    		},
+    		{
+    			"block": [ 1, 2, 0 ],
+    			"target": "input"
+    		},
+    		{
+    			"block": [ -1, 2, 1 ],
+    			"target": "input"
+    		},
+    		{
+    			"block": [ 0, 2, 1 ],
+    			"target": "input"
+    		},
+    		{
+    			"block": [ 1, 2, 1 ],
+    			"target": "input"
+    		}
+    	],
+		"Script": "net.fexcraft.mod.fvtm.util.script.DefaultCraftBlockScript.class",
+		"ScriptData":{
+			"auto_recipe_chooser": true,
+			"instant": false,
+			"cooldown": 80,
+			"process_speed": 1,
+			"cooldown_speed": 1,
+			"process_time": 80
+		}
+    }
+}

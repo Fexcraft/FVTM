@@ -11,7 +11,7 @@
     "MultiBlock":{
     	"Inventories":{
     		"output": "item-16",
-    		"intput": "item-12"
+    		"input": "item-12"
     	},
 		"Blocks":[
 			[ "gep:crusher_body",  1, 0, -1 ],

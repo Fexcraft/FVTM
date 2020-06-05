@@ -48,10 +48,9 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 
 	private void loadRecipes(){
 		ArrayList<Recipe> recipes = CraftBlockScript.SORTED_REGISTRY.get(container.tile.getBlockData().getType().getRegistryName().toString());
-		if(recipes == null) return;
 		for(int i = 0; i < 16; i++){
 			int j = i + 16 * container.page;
-			if(j >= recipes.size()){
+			if(recipes == null || j >= recipes.size()){
 				texts.get("t_" + i).string = "";
 				buttons.get("b_" + i).enabled = false;
 				this.recipes[i] = null;
@@ -61,6 +60,9 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 				buttons.get("b_" + i).enabled = true;
 				this.recipes[i] = recipes.get(j);
 			}
+		}
+		if(recipes == null){
+			texts.get("t_0").string = "No recipes for block found.";
 		}
 	}
 

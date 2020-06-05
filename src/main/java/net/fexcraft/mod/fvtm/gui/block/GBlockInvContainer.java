@@ -15,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidActionResult;
@@ -128,6 +127,9 @@ public class GBlockInvContainer extends GenericContainer {
 				if(packet.hasKey("stack_0")) fluid_io.setInventorySlotContents(0, new ItemStack(packet.getCompoundTag("stack_0")));
 				if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
 			}
+			if(packet.getString("cargo").equals("update_stack")){
+				temp.setStackInSlot(packet.getInteger("index"), new ItemStack(packet.getCompoundTag("stack")));
+			}
 		}
 	}
 
@@ -219,7 +221,11 @@ public class GBlockInvContainer extends GenericContainer {
 	                itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
 	                this.inventoryItemStacks.set(i, itemstack1);
 	                if(clientStackChanged){
-	                	if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, i, itemstack1));
+						NBTTagCompound compound = new NBTTagCompound();
+						compound.setString("cargo", "update_stack");
+						compound.setInteger("index", i);
+						compound.setTag("stack", itemstack1.writeToNBT(new NBTTagCompound()));
+						this.send(Side.CLIENT, compound);
 	                }
 	            }
 	        }

@@ -23,7 +23,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidUtil;
@@ -189,6 +188,9 @@ public class VehicleContainer extends GenericContainer {
                     veh.getVehicleData().getAttribute("fuel_secondary").setValue(packet.getString("secondary"));
                     veh.getVehicleData().getAttribute("fuel_quality").setValue(packet.getFloat("quality"));
 				}
+				if(packet.getString("cargo").equals("update_stack")){
+					temp.setInventorySlotContents(packet.getInteger("index"), new ItemStack(packet.getCompoundTag("stack")));
+				}
 			}
 		}
 	}
@@ -338,8 +340,12 @@ public class VehicleContainer extends GenericContainer {
                 if(ItemStack.areItemStacksEqual(itemstack1, itemstack)) continue;
                 boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
                 itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy(); this.inventoryItemStacks.set(i, itemstack1);
-                if(!clientStackChanged) continue; if(mpp != null) mpp.connection.sendPacket(new SPacketSetSlot(this.windowId, i, itemstack1));
-                for(int j = 0; j < this.listeners.size(); ++j){ this.listeners.get(j).sendSlotContents(this, i, itemstack1); }
+                if(!clientStackChanged) continue;
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("cargo", "update_stack");
+				compound.setInteger("index", i);
+				compound.setTag("stack", itemstack1.writeToNBT(new NBTTagCompound()));
+				this.send(Side.CLIENT, compound);
             }
         }
     }

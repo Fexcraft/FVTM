@@ -21,6 +21,7 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MB_Access;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
+import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -250,7 +251,10 @@ public class M_4ROT_TE extends BlockBase {
 	        if(!pos.equals(core)){
 	            this.core = core;
 	        }
-	        else iscore = true;
+	        else{
+	        	iscore = true;
+		        data = ((BlockItem)stack.getItem()).getData(stack);
+	        }
 	        this.markDirty();
 	        return this;
 		}

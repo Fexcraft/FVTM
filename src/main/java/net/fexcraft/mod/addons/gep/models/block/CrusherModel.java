@@ -1,8 +1,13 @@
 //FMT-Marker FVTM-1
 package net.fexcraft.mod.addons.gep.models.block;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
+import org.lwjgl.opengl.GL11;
+
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
@@ -13,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.TurboList;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 /** This file was exported via the FVTM Exporter V1 of<br>
@@ -789,7 +795,30 @@ public class CrusherModel extends BlockModel {
 			.addShapeBox(0, -0.5f, 0, 12, 4, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 4, 0, 0, 4)
 			.setRotationPoint(-6, -4, -6).setRotationAngle(0, 0, 0).setName("Box 220")
 		);
-		//TODO state program
+		state.addProgram(new TurboList.Program(){
+			
+			private int fullstate;
+			
+			@Override
+			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+				if(tile == null || cache == null) return;
+				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				if(multidata != null && multidata.getInventory("output") != null){
+					List<ItemStack> stacks = multidata.getInventory("output");
+					fullstate = 0;
+					for(int i = 0; i < 16; i++){
+						if(!stacks.get(i).isEmpty()) fullstate++;
+					}
+			    	GL11.glTranslatef(0, -Static.sixteenth * fullstate, 0);
+				}
+			}
+			
+			@Override
+			public void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+		    	GL11.glTranslatef(0, Static.sixteenth * fullstate, 0);
+			}
+			
+		});
 		this.groups.add(state);
 	}
 

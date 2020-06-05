@@ -24,6 +24,8 @@ public class CrusherModel extends BlockModel {
 
 	public CrusherModel(){
 		super(); textureX = 512; textureY = 256;
+		this.addToCreators("Ferdinand (FEX___96)");
+	    gui_scale_x = gui_scale_y = gui_scale_z = 0.125f;
 		//
 		TurboList chassis_body = new TurboList("chassis_body");
 		chassis_body.add(new ModelRendererTurbo(chassis_body, 345, 1, textureX, textureY).addBox(0, 0, 0, 4, 48, 4)
@@ -759,10 +761,9 @@ public class CrusherModel extends BlockModel {
 			
 			@Override
 			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-				if(tile == null) return;
+				if(tile == null || cache == null) return;
 				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
 				if(multidata != null && multidata.getScript() != null && ((CraftBlockScript)multidata.getScript()).getProcessed() > 0){
-					list.rotate(0, 45, 0, true);
 			    	float rotation = cache.getValue("rot_state", 0f) + 1;
 			    	cache.setValue("rot_state", rotation > 360 ? 0 : rotation);
 			    	for(ModelRendererTurbo turbo : list){

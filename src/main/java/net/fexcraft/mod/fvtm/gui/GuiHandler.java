@@ -2,8 +2,19 @@ package net.fexcraft.mod.fvtm.gui;
 
 import java.util.HashMap;
 
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartManager;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
+import net.fexcraft.mod.fvtm.gui.road.RoadContainer;
+import net.fexcraft.mod.fvtm.gui.road.RoadPlacingTool;
+import net.fexcraft.mod.fvtm.gui.road.RoadPlacingToolFill;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,18 +31,43 @@ public class GuiHandler implements IGuiHandler {
 	/* 7xx - other */
 	public static final int STREETSIGN_ADJUSTER = 700;
 	public static final int JUNCTION_ADJUSTER = 701;
-	//900 - const main
-	//910 - part cache
-	//920 - installed part
-	//930 - vehicle
-	//940 - container
-	//950 - gen block
+	public static final int ROADTOOL = 702;
+	public static final int ROADTOOLFILL = 703;
+	/* 90x - constructor main */
+	public static final int CONSTRUCTOR_MAIN = 900;
+	public static final int CONSTRUCTOR_STATUS = 901;
+	public static final int CONSTRUCTOR_VEHINFO = 902;
+	public static final int CONSTRUCTOR_PARTINFO = 904;
+	public static final int CONSTRUCTOR_PARTMANAGER = 905;
+	public static final int CONSTRUCTOR_PARTINSTALLER = 906;
+	public static final int CONSTRUCTOR_TEXTUREMANAGER = 908;
+	public static final int CONSTRUCTOR_PAINTER = 909;
+	/* 91x - part cache */
+	//
+	/* 92x - installed part */
+	//
+	/* 93x - vehicle */
+	
+	/* 94x - container */
+	
+	/* 95x - generated block */
+	
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		switch(ID){
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
+			case ROADTOOL:
+			case ROADTOOLFILL: return new RoadContainer(player, x);
+			case CONSTRUCTOR_MAIN:
+			case CONSTRUCTOR_STATUS:
+			case CONSTRUCTOR_VEHINFO:
+			case CONSTRUCTOR_PARTINFO:
+			case CONSTRUCTOR_PARTMANAGER:
+			case CONSTRUCTOR_PARTINSTALLER:
+			case CONSTRUCTOR_TEXTUREMANAGER:
+			case CONSTRUCTOR_PAINTER: return new ConstructorContainer(player, world, x, y, z);
 		}
 		return null;
 	}
@@ -42,6 +78,16 @@ public class GuiHandler implements IGuiHandler {
 			switch(ID){
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
+				case ROADTOOL: return new RoadPlacingTool(player, x);
+				case ROADTOOLFILL: return new RoadPlacingToolFill(player, x);
+				case CONSTRUCTOR_MAIN: return new ConstructorMain(player, world, z, z, z);
+				case CONSTRUCTOR_STATUS: return new ConstructorStatus(player, world, x, y, z);
+				case CONSTRUCTOR_VEHINFO: return new ConstructorVehicleInfo(player, world, x, y, z);
+				case CONSTRUCTOR_PARTINFO: return new ConstructorPartCacheInfo(player, world, x, y, z);
+				case CONSTRUCTOR_PARTMANAGER: return new ConstructorPartManager(player, world, x, y, z);
+				case CONSTRUCTOR_PARTINSTALLER: return new ConstructorPartInstaller(player, world, x, y, z);
+				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstructorVTM(player, world, x, y, z);
+				case CONSTRUCTOR_PAINTER: return new ConstructorVP(player, world, x, y, z);
 			}
 		}
 		catch(Exception e){

@@ -1,5 +1,9 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_TEXTUREMANAGER;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
@@ -61,7 +65,7 @@ public class ConstructorPartManager extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button13")) openGui(modid, 900, xyz);
+		if(button.name.equals("button13")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		else if(button.name.equals("next")) page++;
 		else if(button.name.equals("prev")) page--;
 		else if(button.name.contains("icon_edit0")){
@@ -69,7 +73,7 @@ public class ConstructorPartManager extends ConstructorGui {
 				int i = Integer.parseInt(button.name.replace("icon_edit0", ""));
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("category", tbuttons[i].string.trim().replace(".", ""));
-				openGenericGui(920, xyz, compound);
+				openGui(920, xyz, LISTENERID, compound);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -80,7 +84,7 @@ public class ConstructorPartManager extends ConstructorGui {
 				int i = Integer.parseInt(button.name.replace("icon_edit1", ""));
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("category", tbuttons[i].string.trim().replace(".", ""));
-				openGenericGui(908, xyz, compound);
+				openGui(CONSTRUCTOR_TEXTUREMANAGER, xyz, LISTENERID, compound);
 			}
 			catch(Exception e){
 				e.printStackTrace();

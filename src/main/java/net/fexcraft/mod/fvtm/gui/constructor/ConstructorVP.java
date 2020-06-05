@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -69,7 +72,7 @@ public class ConstructorVP extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button12")){ openGui(modid, 900, xyz); return true; }
+		if(button.name.equals("button12")){ openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID); return true; }
 		else if(button.name.equals("icon_type_prev") || button.name.equals("icon_type_next")){ primary = !primary; return true; }
 		else if(button.name.equals("spectrum")){ this.updateColorTo(spectrum.getColorAt(mouseX), true); return true; }
 		else if(button.name.equals("palette")){ this.updateColorTo(palette.getColorAt(mouseX, mouseY), false); return true; }

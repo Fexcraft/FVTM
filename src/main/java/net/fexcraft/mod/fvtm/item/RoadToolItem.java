@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOL;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +107,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote){ return EnumActionResult.PASS; }
         if(hand == EnumHand.OFF_HAND){
-        	GenericContainer.openGui("fvtm", 702, new int[]{ 0, 0, 0 }, player); return EnumActionResult.SUCCESS;
+        	GenericContainer.openGui(ROADTOOL, new int[]{ 0, 0, 0 }, LISTENERID, player); return EnumActionResult.SUCCESS;
         }
         if(!player.capabilities.isCreativeMode){
         	Print.chat(player, "&9This is a &6CREATIVE &9mode tool."); return EnumActionResult.FAIL;

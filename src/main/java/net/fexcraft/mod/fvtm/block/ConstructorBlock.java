@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.block;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_PARTINSTALLER;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
-import net.fexcraft.lib.mc.gui.GenericContainer;
-import net.fexcraft.lib.mc.gui.ServerReceiver;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -24,7 +24,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -106,13 +105,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         ConstructorEntity te = (ConstructorEntity) world.getTileEntity(pos); if(te == null) return false;
         ItemStack held = player.getHeldItem(hand);
         if(held.isEmpty()){
-            NBTTagCompound compound = new NBTTagCompound();
-            compound.setString("target_listener", "fcl_gui");
-            compound.setString("task", "open_gui");
-            compound.setString("guimod", "fvtm");
-            compound.setInteger("gui", 900);
-            compound.setIntArray("args", new int[]{ pos.getX(), pos.getY(), pos.getZ() });
-            ServerReceiver.INSTANCE.process(new PacketNBTTagCompound(compound), new Object[]{ player });
+        	player.openGui(FVTM.getInstance(), CONSTRUCTOR_MAIN, world, pos.getX(), pos.getY(), pos.getZ());
             return true;
         }
         else if(held.getItem() instanceof MaterialItem){
@@ -123,7 +116,7 @@ public class ConstructorBlock extends Block implements ITileEntityProvider {
         	te.setPartData(((PartItem)held.getItem()).getData(held), true);
         	Print.chat(player, "Part put into Constructor."); held.shrink(1);
         	//
-        	GenericContainer.openGui("fvtm", 906, new int[]{ pos.getX(), pos.getY(), pos.getZ() }, player);
+        	player.openGui(FVTM.getInstance(), CONSTRUCTOR_PARTINSTALLER, world, pos.getX(), pos.getY(), pos.getZ());
         }
         else if(held.getItem() instanceof VehicleItem){
         	te.dropIfContainsAnyThing();

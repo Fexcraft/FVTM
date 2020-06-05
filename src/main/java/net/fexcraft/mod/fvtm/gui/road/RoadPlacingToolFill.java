@@ -3,14 +3,13 @@ package net.fexcraft.mod.fvtm.gui.road;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 public class RoadPlacingToolFill extends GenericGui<RoadContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/road_placing_tool_fill.png");
 
-	public RoadPlacingToolFill(EntityPlayer player, World world, int x, int y, int z){
-		super(texture, new RoadContainer(player, world, x, y, z), player);
+	public RoadPlacingToolFill(EntityPlayer player, int x){
+		super(texture, new RoadContainer(player, x), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 176; this.ySize = 148;
 	}

@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,7 +55,7 @@ public class ConstructorStatus extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button7")) openGui(modid, 900, xyz);
+		if(button.name.equals("button7")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		else if(button.name.equals("button4")){
 			if(this.container.getTileEntity().getCenterPos() != null){
 				NBTTagCompound compound = new NBTTagCompound();

@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
@@ -77,7 +80,7 @@ public class ConstructorVTM extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button12")) openGui(modid, 900, xyz);
+		if(button.name.equals("button12")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		else if(button.name.endsWith("_supplied")){
 			Textureable textur = getTextureable();
 			int i = textur.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);

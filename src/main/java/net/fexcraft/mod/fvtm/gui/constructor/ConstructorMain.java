@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_STATUS;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -68,7 +71,7 @@ public class ConstructorMain extends ConstructorGui {
 				return true;
 			}
 		}
-		openGui(modid, gui + 901, xyz); return true;
+		openGui(gui + CONSTRUCTOR_STATUS, xyz, LISTENERID); return true;
 	}
 
 	@Override

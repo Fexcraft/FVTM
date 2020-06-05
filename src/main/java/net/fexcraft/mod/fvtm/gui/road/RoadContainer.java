@@ -8,7 +8,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class RoadContainer extends GenericContainer {
@@ -19,7 +18,7 @@ public class RoadContainer extends GenericContainer {
 	protected ItemStack stack;
 	protected int slots;
 
-	public RoadContainer(EntityPlayer player, World world, int x, int y, int z){
+	public RoadContainer(EntityPlayer player, int x){
 		super(player); stack = player.getHeldItemOffhand();
         if(x == 0){
     		roadinv = new RoadInventory(slots = 8);

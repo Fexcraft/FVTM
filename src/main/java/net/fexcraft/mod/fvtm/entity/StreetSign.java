@@ -1,13 +1,15 @@
 package net.fexcraft.mod.fvtm.entity;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.STREETSIGN_ADJUSTER;
+
 import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.lang.BitList;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
-import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.StreetSignItem;
 import net.minecraft.entity.Entity;
@@ -238,7 +240,8 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
             return true;
         }
         if(stack.isEmpty()){
-        	GenericContainer.openGui("fvtm", 700, new int[]{ this.getEntityId(), 0, 0 }, player); return true;
+        	player.openGui(FVTM.getInstance(), STREETSIGN_ADJUSTER, world, this.getEntityId(), 0, 0);
+        	return true;
         }
         return false;
     }

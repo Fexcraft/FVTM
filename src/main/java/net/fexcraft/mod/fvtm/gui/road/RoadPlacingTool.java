@@ -1,16 +1,18 @@
 package net.fexcraft.mod.fvtm.gui.road;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOLFILL;
+
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 public class RoadPlacingTool extends GenericGui<RoadContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/road_placing_tool.png");
 
-	public RoadPlacingTool(EntityPlayer player, World world, int x, int y, int z){
-		super(texture, new RoadContainer(player, world, x, y, z), player);
+	public RoadPlacingTool(EntityPlayer player, int x){
+		super(texture, new RoadContainer(player, x), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 176; this.ySize = 152;
 	}
@@ -33,8 +35,10 @@ public class RoadPlacingTool extends GenericGui<RoadContainer> {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("layer_edit")){
-			openGui("fvtm", 703, new int[]{ 1, 0, 0 }); return true;
-		} else return false;
+			openGui(ROADTOOLFILL, new int[]{ 1, 0, 0 }, LISTENERID);
+			return true;
+		}
+		else return false;
 	}
 
 	@Override

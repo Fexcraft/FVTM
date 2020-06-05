@@ -1,6 +1,10 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+
 import java.util.ArrayList;
+
 import com.google.common.collect.Lists;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -14,7 +18,9 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ConstructorPartInstaller extends ConstructorGui {
 
 	public ConstructorPartInstaller(EntityPlayer player, World world, int x, int y, int z){
-		super(player, world, x, y, z);this.removeEmptyButtons = true; String[] strarr = null;
+		super(player, world, x, y, z);
+		this.removeEmptyButtons = true;
+		String[] strarr = null;
 		if(container.getTileEntity().getPartData() == null){ strarr = new String[7]; }
 		else {
 			PartData part = container.getTileEntity().getPartData();
@@ -68,7 +74,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button4")) openGui(modid, 900, xyz);
+		if(button.name.equals("button4")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		else if(button.name.equals("button2")){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "part_install");

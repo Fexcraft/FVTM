@@ -29,6 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -502,12 +503,12 @@ public abstract class CraftBlockScript implements BlockScript {
 	private static final ItemStack fromJson(JsonElement elm) throws Exception {
 		ItemStack stack = null;
 		if(elm.isJsonPrimitive()){
-			stack = new ItemStack(Item.getByNameOrId(elm.getAsString()));
+			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(elm.getAsString())));
 		}
 		else{
 			JsonObject obj = elm.getAsJsonObject();
-			stack = new ItemStack(Item.getByNameOrId(obj.get("id").getAsString()));
-			stack.setCount(obj.has("count") ? obj.get("count").getAsInt() : 0);
+			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(obj.get("id").getAsString())));
+			stack.setCount(obj.has("count") ? obj.get("count").getAsInt() : 1);
 			stack.setItemDamage(obj.has("damage") ? obj.get("damage").getAsInt() : 0);
 			if(obj.has("tag")){
 				stack.setTagCompound(JsonToNBT.getTagFromJson(obj.get("tag").toString()));

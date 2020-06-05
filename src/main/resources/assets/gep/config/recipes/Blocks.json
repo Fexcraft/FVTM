@@ -64,7 +64,7 @@
 		},
 		{
 			"block": "fcl:bpt",
-			"category": "GEP Machines/Blocks",
+			"category": "gep.recipes.machines",
 			"input":[
 				{
 					"id": "minecraft:iron_block",

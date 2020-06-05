@@ -213,6 +213,7 @@
 			"process_speed": 1,
 			"cooldown_speed": 1,
 			"process_time": 80
-		}
+		},
+		"Tickable": true
     }
 }

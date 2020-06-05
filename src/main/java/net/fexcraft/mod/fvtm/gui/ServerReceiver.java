@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.mc.FCL;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -148,7 +148,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
                 }
                 int gui = packet.nbt.getInteger("gui");
                 int[] args = packet.nbt.hasKey("args") ? packet.nbt.getIntArray("args") : new int[3];
-                player.openGui(FCL.getInstance(), gui, player.world, args[0], args[1], args[2]);
+                player.openGui(FVTM.getInstance(), gui, player.world, args[0], args[1], args[2]);
 				return;
 			}
 			default: return;

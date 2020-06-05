@@ -3,7 +3,7 @@
 	"Recipes": [
 		{
 			"block": "fcl:bpt",
-			"category": "GEP Materials",
+			"category": "gep.recipes.materials",
 			"input":[
 				{
 					"id": "minecraft:slime_ball",

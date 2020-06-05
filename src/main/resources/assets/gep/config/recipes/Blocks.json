@@ -3,7 +3,7 @@
 	"Recipes": [
 		{
 			"block": "fcl:bpt",
-			"category": "GEP Machines/Blocks",
+			"category": "gep.recipes.machines",
 			"input":[
 				{
 					"id": "minecraft:stonebrick",
@@ -33,7 +33,7 @@
 		},
 		{
 			"block": "fcl:bpt",
-			"category": "GEP Machines/Blocks",
+			"category": "gep.recipes.machines",
 			"input":[
 				{
 					"id": "minecraft:stonebrick",

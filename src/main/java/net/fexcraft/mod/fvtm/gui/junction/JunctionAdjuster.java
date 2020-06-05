@@ -14,8 +14,8 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/junction_main.png");
 	
-	public JunctionAdjuster(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(texture, new JunctionAdjusterContainer(player, xyz, compound), player);
+	public JunctionAdjuster(EntityPlayer player){
+		super(texture, new JunctionAdjusterContainer(player), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 248; this.ySize = 206;
 	}

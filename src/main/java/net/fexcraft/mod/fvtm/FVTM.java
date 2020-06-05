@@ -9,8 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.FCL;
-import net.fexcraft.lib.mc.gui.GuiHandler;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
@@ -37,33 +35,8 @@ import net.fexcraft.mod.fvtm.entity.RailTestEntity;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
-import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
-import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
-import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
-import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
-import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
-import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
-import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartManager;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
-import net.fexcraft.mod.fvtm.gui.container.ContainerFluidInventory;
-import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
-import net.fexcraft.mod.fvtm.gui.container.ContainerItemInventory;
-import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
-import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
-import net.fexcraft.mod.fvtm.gui.road.RoadContainer;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacingTool;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacingToolFill;
-import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
-import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
-import net.fexcraft.mod.fvtm.gui.vehicle.*;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RailItemTest;
 import net.fexcraft.mod.fvtm.item.RoadSysItem;
@@ -221,18 +194,8 @@ public class FVTM {
 		Resources.BLOCKS.getValuesCollection().forEach(con -> con.registerIntoOreDictionary());
 		Resources.loadPresets();
 		//
-		GuiHandler.register(MODID, this);
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, FCL.getGuiHandler());
-		//700 - other
-		//900 - const main
-		//910 - part cache
-		//920 - installed part
-		//930 - vehicle
-		//940 - container
-		//950 - gen block
-		if(event.getSide().isClient()){
-			GuiHandler.insert(700, StreetSignAdjuster.class, StreetSignAdjusterContainer.class);
-			GuiHandler.insert(701, JunctionAdjuster.class, JunctionAdjusterContainer.class);
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+		/*if(event.getSide().isClient()){
 			GuiHandler.insert(702, RoadPlacingTool.class, RoadContainer.class);
 			GuiHandler.insert(703, RoadPlacingToolFill.class, RoadContainer.class);
 			GuiHandler.insert(900, ConstructorMain.class, ConstructorContainer.class);
@@ -259,37 +222,7 @@ public class FVTM {
 			GuiHandler.insert(951, GBlockInventory.class, GBlockInvContainer.class);
 			GuiHandler.insert(952, GBlockCraft.class, GBlockCraftContainer.class);
 			GuiHandler.insert(953, GBlockCraftChoose.class, GBlockCraftChooseContainer.class);
-		}
-		else{
-			GuiHandler.insert(700, StreetSignAdjusterContainer.class);
-			GuiHandler.insert(701, JunctionAdjusterContainer.class);
-			GuiHandler.insert(702, RoadContainer.class);
-			GuiHandler.insert(703, RoadContainer.class);
-			GuiHandler.insert(900, ConstructorContainer.class);
-			GuiHandler.insert(901, ConstructorContainer.class);
-			GuiHandler.insert(902, ConstructorContainer.class);
-			GuiHandler.insert(904, ConstructorContainer.class);
-			GuiHandler.insert(905, ConstructorContainer.class);
-			GuiHandler.insert(906, ConstructorContainer.class);
-			GuiHandler.insert(908, ConstructorContainer.class);
-			GuiHandler.insert(909, ConstructorContainer.class);
-			//
-			GuiHandler.insert(930, VehicleContainer.class);
-			GuiHandler.insert(933, VehicleContainer.class);
-			GuiHandler.insert(934, VehicleContainer.class);
-			GuiHandler.insert(935, VehicleContainer.class);
-			GuiHandler.insert(936, VehicleContainer.class);
-			GuiHandler.insert(937, VehicleContainer.class);
-			GuiHandler.insert(938, VehicleContainer.class);
-			GuiHandler.insert(939, VehicleContainer.class);
-			//
-			GuiHandler.insert(941, ContainerInvContainer.class);
-			GuiHandler.insert(942, ContainerInvContainer.class);
-			//
-			GuiHandler.insert(951, GBlockInvContainer.class);
-			GuiHandler.insert(952, GBlockCraftContainer.class);
-			GuiHandler.insert(953, GBlockCraftChooseContainer.class);
-		}
+		}*/
 	}
 
 	@Mod.EventHandler

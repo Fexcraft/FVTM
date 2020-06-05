@@ -6,6 +6,7 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -18,8 +19,15 @@ public class JunctionAdjusterContainer extends GenericContainer {
 	protected GenericGui<JunctionAdjusterContainer> gui;
 	protected Junction junction;
 	
-	public JunctionAdjusterContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(player); junction = player.world.getCapability(Capabilities.RAILSYSTEM, null).get().getJunction(new Vec316f(compound));
+	public JunctionAdjusterContainer(EntityPlayer player){
+		super(player);
+		initPacket(null);
+	}
+
+	@Override
+	public void initPacket(NBTTagCompound compound){
+		if((compound = GuiHandler.validate(player, compound, true)) == null) return;
+		junction = player.world.getCapability(Capabilities.RAILSYSTEM, null).get().getJunction(new Vec316f(compound));
 	}
 
 	@Override

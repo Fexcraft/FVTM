@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.JUNCTION_ADJUSTER;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -92,7 +95,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 	        if(stack.getTagCompound().hasKey("fvtm:junction")){
 	        	cached = new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:junction"));
 	        	if(cached.equals(vector)){
-	        		GenericContainer.openGenericGui(701, new int[]{ 0, 0, 0 }, cached.write(), player);
+	        		GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, cached.write(), player);
 	                return EnumActionResult.SUCCESS;
 	        	}
 	        	if(junk.tracks.size() <= 2){
@@ -101,7 +104,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 	        	}
 	        }
 			if(junk.tracks.size() <= 2){
-        		GenericContainer.openGenericGui(701, new int[]{ 0, 0, 0 }, vector.write(), player);
+        		GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, vector.write(), player);
 			}
 			else{
 				stack.getTagCompound().setTag("fvtm:junction", vector.write());

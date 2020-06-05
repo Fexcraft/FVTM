@@ -2,8 +2,10 @@ package net.fexcraft.mod.fvtm.gui;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -16,7 +18,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 
 	@Override
 	public String getId(){
-		return "fvtm:gui";
+		return GuiHandler.LISTENERID;
 	}
 
 	@Override
@@ -85,6 +87,20 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "update_sections":
 			case "remove_entity":
 			case "update_unit_section":{ Print.debug("task: " + task + " " + packet.nbt); Static.stop(); return; }
+			case "open_gui":{
+                if(packet.nbt.hasKey("data")){
+                	//gui should have been already opened server side
+                	if(player.openContainer instanceof GenericContainer){
+                		((GenericContainer)player.openContainer).initPacket(packet.nbt.getCompoundTag("data"));
+                	}
+                	else{
+                		GuiHandler.CLIENT_GUIDATA_CACHE = packet.nbt.getCompoundTag("data");
+                		int[] xyz = packet.nbt.getIntArray("args");
+                		player.openGui(FVTM.getInstance(), packet.nbt.getInteger("gui"), player.world, xyz[0], xyz[1], xyz[2]);
+                	}
+                }
+				return;
+			}
 			default: return;
 		}
 	}

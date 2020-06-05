@@ -17,7 +17,7 @@
 			}
 		},
 		{
-			"block": "gep:smeltery_core",
+			"block": "gep:smeltery",
 			"id": "slime_to_rubber",
 			"input":[
 				{

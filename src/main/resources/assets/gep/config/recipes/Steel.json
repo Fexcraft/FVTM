@@ -2,7 +2,7 @@
 	"OverrideExisting": false,
 	"Recipes": [
 		{
-			"block": "gep:smeltery_core",
+			"block": "gep:smeltery",
 			"id": "steel_0",
 			"input":[
 				{
@@ -25,7 +25,7 @@
 			]
 		},
 		{
-			"block": "gep:smeltery_core",
+			"block": "gep:smeltery",
 			"id": "steel_1",
 			"input":[
 				{

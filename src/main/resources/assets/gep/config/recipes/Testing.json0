@@ -2,7 +2,7 @@
 	"OverrideExisting": false,
 	"Recipes": [
 		{
-			"block": "gep:smeltery_core",
+			"block": "gep:smeltery",
 			"id": "testing_glue",
 			"input":[
 				{
@@ -24,7 +24,7 @@
 			"craft_time": 100
 		},	
 		{
-			"block": "gep:smeltery_core",
+			"block": "gep:smeltery",
 			"id": "testing_burnable",
 			"input":[
 				{

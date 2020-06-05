@@ -470,7 +470,7 @@ public abstract class CraftBlockScript implements BlockScript {
 			try{
 				JsonObject obj = elm.getAsJsonObject();
 				if(obj.get("block").getAsString().equals("fcl:bpt") || obj.get("block").getAsString().equals("fcl:blueprinttable")){
-					ItemStack output = fromJson(obj.get("output").getAsJsonObject());
+					ItemStack output = fromJson(obj.get("output"));
 					JsonArray erray = obj.get("input").getAsJsonArray();
 					ItemStack[] stacks = new ItemStack[erray.size()];
 					for(int i = 0; i < stacks.length; i++){

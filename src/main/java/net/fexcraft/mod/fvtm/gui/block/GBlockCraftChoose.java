@@ -123,6 +123,7 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 		}
 		if(button.name.startsWith("b_")){
 			int i = Integer.parseInt(button.name.substring(2));
+			if(recipes[i] == null) return false;
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "choose");
 			compound.setString("recipe", recipes[i].id());

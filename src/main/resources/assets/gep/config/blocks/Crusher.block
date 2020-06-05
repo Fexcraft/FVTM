@@ -4,7 +4,7 @@
 	"Model": "gep:models/block/crusher",
 	"Name": "3³ Rock Crusher",
     "Description": "&7The former &2HCP &cCrusher",
-	"Texture": "hcp:textures/blocks/crusher.png",
+	"Texture": "gep:textures/blocks/crusher.png",
     "BlockType": "MULTIBLOCK_4ROT",
     "Material": "IRON",
     "MapColor": "CLAY",

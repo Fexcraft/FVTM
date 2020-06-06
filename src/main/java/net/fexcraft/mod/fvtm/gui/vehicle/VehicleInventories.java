@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_INVENTORY;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -13,7 +16,6 @@ import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -74,9 +76,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		if(button.name.startsWith("inv")){
 			int i = Integer.parseInt(button.name.replace("inv", ""));
 			if(i < 0 || (i + (page * 8)) >= inventories.size()) return true;
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("inventory", inv_names.get(i));
-			openGenericGui(936, new int[]{ 0, veh.getEntity().getEntityId(), 0 }, compound);
+			openGui(VEHICLE_INVENTORY, new int[]{ VEHICLE_INVENTORY, veh.getEntity().getEntityId(), i }, LISTENERID);
 			return true;
 		}
 		return false;

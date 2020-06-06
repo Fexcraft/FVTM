@@ -196,15 +196,6 @@ public class FVTM {
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		/*if(event.getSide().isClient()){
-			GuiHandler.insert(930, VehicleMain.class, VehicleContainer.class);
-			GuiHandler.insert(933, VehicleFuel.class, VehicleContainer.class);
-			GuiHandler.insert(934, VehicleToggables.class, VehicleContainer.class);
-			GuiHandler.insert(935, VehicleInventories.class, VehicleContainer.class);
-			GuiHandler.insert(936, VehicleInventory.class, VehicleContainer.class);
-			GuiHandler.insert(937, VehicleContainers.class, VehicleContainer.class);
-			GuiHandler.insert(938, VehicleContainerSlot.class, VehicleContainer.class);
-			GuiHandler.insert(939, VehicleConnectors.class, VehicleContainer.class);
-			//
 			GuiHandler.insert(941, ContainerItemInventory.class, ContainerInvContainer.class);
 			GuiHandler.insert(942, ContainerFluidInventory.class, ContainerInvContainer.class);
 			//

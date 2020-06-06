@@ -1,6 +1,10 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
-import javax.annotation.Nullable;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINER;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_INVENTORY;
+
+import java.util.Map;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
@@ -8,6 +12,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -33,7 +38,6 @@ import net.minecraftforge.fml.relauncher.Side;
 public class VehicleContainer extends GenericContainer {
 	
 	protected GenericGui<VehicleContainer> gui;
-	@Nullable protected NBTTagCompound initpacket;
 	//
 	private boolean invmode;
 	protected InventoryFunction function;
@@ -54,7 +58,7 @@ public class VehicleContainer extends GenericContainer {
 
 	public VehicleContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
-		if(x == 933){
+		if(x == VEHICLE_FUEL){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 			if(player.isRiding() && player.getRidingEntity() instanceof SeatEntity){
 				SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
@@ -80,10 +84,36 @@ public class VehicleContainer extends GenericContainer {
 	            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 130));
 	        }
 		}
-		if(z == 938){
+		if(x == VEHICLE_INVENTORY){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-			entity = player.world.getEntityByID(x); this.inventoryItemStacks.clear(); this.inventorySlots.clear();
-			slotid = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlotIds()[y];
+			if(y == 0 && (!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false)){
+				player.closeScreen();
+				return;
+			}
+			invmode = true;
+			SeatEntity ent = (SeatEntity)player.getRidingEntity();
+			veh = ent == null ? (GenericVehicle)player.world.getEntityByID(y) : ent.getVehicle();
+			int invid = 0;
+			for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
+				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
+				if(inv == null || inv.getInventoryType() == InventoryType.CONTAINER) continue;
+				if(ent == null ? inv.getSeats().contains("external") : (ent.seatdata.driver || (inv.getSeats().contains(ent.seatdata.name)))){
+					if(invid == z){
+						inv_id = entry.getKey();
+						break;
+					}
+					else invid++;
+				}
+			}
+			if(inv_id == null) player.closeScreen();
+			invpart = veh.getVehicleData().getPart(inv_id);
+			function = invpart.getFunction("fvtm:inventory");
+			this.populateSlots();
+		}
+		if(x == VEHICLE_CONTAINER){
+			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
+			entity = player.world.getEntityByID(y); this.inventoryItemStacks.clear(); this.inventorySlots.clear();
+			slotid = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlotIds()[z];
 			slot = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlot(slotid);
 			//
 			slotInv = new ConSlotInv(slot, entity); slots = slot.length;
@@ -99,19 +129,6 @@ public class VehicleContainer extends GenericContainer {
 	        for(int col = 0; col < 9; col++){
 	            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 120));
 	        }
-		}
-	}
-	
-	public VehicleContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(player); initpacket = compound; if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-		if(xyz[1] == 0 && (!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false)){ player.closeScreen(); return; }
-		//
-		if(compound.hasKey("inventory")){ invmode = true;
-			SeatEntity ent = (SeatEntity)player.getRidingEntity();
-			veh = ent == null ? (GenericVehicle)player.world.getEntityByID(xyz[1]) : ent.getVehicle();
-			invpart = veh.getVehicleData().getPart(inv_id = compound.getString("inventory"));
-			function = invpart.getFunction("fvtm:inventory");
-			this.populateSlots();
 		}
 	}
 

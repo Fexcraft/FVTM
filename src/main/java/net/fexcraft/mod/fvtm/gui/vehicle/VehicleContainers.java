@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINER;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -58,7 +61,7 @@ public class VehicleContainers extends GenericGui<VehicleContainer> {
 		if(button.name.startsWith("inv")){
 			int i = Integer.parseInt(button.name.replace("inv", ""));
 			if(i < 0 || (i + (page * 8)) >= inv_names.length) return true;
-			openGui("fvtm", 938, new int[]{ entity.getEntityId(), i + (page * 8), 938 });
+			openGui(VEHICLE_CONTAINER, new int[]{ VEHICLE_CONTAINER, entity.getEntityId(), i + (page * 8) }, LISTENERID);
 			return true;
 		}
 		return false;
@@ -73,7 +76,7 @@ public class VehicleContainers extends GenericGui<VehicleContainer> {
 		page += i; if(page < 0) page = 0;
 		texts.get("top").string = String.format("Container Slots [%s/%s]", page + 1, inv_names.length / 8 + 1);
 		for(int j = 0; j < 8; j++){ int k = j + (page * 8); boolean bool = k >= inv_names.length;
-			texts.get("row" + j).string = bool ? "" : inv_names[k];buttons.get("inv" + j).enabled = !bool;
+			texts.get("row" + j).string = bool ? "" : inv_names[k]; buttons.get("inv" + j).enabled = !bool;
 		}
 	}
 	

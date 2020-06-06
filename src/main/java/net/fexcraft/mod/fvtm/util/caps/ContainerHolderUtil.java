@@ -1,11 +1,13 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINERS;
+
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -164,13 +166,10 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			else{ PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(entity)); }
 		}
 
-		@SideOnly(Side.CLIENT) @Override
+		@Override
 		public void openGUI(EntityPlayer player){
-			if(entity.world.isRemote){
-				net.fexcraft.lib.mc.gui.GenericGui.openGui("fvtm", 937, new int[]{ entity.getEntityId(), entity.getEntityId(), 0 }); return;
-			}
 			if(player == null) Static.exception(new Exception("Tried to open GUI on server side, but no player specified / is NULL."), false);
-			GenericContainer.openGui("fvtm", 937, new int[]{ entity.getEntityId(), entity.getEntityId(), 0 }, player);
+			player.openGui(FVTM.getInstance(), VEHICLE_CONTAINERS, entity.world, 0, entity.getEntityId(), 0);
 		}
 
 		@Override

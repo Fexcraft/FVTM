@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -8,11 +11,11 @@ import javax.annotation.Nullable;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
-import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -291,7 +294,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 /*if(vehicle.getPart("engine") != null && vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn()){
                     Print.chat(player, "Turn engine off first!"); return true;
                 }*/
-                GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
+            	player.openGui(FVTM.getInstance(), VEHICLE_MAIN, world, 0, this.getEntityId(), 0);
                 return true;
             }
             case TOGGABLES: {//client side
@@ -578,7 +581,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(vehicle.isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
         if(!stack.isEmpty()){
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
-            	GenericContainer.openGui("fvtm", 933, new int[]{ 933, this.getEntityId(), 0 }, player); return true;
+            	player.openGui(FVTM.getInstance(), VEHICLE_FUEL, world, VEHICLE_FUEL, this.getEntityId(), 0);
+            	return true;
             }
             else if(stack.getItem() instanceof VehicleItem){
                 VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
@@ -607,7 +611,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     Print.chat(player, "Turn engine off first!");
                 }
                 else{
-                	GenericContainer.openGui("fvtm", 930, new int[]{ 0, this.getEntityId(), 0 }, player);
+                	player.openGui(FVTM.getInstance(), VEHICLE_MAIN, world, 0, this.getEntityId(), 0);
                 }
                 return true;
             }

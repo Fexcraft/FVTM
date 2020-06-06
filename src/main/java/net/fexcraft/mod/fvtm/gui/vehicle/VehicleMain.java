@@ -1,5 +1,12 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONNECTORS;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_CONTAINERS;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_INVENTORIES;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_TOGGABLES;
+
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
@@ -54,14 +61,30 @@ public class VehicleMain extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(button.name.equals("row7")){ player.closeScreen(); return true; }
-		if(button.name.equals("row2")){ openGui("fvtm", 933, new int[]{ 933, vehicle.getEntityId(), 0 }); return true; }
-		if(button.name.equals("row3")){ openGui("fvtm", 934, new int[]{ 0, vehicle.getEntityId(), 0 }); return true; }
-		if(button.name.equals("row4")){ openGui("fvtm", 935, new int[]{ 0, vehicle.getEntityId(), 0 }); return true; }
-		if(button.name.equals("row5")){
-			openGui("fvtm", 937, new int[]{ 0, vehicle.getEntityId(), 0 }); return true;
+		if(button.name.equals("row7")){
+			player.closeScreen();
+			return true;
 		}
-		if(button.name.equals("row6")){ openGui("fvtm", 939, new int[]{ 0, vehicle.getEntityId(), 0 }); return true; }
+		if(button.name.equals("row2")){
+			openGui(VEHICLE_FUEL, new int[] { VEHICLE_FUEL, vehicle.getEntityId(), 0 }, LISTENERID);
+			return true;
+		}
+		if(button.name.equals("row3")){
+			openGui(VEHICLE_TOGGABLES, new int[] { 0, vehicle.getEntityId(), 0 }, LISTENERID);
+			return true;
+		}
+		if(button.name.equals("row4")){
+			openGui(VEHICLE_INVENTORIES, new int[] { 0, vehicle.getEntityId(), 0 }, LISTENERID);
+			return true;
+		}
+		if(button.name.equals("row5")){
+			openGui(VEHICLE_CONTAINERS, new int[] { 0, vehicle.getEntityId(), 0 }, LISTENERID);
+			return true;
+		}
+		if(button.name.equals("row6")){
+			openGui(VEHICLE_CONNECTORS, new int[] { 0, vehicle.getEntityId(), 0 }, LISTENERID);
+			return true;
+		}
 		//
 		return false;
 	}

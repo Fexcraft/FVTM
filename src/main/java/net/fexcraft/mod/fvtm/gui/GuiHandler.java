@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.gui.road.RoadPlacingTool;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacingToolFill;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
+import net.fexcraft.mod.fvtm.gui.vehicle.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -42,7 +43,14 @@ public class GuiHandler implements IGuiHandler {
 	/* 92x - installed part */
 	//
 	/* 93x - vehicle */
-	
+	public static final int VEHICLE_MAIN = 930;
+	public static final int VEHICLE_FUEL = 933;
+	public static final int VEHICLE_TOGGABLES = 934;
+	public static final int VEHICLE_INVENTORIES = 935;
+	public static final int VEHICLE_INVENTORY = 936;
+	public static final int VEHICLE_CONTAINERS = 937;
+	public static final int VEHICLE_CONTAINER = 938;
+	public static final int VEHICLE_CONNECTORS = 939;
 	/* 94x - container */
 	
 	/* 95x - generated block */
@@ -63,6 +71,14 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_PARTINSTALLER: return new ConstructorContainer(player, world, x, y, z);
 			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstructorContainerVTM(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstructorContainer(player, world, x, y, z);
+			case VEHICLE_MAIN:
+			case VEHICLE_FUEL:
+			case VEHICLE_TOGGABLES:
+			case VEHICLE_INVENTORIES:
+			case VEHICLE_INVENTORY:
+			case VEHICLE_CONTAINERS:
+			case VEHICLE_CONTAINER:
+			case VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
 		}
 		return null;
 	}
@@ -83,6 +99,14 @@ public class GuiHandler implements IGuiHandler {
 				case CONSTRUCTOR_PARTINSTALLER: return new ConstructorPartInstaller(player, world, x, y, z);
 				case CONSTRUCTOR_TEXTUREMANAGER: return new ConstructorVTM(player, world, x, y, z);
 				case CONSTRUCTOR_PAINTER: return new ConstructorVP(player, world, x, y, z);
+				case VEHICLE_MAIN: return new VehicleMain(player, world, x, y, z);
+				case VEHICLE_FUEL: return new VehicleFuel(player, world, x, y, z);
+				case VEHICLE_TOGGABLES: return new VehicleToggables(player, world, x, y, z);
+				case VEHICLE_INVENTORIES: return new VehicleInventories(player, world, x, y, z);
+				case VEHICLE_INVENTORY: return new VehicleInventory(player, world, x, y, z);
+				case VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
+				case VEHICLE_CONTAINER: return new VehicleContainerSlot(player, world, x, y, z);
+				case VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
 			}
 		}
 		catch(Exception e){

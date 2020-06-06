@@ -6,6 +6,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -13,30 +14,29 @@ public class VehicleInventory extends GenericGui<VehicleContainer> {
 	
 	private static final ResourceLocation texture_item = new ResourceLocation("fvtm:textures/gui/vehicle_item_inventory.png");
 	private static final ResourceLocation texture_fluid = new ResourceLocation("fvtm:textures/gui/vehicle_fluid_inventory.png");
-
-	/*public VehicleInventory(EntityPlayer player, World world, int x, int y, int z){
-		super(texture, new VehicleContainer(player, world, x, y, z), player);
-		this.defbackground = true; this.deftexrect = true; container.gui = this;
-		this.xSize = 248; this.ySize = 216;
-		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-		SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
-		//
-	}*/
 	
-	public VehicleInventory(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(texture_item, new VehicleContainer(player, xyz, compound), player);
-		this.defbackground = true; this.deftexrect = true; container.gui = this;
+	public VehicleInventory(EntityPlayer player, World world, int x, int y, int z){
+		super(texture_item, new VehicleContainer(player, world, x, y, z), player);
+		this.defbackground = true;
+		this.deftexrect = true;
+		container.gui = this;
 		switch(container.function.getInventoryType()){
 			case CONTAINER:
 				break;
 			case ENERGY:
 				break;
 			case FLUID:
-				this.xSize = 176; this.ySize = 154;
+				this.xSize = 176;
+				this.ySize = 154;
 				this.texloc = texture_fluid;
 				break;
-			case ITEM: this.xSize = 248; this.ySize = 216; break;
-			default: { player.closeScreen(); return; }
+			case ITEM:
+				this.xSize = 248;
+				this.ySize = 216;
+				break;
+			default: 
+				player.closeScreen();
+				return;
 		}
 	}
 

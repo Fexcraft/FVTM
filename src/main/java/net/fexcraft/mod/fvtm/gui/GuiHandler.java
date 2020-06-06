@@ -5,6 +5,9 @@ import java.util.HashMap;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.gui.constructor.*;
+import net.fexcraft.mod.fvtm.gui.container.ContainerFluidInventory;
+import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
+import net.fexcraft.mod.fvtm.gui.container.ContainerItemInventory;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadContainer;
@@ -52,7 +55,8 @@ public class GuiHandler implements IGuiHandler {
 	public static final int VEHICLE_CONTAINER = 938;
 	public static final int VEHICLE_CONNECTORS = 939;
 	/* 94x - container */
-	
+	public static final int CONTAINER_ITEM = 941;
+	public static final int CONTAINER_FLUID = 942;
 	/* 95x - generated block */
 	
 
@@ -79,6 +83,8 @@ public class GuiHandler implements IGuiHandler {
 			case VEHICLE_CONTAINERS:
 			case VEHICLE_CONTAINER:
 			case VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
+			case CONTAINER_ITEM:
+			case CONTAINER_FLUID: return new ContainerInvContainer(player, world, x, y, z);
 		}
 		return null;
 	}
@@ -107,6 +113,8 @@ public class GuiHandler implements IGuiHandler {
 				case VEHICLE_CONTAINERS: return new VehicleContainers(player, world, x, y, z);
 				case VEHICLE_CONTAINER: return new VehicleContainerSlot(player, world, x, y, z);
 				case VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
+				case CONTAINER_ITEM: return new ContainerItemInventory(player, world, x, y, z);
+				case CONTAINER_FLUID: return new ContainerFluidInventory(player, world, x, y, z);
 			}
 		}
 		catch(Exception e){

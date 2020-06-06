@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import net.fexcraft.lib.mc.api.registry.fBlock;
-import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -171,11 +171,11 @@ public class ContainerBlock extends BlockContainer {
                 }
                 BlockPos corepos = te.getCore().getPos();
                 if(te.getContainerData().getType().getInventoryType() == InventoryType.ITEM){
-                	GenericContainer.openGui("fvtm", 941, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() }, player);
+                	player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_ITEM, world, corepos.getX(), corepos.getY(), corepos.getZ());
                 }
                 else if(te.getContainerData().getType().getInventoryType() == InventoryType.FLUID){
                     te.sendFluidTankUpdate(player);
-                    GenericContainer.openGui("fvtm", 942, new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() }, player);
+                	player.openGui(FVTM.getInstance(), GuiHandler.CONTAINER_FLUID, world, corepos.getX(), corepos.getY(), corepos.getZ());
                 }
                 else{
                     Print.chat(player, "Currently not supported Inventory Type.");

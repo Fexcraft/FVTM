@@ -2,14 +2,9 @@ package net.fexcraft.mod.fvtm.gui;
 
 import java.util.HashMap;
 
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorMain;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartCacheInfo;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartInstaller;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorPartManager;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorStatus;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVP;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVTM;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorVehicleInfo;
+import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.gui.constructor.*;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadContainer;
@@ -65,8 +60,8 @@ public class GuiHandler implements IGuiHandler {
 			case CONSTRUCTOR_VEHINFO:
 			case CONSTRUCTOR_PARTINFO:
 			case CONSTRUCTOR_PARTMANAGER:
-			case CONSTRUCTOR_PARTINSTALLER:
-			case CONSTRUCTOR_TEXTUREMANAGER:
+			case CONSTRUCTOR_PARTINSTALLER: return new ConstructorContainer(player, world, x, y, z);
+			case CONSTRUCTOR_TEXTUREMANAGER: return new ConstructorContainerVTM(player, world, x, y, z);
 			case CONSTRUCTOR_PAINTER: return new ConstructorContainer(player, world, x, y, z);
 		}
 		return null;
@@ -80,7 +75,7 @@ public class GuiHandler implements IGuiHandler {
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
 				case ROADTOOL: return new RoadPlacingTool(player, x);
 				case ROADTOOLFILL: return new RoadPlacingToolFill(player, x);
-				case CONSTRUCTOR_MAIN: return new ConstructorMain(player, world, z, z, z);
+				case CONSTRUCTOR_MAIN: return new ConstructorMain(player, world, x, y, z);
 				case CONSTRUCTOR_STATUS: return new ConstructorStatus(player, world, x, y, z);
 				case CONSTRUCTOR_VEHINFO: return new ConstructorVehicleInfo(player, world, x, y, z);
 				case CONSTRUCTOR_PARTINFO: return new ConstructorPartCacheInfo(player, world, x, y, z);
@@ -99,11 +94,13 @@ public class GuiHandler implements IGuiHandler {
 	public static NBTTagCompound validate(EntityPlayer player, NBTTagCompound compound, boolean client){
 		if(compound != null) return compound;
 		if(client){
+			if(Static.dev()) Print.log("Getting client compound " + CLIENT_GUIDATA_CACHE);
 			compound = CLIENT_GUIDATA_CACHE;
 			CLIENT_GUIDATA_CACHE = null;
 			return compound;
 		}
 		else{
+			if(Static.dev()) Print.log("Getting server compound " + SERVER_GUIDATA_CACHE.get(player.getGameProfile().getId().toString()));
 			return SERVER_GUIDATA_CACHE.remove(player.getGameProfile().getId().toString());
 		}
 	}

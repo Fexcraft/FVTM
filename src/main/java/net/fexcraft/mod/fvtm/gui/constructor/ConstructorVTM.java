@@ -8,7 +8,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -19,26 +18,25 @@ public class ConstructorVTM extends ConstructorGui {
 
 	//private Textureable textur;
 	private IconButton next, prev;
-	private String part;
 
 	public ConstructorVTM(EntityPlayer player, World world, int x, int y, int z){
-		super(player, world, x, y, z); this.removeEmptyButtons = true; part = null;
+		super(new ConstructorContainerVTM(player, world, x, y, z), player, x, y, z);
+		this.removeEmptyButtons = true;
 		this.buttontext = new String[]{ "||Current:" , "||...", "", "||Supplied:", "", "", "||Internal:", "", "", "||External:", "", "", "< Back" };
 	}
 	
-	public ConstructorVTM(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(player, xyz, compound); this.removeEmptyButtons = true; part = compound.getString("category");
-		this.buttontext = new String[]{ "||Current:" , "||...", "", "||Supplied:", "", "", "||Internal:", "", "", "||External:", "", "", "< Back" };
+	private String part(){
+		return ((ConstructorContainerVTM)container).part;
 	}
 	
 	@Override
 	public void init(){
 		super.init(); String title = null;
-		if(part == null){
+		if(part() == null){
 			if(container.getTileEntity().getBlockData() != null) title = "Block"; 
 			if(container.getTileEntity().getContainerData() != null) title = "Container"; 
 			if(container.getTileEntity().getVehicleData() != null) title = "Vehicle"; 
-		} else title = "Part [" + part + "]";
+		} else title = "Part [" + part() + "]";
 		this.menutitle.string = title + " Texture Management";
 		Textureable textur = getTextureable();
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
@@ -57,7 +55,7 @@ public class ConstructorVTM extends ConstructorGui {
 	private Textureable getTextureable(){
 		VehicleData vdata = container.getTileEntity().getVehicleData();
 		ContainerData condata = container.getTileEntity().getContainerData();
-		return part == null ? vdata == null ? condata == null ? container.getTileEntity().getBlockData() : condata : vdata : vdata.getPart(part);
+		return part() == null ? vdata == null ? condata == null ? container.getTileEntity().getBlockData() : condata : vdata : vdata.getPart(part());
 	}
 
 	private void updateIconsAndButtons(){
@@ -89,7 +87,7 @@ public class ConstructorVTM extends ConstructorGui {
 			}
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "vtm_supplied");
-			if(part != null) compound.setString("part", part);
+			if(part() != null) compound.setString("part", part());
 			compound.setInteger("value", i);
 			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 			this.container.send(Side.SERVER, compound); return true;
@@ -98,7 +96,7 @@ public class ConstructorVTM extends ConstructorGui {
 			boolean external = button.name.startsWith("ex");
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "vtm_custom");
-			if(part != null) compound.setString("part", part);
+			if(part() != null) compound.setString("part", part());
 			compound.setString("value", external ? cfields[10].getText() : cfields[7].getText());
 			compound.setBoolean("external", external);
 			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);

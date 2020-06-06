@@ -4,7 +4,6 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +13,8 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ConstructorStatus extends ConstructorGui {
 
 	public ConstructorStatus(EntityPlayer player, World world, int x, int y, int z){
-		super(player, world, x, y, z); this.removeEmptyButtons = true;
+		super(player, world, x, y, z);
+		this.removeEmptyButtons = true;
 		this.buttontext = new String[]{ "||Lift/Center Pos.", "", "", "", "Manual Connect", "Auto Connect", "", "< Return"};
 	}
 	

@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -25,7 +24,8 @@ public class ConstructorVP extends ConstructorGui {
 	private TextField rgb, hex;
 
 	public ConstructorVP(EntityPlayer player, World world, int x, int y, int z){
-		super(player, world, x, y, z); this.removeEmptyButtons = true;
+		super(player, world, x, y, z);
+		this.removeEmptyButtons = true;
 		this.buttontext = new String[]{ "||RGB" , "", "||HEX", "", "", "", "", "", "", "", "||", "||T: ----", "< Back" };
 	}
 	

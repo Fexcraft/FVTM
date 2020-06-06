@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.gui;
+package net.fexcraft.mod.fvtm.gui.constructor;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,6 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -15,19 +14,19 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	
 	public static final ResourceLocation STONE = new ResourceLocation("minecraft:textures/blocks/stone.png");
 	public static final ResourceLocation ANVIL = new ResourceLocation("minecraft:textures/blocks/anvil_base.png");
-	protected static final ResourceLocation ICON_LEFT = new ResourceLocation("fvtm:textures/gui/icons/arrow_left.png");
-	protected static final ResourceLocation ICON_RIGHT = new ResourceLocation("fvtm:textures/gui/icons/arrow_right.png");
-	protected static final ResourceLocation ICON_CHECK = new ResourceLocation("fvtm:textures/gui/icons/check.png");
-	protected static final ResourceLocation ICON_REMOVE = new ResourceLocation("fvtm:textures/gui/icons/remove.png");
-	protected static final ResourceLocation ICON_EDIT0 = new ResourceLocation("fvtm:textures/gui/icons/edit.png");
-	protected static final ResourceLocation ICON_EDIT1 = new ResourceLocation("fvtm:textures/gui/icons/edit2.png");
-	protected static final ResourceLocation ICON_QMARK = new ResourceLocation("fvtm:textures/gui/icons/qmark.png");
+	public static final ResourceLocation ICON_LEFT = new ResourceLocation("fvtm:textures/gui/icons/arrow_left.png");
+	public static final ResourceLocation ICON_RIGHT = new ResourceLocation("fvtm:textures/gui/icons/arrow_right.png");
+	public static final ResourceLocation ICON_CHECK = new ResourceLocation("fvtm:textures/gui/icons/check.png");
+	public static final ResourceLocation ICON_REMOVE = new ResourceLocation("fvtm:textures/gui/icons/remove.png");
+	public static final ResourceLocation ICON_EDIT0 = new ResourceLocation("fvtm:textures/gui/icons/edit.png");
+	public static final ResourceLocation ICON_EDIT1 = new ResourceLocation("fvtm:textures/gui/icons/edit2.png");
+	public static final ResourceLocation ICON_QMARK = new ResourceLocation("fvtm:textures/gui/icons/qmark.png");
 	//
-	protected static final ResourceLocation ICON_BOOL_BACK = new ResourceLocation("fvtm:textures/gui/icons/bool_back.png");
-	protected static final ResourceLocation ICON_BOOL_TRUE = new ResourceLocation("fvtm:textures/gui/icons/bool_on.png");
-	protected static final ResourceLocation ICON_BOOL_FALSE = new ResourceLocation("fvtm:textures/gui/icons/bool_off.png");
-	protected static final ResourceLocation ICON_BOOL_TRI0 = new ResourceLocation("fvtm:textures/gui/icons/bool_tri0.png");
-	protected static final ResourceLocation ICON_BOOL_TRI1 = new ResourceLocation("fvtm:textures/gui/icons/bool_tri1.png");
+	public static final ResourceLocation ICON_BOOL_BACK = new ResourceLocation("fvtm:textures/gui/icons/bool_back.png");
+	public static final ResourceLocation ICON_BOOL_TRUE = new ResourceLocation("fvtm:textures/gui/icons/bool_on.png");
+	public static final ResourceLocation ICON_BOOL_FALSE = new ResourceLocation("fvtm:textures/gui/icons/bool_off.png");
+	public static final ResourceLocation ICON_BOOL_TRI0 = new ResourceLocation("fvtm:textures/gui/icons/bool_tri0.png");
+	public static final ResourceLocation ICON_BOOL_TRI1 = new ResourceLocation("fvtm:textures/gui/icons/bool_tri1.png");
 	//
 	protected static final String modid = FVTM.MODID;
 	protected static final int buttonheight = 12;
@@ -43,14 +42,14 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	protected CenterBox cbox;
 
 	public ConstructorGui(EntityPlayer player, World world, int x, int y, int z){
-		super(STONE, new ConstructorContainer(player, world, x, y, z), player);
-		this.defbackground = false; this.deftexrect = false; xyz = new int[]{ x, y, z };
-		this.container.setGUI(this);
+		this(new ConstructorContainer(player, world, x, y, z), player, x, y, z);
 	}
-	
-	public ConstructorGui(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(STONE, new ConstructorContainer(player, xyz, compound), player);
-		this.defbackground = false; this.deftexrect = false; this.xyz = xyz;
+
+	public ConstructorGui(ConstructorContainer container, EntityPlayer player, int x, int y, int z){
+		super(STONE, container, player);
+		this.defbackground = false;
+		this.deftexrect = false;
+		xyz = new int[]{ x, y, z };
 		this.container.setGUI(this);
 	}
 	

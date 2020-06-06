@@ -4,7 +4,6 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_STATUS;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

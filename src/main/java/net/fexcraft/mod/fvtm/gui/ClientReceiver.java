@@ -5,7 +5,6 @@ import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -90,13 +89,15 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "open_gui":{
                 if(packet.nbt.hasKey("data")){
                 	//gui should have been already opened server side
-                	if(player.openContainer instanceof GenericContainer){
+                	if(player.openContainer instanceof GenericContainer && !((GenericContainer)player.openContainer).isInit()){
                 		((GenericContainer)player.openContainer).initPacket(packet.nbt.getCompoundTag("data"));
+                		Print.debug("Loaded client compound.");
                 	}
                 	else{
                 		GuiHandler.CLIENT_GUIDATA_CACHE = packet.nbt.getCompoundTag("data");
-                		int[] xyz = packet.nbt.getIntArray("args");
-                		player.openGui(FVTM.getInstance(), packet.nbt.getInteger("gui"), player.world, xyz[0], xyz[1], xyz[2]);
+                		Print.debug("Cached client compound.");
+                		//int[] xyz = packet.nbt.getIntArray("args");
+                		//player.openGui(FVTM.getInstance(), packet.nbt.getInteger("gui"), player.world, xyz[0], xyz[1], xyz[2]);
                 	}
                 }
 				return;

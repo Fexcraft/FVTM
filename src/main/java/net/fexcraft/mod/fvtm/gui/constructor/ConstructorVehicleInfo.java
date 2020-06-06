@@ -4,14 +4,14 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public class ConstructorVehicleInfo extends ConstructorGui {
 
 	public ConstructorVehicleInfo(EntityPlayer player, World world, int x, int y, int z){
-		super(player, world, x, y, z); this.removeEmptyButtons = true;
+		super(player, world, x, y, z);
+		this.removeEmptyButtons = true;
 		this.buttontext = new String[]{ "||Name:", "", "Attributes", "Functions", "Scripts", "", "< Back" };
 	}
 	

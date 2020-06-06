@@ -26,7 +26,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 
 	@Override
 	public void initPacket(NBTTagCompound compound){
-		if((compound = GuiHandler.validate(player, compound, true)) == null) return;
+		if((compound = GuiHandler.validate(player, compound, player.world.isRemote)) == null) return;
 		junction = player.world.getCapability(Capabilities.RAILSYSTEM, null).get().getJunction(new Vec316f(compound));
 	}
 

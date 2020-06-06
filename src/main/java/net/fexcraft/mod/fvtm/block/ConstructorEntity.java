@@ -10,7 +10,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.gui.ConstructorContainer;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;

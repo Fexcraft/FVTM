@@ -1,5 +1,11 @@
 package net.fexcraft.mod.fvtm.gui;
 
+import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_BACK;
+import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_FALSE;
+import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_TRI0;
+import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_TRI1;
+import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_TRUE;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -15,6 +21,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
@@ -354,7 +361,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				}
 				Attribute<?> attr = attributes.get(i);
 				offset = j * 12 + 34;
-				mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
+				mc.renderEngine.bindTexture(ICON_BOOL_BACK);
 				if(attr.type().isTristate()){
 					int width = fontRenderer.getStringWidth(attr.id());
 					if(scroll == j) HOVER.glColorApply();
@@ -362,11 +369,11 @@ public class VehicleSteeringOverlay extends GuiScreen {
 					if(scroll == j) RGB.glColorReset();
 					mc.fontRenderer.drawString(attr.id(), this.width - width - 12, offset + 3, 0xffffff);
 					if(attr.type().isBoolean()){
-						mc.renderEngine.bindTexture(attr.getBooleanValue() ? ConstructorGui.ICON_BOOL_TRUE : ConstructorGui.ICON_BOOL_FALSE);
+						mc.renderEngine.bindTexture(attr.getBooleanValue() ? ICON_BOOL_TRUE : ICON_BOOL_FALSE);
 					}
 					else{
 						Boolean bool = attr.getTriStateValue();
-						mc.renderEngine.bindTexture(bool == null ? ConstructorGui.ICON_BOOL_FALSE : bool ? ConstructorGui.ICON_BOOL_TRI1 : ConstructorGui.ICON_BOOL_TRI0);
+						mc.renderEngine.bindTexture(bool == null ? ICON_BOOL_FALSE : bool ? ICON_BOOL_TRI1 : ICON_BOOL_TRI0);
 					}
 					drawRectIcon(this.width - 12, offset, 12, 12);
 				}
@@ -380,7 +387,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				}
 			}
 			if(attributes.size() > 8){
-				mc.renderEngine.bindTexture(ConstructorGui.ICON_BOOL_BACK);
+				mc.renderEngine.bindTexture(ICON_BOOL_BACK);
 				String string = "Page " + (page + 1) + "/" + (attributes.size() / perpage + 1);
 				int width = fontRenderer.getStringWidth(string) + 4;
 				this.drawTexturedModalRect(this.width - width, offset + 12, 0, 0, width, 12);

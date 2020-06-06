@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

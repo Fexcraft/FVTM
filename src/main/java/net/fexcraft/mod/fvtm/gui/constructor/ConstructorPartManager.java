@@ -6,7 +6,6 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.gui.ConstructorGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -19,13 +18,15 @@ public class ConstructorPartManager extends ConstructorGui {
 	private int page;
 
 	public ConstructorPartManager(EntityPlayer player, World world, int x, int y, int z){
-		super(player, world, x, y, z); this.removeEmptyButtons = true;
+		super(player, world, x, y, z);
+		this.removeEmptyButtons = true;
 		this.buttontext = new String[]{"||Installed Parts:", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||Page -/-", "", "< Back"};
 	}
 	
 	@Override
 	public void init(){
-		super.init(); this.menutitle.string = "Part Manager";
+		super.init();
+		this.menutitle.string = "Part Manager";
 		boolean noveh = container.getTileEntity().getVehicleData() == null;
 		this.container.setTitleText(noveh ? "No Vehicle in Constructor" : container.getTileEntity().getVehicleData().getType().getName(), RGB.WHITE.packed);
 		this.buttons.put("next_page", next = new IconButton("next", 11, 0, false, ICON_RIGHT));

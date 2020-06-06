@@ -1,13 +1,12 @@
 package net.fexcraft.mod.fvtm.gui.block;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,8 +26,6 @@ import net.minecraftforge.items.SlotItemHandler;
 public class GBlockInvContainer extends GenericContainer {
 
 	protected GenericGui<GBlockInvContainer> gui;
-	@Nullable
-	protected NBTTagCompound initpacket;
 	protected M_4ROT_TE.TileEntity tile;
 	//
 	protected String inv_id;
@@ -45,14 +42,15 @@ public class GBlockInvContainer extends GenericContainer {
 
 	public GBlockInvContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
-	}
-
-	public GBlockInvContainer(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(player);
-		initpacket = compound;
-		tile = (M_4ROT_TE.TileEntity)player.world.getTileEntity(new BlockPos(xyz[0], xyz[1], xyz[2]));
+		tile = (M_4ROT_TE.TileEntity)player.world.getTileEntity(new BlockPos(x, y, z));
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 		//
+		initPacket(null);
+	}
+
+	@Override
+	public void initPacket(NBTTagCompound compound){
+		if((compound = GuiHandler.validate(player, compound, player.world.isRemote)) == null) return;
 		inv_id = compound.getString("inventory");
 		invtype = tile.getMultiBlockData().getType().getInventoryTypes().get(inv_id);
 		this.populateSlots();
@@ -128,7 +126,8 @@ public class GBlockInvContainer extends GenericContainer {
 				if(packet.hasKey("stack_1")) fluid_io.setInventorySlotContents(1, new ItemStack(packet.getCompoundTag("stack_1")));
 			}
 			if(packet.getString("cargo").equals("update_stack")){
-				temp.setStackInSlot(packet.getInteger("index"), new ItemStack(packet.getCompoundTag("stack")));
+				inventorySlots.get(packet.getInteger("index")).putStack(new ItemStack(packet.getCompoundTag("stack")));
+				inventoryItemStacks.set(packet.getInteger("index"), new ItemStack(packet.getCompoundTag("stack")));
 			}
 		}
 	}

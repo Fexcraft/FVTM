@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_INVENTORY;
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 import java.util.ArrayList;
@@ -11,8 +13,7 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
-import net.fexcraft.lib.mc.gui.ServerReceiver;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
@@ -119,13 +120,8 @@ public class M_4ROT_TE extends BlockBase {
     	//
     	NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("inventory", target);
-		NBTTagCompound compound = new NBTTagCompound();
-        compound.setString("target_listener", "fcl_gui");
-        compound.setString("task", "open_guicontainer");
-        compound.setInteger("gui", 951);
-        compound.setTag("data", packet);
-        compound.setIntArray("args", new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() });
-        ServerReceiver.INSTANCE.process(new PacketNBTTagCompound(compound), new Object[]{ player });
+        int[] xyz = new int[]{ corepos.getX(), corepos.getY(), corepos.getZ() };
+        GenericContainer.openGui(MULTIBLOCK_INVENTORY, xyz, LISTENERID, packet, player);
 	}
 
 	@Override

@@ -195,14 +195,6 @@ public class FVTM {
 		Resources.loadPresets();
 		//
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
-		/*if(event.getSide().isClient()){
-			GuiHandler.insert(941, ContainerItemInventory.class, ContainerInvContainer.class);
-			GuiHandler.insert(942, ContainerFluidInventory.class, ContainerInvContainer.class);
-			//
-			GuiHandler.insert(951, GBlockInventory.class, GBlockInvContainer.class);
-			GuiHandler.insert(952, GBlockCraft.class, GBlockCraftContainer.class);
-			GuiHandler.insert(953, GBlockCraftChoose.class, GBlockCraftChooseContainer.class);
-		}*/
 	}
 
 	@Mod.EventHandler

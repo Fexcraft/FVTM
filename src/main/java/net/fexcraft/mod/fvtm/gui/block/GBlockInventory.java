@@ -5,6 +5,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -13,8 +14,8 @@ public class GBlockInventory extends GenericGui<GBlockInvContainer> {
 	private static final ResourceLocation texture_item = new ResourceLocation("fvtm:textures/gui/vehicle_item_inventory.png");
 	private static final ResourceLocation texture_fluid = new ResourceLocation("fvtm:textures/gui/vehicle_fluid_inventory.png");
 	
-	public GBlockInventory(EntityPlayer player, int[] xyz, NBTTagCompound compound){
-		super(texture_item, new GBlockInvContainer(player, xyz, compound), player);
+	public GBlockInventory(EntityPlayer player, World world, int x, int y, int z){
+		super(texture_item, new GBlockInvContainer(player, world, x, y, z), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		switch(container.invtype){
 			case CONTAINER:

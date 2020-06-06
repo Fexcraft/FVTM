@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.gui.block;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
+
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TileEntity;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
@@ -48,7 +51,7 @@ public class GBlockCraftContainer extends GenericContainer {
 					break;
 				}
 				case "open_chooser":{
-					GenericContainer.openGui("fvtm", 953, new int[]{ tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ() }, player);
+					player.openGui(FVTM.getInstance(), MULTIBLOCK_CRAFT_CHOOSE, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
 					break;
 				}
 				case "craft_recipe":{

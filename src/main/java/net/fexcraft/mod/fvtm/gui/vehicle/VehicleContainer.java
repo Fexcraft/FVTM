@@ -206,7 +206,8 @@ public class VehicleContainer extends GenericContainer {
                     veh.getVehicleData().getAttribute("fuel_quality").setValue(packet.getFloat("quality"));
 				}
 				if(packet.getString("cargo").equals("update_stack")){
-					temp.setInventorySlotContents(packet.getInteger("index"), new ItemStack(packet.getCompoundTag("stack")));
+					inventorySlots.get(packet.getInteger("index")).putStack(new ItemStack(packet.getCompoundTag("stack")));
+					inventoryItemStacks.set(packet.getInteger("index"), new ItemStack(packet.getCompoundTag("stack")));
 				}
 			}
 		}

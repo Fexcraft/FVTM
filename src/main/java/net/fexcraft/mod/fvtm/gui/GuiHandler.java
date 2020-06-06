@@ -4,6 +4,12 @@ import java.util.HashMap;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.gui.block.GBlockCraft;
+import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChoose;
+import net.fexcraft.mod.fvtm.gui.block.GBlockCraftChooseContainer;
+import net.fexcraft.mod.fvtm.gui.block.GBlockCraftContainer;
+import net.fexcraft.mod.fvtm.gui.block.GBlockInvContainer;
+import net.fexcraft.mod.fvtm.gui.block.GBlockInventory;
 import net.fexcraft.mod.fvtm.gui.constructor.*;
 import net.fexcraft.mod.fvtm.gui.container.ContainerFluidInventory;
 import net.fexcraft.mod.fvtm.gui.container.ContainerInvContainer;
@@ -58,7 +64,9 @@ public class GuiHandler implements IGuiHandler {
 	public static final int CONTAINER_ITEM = 941;
 	public static final int CONTAINER_FLUID = 942;
 	/* 95x - generated block */
-	
+	public static final int MULTIBLOCK_INVENTORY = 951;
+	public static final int MULTIBLOCK_CRAFT_MAIN = 952;
+	public static final int MULTIBLOCK_CRAFT_CHOOSE = 953;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
@@ -85,6 +93,9 @@ public class GuiHandler implements IGuiHandler {
 			case VEHICLE_CONNECTORS: return new VehicleContainer(player, world, x, y, z);
 			case CONTAINER_ITEM:
 			case CONTAINER_FLUID: return new ContainerInvContainer(player, world, x, y, z);
+			case MULTIBLOCK_INVENTORY: return new GBlockInvContainer(player, world, x, y, z);
+			case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraftContainer(player, world, x, y, z);
+			case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChooseContainer(player, world, x, y, z);
 		}
 		return null;
 	}
@@ -115,6 +126,9 @@ public class GuiHandler implements IGuiHandler {
 				case VEHICLE_CONNECTORS: return new VehicleConnectors(player, world, x, y, z);
 				case CONTAINER_ITEM: return new ContainerItemInventory(player, world, x, y, z);
 				case CONTAINER_FLUID: return new ContainerFluidInventory(player, world, x, y, z);
+				case MULTIBLOCK_INVENTORY: return new GBlockInventory(player, world, x, y, z);
+				case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraft(player, world, x, y, z);
+				case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChoose(player, world, x, y, z);
 			}
 		}
 		catch(Exception e){

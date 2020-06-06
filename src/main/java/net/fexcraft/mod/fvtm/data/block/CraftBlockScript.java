@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.data.block;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_MAIN;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,8 +16,8 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
-import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TileEntity;
 import net.fexcraft.mod.fvtm.data.InventoryType;
@@ -135,11 +138,11 @@ public abstract class CraftBlockScript implements BlockScript {
 	public boolean onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit){
 		switch(trigger.getTarget()){
 			case "open_gui":{
-				GenericContainer.openGui("fvtm", 952, new int[]{ core.getX(), core.getY(), core.getZ() }, player);
+				player.openGui(FVTM.getInstance(), MULTIBLOCK_CRAFT_MAIN, player.world, core.getX(), core.getY(), core.getZ());
 				return true;
 			}
 			case "select_recipe":{
-				GenericContainer.openGui("fvtm", 953, new int[]{ core.getX(), core.getY(), core.getZ() }, player);
+				player.openGui(FVTM.getInstance(), MULTIBLOCK_CRAFT_CHOOSE, player.world, core.getX(), core.getY(), core.getZ());
 				return true;
 			}
 			default: return false;

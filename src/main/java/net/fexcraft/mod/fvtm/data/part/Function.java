@@ -18,7 +18,7 @@ import net.minecraft.world.World;
  */
 public abstract class Function {
 	
-	public Function(@Nullable JsonObject obj){}
+	public Function(Part part, @Nullable JsonObject obj){}
 	
 	public abstract Function read(NBTTagCompound compound);
 	
@@ -27,11 +27,11 @@ public abstract class Function {
 	public abstract String getId();
 	
 	/** Used to crease an use-copy from the "default" function storage in a Part. */
-	public abstract Function copy();
+	public abstract Function copy(Part Part);
 	
 	public static abstract class StaticFuntion extends Function {
 
-		public StaticFuntion(JsonObject obj){ super(obj); }
+		public StaticFuntion(Part part, JsonObject obj){ super(part, obj); }
 
 		@Override /** Do not read anything. */
 		public Function read(NBTTagCompound compound){ return this; }
@@ -40,7 +40,7 @@ public abstract class Function {
 		public NBTTagCompound write(NBTTagCompound compound){ return null; }
 
 		@Override /** Return self because we don't need copies. */
-		public Function copy(){ return this; }
+		public Function copy(Part part){ return this; }
 		
 	}
 

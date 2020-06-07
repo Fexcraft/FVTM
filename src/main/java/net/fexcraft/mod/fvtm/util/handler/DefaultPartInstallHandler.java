@@ -23,20 +23,25 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		if(data.getParts().containsKey(cat)){
-			Print.chatnn(sender, "There is already another part with that category installed."); return false;
+			Print.chatnn(sender, "There is already another part with that category installed.");
+			return false;
 		}
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		if(!part.getType().getCategories().contains(cat) && (idata != null && !idata.custom_cat)){
-			Print.chatnn(sender, "Part does not allow installing into this category."); return false;
+			Print.chatnn(sender, "Part does not allow installing into this category.");
+			return false;
 		}
 		if(!compatible(idata, data.getType().getRegistryName().toString())){
-			Print.chatnn(sender, "Part incompatible with this vehicle."); return false;
+			Print.chatnn(sender, "Part incompatible with this vehicle.");
+			return false;
 		}
 		if(containsIncompatible(idata, data)){
-			Print.chatnn(sender, "Vehicle contains parts incompatible with this part."); return false;
+			Print.chatnn(sender, "Vehicle contains parts incompatible with this part.");
+			return false;
 		}
 		if(!containsRequired(idata, data)){
-			Print.chatnn(sender, "Vehicle does not contain all required parts."); return false;
+			Print.chatnn(sender, "Vehicle does not contain all required parts.");
+			return false;
 		}
 		if(idata != null && idata.sp_req && !data.getRotationPoints().containsKey(idata.swivel_point)){
 			Print.chatnn(sender, "Vehicle does not contain a required swivel/rotation point. Missing: " + idata.swivel_point);
@@ -53,15 +58,17 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 	
 	private boolean containsIncompatible(DPIHData idata, VehicleData data){
-		if(idata == null || !idata.incompatible.containsKey(data.getType().getRegistryName().toString())){ return false; }
+		if(idata == null || !idata.incompatible.containsKey(data.getType().getRegistryName().toString())) return false;
 		ArrayList<String> list = idata.incompatible.get(data.getType().getRegistryName().toString());
-		for(String str : list) if(data.getParts().containsKey(str)) return true; return false;
+		for(String str : list) if(data.getParts().containsKey(str)) return true;
+		return false;
 	}
 	
 	private boolean containsRequired(DPIHData idata, VehicleData data){
-		if(idata == null || !idata.required.containsKey(data.getType().getRegistryName().toString())){ return true; }
+		if(idata == null || !idata.required.containsKey(data.getType().getRegistryName().toString())) return true;
 		ArrayList<String> list = idata.required.get(data.getType().getRegistryName().toString());
-		for(String str : list) if(!data.getParts().containsKey(str)) return false; return true;
+		for(String str : list) if(!data.getParts().containsKey(str)) return false;
+		return true;
 	}
 
 	@Override
@@ -84,7 +91,8 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 
 	private Pos getPosForPart(PartData part, String string){
 		DPIHData idata = part.getType().getInstallationHandlerData();
-		if(idata == null || !idata.compatible.containsKey(string)) return new Pos(0, 0, 0); return idata.compatible.get(string);
+		if(idata == null || !idata.compatible.containsKey(string)) return new Pos(0, 0, 0);
+		return idata.compatible.get(string);
 	}
 
 	@Override
@@ -94,6 +102,11 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "Part is marked as non removable."); return false;
 		}
 		//Function Check
+		if(!checkWheelSlotsInUse(sender, part, from)) return false;
+		Print.chatnn(sender, "Deinstallation check passed."); return true;
+	}
+	
+	public static boolean checkWheelSlotsInUse(@Nullable ICommandSender sender, PartData part, VehicleData from){
 		if(part.hasFunction("fvtm:wheel_positions")){
 			WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
 			for(String key : from.getParts().keySet()){
@@ -102,12 +115,13 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				}
 			}
 		}
-		Print.chatnn(sender, "Deinstallation check passed."); return true;
+		return true;
 	}
 
 	@Override
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0)); data.getParts().remove(cat);
+		part.setInstalledPos(new Pos(0, 0, 0));
+		data.getParts().remove(cat);
 		part.getAttributes().clear();
 		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
 	}

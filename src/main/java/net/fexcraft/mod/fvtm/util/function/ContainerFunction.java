@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
+import net.fexcraft.mod.fvtm.data.part.Part;
 
 public class ContainerFunction extends StaticFuntion {
 	
@@ -17,8 +18,8 @@ public class ContainerFunction extends StaticFuntion {
 	private String rotpoint;
 	private int length;
 
-	public ContainerFunction(JsonObject obj){
-		super(obj); if(obj == null) return;
+	public ContainerFunction(Part part, JsonObject obj){
+		super(part, obj); if(obj == null) return;
 		if(obj.has("Type")){ onlytype = ContainerType.valueOf(JsonUtil.getIfExists(obj, "type", "MEDIUM")); length = onlytype.length(); }
 		position = Pos.fromJson(obj, false); rotation = JsonUtil.getIfExists(obj, "rot", 0).intValue();
 		length = JsonUtil.getIfExists(obj, "length", 6).intValue(); if(length < 1) length = 6;

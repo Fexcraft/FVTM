@@ -56,6 +56,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 				buttons.get("icon" + i).visible = buttons.get("button" + i).visible = tbuttons[i].visible = true;
 				//
 				boolean partin = container.getTileEntity().getVehicleData() == null || container.getTileEntity().getVehicleData().getPart(buttontext[i]) != null;
+				if(!partin && buttontext[i].startsWith("s:")) partin = container.getTileEntity().getVehicleData().getPart(buttontext[i].split(":")[2]) != null;
 				buttons.get("icon" + i).enabled = buttons.get("button" + i).enabled = !partin;
 				((IconButton)buttons.get("icon" + i)).texture = partin ? ICON_REMOVE : ICON_CHECK;
 			}

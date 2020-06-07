@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.minecraft.client.util.ITooltipFlag;
@@ -23,8 +24,8 @@ public class EngineFunction extends Function {
 	private boolean ison;
 	private String[] fuelgroup;
 
-	public EngineFunction(JsonObject obj){
-		super(obj);
+	public EngineFunction(Part part, JsonObject obj){
+		super(part, obj);
 		engine_speed = JsonUtil.getIfExists(obj, "engine_speed", 0.245f).floatValue();
 		idle_con = JsonUtil.getIfExists(obj, "idle_consumption", 1).intValue();
 		con = JsonUtil.getIfExists(obj, "active_consumption", 1).intValue();
@@ -35,7 +36,7 @@ public class EngineFunction extends Function {
 	}
 
 	public EngineFunction(float es, boolean io, int ic, int c, TreeMap<String, Float> cs, String[] fg){
-		super(null); engine_speed = es; ison = io; idle_con = ic; con = c; cons = cs; this.fuelgroup = fg;
+		super(null, null); engine_speed = es; ison = io; idle_con = ic; con = c; cons = cs; this.fuelgroup = fg;
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class EngineFunction extends Function {
 	}
 	
 	@Override
-	public Function copy(){
+	public Function copy(Part part){
 		return new EngineFunction(engine_speed, ison, idle_con, con, cons, fuelgroup);
 	}
 

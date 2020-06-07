@@ -34,7 +34,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	public PartData(Part type){
 		super(type); this.clearAttributes();
 		for(Function func : type.functions){
-			this.functions.put(func.getId(), func.copy());
+			this.functions.put(func.getId(), func.copy(type));
 		}
 	}
 

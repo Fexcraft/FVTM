@@ -34,6 +34,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.BogieInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.ConnectorInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.util.handler.PartSlotInstallHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -178,7 +179,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 				Class<? extends Function> func = Resources.getFunction(id);
 				if(func != null){
 					try {
-						this.functions.add(func.getConstructor(JsonObject.class).newInstance(elmobj));
+						this.functions.add(func.getConstructor(Part.class, JsonObject.class).newInstance(this, elmobj));
 					} catch(Exception e){ e.printStackTrace(); }
 				}
 				else{
@@ -208,6 +209,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 			else if(handler.equals("bogie")){
 				this.installhandler = BogieInstallationHandler.INSTANCE;
 				this.installhandler_data = new BogieInstallationHandler.BogieData(inst);
+			}
+			else if(handler.equals("part_slot")){
+				this.installhandler = PartSlotInstallHandler.INSTANCE;
+				this.installhandler_data = new PartSlotInstallHandler.PSIHData(inst);
 			}
 			else{
 				//try to load the class

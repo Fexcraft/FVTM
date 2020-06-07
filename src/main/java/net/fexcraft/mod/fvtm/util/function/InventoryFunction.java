@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.handler.ItemStackHandler;
@@ -42,8 +43,8 @@ public class InventoryFunction extends Function {
 	private FluidTank tank;
 
 	/** Static Copy in Part. */
-	public InventoryFunction(JsonObject obj){
-		super(obj); if(obj == null) return;
+	public InventoryFunction(Part part, JsonObject obj){
+		super(part, obj); if(obj == null) return;
 		type = InventoryType.valueOf(JsonUtil.getIfExists(obj, "type", "ITEM"));
 		capacity = JsonUtil.getIfExists(obj, "capacity", 0).intValue();
 		//stacksize = (byte)JsonUtil.getIfExists(obj, "StackSize", 64).intValue();
@@ -76,7 +77,7 @@ public class InventoryFunction extends Function {
 
 	/** Functional Copy in PartData. */
 	public InventoryFunction(InventoryFunction root){
-		super(null); type = root.type; capacity = root.capacity; /*stacksize = root.stacksize;*/
+		super(null, null); type = root.type; capacity = root.capacity; /*stacksize = root.stacksize;*/
 		fluid = root.fluid; this.whitelist = root.whitelist; this.blacklist = root.blacklist; this.seats = root.seats;
 		switch(type){
 			case CONTAINER: break;
@@ -119,7 +120,7 @@ public class InventoryFunction extends Function {
 	}
 
 	@Override
-	public Function copy(){
+	public Function copy(Part part){
 		return new InventoryFunction(this);
 	}
 

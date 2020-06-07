@@ -8,13 +8,14 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
+import net.fexcraft.mod.fvtm.data.part.Part;
 
 public class WheelPositionsFunction extends StaticFuntion {
 	
 	private HashMap<String, WheelSlot> wheels = new HashMap<>();
 
-	public WheelPositionsFunction(JsonObject obj){
-		super(obj); JsonArray array = obj.get("wheel_positions").getAsJsonArray();
+	public WheelPositionsFunction(Part part, JsonObject obj){
+		super(part, obj); JsonArray array = obj.get("wheel_positions").getAsJsonArray();
 		for(JsonElement elm : array){
 			JsonObject json = elm.getAsJsonObject();
 			String id = json.get("id").getAsString();

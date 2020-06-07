@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.data.part.Function;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -15,8 +16,8 @@ public class BogieFunction extends Function {
 	
 	private String inst_pos;
 
-	public BogieFunction(JsonObject obj){
-		super(obj);
+	public BogieFunction(Part part, JsonObject obj){
+		super(part, obj);
 	}
 
 	@Override
@@ -41,8 +42,8 @@ public class BogieFunction extends Function {
 	}
 
 	@Override
-	public Function copy(){
-		return new BogieFunction(null);
+	public Function copy(Part part){
+		return new BogieFunction(part, null);
 	}
 
     @Override

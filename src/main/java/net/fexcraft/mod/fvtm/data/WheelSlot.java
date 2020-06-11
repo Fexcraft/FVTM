@@ -10,7 +10,7 @@ public class WheelSlot {
 	
 	private Pos position;
 	private float yrot, connector, maxradius = 16f, minradius = 16f, minwidth = 1, maxwidth = 8;
-	private boolean drive = false, steering = false, required;
+	private boolean drive = false, steering = false, required, relative;
 	//TODO implement deco wheels and inactive wheels
 	
 	public WheelSlot(JsonObject obj){
@@ -32,6 +32,7 @@ public class WheelSlot {
 		minwidth = JsonUtil.getIfExists(obj, "min_width", minwidth).floatValue();
 		steering = JsonUtil.getIfExists(obj, "steering", false);
 		required = JsonUtil.getIfExists(obj, "required", false);
+		relative = JsonUtil.getIfExists(obj, "relative", false);
 	}
 	
 	public WheelSlot read(NBTTagCompound compound){
@@ -45,6 +46,7 @@ public class WheelSlot {
 		minradius = compound.hasKey("min_width") ? compound.getFloat("min_width") : 1f;
 		steering = compound.hasKey("steering") && compound.getBoolean("steering");
 		required = compound.hasKey("required") && compound.getBoolean("required");
+		relative = compound.hasKey("relative") && compound.getBoolean("relative");
 		return this;
 	}
 	
@@ -53,9 +55,12 @@ public class WheelSlot {
 		this.maxradius = max; this.minradius = min; this.steering = bool; this.required = req;
 	}
 	
-	/** For copying the default WheelSlot from e.g. Vehicle into VehicleData*/
-	public WheelSlot copy(){
-		return new WheelSlot(position.copy(), yrot, drive, connector, maxradius, minradius, maxwidth, minwidth, steering, required);
+	/** For copying the default WheelSlot from e.g. Vehicle into VehicleData
+	 * @param pos position the part this wheel slot is mounted on is located, may be null, only used in case of "relative" wheel slots */
+	public WheelSlot copy(Pos pos){
+		Pos newpos = this.position.copy();
+		if(pos != null && relative) newpos = newpos.add(pos);
+		return new WheelSlot(newpos, yrot, drive, connector, maxradius, minradius, maxwidth, minwidth, steering, required);
 	}
 	
 	public NBTTagCompound write(NBTTagCompound compound){
@@ -68,6 +73,8 @@ public class WheelSlot {
 		compound.setFloat("max_width", maxwidth);
 		compound.setFloat("min_width", maxwidth);
 		if(steering) compound.setBoolean("steering", true);
+		if(required) compound.setBoolean("required", true);
+		if(relative) compound.setBoolean("relative", true);
 		return compound;
 	}
 	

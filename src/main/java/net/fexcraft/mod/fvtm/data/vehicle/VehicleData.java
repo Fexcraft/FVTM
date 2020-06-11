@@ -76,7 +76,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			attributes.put(copy.id(), copy);
 		}
 		for(Entry<String, WheelSlot> entry: type.getDefaultWheelPositions().entrySet()){
-			this.wheels.put(entry.getKey(), entry.getValue().copy());
+			this.wheels.put(entry.getKey(), entry.getValue().copy(null));
 		}
 		this.primary = type.getDefaultPrimaryColor().copy();
 		this.secondary = type.getDefaultSecondaryColor().copy();
@@ -253,11 +253,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	private void refreshModificableDataByParts(){
-		this.wheels.clear(); type.getDefaultWheelPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy()));
+		this.wheels.clear();
+		type.getDefaultWheelPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(null)));
 		for(PartData part : parts.values()){
 			if(part.hasFunction("fvtm:wheel_positions")){
 				WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
-				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy()));
+				func.getPositions().entrySet().forEach(entry -> wheels.put(entry.getKey(), entry.getValue().copy(part.getInstalledPos())));
 			}
 		}
 		//

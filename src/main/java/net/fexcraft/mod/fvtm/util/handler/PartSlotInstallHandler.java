@@ -46,14 +46,16 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		String actualcat = cat.split(":")[2];
+		String[] split = cat.split(":");
+		String actualcat = split[2];
 		data.getParts().put(actualcat, part);
-		PartData mount = data.getPart(cat.split(":")[1]);
+		PartData mount = data.getPart(split[1]);
 		PSIHData idata = part.getType().getInstallationHandlerData();
 		Pos pos = mount.getInstalledPos();
 		if(idata != null){
 			pos = pos.add(idata.getOffset(data.getType().getRegistryName().toString()));
 		}
+		pos = pos.add(mount.getFunction(PartSlotsFunction.class, "fvtm:part_slots").getSlotPositions().get(Integer.parseInt(split[3])));
 		part.setInstalledPos(pos);
 		if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
 			part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
@@ -149,7 +151,7 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 		}
 		String[] arr = new String[found.size()];
 		for(int i = 0; i < arr.length; i++){
-			arr[i] = "s:" + found.get(i);
+			arr[i] = "s:" + found.get(i) + ":" + i;
 		}
 		return arr;
 	}

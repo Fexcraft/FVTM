@@ -15,6 +15,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ConstructorPartInstaller extends ConstructorGui {
+	
+	private String[] categories;
 
 	public ConstructorPartInstaller(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
@@ -24,7 +26,17 @@ public class ConstructorPartInstaller extends ConstructorGui {
 		else {
 			PartData part = container.getTileEntity().getPartData();
 			ArrayList<String> list = Lists.newArrayList(part.getType().getInstallationHandler().getValidCategories(part, container.getTileEntity().getVehicleData()));
-			strarr = new String[7 + list.size()]; for(int i = 0; i < strarr.length - 7; i++){ strarr[i + 7] = list.get(i); }
+			strarr = new String[7 + list.size()];
+			categories = new String[list.size()];
+			for(int i = 0; i < strarr.length - 7; i++){
+				String str = list.get(i);
+				if(str.startsWith("s:")){
+					String[] stra = str.split(":");
+					strarr[i + 7] = stra[1] + ":" + stra[2];
+				}
+				else strarr[i + 7] = str;
+				categories[i] = str;
+			}
 		}
 		strarr[0] = "||Custom Category:"; strarr[1] = ""; strarr[2] = "Install Custom";
 		strarr[3] = ""; strarr[4] = "< Back"; strarr[5] = ""; strarr[6] = "||Default Category:";
@@ -88,7 +100,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 			if(in >= 7){
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("cargo", "part_install");
-				compound.setString("category", tbuttons[in].string);
+				compound.setString("category", categories[in - 7]);
 				compound.setBoolean("custom_category", false);
 				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
 				this.container.send(Side.SERVER, compound);

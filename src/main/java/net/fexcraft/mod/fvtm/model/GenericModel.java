@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -51,9 +52,11 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
             else{
             	JsonObject modelobj = obj.get("groups").getAsJsonObject();
                 for(Entry<String, JsonElement> entry : modelobj.entrySet()){
-                	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, entry.getValue().getAsJsonObject().get("polygons").getAsJsonArray(), textureX, textureY)));
-                	if(entry.getValue().isJsonObject() && entry.getValue().getAsJsonObject().has("fvtm:programs")){
-                		for(JsonElement elm : entry.getValue().getAsJsonObject().get("fvtm:programs").getAsJsonArray()){
+                	JsonObject group = entry.getValue().getAsJsonObject();
+                	groups.add(new TurboList(entry.getKey(), JsonToTMT.parse(null, group.get("polygons").getAsJsonArray(), textureX, textureY)));
+                	if(group.has("fvtm:programs")){
+                		JsonArray array = group.get("fvtm:programs").getAsJsonArray();
+                		for(JsonElement elm : array){
                 			groups.get(entry.getKey()).addProgram(elm.getAsString());
                 		}
                 	}

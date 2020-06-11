@@ -143,8 +143,13 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			sp_req = JsonUtil.getIfExists(obj, "SwivelPointRequired", false);
 			if(obj.has("Compatible")){
 				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
-					JsonObject jsn = elm.getAsJsonObject();
-					this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+					if(elm.isJsonObject()){
+						JsonObject jsn = elm.getAsJsonObject();
+						this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+					}
+					else{
+						this.compatible.put(elm.getAsString(), new Pos(0, 0, 0));
+					}
 				});
 			}
 			if(obj.has("Incompatible")){

@@ -1,12 +1,15 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import static net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.checkWheelSlotsInUse;
+import static net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.wildcards;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -28,7 +31,17 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "There is already another part with that category installed.");
 			return false;
 		}
+		PSIHData idata = part.getType().getInstallationHandlerData();
+		if(!compatible(idata, data.getType().getRegistryName().toString())){
+			Print.chatnn(sender, "Part incompatible with this vehicle.");
+			return false;
+		}
 		Print.chatnn(sender, "Installation check passed."); return true;
+	}
+
+	private boolean compatible(PSIHData idata, String string){
+		if(idata == null || idata.allowsAny()) return true;
+		return idata.compatible.containsKey(string);
 	}
 
 	@Override
@@ -38,7 +51,7 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 		PSIHData idata = part.getType().getInstallationHandlerData();
 		Pos pos = mount.getInstalledPos();
 		if(idata != null){
-			pos = pos.add(idata.offset);
+			pos = pos.add(idata.getOffset());
 		}
 		part.setInstalledPos(pos);
 		if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
@@ -68,16 +81,40 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 	
 	/** Default Part Install Handler Data */
 	public static class PSIHData {
-		
+
+		public TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
 		public boolean removable = true;
-		public Pos offset;
 		
 		public PSIHData(JsonObject obj){
 			if(obj == null) return;
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
-			if(obj.has("Offset")){
-				offset = Pos.fromJson(obj.get("Offset"), obj.get("Offset").isJsonArray());
+			if(obj.has("Compatible")){
+				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
+					if(elm.isJsonObject()){
+						JsonObject jsn = elm.getAsJsonObject();
+						this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+					}
+					else if(elm.isJsonArray()){
+						JsonArray array = elm.getAsJsonArray();
+						this.compatible.put(array.get(3).getAsString(), Pos.fromJson(array, true));
+					}
+					else{
+						this.compatible.put(elm.getAsString(), new Pos(0, 0, 0));
+					}
+				});
 			}
+		}
+
+		public Pos getOffset(){
+			return null;
+		}
+
+		public boolean allowsAny(){
+			if(compatible.isEmpty()) return true;
+			for(String str : wildcards){
+				if(compatible.containsKey(str)) return true;
+			}
+			return false;
 		}
 		
 	}

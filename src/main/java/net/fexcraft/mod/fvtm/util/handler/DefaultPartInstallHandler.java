@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -19,6 +20,7 @@ import net.minecraft.command.ICommandSender;
 public class DefaultPartInstallHandler extends PartInstallationHandler {
 	
 	public static final DefaultPartInstallHandler INSTANCE = new DefaultPartInstallHandler();
+	public static final String[] wildcards = { "*", "any", "all" };
 
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
@@ -51,10 +53,8 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 
 	private boolean compatible(DPIHData idata, String string){
-		if(idata != null && !idata.compatible.isEmpty() && !idata.compatible.containsKey("*")
-			&& !idata.compatible.containsKey("any") && !idata.compatible.containsKey("all")){
-			return idata.compatible.containsKey(string);
-		} else return true;
+		if(idata == null || idata.allowsAny()) return true;
+		return idata.compatible.containsKey(string);
 	}
 	
 	private boolean containsIncompatible(DPIHData idata, VehicleData data){
@@ -74,7 +74,8 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
-		part.setInstalledPos(getPosForPart(part, data.getType().getRegistryName().toString()));
+		DPIHData idata = part.getType().getInstallationHandlerData();
+		part.setInstalledPos(getPosForPart(idata == null ? null : idata.compatible, part, data.getType().getRegistryName().toString()));
 		if(part.getType().getInstallationHandlerData() != null){
 			String point = ((DPIHData)part.getType().getInstallationHandlerData()).swivel_point;
 			if(point != null && !point.equals("vehicle") && data.getRotationPoints().containsKey(point)){
@@ -89,10 +90,22 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 
-	private Pos getPosForPart(PartData part, String string){
-		DPIHData idata = part.getType().getInstallationHandlerData();
-		if(idata == null || !idata.compatible.containsKey(string)) return new Pos(0, 0, 0);
-		return idata.compatible.get(string);
+	public static Pos getPosForPart(TreeMap<String, Pos> compatible, PartData part, String string){
+		Pos pos = compatible == null ? new Pos(0, 0, 0) : null;
+		if(compatible != null){
+			if(compatible.containsKey(string)){
+				pos = compatible.get(string);
+			}
+			else{
+				for(String str : wildcards){
+					if(compatible.containsKey(str)){
+						pos = compatible.get(str);
+						break;
+					}
+				}
+			}
+		}
+		return pos;
 	}
 
 	@Override
@@ -147,6 +160,10 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 						JsonObject jsn = elm.getAsJsonObject();
 						this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
 					}
+					else if(elm.isJsonArray()){
+						JsonArray array = elm.getAsJsonArray();
+						this.compatible.put(array.get(3).getAsString(), Pos.fromJson(array, true));
+					}
 					else{
 						this.compatible.put(elm.getAsString(), new Pos(0, 0, 0));
 					}
@@ -166,6 +183,14 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 					this.required.put(jsn.get("vehicle").getAsString(), parts);
 				});
 			}
+		}
+
+		public boolean allowsAny(){
+			if(compatible.isEmpty()) return true;
+			for(String str : wildcards){
+				if(compatible.containsKey(str)) return true;
+			}
+			return false;
 		}
 		
 	}

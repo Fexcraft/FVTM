@@ -38,7 +38,7 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 		PSIHData idata = part.getType().getInstallationHandlerData();
 		Pos pos = mount.getInstalledPos();
 		if(idata != null){
-			pos.add(idata.offset);
+			pos = pos.add(idata.offset);
 		}
 		part.setInstalledPos(pos);
 		if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){

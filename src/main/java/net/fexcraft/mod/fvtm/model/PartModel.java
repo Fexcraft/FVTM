@@ -104,6 +104,7 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 		}
 		GL11.glPushMatrix();
 		bindTexture(data.getTexture());
+		GL11.glRotatef(1, 0, 180, 0);
 		for(TurboList list : model.groups) list.renderPlain();
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();

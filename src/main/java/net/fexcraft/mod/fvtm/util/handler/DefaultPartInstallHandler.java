@@ -91,7 +91,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 
 	public static Pos getPosForPart(TreeMap<String, Pos> compatible, PartData part, String string){
-		Pos pos = compatible == null ? new Pos(0, 0, 0) : null;
+		Pos pos = compatible == null ? Pos.NULL : null;
 		if(compatible != null){
 			if(compatible.containsKey(string)){
 				pos = compatible.get(string);
@@ -133,7 +133,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0));
+		part.setInstalledPos(Pos.NULL);
 		data.getParts().remove(cat);
 		part.getAttributes().clear();
 		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
@@ -165,7 +165,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 						this.compatible.put(array.get(3).getAsString(), Pos.fromJson(array, true));
 					}
 					else{
-						this.compatible.put(elm.getAsString(), new Pos(0, 0, 0));
+						this.compatible.put(elm.getAsString(), Pos.NULL);
 					}
 				});
 			}

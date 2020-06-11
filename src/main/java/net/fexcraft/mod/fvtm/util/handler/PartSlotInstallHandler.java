@@ -46,12 +46,13 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		data.getParts().put(cat, part);
+		String actualcat = cat.split(":")[2];
+		data.getParts().put(actualcat, part);
 		PartData mount = data.getPart(cat.split(":")[1]);
 		PSIHData idata = part.getType().getInstallationHandlerData();
 		Pos pos = mount.getInstalledPos();
 		if(idata != null){
-			pos = pos.add(idata.getOffset());
+			pos = pos.add(idata.getOffset(data.getType().getRegistryName().toString()));
 		}
 		part.setInstalledPos(pos);
 		if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
@@ -73,7 +74,7 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0));
+		part.setInstalledPos(Pos.NULL);
 		data.getParts().remove(cat);
 		part.getAttributes().clear();
 		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
@@ -99,14 +100,21 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 						this.compatible.put(array.get(3).getAsString(), Pos.fromJson(array, true));
 					}
 					else{
-						this.compatible.put(elm.getAsString(), new Pos(0, 0, 0));
+						this.compatible.put(elm.getAsString(), Pos.NULL);
 					}
 				});
 			}
 		}
 
-		public Pos getOffset(){
-			return null;
+		public Pos getOffset(String vehicle){
+			if(compatible.isEmpty()) return Pos.NULL;
+			if(compatible.containsKey(vehicle)) return compatible.get(vehicle);
+			for(String str : wildcards){
+				if(compatible.containsKey(str)){
+					return compatible.get(str);
+				}
+			}
+			return Pos.NULL;
 		}
 
 		public boolean allowsAny(){

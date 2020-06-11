@@ -94,7 +94,10 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	}
 	
 	public void addProgram(String str){
-		Program prog = PROGRAMS.get(str); if(prog != null) programs.add(prog); else return; hasPrograms();
+		Program prog = PROGRAMS.get(str);
+		if(prog != null) programs.add(prog);
+		else return;
+		hasPrograms();
 	}
 	
 	public void addPrograms(String... strs){

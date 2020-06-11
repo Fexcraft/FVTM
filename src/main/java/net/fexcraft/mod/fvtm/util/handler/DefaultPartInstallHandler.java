@@ -91,7 +91,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	}
 
 	public static Pos getPosForPart(TreeMap<String, Pos> compatible, PartData part, String string){
-		Pos pos = compatible == null ? Pos.NULL : null;
+		Pos pos = Pos.NULL;
 		if(compatible != null){
 			if(compatible.containsKey(string)){
 				pos = compatible.get(string);

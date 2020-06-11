@@ -149,7 +149,7 @@ public class PartSlotInstallHandler extends PartInstallationHandler {
 		}
 		String[] arr = new String[found.size()];
 		for(int i = 0; i < arr.length; i++){
-			arr[i] = "s:" + found.size();
+			arr[i] = "s:" + found.get(i);
 		}
 		return arr;
 	}

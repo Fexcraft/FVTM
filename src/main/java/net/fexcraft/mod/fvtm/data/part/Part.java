@@ -34,7 +34,6 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.BogieInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.ConnectorInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
-import net.fexcraft.mod.fvtm.util.handler.PartSlotInstallHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -210,10 +209,6 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 				this.installhandler = BogieInstallationHandler.INSTANCE;
 				this.installhandler_data = new BogieInstallationHandler.BogieData(inst);
 			}
-			else if(handler.equals("part_slot")){
-				this.installhandler = PartSlotInstallHandler.INSTANCE;
-				this.installhandler_data = new PartSlotInstallHandler.PSIHData(inst);
-			}
 			else{
 				//try to load the class
 				try{
@@ -221,7 +216,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 					this.installhandler = (PartInstallationHandler)clazz.newInstance();
 					if(inst != null) this.installhandler.parse(inst);
 				}
-				catch(Exception e){ Print.log("Failed to load InstallationHandler for `" + this.getRegistryName().toString() + "`!"); e.printStackTrace(); }
+				catch(Exception e){
+					Print.log("Failed to load InstallationHandler for `" + this.getRegistryName().toString() + "`!"); e.printStackTrace();
+					Static.stop();
+				}
 			}
 		} else{ this.installhandler = DefaultPartInstallHandler.INSTANCE; }
 		//

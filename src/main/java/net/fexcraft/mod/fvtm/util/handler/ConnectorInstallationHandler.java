@@ -1,10 +1,13 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -14,6 +17,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.Vec3d;
 
@@ -49,16 +53,17 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 	}
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		data.getParts().put(cat, part); part.setInstalledPos(getPosForPart(part, data.getType().getRegistryName().toString()));
-		boolean front = cat.startsWith("front"); ConnectorData idata = part.getType().getInstallationHandlerData();
-		String regname = data.getType().getRegistryName().toString();
-		data.setConnector(front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname), front);
-		Print.chatnn(sender, "Part installed into selected category."); return true;
-	}
-
-	private Pos getPosForPart(PartData part, String string){
+		data.getParts().put(cat, part);
 		ConnectorData idata = part.getType().getInstallationHandlerData();
-		if(idata == null || !idata.compatible.containsKey(string)) return new Pos(0, 0, 0); return idata.compatible.get(string);
+		DefaultPartInstallHandler.setPosAndSwivelPoint(idata.compatible, cat, part, data);
+		boolean front = cat.startsWith("front");
+		String regname = data.getType().getRegistryName().toString();
+		Vec3d conn = front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname);
+		if(idata.relative){
+			conn = conn.add(part.getInstalledPos().to16Double());
+		}
+		data.setConnector(conn, front);
+		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 
 	@Override
@@ -71,7 +76,8 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0)); data.getParts().remove(cat); part.getAttributes().clear();
+		part.setInstalledPos(new Pos(0, 0, 0));
+		data.getParts().remove(cat); part.getAttributes().clear();
 		data.setConnector(null, cat.startsWith("front"));
 		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
 	}
@@ -79,7 +85,7 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 	/** Default Part Install Handler Data */
 	public static class ConnectorData {
 		
-		private boolean removable;
+		private boolean removable, onslot, relative;
 		private TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
 		private HashMap<String, Vec3d> front = new HashMap<String, Vec3d>();
 		private HashMap<String, Vec3d> rear = new HashMap<String, Vec3d>();
@@ -108,10 +114,21 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 			removable = JsonUtil.getIfExists(obj, "Removable", true);
 			if(obj.has("Compatible")){
 				obj.get("Compatible").getAsJsonArray().forEach(elm -> {
-					JsonObject jsn = elm.getAsJsonObject();
-					this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+					if(elm.isJsonObject()){
+						JsonObject jsn = elm.getAsJsonObject();
+						this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+					}
+					else if(elm.isJsonArray()){
+						JsonArray array = elm.getAsJsonArray();
+						this.compatible.put(array.get(3).getAsString(), Pos.fromJson(array, true));
+					}
+					else{
+						this.compatible.put(elm.getAsString(), Pos.NULL);
+					}
 				});
 			}
+			onslot = JsonUtil.getIfExists(obj, "SlotBased", false);
+			relative = JsonUtil.getIfExists(obj, "Relative", false);
 		}
 
 		public Vec3d getFrontPosition(String id){
@@ -137,6 +154,25 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 
 	@Override
 	public String[] getValidCategories(PartData part, VehicleData vehicle){
+		ConnectorData idata = part.getType().getInstallationHandlerData();
+		if(idata != null && idata.onslot){
+			ArrayList<String> found = new ArrayList<>();
+			for(Entry<String, PartData> data : vehicle.getParts().entrySet()){
+				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
+				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
+				for(int i = 0; i < func.getSlotTypes().size(); i++){
+					String type = func.getSlotTypes().get(i);
+					if(type.equals("front_connector") || type.equals("rear_connector")){
+						found.add(data.getKey() + ":" + (type.equals("front_connector") ? "front_connector" : "rear_connector"));
+					}
+				}
+			}
+			String[] arr = new String[found.size()];
+			for(int i = 0; i < arr.length; i++){
+				arr[i] = "s:" + found.get(i) + ":" + i;
+			}
+			return arr;
+		}
 		return new String[]{ "front_connector", "rear_connector" };
 	}
 

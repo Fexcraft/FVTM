@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -14,6 +15,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.command.ICommandSender;
 
@@ -24,7 +26,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		if(data.getParts().containsKey(cat)){
+		if(data.getParts().containsKey(cat.startsWith("s:") ? cat.split(":")[2] : cat)){
 			Print.chatnn(sender, "There is already another part with that category installed.");
 			return false;
 		}
@@ -45,7 +47,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "Vehicle does not contain all required parts.");
 			return false;
 		}
-		if(idata != null && idata.sp_req && !data.getRotationPoints().containsKey(idata.swivel_point)){
+		if(idata != null && idata.sp_req && !idata.onslot && !data.getRotationPoints().containsKey(idata.swivel_point)){
 			Print.chatnn(sender, "Vehicle does not contain a required swivel/rotation point. Missing: " + idata.swivel_point);
 			return false;
 		}
@@ -73,15 +75,9 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		data.getParts().put(cat, part);
+		data.getParts().put(cat.startsWith("s:") ? cat.split(":")[2] : cat, part);
 		DPIHData idata = part.getType().getInstallationHandlerData();
-		part.setInstalledPos(getPosForPart(idata == null ? null : idata.compatible, part, data.getType().getRegistryName().toString()));
-		if(part.getType().getInstallationHandlerData() != null){
-			String point = ((DPIHData)part.getType().getInstallationHandlerData()).swivel_point;
-			if(point != null && !point.equals("vehicle") && data.getRotationPoints().containsKey(point)){
-				part.setInstalledOnSwivelPoint(point);
-			}
-		}
+		setPosAndSwivelPoint(idata == null ? null : idata.compatible, cat, part, data);
 		/*data.getAttributes().values().forEach(attr ->{
 			attr.getModifiers().forEach(mod -> {
 				Print.debug(mod.id(), mod.origin(), mod.target());
@@ -90,22 +86,36 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 
-	public static Pos getPosForPart(TreeMap<String, Pos> compatible, PartData part, String string){
-		Pos pos = Pos.NULL;
-		if(compatible != null){
-			if(compatible.containsKey(string)){
-				pos = compatible.get(string);
+	public static void setPosAndSwivelPoint(TreeMap<String, Pos> compatible, String cat, PartData part, VehicleData data){
+		String vehid = data.getType().getRegistryName().toString();
+		Pos result = Pos.NULL;
+		if(cat.startsWith("s:")){
+			String[] split = cat.split(":");
+			PartData mount = data.getPart(split[1]);
+			result = mount.getInstalledPos();
+			result = result.add(mount.getFunction(PartSlotsFunction.class, "fvtm:part_slots").getSlotPositions().get(Integer.parseInt(split[3])));
+			if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
+				part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
 			}
-			else{
-				for(String str : wildcards){
-					if(compatible.containsKey(str)){
-						pos = compatible.get(str);
-						break;
-					}
+		}
+		if(compatible != null && !compatible.isEmpty()){
+			if(compatible.containsKey(vehid)){
+				result = result.add(compatible.get(vehid));
+			}
+			for(String str : wildcards){
+				if(compatible.containsKey(str)){
+					result = result.add(compatible.get(str));
+					break;
 				}
 			}
 		}
-		return pos;
+		part.setInstalledPos(result);
+		if(!cat.startsWith("s:") && part.getType().getInstallationHandlerData() instanceof DPIHData){
+			String point = ((DPIHData)part.getType().getInstallationHandlerData()).swivel_point;
+			if(point != null && !point.equals("vehicle") && data.getRotationPoints().containsKey(point)){
+				part.setInstalledOnSwivelPoint(point);
+			}
+		}
 	}
 
 	@Override
@@ -145,7 +155,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		public TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
 		public TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
 		public TreeMap<String, ArrayList<String>> required = new TreeMap<>();
-		public boolean removable = true, custom_cat, sp_req = false;
+		public boolean removable = true, custom_cat, sp_req = false, onslot;
 		public String swivel_point = "vehicle";
 		
 		public DPIHData(JsonObject obj){
@@ -183,6 +193,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 					this.required.put(jsn.get("vehicle").getAsString(), parts);
 				});
 			}
+			onslot = JsonUtil.getIfExists(obj, "SlotBased", false);
 		}
 
 		public boolean allowsAny(){
@@ -203,6 +214,27 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public String[] getValidCategories(PartData part, VehicleData vehicle){
+		DPIHData idata = part.getType().getInstallationHandlerData();
+		if(idata != null && idata.onslot){
+			ArrayList<String> found = new ArrayList<>();
+			for(Entry<String, PartData> data : vehicle.getParts().entrySet()){
+				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
+				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
+				for(int i = 0; i < func.getSlotTypes().size(); i++){
+					String type = func.getSlotTypes().get(i);
+					for(String str : part.getType().getCategories()){
+						if(str.equals(type)){
+							found.add(data.getKey() + ":" + func.getSlotCategories().get(i));
+						}
+					}
+				}
+			}
+			String[] arr = new String[found.size()];
+			for(int i = 0; i < arr.length; i++){
+				arr[i] = "s:" + found.get(i) + ":" + i;
+			}
+			return arr;
+		}
 		return part.getType().getCategories().toArray(new String[0]);
 	}
 

@@ -32,7 +32,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			return false;
 		}
 		DPIHData idata = part.getType().getInstallationHandlerData();
-		if(!part.getType().getCategories().contains(cat.startsWith("s:") ? cat.split(":")[2] : cat) && (idata != null && !idata.custom_cat)){
+		if(!part.getType().getCategories().contains(cat) && (idata != null && !idata.custom_cat && !idata.onslot)){
 			Print.chatnn(sender, "Part does not allow installing into this category.");
 			return false;
 		}

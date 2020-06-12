@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -31,7 +32,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			return false;
 		}
 		DPIHData idata = part.getType().getInstallationHandlerData();
-		if(!part.getType().getCategories().contains(cat) && (idata != null && !idata.custom_cat)){
+		if(!part.getType().getCategories().contains(cat.startsWith("s:") ? cat.split(":")[2] : cat) && (idata != null && !idata.custom_cat)){
 			Print.chatnn(sender, "Part does not allow installing into this category.");
 			return false;
 		}
@@ -180,18 +181,46 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				});
 			}
 			if(obj.has("Incompatible")){
-				obj.get("Incompatible").getAsJsonArray().forEach(elm -> {
-					JsonObject jsn = elm.getAsJsonObject();
-					ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
-					this.incompatible.put(jsn.get("vehicle").getAsString(), parts);
-				});
+				if(obj.get("Incompatible").isJsonArray()){
+					obj.get("Incompatible").getAsJsonArray().forEach(elm -> {
+						JsonObject jsn = elm.getAsJsonObject();
+						ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
+						this.incompatible.put(jsn.get("vehicle").getAsString(), parts);
+					});
+				}
+				else{
+					obj.get("Incompatible").getAsJsonObject().entrySet().forEach(entry -> {
+						ArrayList<String> parts = null;
+						if(entry.getValue().isJsonArray()){
+							parts = JsonUtil.jsonArrayToStringArray(entry.getValue().getAsJsonArray());
+						}
+						else{
+							parts = (ArrayList<String>)Collections.singletonList(entry.getValue().getAsString());
+						}
+						this.incompatible.put(entry.getKey(), parts);
+					});
+				}
 			}
 			if(obj.has("Required")){
-				obj.get("Required").getAsJsonArray().forEach(elm -> {
-					JsonObject jsn = elm.getAsJsonObject();
-					ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
-					this.required.put(jsn.get("vehicle").getAsString(), parts);
-				});
+				if(obj.get("Required").isJsonArray()){
+					obj.get("Required").getAsJsonArray().forEach(elm -> {
+						JsonObject jsn = elm.getAsJsonObject();
+						ArrayList<String> parts = JsonUtil.jsonArrayToStringArray(jsn.get("parts").getAsJsonArray());
+						this.required.put(jsn.get("vehicle").getAsString(), parts);
+					});
+				}
+				else{
+					obj.get("Required").getAsJsonObject().entrySet().forEach(entry -> {
+						ArrayList<String> parts = null;
+						if(entry.getValue().isJsonArray()){
+							parts = JsonUtil.jsonArrayToStringArray(entry.getValue().getAsJsonArray());
+						}
+						else{
+							parts = (ArrayList<String>)Collections.singletonList(entry.getValue().getAsString());
+						}
+						this.required.put(entry.getKey(), parts);
+					});
+				}
 			}
 			onslot = JsonUtil.getIfExists(obj, "SlotBased", false);
 		}

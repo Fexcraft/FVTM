@@ -75,18 +75,26 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 				//
 				break;
 			}
-			case THIRD_PERSON_RIGHT_HAND:
-			case THIRD_PERSON_LEFT_HAND: {
+			case THIRD_PERSON_RIGHT_HAND:{
 				GL11.glRotatef(90f, 0F, 1F, 0F);
-				GL11.glTranslatef(-(func.getWidth() * Static.sixteenth), -0.2f, 0);
+				//GL11.glTranslatef(-(func.getWidth() * Static.sixteenth), -0.2f, 0);
+				GL11.glScalef(.75f, .75f, .75f);
+				break;
+			}
+			case THIRD_PERSON_LEFT_HAND: {
+				GL11.glRotatef(-90f, 0F, 1F, 0F);
+				//GL11.glTranslatef(-(func.getWidth() * Static.sixteenth), -0.2f, 0);
+				GL11.glScalef(.75f, .75f, .75f);
 				break;
 			}
 			case FIRST_PERSON_LEFT_HAND: {
 				GL11.glRotatef(60f, 0F, 1F, 0F);
+				GL11.glScalef(.5f, .5f, .5f);
 				break;
 			}
 			case FIRST_PERSON_RIGHT_HAND: {
 				GL11.glRotatef(-60f, 0F, 1F, 0F);
+				GL11.glScalef(.5f, .5f, .5f);
 				break;
 			}
 			case GUI: {

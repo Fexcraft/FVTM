@@ -4,12 +4,14 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.util.TransformMap;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,12 +28,9 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	
 	////-///---/---///-////
 	
-	public float gui_translate_x = 0;
-	public float gui_translate_y = 0;
-	public float gui_translate_z = 0;
-	public float gui_scale_x = 0.125f;
-	public float gui_scale_y = 0.125f;
-	public float gui_scale_z = 0.125f;
+	public final TransformMap item_scale = new TransformMap(0);
+	public final TransformMap item_translate = new TransformMap(1);
+	public final TransformMap item_rotate = new TransformMap(2);
 	
 	public VehicleModel(){ super(); }
 	
@@ -58,54 +57,29 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 		if(data == null){ return; }
 		VehicleModel model = (VehicleModel)data.getType().getModel();
 		if(model == null) { return; }
-		float[] scal = new float[]{ model.gui_scale_x, model.gui_scale_y, model.gui_scale_z };
 		//
-		GL11.glPushMatrix();
-		switch(type){
-			case GROUND: {
-				GL11.glTranslatef(-0.45F, -0.05F, 0);
-				break;
+		Vec3f translate = model.item_translate.get(type);
+		GL11.glTranslatef(translate.xCoord, translate.yCoord, translate.zCoord);
+		if(data.getType().isTrailerOrWagon() && !data.getType().getVehicleType().isRailVehicle()){
+			if(type == TransformType.GUI){
+				GL11.glTranslatef(-.375f, -.375f, 0);
 			}
-			case FIXED: {
-				//
-				break;
+			else if(type == TransformType.FIRST_PERSON_LEFT_HAND || type == TransformType.FIRST_PERSON_RIGHT_HAND){
+				GL11.glTranslatef(0, 0, -0.5f);
 			}
-			case THIRD_PERSON_RIGHT_HAND:
-			case THIRD_PERSON_LEFT_HAND: {
-				GL11.glRotatef(data.getType().getVehicleType().isAirVehicle() ? -90f : 90f, 0F, 1F, 0F);
-				GL11.glTranslatef(0F, 0, 0F);
-				GL11.glTranslatef(0, 0, 0);
-				break;
-			}
-			case FIRST_PERSON_LEFT_HAND: {
-				if(data.getType().isTrailerOrWagon()){
-					GL11.glTranslatef(0, 0, -0.5f);
-				}
-				GL11.glRotatef(60f, 0F, 1F, 0F);
-				break;
-			}
-			case FIRST_PERSON_RIGHT_HAND: {
-				if (data.getType().isTrailerOrWagon()){
-					GL11.glTranslatef(0, 0, -0.5f);
-				}
-				GL11.glRotatef(120f, 0F, 1F, 0F);
-				break;
-			}
-			case GUI: {
-				float f = data.getType().isTrailerOrWagon() && !data.getType().getVehicleType().isRailVehicle() ? -0.375f : 0;
-				GL11.glTranslatef(model.gui_translate_x + f, model.gui_translate_y + f, model.gui_translate_z);
-				GL11.glRotatef(-135, 0, 1, 0);
-				GL11.glRotatef(-30, 1, 0, 0);
-				GL11.glRotatef(-30, 0, 0, 1);
-				break;
-			}
-			case HEAD: {
-				// TODO
-				break;
-			}
-			default: break;
 		}
-		GL11.glScalef(scal[0], scal[1], scal[2]);
+		Vec3f rotate = model.item_rotate.get(type);
+		GL11.glPushMatrix();
+		GL11.glRotatef(rotate.yCoord, 0F, 1F, 0F);
+		if(type == TransformType.THIRD_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON_LEFT_HAND){
+			GL11.glRotatef(data.getType().getVehicleType().isAirVehicle() ? -90f : 90f, 0F, 1F, 0F);
+		}
+		GL11.glRotatef(rotate.xCoord, 1F, 0F, 0F);
+		GL11.glRotatef(rotate.zCoord, 0F, 0F, 1F);
+		//
+		//
+		Vec3f scale = model.item_scale.get(type);
+		GL11.glScalef(scale.xCoord, scale.yCoord, scale.zCoord);
 		//
 		{
 			GL11.glPushMatrix();
@@ -128,7 +102,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 			}
 			GL11.glPopMatrix();
 		}
-		GL11.glScalef(-scal[0], -scal[1], -scal[2]);
+		//GL11.glScalef(-scale.xCoord, -scale.yCoord, -scale.zCoord);
 		GL11.glPopMatrix();
 	}
 

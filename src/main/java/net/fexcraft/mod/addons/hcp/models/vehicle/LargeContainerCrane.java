@@ -21,7 +21,7 @@ public class LargeContainerCrane extends VehicleModel {
 	public LargeContainerCrane(){
 		super(); textureX = 1024; textureY = 1024;
 		this.addToCreators("Ferdinand (FEX___96)");
-		gui_scale_x = gui_scale_y = gui_scale_z = 0.125f * 0.25f;
+		item_scale.setAll(.03125f);
 		//
 		TurboList chassis_right = new TurboList("chassis_right");
 		chassis_right.add(new ModelRendererTurbo(chassis_right, 945, 324, textureX, textureY).addBox(0.5f, 0, 0, 29, 6, 6)

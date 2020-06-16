@@ -139,7 +139,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		public default Program parse(JsonElement elm){ return this; }
 		
 		/** For creating instances from JTMT/OBJ if necessary. */
-		public default Program parse(String... args){ return this; }
+		public default Program parse(String[] args){ return this; }
 		
 	}
 	

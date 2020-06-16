@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -12,6 +13,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonToTMT;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.WavefrontObjUtil;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
@@ -57,38 +59,80 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
                 	if(group.has("fvtm:programs")){
                 		JsonArray array = group.get("fvtm:programs").getAsJsonArray();
                 		for(JsonElement elm : array){
-                			groups.get(entry.getKey()).addProgram(elm.getAsString());
+                			try{
+                    			if(elm.isJsonPrimitive()){
+                        			groups.get(entry.getKey()).addProgram(elm.getAsString());
+                    			}
+                    			else groups.get(entry.getKey()).addProgram(parseProgram(elm));
+                			}
+                			catch(Exception e){
+                				e.printStackTrace();
+                			}
                 		}
                 	}
                 }
             }
         }
         catch(Throwable thr){
-        	thr.printStackTrace(); net.fexcraft.lib.mc.utils.Static.stop();
+        	thr.printStackTrace();
+        	Static.stop();
         }
 	}
 	
+	public TurboList.Program parseProgram(JsonElement elm) throws Exception {
+		String id = (elm.isJsonArray() ? elm.getAsJsonArray().get(0) : elm.getAsJsonObject().get("id")).getAsString();
+		TurboList.Program prog = TurboList.PROGRAMS.get(id);
+		if(prog == null){
+			throw new Exception("TL-PROGRAM WITH ID '" + id + "' NOT FOUND!");
+		}
+		return prog.parse(elm);
+	}
+	
+	private TurboList.Program parseProgram(String[] args) throws Exception {
+		if(args[1].startsWith("[") || args[1].startsWith("{")){
+			return parseProgram(JsonUtil.getFromString(args[1]));
+		}
+		else{
+			TurboList.Program prog = TurboList.PROGRAMS.get(args[1]);
+			if(prog == null){
+				throw new Exception("TL-PROGRAM WITH ID '" + args[1] + "' NOT FOUND!");
+			}
+			return prog.parse(Arrays.copyOfRange(args, 2, args.length));
+		}
+	}
+
 	public GenericModel(String type, ResourceLocation loc){
 		if(!type.equals("obj")) return;
-		String[][] authors = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), new String[]{ "# Creators:", "# Creator:", "# Editors:", "# Editor:", "# Model Creator:" });
+		String[][] authors = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 0, new String[]{ "# Creators:", "# Creator:", "# Editors:", "# Editor:", "# Model Creator:" });
 		for(String[] str : authors) for(String auth : str) this.creators.add(auth);
 		try{
-			this.textureX = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), "# TextureSizeX:")[0][0]);
-			this.textureY = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), "# TextureSizeY:")[0][0]);
+			this.textureX = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 1, "# TextureSizeX:")[0][0]);
+			this.textureY = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 1, "# TextureSizeY:")[0][0]);
 		}
 		catch(Exception e){ e.printStackTrace(); }
-		String str[][] = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), "# FlipAxes:");
-		boolean bool = str.length == 0 ? false : Boolean.parseBoolean(str[0][0]);
+		//String str[][] = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 1, "# FlipAxes:");
+		//boolean bool = false;str.length == 0 ? false : Boolean.parseBoolean(str[0][0]);
 		String[] ogroups = WavefrontObjUtil.getGroups(Resources.getModelInputStream(loc));
 		for(String group : ogroups){
 			try{
 				groups.add(new TurboList(group, new ModelRendererTurbo[]{
-					new ModelRendererTurbo(null, 0, 0, textureX, textureY).setFlipped(bool).addObj(Resources.getModelInputStream(loc), group, bool)
+					new ModelRendererTurbo(null, 0, 0, textureX, textureY).addObj(Resources.getModelInputStream(loc), group, false)
 				}));
 			} catch(Exception e){ e.printStackTrace(); }
 		}
+		String[][] programs = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 0, new String[]{ "# Program:" }, null, "# ProgramsEnd");
+		if(programs.length > 0){
+			for(String[] args : programs){
+				try{
+					groups.get(args[0]).addProgram(parseProgram(args));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 	}
-	
+
 	@Override
 	public final java.util.Collection<String> getCreators(){
 		return ImmutableList.copyOf(creators);

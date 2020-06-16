@@ -5,6 +5,8 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.JsonElement;
+
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -132,6 +134,12 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		
 		/** Block Specific */
 		public default void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
+
+		/** For creating instances from JTMT/OBJ if necessary. */
+		public default Program parse(JsonElement elm){ return this; }
+		
+		/** For creating instances from JTMT/OBJ if necessary. */
+		public default Program parse(String... args){ return this; }
 		
 	}
 	

@@ -4,6 +4,8 @@ import java.util.Timer;
 
 import org.lwjgl.opengl.GL11;
 
+import com.google.gson.JsonElement;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -200,6 +202,17 @@ public class DefaultPrograms {
 		@Override
 		public String getId(){
 			return "fvtm:window";
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			return new Window(elm.getAsJsonArray().get(0).getAsInt());
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			return new Window(Integer.parseInt(args[0]));
 		}
 		
 	}

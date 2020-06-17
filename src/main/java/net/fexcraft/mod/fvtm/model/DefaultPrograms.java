@@ -396,7 +396,10 @@ public class DefaultPrograms {
 			this(attribute, boolstatebased, min, max, step, axis, defrot); this.override = notadditive;
 		}
 
-		@Override public String getId(){ return "fvtm:attribute_rotator"; }
+		@Override
+		public String getId(){
+			return "fvtm:attribute_rotator";
+		}
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){

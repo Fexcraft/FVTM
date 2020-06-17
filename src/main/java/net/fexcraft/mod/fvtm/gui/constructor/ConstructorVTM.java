@@ -8,8 +8,12 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -94,6 +98,19 @@ public class ConstructorVTM extends ConstructorGui {
 		}
 		else if(button.name.endsWith("_apply")){
 			boolean external = button.name.startsWith("ex");
+			String value = external ? cfields[10].getText() : cfields[7].getText();
+			if(value.length() < 10){
+				this.titletext.update("Invalid input / too short.", RGB_ORANGE.packed);
+				return true;
+			}
+			if(!external){
+				ResourceLocation resloc = new ResourceLocation(value);
+				ITextureObject obj = Minecraft.getMinecraft().getTextureManager().getTexture(resloc);
+				if(obj == null && !Minecraft.getMinecraft().getTextureManager().loadTexture(resloc, obj = new SimpleTexture(resloc))){
+					this.titletext.update("Texture not found in memory.", RGB_ORANGE.packed);
+					return true;
+				}
+			}
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "vtm_custom");
 			if(part() != null) compound.setString("part", part());

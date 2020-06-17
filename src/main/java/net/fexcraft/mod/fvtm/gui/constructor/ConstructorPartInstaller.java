@@ -92,7 +92,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 			compound.setString("cargo", "part_install");
 			compound.setString("category", fields.get("field2").getText());
 			compound.setBoolean("custom_category", true);
-			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound);
 		}
 		else{
@@ -102,7 +102,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 				compound.setString("cargo", "part_install");
 				compound.setString("category", categories[in - 7]);
 				compound.setBoolean("custom_category", false);
-				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 				this.container.send(Side.SERVER, compound);
 			} else return false;
 		}

@@ -37,7 +37,7 @@ public class ConstructorPartCacheInfo extends ConstructorGui {
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button8")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		if(container.getTileEntity().getPartData() == null){
-			container.setTitleText("No Part in Constructor Cache.", RGB.RED.packed);
+			container.setTitleText("No Part in Constructor Cache.", RGB_ORANGE.packed);
 		}
 		if(button.name.equals("button2")){
 			openGui(913, xyz, LISTENERID);//TODO
@@ -54,7 +54,7 @@ public class ConstructorPartCacheInfo extends ConstructorGui {
 		else if(button.name.equals("button6")){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "part_cache_drop");
-			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound);
 			openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		}

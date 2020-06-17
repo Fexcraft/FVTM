@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.gui.constructor;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_STATUS;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -43,14 +42,14 @@ public class ConstructorMain extends ConstructorGui {
 			if(buttons.get("icon_veh").mousePressed(null, mouseX, mouseY)){
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("cargo", "drop"); compound.setString("what", "any"); 
-				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 				this.container.send(Side.SERVER, compound); return true;
 			}
 		}
 		if(button.name.equals("button3") && buttons.get("icon_part").mousePressed(null, mouseX, mouseY)){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "drop"); compound.setString("what", "part"); 
-			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound); return true;
 		}
 		int gui = Integer.parseInt(button.name.replace("button", ""));

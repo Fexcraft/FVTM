@@ -88,7 +88,7 @@ public class ConstructorVP extends ConstructorGui {
 		compound.setString("cargo", "color_update");
 		compound.setBoolean("primary", primary);
 		compound.setInteger("rgb", current.packed);
-		this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+		this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 		this.container.send(Side.SERVER, compound);
 	}
 
@@ -103,7 +103,7 @@ public class ConstructorVP extends ConstructorGui {
 			}
 		}
 		catch(Exception e){
-			e.printStackTrace(); this.titletext.update("Error parsing " + (hex ? "HEX Code" : "RGB Color") + ".", RGB.RED.packed);
+			e.printStackTrace(); this.titletext.update("Error parsing " + (hex ? "HEX Code" : "RGB Color") + ".", RGB_ORANGE.packed);
 		} return rgb;
 	}
 

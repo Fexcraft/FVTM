@@ -95,7 +95,7 @@ public class ConstructorPartManager extends ConstructorGui {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "part_remove");
 			compound.setString("category", tbuttons[Integer.parseInt(button.name.replace("icon_rem", ""))].string.replace(".", ""));
-			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound);
 		}
 		return true;

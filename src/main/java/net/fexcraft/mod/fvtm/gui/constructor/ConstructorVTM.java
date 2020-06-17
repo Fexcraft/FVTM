@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.gui.constructor;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -93,7 +92,7 @@ public class ConstructorVTM extends ConstructorGui {
 			compound.setString("cargo", "vtm_supplied");
 			if(part() != null) compound.setString("part", part());
 			compound.setInteger("value", i);
-			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound); return true;
 		}
 		else if(button.name.endsWith("_apply")){
@@ -116,7 +115,7 @@ public class ConstructorVTM extends ConstructorGui {
 			if(part() != null) compound.setString("part", part());
 			compound.setString("value", external ? cfields[10].getText() : cfields[7].getText());
 			compound.setBoolean("external", external);
-			this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound); return true;
 		}
 		else Print.debug("function not found");

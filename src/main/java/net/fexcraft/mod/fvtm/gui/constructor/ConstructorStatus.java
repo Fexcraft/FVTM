@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.gui.constructor;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -60,19 +59,19 @@ public class ConstructorStatus extends ConstructorGui {
 			if(this.container.getTileEntity().getCenterPos() != null){
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("cargo", "constructor_disconnect");
-				this.titletext.update("Request sending to Server.", RGB.BLUE.packed);
+				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 				this.container.send(Side.SERVER, compound); return true;
 			}
 			BlockPos pos = new BlockPos(cfields[1].getIntegerValue(), cfields[2].getIntegerValue(), cfields[3].getIntegerValue());
 			if(player.world.getTileEntity(pos) == null){
-				this.titletext.update("No TileEntity at selected position. [CLIENT]", RGB.RED.packed); return true;
+				this.titletext.update("No TileEntity at selected position. [CLIENT]", RGB_ORANGE.packed); return true;
 			}
 			this.container.send(Side.SERVER, newConnectPacket(false, pos));
-			this.titletext.update("Request sent to Server.", RGB.BLUE.packed);
+			this.titletext.update("Request sent to Server.", RGB_CYAN.packed);
 		}
 		else if(button.name.equals("button5")){
 			this.container.send(Side.SERVER, newConnectPacket(true, null));
-			this.titletext.update("Request sent to Server.", RGB.BLUE.packed);
+			this.titletext.update("Request sent to Server.", RGB_CYAN.packed);
 		}
 		return false;
 	}

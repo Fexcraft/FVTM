@@ -2,8 +2,10 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.Timer;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -49,8 +51,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(WHEEL_AUTO_ALL);
 		TurboList.PROGRAMS.add(WHEEL_AUTO_STEERING);
 		TurboList.PROGRAMS.add(NO_CULLFACE);
-		TurboList.PROGRAMS.add(STEERING_WHEEL_BASE);
-		TurboList.PROGRAMS.add(STEERING_WHEEL_CBASE);
+		TurboList.PROGRAMS.add(new SteeringWheel(0, 0));//jtmt/obj init only
+		TurboList.PROGRAMS.add(new SteeringWheelCentered(0, 0));//jtmt/obj init only
 		TurboList.PROGRAMS.add(STEERING_WHEEL_Z);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_X);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_Y);
@@ -62,6 +64,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(BOGIE_AUTO);
 		//
 		TurboList.PROGRAMS.add(TRANSPARENT);
+		TurboList.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		//
 		DIDLOAD = true;
 	}
@@ -295,8 +298,6 @@ public class DefaultPrograms {
 		
 	};
 	
-	public static final Program STEERING_WHEEL_BASE = new SteeringWheel(0, 0);//for json/obj INIT
-	public static final Program STEERING_WHEEL_CBASE = new SteeringWheelCentered(0, 0);//for json/obj INIT
 	public static final Program STEERING_WHEEL_Z = new SteeringWheel(2, 1f);
 	public static final Program STEERING_WHEEL_X = new SteeringWheel(0, 1f);
 	public static final Program STEERING_WHEEL_Y = new SteeringWheel(1, 1f);
@@ -399,16 +400,47 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null) return; if((attr = data.getAttribute(attribute)) == null) return;
-			current = cache.getValue(attribute); if(current == null) current = 0f;
+			if(cache == null) return;
+			if((attr = data.getAttribute(attribute)) == null) return;
+			current = cache.getValue(attribute);
+			if(current == null) current = 0f;
 			current = boolstatebased ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
-			if(current > max) current = max; if(current < min) current = min;
+			if(current > max) current = max;
+			if(current < min) current = min;
 			list.rotateAxis(current + defrot, axis, override); cache.setValue(attribute, current);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null || attr == null) return; list.rotateAxis(override ? defrot : -(current + defrot), axis, override); current = 0f;
+			if(cache == null || attr == null) return;
+			list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
+			current = 0f;
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			String attr = array.get(0).getAsString();
+			boolean boolstate = array.get(1).getAsBoolean();
+			float min = array.get(2).getAsFloat();
+			float max = array.get(3).getAsFloat();
+			float step = array.get(4).getAsFloat();
+			int axis = array.get(5).getAsInt();
+			Float defrot = NumberUtils.isCreatable(array.get(6).getAsString()) ? array.get(6).getAsFloat() : null;
+			return new AttributeRotator(attr, boolstate, min, max, step, axis, defrot, array.size() >= 7 && array.get(7).getAsBoolean());
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			String attr = args[0];
+			boolean boolstate = Boolean.parseBoolean(args[1]);
+			float min = Float.parseFloat(args[2]);
+			float max = Float.parseFloat(args[3]);
+			float step = Float.parseFloat(args[4]);
+			int axis = Integer.parseInt(args[5]);
+			Float defrot = NumberUtils.isCreatable(args[6]) ? Float.parseFloat(args[6]) : null;
+			return new AttributeRotator(attr, boolstate, min, max, step, axis, defrot, args.length >= 7 && Boolean.parseBoolean(args[7]));
 		}
 		
 	};

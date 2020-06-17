@@ -12,6 +12,9 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonToTMT;
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.math.TexturedPolygon;
+import net.fexcraft.lib.common.math.TexturedVertex;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.common.utils.WavefrontObjUtil;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelBase;
@@ -125,6 +128,36 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			for(String[] args : programs){
 				try{
 					groups.get(args[0]).addProgram(parseProgram(args));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		String[][] pivots = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 0, new String[]{ "# Pivot:" }, null, "# PivotsEnd");
+		if(pivots.length > 0){
+			for(String[] args : pivots){
+				try{
+					TurboList group = groups.get(args[0]);
+					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					Vec3f rotation = new Vec3f(
+						args.length > 4 ? Float.parseFloat(args[4]) : 0,
+						args.length > 5 ? Float.parseFloat(args[5]) : 0,
+						args.length > 6 ? Float.parseFloat(args[6]) : 0
+					);
+					for(ModelRendererTurbo turbo : group){
+						for(TexturedPolygon poly : turbo.getFaces()){
+							for(TexturedVertex vert : poly.getVertices()){
+								vert.vector = vert.vector.subtract(vector);
+							}
+						}
+						turbo.rotationPointX = vector.xCoord;
+						turbo.rotationPointY = vector.yCoord;
+						turbo.rotationPointZ = vector.zCoord;
+						turbo.rotationAngleX = rotation.xCoord;
+						turbo.rotationAngleY = rotation.yCoord;
+						turbo.rotationAngleZ = rotation.zCoord;
+					}
 				}
 				catch(Exception e){
 					e.printStackTrace();

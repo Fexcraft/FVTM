@@ -4,7 +4,6 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -16,8 +15,7 @@ public class PKTH_VehControl {
         @Override
         public IMessage onMessage(final PKT_VehControl packet, final MessageContext ctx){
             Static.getServer().addScheduledTask(() -> {
-                EntityPlayerMP player = Static.getServer().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
-                for(Entity ent : player.world.loadedEntityList){
+                for(Entity ent : ctx.getServerHandler().player.world.loadedEntityList){
                     if(ent.getEntityId() == packet.entid){ updatevehicle(ent, packet); return; }
                 } return;
             }); return null;

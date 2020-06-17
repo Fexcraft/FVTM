@@ -7,7 +7,6 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IThreadListener;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
@@ -25,8 +24,7 @@ public class PKTH_SeatUpdate {
             ls.addScheduledTask(new Runnable() {
                 @Override
                 public void run(){
-                    EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(ctx.getServerHandler().player.getName());
-                    findAndApply(packet, player.world.loadedEntityList, true);
+                    findAndApply(packet, ctx.getServerHandler().player.world.loadedEntityList, true);
                 }
             });
             return null;

@@ -49,6 +49,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(WHEEL_AUTO_ALL);
 		TurboList.PROGRAMS.add(WHEEL_AUTO_STEERING);
 		TurboList.PROGRAMS.add(NO_CULLFACE);
+		TurboList.PROGRAMS.add(STEERING_WHEEL_BASE);
+		TurboList.PROGRAMS.add(STEERING_WHEEL_CBASE);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_Z);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_X);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_Y);
@@ -293,18 +295,28 @@ public class DefaultPrograms {
 		
 	};
 	
-	public static final Program STEERING_WHEEL_Z = new SteeringWheel(2, 1f), STEERING_WHEEL_X = new SteeringWheel(0, 1f), STEERING_WHEEL_Y = new SteeringWheel(1, 1f);
-	public static final Program STEERING_WHEEL_CZ = new SteeringWheelCentered(2, 1f), STEERING_WHEEL_CX = new SteeringWheelCentered(0, 1f), STEERING_WHEEL_CY = new SteeringWheelCentered(1, 1f);
+	public static final Program STEERING_WHEEL_BASE = new SteeringWheel(0, 0);//for json/obj INIT
+	public static final Program STEERING_WHEEL_CBASE = new SteeringWheelCentered(0, 0);//for json/obj INIT
+	public static final Program STEERING_WHEEL_Z = new SteeringWheel(2, 1f);
+	public static final Program STEERING_WHEEL_X = new SteeringWheel(0, 1f);
+	public static final Program STEERING_WHEEL_Y = new SteeringWheel(1, 1f);
+	public static final Program STEERING_WHEEL_CZ = new SteeringWheelCentered(2, 1f);
+	public static final Program STEERING_WHEEL_CX = new SteeringWheelCentered(0, 1f);
+	public static final Program STEERING_WHEEL_CY = new SteeringWheelCentered(1, 1f);
 	
 	public static class SteeringWheel implements Program {
 		
 		private byte axis; private float ratio, rotated; private String id;
 		
 		public SteeringWheel(int axis, float ratio){
-			this.axis = (byte)axis; this.ratio = ratio; id = "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
+			this.axis = (byte)axis; this.ratio = ratio;
+			id = axis == 0 && ratio == 0 ? "fvtm:steering_base" : "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
 		}
 
-		@Override public String getId(){ return id; }
+		@Override
+		public String getId(){
+			return id;
+		}
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
@@ -316,6 +328,17 @@ public class DefaultPrograms {
 			list.rotateAxis(-rotated, axis, true);
 		}
 		
+		@Override
+		public Program parse(JsonElement elm){
+			return new SteeringWheel(elm.getAsJsonArray().get(0).getAsInt(), elm.getAsJsonArray().get(1).getAsFloat());
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			return new SteeringWheel(Integer.parseInt(args[0]), Float.parseFloat(args[1]));
+		}
+		
 	};
 	
 	/** Only works with centered steering wheels and translated into position. */
@@ -325,10 +348,13 @@ public class DefaultPrograms {
 		
 		public SteeringWheelCentered(int axis, float ratio){
 			x = (byte)(axis == 0 ? 1 : 0); y = (byte)(axis == 1 ? 1 : 0); z = (byte)(axis == 2 ? 1 : 0); this.ratio = ratio;
-			id = "fvtm:steering_c" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
+			id = axis == 0 && ratio == 0 ? "fvtm:steering_base_centered" : "fvtm:steering_c" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
 		}
 
-		@Override public String getId(){ return id; }
+		@Override
+		public String getId(){
+			return id;
+		}
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
@@ -338,6 +364,17 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			GL11.glRotatef(-data.getAttribute("steering_angle").getFloatValue() * ratio, x, y, z);
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			return new SteeringWheelCentered(elm.getAsJsonArray().get(0).getAsInt(), elm.getAsJsonArray().get(1).getAsFloat());
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			return new SteeringWheelCentered(Integer.parseInt(args[0]), Float.parseFloat(args[1]));
 		}
 		
 	};

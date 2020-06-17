@@ -80,7 +80,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	}
 	
 	public TurboList.Program parseProgram(JsonElement elm) throws Exception {
-		String id = (elm.isJsonArray() ? elm.getAsJsonArray().get(0) : elm.getAsJsonObject().get("id")).getAsString();
+		String id = (elm.isJsonArray() ? elm.getAsJsonArray().remove(0) : elm.getAsJsonObject().get("id")).getAsString();
 		TurboList.Program prog = TurboList.PROGRAMS.get(id);
 		if(prog == null){
 			throw new Exception("TL-PROGRAM WITH ID '" + id + "' NOT FOUND!");

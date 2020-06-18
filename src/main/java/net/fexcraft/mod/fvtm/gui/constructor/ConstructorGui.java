@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -65,7 +66,7 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		for(int i = 0; i < buttontext.length; i++){
 			if(!(removeEmptyButtons && buttontext[i].equals(""))){
 				this.texts.put("button" + i, tbuttons[i] = new BasicText(4, 21 + (i * buttonheight), xSize - 8, white, buttontext[i]));
-				this.buttons.put("button" + i, cbuttons[i] = new BasicButton("button" + i, 2, 20 + (i * buttonheight), 0, 0, xSize - 4, 10, true));
+				this.buttons.put("button" + i, cbuttons[i] = new BasicButton("button" + i, 2, 20 + (i * buttonheight), 0, 0, getButtonWidth(buttontext[i]), 10, true));
 				cbuttons[i].rgb_hover = new RGB("#8f9924"/*"#d9df99"*/, 0.8f); cbuttons[i].rgb_none.alpha = 0.8f;
 				if(buttontext[i].equals("") || buttontext[i].startsWith("||")){ cbuttons[i].enabled = false; }
 				if(buttontext[i].startsWith("||")) tbuttons[i].string = buttontext[i].replace("||", "");
@@ -74,6 +75,11 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 			}
 		}
 		cbox = new CenterBox(this, 128, 128);
+	}
+	
+	public int getButtonWidth(String str){
+		int width = fontRenderer.getStringWidth(str);
+		return width > xSize - 4 ? width : xSize - 4;
 	}
 
 	@Override
@@ -113,7 +119,7 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		private int button, index;
 		private boolean left;
 		private CenterBox box;
-		private BasicButton cbutton;
+		public BasicButton cbutton;
 
 		public IconButton(String name, int button, int index, boolean left, ResourceLocation texture){
 			super(name, 0, 0, 0, 0, 8, 8, true); this.button = button; this.index = index; this.left = left;
@@ -123,21 +129,25 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 
 		@Override
 		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
-			if(!visible) return; ConstructorGui g = (ConstructorGui)gui;
+			if(!visible) return;
 			if(box != null){
-				this.x = box.x; int off = 2 + (index * (2 + sizex));
+				this.x = box.x;
+				int off = 2 + (index * (2 + sizex));
 				this.x += left ? off : box.width - off - sizex;
 				this.y = box.y + 1;
 			}
-			else if(cbutton != null){
-				this.x = cbutton.x; int off = 2 + (index * (2 + sizex));
+			else{
+				int off = 2 + (index * (2 + sizex));
+				if(cbutton == null){
+					ConstructorGui g = (ConstructorGui)gui;
+					cbutton = g.cbuttons[button];
+					if(g.fontRenderer.getStringWidth(g.tbuttons[button].string) + off + sizex > g.xSize - 8){
+						cbutton.sizex += 12;
+					}
+				}
+				this.x = cbutton.x;
 				this.x += left ? off : cbutton.sizex - off - sizex;
 				this.y = cbutton.y + 1;
-			}
-			else{
-				this.x = g.cbuttons[button].x; int off = 2 + (index * (2 + sizex));
-				this.x += left ? off : g.cbuttons[button].sizex - off - sizex;
-				this.y = g.cbuttons[button].y + 1;
 			}
 			gui.mc.renderEngine.bindTexture(texture);
 			RGB rgb = hovered ? enabled ? rgb_hover : rgb_disabled : rgb_none; RGB.glColorReset();
@@ -149,7 +159,7 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 			this.box = centerbox; return this;
 		}
 
-		public IconButton setCenterButtonBount(BasicButton button){
+		public IconButton setCenterButtonBound(BasicButton button){
 			this.cbutton = button; return this;
 		}
 
@@ -198,5 +208,8 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 
 	//To be overriden.
 	public void onTitleTextUpdate(){}
+
+	//To be overriden.
+	public void onClientPacket(NBTTagCompound nbt){}
 
 }

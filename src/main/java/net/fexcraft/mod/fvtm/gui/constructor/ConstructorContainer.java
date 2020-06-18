@@ -13,7 +13,7 @@ public class ConstructorContainer extends GenericContainer {
 	
 	protected ConstructorCommandSender sender;
 	protected ConstructorEntity entity;
-	protected ConstructorGui gui;
+	public ConstructorGui gui;
 
 	public ConstructorContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);

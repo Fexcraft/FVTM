@@ -36,6 +36,7 @@ public class ConstructorPartManager extends ConstructorGui {
 			this.buttons.put("icon0" + i + "e", edico[i - 1] = new IconButton("icon_edit0" + i, i, 1, false, ICON_EDIT0));
 			this.buttons.put("icon1" + i + "e", edico[i - 1 + 10] = new IconButton("icon_edit1" + i, i, 2, false, ICON_EDIT1));
 		}
+		this.updateButtons();
 	}
 	
 	private void updateButtons(){
@@ -55,20 +56,41 @@ public class ConstructorPartManager extends ConstructorGui {
 			}
 			next.enabled = page < vdata.getParts().size() / 10;
 			prev.enabled = page > 0;
+			buttons.entrySet().forEach(entry -> {
+				if(entry.getKey().startsWith("icon")){
+					IconButton button = (IconButton)entry.getValue();
+					button.cbutton = null;
+				}
+			});
 		}
+		for(int i = 1; i < 11; i++){
+			buttons.get("button" + i).sizex = getButtonWidth(tbuttons[i].string);
+		}
+		buttons.entrySet().forEach(entry -> {
+			if(entry.getKey().startsWith("icon")){
+				IconButton button = (IconButton)entry.getValue();
+				button.cbutton = null;
+			}
+		});
 	}
 	
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		this.updateButtons();
+		//
 	}
 
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button13")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
-		else if(button.name.equals("next")) page++;
-		else if(button.name.equals("prev")) page--;
+		else if(button.name.equals("next")){
+			page++;
+			this.updateButtons();
+		}
+		else if(button.name.equals("prev")){
+			page--;
+			this.updateButtons();
+		}
 		else if(button.name.contains("icon_edit0")){
 			try{
 				int i = Integer.parseInt(button.name.replace("icon_edit0", ""));
@@ -103,12 +125,20 @@ public class ConstructorPartManager extends ConstructorGui {
 
 	@Override
 	protected void scrollwheel(int am, int x, int y){
-		if(am == 0) return; if(am > 0) page--; else page++; if(page < 0) page = 0;
+		if(am == 0) return;
+		if(am > 0) page--; else page++;
+		if(page < 0) page = 0;
+		this.updateButtons();
 	}
 	
 	@Override
 	public void onTitleTextUpdate(){
 		//
+	}
+
+	@Override
+	public void onClientPacket(NBTTagCompound nbt){
+		updateButtons();
 	}
 
 }

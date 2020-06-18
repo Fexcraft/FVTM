@@ -207,7 +207,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 
     @Override
     public void processClientPacket(PacketTileEntityUpdate packet){
-    	Print.debug(packet.nbt);
+    	//Print.debug(packet.nbt);
         if(packet.nbt.hasKey("PartData")){
         	this.pdata = Resources.getPartData(packet.nbt.getCompoundTag("PartData"));
         }
@@ -245,6 +245,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         else if(packet.nbt.hasKey("CenterReset") && packet.nbt.getBoolean("CenterReset")){
         	this.center = null;
+        }
+        if(net.minecraft.client.Minecraft.getMinecraft().player.openContainer instanceof ConstructorContainer){
+        	((ConstructorContainer)net.minecraft.client.Minecraft.getMinecraft().player.openContainer).gui.onClientPacket(packet.nbt);
         }
     }
     

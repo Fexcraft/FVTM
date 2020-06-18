@@ -18,6 +18,7 @@ public class Seat {
 	public float minpitch, maxpitch;
 	public String swivel_point;
 	public boolean nofirst, nothird;
+	public boolean relative;
 
 	public Seat(JsonObject obj){
 		Pos pos = Pos.fromJson(obj, false);
@@ -35,6 +36,7 @@ public class Seat {
 		nofirst = JsonUtil.getIfExists(obj, "no_first_person", false);
 		nothird = JsonUtil.getIfExists(obj, "no_third_person", false);
 		if(nofirst && nothird) nothird = false;
+		relative = JsonUtil.getIfExists(obj, "relative", false);
 	}
 
 	public Seat(String name, float x, float y, float z, boolean driver, String point, boolean nof, boolean not){
@@ -51,6 +53,16 @@ public class Seat {
 		swivel_point = point;
 		nofirst = nof;
 		nothird = not;
+	}
+
+	public Seat(String name, float x, float y, float z, boolean driver, boolean sitting, String point, boolean nof, boolean not){
+		this(name, x, y, z, driver, point, nof, not);
+		this.sitting = sitting;
+	}
+
+	public Seat(String name, float x, float y, float z, boolean driver, boolean sitting, String point, boolean nof, boolean not, boolean relative){
+		this(name, x, y, z, driver, sitting, point, nof, not);
+		this.relative = relative;
 	}
 
 	public boolean isDriver(){
@@ -83,6 +95,14 @@ public class Seat {
 		if(nofirst) return current > 1 ? 1 : 2;
 		else if(nothird) return 0;
 		else return (current + 1) % 3;
+	}
+
+	public Seat copy(Pos partpos){
+		if(partpos == null || !relative) return this;
+		float x = this.x + partpos.to16FloatX();
+		float y = this.y - partpos.to16FloatY();
+		float z = this.z - partpos.to16FloatZ();
+		return new Seat(name, x, y, z, driver, sitting, swivel_point, nofirst, nothird, relative);
 	}
 
 }

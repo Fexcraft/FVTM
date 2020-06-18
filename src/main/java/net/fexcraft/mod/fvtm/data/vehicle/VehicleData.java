@@ -265,7 +265,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		this.seats.clear();
 		for(PartData part : parts.values()){
 			if(!part.hasFunction("fvtm:seats")) continue;
-			seats.addAll(part.getFunction(SeatsFunction.class, "fvtm:seats").getSeats());
+			for(Seat seat : part.getFunction(SeatsFunction.class, "fvtm:seats").getSeats()){
+				seats.add(seat.relative ? seat.copy(part.getInstalledPos()) : seat);
+			}
 		}
 		//
 		inventories.clear(); parts.forEach((key, value) -> { if(value.hasFunction("fvtm:inventory")) inventories.add(key); });

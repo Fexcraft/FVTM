@@ -64,6 +64,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	protected SwivelPoint rootpoint;
+	protected String displayname;
 
 	public VehicleData(Vehicle type){
 		super(type);
@@ -158,6 +159,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(rear_conn != null) compound.setTag("RearConnector", DataUtil.writeVec3d(rear_conn));
 		//if(customname != null) compound.setString("CustomName", customname);
 		if(preset != null) compound.setString("Preset", preset);
+		if(displayname != null) compound.setString("DisplayName", displayname);
 		/*Print.debug("write", compound);*/ return compound;
 	}
 
@@ -248,6 +250,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(rear_conn == null) rear_conn = type.getDefaultRearConnector();
 		//if(compound.hasKey("CustomName")) customname = compound.getString("CustomName");
 		if(compound.hasKey("Preset")) preset = compound.getString("Preset"); else preset = null;
+		if(compound.hasKey("DisplayName")) displayname = compound.getString("DisplayName");
 		//
 		/*Print.debug("read", compound);*/ return this;
 	}
@@ -729,6 +732,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		SwivelPoint point = rotpoints.get(id);
 		if(point == null) return rootpoint;
 		return point;
+	}
+	
+	public String getName(){
+		return displayname == null ? type.getName() : displayname;
+	}
+
+	public void setName(String string){
+		displayname = string;
 	}
 
 }

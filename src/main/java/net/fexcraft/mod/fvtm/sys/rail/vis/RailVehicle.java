@@ -415,7 +415,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public String getName(){
-        return world.isRemote && rek.ent() == null ? "noent" : rek.data() == null ? "novehdata" : rek.data().getType().getName();
+        return world.isRemote && rek.ent() == null ? "noent" : rek.data() == null ? "novehdata" : rek.data().getName();
     }
 
     @SideOnly(Side.CLIENT) @Override

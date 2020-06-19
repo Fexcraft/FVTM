@@ -86,14 +86,16 @@ public class ConstructorVTM extends ConstructorGui {
 			Textureable textur = getTextureable();
 			int i = textur.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);
 			if(i >= textur.getHolder().getDefaultTextures().size() || i < 0){
-				Print.debug("invalid id " + i); return true;
+				Print.debug("invalid id " + i);
+				return true;
 			}
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "vtm_supplied");
 			if(part() != null) compound.setString("part", part());
 			compound.setInteger("value", i);
 			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
-			this.container.send(Side.SERVER, compound); return true;
+			this.container.send(Side.SERVER, compound);
+			return true;
 		}
 		else if(button.name.endsWith("_apply")){
 			boolean external = button.name.startsWith("ex");
@@ -113,10 +115,11 @@ public class ConstructorVTM extends ConstructorGui {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "vtm_custom");
 			if(part() != null) compound.setString("part", part());
-			compound.setString("value", external ? cfields[10].getText() : cfields[7].getText());
+			compound.setString("value", value);
 			compound.setBoolean("external", external);
 			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
-			this.container.send(Side.SERVER, compound); return true;
+			this.container.send(Side.SERVER, compound);
+			return true;
 		}
 		else Print.debug("function not found");
 		return true;

@@ -457,7 +457,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 
     @Override
     public String getName(){
-        return vehicle.getType().getName();
+        return vehicle.getName();
     }
 
     @SideOnly(Side.CLIENT)

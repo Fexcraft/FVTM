@@ -19,11 +19,14 @@ public class ConstructorStatus extends ConstructorGui {
 	
 	@Override
 	public void init(){
-		super.init(); this.menutitle.string = "Const. Status";
+		super.init();
+		this.menutitle.string = "Const. Status";
 		cfields[1] = new NumberField(1, fontRenderer, 2, 20 + (1 * buttonheight), xSize - 4, 10, true);
 		cfields[2] = new NumberField(2, fontRenderer, 2, 20 + (2 * buttonheight), xSize - 4, 10, true);
 		cfields[3] = new NumberField(3, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10, true);
-		this.fields.put("field1", cfields[1]); this.fields.put("field2", cfields[2]); this.fields.put("field3", cfields[3]);
+		this.fields.put("field1", cfields[1]);
+		this.fields.put("field2", cfields[2]);
+		this.fields.put("field3", cfields[3]);
 		this.updateText(true);
 	}
 	

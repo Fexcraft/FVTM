@@ -111,7 +111,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					this.dropItem(data.newItemStack()); this.updateClient(null);
 				} return;
 			}
-			case "part_cache_drop":{ this.dropPart(true); return; }
+			case "part_cache_drop":{
+				this.dropPart(true);
+				return;
+			}
 			case "vtm_supplied":{
 				if(nocon(container) && noveh(container) && noblk(container)) return;
 				int i = packet.getInteger("value");
@@ -157,6 +160,13 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 						container.setTitleText("Contents dropped.", null); break;
 					}
 				} return;
+			}
+			case "veh_name_change":{
+				if(noveh(container)) return;
+				vdata.setName(packet.hasKey("reset") && packet.getBoolean("reset") ? null : packet.getString("value"));
+				container.setTitleText("Name Changed.", null);
+				this.updateClient("vehicle");
+				return;
 			}
 			//
 			default: return;

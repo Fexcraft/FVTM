@@ -81,6 +81,19 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         }
         //TODO other data
     }
+	
+    @SuppressWarnings("deprecation")
+	@Override
+    public String getItemStackDisplayName(ItemStack stack){
+    	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
+    	if(cache == null || (!cache.overridesLang(false) && cache.getVehicleData().getName() == null)){
+        	String langname = "item." + stack.getItem().getRegistryName().toString() + ".name";
+        	langname = net.minecraft.util.text.translation.I18n.translateToLocal(langname).trim();
+        	if(langname.length() > 0) return langname;
+        	if(cache != null) stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
+    	}
+        return Formatter.format(cache.getVehicleData().getName());
+    }
 
 	private String getTexTitle(VehicleData data){
 		if(data.getSelectedTexture() >= 0){

@@ -552,7 +552,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			Collection<RailEntity> ents = getEntitiesOnTrackAndNext(current, forward);
 			RailEntity found = null;
 			for(RailEntity ent : ents){
-				Print.debug(ent.vehdata.getType().getName());
+				Print.debug(ent.vehdata.getName());
 				if(ent.uid == this.uid) continue;
 				if(ent.rear.mbb.contains(vec)){
 					found = ent; coupler.couple(ent, false); break;
@@ -565,7 +565,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			}
 			if(found != null){
 				Print.chat(player, (thefront ? "Front" : "Rear") + " connected.");
-				Print.chat(player, "&7&o" + found.vehdata.getType().getName());
+				Print.chat(player, "&7&o" + found.vehdata.getName());
 			}
 			else{
 				if(coupler.hasEntity()){
@@ -615,7 +615,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	
 	@Override
 	public String toString(){
-		return "RE['" + uid + "', '" + vehdata.getType().getName() + "', '" + pos.toString() + "']";
+		return "RE['" + uid + "', '" + vehdata.getName() + "', '" + pos.toString() + "']";
 	}
 
 	public void setPaused(boolean bool){

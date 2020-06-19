@@ -532,7 +532,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public String getName(){
-        return vehicle.getType().getName();
+        return vehicle.getName();
     }
 
     @SideOnly(Side.CLIENT)

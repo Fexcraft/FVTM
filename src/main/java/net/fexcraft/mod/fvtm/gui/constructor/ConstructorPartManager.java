@@ -28,7 +28,7 @@ public class ConstructorPartManager extends ConstructorGui {
 		super.init();
 		this.menutitle.string = "Part Manager";
 		boolean noveh = container.getTileEntity().getVehicleData() == null;
-		this.container.setTitleText(noveh ? "No Vehicle in Constructor" : container.getTileEntity().getVehicleData().getType().getName(), RGB.WHITE.packed);
+		this.container.setTitleText(noveh ? "No Vehicle in Constructor" : container.getTileEntity().getVehicleData().getName(), RGB.WHITE.packed);
 		this.buttons.put("next_page", next = new IconButton("next", 11, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_page", prev = new IconButton("prev", 11, 1, false, ICON_LEFT));
 		for(int i = 1; i < 11; i++){

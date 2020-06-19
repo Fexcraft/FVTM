@@ -55,6 +55,7 @@ public abstract class TypeCore<SELF> implements IForgeRegistryEntry<SELF> {
 	    @SuppressWarnings("deprecation")
 		@Override
 	    public String getItemStackDisplayName(ItemStack stack){
+	    	if(type.getDataClass() == null) return super.getItemStackDisplayName(stack);
 	    	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
 	    	if(cache == null || !cache.overridesLang(false)){
 	        	String langname = "item." + stack.getItem().getRegistryName().toString() + ".name";

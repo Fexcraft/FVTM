@@ -738,8 +738,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return displayname == null ? type.getName() : displayname;
 	}
 
-	public void setName(String string){
+	public void setDisplayName(String string){
 		displayname = string;
+	}
+
+	public String getDisplayName(){
+		return displayname;
 	}
 
 }

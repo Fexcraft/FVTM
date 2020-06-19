@@ -163,7 +163,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			}
 			case "veh_name_change":{
 				if(noveh(container)) return;
-				vdata.setName(packet.hasKey("reset") && packet.getBoolean("reset") ? null : packet.getString("value"));
+				vdata.setDisplayName(packet.hasKey("reset") && packet.getBoolean("reset") ? null : packet.getString("value"));
 				container.setTitleText("Name Changed.", null);
 				this.updateClient("vehicle");
 				return;

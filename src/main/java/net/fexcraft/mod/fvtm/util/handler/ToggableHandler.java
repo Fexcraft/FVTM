@@ -32,7 +32,7 @@ public class ToggableHandler {
 	private static String last;
 	private static long tilltime = 0;
 
-	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatEntity seat, EntityPlayer player){// TODO support for other attribute types, e.g. numbers
+	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatEntity seat, EntityPlayer player){
 		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasAABBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
 			/*Print.debug(player, "none found");*/ return false;
@@ -53,7 +53,7 @@ public class ToggableHandler {
 		switch(press){
 			case MOUSE_MAIN:{
 				if(attr.type().isTristate()){
-					packet.setBoolean("bool", !attr.type().isBoolean() ? false : true);
+					packet.setBoolean("bool", !attr.type().isBoolean() ? false : !attr.getBooleanValue());
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.type().isFloat()){
@@ -72,7 +72,7 @@ public class ToggableHandler {
 			}
 			case MOUSE_RIGHT:{
 				if(attr.type().isTristate()){
-					packet.setBoolean("bool", !attr.type().isBoolean() ? true : false);
+					packet.setBoolean("bool", !attr.type().isBoolean() ? true : !attr.getBooleanValue());
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.type().isFloat()){

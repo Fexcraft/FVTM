@@ -10,6 +10,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -52,9 +53,11 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
+    	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
+    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
-        VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData(); if(data == null) return;
+        VehicleData data = cache.getVehicleData();
+        if(data == null) return;
         if(data.isPreset()) tooltip.add(Formatter.format("&6Preset: &7" + data.getPreset()));
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(data.hasPart("engine")){

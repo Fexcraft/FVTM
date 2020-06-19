@@ -11,6 +11,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
+import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
@@ -44,9 +45,11 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
+    	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
+    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
-        ContainerData data = stack.getCapability(Capabilities.VAPDATA, null).getContainerData(); if(data == null) return;
+        ContainerData data = cache.getContainerData();
+        if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         tooltip.add(Formatter.format("&9Type: &7" + type.getContainerType().name()));
         //

@@ -130,6 +130,11 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		public BlockData getBlockData(){
 			return bdata == null ? bdata = ((BlockItem)stack.getItem()).getData(stack) : bdata;
 		}
+
+		@Override
+		public boolean overridesLang(boolean bool){
+			return false;
+		}
 		
 	}
 	
@@ -137,6 +142,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		
 		private ItemStack stack;
 		private VehicleData data;
+		private boolean override;
 
 		@Override
 		public void setStack(ItemStack stack){
@@ -167,6 +173,12 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		public BlockData getBlockData(){
 			return null;
 		}
+
+		@Override
+		public boolean overridesLang(boolean bool){
+			if(bool) override = true;
+			return override;
+		}
 		
 	}
 	
@@ -174,6 +186,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		
 		private ItemStack stack;
 		private PartData data;
+		private boolean override;
 
 		@Override
 		public void setStack(ItemStack stack){
@@ -204,6 +217,12 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		public BlockData getBlockData(){
 			return null;
 		}
+
+		@Override
+		public boolean overridesLang(boolean bool){
+			if(bool) override = true;
+			return override;
+		}
 		
 	}
 	
@@ -211,6 +230,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		
 		private ItemStack stack;
 		private BlockData data;
+		private boolean override;
 
 		@Override
 		public void setStack(ItemStack stack){
@@ -241,6 +261,12 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		public ContainerData getContainerData(){
 			return null;
 		}
+
+		@Override
+		public boolean overridesLang(boolean bool){
+			if(bool) override = true;
+			return override;
+		}
 		
 	}
 	
@@ -248,6 +274,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		
 		private ItemStack stack;
 		private RoadSign data;
+		private boolean override;
 
 		@Override
 		public void setStack(ItemStack stack){
@@ -278,6 +305,12 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		public BlockData getBlockData(){
 			return null;
 		}
+
+		@Override
+		public boolean overridesLang(boolean bool){
+			if(bool) override = true;
+			return override;
+		}
 		
 	}
 	
@@ -285,6 +318,7 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		
 		private ItemStack stack;
 		private ContainerData data;
+		private boolean override;
 
 		@Override
 		public void setStack(ItemStack stack){
@@ -314,6 +348,12 @@ public class VAPDataCache implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public BlockData getBlockData(){
 			return null;
+		}
+
+		@Override
+		public boolean overridesLang(boolean bool){
+			if(bool) override = true;
+			return override;
 		}
 		
 	}

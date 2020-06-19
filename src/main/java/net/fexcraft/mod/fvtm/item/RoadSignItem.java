@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.api.registry.fItem;
@@ -51,6 +52,18 @@ public class RoadSignItem extends Item {
     	}
         tooltip.add(Formatter.format("&9&o" + sign.getAddon().getName()));
         for(String s : sign.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
+    }
+
+    @SuppressWarnings("deprecation")
+	@Override
+    public String getItemStackDisplayName(ItemStack stack){
+    	if(!stack.getCapability(Capabilities.VAPDATA, null).overridesLang(false)){
+        	String langname = "item." + stack.getItem().getRegistryName().toString() + ".name";
+        	langname = net.minecraft.util.text.translation.I18n.translateToLocal(langname).trim();
+        	if(langname.length() > 0) return langname;
+        	stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
+    	}
+        return Formatter.format(stack.getCapability(Capabilities.VAPDATA, null).getRSData().getName());
     }
 	
     @Override

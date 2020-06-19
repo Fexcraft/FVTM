@@ -27,5 +27,7 @@ public interface VehicleAndPartDataCache {
 	public @Nullable ContainerData getContainerData();
 
 	public @Nullable BlockData getBlockData();
+	
+	public boolean overridesLang(boolean bool);
 
 }

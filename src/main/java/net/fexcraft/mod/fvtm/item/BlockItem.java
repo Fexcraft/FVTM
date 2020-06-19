@@ -10,6 +10,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock;
@@ -48,14 +49,16 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         if(type.isFunctional()) tooltip.add(Formatter.format("&b&oFunctional Block"));
         if(type.isDecoration()) tooltip.add(Formatter.format("&e&oDecoration Block"));
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
+    	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
+    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
         }
         if(type.getBlockType().isGenericRoad()){
         	tooltip.add(Formatter.format("&9Height: &7" + (stack.getMetadata() == 0 ? 16 : stack.getMetadata())));
         }
-        BlockData data = stack.getCapability(Capabilities.VAPDATA, null).getBlockData(); if(data == null) return;
+        BlockData data = cache.getBlockData();
+        if(data == null) return;
         if(!data.getType().hasPlainModel()) tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(type.getModel().getCreators().size() > 0){
             tooltip.add(Formatter.format("&9Model by:"));

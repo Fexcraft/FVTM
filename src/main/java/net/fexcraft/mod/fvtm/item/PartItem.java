@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -38,12 +39,14 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-        tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
+    	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
+    	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         tooltip.add(Formatter.format("&9Type: &7" + type.getCategory()));
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
         }
-        PartData data = stack.getCapability(Capabilities.VAPDATA, null).getPartData(); if(data == null) return;
+        PartData data = cache.getPartData();
+        if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
         if(!data.getFunctions().isEmpty()){
             for(Function func : data.getFunctions().values()){
@@ -71,6 +74,18 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
             	tooltip.add(Formatter.format("&7- " + str));
             }
         }
+    }
+
+    @SuppressWarnings("deprecation")
+	@Override
+    public String getItemStackDisplayName(ItemStack stack){
+    	if(!stack.getCapability(Capabilities.VAPDATA, null).overridesLang(false)){
+        	String langname = "item." + stack.getItem().getRegistryName().toString() + ".name";
+        	langname = net.minecraft.util.text.translation.I18n.translateToLocal(langname).trim();
+        	if(langname.length() > 0) return langname;
+        	stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
+    	}
+        return Formatter.format(type.getName());
     }
 
 	private String getTexTitle(PartData data){

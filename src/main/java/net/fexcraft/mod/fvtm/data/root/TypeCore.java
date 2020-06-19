@@ -4,8 +4,12 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -44,7 +48,22 @@ public abstract class TypeCore<SELF> implements IForgeRegistryEntry<SELF> {
 			this.type = core;
 		}
 		
-		public SELF getType(){ return type; }
+		public SELF getType(){
+			return type;
+		}
+		
+	    @SuppressWarnings("deprecation")
+		@Override
+	    public String getItemStackDisplayName(ItemStack stack){
+	    	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
+	    	if(cache == null || !cache.overridesLang(false)){
+	        	String langname = "item." + stack.getItem().getRegistryName().toString() + ".name";
+	        	langname = net.minecraft.util.text.translation.I18n.translateToLocal(langname).trim();
+	        	if(langname.length() > 0) return langname;
+	        	if(cache != null) stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
+	    	}
+	        return Formatter.format(type.getName());
+	    }
 		
 	}
 	

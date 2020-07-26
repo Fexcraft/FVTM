@@ -71,6 +71,7 @@ public class DefaultPrograms {
 		//
 		TurboList.PROGRAMS.add(TRANSPARENT);
 		TurboList.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
+		TurboList.PROGRAMS.add(new RectLightBeam(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null));//jtmt/obj init only
 		//
 		DIDLOAD = true;
 	}
@@ -691,7 +692,7 @@ public class DefaultPrograms {
 		
 	}
 	
-	public static class LightRay implements Program {
+	public static class LightBeam implements Program {
 
 		public Vec3d pos;
 		public ModelRendererTurbo shape;
@@ -699,14 +700,14 @@ public class DefaultPrograms {
 		public ResourceLocation tex;
 		protected BiPredicate<Entity, VehicleData> predicate;
 		
-		public LightRay(ModelRendererTurbo turboobj, Vec3d pos, String swivelpoint, ResourceLocation texture, BiPredicate<Entity, VehicleData> predicate){
+		public LightBeam(ModelRendererTurbo turboobj, Vec3d pos, String swivelpoint, ResourceLocation texture, BiPredicate<Entity, VehicleData> predicate){
 			this.shape = turboobj;
 			this.pos = pos;
 			this.tex = texture;
 			this.predicate = predicate;
 		}
 		
-		public LightRay setPredicate(BiPredicate<Entity, VehicleData> predicate){
+		public LightBeam setPredicate(BiPredicate<Entity, VehicleData> predicate){
 			this.predicate = predicate;
 			return this;
 		}
@@ -721,9 +722,14 @@ public class DefaultPrograms {
 		
 	}
 	
-	public static class RectLightRay extends LightRay {
+	public static class RectLightBeam extends LightBeam {
+		
+		@Override
+		public String getId(){
+			return "fvtm:rect_light_beam";
+		}
 
-		public RectLightRay(float sx, float sy, float sz, float expw, float exph, float x, float y, float z, float rx, float ry, float rz, String swivelpoint, String resloc){
+		public RectLightBeam(float sx, float sy, float sz, float expw, float exph, float x, float y, float z, float rx, float ry, float rz, String swivelpoint, String resloc){
 			super(new ModelRendererTurbo(null, 0, 0, 16, 16).newBoxBuilder()
 				.setOffset(0, -(sy / 2), -(sz / 2)).setSize(sx, sy, sz)
 				.setCorners(0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0, 0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0)
@@ -763,7 +769,7 @@ public class DefaultPrograms {
 			float rz = array.size() > 10 ? array.get(10).getAsFloat() : 0;
 			String sp = array.size() > 11 ? array.get(11).getAsString() : "vehicle";
 			String rs = array.size() > 12 ? array.get(12).getAsString() : null;
-			return new RectLightRay(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
+			return new RectLightBeam(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
 		}
 		
 
@@ -782,7 +788,7 @@ public class DefaultPrograms {
 			float rz = args.length > 10 ? Float.parseFloat(args[10]) : 0;
 			String sp = args.length > 11 ? args[11] : "vehicle";
 			String rs = args.length > 12 ? args[12] : null;
-			return new RectLightRay(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
+			return new RectLightBeam(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
 		}
 		
 	}

@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
 import java.util.Timer;
+import java.util.function.BiPredicate;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
@@ -9,6 +10,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -17,11 +20,14 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
+import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * 
@@ -681,6 +687,102 @@ public class DefaultPrograms {
 					//cache.getWorld().spawnParticle(particle, ignore, x, y, z, sx, sy, sz, params);
 				}
 			}
+		}
+		
+	}
+	
+	public static class LightRay implements Program {
+
+		public Vec3d pos;
+		public ModelRendererTurbo shape;
+		public String swivel;
+		public ResourceLocation tex;
+		protected BiPredicate<Entity, VehicleData> predicate;
+		
+		public LightRay(ModelRendererTurbo turboobj, Vec3d pos, String swivelpoint, ResourceLocation texture, BiPredicate<Entity, VehicleData> predicate){
+			this.shape = turboobj;
+			this.pos = pos;
+			this.tex = texture;
+			this.predicate = predicate;
+		}
+		
+		public LightRay setPredicate(BiPredicate<Entity, VehicleData> predicate){
+			this.predicate = predicate;
+			return this;
+		}
+
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(ent == null || (predicate != null && !predicate.test(ent, data))) return;
+			EffectRenderer.LIGHTRAYS.add(this);
+			EffectRenderer.LIGHTRAYDATAS.add(data);
+			EffectRenderer.LIGHTRAYVEHS.add((VehicleEntity)ent);
+		}
+		
+	}
+	
+	public static class RectLightRay extends LightRay {
+
+		public RectLightRay(float sx, float sy, float sz, float expw, float exph, float x, float y, float z, float rx, float ry, float rz, String swivelpoint, String resloc){
+			super(new ModelRendererTurbo(null, 0, 0, 16, 16).newBoxBuilder()
+				.setOffset(0, -(sy / 2), -(sz / 2)).setSize(sx, sy, sz)
+				.setCorners(0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0, 0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0)
+				.removePolygons(0, 1)
+				.setPolygonUV(2, new float[]{ 16.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, 16.0f, 4.0f })
+				.setPolygonUV(3, new float[]{ 16.0f, 4.0f, 0.0f, 4.0f, 0.0f, 8.0f, 16.0f, 8.0f })
+				.setPolygonUV(4, new float[]{ 16.0f, 8.0f, 0.0f, 8.0f, 0.0f, 12.0f, 16.0f, 12.0f })
+				.setPolygonUV(5, new float[]{ 0.0f, 12.0f, 16.0f, 12.0f, 16.0f, 16.0f, 0.0f, 16.0f })
+				.build().setRotationAngle(rx, ry, rz).addChild(
+					new ModelRendererTurbo(null, 0, 0, 16, 16).setFlipped(true).newBoxBuilder()
+					.setOffset(0, -(sy / 2), -(sz / 2)).setSize(sx, sy, sz)
+					.setCorners(0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0, 0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0)
+					.removePolygons(0, 1)
+					.setPolygonUV(2, new float[]{ 16.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, 16.0f, 4.0f })
+					.setPolygonUV(3, new float[]{ 16.0f, 4.0f, 0.0f, 4.0f, 0.0f, 8.0f, 16.0f, 8.0f })
+					.setPolygonUV(4, new float[]{ 16.0f, 8.0f, 0.0f, 8.0f, 0.0f, 12.0f, 16.0f, 12.0f })
+					.setPolygonUV(5, new float[]{ 0.0f, 12.0f, 16.0f, 12.0f, 16.0f, 16.0f, 0.0f, 16.0f })
+					.build()
+				),
+				new Pos(x, y, z).to16Double(), swivelpoint, resloc == null ? null : new ResourceLocation(resloc), null
+			);
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			float sx = array.get(0).getAsFloat();
+			float sy = array.get(1).getAsFloat();
+			float sz = array.get(2).getAsFloat();
+			float expw = array.get(3).getAsFloat();
+			float exph = array.get(4).getAsFloat();
+			float x = array.get(5).getAsFloat();
+			float y = array.get(6).getAsFloat();
+			float z = array.get(7).getAsFloat();
+			float rx = array.size() > 8 ? array.get(8).getAsFloat() : 0;
+			float ry = array.size() > 9 ? array.get(9).getAsFloat() : 0;
+			float rz = array.size() > 10 ? array.get(10).getAsFloat() : 0;
+			String sp = array.size() > 11 ? array.get(11).getAsString() : "vehicle";
+			String rs = array.size() > 12 ? array.get(12).getAsString() : null;
+			return new RectLightRay(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			float sx = Float.parseFloat(args[0]);
+			float sy = Float.parseFloat(args[1]);
+			float sz = Float.parseFloat(args[2]);
+			float expw = Float.parseFloat(args[3]);
+			float exph = Float.parseFloat(args[4]);
+			float x = Float.parseFloat(args[5]);
+			float y = Float.parseFloat(args[6]);
+			float z = Float.parseFloat(args[7]);
+			float rx = args.length > 8 ? Float.parseFloat(args[8]) : 0;
+			float ry = args.length > 9 ? Float.parseFloat(args[9]) : 0;
+			float rz = args.length > 10 ? Float.parseFloat(args[10]) : 0;
+			String sp = args.length > 11 ? args[11] : "vehicle";
+			String rs = args.length > 12 ? args[12] : null;
+			return new RectLightRay(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
 		}
 		
 	}

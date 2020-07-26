@@ -9,7 +9,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightRay;
+import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -20,7 +20,7 @@ public class EffectRenderer {
 	
 
 	
-	public static final ArrayList<LightRay> LIGHTRAYS = new ArrayList<>();
+	public static final ArrayList<LightBeam> LIGHTRAYS = new ArrayList<>();
 	public static final ArrayList<VehicleData> LIGHTRAYDATAS = new ArrayList<>();
 	public static final ArrayList<VehicleEntity> LIGHTRAYVEHS = new ArrayList<>();
 	public static final HashMap<Integer, Vec3f> RENDER_VEHROT = new HashMap<>();
@@ -37,7 +37,7 @@ public class EffectRenderer {
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GlStateManager.blendFunc(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.SRC_ALPHA);
         for(int i = 0; i < LIGHTRAYS.size(); i++){
-        	LightRay light = LIGHTRAYS.get(i);
+        	LightBeam light = LIGHTRAYS.get(i);
         	VehicleData data = LIGHTRAYDATAS.get(i);
         	VehicleEntity veh = LIGHTRAYVEHS.get(i);
         	Vec3d vehpos = RENDER_VEHPOS.get(veh.getEntity().getEntityId());

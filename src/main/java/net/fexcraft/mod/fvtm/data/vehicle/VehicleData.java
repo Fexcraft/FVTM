@@ -625,7 +625,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public boolean getLongLightsState(){
-		return getAttribute("lights_fog").getBooleanValue();
+		return getAttribute("lights_long").getBooleanValue();
 	}
 
 	public boolean getSpecialLightsState(){

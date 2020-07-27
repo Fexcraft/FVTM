@@ -116,7 +116,10 @@ public class DefaultPrograms {
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getFogLightsState(); }
 		@Override public String getId(){ return "fvtm:fog_lights"; }
 	};
-	public static final Program LONG_LIGHTS = FOG_LIGHTS;
+	public static final Program LONG_LIGHTS = new AlwaysGlow(){
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLongLightsState(); }
+		@Override public String getId(){ return "fvtm:long_lights"; }
+	};
 	
 	public static final Program REVERSE_LIGHTS = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getThrottle() < -0.01; }
@@ -811,7 +814,7 @@ public class DefaultPrograms {
 	public static final RectLightBeam RECT_LIGHTBEAM_REAR_LIGHTS = RECT_LIGHTBEAM_BACK_LIGHTS;
 	public static final RectLightBeam RECT_LIGHTBEAM_BRAKE_LIGHTS = RECT_LIGHTBEAM_REAR_LIGHTS;
 	public static final RectLightBeam RECT_LIGHTBEAM_LONG_LIGHTS = new RectLightBeam("fvtm:rlb_long_lights").setPredicate((ent, veh) -> veh.getLongLightsState()).register();
-	public static final RectLightBeam RECT_LIGHTBEAM_FOG_LIGHTS = RECT_LIGHTBEAM_LONG_LIGHTS;
+	public static final RectLightBeam RECT_LIGHTBEAM_FOG_LIGHTS = new RectLightBeam("fvtm:rlb_fog_lights").setPredicate((ent, veh) -> veh.getFogLightsState()).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_REVERSE_LIGHTS = new RectLightBeam("fvtm:rlb_reverse_lights").setPredicate((ent, veh) -> veh.getThrottle() < -0.01).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_SIGNAL_LEFT = new RectLightBeam("fvtm:rlb_signal_left").setPredicate((ent, veh) -> BLINKER_TOGGLE && (veh.getTurnLightLeft() || veh.getWarningLights())).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_SIGNAL_RIGHT = new RectLightBeam("fvtm:rlb_signal_right").setPredicate((ent, veh) -> BLINKER_TOGGLE && (veh.getTurnLightRight() || veh.getWarningLights())).register();

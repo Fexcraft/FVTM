@@ -141,6 +141,11 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		/** For creating instances from JTMT/OBJ if necessary. */
 		public default Program parse(String[] args){ return this; }
 		
+		public default <T extends Program> T register(){
+			TurboList.PROGRAMS.add(this);
+			return (T)this;
+		}
+		
 	}
 	
 	public static class ProgramMap extends TreeMap<String, Program> {

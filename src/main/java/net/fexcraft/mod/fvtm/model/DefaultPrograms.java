@@ -71,7 +71,6 @@ public class DefaultPrograms {
 		//
 		TurboList.PROGRAMS.add(TRANSPARENT);
 		TurboList.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
-		TurboList.PROGRAMS.add(new RectLightBeam(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null));//jtmt/obj init only
 		//
 		DIDLOAD = true;
 	}
@@ -117,6 +116,7 @@ public class DefaultPrograms {
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getFogLightsState(); }
 		@Override public String getId(){ return "fvtm:fog_lights"; }
 	};
+	public static final Program LONG_LIGHTS = FOG_LIGHTS;
 	
 	public static final Program REVERSE_LIGHTS = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getThrottle() < -0.01; }
@@ -700,11 +700,14 @@ public class DefaultPrograms {
 		public ResourceLocation tex;
 		protected BiPredicate<Entity, VehicleData> predicate;
 		
-		public LightBeam(ModelRendererTurbo turboobj, Vec3d pos, String swivelpoint, ResourceLocation texture, BiPredicate<Entity, VehicleData> predicate){
+		public LightBeam(){}
+		
+		public LightBeam init(ModelRendererTurbo turboobj, Vec3d pos, String swivelpoint, ResourceLocation texture, BiPredicate<Entity, VehicleData> predicate){
 			this.shape = turboobj;
 			this.pos = pos;
 			this.tex = texture;
 			this.predicate = predicate;
+			return this;
 		}
 		
 		public LightBeam setPredicate(BiPredicate<Entity, VehicleData> predicate){
@@ -724,13 +727,20 @@ public class DefaultPrograms {
 	
 	public static class RectLightBeam extends LightBeam {
 		
+		private String id;
+		
+		public RectLightBeam(String id){
+			this.id = id;
+		}
+		
 		@Override
 		public String getId(){
-			return "fvtm:rect_light_beam";
+			return id;
 		}
 
-		public RectLightBeam(float sx, float sy, float sz, float expw, float exph, float x, float y, float z, float rx, float ry, float rz, String swivelpoint, String resloc){
-			super(new ModelRendererTurbo(null, 0, 0, 16, 16).newBoxBuilder()
+		public RectLightBeam init(float sx, float sy, float sz, float expw, float exph, float x, float y, float z, float rx, float ry, float rz, String swivelpoint, String resloc){
+			RectLightBeam beam = new RectLightBeam(id);
+			beam.init(new ModelRendererTurbo(null, 0, 0, 16, 16).newBoxBuilder()
 				.setOffset(0, -(sy / 2), -(sz / 2)).setSize(sx, sy, sz)
 				.setCorners(0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0, 0, 0, 0, 0, exph, expw, 0, exph, expw, 0, 0, 0)
 				.removePolygons(0, 1)
@@ -751,6 +761,7 @@ public class DefaultPrograms {
 				),
 				new Pos(x, y, z).to16Double(), swivelpoint, resloc == null ? null : new ResourceLocation(resloc), null
 			);
+			return beam;
 		}
 		
 		@Override
@@ -769,7 +780,7 @@ public class DefaultPrograms {
 			float rz = array.size() > 10 ? array.get(10).getAsFloat() : 0;
 			String sp = array.size() > 11 ? array.get(11).getAsString() : "vehicle";
 			String rs = array.size() > 12 ? array.get(12).getAsString() : null;
-			return new RectLightBeam(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
+			return init(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
 		}
 		
 
@@ -788,9 +799,33 @@ public class DefaultPrograms {
 			float rz = args.length > 10 ? Float.parseFloat(args[10]) : 0;
 			String sp = args.length > 11 ? args[11] : "vehicle";
 			String rs = args.length > 12 ? args[12] : null;
-			return new RectLightBeam(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
+			return init(sx, sy, sz, expw, exph, x, y, z, rx, ry, rz, sp, rs).setPredicate(predicate);
 		}
 		
 	}
 	
+	public static final RectLightBeam RECT_LIGHTBEAM = new RectLightBeam("fvtm:rect_light_beam").register();
+	public static final RectLightBeam RECT_LIGHTBEAM_LIGHTS = new RectLightBeam("fvtm:rlb_lights").setPredicate((ent, veh) -> veh.getLightsState()).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_FRONT_LIGHTS = new RectLightBeam("fvtm:rlb_front_lights").setPredicate((ent, veh) -> veh.getLightsState()).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_BACK_LIGHTS = new RectLightBeam("fvtm:rlb_back_lights").setPredicate((ent, veh) -> veh.getLightsState() || veh.getThrottle() < -0.01).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_REAR_LIGHTS = RECT_LIGHTBEAM_BACK_LIGHTS;
+	public static final RectLightBeam RECT_LIGHTBEAM_BRAKE_LIGHTS = RECT_LIGHTBEAM_REAR_LIGHTS;
+	public static final RectLightBeam RECT_LIGHTBEAM_LONG_LIGHTS = new RectLightBeam("fvtm:rlb_long_lights").setPredicate((ent, veh) -> veh.getLongLightsState()).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_FOG_LIGHTS = RECT_LIGHTBEAM_LONG_LIGHTS;
+	public static final RectLightBeam RECT_LIGHTBEAM_REVERSE_LIGHTS = new RectLightBeam("fvtm:rlb_reverse_lights").setPredicate((ent, veh) -> veh.getThrottle() < -0.01).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_SIGNAL_LEFT = new RectLightBeam("fvtm:rlb_signal_left").setPredicate((ent, veh) -> BLINKER_TOGGLE && (veh.getTurnLightLeft() || veh.getWarningLights())).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_SIGNAL_RIGHT = new RectLightBeam("fvtm:rlb_signal_right").setPredicate((ent, veh) -> BLINKER_TOGGLE && (veh.getTurnLightRight() || veh.getWarningLights())).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_WARNING_LIGHTS = new RectLightBeam("fvtm:rlb_warning_lights").setPredicate((ent, veh) -> BLINKER_TOGGLE && veh.getWarningLights()).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_INDICATOR_LEFT = RECT_LIGHTBEAM_SIGNAL_LEFT;
+	public static final RectLightBeam RECT_LIGHTBEAM_INDICATOR_RIGHT = RECT_LIGHTBEAM_SIGNAL_RIGHT;
+	public static final RectLightBeam RECT_LIGHTBEAM_BACK_LIGHTS_SIGNAL_LEFT = new RectLightBeam("fvtm:rlb_back_lights_signal_left").setPredicate((ent, veh) -> {
+		if(veh.getTurnLightLeft() || veh.getWarningLights()) return BLINKER_TOGGLE;
+		return veh.getLightsState() || veh.getThrottle() < -0.01;
+	}).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_BACK_LIGHTS_SIGNAL_RIGHT = new RectLightBeam("fvtm:rlb_back_lights_signal_right").setPredicate((ent, veh) -> {
+		if(veh.getTurnLightRight() || veh.getWarningLights()) return BLINKER_TOGGLE;
+		return veh.getLightsState() || veh.getThrottle() < -0.01;
+	}).register();
+	public static final RectLightBeam RECT_LIGHTBEAM_TAIL_LIGHTS_SIGNAL_LEFT = RECT_LIGHTBEAM_BACK_LIGHTS_SIGNAL_LEFT;
+	public static final RectLightBeam RECT_LIGHTBEAM_TAIL_LIGHTS_SIGNAL_RIGHT = RECT_LIGHTBEAM_BACK_LIGHTS_SIGNAL_RIGHT;
 }

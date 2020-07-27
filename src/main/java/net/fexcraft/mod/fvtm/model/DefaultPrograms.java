@@ -764,6 +764,7 @@ public class DefaultPrograms {
 				),
 				new Pos(x, y, z).to16Double(), swivelpoint, resloc == null ? null : new ResourceLocation(resloc), null
 			);
+			beam.setPredicate(predicate);
 			return beam;
 		}
 		

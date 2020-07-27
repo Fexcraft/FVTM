@@ -70,7 +70,8 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	            GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
 	            GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
 	            EffectRenderer.RENDER_VEHROT.put(vehicle.getEntityId(), new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks));
-	            GL11.glPushMatrix(); RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
+	            GL11.glPushMatrix();
+	            RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
 	            {
 		            GL11.glRotatef(180f, 0f, 0f, 1f);
 		            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getType().getModel();

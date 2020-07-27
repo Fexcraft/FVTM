@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -52,6 +53,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
         if(vehicle.getVehicleData() == null){ return; }
         GL11.glPushMatrix();
         {
+        	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new Vec3d(x, y, z));
             GL11.glTranslated(x, y, z);
             GL11.glPushMatrix();
             {
@@ -67,6 +69,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 	            GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);
 	            GL11.glRotatef(vehicle.prevRotationPitch + pitch * ticks, 0.0F, 0.0F, 1.0F);
 	            GL11.glRotatef(vehicle.prevRotationRoll + roll * ticks, 1.0F, 0.0F, 0.0F);
+	            EffectRenderer.RENDER_VEHROT.put(vehicle.getEntityId(), new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks));
 	            GL11.glPushMatrix();
 	            RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
 	            {

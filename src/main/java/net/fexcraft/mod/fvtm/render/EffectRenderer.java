@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
@@ -26,6 +27,7 @@ public class EffectRenderer {
 	public static final HashMap<Integer, Vec3f> RENDER_VEHROT = new HashMap<>();
 	public static final HashMap<Integer, Vec3d> RENDER_VEHPOS = new HashMap<>();
 	public static final ResourceLocation LIGHT_TEXTURE = new ResourceLocation("fvtm:textures/entity/light_beam.png");
+	public static ResourceLocation last;
 	
     @SubscribeEvent
     public void renderLights(RenderWorldLastEvent event){
@@ -40,6 +42,15 @@ public class EffectRenderer {
         	LightBeam light = LIGHTRAYS.get(i);
         	VehicleData data = LIGHTRAYDATAS.get(i);
         	VehicleEntity veh = LIGHTRAYVEHS.get(i);
+        	if(light.tex != null){
+        		if(last == null || !last.equals(light.tex)){
+        			ModelBase.bindTexture(last = light.tex);
+        		}
+        	}
+        	else if(last != null){
+        		last = null;
+        		ModelBase.bindTexture(LIGHT_TEXTURE);
+        	}
         	Vec3d vehpos = RENDER_VEHPOS.get(veh.getEntity().getEntityId());
             GL11.glPushMatrix();
             GL11.glTranslated(vehpos.x, vehpos.y, vehpos.z);
@@ -52,26 +63,33 @@ public class EffectRenderer {
             GL11.glRotatef(180f, 0f, 0f, 1f);
             if(light.swivel == null || light.swivel.equals("vehicle")){
                 GL11.glTranslated(light.pos.x, light.pos.y, light.pos.z);
-                GL11.glColor4f(1, 1, 1, 0.5F);
-            	light.shape.render();
-                GL11.glColor4f(1, 1, 1, 0.5F);
-            	light.shape.render();
             }
             else{
-            	//
+        		SwivelPoint point = data.getRotationPoint(light.swivel);
+        		Vec3d pos = point.getRelativeVector(light.pos, true);
+        		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
+        		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
+                GL11.glTranslated(pos.x, pos.y, pos.z);
+        		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
+        		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
             }
+            GL11.glColor4f(1, 1, 1, 0.5F);
+        	light.shape.render();
+            GL11.glColor4f(1, 1, 1, 0.5F);
+        	light.shape.render();
             //
             GL11.glPopMatrix();
         	GL11.glPopMatrix();
         }
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_BLEND);
     	GL11.glPopMatrix();
         LIGHTRAYS.clear();
         LIGHTRAYDATAS.clear();
         LIGHTRAYVEHS.clear();
+        last = null;
     }
 
 }

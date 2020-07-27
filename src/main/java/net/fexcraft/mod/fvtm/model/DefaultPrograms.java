@@ -547,9 +547,9 @@ public class DefaultPrograms {
 
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        //GlStateManager.enableBlend();
-	        //GlStateManager.disableAlpha();
-	        //GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_DST_COLOR);
+	        GlStateManager.enableBlend();
+	        GlStateManager.disableAlpha();
+	        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.SRC_COLOR);
 	        //if(ent != null) GlStateManager.depthMask(!ent.isInvisible());
 	        lx = OpenGlHelper.lastBrightnessX; ly = OpenGlHelper.lastBrightnessY;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, x, y);
@@ -559,8 +559,8 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
-	        //GlStateManager.disableBlend();
-	        //GlStateManager.enableAlpha();
+	        GlStateManager.disableBlend();
+	        GlStateManager.enableAlpha();
 		}
 		
 	}

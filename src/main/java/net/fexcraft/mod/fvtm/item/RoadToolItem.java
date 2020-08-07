@@ -1,8 +1,5 @@
 package net.fexcraft.mod.fvtm.item;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOL;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,12 +7,13 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.registry.fItem;
-import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -43,7 +41,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	public static RoadToolItem INSTANCE;
 
     public RoadToolItem(){
-		super(); INSTANCE = this; if(Static.side().isServer()) return;
+		super(); INSTANCE = this;
+		if(Static.side().isServer()) return;
     }
 
     @SideOnly(Side.CLIENT)
@@ -103,11 +102,13 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         }
     }
 	
-	@SuppressWarnings("deprecation") @Override
+	@SuppressWarnings("deprecation")
+	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote){ return EnumActionResult.PASS; }
         if(hand == EnumHand.OFF_HAND){
-        	GenericContainer.openGui(ROADTOOL, new int[]{ 0, 0, 0 }, LISTENERID, player); return EnumActionResult.SUCCESS;
+        	player.openGui(FVTM.getInstance(), GuiHandler.ROADTOOL, world, pos.getX(), pos.getY(), pos.getZ());
+        	return EnumActionResult.SUCCESS;
         }
         if(!player.capabilities.isCreativeMode){
         	Print.chat(player, "&9This is a &6CREATIVE &9mode tool."); return EnumActionResult.FAIL;

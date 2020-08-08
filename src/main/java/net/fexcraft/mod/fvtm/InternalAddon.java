@@ -42,7 +42,8 @@ public class InternalAddon extends Addon {
 			obj.addProperty("Addon", REGNAME.toString());
 			obj.addProperty("Name", "30px Standard Gauge");
 			obj.addProperty("Description", "fvtm:standard.gauge_desc");
-			obj.addProperty("Width", 30); obj.addProperty("Height", 4);
+			obj.addProperty("Width", 30);
+			obj.addProperty("Height", 6);
 			obj.addProperty("Model", "fvtm:models/gauges/standard");
 			obj.addProperty("TiesTexture", "fvtm:textures/blocks/standard_gauge.png");
 			obj.addProperty("ModelTexture", "fvtm:textures/blocks/30px_standard_gauge.png");

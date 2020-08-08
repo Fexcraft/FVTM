@@ -214,10 +214,10 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 					height = v.y; state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
 					if(state.getBlock() != Asphalt.INSTANCE || state.getValue(Asphalt.HEIGHT) < height){
 						if(world.getBlockState(blk.up()).getBlock() instanceof Asphalt) height = 0;
-						world.setBlockState(blk, Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, height), 2);
+						world.setBlockState(blk, Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, height));
 					}
 					if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
-						world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0), 2);
+						world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0));
 					}
 					int checkheight = topheight == 0 ? 4 : topheight;
 					for(int i = 1; i < checkheight; i++){
@@ -235,10 +235,10 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 						block = height <= 8 && blockhalf.get(i).getBlock() != Blocks.AIR ? blockhalf.get(i) : blockfill.get(i);
 						//
 						if(state != block){
-							world.setBlockState(blk, block, 2);
+							world.setBlockState(blk, block);
 						}
 						if((height < 9 && height != 0) || world.getBlockState(blk.down()) != blockfill.get(i)){
-							world.setBlockState(blk.down(), blockfill.get(i), 2);
+							world.setBlockState(blk.down(), blockfill.get(i));
 						}
 						int checkheight = topheight == 0 ? 4 : topheight;
 						for(int j = 1; j < checkheight; j++){
@@ -255,7 +255,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 					for(int i = -1/*1*/; i < borderheight_l + 1; i++){
 						//if(i == 1 && height > 8) continue;
 						//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-							world.setBlockState(blk.up(i), left, 2);
+							world.setBlockState(blk.up(i), left);
 						//}
 					}
 				}
@@ -266,7 +266,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 					for(int i = -1/*1*/; i < borderheight_r + 1; i++){
 						//if(i == 1 && height > 8) continue;
 						//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-							world.setBlockState(blk.up(i), righ, 2);
+							world.setBlockState(blk.up(i), righ);
 						//}
 					}
 				}
@@ -275,7 +275,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				for(Vec316f v : ground){
 					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
 					if(world.getBlockState(blk).getBlock() != Asphalt.INSTANCE){
-						world.setBlockState(blk, bot, 2);
+						world.setBlockState(blk, bot);
 					}
 				}
 			}
@@ -283,7 +283,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 				for(Vec316f v : roof){
 					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
 					//if(world.getBlockState(blk).isOpaqueCube()){
-						world.setBlockState(blk, top, 2);
+						world.setBlockState(blk, top);
 					//}
 				}
 			}

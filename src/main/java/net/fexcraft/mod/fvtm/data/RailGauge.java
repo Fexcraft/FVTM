@@ -34,7 +34,8 @@ public class RailGauge extends TypeCore<RailGauge> {
 	protected int width;
 	/** In "micro blocks" (1 = 1/16th of a block).
 	 * Height between the placed track point and the actual position of the wheels on the rail. */
-	protected float height; protected float height16;
+	protected float height, height16;
+	protected float blockwidth;
 	protected RailGaugeItem item;
 	protected List<String> compatible;
 	protected ResourceLocation rail_texture, ties_texture, model_texture;
@@ -72,6 +73,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 		this.width = JsonUtil.getIfExists(obj, "Width", 30).intValue();
 		this.height = JsonUtil.getIfExists(obj, "Height", 4).floatValue();
 		this.height16 = height * Static.sixteenth;
+		this.blockwidth = JsonUtil.getIfExists(obj, "BlockSpace", 2).floatValue();
 		this.rail_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "RailTexture", "fvtm:textures/entity/null.png"));
 		this.ties_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "TiesTexture", "minecraft:textures/blocks/anvil_base.png"));
 		this.model_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "ModelTexture", "fvtm:textures/entity/null.png"));
@@ -181,6 +183,10 @@ public class RailGauge extends TypeCore<RailGauge> {
 	@Nullable
 	public ArrayList<RailPresetItem> getPresets(){
 		return presets;
+	}
+	
+	public float getBlockWidth(){
+		return blockwidth;
 	}
 
 }

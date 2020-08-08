@@ -1,12 +1,15 @@
 package net.fexcraft.mod.fvtm.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -16,9 +19,11 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -113,14 +118,69 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			}
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
+				if(!validate(world, track, junk, second)) return EnumActionResult.SUCCESS;
 				second.addnew(track); junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();
-				Print.chat(player, "&aTrack Created!"); stack.getTagCompound().removeTag("fvtm:railpoints");
-				if(!player.capabilities.isCreativeMode) stack.shrink(1);
-			} else{ Print.chat(player, "&cNo Junction at starting point found!"); }
+				Print.chat(player, "&aTrack Created!");
+				stack.getTagCompound().removeTag("fvtm:railpoints");
+				if(!player.capabilities.isCreativeMode){
+					stack.shrink(1);
+				}
+			}
+			else Print.chat(player, "&cNo Junction at starting point found!");
 			return EnumActionResult.SUCCESS;
 		}
     }
+
+	private boolean validate(World world, Track track, Junction junk, Junction second){
+		float width = type.getBlockWidth(), angle, passed = 0, half = (width * 0.5f) - 0.25f;
+		Vec3f last, vec;
+		ArrayList<Vec316f> path = new ArrayList<>();
+		IBlockState state;
+		BlockPos blk;
+		vec = track.getVectorPosition0(0.001f, false);
+		angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
+		angle += Static.rad90;
+		for(float fl = -half; fl <= half; fl += 0.25f){
+			path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
+		}
+		passed = 0;
+		while(passed < track.length){
+			last = vec; vec = track.getVectorPosition0(passed, false);
+			angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+			angle += Static.rad90;
+			for(float fl = -half; fl <= half; fl += 0.25f){
+				path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, type.height16(), 0)))));
+			}
+			passed += 0.125f;
+		}
+		int height;
+		if(path != null){
+			for(Vec316f v : path){
+				height = v.y;
+				state = world.getBlockState(blk = height != 0 ? v.pos : v.pos.down());
+				if(state.getBlock() != Asphalt.INSTANCE || state.getValue(Asphalt.HEIGHT) < height){
+					if(world.getBlockState(blk.up()).getBlock() instanceof Asphalt) height = 0;
+					world.setBlockState(blk, Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, height));
+				}
+				if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
+					world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0));
+				}
+				int checkheight = 1;
+				for(int i = 1; i < checkheight; i++){
+					if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+						world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static final Vec3f grv(float rad, Vec3f vec){
+        double co = Math.cos(rad), si = Math.sin(rad);
+        return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);
+	}
 
 	private boolean createdJunction(RailSys syscap, EntityPlayer player, NBTTagList list, Vec316f vector){
 		if(list.tagCount() != 1) return false; Vec316f vec = getFirstVector(list); if(!vec.equals(vector)) return false;

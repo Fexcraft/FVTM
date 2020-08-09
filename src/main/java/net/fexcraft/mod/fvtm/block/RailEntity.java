@@ -7,15 +7,12 @@ import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class RailEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 	
@@ -57,7 +54,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
-        super.readFromNBT(pkt.getNbtCompound());
+        //super.readFromNBT(pkt.getNbtCompound());
         this.readFromNBT(pkt.getNbtCompound());
     }
 
@@ -86,10 +83,10 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
         }
     }
 
-    @Override
+    /*@Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState){
         return removed;
-    }
+    }*/
 
 	public ArrayList<PathKey> getTracks(){
 		return tracks;

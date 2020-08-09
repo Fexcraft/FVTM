@@ -31,8 +31,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 
 @fModel(registryname = "fvtm:models/block/dynamic_rail")
 public class RailModel implements FCLBlockModel {
-	
-	//private static final ResourceLocation temp_tex = new ResourceLocation("minecraft:textures/blocks/anvil_base");
 
 	public RailModel(){
 		//TODO
@@ -120,16 +118,13 @@ public class RailModel implements FCLBlockModel {
 	}
 
 	@Override
-	public boolean useDefaultCacheKey(){ return false; }
+	public boolean useDefaultCacheKey(){
+		return false;
+	}
 
 	@Override
 	public String getCacheKey(IBlockState state, EnumFacing side, Map<String, String> customdata, long rand){
 		return Long.toHexString(((IExtendedBlockState)state).getValue(POSITION).toLong());
 	}
-	
-	/*@Override
-	public Collection<ResourceLocation> getTextures(Map<String, String> customdata){
-		return Collections.singleton(temp_tex);
-	}*/
 	
 }

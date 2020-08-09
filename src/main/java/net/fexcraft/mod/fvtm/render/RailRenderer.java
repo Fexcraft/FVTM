@@ -374,16 +374,17 @@ public class RailRenderer {
 				path.add(vec.add(VecUtil.rotByRad(angle, model.rails[p][1])));
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
-				vert0 = new TexturedVertex(path.get(k * 2), 0, 0);
-				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 0);
-				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
-				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 0, 0);
-				vert0.vector = vert0.vector.subtract(track.vecpath[0]);
-				vert1.vector = vert1.vector.subtract(track.vecpath[0]);
-				vert2.vector = vert2.vector.subtract(track.vecpath[0]);
-				vert3.vector = vert3.vector.subtract(track.vecpath[0]);
-				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed; if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
+				vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
+				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 1);
+				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
+				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 1, 0);
+				Vec3f vac = new Vec3f((int)tarp.positions[pess].xCoord, (int)tarp.positions[pess].yCoord, (int)tarp.positions[pess].zCoord);
+				vert0.vector = vert0.vector.subtract(vac);
+				vert1.vector = vert1.vector.subtract(vac);
+				vert2.vector = vert2.vector.subtract(vac);
+				vert3.vector = vert3.vector.subtract(vac);
+				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
 				tarp.turbos[pess].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0/*.setColor(MIDDLE_GRAY)*/ });
 				passed += track.vecpath[k].distanceTo(track.vecpath[k + 1]);
 			}
@@ -415,8 +416,8 @@ public class RailRenderer {
 
 	public static class TurboArrayPositioned {
 		
-		private ModelRendererTurbo[] turbos;
-		private Vec3f[] positions;
+		public ModelRendererTurbo[] turbos;
+		public Vec3f[] positions;
 		
 		public TurboArrayPositioned(Track track, RGB colour){
 			int i = (int)track.getLength(null);

@@ -1,11 +1,13 @@
 package net.fexcraft.mod.fvtm.block;
 
+import static net.fexcraft.mod.fvtm.block.UnlistedProperties.POSITION;
+
 import java.util.Random;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
@@ -14,6 +16,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -21,9 +25,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 
 @fBlock(modid = FVTM.MODID, name = "rail")
-public class RailBlock extends Block {
+public class RailBlock extends BlockContainer{
 	
 	public static RailBlock INSTANCE;
 
@@ -74,11 +79,16 @@ public class RailBlock extends Block {
     public int getLightOpacity(IBlockState state){
     	return state.getValue(HEIGHT) == 0 ? 255 : 0;
     }
-    
-    @Override
+	
+	@Override
     protected BlockStateContainer createBlockState(){
-        return new BlockStateContainer(this, HEIGHT);
+		return new BlockStateContainer.Builder(this).add(HEIGHT).add(POSITION).build();
     }
+	
+	@Override
+	public IExtendedBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos){
+		return ((IExtendedBlockState)state).withProperty(POSITION, pos);
+	}
 
     @Override
     public IBlockState getStateFromMeta(int meta){
@@ -123,6 +133,16 @@ public class RailBlock extends Block {
     @Override
     public boolean isReplaceable(IBlockAccess world, BlockPos pos){
         return false;
+    }
+
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta){
+		return new RailEntity();
+	}
+	
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState state){
+        return EnumBlockRenderType.MODEL;
     }
     
 }

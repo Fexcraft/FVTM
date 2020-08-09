@@ -4,8 +4,8 @@
     "model": "fvtm:dynamic_rail",
     "transform": "forge:default-block",
     "custom": {
-    	"t-x": 0.5,
-    	"t-z": 0.5
+    	"rectify": false,
+    	"scale": 1
     }
   },
   "variants": {

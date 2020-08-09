@@ -12,6 +12,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.RailBlock;
+import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -171,6 +172,8 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				//if(world.getBlockState(blk.up()).getBlock() instanceof RailBlock) height = 0;
 				world.setBlockState(blk, RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, height));
 			}
+			RailEntity tile = (RailEntity)world.getTileEntity(blk);
+			tile.addTrack(track);
 			state = world.getBlockState(blk.down());
 			if(state.getBlock() instanceof RailBlock && state.getValue(HEIGHT) > 0){
 				world.setBlockState(blk.down(), RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, 0));

@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.DisplayBlock;
+import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockBase;
 import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -116,6 +117,7 @@ public class FVTM {
 		GameRegistry.registerTileEntity(BlockBase.TileEntity.class, new ResourceLocation("fvtm:blockbase"));
 		GameRegistry.registerTileEntity(M_4ROT_TE.TileEntity.class, new ResourceLocation("fvtm:multiblock"));
 		GameRegistry.registerTileEntity(M_4ROT_TE.TickableTE.class, new ResourceLocation("fvtm:multiblock_tickable"));
+		GameRegistry.registerTileEntity(RailEntity.class, new ResourceLocation("fvtm:rail"));
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
 		CapabilityManager.INSTANCE.register(RailSystem.class, new RailDataSerializer.Storage(), new RailDataSerializer.Callable());
@@ -213,7 +215,7 @@ public class FVTM {
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.rail.RecClient());
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.road.RecClient());
-			//MinecraftForge.EVENT_BUS.register(new RailRenderer());
+			MinecraftForge.EVENT_BUS.register(new RailRenderer());
 			MinecraftForge.EVENT_BUS.register(new RoadRenderer());
 			MinecraftForge.EVENT_BUS.register(new EffectRenderer());
 		}

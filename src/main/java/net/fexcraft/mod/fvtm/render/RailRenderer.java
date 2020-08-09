@@ -178,7 +178,7 @@ public class RailRenderer {
             	GL11.glTranslatef(junctions[i].getVec3f().xCoord, junctions[i].getVec3f().yCoord, junctions[i].getVec3f().zCoord);
             	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
-        		renderLines(junctions[i]);
+        		//MOVED renderLines(junctions[i]);
         	}
         	/*RailEntity[] entities = reg.getEntities().values().toArray(new RailEntity[0]);
         	for(int i = 0; i < entities.length; i++){
@@ -221,6 +221,7 @@ public class RailRenderer {
 		GL11.glPopMatrix();
     }
 
+	@SuppressWarnings("unused")
 	private void renderLines(Junction value){
         /*if(Command.DEBUG){
     		Tessellator tessellator = Tessellator.getInstance();
@@ -377,9 +378,13 @@ public class RailRenderer {
 				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 0);
 				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
 				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 0, 0);
+				vert0.vector = vert0.vector.subtract(track.vecpath[0]);
+				vert1.vector = vert1.vector.subtract(track.vecpath[0]);
+				vert2.vector = vert2.vector.subtract(track.vecpath[0]);
+				vert3.vector = vert3.vector.subtract(track.vecpath[0]);
 				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed; if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
-				tarp.turbos[pess].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
+				tarp.turbos[pess].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0/*.setColor(MIDDLE_GRAY)*/ });
 				passed += track.vecpath[k].distanceTo(track.vecpath[k + 1]);
 			}
 		}
@@ -414,11 +419,14 @@ public class RailRenderer {
 		private Vec3f[] positions;
 		
 		public TurboArrayPositioned(Track track, RGB colour){
-			int i = (int)track.getLength(null); if(track.length % 1f > 0) i++; if(i == 0) i = 1;
-			turbos = new ModelRendererTurbo[i]; positions = new Vec3f[i];
+			int i = (int)track.getLength(null);
+			if(track.length % 1f > 0) i++;
+			if(i == 0) i = 1;
+			turbos = new ModelRendererTurbo[i];
+			positions = new Vec3f[i];
 			for(int k = 0; k < i; k++){
 				turbos[k] = new ModelRendererTurbo(track, 0, 0, 16, 16);
-				if(colour != null) turbos[k].setColor(colour);
+				//if(colour != null) turbos[k].setColor(colour);
 				positions[k] = track.getVectorPosition(k, false);
 			}
 		}

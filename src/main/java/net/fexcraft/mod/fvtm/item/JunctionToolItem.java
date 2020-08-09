@@ -66,6 +66,9 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking()){
         	Junction junc = syscap.getJunction(vector);
+        	if(junc == null){
+				Print.chat(player, "&cNo junction at position.");
+        	}
         	if(junc.size() > 0){
 				Print.chat(player, "&cDisconnect all tracks before removing a Junction.");
         	}

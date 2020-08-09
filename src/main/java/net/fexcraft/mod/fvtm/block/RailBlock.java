@@ -51,6 +51,11 @@ public class RailBlock extends Block {
     }
 
     @Override
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
+        return HEIGHTBOXES[state.getValue(HEIGHT)].offset(pos);
+    }
+
+    @Override
     public boolean isFullBlock(IBlockState state){
         return state.getValue(HEIGHT) == 0;
     }

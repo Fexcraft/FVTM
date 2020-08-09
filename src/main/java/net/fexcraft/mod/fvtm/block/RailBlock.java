@@ -67,17 +67,17 @@ public class RailBlock extends BlockContainer{
 
     @Override
     public boolean isFullCube(IBlockState state){
-        return state.getValue(HEIGHT) == 0;
+        return false;//state.getValue(HEIGHT) == 0;
     }
 
     @Override
     public boolean isOpaqueCube(IBlockState state){
-        return state.getValue(HEIGHT) == 0;
+        return false;//state.getValue(HEIGHT) == 0;
     }
     
 	@Override
     public int getLightOpacity(IBlockState state){
-    	return state.getValue(HEIGHT) == 0 ? 255 : 0;
+    	return 0;//state.getValue(HEIGHT) == 0 ? 255 : 0;
     }
 	
 	@Override

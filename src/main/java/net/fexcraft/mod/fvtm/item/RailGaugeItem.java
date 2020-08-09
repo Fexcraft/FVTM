@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
+import static net.fexcraft.mod.fvtm.block.RailBlock.HEIGHT;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
@@ -23,7 +25,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -118,7 +119,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			}
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
-				if(!validate(world, track, junk, second)) return EnumActionResult.SUCCESS;
+				if(!validate(player, world, track, junk, second)) return EnumActionResult.SUCCESS;
 				second.addnew(track); junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();
 				Print.chat(player, "&aTrack Created!");
@@ -132,8 +133,8 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		}
     }
 
-	private boolean validate(World world, Track track, Junction junk, Junction second){
-		float width = type.getBlockWidth(), angle, passed = 0, half = (width * 0.5f) - 0.25f;
+	private boolean validate(EntityPlayer player, World world, Track track, Junction junk, Junction second){
+		float width = type.getBlockWidth(), angle, half = (width * 0.5f) - 0.25f;
 		Vec3f last, vec;
 		ArrayList<Vec316f> path = new ArrayList<>();
 		IBlockState state;
@@ -141,10 +142,10 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		vec = track.getVectorPosition0(0.001f, false);
 		angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
 		angle += Static.rad90;
-		for(float fl = -half; fl <= half; fl += 0.25f){
-			path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
-		}
-		passed = 0;
+		/*for(float fl = -half; fl <= half; fl += 0.25f){
+			path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, type.height16(), 0)))));
+		}*/
+		float passed = 0.125f;
 		while(passed < track.length){
 			last = vec; vec = track.getVectorPosition0(passed, false);
 			angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
@@ -155,26 +156,33 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			passed += 0.125f;
 		}
 		int height;
-		if(path != null){
-			for(Vec316f v : path){
-				height = v.y;
-				state = world.getBlockState(blk = height != 0 ? v.pos : v.pos.down());
-				if(state.getBlock() != Asphalt.INSTANCE || state.getValue(Asphalt.HEIGHT) < height){
-					if(world.getBlockState(blk.up()).getBlock() instanceof Asphalt) height = 0;
-					world.setBlockState(blk, Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, height));
-				}
-				if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
-					world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0));
-				}
-				int checkheight = 1;
-				for(int i = 1; i < checkheight; i++){
-					if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-						world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
-					}
-				}
+		for(Vec316f v : path){
+			height = v.y;
+			state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
+			if(state.getBlock() != RailBlock.INSTANCE && !state.getBlock().isReplaceable(world, blk)){
+	            Print.bar(player, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
+	            return false;
 			}
 		}
-		return false;
+		for(Vec316f v : path){
+			height = v.y;
+			state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
+			if(state.getBlock() != RailBlock.INSTANCE || state.getValue(HEIGHT) < height){
+				//if(world.getBlockState(blk.up()).getBlock() instanceof RailBlock) height = 0;
+				world.setBlockState(blk, RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, height));
+			}
+			state = world.getBlockState(blk.down());
+			if(state.getBlock() instanceof RailBlock && state.getValue(HEIGHT) > 0){
+				world.setBlockState(blk.down(), RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, 0));
+			}
+			/*int checkheight = 1;
+			for(int i = 1; i < checkheight; i++){
+				if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+					world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+				}
+			}*/
+		}
+		return true;
 	}
 	
 	public static final Vec3f grv(float rad, Vec3f vec){

@@ -421,14 +421,18 @@ public class RailRenderer {
 		
 		public TurboArrayPositioned(Track track, RGB colour){
 			int i = (int)track.getLength(null);
-			if(track.length % 1f > 0) i++;
+			boolean uneven = false;
+			if(track.length % 1f > 0){
+				uneven = true;
+				i++;
+			}
 			if(i == 0) i = 1;
 			turbos = new ModelRendererTurbo[i];
 			positions = new Vec3f[i];
 			for(int k = 0; k < i; k++){
 				turbos[k] = new ModelRendererTurbo(track, 0, 0, 16, 16);
 				//if(colour != null) turbos[k].setColor(colour);
-				positions[k] = track.getVectorPosition(k, false);
+				positions[k] = track.getVectorPosition(k == 0 ? 0.125f : k == i - 1 && uneven? track.length - 0.125f : k, false);
 			}
 		}
 

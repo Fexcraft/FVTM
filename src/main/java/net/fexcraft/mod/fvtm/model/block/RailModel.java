@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
+import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.VecUtil;
@@ -52,14 +53,20 @@ public class RailModel implements FCLBlockModel {
 			Print.log("Applying path " + key.toString() + "!");
 			Track track = sys.get().getTrack(key);
 			if(track == null){
-				Print.log("not found");
+				Print.log("track not found");
 				continue;
 			}
-			list.add(generateBlockSegment(pos, track, track.gauge.getModel()));
+			if(track.railmodel == null) RailRenderer.generateTrackModel(track, track.gauge.getModel());
+			for(int i = 0; i < track.railmodel.turbos.length; i++){
+				if(!range(pos, track.railmodel.positions[i])) continue;
+				list.add(track.railmodel.turbos[i]);
+			}
+			//list.add(generateBlockSegment(pos, track, track.gauge.getModel()));
 		}
 		return list;
 	}
 	
+	@SuppressWarnings("unused")
 	private ModelRendererTurbo generateBlockSegment(BlockPos pos, Track track, RailGaugeModel model){
 		ModelRendererTurbo turbo = new ModelRendererTurbo(null, 0, 0, 1, 1);
 		float angle, passed = 0;
@@ -86,11 +93,11 @@ public class RailModel implements FCLBlockModel {
 				path.add(vec.add(VecUtil.rotByRad(angle, model.rails[p][1])));
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
-				if(!range(path.get(k), track.getVectorPosition0(passed, false), pos)) continue;//TODO improved checks
 				vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
 				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 1);
 				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
 				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 1, 0);
+				if(!range(pos, track.getVectorPosition0(passed, false), vert0.vector, vert1.vector, vert2.vector, vert3.vector)) continue;
 				Vec3f veca = track.vecpath[0].subtract(pos.getX(), pos.getY(), pos.getZ());
 				vert0.vector = vert0.vector.subtract(track.vecpath[0]).add(veca);
 				vert1.vector = vert1.vector.subtract(track.vecpath[0]).add(veca);
@@ -104,11 +111,12 @@ public class RailModel implements FCLBlockModel {
 		return turbo;
 	}
 
-	private boolean range(Vec3f vec, Vec3f vec2, BlockPos pos){
-		int x = (int)vec.xCoord, y = (int)vec.yCoord, z = (int)vec.zCoord;
-		if(x == pos.getX() && y == pos.getY() && z == pos.getZ()) return true;
-		x = (int)vec2.xCoord; y = (int)vec2.yCoord; z = (int)vec2.zCoord;
-		return x == pos.getX() && y == pos.getY() && z == pos.getZ();
+	private boolean range(BlockPos pos, Vec3f... vecs){
+		for(Vec3f vec : vecs){
+			int x = (int)vec.xCoord, y = (int)vec.yCoord, z = (int)vec.zCoord;
+			if(x == pos.getX() && y == pos.getY() && z == pos.getZ()) return true;
+		}
+		return false;
 	}
 
 	@Override

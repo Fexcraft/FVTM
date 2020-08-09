@@ -151,7 +151,7 @@ public class DisplayBlock extends Block implements ITileEntityProvider {
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
-        return AABB;
+        return AABB.offset(pos);
     }
 
     @Override

@@ -29,7 +29,6 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -222,6 +221,7 @@ public class RailRenderer {
     }
 
 	@SuppressWarnings("unused")
+	@Deprecated
 	private void renderLines(Junction value){
         /*if(Command.DEBUG){
     		Tessellator tessellator = Tessellator.getInstance();
@@ -272,10 +272,10 @@ public class RailRenderer {
         		if(track.railmodel == null){ generateTrackModel(track, model); }
         		ModelBase.bindTexture(track.gauge.getRailTexture());
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.disableCull();
-        		track.railmodel.render();
+        		//track.railmodel.render();
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.enableCull();
         		ModelBase.bindTexture(track.gauge.getTiesTexture());
-        		track.restmodel.render();
+        		//track.restmodel.render();
         	}
         	if(Command.DEBUG){ Track track;
         		for(int i = 0; i < value.size(); i++){ track = value.tracks.get(i);
@@ -432,24 +432,13 @@ public class RailRenderer {
 			}
 		}
 
-		public void render(){
-			for(int m = 0; m < turbos.length; m++){
-		        int i = getBrightness(positions[m]), j = i % 65536, k = i / 65536;
-		        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
-		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F); turbos[m].render(1f);
-			}
-		}
-
-		public void renderPlain(){
-			for(int m = 0; m < turbos.length; m++){ turbos[m].render(1f); }
-		}
-
 		public void clearDisplayLists(){
 			for(ModelRendererTurbo turbo : turbos) if(turbo != null && turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
 		}
 		
 	}
 
+	@Deprecated
 	public static int getBrightness(Vec3f vec){
         BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(vec.xCoord), 0, MathHelper.floor(vec.zCoord));
         if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){
@@ -457,6 +446,7 @@ public class RailRenderer {
         } else { return 0; }
 	}
 
+	@Deprecated
 	public static int getBrightness(double x, double y, double z){
         BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(x), 0, MathHelper.floor(z));
         if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){

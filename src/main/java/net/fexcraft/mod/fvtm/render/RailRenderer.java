@@ -436,6 +436,11 @@ public class RailRenderer {
 			for(ModelRendererTurbo turbo : turbos) if(turbo != null && turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
 		}
 		
+		@Deprecated
+		public void render(){
+			for(int m = 0; m < turbos.length; m++){ turbos[m].render(1f); }
+		}
+		
 	}
 
 	@Deprecated

@@ -125,6 +125,8 @@ public class RailBlock extends BlockContainer{
         return new ItemStack(this).getItem();
     }
     
+    //TODO drops
+    
     @Override
     public ItemStack getItem(World world, BlockPos pos, IBlockState state){
         return new ItemStack(this, 1, state.getValue(HEIGHT));
@@ -143,6 +145,14 @@ public class RailBlock extends BlockContainer{
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state){
         return EnumBlockRenderType.INVISIBLE;
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state){
+    	if(!world.isRemote){
+    		((RailEntity)world.getTileEntity(pos)).remTracks(world);
+        }
+        super.breakBlock(world, pos, state);
     }
     
 }

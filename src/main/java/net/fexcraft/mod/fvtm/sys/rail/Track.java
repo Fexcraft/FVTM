@@ -101,5 +101,9 @@ public class Track extends Path {
 	public PathType getType(){
 		return PathType.RAIL;
 	}
+	
+	public Junction getJunction(){
+		return junction;
+	}
 
 }

@@ -120,7 +120,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			}
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
-				if(!validate(player, world, track, junk, second)) return EnumActionResult.SUCCESS;
+				if(!register(player, world, track)) return EnumActionResult.SUCCESS;
 				second.addnew(track); junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();
 				Print.chat(player, "&aTrack Created!");
@@ -133,8 +133,17 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			return EnumActionResult.SUCCESS;
 		}
     }
+	
+	public static boolean register(EntityPlayer player, World world, Track track){
+		return register(player, world, track, true);
+	}
+	
+	public static boolean unregister(EntityPlayer player, World world, Track track){
+		return register(player, world, track, false);
+	}
 
-	private boolean validate(EntityPlayer player, World world, Track track, Junction junk, Junction second){
+	private static boolean register(EntityPlayer player, World world, Track track, boolean reg){
+		RailGauge type = track.getGauge();
 		float width = type.getBlockWidth(), angle, half = (width * 0.5f) - 0.25f;
 		Vec3f last, vec;
 		ArrayList<Vec316f> path = new ArrayList<>();
@@ -157,37 +166,48 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			passed += 0.125f;
 		}
 		int height;
-		for(Vec316f v : path){
-			height = v.y;
-			state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
-			if(state.getBlock() != RailBlock.INSTANCE && !state.getBlock().isReplaceable(world, blk)){
-	            Print.bar(player, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
-	            return false;
+		if(reg){
+			for(Vec316f v : path){
+				height = v.y;
+				state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
+				if(state.getBlock() != RailBlock.INSTANCE && !state.getBlock().isReplaceable(world, blk)){
+		            if(player != null) Print.bar(player, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
+		            return false;
+				}
 			}
 		}
 		for(Vec316f v : path){
 			height = v.y;
 			state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
-			if(state.getBlock() != RailBlock.INSTANCE || state.getValue(HEIGHT) < height){
+			if(state.getBlock() != RailBlock.INSTANCE || (reg && state.getValue(HEIGHT) < height)){
 				//if(world.getBlockState(blk.up()).getBlock() instanceof RailBlock) height = 0;
+				if(state.getBlock() == RailBlock.INSTANCE){
+					RailEntity tile = (RailEntity)world.getTileEntity(blk);
+					tile.remove = false;
+					tile.sendUpdate();
+				}
 				world.setBlockState(blk, RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, height));
 			}
 			RailEntity tile = (RailEntity)world.getTileEntity(blk);
-			tile.addTrack(track);
+			//if(!reg) Print.log(tile.getPos());
+			regTile(world, tile, track, height, reg);
 			state = world.getBlockState(blk.down());
-			if(state.getBlock() instanceof RailBlock && state.getValue(HEIGHT) > 0){
-				world.setBlockState(blk.down(), RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, 0));
-			}
-			/*int checkheight = 1;
-			for(int i = 1; i < checkheight; i++){
-				if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-					world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+			if(state.getBlock() instanceof RailBlock){
+				tile = (RailEntity)world.getTileEntity(blk.down());
+				if(reg && state.getValue(HEIGHT) > 0){
+					world.setBlockState(blk.down(), RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, 0));
 				}
-			}*/
+				regTile(world, tile, track, 0, reg);
+			}
 		}
 		return true;
 	}
 	
+	private static void regTile(World world, RailEntity tile, Track track, int height, boolean reg){
+		if(reg) tile.addTrack(track, height);
+		else tile.remTrack(track, world);
+	}
+
 	public static final Vec3f grv(float rad, Vec3f vec){
         double co = Math.cos(rad), si = Math.sin(rad);
         return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);

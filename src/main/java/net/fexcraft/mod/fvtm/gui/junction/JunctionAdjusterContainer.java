@@ -7,7 +7,9 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,7 +51,10 @@ public class JunctionAdjusterContainer extends GenericContainer {
 			int del = packet.getByte("del");
 			if(del < 0 || del >= junction.size()) return;
 			Print.debug("delpack: " + packet);
-			junction.remove(del, true); return;
+			Track track = junction.tracks.get(del);
+			junction.remove(del, true);
+			if(track != null) RailGaugeItem.unregister(player, player.world, track);
+			return;
 		}
 		else if(packet.hasKey("dw")){
 			int dw = packet.getByte("dw");

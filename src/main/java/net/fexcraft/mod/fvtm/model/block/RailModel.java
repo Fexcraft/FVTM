@@ -48,16 +48,18 @@ public class RailModel implements FCLBlockModel {
 		ArrayList<ModelRendererTurbo> list = new ArrayList<>();
 		RailSystem sys = Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null);
 		for(PathKey key : rail.getTracks()){
-			Print.log("Applying path " + key.toString() + "!");
+			//Print.log("Applying path " + key.toString() + "!");
 			Track track = sys.get().getTrack(key);
 			if(track == null){
-				Print.log("track not found");
+				//Print.log("track not found");
 				continue;
 			}
 			if(track.railmodel == null) RailRenderer.generateTrackModel(track, track.gauge.getModel());
 			for(int i = 0; i < track.railmodel.turbos.length; i++){
-				if(!range(pos, track.railmodel.positions[i])) continue;
-				list.add(track.railmodel.turbos[i]);
+				if(range(pos, track.railmodel.positions[i])){
+					list.add(track.railmodel.turbos[i]);
+					list.add(track.restmodel.turbos[i]);
+				}
 			}
 			//list.add(generateBlockSegment(pos, track, track.gauge.getModel()));
 		}

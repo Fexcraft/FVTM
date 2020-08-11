@@ -66,7 +66,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         		GL11.glPushMatrix();
             	GL11.glTranslatef(-l, 0, 0);
             	for(int i = l * 2 + 1; i > 0; i--){
-            		te.track.railmodel.render();
+            		te.track.railmodel.renderPlain();
             		GL11.glTranslatef(1, 0, 0);
             	}
             	GL11.glPopMatrix();
@@ -75,7 +75,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         		GL11.glPushMatrix();
             	GL11.glTranslatef(-l, 0, 0);
             	for(int i = l * 2 + 1; i > 0; i--){
-            		te.track.restmodel.render();
+            		te.track.restmodel.renderPlain();
             		GL11.glTranslatef(1, 0, 0);
             	}
             	GL11.glPopMatrix();

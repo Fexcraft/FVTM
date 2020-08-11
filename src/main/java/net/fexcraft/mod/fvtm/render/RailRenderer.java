@@ -29,6 +29,7 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -177,7 +178,7 @@ public class RailRenderer {
             	GL11.glTranslatef(junctions[i].getVec3f().xCoord, junctions[i].getVec3f().yCoord, junctions[i].getVec3f().zCoord);
             	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
-        		//MOVED renderLines(junctions[i]);
+        		renderLines(junctions[i]);
         	}
         	/*RailEntity[] entities = reg.getEntities().values().toArray(new RailEntity[0]);
         	for(int i = 0; i < entities.length; i++){
@@ -220,8 +221,6 @@ public class RailRenderer {
 		GL11.glPopMatrix();
     }
 
-	@SuppressWarnings("unused")
-	@Deprecated
 	private void renderLines(Junction value){
         /*if(Command.DEBUG){
     		Tessellator tessellator = Tessellator.getInstance();
@@ -272,10 +271,10 @@ public class RailRenderer {
         		if(track.railmodel == null){ generateTrackModel(track, model); }
         		ModelBase.bindTexture(track.gauge.getRailTexture());
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.disableCull();
-        		//track.railmodel.render();
+        		track.railmodel.render();
         		if(track.getGauge().getModel().rail_tempcull) GlStateManager.enableCull();
         		ModelBase.bindTexture(track.gauge.getTiesTexture());
-        		//track.restmodel.render();
+        		track.restmodel.render();
         	}
         	if(Command.DEBUG){ Track track;
         		for(int i = 0; i < value.size(); i++){ track = value.tracks.get(i);
@@ -374,18 +373,18 @@ public class RailRenderer {
 				path.add(vec.add(VecUtil.rotByRad(angle, model.rails[p][1])));
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
-				int pess = (int)passed; if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
 				vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
 				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 1);
 				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
 				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 1, 0);
-				Vec3f vac = new Vec3f((int)tarp.positions[pess].xCoord, (int)tarp.positions[pess].yCoord, (int)tarp.positions[pess].zCoord);
+				/*Vec3f vac = new Vec3f((int)tarp.positions[pess].xCoord, (int)tarp.positions[pess].yCoord, (int)tarp.positions[pess].zCoord);
 				vert0.vector = vert0.vector.subtract(vac);
 				vert1.vector = vert1.vector.subtract(vac);
 				vert2.vector = vert2.vector.subtract(vac);
-				vert3.vector = vert3.vector.subtract(vac);
+				vert3.vector = vert3.vector.subtract(vac);*/
 				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
-				tarp.turbos[pess].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0/*.setColor(MIDDLE_GRAY)*/ });
+				int pess = (int)passed; if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
+				tarp.turbos[pess].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
 				passed += track.vecpath[k].distanceTo(track.vecpath[k + 1]);
 			}
 		}
@@ -416,8 +415,8 @@ public class RailRenderer {
 
 	public static class TurboArrayPositioned {
 		
-		public ModelRendererTurbo[] turbos;
-		public Vec3f[] positions;
+		private ModelRendererTurbo[] turbos;
+		private Vec3f[] positions;
 		
 		public TurboArrayPositioned(Track track, RGB colour){
 			int i = (int)track.getLength(null);
@@ -427,7 +426,7 @@ public class RailRenderer {
 			positions = new Vec3f[i];
 			for(int k = 0; k < i; k++){
 				turbos[k] = new ModelRendererTurbo(track, 0, 0, 16, 16);
-				//if(colour != null) turbos[k].setColor(colour);
+				if(colour != null) turbos[k].setColor(colour);
 				positions[k] = track.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? track.length - 0.125f : k, false);
 			}
 		}
@@ -436,8 +435,15 @@ public class RailRenderer {
 			for(ModelRendererTurbo turbo : turbos) if(turbo != null && turbo.displaylist() != null) GL11.glDeleteLists(turbo.displaylist(), 1);
 		}
 		
-		@Deprecated
 		public void render(){
+			for(int m = 0; m < turbos.length; m++){
+		        int i = getBrightness(positions[m]), j = i % 65536, k = i / 65536;
+		        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+		        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F); turbos[m].render(1f);
+			}
+		}
+		
+		public void renderPlain(){
 			for(int m = 0; m < turbos.length; m++){ turbos[m].render(1f); }
 		}
 		

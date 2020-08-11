@@ -106,7 +106,6 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void renderBuffer(Junction junc){
 		if(!groups.contains("buffer")) return;
 		if(buffer_track == null){
@@ -119,9 +118,9 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		groups.get("buffer").renderPlain();
 		GL11.glRotatef(180, 0, 0, 1); GL11.glRotatef(-90, 0, 1, 0);
 		ModelBase.bindTexture(buffer_track.gauge.getTiesTexture());
-		buffer_track.restmodel.render();
+		buffer_track.restmodel.renderPlain();
 		ModelBase.bindTexture(buffer_track.gauge.getRailTexture());
-		buffer_track.railmodel.render();
+		buffer_track.railmodel.renderPlain();
 	}
 	
 }

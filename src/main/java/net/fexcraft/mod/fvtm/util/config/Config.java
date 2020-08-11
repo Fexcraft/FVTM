@@ -59,7 +59,7 @@ public class Config {
             if(RAIL_PLACING_GRID < 1) RAIL_PLACING_GRID = 1;
         }
         {
-        	RAIL_SEGMENTATOR = config.getInt("rail_generation_segmentator", GENERAL, 8, 1, 16, "Segmentator divider for rail generator, valid are 16, 8, 4, 2 or 1.");
+        	RAIL_SEGMENTATOR = config.getInt("rail_generation_segmentator", GENERAL, 4, 1, 16, "Segmentator divider for rail generator, valid are 16, 8, 4, 2 or 1.");
             if(RAIL_SEGMENTATOR > 16) RAIL_SEGMENTATOR = 16;
             if(RAIL_SEGMENTATOR > 8 && RAIL_SEGMENTATOR < 16) RAIL_SEGMENTATOR = 8;
             if(RAIL_SEGMENTATOR > 4 && RAIL_SEGMENTATOR < 8) RAIL_SEGMENTATOR = 4;

@@ -27,7 +27,8 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
 	
 	public static final ResourceLocation lifttexture = new ResourceLocation("fvtm:textures/blocks/constructor_lift.png");
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void render(ConstCenterEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
@@ -65,7 +66,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         		GL11.glPushMatrix();
             	GL11.glTranslatef(-l, 0, 0);
             	for(int i = l * 2 + 1; i > 0; i--){
-            		te.track.railmodel.renderPlain();
+            		te.track.railmodel.render();
             		GL11.glTranslatef(1, 0, 0);
             	}
             	GL11.glPopMatrix();
@@ -74,7 +75,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         		GL11.glPushMatrix();
             	GL11.glTranslatef(-l, 0, 0);
             	for(int i = l * 2 + 1; i > 0; i--){
-            		te.track.restmodel.renderPlain();
+            		te.track.restmodel.render();
             		GL11.glTranslatef(1, 0, 0);
             	}
             	GL11.glPopMatrix();

@@ -106,11 +106,11 @@ public class Region {
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		NBTTagCompound compound = write(false);
 		if(compound.isEmpty()){
-			Print.log("RailRegion [" + key.toString() + "] has no data to save, skipping."); return this;
+			Print.debug("RailRegion [" + key.toString() + "] has no data to save, skipping."); return this;
 		}
 		compound.setLong("Saved", Time.getDate());
 		try{ CompressedStreamTools.write(compound, file); } catch(IOException e){ e.printStackTrace(); }
-		Print.log("Saved RailRegion [" + key.toString() + "]."); return this;
+		Print.debug("Saved RailRegion [" + key.toString() + "]."); return this;
 	}
 
 	private NBTTagCompound write(boolean clientpacket){

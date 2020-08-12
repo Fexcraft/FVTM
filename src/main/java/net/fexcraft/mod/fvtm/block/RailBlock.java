@@ -1,12 +1,14 @@
 package net.fexcraft.mod.fvtm.block;
 
-import static net.fexcraft.mod.fvtm.block.UnlistedProperties.POSITION;
-
+import java.util.Map.Entry;
 import java.util.Random;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -25,7 +27,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 @fBlock(modid = FVTM.MODID, name = "rail")
 public class RailBlock extends BlockContainer{
@@ -82,13 +83,8 @@ public class RailBlock extends BlockContainer{
 	
 	@Override
     protected BlockStateContainer createBlockState(){
-		return new BlockStateContainer.Builder(this).add(HEIGHT).add(POSITION).build();
+		return new BlockStateContainer(this, HEIGHT);
     }
-	
-	@Override
-	public IExtendedBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos){
-		return ((IExtendedBlockState)state).withProperty(POSITION, pos);
-	}
 
     @Override
     public IBlockState getStateFromMeta(int meta){
@@ -107,6 +103,12 @@ public class RailBlock extends BlockContainer{
     
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
+    	if(world.isRemote && hand == EnumHand.MAIN_HAND && player.getHeldItemMainhand().getItem() instanceof JunctionGridItem){
+    		RailEntity tile = (RailEntity)world.getTileEntity(pos);
+    		for(Entry<PathKey, Integer> key : tile.getTracks().entrySet()){
+    			Print.chat(player, key.getKey() + " / " + key.getValue());
+    		}
+    	}
     	return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
     }
 

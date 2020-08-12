@@ -53,7 +53,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 			Print.debug("delpack: " + packet);
 			Track track = junction.tracks.get(del);
 			junction.remove(del, true);
-			if(track != null) RailGaugeItem.unregister(player, player.world, track);
+			if(track != null) RailGaugeItem.unregister(player.world, null, track);
 			return;
 		}
 		else if(packet.hasKey("dw")){

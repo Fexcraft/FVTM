@@ -8,11 +8,14 @@ import java.util.stream.Collectors;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
+import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
@@ -27,7 +30,7 @@ import net.minecraft.world.World;
 public class RailEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 	
 	private HashMap<PathKey, Integer> tracks = new HashMap<>();
-	public boolean remove = true;
+	public boolean remain;
 
 	public void addTrack(Track track, int height){
 		PathKey key = track.getId(track.isOppositeCopy());
@@ -38,11 +41,14 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 	}
 
 	public void remTrack(Track track, World world){
-		tracks.remove(track.getId(track.isOppositeCopy()));
+		PathKey key = track.getId(track.isOppositeCopy());
+		Print.log(key);
+		if(!tracks.containsKey(key)) return;
+		tracks.remove(key);
+		Print.log("contains " + key);
 		if(tracks.isEmpty()){
-			world.setBlockState(pos, Blocks.AIR.getDefaultState());
-			this.sendUpdate();
-			this.markDirty();
+			world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+			Print.log(world.getBlockState(pos).getBlock().getRegistryName());
 			return;
 		}
 		int height = 0;
@@ -55,7 +61,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 				height = val;
 			}
 		}
-		remove = false;
+		remain = true;
 		this.sendUpdate();
 		this.markDirty();
 		world.setBlockState(pos, RailBlock.INSTANCE.getDefaultState().withProperty(RailBlock.HEIGHT, height));
@@ -66,18 +72,17 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		try{
 			List<PathKey> keys = tracks.keySet().stream().collect(Collectors.toList());
 			for(PathKey key : keys){
-				Track track = system.getTrack(key);
-				if(track == null || track.getJunction() == null) continue;
-				int index = track.getJunction().tracks.indexOf(track);
-				if(index == -1){
-					track = system.getTrack(track.getOppositeId());
-					if(track == null || track.getJunction() == null) continue;
-					index = track.getJunction().tracks.indexOf(track);
+				//Print.log("rem" + key);
+				Vec316f vec = key.toVec3f(0);
+				Junction junc = system.getJunction(vec, true);
+				int index  = junc.getIndex(key);
+				if(index >= 0 && index < junc.tracks.size()){
+					Track track = junc.tracks.get(index);
+					junc.remove(index, true);
+					if(track != null){
+						RailGaugeItem.unregister(world, pos, track);
+					}
 				}
-				//Print.debug("index " + index + " " + key + " " + track.getOppositeId());
-				if(index < 0 || index >= track.getJunction().tracks.size()) continue;
-				track.getJunction().remove(index, true);
-				RailGaugeItem.unregister(null, world, track);
 			}
 		}
 		catch(Exception e){
@@ -122,14 +127,14 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
         	list.appendTag(track.getKey().write(com));
         }
         compound.setTag("Tracks", list);
-        compound.setBoolean("Remove", remove);
+        compound.setBoolean("Remain", remain);
         return compound;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
-        remove = compound.getBoolean("Remove");
+        remain = compound.getBoolean("Remain");
         if(!compound.hasKey("Tracks")) return;
         NBTTagList list = (NBTTagList)compound.getTag("Tracks");
         tracks.clear();
@@ -142,8 +147,8 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState){
-    	boolean bool = remove;
-    	remove = true;
+    	boolean bool = remain;
+    	remain = false;
         return bool;
     }
 

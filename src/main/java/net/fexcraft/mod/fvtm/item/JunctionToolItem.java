@@ -69,7 +69,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
         	if(junc == null){
 				Print.chat(player, "&cNo junction at position.");
         	}
-        	if(junc.size() > 0){
+        	else if(junc.size() > 0){
 				Print.chat(player, "&cDisconnect all tracks before removing a Junction.");
         	}
         	else{

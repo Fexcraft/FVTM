@@ -1,13 +1,10 @@
 package net.fexcraft.mod.fvtm.block;
 
-import java.util.Map.Entry;
 import java.util.Random;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fBlock;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -102,12 +99,12 @@ public class RailBlock extends BlockContainer{
     
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-    	if(Static.dev() && !world.isRemote && hand == EnumHand.MAIN_HAND){
+    	/*if(Static.dev() && !world.isRemote && hand == EnumHand.MAIN_HAND){
     		RailEntity tile = (RailEntity)world.getTileEntity(pos);
     		for(Entry<PathKey, Integer> key : tile.getTracks().entrySet()){
     			Print.chat(player, key.getKey() + " / " + key.getValue());
     		}
-    	}
+    	}*/
     	return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
     }
 

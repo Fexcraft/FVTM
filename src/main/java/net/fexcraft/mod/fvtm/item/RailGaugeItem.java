@@ -22,6 +22,7 @@ import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
@@ -152,7 +153,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
 		angle += Static.rad90;
 		/*for(float fl = -half; fl <= half; fl += 0.25f){
-			path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, type.height16(), 0)))));
+			path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
 		}*/
 		float passed = 0.125f;
 		while(passed < track.length){
@@ -160,7 +161,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
 			angle += Static.rad90;
 			for(float fl = -half; fl <= half; fl += 0.25f){
-				path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, type.height16(), 0)))));
+				path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
 			}
 			passed += 0.125f;
 		}
@@ -183,33 +184,39 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			height = v.y;
 			state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
 			rb = state.getBlock() == RailBlock.INSTANCE;
-			if(reg ? (!rb || state.getValue(HEIGHT) < height) : rb){
+			if(reg ? true : rb){
 				if(!blocks.containsKey(blk)) blocks.put(blk, height);
 			}
 			state = world.getBlockState(blk = blk.down());
 			if(state.getBlock() instanceof RailBlock){
-				if(!blocks.containsKey(blk)) blocks.put(blk, 0);
+				if(!blocks.containsKey(blk)) blocks.put(blk, -1);
 			}
 		}
 		for(Entry<BlockPos, Integer> entry : blocks.entrySet()){
 			if(!reg && pos != null && entry.getKey().equals(pos)) continue;
 			blk = entry.getKey();
 			height = entry.getValue();
-			Print.debug("checking " + blk + " / " + height);
+			//Print.debug("checking " + blk + " / " + height);
 			state = world.getBlockState(blk);
-			if(reg && (state.getBlock() != RailBlock.INSTANCE || state.getValue(HEIGHT) < height)){
+			HashMap<PathKey, Integer> tracks = null;
+			RailEntity tile = (RailEntity)world.getTileEntity(blk);
+			if(reg && (state.getBlock() != RailBlock.INSTANCE || state.getValue(HEIGHT) < (height == 0 ? 16 : height))){
 				if(state.getBlock() == RailBlock.INSTANCE){
-					RailEntity tile = (RailEntity)world.getTileEntity(blk);
-					tile.remain = true;
-					tile.sendUpdate();
+					tracks = tile.getTracks();
 				}
 				world.setBlockState(blk, RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, height));
+				if(tracks != null){
+					tile = (RailEntity)world.getTileEntity(blk);
+					tile.getTracks().putAll(tracks);
+				}
 			}
-			RailEntity tile = (RailEntity)world.getTileEntity(blk);
-			if(reg && height == 0 && state.getValue(HEIGHT) > 0){
-				tile.remain = true;
-				tile.sendUpdate();
-				world.setBlockState(blk.down(), RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, 0));
+			tile = (RailEntity)world.getTileEntity(blk);
+			if(reg && height == -1 && state.getValue(HEIGHT) > 0){
+				height = 0;
+				tracks = tile.getTracks();
+				world.setBlockState(blk, RailBlock.INSTANCE.getDefaultState().withProperty(HEIGHT, 0));
+				tile = (RailEntity)world.getTileEntity(blk);
+				tile.getTracks().putAll(tracks);
 			}
 			regTile(world, tile, track, height, reg);
 		}

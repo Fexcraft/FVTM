@@ -30,7 +30,6 @@ import net.minecraft.world.World;
 public class RailEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 	
 	private HashMap<PathKey, Integer> tracks = new HashMap<>();
-	public boolean remain;
 
 	public void addTrack(Track track, int height){
 		PathKey key = track.getId(track.isOppositeCopy());
@@ -61,7 +60,6 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 				height = val;
 			}
 		}
-		remain = true;
 		this.sendUpdate();
 		this.markDirty();
 		world.setBlockState(pos, RailBlock.INSTANCE.getDefaultState().withProperty(RailBlock.HEIGHT, height));
@@ -127,14 +125,12 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
         	list.appendTag(track.getKey().write(com));
         }
         compound.setTag("Tracks", list);
-        compound.setBoolean("Remain", remain);
         return compound;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound){
         super.readFromNBT(compound);
-        remain = compound.getBoolean("Remain");
         if(!compound.hasKey("Tracks")) return;
         NBTTagList list = (NBTTagList)compound.getTag("Tracks");
         tracks.clear();
@@ -147,9 +143,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState){
-    	boolean bool = remain;
-    	remain = false;
-        return bool;
+        return super.shouldRefresh(world, pos, oldState, newState);
     }
 
 	public HashMap<PathKey, Integer> getTracks(){

@@ -1,10 +1,14 @@
 package net.fexcraft.mod.fvtm.block;
 
+import java.util.Map.Entry;
 import java.util.Random;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fBlock;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.item.JunctionToolItem;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -14,6 +18,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -99,16 +104,21 @@ public class RailBlock extends BlockContainer{
     
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-    	/*if(Static.dev() && !world.isRemote && hand == EnumHand.MAIN_HAND){
+    	if(Static.dev() && !world.isRemote && hand == EnumHand.MAIN_HAND && isJuncOrTool(player.getHeldItemMainhand())){
     		RailEntity tile = (RailEntity)world.getTileEntity(pos);
     		for(Entry<PathKey, Integer> key : tile.getTracks().entrySet()){
-    			Print.chat(player, key.getKey() + " / " + key.getValue());
+    			Print.bar(player, key.getKey() + " / " + key.getValue());
     		}
-    	}*/
+    		if(tile.control(world, true, player)) return true;
+    	}
     	return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
     }
 
-    @Override
+    private boolean isJuncOrTool(ItemStack item){
+		return item.getItem() instanceof JunctionToolItem || item.getItem() instanceof ItemTool;
+	}
+
+	@Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
         return getItem(world, pos, state);
     }

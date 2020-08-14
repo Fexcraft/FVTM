@@ -124,7 +124,8 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
 				if(!register(player, world, track)) return EnumActionResult.SUCCESS;
-				second.addnew(track); junk.addnew(track.createOppositeCopy());
+				second.addnew(track);
+				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();
 				Print.chat(player, "&aTrack Created!");
 				stack.getTagCompound().removeTag("fvtm:railpoints");

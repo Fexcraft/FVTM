@@ -96,8 +96,10 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
         	syscap.addJunction(vecs[vecs.length - 1]);
         	end = syscap.getJunction(vecs[vecs.length - 1]);
         }
-        start.addnew(track); end.addnew(track.createOppositeCopy());
-        start.checkTrackSectionConsistency(); end.checkTrackSectionConsistency();
+        start.addnew(track);
+        end.addnew(track.createOppositeCopy());
+        start.checkTrackSectionConsistency();
+        end.checkTrackSectionConsistency();
         Print.bar(player, "&7Track of type &e'" + title + "' &7placed!");
         if(!player.capabilities.isCreativeMode) stack.shrink(1);
 		return EnumActionResult.SUCCESS;

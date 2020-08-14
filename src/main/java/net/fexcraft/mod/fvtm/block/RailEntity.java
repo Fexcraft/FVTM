@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,14 +42,29 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 
 	public void remTrack(Track track, World world){
 		PathKey key = track.getId(track.isOppositeCopy());
-		Print.log(key);
+		//Print.log(key);
 		if(!tracks.containsKey(key)) return;
 		tracks.remove(key);
-		Print.log("contains " + key);
+		//Print.log("contains " + key);
+		control(world, false, null);
+	}
+
+	public boolean control(World world, boolean checkjunc, EntityPlayer sender){
+		if(checkjunc){
+			RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+			List<PathKey> keys = tracks.keySet().stream().collect(Collectors.toList());
+			for(PathKey key : keys){
+				Track track = system.getTrack(key);
+				if(track == null) tracks.remove(key);
+			}
+		}
 		if(tracks.isEmpty()){
 			world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
 			Print.log(world.getBlockState(pos).getBlock().getRegistryName());
-			return;
+			if(sender != null){
+				Print.bar(sender, "&cBlock removed, no actual tracks are attached.");
+			}
+			return true;
 		}
 		int height = 0;
 		for(int val : tracks.values()){
@@ -62,7 +78,14 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		}
 		this.sendUpdate();
 		this.markDirty();
-		world.setBlockState(pos, RailBlock.INSTANCE.getDefaultState().withProperty(RailBlock.HEIGHT, height));
+		if(world.getBlockState(pos).getValue(RailBlock.HEIGHT) != height){
+			world.setBlockState(pos, RailBlock.INSTANCE.getDefaultState().withProperty(RailBlock.HEIGHT, height));
+			if(sender != null){
+				Print.bar(sender, "&cBlock height updated.");
+			}
+			return true;
+		}
+		return false;
 	}
 
 	public void remTracks(World world){

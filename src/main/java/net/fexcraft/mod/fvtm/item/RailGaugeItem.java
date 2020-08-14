@@ -44,7 +44,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGridItem {
 
     public RailGaugeItem(RailGauge core){
-		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
+		super(core); this.setHasSubtypes(true); this.setMaxStackSize(64);
         this.type.getAddon().getFCLRegisterer().addItem(
         	type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;

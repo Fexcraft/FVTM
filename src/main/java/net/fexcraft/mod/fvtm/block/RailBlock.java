@@ -16,6 +16,7 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
@@ -125,19 +126,17 @@ public class RailBlock extends BlockContainer{
     
     @Override
     public int quantityDropped(Random random){
-        return 1;
+        return 0;//1;
     }
     
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune){
-        return new ItemStack(this).getItem();
+        return Items.AIR;//new ItemStack(this).getItem();
     }
-    
-    //TODO drops
     
     @Override
     public ItemStack getItem(World world, BlockPos pos, IBlockState state){
-        return new ItemStack(this, 1, state.getValue(HEIGHT));
+        return ItemStack.EMPTY;//new ItemStack(this, 1, state.getValue(HEIGHT));
     }
     
     @Override

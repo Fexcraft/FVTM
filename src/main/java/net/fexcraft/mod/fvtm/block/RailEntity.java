@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
@@ -45,6 +46,10 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		//Print.log(key);
 		if(!tracks.containsKey(key)) return;
 		tracks.remove(key);
+		EntityItem item = new EntityItem(world);
+		item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+		item.setItem(track.gauge.newItemStack());
+		world.spawnEntity(item);
 		//Print.log("contains " + key);
 		control(world, true, null);
 	}

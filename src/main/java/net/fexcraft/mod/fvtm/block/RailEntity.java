@@ -46,7 +46,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		if(!tracks.containsKey(key)) return;
 		tracks.remove(key);
 		//Print.log("contains " + key);
-		control(world, false, null);
+		control(world, true, null);
 	}
 
 	public boolean control(World world, boolean checkjunc, EntityPlayer sender){

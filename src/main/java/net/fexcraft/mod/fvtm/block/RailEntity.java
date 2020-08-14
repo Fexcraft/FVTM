@@ -27,11 +27,17 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
+import trackapi.lib.ITrack;
 
-public class RailEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
+@Interface(iface = "trackapi.lib.ITrack", modid = "trackapi")
+public class RailEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, ITrack {
 	
 	private HashMap<PathKey, Integer> tracks = new HashMap<>();
+	private float gauge = 1.435f;//1.79375f;
 
 	public void addTrack(Track track, int height){
 		PathKey key = track.getId(track.isOppositeCopy());
@@ -181,6 +187,19 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 
 	public HashMap<PathKey, Integer> getTracks(){
 		return tracks;
+	}
+
+	@Override
+	@Method(modid = "trackapi")
+	public double getTrackGauge(){
+		return gauge;
+	}
+
+	@Override
+	@Method(modid = "trackapi")
+	public Vec3d getNextPosition(Vec3d pos, Vec3d motion){
+		//
+		return null;
 	}
 
 }

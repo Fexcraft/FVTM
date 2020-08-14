@@ -31,7 +31,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 @fBlock(modid = FVTM.MODID, name = "rail")
-public class RailBlock extends BlockContainer{
+public class RailBlock extends BlockContainer {
 	
 	public static RailBlock INSTANCE;
 

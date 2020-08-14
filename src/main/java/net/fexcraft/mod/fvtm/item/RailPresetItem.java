@@ -90,11 +90,12 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
         	syscap.addJunction(vector.copy());
         	start = syscap.getJunction(vector);
         }
+        Track track = new Track(start, vecs, type);
+		if(!RailGaugeItem.register(player, world, track)) return EnumActionResult.SUCCESS;
         if(end == null){
         	syscap.addJunction(vecs[vecs.length - 1]);
         	end = syscap.getJunction(vecs[vecs.length - 1]);
         }
-        Track track = new Track(start, vecs, type);
         start.addnew(track); end.addnew(track.createOppositeCopy());
         start.checkTrackSectionConsistency(); end.checkTrackSectionConsistency();
         Print.bar(player, "&7Track of type &e'" + title + "' &7placed!");
@@ -105,7 +106,9 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 	public Vec316f[] copyAndRotate(Vec316f pos, Vec316f[] path, float yaw){
 		Vec316f[] vecs = new Vec316f[path.length];
 		for(int i = 0; i < vecs.length; i++) vecs[i] = path[i];
-		float seg = 360f / rotations; int con = (int)((((int)yaw + 90f) * rotations) / 360f);
+		float seg = 360f / rotations;
+		int con = (int)((((int)yaw + 90f) * rotations) / 360f);
+		if(con % seg > seg / 2) con++;
 		for(int i = 0; i < vecs.length; i++){
 			if(i != 0 && i != vecs.length - 1) vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector));
 			else vecs[i] = new Vec316f(VecUtil.rotByRad(seg * con * Static.rad1, vecs[i].vector).add(pos.vector), Config.RAIL_PLACING_GRID);

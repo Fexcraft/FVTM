@@ -37,12 +37,14 @@ import trackapi.lib.ITrack;
 public class RailEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, ITrack {
 	
 	private HashMap<PathKey, Integer> tracks = new HashMap<>();
+	//private ArrayList<Track> cache = new ArrayList<>();
 	private float gauge = 1.435f;//1.79375f;
 
 	public void addTrack(Track track, int height){
 		PathKey key = track.getId(track.isOppositeCopy());
 		if(tracks.containsKey(key)) return;
 		tracks.put(key, height);
+		//cache.clear();
 		this.sendUpdate();
 		this.markDirty();
 	}
@@ -52,6 +54,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		//Print.log(key);
 		if(!tracks.containsKey(key)) return;
 		tracks.remove(key);
+		//cache.clear();
 		EntityItem item = new EntityItem(world);
 		item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 		item.setItem(track.gauge.newItemStack());
@@ -178,6 +181,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
         	int height = com.getInteger("height");
         	tracks.put(new PathKey(com), height);
         }
+        //cache.clear();
     }
 
     @Override
@@ -198,8 +202,30 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 	@Override
 	@Method(modid = "trackapi")
 	public Vec3d getNextPosition(Vec3d pos, Vec3d motion){
-		//
-		return null;
+		/*if(tracks.isEmpty()) return pos;
+		if(cache.isEmpty() || cache.size() != tracks.size()) refreshCache();
+		//RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		Vec3d moved = pos.add(motion);
+		Vec3f movad = new Vec3f(moved.x, moved.y, moved.z);
+		if(cache.size() == 1){
+			Track track = cache.get(0);
+			movad = track.getVectorOnTrack(movad);
+			float dis = (float)motion.length();
+			movad = track.getVectorPosition0(dis, movad.distanceTo(track.start.vector) > movad.distanceTo(track.end.vector));
+		}
+		else{
+			//find out if it's a crossing or not
+			//if it's a junction check which switch is active
+			//if neither, we got trouble
+		}*/
+		return pos.add(motion);
 	}
+
+	/*private void refreshCache(){
+		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		for(PathKey key : tracks.keySet()){
+			cache.add(system.getTrack(key));
+		}
+	}*/
 
 }

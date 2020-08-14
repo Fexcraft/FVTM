@@ -106,4 +106,16 @@ public class Track extends Path {
 		return junction;
 	}
 
+	public Vec3f getVectorOnTrack(Vec3f ext){
+		Vec3f at = vecpath[0];
+		float dis = ext.distanceTo(vecpath[0]), tes;
+		for(Vec3f vec : vecpath){
+			if((tes = vec.distanceTo(ext)) < dis){
+				dis = tes;
+				at = vec;
+			}
+		}
+		return at;
+	}
+
 }

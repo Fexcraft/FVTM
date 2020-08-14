@@ -148,7 +148,11 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 
 	private static boolean register(EntityPlayer player, World world, BlockPos pos, Track track, boolean reg){
 		RailGauge type = track.getGauge();
-		float width = type.getBlockWidth(), angle, half = (width * 0.5f) - 0.25f;
+		float width = type.getBlockWidth();
+		if(width == 0f || type.getBlockHeight() == 0){
+			return true;//skip, this block isn't physical
+		}
+		float angle, half = (width * 0.5f) - 0.25f;
 		ArrayList<Vec316f> path = new ArrayList<>();
 		Vec3f last, vec = track.getVectorPosition0(0.001f, false);
 		angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);

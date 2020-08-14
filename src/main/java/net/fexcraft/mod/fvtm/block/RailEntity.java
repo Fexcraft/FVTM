@@ -107,6 +107,11 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 					junc.remove(index, true);
 					if(track != null){
 						RailGaugeItem.unregister(world, pos, track);
+						//re-compensate the first one broken
+						EntityItem item = new EntityItem(world);
+						item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+						item.setItem(track.gauge.newItemStack());
+						world.spawnEntity(item);
 					}
 				}
 			}

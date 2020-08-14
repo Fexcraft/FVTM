@@ -123,7 +123,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			}
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
-				if(!register(player, world, track)) return EnumActionResult.SUCCESS;
+				if(!register(player, world, track, true)) return EnumActionResult.SUCCESS;
 				second.addnew(track);
 				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();
@@ -138,15 +138,15 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		}
     }
 	
-	public static boolean register(EntityPlayer player, World world, Track track){
-		return register(player, world, null, track, true);
+	public static boolean register(EntityPlayer player, World world, Track track, boolean consume){
+		return register(player, world, null, track, true, consume);
 	}
 	
 	public static boolean unregister(World world, BlockPos pos, Track track){
-		return register(null, world, pos, track, false);
+		return register(null, world, pos, track, false, false);
 	}
 
-	private static boolean register(EntityPlayer player, World world, BlockPos pos, Track track, boolean reg){
+	private static boolean register(EntityPlayer player, World world, BlockPos pos, Track track, boolean reg, boolean con){
 		RailGauge type = track.getGauge();
 		float width = type.getBlockWidth();
 		if(width == 0f || type.getBlockHeight() == 0){
@@ -197,6 +197,11 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				if(!blocks.containsKey(blk)) blocks.put(blk, -1);
 			}
 		}
+		boolean creative = player != null && player.capabilities.isCreativeMode;
+		if(reg && con && !creative && getRailsOfTypeInInv(type, player) < blocks.size()){
+			Print.bar(player, String.format("Not enough rails in inventory! Needed: %s", blocks.size()));
+			return false;
+		}
 		for(Entry<BlockPos, Integer> entry : blocks.entrySet()){
 			if(!reg && pos != null && entry.getKey().equals(pos)) continue;
 			blk = entry.getKey();
@@ -224,10 +229,30 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				tile.getTracks().putAll(tracks);
 			}
 			regTile(world, tile, track, height, reg);
+			if(reg && con && !creative) consumeOneItem(type, player);
 		}
 		return true;
 	}
+
+	private static int getRailsOfTypeInInv(RailGauge type, EntityPlayer player){
+		int found = 0;
+		for(ItemStack stack : player.inventoryContainer.getInventory()){
+			if(stack.isEmpty() || stack.getItem() instanceof RailGaugeItem == false) continue;
+			if(((RailGaugeItem)stack.getItem()).getType() != type) continue;
+			found += stack.getCount();
+		}
+		return found;
+	}
 	
+	private static void consumeOneItem(RailGauge type, EntityPlayer player){
+		for(ItemStack stack : player.inventoryContainer.getInventory()){
+			if(stack.isEmpty() || stack.getItem() instanceof RailGaugeItem == false) continue;
+			if(((RailGaugeItem)stack.getItem()).getType() != type) continue;
+			stack.shrink(1);
+			return;
+		}
+	}
+
 	private static void regTile(World world, RailEntity tile, Track track, int height, boolean reg){
 		if(reg) tile.addTrack(track, height);
 		else tile.remTrack(track, world);

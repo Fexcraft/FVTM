@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
@@ -42,8 +43,9 @@ public class RailBlock extends BlockContainer {
 		super(Material.ROCK, MapColor.BLACK);
 		INSTANCE = this;
 		this.setHarvestLevel("pickaxe", 0);
-		this.setHardness(256.0F);
-		this.setResistance(1024f);
+		this.setHardness(4.0F);
+		this.setResistance(2000.0F);
+		this.setSoundType(SoundType.STONE);
         this.setDefaultState(this.blockState.getBaseState().withProperty(HEIGHT, 0));
 	}
 	

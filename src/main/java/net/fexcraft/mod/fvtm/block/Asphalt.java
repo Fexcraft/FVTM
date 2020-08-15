@@ -11,6 +11,7 @@ import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
@@ -39,7 +40,10 @@ public class Asphalt extends Block {
 
 	public Asphalt(){
 		super(Material.ROCK, MapColor.BLACK); INSTANCE = this;
-		this.setHarvestLevel("pickaxe", 0); this.setHardness(256.0F); this.setResistance(1024f);
+		this.setHarvestLevel("pickaxe", 0);
+		this.setHardness(8.0F);
+		this.setResistance(2000.0F);
+		this.setSoundType(SoundType.STONE);
         this.setDefaultState(this.blockState.getBaseState().withProperty(HEIGHT, 0));
 	}
 	

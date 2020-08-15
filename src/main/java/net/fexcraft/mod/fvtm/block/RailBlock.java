@@ -7,7 +7,10 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fBlock;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
@@ -121,7 +124,18 @@ public class RailBlock extends BlockContainer {
 
 	@Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
-        return getItem(world, pos, state);
+		RailEntity tile = (RailEntity)world.getTileEntity(pos);
+		if(tile == null || tile.getTracks().isEmpty()) return ItemStack.EMPTY;
+		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		if(system == null) return ItemStack.EMPTY;
+		Track track = system.getTrack((PathKey)tile.getTracks().keySet().toArray()[0]);
+		if(track == null) return ItemStack.EMPTY;
+		if(track.preset != null){
+			return new ItemStack(Item.getByNameOrId(track.preset));
+		}
+		else{
+			return new ItemStack(track.gauge.getItem());
+		}
     }
     
     @Override

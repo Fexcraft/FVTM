@@ -28,7 +28,9 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -44,10 +46,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGridItem {
 
     public RailGaugeItem(RailGauge core){
-		super(core); this.setHasSubtypes(true); this.setMaxStackSize(64);
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getPath(), this, 0, null);
-        if(Static.side().isServer()) return;
+		super(core);
+		this.setHasSubtypes(true);
+		this.setMaxStackSize(64);
+		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
+		if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
     }
 
@@ -206,7 +209,6 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			if(!reg && pos != null && entry.getKey().equals(pos)) continue;
 			blk = entry.getKey();
 			height = entry.getValue();
-			//Print.debug("checking " + blk + " / " + height);
 			state = world.getBlockState(blk);
 			HashMap<PathKey, Integer> tracks = null;
 			RailEntity tile = (RailEntity)world.getTileEntity(blk);
@@ -230,6 +232,13 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			}
 			regTile(world, tile, track, height, reg);
 			if(reg && con && !creative) consumeOneItem(type, player);
+		}
+		if(!reg && !creative && track.preset != null){
+			if(pos == null) pos = track.start.pos;
+			EntityItem item = new EntityItem(world);
+			item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+			item.setItem(new ItemStack(Item.getByNameOrId(track.preset)));
+			world.spawnEntity(item);
 		}
 		return true;
 	}

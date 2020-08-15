@@ -37,10 +37,11 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 	private int rotations;
 
     public RailPresetItem(RailGauge core, String name, Vec316f... vecs){
-		super(core); this.setHasSubtypes(true); this.setMaxStackSize(1);
-        this.type.getAddon().getFCLRegisterer().addItem(
-        	type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
-        path = vecs; if(Static.side().isServer()) return;
+		super(core);
+		this.setHasSubtypes(true);
+		this.setMaxStackSize(64);
+		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
+		path = vecs; if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab());
     }
     
@@ -90,7 +91,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
         	syscap.addJunction(vector.copy());
         	start = syscap.getJunction(vector);
         }
-        Track track = new Track(start, vecs, type);
+        Track track = new Track(start, vecs, type).withPreset(type.getRegistryName() + "." + title);
 		if(!RailGaugeItem.register(player, world, track, false)) return EnumActionResult.SUCCESS;
         if(end == null){
         	syscap.addJunction(vecs[vecs.length - 1]);

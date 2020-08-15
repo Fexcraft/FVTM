@@ -27,6 +27,7 @@ public class Track extends Path {
 	public TurboArrayPositioned railmodel;
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned restmodel;
+	public String preset;
 	
 	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, RailGauge gauge){
 		super(vec316fs, vector); this.junction = junction; this.gauge = gauge;
@@ -54,6 +55,7 @@ public class Track extends Path {
 		if(junction == null || junction.root.getWorld().isRemote){
 			railmodel = null; restmodel = null;
 		}
+		if(compound.hasKey("preset")) preset = compound.getString("preset");
 		return this;
 	}
 
@@ -67,6 +69,7 @@ public class Track extends Path {
 		compound = super.write(compound);
 		if(unit != null) compound.setLong("section", unit.getSectionId());
 		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
+		if(preset != null) compound.setString("preset", preset);
 		return compound;
 	}
 	
@@ -116,6 +119,11 @@ public class Track extends Path {
 			}
 		}
 		return at;
+	}
+
+	public Track withPreset(String string){
+		this.preset = string;
+		return this;
 	}
 
 }

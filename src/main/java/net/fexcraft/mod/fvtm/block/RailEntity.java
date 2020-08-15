@@ -47,15 +47,15 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 
 	public void remTrack(Track track, World world){
 		PathKey key = track.getId(track.isOppositeCopy());
-		//Print.log(key);
 		if(!tracks.containsKey(key)) return;
 		tracks.remove(key);
 		//cache.clear();
-		EntityItem item = new EntityItem(world);
-		item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-		item.setItem(track.gauge.newItemStack());
-		world.spawnEntity(item);
-		//Print.log("contains " + key);
+		if(track.preset == null){
+			EntityItem item = new EntityItem(world);
+			item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+			item.setItem(track.gauge.newItemStack());
+			world.spawnEntity(item);
+		}
 		control(world, true, null);
 	}
 
@@ -70,7 +70,6 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		}
 		if(tracks.isEmpty()){
 			world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-			Print.log(world.getBlockState(pos).getBlock().getRegistryName());
 			if(sender != null){
 				Print.bar(sender, "&cBlock removed, no actual tracks are attached.");
 			}
@@ -103,7 +102,6 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		try{
 			List<PathKey> keys = tracks.keySet().stream().collect(Collectors.toList());
 			for(PathKey key : keys){
-				//Print.log("rem" + key);
 				Vec316f vec = key.toVec3f(0);
 				Junction junc = system.getJunction(vec, true);
 				int index  = junc.getIndex(key);
@@ -112,6 +110,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 					junc.remove(index, true);
 					if(track != null){
 						RailGaugeItem.unregister(world, pos, track);
+						if(track.preset != null) continue;
 						//re-compensate the first one broken
 						EntityItem item = new EntityItem(world);
 						item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);

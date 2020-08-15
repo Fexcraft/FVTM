@@ -1,0 +1,59 @@
+{
+	"OverrideExisting": true,
+	"Recipes": [
+		{
+			"block": "fcl:bpt",
+			"category": "gep.recipes.rails",
+			"input":[
+				{
+					"id": "gep:steel_ingot",
+					"count": 4
+				},
+				{
+					"id": "minecraft:log",
+					"count": 2
+				}
+			],
+			"output":{
+				"id": "fvtm:standard",
+				"count": 4
+			}
+		},
+		{
+			"block": "fcl:bpt",
+			"category": "gep.recipes.rails",
+			"input":[
+				{
+					"id": "gep:steel_ingot",
+					"count": 32
+				},
+				{
+					"id": "minecraft:log",
+					"count": 16
+				}
+			],
+			"output":{
+				"id": "fvtm:standard.8_straight",
+				"count": 1
+			}
+		},
+		{
+			"block": "fcl:bpt",
+			"category": "gep.recipes.rails",
+			"input":[
+				{
+					"id": "gep:steel_ingot",
+					"count": 64
+				},
+				{
+					"id": "minecraft:log",
+					"count": 32
+				}
+			],
+			"output":{
+				"id": "fvtm:standard.16_straight",
+				"count": 1
+			}
+		}
+	]
+}

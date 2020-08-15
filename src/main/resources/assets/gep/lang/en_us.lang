@@ -46,3 +46,4 @@ tile.gep:crusher_body.name=Crusher (Body)
 # Recipe Groups (FCL)
 gep.recipes.machines=GEP Machines/Blocks
 gep.recipes.materials=GEP Materials
+gep.recipes.rails=30px Rails

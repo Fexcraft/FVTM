@@ -175,7 +175,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			parts.clear();
 			for(NBTBase base : list){
 				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("InstalledAs")) continue;
-				this.parts.put(com.getString("InstalledAs"), Resources.getPartData(com));
+				PartData data = Resources.getPartData(com);
+				if(data != null) this.parts.put(com.getString("InstalledAs"), data);
 			}
 		}
 		//

@@ -27,18 +27,14 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.Method;
-import trackapi.lib.ITrack;
 
-@Interface(iface = "trackapi.lib.ITrack", modid = "trackapi")
-public class RailEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, ITrack {
+//@Interface(iface = "trackapi.lib.ITrack", modid = "trackapi")
+public class RailEntity extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {//, ITrack {
 	
 	private HashMap<PathKey, Integer> tracks = new HashMap<>();
 	//private ArrayList<Track> cache = new ArrayList<>();
-	private float gauge = 1.435f;//1.79375f;
+	//private float gauge = 1.79375f;
 
 	public void addTrack(Track track, int height){
 		PathKey key = track.getId(track.isOppositeCopy());
@@ -193,7 +189,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 		return tracks;
 	}
 
-	@Override
+	/*@Override
 	@Method(modid = "trackapi")
 	public double getTrackGauge(){
 		return gauge;
@@ -217,9 +213,9 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 			//find out if it's a crossing or not
 			//if it's a junction check which switch is active
 			//if neither, we got trouble
-		}*/
+		}*//*
 		return pos.add(motion);
-	}
+	}*/
 
 	/*private void refreshCache(){
 		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();

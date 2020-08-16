@@ -21,17 +21,17 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	public Vec3f[][] rails = new Vec3f[][]{
-		{ new Vec3f(-1.0625, 0.375, 0), new Vec3f(-0.9375, 0.375, 0) },
-		{ new Vec3f( 0.9375, 0.375, 0), new Vec3f( 1.0625, 0.375, 0) },
-		//
-		{ new Vec3f(-1.0625, 0.25, 0), new Vec3f(-1.0625, 0.375, 0) },
-		{ new Vec3f(-0.9375, 0.375, 0), new Vec3f(-0.9375, 0.25, 0) },
-		//
-		{ new Vec3f(0.9375, 0.25, 0), new Vec3f(0.9375, 0.375, 0) },
-		{ new Vec3f(1.0625, 0.375, 0), new Vec3f(1.0625, 0.25, 0) },
-		//
 		{ new Vec3f(-1.0625, 0.25, 0), new Vec3f(-0.9375, 0.25, 0) },
-		{ new Vec3f(0.9375, 0.25, 0), new Vec3f(1.0625, 0.25, 0) }
+		{ new Vec3f( 0.9375, 0.25, 0), new Vec3f( 1.0625, 0.25, 0) },
+		//
+		{ new Vec3f(-1.0625, 0.125, 0), new Vec3f(-1.0625, 0.25, 0) },
+		{ new Vec3f(-0.9375, 0.25, 0), new Vec3f(-0.9375, 0.125, 0) },
+		//
+		{ new Vec3f(0.9375, 0.125, 0), new Vec3f(0.9375, 0.25, 0) },
+		{ new Vec3f(1.0625, 0.25, 0), new Vec3f(1.0625, 0.125, 0) },
+		//
+		{ new Vec3f(-1.0625, 0.125, 0), new Vec3f(-0.9375, 0.125, 0) },
+		{ new Vec3f(0.9375, 0.125, 0), new Vec3f(1.0625, 0.125, 0) }
 	};
 	public boolean rail_tempcull = false;
 	public float ties_distance = 0.5f;

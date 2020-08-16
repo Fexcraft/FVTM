@@ -20,36 +20,49 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		if(data.getParts().containsKey(cat)){
-			Print.chatnn(sender, "There is already another part with that category installed."); return false;
+			Print.chatnn(sender, "There is already another part with that category installed.");
+			return false;
 		}
 		if(!data.getWheelSlots().containsKey(cat)){
-			Print.chatnn(sender, "This Vehicle does not have the required BogieSlot configured."); return false;
+			Print.chatnn(sender, "This Vehicle does not have the required BogieSlot configured.");
+			return false;
 		}
-		Print.chatnn(sender, "Installation check passed."); return true;
+		Print.chatnn(sender, "Installation check passed.");
+		return true;
 	}
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		data.getParts().put(cat, part); part.setInstalledPos(data.getWheelSlots().get(cat).pos());
-		BogieFunction func = part.getFunction("fvtm:bogie"); if(func != null) func.setBogie(cat);
-		BogieData idata = part.getType().getInstallationHandlerData(); Pos partpos = part.getInstalledPos();
+		data.getParts().put(cat, part);
+		part.setInstalledPos(data.getWheelSlots().get(cat).pos());
+		BogieFunction func = part.getFunction("fvtm:bogie");
+		if(func != null) func.setBogie(cat);
+		BogieData idata = part.getType().getInstallationHandlerData();
+		Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.height, -partpos.z).to16Double());
 		//Print.debug("New BogiePos: " + data.getWheelPositions().get(cat));
-		Print.chatnn(sender, "Part installed into selected category."); return true;
+		Print.chatnn(sender, "Part installed into selected category.");
+		return true;
 	}
 
 	@Override
 	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
 		BogieData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "Part is marked as non removable."); return false;
-		} Print.chatnn(sender, "Deinstallation check passed."); return true;
+			Print.chatnn(sender, "Part is marked as non removable.");
+			return false;
+		}
+		Print.chatnn(sender, "Deinstallation check passed.");
+		return true;
 	}
 
 	@Override
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
-		part.setInstalledPos(new Pos(0, 0, 0)); data.getParts().remove(cat); part.getAttributes().clear();
+		part.setInstalledPos(new Pos(0, 0, 0));
+		data.getParts().remove(cat);
+		part.getAttributes().clear();
 		data.getWheelPositions().remove(cat);
-		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
+		Print.chatnn(sender, "Part uninstalled and position reset.");
+		return true;
 	}
 	
 	/** Bogie Part Install Handler Data */

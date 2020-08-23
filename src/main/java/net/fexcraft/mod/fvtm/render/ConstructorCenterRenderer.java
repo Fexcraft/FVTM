@@ -90,7 +90,17 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             try{
                 if(modvec != null){
                     ModelBase.bindTexture(vehicledata.getTexture());
-                    GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * 0.0625f) - te.getLiftState(), 0);
+                    float[] heightoffset = { 0 };
+                    if(!vehicledata.getType().getVehicleType().isRailVehicle() /*vehicledata.getWheelPositions().size() < 2*/){
+                    	heightoffset[0] = vehicledata.getAttribute("constructor_height").getFloatValue() * 0.0625f;
+                    }
+                    else{
+                    	vehicledata.getWheelPositions().values().forEach(cons -> {
+                    		heightoffset[0] += -cons.y;
+                    	});
+                    	heightoffset[0] /= vehicledata.getWheelPositions().size();
+                    }
+                    GL11.glTranslated(0, heightoffset[0] - te.getLiftState(), 0);
                     modvec.render(vehicledata, null, null, null);
                     vehicledata.getParts().forEach((key, partdata) -> {
                         ModelBase.bindTexture(partdata.getTexture());
@@ -106,7 +116,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     		partdata.getInstalledPos().translateR();
                     	}
                     });
-                    GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * -0.0625f) + te.getLiftState(), 0);
+                    GL11.glTranslated(0, heightoffset[0] + te.getLiftState(), 0);
                 }
             }
             catch(Exception e){

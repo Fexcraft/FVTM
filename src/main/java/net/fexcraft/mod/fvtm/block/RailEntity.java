@@ -104,10 +104,13 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 			for(PathKey key : keys){
 				Vec316f vec = key.toVec3f(0);
 				Junction junc = system.getJunction(vec, true);
+				Junction seco = system.getJunction(key.toVec3f(3), true);
 				int index  = junc.getIndex(key);
 				if(index >= 0 && index < junc.tracks.size()){
 					Track track = junc.tracks.get(index);
 					junc.remove(index, true);
+					if(junc.size() == 0) system.delJunction(junc.getVec316f());
+					if(seco.size() == 0) system.delJunction(seco.getVec316f());
 					if(track != null){
 						RailGaugeItem.unregister(world, pos, track);
 						if(track.preset != null) continue;

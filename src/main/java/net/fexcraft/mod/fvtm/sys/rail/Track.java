@@ -120,6 +120,17 @@ public class Track extends Path {
 		}
 		return at;
 	}
+	
+	public float getPassedOnTrack(Vec3f ext){
+		float passed = 0;
+		Vec3f at = getVectorOnTrack(ext), last = at;
+		for(int i = 1; i < vecpath.length; i++){
+			float dis = last.distanceTo(vecpath[i]);
+			if(dis < 0.001f) break;
+			passed += dis;
+		}
+		return passed;
+	}
 
 	public Track withPreset(String string){
 		this.preset = string;

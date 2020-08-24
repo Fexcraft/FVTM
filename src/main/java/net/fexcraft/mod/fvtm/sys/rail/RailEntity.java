@@ -71,6 +71,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		frconndis = (float)vdata.getFrontConnector().x; rrconndis = (float)-vdata.getRearConnector().x;
 		com = new Compound.Singular(this); 
 		//
+		//this.passed = passed + rrconndis + frbogiedis;
 		bfront = move(rrconndis + frbogiedis, TrainPoint.BOGIE_FRONT);
 		brear = move(rrconndis - rrbogiedis, TrainPoint.BOGIE_REAR);
 		pos = medium(bfront, brear); moverq += 0.02f;

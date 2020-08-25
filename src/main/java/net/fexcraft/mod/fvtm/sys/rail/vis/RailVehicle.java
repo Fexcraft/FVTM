@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail.vis;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -69,7 +70,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public Reltrs rek;
 	public SwivelPoint rotpoint;
 	private byte toggletimer;
-	public SeatEntity[] seats;
+	public ArrayList<SeatEntity> seats = new ArrayList<>();
 	//
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
     //
@@ -102,7 +103,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
 		if(compound != null) rek = new Reltrs(world.getCapability(Capabilities.RAILSYSTEM, null).get(), compound);
 		rotpoint = rek.data().getRotationPoint("vehicle");
-		seats = new SeatEntity[rek.data().getSeats().size()];
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCapability Implementation Found!");}
@@ -189,7 +189,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		return wheels;
 	}
 	
-	public SeatEntity[] getSeats(){
+	public ArrayList<SeatEntity> getActiveSeats(){
 		return seats;
 	}
 
@@ -487,7 +487,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
             }
         }
-        for(SeatEntity seat : seats){ if(seat.processInitialInteract(player, hand)){ return true; } }
+        for(SeatEntity seat : seats){
+        	if(seat.processInitialInteract(player, hand)) return true;
+        }
         return false;
     }
 
@@ -495,16 +497,13 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public void onUpdate(){
         super.onUpdate();
         if(rek == null || rek.data() == null){
-        	Print.log("VehicleData is NULL; Not ticking vehicle. Removing Vehicle."); this.setDead(); return;
+        	Print.log("VehicleData is NULL; Not ticking vehicle. Removing Vehicle.");
+        	this.setDead();
+        	return;
         }
-        if(!world.isRemote){
-        	for(int i = 0; i < rek.data().getSeats().size(); i++){
-        		//Seat seat = rek.data().getSeat(i);
-            	if(seats[i] == null || !seats[i].addedToChunk){
-            		seats[i] = new SeatEntity(this, i); world.spawnEntity(seats[i]);
-            	}
-        	}
-        }
+        /*if(!world.isRemote){
+        	//
+        }*/
         prevRotationYaw = rotpoint.getAxes().getYaw();
         prevRotationPitch = rotpoint.getAxes().getPitch();
         prevRotationRoll = rotpoint.getAxes().getRoll();
@@ -591,7 +590,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	@Override
     public boolean attackEntityFrom(DamageSource source, float amount){
         if(world.isRemote || isDead){ return true; }
-        if(source.damageType.equals("player") && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
+        if(source.damageType.equals("player") && (seats.isEmpty() || getControllingPassenger() == null)){
         	//if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) return true;
             if(rek.data().isLocked()){
                 Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
@@ -699,7 +698,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
-                    if(net.minecraft.client.Minecraft.getMinecraft().player.isRiding() && this.seats[0] == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
+                	boolean riding = net.minecraft.client.Minecraft.getMinecraft().player.isRiding();
+                    if(riding && getControllingPassenger() == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
                         Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -41,9 +43,29 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	public abstract SwivelPoint getRotPoint();
 
-	public abstract SeatEntity[] getSeats();
+	public abstract ArrayList<SeatEntity> getActiveSeats();
 
 	public abstract boolean onKeyPress(KeyPress key, Seat seatdata, EntityPlayer player);
+	
+	/** Returns first found (driver) seat's controlling passenger that is a player. */
+	@Override
+	public Entity getControllingPassenger(){
+		for(SeatEntity ent : getActiveSeats()){
+			if(!ent.seatdata.driver) continue;
+			if(ent.getControllingPassenger() instanceof EntityPlayer) return ent.getControllingPassenger();
+		}
+		return null;
+	}
+
+    protected boolean isDriverInCreative(){
+    	Entity con = this.getControllingPassenger();
+    	return con != null && ((EntityPlayer)con).capabilities.isCreativeMode;
+    }
+
+    public boolean isDrivenByPlayer(){//TODO if we'd allow for putting any vehicle as trailer (e.g. towing), remove if-is-trailer check
+    	Entity con = (getVehicleData().getType().isTrailerOrWagon() && getFrontCoupledEntity() != null ? getFrontCoupledEntity().getEntity() : this).getControllingPassenger();
+        return con != null && SeatEntity.isPassengerThePlayer((SeatEntity)con.getRidingEntity());
+    }
 	
 	@Override
 	public boolean isLocked(){

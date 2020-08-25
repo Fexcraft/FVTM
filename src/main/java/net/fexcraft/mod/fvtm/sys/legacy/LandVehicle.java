@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,7 +74,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private VehicleData vehicle;
 	public SwivelPoint rotpoint;
 	//
-	public SeatEntity[] seats;
+	public ArrayList<SeatEntity> seats = new ArrayList<SeatEntity>();
 	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
 	//
 	//public double throttle;
@@ -126,7 +127,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getLegacyData();
         wheels = new WheelEntity[WHEELINDEX.length];
-        seats = new SeatEntity[vehicle.getSeats().size()];
+        //seats = new SeatEntity[vehicle.getSeats().size()];
         stepHeight = lata.wheel_step_height;
         rotpoint = vehicle.getRotationPoint("vehicle");
         this.setSize(vehicle.getAttribute("hitbox_width").getFloatValue(), vehicle.getAttribute("hitbox_height").getFloatValue());
@@ -237,7 +238,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		return wheels;
 	}
 	
-	public SeatEntity[] getSeats(){
+	public ArrayList<SeatEntity> getActiveSeats(){
 		return seats;
 	}
 
@@ -628,77 +629,20 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         return false;
     }
 
-    protected boolean isDriverInGM1(){
-        return seats != null && seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() instanceof EntityPlayer
-        	&& ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode;
-    }
-
     public boolean hasEnoughFuel(){
-        return isDriverInGM1() || true;//(vehicle != null && vehicle.getPart("engine") != null && vehicledata.getFuelTankContent() > vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle);
+        return isDriverInCreative() || true;//(vehicle != null && vehicle.getPart("engine") != null && vehicledata.getFuelTankContent() > vehicledata.getPart("engine").getPart().getAttribute(EngineAttribute.class).getFuelCompsumption() * throttle);
     }
 
-    public boolean isDrivenByPlayer(){
-        if(vehicle.getType().isTrailerOrWagon()){
-            return truck != null && truck.getSeats()[0] != null && SeatEntity.isPassengerThePlayer(truck.getSeats()[0]);
-        }
-        else{
-            return seats[0] != null && SeatEntity.isPassengerThePlayer((SeatEntity)seats[0]);
-        }
-    }
-
-    @SuppressWarnings("unused")
-	@Override
+    @Override
     public void onUpdate(){
         super.onUpdate(); if(this.isDead) return;
         if(vehicle == null){ Print.log("VehicleData is NULL; Not ticking vehicle."); Static.stop(); return; }
         if(!world.isRemote){
-        	for(int i = 0; i < vehicle.getSeats().size(); i++){
-        		Seat seat = vehicle.getSeat(i);
-            	if(seats[i] == null || !seats[i].addedToChunk){
-            		seats[i] = new SeatEntity(this, i); world.spawnEntity(seats[i]);
-            	}
-        	}
-            /*if(vehicle.getType().isTrailerOrWagon()){
-            	if(truck == null){
-                	if(wheels.length == 2){
-                		wheels = new WheelEntity[]{ wheels[0], wheels[1], null, null };
-                	}
-                	if(wheels[2] == null || !wheels[2].addedToChunk){
-                        wheels[2] = new WheelEntity(this, 2);
-                        world.spawnEntity(wheels[2]);
-                    }
-                	if(wheels[3] == null || !wheels[3].addedToChunk){
-                        wheels[3] = new WheelEntity(this, 2);
-                        world.spawnEntity(wheels[3]);
-                    }
-            	}
-            	else{
-            		if(wheels.length > 2){
-            			if(wheels[2] != null){ wheels[2].setDead(); }
-            			if(wheels[3] != null){ wheels[3].setDead(); }
-            			wheels = new WheelEntity[]{ wheels[0], wheels[1] };
-            		}
-            	}
-            }*/
             for(int i = 0; i < wheels.length; i++){
                 if(wheels[i] == null || !wheels[i].addedToChunk){
                     wheels[i] = new WheelEntity(this, i); world.spawnEntity(wheels[i]);
                 }
             }
-        }
-        else{
-            /*if(vehicle.getType().isTrailerOrWagon()){
-            	if(truck == null){
-                	if(wheels.length == 2){
-                		wheels = new WheelEntity[]{ wheels[0], wheels[1], null, null };
-                	}
-            	}
-            	else{
-            		if(wheels.length > 2){
-            			wheels = new WheelEntity[]{ wheels[0], wheels[1] };
-            		}
-            	}
-            }*/
         }
         prevRotationYaw = rotpoint.getAxes().getYaw();
         prevRotationPitch = rotpoint.getAxes().getPitch();
@@ -745,8 +689,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 //wheelsAngle += throttle * 20; if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;
                 //animation stuff }*/
             //
-            if((seats.length > 0 && seats[0] != null && seats[0].getControllingPassenger() == null)
-            	|| !(isDriverInGM1() || vehicle.getAttribute("fuel_stored").getIntegerValue() > 0) && lata.max_throttle != 0){
+            if(getControllingPassenger() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").getIntegerValue() > 0) && lata.max_throttle != 0){
                 throttle *= 0.98F;
             }
             this.onUpdateMovement(); if(trailer != null){ trailer.alignTrailer(); }
@@ -828,9 +771,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		else{
 			if(getVehicleType().isWaterVehicle()){
 		        Vec3d atmc = new Vec3d(0, 0, 0);
-		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || (seats != null && seats[0] != null
-		        	&& seats[0].getControllingPassenger() instanceof EntityPlayer
-		        	&& ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
+		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
 		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
 		        boolean consumed = processConsumption(engine);
 		        for(WheelEntity wheel : wheels){
@@ -894,9 +835,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 			}
 			else{
 				Vec3d atmc = new Vec3d(0, 0, 0);
-		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || (seats != null && seats[0] != null
-		        	&& seats[0].getControllingPassenger() instanceof EntityPlayer
-		        	&& ((EntityPlayer)seats[0].getControllingPassenger()).capabilities.isCreativeMode);
+		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
 		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
 		        boolean consumed = processConsumption(engine);
 		        for(WheelEntity wheel : wheels){
@@ -1055,7 +994,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(world.isRemote || isDead){
             return true;
         }
-        if(source.damageType.equals("player") && (seats.length > 0 ? (seats[0] == null || seats[0].getControllingPassenger() == null) : true)){
+        if(source.damageType.equals("player") && (seats.isEmpty() || getControllingPassenger() == null)){
         	//if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) return true;
             if(vehicle.isLocked()){
                 Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock if you want to remove it.");
@@ -1098,7 +1037,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target){
-        ItemStack stack = vehicle.newItemStack(); stack.setItemDamage(0); return stack;
+        ItemStack stack = vehicle.newItemStack();
+        stack.setItemDamage(0);
+        return stack;
     }
 
     //--- PACKETS ---//
@@ -1159,7 +1100,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
-                    if(net.minecraft.client.Minecraft.getMinecraft().player.isRiding() && this.seats[0] == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
+                	boolean riding = net.minecraft.client.Minecraft.getMinecraft().player.isRiding();
+                    if(riding && getControllingPassenger() == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
                     	boolean state = pkt.nbt.getBoolean("engine_toggle_result"); EntityPlayer player = net.minecraft.client.Minecraft.getMinecraft().player;
                         Print.chat(player, "Engine toggled " + (vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){

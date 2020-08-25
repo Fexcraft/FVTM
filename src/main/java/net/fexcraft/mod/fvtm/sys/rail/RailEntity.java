@@ -22,6 +22,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -161,9 +162,8 @@ public class RailEntity implements Comparable<RailEntity>{
 	private boolean CMODE(){
 		if(!Config.VEHICLES_NEED_FUEL) return true;
 		if(entity != null){
-			return entity.seats != null && entity.seats[0] != null
-	        	&& entity.seats[0].getControllingPassenger() instanceof EntityPlayer
-	        	&& ((EntityPlayer)entity.seats[0].getControllingPassenger()).capabilities.isCreativeMode;
+	    	Entity con = entity.getControllingPassenger();
+	    	return con != null && ((EntityPlayer)con).capabilities.isCreativeMode;
 		} else return false;
 	}
 
@@ -201,11 +201,11 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void checkIfShouldStop(){
-		if(entity == null) return; boolean decrease = false;
-		if(!isActive() && entity.seats.length > 0 && entity.seats[0] != null){
-			if(entity.seats[0].getControllingPassenger() instanceof EntityPlayer == false) decrease = true;
-			else if(!((EntityPlayer)entity.seats[0].getControllingPassenger()).capabilities.isCreativeMode
-				&& vehdata.getAttribute("fuel_stored").getIntegerValue() <= 0) decrease = true;
+		if(entity == null) return;
+		boolean decrease = false;
+		Entity con = entity.getControllingPassenger();
+		if(!isActive() && con != null){
+			if(!((EntityPlayer)con).capabilities.isCreativeMode && vehdata.getAttribute("fuel_stored").getIntegerValue() <= 0) decrease = true;
 		}
 		if(decrease) throttle *= 0.98F;
 	}

@@ -151,6 +151,14 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
                 player.openGui(FVTM.getInstance(), gui, player.world, args[0], args[1], args[2]);
 				return;
 			}
+			//TODO validation
+			case "switch_seat":
+			case "spawn_seat":{
+				if(task.equals("switch_seat")) player.dismountRidingEntity();
+				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				//SeatEntity ent = new SeatEntity((GenericVehicle)veh, packet.nbt.getInteger("seat"), player);
+				return;
+			}
 			default: return;
 		}
 	}

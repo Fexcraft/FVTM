@@ -34,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
+public class SeatOEntity extends Entity implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate> {
 
     private int vehicleid, seatindex;
     private GenericVehicle vehicle;
@@ -47,35 +47,42 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
     private float pass_yaw, pass_pitch;//, pass_roll;
     private double prev_pass_x, prev_pass_y, prev_pass_z;
     private float prev_pass_yaw, prev_pass_pitch;//, prev_pass_roll;
-    //private PassList passenger = new PassList();
 
-    public SeatEntity(World world){
+    public SeatOEntity(World world){
         super(world); setSize(0.5F, 0.5F);
         prevlooking = new Axis3D(); looking = new Axis3D();
         passlooking = new Axis3D(); prevpasslooking = new Axis3D();
         /*this.passenger = null;*/ //if(world.isRemote){ rqSync(); }
     }
 
-    public SeatEntity(GenericVehicle veh, int index){
+    public SeatOEntity(GenericVehicle veh, int index, Entity passenger){
         this(veh.world); vehicle = veh; seatindex = index;
-        vehicleid = veh.getEntity().getEntityId(); seatdata = veh.getVehicleData().getSeats().get(index);
+        vehicleid = veh.getEntity().getEntityId();
+        seatdata = veh.getVehicleData().getSeats().get(index);
+        vehicle.getSeats()[seatindex] = this;
+        Print.debug(vehicle.getSeats()[seatindex], this, vehicle.getSeats()[seatindex] == this);
         setPosition(veh.getEntity().posX, veh.getEntity().posY, veh.getEntity().posZ);
         pass_x = prev_pass_x = posX; pass_y = prev_pass_y = posY; pass_z = prev_pass_z = posZ;
         looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
         prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-        /*this.passenger = null;*/
+		passenger.startRiding(this);
+		world.spawnEntity(this);
     }
 
 	@Override
     public void writeSpawnData(ByteBuf buffer){
-		buffer.writeInt(vehicleid); buffer.writeInt(seatindex); buffer.writeLong(this.getPosition().toLong());
+		buffer.writeInt(vehicleid);
+		buffer.writeInt(seatindex);
+		buffer.writeLong(this.getPosition().toLong());
 		//Print.debug(world.isRemote + "", this.getEntityId(), vehicleid, vehicle);
     }
 
     @Override
     public void readSpawnData(ByteBuf buffer){
-    	this.vehicleid = buffer.readInt(); seatindex = buffer.readInt(); long pos = buffer.readLong();
-        this.vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
+    	vehicleid = buffer.readInt();
+    	seatindex = buffer.readInt();
+    	long pos = buffer.readLong();
+        vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
     	//Print.debug(world.isRemote + "", this.getEntityId(), vehicleid, vehicle);
         if(vehicle == null){
             Print.debug("VEHICLE NULL? ", seatdata == null ? "no seatdata" : seatdata.name,
@@ -84,7 +91,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         }
         //
         this.seatdata = vehicle.getVehicleData().getSeats().get(seatindex);
-        this.vehicle.getActiveSeats().add(this);
+        this.vehicle.getSeats()[seatindex] = this;
         looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
         prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
         Vec3d relpos = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point).getRelativeVector(seatdata.toVec3d(), false);
@@ -129,6 +136,9 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         }
         //
         if(world.isRemote && vehicle == null){ rqSync(); }
+        if(getControllingPassenger() == null){
+        	this.setDead();
+        }
     }
     
     @Override
@@ -228,7 +238,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
                         return;
                     }
                     this.seatdata = vehicle.getVehicleData().getSeat(seatindex);
-                    if(!vehicle.getActiveSeats().contains(this)) vehicle.getActiveSeats().add(this);
+                    vehicle.getSeats()[seatindex] = this;
                     //
                     looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
                     prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
@@ -467,7 +477,7 @@ public class SeatEntity extends Entity implements IEntityAdditionalSpawnData, IP
         	this.isDead = true;
         	Print.debug("DD => " + Time.getDate() + " " + seatindex + " [SERVER]");
         }
-        if(vehicle != null) vehicle.getActiveSeats().remove(this);
+        if(vehicle != null) vehicle.getSeats()[seatindex] = null;
     }
 
     public float getCameraDistance(){

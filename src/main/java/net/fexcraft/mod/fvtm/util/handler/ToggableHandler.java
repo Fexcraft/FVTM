@@ -10,12 +10,14 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -31,8 +33,10 @@ public class ToggableHandler {
 	
 	private static String last;
 	private static long tilltime = 0;
+	public static final AxisAlignedBB SEATBB = new AxisAlignedBB(-.25, 0, -.25, 0.25, 0.5, 0.25);
 
-	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatEntity seat, EntityPlayer player){
+	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatCache seat, EntityPlayer player){
+		if(press == KeyPress.MOUSE_RIGHT && foundSeat(entity, seat, player)) return true;
 		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasAABBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
 			/*Print.debug(player, "none found");*/ return false;
@@ -126,6 +130,52 @@ public class ToggableHandler {
 		return true;
 	}
 
+	private static boolean foundSeat(VehicleEntity entity, SeatCache seatfrom, EntityPlayer player){
+		if(seatfrom == null && player.getRidingEntity() instanceof GenericVehicle){
+			seatfrom = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
+		}
+		Entity renent = Minecraft.getMinecraft().getRenderViewEntity();
+		Vec3d vec = renent.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
+		Vec3d temp = renent.getLook(Minecraft.getMinecraft().getRenderPartialTicks());
+		Vec3d vecto = vec.add(temp.x * 3, temp.y * 3, temp.z * 3);
+		Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
+		for(int i = 0; i < entity.getVehicleData().getSeats().size(); i++){
+			if(seatfrom != null && seatfrom.seatindex == i) continue;
+			Seat seat = entity.getVehicleData().getSeat(i);
+			SeatCache ent = ((GenericVehicle)entity).seats[i];
+			if(ent == null || ent.passenger == null){
+				SwivelPoint point = entity.getVehicleData().getRotationPoint(seat.swivel_point);
+				temp = point.getRelativeVector(seat.x, seat.y, seat.z);
+				temp = temp.add(entity.getEntity().getPositionVector());
+				AxisAlignedBB aabb = SEATBB.offset(temp);
+				for(float f = 0; f < 3; f += Static.sixteenth / 2){
+					Vec3f dis = vec0.distance(vec1, f);
+					vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
+					//if(Command.DEBUG) entity.getEntity().world.spawnParticle(EnumParticleTypes.SNOWBALL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);
+					if(aabb.contains(vec)){
+						NBTTagCompound packet = new NBTTagCompound();
+						packet.setString("target_listener", "fvtm:gui");
+						packet.setString("task", (ent == null ? "spawn" : "switch") + "_seat");
+						packet.setInteger("entity", entity.getEntity().getEntityId());
+						packet.setInteger("seat", i);
+						if(player.world.isRemote){
+							PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+							tilltime = Time.getDate() + 20;
+							last = "seat";
+							Print.debug("found seat" + seat.getName());
+						}
+						else{
+							ServerReceiver.INSTANCE.process(packet, player);
+							Static.stop();
+						}
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	@SideOnly(Side.CLIENT) // Eventually checks about which is closest?
 	private static Attribute<?> getCollided(boolean external, VehicleEntity vehicle, EntityPlayer player, Collection<Attribute<?>> attributes){
 		Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
@@ -159,7 +209,7 @@ public class ToggableHandler {
 		for(Entity entity : Minecraft.getMinecraft().world.loadedEntityList){
 			if(entity instanceof VehicleEntity == false) continue;
 			if(((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").getFloatValue() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
-				Print.debug("veh dis: " + ((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").getFloatValue());
+				Print.debug("veh dis: " + ((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").getFloatValue() + " " + entity.getName());
 				Print.debug("ply dis: " + entity.getDistance(Minecraft.getMinecraft().player));
 				continue;
 			}

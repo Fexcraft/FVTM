@@ -4,7 +4,6 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,9 +19,7 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 181; this.ySize = 40;
-		if(player.getRidingEntity() instanceof SeatEntity){
-			vehicle = ((SeatEntity)player.getRidingEntity()).getVehicle();
-		} else{ vehicle = (GenericVehicle)world.getEntityByID(y); }
+		vehicle = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 	}
 
 	@Override

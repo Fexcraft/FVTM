@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.util.Collections;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Multiple;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.util.MiniBB;
@@ -115,11 +115,11 @@ public class Coupler {
 
 	private void notifyDriver(String string){
 		for(RailEntity ent : root.com.entities){
-			if(ent.entity == null || ent.entity.seats == null) continue;
-			for(SeatEntity seat : ent.entity.seats){
+			if(ent.entity == null) continue;
+			for(SeatCache seat : ent.entity.seats){
 				if(!seat.seatdata.driver) continue;
-				if(seat.getControllingPassenger() == null) continue;
-				Print.chat(seat.getControllingPassenger(), "&e&7" + string);
+				if(seat.passenger == null) continue;
+				Print.chat(seat.passenger, "&e&7" + string);
 			}
 		}
 	}

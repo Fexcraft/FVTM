@@ -7,8 +7,8 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,16 +20,15 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_toggables.png");
 	private ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	private int page, edited;
-	private VehicleEntity veh;
+	private GenericVehicle veh;
 	private TextField field;
 
 	public VehicleToggables(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 256; this.ySize = 218; edited = -1; page = 0;
-		if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-		SeatEntity seat = (SeatEntity)player.getRidingEntity();
-		veh = ((SeatEntity)player.getRidingEntity()).getVehicle();
+		veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+		SeatCache seat = veh.getSeatOf(player);
 		veh.getVehicleData().getAttributes().values().forEach(attr -> {
 			if(seat.seatdata.driver || (attr.seat() != null && attr.seat().equals(seat.seatdata.name))){
 				attributes.add(attr);

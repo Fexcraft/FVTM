@@ -53,7 +53,7 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
@@ -541,7 +541,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onEntityAttack(LivingAttackEvent event){
-		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof SeatEntity){// && !event.getSource().isProjectile()){
+		if(event.getEntity().isRiding() && event.getEntity().getRidingEntity() instanceof GenericVehicle){// && !event.getSource().isProjectile()){
 			event.setCanceled(true);
 		}
 	}

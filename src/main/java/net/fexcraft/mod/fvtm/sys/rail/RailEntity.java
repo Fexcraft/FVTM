@@ -10,7 +10,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
@@ -162,7 +162,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	private boolean CMODE(){
 		if(!Config.VEHICLES_NEED_FUEL) return true;
 		if(entity != null){
-	    	Entity con = entity.getControllingPassenger();
+	    	Entity con = entity.getDriver();
 	    	return con != null && ((EntityPlayer)con).capabilities.isCreativeMode;
 		} else return false;
 	}
@@ -203,7 +203,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void checkIfShouldStop(){
 		if(entity == null) return;
 		boolean decrease = false;
-		Entity con = entity.getControllingPassenger();
+		Entity con = entity.getDriver();
 		if(!isActive() && con != null){
 			if(!((EntityPlayer)con).capabilities.isCreativeMode && vehdata.getAttribute("fuel_stored").getIntegerValue() <= 0) decrease = true;
 		}
@@ -399,13 +399,26 @@ public class RailEntity implements Comparable<RailEntity>{
 	private void checkIfShouldHaveEntity(){
 		if(lastcheck == null) return; if(lastcheck > 0){ lastcheck--; return; }
 		if(entity != null){
-			if(entity.seats != null) for(SeatEntity seat : entity.seats)
-				if(seat != null && seat.hasPassenger()){ lastcheck = interval; return; }
-			if(isInPlayerRange()){ lastcheck = interval; return; }
-			entity.setDead(); entity = null; lastcheck = interval; return;
+			if(entity.seats != null)
+				for(SeatCache seat : entity.seats)
+					if(seat.passenger != null){
+						lastcheck = interval;
+						return;
+					}
+			if(isInPlayerRange()){
+				lastcheck = interval;
+				return;
+			}
+			entity.setDead();
+			entity = null;
+			lastcheck = interval;
+			return;
 		}
 		else{
-			if(!isInPlayerRange()){ lastcheck = interval; return; }
+			if(!isInPlayerRange()){
+				lastcheck = interval;
+				return;
+			}
 			region.getWorld().getWorld().spawnEntity(new RailVehicle(this));
 		}
 	}

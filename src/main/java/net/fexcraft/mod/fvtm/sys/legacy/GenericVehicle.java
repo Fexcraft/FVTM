@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
-import java.util.ArrayList;
-
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -36,6 +34,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public float wheelsYaw;
 	public double throttle;
 	public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
+	public SeatCache[] seats;
 	public WheelEntity[] wheels;
 	public LoopSound engineloop;
 
@@ -43,28 +42,41 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	public abstract SwivelPoint getRotPoint();
 
-	public abstract ArrayList<SeatEntity> getActiveSeats();
-
 	public abstract boolean onKeyPress(KeyPress key, Seat seatdata, EntityPlayer player);
 	
 	/** Returns first found (driver) seat's controlling passenger that is a player. */
+	public Entity getDriver(){
+		for(SeatCache ent : seats){
+			if(ent.seatdata.driver && ent.passenger instanceof EntityPlayer) return ent.passenger;
+		}
+		return null;
+	}
+	
 	@Override
 	public Entity getControllingPassenger(){
-		for(SeatEntity ent : getActiveSeats()){
-			if(!ent.seatdata.driver) continue;
-			if(ent.getControllingPassenger() instanceof EntityPlayer) return ent.getControllingPassenger();
+		return getDriver();
+	}
+	
+	@Override
+	public void updatePassenger(Entity pass){
+		return;
+	}
+
+	public SeatCache getSeatOf(Entity entity){
+		for(SeatCache seat : seats){
+			if(seat.passenger == entity) return seat;
 		}
 		return null;
 	}
 
     protected boolean isDriverInCreative(){
-    	Entity con = this.getControllingPassenger();
+    	Entity con = this.getDriver();
     	return con != null && ((EntityPlayer)con).capabilities.isCreativeMode;
     }
 
     public boolean isDrivenByPlayer(){//TODO if we'd allow for putting any vehicle as trailer (e.g. towing), remove if-is-trailer check
-    	Entity con = (getVehicleData().getType().isTrailerOrWagon() && getFrontCoupledEntity() != null ? getFrontCoupledEntity().getEntity() : this).getControllingPassenger();
-        return con != null && SeatEntity.isPassengerThePlayer((SeatEntity)con.getRidingEntity());
+    	GenericVehicle con = (getVehicleData().getType().isTrailerOrWagon() && getFrontCoupledEntity() != null ? (GenericVehicle)getFrontCoupledEntity().getEntity() : this);
+        return con != null && SeatCache.isPassengerThePlayer(con);
     }
 	
 	@Override

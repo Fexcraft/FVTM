@@ -10,9 +10,8 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +24,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 	private ArrayList<PartData> inventories = new ArrayList<>();
 	private ArrayList<String> inv_names = new ArrayList<>();
 	private RGB[] colors = new RGB[8];
-	private VehicleEntity veh;
+	private GenericVehicle veh;
 	private int page;
 
 	public VehicleInventories(EntityPlayer player, World world, int x, int y, int z){
@@ -33,7 +32,8 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
 		this.xSize = 194; this.ySize = 134;
 		//if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
-		SeatEntity seat = (SeatEntity)player.getRidingEntity(); veh = seat == null ? (GenericVehicle)world.getEntityByID(y) : seat.getVehicle();
+		veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+		SeatCache seat = veh.getSeatOf(player);
 		for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
 			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 			if(inv == null || inv.getInventoryType() == InventoryType.CONTAINER) continue;

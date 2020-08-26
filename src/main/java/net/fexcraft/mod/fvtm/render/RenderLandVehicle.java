@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
@@ -109,7 +110,8 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	            		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){
 	            			if(!attr.hasAABBs()) continue;
 	            			for(Map.Entry<String, float[]> box : attr.getAABBs().entrySet()){
-	            				Vec3d temp = vehicle.rotpoint.getAxes().getRelativeVector(box.getValue()[0] * Static.sixteenth, -box.getValue()[1] * Static.sixteenth, -box.getValue()[2] * Static.sixteenth);
+	            				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(attr.getAABBSP(box.getKey()));
+	            				Vec3d temp = point.getRelativeVector(box.getValue()[0] * Static.sixteenth, -box.getValue()[1] * Static.sixteenth, -box.getValue()[2] * Static.sixteenth);
 	            	        	temp = temp.add(vehicle.getEntity().getPositionVector());
 	            	        	vehicle.world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
 	            			}

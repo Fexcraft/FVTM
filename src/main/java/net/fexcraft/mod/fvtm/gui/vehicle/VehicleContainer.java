@@ -9,18 +9,16 @@ import java.util.Map;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +39,7 @@ public class VehicleContainer extends GenericContainer {
 	//
 	private boolean invmode;
 	protected InventoryFunction function;
-	protected VehicleEntity veh;
+	protected GenericVehicle veh;
 	protected PartData invpart;
 	protected String inv_id;
 	protected TIFI temp;
@@ -60,17 +58,7 @@ public class VehicleContainer extends GenericContainer {
 		super(player);
 		if(x == VEHICLE_FUEL){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-			if(player.isRiding() && player.getRidingEntity() instanceof SeatEntity){
-				SeatEntity ent = (SeatEntity)player.getRidingEntity(); veh = ent.getVehicle();
-				if(!ent.seatdata.driver){ player.closeScreen(); }
-			}
-			else{
-				veh = (VehicleEntity)world.getEntityByID(y);
-				if(veh == null){
-					Print.chat(player, "VEHICLE NOT FOUND BY ID[" + y + "], OPERATION CANCELLING");
-					player.closeScreen(); return;
-				}
-			}
+			veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 			this.inventoryItemStacks.clear(); this.inventorySlots.clear();
 			invmode = true; fuel = new GenericIInventory(null, 1, 1); slots = 1;
 			addSlotToContainer(new Slot(fuel, 0, 116, 50));
@@ -86,18 +74,18 @@ public class VehicleContainer extends GenericContainer {
 		}
 		if(x == VEHICLE_INVENTORY){
 			if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-			if(y == 0 && (!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false)){
+			if(y == 0 && (!player.isRiding() || player.getRidingEntity() instanceof GenericVehicle == false)){
 				player.closeScreen();
 				return;
 			}
 			invmode = true;
-			SeatEntity ent = (SeatEntity)player.getRidingEntity();
-			veh = ent == null ? (GenericVehicle)player.world.getEntityByID(y) : ent.getVehicle();
+			veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
+			SeatCache seat = veh.getSeatOf(player);
 			int invid = 0;
 			for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
 				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 				if(inv == null || inv.getInventoryType() == InventoryType.CONTAINER) continue;
-				if(ent == null ? inv.getSeats().contains("external") : (ent.seatdata.driver || (inv.getSeats().contains(ent.seatdata.name)))){
+				if(seat == null ? inv.getSeats().contains("external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
 					if(invid == z){
 						inv_id = entry.getKey();
 						break;

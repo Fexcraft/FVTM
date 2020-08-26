@@ -48,7 +48,6 @@ import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
@@ -128,7 +127,7 @@ public class FVTM {
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_landvehicle"), LandVehicle.class, "fvtm.landvehicle", 9000, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_airvehicle"), AirVehicle.class, "fvtm.airvehicle", 8997, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_wheel"), WheelEntity.class, "fvtm.wheel", 8999, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:legacy_seat"), SeatEntity.class, "fvtm.seat", 8998, this, 256, 1, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:roadsign"), RoadSignEntity.class, "fvtm.roadsign", 7001, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicle.class, "fvtm.railvehicle", 9001, this, 256, 1, false);
@@ -137,7 +136,7 @@ public class FVTM {
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderLandVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(AirVehicle.class, RenderAirVehicle::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(WheelEntity.class, RenderEmpty::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
+			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(SeatEntity.class, RenderEmpty::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSign.class, RenderStreetSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RoadSignEntity.class, RenderRoadSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailVehicle.class, RenderRailVehicle::new);

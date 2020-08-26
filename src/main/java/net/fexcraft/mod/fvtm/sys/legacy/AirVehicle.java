@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -74,7 +73,6 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 	public SwivelPoint rotpoint;
 	public Axis3D axes, prevaxes;
 	//
-	public ArrayList<SeatEntity> seats = new ArrayList<>();
 	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
 	//=
 	public float wheelsAngle, propelerAngle;
@@ -120,6 +118,8 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getLegacyData();
         wheels = new WheelEntity[WHEELINDEX.length];
+        seats = new SeatCache[vehicle.getSeats().size()];
+        for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         stepHeight = lata.wheel_step_height;
         this.setupCapability(null);//TODO this.getCapability(FVTMCaps.CONTAINER, null));
         vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
@@ -182,7 +182,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
         this.getCapability(Capabilities.CONTAINER, null).dropContents();
         //
         super.setDead();
-        if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
+        //if(seats != null) for(SeatEntity seat : seats) if(seat != null) seat.setDead();
         if(wheels != null) for(WheelEntity wheel : wheels) if(wheel != null) wheel.setDead();
         //
         vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicle));
@@ -209,10 +209,6 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 	
 	public WheelEntity[] getWheels(){
 		return wheels;
-	}
-	
-	public ArrayList<SeatEntity> getActiveSeats(){
-		return seats;
 	}
 
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
@@ -381,7 +377,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posrotincr, boolean teleport){
         if(ticksExisted > 1){ /*Print.debug("setPositionAndRotationDirect");*/ return; }
-        if(this.getControllingPassenger() != null && this.getControllingPassenger() instanceof EntityPlayer){
+        if(this.getDriver() != null && this.getDriver() instanceof EntityPlayer){
             //
         }
         else{
@@ -519,7 +515,9 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 }
             }
         }
-        for(SeatEntity seat : seats){ if(seat.processInitialInteract(player, hand)){ return true; } }
+        for(SeatCache seat : seats){
+        	if(seat.processInteract(player, hand)) return true;
+        }
         return false;
     }
 
@@ -722,7 +720,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 		}
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();
-        for(SeatEntity seat : seats){ if(seat != null){ seat.updatePosition(); } }
+        for(SeatCache seat : seats) if(seat != null) seat.updatePosition();
         /*if(drivenByPlayer){
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
@@ -933,7 +931,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
         if(world.isRemote || isDead){
             return true;
         }
-        if(source.damageType.equals("player") && (seats.isEmpty() || getControllingPassenger() == null)){
+        if(source.damageType.equals("player") && getDriver() == null){
         	//if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)) return true;
             if(vehicle.isLocked()){
                 Print.chat(source.getImmediateSource(), "Vehicle is locked. Unlock to remove it.");
@@ -1039,7 +1037,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
                 	boolean riding = net.minecraft.client.Minecraft.getMinecraft().player.isRiding();
-                    if(riding && this.getControllingPassenger() == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
+                    if(riding && this.getDriver() == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
                         Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
                             Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");

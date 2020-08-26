@@ -25,9 +25,10 @@ import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -44,7 +45,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	public static boolean toggables, resetview;
 	public static int scroll = 0, page, timer, clicktimer, oldview;// TODO replace to something fps independent
-	private SeatEntity seat;
+	private SeatCache seat;
 	//
 	private static final RGB HOVER = new RGB(RGB.GREEN);
 	static{ HOVER.alpha = 0.5f; }
@@ -52,9 +53,9 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	private static VehicleSteeringOverlay instance;
 	private static ArrayList<Attribute<?>> attributes = new ArrayList<>();
 
-	public VehicleSteeringOverlay(SeatEntity entity){
+	public VehicleSteeringOverlay(EntityPlayerSP player){
 		super();
-		this.seat = entity;
+		this.seat = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
 		instance = this;
 	}
 
@@ -85,7 +86,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	@Override
 	public void handleMouseInput(){
-		EntityPlayer player = (EntityPlayer)seat.getControllingPassenger();
+		EntityPlayer player = (EntityPlayer)seat.passenger;
 		if(player != mc.player){
 			mc.displayGuiScreen(null);
 			return;
@@ -136,7 +137,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		packet.setString("attr", attr.id());
 		if(i > 1) packet.setBoolean("reset", true);
 		packet.setBoolean("bool", !attr.type().isBoolean() ? i < 0 : i > 0);
-		packet.setInteger("entity", seat.getVehicle().getEntityId());
+		packet.setInteger("entity", seat.vehicle.getEntityId());
 		Print.debug(packet);
 		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 		clicktimer += 10;
@@ -203,7 +204,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	@Override
 	public void handleInput(){
-		EntityPlayer player = (EntityPlayer)seat.getControllingPassenger();
+		EntityPlayer player = (EntityPlayer)seat.passenger;
 		if(player != mc.player){
 			mc.displayGuiScreen(null);
 			return;
@@ -221,12 +222,12 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				e.printStackTrace();
 			}
 		}
-		if(seat != null && seat.getControllingPassenger() instanceof EntityPlayer){
+		if(seat != null && seat.passenger instanceof EntityPlayer){
 			if(isKeyDown(mc.gameSettings.keyBindForward.getKeyCode())){
-				seat.onKeyPress(seat.getVehicle().getVehicleType().isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
+				seat.onKeyPress(seat.vehicle.getVehicleType().isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
 			}
 			if(isKeyDown(mc.gameSettings.keyBindBack.getKeyCode())){
-				seat.onKeyPress(seat.getVehicle().getVehicleType().isAirVehicle() ? KeyPress.TURN_UP : KeyPress.DECELERATE, player);
+				seat.onKeyPress(seat.vehicle.getVehicleType().isAirVehicle() ? KeyPress.TURN_UP : KeyPress.DECELERATE, player);
 			}
 			if(isKeyDown(mc.gameSettings.keyBindLeft.getKeyCode())){
 				seat.onKeyPress(KeyPress.TURN_LEFT, player);
@@ -316,7 +317,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks){
-		GenericVehicle ent = seat.getVehicle();
+		GenericVehicle ent = seat.vehicle;
 		if(ent == null){ return; }
 		VehicleData data = ent.getVehicleData();
 		if(data == null) return;
@@ -461,8 +462,8 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		attributes.clear();
 		if(!toggables) return;
 		Print.debug("Toggled " + (toggables ? "ON" : "OFF"));
-		if(instance.seat == null || instance.seat.getVehicle() == null) return;
-		for(Attribute<?> attr : instance.seat.getVehicle().getVehicleData().getAttributes().values()){
+		if(instance.seat == null || instance.seat.vehicle == null) return;
+		for(Attribute<?> attr : instance.seat.vehicle.getVehicleData().getAttributes().values()){
 			if(attr.seat() != null && attr.seat().equals(instance.seat.seatdata.name)){
 				attributes.add(attr);
 			}

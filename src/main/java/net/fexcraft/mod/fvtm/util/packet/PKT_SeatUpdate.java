@@ -2,30 +2,37 @@ package net.fexcraft.mod.fvtm.util.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.api.packet.IPacket;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PKT_SeatUpdate implements IPacket, IMessage {
 
     public float yaw, pitch;
-	public int entid;
+	public int entid, seatid;
 
     public PKT_SeatUpdate(){}
 
-    public PKT_SeatUpdate(SeatEntity ent){
-    	entid = ent.getEntityId();
-        yaw = ent.looking.getYaw();
-        pitch = ent.looking.getPitch();
+    public PKT_SeatUpdate(SeatCache seat){
+    	entid = seat.vehicle.getEntityId();
+    	seatid = seat.seatindex;
+        yaw = seat.looking.getYaw();
+        pitch = seat.looking.getPitch();
     }
 
     @Override
     public void toBytes(ByteBuf buf){
-        buf.writeInt(entid); buf.writeFloat(yaw); buf.writeFloat(pitch);
+        buf.writeInt(entid);
+        buf.writeInt(seatid);
+        buf.writeFloat(yaw);
+        buf.writeFloat(pitch);
     }
 
     @Override
     public void fromBytes(ByteBuf buf){
-        entid = buf.readInt(); yaw = buf.readFloat(); pitch = buf.readFloat();
+        entid = buf.readInt();
+        seatid = buf.readInt();
+        yaw = buf.readFloat();
+        pitch = buf.readFloat();
     }
 
 }

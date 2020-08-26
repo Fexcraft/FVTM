@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.Compound;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
@@ -19,6 +20,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 
 public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 	
@@ -152,11 +154,11 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				return;
 			}
 			//TODO validation
-			case "switch_seat":
-			case "spawn_seat":{
-				if(task.equals("switch_seat")) player.dismountRidingEntity();
-				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				//SeatEntity ent = new SeatEntity((GenericVehicle)veh, packet.nbt.getInteger("seat"), player);
+			case "toggle_seat":{
+				GenericVehicle veh = (GenericVehicle)player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				int seatindex = packet.nbt.getInteger("seat");
+				if(seatindex < 0 || seatindex >= veh.seats.length) return;
+				veh.seats[packet.nbt.getInteger("seat")].processInteract(player, packet.nbt.getBoolean("main") ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
 				return;
 			}
 			default: return;

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 
 import java.util.List;
 
+import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
@@ -15,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemLead;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -48,8 +50,7 @@ public class SeatCache {
         resetAxes();
 	}
 
-
-	private void resetAxes(){
+	public void resetAxes(){
         prevlooking = new Axis3D(); looking = new Axis3D();
         passlooking = new Axis3D(); prevpasslooking = new Axis3D();
         looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
@@ -78,6 +79,7 @@ public class SeatCache {
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
                 	pending = entity.getEntityId();
+                    sendPendingPacket();
                     entity.startRiding(vehicle);
                     looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
                     entity.clearLeashed(true, !player.capabilities.isCreativeMode);
@@ -87,6 +89,7 @@ public class SeatCache {
         }
         if(passenger == null){
         	pending = player.getEntityId();
+            sendPendingPacket();
             player.startRiding(vehicle);
             return true;
         }
@@ -94,8 +97,16 @@ public class SeatCache {
     }
 
 
+	private void sendPendingPacket(){
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("task", "seat_pending");
+        nbt.setInteger("seat", seatindex);
+        nbt.setInteger("pending", pending);
+        ApiUtil.sendEntityUpdatePacketToAllAround(vehicle, nbt);
+	}
+
 	public void updatePosition(){
-        if(vehicle == null || vehicle.world.isRemote) return;
+        if(vehicle == null) return;
         prev_pass_x = pass_x;
         prev_pass_y = pass_y;
         prev_pass_z = pass_z;
@@ -155,7 +166,7 @@ public class SeatCache {
             }
             else if(key.toggableInput() && vehicle.world.isRemote){
         		if(clicktimer > 0) return false;
-        		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player);
+        		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player, EnumHand.MAIN_HAND);
             	clicktimer += 10; return bool;
             }
             else return vehicle.onKeyPress(key, seatdata, player);
@@ -257,5 +268,11 @@ public class SeatCache {
         }
         return false;
     }
+
+	public void setPassenger(Entity pass){
+		passenger = pass;
+		resetAxes();
+		pending = -1;
+	}
 
 }

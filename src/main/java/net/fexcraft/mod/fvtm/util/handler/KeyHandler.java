@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
@@ -57,7 +58,7 @@ public class KeyHandler {
     	TOGGABLE {
     		@Override
     		public boolean isActive(){
-    			return ToggableHandler.handleClick(KeyPress.RESET);
+    			return ToggableHandler.handleClick(KeyPress.RESET, EnumHand.MAIN_HAND);
     		}
     		@Override
     		public boolean conflicts(IKeyConflictContext other){
@@ -84,13 +85,13 @@ public class KeyHandler {
     @SubscribeEvent
     public void clickEmpty(RightClickEmpty event){
     	if(!event.getItemStack().isEmpty()) return;
-        ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT);
+        ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getHand());
     }
 
     @SubscribeEvent
     public void clickEmpty(LeftClickEmpty event){
     	if(!event.getItemStack().isEmpty()) return;
-        ToggableHandler.handleClick(KeyPress.MOUSE_MAIN);
+        ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getHand());
     }
     
     //unsure if those 2 bellow won't be processing intensive
@@ -99,7 +100,7 @@ public class KeyHandler {
     @SubscribeEvent
     public void clickEmpty(RightClickBlock event){
     	if(!event.getItemStack().isEmpty()) return;
-        if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT)){
+        if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getHand())){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }
@@ -108,7 +109,7 @@ public class KeyHandler {
     @SubscribeEvent
     public void clickEmpty(LeftClickBlock event){
     	if(!event.getItemStack().isEmpty()) return;
-        if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN)){
+        if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getHand())){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }

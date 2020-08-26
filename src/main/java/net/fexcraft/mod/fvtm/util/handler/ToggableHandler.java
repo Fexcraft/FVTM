@@ -23,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -35,8 +36,8 @@ public class ToggableHandler {
 	private static long tilltime = 0;
 	public static final AxisAlignedBB SEATBB = new AxisAlignedBB(-.25, 0, -.25, 0.25, 0.5, 0.25);
 
-	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatCache seat, EntityPlayer player){
-		if(press == KeyPress.MOUSE_RIGHT && foundSeat(entity, seat, player)) return true;
+	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatCache seat, EntityPlayer player, EnumHand hand){
+		if(press == KeyPress.MOUSE_RIGHT && foundSeat(entity, seat, player, hand)) return true;
 		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasAABBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
 			/*Print.debug(player, "none found");*/ return false;
@@ -130,7 +131,8 @@ public class ToggableHandler {
 		return true;
 	}
 
-	private static boolean foundSeat(VehicleEntity entity, SeatCache seatfrom, EntityPlayer player){
+	private static boolean foundSeat(VehicleEntity entity, SeatCache seatfrom, EntityPlayer player, EnumHand hand){
+		if("seat".equals(last) && Time.getDate() < tilltime) return false;
 		if(seatfrom == null && player.getRidingEntity() instanceof GenericVehicle){
 			seatfrom = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
 		}
@@ -155,14 +157,14 @@ public class ToggableHandler {
 					if(aabb.contains(vec)){
 						NBTTagCompound packet = new NBTTagCompound();
 						packet.setString("target_listener", "fvtm:gui");
-						packet.setString("task", (ent == null ? "spawn" : "switch") + "_seat");
+						packet.setString("task", "toggle_seat");
 						packet.setInteger("entity", entity.getEntity().getEntityId());
 						packet.setInteger("seat", i);
+						packet.setBoolean("main", hand == EnumHand.MAIN_HAND);
 						if(player.world.isRemote){
 							PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 							tilltime = Time.getDate() + 20;
 							last = "seat";
-							Print.debug("found seat" + seat.getName());
 						}
 						else{
 							ServerReceiver.INSTANCE.process(packet, player);
@@ -205,7 +207,7 @@ public class ToggableHandler {
 		return null;
 	}
 
-	public static boolean handleClick(KeyPress press){
+	public static boolean handleClick(KeyPress press, EnumHand hand){
 		for(Entity entity : Minecraft.getMinecraft().world.loadedEntityList){
 			if(entity instanceof VehicleEntity == false) continue;
 			if(((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").getFloatValue() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
@@ -213,7 +215,7 @@ public class ToggableHandler {
 				Print.debug("ply dis: " + entity.getDistance(Minecraft.getMinecraft().player));
 				continue;
 			}
-			if(handleClick(press, (VehicleEntity)entity, null, Minecraft.getMinecraft().player)) return true;
+			if(handleClick(press, (VehicleEntity)entity, null, Minecraft.getMinecraft().player, hand)) return true;
 		}
 		return false;
 	}

@@ -621,9 +621,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
             }
         }
-        for(SeatCache seat : seats){
-        	if(seat.processInteract(player, hand)) return true;
-        }//TODO move to toggable handler
         return false;
     }
 
@@ -1167,6 +1164,18 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 		trailer.startRiding(this);
                 	}*///TODO
                 	break;
+                }
+                case "seat_pending":{
+                	SeatCache seat = seats[pkt.nbt.getInteger("seat")];
+                	seat.pending = pkt.nbt.getInteger("pending");
+                	for(Entity passenger : this.getPassengers()){
+                		seat = getSeatOf(passenger);
+                		if(seat == null){
+                			seat = getPendingSeatFor(passenger);
+                			seat.setPassenger(passenger);
+                		}
+                	}
+                	return;
                 }
             }
         }

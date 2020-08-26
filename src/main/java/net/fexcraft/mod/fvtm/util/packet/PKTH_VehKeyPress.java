@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IThreadListener;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -17,8 +18,9 @@ public class PKTH_VehKeyPress implements IMessageHandler<PKT_VehKeyPress, IMessa
             @Override
             public void run(){
                 EntityPlayerMP player = ctx.getServerHandler().player;
-                if(player.getRidingEntity() != null && player.getRidingEntity() instanceof SeatEntity){
-                    ((SeatEntity)player.getRidingEntity()).onKeyPress(packet.keypress, player);
+                if(player.getRidingEntity() != null && player.getRidingEntity() instanceof GenericVehicle){
+                	SeatCache seat = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
+                    seat.onKeyPress(packet.keypress, player);
                 }
             }
         }); return null;

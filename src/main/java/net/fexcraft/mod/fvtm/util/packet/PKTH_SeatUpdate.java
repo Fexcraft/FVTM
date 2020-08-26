@@ -2,7 +2,8 @@ package net.fexcraft.mod.fvtm.util.packet;
 
 import java.util.List;
 
-import net.fexcraft.mod.fvtm.sys.legacy.SeatEntity;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -50,13 +51,14 @@ public class PKTH_SeatUpdate {
 	private static final void findAndApply(PKT_SeatUpdate packet, List<Entity> list, boolean send){
         for(Entity ent : list){
             if(ent.getEntityId() == packet.entid){
-            	SeatEntity seat = (SeatEntity)ent;
+            	GenericVehicle veh = (GenericVehicle)ent;
+            	SeatCache seat = veh.seats[packet.seatid];
             	seat.prevlooking = seat.looking.clone();
             	seat.looking.setAngles(packet.yaw, packet.pitch, 0F);
             	if(send){
-                    Packets.sendToAllAround(packet, new TargetPoint(seat.dimension,
-                    	seat.getPosition().getX(), seat.getPosition().getY(), seat.getPosition().getZ(), Config.VEHICLE_UPDATE_RANGE));
-            	} else return;
+                    Packets.sendToAllAround(packet, new TargetPoint(veh.dimension, veh.posX, veh.posY, veh.posZ, Config.VEHICLE_UPDATE_RANGE));
+            	}
+            	return;
             }
         }
 	}

@@ -515,9 +515,6 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 }
             }
         }
-        for(SeatCache seat : seats){
-        	if(seat.processInteract(player, hand)) return true;
-        }
         return false;
     }
 
@@ -1095,6 +1092,18 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 		trailer.startRiding(this);
                 	}*///TODO
                 	break;
+                }
+                case "seat_pending":{
+                	SeatCache seat = seats[pkt.nbt.getInteger("seat")];
+                	seat.pending = pkt.nbt.getInteger("pending");
+                	for(Entity passenger : this.getPassengers()){
+                		seat = getSeatOf(passenger);
+                		if(seat == null){
+                			seat = getPendingSeatFor(passenger);
+                			seat.setPassenger(passenger);
+                		}
+                	}
+                	return;
                 }
             }
         }

@@ -9,6 +9,8 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
+import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
+import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -106,7 +108,8 @@ public class SeatCache {
 	}
 
 	public void updatePosition(){
-        if(vehicle == null) return;
+		if(clicktimer > 0) clicktimer--;
+        if(passenger == null) return;
         prev_pass_x = pass_x;
         prev_pass_y = pass_y;
         prev_pass_z = pass_z;
@@ -119,26 +122,26 @@ public class SeatCache {
         pass_x = vehicle.getEntity().posX + relpos.x;
         pass_y = vehicle.getEntity().posY + relpos.y - 0.5;
         pass_z = vehicle.getEntity().posZ + relpos.z;
-
-        if(passenger != null){
-            this.updatePassenger();
+        
+        //
+        
+        this.updatePassenger();
+        //
+        Axis3D glookaxes = vehicle.getRotPoint().getAxes().getRelativeVector(passlooking);
+        pass_yaw = -90F + glookaxes.getYaw();
+        pass_pitch = glookaxes.getPitch();
+        //
+        double yaw = pass_yaw - prev_pass_yaw;
+        if(yaw > 180){ prev_pass_yaw += 360F; }
+        if(yaw < -180){ prev_pass_yaw -= 360F; }
+        if(passenger instanceof EntityPlayer){
+            passenger.prevRotationYaw = prev_pass_yaw;
+            passenger.prevRotationPitch = prev_pass_pitch;
             //
-            Axis3D glookaxes = vehicle.getRotPoint().getAxes().getRelativeVector(passlooking);
-            pass_yaw = -90F + glookaxes.getYaw();
-            pass_pitch = glookaxes.getPitch();
-            //
-            double yaw = pass_yaw - prev_pass_yaw;
-            if(yaw > 180){ prev_pass_yaw += 360F; }
-            if(yaw < -180){ prev_pass_yaw -= 360F; }
-            if(passenger instanceof EntityPlayer){
-                passenger.prevRotationYaw = prev_pass_yaw;
-                passenger.prevRotationPitch = prev_pass_pitch;
-                //
-                passenger.rotationYaw = pass_yaw;
-                passenger.rotationPitch = pass_pitch;
-            }
-            //if(world.isRemote){ pass_roll = -glookaxes.getRoll(); }
+            passenger.rotationYaw = pass_yaw;
+            passenger.rotationPitch = pass_pitch;
         }
+        //if(world.isRemote){ pass_roll = -glookaxes.getRoll(); }
 	}
 
 
@@ -159,26 +162,22 @@ public class SeatCache {
 
 
 	public boolean onKeyPress(KeyPress key, EntityPlayer player){
-        if(vehicle != null){
-            if(key == null){
-                //this.vehicle.getVehicleData().getScripts().forEach((script) -> script.onKeyPress(key, seatdata, player));
-                return false;
-            }
-            else if(key.toggableInput() && vehicle.world.isRemote){
-        		if(clicktimer > 0) return false;
-        		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player, EnumHand.MAIN_HAND);
-            	clicktimer += 10; return bool;
-            }
-            else return vehicle.onKeyPress(key, seatdata, player);
-        }
-        if(vehicle.world.isRemote && key.dismount() && passenger != null){ passenger.dismountRidingEntity(); }
-        return false;
+		if(key == null) return false;
+		else if(key.toggableInput() && vehicle.world.isRemote){
+    		if(clicktimer > 0) return false;
+    		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player, EnumHand.MAIN_HAND);
+        	clicktimer += 10;
+        	return bool;
+		}
+		else if(key.dismount() && vehicle.world.isRemote && passenger != null){
+			passenger.dismountRidingEntity();
+			return true;
+		}
+        else return vehicle.onKeyPress(key, seatdata, player);
 	}
 
 
 	public void onMouseMoved(int dx, int dy){
-        if(vehicle == null){ return; }
-        //
         prevlooking = looking.clone();
         prevpasslooking = passlooking.clone();
         //
@@ -258,7 +257,7 @@ public class SeatCache {
         if(newPitch > -seatdata.minpitch){ newPitch = -seatdata.minpitch; }
         if(newPitch < -seatdata.maxpitch){ newPitch = -seatdata.maxpitch; }
         looking.setAngles(newYaw, newPitch, 0F);
-        //TODO Packets.sendToServer(new PKT_SeatUpdate(this));
+        Packets.sendToServer(new PKT_SeatUpdate(this));
         return;
 	}
 	

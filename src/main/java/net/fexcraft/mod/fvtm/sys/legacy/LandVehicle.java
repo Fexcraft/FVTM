@@ -677,7 +677,11 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	vehicle.getAttribute("throttle").setValue((float)throttle);
         }
         for(WheelEntity wheel : wheels){
-            if(wheel != null){ wheel.prevPosX = wheel.posX; wheel.prevPosY = wheel.posY; wheel.prevPosZ = wheel.posZ; }
+            if(wheel != null){
+            	wheel.prevPosX = wheel.posX;
+            	wheel.prevPosY = wheel.posY;
+            	wheel.prevPosZ = wheel.posZ;
+            }
         }
         if(!world.isRemote){// && vehicle.getType().isTrailerOrWagon() ? this.wheels.length > 2 : true){
             /*if(hasEnoughFuel()){

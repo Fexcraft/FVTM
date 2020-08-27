@@ -63,6 +63,11 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	}
 	
 	@Override
+	public double getMountedYOffset(){
+		return 0;
+	}
+	
+	@Override
 	public void addPassenger(Entity pass){
 		super.addPassenger(pass);
 		SeatCache cache = getPendingSeatFor(pass);

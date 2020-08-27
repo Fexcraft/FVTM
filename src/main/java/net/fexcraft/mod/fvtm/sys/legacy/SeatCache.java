@@ -44,11 +44,11 @@ public class SeatCache {
 	public SeatCache(GenericVehicle veh, int index){
 		vehicle = veh;
 		seatindex = index;
-        vehicleid = veh.getEntity().getEntityId();
+        vehicleid = veh.getEntityId();
         seatdata = veh.getVehicleData().getSeats().get(index);
-        pass_x = prev_pass_x = veh.getEntity().posX;
-        pass_y = prev_pass_y = veh.getEntity().posY;
-        pass_z = prev_pass_z = veh.getEntity().posZ;
+        pass_x = prev_pass_x = veh.posX;
+        pass_y = prev_pass_y = veh.posY;
+        pass_z = prev_pass_z = veh.posZ;
         resetAxes();
 	}
 
@@ -119,9 +119,9 @@ public class SeatCache {
 
         SwivelPoint point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
         Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
-        pass_x = vehicle.getEntity().posX + relpos.x;
-        pass_y = vehicle.getEntity().posY + relpos.y - 0.5;
-        pass_z = vehicle.getEntity().posZ + relpos.z;
+        pass_x = vehicle.posX + relpos.x;
+        pass_y = vehicle.posY + relpos.y - 0.75;
+        pass_z = vehicle.posZ + relpos.z;
         
         //
         

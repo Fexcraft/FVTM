@@ -150,7 +150,7 @@ public class ToggableHandler {
 				temp = point.getRelativeVector(seat.x, seat.y, seat.z);
 				temp = temp.add(entity.getEntity().getPositionVector());
 				AxisAlignedBB aabb = SEATBB.offset(temp);
-				for(float f = 0; f < 3; f += Static.sixteenth / 2){
+				for(float f = 0; f < 4; f += Static.sixteenth / 2){
 					Vec3f dis = vec0.distance(vec1, f);
 					vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
 					//if(Command.DEBUG) entity.getEntity().world.spawnParticle(EnumParticleTypes.SNOWBALL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);

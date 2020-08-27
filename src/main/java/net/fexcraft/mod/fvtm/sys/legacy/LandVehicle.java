@@ -982,10 +982,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		// You expected anything here? Uff.
 	}
     
-    @Override
+    /*@Override
     public void updatePassenger(Entity passenger){
         //if(passenger instanceof LandVehicle){ ((VehicleEntity)passenger).moveTrailer(); }
-    }
+    }*/
 
 	@Override
     public boolean attackEntityFrom(DamageSource source, float amount){

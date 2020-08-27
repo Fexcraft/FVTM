@@ -122,9 +122,7 @@ public class SeatCache {
         pass_x = vehicle.posX + relpos.x;
         pass_y = vehicle.posY + relpos.y - 0.75;
         pass_z = vehicle.posZ + relpos.z;
-        
         //
-        
         this.updatePassenger();
         //
         Axis3D glookaxes = vehicle.getRotPoint().getAxes().getRelativeVector(passlooking);
@@ -134,13 +132,13 @@ public class SeatCache {
         double yaw = pass_yaw - prev_pass_yaw;
         if(yaw > 180){ prev_pass_yaw += 360F; }
         if(yaw < -180){ prev_pass_yaw -= 360F; }
-        if(passenger instanceof EntityPlayer){
+        //if(passenger instanceof EntityPlayer){
             passenger.prevRotationYaw = prev_pass_yaw;
             passenger.prevRotationPitch = prev_pass_pitch;
             //
             passenger.rotationYaw = pass_yaw;
             passenger.rotationPitch = pass_pitch;
-        }
+        //}
         //if(world.isRemote){ pass_roll = -glookaxes.getRoll(); }
 	}
 

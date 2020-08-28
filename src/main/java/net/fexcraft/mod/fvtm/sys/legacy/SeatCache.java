@@ -33,9 +33,9 @@ public class SeatCache {
     public Axis3D looking, prevlooking;
     public Axis3D passlooking, prevpasslooking;
     //
-    private double pass_x, pass_y, pass_z;
+    //private double pass_x, pass_y, pass_z;
     private float pass_yaw, pass_pitch;//, pass_roll;
-    private double prev_pass_x, prev_pass_y, prev_pass_z;
+    //private double prev_pass_x, prev_pass_y, prev_pass_z;
     private float prev_pass_yaw, prev_pass_pitch;//, prev_pass_roll;
     //
     private byte clicktimer;
@@ -46,9 +46,9 @@ public class SeatCache {
 		seatindex = index;
         vehicleid = veh.getEntityId();
         seatdata = veh.getVehicleData().getSeats().get(index);
-        pass_x = prev_pass_x = veh.posX;
-        pass_y = prev_pass_y = veh.posY;
-        pass_z = prev_pass_z = veh.posZ;
+        //pass_x = prev_pass_x = veh.posX;
+        //pass_y = prev_pass_y = veh.posY;
+        //pass_z = prev_pass_z = veh.posZ;
         resetAxes();
 	}
 
@@ -76,7 +76,8 @@ public class SeatCache {
                 return true;
             }
             double checkRange = 10;
-            AxisAlignedBB aabb = new AxisAlignedBB(pass_x - checkRange, pass_y - checkRange, pass_z - checkRange, pass_x + checkRange, pass_y + checkRange, pass_z + checkRange);
+            Vec3d pos = getFreshPosition();
+            AxisAlignedBB aabb = new AxisAlignedBB(pos.x - checkRange, pos.y - checkRange, pos.z - checkRange, pos.x + checkRange, pos.y + checkRange, pos.z + checkRange);
             List<EntityLiving> nearbyMobs = vehicle.world.getEntitiesWithinAABB(EntityLiving.class, aabb);
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
@@ -110,18 +111,9 @@ public class SeatCache {
 	public void updatePosition(){
 		if(clicktimer > 0) clicktimer--;
         if(passenger == null) return;
-        prev_pass_x = pass_x;
-        prev_pass_y = pass_y;
-        prev_pass_z = pass_z;
         prev_pass_yaw = pass_yaw;
         prev_pass_pitch = pass_pitch;
         //prev_pass_roll = pass_roll;
-
-        SwivelPoint point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
-        Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
-        pass_x = vehicle.posX + relpos.x;
-        pass_y = vehicle.posY + relpos.y - 0.75;
-        pass_z = vehicle.posZ + relpos.z;
         //
         this.updatePassenger();
         //
@@ -143,16 +135,23 @@ public class SeatCache {
 	}
 
 
+	private Vec3d getFreshPosition(){
+        SwivelPoint point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
+        Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
+		return relpos.add(vehicle.posX, vehicle.posY, vehicle.posZ);
+	}
+
 	private void updatePassenger(){
         if(passenger == null) return;
+        Vec3d pos = getFreshPosition();
         passenger.rotationYaw = pass_yaw;
         passenger.rotationPitch = pass_pitch;
         passenger.prevRotationYaw = prev_pass_yaw;
         passenger.prevRotationPitch = prev_pass_pitch;
-        passenger.lastTickPosX = passenger.prevPosX = prev_pass_x;
-        passenger.lastTickPosY = passenger.prevPosY = prev_pass_y;
-        passenger.lastTickPosZ = passenger.prevPosZ = prev_pass_z;
-        passenger.setPosition(pass_x, pass_y, pass_z);
+        passenger.lastTickPosX = passenger.prevPosX = passenger.posX;
+        passenger.lastTickPosY = passenger.prevPosY = passenger.posY;
+        passenger.lastTickPosZ = passenger.prevPosZ = passenger.posZ;
+        passenger.setPosition(pos.x, pos.y, pos.z);
         if(!vehicle.world.isRemote && passenger instanceof EntityPlayerMP){
         	Resources.resetFlight((EntityPlayerMP)passenger);
         }

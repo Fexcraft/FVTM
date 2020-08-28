@@ -14,8 +14,8 @@ public class Seat {
 	public float x, y, z;
 	public boolean driver, sitting;
 	public String name;
-	public float minyaw, maxyaw;
-	public float minpitch, maxpitch;
+	public float minyaw, maxyaw, defyaw;
+	public float minpitch, maxpitch, defpitch;
 	public String swivel_point;
 	public boolean nofirst, nothird;
 	public boolean relative;
@@ -37,6 +37,8 @@ public class Seat {
 		nothird = JsonUtil.getIfExists(obj, "no_third_person", false);
 		if(nofirst && nothird) nothird = false;
 		relative = JsonUtil.getIfExists(obj, "relative", false);
+		defyaw = JsonUtil.getIfExists(obj, "def_yaw", 0).floatValue();
+		defpitch = JsonUtil.getIfExists(obj, "def_pitch", 0).floatValue();
 	}
 
 	public Seat(String name, float x, float y, float z, boolean driver, String point, boolean nof, boolean not){
@@ -63,6 +65,11 @@ public class Seat {
 	public Seat(String name, float x, float y, float z, boolean driver, boolean sitting, String point, boolean nof, boolean not, boolean relative){
 		this(name, x, y, z, driver, sitting, point, nof, not);
 		this.relative = relative;
+	}
+
+	public Seat(String name, float x, float y, float z, boolean driver, boolean sitting, String point, boolean nof, boolean not, boolean relative, float dy, float dp){
+		this(name, x, y, z, driver, sitting, point, nof, not, relative);
+		defyaw = defpitch = 0;
 	}
 
 	public boolean isDriver(){
@@ -102,7 +109,7 @@ public class Seat {
 		float x = this.x + partpos.to16FloatX();
 		float y = this.y - partpos.to16FloatY();
 		float z = this.z - partpos.to16FloatZ();
-		return new Seat(name, x, y, z, driver, sitting, swivel_point, nofirst, nothird, relative);
+		return new Seat(name, x, y, z, driver, sitting, swivel_point, nofirst, nothird, relative, defyaw, defpitch);
 	}
 
 }

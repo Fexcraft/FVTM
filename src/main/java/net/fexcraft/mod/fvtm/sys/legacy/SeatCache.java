@@ -269,6 +269,8 @@ public class SeatCache {
 		passenger = pass;
 		resetAxes();
 		pending = -1;
+		pass_yaw = prev_pass_yaw = seatdata.defyaw;
+		pass_pitch = prev_pass_pitch = seatdata.defpitch;
 	}
 
 }

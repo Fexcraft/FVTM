@@ -138,6 +138,7 @@ public class SeatCache {
 	private Vec3d getFreshPosition(){
         SwivelPoint point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
         Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
+        Print.debug(relpos);
 		return relpos.add(vehicle.posX, vehicle.posY, vehicle.posZ);
 	}
 
@@ -271,6 +272,10 @@ public class SeatCache {
 		pending = -1;
 		pass_yaw = prev_pass_yaw = seatdata.defyaw;
 		pass_pitch = prev_pass_pitch = seatdata.defpitch;
+		looking.setAngles(pass_yaw, pass_pitch, 0);
+		prevlooking.setAngles(pass_yaw, pass_pitch, 0);
+		passlooking.setAngles(pass_yaw, pass_pitch, 0);
+		prevpasslooking.setAngles(pass_yaw, pass_pitch, 0);
 	}
 
 }

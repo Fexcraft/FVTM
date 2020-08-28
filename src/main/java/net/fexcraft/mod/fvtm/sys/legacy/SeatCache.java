@@ -138,7 +138,6 @@ public class SeatCache {
 	private Vec3d getFreshPosition(){
         SwivelPoint point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
         Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
-        Print.debug(relpos);
 		return relpos.add(vehicle.posX, vehicle.posY, vehicle.posZ);
 	}
 
@@ -167,10 +166,10 @@ public class SeatCache {
         	clicktimer += 10;
         	return bool;
 		}
-		else if(key.dismount() && vehicle.world.isRemote && passenger != null){
+		/*else if(key.dismount() && vehicle.world.isRemote && passenger != null){
 			passenger.dismountRidingEntity();
 			return true;
-		}
+		}*/
         else return vehicle.onKeyPress(key, seatdata, player);
 	}
 

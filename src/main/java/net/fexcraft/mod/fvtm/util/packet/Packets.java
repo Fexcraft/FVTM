@@ -19,7 +19,7 @@ public class Packets {
 		//
 		instance.registerMessage(PKTH_SeatUpdate.Client.class, PKT_SeatUpdate.class, 0, Side.CLIENT);
 		instance.registerMessage(PKTH_SeatUpdate.Server.class, PKT_SeatUpdate.class, 1, Side.SERVER);
-		instance.registerMessage(PKTH_SeatDismount.Client.class, PKT_SeatDismount.class, 2, Side.CLIENT);
+		//instance.registerMessage(PKTH_SeatDismount.Client.class, PKT_SeatDesmount.class, 2, Side.CLIENT);
 		instance.registerMessage(PKTH_VehKeyPress.class, PKT_VehKeyPress.class, 3, Side.SERVER);
 		instance.registerMessage(PKTH_VehControl.Client.class, PKT_VehControl.class, 4, Side.CLIENT);
 		instance.registerMessage(PKTH_VehControl.Server.class, PKT_VehControl.class, 5, Side.SERVER);

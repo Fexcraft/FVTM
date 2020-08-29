@@ -118,7 +118,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getLegacyData();
         wheels = new WheelEntity[WHEELINDEX.length];
-        seats = new SeatCache[vehicle.getSeats().size()];
+        if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         stepHeight = lata.wheel_step_height;
         this.setupCapability(null);//TODO this.getCapability(FVTMCaps.CONTAINER, null));
@@ -135,11 +135,14 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
         prevRotationRoll = compound.getFloat("RotationRoll");
         prevaxes = axes.clone(); axes = Axis3D.read(this, compound);
         initializeVehicle(true); //Print.debug(compound.toString());
+        super.readEntityFromNBT(compound);
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
-		vehicle.write(compound); axes.write(this, compound); //Print.debug(compound.toString());
+		vehicle.write(compound);
+		axes.write(this, compound); //Print.debug(compound.toString());
+		super.writeEntityToNBT(compound);
 	}
 
 	@Override
@@ -1095,7 +1098,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 }
                 case "seat_pending":{
                 	SeatCache seat = seats[pkt.nbt.getInteger("seat")];
-                	seat.pending = pkt.nbt.getInteger("pending");
+                	seat.pending = new UUID(pkt.nbt.getInteger("pending0"), pkt.nbt.getInteger("pending1"));
                 	for(Entity passenger : this.getPassengers()){
                 		seat = getSeatOf(passenger);
                 		if(seat == null){

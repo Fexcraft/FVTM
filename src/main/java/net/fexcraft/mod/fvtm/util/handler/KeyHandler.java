@@ -77,6 +77,8 @@ public class KeyHandler {
             case END: {
                 if(minecraft.player == null || minecraft.world == null){ return; }
                 if(minecraft.player.getRidingEntity() instanceof GenericVehicle && minecraft.currentScreen == null){
+                	GenericVehicle veh = (GenericVehicle)minecraft.player.getRidingEntity();
+                	if(veh.getSeatOf(minecraft.player) == null) return;//temp
                     minecraft.displayGuiScreen(new VehicleSteeringOverlay(minecraft.player));
                 } break;
             }

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
+import java.util.UUID;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -15,6 +17,7 @@ import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -72,7 +75,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		super.addPassenger(pass);
 		SeatCache cache = getPendingSeatFor(pass);
 		if(cache != null) cache.setPassenger(pass);
-		else if(!world.isRemote) pass.dismountRidingEntity();
+		//else if(!world.isRemote) pass.dismountRidingEntity();
 	}
 	
 	@Override
@@ -87,10 +90,23 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	@Override
     protected boolean canFitPassenger(Entity passenger){
 		for(SeatCache seat : seats){
-			if(seat.passenger == null && seat.pending < 0) return true;
+			if(seat.passenger == null && seat.pending == null) return true;
 		}
         return false;
     }
+	
+	/*@Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound){
+		compound = super.writeToNBT(compound);
+		if(compound.hasKey("Passengers")) compound.removeTag("Passengers");
+		return compound;
+	}
+	
+	@Override
+    public void readFromNBT(NBTTagCompound compound){
+		if(compound.hasKey("Passengers")) compound.removeTag("Passengers");
+		super.readFromNBT(compound);
+	}*/
 
 	public SeatCache getSeatOf(Entity entity){
 		for(SeatCache seat : seats){
@@ -101,7 +117,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 
 	public SeatCache getPendingSeatFor(Entity pass){
 		for(SeatCache seat : seats){
-			if(seat.pending == pass.getEntityId()) return seat;
+			if(pass.getUniqueID().equals(seat.pending)) return seat;
 		}
 		return null;
 	}
@@ -115,6 +131,31 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     	GenericVehicle con = (getVehicleData().getType().isTrailerOrWagon() && getFrontCoupledEntity() != null ? (GenericVehicle)getFrontCoupledEntity().getEntity() : this);
         return con != null && SeatCache.isPassengerThePlayer(con);
     }
+	
+	@Override
+	protected void readEntityFromNBT(NBTTagCompound compound){
+		try{
+	        for(int i = 0; i < seats.length; i++){
+	        	if(!compound.hasKey("se" + i)) continue;
+        		seats[i].pending = new UUID(compound.getLong("se" + i), compound.getLong("at") + i);
+        		seats[i].sendPendingPacket();
+	        }
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void writeEntityToNBT(NBTTagCompound compound){
+		if(seats == null || seats.length == 0) return;
+		NBTTagCompound seets = new NBTTagCompound();
+		for(SeatCache seat : seats){
+			if(seat.passenger == null) continue;
+			seets.setLong("se" + seat.seatindex, seat.passenger.getUniqueID().getMostSignificantBits());
+			seets.setLong("at" + seat.seatindex, seat.passenger.getUniqueID().getLeastSignificantBits());
+		}
+	}
 	
 	@Override
 	public boolean isLocked(){

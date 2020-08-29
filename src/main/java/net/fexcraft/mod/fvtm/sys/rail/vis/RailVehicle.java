@@ -33,6 +33,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -101,7 +102,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
 		if(compound != null) rek = new Reltrs(world.getCapability(Capabilities.RAILSYSTEM, null).get(), compound);
 		rotpoint = rek.data().getRotationPoint("vehicle");
-        seats = new SeatCache[rek.data().getSeats().size()];
+        if(seats == null) seats = new SeatCache[rek.data().getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
@@ -111,12 +112,17 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
-		this.setDead();
+		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		RailEntity ent = system.getEntity(compound.getLong("RailEntity"), true);
+		if(ent != null) ent.entity = this;
+		//this.setDead();
+		super.readEntityFromNBT(compound);
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
 		compound.setLong("RailEntity", rek.uid);
+		super.writeEntityToNBT(compound);
 	}
 
 	@Override
@@ -739,7 +745,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "seat_pending":{
                 	SeatCache seat = seats[pkt.nbt.getInteger("seat")];
-                	seat.pending = pkt.nbt.getInteger("pending");
+                	seat.pending = new UUID(pkt.nbt.getInteger("pending0"), pkt.nbt.getInteger("pending1"));
                 	for(Entity passenger : this.getPassengers()){
                 		seat = getSeatOf(passenger);
                 		if(seat == null){

@@ -125,7 +125,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getLegacyData();
         wheels = new WheelEntity[WHEELINDEX.length];
-        seats = new SeatCache[vehicle.getSeats().size()];
+        if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         stepHeight = lata.wheel_step_height;
         rotpoint = vehicle.getRotationPoint("vehicle");
@@ -153,12 +153,15 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		prevRotationPitch = compound.getFloat("RotationPitch");
 		prevRotationRoll = compound.getFloat("RotationRoll");
 		rotpoint.loadAxes(this, compound);
-		initializeVehicle(true); // Print.debug(compound.toString());
+		initializeVehicle(world.isRemote); // Print.debug(compound.toString());
+		super.readEntityFromNBT(compound);
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
-		vehicle.write(compound); rotpoint.saveAxes(this, compound); //Print.debug(compound.toString());
+		vehicle.write(compound);
+		rotpoint.saveAxes(this, compound); //Print.debug(compound.toString());
+		super.writeEntityToNBT(compound);
 	}
 
 	@Override
@@ -211,7 +214,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         //
         vehicle.getScripts().forEach((script) -> script.onRemove(this, vehicle));
         if(truck != null){ truck.trailer = null; } if(trailer != null){ trailer.truck = null;}
-        Static.exception(null, false);
+        //Static.exception(null, false);
     }
 
 	@Override
@@ -1171,12 +1174,12 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 case "seat_pending":{
                 	SeatCache seat = seats[pkt.nbt.getInteger("seat")];
-                	seat.pending = pkt.nbt.getInteger("pending");
+                	seat.pending = new UUID(pkt.nbt.getInteger("pending0"), pkt.nbt.getInteger("pending1"));
                 	for(Entity passenger : this.getPassengers()){
                 		seat = getSeatOf(passenger);
                 		if(seat == null){
                 			seat = getPendingSeatFor(passenger);
-                			seat.setPassenger(passenger);
+                			if(seat != null) seat.setPassenger(passenger);//tempcheck
                 		}
                 	}
                 	return;

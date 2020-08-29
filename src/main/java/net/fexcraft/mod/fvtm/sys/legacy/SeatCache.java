@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
@@ -25,7 +26,8 @@ import net.minecraft.util.math.Vec3d;
 
 public class SeatCache {
 	
-    public int vehicleid, seatindex, pending = -1;
+    public int vehicleid, seatindex;
+    public UUID pending = null;
     public GenericVehicle vehicle;
     public Entity passenger;
     //
@@ -45,11 +47,11 @@ public class SeatCache {
 		vehicle = veh;
 		seatindex = index;
         vehicleid = veh.getEntityId();
-        seatdata = veh.getVehicleData().getSeats().get(index);
+    	seatdata = veh.getVehicleData().getSeats().get(index);
+        resetAxes();
         //pass_x = prev_pass_x = veh.posX;
         //pass_y = prev_pass_y = veh.posY;
         //pass_z = prev_pass_z = veh.posZ;
-        resetAxes();
 	}
 
 	public void resetAxes(){
@@ -63,7 +65,6 @@ public class SeatCache {
 	public boolean processInteract(EntityPlayer player, EnumHand hand){
         if(vehicle.world.isRemote){ return false; }
         ItemStack stack = player.getHeldItem(hand);
-        Print.debug(stack);
         if(vehicle.getVehicleData().isLocked()){
             Print.chat(player, "Vehicle is Locked.");
             return true;
@@ -82,7 +83,7 @@ public class SeatCache {
             List<EntityLiving> nearbyMobs = vehicle.world.getEntitiesWithinAABB(EntityLiving.class, aabb);
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
-                	pending = entity.getEntityId();
+                	pending = entity.getUniqueID();
                     sendPendingPacket();
                     looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
                     entity.clearLeashed(true, !player.capabilities.isCreativeMode);
@@ -95,7 +96,7 @@ public class SeatCache {
             return true;
         }
         if(passenger == null){
-        	pending = player.getEntityId();
+        	pending = player.getUniqueID();
             sendPendingPacket();
             player.startRiding(vehicle);
             return true;
@@ -104,11 +105,12 @@ public class SeatCache {
     }
 
 
-	private void sendPendingPacket(){
+	public void sendPendingPacket(){
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("task", "seat_pending");
         nbt.setInteger("seat", seatindex);
-        nbt.setInteger("pending", pending);
+        nbt.setLong("pending0", pending.getMostSignificantBits());
+        nbt.setLong("pending1", pending.getLeastSignificantBits());
         ApiUtil.sendEntityUpdatePacketToAllAround(vehicle, nbt);
 	}
 
@@ -272,7 +274,7 @@ public class SeatCache {
 	public void setPassenger(Entity pass){
 		passenger = pass;
 		resetAxes();
-		pending = -1;
+		pending = null;
 		pass_yaw = prev_pass_yaw = seatdata.defyaw;
 		pass_pitch = prev_pass_pitch = seatdata.defpitch;
 		looking.setAngles(pass_yaw, pass_pitch, 0);

@@ -84,6 +84,14 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		super.removePassenger(pass);
 	}
 
+	@Override
+    protected boolean canFitPassenger(Entity passenger){
+		for(SeatCache seat : seats){
+			if(seat.passenger == null && seat.pending < 0) return true;
+		}
+        return false;
+    }
+
 	public SeatCache getSeatOf(Entity entity){
 		for(SeatCache seat : seats){
 			if(seat.passenger == entity) return seat;

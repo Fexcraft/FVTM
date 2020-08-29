@@ -62,14 +62,15 @@ public class SeatCache {
 
 	public boolean processInteract(EntityPlayer player, EnumHand hand){
         if(vehicle.world.isRemote){ return false; }
-        ItemStack currentItem = player.getHeldItem(hand);
+        ItemStack stack = player.getHeldItem(hand);
+        Print.debug(stack);
         if(vehicle.getVehicleData().isLocked()){
             Print.chat(player, "Vehicle is Locked.");
             return true;
         }
-        if(currentItem.getItem() instanceof ItemLead){
+        if(stack.getItem() instanceof ItemLead){
         	if(passenger instanceof EntityPlayer) return false;
-            if(passenger instanceof EntityLiving && !(passenger instanceof EntityPlayer)){
+            if(passenger instanceof EntityLiving){
                 EntityLiving mob = (EntityLiving)passenger;
                 passenger.dismountRidingEntity();
                 mob.setLeashHolder(player, true);
@@ -83,11 +84,14 @@ public class SeatCache {
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
                 	pending = entity.getEntityId();
                     sendPendingPacket();
-                    entity.startRiding(vehicle);
                     looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
                     entity.clearLeashed(true, !player.capabilities.isCreativeMode);
+                    entity.startRiding(vehicle);
+                    Print.debug("found");
+                    break;
                 }
             }
+            Print.debug("end");
             return true;
         }
         if(passenger == null){
@@ -148,9 +152,9 @@ public class SeatCache {
         passenger.rotationPitch = pass_pitch;
         passenger.prevRotationYaw = prev_pass_yaw;
         passenger.prevRotationPitch = prev_pass_pitch;
-        passenger.lastTickPosX = passenger.prevPosX = passenger.posX;
-        passenger.lastTickPosY = passenger.prevPosY = passenger.posY;
-        passenger.lastTickPosZ = passenger.prevPosZ = passenger.posZ;
+        //passenger.lastTickPosX = passenger.prevPosX = passenger.posX;
+        //passenger.lastTickPosY = passenger.prevPosY = passenger.posY;
+        //passenger.lastTickPosZ = passenger.prevPosZ = passenger.posZ;
         passenger.setPosition(pos.x, pos.y, pos.z);
         if(!vehicle.world.isRemote && passenger instanceof EntityPlayerMP){
         	Resources.resetFlight((EntityPlayerMP)passenger);
@@ -162,7 +166,7 @@ public class SeatCache {
 		if(key == null) return false;
 		else if(key.toggableInput() && vehicle.world.isRemote){
     		if(clicktimer > 0) return false;
-    		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player, EnumHand.MAIN_HAND);
+    		boolean bool = ToggableHandler.handleClick(key, vehicle, this, player, ItemStack.EMPTY);
         	clicktimer += 10;
         	return bool;
 		}

@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.settings.IKeyConflictContext;
@@ -58,7 +59,7 @@ public class KeyHandler {
     	TOGGABLE {
     		@Override
     		public boolean isActive(){
-    			return ToggableHandler.handleClick(KeyPress.RESET, EnumHand.MAIN_HAND);
+    			return ToggableHandler.handleClick(KeyPress.RESET, ItemStack.EMPTY);
     		}
     		@Override
     		public boolean conflicts(IKeyConflictContext other){
@@ -84,14 +85,14 @@ public class KeyHandler {
 
     @SubscribeEvent
     public void clickEmpty(RightClickEmpty event){
-    	if(!event.getItemStack().isEmpty()) return;
-        ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getHand());
+    	//if(!event.getItemStack().isEmpty()) return;
+        if(event.getHand() == EnumHand.MAIN_HAND) ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getItemStack());
     }
 
     @SubscribeEvent
     public void clickEmpty(LeftClickEmpty event){
-    	if(!event.getItemStack().isEmpty()) return;
-        ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getHand());
+    	//if(!event.getItemStack().isEmpty()) return;
+    	if(event.getHand() == EnumHand.MAIN_HAND) ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getItemStack());
     }
     
     //unsure if those 2 bellow won't be processing intensive
@@ -99,8 +100,8 @@ public class KeyHandler {
 
     @SubscribeEvent
     public void clickEmpty(RightClickBlock event){
-    	if(!event.getItemStack().isEmpty()) return;
-        if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getHand())){
+    	//if(!event.getItemStack().isEmpty()) return;
+        if(event.getHand() == EnumHand.MAIN_HAND && ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getItemStack())){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }
@@ -108,8 +109,8 @@ public class KeyHandler {
 
     @SubscribeEvent
     public void clickEmpty(LeftClickBlock event){
-    	if(!event.getItemStack().isEmpty()) return;
-        if(ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getHand())){
+    	//if(!event.getItemStack().isEmpty()) return;
+        if(event.getHand() == EnumHand.MAIN_HAND && ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getItemStack())){
         	event.setCanceled(true);
         	event.setCancellationResult(EnumActionResult.PASS);
         }

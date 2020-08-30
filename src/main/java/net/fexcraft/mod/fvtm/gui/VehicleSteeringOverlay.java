@@ -86,7 +86,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	@Override
 	public void handleMouseInput(){
-		EntityPlayer player = (EntityPlayer)seat.passenger;
+		EntityPlayer player = (EntityPlayer)seat.passenger();
 		if(player != mc.player){
 			mc.displayGuiScreen(null);
 			return;
@@ -204,7 +204,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	@Override
 	public void handleInput(){
-		EntityPlayer player = (EntityPlayer)seat.passenger;
+		EntityPlayer player = (EntityPlayer)seat.passenger();
 		if(player != mc.player){
 			mc.displayGuiScreen(null);
 			return;
@@ -222,7 +222,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				e.printStackTrace();
 			}
 		}
-		if(seat != null && seat.passenger instanceof EntityPlayer){
+		if(seat != null && seat.passenger() instanceof EntityPlayer){
 			if(isKeyDown(mc.gameSettings.keyBindForward.getKeyCode())){
 				seat.onKeyPress(seat.vehicle.getVehicleType().isAirVehicle() ? KeyPress.TURN_DOWN : KeyPress.ACCELERATE, player);
 			}

@@ -401,7 +401,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(entity != null){
 			if(entity.seats != null)
 				for(SeatCache seat : entity.seats)
-					if(seat.passenger != null){
+					if(seat.passenger() != null){
 						lastcheck = interval;
 						return;
 					}

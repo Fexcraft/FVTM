@@ -118,8 +118,8 @@ public class Coupler {
 			if(ent.entity == null) continue;
 			for(SeatCache seat : ent.entity.seats){
 				if(!seat.seatdata.driver) continue;
-				if(seat.passenger == null) continue;
-				Print.chat(seat.passenger, "&e&7" + string);
+				if(seat.passenger() == null) continue;
+				Print.chat(seat.passenger(), "&e&7" + string);
 			}
 		}
 	}

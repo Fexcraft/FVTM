@@ -50,7 +50,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	/** Returns first found (driver) seat's controlling passenger that is a player. */
 	public Entity getDriver(){
 		for(SeatCache ent : seats){
-			if(ent.seatdata.driver && ent.passenger instanceof EntityPlayer) return ent.passenger;
+			if(ent.seatdata.driver && ent.passenger() instanceof EntityPlayer) return ent.passenger();
 		}
 		return null;
 	}
@@ -62,6 +62,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	@Override
 	public void updatePassenger(Entity pass){
+		SeatCache seat = getSeatOf(pass);
+		if(seat != null) seat.updatePassenger();
 		return;
 	}
 	
@@ -73,7 +75,9 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	@Override
 	public void addPassenger(Entity pass){
 		super.addPassenger(pass);
-		SeatCache cache = getPendingSeatFor(pass);
+		SeatCache cache = getSeatOf(pass);
+		if(cache != null) return;
+		cache = getPendingSeatFor(pass);
 		if(cache != null) cache.setPassenger(pass);
 		//else if(!world.isRemote) pass.dismountRidingEntity();
 	}
@@ -82,7 +86,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public void removePassenger(Entity pass){
 		SeatCache cache = getSeatOf(pass);
 		if(cache != null){
-			cache.passenger = null;
+			cache.setPassenger(null);
 		}
 		super.removePassenger(pass);
 	}
@@ -90,7 +94,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	@Override
     protected boolean canFitPassenger(Entity passenger){
 		for(SeatCache seat : seats){
-			if(seat.passenger == null && seat.pending == null) return true;
+			if(seat.passenger() == null && seat.pending == null) return true;
 		}
         return false;
     }
@@ -110,14 +114,14 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 
 	public SeatCache getSeatOf(Entity entity){
 		for(SeatCache seat : seats){
-			if(seat.passenger == entity) return seat;
+			if(seat.passenger() == entity) return seat;
 		}
 		return null;
 	}
 
 	public SeatCache getPendingSeatFor(Entity pass){
 		for(SeatCache seat : seats){
-			if(pass.getUniqueID().equals(seat.pending)) return seat;
+			if(pass.getEntityId() == seat.pendingid || pass.getUniqueID().equals(seat.pending)) return seat;
 		}
 		return null;
 	}
@@ -137,8 +141,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		try{
 	        for(int i = 0; i < seats.length; i++){
 	        	if(!compound.hasKey("se" + i)) continue;
-        		seats[i].pending = new UUID(compound.getLong("se" + i), compound.getLong("at") + i);
-        		seats[i].sendPendingPacket();
+        		seats[i].sendPendingPacket(new UUID(compound.getLong("se" + i), compound.getLong("at") + i), null);
 	        }
 		}
 		catch(Exception e){
@@ -151,9 +154,9 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		if(seats == null || seats.length == 0) return;
 		NBTTagCompound seets = new NBTTagCompound();
 		for(SeatCache seat : seats){
-			if(seat.passenger == null) continue;
-			seets.setLong("se" + seat.seatindex, seat.passenger.getUniqueID().getMostSignificantBits());
-			seets.setLong("at" + seat.seatindex, seat.passenger.getUniqueID().getLeastSignificantBits());
+			if(seat.passenger() == null) continue;
+			seets.setLong("se" + seat.seatindex, seat.passenger().getUniqueID().getMostSignificantBits());
+			seets.setLong("at" + seat.seatindex, seat.passenger().getUniqueID().getLeastSignificantBits());
 		}
 	}
 	

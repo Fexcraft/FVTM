@@ -744,15 +744,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 	break;
                 }
                 case "seat_pending":{
-                	SeatCache seat = seats[pkt.nbt.getInteger("seat")];
-                	seat.pending = new UUID(pkt.nbt.getInteger("pending0"), pkt.nbt.getInteger("pending1"));
-                	for(Entity passenger : this.getPassengers()){
-                		seat = getSeatOf(passenger);
-                		if(seat == null){
-                			seat = getPendingSeatFor(passenger);
-                			seat.setPassenger(passenger);
-                		}
-                	}
+                	seats[pkt.nbt.getInteger("seat")].readPendingPacket(pkt.nbt);
                 	return;
                 }
             }

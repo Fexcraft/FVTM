@@ -148,7 +148,7 @@ public class ToggableHandler {
 			if(seatfrom != null && seatfrom.seatindex == i) continue;
 			Seat seat = entity.getVehicleData().getSeat(i);
 			SeatCache ent = ((GenericVehicle)entity).seats[i];
-			if(ent == null || ent.passenger == null){
+			if(ent == null || ent.passenger() == null){
 				SwivelPoint point = entity.getVehicleData().getRotationPoint(seat.swivel_point);
 				temp = point.getRelativeVector(seat.x, seat.y, seat.z);
 				temp = temp.add(entity.getEntity().getPositionVector());

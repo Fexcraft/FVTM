@@ -28,8 +28,9 @@ public class SeatCache {
 	
     public int vehicleid, seatindex;
     public UUID pending = null;
+    public int pendingid = 0;
     public GenericVehicle vehicle;
-    public Entity passenger;
+    private Entity passenger;
     //
     public Seat seatdata;
     public Axis3D looking, prevlooking;
@@ -83,8 +84,8 @@ public class SeatCache {
             List<EntityLiving> nearbyMobs = vehicle.world.getEntitiesWithinAABB(EntityLiving.class, aabb);
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
-                	pending = entity.getUniqueID();
-                    sendPendingPacket();
+                    sendPendingPacket(entity.getUniqueID(), entity.getEntityId());
+                    setPassenger(entity);
                     looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
                     entity.clearLeashed(true, !player.capabilities.isCreativeMode);
                     entity.startRiding(vehicle);
@@ -96,8 +97,8 @@ public class SeatCache {
             return true;
         }
         if(passenger == null){
-        	pending = player.getUniqueID();
-            sendPendingPacket();
+            sendPendingPacket(player.getUniqueID(), player.getEntityId());
+            setPassenger(player);
             player.startRiding(vehicle);
             return true;
         }
@@ -105,13 +106,28 @@ public class SeatCache {
     }
 
 
-	public void sendPendingPacket(){
+	public void sendPendingPacket(UUID uuid, Integer entid){
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("task", "seat_pending");
         nbt.setInteger("seat", seatindex);
-        nbt.setLong("pending0", pending.getMostSignificantBits());
+        if(entid != null) nbt.setLong("pending", pendingid = entid);
+        nbt.setLong("pending0", (pending = uuid).getMostSignificantBits());
         nbt.setLong("pending1", pending.getLeastSignificantBits());
         ApiUtil.sendEntityUpdatePacketToAllAround(vehicle, nbt);
+	}
+
+	public void readPendingPacket(NBTTagCompound nbt){
+		Print.debug("receiving pending packet");
+    	pending = new UUID(nbt.getLong("pending0"), nbt.getLong("pending1"));
+    	if(nbt.hasKey("pending")) pendingid = nbt.getInteger("pending");
+    	for(Entity ent : vehicle.world.loadedEntityList){
+    		if(ent.getUniqueID().equals(pending)){
+    			setPassenger(ent);
+    			//ent.startRiding(vehicle);
+    			Print.debug("found mounting");
+    			break;
+    		}
+    	}
 	}
 
 	public void updatePosition(){
@@ -121,7 +137,7 @@ public class SeatCache {
         prev_pass_pitch = pass_pitch;
         //prev_pass_roll = pass_roll;
         //
-        this.updatePassenger();
+        //this.updatePassenger();
         //
         Axis3D glookaxes = vehicle.getRotPoint().getAxes().getRelativeVector(passlooking);
         pass_yaw = -90F + glookaxes.getYaw();
@@ -147,7 +163,7 @@ public class SeatCache {
 		return relpos.add(vehicle.posX, vehicle.posY, vehicle.posZ);
 	}
 
-	private void updatePassenger(){
+	public void updatePassenger(){
         if(passenger == null) return;
         Vec3d pos = getFreshPosition();
         passenger.rotationYaw = pass_yaw;
@@ -157,7 +173,8 @@ public class SeatCache {
         //passenger.lastTickPosX = passenger.prevPosX = passenger.posX;
         //passenger.lastTickPosY = passenger.prevPosY = passenger.posY;
         //passenger.lastTickPosZ = passenger.prevPosZ = passenger.posZ;
-        passenger.setPosition(pos.x, pos.y, pos.z);
+        double yoff = passenger instanceof EntityPlayer ? passenger.getYOffset() : 0;
+        passenger.setPosition(pos.x, pos.y + yoff, pos.z);
         if(!vehicle.world.isRemote && passenger instanceof EntityPlayerMP){
         	Resources.resetFlight((EntityPlayerMP)passenger);
         }
@@ -272,15 +289,22 @@ public class SeatCache {
     }
 
 	public void setPassenger(Entity pass){
+		SeatCache old = vehicle.getSeatOf(pass);
+		if(old != null && old != this) old.setPassenger(null);
 		passenger = pass;
 		resetAxes();
 		pending = null;
+		pendingid = -1;
 		pass_yaw = prev_pass_yaw = seatdata.defyaw;
 		pass_pitch = prev_pass_pitch = seatdata.defpitch;
 		looking.setAngles(pass_yaw, pass_pitch, 0);
 		prevlooking.setAngles(pass_yaw, pass_pitch, 0);
 		passlooking.setAngles(pass_yaw, pass_pitch, 0);
 		prevpasslooking.setAngles(pass_yaw, pass_pitch, 0);
+	}
+	
+	public Entity passenger(){
+		return passenger;
 	}
 
 }

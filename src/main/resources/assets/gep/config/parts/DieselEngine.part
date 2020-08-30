@@ -6,9 +6,7 @@
     "Category": [
     	"engine", "ballast", "decoration"
     ],
-    "Textures": [
-        "fvtm:textures/entities/null_texture.png"
-    ],
+    "Textures": "fvtm:textures/entity/null.png",
     "Modifiers":[
     	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "120", "priority": "veryhigh" }
     ],

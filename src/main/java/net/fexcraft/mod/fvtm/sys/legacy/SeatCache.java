@@ -75,6 +75,7 @@ public class SeatCache {
             if(passenger instanceof EntityLiving){
                 EntityLiving mob = (EntityLiving)passenger;
                 passenger.dismountRidingEntity();
+                setPassenger(null);
                 mob.setLeashHolder(player, true);
                 return true;
             }
@@ -121,7 +122,7 @@ public class SeatCache {
     	pending = new UUID(nbt.getLong("pending0"), nbt.getLong("pending1"));
     	if(nbt.hasKey("pending")) pendingid = nbt.getInteger("pending");
     	for(Entity ent : vehicle.world.loadedEntityList){
-    		if(ent.getUniqueID().equals(pending)){
+    		if(ent.getEntityId() == pendingid || ent.getUniqueID().equals(pending)){
     			setPassenger(ent);
     			//ent.startRiding(vehicle);
     			Print.debug("found mounting");

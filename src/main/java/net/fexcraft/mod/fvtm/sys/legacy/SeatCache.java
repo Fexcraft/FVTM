@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.util.Axis3D;
@@ -41,8 +42,7 @@ public class SeatCache {
     //private double prev_pass_x, prev_pass_y, prev_pass_z;
     private float prev_pass_yaw, prev_pass_pitch;//, prev_pass_roll;
     //
-    private byte clicktimer;
-    
+    private byte clicktimer, interacttimer;
     
 	public SeatCache(GenericVehicle veh, int index){
 		vehicle = veh;
@@ -70,13 +70,17 @@ public class SeatCache {
             Print.chat(player, "Vehicle is Locked.");
             return true;
         }
+        if(interacttimer > 0) return false;
+        Print.debug("seat " + seatindex);
         if(stack.getItem() instanceof ItemLead){
         	if(passenger instanceof EntityPlayer) return false;
             if(passenger instanceof EntityLiving){
                 EntityLiving mob = (EntityLiving)passenger;
                 passenger.dismountRidingEntity();
-                setPassenger(null);
+                passenger(null);
                 mob.setLeashHolder(player, true);
+                //Print.debug("leashed");
+                interacttimer += 10;
                 return true;
             }
             double checkRange = 10;
@@ -86,21 +90,23 @@ public class SeatCache {
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
                     sendPendingPacket(entity.getUniqueID(), entity.getEntityId());
-                    setPassenger(entity);
+                    passenger(entity);
                     looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
                     entity.clearLeashed(true, !player.capabilities.isCreativeMode);
                     entity.startRiding(vehicle);
-                    Print.debug("found");
+                    //Print.debug("found");
                     break;
                 }
             }
-            Print.debug("end");
+            //Print.debug("end");
+            interacttimer += 10;
             return true;
         }
         if(passenger == null){
             sendPendingPacket(player.getUniqueID(), player.getEntityId());
-            setPassenger(player);
+            passenger(player);
             player.startRiding(vehicle);
+            interacttimer += 10;
             return true;
         }
         return false;
@@ -118,14 +124,14 @@ public class SeatCache {
 	}
 
 	public void readPendingPacket(NBTTagCompound nbt){
-		Print.debug("receiving pending packet");
+		//Print.debug("receiving pending packet");
     	pending = new UUID(nbt.getLong("pending0"), nbt.getLong("pending1"));
     	if(nbt.hasKey("pending")) pendingid = nbt.getInteger("pending");
     	for(Entity ent : vehicle.world.loadedEntityList){
     		if(ent.getEntityId() == pendingid || ent.getUniqueID().equals(pending)){
-    			setPassenger(ent);
+    			passenger(ent);
     			//ent.startRiding(vehicle);
-    			Print.debug("found mounting");
+    			//Print.debug("found mounting");
     			break;
     		}
     	}
@@ -133,6 +139,7 @@ public class SeatCache {
 
 	public void updatePosition(){
 		if(clicktimer > 0) clicktimer--;
+		if(interacttimer > 0) interacttimer--;
         if(passenger == null) return;
         prev_pass_yaw = pass_yaw;
         prev_pass_pitch = pass_pitch;
@@ -289,9 +296,13 @@ public class SeatCache {
         return false;
     }
 
-	public void setPassenger(Entity pass){
+	public void passenger(Entity pass){
+		if(pass == null){
+			Static.exception(null, false);
+			return;
+		}
 		SeatCache old = vehicle.getSeatOf(pass);
-		if(old != null && old != this) old.setPassenger(null);
+		if(old != null && old != this) old.passenger(null);
 		passenger = pass;
 		resetAxes();
 		pending = null;

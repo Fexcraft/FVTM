@@ -64,6 +64,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public void updatePassenger(Entity pass){
 		SeatCache seat = getSeatOf(pass);
 		if(seat != null) seat.updatePassenger();
+		else pass.setPosition(posX, posY, posZ);
 		return;
 	}
 	
@@ -78,7 +79,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		SeatCache cache = getSeatOf(pass);
 		if(cache != null) return;
 		cache = getPendingSeatFor(pass);
-		if(cache != null) cache.setPassenger(pass);
+		if(cache != null) cache.passenger(pass);
 		//else if(!world.isRemote) pass.dismountRidingEntity();
 	}
 	
@@ -86,31 +87,19 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public void removePassenger(Entity pass){
 		SeatCache cache = getSeatOf(pass);
 		if(cache != null){
-			cache.setPassenger(null);
+			cache.passenger(null);
 		}
 		super.removePassenger(pass);
 	}
 
 	@Override
     protected boolean canFitPassenger(Entity passenger){
-		for(SeatCache seat : seats){
+		/*for(SeatCache seat : seats){
 			if(seat.passenger() == null && seat.pending == null) return true;
 		}
-        return false;
+        return false;*/
+		return true;
     }
-	
-	/*@Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound){
-		compound = super.writeToNBT(compound);
-		if(compound.hasKey("Passengers")) compound.removeTag("Passengers");
-		return compound;
-	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound compound){
-		if(compound.hasKey("Passengers")) compound.removeTag("Passengers");
-		super.readFromNBT(compound);
-	}*/
 
 	public SeatCache getSeatOf(Entity entity){
 		for(SeatCache seat : seats){

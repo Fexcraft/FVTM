@@ -57,6 +57,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
+import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
@@ -72,6 +73,7 @@ import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -118,6 +120,7 @@ public class Resources {
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
+	public static final String UTIL_LISTENER = "fvtm:utils";
 	//
 	private File configroot; 
 	
@@ -449,11 +452,14 @@ public class Resources {
 		if(event.getObject() instanceof ContainerHoldingEntity){
 			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
 		}
-		if(Static.side().isClient() && event.getObject() instanceof VehicleEntity){
+		if(event.getObject().world.isRemote && event.getObject() instanceof VehicleEntity){
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 		if(event.getObject() instanceof EntityPlayer){
 			event.addCapability(new ResourceLocation("fvtm:playerdata"), new PlayerDataHandler(event.getObject()));
+		}
+		if(event.getObject() instanceof EntityLivingBase){
+			event.addCapability(new ResourceLocation("fvtm:passenger"), new PassengerCapHandler(event.getObject()));
 		}
 	}
 	

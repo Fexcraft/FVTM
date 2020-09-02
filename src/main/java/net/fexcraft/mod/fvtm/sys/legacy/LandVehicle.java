@@ -1172,10 +1172,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 	}*///TODO
                 	break;
                 }
-                case "seat_pending":{
-                	seats[pkt.nbt.getInteger("seat")].readPendingPacket(pkt.nbt);
-                	return;
-                }
             }
         }
     }

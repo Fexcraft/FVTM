@@ -1,9 +1,10 @@
 package net.fexcraft.mod.fvtm.sys.legacy;
 
-import java.util.UUID;
-
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -63,7 +64,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	@Override
 	public void updatePassenger(Entity pass){
 		SeatCache seat = getSeatOf(pass);
-		if(seat != null) seat.updatePassenger();
+		if(seat != null) seat.updatePassenger(pass);
 		else pass.setPosition(posX, posY, posZ);
 		return;
 	}
@@ -77,34 +78,28 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public void addPassenger(Entity pass){
 		super.addPassenger(pass);
 		SeatCache cache = getSeatOf(pass);
-		if(cache != null) return;
-		cache = getPendingSeatFor(pass);
-		if(cache != null) cache.passenger(pass, false);
-		//else if(!world.isRemote) pass.dismountRidingEntity();
+		if(cache != null){
+			cache.passenger(pass);
+		}
+		Print.debug("SEATAT: " + pass.getCapability(Capabilities.PASSENGER, null).seat());
 	}
 	
 	@Override
 	public void removePassenger(Entity pass){
 		SeatCache cache = getSeatOf(pass);
 		if(cache != null){
-			cache.passenger(null, false);
+			cache.passenger(null);
 		}
+		if(!world.isRemote){
+			pass.getCapability(Capabilities.PASSENGER, null).set(-1, -1, true);
+		}
+		Print.debug("SWASAT: " + pass.getCapability(Capabilities.PASSENGER, null).seat());
 		super.removePassenger(pass);
 	}
 	
 	@Override
     public void removePassengers(){
-		if(world.isRemote){//assumably a call from the set-passengers packet
-			for(SeatCache seat : seats){
-				if(seat.passenger() == null) continue;
-				UUID uuid = seat.passenger().getUniqueID();
-				int entid = seat.passenger().getEntityId();
-				seat.passenger(null, true);
-				seat.pending = uuid;
-				seat.pendingid = entid;
-			}
-		}
-        super.removePassengers();
+		super.removePassengers();
     }
 
 	@Override
@@ -117,17 +112,9 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     }
 
 	public SeatCache getSeatOf(Entity entity){
-		for(SeatCache seat : seats){
-			if(seat.passenger() == entity) return seat;
-		}
-		return null;
-	}
-
-	public SeatCache getPendingSeatFor(Entity pass){
-		for(SeatCache seat : seats){
-			if(pass.getEntityId() == seat.pendingid || pass.getUniqueID().equals(seat.pending)) return seat;
-		}
-		return null;
+		Passenger pass = entity.getCapability(Capabilities.PASSENGER, null);
+		if(pass == null || pass.seat() < 0 || pass.seat() >= seats.length) return null;
+		return seats[pass.seat()];
 	}
 
     protected boolean isDriverInCreative(){
@@ -142,26 +129,12 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
-		try{
-	        for(int i = 0; i < seats.length; i++){
-	        	if(!compound.hasKey("se" + i)) continue;
-        		seats[i].sendPendingPacket(new UUID(compound.getLong("se" + i), compound.getLong("at") + i), null);
-	        }
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
+		//
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
-		if(seats == null || seats.length == 0) return;
-		NBTTagCompound seets = new NBTTagCompound();
-		for(SeatCache seat : seats){
-			if(seat.passenger() == null) continue;
-			seets.setLong("se" + seat.seatindex, seat.passenger().getUniqueID().getMostSignificantBits());
-			seets.setLong("at" + seat.seatindex, seat.passenger().getUniqueID().getLeastSignificantBits());
-		}
+		//
 	}
 	
 	@Override

@@ -743,10 +743,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             		}*/
                 	break;
                 }
-                case "seat_pending":{
-                	seats[pkt.nbt.getInteger("seat")].readPendingPacket(pkt.nbt);
-                	return;
-                }
             }
         }
     }

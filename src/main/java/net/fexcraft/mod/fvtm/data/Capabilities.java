@@ -41,4 +41,8 @@ public class Capabilities {
 	@CapabilityInject(PlayerData.class)
 	public static final Capability<PlayerData> PLAYERDATA = null;
 	
+	/** Optional Passenger Capability */
+	@CapabilityInject(Passenger.class)
+	public static final Capability<Passenger> PASSENGER = null;
+	
 }

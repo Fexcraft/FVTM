@@ -1096,10 +1096,6 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 	}*///TODO
                 	break;
                 }
-                case "seat_pending":{
-                	seats[pkt.nbt.getInteger("seat")].readPendingPacket(pkt.nbt);
-                	return;
-                }
             }
         }
     }

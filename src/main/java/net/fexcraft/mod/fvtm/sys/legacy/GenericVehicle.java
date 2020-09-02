@@ -79,7 +79,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		SeatCache cache = getSeatOf(pass);
 		if(cache != null) return;
 		cache = getPendingSeatFor(pass);
-		if(cache != null) cache.passenger(pass);
+		if(cache != null) cache.passenger(pass, false);
 		//else if(!world.isRemote) pass.dismountRidingEntity();
 	}
 	
@@ -87,10 +87,25 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public void removePassenger(Entity pass){
 		SeatCache cache = getSeatOf(pass);
 		if(cache != null){
-			cache.passenger(null);
+			cache.passenger(null, false);
 		}
 		super.removePassenger(pass);
 	}
+	
+	@Override
+    public void removePassengers(){
+		if(world.isRemote){//assumably a call from the set-passengers packet
+			for(SeatCache seat : seats){
+				if(seat.passenger() == null) continue;
+				UUID uuid = seat.passenger().getUniqueID();
+				int entid = seat.passenger().getEntityId();
+				seat.passenger(null, true);
+				seat.pending = uuid;
+				seat.pendingid = entid;
+			}
+		}
+        super.removePassengers();
+    }
 
 	@Override
     protected boolean canFitPassenger(Entity passenger){

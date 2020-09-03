@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -15,6 +17,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 	
+	public static final ConcurrentHashMap<Integer, Integer> CLQUEUE = new ConcurrentHashMap<>();
 	private Implementation instance;
 	
 	public PassengerCapHandler(Entity entity){
@@ -92,6 +95,10 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 
 		public void set(Entity entity){
 			this.entity = entity;
+			if(entity.world.isRemote){
+				Integer val = CLQUEUE.remove(entity.getEntityId());
+				if(val != null) seatindex = val;
+			}
 		}
 
 		@Override

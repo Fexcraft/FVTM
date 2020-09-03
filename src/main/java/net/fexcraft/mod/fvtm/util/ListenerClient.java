@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -20,7 +21,10 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 		switch(task){
 			case "update_passenger":{
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				if(ent == null) return;
+				if(ent == null){
+					PassengerCapHandler.CLQUEUE.put(packet.nbt.getInteger("entity"), packet.nbt.getInteger("seat"));
+					return;
+				}
 				ent.getCapability(Capabilities.PASSENGER, null).set(packet.nbt.getInteger("vehicle"), packet.nbt.getInteger("seat"));
 				return;
 			}

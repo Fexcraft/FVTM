@@ -81,7 +81,7 @@ public class SeatCache {
             List<EntityLiving> nearbyMobs = vehicle.world.getEntitiesWithinAABB(EntityLiving.class, aabb);
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
-                	entity.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex, true);
+                	entity.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex);
                     looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
                     entity.clearLeashed(true, !player.capabilities.isCreativeMode);
                     entity.startRiding(vehicle);
@@ -92,7 +92,7 @@ public class SeatCache {
             return true;
         }
         if(passenger == null){
-        	player.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex, true);
+        	player.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex);
             player.startRiding(vehicle);
             interacttimer += 10;
             return true;

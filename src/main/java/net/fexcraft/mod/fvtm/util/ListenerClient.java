@@ -21,7 +21,7 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 			case "update_passenger":{
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(ent == null) return;
-				ent.getCapability(Capabilities.PASSENGER, null).set(packet.nbt.getInteger("vehicle"), packet.nbt.getInteger("seat"), false);
+				ent.getCapability(Capabilities.PASSENGER, null).set(packet.nbt.getInteger("vehicle"), packet.nbt.getInteger("seat"));
 				return;
 			}
 			default: return;

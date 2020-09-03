@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 
 public interface Passenger {
 	
-	public void set(int veh, int seat, boolean sync);
+	public void set(int veh, int seat);
 	
 	public int vehicle();
 	

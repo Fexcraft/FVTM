@@ -91,7 +91,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 			cache.passenger(null);
 		}
 		if(!world.isRemote){
-			pass.getCapability(Capabilities.PASSENGER, null).set(-1, -1, true);
+			pass.getCapability(Capabilities.PASSENGER, null).set(-1, -1);
 		}
 		Print.debug("SWASAT: " + pass.getCapability(Capabilities.PASSENGER, null).seat());
 		super.removePassenger(pass);

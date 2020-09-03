@@ -46,7 +46,7 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public NBTBase writeNBT(Capability<Passenger> capability, Passenger instance, EnumFacing side){
 			NBTTagCompound com = new NBTTagCompound();
-			if(instance.vehicle() > -1 && instance.seat() > -1){
+			if(instance.seat() > -1){
 				com.setInteger("seat", instance.seat());
 			}
 			return com;
@@ -56,7 +56,7 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 		public void readNBT(Capability<Passenger> capability, Passenger instance, EnumFacing side, NBTBase nbt){
 			NBTTagCompound com = (NBTTagCompound)nbt;
 			if(com.isEmpty()) return;
-			instance.set(-1, com.getInteger("seat"), false);
+			instance.set(-1, com.getInteger("seat"));
 		}
 		
 	}
@@ -76,10 +76,10 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 		private int vehicle = -1, seatindex = -1;
 
 		@Override
-		public void set(int veh, int seat, boolean sync){
+		public void set(int veh, int seat){
 			vehicle = veh;
 			seatindex = seat;
-			if(sync){
+			if(!entity.world.isRemote){
 				NBTTagCompound packet = new NBTTagCompound();
 				packet.setString("target_listener", Resources.UTIL_LISTENER);
 				packet.setString("task", "update_passenger");

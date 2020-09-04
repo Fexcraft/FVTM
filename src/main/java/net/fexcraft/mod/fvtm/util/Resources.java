@@ -551,5 +551,10 @@ public class Resources {
 			event.setCanceled(true);
 		}
 	}
+	
+	/*@SubscribeEvent
+	public void onSpawn(EntityJoinWorldEvent event){
+		Print.debug(event.getEntity());
+	}*/
 
 }

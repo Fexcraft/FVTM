@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util.caps;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -17,7 +15,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 	
-	public static final ConcurrentHashMap<Integer, Integer> CLQUEUE = new ConcurrentHashMap<>();
+	//public static final ConcurrentHashMap<UUID, Integer> CLQUEUE = new ConcurrentHashMap<>();
 	private Implementation instance;
 	
 	public PassengerCapHandler(Entity entity){
@@ -77,27 +75,26 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 		
 		private Entity entity;
 		private int vehicle = -1, seatindex = -1;
+		private byte check;
 
 		@Override
 		public void set(int veh, int seat){
 			vehicle = veh;
 			seatindex = seat;
-			if(!entity.world.isRemote){
-				NBTTagCompound packet = new NBTTagCompound();
-				packet.setString("target_listener", Resources.UTIL_LISTENER);
-				packet.setString("task", "update_passenger");
-				packet.setInteger("entity", entity.getEntityId());
-				packet.setInteger("vehicle", vehicle);
-				packet.setInteger("seat", seatindex);
-				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(entity));
-			}
+			if(!entity.world.isRemote) update_packet();
 		}
 
 		public void set(Entity entity){
 			this.entity = entity;
 			if(entity.world.isRemote){
-				Integer val = CLQUEUE.remove(entity.getEntityId());
-				if(val != null) seatindex = val;
+				/*NBTTagCompound packet = new NBTTagCompound();
+				packet.setString("target_listener", Resources.UTIL_LISTENER);
+				packet.setString("task", "upg");
+				packet.setInteger("entity", entity.getEntityId());
+				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));*/
+				//
+				/*Integer val = CLQUEUE.remove(entity.getUniqueID());
+				if(val != null) seatindex = val;*/
 			}
 		}
 
@@ -114,6 +111,31 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public Entity entity(){
 			return entity;
+		}
+
+		@Override
+		public void update_packet(){
+			NBTTagCompound packet = new NBTTagCompound();
+			packet.setString("target_listener", Resources.UTIL_LISTENER);
+			packet.setString("task", "update_passenger");
+			packet.setInteger("entity", entity.getEntityId());
+			packet.setInteger("vehicle", vehicle);
+			packet.setInteger("seat", seatindex);
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(entity));
+		}
+
+		@Override
+		public void reconn(boolean skipcheck){
+			if(!skipcheck && check > 0){
+				check--;
+				return;
+			}
+			NBTTagCompound packet = new NBTTagCompound();
+			packet.setString("target_listener", Resources.UTIL_LISTENER);
+			packet.setString("task", "upg");
+			packet.setInteger("entity", entity.getEntityId());
+			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+			check = 20;
 		}
 		
 	}

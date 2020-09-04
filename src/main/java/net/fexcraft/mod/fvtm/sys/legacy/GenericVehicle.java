@@ -65,7 +65,10 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public void updatePassenger(Entity pass){
 		SeatCache seat = getSeatOf(pass);
 		if(seat != null) seat.updatePassenger(pass);
-		else pass.setPosition(posX, posY, posZ);
+		else{
+			if(world.isRemote) pass.getCapability(Capabilities.PASSENGER, null).reconn(true);
+			pass.setPosition(posX, posY, posZ);
+		}
 		return;
 	}
 	

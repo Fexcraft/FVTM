@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,8 +23,11 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 		String task = packet.nbt.getString("task");
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
 		switch(task){
-			case "todo":{
-				//
+			case "upg":{
+				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				if(ent != null && ent.getCapability(Capabilities.PASSENGER, null).seat() > -1){
+					ent.getCapability(Capabilities.PASSENGER, null).update_packet();
+				}
 				return;
 			}
 			default: return;

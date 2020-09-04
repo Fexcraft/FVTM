@@ -12,4 +12,8 @@ public interface Passenger {
 
 	public Entity entity();
 
+	public void update_packet();
+
+	public void reconn(boolean skipcheck);
+
 }

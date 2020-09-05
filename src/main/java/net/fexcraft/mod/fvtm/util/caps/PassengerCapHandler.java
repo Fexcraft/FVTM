@@ -4,6 +4,8 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Passenger;
+import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
@@ -15,7 +17,6 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 	
-	//public static final ConcurrentHashMap<UUID, Integer> CLQUEUE = new ConcurrentHashMap<>();
 	private Implementation instance;
 	
 	public PassengerCapHandler(Entity entity){
@@ -79,6 +80,12 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 
 		@Override
 		public void set(int veh, int seat){
+			if(entity.world.isRemote && entity.isRiding() && seat > -1){
+				GenericVehicle geve = (GenericVehicle)entity.getRidingEntity();
+				for(SeatCache cache : geve.seats){
+					if(cache.passenger() == entity) cache.passenger(null);
+				}
+			}
 			vehicle = veh;
 			seatindex = seat;
 			if(!entity.world.isRemote) update_packet();
@@ -92,9 +99,6 @@ public class PassengerCapHandler implements ICapabilitySerializable<NBTBase>{
 				packet.setString("task", "upg");
 				packet.setInteger("entity", entity.getEntityId());
 				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));*/
-				//
-				/*Integer val = CLQUEUE.remove(entity.getUniqueID());
-				if(val != null) seatindex = val;*/
 			}
 		}
 

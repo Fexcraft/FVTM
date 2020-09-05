@@ -89,9 +89,10 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	@Override
 	public void removePassenger(Entity pass){
-		SeatCache cache = getSeatOf(pass);
-		if(cache != null){
-			cache.passenger(null);
+		for(SeatCache seat : seats){
+			if(pass.equals(seat.passenger())){
+				seat.passenger(null);
+			}
 		}
 		if(!world.isRemote){
 			pass.getCapability(Capabilities.PASSENGER, null).set(-1, -1);

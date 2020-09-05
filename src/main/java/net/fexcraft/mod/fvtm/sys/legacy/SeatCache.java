@@ -92,8 +92,17 @@ public class SeatCache {
             return true;
         }
         if(passenger == null){
-        	player.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex);
-            player.startRiding(vehicle);
+        	if(player.isRiding() && player.getRidingEntity().equals(vehicle)){
+        		SeatCache seat = vehicle.getSeatOf(player);
+        		seat.passenger(null);
+            	player.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex);
+            	this.passenger(player);
+        	}
+        	else{
+        		player.dismountRidingEntity();
+            	player.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex);
+                player.startRiding(vehicle);
+        	}
             interacttimer += 10;
             return true;
         }

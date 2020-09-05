@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -84,7 +83,6 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		if(cache != null){
 			cache.passenger(pass);
 		}
-		Print.debug("SEATAT: " + pass.getCapability(Capabilities.PASSENGER, null).seat());
 	}
 	
 	@Override
@@ -97,7 +95,6 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		if(!world.isRemote){
 			pass.getCapability(Capabilities.PASSENGER, null).set(-1, -1);
 		}
-		Print.debug("SWASAT: " + pass.getCapability(Capabilities.PASSENGER, null).seat());
 		super.removePassenger(pass);
 	}
 	

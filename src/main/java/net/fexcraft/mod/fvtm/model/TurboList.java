@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -144,6 +145,155 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		public default <T extends Program> T register(){
 			TurboList.PROGRAMS.add(this);
 			return (T)this;
+		}
+		
+	}
+	
+	public static class ConditionalProgram implements Program {
+		
+		protected ArrayList<Program> programs = new ArrayList<>(), opposite = new ArrayList<>();
+		protected boolean passed;
+
+		/** General Purpose */
+		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
+			return true;
+		}
+		
+		@Override
+		public void preRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
+			if(passed = test(list, ent, data, color, part, cache)){
+				for(Program prog : programs) prog.preRender(list, ent, data, color, part, cache);
+			}
+			else{
+				for(Program prog : opposite) prog.preRender(list, ent, data, color, part, cache);
+			}
+		}
+		
+		@Override
+		public void postRender(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
+			if(passed){
+				for(Program prog : programs) prog.postRender(list, ent, data, color, part, cache);
+			}
+			else{
+				for(Program prog : opposite) prog.postRender(list, ent, data, color, part, cache);
+			}
+		}
+		
+		//
+
+		/** Block Specific */
+		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			return true;
+		}
+		
+		@Override
+		public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			if(passed = test(list, tile, data, cache)){
+				for(Program prog : programs) prog.preRender(list, tile, data, cache);
+			}
+			else{
+				for(Program prog : opposite) prog.preRender(list, tile, data, cache);
+			}
+		}
+		
+		@Override
+		public void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			if(passed){
+				for(Program prog : programs) prog.postRender(list, tile, data, cache);
+			}
+			else{
+				for(Program prog : opposite) prog.postRender(list, tile, data, cache);
+			}
+		}
+		
+		//
+		
+		public ConditionalProgram add(Program... programs){
+			for(Program prog : programs) this.programs.add(prog);
+			return this;
+		}
+		
+		public ConditionalProgram addElse(Program... programs){
+			for(Program prog : programs) this.opposite.add(prog);
+			return this;
+		}
+		
+		public ConditionalProgram addNegative(Program... programs){
+			return addElse(programs);
+		}
+		
+		public ConditionalProgram addOpposite(Program... programs){
+			return addElse(programs);
+		}
+		
+	}
+	
+	public static class FunctionalProgram extends ConditionalProgram {
+		
+		private Predicate<GeneralProgramObject> general;
+		private Predicate<BlockProgramObject> block;
+		
+		public FunctionalProgram(Predicate<?> pred, int index){
+			switch(index){
+				case 0: general = (Predicate<GeneralProgramObject>)pred; break;
+				case 1: block = (Predicate<BlockProgramObject>)pred; break;
+			}
+		}
+
+		/** General Purpose */
+		@Override
+		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
+			return general.test(GeneralProgramObject.INST.set(list, ent, data, color, part, cache));
+		}
+
+		/** Block Specific */
+		@Override
+		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			return block.test(BlockProgramObject.INST.set(list, tile, data, cache));
+		}
+		
+	}
+	
+	/* Application ONLY internally. */
+	public static class GeneralProgramObject {
+		
+		public static final GeneralProgramObject INST = new GeneralProgramObject();
+		
+		public TurboList list;
+		public Entity ent;
+		public VehicleData data;
+		public Colorable color;
+		public String part;
+		public RenderCache cache;
+		
+		public GeneralProgramObject set(TurboList list2, Entity ent2, VehicleData data2, Colorable color2, String part2, RenderCache cache2){
+			list = list2;
+			ent = ent2;
+			data = data2;
+			color = color2;
+			part = part2;
+			cache = cache2;
+			return this;
+		}
+		
+	}
+
+	/* Application ONLY internally. */
+	public static class BlockProgramObject {
+		
+		public static final BlockProgramObject INST = new BlockProgramObject();
+		
+		public TurboList list;
+		public TileEntity tile;
+		public BlockData data;
+		public RenderCache cache;
+		
+		public BlockProgramObject set(TurboList list2, TileEntity tile2, BlockData data2, RenderCache cache2){
+			list = list2;
+			tile = tile2;
+			data = data2;
+			cache = cache2;
+			return this;
 		}
 		
 	}

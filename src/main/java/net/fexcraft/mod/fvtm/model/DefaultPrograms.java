@@ -42,6 +42,8 @@ public class DefaultPrograms {
 	public static void init(){
 		TurboList.PROGRAMS.add(RGB_PRIMARY);
 		TurboList.PROGRAMS.add(RGB_SECONDARY);
+		TurboList.PROGRAMS.add(new RGBCustom(0xffffff));
+		TurboList.PROGRAMS.add(INVISIBLE);
 		TurboList.PROGRAMS.add(ALWAYS_GLOW);
 		TurboList.PROGRAMS.add(LIGHTS);
 		TurboList.PROGRAMS.add(FRONT_LIGHTS);
@@ -91,10 +93,67 @@ public class DefaultPrograms {
 		@Override public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ RGB.glColorReset(); }
 	};
 	
+	public static class RGBCustom implements Program {
+		
+		private RGB color;
+		
+		public RGBCustom(int color){
+			this.color = new RGB(color);
+		}
+		
+		public RGBCustom(RGB rgb){
+			color = rgb;
+		}
+		
+		@Override
+		public String getId(){
+			return "fvtm:rgb_custom";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			this.color.glColorApply();
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			RGB.glColorReset();
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			this.color.glColorApply();
+		}
+		
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			RGB.glColorReset();
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			return new RGBCustom(new RGB(elm.getAsJsonArray().get(0).getAsString()));
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new RGBCustom(new RGB(args[0]));
+		}
+		
+	}
+	
+	public static final Program INVISIBLE = new Program(){
+		@Override public String getId(){ return "fvtm:hide"; }
+		@Override public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ list.visible = false; }
+		@Override public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ list.visible = true; }
+		@Override public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ list.visible = false; }
+		@Override public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ list.visible = true; }
+	}, HIDE = INVISIBLE;
+	
 	public static final Program ALWAYS_GLOW = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return true; }
 		@Override public String getId(){ return "fvtm:glow"; }
-	};
+	}, GLOW = ALWAYS_GLOW;
 	
 	public static final Program LIGHTS = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState(); }

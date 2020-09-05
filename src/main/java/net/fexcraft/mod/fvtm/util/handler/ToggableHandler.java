@@ -35,7 +35,7 @@ public class ToggableHandler {
 	
 	private static String last;
 	private static long tilltime = 0;
-	public static final AxisAlignedBB SEATBB = new AxisAlignedBB(-.25, 0, -.25, 0.25, 0.5, 0.25);
+	public static final AxisAlignedBB SEATBB = new AxisAlignedBB(-.375, 0, -.375, 0.375, 0.75, 0.375);
 
 	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatCache seat, EntityPlayer player, ItemStack stack){
 		if(press == KeyPress.MOUSE_RIGHT && foundSeat(entity, seat, player, stack)) return true;

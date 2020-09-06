@@ -33,7 +33,6 @@ import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -112,11 +111,11 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
-		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		/*RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
 		RailEntity ent = system.getEntity(compound.getLong("RailEntity"), true);
-		if(ent != null) ent.entity = this;
-		//this.setDead();
-		super.readEntityFromNBT(compound);
+		if(ent != null) ent.entity = this;*/
+		this.setDead();
+		//super.readEntityFromNBT(compound);
 	}
 
 	@Override

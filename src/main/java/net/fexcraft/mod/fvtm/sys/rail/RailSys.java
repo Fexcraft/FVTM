@@ -266,9 +266,11 @@ public class RailSys implements RailSystem {
 						for(RailEntity ent : multiple.entities) ent.region.spawnEntity(ent.start());
 					}
 				}
-			} torem.forEach(rem -> Region.fillqueue.remove(rem)); torem.clear();
+			}
+			torem.forEach(rem -> Region.fillqueue.remove(rem));
+			torem.clear();
 		}
-		for(Region region : regions.values()){ region.updateTick(); }
+		for(Region region : regions.values()) region.updateTick();
 	}
 
 	@Override
@@ -371,6 +373,10 @@ public class RailSys implements RailSystem {
 
 	public boolean isRemote(){
 		return world.isRemote;
+	}
+
+	public TreeMap<Long, RegionKey> getEntityIndex(){
+		return entities;
 	}
 
 }

@@ -449,6 +449,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
+		if(event.getObject().world == null) return;
 		if(event.getObject() instanceof ContainerHoldingEntity){
 			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
 		}

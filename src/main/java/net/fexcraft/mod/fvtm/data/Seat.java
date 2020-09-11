@@ -1,13 +1,22 @@
 package net.fexcraft.mod.fvtm.data;
 
+import java.util.TreeMap;
 import java.util.UUID;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Pos;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class Seat {
 
@@ -19,6 +28,7 @@ public class Seat {
 	public String swivel_point;
 	public boolean nofirst, nothird;
 	public boolean relative;
+	public TreeMap<String, Boolean> filter = null;
 
 	public Seat(JsonObject obj){
 		Pos pos = Pos.fromJson(obj, false);
@@ -39,6 +49,16 @@ public class Seat {
 		relative = JsonUtil.getIfExists(obj, "relative", false);
 		defyaw = JsonUtil.getIfExists(obj, "def_yaw", 0).floatValue();
 		defpitch = JsonUtil.getIfExists(obj, "def_pitch", 0).floatValue();
+		if(obj.has("filter")){
+			filter = new TreeMap<>();
+			JsonArray array = obj.get("filter").getAsJsonArray();
+			for(JsonElement elm : array){
+				String str = elm.getAsString();
+				boolean bool = !str.startsWith("!");
+				if(!bool) str = str.substring(1);
+				filter.put(str, bool);
+			}
+		}
 	}
 
 	public Seat(String name, float x, float y, float z, boolean driver, String point, boolean nof, boolean not){
@@ -110,6 +130,21 @@ public class Seat {
 		float y = this.y - partpos.to16FloatY();
 		float z = this.z - partpos.to16FloatZ();
 		return new Seat(name, x, y, z, driver, sitting, swivel_point, nofirst, nothird, relative, defyaw, defpitch);
+	}
+	
+	public boolean allow(Entity ent){
+		if(filter == null){
+			return driver ? ent instanceof EntityPlayer : true;
+		}
+		Boolean bool = null;
+		if(ent instanceof EntityPlayer && (bool = filter.get("players")) != null) return bool;
+		EntityEntry entry = EntityRegistry.getEntry(ent.getClass());
+		if(entry == null) return false;
+		bool = filter.get(entry.getRegistryName().toString());
+		if(bool != null) return bool;
+		if(ent instanceof EntityAnimal && (bool = filter.get("animals")) != null) return bool;
+		if(ent instanceof EntityMob    && (bool = filter.get("hostile")) != null) return bool;
+		return false;
 	}
 
 }

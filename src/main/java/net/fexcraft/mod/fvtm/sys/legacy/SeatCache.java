@@ -81,6 +81,10 @@ public class SeatCache {
             List<EntityLiving> nearbyMobs = vehicle.world.getEntitiesWithinAABB(EntityLiving.class, aabb);
             for(EntityLiving entity : nearbyMobs){
                 if(entity.getLeashed() && entity.getLeashHolder() == player){
+                	if(!seatdata.allow(entity)){
+                		Print.bar(player, "&eSeat does not accept this entity kind. (" + entity.getName() + ")");
+                		continue;
+                	}
                 	entity.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex);
                     looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
                     entity.clearLeashed(true, !player.capabilities.isCreativeMode);
@@ -92,6 +96,10 @@ public class SeatCache {
             return true;
         }
         if(passenger == null){
+        	if(!seatdata.allow(player)){
+        		Print.bar(player, "&eSeat does not accept players as passengers.");
+        		return false;
+        	}
         	if(player.isRiding() && player.getRidingEntity().equals(vehicle)){
         		SeatCache seat = vehicle.getSeatOf(player);
         		seat.passenger(null);

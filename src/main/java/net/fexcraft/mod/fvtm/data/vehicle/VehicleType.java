@@ -50,9 +50,6 @@ public enum VehicleType {
 		ArrayList<Attribute<?>> attrs = new ArrayList<>();
 		//general
 		attrs.add(new Attribute.FloatAttribute(true, "weight", 1000f).setMinMax(0, Integer.MAX_VALUE));
-		attrs.add(new Attribute.FloatAttribute(true, "constructor_length", 3f).setMinMax(0, 4096).setEditable(true));
-		attrs.add(new Attribute.FloatAttribute(true, "constructor_height", 0f).setMinMax(-4096, 4096).setEditable(true));
-		attrs.add(new Attribute.FloatAttribute(true, "constructor_wheel_offset", 16f).setMinMax(-4096, 4096).setEditable(true));
 		attrs.add(new Attribute.BooleanAttribute(true, "constructor_show", true).setEditable(true));
 		attrs.add(new Attribute.FloatAttribute(true, "hitbox_width", 1f).setMinMax(0, 16).setEditable(false));
 		attrs.add(new Attribute.FloatAttribute(true, "hitbox_height", 1f).setMinMax(0, 16).setEditable(false));

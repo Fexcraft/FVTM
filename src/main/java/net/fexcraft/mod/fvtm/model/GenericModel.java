@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -240,6 +242,16 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			return get(key) != null;
 		}
 		
+	}
+
+	public void clearDisplayLists(TurboList list){
+		for(ModelRendererTurbo turbo : list)
+			if(turbo != null && turbo.displaylist() != null)
+				GL11.glDeleteLists(turbo.displaylist(), 1);
+	}
+
+	public void clearDisplayLists(){
+		for(TurboList list : groups) clearDisplayLists(list);
 	}
 	
 }

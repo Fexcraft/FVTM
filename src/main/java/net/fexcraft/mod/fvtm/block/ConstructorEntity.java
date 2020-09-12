@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
+import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -226,10 +227,12 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         //
         if(packet.nbt.hasKey("VehicleData")){
-        	this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData")); this.resetCenterRails();
+        	this.vdata = Resources.getVehicleData(packet.nbt.getCompoundTag("VehicleData"));
+        	this.resetCenterModels();
         }
         else if(packet.nbt.hasKey("VehicleDataReset") && packet.nbt.getBoolean("VehicleDataReset")){
-        	this.vdata = null; this.resetCenterRails();
+        	this.vdata = null;
+        	this.resetCenterModels();
         }
         //
         if(packet.nbt.hasKey("ContainerData")){
@@ -261,13 +264,24 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
     }
     
-    private void resetCenterRails(){
-		if(center == null) return; TileEntity center = world.getTileEntity(this.center); if(center == null) return;
+    private void resetCenterModels(){
+		if(center == null) return;
+		TileEntity center = world.getTileEntity(this.center);
+		if(center == null) return;
 		if(center instanceof ConstCenterEntity == false) return;
-		ConstCenterEntity cent = (ConstCenterEntity)center; if(cent.track == null) return;
+		ConstCenterEntity cent = (ConstCenterEntity)center;
+		if(cent.track == null) return;
 		if(cent.track.railmodel != null) cent.track.railmodel.clearDisplayLists();
 		if(cent.track.restmodel != null) cent.track.restmodel.clearDisplayLists();
-		cent.track.railmodel = cent.track.restmodel = null; cent.track.gauge = null;
+		cent.track.railmodel = cent.track.restmodel = null;
+		cent.track.gauge = null;
+		//
+		if(cent.models == null || cent.models.isEmpty()) return;
+		for(ConstructorLiftModel model : cent.models){
+			if(model == null) continue;
+			model.clear(vdata.getType().getRegistryName());
+		}
+		cent.models = null;
 	}
 
 	public void updateClient(String type){

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -55,6 +56,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	protected float coupler_range = 0.25f;
+	protected HashMap<String, LiftingPoint> liftingpoints = new HashMap<>();
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -222,6 +224,12 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				this.sounds.put(json.get("event").getAsString(), new Sound(new ResourceLocation(json.get("sound").getAsString()), JsonUtil.getIfExists(obj, "volume", 1f).floatValue(), JsonUtil.getIfExists(obj, "pitch", 1f).floatValue()));
 			}
 		}
+		if(obj.has("LiftingPoints")){
+			JsonObject lifts = obj.get("LiftingPoints").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : lifts.entrySet()){
+				liftingpoints.put(entry.getKey(), new LiftingPoint(entry.getKey(), entry.getValue().getAsJsonArray()));
+			}
+		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.item = new VehicleItem(this);
@@ -333,6 +341,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	public TreeMap<String, SwivelPoint> getDefaultSwivelPoints(){
 		return rotpoints;
+	}
+	
+	public HashMap<String, LiftingPoint> getLiftingPoints(){
+		return liftingpoints;
 	}
 
 }

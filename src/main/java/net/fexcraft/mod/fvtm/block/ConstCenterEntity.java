@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.block;
 
+import java.util.ArrayList;
+
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
@@ -8,6 +10,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -24,6 +27,8 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 	
 	@SideOnly(Side.CLIENT)
 	public Track track;
+	@SideOnly(Side.CLIENT)
+	public ArrayList<ConstructorLiftModel> models;
 	
 	public ConstCenterEntity(){}
 	

@@ -1,22 +1,27 @@
 //FMT-Marker FVTM-1
 package net.fexcraft.mod.fvtm.model.block;
 
+import java.util.ArrayList;
+
+import org.lwjgl.opengl.GL11;
+
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ResourceLocation;
 
 /** This file was exported via the FVTM Exporter V1 of<br>
  *  FMT (Fex's Modelling Toolbox) v.1.1.7 &copy; 2019 - Fexcraft.net<br>
  *  All rights reserved. For this Model's License contact the Author/Creator.
  */
-public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, BlockPos> {
+public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float> {
 	
-	public static final ConstructorLiftModel INSTANCE = new ConstructorLiftModel();
-	//
 	public TurboList engine;
 	public TurboList pillar;
 	public TurboList glider;
@@ -24,63 +29,77 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, BlockP
 	public TurboList holder1;
 	public TurboList arm0;
 	public TurboList arm1;
+	private ResourceLocation location;
+	private float rotation;
+	private Pos offset;
+	private static final float zoff = 10;
 
-	public ConstructorLiftModel(){
-		super(); textureX = 256; textureY = 256;
+	public ConstructorLiftModel(LiftingPoint point, LiftingPoint counter, ResourceLocation resloc){
+		super();
+		textureX = 64;
+		textureY = 64;
+		this.location = resloc;
 		this.addToCreators("Ferdinand (FEX___96)");
+		if(point.isSingular()) offset = point.pos;
+		else{
+			offset = new Pos((point.pos.x + counter.pos.x) / 2, point.pos.y, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
+		}
 		//
-		engine = new TurboList("engine");
-		engine.add(new ModelRendererTurbo(engine, 25, 16, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 8, 12, 0, 1, 1, 4,
-			null, new boolean[]{ true, true, false, true })
-			.setRotationPoint(0, -15, 5).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 25, 25, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 1, 12, 0, 1, 0.75f, 4,
-			null, new boolean[]{ true, true, false, true })
-			.setRotationPoint(0, -7, 5).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 25, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 1, 12, 0, 0.75f, 1, 4,
-			null, new boolean[]{ false, true, false, true })
-			.setRotationPoint(0, -16, 5).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 25, 29, textureX, textureY).addHollowCylinder(0, 0, 0, 3, 0.001f, 1, 12, 0, 1, 1, 4,
-			null, new boolean[]{ true, true, false, true })
-			.setRotationPoint(0, -6, 5).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 25, 37, textureX, textureY).addHollowCylinder(0, 0, 0, 3, 0.001f, 1, 12, 0, 1, 0.75f, 4,
-			null, new boolean[]{ true, false, false, true })
-			.setRotationPoint(0, -5, 5).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 25, 46, textureX, textureY)
-			.addBox(0, 0, 0, 1, 6, 3, 0, 1f, new boolean[]{ true, false, false, false, false, false })
-			.setRotationPoint(-4, -14, 4).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 32, 46, textureX, textureY)
-			.addBox(0, 0, 0, 1, 6, 3, 0, 1f, new boolean[]{ false, true, false, false, false, false })
-			.setRotationPoint(3, -14, 4).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 52, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 1, 0.001f, 8, 8, 0, 1, 1, 5,
-			new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
-			.setRotationPoint(0, -24, 5).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 42, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 0.5f, 0.001f, 8, 8, 0, 1, 1, 5,
-			new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
-			.setRotationPoint(2, -24, 4).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		engine.add(new ModelRendererTurbo(engine, 47, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 0.5f, 0.001f, 8, 8, 0, 1, 1, 5,
-			new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
-			.setRotationPoint(-2, -24, 5).setRotationAngle(0, 0, 0)
-			.setTextured(true).setLines(false)
-		);
-		this.groups.add(engine);
+		if(point.pos.z >= 0){
+			engine = new TurboList("engine");
+			engine.add(new ModelRendererTurbo(engine, 25, 16, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 8, 12, 0, 1, 1, 4,
+				null, new boolean[]{ true, true, false, true })
+				.setRotationPoint(0, -15, 5).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 25, 25, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 1, 12, 0, 1, 0.75f, 4,
+				null, new boolean[]{ true, true, false, true })
+				.setRotationPoint(0, -7, 5).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 25, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 4, 0.001f, 1, 12, 0, 0.75f, 1, 4,
+				null, new boolean[]{ false, true, false, true })
+				.setRotationPoint(0, -16, 5).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 25, 29, textureX, textureY).addHollowCylinder(0, 0, 0, 3, 0.001f, 1, 12, 0, 1, 1, 4,
+				null, new boolean[]{ true, true, false, true })
+				.setRotationPoint(0, -6, 5).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 25, 37, textureX, textureY).addHollowCylinder(0, 0, 0, 3, 0.001f, 1, 12, 0, 1, 0.75f, 4,
+				null, new boolean[]{ true, false, false, true })
+				.setRotationPoint(0, -5, 5).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 25, 46, textureX, textureY)
+				.addBox(0, 0, 0, 1, 6, 3, 0, 1f, new boolean[]{ true, false, false, false, false, false })
+				.setRotationPoint(-4, -14, 4).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 32, 46, textureX, textureY)
+				.addBox(0, 0, 0, 1, 6, 3, 0, 1f, new boolean[]{ false, true, false, false, false, false })
+				.setRotationPoint(3, -14, 4).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 52, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 1, 0.001f, 8, 8, 0, 1, 1, 5,
+				new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
+				.setRotationPoint(0, -24, 5).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 42, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 0.5f, 0.001f, 8, 8, 0, 1, 1, 5,
+				new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
+				.setRotationPoint(2, -24, 4).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			engine.add(new ModelRendererTurbo(engine, 47, 14, textureX, textureY).addHollowCylinder(0, 0, 0, 0.5f, 0.001f, 8, 8, 0, 1, 1, 5,
+				new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, -3.0), new boolean[]{ true, true, false, true })
+				.setRotationPoint(-2, -24, 5).setRotationAngle(0, 0, 0)
+				.setTextured(true).setLines(false)
+			);
+			this.groups.add(engine);
+		}
+		else rotation = 180;
 		//
 		pillar = new TurboList("pillar");
 		pillar.add(new ModelRendererTurbo(pillar, 5, 56, textureX, textureY).newBoxBuilder()
@@ -392,7 +411,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, BlockP
 			.setTextured(true).setLines(false)
 		);
 		pillar.add(new ModelRendererTurbo(pillar, 25, 7, textureX, textureY).addBox(0, 0, 0, 8, 1, 5)
-			.setRotationPoint(-4, 0, -1).setRotationAngle(0, 0, 0)
+			.setRotationPoint(-4, -0.1f, -1).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		this.groups.add(pillar);
@@ -408,28 +427,30 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, BlockP
 		holder0 = new TurboList("holder0");
 		holder0.add(new ModelRendererTurbo(holder0, 48, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
-			.setRotationPoint(14, -3.5f, -10).setRotationAngle(0, 0, 0)
+			.setRotationPoint(0, -3.5f, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		holder0.add(new ModelRendererTurbo(holder0, 48, 35, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.5, 0.0), new boolean[]{ false, true, false, true })
-			.setRotationPoint(14, -4, -10).setRotationAngle(0, 0, 0)
+			.setRotationPoint(0, -4, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		this.groups.add(holder0);
+		holder0.forEach(mrt -> mrt.setRotationPoint(point.isSingular() ? -2 : point.pos.x, -4, -zoff));
 		//
 		holder1 = new TurboList("holder1");
 		holder1.add(new ModelRendererTurbo(holder1, 39, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
-			.setRotationPoint(-14, -3.5f, -10).setRotationAngle(0, 0, 0)
+			.setRotationPoint(0, -3.5f, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		holder1.add(new ModelRendererTurbo(holder1, 39, 35, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.5, 0.0), new boolean[]{ false, true, false, true })
-			.setRotationPoint(-14, -4, -10).setRotationAngle(0, 0, 0)
+			.setRotationPoint(0, -4, 0).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		this.groups.add(holder1);
+		holder1.forEach(mrt -> mrt.setRotationPoint(point.isSingular() ? 2 : counter.pos.x, -4, -zoff));
 		//
 		arm0 = new TurboList("arm0");
 		arm0.add(new ModelRendererTurbo(arm0, 39, 49, textureX, textureY).newBoxBuilder()
@@ -463,13 +484,37 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, BlockP
 	}
 
 	@Override
-	public void render(ConstCenterEntity data, BlockPos key){
-		//
+	public void render(ConstCenterEntity tile, Float ticks){
+		offset.translate();
+		if(engine != null) engine.renderPlain();
+		GL11.glRotatef(rotation, 0, 1, 0);
+		pillar.renderPlain();
+		holder0.renderPlain();
+		holder1.renderPlain();
+		GL11.glRotatef(-rotation, 0, 1, 0);
+		offset.translateR();
 	}
 
 	@Override
-	public void render(ConstCenterEntity data, BlockPos key, Entity ent, RenderCache cache){
-		this.render(data, key); return;
+	public void render(ConstCenterEntity tile, Float ticks, Entity ent, RenderCache cache){
+		this.render(tile, ticks);
+	}
+	
+	public static ArrayList<ConstructorLiftModel> setup(VehicleData data){
+		ResourceLocation location = data.getType().getRegistryName();
+		ArrayList<String> processed = new ArrayList<>(); 
+		ArrayList<ConstructorLiftModel> models = new ArrayList<>(); 
+		for(LiftingPoint point : data.getType().getLiftingPoints().values()){
+			if(processed.contains(point.id)) continue;
+			models.add(new ConstructorLiftModel(point, data.getType().getLiftingPoints().get(point.second), location));
+			processed.add(point.id);
+		}
+		return models;
+	}
+
+	public void clear(ResourceLocation resloc){
+		if(resloc.equals(location)) return;
+		super.clearDisplayLists();
 	}
 
 }

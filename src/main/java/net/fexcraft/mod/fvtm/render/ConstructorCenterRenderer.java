@@ -46,6 +46,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         if(vehicle && tile.getVehicleData().getAttribute("constructor_show").getBooleanValue()){
             if(tile.getVehicleData().getType().getVehicleType().isLandVehicle()){
             	GL11.glPushMatrix();
+            	tile.updateLiftState();
             	ModelBase.bindTexture(lifttexture);
             	if(tile.models == null) tile.models = ConstructorLiftModel.setup(tile.getVehicleData());
             	for(ConstructorLiftModel model : tile.models) model.render(tile, partialticks);
@@ -88,13 +89,13 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                 if(modvec != null){
                     ModelBase.bindTexture(vehicledata.getTexture());
                     float[] heightoffset = { 0 };
-                    if(vehicledata.getType().getVehicleType().isRailVehicle()){
+                    if(vehicledata.getType().getVehicleType().isRailVehicle() && !vehicledata.getWheelPositions().isEmpty()){
                     	vehicledata.getWheelPositions().values().forEach(cons -> {
                     		heightoffset[0] += -cons.y;
                     	});
                     	heightoffset[0] /= vehicledata.getWheelPositions().size();
                     }
-                    GL11.glTranslated(0, heightoffset[0] - tile.getLiftState(), 0);
+                    GL11.glTranslated(0, heightoffset[0] + tile.getLiftState(), 0);
                     modvec.render(vehicledata, null, null, null);
                     vehicledata.getParts().forEach((key, partdata) -> {
                         ModelBase.bindTexture(partdata.getTexture());
@@ -110,7 +111,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     		partdata.getInstalledPos().translateR();
                     	}
                     });
-                    GL11.glTranslated(0, heightoffset[0] + tile.getLiftState(), 0);
+                    GL11.glTranslated(0, heightoffset[0] - tile.getLiftState(), 0);
                 }
             }
             catch(Exception e){

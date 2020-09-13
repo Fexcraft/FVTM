@@ -15,8 +15,14 @@ public class LiftingPoint {
 		second = array.size() > 3 ? array.get(3).getAsString() : null;
 	}
 	
+	public LiftingPoint(String key, Pos pos2, String str){
+		id = key;
+		pos = pos2;
+		second = str;
+	}
+
 	public boolean isSingular(){
-		return second.equals("none") || second.equals("singular");
+		return second == null || second.equals("none") || second.equals("singular");
 	}
 
 }

@@ -31,6 +31,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 	public TurboList arm0;
 	public TurboList arm1;
 	private ResourceLocation location;
+	@SuppressWarnings("unused")
 	private float rotation, yoff;
 	private Pos offset;
 	private static final float zoff = 10;
@@ -43,7 +44,9 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		this.addToCreators("Ferdinand (FEX___96)");
 		float dis = 0;
 		boolean singular = point.isSingular() || counter == null;
-		if(singular) offset = point.pos;
+		if(singular){
+			offset = new Pos(point.pos.x, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
+		}
 		else{
 			offset = new Pos((point.pos.x + counter.pos.x) / 2, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
 			dis = (Math.abs(point.pos.x) + Math.abs(counter.pos.x)) / 2;
@@ -430,7 +433,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		);
 		this.groups.add(glider);
 		//
-		Vec3f hol0 = new Vec3f(singular ? 3 : dis, -4, -zoff);
+		Vec3f hol0 = new Vec3f(singular ? 3 : dis, -4, -zoff - 1);
 		holder0 = new TurboList("holder0");
 		holder0.add(new ModelRendererTurbo(holder0, 48, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
@@ -444,7 +447,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		);
 		this.groups.add(holder0);
 		//
-		Vec3f hol1 = new Vec3f(singular ? -3 : -dis, -4, -zoff);
+		Vec3f hol1 = new Vec3f(singular ? -3 : -dis, -4, -zoff - 1);
 		holder1 = new TurboList("holder1");
 		holder1.add(new ModelRendererTurbo(holder1, 39, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
@@ -497,14 +500,13 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		if(engine != null) engine.renderPlain();
 		GL11.glRotatef(rotation, 0, 1, 0);
 		pillar.renderPlain();
-		tile.updateLiftState();
-		GL11.glTranslatef(0, -tile.getLiftState() - yoff, 0);
+		GL11.glTranslatef(0, tile.getRawLiftState(), 0);
 		glider.renderPlain();
 		arm0.renderPlain();
 		arm1.renderPlain();
 		holder0.renderPlain();
 		holder1.renderPlain();
-		GL11.glTranslatef(0, tile.getLiftState() + yoff, 0);
+		GL11.glTranslatef(0, -tile.getRawLiftState(), 0);
 		GL11.glRotatef(-rotation, 0, 1, 0);
 		offset.translateR();
 	}
@@ -528,7 +530,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 	}
 
 	public void clear(ResourceLocation resloc){
-		if(resloc.equals(location)) return;
+		if(location.equals(resloc)) return;
 		super.clearDisplayLists();
 	}
 

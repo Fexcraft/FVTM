@@ -6,8 +6,10 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
+import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -16,6 +18,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -163,17 +166,57 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
     public AxisAlignedBB getRenderBoundingBox(){
         return /*IN*/FINITE_EXTENT_AABB.offset(pos);
     }
+    
+    private float liftstate, input, lowest, slot, wheeloff;
+    private boolean onwheels;
 
 	public void updateLiftState(){
-		//TODO
+		VehicleData data = this.getVehicleData();
+		if(data == null){
+			liftstate = 0;
+			return;
+		}
+		lowest = slot = -64;
+		for(LiftingPoint point : data.getType().getLiftingPoints().values()){
+			if(lowest < point.pos.y16) lowest = point.pos.y16;
+		}
+		/*if(data.getWheelSlots().size() < 4){
+			liftstate = input < -1.5f ? input : -1.5f;
+			return;
+		}*/
+		for(WheelSlot ws : data.getWheelSlots().values()){
+			if(slot < ws.pos().y16) slot = ws.pos().y16;
+		}
+		wheeloff = 0;
+		if(!data.getWheelPositions().isEmpty()){
+			for(Vec3d vec : data.getWheelPositions().values()){
+				wheeloff += vec.y;
+			}
+			wheeloff /= data.getWheelPositions().size();
+		}
+		onwheels = data.getWheelPositions().size() >= 4;
+		liftstate = /*Command.getValI("lift", 0) +*/ (input < -1.5f && !onwheels ? -1.5f : input);
+		//Command.VALS.put("lowest", lowest + "");
+		//Command.VALS.put("wheeloff", wheeloff + "");
+		//Command.VALS.put("onwheel", onwheels + "");
+		if(liftstate + getAddition() < -4) liftstate = -4 - getAddition();
 	}
 
 	public float getLiftState(){
-		return 0f;
+		return liftstate + getAddition();
+	}
+	
+	public float getAddition(){
+		float fl = slot > lowest ? lowest : slot;
+		return (!onwheels || wheeloff > fl ? fl : wheeloff) - (onwheels ? 0 : 0.25f);
+	}
+
+	public float getRawLiftState(){
+		return liftstate;
 	}
 	
 	public float getLowestLiftPoint(){
-		return 0f;
+		return lowest;
 	}
 
 }

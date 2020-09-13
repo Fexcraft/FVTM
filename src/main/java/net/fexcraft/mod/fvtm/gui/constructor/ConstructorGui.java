@@ -17,6 +17,8 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	public static final ResourceLocation ANVIL = new ResourceLocation("minecraft:textures/blocks/anvil_base.png");
 	public static final ResourceLocation ICON_LEFT = new ResourceLocation("fvtm:textures/gui/icons/arrow_left.png");
 	public static final ResourceLocation ICON_RIGHT = new ResourceLocation("fvtm:textures/gui/icons/arrow_right.png");
+	public static final ResourceLocation ICON_UP = new ResourceLocation("fvtm:textures/gui/icons/arrow_up.png");
+	public static final ResourceLocation ICON_DOWN = new ResourceLocation("fvtm:textures/gui/icons/arrow_down.png");
 	public static final ResourceLocation ICON_CHECK = new ResourceLocation("fvtm:textures/gui/icons/check.png");
 	public static final ResourceLocation ICON_REMOVE = new ResourceLocation("fvtm:textures/gui/icons/remove.png");
 	public static final ResourceLocation ICON_EDIT0 = new ResourceLocation("fvtm:textures/gui/icons/edit.png");

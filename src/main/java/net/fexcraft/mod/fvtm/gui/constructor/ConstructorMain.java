@@ -13,16 +13,18 @@ public class ConstructorMain extends ConstructorGui {
 	public ConstructorMain(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		this.buttontext = new String[]{
-			"Const. Status", "Content Info", "",
+			"Const. Status", "Content Info", "Lift Status", "",
 			"Part Cache", "Part Manager", "Part Installer",
 			"", "Texture Manager", "Spraying Tool", "", "Exit"};
 	}
 	
 	@Override
 	public void init(){
-		this.buttons.put("icon_part", new IconButton("icon_part", 3, 0, false, ICON_REMOVE));
+		this.buttons.put("icon_part", new IconButton("icon_part", 4, 0, false, ICON_REMOVE));
 		this.buttons.put("icon_spawn", new IconButton("icon_spawn", 1, 1, false, ICON_EDIT0));
 		this.buttons.put("icon_veh", new IconButton("icon_veh", 1, 0, false, ICON_CHECK));
+		this.buttons.put("lift_up", new IconButton("icon_veh", 2, 1, false, ICON_UP));
+		this.buttons.put("lift_dw", new IconButton("icon_veh", 2, 0, false, ICON_DOWN));
 		super.init();
 	}
 
@@ -34,7 +36,26 @@ public class ConstructorMain extends ConstructorGui {
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
-		if(button.name.equals("button10")){ player.closeScreen(); return true; }
+		if(button.name.equals("button11")){ player.closeScreen(); return true; }
+		if(button.name.equals("button2")){
+			if(buttons.get("lift_up").mousePressed(null, mouseX, mouseY)){
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("cargo", "lift");
+				compound.setInteger("dir", -1); 
+				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+				this.container.send(Side.SERVER, compound);
+				return true;
+			}
+			if(buttons.get("lift_dw").mousePressed(null, mouseX, mouseY)){
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("cargo", "lift");
+				compound.setInteger("dir", 1); 
+				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+				this.container.send(Side.SERVER, compound);
+				return true;
+			}
+			return true;
+		}
 		if(button.name.equals("button1")){
 			if(buttons.get("icon_spawn").mousePressed(null, mouseX, mouseY)){
 				this.titletext.update("Not available yet! Sorry!", null); return true;
@@ -46,14 +67,14 @@ public class ConstructorMain extends ConstructorGui {
 				this.container.send(Side.SERVER, compound); return true;
 			}
 		}
-		if(button.name.equals("button3") && buttons.get("icon_part").mousePressed(null, mouseX, mouseY)){
+		if(button.name.equals("button4") && buttons.get("icon_part").mousePressed(null, mouseX, mouseY)){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "drop"); compound.setString("what", "part"); 
 			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound); return true;
 		}
 		int gui = Integer.parseInt(button.name.replace("button", ""));
-		if(gui == 7){
+		if(gui == 8){
 			if(container.getTileEntity().getVehicleData() == null
 				&& container.getTileEntity().getContainerData() == null
 				&& container.getTileEntity().getBlockData() == null){
@@ -61,7 +82,7 @@ public class ConstructorMain extends ConstructorGui {
 				return true;
 			}
 		}
-		else if(gui == 8){
+		else if(gui == 9){
 			if(container.getTileEntity().getVehicleData() == null
 				&& container.getTileEntity().getContainerData() == null
 				&& container.getTileEntity().getBlockData() == null){
@@ -69,7 +90,7 @@ public class ConstructorMain extends ConstructorGui {
 				return true;
 			}
 		}
-		openGui(gui + CONSTRUCTOR_STATUS, xyz, LISTENERID); return true;
+		openGui(gui - 1 + CONSTRUCTOR_STATUS, xyz, LISTENERID); return true;
 	}
 
 	@Override

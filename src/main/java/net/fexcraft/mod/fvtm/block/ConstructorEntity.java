@@ -29,6 +29,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	private PartData pdata;
 	private BlockData bdata;
 	private BlockPos center;
+	public float liftstate;
 	
 	public ConstructorEntity(){}
 
@@ -169,6 +170,15 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				this.updateClient("vehicle");
 				return;
 			}
+			case "lift":{
+				if(noveh(container)) return;
+				liftstate += packet.getInteger("dir") * 0.5f;
+				if(liftstate < -4) liftstate = -4;
+				if(liftstate > 0) liftstate = 0;
+				this.updateClient("lift");
+				container.setTitleText("Lift state adjusted.", null);
+				return;
+			}
 			//
 			default: return;
 		}
@@ -252,6 +262,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         if(packet.nbt.hasKey("RGBPrimary")) (cdata == null ? bdata == null ? vdata : bdata : cdata).getPrimaryColor().packed = packet.nbt.getInteger("RGBPrimary"); 
         if(packet.nbt.hasKey("RGBSecondary")) (cdata == null ? bdata == null ? vdata : bdata : cdata).getSecondaryColor().packed = packet.nbt.getInteger("RGBSecondary");
         //Print.debug(vdata.getPrimaryColor().packed, vdata.getSecondaryColor().packed);
+        if(packet.nbt.hasKey("LiftState")){
+        	this.liftstate = packet.nbt.getFloat("LiftState");
+        }
         //
         if(packet.nbt.hasKey("CenterPos")){
         	this.center = BlockPos.fromLong(packet.nbt.getLong("CenterPos"));
@@ -312,6 +325,10 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     			compound.setInteger("RGBSecondary", (cdata == null ? bdata == null ? vdata : bdata : cdata).getSecondaryColor().packed);
     			break;
     		}
+    		case "liftstate": case "lift":{
+    			compound.setFloat("LiftState", liftstate);
+    			break;
+    		}
     		//
     		default: return;
     	} this.markDirty();//checking stuff
@@ -340,6 +357,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		if(bdata != null) compound.setTag("BlockData", bdata.write(new NBTTagCompound()));
 		else compound.setBoolean("BlockDataReset", true);
         if(center != null){ compound.setLong("Center", center.toLong()); }
+        compound.setFloat("LiftState", liftstate);
         return compound;
     }
 
@@ -372,6 +390,9 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         }
         if(compound.hasKey("Center")){
             this.center = BlockPos.fromLong(compound.getLong("Center"));
+        }
+        if(compound.hasKey("LiftState")){
+        	this.liftstate = compound.getFloat("LiftState");
         }
     }
     

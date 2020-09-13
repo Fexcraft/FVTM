@@ -167,7 +167,7 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
         return /*IN*/FINITE_EXTENT_AABB.offset(pos);
     }
     
-    private float liftstate, input, lowest, slot, wheeloff;
+    private float liftstate, lowest, slot, wheeloff;
     private boolean onwheels;
 
 	public void updateLiftState(){
@@ -176,6 +176,7 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 			liftstate = 0;
 			return;
 		}
+		float input = tile.liftstate;
 		lowest = slot = -64;
 		for(LiftingPoint point : data.getType().getLiftingPoints().values()){
 			if(lowest < point.pos.y16) lowest = point.pos.y16;

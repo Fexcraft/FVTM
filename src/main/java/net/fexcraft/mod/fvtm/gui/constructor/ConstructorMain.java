@@ -90,7 +90,7 @@ public class ConstructorMain extends ConstructorGui {
 				return true;
 			}
 		}
-		openGui(gui - 1 + CONSTRUCTOR_STATUS, xyz, LISTENERID); return true;
+		openGui(gui - (gui < 2 ? 0 : 1) + CONSTRUCTOR_STATUS, xyz, LISTENERID); return true;
 	}
 
 	@Override

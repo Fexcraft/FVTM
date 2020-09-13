@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.util.HashMap;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
@@ -25,6 +26,7 @@ import net.minecraft.server.MinecraftServer;
 public class Command extends CommandBase {
 	
 	public static boolean DEBUG;
+	public static HashMap<String, String> VALS = new HashMap<>();
 
     @Override
     public String getName(){
@@ -135,6 +137,11 @@ public class Command extends CommandBase {
             	}
             	break;
             }
+            case "vals":{
+            	if(!server.isSinglePlayer()) return;
+            	VALS.put(args[1], args[2]);
+            	return;
+            }
             default: {
                 Print.chat(sender, "null [0]");
                 break;
@@ -142,5 +149,24 @@ public class Command extends CommandBase {
         }
         //
     }
+
+	public static String getValS(String string){
+		return VALS.get(string);
+	}
+
+	public static float getValF(String string, float def){
+		if(!VALS.containsKey(string)) return def;
+		return Float.parseFloat(VALS.get(string));
+	}
+
+	public static int getValI(String string, int def){
+		if(!VALS.containsKey(string)) return def;
+		return Integer.parseInt(VALS.get(string));
+	}
+
+	public static boolean getValB(String string, boolean def){
+		if(!VALS.containsKey(string)) return def;
+		return Boolean.parseBoolean(VALS.get(string));
+	}
 
 }

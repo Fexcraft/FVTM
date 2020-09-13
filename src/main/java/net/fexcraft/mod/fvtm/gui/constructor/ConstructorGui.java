@@ -1,6 +1,9 @@
 package net.fexcraft.mod.fvtm.gui.constructor;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.lwjgl.input.Keyboard;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -10,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	
@@ -78,6 +82,24 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		}
 		cbox = new CenterBox(this, 128, 128);
 	}
+	
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException{
+        super.keyTyped(typedChar, keyCode);
+        if(keyCode == Keyboard.KEY_DOWN){
+    		NBTTagCompound compound = new NBTTagCompound();
+    		compound.setString("cargo", "lift");
+    		compound.setInteger("dir", 1);
+    		this.container.send(Side.SERVER, compound);
+    		return;
+        }
+        else if(keyCode == Keyboard.KEY_UP){
+    		NBTTagCompound compound = new NBTTagCompound();
+    		compound.setString("cargo", "lift");
+    		compound.setInteger("dir", -1);
+    		this.container.send(Side.SERVER, compound);
+        }
+    }
 	
 	public int getButtonWidth(String str){
 		int width = fontRenderer.getStringWidth(str);

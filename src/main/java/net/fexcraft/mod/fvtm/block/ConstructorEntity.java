@@ -278,7 +278,6 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		//
 		if(cent.models == null || cent.models.isEmpty()) return;
 		for(ConstructorLiftModel model : cent.models){
-			if(model == null) continue;
 			model.clear(vdata.getType().getRegistryName());
 		}
 		cent.models = null;

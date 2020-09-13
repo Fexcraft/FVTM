@@ -88,10 +88,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                 if(modvec != null){
                     ModelBase.bindTexture(vehicledata.getTexture());
                     float[] heightoffset = { 0 };
-                    if(!vehicledata.getType().getVehicleType().isRailVehicle() /*vehicledata.getWheelPositions().size() < 2*/){
-                    	heightoffset[0] = vehicledata.getAttribute("constructor_height").getFloatValue() * 0.0625f;
-                    }
-                    else{
+                    if(vehicledata.getType().getVehicleType().isRailVehicle()){
                     	vehicledata.getWheelPositions().values().forEach(cons -> {
                     		heightoffset[0] += -cons.y;
                     	});

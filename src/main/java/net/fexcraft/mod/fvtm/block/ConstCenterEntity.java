@@ -6,7 +6,6 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -165,22 +164,16 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
         return /*IN*/FINITE_EXTENT_AABB.offset(pos);
     }
 
-	public float getLength(){
-		if(tile == null || tile.getVehicleData() == null) return 3;
-		return tile.getVehicleData().getAttribute("constructor_length").getFloatValue();
+	public void updateLiftState(){
+		//TODO
 	}
 
-	public float getRenderLength(){
-		return this.getLength() * 2 + 1;
+	public float getLiftState(){
+		return 0f;
 	}
-
-	public int getLiftState(){
-		return 0;//TODO implement lift mechanism
-	}
-
-	public float getWheelOffset(){
-		if(tile == null || tile.getVehicleData() == null) return 1.5f;
-		return tile.getVehicleData().getAttribute("constructor_wheel_offset").getFloatValue() * Static.sixteenth;
+	
+	public float getLowestLiftPoint(){
+		return 0f;
 	}
 
 }

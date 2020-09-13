@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.ConstCenterEntity;
@@ -30,7 +31,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 	public TurboList arm0;
 	public TurboList arm1;
 	private ResourceLocation location;
-	private float rotation;
+	private float rotation, yoff;
 	private Pos offset;
 	private static final float zoff = 10;
 
@@ -40,10 +41,15 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		textureY = 64;
 		this.location = resloc;
 		this.addToCreators("Ferdinand (FEX___96)");
-		if(point.isSingular()) offset = point.pos;
+		float dis = 0;
+		boolean singular = point.isSingular() || counter == null;
+		if(singular) offset = point.pos;
 		else{
-			offset = new Pos((point.pos.x + counter.pos.x) / 2, point.pos.y, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
+			offset = new Pos((point.pos.x + counter.pos.x) / 2, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
+			dis = (Math.abs(point.pos.x) + Math.abs(counter.pos.x)) / 2;
+			if(dis < 3) singular = true;
 		}
+		yoff = point.pos.y16;
 		//
 		if(point.pos.z >= 0){
 			engine = new TurboList("engine");
@@ -424,37 +430,38 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		);
 		this.groups.add(glider);
 		//
+		Vec3f hol0 = new Vec3f(singular ? 3 : dis, -4, -zoff);
 		holder0 = new TurboList("holder0");
 		holder0.add(new ModelRendererTurbo(holder0, 48, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
-			.setRotationPoint(0, -3.5f, 0).setRotationAngle(0, 0, 0)
+			.setRotationPoint(hol0.xCoord, hol0.yCoord + 0.5f, hol0.zCoord).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		holder0.add(new ModelRendererTurbo(holder0, 48, 35, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.5, 0.0), new boolean[]{ false, true, false, true })
-			.setRotationPoint(0, -4, 0).setRotationAngle(0, 0, 0)
+			.setRotationPoint(hol0.xCoord, hol0.yCoord, hol0.zCoord).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		this.groups.add(holder0);
-		holder0.forEach(mrt -> mrt.setRotationPoint(point.isSingular() ? -2 : point.pos.x, -4, -zoff));
 		//
+		Vec3f hol1 = new Vec3f(singular ? -3 : -dis, -4, -zoff);
 		holder1 = new TurboList("holder1");
 		holder1.add(new ModelRendererTurbo(holder1, 39, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
-			.setRotationPoint(0, -3.5f, 0).setRotationAngle(0, 0, 0)
+			.setRotationPoint(hol1.xCoord, hol1.yCoord + 0.5f, hol1.zCoord).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		holder1.add(new ModelRendererTurbo(holder1, 39, 35, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.5, 0.0), new boolean[]{ false, true, false, true })
-			.setRotationPoint(0, -4, 0).setRotationAngle(0, 0, 0)
+			.setRotationPoint(hol1.xCoord, hol1.yCoord, hol1.zCoord).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		this.groups.add(holder1);
-		holder1.forEach(mrt -> mrt.setRotationPoint(point.isSingular() ? 2 : counter.pos.x, -4, -zoff));
 		//
+		Vec3f ar0m = new Vec3f(3, -2, -1);
 		arm0 = new TurboList("arm0");
 		arm0.add(new ModelRendererTurbo(arm0, 39, 49, textureX, textureY).newBoxBuilder()
-			.setOffset(0, 0, -0.5f).setSize(15, 2, 1)
+			.setOffset(0, 0, -0.5f).setSize((int)ar0m.distanceTo(hol0) + 1, 2, 1)
 			.setCorners(0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, -0.25f, -0.75f, -2, -0.25f, -0.75f, -2, -0.25f, 0, 0, -0.25f)
 			.setPolygonUV(0, new float[]{ 16.0f, 0.0f })
 			.setPolygonUV(1, new float[]{ 16.0f, 2.0f })
@@ -462,14 +469,15 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 			.setPolygonUV(3, new float[]{ 0.0f, 2.0f, 2.0f, 4.0f })
 			.setPolygonUV(4, new float[]{ 2.0f, 0.0f, 16.0f, 2.0f })
 			.setPolygonUV(5, new float[]{ 2.0f, 2.0f, 16.0f, 4.0f }).build()
-			.setRotationPoint(3, -2, -1).setRotationAngle(0, 40, 0)
-			.setTextured(true).setLines(false)
+			.setRotationPoint(ar0m.xCoord, ar0m.yCoord, ar0m.zCoord)
+			.setRotationAngle(0, (float)Math.toDegrees(Math.atan2(ar0m.xCoord - hol0.xCoord, ar0m.zCoord - hol0.zCoord)) + 90, 0)
 		);
 		this.groups.add(arm0);
 		//
+		Vec3f ar1m = new Vec3f(-3, -2, -1);
 		arm1 = new TurboList("arm1");
 		arm1.add(new ModelRendererTurbo(arm1, 39, 54, textureX, textureY).newBoxBuilder()
-			.setOffset(0, 0, -0.5f).setSize(15, 2, 1)
+			.setOffset(0, 0, -0.5f).setSize((int)ar1m.distanceTo(hol1) + 1, 2, 1)
 			.setCorners(0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, -0.25f, -0.75f, -2, -0.25f, -0.75f, -2, -0.25f, 0, 0, -0.25f)
 			.setPolygonUV(0, new float[]{ 16.0f, 0.0f })
 			.setPolygonUV(1, new float[]{ 16.0f, 2.0f })
@@ -477,8 +485,8 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 			.setPolygonUV(3, new float[]{ 0.0f, 2.0f, 2.0f, 4.0f })
 			.setPolygonUV(4, new float[]{ 2.0f, 0.0f, 16.0f, 2.0f })
 			.setPolygonUV(5, new float[]{ 2.0f, 2.0f, 16.0f, 4.0f }).build()
-			.setRotationPoint(-3, -2, -1).setRotationAngle(0, 140, 0)
-			.setTextured(true).setLines(false)
+			.setRotationPoint(ar1m.xCoord, ar1m.yCoord, ar1m.zCoord)
+			.setRotationAngle(0, (float)Math.toDegrees(Math.atan2(ar1m.xCoord - hol1.xCoord, ar1m.zCoord - hol1.zCoord)) + 90, 0)
 		);
 		this.groups.add(arm1);
 	}
@@ -489,8 +497,14 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		if(engine != null) engine.renderPlain();
 		GL11.glRotatef(rotation, 0, 1, 0);
 		pillar.renderPlain();
+		tile.updateLiftState();
+		GL11.glTranslatef(0, -tile.getLiftState() - yoff, 0);
+		glider.renderPlain();
+		arm0.renderPlain();
+		arm1.renderPlain();
 		holder0.renderPlain();
 		holder1.renderPlain();
+		GL11.glTranslatef(0, tile.getLiftState() + yoff, 0);
 		GL11.glRotatef(-rotation, 0, 1, 0);
 		offset.translateR();
 	}
@@ -507,6 +521,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		for(LiftingPoint point : data.getType().getLiftingPoints().values()){
 			if(processed.contains(point.id)) continue;
 			models.add(new ConstructorLiftModel(point, data.getType().getLiftingPoints().get(point.second), location));
+			if(!point.isSingular()) processed.add(point.second);
 			processed.add(point.id);
 		}
 		return models;

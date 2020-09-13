@@ -15,7 +15,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 
 /** This file was exported via the FVTM Exporter V1 of<br>
  *  FMT (Fex's Modelling Toolbox) v.1.1.7 &copy; 2019 - Fexcraft.net<br>
@@ -30,26 +29,26 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 	public TurboList holder1;
 	public TurboList arm0;
 	public TurboList arm1;
-	private ResourceLocation location;
-	@SuppressWarnings("unused")
 	private float rotation, yoff;
 	private Pos offset;
-	private static final float zoff = 10;
+	private float zoff = 10;
 
-	public ConstructorLiftModel(LiftingPoint point, LiftingPoint counter, ResourceLocation resloc){
+	public ConstructorLiftModel(LiftingPoint point, LiftingPoint counter){
 		super();
 		textureX = 64;
 		textureY = 64;
-		this.location = resloc;
 		this.addToCreators("Ferdinand (FEX___96)");
 		float dis = 0;
 		boolean singular = point.isSingular() || counter == null;
+		zoff += point.off;
 		if(singular){
 			offset = new Pos(point.pos.x, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
 		}
 		else{
 			offset = new Pos((point.pos.x + counter.pos.x) / 2, 0, point.pos.z + (point.pos.z < 0 ? -zoff : zoff));
-			dis = (Math.abs(point.pos.x) + Math.abs(counter.pos.x)) / 2;
+			float less = point.pos.x > counter.pos.x ? counter.pos.x : point.pos.x;
+			float more = point.pos.x > counter.pos.x ? point.pos.x : counter.pos.x;
+			dis = Math.abs(more - less) / 2;
 			if(dis < 3) singular = true;
 		}
 		yoff = point.pos.y16;
@@ -500,13 +499,14 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		if(engine != null) engine.renderPlain();
 		GL11.glRotatef(rotation, 0, 1, 0);
 		pillar.renderPlain();
-		GL11.glTranslatef(0, tile.getRawLiftState(), 0);
+		float off = (yoff - tile.getLowestLiftPoint());
+		GL11.glTranslatef(0, tile.getRawLiftState() + off, 0);
 		glider.renderPlain();
 		arm0.renderPlain();
 		arm1.renderPlain();
 		holder0.renderPlain();
 		holder1.renderPlain();
-		GL11.glTranslatef(0, -tile.getRawLiftState(), 0);
+		GL11.glTranslatef(0, -tile.getRawLiftState() - off, 0);
 		GL11.glRotatef(-rotation, 0, 1, 0);
 		offset.translateR();
 	}
@@ -517,21 +517,15 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 	}
 	
 	public static ArrayList<ConstructorLiftModel> setup(VehicleData data){
-		ResourceLocation location = data.getType().getRegistryName();
 		ArrayList<String> processed = new ArrayList<>(); 
 		ArrayList<ConstructorLiftModel> models = new ArrayList<>(); 
 		for(LiftingPoint point : data.getType().getLiftingPoints().values()){
 			if(processed.contains(point.id)) continue;
-			models.add(new ConstructorLiftModel(point, data.getType().getLiftingPoints().get(point.second), location));
+			models.add(new ConstructorLiftModel(point, data.getType().getLiftingPoints().get(point.second)));
 			if(!point.isSingular()) processed.add(point.second);
 			processed.add(point.id);
 		}
 		return models;
-	}
-
-	public void clear(ResourceLocation resloc){
-		if(location.equals(resloc)) return;
-		super.clearDisplayLists();
 	}
 
 }

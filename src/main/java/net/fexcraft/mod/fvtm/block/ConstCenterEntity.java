@@ -167,7 +167,7 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
         return /*IN*/FINITE_EXTENT_AABB.offset(pos);
     }
     
-    private float liftstate, lowest, slot, wheeloff;
+    private float liftstate, lowest, upmost, slot, wheeloff;
     private boolean onwheels;
 
 	public void updateLiftState(){
@@ -177,8 +177,10 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 			return;
 		}
 		float input = tile.liftstate;
-		lowest = slot = -64;
+		lowest = slot = -16;
+		upmost = 16;
 		for(LiftingPoint point : data.getType().getLiftingPoints().values()){
+			if(upmost > point.pos.y16) upmost = point.pos.y16;
 			if(lowest < point.pos.y16) lowest = point.pos.y16;
 		}
 		/*if(data.getWheelSlots().size() < 4){
@@ -196,21 +198,22 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 			wheeloff /= data.getWheelPositions().size();
 		}
 		onwheels = data.getWheelPositions().size() >= 4;
-		liftstate = /*Command.getValI("lift", 0) +*/ (input > -1.5f && !onwheels ? -1.5f : input);
+		liftstate = /*Command.getValI("lift", 0) +*/ (input > -1.25f && !onwheels ? -1.25f : input);
 		//Command.VALS.put("lowest", lowest + "");
 		//Command.VALS.put("wheeloff", wheeloff + "");
 		//Command.VALS.put("onwheel", onwheels + "");
-		if(liftstate + getAddition() < -4) liftstate = -4 - getAddition();
+		if(liftstate + upmost < -4) liftstate = -4 - upmost;
+		if(liftstate + lowest > 0) liftstate = 0 - lowest;
 	}
 
 	public float getLiftState(){
-		return liftstate + getAddition();
+		return liftstate + (lowest > 0 ? -lowest : lowest) - 0.25f;//getAddition();
 	}
 	
-	public float getAddition(){
+	/*private float getAddition(){
 		float fl = slot > lowest ? lowest : slot;
 		return (!onwheels || wheeloff > fl ? fl : wheeloff) - (onwheels ? 0 : 0.25f);
-	}
+	}*/
 
 	public float getRawLiftState(){
 		return liftstate;

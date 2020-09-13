@@ -231,8 +231,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			}
 		}
 		else{
-			liftingpoints.put("placeholer0", new LiftingPoint("placeholer0", new Pos(0, 0, -20), null));
-			liftingpoints.put("placeholer1", new LiftingPoint("placeholer1", new Pos(0, 0, 20), null));
+			liftingpoints.put("placeholer0", new LiftingPoint("placeholer0", new Pos(0, 0, -20), null, 0));
+			liftingpoints.put("placeholer1", new LiftingPoint("placeholer1", new Pos(0, 0, 20), null, 0));
 		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;

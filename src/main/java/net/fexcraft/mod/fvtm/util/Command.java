@@ -139,6 +139,10 @@ public class Command extends CommandBase {
             }
             case "vals":{
             	if(!server.isSinglePlayer()) return;
+            	if(args.length < 3){
+            		Print.chat(sender, VALS.get(args[1]));
+            		return;
+            	}
             	VALS.put(args[1], args[2]);
             	return;
             }

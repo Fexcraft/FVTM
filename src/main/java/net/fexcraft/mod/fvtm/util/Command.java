@@ -154,6 +154,11 @@ public class Command extends CommandBase {
 		return VALS.get(string);
 	}
 
+	public static String getValS(String string, String def){
+		if(!VALS.containsKey(string)) return def;
+		return VALS.get(string);
+	}
+
 	public static float getValF(String string, float def){
 		if(!VALS.containsKey(string)) return def;
 		return Float.parseFloat(VALS.get(string));

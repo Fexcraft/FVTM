@@ -196,7 +196,7 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 			wheeloff /= data.getWheelPositions().size();
 		}
 		onwheels = data.getWheelPositions().size() >= 4;
-		liftstate = /*Command.getValI("lift", 0) +*/ (input < -1.5f && !onwheels ? -1.5f : input);
+		liftstate = /*Command.getValI("lift", 0) +*/ (input > -1.5f && !onwheels ? -1.5f : input);
 		//Command.VALS.put("lowest", lowest + "");
 		//Command.VALS.put("wheeloff", wheeloff + "");
 		//Command.VALS.put("onwheel", onwheels + "");

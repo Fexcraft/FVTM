@@ -173,7 +173,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			case "lift":{
 				if(noveh(container)) return;
 				liftstate += packet.getInteger("dir") * 0.5f;
-				if(liftstate < -4) liftstate = -4;
+				if(liftstate < -3) liftstate = -3;
 				if(liftstate > 0) liftstate = 0;
 				this.updateClient("lift");
 				container.setTitleText("Lift state adjusted.", null);

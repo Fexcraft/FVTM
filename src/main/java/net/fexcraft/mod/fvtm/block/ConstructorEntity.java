@@ -283,17 +283,18 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 		if(center == null) return;
 		if(center instanceof ConstCenterEntity == false) return;
 		ConstCenterEntity cent = (ConstCenterEntity)center;
-		if(cent.track == null) return;
-		if(cent.track.railmodel != null) cent.track.railmodel.clearDisplayLists();
-		if(cent.track.restmodel != null) cent.track.restmodel.clearDisplayLists();
-		cent.track.railmodel = cent.track.restmodel = null;
-		cent.track.gauge = null;
-		//
-		if(cent.models == null || cent.models.isEmpty()) return;
-		for(ConstructorLiftModel model : cent.models){
-			model.clearDisplayLists();
+		if(cent.track != null){
+			if(cent.track.railmodel != null) cent.track.railmodel.clearDisplayLists();
+			if(cent.track.restmodel != null) cent.track.restmodel.clearDisplayLists();
+			cent.track.railmodel = cent.track.restmodel = null;
+			cent.track.gauge = null;
 		}
-		cent.models = null;
+		if(cent.models != null){
+			for(ConstructorLiftModel model : cent.models){
+				model.clearDisplayLists();
+			}
+			cent.models = null;
+		}
 	}
 
 	public void updateClient(String type){

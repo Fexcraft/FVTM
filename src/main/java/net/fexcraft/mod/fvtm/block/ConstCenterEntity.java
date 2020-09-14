@@ -205,7 +205,7 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 	}
 
 	public float getLiftState(){
-		return liftstate + (lowest > 0 ? -lowest : lowest) - adj;
+		return liftstate + -lowest - adj;
 	}
 	
 	private float getAddition(){

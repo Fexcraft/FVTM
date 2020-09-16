@@ -500,13 +500,13 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		GL11.glRotatef(rotation, 0, 1, 0);
 		pillar.renderPlain();
 		float off = (yoff - tile.getLowestLiftPoint());
-		GL11.glTranslatef(0, tile.getRawLiftState() + off, 0);
+		GL11.glTranslatef(0, tile.getRawLiftState() + off + .25f, 0);
 		glider.renderPlain();
 		arm0.renderPlain();
 		arm1.renderPlain();
 		holder0.renderPlain();
 		holder1.renderPlain();
-		GL11.glTranslatef(0, -tile.getRawLiftState() - off, 0);
+		GL11.glTranslatef(0, -tile.getRawLiftState() - off - .25f, 0);
 		GL11.glRotatef(-rotation, 0, 1, 0);
 		offset.translateR();
 	}

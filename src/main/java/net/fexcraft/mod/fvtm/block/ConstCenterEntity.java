@@ -169,7 +169,6 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
     
     private float liftstate, lowest, upmost, slot, wheeloff;
     private boolean onwheels;
-    private static final float adj = 0.25f;
 
 	public void updateLiftState(){
 		VehicleData data = this.getVehicleData();
@@ -184,33 +183,32 @@ public class ConstCenterEntity extends TileEntity implements IPacketReceiver<Pac
 			if(upmost > point.pos.y16) upmost = point.pos.y16;
 			if(lowest < point.pos.y16) lowest = point.pos.y16;
 		}
-		/*if(data.getWheelSlots().size() < 4){
-			liftstate = input < -1.5f ? input : -1.5f;
-			return;
-		}*/
 		for(WheelSlot ws : data.getWheelSlots().values()){
 			if(slot < ws.pos().y16) slot = ws.pos().y16;
 		}
 		wheeloff = -16;
-		if(!data.getWheelPositions().isEmpty()){
-			for(Vec3d vec : data.getWheelPositions().values()){
-				if(wheeloff < -vec.y) wheeloff = (float)-vec.y;
+		if(data.getWheelPositions().size() > 0){
+			if(!data.getWheelPositions().isEmpty()){
+				for(Vec3d vec : data.getWheelPositions().values()){
+					if(wheeloff < -vec.y) wheeloff = (float)-vec.y;
+				}
 			}
 		}
+		else wheeloff = slot;
 		onwheels = data.getWheelPositions().size() >= 4;
-		liftstate = /*Command.getValI("lift", 0) +*/ (input > -1.25f && !onwheels ? -1.25f : input);
-		//if(liftstate + upmost - adj < -4) liftstate = -4 - upmost;
+		liftstate = (input > -1.25f && !onwheels ? -1.25f : input);
 		float low = getAddition();
-		if(liftstate + low - adj > 0) liftstate = -(low + getLiftState());
+		liftstate += lowest - low;
+		while(liftstate + -lowest < -3) liftstate += 0.5f;
 	}
 
 	public float getLiftState(){
-		return liftstate + -lowest - adj;
+		return liftstate + -lowest;
 	}
 	
 	private float getAddition(){
-		float low = slot > lowest ? slot : lowest;
-		return (!onwheels || wheeloff > low ? wheeloff : low);
+		float low = slot < lowest ? lowest : slot;
+		return (!onwheels || wheeloff < low ? low : wheeloff);
 	}
 
 	public float getRawLiftState(){

@@ -78,6 +78,7 @@ public class DefaultPrograms {
 		DIDLOAD = true;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static final Program RGB_PRIMARY = new Program(){
 		@Override public String getId(){ return "fvtm:rgb_primary"; }
 		@Override public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ color.getPrimaryColor().glColorApply(); }
@@ -85,7 +86,8 @@ public class DefaultPrograms {
 		@Override public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ data.getPrimaryColor().glColorApply(); }
 		@Override public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){ RGB.glColorReset(); }
 	};
-	
+
+	@SuppressWarnings("deprecation")
 	public static final Program RGB_SECONDARY = new Program(){
 		@Override public String getId(){ return "fvtm:rgb_secondary"; }
 		@Override public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){ color.getSecondaryColor().glColorApply(); }

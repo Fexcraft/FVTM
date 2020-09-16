@@ -43,6 +43,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(RGB_PRIMARY);
 		TurboList.PROGRAMS.add(RGB_SECONDARY);
 		TurboList.PROGRAMS.add(new RGBCustom(0xffffff));
+		TurboList.PROGRAMS.add(new RGBChannel("custom"));
 		TurboList.PROGRAMS.add(INVISIBLE);
 		TurboList.PROGRAMS.add(ALWAYS_GLOW);
 		TurboList.PROGRAMS.add(LIGHTS);
@@ -138,6 +139,51 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new RGBCustom(new RGB(args[0]));
+		}
+		
+	}
+	
+	public static class RGBChannel implements Program {
+		
+		private String channel;
+		
+		public RGBChannel(String colorchannel){
+			this.channel = colorchannel;
+		}
+		
+		@Override
+		public String getId(){
+			return "fvtm:rgb_channel";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			color.getColorChannel(channel).glColorApply();
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			RGB.glColorReset();
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			data.getColorChannel(channel).glColorApply();
+		}
+		
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			RGB.glColorReset();
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			return new RGBChannel(elm.getAsJsonArray().get(0).getAsString());
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new RGBChannel(args[0]);
 		}
 		
 	}

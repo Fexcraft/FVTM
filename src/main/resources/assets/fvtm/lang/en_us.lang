@@ -7,7 +7,7 @@
 #>
 
 # Commands
-
+commands.fvtm.main_usage=Try: /fvtm help
 
 # Blocks
 tile.fvtm:constructor.name=Constructor Block

@@ -10,6 +10,7 @@ import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -55,7 +56,13 @@ public class Command extends CommandBase {
         }
         switch(args[0]){
             case "help": {
-            	//TODO
+        		Print.chat(sender, "&9Command arguments");
+        		Print.chat(sender, "&7- /fvtm rrr (reload rail region)");
+        		Print.chat(sender, "&7- /fvtm rrs (reload rail sections)");
+        		Print.chat(sender, "&7- /fvtm debug (toggle debug mode)");
+        		Print.chat(sender, "&7- /fvtm preset <args>");
+        		Print.chat(sender, "&7- /fvtm attr <args>");
+        		Print.chat(sender, "&7- /fvtm vals <args> (debug values)");
                 break;
             }
             case "rrr": case "reload-railregion":{
@@ -145,6 +152,58 @@ public class Command extends CommandBase {
             	}
             	VALS.put(args[1], args[2]);
             	return;
+            }
+            case "attr":{
+            	if(args.length < 2){
+            		Print.chat(sender, "&9Attribute commands:");
+            		Print.chat(sender, "&7- /fvtm attr reset <id>");
+            		Print.chat(sender, "&7- &m/fvtm attr set <id> <value>");
+            		Print.chat(sender, "&7- /fvtm attr see <id>");
+            		Print.chat(sender, "&eUsable with VEHICLE items.");
+            		break;
+            	}
+            	if(sender instanceof EntityPlayer == false){
+            		Print.chat(sender, "Can be only used by online players."); return;
+            	}
+            	EntityPlayer player = (EntityPlayer)sender;
+            	ItemStack stack = player.getHeldItemMainhand();
+            	if(stack.getItem() instanceof VehicleItem){
+                	VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
+                	if(args.length < 3){
+                		Print.chat(sender, "No Attribute ID specified.");
+                		return;
+                	}
+                	Attribute<?> attr = data.getAttribute(args[2]);
+                	if(attr == null){
+                		Print.chat(sender, "Attribute not found in vehicle.");
+                		return;
+                	}
+                	if(args[1].equals("see")){
+                		Print.chat(sender, attr.getStringValue());
+                		return;
+                	}
+                	else if(args[1].equals("set")){
+                		Print.chat(sender, "Not available yet.");
+                		return;
+                	}
+                	if(args[1].equals("reset")){
+                		if(!data.getType().getBaseAttributes().containsKey(args[2])){
+                    		Print.chat(sender, "Only default/base attributes can be reset.");
+                		}
+                		else{
+                			Attribute<?> base = data.getType().getBaseAttributes().get(args[2]);
+                			attr.setInitValue(base.getInitValue());
+                			attr.setValue(base.getValue());
+                			data.write(stack.getTagCompound());
+                    		Print.chat(sender, "Attribute reset.");
+                		}
+                		return;
+                	}
+            	}
+            	else if(stack.isEmpty() || stack.getItem() instanceof VehicleItem == false){
+            		Print.chat(sender, "You need to hold a VehicleItem in hand."); return;
+            	}
+            	break;
             }
             default: {
                 Print.chat(sender, "null [0]");

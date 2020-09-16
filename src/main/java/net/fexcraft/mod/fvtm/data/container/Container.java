@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.data.container;
 
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -31,10 +34,10 @@ import net.minecraftforge.fluids.FluidRegistry;
  */
 public class Container extends TypeCore<Container> implements Textureable.TextureHolder, Colorable.ColorHolder {
 
+	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected List<NamedResourceLocation> textures;
 	protected Model<ContainerData, Object> model;
 	protected ContentFilter filter;
-	protected RGB primary, secondary;
 	protected InventoryType invtype;
 	protected ContainerType type;
 	protected ContainerItem item;
@@ -58,16 +61,6 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	}
 
 	@Override
-	public RGB getDefaultPrimaryColor(){
-		return primary;
-	}
-
-	@Override
-	public RGB getDefaultSecondaryColor(){
-		return secondary;
-	}
-
-	@Override
 	public List<NamedResourceLocation> getDefaultTextures(){
 		return textures;
 	}
@@ -83,8 +76,13 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.type = ContainerType.valueOf(JsonUtil.getIfExists(obj, "ContainerType", "MEDIUM").toUpperCase());
 		this.textures = DataUtil.getTextures(obj);
-		this.primary = DataUtil.getColor(obj, "Primary");
-		this.secondary = DataUtil.getColor(obj, "Secondary");
+		channels.put("primary", DataUtil.getColor(obj, "Primary", false));
+		channels.put("secondary", DataUtil.getColor(obj, "Secondary", false));
+		if(obj.has("Colors")){
+			for(Entry<String, JsonElement> entry : obj.get("Colors").getAsJsonObject().entrySet()){
+				channels.put(entry.getKey(), new RGB(entry.getValue().getAsString()));
+			}
+		}
 		this.invtype = InventoryType.valueOf(JsonUtil.getIfExists(obj, "InventoryType", "ITEM").toUpperCase());
 		this.capacity = JsonUtil.getIfExists(obj, "InventorySize", invtype == InventoryType.ITEM ? 8 : 16000).intValue();
         if(obj.has("FluidType")){
@@ -152,6 +150,16 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 
 	public ContentFilter getContentFilter(){
 		return filter;
+	}
+
+	@Override
+	public RGB getDefaultColorChannel(String channel){
+		return channels.get(channel);
+	}
+
+	@Override
+	public TreeMap<String, RGB> getDefaultColorChannels(){
+		return channels;
 	}
 
 }

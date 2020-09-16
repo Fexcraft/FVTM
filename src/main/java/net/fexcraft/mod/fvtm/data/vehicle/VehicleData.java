@@ -50,7 +50,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
-	protected RGB primary, secondary;
+	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected int selected_texture;
 	protected String extex, preset;
 	protected ResourceLocation seltex;
@@ -79,8 +79,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(Entry<String, WheelSlot> entry: type.getDefaultWheelPositions().entrySet()){
 			this.wheels.put(entry.getKey(), entry.getValue().copy(null));
 		}
-		this.primary = type.getDefaultPrimaryColor().copy();
-		this.secondary = type.getDefaultSecondaryColor().copy();
+		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
+			channels.put(entry.getKey(), entry.getValue().copy());
+		}
 		this.front_conn = type.getDefaultFrontConnector();
 		this.rear_conn = type.getDefaultRearConnector();
 		if(type.getPreInstalledParts() != null){
@@ -115,8 +116,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
 			compound.setBoolean("ExternalTexture", isTextureExternal);
 		}
-		compound.setInteger("RGBPrimary", primary.packed);
-		compound.setInteger("RGBSecondary", secondary.packed);
+		for(String str : channels.keySet()){
+			compound.setInteger("RGB_" + str, channels.get(str).packed);
+		}
 		NBTTagList wlist = new NBTTagList();
 		for(Entry<String, WheelSlot> entry : wheels.entrySet()){
 			NBTTagCompound com = new NBTTagCompound();
@@ -203,8 +205,18 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
 		} else{ seltex = null; extex = null; isTextureExternal = false; }
-		if(compound.hasKey("RGBPrimary")) primary.packed = compound.getInteger("RGBPrimary");
-		if(compound.hasKey("RGBSecondary")) secondary.packed = compound.getInteger("RGBSecondary");
+		//
+		if(compound.hasKey("RGBPrimary")){
+			channels.get("primary").packed = compound.getInteger("RGBPrimary");
+		}
+		if(compound.hasKey("RGBSecondary")){
+			channels.get("secondary").packed = compound.getInteger("RGBSecondary");
+		}
+		for(String str : channels.keySet()){
+			if(compound.hasKey("RGB_" + str)){
+				channels.get(str).packed = compound.getInteger("RGB_" + str);
+			}
+		}
 		//
 		this.refreshModificableDataByParts();
 		//
@@ -510,23 +522,18 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	@Override
-	public RGB getPrimaryColor(){
-		return primary;
+	public RGB getColorChannel(String channel){
+		return channels.get(channel);
 	}
 
 	@Override
-	public RGB getSecondaryColor(){
-		return secondary;
+	public void setColorChannel(String channel, RGB color){
+		channels.put(channel, color);
 	}
 
 	@Override
-	public void setPrimaryColor(RGB color){
-		this.primary = color;
-	}
-
-	@Override
-	public void setSecondaryColor(RGB color){
-		this.secondary = color;
+	public TreeMap<String, RGB> getColorChannels(){
+		return channels;
 	}
 
 	public ItemStack newItemStack(){

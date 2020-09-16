@@ -78,7 +78,7 @@ public class DataUtil {
 		} return reslocs;
 	}
 
-	public static RGB getColor(JsonObject obj, String prefix){
+	public static RGB getColor(JsonObject obj, String prefix, boolean nell){
 		RGB result = null;
 		if(obj.has(prefix + "Color")){
 			JsonElement elm = obj.get(prefix + "Color");
@@ -98,7 +98,7 @@ public class DataUtil {
 			}
 			else {};
 		}
-		return result == null ? new RGB() : result;
+		return result == null ? nell ? null : new RGB() : result;
 	}
     
     /** Allows for loading more than 256 slots. **/

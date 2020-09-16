@@ -61,10 +61,10 @@ public class BlockBase extends PlainBase implements ITileEntityProvider {
         	TileEntity tile = (TileEntity)world.getTileEntity(pos);
         	if(tile == null) return true;
         	if(hand == EnumHand.MAIN_HAND){
-        		tile.getBlockData().setPrimaryColor(colour);
+        		tile.getBlockData().setColorChannel("primary", colour);
         	}
         	else{
-        		tile.getBlockData().setSecondaryColor(colour);
+        		tile.getBlockData().setColorChannel("secondary", colour);
         	}
         	tile.sendUpdate();
         	Print.chat(player, "&eColour applied. &7[" + (hand == EnumHand.MAIN_HAND ? "primary" : "secondary") + "]");

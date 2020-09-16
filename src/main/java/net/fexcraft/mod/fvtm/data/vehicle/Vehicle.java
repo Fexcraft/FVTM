@@ -47,7 +47,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected Model<VehicleData, Object> model;
 	protected List<NamedResourceLocation> textures;
 	protected ArrayList<String> required;
-	protected RGB primary, secondary;
+	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected String modelid;
 	protected LegacyData legacy_data;
 	protected boolean trailer;
@@ -88,8 +88,13 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.type = VehicleType.valueOf(JsonUtil.getIfExists(obj, "VehicleType", "LAND").toUpperCase());
 		this.textures = DataUtil.getTextures(obj);
-		this.primary = DataUtil.getColor(obj, "Primary");
-		this.secondary = DataUtil.getColor(obj, "Secondary");
+		channels.put("primary", DataUtil.getColor(obj, "Primary", false));
+		channels.put("secondary", DataUtil.getColor(obj, "Secondary", false));
+		if(obj.has("Colors")){
+			for(Entry<String, JsonElement> entry : obj.get("Colors").getAsJsonObject().entrySet()){
+				channels.put(entry.getKey(), new RGB(entry.getValue().getAsString()));
+			}
+		}
 		this.required = (ArrayList<String>)DataUtil.getStringArray(obj, "RequiredParts", true, false);
 		//
 		if(obj.has("Attributes")){
@@ -295,16 +300,6 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		return textures;
 	}
 
-	@Override
-	public RGB getDefaultPrimaryColor(){
-		return primary;
-	}
-
-	@Override
-	public RGB getDefaultSecondaryColor(){
-		return secondary;
-	}
-
 	public TreeMap<String, WheelSlot> getDefaultWheelPositions(){
 		return defwheelpos;
 	}
@@ -349,6 +344,16 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	
 	public HashMap<String, LiftingPoint> getLiftingPoints(){
 		return liftingpoints;
+	}
+
+	@Override
+	public RGB getDefaultColorChannel(String channel){
+		return channels.get(channel);
+	}
+
+	@Override
+	public TreeMap<String, RGB> getDefaultColorChannels(){
+		return channels;
 	}
 
 }

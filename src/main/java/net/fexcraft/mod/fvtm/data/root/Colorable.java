@@ -1,22 +1,32 @@
 package net.fexcraft.mod.fvtm.data.root;
 
+import java.util.TreeMap;
+
 import net.fexcraft.lib.common.math.RGB;
 
 public interface Colorable {
 	
-	public RGB getPrimaryColor();
+	@Deprecated
+	public default RGB getPrimaryColor(){
+		return getColorChannel("primary");
+	}
+
+	@Deprecated
+	public default RGB getSecondaryColor(){
+		return getColorChannel("secondary");
+	}
 	
-	public RGB getSecondaryColor();
+	public RGB getColorChannel(String channel);
 	
-	public void setPrimaryColor(RGB color);
+	public void setColorChannel(String channel, RGB color);
 	
-	public void setSecondaryColor(RGB color);
+	public TreeMap<String, RGB> getColorChannels();
 	
 	public static interface ColorHolder {
 		
-		public RGB getDefaultPrimaryColor();
+		public RGB getDefaultColorChannel(String channel);
 		
-		public RGB getDefaultSecondaryColor();
+		public TreeMap<String, RGB> getDefaultColorChannels();
 		
 	}
 

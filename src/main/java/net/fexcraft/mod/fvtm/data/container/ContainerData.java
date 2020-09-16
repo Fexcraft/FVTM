@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.data.container;
 
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -22,7 +25,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  */
 public class ContainerData extends DataCore<Container, ContainerData> implements Colorable, Textureable, Lockable {
 
-	protected RGB primary, secondary;
+	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected int selected_texture;
 	protected String extex;
 	protected ResourceLocation seltex;
@@ -32,8 +35,9 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	
 	public ContainerData(Container type){
 		super(type);
-		this.primary = type.getDefaultPrimaryColor().copy();
-		this.secondary = type.getDefaultSecondaryColor().copy();
+		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
+			channels.put(entry.getKey(), entry.getValue().copy());
+		}
 		//
         switch(type.getInventoryType()){
 	        case ENERGY:
@@ -50,23 +54,18 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	}
 
 	@Override
-	public RGB getPrimaryColor(){
-		return primary;
+	public RGB getColorChannel(String channel){
+		return channels.get(channel);
 	}
 
 	@Override
-	public RGB getSecondaryColor(){
-		return secondary;
+	public void setColorChannel(String channel, RGB color){
+		channels.put(channel, color);
 	}
 
 	@Override
-	public void setPrimaryColor(RGB color){
-		this.primary = color;
-	}
-
-	@Override
-	public void setSecondaryColor(RGB color){
-		this.secondary = color;
+	public TreeMap<String, RGB> getColorChannels(){
+		return channels;
 	}
 
 	@Override
@@ -127,8 +126,9 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	public NBTTagCompound write(NBTTagCompound compound){
 		if(compound == null) compound = new NBTTagCompound();
 		compound.setString("Container", type.getRegistryName().toString());
-		compound.setInteger("RGBPrimary", primary.packed);
-		compound.setInteger("RGBSecondary", secondary.packed);
+		for(String str : channels.keySet()){
+			compound.setInteger("RGB_" + str, channels.get(str).packed);
+		}
 		compound.setInteger("SelectedTexture", selected_texture);
 		if(seltex != null || extex != null || selected_texture < 0){
 			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
@@ -146,8 +146,18 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 
 	@Override
 	public ContainerData read(NBTTagCompound compound){
-		if(compound.hasKey("RGBPrimary")) primary.packed = compound.getInteger("RGBPrimary");
-		if(compound.hasKey("RGBSecondary")) secondary.packed = compound.getInteger("RGBSecondary");
+		if(compound.hasKey("RGBPrimary")){
+			channels.get("primary").packed = compound.getInteger("RGBPrimary");
+		}
+		if(compound.hasKey("RGBSecondary")){
+			channels.get("secondary").packed = compound.getInteger("RGBSecondary");
+		}
+		for(String str : channels.keySet()){
+			if(compound.hasKey("RGB_" + str)){
+				channels.get(str).packed = compound.getInteger("RGB_" + str);
+			}
+		}
+		//
 		this.selected_texture = compound.getInteger("SelectedTexture");
 		if(selected_texture < 0){
 			externaltex = compound.getBoolean("ExternalTexture");

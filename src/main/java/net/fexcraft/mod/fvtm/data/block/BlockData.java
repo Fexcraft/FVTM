@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.data.block;
 
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
@@ -21,13 +24,14 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal;
 	//
-	protected RGB primary, secondary;
+	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected MultiBlockData multidata;
 
 	public BlockData(Block type){
 		super(type);
-		primary = type.getDefaultPrimaryColor().copy();
-		secondary = type.getDefaultSecondaryColor().copy();
+		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
+			channels.put(entry.getKey(), entry.getValue().copy());
+		}
 		multidata = type.isFunctional() ? new MultiBlockData(this, type.getMultiBlock()) : null;
 	}
 
@@ -42,8 +46,9 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 			compound.setBoolean("ExternalTexture", isTextureExternal);
 		}
 		//
-		compound.setInteger("RGBPrimary", primary.packed);
-		compound.setInteger("RGBSecondary", secondary.packed);
+		for(String str : channels.keySet()){
+			compound.setInteger("RGB_" + str, channels.get(str).packed);
+		}
 		if(multidata != null) compound.setTag("MultiBlock", multidata.write(null));
 		return compound;
 	}
@@ -57,8 +62,17 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
 		} else{ seltex = null; extex = null; isTextureExternal = false; }
 		//
-		if(compound.hasKey("RGBPrimary")) primary.packed = compound.getInteger("RGBPrimary");
-		if(compound.hasKey("RGBSecondary")) secondary.packed = compound.getInteger("RGBSecondary");
+		if(compound.hasKey("RGBPrimary")){
+			channels.get("primary").packed = compound.getInteger("RGBPrimary");
+		}
+		if(compound.hasKey("RGBSecondary")){
+			channels.get("secondary").packed = compound.getInteger("RGBSecondary");
+		}
+		for(String str : channels.keySet()){
+			if(compound.hasKey("RGB_" + str)){
+				channels.get(str).packed = compound.getInteger("RGB_" + str);
+			}
+		}
 		if(compound.hasKey("MultiBlock")) multidata.read(compound.getCompoundTag("MultiBlock"));
 		return this;
 	}
@@ -126,28 +140,23 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 		return type;
 	}
 
-	@Override
-	public RGB getPrimaryColor(){
-		return primary;
-	}
-
-	@Override
-	public RGB getSecondaryColor(){
-		return secondary;
-	}
-
-	@Override
-	public void setPrimaryColor(RGB color){
-		this.primary = color;
-	}
-
-	@Override
-	public void setSecondaryColor(RGB color){
-		this.secondary = color;
-	}
-
 	public MultiBlockData getMultiBlockData(){
 		return multidata;
+	}
+
+	@Override
+	public RGB getColorChannel(String channel){
+		return channels.get(channel);
+	}
+
+	@Override
+	public void setColorChannel(String channel, RGB color){
+		channels.put(channel, color);
+	}
+
+	@Override
+	public TreeMap<String, RGB> getColorChannels(){
+		return channels;
 	}
 
 }

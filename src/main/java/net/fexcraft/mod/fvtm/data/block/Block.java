@@ -1,9 +1,11 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.Static;
@@ -41,7 +43,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected Model<BlockData, TileEntity> model;
 	//
 	protected boolean plain_model;
-	protected RGB primary, secondary;
+	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected byte maxstacksize;
 	protected TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
 	protected BlockType blocktype;
@@ -85,8 +87,14 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.textures = DataUtil.getTextures(obj);
 		//
-		this.primary = DataUtil.getColor(obj, "Primary");
-		this.secondary = DataUtil.getColor(obj, "Secondary");
+		channels.put("primary", DataUtil.getColor(obj, "Primary", false));
+		channels.put("secondary", DataUtil.getColor(obj, "Secondary", false));
+		if(obj.has("Colors")){
+			for(Entry<String, JsonElement> entry : obj.get("Colors").getAsJsonObject().entrySet()){
+				channels.put(entry.getKey(), new RGB(entry.getValue().getAsString()));
+			}
+		}
+		//
 		this.maxstacksize = JsonUtil.getIfExists(obj, "MaxItemStackSize", 64).byteValue();
 		this.burntime = JsonUtil.getIfExists(obj, "ItemBurnTime", 0).intValue();
 		this.oredict = obj.has("OreDictionary") ? obj.get("OreDictionary").getAsString() : null;
@@ -267,16 +275,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return textures;
 	}
 
-	@Override
-	public RGB getDefaultPrimaryColor(){
-		return primary;
-	}
-
-	@Override
-	public RGB getDefaultSecondaryColor(){
-		return secondary;
-	}
-
 	public boolean isFunctional(){
 		return multiblock != null;
 	}
@@ -391,6 +389,16 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public boolean isInvisible(){
 		return invisible;
+	}
+
+	@Override
+	public RGB getDefaultColorChannel(String channel){
+		return channels.get(channel);
+	}
+
+	@Override
+	public TreeMap<String, RGB> getDefaultColorChannels(){
+		return channels;
 	}
 
 }

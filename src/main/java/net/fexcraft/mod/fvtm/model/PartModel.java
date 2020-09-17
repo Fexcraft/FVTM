@@ -50,12 +50,12 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 
 	@Override
 	public void render(VehicleData data, String key){
-		for(TurboList list : groups){ list.render(null, data, data, key, null); }
+		for(TurboList list : groups) list.render(null, data, data, key, null);
 	}
 
 	@Override
 	public void render(VehicleData data, String key, Entity ent, RenderCache cache){
-		for(TurboList list : groups){ list.render(ent, data, data, key, cache); }
+		for(TurboList list : groups) list.render(ent, data, data, key, cache);
 	}
 	
 	@Override
@@ -138,6 +138,26 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
         GL11.glTranslated(pos.x, pos.y, pos.z);
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
+	}
+	
+	public static class ScaledPartModel extends PartModel {
+		
+		@Override
+		public void render(VehicleData data, String key){
+			GL11.glPushMatrix();
+			GL11.glScalef(scale, scale, scale);
+			super.render(data, key);
+			GL11.glPopMatrix();
+		}
+
+		@Override
+		public void render(VehicleData data, String key, Entity ent, RenderCache cache){
+			GL11.glPushMatrix();
+			GL11.glScalef(scale, scale, scale);
+			super.render(data, key, ent, cache);
+			GL11.glPopMatrix();
+		}
+		
 	}
 	
 }

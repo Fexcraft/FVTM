@@ -40,12 +40,12 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 
 	@Override
 	public void render(VehicleData data, Object key){
-		for(TurboList list : groups){ list.render(null, data, data, null, null); }
+		for(TurboList list : groups) list.render(null, data, data, null, null);
 	}
 
 	@Override
 	public void render(VehicleData data, Object key, Entity ent, RenderCache cache){
-		for(TurboList list : groups){ list.render(ent, data, data, null, cache); }
+		for(TurboList list : groups) list.render(ent, data, data, null, cache);
 	}
 	
 	////-///---/---///-////
@@ -104,6 +104,26 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 		}
 		//GL11.glScalef(-scale.xCoord, -scale.yCoord, -scale.zCoord);
 		GL11.glPopMatrix();
+	}
+	
+	public static class ScaledVehicleModel extends VehicleModel {
+		
+		@Override
+		public void render(VehicleData data, Object key){
+			GL11.glPushMatrix();
+			GL11.glScalef(scale, scale, scale);
+			super.render(data, key);
+			GL11.glPopMatrix();
+		}
+
+		@Override
+		public void render(VehicleData data, Object key, Entity ent, RenderCache cache){
+			GL11.glPushMatrix();
+			GL11.glScalef(scale, scale, scale);
+			super.render(data, key, ent, cache);
+			GL11.glPopMatrix();
+		}
+		
 	}
 
 }

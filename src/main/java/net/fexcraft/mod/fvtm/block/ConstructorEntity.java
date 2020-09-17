@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
@@ -138,15 +139,17 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}
 			case "color_update":{
-				if(nocon(container) && noveh(container) && noblk(container)) return; boolean primary = packet.getBoolean("primary"); int rgb = packet.getInteger("rgb");
+				if(nocon(container) && noveh(container) && noblk(container)) return;
+				String channel = packet.getString("channel");
+				int rgb = packet.getInteger("rgb");
 				if(bdata != null){
-					(primary ? bdata.getPrimaryColor() : bdata.getSecondaryColor()).packed = rgb;
+					bdata.getColorChannel(channel).packed = rgb;
 				}
 				else if(cdata == null){
-					(primary ? vdata.getPrimaryColor() : vdata.getSecondaryColor()).packed = rgb;
+					vdata.getColorChannel(channel).packed = rgb;
 				}
 				else{
-					(primary ? cdata.getPrimaryColor() : cdata.getSecondaryColor()).packed = rgb;
+					vdata.getColorChannel(channel).packed = rgb;
 				}
 				container.setTitleText("Color Applied.", null); this.updateClient("color"); return;
 			}
@@ -259,8 +262,14 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
         	this.bdata = null;
         }
         //
-        if(packet.nbt.hasKey("RGBPrimary")) (cdata == null ? bdata == null ? vdata : bdata : cdata).getPrimaryColor().packed = packet.nbt.getInteger("RGBPrimary"); 
-        if(packet.nbt.hasKey("RGBSecondary")) (cdata == null ? bdata == null ? vdata : bdata : cdata).getSecondaryColor().packed = packet.nbt.getInteger("RGBSecondary");
+        if(packet.nbt.hasKey("RGBUpdate") && packet.nbt.getBoolean("RGBUpdate")){
+        	Colorable colorable = cdata == null ? bdata == null ? vdata : bdata : cdata;
+    		for(String str : colorable.getColorChannels().keySet()){
+    			if(packet.nbt.hasKey("RGB_" + str)){
+    				colorable.getColorChannels().get(str).packed = packet.nbt.getInteger("RGB_" + str);
+    			}
+    		}
+        }
         //Print.debug(vdata.getPrimaryColor().packed, vdata.getSecondaryColor().packed);
         if(packet.nbt.hasKey("LiftState")){
         	this.liftstate = packet.nbt.getFloat("LiftState");
@@ -322,8 +331,11 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
     		}
     		case "color": case "rgb":{
     			if(vdata == null && cdata == null && bdata == null){ Print.debug("no veh in const # color"); return; }
-    			compound.setInteger("RGBPrimary", (cdata == null ? bdata == null ? vdata : bdata : cdata).getPrimaryColor().packed);
-    			compound.setInteger("RGBSecondary", (cdata == null ? bdata == null ? vdata : bdata : cdata).getSecondaryColor().packed);
+    			Colorable colorable = cdata == null ? bdata == null ? vdata : bdata : cdata;
+    			for(String str : colorable.getColorChannels().keySet()){
+    				compound.setInteger("RGB_" + str, colorable.getColorChannels().get(str).packed);
+    			}
+    			compound.setBoolean("RGBUpdate", true);
     			break;
     		}
     		case "liftstate": case "lift":{

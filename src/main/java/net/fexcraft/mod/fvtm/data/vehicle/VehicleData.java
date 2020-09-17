@@ -30,6 +30,7 @@ import net.fexcraft.mod.fvtm.data.root.Soundable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.function.ColorFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
@@ -285,8 +286,31 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				seats.add(seat.relative ? seat.copy(part.getInstalledPos()) : seat);
 			}
 		}
+		//colors
+		TreeMap<String, RGB> chan = new TreeMap<>(channels);
+		channels.clear();
+		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
+			channels.put(entry.getKey(), entry.getValue().copy());
+		}
+		for(PartData part : parts.values()){
+			if(!part.hasFunction("fvtm:color")) continue;
+			TreeMap<String, RGB> colors = part.getFunction(ColorFunction.class, "fvtm:color").getColors();
+			for(Entry<String, RGB> entry : colors.entrySet()){
+				if(!channels.containsKey(entry.getKey())){
+					channels.put(entry.getKey(), entry.getValue().copy());
+				}
+			}
+		}
+		for(Entry<String, RGB> entry : chan.entrySet()){
+			if(channels.containsKey(entry.getKey())){
+				channels.get(entry.getKey()).packed = entry.getValue().packed;
+			}
+		}
 		//
-		inventories.clear(); parts.forEach((key, value) -> { if(value.hasFunction("fvtm:inventory")) inventories.add(key); });
+		inventories.clear();
+		parts.forEach((key, value) -> {
+			if(value.hasFunction("fvtm:inventory")) inventories.add(key);
+		});
 		//
 		sounds.clear(); sounds.putAll(type.getSounds());
 		for(PartData data : parts.values()){
@@ -341,7 +365,6 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return attributes.get(id);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <VAL> Attribute<VAL> getAttributeCasted(String id){
 		return (Attribute<VAL>)attributes.get(id);
 	}

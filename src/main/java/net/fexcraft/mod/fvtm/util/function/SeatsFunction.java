@@ -16,7 +16,8 @@ public class SeatsFunction extends StaticFuntion {
 	private ArrayList<Seat> seats = new ArrayList<>();
 
 	public SeatsFunction(Part part, JsonObject obj){
-		super(part, obj); JsonArray array = obj.get("seats").getAsJsonArray();
+		super(part, obj);
+		JsonArray array = obj.get("seats").getAsJsonArray();
 		for(JsonElement elm : array){
 			seats.add(new Seat(elm.getAsJsonObject()));
 		}

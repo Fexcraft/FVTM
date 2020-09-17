@@ -64,14 +64,7 @@ import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.fvtm.util.function.BogieFunction;
-import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
-import net.fexcraft.mod.fvtm.util.function.EngineFunction;
-import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
-import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
-import net.fexcraft.mod.fvtm.util.function.WheelFunction;
-import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
+import net.fexcraft.mod.fvtm.util.function.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -209,6 +202,7 @@ public class Resources {
 		registerFunction("fvtm:container", ContainerFunction.class, true);
 		registerFunction("fvtm:bogie", BogieFunction.class, true);
 		registerFunction("fvtm:part_slots", PartSlotsFunction.class, true);
+		registerFunction("fvtm:color", ColorFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){
@@ -265,7 +259,6 @@ public class Resources {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
 	public static <T, K> Model<T, K> getModel(String name, Class<? extends Model<T, K>> clazz){
 		if(name == null || name.equals("") || name.equals("null")){

@@ -72,6 +72,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(LIGHTS_REAR_BACKWARD);
 		TurboList.PROGRAMS.add(BOGIE_AUTO);
 		//
+		TurboList.PROGRAMS.add(new Scale(1f));
 		TurboList.PROGRAMS.add(TRANSPARENT);
 		TurboList.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		//
@@ -735,7 +736,9 @@ public class DefaultPrograms {
 		public Scale(float scale){ this.scale = scale; }
 
 		@Override
-		public String getId(){ return "fvtm:scale"; }
+		public String getId(){
+			return "fvtm:scale";
+		}
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
@@ -745,6 +748,17 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			GL11.glPopMatrix();
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			return new Scale(elm.getAsJsonArray().get(0).getAsFloat());
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			return new Scale(Float.parseFloat(args[0]));
 		}
 		
 	}

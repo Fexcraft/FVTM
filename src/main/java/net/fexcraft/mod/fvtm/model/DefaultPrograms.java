@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
 import java.util.Timer;
+import java.util.TreeMap;
 import java.util.function.BiPredicate;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -502,6 +503,7 @@ public class DefaultPrograms {
 	
 	public static abstract class AttributeBased implements Program {
 		
+		private static final TreeMap<String, Integer> linked = new TreeMap<>();
 		protected String attribute, cacheid;
 		
 		public AttributeBased(String attr){
@@ -510,10 +512,14 @@ public class DefaultPrograms {
 
 		@Override
 		public void init(TurboList list){
-			if(list.programs.stream().filter(pre -> pre instanceof AttributeBased).count() > 1){
-				cacheid = attribute + "_"  + list.programs.indexOf(this);
+			if(linked.containsKey(attribute)){
+				cacheid = attribute + "_" + linked.get(attribute);
+				linked.put(attribute, linked.get(attribute) + 1);
 			}
-			else cacheid = attribute;
+			else{
+				cacheid = attribute + "_0";
+				linked.put(attribute, 1);
+			}
 		}
 		
 	}

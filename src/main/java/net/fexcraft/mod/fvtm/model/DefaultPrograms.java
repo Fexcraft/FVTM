@@ -499,10 +499,27 @@ public class DefaultPrograms {
 		
 	};
 	
-	public static class AttributeRotator implements Program {
+	public static abstract class AttributeBased implements Program {
+		
+		protected String attribute, cacheid;
+		
+		public AttributeBased(String attr){
+			this.attribute = attr;
+		}
+
+		@Override
+		public void init(TurboList list){
+			if(list.programs.stream().filter(pre -> pre instanceof AttributeBased).count() > 1){
+				cacheid = attribute + "_"  + list.programs.indexOf(this);
+			}
+			else cacheid = attribute;
+		}
+		
+	}
+	
+	public static class AttributeRotator extends AttributeBased {
 		
 		private Attribute<?> attr;
-		private String attribute;
 		private float min, max, step;
 		private Float current;
 		private int axis;
@@ -510,13 +527,22 @@ public class DefaultPrograms {
 		private float defrot;
 		
 		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot){
-			this.attribute = attribute; this.boolstatebased = boolstatebased; override = true;
-			this.min = min; this.max = max; this.step = step; this.axis = axis; this.defrot = defrot;
-			if(min == max || (min == 0f && max == 0f)){ min = -360; max = 360; }
+			super(attribute);
+			this.boolstatebased = boolstatebased;
+			this.override = true;
+			this.min = min; 
+			this.max = max;
+			this.step = step;
+			this.axis = axis;
+			this.defrot = defrot;
+			if(min == max || (min == 0f && max == 0f)){
+				min = -360; max = 360;
+			}
 		}
 		
 		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot, boolean notadditive){
-			this(attribute, boolstatebased, min, max, step, axis, defrot); this.override = notadditive;
+			this(attribute, boolstatebased, min, max, step, axis, defrot);
+			this.override = notadditive;
 		}
 
 		@Override
@@ -528,13 +554,13 @@ public class DefaultPrograms {
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			if(cache == null) return;
 			if((attr = data.getAttribute(attribute)) == null) return;
-			current = cache.getValue(attribute);
+			current = cache.getValue(cacheid);
 			if(current == null) current = 0f;
 			current = boolstatebased ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
 			if(current > max) current = max;
 			if(current < min) current = min;
 			list.rotateAxis(current + defrot, axis, override);
-			cache.setValue(attribute, current);
+			cache.setValue(cacheid, current);
 		}
 		
 		@Override
@@ -572,7 +598,7 @@ public class DefaultPrograms {
 		
 	};
 	
-	public static class AttributeTranslator implements Program {
+	public static class AttributeTranslator extends AttributeBased {
 		
 		private Attribute<?> attr;
 		private String attribute;
@@ -582,15 +608,19 @@ public class DefaultPrograms {
 		private int axis;
 		
 		public AttributeTranslator(String attribute, boolean boolstatebased, float min, float max, float step, int axis){
-			this.attribute = attribute; this.bool = boolstatebased;
-			this.axis = axis; this.step = step; this.min = min; this.max = max;
+			super(attribute);
+			this.bool = boolstatebased;
+			this.axis = axis;
+			this.step = step;
+			this.min = min;
+			this.max = max;
 		}
 
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			if(cache == null) return;
 			if((attr = data.getAttribute(attribute)) == null) return;
-			current = cache.getValue(attribute);
+			current = cache.getValue(cacheid);
 			if(current == null) current = 0f;
 			current = bool ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
 			if(current > max) current = max; if(current < min) current = min;
@@ -599,7 +629,7 @@ public class DefaultPrograms {
 				axis == 0 ? current * Static.sixteenth : 0,
 				axis == 1 ? current * Static.sixteenth : 0,
 				axis == 2 ? current * Static.sixteenth : 0);
-			cache.setValue("attribute", current);
+			cache.setValue(cacheid, current);
 		}
 
 		@Override

@@ -146,6 +146,9 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 			TurboList.PROGRAMS.add(this);
 			return (T)this;
 		}
+
+		/** Called when a turbolist is added into the model, preload program data here if neccessary. */
+		public default void init(TurboList list){}
 		
 	}
 	
@@ -302,6 +305,10 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		
 		public void add(Program prog){ this.put(prog.getId(), prog); }
 		
+	}
+
+	public void initPrograms(){
+		for(Program prog : programs) prog.init(this);
 	}
 	
 }

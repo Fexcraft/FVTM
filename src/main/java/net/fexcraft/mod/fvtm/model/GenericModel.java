@@ -224,7 +224,10 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	
 	public static final class GroupMap extends TreeMap<String, TurboList> {
 		
-		public void add(TurboList group){ this.put(group.name, group); }
+		public void add(TurboList group){
+			this.put(group.name, group);
+			group.initPrograms();
+		}
 		
 		@Override
 		public TurboList get(Object key){

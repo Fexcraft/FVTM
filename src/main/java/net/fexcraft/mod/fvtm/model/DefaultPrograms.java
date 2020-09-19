@@ -533,7 +533,8 @@ public class DefaultPrograms {
 			current = boolstatebased ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
 			if(current > max) current = max;
 			if(current < min) current = min;
-			list.rotateAxis(current + defrot, axis, override); cache.setValue(attribute, current);
+			list.rotateAxis(current + defrot, axis, override);
+			cache.setValue(attribute, current);
 		}
 		
 		@Override
@@ -598,6 +599,7 @@ public class DefaultPrograms {
 				axis == 0 ? current * Static.sixteenth : 0,
 				axis == 1 ? current * Static.sixteenth : 0,
 				axis == 2 ? current * Static.sixteenth : 0);
+			cache.setValue("attribute", current);
 		}
 
 		@Override

@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.lwjgl.opengl.GL11;
 
@@ -222,21 +221,13 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		for(ModelRendererTurbo mrt : mrts) mrt.render();
 	}
 	
-	public static final class GroupMap extends TreeMap<String, TurboList> {
-		
-		public void add(TurboList group){
-			this.put(group.name, group);
-			group.initPrograms();
-		}
+	public static final class GroupList extends ArrayList<TurboList> {
 		
 		@Override
-		public TurboList get(Object key){
-			return super.get(key) == null ? TurboList.EMPTY : super.get(key);
+		public boolean add(TurboList list){
+			list.initPrograms();
+			return super.add(list);
 		}
-		
-	}
-	
-	public static final class GroupList extends ArrayList<TurboList> {
 
 		public TurboList get(String key){
 			for(TurboList list : this) if(list.name.equals(key)) return list; return null;

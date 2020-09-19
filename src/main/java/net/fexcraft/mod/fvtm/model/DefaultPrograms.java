@@ -76,6 +76,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(new Scale(1f));
 		TurboList.PROGRAMS.add(TRANSPARENT);
 		TurboList.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
+		TurboList.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		//
 		DIDLOAD = true;
 	}
@@ -596,7 +597,7 @@ public class DefaultPrograms {
 			return new AttributeRotator(attr, boolstate, min, max, step, axis, defrot, args.length >= 7 && Boolean.parseBoolean(args[7]));
 		}
 		
-	};
+	}
 	
 	public static class AttributeTranslator extends AttributeBased {
 		
@@ -614,6 +615,11 @@ public class DefaultPrograms {
 			this.step = step;
 			this.min = min;
 			this.max = max;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:attribute_translator";
 		}
 
 		@Override
@@ -635,6 +641,29 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			GL11.glPopMatrix();
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			String attr = array.get(0).getAsString();
+			boolean boolstate = array.get(1).getAsBoolean();
+			float min = array.get(2).getAsFloat();
+			float max = array.get(3).getAsFloat();
+			float step = array.get(4).getAsFloat();
+			int axis = array.get(5).getAsInt();
+			return new AttributeTranslator(attr, boolstate, min, max, step, axis);
+		}
+
+		@Override
+		public Program parse(String[] args){
+			String attr = args[0];
+			boolean boolstate = Boolean.parseBoolean(args[1]);
+			float min = Float.parseFloat(args[2]);
+			float max = Float.parseFloat(args[3]);
+			float step = Float.parseFloat(args[4]);
+			int axis = Integer.parseInt(args[5]);
+			return new AttributeTranslator(attr, boolstate, min, max, step, axis);
 		}
 
 	}

@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -500,9 +501,13 @@ public class DefaultPrograms {
 	
 	public static class AttributeRotator implements Program {
 		
-		private Attribute<?> attr; private String attribute;
-		private float min, max, step; private Float current; private int axis;
-		private boolean boolstatebased, override; private float defrot;
+		private Attribute<?> attr;
+		private String attribute;
+		private float min, max, step;
+		private Float current;
+		private int axis;
+		private boolean boolstatebased, override;
+		private float defrot;
 		
 		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot){
 			this.attribute = attribute; this.boolstatebased = boolstatebased; override = true;
@@ -566,24 +571,33 @@ public class DefaultPrograms {
 		
 	};
 	
-	/*public static class AttributeTranslator implements Program {
+	public static class AttributeTranslator implements Program {
 		
-		private Attribute<?> attr; private String attribute; private boolean bool;
-		private float min, max, step; private Float current; private int axis;
+		private Attribute<?> attr;
+		private String attribute;
+		private boolean bool;
+		private float min, max, step;
+		private Float current;
+		private int axis;
 		
-		public AttributeTranslator(String attribute, boolean boolstatebased, int axis, float min, float max, float step){
-			this.attribute = attribute; bool = boolstatebased; this.axis = axis; this.step = step; this.min = min; this.max = max;
+		public AttributeTranslator(String attribute, boolean boolstatebased, float min, float max, float step, int axis){
+			this.attribute = attribute; this.bool = boolstatebased;
+			this.axis = axis; this.step = step; this.min = min; this.max = max;
 		}
 
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(cache == null) return; if((attr = data.getAttribute(attribute)) == null) return;
-			current = cache.getValue(attribute); if(current == null) current = 0f;
+			if(cache == null) return;
+			if((attr = data.getAttribute(attribute)) == null) return;
+			current = cache.getValue(attribute);
+			if(current == null) current = 0f;
 			current = bool ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
 			if(current > max) current = max; if(current < min) current = min;
 			GL11.glPushMatrix();
-			GL11.glTranslatef(axis == 0 ? current * Static.sixteenth : 0,
-				axis == 1 ? current * Static.sixteenth : 0, axis == 2 ? current * Static.sixteenth : 0);
+			GL11.glTranslatef(
+				axis == 0 ? current * Static.sixteenth : 0,
+				axis == 1 ? current * Static.sixteenth : 0,
+				axis == 2 ? current * Static.sixteenth : 0);
 		}
 
 		@Override
@@ -591,7 +605,7 @@ public class DefaultPrograms {
 			GL11.glPopMatrix();
 		}
 
-	}*/
+	}
 	
 	public static class AttributeVisible implements Program {
 		

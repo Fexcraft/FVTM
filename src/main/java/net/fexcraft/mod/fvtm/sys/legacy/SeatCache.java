@@ -11,7 +11,6 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SeatCache {
 	
@@ -191,11 +192,11 @@ public class SeatCache {
         prevpasslooking = passlooking.clone();
         //
         double lookSpeed = 4F;
-        double npasspitch = passlooking.getPitch() - dy / lookSpeed * Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+        double npasspitch = passlooking.getPitch() - dy / lookSpeed * net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;
         if(npasspitch > -seatdata.minpitch){ npasspitch = -seatdata.minpitch; }
         if(npasspitch < -seatdata.maxpitch){ npasspitch = -seatdata.maxpitch; }
         //
-        double npassyaw = passlooking.getYaw() + dx / lookSpeed * Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+        double npassyaw = passlooking.getYaw() + dx / lookSpeed * net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;
         double opassyaw = npassyaw - 360F;
         if(npassyaw < 0){ opassyaw = npassyaw + 360F; }
         if(!(npassyaw >= seatdata.minyaw && npassyaw <= seatdata.maxyaw) || (opassyaw >= seatdata.minyaw && opassyaw <= seatdata.maxyaw)){
@@ -272,10 +273,15 @@ public class SeatCache {
 	
     public static final boolean isPassengerThePlayer(GenericVehicle con){
         if(con.world.isRemote){
-        	return con.getSeatOf(net.minecraft.client.Minecraft.getMinecraft().player) != null;
+        	return clofnn(con);
         }
         return false;
     }
+
+    @SideOnly(Side.CLIENT)
+	private static boolean clofnn(GenericVehicle con){
+		return con.getSeatOf(net.minecraft.client.Minecraft.getMinecraft().player) != null;
+	}
 
 	public void passenger(Entity pass){
 		if(pass != null){

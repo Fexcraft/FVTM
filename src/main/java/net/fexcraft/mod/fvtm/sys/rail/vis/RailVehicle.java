@@ -579,11 +579,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void checkForCollisions(){
 		// You expected anything here? Uff.
 	}
-    
-    @Override
-    public void updatePassenger(Entity passenger){
-        //
-    }
 
 	@Override
     public boolean attackEntityFrom(DamageSource source, float amount){

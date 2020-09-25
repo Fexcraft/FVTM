@@ -116,7 +116,7 @@ public class StreetSignCachedModel {
 
     private ModelRendererTurbo copyTurbo(String string, int i){
     	ModelRendererTurbo turbo = StreetSignModel.INSTANCE.groups.get(string).get(i);
-		ModelRendererTurbo turbo0 = new ModelRendererTurbo(null).copyTo(turbo.getVertices(), turbo.getFaces());
+		ModelRendererTurbo turbo0 = new ModelRendererTurbo(null).copyTo(turbo.getFaces());
 		return turbo0.setRotationPoint(turbo.rotationPointX, turbo.rotationPointY, turbo.rotationPointZ);
 	}
 
@@ -124,7 +124,7 @@ public class StreetSignCachedModel {
 	private ArrayList<ModelRendererTurbo> copyGroup(String string){
     	ArrayList<ModelRendererTurbo> list = new ArrayList<>();
     	for(ModelRendererTurbo turbo : StreetSignModel.INSTANCE.groups.get(string)){
-    		ModelRendererTurbo turbo0 = new ModelRendererTurbo(null).copyTo(turbo.getVertices(), turbo.getFaces());
+    		ModelRendererTurbo turbo0 = new ModelRendererTurbo(null).copyTo(turbo.getFaces());
 			list.add(turbo0.setRotationPoint(turbo.rotationPointX, turbo.rotationPointY, turbo.rotationPointZ));
 		} return list;
 	}

@@ -385,7 +385,7 @@ public class RailRenderer {
 				vert3.vector = vert3.vector.subtract(vac);*/
 				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
 				int pess = (int)passed; if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
-				tarp.turbos[pess].copyTo(poly0.getVertices(), new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
+				tarp.turbos[pess].copyTo(new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
 				passed += track.vecpath[k].distanceTo(track.vecpath[k + 1]);
 			}
 		}
@@ -406,7 +406,7 @@ public class RailRenderer {
 							verts[m] = new TexturedVertex(VecUtil.rotByRad(angle, org.vector), org.textureX, org.textureY);
 							verts[m].vector = verts[m].vector.scale(Static.sixteenth).add(vec);
 						}
-						tarp.turbos[(int)accu].copyTo(verts, new TexturedPolygon[]{ new TexturedPolygon(verts) });
+						tarp.turbos[(int)accu].copyTo(new TexturedPolygon(verts));
 					}
 				} accu += model.ties_distance;
 			}

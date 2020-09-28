@@ -15,11 +15,13 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -209,5 +211,10 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     public AxisAlignedBB getRenderBoundingBox(){
         return this.getEntityBoundingBox().grow(getVehicleData().getAttribute("collision_range").getFloatValue());
     }
+	
+	@Override
+	public void playStepSound(BlockPos blockpos, Block block){
+		return;
+	}
 
 }

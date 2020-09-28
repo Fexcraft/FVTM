@@ -4,9 +4,11 @@ import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -140,5 +142,10 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     public void applyEntityCollision(Entity entity){
         return;
     }
+	
+	@Override
+	public void playStepSound(BlockPos blockpos, Block block){
+		return;
+	}
 
 }

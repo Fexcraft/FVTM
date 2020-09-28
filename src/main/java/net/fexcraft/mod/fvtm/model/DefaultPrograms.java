@@ -222,7 +222,7 @@ public class DefaultPrograms {
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() || data.getThrottle() < -0.01; }
 		@Override public String getId(){ return "fvtm:back_lights"; }
 	};
-	public static final Program REAR_LIGHTS = BACK_LIGHTS, BRAKE_LIGHTS = REAR_LIGHTS;//TODO add "break" marker;
+	public static final Program REAR_LIGHTS = BACK_LIGHTS;
 	
 	public static final Program FOG_LIGHTS = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getFogLightsState(); }
@@ -237,6 +237,7 @@ public class DefaultPrograms {
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getThrottle() < -0.01; }
 		@Override public String getId(){ return "fvtm:reverse_lights"; }
 	};
+	public static final Program BRAKE_LIGHTS = REVERSE_LIGHTS;//TODO add "break" marker;
 	
 	public static final Program LIGHTS_FRONT_FORWARD = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").getBooleanValue(); }

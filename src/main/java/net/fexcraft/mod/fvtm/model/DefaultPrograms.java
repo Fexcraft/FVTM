@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TreeMap;
 import java.util.function.BiPredicate;
@@ -1036,4 +1037,13 @@ public class DefaultPrograms {
 	}).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_TAIL_LIGHTS_SIGNAL_LEFT = RECT_LIGHTBEAM_BACK_LIGHTS_SIGNAL_LEFT;
 	public static final RectLightBeam RECT_LIGHTBEAM_TAIL_LIGHTS_SIGNAL_RIGHT = RECT_LIGHTBEAM_BACK_LIGHTS_SIGNAL_RIGHT;
+	
+	public static final HashMap<String, RGBChannel> RGB_CHANNELS = new HashMap<>();
+
+	public static RGBChannel getRGBChannel(String channel_id){
+		if(RGB_CHANNELS.containsKey(channel_id)) return RGB_CHANNELS.get(channel_id);
+		RGBChannel channel = new RGBChannel(channel_id);
+		RGB_CHANNELS.put(channel_id, channel);
+		return channel;
+	}
 }

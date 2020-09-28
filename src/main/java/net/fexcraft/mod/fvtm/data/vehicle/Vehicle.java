@@ -131,7 +131,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 					case "tristate":
 					case "threestate":
 					case "ternary":{
-						Boolean bool = !json.has("value") || json.get("value").toString().equals("null") ? null : json.get("value").getAsBoolean();
+						Boolean bool = !json.has("value") || json.get("value").getAsString().equals("null") ? null : json.get("value").getAsBoolean();
 						attr = new Attribute.TriStateAttribute(true, id, bool);
 						isbool = true;
 						break;

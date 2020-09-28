@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,7 +53,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected LegacyData legacy_data;
 	protected boolean trailer;
 	protected Vec3d def_front_conn, def_rear_conn;
-	protected HashMap<String, ResourceLocation> preinstalled;
+	protected LinkedHashMap<String, ResourceLocation> preinstalled;
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	protected float coupler_range = 0.25f;
@@ -205,7 +206,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			this.coupler_range = obj.get("CouplerRange").getAsFloat();
 		}
 		if(obj.has("PreInstalled")){
-			preinstalled = new HashMap<>();
+			preinstalled = new LinkedHashMap<>();
 			JsonObject pre = obj.get("PreInstalled").getAsJsonObject();
 			for(java.util.Map.Entry<String, JsonElement> entry : pre.entrySet()){
 				preinstalled.put(entry.getKey(), new ResourceLocation(entry.getValue().getAsString()));

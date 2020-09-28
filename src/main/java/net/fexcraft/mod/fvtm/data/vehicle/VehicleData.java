@@ -15,6 +15,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
@@ -87,8 +88,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		this.rear_conn = type.getDefaultRearConnector();
 		if(type.getPreInstalledParts() != null){
 			for(java.util.Map.Entry<String, ResourceLocation> entry : type.getPreInstalledParts().entrySet()){
-				Part part = Resources.PARTS.getValue(entry.getValue()); if(part == null) continue;
-				this.installPart(null, new PartData(part), entry.getKey());
+				try{
+					Part part = Resources.PARTS.getValue(entry.getValue());
+					if(part == null) continue;
+					this.installPart(null, new PartData(part), entry.getKey());
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					Static.stop();
+				}
 			}
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));

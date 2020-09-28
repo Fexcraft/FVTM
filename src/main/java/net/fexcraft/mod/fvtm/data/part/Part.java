@@ -75,7 +75,6 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		return Part.class;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Part parse(JsonObject obj){
 		this.registryname = DataUtil.getRegistryName(obj);

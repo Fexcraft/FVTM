@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util.handler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -10,10 +11,12 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
@@ -22,6 +25,8 @@ import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -44,9 +49,40 @@ public class ToggableHandler {
 	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatCache seat, EntityPlayer player, ItemStack stack){
 		if(press == KeyPress.MOUSE_RIGHT && foundSeat(entity, seat, player, stack)) return true;
 		if(!stack.isEmpty()){
-			if(stack.getItem() instanceof PartItem && stack.getCapability(Capabilities.VAPDATA, null).getPartData().getType().getInstallationHandlerData() instanceof DPIHData){
-        		DPIHData idata = stack.getCapability(Capabilities.VAPDATA, null).getPartData().getType().getInstallationHandlerData();
+			Print.debug("item");
+			if(stack.getItem() instanceof PartItem){
+				PartData part = stack.getCapability(Capabilities.VAPDATA, null).getPartData();
+				if(part.getType().getInstallationHandlerData() instanceof DPIHData == false) return false;
+        		DPIHData idata = part.getType().getInstallationHandlerData();
         		if(idata.hotswap){
+        			ArrayList<Collidable> colls = new ArrayList<>();
+        			for(Entry<String, PartData> data : entity.getVehicleData().getParts().entrySet()){
+        				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
+        				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
+        				for(int i = 0; i < func.getSlotTypes().size(); i++){
+        					String type = func.getSlotTypes().get(i);
+        					for(String str : part.getType().getCategories()){
+        						if(str.equals(type)){
+        							colls.add(new Collidable(idata, data.getKey(), func.getSlotPositions().get(i), i));
+        						}
+        					}
+        				}
+        				Collidable coll = getCollided(seat == null, entity, player, colls);
+        				if(coll != null){
+        					if(coll.id().equals(last) && Time.getDate() < tilltime){
+        						return true;
+        					}
+        					NBTTagCompound packet = new NBTTagCompound();
+        					packet.setString("target_listener", Resources.UTIL_LISTENER);
+        					packet.setString("task", "hot_install");
+        					packet.setString("source", coll.source);
+        					packet.setInteger("index", coll.index);
+        					packet.setInteger("entity", entity.getEntity().getEntityId());
+        					PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+        					last = coll.id(); tilltime = Time.getDate() + 20;
+        					return true;
+        				}
+        			}
         			
         		}
 	        }
@@ -218,8 +254,10 @@ public class ToggableHandler {
 	}
 
 	public static boolean handleClick(KeyPress press, ItemStack stack){
+		if(!stack.isEmpty() && !(stack.getItem() instanceof PartItem)) return false;
 		for(Entity entity : Minecraft.getMinecraft().world.loadedEntityList){
 			if(entity instanceof VehicleEntity == false) continue;
+			Print.debug("test");
 			if(((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").getFloatValue() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
 				Print.debug("veh dis: " + ((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").getFloatValue() + " " + entity.getName());
 				Print.debug("ply dis: " + entity.getDistance(Minecraft.getMinecraft().player));
@@ -233,13 +271,24 @@ public class ToggableHandler {
 	public static class Collidable {
 		
 		protected Attribute<?> attr;
+		private DPIHData data;
+		private String source;
+		private int index;
+		private Pos pos;
 		
 		public Collidable(Attribute<?> attr){
 			this.attr = attr;
 		}
 
+		public Collidable(DPIHData data, String source, Pos pos, int index){
+			this.data = data;
+			this.source = source;
+			this.pos = pos;
+			this.index = index;
+		}
+
 		public String id(){
-			return attr == null ? "" : attr.id();
+			return attr == null ? source + ":" + index : attr.id();
 		}
 
 		public void collectAABBs(boolean external, VehicleEntity vehicle, EntityPlayer player, TreeMap<String, AxisAlignedBB> aabbs, Vec3d temp){
@@ -250,9 +299,16 @@ public class ToggableHandler {
 				temp = point.getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
 				temp = temp.add(vehicle.getEntity().getPositionVector());
 				float te = arr[3] * Static.sixteenth;
-				if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
 				aabbs.put(attr.id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
+			else{
+				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.swivel_point);
+				temp = point.getRelativeVector(pos.x16, -pos.y16, -pos.z16);
+				temp = temp.add(vehicle.getEntity().getPositionVector());
+				float te = 0.125f;
+				aabbs.put(id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
+			}
+			if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
 		}
 		
 	}

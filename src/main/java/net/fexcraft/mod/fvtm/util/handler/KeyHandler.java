@@ -15,6 +15,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -97,11 +98,19 @@ public class KeyHandler {
     	if(event.getHand() == EnumHand.MAIN_HAND) ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getItemStack());
     }
     
-    //unsure if those 2 bellow won't be processing intensive
+    //unsure if those 3 bellow won't be processing intensive
     //TODO remove if we manage to get larger bounding boxes instead
 
     @SubscribeEvent
-    public void clickEmpty(RightClickBlock event){
+    public void clickItem(RightClickItem event){
+        if(event.getHand() == EnumHand.MAIN_HAND && ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getItemStack())){
+        	event.setCanceled(true);
+        	event.setCancellationResult(EnumActionResult.PASS);
+        }
+    }
+
+    @SubscribeEvent
+    public void clickBlock(RightClickBlock event){
     	//if(!event.getItemStack().isEmpty()) return;
         if(event.getHand() == EnumHand.MAIN_HAND && ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, event.getItemStack())){
         	event.setCanceled(true);
@@ -110,7 +119,7 @@ public class KeyHandler {
     }
 
     @SubscribeEvent
-    public void clickEmpty(LeftClickBlock event){
+    public void clickBlock(LeftClickBlock event){
     	//if(!event.getItemStack().isEmpty()) return;
         if(event.getHand() == EnumHand.MAIN_HAND && ToggableHandler.handleClick(KeyPress.MOUSE_MAIN, event.getItemStack())){
         	event.setCanceled(true);

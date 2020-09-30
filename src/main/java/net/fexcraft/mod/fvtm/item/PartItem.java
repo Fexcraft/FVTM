@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -48,6 +49,9 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         PartData data = cache.getPartData();
         if(data == null) return;
         tooltip.add(Formatter.format("&9Texture: &7" + getTexTitle(data)));
+        if(type.getInstallationHandlerData() != null && type.getInstallationHandlerData() instanceof DPIHData && ((DPIHData)type.getInstallationHandlerData()).hotswap){
+        	tooltip.add(Formatter.format("&a&oThis part supports hot-install."));
+        }
         if(!data.getFunctions().isEmpty()){
             for(Function func : data.getFunctions().values()){
             	func.addInformation(stack, world, data, tooltip, flag);

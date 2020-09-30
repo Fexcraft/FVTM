@@ -1040,11 +1040,24 @@ public class DefaultPrograms {
 	public static final RectLightBeam RECT_LIGHTBEAM_TAIL_LIGHTS_SIGNAL_RIGHT = RECT_LIGHTBEAM_BACK_LIGHTS_SIGNAL_RIGHT;
 	
 	public static final HashMap<String, RGBChannel> RGB_CHANNELS = new HashMap<>();
+	public static final HashMap<String, AlwaysGlow> CUSTOM_LIGHTS = new HashMap<>();
 
 	public static RGBChannel getRGBChannel(String channel_id){
 		if(RGB_CHANNELS.containsKey(channel_id)) return RGB_CHANNELS.get(channel_id);
 		RGBChannel channel = new RGBChannel(channel_id);
 		RGB_CHANNELS.put(channel_id, channel);
 		return channel;
+	}
+
+	public static AlwaysGlow getCustomLights(String attr_id){
+		if(CUSTOM_LIGHTS.containsKey(attr_id)) CUSTOM_LIGHTS.get(attr_id);
+		AlwaysGlow glow = new AlwaysGlow(){
+			@Override
+			public boolean shouldGlow(Entity ent, VehicleData data){
+				return data.getAttribute(attr_id).getBooleanValue();
+			}
+		};
+		CUSTOM_LIGHTS.put(attr_id, glow);
+		return glow;
 	}
 }

@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -10,15 +11,18 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
+import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
 import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,15 +43,26 @@ public class ToggableHandler {
 
 	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatCache seat, EntityPlayer player, ItemStack stack){
 		if(press == KeyPress.MOUSE_RIGHT && foundSeat(entity, seat, player, stack)) return true;
-		if(!stack.isEmpty()) return false;
+		if(!stack.isEmpty()){
+			if(stack.getItem() instanceof PartItem && stack.getCapability(Capabilities.VAPDATA, null).getPartData().getType().getInstallationHandlerData() instanceof DPIHData){
+        		DPIHData idata = stack.getCapability(Capabilities.VAPDATA, null).getPartData().getType().getInstallationHandlerData();
+        		if(idata.hotswap){
+        			
+        		}
+	        }
+			return false;
+		}
 		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasAABBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
 			/*Print.debug(player, "none found");*/ return false;
 		}
-		Attribute<?> attr = getCollided(seat == null, entity, player, attributes);
-		if(attr == null){
+		ArrayList<Collidable> colls = new ArrayList<>();
+		attributes.forEach(attr -> colls.add(new Collidable(attr)));
+		Collidable coll = getCollided(seat == null, entity, player, colls);
+		if(coll == null){
 			/*Print.debug(player, "none hit");*/ return false;
 		}
+		Attribute<?> attr = coll.attr;
 		if(attr.id().equals(last) && Time.getDate() < tilltime){
 			/*Print.debug(player, "skipping till cooldown");*/ return true;
 		}
@@ -181,7 +196,7 @@ public class ToggableHandler {
 	}
 
 	@SideOnly(Side.CLIENT) // Eventually checks about which is closest?
-	private static Attribute<?> getCollided(boolean external, VehicleEntity vehicle, EntityPlayer player, Collection<Attribute<?>> attributes){
+	private static Collidable getCollided(boolean external, VehicleEntity vehicle, EntityPlayer player, Collection<Collidable> collidables){
 		Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
 		if(entity == null || entity.world == null) return null;
 		Vec3d vec = entity.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
@@ -189,22 +204,15 @@ public class ToggableHandler {
 		Vec3d vecto = vec.add(temp.x * 2, temp.y * 2, temp.z * 2);
 		Vec3f vec0 = new Vec3f(vec.x, vec.y, vec.z), vec1 = new Vec3f(vecto.x, vecto.y, vecto.z);
 		TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
-		for(Attribute<?> attr : attributes){
-			String attrid = (external ? "external-" : "") + attr.getStringValue();
-			float[] arr = attr.getAABB(attrid);
-			SwivelPoint point = vehicle.getVehicleData().getRotationPoint(attr.getAABBSP(attrid));
-			temp = point.getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
-			temp = temp.add(vehicle.getEntity().getPositionVector());
-			float te = arr[3] * Static.sixteenth;
-			if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
-			aabbs.put(attr.id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
+		for(Collidable coll : collidables){
+			coll.collectAABBs(external, vehicle, player, aabbs, temp);
 		}
 		for(float f = 0; f < (external ? 3 : 2); f += Static.sixteenth / 2){
 			Vec3f dis = vec0.distance(vec1, f);
 			vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
 			if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);
-			for(Attribute<?> attr : attributes)
-				if(aabbs.get(attr.id()).contains(vec)) return attr;
+			for(Collidable coll : collidables)
+				if(aabbs.get(coll.id()).contains(vec)) return coll;
 		}
 		return null;
 	}
@@ -220,6 +228,33 @@ public class ToggableHandler {
 			if(handleClick(press, (VehicleEntity)entity, null, Minecraft.getMinecraft().player, stack)) return true;
 		}
 		return false;
+	}
+	
+	public static class Collidable {
+		
+		protected Attribute<?> attr;
+		
+		public Collidable(Attribute<?> attr){
+			this.attr = attr;
+		}
+
+		public String id(){
+			return attr == null ? "" : attr.id();
+		}
+
+		public void collectAABBs(boolean external, VehicleEntity vehicle, EntityPlayer player, TreeMap<String, AxisAlignedBB> aabbs, Vec3d temp){
+			if(attr != null){
+				String attrid = (external ? "external-" : "") + attr.getStringValue();
+				float[] arr = attr.getAABB(attrid);
+				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(attr.getAABBSP(attrid));
+				temp = point.getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
+				temp = temp.add(vehicle.getEntity().getPositionVector());
+				float te = arr[3] * Static.sixteenth;
+				if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
+				aabbs.put(attr.id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
+			}
+		}
+		
 	}
 
 }

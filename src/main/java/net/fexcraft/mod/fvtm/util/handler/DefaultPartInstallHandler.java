@@ -249,18 +249,19 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			for(Entry<String, PartData> data : vehicle.getParts().entrySet()){
 				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
 				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
+				int funds = 0;
 				for(int i = 0; i < func.getSlotTypes().size(); i++){
 					String type = func.getSlotTypes().get(i);
 					for(String str : part.getType().getCategories()){
 						if(str.equals(type)){
-							found.add(data.getKey() + ":" + func.getSlotCategories().get(i));
+							found.add(data.getKey() + ":" + func.getSlotCategories().get(i) + ":" + funds++);
 						}
 					}
 				}
 			}
 			String[] arr = new String[found.size()];
 			for(int i = 0; i < arr.length; i++){
-				arr[i] = "s:" + found.get(i) + ":" + i;
+				arr[i] = "s:" + found.get(i);
 			}
 			return arr;
 		}

@@ -156,7 +156,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		public TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
 		public TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
 		public TreeMap<String, ArrayList<String>> required = new TreeMap<>();
-		public boolean removable = true, custom_cat, sp_req = false, onslot;
+		public boolean removable = true, custom_cat, sp_req = false, onslot, hotswap;
 		public String swivel_point = "vehicle";
 		
 		public DPIHData(JsonObject obj){
@@ -223,6 +223,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				}
 			}
 			onslot = JsonUtil.getIfExists(obj, "SlotBased", false);
+			hotswap = JsonUtil.getIfExists(obj, "HotSwap", false);
 		}
 
 		public boolean allowsAny(){

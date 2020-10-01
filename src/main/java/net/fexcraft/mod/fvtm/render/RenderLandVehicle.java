@@ -116,7 +116,11 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	        					for(String str : part.getType().getCategories()){
 	        						if(str.equals(type)){
 	        							func.getSlotPositions().get(i).translate();
-	        							DebugModels.HOTINSTALLCUBE.render();
+	        			            	GL11.glPushMatrix();
+	        			            	float scal = func.getSlotRadius().get(i);
+	        			            	GL11.glScalef(scal, scal, scal);
+	        							DebugModels.HOTINSTALLCUBE.render(1f);
+	        			            	GL11.glPopMatrix();
 	        							func.getSlotPositions().get(i).translateR();
 	        						}
 	        					}

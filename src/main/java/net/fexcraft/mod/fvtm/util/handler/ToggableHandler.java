@@ -63,7 +63,7 @@ public class ToggableHandler {
         					String type = func.getSlotTypes().get(i);
         					for(String str : part.getType().getCategories()){
         						if(str.equals(type)){
-        							colls.add(new Collidable(idata, data.getKey(), func.getSlotPositions().get(i), i));
+        							colls.add(new Collidable(idata, data.getKey(), func, i));
         						}
         					}
         				}
@@ -271,19 +271,19 @@ public class ToggableHandler {
 	public static class Collidable {
 		
 		protected Attribute<?> attr;
+		private PartSlotsFunction func;
 		private DPIHData data;
 		private String source;
 		private int index;
-		private Pos pos;
 		
 		public Collidable(Attribute<?> attr){
 			this.attr = attr;
 		}
 
-		public Collidable(DPIHData data, String source, Pos pos, int index){
+		public Collidable(DPIHData data, String source, PartSlotsFunction func, int index){
 			this.data = data;
 			this.source = source;
-			this.pos = pos;
+			this.func = func;
 			this.index = index;
 		}
 
@@ -303,9 +303,10 @@ public class ToggableHandler {
 			}
 			else{
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.swivel_point);
+				Pos pos = func.getSlotPositions().get(index);
 				temp = point.getRelativeVector(pos.x16, -pos.y16, -pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());
-				float te = 0.125f;
+				float te = func.getSlotRadius().get(index) / 2;
 				aabbs.put(id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
 			if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);

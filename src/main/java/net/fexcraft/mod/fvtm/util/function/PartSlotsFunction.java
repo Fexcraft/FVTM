@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
@@ -20,6 +21,7 @@ public class PartSlotsFunction extends StaticFuntion {
 	private ArrayList<String> slot_type = new ArrayList<>();
 	private ArrayList<Pos> slot_pos = new ArrayList<>();
 	private ArrayList<String> slot_cat = new ArrayList<>();
+	private ArrayList<Float> slot_rad = new ArrayList<>();
 
 	public PartSlotsFunction(Part part, JsonObject obj){
 		super(part, obj);
@@ -29,6 +31,7 @@ public class PartSlotsFunction extends StaticFuntion {
 			slot_type.add(array.get(3).getAsString());
 			slot_pos.add(Pos.fromJson(array, true));
 			slot_cat.add(array.size() > 4 ? array.get(4).getAsString() : part.getCategory() + "_" + i);
+			slot_rad.add(array.size() > 5 ? array.get(5).getAsInt() * Static.sixteenth : 0.25f);
 		}
 	}
 
@@ -47,6 +50,10 @@ public class PartSlotsFunction extends StaticFuntion {
 	
 	public ArrayList<String> getSlotCategories(){
 		return slot_cat;
+	}
+	
+	public ArrayList<Float> getSlotRadius(){
+		return slot_rad;
 	}
 
     @Override

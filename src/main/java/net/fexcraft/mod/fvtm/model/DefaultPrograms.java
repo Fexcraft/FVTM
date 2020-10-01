@@ -1079,7 +1079,6 @@ public class DefaultPrograms {
 		(BLINKER_TIMER = new Timer()).schedule(new TimerTask(){
 			@Override
 			public void run(){
-				Print.debug("toggling");
 				BLINKER_TOGGLE = !BLINKER_TOGGLE;
 			}
 		}, new Date(mid), Config.BLINKER_INTERVAL);

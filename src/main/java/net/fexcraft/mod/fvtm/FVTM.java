@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -185,15 +184,7 @@ public class FVTM {
 			RoadSysItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
-				LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
-				long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
-				while((mid += Config.BLINKER_INTERVAL) < date);
-				(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER = new Timer()).schedule(new TimerTask(){
-					@Override
-					public void run(){
-						net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE = !net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
-					}
-				}, new Date(mid), Config.BLINKER_INTERVAL);
+				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
 			}
 		}
 		Resources.MATERIALS.getValuesCollection().forEach(mat -> mat.linkContainerItem());

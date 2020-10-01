@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.config;
 import java.io.File;
 import java.util.List;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -77,6 +78,9 @@ public class Config {
         }
         MAX_ROAD_LENGTH = config.getInt("road_max_length", GENERAL, 256, 1, 4096, "Max vector (total) length of new placed roads (with the placing tool).");
         BLINKER_INTERVAL = config.getInt("blinker_interval", GENERAL, 750, 100, 2000, "Blinker/Turn Signal toggle interval, in milliseconds.");
+        if(Static.side().isClient()){
+        	net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
+        }
     }
 
     public static void add(List<IConfigElement> list){

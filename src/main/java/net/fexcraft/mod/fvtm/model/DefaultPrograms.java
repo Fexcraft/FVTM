@@ -1,7 +1,13 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.function.BiPredicate;
 
@@ -12,7 +18,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
@@ -24,6 +32,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -1059,5 +1068,20 @@ public class DefaultPrograms {
 		};
 		CUSTOM_LIGHTS.put(attr_id, glow);
 		return glow;
+	}
+
+	public static void setupBlinkerTimer(){
+		if(BLINKER_TIMER != null) BLINKER_TIMER.cancel();
+		Print.debug("Setting up blinker-toggle timer.");
+		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
+		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
+		while((mid += Config.BLINKER_INTERVAL) < date);
+		(BLINKER_TIMER = new Timer()).schedule(new TimerTask(){
+			@Override
+			public void run(){
+				Print.debug("toggling");
+				BLINKER_TOGGLE = !BLINKER_TOGGLE;
+			}
+		}, new Date(mid), Config.BLINKER_INTERVAL);
 	}
 }

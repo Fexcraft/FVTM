@@ -19,7 +19,7 @@ public class DebugModels {
 			CONTAINER[i].setTextured(false).setColor(rgb);
 		}
 	}
-    public static final ModelRendererTurbo CENTERSPHERE = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setTextured(false).setLines(new RGB(0xcdcdcd));
+    public static final ModelRendererTurbo CENTERSPHERE = new ModelRendererTurbo(null, 0, 0, 16, 16).addSphere(0, 0, 0, 1, 16, 16, 8, 8).setLines(new RGB(0xcdcdcd));
     public static final ModelRendererTurbo HOTINSTALLCUBE = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, -0.5f, -0.5f, 1, 1, 1).setLines(new RGB(0x00ffff));
 
 }

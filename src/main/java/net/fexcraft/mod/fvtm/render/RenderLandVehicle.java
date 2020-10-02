@@ -137,7 +137,11 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	            	GL11.glPushMatrix();
 	            	float scal = vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() * 16;
 	            	GL11.glScalef(scal, scal, scal);
+	            	GL11.glDisable(GL11.GL_TEXTURE_2D);
+					GL11.glLineWidth(2f);
 	            	DebugModels.CENTERSPHERE.render();
+        			GL11.glLineWidth(1f);
+					GL11.glEnable(GL11.GL_TEXTURE_2D);
 	            	GL11.glPopMatrix();
 	            	if(Static.dev()){
 	            		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){

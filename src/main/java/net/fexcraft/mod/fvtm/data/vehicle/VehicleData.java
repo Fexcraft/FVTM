@@ -389,10 +389,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			this.insertSwivelPointsFromPart(data, category);
 			this.insertAttributesFromPart(data, category);
 			//
-			this.parts.values().forEach(part -> part.resetAttributes());
 			this.resetAttributes();
-			//
-			this.parts.values().forEach(part -> part.updateAttributes(Attribute.Update.INITIAL));
 			this.updateAttributes(Attribute.Update.INITIAL);
 			//
 			this.refreshModificableDataByParts();
@@ -407,12 +404,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(part.getType().getInstallationHandler().processUninstall(sender, part, category, this)){
 			this.removeSwivelPointsFromPart(part, category);
 			this.removeAttributesFromPart(part, category);
-			part.clearAttributes(); part.clearModifiers();
 			//
-			this.parts.values().forEach(data -> data.resetAttributes());
 			this.resetAttributes();
-			//
-			this.parts.values().forEach(data -> data.updateAttributes(Attribute.Update.INITIAL));
 			this.updateAttributes(Attribute.Update.INITIAL);
 			//
 			this.refreshModificableDataByParts();

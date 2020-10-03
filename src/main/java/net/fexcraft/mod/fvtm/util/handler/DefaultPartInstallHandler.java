@@ -146,7 +146,6 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
 		part.setInstalledPos(Pos.NULL);
 		data.getParts().remove(cat);
-		part.getAttributes().clear();
 		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
 	}
 	

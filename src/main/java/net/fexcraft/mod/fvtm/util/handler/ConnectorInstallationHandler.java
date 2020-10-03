@@ -77,7 +77,7 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 	@Override
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
 		part.setInstalledPos(new Pos(0, 0, 0));
-		data.getParts().remove(cat); part.getAttributes().clear();
+		data.getParts().remove(cat);
 		data.setConnector(null, cat.startsWith("front"));
 		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
 	}

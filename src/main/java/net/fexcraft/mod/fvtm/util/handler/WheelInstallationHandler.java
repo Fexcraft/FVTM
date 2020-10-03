@@ -88,7 +88,6 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
 		part.setInstalledPos(new Pos(0, 0, 0));
 		data.getParts().remove(cat);
-		part.getAttributes().clear();
 		data.getWheelPositions().remove(cat);
 		Print.chatnn(sender, "Part uninstalled and position reset.");
 		return true;

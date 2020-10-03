@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTTagString;
 /**
  * 4th prototype.
  * @author Ferdinand Calo' (FEX___96)
- */ @SuppressWarnings("unchecked")
+ */
 public abstract class Attribute<V> {
 	 
 	public static final Comparator<Modifier<?>> MODIFIER_COMPARATOR = new Comparator<Modifier<?>>() {

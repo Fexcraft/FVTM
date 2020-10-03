@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Pos;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.minecraft.item.ItemStack;
@@ -21,7 +20,6 @@ import net.minecraft.util.ResourceLocation;
  */
 public class PartData extends DataCore<Part, PartData> implements Textureable {
 	
-	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, Function> functions = new TreeMap<>();
 	protected int selected_texture;
 	protected String extex;
@@ -32,7 +30,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	protected String rotpoint;
 
 	public PartData(Part type){
-		super(type); this.clearAttributes();
+		super(type);
 		for(Function func : type.functions){
 			this.functions.put(func.getId(), func.copy(type));
 		}
@@ -103,39 +101,6 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		obj.add("CurrentPos", currentpos.toJson(true));
 		//
 		return obj;
-	}
-	
-	public Attribute<?> getAttribute(String id){
-		return attributes.get(id);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <VAL> Attribute<VAL> getAttributeCasted(String id){
-		return (Attribute<VAL>)attributes.get(id);
-	}
-	
-	public TreeMap<String, Attribute<?>> getAttributes(){
-		return attributes;
-	}
-
-	public void resetAttributes(){
-		for(Attribute<?> attr : attributes.values()){ attr.reset(); }
-	}
-
-	public void updateAttributes(Attribute.Update call){
-		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call); }
-	}
-
-	public void clearAttributes(){
-		if(!attributes.isEmpty()) attributes.clear();
-		for(Attribute<?> attr : type.getBaseAttributes()){
-			if(attr.target() != null && !attr.target().startsWith("self")) continue;
-			Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
-		}
-	}
-
-	public void clearModifiers(){
-		for(Attribute<?> attr : attributes.values()) attr.getModifiers().clear();
 	}
 
 	public ItemStack newItemStack(){
@@ -211,12 +176,10 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		return functions;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <F extends Function> F getFunction(String id){
 		return (F)functions.get(id);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <F> F getFunction(Class<F> clazz, String id){
 		return (F)functions.get(id);
 	}

@@ -47,7 +47,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
 	protected Model<VehicleData, Object> model;
 	protected List<NamedResourceLocation> textures;
-	protected ArrayList<String> required;
+	protected ArrayList<String> required, categories;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected String modelid;
 	protected LegacyData legacy_data;
@@ -97,6 +97,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			}
 		}
 		this.required = (ArrayList<String>)DataUtil.getStringArray(obj, "RequiredParts", true, false);
+		this.categories = (ArrayList<String>)DataUtil.getStringArray(obj, new String[]{ "Category", "Categories" }, ",", false);
 		//
 		if(obj.has("Attributes")){
 			JsonArray array = obj.get("Attributes").getAsJsonArray();
@@ -355,6 +356,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	@Override
 	public TreeMap<String, RGB> getDefaultColorChannels(){
 		return channels;
+	}
+	
+	public ArrayList<String> getCategory(){
+		return categories;
 	}
 
 }

@@ -45,19 +45,25 @@ public class DataUtil {
 			if(addon != null) return addon;
 		} return Resources.ADDONS.getValue(InternalAddon.REGNAME);
 	}
-
+	
 	public static List<String> getStringArray(JsonObject obj, String key, boolean split, boolean immutable){
+		return getStringArray(obj, new String[]{ key }, split ? "\n" : null, immutable);
+	}
+
+	public static List<String> getStringArray(JsonObject obj, String[] keys, String split, boolean immutable){
 		ArrayList<String> list = new ArrayList<>();
-		if(obj.has(key)){
-			if(obj.get(key).isJsonPrimitive()){
-				if(split){
-					String[] arr = obj.get(key).getAsString().split("\n");
-					for(String string : arr) list.add(string);
+		for(String key : keys){
+			if(obj.has(key)){
+				if(obj.get(key).isJsonPrimitive()){
+					if(split != null){
+						String[] arr = obj.get(key).getAsString().split(split);//"\n");
+						for(String string : arr) list.add(string);
+					}
+					else list.add(obj.get(key).getAsString());
 				}
-				else list.add(obj.get(key).getAsString());
-			}
-			else{
-				obj.get(key).getAsJsonArray().forEach(elm -> list.add(elm.getAsString()));
+				else{
+					obj.get(key).getAsJsonArray().forEach(elm -> list.add(elm.getAsString()));
+				}
 			}
 		}
 		return immutable ? ImmutableList.copyOf(list) : list;

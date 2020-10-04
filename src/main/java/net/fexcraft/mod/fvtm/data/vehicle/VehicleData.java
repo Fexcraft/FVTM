@@ -432,81 +432,52 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	private void insertAttributesFromPart(PartData data, String catin){
 		String dataid = catin + "|" + data.getType().getRegistryName().toString();
 		for(Attribute<?> attr : data.getType().getBaseAttributes()){
-			/*if(attr.getTarget().startsWith("self") && !data.getAttributes().containsKey(attr.getId())){
-				data.getAttributes().put(attr.getId(), attr.copy(dataid));
-			}//this should actually happen on partdata construction else*/
-			if(attr.target().startsWith("part")){
-				String id = attr.target().replace("part:", "");
-				if(!parts.containsKey(id)) continue;
-				if(!parts.get(id).getAttributes().containsKey(id))
-					parts.get(id).getAttributes().put(attr.id(), attr.copy(dataid));
+			String[] valid = attr.target().split(",");
+			boolean pass = false;
+			boolean not = false;
+			for(String val : valid){
+				val = val.trim();
+				if(val.startsWith("!")){
+					not = true;
+					val = val.substring(1);
+				}
+				if(val.equals("vehicle")){
+					pass = !not;
+					break;
+				}
+				if(val.contentEquals(this.getType().getRegistryName().toString())){
+					pass = !not;
+					break;
+				}
+				if(this.getType().getCategory().contains(val)){
+					pass = !not;
+					break;
+				}
+				if(val.startsWith("pack-")){
+					ResourceLocation loc = new ResourceLocation(val.substring(5));
+					if(loc.equals(this.getType().getAddon().getRegistryName())){
+						pass = !not;
+						break;
+					}
+				}
 			}
-			else if(attr.target().startsWith("vehicle") && !this.getAttributes().containsKey(attr.id())){
-				if(attr.target().contains("-")){
-					String id = attr.target().replace("vehicle-", "");
-					if(this.getType().getRegistryName().toString().equals(id))
-						this.getAttributes().put(attr.id(), attr.copy(dataid));
-				} else{ this.getAttributes().put(attr.id(), attr.copy(dataid)); }
+			if(pass && !this.getAttributes().containsKey(attr.id())){
+				this.getAttributes().put(attr.id(), attr.copy(dataid));
 			}
 		}
 		//Print.console(data.getType().getBaseAttributes());
 		//Print.console(attributes);
-		//check if parts have attributes to add into other parts
-		for(Entry<String, PartData> part : parts.entrySet()){
-			if(part.getValue() == data) continue;
-			String str = part.getKey() + "|" + part.getValue().getType().getRegistryName().toString();
-			for(Attribute<?> attr : part.getValue().getType().getBaseAttributes()){
-				if(attr.target().equals("part:" + catin)){
-					if(!data.getAttributes().containsKey(attr.id()))
-						data.getAttributes().put(attr.id(), attr.copy(str));
-				}
-			}
-		}
 		//add modifiers
 		for(Modifier<?> mod : data.getType().getBaseModifiers()){
-			if(!mod.target().contains(":")){ continue; }
-			String[] target = mod.target().split(":");
-			if(target[0].equals("self")){
-				if(data.getAttributes().containsKey(target[1])){
-					data.getAttribute(target[1]).addModifier(mod.copy(dataid));
-				}
-			}
-			else if(target[0].startsWith("part-")){
-				if(target[0].replace("part-", "").equals(catin)){}
-				else if(parts.containsKey(target[0].replace("part-", ""))){
-					PartData part = parts.get(target[0].replace("part-", ""));
-					if(part.getAttributes().containsKey(target[1])){
-						part.getAttribute(target[1]).addModifier(mod.copy(dataid));
-					}
-				}
-			}
-			else if(target[0].equals("vehicle")){
-				if(this.getAttributes().containsKey(target[1])){
-					this.getAttributes().get(target[1]).addModifier(mod.copy(dataid));
-				}
-			}
-		}
-		for(Entry<String, PartData> part : parts.entrySet()){
-			if(part.getValue() == data) continue;
-			for(Modifier<?> mod : part.getValue().getType().getBaseModifiers()){
-				String str = part.getKey() + "|" + part.getValue().getType().getRegistryName().toString();
-				if(mod.target().startsWith("part-" + catin + ":")){
-					String target = mod.target().split(":")[1];
-					if(data.getAttributes().containsKey(target))
-						data.getAttribute(target).addModifier(mod.copy(str));
-				}
+			String target = mod.target().contains(":") ? mod.target().split(":")[0] : mod.target();
+			if(this.getAttributes().containsKey(target)){
+				this.getAttributes().get(target).addModifier(mod.copy(dataid));
 			}
 		}
 	}
 
 	private void removeAttributesFromPart(PartData data, String category){
 		String datain = category + "|" + data.getType().getRegistryName().toString();
-		for(PartData part : this.parts.values()){
-			part.getAttributes().entrySet().removeIf(pre -> pre.getValue().origin() != null && pre.getValue().origin().equals(datain));
-			for(Attribute<?> attr : part.getAttributes().values()){
-				attr.getModifiers().removeIf(pre -> pre.origin() != null && pre.origin().equals(datain));
-			}
-		}
 		this.attributes.entrySet().removeIf(pre -> pre.getValue().origin() != null && pre.getValue().origin().equals(datain));
 		for(Attribute<?> attr : this.attributes.values()){
 			attr.getModifiers().removeIf(pre -> pre.origin() != null && pre.origin().equals(datain));

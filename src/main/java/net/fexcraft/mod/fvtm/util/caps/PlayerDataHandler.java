@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -70,6 +71,7 @@ public class PlayerDataHandler implements ICapabilitySerializable<NBTBase>{
 		
 		private EntityPlayer player;
 		private HashMap<VehicleType, String> systems = new HashMap<>();
+		private Vec3d position;
 		
 		@Override
 		public void setPlayer(EntityPlayer player){
@@ -89,6 +91,16 @@ public class PlayerDataHandler implements ICapabilitySerializable<NBTBase>{
 		@Override
 		public boolean setFavoriteSpawnSystemFor(VehicleType type, String systemid){
 			return systems.put(type, systemid) == null;
+		}
+
+		@Override
+		public void setActiveSpawnPoint(Vec3d vector){
+			position = vector;
+		}
+
+		@Override
+		public Vec3d getActiveSpawnPoint(Vec3d vector){
+			return position;
 		}
 		
 	}

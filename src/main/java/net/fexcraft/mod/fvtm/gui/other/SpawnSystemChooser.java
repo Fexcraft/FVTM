@@ -19,7 +19,7 @@ public class SpawnSystemChooser extends GenericGui<SpawnSystemContainer> {
 	private static VehicleType type;
 	private static SpawnMode mode;
 	private static int scroll;
-	private boolean save;
+	private boolean save, demo;
 
 	public SpawnSystemChooser(EntityPlayer player, int x, int y, int z){
 		super(texture, new SpawnSystemContainer(player, x, y, z), player);
@@ -30,6 +30,7 @@ public class SpawnSystemChooser extends GenericGui<SpawnSystemContainer> {
 		this.ySize = 120;
 		type = VehicleType.values()[x];
 		mode = SpawnMode.values()[y];
+		demo = z > 0;
 	}
 
 	@Override
@@ -83,6 +84,7 @@ public class SpawnSystemChooser extends GenericGui<SpawnSystemContainer> {
 			compound.setInteger("mode", mode.ordinal());
 			compound.setString("system", system.getId());
 			compound.setBoolean("save", save);
+			compound.setBoolean("demo", demo);
 			this.container.send(Side.SERVER, compound);
 			return true;
 		}

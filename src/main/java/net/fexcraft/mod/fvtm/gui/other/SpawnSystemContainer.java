@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -39,7 +42,18 @@ public class SpawnSystemContainer extends GenericContainer {
 					break;
 				}
 				case "spawn":{
-					
+					EntitySystem sys = EntitySystem.REGISTRY.get(packet.getString("system"));
+					boolean demo = packet.getBoolean("demo"), save = packet.getBoolean("save");
+					VehicleType type = VehicleType.values()[packet.getInteger("type")];
+					SpawnMode mode = SpawnMode.values()[packet.getInteger("mode")];
+					ItemStack stack = player.getHeldItemMainhand();
+					VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData();
+					if(!demo && sys.canSpawn(player, player.getCapability(Capabilities.PLAYERDATA, null).getActiveSpawnPoint(), stack, data, mode)){
+						sys.spawnEntity(player, player.getCapability(Capabilities.PLAYERDATA, null).getActiveSpawnPoint(), stack, data, mode);
+					}
+					if(save){
+						player.getCapability(Capabilities.PLAYERDATA, null).setFavoriteSpawnSystemFor(type, sys.getId());
+					}
 					break;
 				}
 			}

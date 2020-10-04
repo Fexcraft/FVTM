@@ -99,7 +99,7 @@ public class PlayerDataHandler implements ICapabilitySerializable<NBTBase>{
 		}
 
 		@Override
-		public Vec3d getActiveSpawnPoint(Vec3d vector){
+		public Vec3d getActiveSpawnPoint(){
 			return position;
 		}
 		

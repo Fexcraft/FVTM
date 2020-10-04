@@ -17,6 +17,6 @@ public interface PlayerData {
 	
 	public void setActiveSpawnPoint(Vec3d vector);
 	
-	public Vec3d getActiveSpawnPoint(Vec3d vector);
+	public Vec3d getActiveSpawnPoint();
 	
 }

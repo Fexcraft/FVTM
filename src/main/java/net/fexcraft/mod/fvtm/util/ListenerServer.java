@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
+import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -42,7 +43,16 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				PartData source = entity.getVehicleData().getPart(packet.nbt.getString("source"));
 				PartSlotsFunction func = source.getFunction(PartSlotsFunction.class, "fvtm:part_slots");
 				int index = packet.nbt.getInteger("index");
-				data = entity.getVehicleData().installPart(Command.DEBUG ? player : null, data, "s:" + packet.nbt.getString("source") + ":" + func.getSlotCategories().get(index) + ":" + index);
+				String slot = "s:" + packet.nbt.getString("source") + ":" + func.getSlotCategories().get(index) + ":" + index;
+				if(entity.getVehicleData().getPart(slot) != null){
+					PartData oldpart = entity.getVehicleData().getPart(slot);
+					boolean valid = oldpart.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallationHandlerData()).hotswap;
+					if(valid && entity.getVehicleData().deinstallPart(Command.DEBUG ? player : null, slot, true)){
+						player.addItemStackToInventory(oldpart.newItemStack());
+					}
+					else return;
+				}
+				data = entity.getVehicleData().installPart(Command.DEBUG ? player : null, data, slot, true);
 				if(data == null){
 					player.getHeldItem(EnumHand.MAIN_HAND).shrink(1);
 					NBTTagCompound compound = entity.getVehicleData().write(new NBTTagCompound());

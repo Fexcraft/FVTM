@@ -91,7 +91,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				try{
 					Part part = Resources.PARTS.getValue(entry.getValue());
 					if(part == null) continue;
-					this.installPart(null, new PartData(part), entry.getKey());
+					this.installPart(null, new PartData(part), entry.getKey(), false);
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -382,22 +382,24 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 	
 	/** @return null if installed successfully. */
-	public PartData installPart(@Nullable ICommandSender engineer, PartData data, String category){
+	public PartData installPart(@Nullable ICommandSender engineer, PartData data, String category, boolean hotinst){
 		if(!data.getType().getInstallationHandler().allowInstall(engineer, data, category, this)) return data;
 		//if(parts.containsKey(category)) return data;//<- actually, let's let the handler check that
 		if(data.getType().getInstallationHandler().processInstall(engineer, data, category, this)){
 			this.insertSwivelPointsFromPart(data, category);
 			this.insertAttributesFromPart(data, category);
 			//
-			this.resetAttributes();
-			this.updateAttributes(Attribute.Update.INITIAL);
+			if(!hotinst){
+				this.resetAttributes();
+				this.updateAttributes(Attribute.Update.INITIAL);
+			}
 			//
 			this.refreshModificableDataByParts();
 			return null;
 		} else return data;
 	}
 
-	public boolean deinstallPart(@Nullable ICommandSender sender, String category){
+	public boolean deinstallPart(@Nullable ICommandSender sender, String category, boolean hotinst){
 		PartData part = this.getPart(category);
 		if(part == null){ Print.chatnn(sender, "No part in that category."); return false; }
 		if(!part.getType().getInstallationHandler().allowUninstall(sender, part, category, this)) return false;
@@ -405,8 +407,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			this.removeSwivelPointsFromPart(part, category);
 			this.removeAttributesFromPart(part, category);
 			//
-			this.resetAttributes();
-			this.updateAttributes(Attribute.Update.INITIAL);
+			if(!hotinst){
+				this.resetAttributes();
+				this.updateAttributes(Attribute.Update.INITIAL);
+			}
 			//
 			this.refreshModificableDataByParts();
 			return true;

@@ -317,8 +317,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		return installhandler;
 	}
 	
-	/** Only for the internal `default` and `advanced` installation handlers, otherwise null. */
-	@SuppressWarnings("unchecked")
+	/** Not every handler may have additional data. */
 	public <U> U getInstallationHandlerData(){
 		return (U)installhandler_data;
 	}

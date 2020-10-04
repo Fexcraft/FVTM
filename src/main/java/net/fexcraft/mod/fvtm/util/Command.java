@@ -8,10 +8,12 @@ import java.util.HashMap;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
@@ -63,6 +65,7 @@ public class Command extends CommandBase {
         		Print.chat(sender, "&7- /fvtm preset <args>");
         		Print.chat(sender, "&7- /fvtm attr <args>");
         		Print.chat(sender, "&7- /fvtm vals <args> (debug values)");
+        		Print.chat(sender, "&7- /fvtm spawn-sys");
                 break;
             }
             case "rrr": case "reload-railregion":{
@@ -203,6 +206,10 @@ public class Command extends CommandBase {
             	else if(stack.isEmpty() || stack.getItem() instanceof VehicleItem == false){
             		Print.chat(sender, "You need to hold a VehicleItem in hand."); return;
             	}
+            	break;
+            }
+            case "spawn-sys":{
+            	((EntityPlayer)sender).openGui(FVTM.getInstance(), GuiHandler.SPAWNSYS, sender.getEntityWorld(), 0, 0, 0);
             	break;
             }
             default: {

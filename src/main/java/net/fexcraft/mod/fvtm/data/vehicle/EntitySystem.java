@@ -21,6 +21,8 @@ public abstract class EntitySystem {
 	
 	public abstract boolean canSpawn(World world, Vec3d pos, @Nullable EntityPlayer placer, @Nullable ItemStack stack, VehicleData data, SpawnMode mode);
 	
+	public abstract boolean validFor(SpawnMode mode, VehicleType type);
+	
 	public static enum SpawnMode {
 		PLAYER, CONSTRUCTOR, CODE, OTHER
 	}

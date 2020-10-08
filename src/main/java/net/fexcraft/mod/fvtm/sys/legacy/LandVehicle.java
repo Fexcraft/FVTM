@@ -31,6 +31,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -592,7 +593,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultRearConnector());
                 		return true;
                 	}
-                	if(!VehicleItem.validToSpawn(player, stack, world, data, false)) return true;
+                	if(!LegacySpawnSystem.validToSpawn(player, stack, data, false)) return true;
                 	if(trailer != null){
                 		Print.chat(player, "&cPlease disconnect the currently connected trailer first.");
                 		return true;

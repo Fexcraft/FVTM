@@ -57,26 +57,33 @@ public class LegacySpawnSystem extends EntitySystem {
 	}
     
     public static boolean validToSpawn(EntityPlayer player, ItemStack stack, VehicleData data, boolean plane){
-		String[] index = plane ? AirVehicle.WHEELINDEX : data.getType().isTrailerOrWagon()
-			? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
+		String[] index = plane ? AirVehicle.WHEELINDEX : data.getType().isTrailerOrWagon() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX;
+		boolean failed = false;
 		for(String str : index){
 			if(!data.getWheelPositions().containsKey(str)){
 				String trailer = data.getType().isTrailerOrWagon() ? "&9Trailer" : "&9Vehicle";
-				Print.chat(player, trailer + " is missing a wheel! &7&o" + str); failed = true;
+				Print.chat(player, trailer + " is missing a wheel! &7&o" + str);
+				failed = true;
 			}
 		}
 		if(!data.getType().isTrailerOrWagon() && !data.hasPart("engine")){
-			Print.chat(player, "&9Vehicle does not have an Engine installed!"); //failed = true;
+			Print.chat(player, "&9Vehicle does not have an Engine installed!"); // failed = true;
 		}
 		if(!data.getType().isTrailerOrWagon() && data.getSeats().size() < 1){
-			Print.chat(player, "&9Vehicle does not have any Seats!"); failed = true;
+			Print.chat(player, "&9Vehicle does not have any Seats!");
+			failed = true;
 		}
 		for(String part : data.getType().getRequiredParts()){
 			if(data.getPart(part) == null){
-				Print.chat(player, "&9Vehicle is missing &6required part&9: &a" + part + "&9!"); failed = true;
+				Print.chat(player, "&9Vehicle is missing &6required part&9: &a" + part + "&9!");
+				failed = true;
 			}
 		}
-		//TODO add later more checks if necessary
+		if(data.getType().getLegacyData() == null){
+			Print.chat(player, "&9Vehicle does not have legacy entity data configured!");
+			failed = true;
+		}
+		// TODO add later more checks if necessary
 		return !failed;
 	}
 

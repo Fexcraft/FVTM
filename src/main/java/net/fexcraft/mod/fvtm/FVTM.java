@@ -56,6 +56,7 @@ import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.ListenerClient;
 import net.fexcraft.mod.fvtm.util.ListenerServer;
+import net.fexcraft.mod.fvtm.util.RailSpawnSystem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
@@ -115,8 +116,8 @@ public class FVTM {
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		//
-		EntitySystem.REGISTRY.put("legacy", new LegacySpawnSystem());
-		EntitySystem.REGISTRY.put("duplicate", new LegacySpawnSystem());
+		EntitySystem.add(new LegacySpawnSystem());
+		EntitySystem.add(new RailSpawnSystem());
 		GameRegistry.registerTileEntity(BlockBase.TileEntity.class, new ResourceLocation("fvtm:blockbase"));
 		GameRegistry.registerTileEntity(M_4ROT_TE.TileEntity.class, new ResourceLocation("fvtm:multiblock"));
 		GameRegistry.registerTileEntity(M_4ROT_TE.TickableTE.class, new ResourceLocation("fvtm:multiblock_tickable"));

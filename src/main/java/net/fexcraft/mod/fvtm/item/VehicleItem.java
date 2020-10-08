@@ -5,27 +5,18 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
-import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
+import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem.SpawnMode;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
-import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
-import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
-import net.fexcraft.mod.fvtm.sys.rail.Track;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.PresetTab;
-import net.fexcraft.mod.fvtm.util.Vec316f;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -133,79 +124,9 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     	if(world.isRemote || side != EnumFacing.UP) return EnumActionResult.PASS; ItemStack stack = player.getHeldItem(hand);
     	if(world.getBlockState(pos).getBlock() instanceof ConstructorBlock) return EnumActionResult.PASS;
     	VehicleData data = ((VehicleItem)stack.getItem()).getData(stack);
-    	if(data.getType().getVehicleType().isAirVehicle()){
-    		if(!validToSpawn(player, stack, world, data, true)){ return EnumActionResult.SUCCESS; }
-    		world.spawnEntity(new AirVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
-    	}
-    	else if(data.getType().getVehicleType().isRailVehicle()){
-            RailSys syscap = world.getCapability(Capabilities.RAILSYSTEM, null).get();
-            if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.SUCCESS; }
-            Vec316f vector = new Vec316f(new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
-    		Junction junk = syscap.getJunction(vector, true);
-    		net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(pos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(pos) : null;
-			double length = data.getWheelPositions().get("bogie_front").x + -data.getWheelPositions().get("bogie_rear").x;
-    		if((junk == null || junk.tracks.isEmpty()) && tile != null){
-    			if(tile.getTracks().size() > 1){
-        			Print.bar(player, "&c&oPlaceable only on single-track rail blocks.");
-    			}
-    			else{
-    				Track track = syscap.getTrack(tile.getTracks().keySet().toArray(new PathKey[0])[0]);
-        			if(track.length < length){
-            			Print.bar(player, "&c&oTrack too short to spawn this vehicle.");
-            			return EnumActionResult.SUCCESS;
-        			}
-        			else{
-            			Print.bar(player, "&b&oSpawning vehicle...");
-        				syscap.registerEntity(new RailEntity(syscap, data, track, player.getGameProfile().getId()));
-        			}
-    			}
-    	        return EnumActionResult.SUCCESS;
-    		}
-    		if(junk == null){
-    			Print.bar(player, "&c&oNo Junction found at this position.");
-    		}
-    		else if(junk.tracks.isEmpty()){
-    			Print.bar(player, "&c&oJunction has no tracks attached.");
-    		}
-    		else{
-    			if(junk.tracks.get(0).length < length){
-        			Print.bar(player, "&c&oFirst Track of Junction too short to spawn this vehicle."); return EnumActionResult.SUCCESS;
-    			}
-    			Print.bar(player, "&a&oSpawning vehicle...");
-				syscap.registerEntity(new RailEntity(syscap, data, junk.tracks.get(0), player.getGameProfile().getId()));
-    		}
-    	}
-    	else{
-    		if(!validToSpawn(player, stack, world, data, false)){ return EnumActionResult.SUCCESS; }
-    		world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.up(2)), player, -1));
-    	}
-    	if(!player.capabilities.isCreativeMode) stack.shrink(1);
-        return EnumActionResult.SUCCESS;
+    	EntitySystem.spawnVehicle(player, new Vec3d(pos).add(hitX, hitY, hitZ), stack, data, SpawnMode.PLAYER);
+    	return EnumActionResult.SUCCESS;
     }
-    
-    public static boolean validToSpawn(EntityPlayer player, ItemStack stack, World world, VehicleData data, boolean plane){
-		String[] index = plane ? AirVehicle.WHEELINDEX : data.getType().isTrailerOrWagon()
-			? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
-		for(String str : index){
-			if(!data.getWheelPositions().containsKey(str)){
-				String trailer = data.getType().isTrailerOrWagon() ? "&9Trailer" : "&9Vehicle";
-				Print.chat(player, trailer + " is missing a wheel! &7&o" + str); failed = true;
-			}
-		}
-		if(!data.getType().isTrailerOrWagon() && !data.hasPart("engine")){
-			Print.chat(player, "&9Vehicle does not have an Engine installed!"); //failed = true;
-		}
-		if(!data.getType().isTrailerOrWagon() && data.getSeats().size() < 1){
-			Print.chat(player, "&9Vehicle does not have any Seats!"); failed = true;
-		}
-		for(String part : data.getType().getRequiredParts()){
-			if(data.getPart(part) == null){
-				Print.chat(player, "&9Vehicle is missing &6required part&9: &a" + part + "&9!"); failed = true;
-			}
-		}
-		//TODO add later more checks if necessary
-		return !failed;
-	}
 
 	@Override
     public boolean showJunctionGrid(){

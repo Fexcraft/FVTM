@@ -53,8 +53,8 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
-import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
 import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
@@ -326,6 +326,14 @@ public class Resources {
 	}
 
 	public static VehicleData getVehicleData(NBTTagCompound compound){
+		if(!compound.hasKey("Vehicle")) return null;
+		Vehicle veh = getVehicle(compound.getString("Vehicle")); if(veh == null) return null;
+		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }
+		catch(Throwable e){ e.printStackTrace(); return null; }
+	}
+
+	public static VehicleData readVehicleData(NBTTagCompound compound, VehicleData data){
+		if(data != null) return data.read(compound);
 		if(!compound.hasKey("Vehicle")) return null;
 		Vehicle veh = getVehicle(compound.getString("Vehicle")); if(veh == null) return null;
 		try{ return ((VehicleData)veh.getDataClass().getConstructor(Vehicle.class).newInstance(veh)).read(compound); }

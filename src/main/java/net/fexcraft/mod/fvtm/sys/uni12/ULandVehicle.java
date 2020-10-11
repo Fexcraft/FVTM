@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.legacy;
+package net.fexcraft.mod.fvtm.sys.uni12;
 
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
@@ -31,6 +31,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
@@ -68,10 +69,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
- * <br>
- * "Legacy" Main class for Vehicles.
  */
-public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, ContainerHoldingEntity {
+public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, ContainerHoldingEntity {
 
 	private LegacyData lata;
 	private VehicleData vehicle;
@@ -82,7 +81,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	//public double throttle;
 	public float wheelsAngle, serverWY;//, wheelsYaw;
     public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
-    public LandVehicle truck, trailer;
+    public ULandVehicle truck, trailer;
     //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
     protected byte doorToggleTimer;
     //
@@ -93,28 +92,28 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
     public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
 
-	public LandVehicle(World ilmondo){
-		super(ilmondo);
+	public ULandVehicle(World world){
+		super(world);
 		preventEntitySpawning = true; setSize(1f, 1f);
 		ignoreFrustumCheck = true; stepHeight = 1f;
         if(world.isRemote){
             setRenderDistanceWeight(1d);
         }
-        Print.debug("SPAWNING " + ilmondo.isRemote + " " + this.getEntityId());
+        Print.debug("SPAWNING " + world.isRemote + " " + this.getEntityId());
 	}
 	
 	/** Constructor to spawn either by a player or Constructor.
 	 * 
 	 * @param meta should be -1 or lower if placer rotation yaw matters
 	 * */
-	public LandVehicle(World world, VehicleData data, Vec3d pos, @Nullable EntityPlayer placer, int meta){
+	public ULandVehicle(World world, VehicleData data, Vec3d pos, @Nullable EntityPlayer placer, int meta){
 		this(world); this.setPosition(pos.x, pos.y, pos.z); this.vehicle = data;
 		if(placer != null) this.placer = placer.getGameProfile().getId();
 		initializeVehicle(false);
 		this.rotateYaw((placer == null || meta >= 0 ? (meta * 90f) : placer.rotationYaw) + 90f);
 	}
 
-	public LandVehicle(World world, VehicleData data, EntityPlayer player, LandVehicle truck){
+	public ULandVehicle(World world, VehicleData data, EntityPlayer player, ULandVehicle truck){
 		this(world, data, truck.getPositionVector(), player, 0);
 		this.truck = truck; truck.trailer = this;
 		rotpoint.updatePrevAxe();
@@ -186,7 +185,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             prevRotationPitch = rotpoint.getAxes().getPitch();
             prevRotationRoll = rotpoint.getAxes().getRoll();
             if(compound.hasKey("TruckId")){
-            	truck = (LandVehicle)world.getEntityByID(compound.getInteger("TruckId"));
+            	truck = (ULandVehicle)world.getEntityByID(compound.getInteger("TruckId"));
             }
             initializeVehicle(true);
         }
@@ -329,7 +328,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 		vehicle.getAttribute("lights").setValue(true);
                 	}
                 	//
-                    LandVehicle trailer = this.trailer;
+                    ULandVehicle trailer = this.trailer;
                     while(trailer != null){
                         trailer.vehicle.getAttribute("lights").setValue(vehicle.getAttribute("lights").getBooleanValue());
                         trailer.vehicle.getAttribute("lights_long").setValue(vehicle.getAttribute("lights_long").getBooleanValue());
@@ -372,9 +371,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public void tryAttach(EntityPlayer player){
 		Vec3d vec = this.getRotPoint().getAxes().getRelativeVector(this.getVehicleData().getRearConnector()).add(this.getPositionVector());
 		AxisAlignedBB aabb = new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
-		List<Entity> list = world.getEntitiesInAABBexcluding(this, aabb, (ent) -> ent instanceof LandVehicle);
+		List<Entity> list = world.getEntitiesInAABBexcluding(this, aabb, (ent) -> ent instanceof ULandVehicle);
 		for(Entity ent : list){
-			LandVehicle veh = (LandVehicle)ent;
+			ULandVehicle veh = (ULandVehicle)ent;
 			if(veh.truck == null){
 				veh.truck = this; this.trailer = veh;
 				this.sendConnectionUpdate(); veh.sendConnectionUpdate();
@@ -395,7 +394,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	public void tryDetach(EntityPlayer player){
 		if(this.getCoupledEntity(false) == null) return;
-		trailer.truck = null; LandVehicle trailer = this.trailer; this.trailer = null;
+		trailer.truck = null; ULandVehicle trailer = this.trailer; this.trailer = null;
 		trailer.sendConnectionUpdate(); this.sendConnectionUpdate();
 		Print.chat(player, "&c&oTrailer disconnected&a!");
 	}
@@ -602,7 +601,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 		return true;
                 	}
                 	//TODO connector checks
-                	world.spawnEntity(new LandVehicle(world, data, player, this));
+                	world.spawnEntity(new ULandVehicle(world, data, player, this));
                 	return true;
                 }
             }
@@ -1136,7 +1135,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 case "toggle_lights": {
                     vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
                     vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
-                    LandVehicle trailer = this.trailer;
+                    ULandVehicle trailer = this.trailer;
                     while(trailer != null){
                         trailer.vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
                         trailer.vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
@@ -1147,9 +1146,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 case "connections_update":{
                 	Print.debug(this);
                 	int truck = pkt.nbt.getInteger("truck"); Print.debug("packet result t0" + truck);
-                	if(truck == -1) this.truck = null; else this.truck = (LandVehicle)world.getEntityByID(truck);
+                	if(truck == -1) this.truck = null; else this.truck = (ULandVehicle)world.getEntityByID(truck);
                 	int trailer = pkt.nbt.getInteger("trailer"); Print.debug("packet result t1" + trailer);
-                	if(trailer == -1) this.trailer = null; else this.trailer = (LandVehicle)world.getEntityByID(trailer);
+                	if(trailer == -1) this.trailer = null; else this.trailer = (ULandVehicle)world.getEntityByID(trailer);
                 	break;
                 }
                 case "update_trailer":{

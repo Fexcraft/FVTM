@@ -3,8 +3,8 @@ package net.fexcraft.mod.fvtm.util.handler;
 import org.lwjgl.input.Keyboard;
 
 import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
-import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.legacy.KeyPress;
+import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;

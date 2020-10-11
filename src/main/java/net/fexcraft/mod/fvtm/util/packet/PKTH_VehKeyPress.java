@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.util.packet;
 
-import net.fexcraft.mod.fvtm.sys.legacy.GenericVehicle;
-import net.fexcraft.mod.fvtm.sys.legacy.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IThreadListener;
 import net.minecraftforge.fml.common.FMLCommonHandler;

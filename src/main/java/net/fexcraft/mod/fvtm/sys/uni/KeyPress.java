@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.sys.legacy;
+package net.fexcraft.mod.fvtm.sys.uni;
 
 public enum KeyPress {
 	

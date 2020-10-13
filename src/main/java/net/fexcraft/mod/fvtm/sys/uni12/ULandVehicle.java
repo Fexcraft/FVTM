@@ -80,16 +80,20 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	//
 	//public double throttle;
 	public float wheelsAngle, serverWY;//, wheelsYaw;
-    public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
+    public float prevRotationYaw;
+    public float prevRotationPitch;
+    public float prevRotationRoll;
     public ULandVehicle truck, trailer;
     //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
-    protected byte doorToggleTimer;
+    protected byte toggle_timer;
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
-    public int serverPositionTransitionTicker;
+    public int server_pos_ticker;
     public static final int servtick = 5;
+    @Deprecated
     public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
+    @Deprecated
     public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
 
 	public ULandVehicle(World world){
@@ -301,9 +305,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case TOGGABLES: {//client side
-            	if(doorToggleTimer > 0) return true;
+            	if(toggle_timer > 0) return true;
             	net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.toggle();
-            	doorToggleTimer += 10;
+            	toggle_timer += 10;
                 return true;
             }
             case SCRIPTS: {
@@ -314,7 +318,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;*/
             }
             case LIGHTS: {
-                if(doorToggleTimer <= 0){
+                if(toggle_timer <= 0){
                 	if(vehicle.getAttribute("lights").getBooleanValue()){
                 		if(vehicle.getAttribute("lights_long").getBooleanValue()){
                     		vehicle.getAttribute("lights").setValue(false);
@@ -335,7 +339,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                         trailer = trailer.trailer;
                     }
                 	//TODO find a way for fog lights
-                    doorToggleTimer = 10;
+                    toggle_timer = 10;
                     NBTTagCompound nbt = new NBTTagCompound();
                     nbt.setString("task", "toggle_lights");
                     nbt.setBoolean("lights", vehicle.getAttribute("lights").getBooleanValue());
@@ -353,14 +357,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         			Print.chat(player, "This vehicle does not have a rear connector installed.");
         			return true;
         		}
-                if(doorToggleTimer <= 0){
+                if(toggle_timer <= 0){
                 	if(this.getCoupledEntity(false) == null){
                 		this.tryAttach(player);
                 	}
                 	else{
                 		this.tryDetach(player);
                 	}
-                    doorToggleTimer = 10;
+                    toggle_timer = 10;
                 }
             	return true;
             }
@@ -442,7 +446,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(world.isRemote){
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
-            serverPositionTransitionTicker = servtick;
+            server_pos_ticker = servtick;
         }
         else{
             setPosition(posX, posY, posZ);
@@ -654,26 +658,26 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             this.ticksExisted = 0;
         }
         //
-        if(doorToggleTimer > 0){
-            doorToggleTimer--;
+        if(toggle_timer > 0){
+            toggle_timer--;
         }
         //
         if(!world.isRemote){ wheelsYaw *= 0.95F;  }
         if(wheelsYaw > 30){ wheelsYaw = 30; } if(wheelsYaw < -30){ wheelsYaw = -30; }
         if(world.isRemote){
-            if(serverPositionTransitionTicker > 0){
-                double x = posX + (serverPosX - posX) / serverPositionTransitionTicker;
-                double y = posY + (serverPosY - posY) / serverPositionTransitionTicker;
-                double z = posZ + (serverPosZ - posZ) / serverPositionTransitionTicker;
+            if(server_pos_ticker > 0){
+                double x = posX + (serverPosX - posX) / server_pos_ticker;
+                double y = posY + (serverPosY - posY) / server_pos_ticker;
+                double z = posZ + (serverPosZ - posZ) / server_pos_ticker;
                 double dYaw = MathHelper.wrapDegrees(serverYaw - rotpoint.getAxes().getYaw());
                 double dPitch = MathHelper.wrapDegrees(serverPitch - rotpoint.getAxes().getPitch());
                 double dRoll = MathHelper.wrapDegrees(serverRoll - rotpoint.getAxes().getRoll());
-                rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / serverPositionTransitionTicker);
-                rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / serverPositionTransitionTicker);
-                float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / serverPositionTransitionTicker);
-                --serverPositionTransitionTicker; setPosition(x, y, z);
+                rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / server_pos_ticker);
+                rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / server_pos_ticker);
+                float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / server_pos_ticker);
+                --server_pos_ticker; setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
-                float old = wheelsYaw; wheelsYaw = wheelsYaw + (serverWY - wheelsYaw) / serverPositionTransitionTicker;
+                float old = wheelsYaw; wheelsYaw = wheelsYaw + (serverWY - wheelsYaw) / server_pos_ticker;
                 if(wheelsYaw != wheelsYaw) wheelsYaw = old;
             }
             vehicle.getAttribute("steering_angle").setValue(wheelsYaw);

@@ -20,7 +20,7 @@ public class BasicSpawnSystem extends EntitySystem {
 
 	@Override
 	public String getName(){
-		return "Basic/U12 Entities";
+		return "Basic/U12 Prototype";
 	}
 
 	@Override

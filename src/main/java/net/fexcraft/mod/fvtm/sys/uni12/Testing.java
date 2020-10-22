@@ -22,16 +22,12 @@ public class Testing {
 		
 		
 		float mass = 1000f;
-		Vec3f acc = divide(flong, mass);
+		Vec3f acc = flong.divide(mass);
 		vel = vel.add(acc.scale(ticks));
 		
 		Vec3f pos = new Vec3f();
 		pos = pos.add(vel.scale(ticks));
 		
-	}
-
-	private static Vec3f divide(Vec3f vec, float div){
-		return new Vec3f(vec.xCoord / div, vec.yCoord / div, vec.zCoord / div);
 	}
 	
 	public static void pro1(boolean brake){
@@ -50,7 +46,7 @@ public class Testing {
 		
 		
 		float mass = 1000f;
-		Vec3f acc = divide(flong, mass);
+		Vec3f acc = flong.divide(mass);
 		vel = vel.add(acc.scale(ticks));
 		
 		Vec3f pos = new Vec3f();

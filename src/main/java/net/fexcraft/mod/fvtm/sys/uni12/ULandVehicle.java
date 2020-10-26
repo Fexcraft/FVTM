@@ -99,6 +99,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     //
     //
     public ArrayList<Axle> axles = new ArrayList<>();
+    public Axle front, rear;
+    public double wheelbase, cg_height;
 
 	public ULandVehicle(World world){	
 		super(world);
@@ -167,11 +169,22 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         axles.forEach(axle -> axle.initCenter(vehicle.getWheelPositions()));
         double amin = 0, amax = 0;
         for(Axle axle : axles){
-        	if(axle.pos.x < amin) amin = axle.pos.x;
-        	if(axle.pos.x > amax) amax = axle.pos.x; 
+        	if(axle.pos.x < amin){
+        		amin = axle.pos.x;
+        		rear = axle;
+        	}
+        	if(axle.pos.x > amax){
+        		amax = axle.pos.x;
+        		front = axle;
+        	}
         }
-        double total = Math.abs(amin) + Math.abs(amax);
-        for(Axle axle : axles) axle.weight_ratio = Math.abs(axle.pos.x) / total;
+        wheelbase = Math.abs(amin) + Math.abs(amax);
+        cg_height = 0;
+        for(Axle axle : axles){
+        	axle.weight_ratio = Math.abs(axle.pos.x) / wheelbase;
+        	cg_height = axle.pos.y;
+        }
+        cg_height /= axles.size();
 	}
 
 	@Override
@@ -775,7 +788,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public static final float INERTIA_SCALE = 1f;
 
 	public void onUpdateMovement(){
-		//float mass = vehicle.getAttribute("weight").getFloatValue();
+		double mass = vehicle.getAttribute("weight").getFloatValue();
+		for(Axle axle : axles) axle.calcWeight(mass, null, cg_height, wheelbase);
 		
 		
 		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;

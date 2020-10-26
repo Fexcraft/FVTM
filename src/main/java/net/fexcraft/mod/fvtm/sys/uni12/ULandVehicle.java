@@ -150,6 +150,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
         }
         //
+        setupAxles();
+	}
+	
+	private void setupAxles(){
+		axles.clear();
         for(Entry<String, Vec3d> entry : vehicle.getWheelPositions().entrySet()){
         	Vec3d val = entry.getValue();
         	Axle axle = null;
@@ -160,8 +165,15 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	axle.wheels.add(entry.getKey());
         }
         axles.forEach(axle -> axle.initCenter(vehicle.getWheelPositions()));
+        double amin = 0, amax = 0;
+        for(Axle axle : axles){
+        	if(axle.pos.x < amin) amin = axle.pos.x;
+        	if(axle.pos.x > amax) amax = axle.pos.x; 
+        }
+        double total = Math.abs(amin) + Math.abs(amax);
+        for(Axle axle : axles) axle.weight_ratio = Math.abs(axle.pos.x) / total;
 	}
-	
+
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicle == null){
@@ -760,10 +772,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     }
     
     public static final float GRAVITY = 9.81f;
-    public static final float INERTIA = 1f;
+    public static final float INERTIA_SCALE = 1f;
 
 	public void onUpdateMovement(){
-
+		//float mass = vehicle.getAttribute("weight").getFloatValue();
 		
 		
 		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;

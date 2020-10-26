@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.uni12;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Vec3f;
 
 public class Testing {
@@ -66,8 +67,9 @@ public class Testing {
 		float waf = (afd / wbase) * weight - (cgh / wbase) * mass * accel;
 		float war = (ard / wbase) * weight + (cgh / wbase) * mass * accel;
 		
-		
-		
+		float wang = Static.rad45;
+		float wrad = 0.4f;
+		float slipr = (wang * wrad - vel.lengthVector()) / vel.normalize().lengthVector();//??
 		
 	}
 

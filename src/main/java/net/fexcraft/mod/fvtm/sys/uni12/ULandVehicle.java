@@ -3,7 +3,9 @@ package net.fexcraft.mod.fvtm.sys.uni12;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -91,12 +93,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public double serverYaw, serverPitch, serverRoll;
     public int server_pos_ticker;
     public static final int servtick = 5;
-    @Deprecated
     public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
-    @Deprecated
     public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
+    //
+    //
+    //
+    public ArrayList<Axle> axles = new ArrayList<>();
 
-	public ULandVehicle(World world){
+	public ULandVehicle(World world){	
 		super(world);
 		preventEntitySpawning = true; setSize(1f, 1f);
 		ignoreFrustumCheck = true; stepHeight = 1f;
@@ -145,6 +149,17 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(!remote && truck != null){
         	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
         }
+        //
+        for(Entry<String, Vec3d> entry : vehicle.getWheelPositions().entrySet()){
+        	Vec3d val = entry.getValue();
+        	Axle axle = null;
+        	if(axles.stream().anyMatch(a -> a.pos.x == val.x && a.pos.y == val.y)){
+        		axle = axles.stream().filter(a -> a.pos.x == val.x && a.pos.y == val.y).findFirst().get();
+        	}
+        	else axle = new Axle(axles.size(), new Vec3d(val.x, val.y, 0));
+        	axle.wheels.add(entry.getKey());
+        }
+        axles.forEach(axle -> axle.initCenter(vehicle.getWheelPositions()));
 	}
 	
 	@Override
@@ -701,7 +716,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").getIntegerValue() > 0) && lata.max_throttle != 0){
                 throttle *= 0.98F;
             }
-            this.onUpdateMovement(); if(trailer != null){ trailer.alignTrailer(); }
+            this.onUpdateMovement();
+            if(trailer != null) trailer.alignTrailer();
             //
             if(wheels[0] != null && wheels[1] != null && wheels[2] != null && wheels[3] != null){
                 Vec3d front = new Vec3d((wheels[2].posX + wheels[3].posX) / 2F, (wheels[2].posY + wheels[3].posY) / 2F, (wheels[2].posZ + wheels[3].posZ) / 2F);
@@ -742,9 +758,76 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }
+    
+    public static final float GRAVITY = 9.81f;
+    public static final float INERTIA = 1f;
 
 	public void onUpdateMovement(){
-		if(vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
+
+		
+		
+		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
+			Vec3d atmc = new Vec3d(0, 0, 0);
+	        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
+	        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
+	        boolean consumed = processConsumption(engine);
+	        for(WheelEntity wheel : wheels){
+	            if(wheel == null){ continue; }
+	            onGround = true; wheel.onGround = true;
+	            wheel.rotationYaw = rotpoint.getAxes().getYaw();
+	            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
+	                wheel.rotationYaw += wheelsYaw;
+	            }
+	            wheel.motionX *= 0.9F;
+	            wheel.motionY *= 0.9F;
+	            wheel.motionZ *= 0.9F;
+	            wheel.motionY -= 0.98F / 20F;//Gravity
+	            if(engine != null){
+	                if((canThrustCreatively || consumed)){
+	                    double velocityScale;
+	                    if(lata.is_tracked){
+	                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
+	                        //
+	                        float turningDrag = 0.02F;
+	                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
+	                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
+	                        //
+	                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
+	                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
+	                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
+	                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
+	                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
+	                    }
+	                    else{
+	                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
+	                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
+	                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
+	                        //
+	                        if(wheel.wheelid == 2 || wheel.wheelid == 3){
+	                            velocityScale = 0.01F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod) * (throttle > 0 ? 1 : -1);
+	                            wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
+	                            wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
+	                        }
+	                        else{
+	                            wheel.motionX *= 0.9F;
+	                            wheel.motionZ *= 0.9F;
+	                        }
+	                    }
+	                }
+	            }
+	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
+	            //pull wheel back to car
+	            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
+	            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+	            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
+	            if(despos.lengthSquared() > 0.001F){
+	                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
+	                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
+	            }
+	        }
+	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
+		}
+		else{
 			Vec3d atmc = new Vec3d(0, 0, 0); int wheelid = 0;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
@@ -776,133 +859,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            wheelid++;
 	        }
 	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-		}
-		else{
-			if(getVehicleType().isWaterVehicle()){
-		        Vec3d atmc = new Vec3d(0, 0, 0);
-		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
-		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
-		        boolean consumed = processConsumption(engine);
-		        for(WheelEntity wheel : wheels){
-		            if(wheel == null){ continue; }
-		            onGround = false; wheel.onGround = false;
-		            wheel.rotationYaw = rotpoint.getAxes().getYaw();
-		            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
-		                wheel.rotationYaw += wheelsYaw;
-		            }
-		            wheel.motionX *= 0.9F;
-		            wheel.motionY *= 0.9F;
-		            wheel.motionZ *= 0.9F;
-		            wheel.motionY -= 0.98F / 20F;//Gravity
-		            if(engine != null){
-		                if((canThrustCreatively || consumed)){
-		                    double velocityScale;
-		                    if(lata.is_tracked){
-		                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
-		                        //
-		                        float turningDrag = 0.02F;
-		                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-		                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-		                        //
-		                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-		                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
-		                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
-		                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
-		                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
-		                    }
-		                    else{
-		                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-		                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-		                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-		                        //
-		                        if(wheel.wheelid == 2 || wheel.wheelid == 3){
-		                            velocityScale = 0.01F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod) * (throttle > 0 ? 1 : -1);
-		                            wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-		                            wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-		                        }
-		                        else{
-		                            wheel.motionX *= 0.9F;
-		                            wheel.motionZ *= 0.9F;
-		                        }
-		                    }
-		                }
-		            }
-		            if(world.containsAnyLiquid(wheel.getEntityBoundingBox())){
-		                wheel.motionY += lata.bouyancy;
-		            }
-		            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-		            //pull wheel back to the boat
-		            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
-		            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-		            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
-		            if(despos.lengthSquared() > 0.001F){
-		                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
-		                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
-		            }
-		        }
-		        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-			}
-			else{
-				Vec3d atmc = new Vec3d(0, 0, 0);
-		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
-		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
-		        boolean consumed = processConsumption(engine);
-		        for(WheelEntity wheel : wheels){
-		            if(wheel == null){ continue; }
-		            onGround = true; wheel.onGround = true;
-		            wheel.rotationYaw = rotpoint.getAxes().getYaw();
-		            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
-		                wheel.rotationYaw += wheelsYaw;
-		            }
-		            wheel.motionX *= 0.9F;
-		            wheel.motionY *= 0.9F;
-		            wheel.motionZ *= 0.9F;
-		            wheel.motionY -= 0.98F / 20F;//Gravity
-		            if(engine != null){
-		                if((canThrustCreatively || consumed)){
-		                    double velocityScale;
-		                    if(lata.is_tracked){
-		                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
-		                        //
-		                        float turningDrag = 0.02F;
-		                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-		                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-		                        //
-		                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-		                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
-		                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
-		                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
-		                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
-		                    }
-		                    else{
-		                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-		                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-		                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-		                        //
-		                        if(wheel.wheelid == 2 || wheel.wheelid == 3){
-		                            velocityScale = 0.01F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod) * (throttle > 0 ? 1 : -1);
-		                            wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-		                            wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-		                        }
-		                        else{
-		                            wheel.motionX *= 0.9F;
-		                            wheel.motionZ *= 0.9F;
-		                        }
-		                    }
-		                }
-		            }
-		            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-		            //pull wheel back to car
-		            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
-		            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-		            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
-		            if(despos.lengthSquared() > 0.001F){
-		                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
-		                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
-		            }
-		        }
-		        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-			}
 		}
 	}
 	

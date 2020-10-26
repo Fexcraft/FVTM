@@ -10,6 +10,7 @@ public class Axle {
 	public final int id;
 	public Vec3d pos;
 	public final ArrayList<String> wheels = new ArrayList<>();
+	public double weight_ratio;
 	
 	public Axle(int id, Vec3d pos){
 		this.id = id;

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.legacy;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
@@ -25,6 +26,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     public boolean foundveh;
     private int vehicleid;
     public int wheelid;
+    public WheelSlot slot;
 
     public WheelEntity(World world){
         super(world); setSize(0.25F, 0.25F); stepHeight = 1.1F;
@@ -34,6 +36,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         this(entity.world); vehicle = entity;
         vehicleid = entity.getEntity().getEntityId();
         wheelid = i; initPosition();
+        slot = vehicle.getVehicleData().getWheelSlots().get(vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid]);
     }
 
     @Override
@@ -47,9 +50,9 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         if(world.getEntityByID(vehicleid) instanceof GenericVehicle){
             vehicle = (GenericVehicle)world.getEntityByID(vehicleid);
         }
-        if(vehicle != null){
-            setPosition(posX, posY, posZ);
-        }
+        if(vehicle == null) return;
+        setPosition(vehicle.posX, vehicle.posY, vehicle.posZ);
+        slot = vehicle.getVehicleData().getWheelSlots().get(vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid]);
     }
 
     public void initPosition(){

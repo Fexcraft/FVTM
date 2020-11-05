@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Pos;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class WheelSlot {
@@ -11,6 +12,7 @@ public class WheelSlot {
 	private Pos position;
 	private float yrot, connector, maxradius = 16f, minradius = 16f, minwidth = 1, maxwidth = 8;
 	private boolean drive = false, steering = false, required, relative;
+	private String powered = null;
 	//TODO implement deco wheels and inactive wheels
 	
 	public WheelSlot(JsonObject obj){
@@ -33,6 +35,10 @@ public class WheelSlot {
 		steering = JsonUtil.getIfExists(obj, "steering", false);
 		required = JsonUtil.getIfExists(obj, "required", false);
 		relative = JsonUtil.getIfExists(obj, "relative", false);
+		if(obj.has("powered")){
+			if(obj.get("powered").getAsString().equals("true")) powered = "";
+			else powered = obj.get("powered").getAsString();
+		}
 	}
 	
 	public WheelSlot read(NBTTagCompound compound){
@@ -47,6 +53,7 @@ public class WheelSlot {
 		steering = compound.hasKey("steering") && compound.getBoolean("steering");
 		required = compound.hasKey("required") && compound.getBoolean("required");
 		relative = compound.hasKey("relative") && compound.getBoolean("relative");
+		powered = compound.hasKey("powered") ? compound.getString("powered") : null;
 		return this;
 	}
 	
@@ -75,6 +82,7 @@ public class WheelSlot {
 		if(steering) compound.setBoolean("steering", true);
 		if(required) compound.setBoolean("required", true);
 		if(relative) compound.setBoolean("relative", true);
+		if(powered != null) compound.setString("powered", powered);
 		return compound;
 	}
 	
@@ -88,5 +96,9 @@ public class WheelSlot {
 	public float connector(){ return connector; }
 	public boolean steering(){ return steering; }
 	public boolean required(){ return required; }
+	
+	public boolean powered(VehicleData data){
+		return powered == null ? false : powered.length() == 0 || data != null && data.getBooleanAttribute(powered, false);
+	}
 
 }

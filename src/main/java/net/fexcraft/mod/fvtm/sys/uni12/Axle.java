@@ -23,8 +23,8 @@ public class Axle {
 		pos = new Vec3d(pos.x, pos.y, pos.z / wheels.size());
 	}
 
-	public void calcWeight(double mass, Vec3d acc, double height, double base){
-		double ahb = 0.2 * acc.x * height / base;
+	public void calcWeight(double mass, double acc, double height, double base){
+		double ahb = 0.2 * acc * height / base;
 		weight_on = mass * (weight_ratio * ULandVehicle.GRAVITY + (pos.x > 0 ? -ahb : ahb));
 	}
 

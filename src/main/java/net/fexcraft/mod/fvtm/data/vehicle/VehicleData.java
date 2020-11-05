@@ -380,6 +380,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	public TreeMap<String, Attribute<?>> getAttributes(){
 		return attributes;
 	}
+
+	/** Null-Safe attribute value check. Works with tri-state attributes too. */
+	public Boolean getAttributeBoolean(String id, boolean def){
+		Attribute<?> attr = getAttribute(id);
+		return attr == null /*|| !attr.type().isTristate()*/ ? def : attr.getTriStateValue();
+	}
 	
 	/** @return null if installed successfully. */
 	public PartData installPart(@Nullable ICommandSender engineer, PartData data, String category, boolean hotinst){
@@ -663,7 +669,6 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(VehicleScript script : scripts) if(script.getId().equals(string)) return script; return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <V extends VehicleScript> V getVehicleScriptCasted(String string){
 		for(VehicleScript script : scripts) if(script.getId().equals(string)) return (V)script; return null;
 	}

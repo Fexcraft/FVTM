@@ -789,16 +789,23 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttribute("weight").getFloatValue();
-		for(Axle axle : axles) axle.calcWeight(mass, null, cg_height, wheelbase);
+		double accel = mass * (GRAVITY / 2);
+		for(Axle axle : axles) axle.calcWeight(mass, accel, cg_height, wheelbase);
+		//
+		Vec3d atmc = new Vec3d(0, 0, 0);
+        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
+        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
+        boolean consumed = processConsumption(engine);
+        //
 		for(WheelEntity wheel : wheels){
-			
+            if(wheel == null) continue;
+            onGround = wheel.onGround = true;
+            wheel.rotationYaw = rotpoint.getAxes().getYaw();
+            
+            
 		}
 		
 		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
-			Vec3d atmc = new Vec3d(0, 0, 0);
-	        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
-	        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
-	        boolean consumed = processConsumption(engine);
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
 	            onGround = true; wheel.onGround = true;
@@ -856,7 +863,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
 		}
 		else{
-			Vec3d atmc = new Vec3d(0, 0, 0); int wheelid = 0;
+			int wheelid = 0;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
 	            onGround = true; wheel.onGround = true;

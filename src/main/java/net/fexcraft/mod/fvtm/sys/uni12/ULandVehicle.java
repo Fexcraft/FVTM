@@ -790,7 +790,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttribute("weight").getFloatValue();
 		for(Axle axle : axles) axle.calcWeight(mass, null, cg_height, wheelbase);
-		
+		for(WheelEntity wheel : wheels){
+			
+		}
 		
 		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
 			Vec3d atmc = new Vec3d(0, 0, 0);

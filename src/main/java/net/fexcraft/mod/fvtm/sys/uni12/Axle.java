@@ -12,6 +12,7 @@ public class Axle {
 	public final ArrayList<String> wheels = new ArrayList<>();
 	public double weight_ratio;
 	public double weight_on;
+	public double yaw_speed;
 	
 	public Axle(int id, Vec3d pos){
 		this.id = id;
@@ -23,9 +24,10 @@ public class Axle {
 		pos = new Vec3d(pos.x, pos.y, pos.z / wheels.size());
 	}
 
-	public void calcWeight(double mass, double acc, double height, double base){
+	public void calc(double mass, double acc, double height, double base, double yaw){
 		double ahb = 0.2 * acc * height / base;
 		weight_on = mass * (weight_ratio * ULandVehicle.GRAVITY + (pos.x > 0 ? -ahb : ahb));
+		yaw_speed = pos.x * yaw;
 	}
 
 }

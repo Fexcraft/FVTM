@@ -95,6 +95,7 @@ public class WheelSlot {
 	public float connector(){ return connector; }
 	public boolean steering(){ return steering; }
 	public boolean required(){ return required; }
+	public boolean braking(){ return braking; }
 	
 	public boolean powered(VehicleData data){
 		return powered == null ? false : powered.length() == 0 || data != null && data.getAttributeBoolean(powered, false);

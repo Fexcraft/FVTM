@@ -101,6 +101,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public ArrayList<Axle> axles = new ArrayList<>();
     public Axle front, rear;
     public double wheelbase, cg_height;
+    public double yaw_rate;
+    public boolean braking;
 
 	public ULandVehicle(World world){	
 		super(world);
@@ -199,6 +201,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		prevRotationYaw = compound.getFloat("RotationYaw");
 		prevRotationPitch = compound.getFloat("RotationPitch");
 		prevRotationRoll = compound.getFloat("RotationRoll");
+		braking = compound.getBoolean("Braking");
 		rotpoint.loadAxes(this, compound);
 		initializeVehicle(world.isRemote); // Print.debug(compound.toString());
 		super.readEntityFromNBT(compound);
@@ -207,6 +210,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
 		vehicle.write(compound);
+		compound.setBoolean("Braking", braking);
 		rotpoint.saveAxes(this, compound); //Print.debug(compound.toString());
 		super.writeEntityToNBT(compound);
 	}
@@ -317,14 +321,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case BRAKE:{
-                throttle *= 0.8F;
-                if(onGround){
-                    motionX *= 0.8F;
-                    motionZ *= 0.8F;
-                }
-                if(throttle < -0.0001){
-                    throttle = 0;
-                }
+                braking = !braking;
                 return true;
             }
             case ENGINE: {
@@ -786,11 +783,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     
     public static final float GRAVITY = 9.81f;
     public static final float INERTIA_SCALE = 1f;
+    public static final int TICKR = 20;
+    private static final float tiregrip = 2;//TODO TIRES
+    private static final float brakegrip = 0.75f;//TODO TIRES
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttribute("weight").getFloatValue();
 		double accel = mass * (GRAVITY / 2);
-		for(Axle axle : axles) axle.calcWeight(mass, accel, cg_height, wheelbase);
+		for(Axle axle : axles) axle.calc(mass, accel, cg_height, wheelbase, yaw_rate);
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);
         boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
@@ -801,7 +801,21 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             if(wheel == null) continue;
             onGround = wheel.onGround = true;
             wheel.rotationYaw = rotpoint.getAxes().getYaw();
+            double cs = Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
+            double sn = Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
+            Axle axle = getAxle(wheel.getIndex());
+            double motx = cs * motionX + sn * motionY;
+            double moty = cs * motionY - sn * motionX;
             
+            wheel.motionX *= 0.9F;
+            wheel.motionY *= 0.9F;
+            wheel.motionZ *= 0.9F;
+            wheel.motionY -= 0.98F / TICKR;
+            
+            double steer = wheel.slot.steering() ? Math.signum(motx) * wheelsYaw : 0;
+            double slip_angle = Math.atan2(moty + axle.yaw_speed, Math.abs(motx) - steer);
+            double grip = tiregrip * (wheel.slot.braking() && braking ? brakegrip : 0);//TODO TIRES
+            double frict = Static.clamp(axle.pos.x > 0 ? 5 : 5.2f, -grip, grip) * axle.weight_on;//TODO TIRES
             
 		}
 		
@@ -896,7 +910,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
 		}
 	}
-	
+
+	private Axle getAxle(String index){
+		for(Axle axle : axles){
+			if(axle.wheels.contains(index)) return axle;
+		}
+		return null;
+	}
+
 	public void alignTrailer(){
         prevPosX = posX; prevPosY = posY; prevPosZ = posZ; if(wheelnull() || truck == null){ return; }
         Vec3d conn = truck.rotpoint.getAxes().getRelativeVector(truck.getVehicleData().getRearConnector());

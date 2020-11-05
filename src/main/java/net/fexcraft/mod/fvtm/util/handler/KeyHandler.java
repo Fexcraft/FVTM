@@ -25,7 +25,7 @@ public class KeyHandler {
     private static Minecraft minecraft;
     public static KeyBinding engineToggle, openInventory;
     public static KeyBinding doorToggle, scriptsGUI, lightsToggle;
-    public static KeyBinding trailerToggle, wagonToggle, reset;
+    public static KeyBinding trailerToggle, wagonToggle, reset, brake;
     public static KeyBinding arrow_up, arrow_down, arrow_left, arrow_right;
     public static final String category = "keycompound.fvtm.controls";
 
@@ -43,6 +43,7 @@ public class KeyHandler {
         ClientRegistry.registerKeyBinding(arrow_left = new KeyBinding("key.fvtm.arrow_left", KeyConflictContex.VEHICLE, Keyboard.KEY_LEFT, category));
         ClientRegistry.registerKeyBinding(arrow_right = new KeyBinding("key.fvtm.arrow_right", KeyConflictContex.VEHICLE, Keyboard.KEY_RIGHT, category));
         ClientRegistry.registerKeyBinding(reset = new KeyBinding("key.fvtm.reset", KeyConflictContex.TOGGABLE, Keyboard.KEY_SEMICOLON, category));
+        ClientRegistry.registerKeyBinding(brake = new KeyBinding("key.fvtm.brake", KeyConflictContex.TOGGABLE, Keyboard.KEY_SPACE, category));
     }
     
     public static enum KeyConflictContex implements IKeyConflictContext {

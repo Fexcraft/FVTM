@@ -36,7 +36,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         this(entity.world); vehicle = entity;
         vehicleid = entity.getEntity().getEntityId();
         wheelid = i; initPosition();
-        slot = vehicle.getVehicleData().getWheelSlots().get(vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid]);
+        slot = vehicle.getVehicleData().getWheelSlots().get(getIndex());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         }
         if(vehicle == null) return;
         setPosition(vehicle.posX, vehicle.posY, vehicle.posZ);
-        slot = vehicle.getVehicleData().getWheelSlots().get(vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid]);
+        slot = vehicle.getVehicleData().getWheelSlots().get(getIndex());
     }
 
     public void initPosition(){
@@ -150,6 +150,10 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	@Override
 	public void playStepSound(BlockPos blockpos, Block block){
 		return;
+	}
+
+	public String getIndex(){
+		return vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid];
 	}
 
 }

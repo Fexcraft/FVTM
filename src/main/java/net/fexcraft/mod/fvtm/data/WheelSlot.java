@@ -11,14 +11,12 @@ public class WheelSlot {
 	
 	private Pos position;
 	private float yrot, connector, maxradius = 16f, minradius = 16f, minwidth = 1, maxwidth = 8;
-	private boolean drive = false, steering = false, required, relative;
+	private boolean steering, required, relative, braking;
 	private String powered = null;
-	//TODO implement deco wheels and inactive wheels
 	
 	public WheelSlot(JsonObject obj){
 		position = Pos.fromJson(obj, false);
 		yrot = JsonUtil.getIfExists(obj, "y_rot", 0).floatValue();
-		drive = JsonUtil.getIfExists(obj, "drive", false);
 		connector = JsonUtil.getIfExists(obj, "connector", 0f).floatValue();
 		if(obj.has("radius")){
 			float rad = obj.get("radius").getAsFloat();
@@ -35,16 +33,17 @@ public class WheelSlot {
 		steering = JsonUtil.getIfExists(obj, "steering", false);
 		required = JsonUtil.getIfExists(obj, "required", false);
 		relative = JsonUtil.getIfExists(obj, "relative", false);
-		if(obj.has("powered")){
-			if(obj.get("powered").getAsString().equals("true")) powered = "";
+		boolean drive = JsonUtil.getIfExists(obj, "drive", false);
+		if(drive || obj.has("powered")){
+			if(drive || obj.get("powered").getAsString().equals("true")) powered = "";
 			else powered = obj.get("powered").getAsString();
 		}
+		braking = JsonUtil.getIfExists(obj, "braking", true);
 	}
 	
 	public WheelSlot read(NBTTagCompound compound){
 		position = Pos.fromNBT(null, compound);
 		yrot = compound.getFloat("y_rot");
-		drive = compound.hasKey("drive") && compound.getBoolean("drive");
 		connector = compound.hasKey("connector") ? compound.getFloat("connector") : 0f;
 		maxradius = compound.hasKey("max_radius") ? compound.getFloat("max_radius") : 16f;
 		minradius = compound.hasKey("min_radius") ? compound.getFloat("min_radius") : 16f;
@@ -54,11 +53,12 @@ public class WheelSlot {
 		required = compound.hasKey("required") && compound.getBoolean("required");
 		relative = compound.hasKey("relative") && compound.getBoolean("relative");
 		powered = compound.hasKey("powered") ? compound.getString("powered") : null;
+		braking = compound.hasKey("braking") && compound.getBoolean("braking");
 		return this;
 	}
 	
-	public WheelSlot(Pos pos, float rot, boolean drivewheel, float conn, float max, float min, float wmax, float wmin, boolean bool, boolean req){
-		this.position = pos; this.yrot = rot; this.drive = drivewheel; this.connector = conn; this.minwidth = wmin; this.maxwidth = wmax;
+	public WheelSlot(Pos pos, float rot, String powered, float conn, float max, float min, float wmax, float wmin, boolean bool, boolean req){
+		this.position = pos; this.yrot = rot; this.powered = powered; this.connector = conn; this.minwidth = wmin; this.maxwidth = wmax;
 		this.maxradius = max; this.minradius = min; this.steering = bool; this.required = req;
 	}
 	
@@ -67,13 +67,12 @@ public class WheelSlot {
 	public WheelSlot copy(Pos pos){
 		Pos newpos = this.position.copy();
 		if(pos != null && relative) newpos = newpos.add(pos);
-		return new WheelSlot(newpos, yrot, drive, connector, maxradius, minradius, maxwidth, minwidth, steering, required);
+		return new WheelSlot(newpos, yrot, powered, connector, maxradius, minradius, maxwidth, minwidth, steering, required);
 	}
 	
 	public NBTTagCompound write(NBTTagCompound compound){
 		position.toNBT(null, compound);
 		compound.setFloat("y_rot", yrot);
-		if(drive) compound.setBoolean("drive", drive);
 		if(connector > 0f) compound.setFloat("connector", connector);
 		compound.setFloat("max_radius", maxradius);
 		compound.setFloat("min_radius", maxradius);
@@ -83,12 +82,12 @@ public class WheelSlot {
 		if(required) compound.setBoolean("required", true);
 		if(relative) compound.setBoolean("relative", true);
 		if(powered != null) compound.setString("powered", powered);
+		if(braking) compound.setBoolean("braking", braking);
 		return compound;
 	}
 	
 	public Pos pos(){ return position; }
 	public float yrot(){ return yrot; }
-	public boolean drivewheel(){ return drive; }
 	public float maxradius(){ return maxradius; }
 	public float minradius(){ return minradius; }
 	public float maxwidth(){ return maxwidth; }
@@ -98,7 +97,7 @@ public class WheelSlot {
 	public boolean required(){ return required; }
 	
 	public boolean powered(VehicleData data){
-		return powered == null ? false : powered.length() == 0 || data != null && data.getBooleanAttribute(powered, false);
+		return powered == null ? false : powered.length() == 0 || data != null && data.getAttributeBoolean(powered, false);
 	}
 
 }

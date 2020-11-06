@@ -252,7 +252,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				if(toggables) page(1);
 				else seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
 			}
-			if(seat.vehicle instanceof ULandVehicle){
+			if(player.getRidingEntity() instanceof ULandVehicle){
 				if(isKeyDown(KeyHandler.pbrake.getKeyCode())){
 					seat.onKeyPress(KeyPress.PBRAKE, player);
 				}

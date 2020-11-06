@@ -23,10 +23,12 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
+import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -421,6 +423,12 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
 			mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
+		}
+		if(Command.DEBUG){
+			for(int i = 0; i < seat.vehicle.wheels.length; i++){
+				WheelEntity wheel = seat.vehicle.wheels[i];
+				mc.fontRenderer.drawString(Formatter.format(wheel == null ? "none" : wheel.slot == null ? "no_slot" : (wheel.slot.steering() ? "steering, " : "") + (wheel.slot.powered(seat.vehicle.getVehicleData()) ? "powered" : "idle")), 7, 51 + (i * 11), 0xffffff);
+			}
 		}
 		GL11.glPopMatrix();
 	}

@@ -44,7 +44,7 @@ public class KeyHandler {
         ClientRegistry.registerKeyBinding(arrow_right = new KeyBinding("key.fvtm.arrow_right", KeyConflictContex.VEHICLE, Keyboard.KEY_RIGHT, category));
         ClientRegistry.registerKeyBinding(reset = new KeyBinding("key.fvtm.reset", KeyConflictContex.TOGGABLE, Keyboard.KEY_SEMICOLON, category));
         ClientRegistry.registerKeyBinding(brake = new KeyBinding("key.fvtm.brake", KeyConflictContex.VEHICLE, Keyboard.KEY_SPACE, category));
-        ClientRegistry.registerKeyBinding(pbrake = new KeyBinding("key.fvtm.pbrake", KeyConflictContex.VEHICLE, Keyboard.KEY_P, category));
+        ClientRegistry.registerKeyBinding(pbrake = new KeyBinding("key.fvtm.pbrake", KeyConflictContex.VEHICLE, Keyboard.KEY_O, category));
     }
     
     public static enum KeyConflictContex implements IKeyConflictContext {

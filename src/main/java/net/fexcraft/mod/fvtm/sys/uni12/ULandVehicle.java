@@ -294,6 +294,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	public WheelEntity[] getWheels(){
 		return wheels;
 	}
+	@Override
+	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
+		return onKeyPress(key, seat, player, false);
+	}
 
 	@Override
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player, boolean state){

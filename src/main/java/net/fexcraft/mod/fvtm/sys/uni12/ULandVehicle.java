@@ -140,6 +140,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getLegacyData();
         wheels = new WheelEntity[WHEELINDEX.length];
+        setupAxles();
         if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         stepHeight = lata.wheel_step_height;
@@ -154,7 +155,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
         }
         //
-        setupAxles();
 	}
 	
 	private void setupAxles(){
@@ -165,7 +165,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	if(axles.stream().anyMatch(a -> a.pos.x == val.x && a.pos.y == val.y)){
         		axle = axles.stream().filter(a -> a.pos.x == val.x && a.pos.y == val.y).findFirst().get();
         	}
-        	else axle = new Axle(axles.size(), new Vec3d(val.x, val.y, 0));
+        	else{
+        		axle = new Axle(axles.size(), new Vec3d(val.x, val.y, 0));
+            	axles.add(axle);
+        	}
         	axle.wheels.add(entry.getKey());
         }
         axles.forEach(axle -> axle.initCenter(vehicle.getWheelPositions()));
@@ -797,9 +800,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public static final float GRAVITY = 9.81f;
     public static final float INERTIA_SCALE = 1f;
     public static final int TICKR = 20;
+    public static final float TICKA = 1f / TICKR;
     private static final float tiregrip = 2;//TODO TIRES
     private static final float brakegrip = 0.75f;//TODO TIRES
     private static final float engineforce = 8000f;//TODO ENGINE CALC + GEARS
+    private static final float rr = 8f;//TODO ATTR
+    private static final float ar = 2.5f;//TODO ATTR
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttribute("weight").getFloatValue();
@@ -819,27 +825,54 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             if(wheel == null) continue;
             onGround = wheel.onGround = true;
             wheel.rotationYaw = rotpoint.getAxes().getYaw();
-            double cs = Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
-            double sn = Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
             Axle axle = getAxle(wheel.getIndex());
-            double motx = cs * motionX + sn * motionY;
-            double moty = cs * motionY - sn * motionX;
-            
+            if(axle == null){
+            	Print.debug("noax" + wheel.wheelid);
+            }
             wheel.motionX *= 0.9F;
             wheel.motionY *= 0.9F;
             wheel.motionZ *= 0.9F;
             wheel.motionY -= 0.98F / TICKR;
+
+            double cs = Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
+            double sn = Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
+            double motx = cs * motionX + sn * motionY;
+            double moty = cs * motionY - sn * motionX;
             
             double steer = wheel.slot.steering() ? Math.signum(motx) * wheelsYaw : 0;
             double slip_angle = Math.atan2(moty + axle.yaw_speed, Math.abs(motx) - steer);
             double grip = tiregrip * (wheel.slot.braking() && pbrake ? brakegrip : 0);//TODO TIRES
-            double frict = Static.clamp(axle.pos.x > 0 ? 5 : 5.2f, -grip, grip) * axle.weight_on;//TODO TIRES
+            double frict = Static.clamp((axle.pos.x > 0 ? 5 : 5.2f) * slip_angle, -grip, grip) * axle.weight_on;//TODO TIRES
             
+        	double tracx = throttle - brake * Math.signum(motx);
+        	double tracy = 0;
+        	
+        	double dragx = -rr * motx - ar * motx * Math.abs(motx);
+        	double dragy = -rr * moty - ar * moty * Math.abs(moty);
+        	
+        	double totalForce_cx = dragx + tracx;
+        	double totalForce_cy = dragy + tracy + Math.cos(wheelsYaw) * frict + frict;
+        	
+        	double acx = totalForce_cx / mass;
+        	double acy = totalForce_cy / mass;
+
+        	motionX = (cs * acx - sn * acy) * TICKA;
+        	motionY = (sn * acx + cs * acy) * TICKA;
             
-            
+
+            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
+            //pull wheel back to car
+            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
+            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
+            if(despos.lengthSquared() > 0.001F){
+                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
+                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
+            }
 		}
+	    move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
 		
-		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
+		/*if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
 	            onGround = true; wheel.onGround = true;
@@ -928,7 +961,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            wheelid++;
 	        }
 	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-		}
+		}*/
 	}
 
 	private Axle getAxle(String index){

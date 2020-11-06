@@ -866,7 +866,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
         	wheel.motionX = (cs * acx - sn * acy) * TICKA;
         	wheel.motionZ = (sn * acx + cs * acy) * TICKA;
-            
 
             wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
             //pull wheel back to car
@@ -881,7 +880,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             	tf = (frict + tracx) * axle.pos.x;
             }
             else if(wheel.wheelid == 3){
-            	tr = (frict + tracy) * axle.pos.x;
+            	tr = (frict + tracy) * -axle.pos.x;
             }
 		}
 		yaw_rate += ((tf - tr) / mass) * TICKA;

@@ -799,6 +799,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public static final int TICKR = 20;
     private static final float tiregrip = 2;//TODO TIRES
     private static final float brakegrip = 0.75f;//TODO TIRES
+    private static final float engineforce = 8000f;//TODO ENGINE CALC + GEARS
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttribute("weight").getFloatValue();
@@ -809,6 +810,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
         EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
         boolean consumed = processConsumption(engine);
+        
+        float brkf = vehicle.getAttributeFloat("brake_force", 10000f);
+    	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
+    	double throttle = this.throttle * engineforce;
         //
 		for(WheelEntity wheel : wheels){
             if(wheel == null) continue;

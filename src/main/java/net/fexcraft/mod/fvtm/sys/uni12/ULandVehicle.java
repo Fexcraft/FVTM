@@ -102,7 +102,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public Axle front, rear;
     public double wheelbase, cg_height;
     public double yaw_rate;
-    public boolean braking;
+    public boolean pbrake, braking;
 
 	public ULandVehicle(World world){	
 		super(world);
@@ -201,7 +201,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		prevRotationYaw = compound.getFloat("RotationYaw");
 		prevRotationPitch = compound.getFloat("RotationPitch");
 		prevRotationRoll = compound.getFloat("RotationRoll");
-		braking = compound.getBoolean("Braking");
+		pbrake = compound.getBoolean("Parking");
 		rotpoint.loadAxes(this, compound);
 		initializeVehicle(world.isRemote); // Print.debug(compound.toString());
 		super.readEntityFromNBT(compound);
@@ -210,7 +210,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
 		vehicle.write(compound);
-		compound.setBoolean("Braking", braking);
+		compound.setBoolean("Parking", pbrake);
 		rotpoint.saveAxes(this, compound); //Print.debug(compound.toString());
 		super.writeEntityToNBT(compound);
 	}
@@ -292,11 +292,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		return wheels;
 	}
 
-	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
+	@Override
+	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player, boolean state){
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driverOnly()) return false;
-        if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
-            Packets.sendToServer(new PKT_VehKeyPress(key)); return true;
+        if(world.isRemote && !key.toggables()/*&& key.dismount()*/){
+            Packets.sendToServer(new PKT_VehKeyPress(key));
+            if(!key.synced()) return true;
         }
         switch(key){
             case ACCELERATE:{
@@ -321,7 +323,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case BRAKE:{
-                braking = !braking;
+                braking = state;
+                return true;
+            }
+            case PBRAKE:{
+                pbrake = !pbrake;
                 return true;
             }
             case ENGINE: {
@@ -408,6 +414,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             default:{ Print.chat(player, String.format("Task for keypress %s not found.", key)); return false; }
         }
     }
+	
+	public boolean getKeyPressState(KeyPress key){
+		if(key == KeyPress.BRAKE){
+			return braking;
+		}
+		return false;
+	}
 
 	public void tryAttach(EntityPlayer player){
 		Vec3d vec = this.getRotPoint().getAxes().getRelativeVector(this.getVehicleData().getRearConnector()).add(this.getPositionVector());
@@ -814,8 +827,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             
             double steer = wheel.slot.steering() ? Math.signum(motx) * wheelsYaw : 0;
             double slip_angle = Math.atan2(moty + axle.yaw_speed, Math.abs(motx) - steer);
-            double grip = tiregrip * (wheel.slot.braking() && braking ? brakegrip : 0);//TODO TIRES
+            double grip = tiregrip * (wheel.slot.braking() && pbrake ? brakegrip : 0);//TODO TIRES
             double frict = Static.clamp(axle.pos.x > 0 ? 5 : 5.2f, -grip, grip) * axle.weight_on;//TODO TIRES
+            
+            
             
 		}
 		

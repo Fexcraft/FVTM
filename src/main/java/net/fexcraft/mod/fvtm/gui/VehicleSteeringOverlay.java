@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -251,8 +252,19 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				if(toggables) page(1);
 				else seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
 			}
-			if(/*isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) ||*/ isKeyDown(KeyHandler.brake.getKeyCode())){
-				seat.onKeyPress(KeyPress.BRAKE, player);
+			if(seat.vehicle instanceof ULandVehicle){
+				if(isKeyDown(KeyHandler.pbrake.getKeyCode())){
+					seat.onKeyPress(KeyPress.PBRAKE, player);
+				}
+				boolean state = isKeyDown(KeyHandler.brake.getKeyCode());
+				if(state != seat.vehicle.getKeyPressState(KeyPress.BRAKE)){
+					seat.vehicle.onKeyPress(KeyPress.BRAKE, seat.seatdata, player, state);
+				}
+			}
+			else{
+				if(/*isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) ||*/ isKeyDown(KeyHandler.brake.getKeyCode())){
+					seat.onKeyPress(KeyPress.BRAKE, player);
+				}
 			}
 			if(isKeyDown(KeyHandler.engineToggle.getKeyCode())){
 				seat.onKeyPress(KeyPress.ENGINE, player);

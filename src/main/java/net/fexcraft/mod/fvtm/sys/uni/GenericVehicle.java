@@ -48,7 +48,17 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	public abstract SwivelPoint getRotPoint();
 
-	public abstract boolean onKeyPress(KeyPress key, Seat seatdata, EntityPlayer player);
+	public boolean onKeyPress(KeyPress key, Seat seatdata, EntityPlayer player, boolean state){
+		return onKeyPress(key, seatdata, player);
+	}
+	
+	public boolean getKeyPressState(KeyPress key){
+		return false;
+	}
+	
+	public boolean onKeyPress(KeyPress key, Seat seatdata, EntityPlayer player){
+		return false;
+	}
 	
 	/** Returns first found (driver) seat's controlling passenger that is a player. */
 	public Entity getDriver(){

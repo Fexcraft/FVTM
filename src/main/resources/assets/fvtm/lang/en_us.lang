@@ -49,4 +49,5 @@ key.fvtm.arrow_down=Arrow Down
 key.fvtm.arrow_left=Arrow Left
 key.fvtm.arrow_right=Arrow Right
 key.fvtm.reset=Reset Attribute (Toggables)
-key.fvtm.brake=(Hand/Parking) Brake
+key.fvtm.brake=Brake
+key.fvtm.pbrake=(Hand/Parking) Brake

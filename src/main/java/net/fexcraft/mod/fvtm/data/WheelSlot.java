@@ -98,7 +98,7 @@ public class WheelSlot {
 	public boolean braking(){ return braking; }
 	
 	public boolean powered(VehicleData data){
-		return powered == null ? false : powered.length() == 0 || data != null && data.getAttributeBoolean(powered, false);
+		return powered == null ? false : powered.length() == 0 || (data != null && data.getAttributeBoolean(powered, false));
 	}
 
 }

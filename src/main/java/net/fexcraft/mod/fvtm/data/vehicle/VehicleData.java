@@ -386,6 +386,18 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		Attribute<?> attr = getAttribute(id);
 		return attr == null /*|| !attr.type().isTristate()*/ ? def : attr.getTriStateValue();
 	}
+
+	/** Null-Safe attribute value check. Works with integer attributes too. */
+	public float getAttributeFloat(String id, float def){
+		Attribute<?> attr = getAttribute(id);
+		return attr == null ? def : attr.getFloatValue();
+	}
+
+	/** Null-Safe attribute value check. Works with other attribute types too. */
+	public String getAttributeString(String id, String def){
+		Attribute<?> attr = getAttribute(id);
+		return attr == null ? def : attr.getStringValue();
+	}
 	
 	/** @return null if installed successfully. */
 	public PartData installPart(@Nullable ICommandSender engineer, PartData data, String category, boolean hotinst){

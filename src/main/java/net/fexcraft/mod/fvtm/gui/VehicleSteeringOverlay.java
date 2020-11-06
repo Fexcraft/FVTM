@@ -418,11 +418,19 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			GL11.glPopMatrix();
 			return;
 		}
-		mc.fontRenderer.drawString(Formatter.format("Speed: " + format(calculateSpeed(ent.getEntity()))), 7, 3, 0xffffff);
+		mc.fontRenderer.drawString(Formatter.format("Speed: " + format(calculateSpeed(ent.getEntity()) * 3.6f)), 7, 3, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
 			mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
+		}
+		if(seat.vehicle instanceof ULandVehicle){//temporary, will be replaced with icons
+			if(((ULandVehicle)seat.vehicle).braking){
+				mc.fontRenderer.drawString(Formatter.format("BRAKE ON"), 7, 40, 0xffffff);
+			}
+			if(((ULandVehicle)seat.vehicle).pbrake){
+				mc.fontRenderer.drawString(Formatter.format("HAND-BRAKE ON"), 7, 51, 0xffffff);
+			}
 		}
 		if(Command.DEBUG){
 			for(int i = 0; i < seat.vehicle.wheels.length; i++){

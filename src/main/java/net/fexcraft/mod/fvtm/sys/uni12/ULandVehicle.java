@@ -101,6 +101,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public ArrayList<Axle> axles = new ArrayList<>();
     public Axle front, rear;
     public double wheelbase, cg_height;
+    public double yaw_rate;
     public boolean pbrake, braking;
 
 	public ULandVehicle(World world){	
@@ -321,11 +322,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case TURN_LEFT:{
-                wheelsYaw -= 0.5f;//1F
+                wheelsYaw -= Static.rad12;
                 return true;
             }
             case TURN_RIGHT:{
-                wheelsYaw += 0.5f;//1F
+                wheelsYaw += Static.rad12;
                 return true;
             }
             case BRAKE:{
@@ -333,7 +334,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case PBRAKE:{
+            	if(toggle_timer > 0) return true;
                 pbrake = !pbrake;
+            	toggle_timer += 10;
                 return true;
             }
             case ENGINE: {
@@ -719,7 +722,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         //
         if(!world.isRemote){ wheelsYaw *= 0.95F;  }
-        if(wheelsYaw > 30){ wheelsYaw = 30; } if(wheelsYaw < -30){ wheelsYaw = -30; }
+        if(wheelsYaw > Static.rad45){ wheelsYaw = Static.rad45; }//TODO vehicle attr
+        if(wheelsYaw < -Static.rad45){ wheelsYaw = -Static.rad45; }//TODO vehicle attr
         if(world.isRemote){
             if(server_pos_ticker > 0){
                 double x = posX + (serverPosX - posX) / server_pos_ticker;
@@ -806,14 +810,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public static final float TICKA = 1f / TICKR;
     private static final float tiregrip = 2;//TODO TIRES
     private static final float brakegrip = 0.75f;//TODO TIRES
-    private static final float engineforce = 8000f;//TODO ENGINE CALC + GEARS
+    private static final float engineforce = 28000f;//TODO ENGINE CALC + GEARS
     private static final float rr = 8f;//TODO ATTR
     private static final float ar = 2.5f;//TODO ATTR
     private double acx = 0f;
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttribute("weight").getFloatValue();
-		for(Axle axle : axles) axle.calc(mass, acx, cg_height, wheelbase, rotpoint.getAxes().getYaw() - rotpoint.getPrevAxes().getYaw());
+		for(Axle axle : axles) axle.calc(mass, acx, cg_height, wheelbase, yaw_rate);
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);
         boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
@@ -823,6 +827,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         float brkf = vehicle.getAttributeFloat("brake_force", 10000f);
     	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
     	double throttle = this.throttle * engineforce;
+    	double tf = 0, tr = 0; 
         //
 		for(WheelEntity wheel : wheels){
             if(wheel == null) continue;
@@ -832,9 +837,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             if(axle == null){
             	Print.debug("noax" + wheel.wheelid);
             }
-            wheel.motionX *= 0.9F;
-            wheel.motionY *= 0.9F;
-            wheel.motionZ *= 0.9F;
+            //wheel.motionX *= 0.9F;
+            //wheel.motionY *= 0.9F;
+            //wheel.motionZ *= 0.9F;
             wheel.motionY -= 0.98F / TICKR;
 
             double cs = Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
@@ -872,7 +877,16 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
                 despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
             }
+            if(wheel.wheelid == 0){
+            	tf = (frict + tracx) * axle.pos.x;
+            }
+            else if(wheel.wheelid == 3){
+            	tr = (frict + tracy) * axle.pos.x;
+            }
 		}
+		yaw_rate += ((tf - tr) / mass) * TICKA;
+		rotpoint.getAxes().rotateYawR((float)(yaw_rate * TICKA));
+		//
 	    move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
 		
 		/*if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;

@@ -101,7 +101,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public ArrayList<Axle> axles = new ArrayList<>();
     public Axle front, rear;
     public double wheelbase, cg_height;
-    public double yaw_rate;
     public boolean pbrake, braking;
 
 	public ULandVehicle(World world){	
@@ -810,11 +809,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     private static final float engineforce = 8000f;//TODO ENGINE CALC + GEARS
     private static final float rr = 8f;//TODO ATTR
     private static final float ar = 2.5f;//TODO ATTR
+    private double acx = 0f;
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttribute("weight").getFloatValue();
-		double accel = mass * (GRAVITY / 2);
-		for(Axle axle : axles) axle.calc(mass, accel, cg_height, wheelbase, yaw_rate);
+		for(Axle axle : axles) axle.calc(mass, acx, cg_height, wheelbase, rotpoint.getAxes().getYaw() - rotpoint.getPrevAxes().getYaw());
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);
         boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
@@ -840,11 +839,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
             double cs = Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
             double sn = Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
-            double motx = cs * motionX + sn * motionY;
-            double moty = cs * motionY - sn * motionX;
+            double motx = cs * wheel.motionX + sn * wheel.motionZ;
+            double moty = cs * wheel.motionZ - sn * wheel.motionX;
             
             double steer = wheel.slot.steering() ? Math.signum(motx) * wheelsYaw : 0;
-            double slip_angle = Math.atan2(moty + axle.yaw_speed, Math.abs(motx) - steer);
+            double slip_angle = Math.atan2(moty + axle.yaw_speed, Math.abs(motx)) - steer;
             double grip = tiregrip * (wheel.slot.braking() && pbrake ? brakegrip : 0);//TODO TIRES
             double frict = Static.clamp((axle.pos.x > 0 ? 5 : 5.2f) * slip_angle, -grip, grip) * axle.weight_on;//TODO TIRES
             
@@ -854,14 +853,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	double dragx = -rr * motx - ar * motx * Math.abs(motx);
         	double dragy = -rr * moty - ar * moty * Math.abs(moty);
         	
-        	double totalForce_cx = dragx + tracx;
-        	double totalForce_cy = dragy + tracy + Math.cos(wheelsYaw) * frict + frict;
+        	double totalx = dragx + tracx;
+        	double totaly = dragy + tracy + (wheel.slot.steering() ? Math.cos(wheelsYaw) * frict : frict);
         	
-        	double acx = totalForce_cx / mass;
-        	double acy = totalForce_cy / mass;
+        	acx = totalx / mass;
+        	double acy = totaly / mass;
 
-        	motionX = (cs * acx - sn * acy) * TICKA;
-        	motionY = (sn * acx + cs * acy) * TICKA;
+        	wheel.motionX = (cs * acx - sn * acy) * TICKA;
+        	wheel.motionZ = (sn * acx + cs * acy) * TICKA;
             
 
             wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);

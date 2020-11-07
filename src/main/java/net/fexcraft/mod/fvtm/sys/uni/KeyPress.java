@@ -34,4 +34,8 @@ public enum KeyPress {
 		return this == BRAKE || this == PBRAKE;
 	}
 
+	public boolean sync_state(){
+		return this == BRAKE;
+	}
+
 }

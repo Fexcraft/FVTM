@@ -49,6 +49,7 @@ import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
+import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPressState;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -304,8 +305,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driverOnly()) return false;
         if(world.isRemote && !key.toggables()/*&& key.dismount()*/){
-            Packets.sendToServer(new PKT_VehKeyPress(key));
-            if(!key.synced()) return true;
+        	if(key.synced()){
+                Packets.sendToServer(key.sync_state() ? new PKT_VehKeyPressState(key, state) : new PKT_VehKeyPress(key));
+        	}
+        	else{
+                Packets.sendToServer(new PKT_VehKeyPress(key));
+                return true;
+        	}
         }
         switch(key){
             case ACCELERATE:{

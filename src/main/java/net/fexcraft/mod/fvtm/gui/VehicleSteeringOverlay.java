@@ -435,11 +435,20 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		if(Command.DEBUG){
 			for(int i = 0; i < seat.vehicle.wheels.length; i++){
 				WheelEntity wheel = seat.vehicle.wheels[i];
-				mc.fontRenderer.drawString(Formatter.format(wheel == null ? "none" : wheel.slot == null ? "no_slot" : (wheel.slot.steering() ? "steering, " : "") + (wheel.slot.powered(seat.vehicle.getVehicleData()) ? "powered" : "idle")), 7, 51 + (i * 11), 0xffffff);
+				mc.fontRenderer.drawString(Formatter.format(wheel == null ? "none" : wheel.slot == null ? "no_slot" : (wheel.slot.steering() ? "steering, " : "") + (wheel.slot.powered(seat.vehicle.getVehicleData()) ? "powered" : "idle")), 7, 62 + (i * 11), 0xffffff);
 			}
+		}
+		else if(STRS.size() > 0){
+			int i = 0;
+			for(String str : STRS){
+				mc.fontRenderer.drawString(Formatter.format(str), 7, 62 + (i++ * 11), 0xffffff);
+			}
+			STRS.clear();
 		}
 		GL11.glPopMatrix();
 	}
+	
+	public static ArrayList<String> STRS = new ArrayList<String>();
 
 	public static void drawRectIcon(int x, int y, int width, int height){
 		Tessellator tessellator = Tessellator.getInstance();

@@ -30,6 +30,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -872,6 +873,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
         	wheel.motionX = (cs * acx - sn * acy) * TICKA;
         	wheel.motionZ = (sn * acx + cs * acy) * TICKA;
+        	VehicleSteeringOverlay.STRS.add(((cs * acx - sn * acy) * TICKA) + " " + ((sn * acx + cs * acy) * TICKA));
 
             wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
             //pull wheel back to car
@@ -890,6 +892,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
 		}
 		yaw_rate += ((tf - tr) / mass) * TICKA;
+		VehicleSteeringOverlay.STRS.add(yaw_rate + " " + Math.toDegrees(yaw_rate));
+		VehicleSteeringOverlay.STRS.add(braking ? "BRAKING" : "IDLE");
 		rotpoint.getAxes().rotateYawR((float)(yaw_rate * TICKA));
 		//
 	    move(MoverType.SELF, atmc.x, atmc.y, atmc.z);

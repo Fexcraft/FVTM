@@ -9,6 +9,7 @@ import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_TRU
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -418,7 +419,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			GL11.glPopMatrix();
 			return;
 		}
-		mc.fontRenderer.drawString(Formatter.format("Speed: " + format(calculateSpeed(ent.getEntity()) * 3.6f)), 7, 3, 0xffffff);
+		mc.fontRenderer.drawString(Formatter.format("Speed: " + format(calculateSpeed(ent.getEntity()))), 7, 3, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
@@ -443,12 +444,11 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			for(String str : STRS){
 				mc.fontRenderer.drawString(Formatter.format(str), 7, 62 + (i++ * 11), 0xffffff);
 			}
-			STRS.clear();
 		}
 		GL11.glPopMatrix();
 	}
 	
-	public static ArrayList<String> STRS = new ArrayList<String>();
+	public static CopyOnWriteArrayList<String> STRS = new CopyOnWriteArrayList<String>();
 
 	public static void drawRectIcon(int x, int y, int width, int height){
 		Tessellator tessellator = Tessellator.getInstance();
@@ -485,7 +485,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	public static final float calculateSpeed(Entity ent){
 		double dX = ent.posX - ent.prevPosX, dY = ent.posY - ent.prevPosY, dZ = ent.posZ - ent.prevPosZ;
-		float speed = (float)Math.sqrt(dX * dX + dY * dY + dZ * dZ) * 1000F / 16F;
+		float speed = (float)Math.sqrt(dX * dX + dY * dY + dZ * dZ) * 1000F;// / 16F;
 		return (speed = (int)(speed * 10F) / 10F) / 20f;
 	}
 

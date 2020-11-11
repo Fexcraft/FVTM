@@ -38,7 +38,6 @@ import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
-import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -102,6 +101,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     //
     //
     public ArrayList<Axle> axles = new ArrayList<>();
+    public ArrayList<WTD> wheeldata = new ArrayList<>();
     public Axle front, rear;
     public double wheelbase, cg_height;
     public boolean pbrake, braking;
@@ -142,6 +142,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getLegacyData();
         wheels = new WheelEntity[WHEELINDEX.length];
+        setupWheels();
         setupAxles();
         if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
@@ -158,20 +159,20 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         //
 	}
-	
+
 	private void setupAxles(){
 		axles.clear();
-        for(Entry<String, Vec3d> entry : vehicle.getWheelPositions().entrySet()){
-        	Vec3d val = entry.getValue();
+        for(WTD wheel : wheeldata){
         	Axle axle = null;
-        	if(axles.stream().anyMatch(a -> a.pos.x == val.x && a.pos.y == val.y)){
-        		axle = axles.stream().filter(a -> a.pos.x == val.x && a.pos.y == val.y).findFirst().get();
+        	if(axles.stream().anyMatch(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y)){
+        		axle = axles.stream().filter(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y).findFirst().get();
         	}
         	else{
-        		axle = new Axle(axles.size(), new Vec3d(val.x, val.y, 0));
+        		axle = new Axle(axles.size(), new Vec3d(wheel.pos.x, wheel.pos.y, 0));
             	axles.add(axle);
         	}
-        	axle.wheels.add(entry.getKey());
+        	axle.wheels.add(wheel.id);
+        	wheel.axle = axle;
         }
         axles.forEach(axle -> axle.initCenter(vehicle.getWheelPositions()));
         double amin = 0, amax = 0;
@@ -192,6 +193,15 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	cg_height = axle.pos.y;
         }
         cg_height /= axles.size();
+	}
+	
+	private void setupWheels(){
+		wheeldata.clear();
+        for(Entry<String, Vec3d> entry : vehicle.getWheelPositions().entrySet()){
+        	WTD wheel = new WTD(entry.getKey());
+        	wheel.pos = entry.getValue();
+        	wheeldata.add(wheel);
+        }
 	}
 
 	@Override
@@ -811,14 +821,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
     }
     
-    public static final float GRAVITY = 9.81f;
-    public static final float INERTIA_SCALE = 1f;
-    public static final int TICKR = 20;
-    public static final float TICKA = 1f / TICKR;
+    public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
+    public static final float TICKA = 1f / 20f;
     private static final float tiregrip = 2;//TODO TIRES
     private static final float brakegrip = 0.75f;//TODO TIRES
     private static final float engineforce = 18000f;//TODO ENGINE CALC + GEARS
-    private static final float rr = 8f;//TODO ATTR
     private static final float ar = 2.5f;//TODO ATTR
     private double accx = 0f;
 
@@ -841,29 +848,28 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
+	            WTD wheeldata = getWheelData(wheel.getIndex());
 	            onGround = true; wheel.onGround = true;
 	            wheel.rotationYaw = rotpoint.getAxes().getYaw();
 	            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
 	                wheel.rotationYaw += wheelsYaw;
 	            }
-	            Axle axle = getAxle(wheel.getIndex());
-	            if(axle == null){
-	            	Print.debug("noax" + wheel.wheelid);
-	            }
 	            wheel.motionX *= 0.9F;
 	            wheel.motionY *= 0.9F;
 	            wheel.motionZ *= 0.9F;
-	            wheel.motionY -= 0.98F / 20F;//Gravity
+	            wheel.motionY -= GRAVE;
 	            //
 	            double motx = 0, moty = 0, stew = wheelsYaw * 3.14159265F / 180F;
 	            double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
-	            double slip_angle = Math.atan2(moty + axle.yaw_speed, Math.abs(motx)) - steer;
-	            double grip = (tiregrip / Command.getValF("tiregrip", 1f)) * (wheel.slot.braking() && pbrake ? brakegrip : 1);//TODO TIRES
-	            double frict = Static.clamp((axle.pos.x > 0 ? 5 : 5.2f) * slip_angle, -grip, grip) * axle.weight_on;//TODO TIRES
+	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
+	            double grip = tiregrip * (wheel.slot.braking() && pbrake ? brakegrip : 1);//TODO TIRES
+	            double frict = Static.clamp((wheeldata.axle.pos.x > 0 ? 5 : 5.2f) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;//TODO TIRES
 	        	double trac = thr - brake * Math.signum(motx);
-	        	double dragx = -rr * motx - ar * motx * Math.abs(motx);
+	        	//if(trac < 0) trac = 0;
+	        	double rr = wheeldata.drag * 30;
+	        	wheeldata.drag = -rr * motx - ar * motx * Math.abs(motx);
 	        	double dragy = -rr * moty - ar * moty * Math.abs(moty);
-	        	double totalx = dragx + trac;
+	        	double totalx = wheeldata.drag + trac;
 	        	double totaly = dragy + (wheel.slot.steering() ? Math.cos(stew) * frict : 0);
 	        	double acx = (totalx / mass) * TICKA;
 	        	double acy = (totaly / mass) * TICKA;
@@ -950,9 +956,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		}*/
 	}
 
-	private Axle getAxle(String index){
-		for(Axle axle : axles){
-			if(axle.wheels.contains(index)) return axle;
+	private WTD getWheelData(String index){
+		for(WTD wheel : wheeldata){
+			if(wheel.id.equals(index)) return wheel;
 		}
 		return null;
 	}

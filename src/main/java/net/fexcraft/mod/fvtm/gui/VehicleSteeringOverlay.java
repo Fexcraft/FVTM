@@ -419,7 +419,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			GL11.glPopMatrix();
 			return;
 		}
-		mc.fontRenderer.drawString(Formatter.format("Speed: " + format(calculateSpeed(ent.getEntity()))), 7, 3, 0xffffff);
+		mc.fontRenderer.drawString(Formatter.format("Speed: " + format(ent.speed)), 7, 3, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
@@ -486,7 +486,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	public static final float calculateSpeed(Entity ent){
 		double dX = ent.posX - ent.prevPosX, dY = ent.posY - ent.prevPosY, dZ = ent.posZ - ent.prevPosZ;
 		float speed = (float)Math.sqrt(dX * dX + dY * dY + dZ * dZ) * 1000F;// / 16F;
-		return (speed = (int)(speed * 10F) / 10F) / 20f;
+		return (speed /*= (int)(speed * 10F) / 10F*/) / 20f;
 	}
 
 	@Override

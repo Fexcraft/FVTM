@@ -723,7 +723,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
         }
         else{
-        	
+        	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);
         }
         for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));

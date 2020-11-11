@@ -7,7 +7,6 @@ public class WTD {
 	public final String id;
 	public Vec3d pos;
 	public Axle axle;
-	public double drag;
 
 	public WTD(String key){
 		this.id = key;

@@ -803,7 +803,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
         }
         else{
-        	
+        	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);
         }
         for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
@@ -825,7 +825,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     private static final float tiregrip = 2;//TODO TIRES
     private static final float brakegrip = 0.75f;//TODO TIRES
     private static final float engineforce = 18000f;//TODO ENGINE CALC + GEARS
-    private static final float ar = 2.5f;//TODO ATTR
+    private static final float ar = 2.5f, rr = 8f;//TODO ATTR
     private double accx = 0f;
 
 	public void onUpdateMovement(){
@@ -863,10 +863,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            double frict = Static.clamp((wheeldata.axle.pos.x > 0 ? 5 : 5.2f) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;//TODO TIRES
 	        	double trac = thr - brake * Math.signum(motx);
 	        	//if(trac < 0) trac = 0;
-	        	double rr = wheeldata.drag * 30;
-	        	wheeldata.drag = -rr * motx - ar * motx * Math.abs(motx);
+	        	double dragx = -rr * motx - ar * motx * Math.abs(motx);
 	        	double dragy = -rr * moty - ar * moty * Math.abs(moty);
-	        	double totalx = wheeldata.drag + trac;
+	        	double totalx = dragx + trac;
 	        	double totaly = dragy + (wheel.slot.steering() ? Math.cos(stew) * frict : 0);
 	        	double acx = (totalx / mass) * TICKA;
 	        	double acy = (totaly / mass) * TICKA;

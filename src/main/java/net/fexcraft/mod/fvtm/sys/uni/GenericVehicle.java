@@ -39,6 +39,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	public float wheelsYaw;
 	public double throttle;
+	@SideOnly(Side.CLIENT)
+	public double speed;//For Client Overlay
 	public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
 	public SeatCache[] seats;
 	public WheelEntity[] wheels;

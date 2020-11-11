@@ -825,11 +825,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     private static final float tiregrip = 2;//TODO TIRES
     private static final float brakegrip = 0.75f;//TODO TIRES
     private static final float engineforce = 18000f;//TODO ENGINE CALC + GEARS
-    private static final float ar = 2.5f, rr = 8f;//TODO ATTR
     private double accx = 0f;
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttributeFloat("weight", 1000f);
+		double rr = vehicle.getAttributeFloat("roll_resistance", 8f);
+		double ar = vehicle.getAttributeFloat("air_resistance", 2.5f);
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);

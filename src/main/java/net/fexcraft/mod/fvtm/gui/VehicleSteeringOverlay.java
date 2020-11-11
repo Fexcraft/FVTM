@@ -9,6 +9,7 @@ import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_TRU
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -23,9 +24,12 @@ import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
+import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -251,8 +255,19 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				if(toggables) page(1);
 				else seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
 			}
-			if(isKeyDown(mc.gameSettings.keyBindJump.getKeyCode())){
-				seat.onKeyPress(KeyPress.BRAKE, player);
+			if(player.getRidingEntity() instanceof ULandVehicle){
+				if(isKeyDown(KeyHandler.pbrake.getKeyCode())){
+					seat.onKeyPress(KeyPress.PBRAKE, player);
+				}
+				boolean state = isKeyDown(KeyHandler.brake.getKeyCode());
+				if(state != seat.vehicle.getKeyPressState(KeyPress.BRAKE)){
+					seat.vehicle.onKeyPress(KeyPress.BRAKE, seat.seatdata, player, state);
+				}
+			}
+			else{
+				if(/*isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) ||*/ isKeyDown(KeyHandler.brake.getKeyCode())){
+					seat.onKeyPress(KeyPress.BRAKE, player);
+				}
 			}
 			if(isKeyDown(KeyHandler.engineToggle.getKeyCode())){
 				seat.onKeyPress(KeyPress.ENGINE, player);
@@ -404,14 +419,36 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			GL11.glPopMatrix();
 			return;
 		}
-		mc.fontRenderer.drawString(Formatter.format("Speed: " + format(calculateSpeed(ent.getEntity()))), 7, 3, 0xffffff);
+		mc.fontRenderer.drawString(Formatter.format("Speed: " + format(ent.speed)), 7, 3, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
 			mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
 		}
+		if(seat.vehicle instanceof ULandVehicle){//temporary, will be replaced with icons
+			if(((ULandVehicle)seat.vehicle).braking){
+				mc.fontRenderer.drawString(Formatter.format("BRAKE ON"), 7, 40, 0xffffff);
+			}
+			if(((ULandVehicle)seat.vehicle).pbrake){
+				mc.fontRenderer.drawString(Formatter.format("HAND-BRAKE ON"), 7, 51, 0xffffff);
+			}
+		}
+		if(Command.DEBUG){
+			for(int i = 0; i < seat.vehicle.wheels.length; i++){
+				WheelEntity wheel = seat.vehicle.wheels[i];
+				mc.fontRenderer.drawString(Formatter.format(wheel == null ? "none" : wheel.slot == null ? "no_slot" : (wheel.slot.steering() ? "steering, " : "") + (wheel.slot.powered(seat.vehicle.getVehicleData()) ? "powered" : "idle")), 7, 62 + (i * 11), 0xffffff);
+			}
+		}
+		else if(STRS.size() > 0){
+			int i = 0;
+			for(String str : STRS){
+				mc.fontRenderer.drawString(Formatter.format(str), 7, 62 + (i++ * 11), 0xffffff);
+			}
+		}
 		GL11.glPopMatrix();
 	}
+	
+	public static CopyOnWriteArrayList<String> STRS = new CopyOnWriteArrayList<String>();
 
 	public static void drawRectIcon(int x, int y, int width, int height){
 		Tessellator tessellator = Tessellator.getInstance();
@@ -448,8 +485,8 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	public static final float calculateSpeed(Entity ent){
 		double dX = ent.posX - ent.prevPosX, dY = ent.posY - ent.prevPosY, dZ = ent.posZ - ent.prevPosZ;
-		float speed = (float)Math.sqrt(dX * dX + dY * dY + dZ * dZ) * 1000F / 16F;
-		return (speed = (int)(speed * 10F) / 10F) / 20f;
+		float speed = (float)Math.sqrt(dX * dX + dY * dY + dZ * dZ) * 1000F;// / 16F;
+		return (speed /*= (int)(speed * 10F) / 10F*/) / 20f;
 	}
 
 	@Override

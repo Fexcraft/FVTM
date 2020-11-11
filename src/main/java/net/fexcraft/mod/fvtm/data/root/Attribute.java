@@ -76,7 +76,7 @@ public abstract class Attribute<V> {
 	public abstract float getFloatValue();
 	public abstract String getStringValue();
 	public abstract boolean getBooleanValue();
-	public Boolean getTriStateValue(){ return false; }
+	public abstract Boolean getTriStateValue();
 	
 	public Attribute<?> updateValue(Update call){
 		for(Modifier<?> mod : modifiers){
@@ -271,6 +271,7 @@ public abstract class Attribute<V> {
 		@Override public float getFloatValue(){ return 0; }
 		@Override public String getStringValue(){ return value(); }
 		@Override public boolean getBooleanValue(){ return Boolean.parseBoolean(value()); }
+		@Override public Boolean getTriStateValue(){ return value().equalsIgnoreCase("null") ? null : Boolean.parseBoolean(value()); }
 		
 	}
 	
@@ -300,6 +301,7 @@ public abstract class Attribute<V> {
 		@Override public float getFloatValue(){ return value(); }
 		@Override public String getStringValue(){ return value() + ""; }
 		@Override public boolean getBooleanValue(){ return value() > 0; }
+		@Override public Boolean getTriStateValue(){ return value() == 0f ? null : value() > 0; }
 		
 		@Override
 		public void increase(int amount){
@@ -354,6 +356,7 @@ public abstract class Attribute<V> {
 		@Override public float getFloatValue(){ return value(); }
 		@Override public String getStringValue(){ return value() + ""; }
 		@Override public boolean getBooleanValue(){ return value() > 0; }
+		@Override public Boolean getTriStateValue(){ return value() == 0 ? null : value() > 0; }
 		
 		@Override
 		public void increase(float amount){
@@ -410,6 +413,7 @@ public abstract class Attribute<V> {
 		@Override public float getFloatValue(){ return value() ? 1 : 0; }
 		@Override public String getStringValue(){ return value() + ""; }
 		@Override public boolean getBooleanValue(){ return value(); }
+		@Override public Boolean getTriStateValue(){ return value(); }
 		
 	}
 	

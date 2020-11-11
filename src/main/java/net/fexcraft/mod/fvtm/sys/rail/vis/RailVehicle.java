@@ -562,7 +562,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             rotpoint.getAxes().setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
         }
         else{
-        	
+        	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);
         }
         for(SwivelPoint point : rek.data().getRotationPoints().values()) point.update(this);
         rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));

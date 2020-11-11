@@ -3,7 +3,9 @@ package net.fexcraft.mod.fvtm.sys.uni12;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_FUEL;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_MAIN;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -47,6 +49,7 @@ import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
+import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPressState;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -91,12 +94,18 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public double serverYaw, serverPitch, serverRoll;
     public int server_pos_ticker;
     public static final int servtick = 5;
-    @Deprecated
     public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
-    @Deprecated
     public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
+    //
+    //
+    //
+    public ArrayList<Axle> axles = new ArrayList<>();
+    public ArrayList<WTD> wheeldata = new ArrayList<>();
+    public Axle front, rear;
+    public double wheelbase, cg_height;
+    public boolean pbrake, braking;
 
-	public ULandVehicle(World world){
+	public ULandVehicle(World world){	
 		super(world);
 		preventEntitySpawning = true; setSize(1f, 1f);
 		ignoreFrustumCheck = true; stepHeight = 1f;
@@ -132,6 +141,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	private void initializeVehicle(boolean remote){
         lata = vehicle.getType().getLegacyData();
         wheels = new WheelEntity[WHEELINDEX.length];
+        setupWheels();
+        setupAxles();
         if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         stepHeight = lata.wheel_step_height;
@@ -145,8 +156,53 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(!remote && truck != null){
         	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
         }
+        //
+	}
+
+	private void setupAxles(){
+		axles.clear();
+        for(WTD wheel : wheeldata){
+        	Axle axle = null;
+        	if(axles.stream().anyMatch(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y)){
+        		axle = axles.stream().filter(a -> a.pos.x == wheel.pos.x && a.pos.y == wheel.pos.y).findFirst().get();
+        	}
+        	else{
+        		axle = new Axle(axles.size(), new Vec3d(wheel.pos.x, wheel.pos.y, 0));
+            	axles.add(axle);
+        	}
+        	axle.wheels.add(wheel);
+        	wheel.axle = axle;
+        }
+        axles.forEach(axle -> axle.initCenter());
+        double amin = 0, amax = 0;
+        for(Axle axle : axles){
+        	if(axle.pos.x < amin){
+        		amin = axle.pos.x;
+        		rear = axle;
+        	}
+        	if(axle.pos.x > amax){
+        		amax = axle.pos.x;
+        		front = axle;
+        	}
+        }
+        wheelbase = Math.abs(amin) + Math.abs(amax);
+        cg_height = 0;
+        for(Axle axle : axles){
+        	axle.weight_ratio = Math.abs(axle.pos.x) / wheelbase;
+        	cg_height = axle.pos.y;
+        }
+        cg_height /= axles.size();
 	}
 	
+	private void setupWheels(){
+		wheeldata.clear();
+        for(Entry<String, Vec3d> entry : vehicle.getWheelPositions().entrySet()){
+        	WTD wheel = new WTD(entry.getKey());
+        	wheel.pos = entry.getValue();
+        	wheeldata.add(wheel);
+        }
+	}
+
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound){
 		if(vehicle == null){
@@ -159,6 +215,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		prevRotationYaw = compound.getFloat("RotationYaw");
 		prevRotationPitch = compound.getFloat("RotationPitch");
 		prevRotationRoll = compound.getFloat("RotationRoll");
+		pbrake = compound.getBoolean("Parking");
 		rotpoint.loadAxes(this, compound);
 		initializeVehicle(world.isRemote); // Print.debug(compound.toString());
 		super.readEntityFromNBT(compound);
@@ -167,6 +224,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound){
 		vehicle.write(compound);
+		compound.setBoolean("Parking", pbrake);
 		rotpoint.saveAxes(this, compound); //Print.debug(compound.toString());
 		super.writeEntityToNBT(compound);
 	}
@@ -247,12 +305,23 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	public WheelEntity[] getWheels(){
 		return wheels;
 	}
-
+	@Override
 	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player){
+		return onKeyPress(key, seat, player, false);
+	}
+
+	@Override
+	public boolean onKeyPress(KeyPress key, Seat seat, EntityPlayer player, boolean state){
 		for(VehicleScript script : vehicle.getScripts()) if(script.onKeyPress(key, seat, player)) return true;
         if(!seat.driver && key.driverOnly()) return false;
-        if(world.isRemote && !key.toggables() /*&& key.dismount()*/){
-            Packets.sendToServer(new PKT_VehKeyPress(key)); return true;
+        if(world.isRemote && !key.toggables()/*&& key.dismount()*/){
+        	if(key.synced()){
+                Packets.sendToServer(key.sync_state() ? new PKT_VehKeyPressState(key, state) : new PKT_VehKeyPress(key));
+        	}
+        	else{
+                Packets.sendToServer(new PKT_VehKeyPress(key));
+                return true;
+        	}
         }
         switch(key){
             case ACCELERATE:{
@@ -269,22 +338,21 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case TURN_LEFT:{
-                wheelsYaw -= 0.5f;//1F
+                wheelsYaw -= .5f;
                 return true;
             }
             case TURN_RIGHT:{
-                wheelsYaw += 0.5f;//1F
+                wheelsYaw += .5f;
                 return true;
             }
             case BRAKE:{
-                throttle *= 0.8F;
-                if(onGround){
-                    motionX *= 0.8F;
-                    motionZ *= 0.8F;
-                }
-                if(throttle < -0.0001){
-                    throttle = 0;
-                }
+                braking = state;
+                return true;
+            }
+            case PBRAKE:{
+            	if(toggle_timer > 0) return true;
+                pbrake = !pbrake;
+            	toggle_timer += 10;
                 return true;
             }
             case ENGINE: {
@@ -371,6 +439,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             default:{ Print.chat(player, String.format("Task for keypress %s not found.", key)); return false; }
         }
     }
+	
+	public boolean getKeyPressState(KeyPress key){
+		if(key == KeyPress.BRAKE){
+			return braking;
+		}
+		return false;
+	}
 
 	public void tryAttach(EntityPlayer player){
 		Vec3d vec = this.getRotPoint().getAxes().getRelativeVector(this.getVehicleData().getRearConnector()).add(this.getPositionVector());
@@ -663,7 +738,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         //
         if(!world.isRemote){ wheelsYaw *= 0.95F;  }
-        if(wheelsYaw > 30){ wheelsYaw = 30; } if(wheelsYaw < -30){ wheelsYaw = -30; }
+        if(wheelsYaw > 45){ wheelsYaw = 45; }//TODO vehicle attr
+        if(wheelsYaw < -45){ wheelsYaw = -45; }//TODO vehicle attr
         if(world.isRemote){
             if(server_pos_ticker > 0){
                 double x = posX + (serverPosX - posX) / server_pos_ticker;
@@ -701,7 +777,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").getIntegerValue() > 0) && lata.max_throttle != 0){
                 throttle *= 0.98F;
             }
-            this.onUpdateMovement(); if(trailer != null){ trailer.alignTrailer(); }
+            this.onUpdateMovement();
+            if(trailer != null) trailer.alignTrailer();
             //
             if(wheels[0] != null && wheels[1] != null && wheels[2] != null && wheels[3] != null){
                 Vec3d front = new Vec3d((wheels[2].posX + wheels[3].posX) / 2F, (wheels[2].posY + wheels[3].posY) / 2F, (wheels[2].posZ + wheels[3].posZ) / 2F);
@@ -726,7 +803,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
         }
         else{
-        	
+        	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);
         }
         for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
@@ -742,10 +819,107 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
         }
     }
+    
+    public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
+    public static final float TICKA = 1f / 20f;
+    private static final float tiregrip = 2;//TODO TIRES
+    private static final float brakegrip = 0.75f;//TODO TIRES
+    private static final float engineforce = 18000f;//TODO ENGINE CALC + GEARS
+    private double accx = 0f;
 
 	public void onUpdateMovement(){
-		if(vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
-			Vec3d atmc = new Vec3d(0, 0, 0); int wheelid = 0;
+		double mass = vehicle.getAttributeFloat("weight", 1000f);
+		double rr = vehicle.getAttributeFloat("roll_resistance", 8f);
+		double ar = vehicle.getAttributeFloat("air_resistance", 2.5f);
+		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
+		//
+		Vec3d atmc = new Vec3d(0, 0, 0);
+        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
+        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
+        boolean consumed = processConsumption(engine);
+        
+        float brkf = vehicle.getAttributeFloat("brake_force", 10000f);
+    	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
+    	double thr = this.throttle * engineforce;
+        //
+    	accx = 0;
+		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
+	        for(WheelEntity wheel : wheels){
+	            if(wheel == null){ continue; }
+	            WTD wheeldata = getWheelData(wheel.getIndex());
+	            onGround = true; wheel.onGround = true;
+	            wheel.rotationYaw = rotpoint.getAxes().getYaw();
+	            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
+	                wheel.rotationYaw += wheelsYaw;
+	            }
+	            wheel.motionX *= 0.9F;
+	            wheel.motionY *= 0.9F;
+	            wheel.motionZ *= 0.9F;
+	            wheel.motionY -= GRAVE;
+	            //
+	            double motx = 0, moty = 0, stew = wheelsYaw * 3.14159265F / 180F;
+	            double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
+	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
+	            double grip = tiregrip * (wheel.slot.braking() && pbrake ? brakegrip : 1);//TODO TIRES
+	            double frict = Static.clamp((wheeldata.axle.pos.x > 0 ? 5 : 5.2f) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;//TODO TIRES
+	        	double trac = thr - brake * Math.signum(motx);
+	        	//if(trac < 0) trac = 0;
+	        	double dragx = -rr * motx - ar * motx * Math.abs(motx);
+	        	double dragy = -rr * moty - ar * moty * Math.abs(moty);
+	        	double totalx = dragx + trac;
+	        	double totaly = dragy + (wheel.slot.steering() ? Math.cos(stew) * frict : 0);
+	        	double acx = (totalx / mass) * TICKA;
+	        	double acy = (totaly / mass) * TICKA;
+	        	accx += acx;
+	        	//
+	            if(engine != null){
+	                if((canThrustCreatively || consumed)){
+	                    double val;
+	                    if(lata.is_tracked){
+	                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
+	                        //
+	                        float turningDrag = 0.02F;
+	                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
+	                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
+	                        //
+	                        val = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
+	                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
+	                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * val;
+	                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
+	                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
+	                    }
+	                    else{
+	                        val = acx;
+	                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
+	                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val;
+	                        //
+	                        if(wheel.wheelid == 2 || wheel.wheelid == 3){
+	                            val = acy / 20f;
+	                            wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+	                            wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+	                        }
+	                        else{
+	                            wheel.motionX *= 0.9F;
+	                            wheel.motionZ *= 0.9F;
+	                        }
+	                    }
+	                }
+	            }
+	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
+	            //pull wheel back to car
+	            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
+	            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+	            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
+	            if(despos.lengthSquared() > 0.001F){
+	                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
+	                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
+	            }
+	        }
+	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
+	        accx /= wheels.length;
+		}
+		/*else{
+			int wheelid = 0;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
 	            onGround = true; wheel.onGround = true;
@@ -776,136 +950,16 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            wheelid++;
 	        }
 	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-		}
-		else{
-			if(getVehicleType().isWaterVehicle()){
-		        Vec3d atmc = new Vec3d(0, 0, 0);
-		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
-		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
-		        boolean consumed = processConsumption(engine);
-		        for(WheelEntity wheel : wheels){
-		            if(wheel == null){ continue; }
-		            onGround = false; wheel.onGround = false;
-		            wheel.rotationYaw = rotpoint.getAxes().getYaw();
-		            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
-		                wheel.rotationYaw += wheelsYaw;
-		            }
-		            wheel.motionX *= 0.9F;
-		            wheel.motionY *= 0.9F;
-		            wheel.motionZ *= 0.9F;
-		            wheel.motionY -= 0.98F / 20F;//Gravity
-		            if(engine != null){
-		                if((canThrustCreatively || consumed)){
-		                    double velocityScale;
-		                    if(lata.is_tracked){
-		                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
-		                        //
-		                        float turningDrag = 0.02F;
-		                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-		                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-		                        //
-		                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-		                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
-		                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
-		                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
-		                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
-		                    }
-		                    else{
-		                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-		                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-		                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-		                        //
-		                        if(wheel.wheelid == 2 || wheel.wheelid == 3){
-		                            velocityScale = 0.01F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod) * (throttle > 0 ? 1 : -1);
-		                            wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-		                            wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-		                        }
-		                        else{
-		                            wheel.motionX *= 0.9F;
-		                            wheel.motionZ *= 0.9F;
-		                        }
-		                    }
-		                }
-		            }
-		            if(world.containsAnyLiquid(wheel.getEntityBoundingBox())){
-		                wheel.motionY += lata.bouyancy;
-		            }
-		            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-		            //pull wheel back to the boat
-		            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
-		            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-		            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
-		            if(despos.lengthSquared() > 0.001F){
-		                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
-		                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
-		            }
-		        }
-		        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-			}
-			else{
-				Vec3d atmc = new Vec3d(0, 0, 0);
-		        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
-		        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
-		        boolean consumed = processConsumption(engine);
-		        for(WheelEntity wheel : wheels){
-		            if(wheel == null){ continue; }
-		            onGround = true; wheel.onGround = true;
-		            wheel.rotationYaw = rotpoint.getAxes().getYaw();
-		            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
-		                wheel.rotationYaw += wheelsYaw;
-		            }
-		            wheel.motionX *= 0.9F;
-		            wheel.motionY *= 0.9F;
-		            wheel.motionZ *= 0.9F;
-		            wheel.motionY -= 0.98F / 20F;//Gravity
-		            if(engine != null){
-		                if((canThrustCreatively || consumed)){
-		                    double velocityScale;
-		                    if(lata.is_tracked){
-		                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
-		                        //
-		                        float turningDrag = 0.02F;
-		                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-		                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-		                        //
-		                        velocityScale = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-		                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
-		                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * velocityScale;
-		                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
-		                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
-		                    }
-		                    else{
-		                        velocityScale = 0.1F * throttle * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-		                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-		                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale;
-		                        //
-		                        if(wheel.wheelid == 2 || wheel.wheelid == 3){
-		                            velocityScale = 0.01F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod) * (throttle > 0 ? 1 : -1);
-		                            wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-		                            wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * velocityScale * wheelsYaw;
-		                        }
-		                        else{
-		                            wheel.motionX *= 0.9F;
-		                            wheel.motionZ *= 0.9F;
-		                        }
-		                    }
-		                }
-		            }
-		            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
-		            //pull wheel back to car
-		            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
-		            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-		            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
-		            if(despos.lengthSquared() > 0.001F){
-		                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
-		                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
-		            }
-		        }
-		        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-			}
-		}
+		}*/
 	}
-	
+
+	private WTD getWheelData(String index){
+		for(WTD wheel : wheeldata){
+			if(wheel.id.equals(index)) return wheel;
+		}
+		return null;
+	}
+
 	public void alignTrailer(){
         prevPosX = posX; prevPosY = posY; prevPosZ = posZ; if(wheelnull() || truck == null){ return; }
         Vec3d conn = truck.rotpoint.getAxes().getRelativeVector(truck.getVehicleData().getRearConnector());

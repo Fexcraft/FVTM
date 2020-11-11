@@ -51,6 +51,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected String modelid;
 	protected LegacyData legacy_data;
+	protected Uni12Data uni12_data;
 	protected boolean trailer;
 	protected Vec3d def_front_conn, def_rear_conn;
 	protected LinkedHashMap<String, ResourceLocation> preinstalled;
@@ -279,12 +280,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		this.model = Resources.getModel(modelid, VehicleModel.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	public <ATTR extends Attribute<?>> ATTR getBaseAttribute(String id){
 		return (ATTR)attributes.get(id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T, ATTR extends Attribute<T>> ATTR getBaseAttributeCasted(String id){
 		return (ATTR)attributes.get(id);
 	}
@@ -308,6 +307,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	public LegacyData getLegacyData(){
 		return legacy_data;
+	}
+
+	public Uni12Data getUni12Data(){
+		return uni12_data;
 	}
 
 	public boolean isTrailerOrWagon(){

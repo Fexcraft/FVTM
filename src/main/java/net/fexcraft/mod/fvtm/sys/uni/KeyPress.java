@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 public enum KeyPress {
 	
-	ACCELERATE, DECELERATE, TURN_LEFT, TURN_RIGHT, BRAKE, ENGINE, DISMOUNT,
+	ACCELERATE, DECELERATE, TURN_LEFT, TURN_RIGHT, BRAKE, PBRAKE, ENGINE, DISMOUNT,
 	INVENTORY, TOGGABLES, SCRIPTS, LIGHTS, COUPLER_FRONT, COUPLER_REAR, RESET,
 	MOUSE_MAIN, MOUSE_RIGHT, TURN_UP, TURN_DOWN, ROLL_LEFT, ROLL_RIGHT;
 	
@@ -28,6 +28,14 @@ public enum KeyPress {
 
 	public boolean driverOnly(){
 		return !dismount() && !scripts() && !toggables() && !inventory();// && !toggableInput();
+	}
+
+	public boolean synced(){
+		return this == BRAKE || this == PBRAKE;
+	}
+
+	public boolean sync_state(){
+		return this == BRAKE;
 	}
 
 }

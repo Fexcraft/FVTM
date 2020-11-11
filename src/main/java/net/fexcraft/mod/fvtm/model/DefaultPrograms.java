@@ -229,7 +229,7 @@ public class DefaultPrograms {
 	};
 	
 	public static final Program BACK_LIGHTS = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() || data.getThrottle() < -0.01; }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() || data.getThrottle() < -0.01 || ((GenericVehicle)ent).isBraking(); }//TODO rear+brake lights instead
 		@Override public String getId(){ return "fvtm:back_lights"; }
 	};
 	public static final Program REAR_LIGHTS = BACK_LIGHTS;

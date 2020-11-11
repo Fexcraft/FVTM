@@ -316,7 +316,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(!seat.driver && key.driverOnly()) return false;
         if(world.isRemote && !key.toggables()/*&& key.dismount()*/){
         	if(key.synced()){
-                Packets.sendToServer(key.sync_state() ? new PKT_VehKeyPressState(key, state) : new PKT_VehKeyPress(key));
+                Packets.sendToServer(key.sync_state() ? new PKT_VehKeyPressState(this, player, key, state) : new PKT_VehKeyPress(key));
         	}
         	else{
                 Packets.sendToServer(new PKT_VehKeyPress(key));

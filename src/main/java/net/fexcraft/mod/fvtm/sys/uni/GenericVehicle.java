@@ -230,4 +230,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		return;
 	}
 
+	public boolean isBraking(){
+		return false;
+	}
+
 }

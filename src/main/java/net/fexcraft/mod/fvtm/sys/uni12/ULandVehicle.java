@@ -1256,5 +1256,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	public boolean isRailType(){
 		return false;
 	}
+	
+	@Override
+	public boolean isBraking(){
+		return braking;
+	}
 
 }

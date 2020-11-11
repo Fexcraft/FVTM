@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.TurboList.ConditionalProgram;
+import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.entity.Entity;
 
 public class ConditionalPrograms {
@@ -34,7 +35,14 @@ public class ConditionalPrograms {
 	
 	public static class RearLights extends BackLights {}
 	
-	public static class BrakeLights extends BackLights {}//TODO update when "break" marker exists
+	public static class BrakeLights extends ConditionalProgram {
+		
+		@Override
+		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
+			return ((GenericVehicle)ent).isBraking();
+		}
+		
+	}
 	
 	public static class FogLights extends ConditionalProgram {
 		

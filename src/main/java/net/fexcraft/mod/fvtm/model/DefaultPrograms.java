@@ -32,6 +32,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
+import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.renderer.GlStateManager;
@@ -246,7 +247,10 @@ public class DefaultPrograms {
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getThrottle() < -0.01; }
 		@Override public String getId(){ return "fvtm:reverse_lights"; }
 	};
-	public static final Program BRAKE_LIGHTS = REVERSE_LIGHTS;//TODO add "break" marker;
+	public static final Program BRAKE_LIGHTS = new AlwaysGlow(){
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return ((GenericVehicle)ent).isBraking(); }
+		@Override public String getId(){ return "fvtm:reverse_lights"; }
+	};
 	
 	public static final Program LIGHTS_FRONT_FORWARD = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").getBooleanValue(); }
@@ -1028,7 +1032,7 @@ public class DefaultPrograms {
 	public static final RectLightBeam RECT_LIGHTBEAM_FRONT_LIGHTS = new RectLightBeam("fvtm:rlb_front_lights").setPredicate((ent, veh) -> veh.getLightsState() && !veh.getLongLightsState() && !veh.getFogLightsState()).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_BACK_LIGHTS = new RectLightBeam("fvtm:rlb_back_lights").setPredicate((ent, veh) -> veh.getLightsState() || veh.getThrottle() < -0.01).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_REAR_LIGHTS = RECT_LIGHTBEAM_BACK_LIGHTS;
-	public static final RectLightBeam RECT_LIGHTBEAM_BRAKE_LIGHTS = RECT_LIGHTBEAM_REAR_LIGHTS;
+	public static final RectLightBeam RECT_LIGHTBEAM_BRAKE_LIGHTS = new RectLightBeam("fvtm:rlb_back_lights").setPredicate((ent, veh) -> ((GenericVehicle)ent).isBraking()).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_LONG_LIGHTS = new RectLightBeam("fvtm:rlb_long_lights").setPredicate((ent, veh) -> veh.getLongLightsState() && !veh.getFogLightsState()).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_FOG_LIGHTS = new RectLightBeam("fvtm:rlb_fog_lights").setPredicate((ent, veh) -> veh.getFogLightsState()).register();
 	public static final RectLightBeam RECT_LIGHTBEAM_REVERSE_LIGHTS = new RectLightBeam("fvtm:rlb_reverse_lights").setPredicate((ent, veh) -> veh.getThrottle() < -0.01).register();

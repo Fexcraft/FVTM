@@ -28,7 +28,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() || data.getThrottle() < -0.01;
+			return data.getLightsState() || data.getThrottle() < -0.01 || ((GenericVehicle)ent).isBraking();//TODO rear+brake lights instead
 		}
 		
 	}

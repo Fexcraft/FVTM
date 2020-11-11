@@ -30,7 +30,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -171,10 +170,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         		axle = new Axle(axles.size(), new Vec3d(wheel.pos.x, wheel.pos.y, 0));
             	axles.add(axle);
         	}
-        	axle.wheels.add(wheel.id);
+        	axle.wheels.add(wheel);
         	wheel.axle = axle;
         }
-        axles.forEach(axle -> axle.initCenter(vehicle.getWheelPositions()));
+        axles.forEach(axle -> axle.initCenter());
         double amin = 0, amax = 0;
         for(Axle axle : axles){
         	if(axle.pos.x < amin){
@@ -830,7 +829,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     private double accx = 0f;
 
 	public void onUpdateMovement(){
-		double mass = vehicle.getAttribute("weight").getFloatValue();
+		double mass = vehicle.getAttributeFloat("weight", 1000f);
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);
@@ -842,8 +841,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
     	double thr = this.throttle * engineforce;
         //
-    	VehicleSteeringOverlay.STRS.clear();
-    	VehicleSteeringOverlay.STRS.add("" + wheelsYaw);
     	accx = 0;
 		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
 	        for(WheelEntity wheel : wheels){

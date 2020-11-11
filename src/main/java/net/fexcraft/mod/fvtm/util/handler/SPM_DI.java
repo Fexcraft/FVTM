@@ -6,20 +6,27 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.SwivelPointMover;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.Attribute.Type;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 
 public class SPM_DI implements SwivelPointMover {
 	
 	private Attribute<?> attr;
 	private String attribute;
-	private float last, speed = 1;
+	private float last, speed = 1, min, max, def;
 	private int axe;
-	private boolean pos;
+	private boolean pos, bool, loop;//, ret;
 	public boolean moved;
 	
 	public SPM_DI(JsonObject obj){
 		this(obj.get("attribute").getAsString(), obj.get("var").getAsString());
 		speed = JsonUtil.getIfExists(obj, "speed", 1).floatValue();
+		bool = JsonUtil.getIfExists(obj, "bool_based", false);
+		min = JsonUtil.getIfExists(obj, "min", Integer.MIN_VALUE).floatValue();
+		max = JsonUtil.getIfExists(obj, "max", Integer.MAX_VALUE).floatValue();
+		def = JsonUtil.getIfExists(obj, "def", 0).floatValue();
+		loop = JsonUtil.getIfExists(obj, "loop", false);
+		//ret = JsonUtil.getIfExists(obj, "return", false);
 	}
 	
 	public SPM_DI(String key, String value){
@@ -60,9 +67,28 @@ public class SPM_DI implements SwivelPointMover {
 	public void update(VehicleEntity entity, SwivelPoint point){
 		if(attr == null){
 			attr = entity.getVehicleData().getAttribute(attribute);
-			last = attr.getFloatValue();
+			last = bool ? attr.getFloatValue() : def;
 			move(point, axe, pos, last);
 			//Print.bar(Minecraft.getMinecraft().player, get(point) + "=" + last);
+		}
+		if(bool){
+			if(attr.type() == Type.TRISTATE){
+				last += attr.getTriStateValue() == null ? 0 : attr.getBooleanValue() ? speed : -speed;
+			}
+			else{
+				if(attr.getBooleanValue()) last += speed;
+			}
+			if(last > max){
+				if(loop) last = min + (last - max);
+				else last = max;
+			}
+			if(last < min){
+				if(loop) last = max - (min - last);
+				else last = min;
+			}
+			if(last == get(point)) return;
+			move(point, axe, pos, last);
+			return;
 		}
 		if(last != attr.getFloatValue()){
 			//Print.bar(Minecraft.getMinecraft().player, last + "/" + attr.getFloatValue());
@@ -78,7 +104,7 @@ public class SPM_DI implements SwivelPointMover {
 			//point.updateClient(entity.getEntity());
 		}
 	}
-	
+
 	private void move(SwivelPoint point, int axe, boolean pos, float last){
 		moved = true;
 		if(pos){

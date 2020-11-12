@@ -51,7 +51,7 @@ public class TireFunction extends Function {
 
 	@Override
 	public String getId(){
-		return "fvtm:wheel";
+		return "fvtm:tire";
 	}
 
 	public void setWheel(String cat, WheelSlot slot){

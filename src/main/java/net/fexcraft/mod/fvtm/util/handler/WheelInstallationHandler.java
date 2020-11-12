@@ -87,6 +87,10 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "Part is marked as non removable.");
 			return false;
 		}
+		if(from.hasPart(is_category + ":tire")){
+			Print.chatnn(sender, "Please remove the tire first.");
+			return false;
+		}
 		Print.chatnn(sender, "Deinstallation check passed.");
 		return true;
 	}

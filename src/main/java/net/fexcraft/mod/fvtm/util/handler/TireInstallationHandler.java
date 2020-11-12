@@ -28,16 +28,17 @@ public class TireInstallationHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "There is already another part with that category installed.");
 			return false;
 		}
-		if(!data.getWheelSlots().containsKey(cat)){
+		String whcat = cat.split(":")[0];
+		if(!data.getWheelSlots().containsKey(whcat)){
 			Print.chatnn(sender, "This Vehicle does not have the required WheelSlot configured.");
 			return false;
 		}
-		if(!data.hasPart(cat.split(":")[0])){
+		if(!data.hasPart(whcat)){
 			Print.chatnn(sender, "There is no wheel/rim to install this tire on at that slot!");
 			return false;
 		}
 		TireData idata = part.getType().getInstallationHandlerData();
-		WheelSlot slot = data.getWheelSlots().get(cat);
+		WheelSlot slot = data.getWheelSlots().get(whcat);
 		if(slot == null){
 			Print.chatnn(sender, "Error, slot not found.");
 			return false;
@@ -51,7 +52,7 @@ public class TireInstallationHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "Tire radius too small. [" + idata.outer_radius + "<" + slot.min_tire_radius() + "]");
 			return false;
 		}
-		WheelData wdata = data.getPart(cat.split(":")[0]).getType().getInstallationHandlerData();
+		WheelData wdata = data.getPart(whcat).getType().getInstallationHandlerData();
 		if(idata.inner_radius < wdata.getRadius()){
 			Print.chatnn(sender, "Wheel too large for Tire inner radius. [" + wdata.getRadius() + ">" + idata.inner_radius + "]");
 			return false;

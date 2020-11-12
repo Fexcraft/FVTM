@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
@@ -147,7 +149,15 @@ public class TireInstallationHandler extends PartInstallationHandler {
 
 	@Override
 	public String[] getValidCategories(PartData part, VehicleData vehicle){
-		return vehicle.getWheelSlots().keySet().toArray(new String[0]);
+		ArrayList<String> strs = new ArrayList<>();
+		for(String str : vehicle.getWheelSlots().keySet()){
+			if(vehicle.hasPart(str)){
+				WheelData data = vehicle.getPart(str).getType().getInstallationHandlerData();
+				if(data != null && data.hasTire()) continue;
+				strs.add(str + ":tire");
+			}
+		}
+		return strs.toArray(new String[0]);
 	}
 
 }

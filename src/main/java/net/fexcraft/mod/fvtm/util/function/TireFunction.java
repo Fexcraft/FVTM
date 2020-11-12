@@ -18,24 +18,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class WheelFunction extends Function {
+public class TireFunction extends Function {
 	
-	private String inst_pos;
+	private String inst_on;
 	private WheelSlot wheel;
 
-	public WheelFunction(Part part, JsonObject obj){
+	public TireFunction(Part part, JsonObject obj){
 		super(part, obj);
 	}
 
 	@Override
 	public Function read(NBTTagCompound compound){
-		inst_pos = compound.hasKey("wheel_pos") ? compound.getString("wheel_pos") : null;
+		inst_on = compound.hasKey("wheel_on") ? compound.getString("wheel_on") : null;
 		return this;
 	}
 
 	@Override
 	public NBTTagCompound write(NBTTagCompound compound){
-		if(inst_pos != null) compound.setString("wheel_pos", inst_pos);
+		if(inst_on != null) compound.setString("wheel_on", inst_on);
 		return compound;
 	}
 	
@@ -45,7 +45,7 @@ public class WheelFunction extends Function {
 	
 	public @Nullable WheelSlot getWheelPos(VehicleData vehicle){
 		if(wheel != null) return wheel;
-		if(inst_pos != null) return wheel = vehicle.getWheelSlots().get(inst_pos);
+		if(inst_on != null) return wheel = vehicle.getWheelSlots().get(inst_on);
 		return null;
 	}
 
@@ -55,19 +55,19 @@ public class WheelFunction extends Function {
 	}
 
 	public void setWheel(String cat, WheelSlot slot){
-		this.inst_pos = cat; wheel = slot;
+		this.inst_on = cat; wheel = slot;
 	}
 
 	@Override
 	public Function copy(Part part){
-		return new WheelFunction(part, null);
+		return new TireFunction(part, null);
 	}
 
     @Override
     public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
     	WheelData wdata = data.getType().getInstallationHandlerData();
-        tooltip.add(Formatter.format("&9Wheel Radius: &7" + wdata.getRadius()));
-        tooltip.add(Formatter.format("&9Wheel Width: &7" + wdata.getWidth()));
+        tooltip.add(Formatter.format("&9Tire Radius: &7" + wdata.getRadius()));
+        tooltip.add(Formatter.format("&9Tire Width: &7" + wdata.getWidth()));
     }
 
 }

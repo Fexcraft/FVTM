@@ -34,6 +34,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.BogieInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.ConnectorInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -199,6 +200,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 			else if(handler.equals("wheel") || handler.equals("wheel_handler") || handler.equals("wheel_installer")){
 				this.installhandler = WheelInstallationHandler.INSTANCE;
 				this.installhandler_data = new WheelInstallationHandler.WheelData(inst);
+			}
+			else if(handler.equals("tire") || handler.equals("tyre")|| handler.equals("tire_handler") || handler.equals("tire_installer")){
+				this.installhandler = TireInstallationHandler.INSTANCE;
+				this.installhandler_data = new TireInstallationHandler.TireData(inst);
 			}
 			else if(handler.equals("connector")){
 				this.installhandler = ConnectorInstallationHandler.INSTANCE;

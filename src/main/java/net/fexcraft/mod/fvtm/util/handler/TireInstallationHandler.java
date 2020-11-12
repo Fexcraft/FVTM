@@ -13,11 +13,12 @@ import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
+import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.command.ICommandSender;
 
-public class WheelInstallationHandler extends PartInstallationHandler {
+public class TireInstallationHandler extends PartInstallationHandler {
 
-	public static final WheelInstallationHandler INSTANCE = new WheelInstallationHandler();
+	public static final TireInstallationHandler INSTANCE = new TireInstallationHandler();
 
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
@@ -29,31 +30,41 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 			Print.chatnn(sender, "This Vehicle does not have the required WheelSlot configured.");
 			return false;
 		}
-		WheelData idata = part.getType().getInstallationHandlerData();
+		if(!data.hasPart(cat.split(":")[0])){
+			Print.chatnn(sender, "There is no wheel/rim to install this tire on at that slot!");
+			return false;
+		}
+		TireData idata = part.getType().getInstallationHandlerData();
 		WheelSlot slot = data.getWheelSlots().get(cat);
 		if(slot == null){
 			Print.chatnn(sender, "Error, slot not found.");
 			return false;
 		}
 		// Print.debug(idata.radius, slot.maxradius(), slot.minradius());
-		if(idata.radius > slot.max_radius()){
-			Print.chatnn(sender, "Wheel radius too large. [" + idata.radius + ">" + slot.max_radius() + "]");
+		if(idata.outer_radius > slot.max_radius()){
+			Print.chatnn(sender, "Tire radius too large. [" + idata.outer_radius + ">" + slot.max_radius() + "]");
 			return false;
 		}
-		if(idata.radius < slot.min_radius(idata.has_tire)){
-			Print.chatnn(sender, "Wheel radius too small. [" + idata.radius + "<" + slot.min_radius(idata.has_tire) + "]");
+		if(idata.outer_radius < slot.min_tire_radius()){
+			Print.chatnn(sender, "Tire radius too small. [" + idata.outer_radius + "<" + slot.min_tire_radius() + "]");
 			return false;
 		}
+		WheelData wdata = data.getPart(cat.split(":")[0]).getType().getInstallationHandlerData();
+		if(idata.inner_radius < wdata.getRadius()){
+			Print.chatnn(sender, "Wheel too large for Tire inner radius. [" + wdata.getRadius() + ">" + idata.inner_radius + "]");
+			return false;
+		}
+		if(idata.inner_radius > wdata.getRadius()){
+			Print.chatnn(sender, "Tire inner radius too large for this Wheel. [" + idata.inner_radius + ">" +  wdata.getRadius() + "]");
+			return false;
+		}
+		//
 		if(idata.width > slot.max_width()){
-			Print.chatnn(sender, "Wheel is too wide. [" + idata.width + ">" + slot.max_width() + "]");
+			Print.chatnn(sender, "Tire is too wide. [" + idata.width + ">" + slot.max_width() + "]");
 			return false;
 		}
-		if(idata.width < slot.min_width(idata.has_tire)){
-			Print.chatnn(sender, "Wheel is too thin. [" + idata.width + "<" + slot.min_width(idata.has_tire) + "]");
-			return false;
-		}
-		if(idata.connector != slot.connector()){
-			Print.chatnn(sender, "Incompatible connector.");
+		if(idata.width < slot.min_tire_width()){
+			Print.chatnn(sender, "Tire is too thin. [" + idata.width + "<" + slot.min_tire_width() + "]");
 			return false;
 		}
 		Print.chatnn(sender, "Installation check passed.");
@@ -63,18 +74,20 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat, part);
-		part.setInstalledPos(data.getWheelSlots().get(cat).pos());
+		String whcat = cat.split(":")[0];
+		part.setInstalledPos(data.getWheelSlots().get(whcat).pos());
 		{
-			WheelFunction func = part.getFunction("fvtm:wheel");
-			if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
+			PartData wheel = data.getPart(whcat);
+			WheelFunction func = wheel.getFunction("fvtm:wheel");
+			if(func != null) func.setWheel(whcat, data.getWheelSlots().get(whcat));
 		}
 		{
 			TireFunction func = part.getFunction("fvtm:tire");
-			if(func != null) func.setWheel(cat, data.getWheelSlots().get(cat));
+			if(func != null) func.setWheel(whcat, data.getWheelSlots().get(whcat));
 		}
-		WheelData idata = part.getType().getInstallationHandlerData();
+		TireData idata = part.getType().getInstallationHandlerData();
 		Pos partpos = part.getInstalledPos();
-		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).to16Double());
+		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.outer_radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).to16Double());
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
 		Print.chatnn(sender, "Part installed into selected category.");
 		return true;
@@ -82,7 +95,7 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
-		WheelData idata = part.getType().getInstallationHandlerData();
+		TireData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
 			Print.chatnn(sender, "Part is marked as non removable.");
 			return false;
@@ -101,29 +114,28 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 	}
 
 	/** Wheel Part Install Handler Data */
-	public static class WheelData {
+	public static class TireData {
 
-		private float radius, width, connector;
-		private boolean removable, has_tire;
+		private float outer_radius, inner_radius, width;
+		private boolean removable;
 
-		public WheelData(JsonObject obj){
-			this.radius = JsonUtil.getIfExists(obj, "Radius", 16f).floatValue();
+		public TireData(JsonObject obj){
+			this.outer_radius = JsonUtil.getIfExists(obj, "OuterRadius", 16f).floatValue();
+			this.inner_radius = JsonUtil.getIfExists(obj, "InnerRadius", 16f).floatValue();
 			this.width = JsonUtil.getIfExists(obj, "Width", 4f).floatValue();
-			this.connector = JsonUtil.getIfExists(obj, "Connector", 0f).floatValue();
 			this.removable = JsonUtil.getIfExists(obj, "Removable", true);
-			this.has_tire = JsonUtil.getIfExists(obj, "Tireless", true);
 		}
 
-		public float getRadius(){
-			return radius;
+		public float getOuterRadius(){
+			return outer_radius;
+		}
+
+		public float getInnerRadius(){
+			return inner_radius;
 		}
 
 		public float getWidth(){
 			return width;
-		}
-		
-		public boolean hasTire(){
-			return has_tire;
 		}
 
 	}

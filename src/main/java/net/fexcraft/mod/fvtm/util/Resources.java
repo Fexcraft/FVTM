@@ -203,6 +203,7 @@ public class Resources {
 		registerFunction("fvtm:bogie", BogieFunction.class, true);
 		registerFunction("fvtm:part_slots", PartSlotsFunction.class, true);
 		registerFunction("fvtm:color", ColorFunction.class, true);
+		registerFunction("fvtm:tire", TireFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){

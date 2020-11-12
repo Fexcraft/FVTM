@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
+import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler.TireData;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -65,9 +65,10 @@ public class TireFunction extends Function {
 
     @Override
     public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
-    	WheelData wdata = data.getType().getInstallationHandlerData();
-        tooltip.add(Formatter.format("&9Tire Radius: &7" + wdata.getRadius()));
-        tooltip.add(Formatter.format("&9Tire Width: &7" + wdata.getWidth()));
+    	TireData tiredata = data.getType().getInstallationHandlerData();
+        tooltip.add(Formatter.format("&9Tire Outer Radius: &7" + tiredata.getOuterRadius()));
+        tooltip.add(Formatter.format("&9Tire Inner Radius: &7" + tiredata.getInnerRadius()));
+        tooltip.add(Formatter.format("&9Tire Width: &7" + tiredata.getWidth()));
     }
 
 }

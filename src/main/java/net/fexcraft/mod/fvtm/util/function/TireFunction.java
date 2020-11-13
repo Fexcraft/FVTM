@@ -33,6 +33,7 @@ public class TireFunction extends Function {
 
 	public TireFunction(Part part, JsonObject obj){
 		super(part, obj);
+		if(obj == null) obj = new JsonObject();
 		TireAttr attr = new TireAttr();
 		attr.general_grip = JsonUtil.getIfExists(obj, "general_grip", 1f).floatValue();
 		attr.corner_stiffness = JsonUtil.getIfExists(obj, "stiffness", 5.2f).floatValue();

@@ -179,7 +179,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 				if(func != null){
 					try {
 						this.functions.add(func.getConstructor(Part.class, JsonObject.class).newInstance(this, elmobj));
-					} catch(Exception e){ e.printStackTrace(); }
+					}
+					catch(Exception e){
+						e.printStackTrace(); Static.stop();
+					}
 				}
 				else{
 					Print.log("Function with ID '" + id + "' for PART '" + registryname.toString() + "' not found!"); Static.stop();

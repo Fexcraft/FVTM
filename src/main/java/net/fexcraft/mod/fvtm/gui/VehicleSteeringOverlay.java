@@ -47,7 +47,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class VehicleSteeringOverlay extends GuiScreen {
 
-	public static boolean toggables, resetview;
+	public static boolean toggables, resetview, uni12;
 	public static int scroll = 0, page, timer, clicktimer, oldview;// TODO replace to something fps independent
 	private SeatCache seat;
 	//
@@ -60,6 +60,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	public VehicleSteeringOverlay(EntityPlayerSP player){
 		super();
 		this.seat = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
+		uni12 = seat.vehicle instanceof ULandVehicle;
 		instance = this;
 	}
 
@@ -255,7 +256,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				if(toggables) page(1);
 				else seat.onKeyPress(KeyPress.ROLL_RIGHT, player);
 			}
-			if(player.getRidingEntity() instanceof ULandVehicle){
+			if(uni12){
 				if(isKeyDown(KeyHandler.pbrake.getKeyCode())){
 					seat.onKeyPress(KeyPress.PBRAKE, player);
 				}
@@ -329,6 +330,10 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	public static final ResourceLocation LIGHTS_HIGH_ON = new ResourceLocation("fvtm:textures/gui/icons/lights_high_on.png");
 	public static final ResourceLocation LIGHTS_FOG_OFF = new ResourceLocation("fvtm:textures/gui/icons/lights_fog_off.png");
 	public static final ResourceLocation LIGHTS_FOG_ON = new ResourceLocation("fvtm:textures/gui/icons/lights_fog_on.png");
+	public static final ResourceLocation PBRAKE_OFF = new ResourceLocation("fvtm:textures/gui/icons/pbrake_off.png");
+	public static final ResourceLocation PBRAKE_ON = new ResourceLocation("fvtm:textures/gui/icons/pbrake_on.png");
+	public static final ResourceLocation BRAKE_OFF = new ResourceLocation("fvtm:textures/gui/icons/brake_off.png");
+	public static final ResourceLocation BRAKE_ON = new ResourceLocation("fvtm:textures/gui/icons/brake_on.png");
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks){
@@ -350,8 +355,8 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		drawRectIcon(width - 33, 1, 32, 32);
 		//
 		if(!ent.isRailType()){
-			this.mc.getTextureManager().bindTexture(ConstructorGui.ANVIL);
-			drawRectIcon(width - 97 - 16, 1, 80, 16);
+			//this.mc.getTextureManager().bindTexture(ConstructorGui.ANVIL);
+			//drawRectIcon(width - 97 - 16, 1, 80, 16);
 			boolean turnleft = DefaultPrograms.BLINKER_TOGGLE && (data.getTurnLightLeft() || data.getWarningLights());
 			mc.getTextureManager().bindTexture(turnleft ? INDICATOR_LEFT_ON : INDICATOR_LEFT_OFF);
 			drawRectIcon(width - 97 - 16, 1, 16, 16);
@@ -365,6 +370,13 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			drawRectIcon(width - 97 + 16, 1, 16, 16);
 			mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getBooleanValue() ? LIGHTS_FOG_ON : LIGHTS_FOG_OFF);
 			drawRectIcon(width - 97, 1, 16, 16);
+			//
+			if(uni12){
+				mc.getTextureManager().bindTexture(((ULandVehicle)seat.vehicle).pbrake ? PBRAKE_ON : PBRAKE_OFF);
+				drawRectIcon(width - 97 - 34, 1, 16, 16);
+				mc.getTextureManager().bindTexture(((ULandVehicle)seat.vehicle).braking ? BRAKE_ON : BRAKE_OFF);
+				drawRectIcon(width - 97 - 50, 1, 16, 16);
+			}
 		}
 		//
 		if(!attributes.isEmpty()){
@@ -424,14 +436,6 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
 			mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
-		}
-		if(seat.vehicle instanceof ULandVehicle){//temporary, will be replaced with icons
-			if(((ULandVehicle)seat.vehicle).braking){
-				mc.fontRenderer.drawString(Formatter.format("BRAKE ON"), 7, 40, 0xffffff);
-			}
-			if(((ULandVehicle)seat.vehicle).pbrake){
-				mc.fontRenderer.drawString(Formatter.format("HAND-BRAKE ON"), 7, 51, 0xffffff);
-			}
 		}
 		if(Command.DEBUG){
 			for(int i = 0; i < seat.vehicle.wheels.length; i++){

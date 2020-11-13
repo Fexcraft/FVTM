@@ -1,10 +1,12 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -46,11 +48,23 @@ public class BasicSpawnSystem extends EntitySystem {
     
     public static boolean validToSpawn(EntityPlayer player, ItemStack stack, VehicleData data){
 		String[] index = data.getType().isTrailerOrWagon() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX; boolean failed = false;
+		boolean tireinfo = false;
 		for(String str : index){
+			String trailer = data.getType().isTrailerOrWagon() ? "&9Trailer" : "&9Vehicle";
 			if(!data.getWheelPositions().containsKey(str)){
-				String trailer = data.getType().isTrailerOrWagon() ? "&9Trailer" : "&9Vehicle";
 				Print.chat(player, trailer + " is missing a wheel! &7&o" + str); failed = true;
 			}
+        	PartData part = data.getPart(str);
+        	if(!((WheelData)part.getType().getInstallationHandlerData()).hasTire()){
+        		part = data.getPart(str + ":tire");
+        	}
+        	if(!part.hasFunction("fvtm:tire")){
+				Print.chat(player, trailer + " is missing a &avalid &9tire! &7&o" + str);
+				tireinfo = failed = true;
+        	}
+		}
+		if(tireinfo){
+			Print.chat(player, "&bU12/Basic vehicles need tire/wheel parts with a TireFunction attached!");
 		}
 		if(!data.getType().isTrailerOrWagon() && !data.hasPart("engine")){
 			Print.chat(player, "&9Vehicle does not have an Engine installed!"); //failed = true;

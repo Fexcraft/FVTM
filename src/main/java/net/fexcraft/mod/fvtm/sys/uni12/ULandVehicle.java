@@ -830,7 +830,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
-    private static final float brakegrip = 0.5f;//TODO TIRES
     private static final float engineforce = 8000f;//TODO ENGINE CALC + GEARS
     private double accx = 0f;
 
@@ -874,7 +873,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            double stew = wheelsYaw * 3.14159265F / 180F; 
 	            double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
 	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
-	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? brakegrip : 1);
+	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? wheeldata.function.brake_grip : 1);
 	        	double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
 	        	double trac = wheeldata.function.getGripFor(mat, rainfall) * thr - brake * Math.signum(motx);//grip inclusion here is for testing
 	        	//if(trac < 0) trac = 0;

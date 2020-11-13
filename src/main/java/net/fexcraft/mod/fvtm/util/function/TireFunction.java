@@ -36,6 +36,7 @@ public class TireFunction extends Function {
 		if(obj == null) obj = new JsonObject();
 		TireAttr attr = new TireAttr();
 		attr.general_grip = JsonUtil.getIfExists(obj, "general_grip", 1f).floatValue();
+		attr.brake_grip = JsonUtil.getIfExists(obj, "break_grip", 0.7f).floatValue();
 		attr.corner_stiffness = JsonUtil.getIfExists(obj, "stiffness", 5.2f).floatValue();
 		attr.corner_stiffness_steering = JsonUtil.getIfExists(obj, "steering_stiffness", 5f).floatValue();
 		if(obj.has("material_table")){
@@ -103,6 +104,7 @@ public class TireFunction extends Function {
     	
     	private HashMap<Material, MatTireAttr> table = new HashMap<>();
     	private float general_grip, corner_stiffness, corner_stiffness_steering;
+    	public float brake_grip;
 
         public float getGripFor(Material mat, boolean rainfall){
         	if(table.containsKey(mat)){

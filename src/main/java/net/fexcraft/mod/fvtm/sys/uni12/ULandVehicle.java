@@ -876,7 +876,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
 	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? brakegrip : 1);
 	        	double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
-	        	double trac = thr - brake * Math.signum(motx);
+	        	double trac = wheeldata.function.getGripFor(mat, rainfall) * thr - brake * Math.signum(motx);//grip inclusion here is for testing
 	        	//if(trac < 0) trac = 0;
 	        	double dragx = -rr * motx - ar * motx * Math.abs(motx);
 	        	double dragy = -rr * moty - ar * moty * Math.abs(moty);

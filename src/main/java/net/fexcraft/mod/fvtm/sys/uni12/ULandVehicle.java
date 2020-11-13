@@ -830,8 +830,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
-    private static final float brakegrip = 0.75f;//TODO TIRES
-    private static final float engineforce = 18000f;//TODO ENGINE CALC + GEARS
+    private static final float brakegrip = 0.5f;//TODO TIRES
+    private static final float engineforce = 8000f;//TODO ENGINE CALC + GEARS
     private double accx = 0f;
 
 	public void onUpdateMovement(){
@@ -848,9 +848,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         float brkf = vehicle.getAttributeFloat("brake_force", 10000f);
     	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
     	double thr = this.throttle * engineforce;
+    	double cos = Math.cos(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
+    	double sin = Math.sin(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
         //
     	accx = 0;
-		if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
+    	if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
 	            WTD wheeldata = getWheelData(wheel.getIndex());
@@ -867,11 +869,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            wheel.motionZ *= 0.9F;
 	            wheel.motionY -= GRAVE;
 	            //
-	            double motx = 0, moty = 0, stew = wheelsYaw * 3.14159265F / 180F;
+	        	double motx = cos * wheel.motionX + sin * wheel.motionZ;
+	        	double moty = cos * wheel.motionZ - sin * wheel.motionX;
+	            double stew = wheelsYaw * 3.14159265F / 180F; 
 	            double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
 	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
 	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? brakegrip : 1);
-	            double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
+	        	double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
 	        	double trac = thr - brake * Math.signum(motx);
 	        	//if(trac < 0) trac = 0;
 	        	double dragx = -rr * motx - ar * motx * Math.abs(motx);

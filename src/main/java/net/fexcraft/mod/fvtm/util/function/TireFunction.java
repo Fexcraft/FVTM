@@ -92,6 +92,7 @@ public class TireFunction extends Function {
 
     @Override
     public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
+    	if(data.getType().getInstallationHandlerData() instanceof TireData == false) return;
     	TireData tiredata = data.getType().getInstallationHandlerData();
         tooltip.add(Formatter.format("&9Tire Outer Radius: &7" + tiredata.getOuterRadius()));
         tooltip.add(Formatter.format("&9Tire Inner Radius: &7" + tiredata.getInnerRadius()));

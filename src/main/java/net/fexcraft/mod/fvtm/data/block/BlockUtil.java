@@ -48,8 +48,12 @@ public class BlockUtil {
 	}
 
 	public static Material getMaterial(String mat){
+		return getMaterial(mat, false);
+	}
+
+	public static Material getMaterial(String mat, boolean allownull){
 		Material material = VANILLA_MATERIALS.get(mat);
-		return material == null ? Material.ROCK : material;
+		return material == null ? allownull ? null : Material.ROCK : material;
 	}
 
 	public static MapColor getMapColor(String mapcol){

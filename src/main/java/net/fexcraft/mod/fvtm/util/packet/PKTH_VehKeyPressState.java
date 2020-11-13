@@ -41,8 +41,8 @@ public class PKTH_VehKeyPressState {
             ls.addScheduledTask(new Runnable() {
                 @Override
                 public void run(){
-                	GenericVehicle ent = (GenericVehicle)ctx.getServerHandler().player.getEntityWorld().getEntityByID(packet.source);
-                	EntityPlayer player = (EntityPlayer)ctx.getServerHandler().player.getEntityWorld().getEntityByID(packet.player);
+                	GenericVehicle ent = (GenericVehicle)Minecraft.getMinecraft().player.world.getEntityByID(packet.source);
+                	EntityPlayer player = (EntityPlayer)Minecraft.getMinecraft().player.world.getEntityByID(packet.player);
                 	if(ent == null || player == null || player == Minecraft.getMinecraft().player) return;
                 	SeatCache seat = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
                 	if(seat == null) return;

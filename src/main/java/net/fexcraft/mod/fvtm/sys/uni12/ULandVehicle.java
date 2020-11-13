@@ -46,11 +46,13 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
+import net.fexcraft.mod.fvtm.util.function.TireFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPressState;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,6 +63,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -199,6 +202,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         for(Entry<String, Vec3d> entry : vehicle.getWheelPositions().entrySet()){
         	WTD wheel = new WTD(entry.getKey());
         	wheel.pos = entry.getValue();
+        	PartData part = vehicle.getPart(entry.getKey());
+        	if(!((WheelData)part.getType().getInstallationHandlerData()).hasTire()){
+        		part = vehicle.getPart(entry.getKey() + ":tire");
+        	}
+        	wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
         	wheeldata.add(wheel);
         }
 	}
@@ -821,8 +829,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     }
     
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
-    public static final float TICKA = 1f / 20f;
-    private static final float tiregrip = 2;//TODO TIRES
+    public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
     private static final float brakegrip = 0.75f;//TODO TIRES
     private static final float engineforce = 18000f;//TODO ENGINE CALC + GEARS
     private double accx = 0f;
@@ -852,6 +859,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
 	                wheel.rotationYaw += wheelsYaw;
 	            }
+	            BlockPos wheelpos = new BlockPos(wheel.posX, wheel.posY - o132, wheel.posZ);
+	        	boolean rainfall = world.isRainingAt(wheelpos);
+	            Material mat = world.getBlockState(wheelpos).getMaterial();
 	            wheel.motionX *= 0.9F;
 	            wheel.motionY *= 0.9F;
 	            wheel.motionZ *= 0.9F;
@@ -860,8 +870,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            double motx = 0, moty = 0, stew = wheelsYaw * 3.14159265F / 180F;
 	            double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
 	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
-	            double grip = tiregrip * (wheel.slot.braking() && pbrake ? brakegrip : 1);//TODO TIRES
-	            double frict = Static.clamp((wheeldata.axle.pos.x > 0 ? 5 : 5.2f) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;//TODO TIRES
+	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? brakegrip : 1);
+	            double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
 	        	double trac = thr - brake * Math.signum(motx);
 	        	//if(trac < 0) trac = 0;
 	        	double dragx = -rr * motx - ar * motx * Math.abs(motx);
@@ -875,7 +885,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            if(engine != null){
 	                if((canThrustCreatively || consumed)){
 	                    double val;
-	                    if(lata.is_tracked){
+	                    if(lata.is_tracked){//TODO update
 	                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
 	                        //
 	                        float turningDrag = 0.02F;

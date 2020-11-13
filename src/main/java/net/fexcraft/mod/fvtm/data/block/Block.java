@@ -114,9 +114,9 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 			});
 		}
 		this.blocktype = BlockType.valueOf(JsonUtil.getIfExists(obj, "BlockType", "GENERIC_4ROT"));
-		this.material = getMaterial(JsonUtil.getIfExists(obj, "Material", "ROCK").toLowerCase());
+		this.material = BlockUtil.getMaterial(JsonUtil.getIfExists(obj, "Material", "ROCK").toLowerCase());
 		//TODO eventually allow creation of custom materials
-		this.colour = getMapColor(JsonUtil.getIfExists(obj, "MapColor", "STONE").toLowerCase());
+		this.colour = BlockUtil.getMapColor(JsonUtil.getIfExists(obj, "MapColor", "STONE").toLowerCase());
 		this.hardness = JsonUtil.getIfExists(obj, "Hardness", 1f).floatValue();
 		this.lightlevel = JsonUtil.getIfExists(obj, "LightLevel", 0f).floatValue();
 		this.resistance = JsonUtil.getIfExists(obj, "Resistance", 0f).floatValue();
@@ -137,105 +137,6 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		try{
 			this.block = blocktype.getApplicableClass(sub || isFunctional(), plain_model).getConstructor(Block.class).newInstance(this);
 		} catch(Exception e){ e.printStackTrace(); Static.stop(); } return this;
-	}
-
-	private Material getMaterial(String mat){
-		switch(mat){
-			case "air": return Material.AIR;
-			case "grass": return Material.GRASS;
-			case "ground": return Material.GROUND;
-			case "wood": return Material.WOOD;
-			case "rock": return Material.ROCK;
-			case "iron": return Material.IRON;
-			case "anvil": return Material.ANVIL;
-			case "water": return Material.WATER;
-			case "lava": return Material.LAVA;
-			case "leaves": return Material.LEAVES;
-			case "plants": return Material.PLANTS;
-			case "vine": return Material.VINE;
-			case "sponge": return Material.SPONGE;
-			case "cloth": return Material.CLOTH;
-			case "fire": return Material.FIRE;
-			case "sand": return Material.SAND;
-			case "circuits": return Material.CIRCUITS;
-			case "carpet": return Material.AIR;
-			case "glass": return Material.GLASS;
-			case "redstone_light": return Material.REDSTONE_LIGHT;
-			case "tnt": return Material.TNT;
-			case "coral": return Material.CORAL;
-			case "ice": return Material.ICE;
-			case "packed_ice": return Material.PACKED_ICE;
-			case "snow": return Material.SNOW;
-			case "crafted_snow": return Material.CRAFTED_SNOW;
-			case "cactus": return Material.CACTUS;
-			case "clay": return Material.CLAY;
-			case "gourd": return Material.GOURD;
-			//case "dragon_egg": return Material.DRAGON_EGG;
-			case "portal": return Material.PORTAL;
-			case "cake": return Material.CAKE;
-			case "web": return Material.WEB;
-			case "piston": return Material.PISTON;
-			case "barrier": return Material.BARRIER;
-			//case "scructure_void": return Material.STRUCTURE_VOID;
-		} return Material.ROCK;
-	}
-
-	private MapColor getMapColor(String mapcol){
-		switch(mapcol){
-			case "air": return MapColor.AIR;
-			case "grass": return MapColor.GRASS;
-			case "sand": return MapColor.SAND;
-			case "cloth": return MapColor.CLOTH;
-			case "tnt": return MapColor.TNT;
-			case "ice": return MapColor.ICE;
-			case "iron": return MapColor.IRON;
-			case "foliage": return MapColor.FOLIAGE;
-			case "snow": return MapColor.SNOW;
-			case "clay": return MapColor.CLAY;
-			case "dirt": return MapColor.DIRT;
-			case "stone": return MapColor.STONE;
-			case "water": return MapColor.WATER;
-			case "wood": return MapColor.WOOD;
-			case "quartz": return MapColor.QUARTZ;
-			case "adobe": return MapColor.ADOBE;
-			case "magenta": return MapColor.MAGENTA;
-			case "light_blue": return MapColor.LIGHT_BLUE;
-			case "yellow": return MapColor.YELLOW;
-			case "lime": return MapColor.LIME;
-			case "pink": return MapColor.PINK;
-			case "gray": return MapColor.GRAY;
-			case "silver": return MapColor.SILVER;
-			case "cyan": return MapColor.CYAN;
-			case "purple": return MapColor.PURPLE;
-			case "blue": return MapColor.BLUE;
-			case "brown": return MapColor.BROWN;
-			case "green": return MapColor.GREEN;
-			case "red": return MapColor.RED;
-			case "black": return MapColor.BLACK;
-			case "gold": return MapColor.GOLD;
-			case "diamond": return MapColor.DIAMOND;
-			case "lapis": return MapColor.LAPIS;
-			case "emerald": return MapColor.EMERALD;
-			case "obsidian": return MapColor.OBSIDIAN;
-			case "netherrack": return MapColor.NETHERRACK;
-			case "white_stained_hardenen_clay": return MapColor.WHITE_STAINED_HARDENED_CLAY;
-			case "orange_stained_hardenen_clay": return MapColor.ORANGE_STAINED_HARDENED_CLAY;
-			case "magenta_stained_hardenen_clay": return MapColor.MAGENTA_STAINED_HARDENED_CLAY;
-			case "light_blue_stained_hardenen_clay": return MapColor.LIGHT_BLUE_STAINED_HARDENED_CLAY;
-			case "yellow_stained_hardenen_clay": return MapColor.YELLOW_STAINED_HARDENED_CLAY;
-			case "lime_stained_hardenen_clay": return MapColor.LIME_STAINED_HARDENED_CLAY;
-			case "pink_stained_hardenen_clay": return MapColor.PINK_STAINED_HARDENED_CLAY;
-			case "gray_stained_hardenen_clay": return MapColor.GRAY_STAINED_HARDENED_CLAY;
-			case "silver_stained_hardenen_clay": return MapColor.SILVER_STAINED_HARDENED_CLAY;
-			case "cyan_stained_hardenen_clay": return MapColor.CYAN_STAINED_HARDENED_CLAY;
-			case "purple_stained_hardenen_clay": return MapColor.PURPLE_STAINED_HARDENED_CLAY;
-			case "blue_stained_hardenen_clay": return MapColor.BLUE_STAINED_HARDENED_CLAY;
-			case "brown_stained_hardenen_clay": return MapColor.BROWN_STAINED_HARDENED_CLAY;
-			case "green_stained_hardenen_clay": return MapColor.GREEN_STAINED_HARDENED_CLAY;
-			case "red_stained_hardenen_clay": return MapColor.RED_STAINED_HARDENED_CLAY;
-			case "black_stained_hardenen_clay": return MapColor.BLACK_STAINED_HARDENED_CLAY;
-		}
-		return MapColor.STONE;
 	}
 
 	@Override

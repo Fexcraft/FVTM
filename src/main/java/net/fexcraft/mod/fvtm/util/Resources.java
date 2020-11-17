@@ -204,6 +204,7 @@ public class Resources {
 		registerFunction("fvtm:part_slots", PartSlotsFunction.class, true);
 		registerFunction("fvtm:color", ColorFunction.class, true);
 		registerFunction("fvtm:tire", TireFunction.class, true);
+		registerFunction("fvtm:transmission", TransmissionFunction.class, true);
 	}
 
 	private void searchInAddonsFor(DataType datatype){

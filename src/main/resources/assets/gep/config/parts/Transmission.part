@@ -1,0 +1,8 @@
+{
+    "RegistryName": "gep:transmission",
+    "Addon": "fvtm:gep",
+    "Name": "Generic Transmission",
+    "Model": "null",
+    "Category": "transmission",
+    "Function": "fvtm:transmission"
+}

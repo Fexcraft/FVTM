@@ -1,8 +1,10 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -23,6 +25,9 @@ public class EngineFunction extends Function {
 	private TreeMap<String, Float> cons = new TreeMap<>();
 	private boolean ison;
 	private String[] fuelgroup;
+	//
+	private int min_rpm, max_rpm;
+	private float[][] torque_chart;
 
 	public EngineFunction(Part part, JsonObject obj){
 		super(part, obj);
@@ -32,6 +37,21 @@ public class EngineFunction extends Function {
 		fuelgroup = DataUtil.getStringArray(obj, "fuel_group", false, false).toArray(new String[0]);
 		if(obj.has("consumptions") && obj.get("consumptions").isJsonObject()){//todo find better naming
 			obj.get("consumptions").getAsJsonObject().entrySet().forEach(entry -> cons.put(entry.getKey(), entry.getValue().getAsFloat()));
+		}
+		//
+		if(!(obj.has("min_rpm") || obj.has("max_rpm") || obj.has("torque_chart"))) return; 
+		min_rpm = JsonUtil.getIfExists(obj, "min_rpm", 1000).intValue();
+		max_rpm = JsonUtil.getIfExists(obj, "max_rpm", 6000).intValue();
+		JsonObject tor = obj.get("torque_chart").getAsJsonObject();
+		torque_chart = new float[tor.size()][2];
+		TreeMap<Integer, Float> map = new TreeMap<>();
+		for(Map.Entry<String, JsonElement> entry : tor.entrySet()){
+			map.put(Integer.parseInt(entry.getKey()), entry.getValue().getAsFloat());
+		}
+		int index = 0;
+		for(Map.Entry<Integer, Float> entry : map.entrySet()){
+			torque_chart[index][0] = entry.getKey();
+			torque_chart[index++][1] = entry.getValue();
 		}
 	}
 
@@ -94,6 +114,23 @@ public class EngineFunction extends Function {
 
 	public int getIdleFuelConsumption(){
 		return idle_con;
+	}
+	
+	public int minRPM(){
+		return min_rpm;
+	}
+	
+	public int maxRPM(){
+		return min_rpm;
+	}
+	
+	public float[][] getTorqueChart(){
+		return torque_chart;
+	}
+	
+	public float getTorque(int rpm){
+		//TODO
+		return 0;
 	}
 
 }

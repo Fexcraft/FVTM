@@ -19,6 +19,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -768,6 +769,10 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public String getDisplayName(){
 		return displayname;
+	}
+
+	public <F extends Function> F getFunctionInPart(String part, String function){
+		return parts.containsKey(part) ? parts.get(part).getFunction(function) : null;
 	}
 
 }

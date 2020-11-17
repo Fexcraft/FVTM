@@ -53,6 +53,7 @@ public class EngineFunction extends Function {
 			torque_chart[index][0] = entry.getKey();
 			torque_chart[index++][1] = entry.getValue();
 		}
+		//TODO validation, e.g. check if there are at least 2 entries
 	}
 
 	public EngineFunction(float es, boolean io, int ic, int c, TreeMap<String, Float> cs, String[] fg){
@@ -129,7 +130,20 @@ public class EngineFunction extends Function {
 	}
 	
 	public float getTorque(int rpm){
-		//TODO
+		if(rpm <= min_rpm) return torque_chart[0][1];
+		if(rpm >= max_rpm) return torque_chart[torque_chart.length - 1][1];
+		float[] last, curr = torque_chart[0];
+		for(int i = 1; i < torque_chart.length; i++){
+			last = curr; curr = torque_chart[i];
+			if(rpm >= last[0] && rpm < curr[0]){
+				float diff = curr[0] - last[0];
+				float rrpm = rpm - last[0];
+				diff = rrpm / diff;
+				return last[1] + (diff * (curr[1] - last[1]));
+			}
+			if(i != torque_chart.length - 1) continue;
+			else return curr[1];
+		}
 		return 0;
 	}
 

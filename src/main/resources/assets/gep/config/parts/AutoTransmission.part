@@ -1,0 +1,11 @@
+{
+    "RegistryName": "gep:automatic_transmission",
+    "Addon": "fvtm:gep",
+    "Name": "Generic Automatic Transmission",
+    "Model": "null",
+    "Category": "transmission",
+    "Function": {
+    	"id": "fvtm:transmission",
+    	"automatic": true
+    }
+}

@@ -840,7 +840,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);
-        EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
+        EngineFunction engine = vehicle.getFunctionInPart("engine", "fvtm:engine");
         boolean consumed = processConsumption(engine);
         
         float brkf = vehicle.getAttributeFloat("brake_force", 10000f);

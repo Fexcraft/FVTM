@@ -840,7 +840,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);
-        boolean canThrustCreatively = !Config.VEHICLES_NEED_FUEL || isDriverInCreative();
         EngineFunction engine = vehicle.hasPart("engine") ? vehicle.getPart("engine").getFunction("fvtm:engine") : null;
         boolean consumed = processConsumption(engine);
         
@@ -875,7 +874,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
 	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? wheeldata.function.brake_grip : 1);
 	        	double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
-	        	double trac = wheeldata.function.getGripFor(mat, rainfall) * thr - brake * Math.signum(motx);//grip inclusion here is for testing
+	        	double trac = wheeldata.function.getGripFor(mat, rainfall) * ((consumed ? thr : 0) - brake * Math.signum(motx));//grip inclusion here is for testing
 	        	//if(trac < 0) trac = 0;
 	        	double dragx = -rr * motx - ar * motx * Math.abs(motx);
 	        	double dragy = -rr * moty - ar * moty * Math.abs(moty);
@@ -885,39 +884,35 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	        	double acy = (totaly / mass) * TICKA;
 	        	accx += acx;
 	        	//
-	            if(engine != null){
-	                if((canThrustCreatively || consumed)){
-	                    double val;
-	                    if(lata.is_tracked){//TODO update
-	                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
-	                        //
-	                        float turningDrag = 0.02F;
-	                        wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-	                        wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
-	                        //
-	                        val = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
-	                        float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
-	                        double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * val;
-	                        wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
-	                        wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
-	                    }
-	                    else{
-	                        val = acx;
-	                        wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
-	                        wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val;
-	                        //
-	                        if(wheel.wheelid == 2 || wheel.wheelid == 3){
-	                            val = acy / 20f;
-	                            wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
-	                            wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
-	                        }
-	                        else{
-	                            wheel.motionX *= 0.9F;
-	                            wheel.motionZ *= 0.9F;
-	                        }
-	                    }
-	                }
-	            }
+                double val;
+                if(lata.is_tracked){//TODO update
+                    boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
+                    //
+                    float turningDrag = 0.02F;
+                    wheel.motionX *= 1F - (Math.abs(wheelsYaw) * turningDrag);
+                    wheel.motionZ *= 1F - (Math.abs(wheelsYaw) * turningDrag);
+                    //
+                    val = 0.04F * (throttle > 0 ? lata.max_throttle : lata.min_throttle) * engine.getLegacyEngineSpeed();
+                    float steeringScale = 0.1F * (wheelsYaw > 0 ? lata.turn_left_mod : lata.turn_right_mod);
+                    double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * val;
+                    wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
+                    wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
+                }
+                else{
+                    val = acx;
+                    wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
+                    wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val;
+                    //
+                    if(wheel.wheelid == 2 || wheel.wheelid == 3){
+                        val = acy / 20f;
+                        wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+                        wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+                    }
+                    else{
+                        wheel.motionX *= 0.9F;
+                        wheel.motionZ *= 0.9F;
+                    }
+                }
 	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 	            //pull wheel back to car
 	            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
@@ -1027,8 +1022,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
     private boolean processConsumption(EngineFunction engine){
     	if(engine == null) return false;
+    	if(!Config.VEHICLES_NEED_FUEL) return true;
     	if(accumulator < 20){
-    		if(!engine.isOn()){
+    		if(!engine.isOn() || isDriverInCreative()){
     			//pass
     		}
     		else if(throttle == 0f || (throttle < 0.05f && throttle > -0.05f)){

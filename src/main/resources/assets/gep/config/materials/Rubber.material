@@ -1,5 +1,5 @@
 {
-    "RegistryName": "generic:rubber",
+    "RegistryName": "gep:rubber",
     "Addon": "fvtm:gep",
     "Name": "Rubber",
     "MaxItemStackSize": 16,

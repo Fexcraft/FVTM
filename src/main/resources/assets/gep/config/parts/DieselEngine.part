@@ -20,7 +20,16 @@
     		"synthetic": 6,
     		"biodiesel": 7
     	},
-    	"fuel_group": "diesel"
+    	"fuel_group": "diesel",
+    	
+    	"min_rpm": 1000,
+	    "max_rpm": 5000,
+	    "torque_chart":{
+	        "1000": 300,
+	        "4000": 450,
+	        "5000": 400
+	    },
+	    "__comment": "example/testing values"
     },
     "Sounds":[
     	{

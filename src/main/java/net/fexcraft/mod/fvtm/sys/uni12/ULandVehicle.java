@@ -1034,7 +1034,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		}*/
 	}
 
-	private WTD getWheelData(String index){
+	public WTD getWheelData(String index){
 		for(WTD wheel : wheeldata){
 			if(wheel.id.equals(index)) return wheel;
 		}

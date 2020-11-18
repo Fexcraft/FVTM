@@ -39,6 +39,7 @@ public class TireFunction extends Function {
 		attr.brake_grip = JsonUtil.getIfExists(obj, "break_grip", 0.7f).floatValue();
 		attr.corner_stiffness = JsonUtil.getIfExists(obj, "stiffness", 5.2f).floatValue();
 		attr.corner_stiffness_steering = JsonUtil.getIfExists(obj, "steering_stiffness", 5f).floatValue();
+		attr.step_height = JsonUtil.getIfExists(obj, "step_height", 1f).floatValue();
 		if(obj.has("material_table")){
 			JsonObject table = obj.get("material_table").getAsJsonObject();
 			for(Map.Entry<String, JsonElement> entry : table.entrySet()){
@@ -93,18 +94,21 @@ public class TireFunction extends Function {
 
     @Override
     public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
-    	if(data.getType().getInstallationHandlerData() instanceof TireData == false) return;
-    	TireData tiredata = data.getType().getInstallationHandlerData();
-        tooltip.add(Formatter.format("&9Tire Outer Radius: &7" + tiredata.getOuterRadius()));
-        tooltip.add(Formatter.format("&9Tire Inner Radius: &7" + tiredata.getInnerRadius()));
-        tooltip.add(Formatter.format("&9Tire Width: &7" + tiredata.getWidth()));
+    	if(data.getType().getInstallationHandlerData() instanceof TireData){
+        	TireData tiredata = data.getType().getInstallationHandlerData();
+            tooltip.add(Formatter.format("&9Tire Outer Radius: &7" + tiredata.getOuterRadius()));
+            tooltip.add(Formatter.format("&9Tire Inner Radius: &7" + tiredata.getInnerRadius()));
+            tooltip.add(Formatter.format("&9Tire Width: &7" + tiredata.getWidth()));
+    		return;
+    	}
+        tooltip.add(Formatter.format("&9Climb Height: &7" + TIRES.get(data.getType()).step_height));
     }
     
     public static class TireAttr {
     	
     	private HashMap<Material, MatTireAttr> table = new HashMap<>();
     	private float general_grip, corner_stiffness, corner_stiffness_steering;
-    	public float brake_grip;
+    	public float brake_grip, step_height;
 
         public float getGripFor(Material mat, boolean rainfall){
         	if(table.containsKey(mat)){

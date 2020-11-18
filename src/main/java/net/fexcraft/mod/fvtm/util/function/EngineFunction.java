@@ -28,6 +28,7 @@ public class EngineFunction extends Function {
 	//
 	private int min_rpm, max_rpm;
 	private float[][] torque_chart;
+	private float highest_torque;
 
 	public EngineFunction(Part part, JsonObject obj){
 		super(part, obj);
@@ -39,7 +40,7 @@ public class EngineFunction extends Function {
 			obj.get("consumptions").getAsJsonObject().entrySet().forEach(entry -> cons.put(entry.getKey(), entry.getValue().getAsFloat()));
 		}
 		//
-		if(!(obj.has("min_rpm") || obj.has("max_rpm") || obj.has("torque_chart"))) return; 
+		if(!obj.has("torque_chart")) return;
 		min_rpm = JsonUtil.getIfExists(obj, "min_rpm", 1000).intValue();
 		max_rpm = JsonUtil.getIfExists(obj, "max_rpm", 6000).intValue();
 		JsonObject tor = obj.get("torque_chart").getAsJsonObject();
@@ -52,6 +53,7 @@ public class EngineFunction extends Function {
 		for(Map.Entry<Integer, Float> entry : map.entrySet()){
 			torque_chart[index][0] = entry.getKey();
 			torque_chart[index++][1] = entry.getValue();
+			if(entry.getValue() > highest_torque) highest_torque = entry.getValue();
 		}
 		//TODO validation, e.g. check if there are at least 2 entries
 	}
@@ -87,7 +89,12 @@ public class EngineFunction extends Function {
 	
 	@Override
 	public Function copy(Part part){
-		return new EngineFunction(engine_speed, ison, idle_con, con, cons, fuelgroup);
+		EngineFunction func = new EngineFunction(engine_speed, ison, idle_con, con, cons, fuelgroup);
+		func.min_rpm = min_rpm;
+		func.max_rpm = max_rpm;
+		func.torque_chart = torque_chart;
+		func.highest_torque = highest_torque;
+		return func;
 	}
 
 	public boolean setState(boolean bool){
@@ -106,6 +113,13 @@ public class EngineFunction extends Function {
     public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
     	for(String str : fuelgroup){
             tooltip.add(Formatter.format("&9Engine Fuel: &7" + str));
+    	}
+    	if(torque_chart != null){
+            tooltip.add(Formatter.format("&9Range: &7" + min_rpm + "-" + max_rpm + " rpm"));
+            tooltip.add(Formatter.format("&9Torque: &7" + torque_chart[0][1] + "-" + highest_torque));
+    	}
+    	else{
+            tooltip.add(Formatter.format("&8&oLegacy Engine, not U12/Basic Compatible."));
     	}
     }
 

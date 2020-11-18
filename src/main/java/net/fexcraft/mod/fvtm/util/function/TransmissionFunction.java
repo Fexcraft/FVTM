@@ -23,6 +23,7 @@ public class TransmissionFunction extends StaticFuntion {
 	private float u_low, u_mid, u_high;
 	private float d_low, d_mid, d_high;
 	private int fgears, rgears;
+	private float efficiency;
 	private boolean automatic;
 
 	public TransmissionFunction(Part part, JsonObject obj){
@@ -69,6 +70,7 @@ public class TransmissionFunction extends StaticFuntion {
 			d_mid = rats.get(1).getAsFloat();
 			d_high = rats.get(2).getAsFloat();
 		}
+		efficiency = JsonUtil.getIfExists(obj, "efficiency", 0.7).floatValue();
 	}
 
 	@Override
@@ -93,6 +95,10 @@ public class TransmissionFunction extends StaticFuntion {
     
     public boolean isManual(){
     	return !automatic;
+    }
+    
+    public float getEfficiency(){
+    	return efficiency;
     }
 	
 	public int getFGearAmount(){

@@ -47,6 +47,7 @@ import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
+import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehKeyPress;
@@ -105,7 +106,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public ArrayList<Axle> axles = new ArrayList<>();
     public ArrayList<WTD> wheeldata = new ArrayList<>();
     public Axle front, rear;
-    public double wheelbase, cg_height;
+    public double wheelbase, cg_height, wheel_radius;
     public boolean pbrake, braking;
 
 	public ULandVehicle(World world){	
@@ -199,16 +200,22 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	
 	private void setupWheels(){
 		wheeldata.clear();
+		wheel_radius = 0;
         for(Entry<String, Vec3d> entry : vehicle.getWheelPositions().entrySet()){
         	WTD wheel = new WTD(entry.getKey());
         	wheel.pos = entry.getValue();
         	PartData part = vehicle.getPart(entry.getKey());
         	if(!((WheelData)part.getType().getInstallationHandlerData()).hasTire()){
         		part = vehicle.getPart(entry.getKey() + ":tire");
+        		wheel_radius += ((TireData)part.getType().getInstallationHandlerData()).getOuterRadius() * Static.sixteenth;
+        	}
+        	else{
+        		wheel_radius += ((WheelData)part.getType().getInstallationHandlerData()).getRadius() * Static.sixteenth;
         	}
         	wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
         	wheeldata.add(wheel);
         }
+        wheel_radius /= wheeldata.size();
 	}
 
 	@Override

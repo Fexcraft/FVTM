@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,6 +66,22 @@ public class BasicSpawnSystem extends EntitySystem {
 		}
 		if(tireinfo){
 			Print.chat(player, "&bU12/Basic vehicles need tire/wheel parts with a TireFunction attached!");
+		}
+		if(!data.getType().isTrailerOrWagon()){
+			if(!data.hasPart("engine")){
+				Print.chat(player, "&9Vehicle does not have an Engine installed!"); //failed = true;
+			}
+			else{
+				EngineFunction func = data.getFunctionInPart("engine", "fvtm:engine");
+				if(func == null){
+					Print.chat(player, "&cInstalled engine has no function!"); //failed = true;
+				}
+				else if(func.getTorqueChart() == null){
+					Print.chat(player, "&cInstalled engine is not valid for the Basic System.");
+					Print.chat(player, "&7&oInstall another engine or try the Legacy Entities!");
+					failed = true;
+				}
+			}
 		}
 		if(!data.getType().isTrailerOrWagon() && !data.hasPart("engine")){
 			Print.chat(player, "&9Vehicle does not have an Engine installed!"); //failed = true;

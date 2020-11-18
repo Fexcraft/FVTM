@@ -37,6 +37,7 @@ public class TransmissionFunction extends StaticFuntion {
 			ratios.add(1f);
 			ratios.add(0.5f);
 			ratios.add(0f);
+			ratios.add(-1.8f);
 			ratios.add(-3f);
 		}
 		else for(JsonElement elm : rats){
@@ -119,18 +120,19 @@ public class TransmissionFunction extends StaticFuntion {
 	/** To be called from the vehicle vehicle when this is an automatic transmission, to check if it should change gears. */
 	public int processAutoShift(int gear, int rpm, int rpm_max, double throttle){
 		if(gear == 0) return 0;
+		//if(throttle < 0.0001f) return 0;
 		float max = rpm_max * (throttle < 0.3 ? u_low : throttle < 0.7 ? u_mid : u_high);
 		float min = rpm_max * (throttle < 0.3 ? d_low : throttle < 0.7 ? d_mid : d_high);
+		boolean rev = gear < 0;
+		if(rev) gear = -gear;
 		if(rpm < min){
-			if(gear <= 1) return 1;
-			else return gear - 1;
+			gear = gear <= 1 ? 1 : gear - 1;
 		}
 		else if(rpm > max){
-			int gears = (gear > 0 ? fgears : rgears);
-			if(gear >= gears) return gears;
-			else return gear + 1;
+			int gears = (rev ? rgears : fgears);
+			gear = gear >= gears ? gears : gear + 1;
 		}
-		return gear;
+		return rev ? -gear : gear;
 	}
 
 }

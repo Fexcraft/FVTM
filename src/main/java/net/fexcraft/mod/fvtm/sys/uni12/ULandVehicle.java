@@ -94,7 +94,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public float prevRotationRoll;
     public ULandVehicle truck, trailer;
     //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
-    protected byte toggle_timer, gear_timer;
+    protected byte toggle_timer, gear_timer, autogear_timer;
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
@@ -399,6 +399,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
             case GEAR_UP: {
                 if(gear_timer <= 0){
+                	if(transmission == null) return true;
                 	int gear = vehicle.getAttributeInteger("gear", 0);
                 	if(transmission.isAutomatic()){
                 		if(gear < 0){
@@ -420,6 +421,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
             case GEAR_DOWN: {
                 if(gear_timer <= 0){
+                	if(transmission == null) return true;
                 	int gear = vehicle.getAttributeInteger("gear", 0);
                 	if(transmission.isAutomatic()){
                 		if(gear > 0){
@@ -800,6 +802,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(gear_timer > 0){
             gear_timer--;
         }
+        if(autogear_timer > 0){
+            autogear_timer--;
+        }
         //
         if(!world.isRemote){ wheelsYaw *= 0.95F;  }
         if(wheelsYaw > 45){ wheelsYaw = 45; }//TODO vehicle attr
@@ -908,17 +913,16 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		VehicleSteeringOverlay.STRS.add("RPM: " + rpm);
     	if(transmission != null){
     		force = engine.getTorque(rpm) * transmission.getRatio(gear) * vehicle.getAttributeFloat("differential_ratio", 3.5f) * transmission.getEfficiency() / wheel_radius;
-        	if(transmission.isAutomatic() && gear_timer <= 0){
+        	if(transmission.isAutomatic() && autogear_timer <= 0){
         		int ngear = transmission.processAutoShift(gear, rpm, engine.maxRPM(), throttle);
         		if(ngear != gear){
         			vehicle.getAttribute("gear").setValue(ngear);
         			sendAttributeUpdate("gear");
         		}
-        		gear_timer += 40;
+        		autogear_timer += 40;
         	}
     	}
     	double thr = this.throttle * force;
-		VehicleSteeringOverlay.STRS.add("T+FR: " + throttle + " * " + force + " = " + thr);
     	double cos = Math.cos(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
     	double sin = Math.sin(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
         //

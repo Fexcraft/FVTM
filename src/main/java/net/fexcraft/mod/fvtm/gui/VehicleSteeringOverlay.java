@@ -437,6 +437,13 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
 			mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
 		}
+		if(uni12){
+			ULandVehicle veh = (ULandVehicle)seat.vehicle;
+			int gear = veh.getVehicleData().getAttributeInteger("gear", 0);
+			String gearS = veh.transmission != null && veh.transmission.isAutomatic() && gear != 0 ? "A" : "";
+			mc.fontRenderer.drawString(Formatter.format("RPM: " + "//TODO"), 157, 3, 0xffffff);
+			mc.fontRenderer.drawString(Formatter.format("Gear: " + gearS + gear), 157, 14, 0xffffff);
+		}
 		if(Command.DEBUG){
 			for(int i = 0; i < seat.vehicle.wheels.length; i++){
 				WheelEntity wheel = seat.vehicle.wheels[i];

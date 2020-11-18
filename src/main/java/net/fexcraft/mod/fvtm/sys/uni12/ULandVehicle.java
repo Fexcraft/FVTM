@@ -30,6 +30,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -80,7 +81,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, ContainerHoldingEntity {
 
-	private LegacyData lata;
+	private LegacyData lata;//TODO replace
 	private VehicleData vehicle;
 	public SwivelPoint rotpoint;
 	//
@@ -93,7 +94,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public float prevRotationRoll;
     public ULandVehicle truck, trailer;
     //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
-    protected byte toggle_timer;
+    protected byte toggle_timer, gear_timer;
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
@@ -110,6 +111,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public double wheelbase, cg_height;
     public float wheel_radius;
     public boolean pbrake, braking;
+    public EngineFunction engine;
+    public TransmissionFunction transmission;
 
 	public ULandVehicle(World world){	
 		super(world);
@@ -149,6 +152,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         wheels = new WheelEntity[WHEELINDEX.length];
         setupWheels();
         setupAxles();
+        engine = vehicle.getFunctionInPart("engine", "fvtm:engine");
+        transmission = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
         if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         stepHeight = lata.wheel_step_height;
@@ -342,16 +347,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         switch(key){
             case ACCELERATE:{
-                throttle += throttle < 0 ? 0.02f : 0.01F;
-                if(throttle > 1F){ throttle = 1F; }
+                throttle += 0.01F;
+                if(throttle > 1F) throttle = 1F;
                 return true;
             }
             case DECELERATE:{
-                throttle -= throttle > 0 ? 0.02f : 0.01F;
-                if(throttle < -1F){ throttle = -1F; }
-                if(throttle < 0F && lata.min_throttle == 0F){
-                    throttle = 0F;
-                }
+                throttle -= 0.01F;
+                if(throttle < 0F) throttle = 0F;
                 return true;
             }
             case TURN_LEFT:{
@@ -395,12 +397,54 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             	toggle_timer += 10;
                 return true;
             }
+            case GEAR_UP: {
+                if(gear_timer <= 0){
+                	int gear = vehicle.getAttributeInteger("gear", 0);
+                	if(transmission.isAutomatic()){
+                		if(gear < 0){
+                    		vehicle.getAttribute("gear").setValue(0);
+                    		sendAttributeUpdate("gear");
+                		}
+                		else if(gear == 0){
+                    		vehicle.getAttribute("gear").setValue(1);
+                    		sendAttributeUpdate("gear");
+                		}
+                	}
+                	else if(gear + 1 <= transmission.getFGearAmount()){
+                		vehicle.getAttribute("gear").setValue(gear + 1);
+                		sendAttributeUpdate("gear");
+                	}
+                	gear_timer += 10;
+                }
+                return true;
+            }
+            case GEAR_DOWN: {
+                if(gear_timer <= 0){
+                	int gear = vehicle.getAttributeInteger("gear", 0);
+                	if(transmission.isAutomatic()){
+                		if(gear > 0){
+                    		vehicle.getAttribute("gear").setValue(0);
+                    		sendAttributeUpdate("gear");
+                		}
+                		else if(gear == 0){
+                    		vehicle.getAttribute("gear").setValue(-1);
+                    		sendAttributeUpdate("gear");
+                		}
+                	}
+                	else if(gear - 1 >= -transmission.getRGearAmount()){
+                		vehicle.getAttribute("gear").setValue(gear - 1);
+                		sendAttributeUpdate("gear");
+                	}
+                	gear_timer += 10;
+                }
+                return true;
+            }
             case SCRIPTS: {
                 /*if(!world.isRemote){
                     player.openGui(FVTM.getInstance(), GuiHandler.VEHICLE_SCRIPTSGUI, world, this.getEntityId(), seat, 0);
                     //open scripts gui
-                }
-                return true;*/
+                }*/
+                return true;
             }
             case LIGHTS: {
                 if(toggle_timer <= 0){
@@ -753,6 +797,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(toggle_timer > 0){
             toggle_timer--;
         }
+        if(gear_timer > 0){
+            gear_timer--;
+        }
         //
         if(!world.isRemote){ wheelsYaw *= 0.95F;  }
         if(wheelsYaw > 45){ wheelsYaw = 45; }//TODO vehicle attr
@@ -847,26 +894,31 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		double ar = vehicle.getAttributeFloat("air_resistance", 2.5f);
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
 		//
+		VehicleSteeringOverlay.STRS.clear();
 		Vec3d atmc = new Vec3d(0, 0, 0);
-        EngineFunction engine = vehicle.getFunctionInPart("engine", "fvtm:engine");
+        //EngineFunction engine = vehicle.getFunctionInPart("engine", "fvtm:engine");
         boolean consumed = processConsumption(engine);
         
         float brkf = vehicle.getAttributeFloat("brake_force", 10000f);
     	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
-    	TransmissionFunction trans = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
-    	int gear = vehicle.getAttributeInteger("gear", 1), rpm = 3000;
+    	//TransmissionFunction trans = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
+    	int gear = vehicle.getAttributeInteger("gear", 0), rpm = 3000;
     	float force = 0;
-    	if(trans != null){
-    		force = engine.getTorque(rpm) * trans.getRatio(gear) * vehicle.getAttributeFloat("differential_ratio", 3.5f) * trans.getEfficiency() / wheel_radius;
-    	}
-    	if(trans.isAutomatic()){
-    		int ngear = trans.processAutoShift(gear, rpm, engine.maxRPM(), throttle, true);//TODO non negative throttle
-    		if(ngear != gear){
-    			vehicle.getAttribute("gear").setValue(ngear);
-    			//TODO send update packet
-    		}
+		VehicleSteeringOverlay.STRS.add("Gear: " + (transmission != null && transmission.isAutomatic() && gear != 0 ? "A" : "") + gear);
+		VehicleSteeringOverlay.STRS.add("RPM: " + rpm);
+    	if(transmission != null){
+    		force = engine.getTorque(rpm) * transmission.getRatio(gear) * vehicle.getAttributeFloat("differential_ratio", 3.5f) * transmission.getEfficiency() / wheel_radius;
+        	if(transmission.isAutomatic() && gear_timer <= 0){
+        		int ngear = transmission.processAutoShift(gear, rpm, engine.maxRPM(), throttle);
+        		if(ngear != gear){
+        			vehicle.getAttribute("gear").setValue(ngear);
+        			sendAttributeUpdate("gear");
+        		}
+        		gear_timer += 40;
+        	}
     	}
     	double thr = this.throttle * force;
+		VehicleSteeringOverlay.STRS.add("T+FR: " + throttle + " * " + force + " = " + thr);
     	double cos = Math.cos(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
     	double sin = Math.sin(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
         //

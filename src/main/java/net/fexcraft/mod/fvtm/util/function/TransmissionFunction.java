@@ -25,6 +25,7 @@ public class TransmissionFunction extends StaticFuntion {
 	private int fgears, rgears;
 	private float efficiency;
 	private boolean automatic;
+	//TODO transmission speed var
 
 	public TransmissionFunction(Part part, JsonObject obj){
 		super(part, obj);
@@ -106,15 +107,17 @@ public class TransmissionFunction extends StaticFuntion {
 	}
 	
 	public int getRGearAmount(){
-		return fgears;
+		return rgears;
 	}
 	
 	public float getRatio(int gear){
-		return ratios.get(gear);
+		if(rgears + gear < 0 ) gear = -rgears;
+		if(rgears + gear >= ratios.size()) gear = ratios.size() - 1 - rgears;
+		return ratios.get(rgears + gear);
 	}
 	
 	/** To be called from the vehicle vehicle when this is an automatic transmission, to check if it should change gears. */
-	public int processAutoShift(int gear, int rpm, int rpm_max, double throttle, boolean forward){
+	public int processAutoShift(int gear, int rpm, int rpm_max, double throttle){
 		if(gear == 0) return 0;
 		float max = rpm_max * (throttle < 0.3 ? u_low : throttle < 0.7 ? u_mid : u_high);
 		float min = rpm_max * (throttle < 0.3 ? d_low : throttle < 0.7 ? d_mid : d_high);
@@ -123,7 +126,7 @@ public class TransmissionFunction extends StaticFuntion {
 			else return gear - 1;
 		}
 		else if(rpm > max){
-			int gears = (forward ? fgears : rgears);
+			int gears = (gear > 0 ? fgears : rgears);
 			if(gear >= gears) return gears;
 			else return gear + 1;
 		}

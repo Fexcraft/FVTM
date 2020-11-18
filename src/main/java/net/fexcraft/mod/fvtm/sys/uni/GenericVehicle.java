@@ -10,8 +10,10 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.LoopSound;
@@ -232,6 +234,38 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 
 	public boolean isBraking(){
 		return false;
+	}
+	
+	public void sendAttributeUpdate(Attribute<?> attr){
+		if(attr == null) return;
+		NBTTagCompound packet = new NBTTagCompound();
+		packet.setString("target_listener", "fvtm:gui");
+		packet.setString("task", attr.type().isString() ? "attr_update" : "attr_toggle");
+		packet.setString("attr", attr.id());
+		packet.setInteger("entity", getEntityId());
+		if(attr.type().isTristate()){
+			if(attr.getTriStateValue() == null){
+				packet.setBoolean("bool", false);
+				packet.setBoolean("reset", true);
+			}
+			else{
+				packet.setBoolean("bool", attr.getBooleanValue());
+			}
+		}
+		else if(attr.type().isFloat()){
+			packet.setFloat("value", attr.getFloatValue());
+		}
+		else if(attr.type().isInteger()){
+			packet.setFloat("value", attr.getIntegerValue());
+		}
+		else if(attr.type().isString()){
+			packet.setString("value", attr.getStringValue());
+		}
+		ServerReceiver.INSTANCE.process(packet, null, world);
+	}
+
+	public void sendAttributeUpdate(String id){
+		sendAttributeUpdate(getVehicleData().getAttribute(id));
 	}
 
 }

@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraft.world.World;
 
 public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 	
@@ -36,10 +37,11 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 	public void process(PacketNBTTagCompound packet, Object[] objs){
 		String task = packet.nbt.getString("task");
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
+		World world = objs[0] == null ? (World)objs[1] : player.world;
 		switch(task){
 			case "attr_toggle":{
 				boolean bool = packet.nbt.getBoolean("bool");
-				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				VehicleEntity veh = (VehicleEntity)world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
 				final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
 				Object old = attr.getValue();
@@ -136,7 +138,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				break;
 			}
 			case "update_container_holder":{
-				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				Entity ent = world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(ent == null){ Print.debug("Entity not found. CHP " + packet.nbt.getInteger("entity")); return; }
 				ContainerHolderUtil.Implementation impl = (Implementation)ent.getCapability(Capabilities.CONTAINER, null);
 				if(impl == null) Print.debug("Capability is null. CHP " + packet.nbt.getInteger("entity"));
@@ -155,7 +157,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 			}
 			//TODO validation
 			case "toggle_seat":{
-				GenericVehicle veh = (GenericVehicle)player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				GenericVehicle veh = (GenericVehicle)world.getEntityByID(packet.nbt.getInteger("entity"));
 				int seatindex = packet.nbt.getInteger("seat");
 				if(seatindex < 0 || seatindex >= veh.seats.length) return;
 				veh.seats[packet.nbt.getInteger("seat")].processInteract(player, packet.nbt.getBoolean("main") ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
@@ -166,7 +168,11 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 	}
 
 	public void process(NBTTagCompound compound, EntityPlayer player){
-		this.process(new PacketNBTTagCompound(compound), new Object[]{ player });
+		this.process(compound, player, null);
+	}
+
+	public void process(NBTTagCompound compound, EntityPlayer player, World world){
+		this.process(new PacketNBTTagCompound(compound), new Object[]{ player, world == null ? player.world : world });
 	}
 
 }

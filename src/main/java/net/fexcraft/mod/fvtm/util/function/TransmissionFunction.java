@@ -22,10 +22,9 @@ public class TransmissionFunction extends StaticFuntion {
 	private ArrayList<Float> ratios = new ArrayList<>();
 	private float u_low, u_mid, u_high;
 	private float d_low, d_mid, d_high;
-	private int fgears, rgears;
+	private int fgears, rgears, shift_speed;
 	private float efficiency;
 	private boolean automatic;
-	//TODO transmission speed var
 
 	public TransmissionFunction(Part part, JsonObject obj){
 		super(part, obj);
@@ -73,6 +72,7 @@ public class TransmissionFunction extends StaticFuntion {
 			d_high = rats.get(2).getAsFloat();
 		}
 		efficiency = JsonUtil.getIfExists(obj, "efficiency", 0.7).floatValue();
+		shift_speed = JsonUtil.getIfExists(obj, "shift_speed", 40).intValue();
 	}
 
 	@Override
@@ -133,6 +133,10 @@ public class TransmissionFunction extends StaticFuntion {
 			gear = gear >= gears ? gears : gear + 1;
 		}
 		return rev ? -gear : gear;
+	}
+
+	public int getShiftSpeed(){
+		return shift_speed;
 	}
 
 }

@@ -410,6 +410,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     		vehicle.getAttribute("gear").setValue(1);
                     		sendAttributeUpdate("gear");
                 		}
+                		autogear_timer += transmission.getShiftSpeed();
                 	}
                 	else if(gear + 1 <= transmission.getFGearAmount()){
                 		vehicle.getAttribute("gear").setValue(gear + 1);
@@ -432,6 +433,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     		vehicle.getAttribute("gear").setValue(-1);
                     		sendAttributeUpdate("gear");
                 		}
+                		autogear_timer += transmission.getShiftSpeed();
                 	}
                 	else if(gear - 1 >= -transmission.getRGearAmount()){
                 		vehicle.getAttribute("gear").setValue(gear - 1);
@@ -919,7 +921,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         			vehicle.getAttribute("gear").setValue(ngear);
         			sendAttributeUpdate("gear");
         		}
-        		autogear_timer += 40;
+        		autogear_timer += transmission.getShiftSpeed();
         	}
     	}
     	double thr = this.throttle * force;

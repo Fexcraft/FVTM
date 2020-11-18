@@ -82,6 +82,15 @@ public class BasicSpawnSystem extends EntitySystem {
 					failed = true;
 				}
 			}
+			if(!data.hasPart("transmission")){
+				Print.chat(player, "&9Vehicle does not have a Transmission installed!"); //failed = true;
+			}
+			else{
+				if(data.getFunctionInPart("transmission", "fvtm:transmission") == null){
+					Print.chat(player, "&cInstalled transmission has no function!");
+					failed = true;
+				}
+			}
 		}
 		if(!data.getType().isTrailerOrWagon() && !data.hasPart("engine")){
 			Print.chat(player, "&9Vehicle does not have an Engine installed!"); //failed = true;

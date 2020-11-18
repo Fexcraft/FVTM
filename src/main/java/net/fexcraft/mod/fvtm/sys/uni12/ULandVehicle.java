@@ -30,7 +30,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -901,7 +900,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		double ar = vehicle.getAttributeFloat("air_resistance", 2.5f);
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
 		//
-		VehicleSteeringOverlay.STRS.clear();
 		Vec3d atmc = new Vec3d(0, 0, 0);
         //EngineFunction engine = vehicle.getFunctionInPart("engine", "fvtm:engine");
         boolean consumed = processConsumption(engine);
@@ -911,8 +909,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	//TransmissionFunction trans = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
     	int gear = vehicle.getAttributeInteger("gear", 0), rpm = 3000;
     	float force = 0;
-		VehicleSteeringOverlay.STRS.add("Gear: " + (transmission != null && transmission.isAutomatic() && gear != 0 ? "A" : "") + gear);
-		VehicleSteeringOverlay.STRS.add("RPM: " + rpm);
     	if(transmission != null){
     		force = engine.getTorque(rpm) * transmission.getRatio(gear) * vehicle.getAttributeFloat("differential_ratio", 3.5f) * transmission.getEfficiency() / wheel_radius;
         	if(transmission.isAutomatic() && autogear_timer <= 0){

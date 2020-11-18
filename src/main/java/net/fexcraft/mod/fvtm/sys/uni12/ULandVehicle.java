@@ -25,7 +25,6 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.vehicle.LegacyData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
@@ -80,7 +79,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpawnData, IPacketReceiver<PacketEntityUpdate>, ContainerHoldingEntity {
 
-	private LegacyData lata;//TODO replace
 	private VehicleData vehicle;
 	public SwivelPoint rotpoint;
 	//
@@ -147,7 +145,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	}
 
 	private void initializeVehicle(boolean remote){
-        lata = vehicle.getType().getLegacyData();
+        //lata = vehicle.getType().getLegacyData();
         wheels = new WheelEntity[WHEELINDEX.length];
         setupWheels();
         setupAxles();
@@ -155,7 +153,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         transmission = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
         if(seats == null) seats = new SeatCache[vehicle.getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
-        stepHeight = lata.wheel_step_height;
+        //stepHeight = lata.wheel_step_height;
         rotpoint = vehicle.getRotationPoint("vehicle");
         this.setSize(vehicle.getAttribute("hitbox_width").getFloatValue(), vehicle.getAttribute("hitbox_height").getFloatValue());
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
@@ -844,7 +842,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 //wheelsAngle += throttle * 20; if(wheelsAngle > 360) wheelsAngle = -360; if(wheelsAngle < -360) wheelsAngle = 360;
                 //animation stuff }*/
             //
-            if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").getIntegerValue() > 0) && lata.max_throttle != 0){
+            if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").getIntegerValue() > 0)){
                 throttle *= 0.98F;
             }
             this.onUpdateMovement();
@@ -866,9 +864,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 double roll = 0F;
                 roll = -(float) Math.atan2(dry, drxz);
                 //
-                if(lata.is_tracked){
+                /*if(lata.is_tracked){
                     yaw = (float) Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
-                }
+                }*///TODO TRACKED DEFINITION
                 rotpoint.getAxes().setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
             }
         }
@@ -931,9 +929,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            WTD wheeldata = getWheelData(wheel.getIndex());
 	            onGround = true; wheel.onGround = true;
 	            wheel.rotationYaw = rotpoint.getAxes().getYaw();
-	            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
+	            /*if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
 	                wheel.rotationYaw += wheelsYaw;
-	            }
+	            }*/////TODO TRACKED DEFINITION
 	            BlockPos wheelpos = new BlockPos(wheel.posX, wheel.posY - o132, wheel.posZ);
 	        	boolean rainfall = world.isRainingAt(wheelpos);
 	            Material mat = world.getBlockState(wheelpos).getMaterial();
@@ -960,7 +958,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	        	accx += acx;
 	        	//
                 double val;
-                if(lata.is_tracked){//TODO update
+                /*if(lata.is_tracked){//TODO update
                     boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
                     //
                     float turningDrag = 0.02F;
@@ -972,8 +970,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     double effectiveWheelSpeed = (throttle + (wheelsYaw * (left ? 1 : -1) * steeringScale)) * val;
                     wheel.motionX += effectiveWheelSpeed * Math.cos(wheel.rotationYaw * 3.14159265F / 180F);
                     wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
-                }
-                else{
+                }//TODO TRACKED DEFINITION
+                else*/{
                     val = acx;
                     wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
                     wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val;
@@ -992,7 +990,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            //pull wheel back to car
 	            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
 	            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-	            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
+	            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(0.5f);//TODO lata.wss
 	            if(despos.lengthSquared() > 0.001F){
 	                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
 	                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);

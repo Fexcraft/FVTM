@@ -242,11 +242,11 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			}
 			if(isKeyDown(KeyHandler.arrow_up.getKeyCode())){
 				if(toggables) scroll(1, true);
-				else seat.onKeyPress(KeyPress.ACCELERATE, player);
+				else seat.onKeyPress(seat.vehicle.getVehicleType().isAirVehicle() ? KeyPress.ACCELERATE : KeyPress.GEAR_UP, player);
 			}
 			if(isKeyDown(KeyHandler.arrow_down.getKeyCode())){
 				if(toggables) scroll(-1, true);
-				else seat.onKeyPress(KeyPress.DECELERATE, player);
+				else seat.onKeyPress(seat.vehicle.getVehicleType().isAirVehicle() ? KeyPress.DECELERATE : KeyPress.GEAR_DOWN, player);
 			}
 			if(isKeyDown(KeyHandler.arrow_left.getKeyCode())){
 				if(toggables) page(-1);

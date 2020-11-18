@@ -394,6 +394,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return attr == null ? def : attr.getFloatValue();
 	}
 
+	/** Null-Safe attribute value check. */
+	public int getAttributeInteger(String id, int def){
+		Attribute<?> attr = getAttribute(id);
+		return attr == null ? def : attr.getIntegerValue();
+	}
+
 	/** Null-Safe attribute value check. Works with other attribute types too. */
 	public String getAttributeString(String id, String def){
 		Attribute<?> attr = getAttribute(id);

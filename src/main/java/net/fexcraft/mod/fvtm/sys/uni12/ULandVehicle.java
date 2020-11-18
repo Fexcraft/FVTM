@@ -47,6 +47,7 @@ import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.fexcraft.mod.fvtm.util.function.TireFunction;
+import net.fexcraft.mod.fvtm.util.function.TransmissionFunction;
 import net.fexcraft.mod.fvtm.util.handler.TireInstallationHandler.TireData;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.fexcraft.mod.fvtm.util.packet.PKT_VehControl;
@@ -106,7 +107,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public ArrayList<Axle> axles = new ArrayList<>();
     public ArrayList<WTD> wheeldata = new ArrayList<>();
     public Axle front, rear;
-    public double wheelbase, cg_height, wheel_radius;
+    public double wheelbase, cg_height;
+    public float wheel_radius;
     public boolean pbrake, braking;
 
 	public ULandVehicle(World world){	
@@ -837,7 +839,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
-    private static final float engineforce = 8000f;//TODO ENGINE CALC + GEARS
     private double accx = 0f;
 
 	public void onUpdateMovement(){
@@ -852,7 +853,20 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         
         float brkf = vehicle.getAttributeFloat("brake_force", 10000f);
     	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
-    	double thr = this.throttle * engineforce;
+    	TransmissionFunction trans = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
+    	int gear = vehicle.getAttributeInteger("gear", 1), rpm = 3000;
+    	float force = 0;
+    	if(trans != null){
+    		force = engine.getTorque(rpm) * trans.getRatio(gear) * vehicle.getAttributeFloat("differential_ratio", 3.5f) * trans.getEfficiency() / wheel_radius;
+    	}
+    	if(trans.isAutomatic()){
+    		int ngear = trans.processAutoShift(gear, rpm, engine.maxRPM(), throttle, true);//TODO non negative throttle
+    		if(ngear != gear){
+    			vehicle.getAttribute("gear").setValue(ngear);
+    			//TODO send update packet
+    		}
+    	}
+    	double thr = this.throttle * force;
     	double cos = Math.cos(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
     	double sin = Math.sin(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
         //

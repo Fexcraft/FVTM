@@ -62,7 +62,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         }
         if(data.hasPart("transmission")){
         	TransmissionFunction func = data.getFunctionInPart("transmission", "fvtm:transmission");
-            tooltip.add(Formatter.format("&9Transmission: &7" + func == null ? "disfunctional" : func.isAutomatic() ? "automatic" : "manual"));
+            tooltip.add(Formatter.format("&9Transmission: &7" + (func == null ? "disfunctional" : func.isAutomatic() ? "automatic" : "manual")));
         }
         tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getStringValue() + "kg"));
         tooltip.add(Formatter.format("&9Seats: &7" + data.getSeats().size()));

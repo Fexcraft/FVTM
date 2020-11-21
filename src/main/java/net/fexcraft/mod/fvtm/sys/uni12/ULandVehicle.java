@@ -498,7 +498,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 }
             	return true;
             }
-            default:{ Print.chat(player, String.format("Task for keypress %s not found.", key)); return false; }
+            default:{
+            	/*Print.chat(player, String.format("Task for keypress %s not found.", key));*/
+            	return false;
+            }
         }
     }
 	
@@ -808,6 +811,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(!world.isRemote){ wheelsYaw *= 0.95F;  }
         if(wheelsYaw > 45){ wheelsYaw = 45; }//TODO vehicle attr
         if(wheelsYaw < -45){ wheelsYaw = -45; }//TODO vehicle attr
+        px = posX;
+        py = posY;
+        pz = posZ;
         if(world.isRemote){
             if(server_pos_ticker > 0){
                 double x = posX + (serverPosX - posX) / server_pos_ticker;
@@ -819,14 +825,15 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / server_pos_ticker);
                 rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / server_pos_ticker);
                 float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / server_pos_ticker);
-                --server_pos_ticker; setPosition(x, y, z);
+                --server_pos_ticker;
+                setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
                 float old = wheelsYaw; wheelsYaw = wheelsYaw + (serverWY - wheelsYaw) / server_pos_ticker;
                 if(wheelsYaw != wheelsYaw) wheelsYaw = old;
             }
             vehicle.getAttribute("steering_angle").setValue(wheelsYaw);
-            double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
-            wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
+            wheelsAngle += speed * (wheel_radius * 2 * Static.PI);
+            if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
         	vehicle.getAttribute("throttle").setValue((float)throttle);
         }
@@ -871,8 +878,26 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
         }
         else{
-        	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);
+        	if(engine != null){
+            	int gear = vehicle.getAttributeInteger("gear", 0);
+            	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
+            	orpm = rpm;
+            	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
+            	rpm = (orpm + rpm) / 2;
+            	if(rpm < 0) rpm = -rpm;
+            	if(rpm < engine.minRPM()) rpm = engine.minRPM();
+            	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();
+            	rpm = rpm / 100 * 100;
+        	}
+        	//for the GUI
         }
+        //
+		double x = posX - px, y = posY - py, z = posZ - pz;
+		oos = os;
+		os = speed;
+		speed = (float)Math.sqrt(x * x + y * y + z * z) * 1000F / 20f;// / 16F;
+		speed = (oos + os + speed) / 3d;
+		//
         for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();
@@ -890,7 +915,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
+    private double px, py, pz, oos, os;
     private double accx = 0f;
+	public int orpm, rpm;
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttributeFloat("weight", 1000f);
@@ -901,14 +928,24 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		Vec3d atmc = new Vec3d(0, 0, 0);
         //EngineFunction engine = vehicle.getFunctionInPart("engine", "fvtm:engine");
         boolean consumed = processConsumption(engine);
+        boolean nopass = this.getPassengers().isEmpty();
         
         float brkf = vehicle.getAttributeFloat("brake_force", 10000f);
     	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
     	//TransmissionFunction trans = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
-    	int gear = vehicle.getAttributeInteger("gear", 0), rpm = 3000;
+    	int gear = vehicle.getAttributeInteger("gear", 0);
+    	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
+    	if(engine != null){
+        	orpm = rpm;
+        	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
+        	rpm = (orpm + rpm) / 2;
+        	if(rpm < 0) rpm = -rpm;
+        	if(rpm < engine.minRPM()) rpm = engine.minRPM();
+        	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();
+    	}
     	float force = 0;
     	if(transmission != null){
-    		force = engine.getTorque(rpm) * transmission.getRatio(gear) * vehicle.getAttributeFloat("differential_ratio", 3.5f) * transmission.getEfficiency() / wheel_radius;
+    		force = engine.getTorque(rpm) * transmission.getRatio(gear) * diff * transmission.getEfficiency() / wheel_radius;
         	if(transmission.isAutomatic() && autogear_timer <= 0){
         		int ngear = transmission.processAutoShift(gear, rpm, engine.maxRPM(), throttle);
         		if(ngear != gear){
@@ -935,9 +972,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            BlockPos wheelpos = new BlockPos(wheel.posX, wheel.posY - o132, wheel.posZ);
 	        	boolean rainfall = world.isRainingAt(wheelpos);
 	            Material mat = world.getBlockState(wheelpos).getMaterial();
-	            wheel.motionX *= 0.9F;
-	            wheel.motionY *= 0.9F;
-	            wheel.motionZ *= 0.9F;
+	            if(speed < 3 || nopass){
+	            	boolean brk = braking || pbrake;
+		            wheel.motionX *= brk ? 0 : 0.9F;
+		            wheel.motionY *= brk ? 0 : 0.9F;
+		            wheel.motionZ *= brk ? 0 : 0.9F;
+	            }
 	            wheel.motionY -= GRAVE;
 	            //
 	        	double motx = cos * wheel.motionX + sin * wheel.motionZ;
@@ -948,7 +988,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? wheeldata.function.brake_grip : 1);
 	        	double frict = Static.clamp((wheeldata.function.getCornerStiffnessFor(mat, wheel.slot.steering())) * slip_angle, -grip, grip) * wheeldata.axle.weight_on;
 	        	double trac = wheeldata.function.getGripFor(mat, rainfall) * ((consumed ? thr : 0) - brake * Math.signum(motx));//grip inclusion here is for testing
-	        	//if(trac < 0) trac = 0;
 	        	double dragx = -rr * motx - ar * motx * Math.abs(motx);
 	        	double dragy = -rr * moty - ar * moty * Math.abs(moty);
 	        	double totalx = dragx + trac;

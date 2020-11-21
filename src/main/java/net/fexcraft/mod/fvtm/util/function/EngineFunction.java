@@ -136,7 +136,7 @@ public class EngineFunction extends Function {
 	}
 	
 	public int maxRPM(){
-		return min_rpm;
+		return max_rpm;
 	}
 	
 	public float[][] getTorqueChart(){

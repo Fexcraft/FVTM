@@ -75,6 +75,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		if(resetview) oldview = mc.gameSettings.thirdPersonView;
 		resetview = true;
 		mc.gameSettings.thirdPersonView = seat.seatdata.getViewValue(oldview, false);
+		lastgear = 100;
 	}
 
 	@Override
@@ -440,9 +441,22 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		if(uni12){
 			ULandVehicle veh = (ULandVehicle)seat.vehicle;
 			int gear = veh.getVehicleData().getAttributeInteger("gear", 0);
-			String gearS = veh.transmission != null && veh.transmission.isAutomatic() && gear != 0 ? "A" : "";
+			if(lastgear != gear){
+				lastgear = gear;
+				boolean auto = veh.transmission != null && veh.transmission.isAutomatic();
+				gear_label = veh.transmission != null && veh.transmission.isAutomatic() && gear != 0 ? "A" : "";
+				if(gear < 0){
+					gear_label = (auto ? "A-" : "") + "R" + (veh.transmission.getRGearAmount() == 1 ? "" : -gear);
+				}
+				else if(gear == 0){
+					gear_label = "N";
+				}
+				else{
+					gear_label += gear;
+				}
+			}
 			mc.fontRenderer.drawString(Formatter.format("RPM: " + "//TODO"), 157, 3, 0xffffff);
-			mc.fontRenderer.drawString(Formatter.format("Gear: " + gearS + gear), 157, 14, 0xffffff);
+			mc.fontRenderer.drawString(Formatter.format("Gear: " + gear_label), 157, 14, 0xffffff);
 		}
 		if(Command.DEBUG){
 			for(int i = 0; i < seat.vehicle.wheels.length; i++){
@@ -460,6 +474,8 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	}
 	
 	public static CopyOnWriteArrayList<String> STRS = new CopyOnWriteArrayList<String>();
+	private static String gear_label;
+	private static int lastgear = -100;
 
 	public static void drawRectIcon(int x, int y, int width, int height){
 		Tessellator tessellator = Tessellator.getInstance();

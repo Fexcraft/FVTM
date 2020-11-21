@@ -881,9 +881,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	if(engine != null){
             	int gear = vehicle.getAttributeInteger("gear", 0);
             	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
-            	orpm = rpm;
             	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
-            	rpm = (orpm + rpm) / 2;
             	if(rpm < 0) rpm = -rpm;
             	if(rpm < engine.minRPM()) rpm = engine.minRPM();
             	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();
@@ -936,9 +934,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	int gear = vehicle.getAttributeInteger("gear", 0);
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
     	if(engine != null){
-        	orpm = rpm;
+        	//orpm = rpm;
         	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
-        	rpm = (orpm + rpm) / 2;
+        	//rpm = (orpm + rpm) / 2;
         	if(rpm < 0) rpm = -rpm;
         	if(rpm < engine.minRPM()) rpm = engine.minRPM();
         	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();

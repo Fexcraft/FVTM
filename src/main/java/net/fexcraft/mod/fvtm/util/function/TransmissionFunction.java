@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.util.function;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.JsonArray;
@@ -31,13 +30,13 @@ public class TransmissionFunction extends StaticFuntion {
 		if(obj == null) obj = new JsonObject();
 		JsonArray rats = obj.has("gear_ratios") ? obj.get("gear_ratios").getAsJsonArray() : null;
 		if(rats == null){
+			ratios.add(-1.8f);
+			ratios.add(-3f);
+			ratios.add(0f);
 			ratios.add(3f);
 			ratios.add(2f);
 			ratios.add(1f);
 			ratios.add(0.5f);
-			ratios.add(0f);
-			ratios.add(-1.8f);
-			ratios.add(-3f);
 		}
 		else for(JsonElement elm : rats){
 			ratios.add(elm.getAsFloat());
@@ -47,7 +46,7 @@ public class TransmissionFunction extends StaticFuntion {
 			if(f > 0) fgears++;
 			if(f < 0) rgears++;
 		}
-		Collections.sort(ratios);
+		//Collections.sort(ratios);
 		automatic = JsonUtil.getIfExists(obj, "automatic", false);
 		rats = obj.has("throttle_ratios_up") ? obj.get("throttle_ratios_up").getAsJsonArray() : null;
 		if(rats == null){
@@ -83,7 +82,7 @@ public class TransmissionFunction extends StaticFuntion {
     @Override
     public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&9Gears: &7" + fgears + " / N / " + (rgears == 1 ? "R" : rgears)));
-        tooltip.add(Formatter.format("&9Range: &7" + (ratios.get(rgears + 1) + "-" + ratios.get(ratios.size() - 1)) + " / " + (rgears == 1 ? ratios.get(0) : ratios.get(0) + "-" + ratios.get(rgears))));
+        tooltip.add(Formatter.format("&9Range: &7" + (ratios.get(rgears + 1) + "-" + ratios.get(ratios.size() - 1)) + " / R" + (rgears == 1 ? -ratios.get(0) : -ratios.get(0) + "-" + -ratios.get(rgears - 1))));
         tooltip.add(Formatter.format("&9Type: &7" + (automatic ? "automatic" : "manual")));
     }
     

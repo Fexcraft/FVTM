@@ -935,7 +935,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	int gear = vehicle.getAttributeInteger("gear", 0);
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
     	VehicleSteeringOverlay.STRS.clear();
-    	VehicleSteeringOverlay.STRS.add("THR: " + throttle);
     	VehicleSteeringOverlay.STRS.add("ORPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
     	if(engine != null && transmission != null){
         	//orpm = rpm;
@@ -986,7 +985,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            //
 	        	double motx = cos * wheel.motionX + sin * wheel.motionZ;
 	        	double moty = cos * wheel.motionZ - sin * wheel.motionX;
-	            double stew = wheelsYaw * 3.14159265F / 180F; 
+	            double stew = wheelsYaw * 3.14159265F / 180F;
 	            double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
 	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
 	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? wheeldata.function.brake_grip : 1);
@@ -1020,13 +1019,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * Config.U12_MOTION_SCALE;
                     //
                     if(wheel.slot.steering()){
+                    	//val = wheelsYaw > 1 ? 1 : wheelsYaw < -1 ? -1 : wheelsYaw;
                         val = acy / 20f;
-                        wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
-                        wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+                        wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+                        wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                     }
                     else{
-                        wheel.motionX *= 0.9F;
-                        wheel.motionZ *= 0.9F;
+                        wheel.motionX *= 0.95F;
+                        wheel.motionZ *= 0.95F;
                     }
                 }
 	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);

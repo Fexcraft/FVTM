@@ -119,7 +119,9 @@ public class TransmissionFunction extends StaticFuntion {
 	/** To be called from the vehicle vehicle when this is an automatic transmission, to check if it should change gears. */
 	public int processAutoShift(int gear, int rpm, int rpm_max, double throttle){
 		if(gear == 0) return 0;
-		//if(throttle < 0.0001f) return 0;
+		if(throttle < 0.001f){
+			return gear > 1 ? gear - 1 : 1;
+		}
 		float max = rpm_max * (throttle < 0.3 ? u_low : throttle < 0.7 ? u_mid : u_high);
 		float min = rpm_max * (throttle < 0.3 ? d_low : throttle < 0.7 ? d_mid : d_high);
 		boolean rev = gear < 0;

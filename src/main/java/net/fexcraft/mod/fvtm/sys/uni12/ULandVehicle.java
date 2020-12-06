@@ -29,6 +29,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
+import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -344,12 +345,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         switch(key){
             case ACCELERATE:{
-                throttle += 0.01F;
+                throttle += 0.05f;//01F;
                 if(throttle > 1F) throttle = 1F;
                 return true;
             }
             case DECELERATE:{
-                throttle -= 0.01F;
+                throttle -= 0.05f;//01F;
                 if(throttle < 0F) throttle = 0F;
                 return true;
             }
@@ -933,6 +934,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	//TransmissionFunction trans = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
     	int gear = vehicle.getAttributeInteger("gear", 0);
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
+    	VehicleSteeringOverlay.STRS.clear();
+    	VehicleSteeringOverlay.STRS.add("THR: " + throttle);
+    	VehicleSteeringOverlay.STRS.add("ORPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
     	if(engine != null && transmission != null){
         	//orpm = rpm;
         	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
@@ -953,6 +957,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         		autogear_timer += transmission.getShiftSpeed();
         	}
     	}
+    	VehicleSteeringOverlay.STRS.add("NRPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
     	double thr = this.throttle * force;
     	double cos = Math.cos(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
     	double sin = Math.sin(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
@@ -1010,20 +1015,20 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 }//TODO TRACKED DEFINITION
                 else*/{
                     val = acx;
-                    wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
-                    wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val;
+                    wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * Config.U12_MOTION_SCALE;
+                    wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * Config.U12_MOTION_SCALE;
                     //
                     if(wheel.slot.steering()){
                         val = acy / 20f;
                         wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                         wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                     }
-                    /*else{
+                    else{
                         wheel.motionX *= 0.9F;
                         wheel.motionZ *= 0.9F;
-                    }*/
+                    }
                 }
-	            wheel.move(MoverType.SELF, wheel.motionX * Config.U12_MOTION_SCALE, wheel.motionY, wheel.motionZ * Config.U12_MOTION_SCALE);
+	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 	            //pull wheel back to car
 	            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
 	            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);

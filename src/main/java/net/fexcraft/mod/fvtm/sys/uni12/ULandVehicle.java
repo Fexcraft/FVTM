@@ -975,11 +975,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            BlockPos wheelpos = new BlockPos(wheel.posX, wheel.posY - o132, wheel.posZ);
 	        	boolean rainfall = world.isRainingAt(wheelpos);
 	            Material mat = world.getBlockState(wheelpos).getMaterial();
-	            if(speed < 3 || nopass){
+	            if(throttle < 0.001f || speed < 3 || nopass){
 	            	boolean brk = braking || pbrake;
-		            wheel.motionX *= brk ? 0 : 0.9F;
-		            wheel.motionY *= brk ? 0 : 0.9F;
-		            wheel.motionZ *= brk ? 0 : 0.9F;
+	            	double by = brk ? 0 : speed < 3 ? 0.9 : 0.99;
+		            wheel.motionX *= by;
+		            wheel.motionY *= by;
+		            wheel.motionZ *= by;
 	            }
 	            wheel.motionY -= GRAVE;
 	            //

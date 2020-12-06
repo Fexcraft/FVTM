@@ -832,7 +832,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 if(wheelsYaw != wheelsYaw) wheelsYaw = old;
             }
             vehicle.getAttribute("steering_angle").setValue(wheelsYaw);
-            wheelsAngle += speed * (wheel_radius * 2 * Static.PI);
+            wheelsAngle += speed * (wheel_radius * 2 * Static.PI) * (vehicle.getAttributeInteger("gear", 0) >= 0 ? 1 : -1);
             if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
         	vehicle.getAttribute("throttle").setValue((float)throttle);
@@ -878,7 +878,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
         }
         else{
-        	if(engine != null){
+        	if(engine != null && transmission != null){
             	int gear = vehicle.getAttributeInteger("gear", 0);
             	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
             	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
@@ -933,7 +933,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	//TransmissionFunction trans = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
     	int gear = vehicle.getAttributeInteger("gear", 0);
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
-    	if(engine != null){
+    	if(engine != null && transmission != null){
         	//orpm = rpm;
         	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
         	//rpm = (orpm + rpm) / 2;
@@ -1013,17 +1013,17 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
                     wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val;
                     //
-                    if(wheel.wheelid == 2 || wheel.wheelid == 3){
+                    if(wheel.slot.steering()){
                         val = acy / 20f;
                         wheel.motionX -= wheel.getHorizontalSpeed() * Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                         wheel.motionZ += wheel.getHorizontalSpeed() * Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                     }
-                    else{
+                    /*else{
                         wheel.motionX *= 0.9F;
                         wheel.motionZ *= 0.9F;
-                    }
+                    }*/
                 }
-	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
+	            wheel.move(MoverType.SELF, wheel.motionX * Config.U12_MOTION_SCALE, wheel.motionY, wheel.motionZ * Config.U12_MOTION_SCALE);
 	            //pull wheel back to car
 	            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));
 	            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);

@@ -121,6 +121,10 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         }
         if(vehicle == null){ return; }
         if(!addedToChunk){ world.spawnEntity(this); }
+        /*if(world.isRemote){
+        	Vec3d pos = vehicle.getRotPoint().getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(getIndex()));
+        	this.setPosition(vehicle.posX + pos.x, vehicle.posY + pos.y, vehicle.posZ + pos.z);
+        }*///testing
     }
 
     public double getHorizontalSpeed(){

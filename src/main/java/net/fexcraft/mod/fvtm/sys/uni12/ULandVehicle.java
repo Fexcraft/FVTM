@@ -878,7 +878,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 rotpoint.getAxes().setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
             }
         }
-        else{
+        //
+		double x = posX - px, y = posY - py, z = posZ - pz;
+		oos = os;
+		os = speed;
+		speed = (float)Math.sqrt(x * x + y * y + z * z) * 1000F / 20f;// / 16F;
+		speed = (oos + os + speed) / 3d;
+		//
+        if(world.isRemote){
         	if(engine != null && transmission != null){
             	int gear = vehicle.getAttributeInteger("gear", 0);
             	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
@@ -890,12 +897,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	}
         	//for the GUI
         }
-        //
-		double x = posX - px, y = posY - py, z = posZ - pz;
-		oos = os;
-		os = speed;
-		speed = (float)Math.sqrt(x * x + y * y + z * z) * 1000F / 20f;// / 16F;
-		speed = (oos + os + speed) / 3d;
 		//
         for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
@@ -938,9 +939,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	VehicleSteeringOverlay.STRS.add("WYAW: " + wheelsYaw);
     	VehicleSteeringOverlay.STRS.add("ORPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
     	if(engine != null && transmission != null){
-        	//orpm = rpm;
+        	orpm = rpm;
         	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
-        	//rpm = (orpm + rpm) / 2;
+        	rpm = (orpm + rpm) / 2;
         	if(rpm < 0) rpm = -rpm;
         	if(rpm < engine.minRPM()) rpm = engine.minRPM();
         	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();

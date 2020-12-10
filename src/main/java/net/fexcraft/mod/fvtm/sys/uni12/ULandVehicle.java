@@ -809,9 +809,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             autogear_timer--;
         }
         //
-        if(!world.isRemote){ wheelsYaw *= 0.95F;  }
-        if(wheelsYaw > 45){ wheelsYaw = 45; }//TODO vehicle attr
-        if(wheelsYaw < -45){ wheelsYaw = -45; }//TODO vehicle attr
+        if(!world.isRemote){ wheelsYaw *= 0.98F;  }
+        float wymax = vehicle.getAttributeFloat("max_steering_angle", 45);
+        wheelsYaw = Static.clamp(wheelsYaw, -wymax, wymax);
         px = posX;
         py = posY;
         pz = posZ;
@@ -935,6 +935,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	int gear = vehicle.getAttributeInteger("gear", 0);
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
     	VehicleSteeringOverlay.STRS.clear();
+    	VehicleSteeringOverlay.STRS.add("WYAW: " + wheelsYaw);
     	VehicleSteeringOverlay.STRS.add("ORPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
     	if(engine != null && transmission != null){
         	//orpm = rpm;

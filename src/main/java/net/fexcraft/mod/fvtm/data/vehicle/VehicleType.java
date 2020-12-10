@@ -80,8 +80,9 @@ public enum VehicleType {
 				attrs.add(new Attribute.TriStateAttribute(true, "turn_lights", null).setSeat("driver"));
 				attrs.add(new Attribute.BooleanAttribute(true, "warning_lights", false).setSeat("driver"));
 				//
-				attrs.add(new Attribute.FloatAttribute(true, "steering_angle", 0f).setMinMax(-40f, 40f));
+				attrs.add(new Attribute.FloatAttribute(true, "steering_angle", 0f).setMinMax(-90f, 90f));
 				attrs.add(new Attribute.FloatAttribute(true, "wheel_angle", 0f).setMinMax(-360f, 360f));
+				attrs.add(new Attribute.FloatAttribute(true, "max_steering_angle", 0f).setMinMax(-90f, 90f).setEditable(false));
 				break;
 			}
 			case RAIL:{

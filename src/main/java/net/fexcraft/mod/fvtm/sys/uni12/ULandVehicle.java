@@ -895,7 +895,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             	if(rpm < 0) rpm = -rpm;
             	if(rpm < engine.minRPM()) rpm = engine.minRPM();
             	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();
-            	rpm = rpm / 100 * 100;
+            	rpm = rpm < 100 ? rpm : rpm / 100 * 100;
         	}
         	//for the GUI
         }

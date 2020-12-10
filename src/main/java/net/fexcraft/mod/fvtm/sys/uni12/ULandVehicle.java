@@ -934,12 +934,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         
         float brkf = vehicle.getAttributeFloat("brake_force", 10000f);
     	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
-    	//TransmissionFunction trans = vehicle.getFunctionInPart("transmission", "fvtm:transmission");
     	int gear = vehicle.getAttributeInteger("gear", 0);
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
     	VehicleSteeringOverlay.STRS.clear();
-    	VehicleSteeringOverlay.STRS.add("WYAW: " + wheelsYaw);
-    	VehicleSteeringOverlay.STRS.add("ORPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
+    	VehicleSteeringOverlay.STRS.add("WYAW: " + VehicleSteeringOverlay.format(wheelsYaw));
+    	VehicleSteeringOverlay.STRS.add("SRPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
+    	VehicleSteeringOverlay.STRS.add("SSPE: " + speed);
+    	VehicleSteeringOverlay.STRS.add("GRAT: " + transmission.getRatio(gear));
     	if(engine != null && transmission != null){
         	orpm = rpm;
         	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
@@ -960,10 +961,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         		autogear_timer += transmission.getShiftSpeed();
         	}
     	}
-    	VehicleSteeringOverlay.STRS.add("NRPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
     	double thr = this.throttle * force;
     	double cos = Math.cos(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
     	double sin = Math.sin(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
+    	boolean slowdown = throttle < 0.001f || gear == 0;
         //
     	accx = 0;
     	if(!vehicle.getType().isTrailerOrWagon()){ //if(truck != null) return;
@@ -978,9 +979,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            BlockPos wheelpos = new BlockPos(wheel.posX, wheel.posY - o132, wheel.posZ);
 	        	boolean rainfall = world.isRainingAt(wheelpos);
 	            Material mat = world.getBlockState(wheelpos).getMaterial();
-	            if(throttle < 0.001f || speed < 3 || nopass){
+	            if(slowdown || speed < 3 || nopass){
 	            	boolean brk = braking || pbrake;
-	            	double by = brk ? 0 : speed < 3 ? 0.9 : 0.99;
+	            	double by = brk && !slowdown ? 0 : speed < 3 ? 0.9 : 0.99;
 		            wheel.motionX *= by;
 		            wheel.motionY *= by;
 		            wheel.motionZ *= by;
@@ -1023,9 +1024,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * Config.U12_MOTION_SCALE;
                     //
                     if(wheel.slot.steering()){
-                        val = acy * 0.01f;
-                        wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
-                        wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+                    	if(motx > 0.01f || motx < -0.01f){
+                            val = acy * 0.01f;
+                            wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+                            wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
+                    	}
                     }
                     else{
                         wheel.motionX *= 0.95F;

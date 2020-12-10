@@ -1019,8 +1019,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * Config.U12_MOTION_SCALE;
                     //
                     if(wheel.slot.steering()){
-                    	//val = wheelsYaw > 1 ? 1 : wheelsYaw < -1 ? -1 : wheelsYaw;
-                        val = acy / 20f;
+                        val = acy * 0.01f;
                         wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                         wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                     }

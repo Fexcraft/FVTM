@@ -874,10 +874,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         //
 		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
-		oos = os;
-		os = speed;
-		speed = (float)Math.sqrt(x * x + y * y + z * z) * 1000F / 20f;// / 16F;
-		speed = (oos + os + speed) / 3d;
+		while(avsp.size() < 10) avsp.add(speed);
+		avsp.add(Math.sqrt(x * x + y * y + z * z) * 1000F / 20f);
+		avsp.remove(0);
+		speed = 0;
+		for(double d : avsp) speed += d;
+		speed /= avsp.size();
 		//
         if(world.isRemote){
         	if(engine != null && transmission != null){
@@ -909,9 +911,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
     }
     
+    private ArrayList<Double> avsp = new ArrayList<>();
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
-    private double /*px, py, pz,*/ oos, os;
+    /*private double /*px, py, pz, oos, os;*/
     private double accx = 0f;
 	public int orpm, rpm;
 
@@ -931,10 +934,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	int gear = vehicle.getAttributeInteger("gear", 0);
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
     	VehicleSteeringOverlay.STRS.clear();
-    	VehicleSteeringOverlay.STRS.add("WYAW: " + VehicleSteeringOverlay.format(wheelsYaw));
     	VehicleSteeringOverlay.STRS.add("SRPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
     	VehicleSteeringOverlay.STRS.add("SSPE: " + VehicleSteeringOverlay.format(speed));
-    	VehicleSteeringOverlay.STRS.add("GRAT: " + transmission.getRatio(gear));
     	if(engine != null && transmission != null){
         	orpm = rpm;
         	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
@@ -984,7 +985,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            //
 	        	double motx = cos * wheel.motionX + sin * wheel.motionZ;
 	        	double moty = cos * wheel.motionZ - sin * wheel.motionX;
-	            double stew = (gear < 0 ? -wheelsYaw : wheelsYaw) * 3.14159265F / 180F;
+	            double stew = wheelsYaw * 3.14159265F / 180F;
 	            double steer = wheel.slot.steering() ? Math.signum(motx) * stew : 0;
 	            double slip_angle = Math.atan2(moty + wheeldata.axle.yaw_speed, Math.abs(motx)) - steer;
 	            double grip = wheeldata.function.getGripFor(mat, rainfall) * (wheel.slot.braking() && pbrake ? wheeldata.function.brake_grip : 1);
@@ -1024,7 +1025,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                             wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                     	}
                     }
-                    else{
+                    if(gear > 0 && !wheel.slot.steering()){
                         wheel.motionX *= 0.95F;
                         wheel.motionZ *= 0.95F;
                     }

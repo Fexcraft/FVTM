@@ -1019,7 +1019,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     //
                     if(wheel.slot.steering()){
                     	if(motx > 0.01f || motx < -0.01f){
-                            val = acy * 0.05;
+                            val = acy * 0.01;
                             wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                             wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                     	}

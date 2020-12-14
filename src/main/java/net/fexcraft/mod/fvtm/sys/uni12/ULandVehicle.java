@@ -869,7 +869,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 /*if(lata.is_tracked){
                     yaw = (float) Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
                 }*///TODO TRACKED DEFINITION
-                rotpoint.getAxes().setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+                rotpoint.getAxes().setRotation(yaw, pitch, roll);
             }
         }
         //
@@ -1014,22 +1014,21 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     wheel.motionZ += effectiveWheelSpeed * Math.sin(wheel.rotationYaw * 3.14159265F / 180F);
                 }//TODO TRACKED DEFINITION
                 else*/{
-                    val = acx;
-                    wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * Config.U12_MOTION_SCALE;
-                    wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * Config.U12_MOTION_SCALE;
+                    val = acx * Config.U12_MOTION_SCALE;
+                    wheel.motionX *= 0.5;
+                    wheel.motionZ *= 0.5;
+                    wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx / 2);
+                    wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx / 2);
                     //
                     if(wheel.slot.steering()){
                     	if(motx > 0.01f || motx < -0.01f){
-                            val = acy * 0.01f;
+                            val = acy * 0.05;
                             wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                             wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                     	}
                     }
-                    if(gear > 0 && !wheel.slot.steering()){
-                        wheel.motionX *= 0.95F;
-                        wheel.motionZ *= 0.95F;
-                    }
                 }
+                wheel.rotationYaw = 0;
 	            wheel.move(MoverType.SELF, wheel.motionX, wheel.motionY, wheel.motionZ);
 	            //pull wheel back to car
 	            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(vehicle.getWheelPositions().get(WHEELINDEX[wheel.wheelid]));

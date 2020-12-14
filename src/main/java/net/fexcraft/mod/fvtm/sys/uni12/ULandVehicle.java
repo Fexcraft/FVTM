@@ -32,6 +32,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
@@ -95,8 +96,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;
-    public int server_pos_ticker;
-    public static final int servtick = 5;
+    public int server_pos_ticker, rpm, orpm, crpm;
+    public static final int servtick = 3;
     public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
     public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
     //
@@ -344,12 +345,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         switch(key){
             case ACCELERATE:{
-                throttle += 0.05f;//01F;
+                throttle += 0.01f;
                 if(throttle > 1F) throttle = 1F;
                 return true;
             }
             case DECELERATE:{
-                throttle -= 0.05f;//01F;
+                throttle -= 0.01f;
                 if(throttle < 0F) throttle = 0F;
                 return true;
             }
@@ -515,7 +516,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	public void tryAttach(EntityPlayer player){
 		Vec3d vec = this.getRotPoint().getAxes().getRelativeVector(this.getVehicleData().getRearConnector()).add(this.getPositionVector());
 		AxisAlignedBB aabb = new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
-		List<Entity> list = world.getEntitiesInAABBexcluding(this, aabb, (ent) -> ent instanceof ULandVehicle);
+		List<Entity> list = world.getEntitiesInAABBexcluding(this, aabb, ent -> ent instanceof ULandVehicle || ent instanceof LandVehicle);
 		for(Entity ent : list){
 			ULandVehicle veh = (ULandVehicle)ent;
 			if(veh.truck == null){
@@ -582,7 +583,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	rotpoint.getAxes().setAngles(rotYaw, rotPitch, rotRoll);
     }
 
-	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double throttle, double steeringYaw, int fuel, double speed){
+	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double throttle, double steeringYaw, int fuel){
         if(world.isRemote){
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
@@ -597,7 +598,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         this.throttle = throttle; serverWY = (float)steeringYaw;
         vehicle.getAttribute("fuel_stored").setValue(fuel);
-        sspeed = speed;
 	}
 	
 	/*@Override
@@ -823,7 +823,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / server_pos_ticker);
                 rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / server_pos_ticker);
                 float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / server_pos_ticker);
-                speed += (sspeed - speed) / server_pos_ticker;
+                crpm += (rpm - crpm) / server_pos_ticker;
                 --server_pos_ticker;
                 setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
@@ -871,30 +871,15 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 }*///TODO TRACKED DEFINITION
                 rotpoint.getAxes().setRotation(yaw, pitch, roll);
             }
-            //
-    		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
-    		while(avsp.size() < 10) avsp.add(speed);
-    		avsp.add(Math.sqrt(x * x + y * y + z * z) * 1000F / 20f);
-    		avsp.remove(0);
-    		speed = 0;
-    		for(double d : avsp) speed += d;
-    		speed /= avsp.size();
         }
-		//
-        if(world.isRemote){
-        	if(engine != null && transmission != null){
-            	int gear = vehicle.getAttributeInteger("gear", 0);
-            	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
-            	orpm = rpm;
-            	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);
-            	rpm = (orpm + rpm) / 2;
-            	if(rpm < 0) rpm = -rpm;
-            	if(rpm < engine.minRPM()) rpm = engine.minRPM();
-            	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();
-            	rpm = rpm < 100 ? rpm : rpm / 100 * 100;
-        	}
-        	//for the GUI
-        }
+        //
+		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
+		while(avsp.size() < 10) avsp.add(speed);
+		avsp.add(Math.sqrt(x * x + y * y + z * z) * 1000F / 20f);
+		avsp.remove(0);
+		speed = 0;
+		for(double d : avsp) speed += d;
+		speed /= avsp.size();
 		//
         for(SwivelPoint point : vehicle.getRotationPoints().values()) point.update(this);
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
@@ -904,7 +889,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
         }*/
-        if(!world.isRemote && ticksExisted % 5 == 0){
+        if(!world.isRemote && ticksExisted % servtick == 0){
         	vehicle.getAttribute("throttle").setValue((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
             for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
@@ -916,7 +901,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
     /*private double /*px, py, pz, oos, os;*/
     private double accx = 0f;
-	public int orpm, rpm;
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttributeFloat("weight", 1000f);
@@ -925,7 +909,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);
-        //EngineFunction engine = vehicle.getFunctionInPart("engine", "fvtm:engine");
         boolean consumed = processConsumption(engine);
         boolean nopass = this.getPassengers().isEmpty();
         
@@ -1019,7 +1002,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     //
                     if(wheel.slot.steering()){
                     	if(motx > 0.01f || motx < -0.01f){
-                            val = acy * 0.01;
+                            val = acy * 0.05;
                             wheel.motionX -= Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                             wheel.motionZ += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val * wheelsYaw;
                     	}
@@ -1039,13 +1022,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
 	        accx /= wheels.length;
 		}
-		/*else{
+		else{
 			int wheelid = 0;
 	        for(WheelEntity wheel : wheels){
 	            if(wheel == null){ continue; }
 	            onGround = true; wheel.onGround = true;
 	            wheel.rotationYaw = rotpoint.getAxes().getYaw();
-	            if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
+	            if(wheel.wheelid == 2 || wheel.wheelid == 3){
 	                wheel.rotationYaw += wheelsYaw;
 	            }
 	            wheel.motionX *= 0.9F;
@@ -1063,7 +1046,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	        	}
 	            Vec3d targetpos = rotpoint.getAxes().getRelativeVector(s);
 	            Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
-	            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(lata.wheel_spring_strength);
+	            Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(0.5f);//TODO lata.wss
 	            if(despos.lengthSquared() > 0.001F){
 	                wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
 	                despos = despos.scale(0.5F); atmc = atmc.subtract(despos);
@@ -1071,7 +1054,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	            wheelid++;
 	        }
 	        move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
-		}*/
+		}
+	}
+	
+	@Override
+	public int getSpeed(){
+		return (int)speed;
 	}
 
 	public WTD getWheelData(String index){

@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
+import net.fexcraft.mod.fvtm.sys.uni12.WTD;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -52,7 +53,13 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         if(vehicle == null) return;
         setPosition(vehicle.posX, vehicle.posY, vehicle.posZ);
         slot = vehicle.getVehicleData().getWheelSlots().get(getIndex());
-        stepHeight = vehicle instanceof ULandVehicle ? ((ULandVehicle)vehicle).getWheelData(getIndex()).function.step_height : vehicle.getVehicleData().getType().getLegacyData().wheel_step_height;
+        if(vehicle instanceof ULandVehicle){
+            WTD wtd = ((ULandVehicle)vehicle).getWheelData(getIndex());
+            stepHeight = wtd == null ? 0 : wtd.function.step_height;
+        }
+        else{
+        	stepHeight = vehicle.getVehicleData().getType().getLegacyData() == null ? 1f : vehicle.getVehicleData().getType().getLegacyData().wheel_step_height;
+        }
     }
 
     public void initPosition(){
@@ -80,7 +87,13 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
             vec = vehicle.getRotPoint().getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(index));
     	}
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
-        stepHeight = vehicle instanceof ULandVehicle ? ((ULandVehicle)vehicle).getWheelData(index).function.step_height : vehicle.getVehicleData().getType().getLegacyData().wheel_step_height;
+        if(vehicle instanceof ULandVehicle){
+            WTD wtd = ((ULandVehicle)vehicle).getWheelData(index);
+            stepHeight = wtd == null ? 0 : wtd.function.step_height;
+        }
+        else{
+        	stepHeight = vehicle.getVehicleData().getType().getLegacyData() == null ? 1f : vehicle.getVehicleData().getType().getLegacyData().wheel_step_height;
+        }
         //
         prevPosX = posX; prevPosY = posY; prevPosZ = posZ;
     }

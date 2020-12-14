@@ -432,7 +432,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			GL11.glPopMatrix();
 			return;
 		}
-		mc.fontRenderer.drawString(Formatter.format("Speed: " + format((int)ent.speed)), 7, 3, 0xffffff);
+		mc.fontRenderer.drawString(Formatter.format("Speed: " + format((int)ent.getSpeed())), 7, 3, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
@@ -455,7 +455,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 					gear_label += gear;
 				}
 			}
-			mc.fontRenderer.drawString(Formatter.format("RPM: " + veh.rpm), 157, 3, 0xffffff);
+			mc.fontRenderer.drawString(Formatter.format("RPM: " + (veh.crpm / 100 * 100)), 157, 3, 0xffffff);
 			mc.fontRenderer.drawString(Formatter.format("Gear: " + gear_label), 157, 14, 0xffffff);
 		}
 		if(Command.DEBUG){

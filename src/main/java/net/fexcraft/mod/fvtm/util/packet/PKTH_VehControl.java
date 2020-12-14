@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util.packet;
 
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -39,7 +40,10 @@ public class PKTH_VehControl {
 
     private static void updatevehicle(Entity entity, PKT_VehControl pkt){
         if(entity == null || entity instanceof GenericVehicle == false){ return; }
-        ((GenericVehicle)entity).setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll, pkt.throttle, pkt.steeringYaw, pkt.fuel, pkt.speed);
+        ((GenericVehicle)entity).setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll, pkt.throttle, pkt.steeringYaw, pkt.fuel);
+        if(entity.world.isRemote && entity instanceof ULandVehicle){
+        	((ULandVehicle)entity).rpm = pkt.rpm;
+        }
     }
 
 }

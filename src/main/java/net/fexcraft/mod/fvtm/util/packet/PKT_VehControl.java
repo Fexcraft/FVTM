@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util.packet;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.api.packet.IPacket;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PKT_VehControl implements IPacket, IMessage {
@@ -11,7 +12,7 @@ public class PKT_VehControl implements IPacket, IMessage {
     public double posX, posY, posZ;
     public float yaw, pitch, roll;
     public double throttle, steeringYaw;
-    public double speed;
+    public int rpm;
 
     public PKT_VehControl(){}
 
@@ -22,7 +23,8 @@ public class PKT_VehControl implements IPacket, IMessage {
         pitch = veh.getRotPoint().getAxes().getPitch();
         roll = veh.getRotPoint().getAxes().getRoll();
         fuel = veh.getVehicleData().getAttribute("fuel_stored").getIntegerValue();
-        steeringYaw = veh.wheelsYaw; throttle = veh.throttle; speed = veh.speed;
+        steeringYaw = veh.wheelsYaw; throttle = veh.throttle;
+        if(veh instanceof ULandVehicle) rpm = ((ULandVehicle)veh).rpm;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class PKT_VehControl implements IPacket, IMessage {
         buf.writeFloat(roll);
         buf.writeDouble(throttle);
         buf.writeDouble(steeringYaw);
-        buf.writeDouble(speed);
+        buf.writeInt(rpm);
         buf.writeInt(fuel);
     }
 
@@ -51,7 +53,7 @@ public class PKT_VehControl implements IPacket, IMessage {
         roll = buf.readFloat();
         throttle = buf.readDouble();
         steeringYaw = buf.readDouble();
-        speed = buf.readDouble();
+        rpm = buf.readInt();
         fuel = buf.readInt();
     }
 

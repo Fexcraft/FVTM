@@ -995,10 +995,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 }//TODO TRACKED DEFINITION
                 else*/{
                     val = acx * Config.U12_MOTION_SCALE;
-                    wheel.motionX *= 0.5;
-                    wheel.motionZ *= 0.5;
-                    wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx / 2);
-                    wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx / 2);
+                    wheel.motionX *= 0.25;
+                    wheel.motionZ *= 0.25;
+                    wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx * 0.75);
+                    wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * (val + motx * 0.75);
                     //
                     if(wheel.slot.steering()){
                     	if(motx > 0.01f || motx < -0.01f){

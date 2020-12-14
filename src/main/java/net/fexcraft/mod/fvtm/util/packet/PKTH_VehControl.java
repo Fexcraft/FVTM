@@ -39,8 +39,7 @@ public class PKTH_VehControl {
 
     private static void updatevehicle(Entity entity, PKT_VehControl pkt){
         if(entity == null || entity instanceof GenericVehicle == false){ return; }
-        ((GenericVehicle)entity).setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll,
-        	pkt.motX, pkt.motY, pkt.motZ, pkt.throttle, pkt.steeringYaw, pkt.fuel, pkt.speed);
+        ((GenericVehicle)entity).setPositionRotationAndMotion(pkt.posX, pkt.posY, pkt.posZ, pkt.yaw, pkt.pitch, pkt.roll, pkt.throttle, pkt.steeringYaw, pkt.fuel, pkt.speed);
     }
 
 }

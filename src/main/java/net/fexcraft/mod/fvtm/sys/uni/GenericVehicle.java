@@ -196,7 +196,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 
 	public abstract boolean isRailType();
 
-	public abstract void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double throttle, double steeringYaw, int fuel, double speed);
+	public abstract void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double throttle, double steeringYaw, int fuel, double speed);
 	
 	@Override
 	public Vec3d getContainerSlotPosition(String slotid, ContainerHolder capability){

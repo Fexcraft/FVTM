@@ -10,16 +10,18 @@ public class PKT_VehControl implements IPacket, IMessage {
     public int entid, fuel;
     public double posX, posY, posZ;
     public float yaw, pitch, roll;
-    public double motX, motY, motZ;
     public double throttle, steeringYaw;
     public double speed;
 
     public PKT_VehControl(){}
 
     public PKT_VehControl(GenericVehicle veh){
-    	entid = veh.getEntityId(); posX = veh.posX; posY = veh.posY; posZ = veh.posZ;
-        yaw = veh.getRotPoint().getAxes().getYaw(); pitch = veh.getRotPoint().getAxes().getPitch(); roll = veh.getRotPoint().getAxes().getRoll();
-        motX = veh.motionX; motY = veh.motionY; motZ = veh.motionZ; fuel = veh.getVehicleData().getAttribute("fuel_stored").getIntegerValue();
+    	entid = veh.getEntityId();
+    	posX = veh.posX; posY = veh.posY; posZ = veh.posZ;
+        yaw = veh.getRotPoint().getAxes().getYaw();
+        pitch = veh.getRotPoint().getAxes().getPitch();
+        roll = veh.getRotPoint().getAxes().getRoll();
+        fuel = veh.getVehicleData().getAttribute("fuel_stored").getIntegerValue();
         steeringYaw = veh.wheelsYaw; throttle = veh.throttle; speed = veh.speed;
     }
 
@@ -32,9 +34,6 @@ public class PKT_VehControl implements IPacket, IMessage {
         buf.writeFloat(yaw);
         buf.writeFloat(pitch);
         buf.writeFloat(roll);
-        buf.writeDouble(motX);
-        buf.writeDouble(motY);
-        buf.writeDouble(motZ);
         buf.writeDouble(throttle);
         buf.writeDouble(steeringYaw);
         buf.writeDouble(speed);
@@ -50,9 +49,6 @@ public class PKT_VehControl implements IPacket, IMessage {
         yaw = buf.readFloat();
         pitch = buf.readFloat();
         roll = buf.readFloat();
-        motX = buf.readDouble();
-        motY = buf.readDouble();
-        motZ = buf.readDouble();
         throttle = buf.readDouble();
         steeringYaw = buf.readDouble();
         speed = buf.readDouble();

@@ -337,7 +337,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     	rotpoint.getAxes().setAngles(rotYaw, rotPitch, rotRoll);
     }
 
-	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double throttle, double steeringYaw, int fuel, double speed){
+	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double throttle, double steeringYaw, int fuel, double speed){
         if(world.isRemote){
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
@@ -350,7 +350,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             prevRotationRoll = roll;
             setRotation(yaw, pitch, roll);
         }
-        motionX = motX; motionY = motY; motionZ = motZ;
         this.throttle = throttle; rek.data().getAttribute("fuel_stored").setValue(fuel);
 	}
 

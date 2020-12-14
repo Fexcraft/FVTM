@@ -583,7 +583,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	rotpoint.getAxes().setAngles(rotYaw, rotPitch, rotRoll);
     }
 
-	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, Vec3d avel, double throttle, double steeringYaw, int fuel){
+	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double throttle, double steeringYaw, int fuel){
         if(world.isRemote){
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
@@ -596,7 +596,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             prevRotationRoll = roll;
             setRotation(yaw, pitch, roll);
         }
-        motionX = motX; motionY = motY; motionZ = motZ; angularVelocity = avel;
+        motionX = motX; motionY = motY; motionZ = motZ;
         this.throttle = throttle; serverWY = (float)steeringYaw;
         vehicle.getAttribute("fuel_stored").setValue(fuel);
 	}

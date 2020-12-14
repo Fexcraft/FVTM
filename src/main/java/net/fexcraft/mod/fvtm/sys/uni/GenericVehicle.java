@@ -43,7 +43,6 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public double throttle;
 	//@SideOnly(Side.CLIENT)
 	public double speed;//~~For Client Overlay~~
-	public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
 	public SeatCache[] seats;
 	public WheelEntity[] wheels;
 	public LoopSound engineloop;
@@ -197,7 +196,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 
 	public abstract boolean isRailType();
 
-	public abstract void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, Vec3d avel, double throttle, double steeringYaw, int fuel);
+	public abstract void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double throttle, double steeringYaw, int fuel);
 	
 	@Override
 	public Vec3d getContainerSlotPosition(String slotid, ContainerHolder capability){

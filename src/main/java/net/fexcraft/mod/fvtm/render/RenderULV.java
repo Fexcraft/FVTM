@@ -69,7 +69,7 @@ public class RenderULV extends Render<ULandVehicle> implements IRenderFactory<UL
 	            float pitch = (vehicle.rotpoint.getAxes().getPitch() - vehicle.prevRotationPitch);
 	            for(; pitch > 180F; pitch -= 360F){ }
 	            for(; pitch <= -180F; pitch += 360F){ }
-	            float roll = (vehicle.rotpoint.getAxes().getRoll()/ - vehicle.prevRotationRoll);
+	            float roll = (vehicle.rotpoint.getAxes().getRoll() - vehicle.prevRotationRoll);
 	            for(; roll > 180F; roll -= 360F){ }
 	            for(; roll <= -180F; roll += 360F){ }
 	            GL11.glRotatef(180F - vehicle.prevRotationYaw - yaw * ticks, 0.0F, 1.0F, 0.0F);

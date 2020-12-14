@@ -823,12 +823,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / server_pos_ticker);
                 rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / server_pos_ticker);
                 float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / server_pos_ticker);
+                wheelsYaw += (serverWY - wheelsYaw) / server_pos_ticker;
                 crpm += (rpm - crpm) / server_pos_ticker;
                 --server_pos_ticker;
                 setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
-                float old = wheelsYaw; wheelsYaw = wheelsYaw + (serverWY - wheelsYaw) / server_pos_ticker;
-                if(wheelsYaw != wheelsYaw) wheelsYaw = old;
             }
             vehicle.getAttribute("steering_angle").setValue(wheelsYaw);
             wheelsAngle += speed * (wheel_radius * 2 * Static.PI) * (vehicle.getAttributeInteger("gear", 0) >= 0 ? 1 : -1);

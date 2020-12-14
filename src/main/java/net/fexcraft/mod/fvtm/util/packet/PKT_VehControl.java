@@ -12,6 +12,7 @@ public class PKT_VehControl implements IPacket, IMessage {
     public float yaw, pitch, roll;
     public double motX, motY, motZ;
     public double throttle, steeringYaw;
+    public double speed;
 
     public PKT_VehControl(){}
 
@@ -19,7 +20,7 @@ public class PKT_VehControl implements IPacket, IMessage {
     	entid = veh.getEntityId(); posX = veh.posX; posY = veh.posY; posZ = veh.posZ;
         yaw = veh.getRotPoint().getAxes().getYaw(); pitch = veh.getRotPoint().getAxes().getPitch(); roll = veh.getRotPoint().getAxes().getRoll();
         motX = veh.motionX; motY = veh.motionY; motZ = veh.motionZ; fuel = veh.getVehicleData().getAttribute("fuel_stored").getIntegerValue();
-        steeringYaw = veh.wheelsYaw; throttle = veh.throttle;
+        steeringYaw = veh.wheelsYaw; throttle = veh.throttle; speed = veh.speed;
     }
 
     @Override
@@ -36,6 +37,7 @@ public class PKT_VehControl implements IPacket, IMessage {
         buf.writeDouble(motZ);
         buf.writeDouble(throttle);
         buf.writeDouble(steeringYaw);
+        buf.writeDouble(speed);
         buf.writeInt(fuel);
     }
 
@@ -53,6 +55,7 @@ public class PKT_VehControl implements IPacket, IMessage {
         motZ = buf.readDouble();
         throttle = buf.readDouble();
         steeringYaw = buf.readDouble();
+        speed = buf.readDouble();
         fuel = buf.readInt();
     }
 

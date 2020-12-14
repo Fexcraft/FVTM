@@ -583,7 +583,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	rotpoint.getAxes().setAngles(rotYaw, rotPitch, rotRoll);
     }
 
-	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double throttle, double steeringYaw, int fuel){
+	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double motX, double motY, double motZ, double throttle, double steeringYaw, int fuel, double speed){
         if(world.isRemote){
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
@@ -599,6 +599,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         motionX = motX; motionY = motY; motionZ = motZ;
         this.throttle = throttle; serverWY = (float)steeringYaw;
         vehicle.getAttribute("fuel_stored").setValue(fuel);
+        sspeed = speed;
 	}
 	
 	/*@Override
@@ -824,6 +825,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / server_pos_ticker);
                 rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / server_pos_ticker);
                 float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / server_pos_ticker);
+                speed += (sspeed - speed) / server_pos_ticker;
                 --server_pos_ticker;
                 setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
@@ -871,15 +873,15 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 }*///TODO TRACKED DEFINITION
                 rotpoint.getAxes().setRotation(yaw, pitch, roll);
             }
+            //
+    		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
+    		while(avsp.size() < 10) avsp.add(speed);
+    		avsp.add(Math.sqrt(x * x + y * y + z * z) * 1000F / 20f);
+    		avsp.remove(0);
+    		speed = 0;
+    		for(double d : avsp) speed += d;
+    		speed /= avsp.size();
         }
-        //
-		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
-		while(avsp.size() < 10) avsp.add(speed);
-		avsp.add(Math.sqrt(x * x + y * y + z * z) * 1000F / 20f);
-		avsp.remove(0);
-		speed = 0;
-		for(double d : avsp) speed += d;
-		speed /= avsp.size();
 		//
         if(world.isRemote){
         	if(engine != null && transmission != null){

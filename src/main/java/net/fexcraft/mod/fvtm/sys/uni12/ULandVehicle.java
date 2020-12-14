@@ -29,7 +29,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
@@ -934,9 +933,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     	double brake = Math.min((braking ? brkf : 0) + (pbrake ? vehicle.getAttributeFloat("parking_brake_force", 5000f) : 0), brkf);
     	int gear = vehicle.getAttributeInteger("gear", 0);
     	float diff = vehicle.getAttributeFloat("differential_ratio", 3.5f);
-    	VehicleSteeringOverlay.STRS.clear();
-    	VehicleSteeringOverlay.STRS.add("SRPM: " + (rpm < 100 ? 100 : rpm / 100 * 100));
-    	VehicleSteeringOverlay.STRS.add("SSPE: " + VehicleSteeringOverlay.format(speed));
     	if(engine != null && transmission != null){
         	orpm = rpm;
         	rpm = (int)((speed / wheel_radius) * transmission.getRatio(gear) * diff * 60 / Static.PI2);

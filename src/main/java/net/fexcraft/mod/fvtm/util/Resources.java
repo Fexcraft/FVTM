@@ -14,6 +14,8 @@ import org.apache.commons.io.FilenameUtils;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -534,7 +536,15 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onPlayerIn(PlayerEvent.PlayerLoggedInEvent event){
-		if(!Static.getServer().isSinglePlayer()) return; RailSys.PLAYERON = true;
+		if(event.player.world != null && !event.player.world.isRemote){
+			NBTTagCompound cfgsync = new NBTTagCompound();
+			cfgsync.setInteger("u12_sync_rate", Config.U12_SYNC_RATE);
+			cfgsync.setString("task", "config_sync");
+			cfgsync.setString("target_listener", Resources.UTIL_LISTENER);
+			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);
+		}
+		if(!Static.getServer().isSinglePlayer()) return;
+		RailSys.PLAYERON = true;
 	}
 	
 	@SubscribeEvent

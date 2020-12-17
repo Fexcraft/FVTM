@@ -99,6 +99,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public int server_pos_ticker, rpm, orpm, crpm;
     public static final String[] WHEELINDEX = new String[]{ "left_back_wheel", "right_back_wheel", "right_front_wheel", "left_front_wheel" };
     public static final String[] TRAILERWHEELINDEX = new String[]{ WHEELINDEX[0], WHEELINDEX[1] };
+    public static int SYNC_RATE = 5;
     //
     //
     //
@@ -586,7 +587,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(world.isRemote){
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ;
             serverYaw = yaw; serverPitch = pitch; serverRoll = roll;
-            server_pos_ticker = Config.U12_SYNC_RATE;
+            server_pos_ticker = SYNC_RATE;
         }
         else{
             setPosition(posX, posY, posZ);
@@ -887,7 +888,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
         }*/
-        if(!world.isRemote && ticksExisted % Config.U12_SYNC_RATE == 0){
+        if(!world.isRemote && ticksExisted % SYNC_RATE == 0){
         	vehicle.getAttribute("throttle").setValue((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
             for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);

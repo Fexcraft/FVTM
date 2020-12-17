@@ -921,6 +921,7 @@ public class DefaultPrograms {
 		public String swivel;
 		public ResourceLocation tex;
 		protected BiPredicate<Entity, VehicleData> predicate;
+		protected BiPredicate<TileEntity, BlockData> block_predicate;
 		
 		public LightBeam(){}
 		
@@ -943,6 +944,27 @@ public class DefaultPrograms {
 			EffectRenderer.LIGHTRAYS.add(this);
 			EffectRenderer.LIGHTRAYDATAS.add(data);
 			EffectRenderer.LIGHTRAYVEHS.add((VehicleEntity)ent);
+		}
+		
+		public LightBeam init(ModelRendererTurbo turboobj, Vec3d pos, ResourceLocation texture, BiPredicate<TileEntity, BlockData> predicate){
+			this.shape = turboobj;
+			this.pos = pos;
+			this.tex = texture;
+			this.block_predicate = predicate;
+			return this;
+		}
+		
+		public LightBeam setBlockPredicate(BiPredicate<TileEntity, BlockData> predicate){
+			this.block_predicate = predicate;
+			return this;
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			if(ent == null || (block_predicate != null && !block_predicate.test(ent, data))) return;
+			EffectRenderer.BLOCK_LIGHTRAYS.add(this);
+			EffectRenderer.BLOCK_LIGHTRAYDATAS.add(data);
+			EffectRenderer.BLOCK_LIGHTRAYTILES.add(ent);
 		}
 		
 	}

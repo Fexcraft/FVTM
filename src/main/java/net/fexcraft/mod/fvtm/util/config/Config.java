@@ -49,12 +49,12 @@ public class Config {
     }
 
     private static final void refresh(){
-        VEHICLES_NEED_FUEL = config.getBoolean("vehicles_need_fuel", LEGACYSYS, false, "If vehicles need Fuel (in survival mode) to function.");
-        VEHICLE_UPDATE_RANGE = config.getFloat("vehicle_update_range", LEGACYSYS, 256, 8, 4096, "Range to which Update Packets will be sent.");
+        VEHICLES_NEED_FUEL = config.getBoolean("vehicles_need_fuel", GENERAL, false, "If vehicles need Fuel (in survival mode) to function.");
+        VEHICLE_UPDATE_RANGE = config.getFloat("vehicle_update_range", GENERAL, 256, 8, 4096, "Range to which Update Packets will be sent.");
         U12_MOTION_SCALE = config.getFloat("u12_motion_scale", U12BASE, 0.2f, 0.001f, 2, "Physics Motion Scale Multiplier.");
         U12_SYNC_RATE = config.getInt("u12_sync_rate", U12BASE, 5, 1, 10, "Entity sync rate in ticks. Lesser value means higher sync AND higher bandwidth. Higher value means slower sync and less bandwidth.");
         ULandVehicle.SYNC_RATE = U12_SYNC_RATE;
-        VEHICLE_DROP_CONTENTS = config.getBoolean("vehicle_drop_contents", LEGACYSYS, false, "If vehicles should drop their inventory contents upon being 'broken' or removed by hand.");
+        VEHICLE_DROP_CONTENTS = config.getBoolean("vehicle_drop_contents", GENERAL, false, "If vehicles should drop their inventory contents upon being 'broken' or removed by hand.");
         RENDER_OUT_OF_VIEW = config.getBoolean("render_out_of_view", GENERAL, false, "If vehicles should be rendered out of default view.");
         RENDER_VEHILE_MODELS_AS_ITEMS = config.getBoolean("render_vehicle_models_as_items", GENERAL, true, "If the Vehicle's model should be rendered as Item. May cause laggs.");
         UNLOAD_INTERVAL = config.getInt("unload_interval", GENERAL, 300000, 60000, 86400000, "Interval in which it is checked for trains/rails to be unloaded.");
@@ -92,6 +92,7 @@ public class Config {
 
     public static void add(List<IConfigElement> list){
         list.add(new ConfigElement(config.getCategory(GENERAL)));
+        list.add(new ConfigElement(config.getCategory(U12BASE)));
         list.add(new ConfigElement(config.getCategory(LEGACYSYS)));
         list.add(new ConfigElement(config.getCategory(PROTOTYPING)));
     }

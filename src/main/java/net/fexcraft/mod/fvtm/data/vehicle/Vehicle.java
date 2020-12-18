@@ -175,7 +175,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			}
 		}
 		// Check for missing attributes / fill in default values;
-		List<Attribute<?>> attrs = type.getDefaultAttributesForType();
+		List<Attribute<?>> attrs = type.getDefaultAttributesForType(this);
 		for(Attribute<?> attr : attrs){
 			if(!attributes.containsKey(attr.id())){
 				Attribute<?> copy = attr.copy(null);

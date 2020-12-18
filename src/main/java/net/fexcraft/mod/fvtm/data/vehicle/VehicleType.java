@@ -46,7 +46,7 @@ public enum VehicleType {
 		return name;
 	}
 	
-	public ArrayList<Attribute<?>> getDefaultAttributesForType(){
+	public ArrayList<Attribute<?>> getDefaultAttributesForType(Vehicle vehicle){
 		ArrayList<Attribute<?>> attrs = new ArrayList<>();
 		//general
 		attrs.add(new Attribute.FloatAttribute(true, "weight", 1000f).setMinMax(0, Integer.MAX_VALUE));
@@ -83,6 +83,9 @@ public enum VehicleType {
 				attrs.add(new Attribute.FloatAttribute(true, "steering_angle", 0f).setMinMax(-90f, 90f));
 				attrs.add(new Attribute.FloatAttribute(true, "wheel_angle", 0f).setMinMax(-360f, 360f));
 				attrs.add(new Attribute.FloatAttribute(true, "max_steering_angle", 35f).setMinMax(-90f, 90f).setEditable(false));
+				if(vehicle.isTrailerOrWagon()){
+					attrs.add(new Attribute.FloatAttribute(true, "trailer_weight_ratio", 0.2f).setMinMax(0f, 1f));
+				}
 				break;
 			}
 			case RAIL:{

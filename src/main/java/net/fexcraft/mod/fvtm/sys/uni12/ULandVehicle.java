@@ -1009,12 +1009,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	sin = Math.sin(trailer.rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
             //
             Vec3d trax = trailer.rotpoint.getAxes().getRelativeVector(trailer.rear.pos).add(trailer.getPositionVector());
-            Vec3d trux = trailer.truck.rotpoint.getAxes().getRelativeVector(trailer.truck.getVehicleData().getRearConnector());
-            trux = trux.add(trailer.truck.getPositionVector());
-            trailer.rotpoint.getAxes().setRotation(
-            	Math.atan2(trux.z - trax.z, trux.x - trax.x),
-            	trailer.rotpoint.getAxes().getRadianPitch(),
-            	trailer.rotpoint.getAxes().getRadianRoll());
+            trailer.rotpoint.getAxes().setRotationYaw(Math.atan2(conn.z - trax.z, conn.x - trax.x));
     		int wheelid = 0;
         	for(WheelEntity wheel : trailer.wheels){
         		if(wheel == null) continue;
@@ -1034,6 +1029,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	}
             trailer.move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
             trailer.setPosition(conn.x, conn.y, conn.z);
+            //trailer.rerot();
         }
 	}
 	
@@ -1072,11 +1068,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             despos = despos.scale(0.5F);
             return atmc.subtract(despos);
         }
-        if(wheel.getPositionVector().distanceTo(this.getPositionVector()) > 256){//1024
+        /*if(wheel.getPositionVector().distanceTo(this.getPositionVector()) > 256){//1024
             wheel.posX = despos.x;
             wheel.posY = despos.y;
             wheel.posZ = despos.z;
-        }
+        }*/
         return atmc;
 	}
     

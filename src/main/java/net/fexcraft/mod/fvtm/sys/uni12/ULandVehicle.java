@@ -480,8 +480,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case COUPLER_REAR: {
-        		if(throttle > 0 || throttle < 0){
-        			Print.chat(player, "Please stop the vehicle first!");
+        		if(speed > 3){
+        			Print.chat(player, "Please decrease the speed!");
         			return true;
         		}
         		if(this.vehicle.getRearConnector() == null){

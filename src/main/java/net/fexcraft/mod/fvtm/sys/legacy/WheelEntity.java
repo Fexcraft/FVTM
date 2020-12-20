@@ -138,6 +138,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         	Vec3d pos = vehicle.getRotPoint().getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(getIndex()));
         	this.setPosition(vehicle.posX + pos.x, vehicle.posY + pos.y, vehicle.posZ + pos.z);
         }*///testing
+        if(world.isRemote) this.motionX = this.motionY = this.motionZ;
     }
 
     public double getHorizontalSpeed(){

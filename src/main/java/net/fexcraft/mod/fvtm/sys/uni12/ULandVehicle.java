@@ -350,7 +350,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case DECELERATE:{
-                throttle -= 0.01f;
+                throttle -= braking ? 0.05f : 0.01f;
                 if(throttle < 0F) throttle = 0F;
                 return true;
             }

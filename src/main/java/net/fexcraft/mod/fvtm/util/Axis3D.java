@@ -226,6 +226,14 @@ public class Axis3D {
 		setRotation((float)yaw, (float)pitch, (float)roll);
 	}
 
+	public void setRotationYaw(double yaw){
+		setRotation((float)yaw, getRadianPitch(), getRadianRoll());
+	}
+
+	public void setRotationPitch(double pitch){
+		setRotation(getRadianYaw(), (float)pitch, getRadianRoll());
+	}
+
 	public Vec3f getLocalVector(Vec3f vec){
 		Matrix4f mat = new Matrix4f();
 		mat.m00 = vec.xCoord;

@@ -1036,9 +1036,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	}
             trailer.move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
             trailer.setPosition(conn.x, conn.y, conn.z);
-            /*for(int i = 0; i < 2; i++){
+            for(int i = 0; i < 2; i++){
             	trailer.wheels[i].move(MoverType.SELF, 0, -GRAVE, 0);
-            }*/
+            }
             trailer.rerott();
         	trailer = trailer.trailer;
         }

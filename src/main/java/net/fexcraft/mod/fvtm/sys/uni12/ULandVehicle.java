@@ -850,7 +850,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 if(vehicle.getType().isTrailerOrWagon()) relign();
                 else onUpdateMovement();
             }
-            rerot();
         }
         //
 		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
@@ -869,10 +868,16 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
             serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
         }*/
-        if(!world.isRemote && ticksExisted % SYNC_RATE == 0){
+        if(!world.isRemote && ticksExisted % SYNC_RATE == 0 && truck == null){
         	vehicle.getAttribute("throttle").setValue((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
             for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
+            ULandVehicle trailer = this.trailer;
+            while(trailer != null){
+                Packets.sendToAllAround(new PKT_VehControl(trailer), Resources.getTargetPoint(trailer));
+                for(SwivelPoint point : trailer.vehicle.getRotationPoints().values()) point.sendClientUpdate(trailer);
+                trailer = trailer.trailer;
+            }
         }
     }
     
@@ -994,12 +999,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
         accx /= wheels.length;
+        rerot();
         //
-        if(trailer == null) return;
-        ULandVehicle trailer = this;
-        while(trailer.trailer != null){
+        ULandVehicle trailer = this.trailer;
+        while(trailer != null){
         	atmc = new Vec3d(0, 0, 0);
-        	trailer = trailer.trailer;
             if(trailer.wheelnull()) break;
         	trailer.onGround = true;
             Vec3d opos = trailer.getPositionVector();
@@ -1015,21 +1019,28 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         		if(wheel == null) continue;
         		wheel.onGround = true;
                 wheel.rotationYaw = trailer.rotpoint.getAxes().getYaw();
-                wheel.motionX = wheel.motionZ = 0;
+                wheel.motionX = wheel.motionZ = wheel.motionY = 0;
                 wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
                 wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val;
+                wheel.motionY -= GRAVE;
                 Vec3d s = null;
             	if(wheelid >= 2){
             		s = trailer.vehicle.getWheelPositions().get(WHEELINDEX[wheelid == 2 ? 1 : 0]);
             		s = new Vec3d(0, s.y, s.z);
+            		//s = new Vec3d(0, 0, 0);
             	}
             	else s = trailer.vehicle.getWheelPositions().get(WHEELINDEX[wheelid]);
                 atmc = alignWheel(trailer, wheel, s, atmc);
+                //trailer.rerott();
                 wheelid++;
         	}
             trailer.move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
             trailer.setPosition(conn.x, conn.y, conn.z);
-            //trailer.rerot();
+            /*for(int i = 0; i < 2; i++){
+            	trailer.wheels[i].move(MoverType.SELF, 0, -GRAVE, 0);
+            }*/
+            trailer.rerott();
+        	trailer = trailer.trailer;
         }
 	}
 	
@@ -1057,11 +1068,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             wheelid++;
         }
         move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
+        rerot();
 	}
 	
-	private Vec3d alignWheel(ULandVehicle vehicle, WheelEntity wheel, Vec3d vec, Vec3d atmc){
+	private static Vec3d alignWheel(ULandVehicle vehicle, WheelEntity wheel, Vec3d vec, Vec3d atmc){
         Vec3d targetpos = vehicle.rotpoint.getAxes().getRelativeVector(vec);
-        Vec3d current = new Vec3d(wheel.posX - posX, wheel.posY - posY, wheel.posZ - posZ);
+        Vec3d current = new Vec3d(wheel.posX - vehicle.posX, wheel.posY - vehicle.posY, wheel.posZ - vehicle.posZ);
         Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(0.5f);//TODO lata.wss
         if(despos.lengthSquared() > 0.001F){
             wheel.move(MoverType.SELF, despos.x, despos.y, despos.z);
@@ -1097,6 +1109,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             yaw = (float) Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
         }*///TODO TRACKED DEFINITION
         rotpoint.getAxes().setRotation(yaw, pitch, roll);
+    }
+    
+    public void rerott(){
+        rerot();
     }
 	
 	@Override

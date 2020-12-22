@@ -7,5 +7,6 @@
     "Material": "IRON",
     "MapColor": "CLAY",
     "MultiSubBlock": true,
-    "Invisible": true
+    "Invisible": true,
+    "HideItem": true
 }

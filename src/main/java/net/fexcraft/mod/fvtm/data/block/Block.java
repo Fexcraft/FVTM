@@ -42,7 +42,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected String modelid;
 	protected Model<BlockData, TileEntity> model;
 	//
-	protected boolean plain_model;
+	protected boolean plain_model, hideitem;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected byte maxstacksize;
 	protected TreeMap<String, AxisAlignedBB> aabbs = new TreeMap<>();
@@ -130,6 +130,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.opaque = JsonUtil.getIfExists(obj, "Opaque", false);
 		this.cutout = JsonUtil.getIfExists(obj, "RenderCutout", false);
 		this.invisible = JsonUtil.getIfExists(obj, "Invisible", false);
+		this.hideitem = JsonUtil.getIfExists(obj, "HideItem", false);
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
@@ -290,6 +291,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 
 	public boolean isInvisible(){
 		return invisible;
+	}
+
+	public boolean shouldHideItem(){
+		return hideitem;
 	}
 
 	@Override

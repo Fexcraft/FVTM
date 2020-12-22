@@ -6,5 +6,6 @@
     "BlockType": "MULTIBLOCK_4ROT",
     "Material": "IRON",
     "MapColor": "CLAY",
-    "Invisible": true
+    "Invisible": true,
+    "HideItem": true
 }

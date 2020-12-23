@@ -225,7 +225,7 @@ public class Addon extends TypeCore<Addon> {
 
 	private void checkLangFile(TypeCore<?> core){
 		if(lang == null) lang = new File(file.getParentFile(), "/src/main/resources/assets/" + registryname.getPath() + "/lang/en_us.lang");
-		String regname = "item." + core.getRegistryName().toString() + ".name=";
+		String regname = (core instanceof Block ? "tile." : "item.") + core.getRegistryName().toString() + ".name=";
 		if(!containsLangEntry(regname)){
 			try{ Files.write(lang.toPath(), ("\n" + regname).getBytes(), StandardOpenOption.APPEND); }
 			catch(IOException e){ e.printStackTrace(); }

@@ -894,7 +894,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
 	public void onUpdateMovement(){
 		double mass = vehicle.getAttributeFloat("weight", 1000f);
-
+		if(trailer != null){
+			ULandVehicle trailer = this.trailer;
+			while(trailer != null){
+				mass += trailer.vehicle.getAttributeFloat("weight", 1000) * trailer.vehicle.getAttributeFloat("trailer_weight_ratio", 0.2f);
+				trailer = trailer.trailer;
+			}
+		}
 		double rr = vehicle.getAttributeFloat("roll_resistance", 8f);
 		double ar = vehicle.getAttributeFloat("air_resistance", 2.5f);
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);

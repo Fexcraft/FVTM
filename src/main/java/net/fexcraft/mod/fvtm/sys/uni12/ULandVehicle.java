@@ -906,6 +906,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		double rr = vehicle.getAttributeFloat("roll_resistance", 8f);
 		double ar = vehicle.getAttributeFloat("air_resistance", 2.5f);
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);
+		boolean overloaded = appmass - vehicle.getAttributeFloat("weight", 1000f) > vehicle.getAttributeFloat("max_towing", 3500f);
 		//
 		Vec3d atmc = new Vec3d(0, 0, 0);
         boolean consumed = processConsumption(engine);
@@ -924,7 +925,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	if(rpm > engine.maxRPM()) rpm = engine.maxRPM();
     	}
     	float force = 0;
-    	if(transmission != null){
+    	if(!overloaded && transmission != null){
     		force = engine.getTorque(rpm) * transmission.getRatio(gear) * diff * transmission.getEfficiency() / wheel_radius;
         	if(transmission.isAutomatic() && autogear_timer <= 0){
         		int ngear = transmission.processAutoShift(gear, rpm, engine.maxRPM(), throttle);
@@ -934,6 +935,11 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         		}
         		autogear_timer += transmission.getShiftSpeed();
         	}
+    	}
+    	if(overloaded){
+    		//TODO dedicated icon/message in GUI
+    		EntityPlayer player = (EntityPlayer)this.getDriver();
+    		if(player != null) Print.bar(player, "&cTEMP: Towing limit reached, vehicle is overloaded.");
     	}
     	double thr = this.throttle * force;
     	double cos = Math.cos(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);

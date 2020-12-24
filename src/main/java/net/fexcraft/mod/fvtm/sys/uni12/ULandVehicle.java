@@ -905,7 +905,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 				truck = truck.truck;
 			}
 		}
-		double mass = appmass;//vehicle.getAttributeFloat("weight", 1000f);
+		else appmass = vehicle.getAttributeFloat("weight", 1000f);
+		double mass = appmass;
 		double rr = vehicle.getAttributeFloat("roll_resistance", 8f);
 		double ar = vehicle.getAttributeFloat("air_resistance", 2.5f);
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);

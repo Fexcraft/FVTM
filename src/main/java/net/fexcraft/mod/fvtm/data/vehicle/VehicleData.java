@@ -781,4 +781,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return parts.containsKey(part) ? parts.get(part).getFunction(function) : null;
 	}
 
+	public VehicleData copy(){
+		return new VehicleData(type).read(write(null));
+	}
+
 }

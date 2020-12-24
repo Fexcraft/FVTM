@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
+import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.command.ICommandSender;
@@ -34,8 +35,8 @@ public class BasicSpawnSystem extends EntitySystem {
 	@Override
 	public void spawnEntity(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
 		World world = placer.getEntityWorld();
-		EntityPlayer player = (EntityPlayer)placer;
-		world.spawnEntity(new net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), player, -1));
+		EntityPlayer player = (EntityPlayer)placer.getCommandSenderEntity();
+		world.spawnEntity(new ULandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), player, -1));
     	if(!player.capabilities.isCreativeMode) stack.shrink(1);
 	}
 

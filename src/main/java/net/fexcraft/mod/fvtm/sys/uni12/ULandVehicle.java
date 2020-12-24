@@ -130,15 +130,24 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		this(world); this.setPosition(pos.x, pos.y, pos.z); this.vehicle = data;
 		if(placer != null) this.placer = placer.getGameProfile().getId();
 		initializeVehicle(false);
-		this.rotateYaw((placer == null || meta >= 0 ? (meta * 90f) : placer.rotationYaw) + 90f);
+		if(meta > -2){
+			float prot = placer != null ? (MathHelper.floor(((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15) * 22.5f : 0;
+			rotpoint.getAxes().rotateYawD((placer == null || meta >= 0 ? (meta * 90f) : prot) + -90F);
+			rotpoint.updatePrevAxe();
+		}
+        Print.debug("SPAWNED " + world.isRemote + " " + this.getEntityId());
 	}
 
 	public ULandVehicle(World world, VehicleData data, EntityPlayer player, ULandVehicle truck){
-		this(world, data, truck.getPositionVector(), player, 0);
-		this.truck = truck; truck.trailer = this;
+		this(world, data, truck.rotpoint.getAxes().getRelativeVector(truck.vehicle.getRearConnector()).add(truck.getPositionVector()), player, -2);
+		(this.truck = truck).trailer = this;
+		rotpoint.getAxes().setRotationYaw(truck.rotpoint.getAxes().getRadianYaw());
 		rotpoint.updatePrevAxe();
-		rotpoint.getAxes().setAngles(truck.rotpoint.getAxes().getYaw(), rotpoint.getAxes().getPitch(), rotpoint.getAxes().getRoll());
-	}
+        if(!world.isRemote && truck != null){
+        	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
+        }
+        Print.debug("TRAILER " + world.isRemote + " " + this.getEntityId());
+	} 
 
 	@Override
 	protected void entityInit(){
@@ -161,11 +170,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCap Implementation Found!");}
         vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
-        //
-        if(!remote && truck != null){
-        	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
-        }
-        //
 	}
 
 	private void setupAxles(){
@@ -1003,9 +1007,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         //
         ULandVehicle trailer = this.trailer;
         while(trailer != null){
-        	atmc = new Vec3d(0, 0, 0);
             if(trailer.wheelnull()) break;
-        	trailer.onGround = true;
+        	atmc = new Vec3d(0, 0, 0);
             Vec3d opos = trailer.getPositionVector();
             Vec3d conn = trailer.truck.rotpoint.getAxes().getRelativeVector(trailer.truck.getVehicleData().getRearConnector());
             val = opos.distanceTo(conn = conn.add(trailer.truck.getPositionVector()));
@@ -1015,11 +1018,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             Vec3d trax = trailer.rotpoint.getAxes().getRelativeVector(trailer.rear.pos).add(trailer.getPositionVector());
             trailer.rotpoint.getAxes().setRotationYaw(Math.atan2(conn.z - trax.z, conn.x - trax.x));
     		int wheelid = 0;
+        	trailer.onGround = true;
         	for(WheelEntity wheel : trailer.wheels){
         		if(wheel == null) continue;
         		wheel.onGround = true;
                 wheel.rotationYaw = trailer.rotpoint.getAxes().getYaw();
-                wheel.motionX = wheel.motionZ = wheel.motionY = 0;
+                wheel.motionX = wheel.motionZ = 0;
+                if(val < GRAVE) wheel.motionY = 0;
                 wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
                 wheel.motionZ += Math.sin(wheel.rotationYaw * 3.14159265F / 180F) * val;
                 wheel.motionY -= GRAVE;
@@ -1027,7 +1032,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             	if(wheelid >= 2){
             		s = trailer.vehicle.getWheelPositions().get(WHEELINDEX[wheelid == 2 ? 1 : 0]);
             		s = new Vec3d(0, s.y, s.z);
-            		//s = new Vec3d(0, 0, 0);
             	}
             	else s = trailer.vehicle.getWheelPositions().get(WHEELINDEX[wheelid]);
                 atmc = alignWheel(trailer, wheel, s, atmc);

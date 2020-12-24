@@ -47,7 +47,7 @@ public class SpawnSystemContainer extends GenericContainer {
 					VehicleType type = VehicleType.values()[packet.getInteger("type")];
 					SpawnMode mode = SpawnMode.values()[packet.getInteger("mode")];
 					ItemStack stack = player.getHeldItemMainhand();
-					VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData();
+					VehicleData data = stack.getCapability(Capabilities.VAPDATA, null).getVehicleData().copy();
 					player.closeScreen();
 					if(!demo && sys.canSpawn(player, player.getCapability(Capabilities.PLAYERDATA, null).getActiveSpawnPoint(), stack, data, mode)){
 						sys.spawnEntity(player, player.getCapability(Capabilities.PLAYERDATA, null).getActiveSpawnPoint(), stack, data, mode);

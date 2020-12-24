@@ -37,7 +37,7 @@ public abstract class EntitySystem {
 	
 	
 	public static final void spawnVehicle(ICommandSender placer, Vec3d pos, @Nullable ItemStack stack, VehicleData data, SpawnMode mode){
-		String favorite = placer == null || placer.getCommandSenderEntity().getCapability(Capabilities.PLAYERDATA, null) == null? null
+		String favorite = placer == null || placer.getCommandSenderEntity().getCapability(Capabilities.PLAYERDATA, null) == null ? null
 			: placer.getCommandSenderEntity().getCapability(Capabilities.PLAYERDATA, null).getFavoriteSpawnSystemFor(data.getType().getVehicleType());
 		EntitySystem sel = REGISTRY.get(favorite);
 		if(sel != null && sel.canSpawn(placer, pos, stack, data, mode)){

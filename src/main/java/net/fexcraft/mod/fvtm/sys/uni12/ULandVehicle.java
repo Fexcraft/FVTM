@@ -890,17 +890,22 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
     /*private double /*px, py, pz, oos, os;*/
+    private double appmass = 0;
     private double accx = 0f;
 
 	public void onUpdateMovement(){
-		double mass = vehicle.getAttributeFloat("weight", 1000f);
 		if(trailer != null){
 			ULandVehicle trailer = this.trailer;
-			while(trailer != null){
-				mass += trailer.vehicle.getAttributeFloat("weight", 1000) * trailer.vehicle.getAttributeFloat("trailer_weight_ratio", 0.2f);
-				trailer = trailer.trailer;
+			while(trailer.trailer != null) trailer = trailer.trailer;
+			ULandVehicle truck = trailer.truck;
+			trailer.appmass = trailer.vehicle.getAttributeFloat("weight", 1000);
+			while(truck != null){
+				truck.appmass = truck.vehicle.getAttributeFloat("weight", 1000);
+				truck.appmass += truck.trailer.appmass * truck.trailer.vehicle.getAttributeFloat("trailer_weight_ratio", 0.2f);
+				truck = truck.truck;
 			}
 		}
+		double mass = appmass;//vehicle.getAttributeFloat("weight", 1000f);
 		double rr = vehicle.getAttributeFloat("roll_resistance", 8f);
 		double ar = vehicle.getAttributeFloat("air_resistance", 2.5f);
 		for(Axle axle : axles) axle.calc(mass, accx, cg_height, wheelbase, 1f);

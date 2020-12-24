@@ -869,10 +869,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();
         for(SeatCache seat : seats) seat.updatePosition();
-        /*if(drivenByPlayer){
-            PacketHandler.getInstance().sendToServer(new PacketVehicleControl(this));
-            serverPosX = posX; serverPosY = posY; serverPosZ = posZ; serverYaw = axes.getYaw();
-        }*/
         if(!world.isRemote && ticksExisted % SYNC_RATE == 0 && truck == null){
         	vehicle.getAttribute("throttle").setValue((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));

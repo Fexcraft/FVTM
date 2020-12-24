@@ -62,7 +62,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
         }
-        Vec316f vector = new Vec316f(new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID), cached;
+        Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID), cached;
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking()){
         	Junction junc = syscap.getJunction(vector);

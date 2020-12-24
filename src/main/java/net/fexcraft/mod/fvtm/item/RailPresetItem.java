@@ -75,7 +75,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
         RailSys syscap = world.getCapability(Capabilities.RAILSYSTEM, null).get();
         if(syscap == null){ Print.chat(player, "&cWorld Capability not found."); return EnumActionResult.FAIL; }
         ItemStack stack = player.getHeldItem(hand);
-        Vec316f vector = new Vec316f(new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
         Junction start = syscap.getJunction(vector);
         if(start != null && start.tracks.size() >= 4){
         	Print.chat(player, "&7Junction at Start point has reached max allowed connections.");

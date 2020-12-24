@@ -89,7 +89,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 	        return EnumActionResult.FAIL;
         }
         ItemStack stack = player.getHeldItem(hand);
-        Vec316f vector = new Vec316f(new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
+        Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
         if(player.isSneaking()){
 			stack.getTagCompound().removeTag("fvtm:railpoints");
 			Print.chat(player, "&bItem Point(s) Cache reset.");

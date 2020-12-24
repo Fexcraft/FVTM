@@ -57,8 +57,8 @@ public class RailRenderer {
     	if((stack = event.getPlayer().getHeldItemMainhand()).isEmpty()) return;
     	else if(event.getTarget() == null || event.getTarget().typeOfHit != net.minecraft.util.math.RayTraceResult.Type.BLOCK) return;
     	if(stack.getItem() instanceof JunctionGridItem && ((JunctionGridItem)stack.getItem()).showJunctionGrid()){
-    		Vec316f vec = new Vec316f(event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
-    		jitem = (JunctionGridItem)stack.getItem();  HOLDING = true;
+    		Vec316f vec = new Vec316f(event.getPlayer().world, event.getTarget().hitVec, Config.RAIL_PLACING_GRID);
+    		jitem = (JunctionGridItem)stack.getItem(); HOLDING = true;
     		if(jitem.offsetVectors()){
         		vecs = new Vec316f[jitem.getVectors(stack).length];
     			float seg = 360f / jitem.getSegments();

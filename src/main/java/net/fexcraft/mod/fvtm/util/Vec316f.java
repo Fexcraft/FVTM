@@ -1,9 +1,12 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.block.RailBlock;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 /**
  * <i>Junction Vector</i>
@@ -31,6 +34,18 @@ public class Vec316f implements Comparable<Vec316f> {
 		y = (byte)((pos.yCoord - this.pos.getY()) / 0.0625);
 		z = (byte)((pos.zCoord - this.pos.getZ()) / 0.0625);
 		vector = toVec3f();
+	}
+
+	public Vec316f(World world, Vec3d pos, int rgs){
+		this(validatePos(world, pos), rgs);
+	}
+
+	private static Vec3d validatePos(World world, Vec3d pos){
+		if(world != null){
+			IBlockState state = world.getBlockState(new BlockPos(pos));
+			if(state.getBlock() instanceof RailBlock) pos = new Vec3d(pos.x, (int)pos.y, pos.z);
+		}
+		return pos;
 	}
 
 	public Vec316f(Vec3d pos, int rgs){

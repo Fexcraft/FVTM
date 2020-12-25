@@ -433,12 +433,21 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			return;
 		}
 		mc.fontRenderer.drawString(Formatter.format("Speed: " + format((int)ent.getSpeed())), 7, 3, 0xffffff);
-		mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
 		mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
 			mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 7, 40, 0xffffff);
 		}
 		if(uni12){
+			mc.fontRenderer.drawString(Formatter.format("Throttle: "), 7, 14, 0xffffff);
+			{
+				RGB.BLACK.glColorApply();
+				this.mc.getTextureManager().bindTexture(ConstructorGui.STONE);
+				this.drawTexturedModalRect(59, 13, 0, 0, 102, 10);
+				RGB.glColorReset();
+				(ent.throttle > 0.8 ? ConstructorGui.RGB_ORANGE : RGB.GREEN).glColorApply();
+				this.drawTexturedModalRect(60, 14, 0, 0, (int)(ent.throttle * 100), 8);
+				RGB.glColorReset();
+			}
 			ULandVehicle veh = (ULandVehicle)seat.vehicle;
 			int gear = veh.getVehicleData().getAttributeInteger("gear", 0);
 			if(lastgear != gear){
@@ -455,8 +464,11 @@ public class VehicleSteeringOverlay extends GuiScreen {
 					gear_label += gear;
 				}
 			}
-			mc.fontRenderer.drawString(Formatter.format("RPM: " + (veh.crpm / 100 * 100)), 157, 3, 0xffffff);
-			mc.fontRenderer.drawString(Formatter.format("Gear: " + gear_label), 157, 14, 0xffffff);
+			mc.fontRenderer.drawString(Formatter.format("RPM: " + (veh.crpm / 100 * 100)), 167, 3, 0xffffff);
+			mc.fontRenderer.drawString(Formatter.format("Gear: " + gear_label), 167, 14, 0xffffff);
+		}
+		else{
+			mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14, 0xffffff);
 		}
 		if(Command.DEBUG){
 			for(int i = 0; i < seat.vehicle.wheels.length; i++){

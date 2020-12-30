@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -16,12 +17,12 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Material extends TypeCore<Material> {
+public class Material extends TypeCore<Material> implements Tabbed {
 	
 	protected byte maxStackSize;
 	protected short maxHealth;
 	protected MaterialItem item;
-	protected String oreDict, container, fuelgroup;
+	protected String oreDict, container, fuelgroup, ctab;
 	protected int burntime, fuel_capacity;
 	protected boolean isVehicleKey, isFuelContainer;
 	protected Fuel fuel;
@@ -63,6 +64,7 @@ public class Material extends TypeCore<Material> {
 		this.fuel = obj.has("FuelType") ? Resources.getFuel(obj.get("FuelType").getAsString()) : null;
 		this.fuelgroup = obj.has("FuelGroup") ? obj.get("FuelGroup").getAsString() : null;
 		//
+        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new MaterialItem(this); return this;
 	}
 
@@ -149,6 +151,11 @@ public class Material extends TypeCore<Material> {
 
 	public void registerIntoOreDictionary(){
         if(getOreDictionaryId() != null) OreDictionary.registerOre(getOreDictionaryId(), item); else return;
+	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
 	}
 
 }

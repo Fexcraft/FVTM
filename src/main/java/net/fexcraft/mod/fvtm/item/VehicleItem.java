@@ -42,7 +42,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         this.type.getAddon().getFCLRegisterer().addItem(
         	type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(type.getAddon().getCreativeTab());
+        this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
 	}
 
     @SideOnly(Side.CLIENT)

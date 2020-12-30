@@ -31,7 +31,9 @@ public class InternalAddon extends Addon {
 		url = "http://fexcraft.net/not_found";
 		license = "http://fexcraft.net/license?id=mods";
 		registerer = FVTM.getRegisterer();
-		if(Static.side().isClient()){ this.creativetab = new AddonTab(this); }
+		if(Static.side().isClient()){
+			this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
+		}
 	}
 	
 	/** This addon is shipped with the FVTM jar, so we don't search for content. Edit: except the default rail gauge now. */ @Override

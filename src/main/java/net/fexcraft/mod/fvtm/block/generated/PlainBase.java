@@ -41,7 +41,7 @@ public class PlainBase extends net.minecraft.block.Block {
     }
 
 	public void linkCreativeTab(){
-		this.setCreativeTab(type.getAddon().getCreativeTab());
+		this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
 	}
     
     @Override

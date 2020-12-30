@@ -39,7 +39,7 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
         this.type.getAddon().getFCLRegisterer().addItem(
         	type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(type.getAddon().getCreativeTab());
+        this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
 	}
 
     @SideOnly(Side.CLIENT)

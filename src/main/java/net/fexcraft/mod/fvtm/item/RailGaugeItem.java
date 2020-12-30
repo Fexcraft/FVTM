@@ -51,7 +51,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		this.setMaxStackSize(64);
 		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
 		if(Static.side().isServer()) return;
-        this.setCreativeTab(type.getAddon().getCreativeTab());
+        this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
     }
 
     @SideOnly(Side.CLIENT)

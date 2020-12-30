@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -55,7 +56,7 @@ public class Addon extends TypeCore<Addon> {
 	protected ContainerType contype;
 	//
 	@SideOnly(Side.CLIENT)
-	protected CreativeTabs creativetab;
+	protected HashMap<String, CreativeTabs> creativetabs = new HashMap<>();
 	protected AutoRegisterer registerer;
 	
 	public Addon(ContainerType type, File file){ this.contype = type; this.file = file; }
@@ -80,7 +81,16 @@ public class Addon extends TypeCore<Addon> {
 		generatejson = JsonUtil.getIfExists(obj, "GenerateItemJson", false);
 		generateicon = JsonUtil.getIfExists(obj, "GenerateItemIcon", false);
 		//
-		if(Static.side().isClient()){ this.creativetab = new AddonTab(this); }
+		if(Static.side().isClient()){
+			if(!obj.has("CreativeTabs") || obj.get("CreativeTabs").getAsJsonArray().size() == 0){
+				this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
+			}
+			else{
+				obj.get("CreativeTabs").getAsJsonArray().forEach(elm ->{
+					this.creativetabs.put(elm.getAsString(), new AddonTab(this, elm.getAsString()));
+				});
+			}
+		}
 		this.registerer = new AutoRegisterer(this.getRegistryName().getPath());
 		return this;
 	}
@@ -304,8 +314,17 @@ public class Addon extends TypeCore<Addon> {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public CreativeTabs getCreativeTab(){
-		return this.creativetab;
+	public CreativeTabs getDefaultCreativeTab(){
+		if(creativetabs.containsKey("default"))
+			return creativetabs.get("default");
+		else return creativetabs.values().toArray(new CreativeTabs[0])[0];
+	}
+
+	@SideOnly(Side.CLIENT)
+	public CreativeTabs getCreativeTab(String id){
+		if(creativetabs.containsKey(id))
+			return creativetabs.get(id);
+		else return getDefaultCreativeTab();
 	}
 
 	public void loadPresets(){

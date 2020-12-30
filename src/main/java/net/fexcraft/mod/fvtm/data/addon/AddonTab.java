@@ -17,13 +17,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class AddonTab extends CreativeTab {
 	
     private static TreeMap<ResourceLocation, AddonTab> TABS = new TreeMap<>();
+    public static final String DEFAULT = "default";
     private NonNullList<ItemStack> list;
     private int icon, sec;
 	private Addon addon;
 
-	public AddonTab(Addon addon){
-		super(addon.getRegistryName().toString());
-		TABS.put(addon.getRegistryName(), this);
+	public AddonTab(Addon addon, String string){
+		super(addon.getRegistryName().toString() + (string.equals(DEFAULT) ? "" : "." + string));
+		TABS.put(new ResourceLocation(super.getTabLabel()), this);
 		this.addon = addon;
 	}
 

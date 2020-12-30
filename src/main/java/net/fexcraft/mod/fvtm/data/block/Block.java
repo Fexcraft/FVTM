@@ -16,6 +16,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.BlockItem;
@@ -34,12 +35,12 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Block extends TypeCore<Block> implements Textureable.TextureHolder, Colorable.ColorHolder {
+public class Block extends TypeCore<Block> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed {
 	
 	protected List<NamedResourceLocation> textures;
 	protected BlockItem item;
 	protected net.minecraft.block.Block block;
-	protected String modelid;
+	protected String modelid, ctab;
 	protected Model<BlockData, TileEntity> model;
 	//
 	protected boolean plain_model, hideitem;
@@ -131,6 +132,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.cutout = JsonUtil.getIfExists(obj, "RenderCutout", false);
 		this.invisible = JsonUtil.getIfExists(obj, "Invisible", false);
 		this.hideitem = JsonUtil.getIfExists(obj, "HideItem", false);
+        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		if(obj.has("MultiBlock")){
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
@@ -305,6 +307,11 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	@Override
 	public TreeMap<String, RGB> getDefaultColorChannels(){
 		return channels;
+	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
 	}
 
 }

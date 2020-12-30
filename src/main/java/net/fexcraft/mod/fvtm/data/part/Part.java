@@ -23,6 +23,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -43,14 +44,14 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder {
+public class Part extends TypeCore<Part> implements Textureable.TextureHolder, SoundHolder, Tabbed {
 	
 	protected ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	protected ArrayList<Modifier<?>> modifiers = new ArrayList<>();
 	protected List<NamedResourceLocation> textures;
 	protected List<String> categories;
 	protected PartItem item;
-	protected String modelid;
+	protected String modelid, ctab;
 	protected Model<VehicleData, String> model;
 	protected PartInstallationHandler installhandler;
 	protected Object installhandler_data;
@@ -264,6 +265,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new PartItem(this); return this;
 	}
 
@@ -345,6 +347,11 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 
 	public TreeMap<String, SwivelPoint> getDefaultSwivelPoints(){
 		return rotpoints;
+	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
 	}
 
 }

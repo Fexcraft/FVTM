@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -15,11 +16,11 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Consumable extends TypeCore<Consumable> {
+public class Consumable extends TypeCore<Consumable> implements Tabbed {
 	
 	protected byte maxStackSize;
 	protected ConsumableItem item;
-	protected String oreDict, container;
+	protected String oreDict, container, ctab;
 	//
     private int healamount, useduration;
     private float saturation;
@@ -62,6 +63,7 @@ public class Consumable extends TypeCore<Consumable> {
         this.drinkable = JsonUtil.getIfExists(obj, "Drinkable", false);
         this.alwaysedible = JsonUtil.getIfExists(obj, "AlwaysEdible", false);
 		//
+        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new ConsumableItem(this); return this;
 	}
 
@@ -134,5 +136,10 @@ public class Consumable extends TypeCore<Consumable> {
     public boolean isAlwaysEdible(){
         return alwaysedible;
     }
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
+	}
 
 }

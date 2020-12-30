@@ -34,7 +34,7 @@ public class MaterialItem extends TypeCoreItem<Material> {
 		this.setMaxDamage(material.getMaxDamage());
         this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
-        this.setCreativeTab(type.getAddon().getCreativeTab());
+        this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
 	}
 
     @SideOnly(Side.CLIENT)

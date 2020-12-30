@@ -14,6 +14,7 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RailPresetItem;
@@ -28,7 +29,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RailGauge extends TypeCore<RailGauge> {
+public class RailGauge extends TypeCore<RailGauge> implements Tabbed {
 	
 	/** In "micro blocks" (1 = 1/16th of a block). */
 	protected int width;
@@ -40,7 +41,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 	protected List<String> compatible;
 	protected ResourceLocation rail_texture, ties_texture, model_texture;
 	//
-	protected String modelid;
+	protected String modelid, ctab;
 	protected RailGaugeModel model;
 	protected ArrayList<RailPresetItem> presets;
 	
@@ -120,6 +121,7 @@ public class RailGauge extends TypeCore<RailGauge> {
 			}
 		}
 		//
+        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new RailGaugeItem(this); return this;
 	}
 
@@ -194,6 +196,11 @@ public class RailGauge extends TypeCore<RailGauge> {
 	
 	public float getBlockHeight(){
 		return blockheight;
+	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
 	}
 
 }

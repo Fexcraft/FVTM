@@ -87,7 +87,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     	if(type.shouldHideItem()) return;
-    	if(tab == CreativeTabs.SEARCH || tab == type.getAddon().getCreativeTab()){
+    	if(tab == CreativeTabs.SEARCH || tab == type.getAddon().getCreativeTab(type.getCreativeTab())){
     		if(type.getBlockType().isGenericRoad()){
 	    		items.add(new ItemStack(this, 1, 0)); items.add(new ItemStack(this, 1, 12));
 	    		items.add(new ItemStack(this, 1, 8)); items.add(new ItemStack(this, 1, 4));
@@ -101,7 +101,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
     
     @Override
     public CreativeTabs getCreativeTab(){
-        return type.getAddon().getCreativeTab();
+        return type.getAddon().getCreativeTab(type.getCreativeTab());
     }
     
     @Override

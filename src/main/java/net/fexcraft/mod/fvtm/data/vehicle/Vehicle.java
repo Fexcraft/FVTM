@@ -21,14 +21,7 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
-import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.DataType;
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Sound;
-import net.fexcraft.mod.fvtm.data.root.Soundable;
-import net.fexcraft.mod.fvtm.data.root.Textureable;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.data.root.*;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -41,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder {
+public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHolder, Colorable.ColorHolder, Soundable.SoundHolder, Tabbed {
 
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, WheelSlot> defwheelpos = new TreeMap<>();
@@ -49,7 +42,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected List<NamedResourceLocation> textures;
 	protected ArrayList<String> required, categories;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected String modelid;
+	protected String modelid, ctab;
 	protected LegacyData legacy_data;
 	protected Uni12Data uni12_data;
 	protected boolean trailer;
@@ -244,6 +237,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new VehicleItem(this);
 		return this;
 	}
@@ -363,6 +357,11 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	
 	public ArrayList<String> getCategory(){
 		return categories;
+	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
 	}
 
 }

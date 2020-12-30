@@ -177,18 +177,18 @@ public class FVTM {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
 		if(event.getSide().isClient()){
-			ConstructorBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
-			ConstCenterBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
-			DisplayBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
-			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
-			FCLRegistry.getItem("fvtm:streetsign").setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			ConstructorBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			ConstCenterBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			DisplayBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			FCLRegistry.getBlock("fvtm:streetpost").setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			FCLRegistry.getItem("fvtm:streetsign").setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			//RailItemTemp.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
 			Resources.BLOCKS.getValuesCollection().forEach(block -> block.linkItem());
-			JunctionToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
-			SignalItem0.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
-			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
-			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
-			RoadSysItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getCreativeTab());
+			JunctionToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			SignalItem0.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			RoadSysItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();

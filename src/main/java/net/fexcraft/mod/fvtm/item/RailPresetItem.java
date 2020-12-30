@@ -42,7 +42,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		this.setMaxStackSize(64);
 		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
 		path = vecs; if(Static.side().isServer()) return;
-        this.setCreativeTab(type.getAddon().getCreativeTab());
+        this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
     }
     
     public RailPresetItem setSegmentation(int segments){

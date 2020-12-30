@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
@@ -32,7 +33,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  * 
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Container extends TypeCore<Container> implements Textureable.TextureHolder, Colorable.ColorHolder {
+public class Container extends TypeCore<Container> implements Textureable.TextureHolder, Colorable.ColorHolder, Tabbed {
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected List<NamedResourceLocation> textures;
@@ -41,7 +42,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	protected InventoryType invtype;
 	protected ContainerType type;
 	protected ContainerItem item;
-	protected String modelid;
+	protected String modelid, ctab;
 	protected int capacity;
 	protected Fluid fluid;
 
@@ -93,6 +94,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
         }
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new ContainerItem(this); return this;
 	}
 
@@ -160,6 +162,11 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	@Override
 	public TreeMap<String, RGB> getDefaultColorChannels(){
 		return channels;
+	}
+
+	@Override
+	public String getCreativeTab(){
+		return ctab;
 	}
 
 }

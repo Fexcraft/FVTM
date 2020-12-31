@@ -56,7 +56,7 @@ public class Addon extends TypeCore<Addon> {
 	protected ContainerType contype;
 	//
 	@SideOnly(Side.CLIENT)
-	protected HashMap<String, CreativeTabs> creativetabs = new HashMap<>();
+	protected HashMap<String, CreativeTabs> creativetabs;
 	protected AutoRegisterer registerer;
 	
 	public Addon(ContainerType type, File file){ this.contype = type; this.file = file; }
@@ -82,6 +82,7 @@ public class Addon extends TypeCore<Addon> {
 		generateicon = JsonUtil.getIfExists(obj, "GenerateItemIcon", false);
 		//
 		if(Static.side().isClient()){
+			creativetabs = new HashMap<>();
 			if(!obj.has("CreativeTabs") || obj.get("CreativeTabs").getAsJsonArray().size() == 0){
 				this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 			}

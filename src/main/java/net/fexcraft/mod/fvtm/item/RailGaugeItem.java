@@ -126,7 +126,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			}
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
-				if(!register(player, world, track, true)) return EnumActionResult.SUCCESS;
+				if(!Config.NO_RAIL_BLOCKS && !register(player, world, track, true)) return EnumActionResult.SUCCESS;
 				second.addnew(track);
 				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();

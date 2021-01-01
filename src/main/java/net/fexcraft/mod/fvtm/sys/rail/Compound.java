@@ -36,7 +36,9 @@ public abstract class Compound {
 
 		public Singular(Region region, long uid, NBTTagCompound compound){
 			super(uid); RailEntity root = new RailEntity(region, this);
-			entities.add(root.read(compound)); COMPOUNDS.put(uid, this);
+			root = root.read(compound);
+			if(root == null) return;
+			entities.add(root); COMPOUNDS.put(uid, this);
 		}
 
 		public Singular(RailEntity ent, long uid){
@@ -100,8 +102,10 @@ public abstract class Compound {
 		public Multiple(RailSys system, Region region, Long id, NBTTagList list){
 			super(id); RailEntity prev = null, curr; NBTTagCompound compound;
 			for(int i = 0; i < list.tagCount(); i++){
-				compound = (NBTTagCompound)list.get(i); if(!compound.hasKey("region")) return;
+				compound = (NBTTagCompound)list.get(i);
+				if(!compound.hasKey("region")) return;
 				curr = new RailEntity(region == null ? system.getRegions().get(compound.getIntArray("region")) : region, this).read(compound);
+				if(curr == null) continue;
 				if(prev != null){
 					if(compound.hasKey("front_coupled") && compound.getLong("front_coupled") == prev.uid){
 						(compound.getBoolean("front_coupler") ? prev.front : prev.rear).entity = curr;
@@ -114,6 +118,7 @@ public abstract class Compound {
 				}
 				entities.add(prev = curr);
 			}
+			if(entities.isEmpty()) return;
 			COMPOUNDS.put(uid, this);
 		}
 

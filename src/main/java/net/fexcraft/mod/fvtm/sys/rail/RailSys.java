@@ -250,6 +250,7 @@ public class RailSys implements RailSystem {
 					region = getRegions().get(com.getIntArray("region"), true);
 					if(region == null || !region.loaded) continue;
 					Singular singular = new Singular(region, com.getLong("Compound"), com);
+					if(singular.getEntitites().size() == 0) continue;
 					singular.forward = com.getBoolean("forward"); torem.add(uid);
 					region.spawnEntity(singular.getEntitites().get(0).start());
 				}
@@ -262,6 +263,7 @@ public class RailSys implements RailSystem {
 					}
 					if(allregionsloaded){
 						Compound.Multiple multiple = new Compound.Multiple(this, null, uid, ents);
+						if(multiple.getEntitites().size() == 0) continue;
 						multiple.forward = com.getBoolean("Forward"); torem.add(uid);
 						for(RailEntity ent : multiple.entities) ent.region.spawnEntity(ent.start());
 					}

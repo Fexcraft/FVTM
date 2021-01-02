@@ -481,7 +481,7 @@ public class Resources {
 	public void onServerTick(TickEvent.ServerTickEvent event){
 		if(event.phase != Phase.START) return;
 		for(World world : Static.getServer().worlds){
-			world.getCapability(Capabilities.RAILSYSTEM, null).updateTick();
+			if(!Config.DISABLE_RAILS) world.getCapability(Capabilities.RAILSYSTEM, null).updateTick();
 		}
 	}
 	

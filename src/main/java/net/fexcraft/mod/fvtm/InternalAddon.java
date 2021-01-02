@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm;
 
 import java.io.File;
+import java.util.HashMap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -32,7 +33,7 @@ public class InternalAddon extends Addon {
 		license = "http://fexcraft.net/license?id=mods";
 		registerer = FVTM.getRegisterer();
 		if(Static.side().isClient()){
-			this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
+			(creativetabs = new HashMap<>()).put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 		}
 	}
 	

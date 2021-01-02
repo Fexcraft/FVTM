@@ -124,7 +124,7 @@ public class Config {
                 if(ROAD_PLACING_GRID < 1) ROAD_PLACING_GRID = 1;
             }
             MAX_ROAD_LENGTH = config.getInt("road_max_length", ROADSYS, 256, 1, 4096, "Max vector (total) length of new placed roads (with the placing tool).");
-            DISABLE_ROADS = config.getBoolean("disable_roads", RAILSYS, false, "If FVTM road system should be disabled.");
+            DISABLE_ROADS = config.getBoolean("disable_roads", ROADSYS, false, "If FVTM road system should be disabled.");
             
     	}
     }

@@ -157,6 +157,7 @@ public class RailRenderer {
     
     @SubscribeEvent
     public void renderRails(RenderWorldLastEvent event){
+    	if(Config.DISABLE_RAILS) return;
 	    raildata = Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null).get();
         //if(raildata.isLoading()) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();

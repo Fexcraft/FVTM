@@ -56,7 +56,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote){ return EnumActionResult.PASS; }
+        if(world.isRemote || Config.DISABLE_RAILS){ return EnumActionResult.PASS; }
         RailSys syscap = world.getCapability(Capabilities.RAILSYSTEM, null).get();
         if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");

@@ -26,7 +26,7 @@ public class Config {
     	//PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS;
     public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
-    public static boolean NO_RAIL_BLOCKS;
+    public static boolean NO_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
 	public static long UNLOAD_INTERVAL;
@@ -111,6 +111,7 @@ public class Config {
                 if(RAIL_SEGMENTATOR < 1) RAIL_SEGMENTATOR = 1;
             }
             MAX_RAIL_TRACK_LENGTH = config.getInt("rail_track_max_length", RAILSYS, 32, 1, 128, "Max vector (total) length of new placed (rail) Tracks.");
+            DISABLE_RAILS = config.getBoolean("disable_rails", RAILSYS, false, "If FVTM rail system should be disabled.");
             
     	}
     	{//ROAD
@@ -123,6 +124,7 @@ public class Config {
                 if(ROAD_PLACING_GRID < 1) ROAD_PLACING_GRID = 1;
             }
             MAX_ROAD_LENGTH = config.getInt("road_max_length", ROADSYS, 256, 1, 4096, "Max vector (total) length of new placed roads (with the placing tool).");
+            DISABLE_ROADS = config.getBoolean("disable_roads", RAILSYS, false, "If FVTM road system should be disabled.");
             
     	}
     }

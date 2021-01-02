@@ -447,8 +447,8 @@ public class Resources {
 	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		//event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
-		event.addCapability(new ResourceLocation("fvtm:raildata"), new RailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
-		event.addCapability(new ResourceLocation("fvtm:roaddata"), new RoadDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+		if(!Config.DISABLE_RAILS) event.addCapability(new ResourceLocation("fvtm:raildata"), new RailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+		if(!Config.DISABLE_ROADS) event.addCapability(new ResourceLocation("fvtm:roaddata"), new RoadDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
 		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
 	}
 	
@@ -495,6 +495,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onChunkLoad(ChunkEvent.Load event){
+		if(Config.DISABLE_RAILS) return;
 		event.getWorld().getCapability(Capabilities.RAILSYSTEM, null).onChunkLoad(event.getChunk());
 		event.getChunk().getTileEntityMap().values().forEach(tile -> {
 			if(tile instanceof M_4ROT_TE.TileEntity){
@@ -505,6 +506,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onChunkUnload(ChunkEvent.Unload event){
+		if(Config.DISABLE_RAILS) return;
 		event.getWorld().getCapability(Capabilities.RAILSYSTEM, null).onChunkUnload(event.getChunk());
 	}
 

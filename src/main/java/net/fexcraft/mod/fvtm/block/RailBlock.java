@@ -40,7 +40,7 @@ public class RailBlock extends BlockContainer {
 	public static RailBlock INSTANCE;
 
 	public RailBlock(){
-		super(Material.ROCK, MapColor.BLACK);
+		super(Material.ROCK, MapColor.IRON);
 		INSTANCE = this;
 		this.setHarvestLevel("pickaxe", 0);
 		this.setHardness(4.0F);

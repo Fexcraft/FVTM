@@ -30,7 +30,7 @@ public class TransmissionFunction extends StaticFuntion {
 		if(obj == null) obj = new JsonObject();
 		JsonArray rats = obj.has("gear_ratios") ? obj.get("gear_ratios").getAsJsonArray() : null;
 		if(rats == null){
-			ratios.add(-1.8f);
+			//ratios.add(-1.8f);
 			ratios.add(-3f);
 			ratios.add(0f);
 			ratios.add(3f);

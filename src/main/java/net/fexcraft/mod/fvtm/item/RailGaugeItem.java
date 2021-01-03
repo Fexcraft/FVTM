@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import static net.fexcraft.mod.fvtm.block.RailBlock.HEIGHT;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.RAILPLACER;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.block.RailEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -69,6 +71,13 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
             }
         }
         tooltip.add(Formatter.format("&9- - - - - - &7-"));
+        tooltip.add(Formatter.format("&6Usage:"));
+        tooltip.add(Formatter.format("&b- Rightclick twice in the same position to create a Junction."));
+        tooltip.add(Formatter.format("&b- Rightclick in sequence between 2 Junctions to create a track."));
+        tooltip.add(Formatter.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
+        tooltip.add(Formatter.format("&b- Rightclick + Sneak (on empty cache) to open GUI."));
+        tooltip.add(Formatter.format("&o&bNote that without zoom (in GUI) only &o&7corner or centered &o&bJunction positions are available."));
+        tooltip.add(Formatter.format("&9- - - - - - &7-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railpoints")){
         	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints");
     		for(int k = 0; k < list.tagCount(); k++){
@@ -91,8 +100,13 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         ItemStack stack = player.getHeldItem(hand);
         Vec316f vector = new Vec316f(world, new Vec3d(pos).add(hitX, hitY, hitZ), Config.RAIL_PLACING_GRID);
         if(player.isSneaking()){
-			stack.getTagCompound().removeTag("fvtm:railpoints");
-			Print.chat(player, "&bItem Point(s) Cache reset.");
+        	if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railpoints")){
+    			stack.getTagCompound().removeTag("fvtm:railpoints");
+    			Print.chat(player, "&bItem Point(s) Cache reset.");
+        	}
+        	else{
+        		player.openGui(FVTM.getInstance(), RAILPLACER, world, 0, 0, 0);
+        	}
 			return EnumActionResult.SUCCESS;
 		}
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());

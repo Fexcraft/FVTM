@@ -102,6 +102,13 @@ public class Vec316f implements Comparable<Vec316f> {
 		vector = new Vec3f(other.vector);
 	}
 
+	public Vec316f(BlockPos blkpos, boolean centered, boolean vcentered){
+		pos = new BlockPos(blkpos);
+		x = z = (byte)(centered ? 8 : 0);
+		y = (byte)(vcentered ? 8 : 0);
+		vector = toVec3f();
+	}
+
 	public NBTTagCompound write(){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("vec_pos", pos.toLong());

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.rail;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
@@ -23,6 +24,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -164,6 +166,30 @@ public class RailSys implements RailSystem {
 
 	public Junction getJunction(Vec316f vec, boolean load){
 		Region region = regions.get(vec, load); return region.getJunction(vec);
+	}
+
+	public ArrayList<Junction> getJunctionsInChunk(int cx, int cz){
+		ArrayList<Junction> arr = new ArrayList<>();
+		Region region = regions.get(RegionKey.getRegionXZ(cx, cz));
+		if(region == null) return arr;
+		for(Entry<Vec316f, Junction> entry : region.getJunctions().entrySet()){
+			if(entry.getKey().pos.getX() >> 4 == cx && entry.getKey().pos.getZ() >> 4 == cz){
+				arr.add(entry.getValue());
+			}
+		}
+		return arr;
+	}
+
+	public ArrayList<Junction> getJunctionsAt(BlockPos pos){
+		ArrayList<Junction> arr = new ArrayList<>();
+		Region region = regions.get(RegionKey.getRegionXZ(pos));
+		if(region == null) return arr;
+		for(Entry<Vec316f, Junction> entry : region.getJunctions().entrySet()){
+			if(entry.getKey().pos.equals(pos)){
+				arr.add(entry.getValue());
+			}
+		}
+		return arr;
 	}
 
 	public boolean delJunction(Vec316f vector){

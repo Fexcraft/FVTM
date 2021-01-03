@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 public class RegionKey implements Comparable<RegionKey> {
 	
@@ -69,6 +70,10 @@ public class RegionKey implements Comparable<RegionKey> {
 
 	public static int[] getRegionXZ(Vec3d vec){
 		return getRegionXZ((int)vec.x >> 4, (int)vec.z >> 4);
+	}
+
+	public static int[] getRegionXZ(Vec3i vec){
+		return getRegionXZ((int)vec.getX() >> 4, (int)vec.getZ() >> 4);
 	}
 
 	public static int[] getRegionXZ(PathKey key){

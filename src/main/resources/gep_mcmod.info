@@ -1,8 +1,8 @@
 [
 	{
 	  "modid": "gep",
-	  "name": "\u00a72General Essentials Pack",
-	  "description": "\u00a77The generic general essentials pack.",
+	  "name": "General Essentials Pack",
+	  "description": "The generic general essentials pack.",
 	  "version": "${version}",
 	  "mcversion": "${mcversion}",
 	  "url": "http://fexcraft.net/",

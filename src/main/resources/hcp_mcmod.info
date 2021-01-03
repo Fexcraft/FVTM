@@ -1,8 +1,8 @@
 [
 	{
 	  "modid": "hcp",
-	  "name": "\u00a73Heavy Cargo Pack",
-	  "description": "\u00a77A pack featuring Cargo related Content.",
+	  "name": "Heavy Cargo Pack",
+	  "description": "A pack featuring Cargo related Content.",
 	  "version": "${version}",
 	  "mcversion": "${mcversion}",
 	  "url": "http://fexcraft.net/",

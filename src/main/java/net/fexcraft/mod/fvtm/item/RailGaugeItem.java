@@ -105,7 +105,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
     			Print.chat(player, "&bItem Point(s) Cache reset.");
         	}
         	else{
-        		player.openGui(FVTM.getInstance(), RAILPLACER, world, 0, 0, 0);
+        		player.openGui(FVTM.getInstance(), RAILPLACER, world, player.inventory.getSlotFor(stack), 0, 0);
         	}
 			return EnumActionResult.SUCCESS;
 		}

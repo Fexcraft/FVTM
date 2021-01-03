@@ -96,6 +96,10 @@ public class Vec316f implements Comparable<Vec316f> {
 		pos = new BlockPos(px, py, pz); this.x = x; this.y = y; this.z = z; vector = toVec3f();
 	}
 
+	public Vec316f(BlockPos blkpos, byte x, byte y, byte z){
+		pos = new BlockPos(blkpos); this.x = x; this.y = y; this.z = z; vector = toVec3f();
+	}
+
 	public Vec316f(Vec316f other){
 		pos = new BlockPos(other.pos);
 		x = other.x; y = other.y; z = other.z;

@@ -34,7 +34,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	private static BlockPos[][] POSGRID;
 	private static IBlockState[][] STATEGRID;
 	private static ArrayList<Junction> junctions = new ArrayList<>();
-	private static boolean noterrain = true;
+	private static boolean noterrain;
 	private static Orient orient;
 	private static int cx, cz;
 	private static Zoom zoom;
@@ -42,6 +42,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	//
 	private static int itemslot;
 	private static Vec316f begin;
+	private static Track demotrack;
 	private static ArrayList<Vec316f> points = new ArrayList<>();
 	//
 	private FieldButton fieldbutton;
@@ -126,27 +127,30 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		for(Junction junc : junctions){
 			renderJunction(junc);
 		}
+		if(demotrack != null) renderTrack(demotrack, false);
 		GL11.glLineWidth(1f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
 	private void renderJunction(Junction junc){
+		for(Track track : junc.tracks){
+			renderTrack(track, true);
+		}
+	}
+	
+	private void renderTrack(Track conn, boolean junc){
+		if(conn.isOppositeCopy()) return;
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        Vec3f vec0, vec1; float flfl, glgl;
-		for(int o = 0; o < junc.tracks.size(); o++){
-			Track conn = junc.tracks.get(o);
-			if(conn.isOppositeCopy()) continue;
-	        flfl = conn.isOppositeCopy() ? 1 : 0;
-	        glgl = conn.isOppositeCopy() ? 0 : 1;
-			for(int j = 0; j < conn.vecpath.length - 1; j++){
-				vec0 = conn.vecpath[j];
-				vec1 = conn.vecpath[j + 1];
-                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-                bufferbuilder.pos((vec0.xCoord - (cx * 16)), (vec0.zCoord - (cz * 16)), zLevel).color(0f, glgl, flfl, 1F).endVertex();
-                bufferbuilder.pos((vec1.xCoord - (cx * 16)), (vec1.zCoord - (cz * 16)), zLevel).color(0f, glgl, flfl, 1F).endVertex();
-                tessellator.draw();
-			}
+        Vec3f vec0, vec1;
+        float flfl = junc ? 0 : 1, glgl = junc ? 1 : 0;
+		for(int j = 0; j < conn.vecpath.length - 1; j++){
+			vec0 = conn.vecpath[j];
+			vec1 = conn.vecpath[j + 1];
+			bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+			bufferbuilder.pos((vec0.xCoord - (cx * 16)) * zoom.cs + guiLeft + zoom.bo, (vec0.zCoord - (cz * 16)) * zoom.cs + guiTop + zoom.bo, zLevel + 1).color(0f, glgl, flfl, 1F).endVertex();
+			bufferbuilder.pos((vec1.xCoord - (cx * 16)) * zoom.cs + guiLeft + zoom.bo, (vec1.zCoord - (cz * 16)) * zoom.cs + guiTop + zoom.bo, zLevel + 1).color(0f, glgl, flfl, 1F).endVertex();
+			tessellator.draw();
 		}
 	}
 
@@ -203,15 +207,20 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
         	Vec316f pos = new Vec316f(POSGRID[x][y].up(), (byte)orient.x, (byte)0, (byte)orient.z);
         	Junction junc = system.getJunction(pos);
         	if(begin == null){
-        		if(junc != null) begin = pos;
+        		if(junc != null){
+        			begin = pos;
+        			points.add(pos);
+        		}
         	}
         	else if(junc != null){
         		//try placing track
         		buttons.entrySet().removeIf(entry -> entry.getKey().startsWith("p"));
+        		demotrack = null;
         		points.clear();
         		begin = null;
         	}
         	else if(begin != null){
+        		demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
         		points.add(pos);
         		buttons.put("p" + pos.asIDString(), new PointButton(pos));
         	}

@@ -110,16 +110,16 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			return EnumActionResult.SUCCESS;
 		}
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-        return placeTrack(player, world, stack, syscap, vector);
+        return placeTrack(player, world, stack, syscap, vector, true);
     }
 	
-	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSys syscap, Vec316f vector){
+	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSys syscap, Vec316f vector, boolean bar){
 		Junction junk = syscap.getJunction(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
 		if(junk == null || list.isEmpty()){
 			if(list.isEmpty() || !createdJunction(syscap, player, list, vector)){
 				list.appendTag(vector.write()); stack.getTagCompound().setTag("fvtm:railpoints", list);
-				Print.bar(player, list.tagCount() + (getSuffix(list.tagCount())) +" Point Added!");
+				chatbar(bar, player, list.tagCount() + (getSuffix(list.tagCount())) +" Point Added!");
 				return EnumActionResult.SUCCESS;
 			}
 			else{ stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.SUCCESS; }
@@ -159,6 +159,11 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		}
 	}
 	
+	private void chatbar(boolean bar, EntityPlayer player, String string){
+		if(bar) Print.bar(player, string);
+		else Print.chat(player, string);
+	}
+
 	public static boolean register(EntityPlayer player, World world, Track track, boolean consume){
 		return register(player, world, null, track, true, consume);
 	}

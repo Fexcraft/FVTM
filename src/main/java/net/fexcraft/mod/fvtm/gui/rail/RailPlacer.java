@@ -19,18 +19,21 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class RailPlacer extends GenericGui<RailPlacerContainer> {
@@ -81,7 +84,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 			}
 		}
 		system = player.world.getCapability(Capabilities.RAILSYSTEM, null).get();
-		int d = zoom.co * 2;
+		int d = zoom.co * 2 + 1;
 		for(int i = 0; i < d; i++){
 			for(int j = 0; j < d; j++){
 				junctions.addAll(system.getJunctionsInChunk(cx + i, cz + j));
@@ -92,11 +95,17 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	private static final BlockPos getPos(World world, int x, int z){
 		for(int i = 255; i > 0; i--){
 			BlockPos pos = new BlockPos(x, i, z);
-			if(world.getBlockState(pos).getBlock() != Blocks.AIR && world.getBlockState(pos).getBlock() instanceof RailBlock == false){
+			IBlockState state = world.getBlockState(pos);
+			if(state.getBlock() instanceof RailBlock) continue;
+			if((state.isSideSolid(world, pos, EnumFacing.UP) && !state.getBlock().isReplaceable(world, pos)) || isWater(state.getBlock())){
 				return pos;
 			}
 		}
 		return new BlockPos(x, 0, z);
+	}
+
+	private static boolean isWater(Block block){
+		return block instanceof BlockLiquid || block instanceof BlockFluidBase;
 	}
 
 	@Override
@@ -244,7 +253,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setTag("points", list);
 				compound.setTag("end", end.write());
-				compound.setString("task", "place");
+				compound.setString("cargo", "place");
 				container.send(Side.SERVER, compound);
 				resetPoints();
 			}

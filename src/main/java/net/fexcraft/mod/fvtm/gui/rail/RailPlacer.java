@@ -10,9 +10,11 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -23,9 +25,13 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	
@@ -41,8 +47,8 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	private RailSys system;
 	//
 	private static int itemslot;
-	private static Vec316f begin;
 	private static Track demotrack;
+	private static Vec316f begin, end;
 	private static ArrayList<Vec316f> points = new ArrayList<>();
 	//
 	private FieldButton fieldbutton;
@@ -105,6 +111,9 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		for(Vec316f point : points){
 			this.buttons.put("p" + point.asIDString(), new PointButton(point));
 		}
+		this.buttons.put("terrain", new BasicButton("terrain", guiLeft + 202, guiTop + 188, 202, 188, 10, 10, true));
+		this.buttons.put("confirm", new BasicButton("confirm", guiLeft + 237, guiTop + 187, 237, 187, 12, 12, true));
+		this.buttons.put("reset", new BasicButton("reset", guiLeft + 224, guiTop + 187, 224, 187, 12, 12, true));
 	}
 
 	@Override
@@ -206,6 +215,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
         	ttip.add(PARAGRAPH_SIGN + "7Block: " + STATEGRID[x][y].getBlock().getLocalizedName());
         	Vec316f pos = new Vec316f(POSGRID[x][y].up(), (byte)orient.x, (byte)0, (byte)orient.z);
         	Junction junc = system.getJunction(pos);
+        	if(end != null) return true;
         	if(begin == null){
         		if(junc != null){
         			begin = pos;
@@ -213,19 +223,50 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
         		}
         	}
         	else if(junc != null){
-        		//try placing track
-        		buttons.entrySet().removeIf(entry -> entry.getKey().startsWith("p"));
-        		demotrack = null;
-        		points.clear();
-        		begin = null;
+        		demotrack = new Track(null, points.toArray(new Vec316f[0]), end = pos, null);
+        		points.add(pos);
         	}
         	else if(begin != null){
         		demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
-        		points.add(pos);
         		buttons.put("p" + pos.asIDString(), new PointButton(pos));
+        		points.add(pos);
         	}
+        	return true;
+		}
+		else if(button.name.equals("confirm")){
+			if(begin == null || end == null || points.isEmpty()) return true;
+			ItemStack stack = player.inventory.getStackInSlot(itemslot);
+			if(stack.getItem() instanceof RailGaugeItem){
+				NBTTagList list = new NBTTagList();
+				for(int i = 0; i < points.size() - 1; i++){
+					list.appendTag(points.get(i).write());
+				}
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setTag("points", list);
+				compound.setTag("end", end.write());
+				compound.setString("task", "place");
+				container.send(Side.SERVER, compound);
+				resetPoints();
+			}
+			else Print.chat(player, "&cNo valid item in hand.");
+    		return true;
+		}
+		else if(button.name.equals("reset")){
+			resetPoints();
+    		return true;
+		}
+		else if(button.name.equals("terrain")){
+			noterrain = !noterrain;
+    		return true;
 		}
 		return false;
+	}
+
+	private void resetPoints(){
+		buttons.entrySet().removeIf(entry -> entry.getKey().startsWith("p"));
+		begin = end = null;
+		demotrack = null;
+		points.clear();
 	}
 
 	@Override
@@ -310,8 +351,13 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		@Override
 		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
 			if(!visible) return;
-			drawScaledCustomSizeModalRect(gui.getGuiLeft() + x + zoom.bo, gui.getGuiTop() + y + zoom.bo,
-				begin != null && begin.equals(junction.getVec316f()) ? 0 : centered ? 36 : 12, 244, 12, 12, zoom.cs, zoom.cs, 256, 256);
+			drawScaledCustomSizeModalRect(gui.getGuiLeft() + x + zoom.bo, gui.getGuiTop() + y + zoom.bo, isRed() ? 0 : centered ? 36 : 12, 244, 12, 12, zoom.cs, zoom.cs, 256, 256);
+		}
+
+		private boolean isRed(){
+			if(begin != null && begin.equals(junction.getVec316f())) return true;
+			if(end != null && end.equals(junction.getVec316f())) return true;
+			return false;
 		}
 		
 	}

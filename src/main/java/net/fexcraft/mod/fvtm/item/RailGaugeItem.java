@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
 import static net.fexcraft.mod.fvtm.block.RailBlock.HEIGHT;
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.RAILPLACER;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
@@ -105,11 +105,15 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
     			Print.chat(player, "&bItem Point(s) Cache reset.");
         	}
         	else{
-        		player.openGui(FVTM.getInstance(), RAILPLACER, world, player.inventory.getSlotFor(stack), 0, 0);
+        		player.openGui(FVTM.getInstance(), GuiHandler.RAILPLACER, world, player.inventory.getSlotFor(stack), 0, 0);
         	}
 			return EnumActionResult.SUCCESS;
 		}
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
+        return placeTrack(player, world, stack, syscap, vector);
+    }
+	
+	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSys syscap, Vec316f vector){
 		Junction junk = syscap.getJunction(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
 		if(junk == null || list.isEmpty()){
@@ -153,7 +157,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			else Print.chat(player, "&cNo Junction at starting point found!");
 			return EnumActionResult.SUCCESS;
 		}
-    }
+	}
 	
 	public static boolean register(EntityPlayer player, World world, Track track, boolean consume){
 		return register(player, world, null, track, true, consume);

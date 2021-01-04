@@ -37,14 +37,13 @@ public class RailPlacerContainer extends GenericContainer {
 			Print.chat(player, "Error, RailSysCap is null.");
 			return;
 		}
-		switch(packet.getString("task")){
+		switch(packet.getString("cargo")){
 			case "place":{
-				Print.debug("placing!");
 				ItemStack stack = player.inventory.getStackInSlot(itemslot);
 				Vec316f vec = new Vec316f(packet.getCompoundTag("end"));
 				if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 				stack.getTagCompound().setTag("fvtm:railpoints", packet.getTag("points"));
-				((RailGaugeItem)stack.getItem()).placeTrack(player, player.world, stack, system, vec);
+				((RailGaugeItem)stack.getItem()).placeTrack(player, player.world, stack, system, vec, false);
 				player.openGui(FVTM.getInstance(), GuiHandler.RAILPLACER, player.world, itemslot, zoom, 0);
 				break;
 			}

@@ -15,6 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 
+	public static String LAST_MSG;
+
 	@Override
 	public String getId(){
 		return GuiHandler.LISTENERID;
@@ -100,6 +102,10 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
                 		//player.openGui(FVTM.getInstance(), packet.nbt.getInteger("gui"), player.world, xyz[0], xyz[1], xyz[2]);
                 	}
                 }
+				return;
+			}
+			case "gui:cmd:msg":{
+				LAST_MSG = packet.nbt.getString("msg");
 				return;
 			}
 			default: return;

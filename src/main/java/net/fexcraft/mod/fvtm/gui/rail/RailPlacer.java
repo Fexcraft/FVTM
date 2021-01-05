@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -21,6 +22,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -205,9 +207,9 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		}
 	    if(ttip.size() > 0) this.drawHoveringText(ttip, mouseX, mouseY, mc.fontRenderer);
 	    //
-	    /*if(STR != null){//TODO find way to get last message received in chat, if possible
-		    fontRenderer.drawStringWithShadow(STR, guiLeft, guiTop - 10, MapColor.SNOW.colorValue);
-	    }*/
+	    if(ClientReceiver.LAST_MSG != null){
+		    fontRenderer.drawStringWithShadow(ClientReceiver.LAST_MSG, guiLeft, guiTop - 10, MapColor.SNOW.colorValue);
+	    }
 	}
 
 	@Override
@@ -241,7 +243,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
         		}
         		else{
         			if(junc.tracks.size() > 0){
-        				Print.chat(player, "&bPlease remove all connected tracks first!");
+        				Print.chat(container.sender, "&bPlease remove all connected tracks first!");
         			}
         			else{
         				NBTTagCompound compound = new NBTTagCompound();
@@ -270,7 +272,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	        		points.add(pos);
         		}
         		else{
-    				Print.chat(player, "&eGUI track point limit reached.");
+    				Print.chat(container.sender, "&eGUI track point limit reached.");
         		}
         	}
         	return true;
@@ -285,12 +287,12 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 				}
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setTag("points", list);
-				compound.setTag("end", end.write());
+				compound.setTag("pos", end.write());
 				compound.setString("cargo", "place");
 				container.send(Side.SERVER, compound);
 				resetPoints();
 			}
-			else Print.chat(player, "&cNo valid item in hand.");
+			else Print.chat(container.sender, "&cNo valid item in hand.");
     		return true;
 		}
 		else if(button.name.equals("reset")){

@@ -92,7 +92,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
         	start = syscap.getJunction(vector);
         }
         Track track = new Track(start, vecs, type).withPreset(type.getRegistryName() + "." + title);
-		if(!Config.NO_RAIL_BLOCKS && !RailGaugeItem.register(true, player, world, track, false)) return EnumActionResult.SUCCESS;
+		if(!Config.NO_RAIL_BLOCKS && !RailGaugeItem.register(player, player, world, track, false)) return EnumActionResult.SUCCESS;
         if(end == null){
         	syscap.addJunction(vecs[vecs.length - 1]);
         	end = syscap.getJunction(vecs[vecs.length - 1]);

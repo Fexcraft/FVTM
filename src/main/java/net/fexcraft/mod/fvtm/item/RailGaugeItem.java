@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
+import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
@@ -30,6 +31,7 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -110,69 +112,69 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			return EnumActionResult.SUCCESS;
 		}
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-        return placeTrack(player, world, stack, syscap, vector, true);
+        return placeTrack(player, world, stack, syscap, vector, player);
     }
 	
-	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSys syscap, Vec316f vector, boolean bar){
+	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSys syscap, Vec316f vector, ICommandSender sender){
 		Junction junk = syscap.getJunction(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
 		if(junk == null || list.isEmpty()){
-			if(list.isEmpty() || !createdJunction(syscap, player, list, vector)){
+			if(list.isEmpty() || !createdJunction(sender, syscap, player, list, vector)){
 				list.appendTag(vector.write()); stack.getTagCompound().setTag("fvtm:railpoints", list);
-				chatbar(bar, player, list.tagCount() + (getSuffix(list.tagCount())) +" Point Added!");
+				chatbar(sender, player, list.tagCount() + (getSuffix(list.tagCount())) +" Point Added!");
 				return EnumActionResult.SUCCESS;
 			}
 			else{ stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.SUCCESS; }
 		}
 		else{
 			if(!junk.tracks.isEmpty() && junk.tracks.size() < 2 && !junk.tracks.get(0).isCompatibleGauge(type)){
-				Print.chat(player, "&9Item Gauge not compatible with the &7Junction's Gauge&9.");
+				Print.chat(sender, "&9Item Gauge not compatible with the &7Junction's Gauge&9.");
 				return EnumActionResult.FAIL;
 			}
 			if(junk.signal != null){
-				Print.chat(player, "&9Please remove the signal first.");
+				Print.chat(sender, "&9Please remove the signal first.");
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
 			if(junk.tracks.size() >= 4){
-				Print.chat(player, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
+				Print.chat(sender, "&9Junction reached track limit (4)\n&c&oPoint cache reset.");
 				stack.getTagCompound().removeTag("fvtm:railpoints"); return EnumActionResult.FAIL;
 			}
 			Track track = new Track(junk, getVectors(list), vector, type);
 			if(track.length > Config.MAX_RAIL_TRACK_LENGTH){
-				Print.chat(player, "&cTrack length exceeds the configured max length.");
+				Print.chat(sender, "&cTrack length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
 			}
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
-				if(!Config.NO_RAIL_BLOCKS && !register(bar, player, world, track, true)) return EnumActionResult.SUCCESS;
+				if(!Config.NO_RAIL_BLOCKS && !register(sender, player, world, track, true)) return EnumActionResult.SUCCESS;
 				second.addnew(track);
 				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();
-				Print.chat(player, "&aTrack Created!");
+				Print.chat(sender, "&aTrack Created!");
 				stack.getTagCompound().removeTag("fvtm:railpoints");
 				if(!player.capabilities.isCreativeMode){
 					stack.shrink(1);
 				}
 			}
-			else Print.chat(player, "&cNo Junction at starting point found!");
+			else Print.chat(sender, "&cNo Junction at starting point found!");
 			return EnumActionResult.SUCCESS;
 		}
 	}
 	
-	private static void chatbar(boolean bar, EntityPlayer player, String string){
-		if(bar) Print.bar(player, string);
-		else Print.chat(player, string);
+	private static void chatbar(ICommandSender sender, EntityPlayer player, String string){
+		if(sender instanceof GuiCommandSender == false) Print.bar(player, string);
+		else Print.chat(sender, string);
 	}
 
-	public static boolean register(boolean bar, EntityPlayer player, World world, Track track, boolean consume){
-		return register(bar, player, world, null, track, true, consume);
+	public static boolean register(ICommandSender sender, EntityPlayer player, World world, Track track, boolean consume){
+		return register(sender, player, world, null, track, true, consume);
 	}
 	
-	public static boolean unregister(boolean bar, World world, BlockPos pos, Track track){
-		return register(bar, null, world, pos, track, false, false);
+	public static boolean unregister(ICommandSender sender, World world, BlockPos pos, Track track){
+		return register(sender, null, world, pos, track, false, false);
 	}
 
-	private static boolean register(boolean bar, EntityPlayer player, World world, BlockPos pos, Track track, boolean reg, boolean con){
+	private static boolean register(ICommandSender sender, EntityPlayer player, World world, BlockPos pos, Track track, boolean reg, boolean con){
 		RailGauge type = track.getGauge();
 		float width = type.getBlockWidth();
 		if(width == 0f || type.getBlockHeight() == 0){
@@ -204,7 +206,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				height = v.y;
 				state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
 				if(state.getBlock() != RailBlock.INSTANCE && !state.getBlock().isReplaceable(world, blk)){
-		            if(player != null) chatbar(bar, player, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
+		            if(player != null) chatbar(sender, player, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
 		            return false;
 				}
 			}
@@ -225,7 +227,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		}
 		boolean creative = player != null && player.capabilities.isCreativeMode;
 		if(reg && con && !creative && getRailsOfTypeInInv(type, player) < blocks.size()){
-			chatbar(bar, player, String.format("Not enough rails in inventory! Needed: %s", blocks.size()));
+			chatbar(sender, player, String.format("Not enough rails in inventory! Needed: %s", blocks.size()));
 			return false;
 		}
 		for(Entry<BlockPos, Integer> entry : blocks.entrySet()){
@@ -295,9 +297,9 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);
 	}
 
-	private boolean createdJunction(RailSys syscap, EntityPlayer player, NBTTagList list, Vec316f vector){
+	private boolean createdJunction(ICommandSender sender, RailSys syscap, EntityPlayer player, NBTTagList list, Vec316f vector){
 		if(list.tagCount() != 1) return false; Vec316f vec = getFirstVector(list); if(!vec.equals(vector)) return false;
-		syscap.addJunction(vector); Print.chat(player, "Junction Created!"); return true;
+		syscap.addJunction(vector); Print.chat(sender, "Junction Created!"); return true;
 	}
 
 	private String getSuffix(int tagCount){

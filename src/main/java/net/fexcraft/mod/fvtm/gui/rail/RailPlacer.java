@@ -56,7 +56,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	private static Vec316f begin, end;
 	private static ArrayList<Vec316f> points = new ArrayList<>();
 	//
-	private FieldButton fieldbutton;
+	//private FieldButton fieldbutton;
 	private OrientButton orientbutton;
 	private ArrayList<String> ttip = new ArrayList<String>();
 	
@@ -138,7 +138,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		this.buttons.put("zoom-", new BasicButton("z-", guiLeft + 223, guiTop + 7, 223, 7, 12, 12, zoom.ordinal() > 0));
 		this.buttons.put("zoom+", new BasicButton("z+", guiLeft + 237, guiTop + 7, 237, 7, 12, 12, zoom.ordinal() < 2));
 		this.buttons.put("orient", orientbutton = new OrientButton(guiLeft, guiTop));
-		this.buttons.put("field", fieldbutton = new FieldButton(guiLeft, guiTop));
+		this.buttons.put("field", /*fieldbutton =*/ new FieldButton(guiLeft, guiTop));
 		for(Junction junc : junctions){
 			this.buttons.put("j" + junc.getVec316f().asIDString(), new JunctionButton(junc));
 		}
@@ -155,11 +155,27 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 				super.draw(gui, pticks, mouseX, mouseY);
 			}
 		});
+		for(int i = 0; i < 12; i++){
+			/*this.buttons.put("field" + i, new BasicButton("field" + i, guiLeft + 201, guiTop + 21 + (i * 12), 201, 21, 47, 12, true){
+				@Override
+				public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
+					return;
+				}
+			});*/
+			this.buttons.put("ad" + i, new B88("d" + i, guiLeft + 221, guiTop + 23 + (i * 12), 56, 240, 8, 8));
+			this.buttons.put("au" + i, new B88("u" + i, guiLeft + 230, guiTop + 23 + (i * 12), 64, 240, 8, 8));
+			this.buttons.put("ar" + i, new B88("r" + i, guiLeft + 239, guiTop + 23 + (i * 12), 72, 240, 8, 8));
+		}
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		//
+		for(int i = 0; i < 12; i++){
+			//buttons.get("field" + i).visible = i < points.size();
+			buttons.get("ad" + i).visible = buttons.get("ad" + i).hovered;
+			buttons.get("au" + i).visible = buttons.get("au" + i).hovered;
+			buttons.get("ar" + i).visible = buttons.get("ar" + i).hovered;
+		}
 	}
 
 	@Override
@@ -206,6 +222,11 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 
 	@Override
 	protected void drawlast(float pticks, int mouseX, int mouseY){
+		for(int i = 0; i < 12; i++){
+			if(i >= points.size()) break;
+			Vec316f vec = points.get(i);
+			fontRenderer.drawString(vec.x + ":" + vec.y + ":" + vec.z, guiLeft + 201, guiTop + 24 + (i * 12), MapColor.SNOW.colorValue);
+		}
 		ttip.clear();
 		if(mouseX >= guiLeft + zoom.bo && mouseX < guiLeft + zoom.bo + zoom.ts && mouseY >= guiTop + zoom.bo && mouseY < guiTop + zoom.bo + zoom.ts){
 			int x = (mouseX - guiLeft - zoom.bo) / zoom.cs, y = (mouseY - guiTop - zoom.bo) / zoom.cs;
@@ -331,6 +352,15 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		else if(button.name.equals("noblock")){
 			noblocks = !noblocks;
     		return true;
+		}
+		else if(button.name.startsWith("d")){
+			
+		}
+		else if(button.name.startsWith("u")){
+			
+		}
+		else if(button.name.startsWith("r")){
+			
 		}
 		return false;
 	}
@@ -482,6 +512,20 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		@Override
 		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
 			return;
+		}
+		
+	}
+	
+	public static class B88 extends BasicButton {
+
+		public B88(String string, int x, int y, int u, int v, int w, int h){
+			super(string, x, y, u, v, w, h, true);
+		}
+		
+		@Override
+		public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
+			if(!visible) return;
+            gui.drawTexturedModalRect(x, y, tx, ty - (hovered ? 8 : 0), sizex, sizey);
 		}
 		
 	}

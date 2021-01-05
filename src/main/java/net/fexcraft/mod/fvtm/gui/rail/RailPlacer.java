@@ -80,7 +80,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 			for(int j = 0; j < zoom.gs; j++){
 				BlockPos pos = getPos(player.world, i + (cx * 16), j + (cz * 16));
 				IBlockState state = player.world.getBlockState(pos);
-				GRID[i][j] = new RGB(state.getMapColor(player.world, pos).colorValue);
+				//GRID[i][j] = new Color(state.getMapColor(player.world, pos).colorValue);
 				POSGRID[i][j] = pos;
 				STATEGRID[i][j] = state;
 			}
@@ -90,6 +90,25 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		for(int i = 0; i < d; i++){
 			for(int j = 0; j < d; j++){
 				junctions.addAll(system.getJunctionsInChunk(cx + i, cz + j));
+			}
+		}
+		for(int i = 0; i < zoom.gs; i++){
+			for(int j = 0; j < zoom.gs; j++){
+				int m = 0;
+				if(isWater(STATEGRID[i][j].getBlock())){
+					d = 0;
+					for(int k = 0; k < 256; k++){
+						if(isWater(player.world.getBlockState(POSGRID[i][j].down(k)).getBlock())) d++;
+						else break;
+					}
+					if(d > 5) m = d > 10 ? 0 : 1; else m = 2;
+				}
+				else{
+					m = 1;
+					if(player.world.getBlockState(POSGRID[i][j].add(0, 1, -1)).getMapColor(player.world, POSGRID[i][j]) != MapColor.AIR) m--;
+					if(player.world.getBlockState(POSGRID[i][j].add(0, 0, -1)).getMapColor(player.world, POSGRID[i][j]) == MapColor.AIR) m++;
+				}
+				GRID[i][j] = new RGB(STATEGRID[i][j].getMapColor(player.world, POSGRID[i][j]).getMapColor(m));
 			}
 		}
 	}

@@ -144,7 +144,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			}
 			Junction second = syscap.getJunction(track.start);
 			if(second != null){
-				if(!Config.NO_RAIL_BLOCKS && !register(player, world, track, true)) return EnumActionResult.SUCCESS;
+				if(!Config.NO_RAIL_BLOCKS && !register(bar, player, world, track, true)) return EnumActionResult.SUCCESS;
 				second.addnew(track);
 				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();
@@ -159,20 +159,20 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		}
 	}
 	
-	private void chatbar(boolean bar, EntityPlayer player, String string){
+	private static void chatbar(boolean bar, EntityPlayer player, String string){
 		if(bar) Print.bar(player, string);
 		else Print.chat(player, string);
 	}
 
-	public static boolean register(EntityPlayer player, World world, Track track, boolean consume){
-		return register(player, world, null, track, true, consume);
+	public static boolean register(boolean bar, EntityPlayer player, World world, Track track, boolean consume){
+		return register(bar, player, world, null, track, true, consume);
 	}
 	
-	public static boolean unregister(World world, BlockPos pos, Track track){
-		return register(null, world, pos, track, false, false);
+	public static boolean unregister(boolean bar, World world, BlockPos pos, Track track){
+		return register(bar, null, world, pos, track, false, false);
 	}
 
-	private static boolean register(EntityPlayer player, World world, BlockPos pos, Track track, boolean reg, boolean con){
+	private static boolean register(boolean bar, EntityPlayer player, World world, BlockPos pos, Track track, boolean reg, boolean con){
 		RailGauge type = track.getGauge();
 		float width = type.getBlockWidth();
 		if(width == 0f || type.getBlockHeight() == 0){
@@ -204,7 +204,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				height = v.y;
 				state = world.getBlockState(blk = height == 0 ? v.pos.down() : v.pos);
 				if(state.getBlock() != RailBlock.INSTANCE && !state.getBlock().isReplaceable(world, blk)){
-		            if(player != null) Print.bar(player, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
+		            if(player != null) chatbar(bar, player, String.format("Obstacle at position: %sx, %sy, %sz!", blk.getX(), blk.getY(), blk.getZ()));
 		            return false;
 				}
 			}
@@ -225,7 +225,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		}
 		boolean creative = player != null && player.capabilities.isCreativeMode;
 		if(reg && con && !creative && getRailsOfTypeInInv(type, player) < blocks.size()){
-			Print.bar(player, String.format("Not enough rails in inventory! Needed: %s", blocks.size()));
+			chatbar(bar, player, String.format("Not enough rails in inventory! Needed: %s", blocks.size()));
 			return false;
 		}
 		for(Entry<BlockPos, Integer> entry : blocks.entrySet()){

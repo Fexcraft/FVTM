@@ -97,11 +97,15 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 			BlockPos pos = new BlockPos(x, i, z);
 			IBlockState state = world.getBlockState(pos);
 			if(state.getBlock() instanceof RailBlock) continue;
-			if((state.isSideSolid(world, pos, EnumFacing.UP) && !state.getBlock().isReplaceable(world, pos)) || isWater(state.getBlock())){
+			if(isSolid(state, world, pos) || isWater(state.getBlock())){
 				return pos;
 			}
 		}
 		return new BlockPos(x, 0, z);
+	}
+	
+	private static boolean isSolid(IBlockState state, World world, BlockPos pos){
+		return state.isSideSolid(world, pos, EnumFacing.UP) && !state.getBlock().isReplaceable(world, pos);
 	}
 
 	private static boolean isWater(Block block){
@@ -200,6 +204,10 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 			ttip.add(PARAGRAPH_SIGN + "6Selected J-orientation: " + orient.name());
 		}
 	    if(ttip.size() > 0) this.drawHoveringText(ttip, mouseX, mouseY, mc.fontRenderer);
+	    //
+	    /*if(STR != null){//TODO find way to get last message received in chat, if possible
+		    fontRenderer.drawStringWithShadow(STR, guiLeft, guiTop - 10, MapColor.SNOW.colorValue);
+	    }*/
 	}
 
 	@Override
@@ -224,6 +232,26 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
         	ttip.add(PARAGRAPH_SIGN + "7Block: " + STATEGRID[x][y].getBlock().getLocalizedName());
         	Vec316f pos = new Vec316f(POSGRID[x][y].up(), (byte)orient.x, (byte)0, (byte)orient.z);
         	Junction junc = system.getJunction(pos);
+        	if(mouseButton > 0){
+        		if(junc == null){
+    				NBTTagCompound compound = new NBTTagCompound();
+    				compound.setTag("pos", pos.write());
+    				compound.setString("cargo", "set_junc");
+    				container.send(Side.SERVER, compound);
+        		}
+        		else{
+        			if(junc.tracks.size() > 0){
+        				Print.chat(player, "&bPlease remove all connected tracks first!");
+        			}
+        			else{
+        				NBTTagCompound compound = new NBTTagCompound();
+        				compound.setTag("pos", pos.write());
+        				compound.setString("cargo", "del_junc");
+        				container.send(Side.SERVER, compound);
+        			}
+        		}
+        		return true;
+        	}
         	if(end != null) return true;
         	if(begin == null){
         		if(junc != null){
@@ -232,13 +260,18 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
         		}
         	}
         	else if(junc != null){
-        		demotrack = new Track(null, points.toArray(new Vec316f[0]), end = pos, null);
-        		points.add(pos);
+            	demotrack = new Track(null, points.toArray(new Vec316f[0]), end = pos, null);
+            	points.add(pos);
         	}
         	else if(begin != null){
-        		demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
-        		buttons.put("p" + pos.asIDString(), new PointButton(pos));
-        		points.add(pos);
+        		if(points.size() < 12){
+	        		demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
+	        		buttons.put("p" + pos.asIDString(), new PointButton(pos));
+	        		points.add(pos);
+        		}
+        		else{
+    				Print.chat(player, "&eGUI track point limit reached.");
+        		}
         	}
         	return true;
 		}

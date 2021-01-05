@@ -45,7 +45,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	private static BlockPos[][] POSGRID;
 	private static IBlockState[][] STATEGRID;
 	private static ArrayList<Junction> junctions = new ArrayList<>();
-	private static boolean noterrain;
+	private static boolean noterrain, noblocks;
 	private static Orient orient;
 	private static int cx, cz;
 	private static Zoom zoom;
@@ -129,6 +129,13 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		this.buttons.put("terrain", new BasicButton("terrain", guiLeft + 202, guiTop + 188, 202, 188, 10, 10, true));
 		this.buttons.put("confirm", new BasicButton("confirm", guiLeft + 237, guiTop + 187, 237, 187, 12, 12, true));
 		this.buttons.put("reset", new BasicButton("reset", guiLeft + 224, guiTop + 187, 224, 187, 12, 12, true));
+		this.buttons.put("noblock", new BasicButton("noblock", guiLeft + 201, guiTop + 7, 120, 244, 20, 12, true){
+			@Override
+			public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
+				ty = noblocks ? 232 : 244;
+				super.draw(gui, pticks, mouseX, mouseY);
+			}
+		});
 	}
 
 	@Override
@@ -288,6 +295,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setTag("points", list);
 				compound.setTag("pos", end.write());
+				compound.setBoolean("noblocks", noblocks);
 				compound.setString("cargo", "place");
 				container.send(Side.SERVER, compound);
 				resetPoints();
@@ -301,6 +309,10 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		}
 		else if(button.name.equals("terrain")){
 			noterrain = !noterrain;
+    		return true;
+		}
+		else if(button.name.equals("noblock")){
+			noblocks = !noblocks;
     		return true;
 		}
 		return false;

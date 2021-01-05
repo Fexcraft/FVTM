@@ -112,10 +112,10 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 			return EnumActionResult.SUCCESS;
 		}
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-        return placeTrack(player, world, stack, syscap, vector, player);
+        return placeTrack(player, world, stack, syscap, vector, player, false);
     }
 	
-	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSys syscap, Vec316f vector, ICommandSender sender){
+	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSys syscap, Vec316f vector, ICommandSender sender, boolean noblocks){
 		Junction junk = syscap.getJunction(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
 		if(junk == null || list.isEmpty()){
@@ -145,8 +145,9 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 				return EnumActionResult.FAIL;
 			}
 			Junction second = syscap.getJunction(track.start);
+			track.blockless = Config.NO_RAIL_BLOCKS || noblocks;
 			if(second != null){
-				if(!Config.NO_RAIL_BLOCKS && !register(sender, player, world, track, true)) return EnumActionResult.SUCCESS;
+				if(!track.blockless && !register(sender, player, world, track, true)) return EnumActionResult.SUCCESS;
 				second.addnew(track);
 				junk.addnew(track.createOppositeCopy());
 				second.checkTrackSectionConsistency();

@@ -48,7 +48,7 @@ public class RailPlacerContainer extends GenericContainer {
 			case "place":{
 				if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 				stack.getTagCompound().setTag("fvtm:railpoints", packet.getTag("points"));
-				item.placeTrack(player, player.world, stack, system, vec, sender);
+				item.placeTrack(player, player.world, stack, system, vec, sender, packet.getBoolean("noblocks"));
 				reopen();
 				break;
 			}

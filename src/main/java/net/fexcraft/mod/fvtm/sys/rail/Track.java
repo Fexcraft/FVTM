@@ -28,6 +28,7 @@ public class Track extends Path {
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned restmodel;
 	public String preset;
+	public boolean blockless;
 	
 	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, RailGauge gauge){
 		super(vec316fs, vector); this.junction = junction; this.gauge = gauge;
@@ -56,6 +57,7 @@ public class Track extends Path {
 			railmodel = null; restmodel = null;
 		}
 		if(compound.hasKey("preset")) preset = compound.getString("preset");
+		if(compound.hasKey("blockless")) blockless = compound.getBoolean("blockless");
 		return this;
 	}
 
@@ -70,6 +72,7 @@ public class Track extends Path {
 		if(unit != null) compound.setLong("section", unit.getSectionId());
 		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
 		if(preset != null) compound.setString("preset", preset);
+		if(blockless) compound.setBoolean("blockless", true);
 		return compound;
 	}
 	

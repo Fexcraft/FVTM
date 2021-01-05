@@ -111,7 +111,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 					junc.remove(index, true);
 					if(junc.size() == 0) system.delJunction(junc.getVec316f());
 					if(seco.size() == 0) system.delJunction(seco.getVec316f());
-					if(track != null){
+					if(track != null && !track.blockless){
 						RailGaugeItem.unregister(null, world, pos, track);
 						if(track.preset != null) continue;
 						//re-compensate the first one broken

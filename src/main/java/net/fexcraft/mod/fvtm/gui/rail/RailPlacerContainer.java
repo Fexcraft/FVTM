@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -28,6 +29,7 @@ public class RailPlacerContainer extends GenericContainer {
 		itemslot = x; zoom = y;
 		system = player.world.getCapability(Capabilities.RAILSYSTEM, null).get();
 		sender = new GuiCommandSender(player);
+		if(!Perms.RAIL_PLACER_GUI.has(player)) player.closeScreen();
 	}
 
 	@Override
@@ -46,6 +48,10 @@ public class RailPlacerContainer extends GenericContainer {
 		Vec316f vec = new Vec316f(packet.getCompoundTag("pos"));
 		switch(packet.getString("cargo")){
 			case "place":{
+				if(packet.getBoolean("noblocks") && !Perms.RAIL_PLACER_GUI_NOBLOCK.has(null)){
+					Print.chat(sender, "&cNo permission to place blockless tracks.");
+					return;
+				}
 				if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 				stack.getTagCompound().setTag("fvtm:railpoints", packet.getTag("points"));
 				item.placeTrack(player, player.world, stack, system, vec, sender, packet.getBoolean("noblocks"));

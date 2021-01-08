@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -63,6 +64,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	
 	public RailPlacer(EntityPlayer player, int x, int y, int z){
 		super(texture, new RailPlacerContainer(player, x, y, z), player);
+		if(!Perms.RAIL_PLACER_GUI.has(player)) player.closeScreen();
 		zoom = y < 0 || y >= Zoom.values().length ? Zoom.NONE :  Zoom.values()[y];
 		if(orient == null) orient = Orient.C;
 		itemslot = x;

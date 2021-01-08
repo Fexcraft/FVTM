@@ -26,6 +26,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
@@ -107,7 +108,9 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
     			Print.chat(player, "&bItem Point(s) Cache reset.");
         	}
         	else{
-        		player.openGui(FVTM.getInstance(), GuiHandler.RAILPLACER, world, player.inventory.getSlotFor(stack), 0, 0);
+        		if(Perms.RAIL_PLACER_GUI.has(player)){
+        			player.openGui(FVTM.getInstance(), GuiHandler.RAILPLACER, world, player.inventory.getSlotFor(stack), 0, 0);
+        		}
         	}
 			return EnumActionResult.SUCCESS;
 		}

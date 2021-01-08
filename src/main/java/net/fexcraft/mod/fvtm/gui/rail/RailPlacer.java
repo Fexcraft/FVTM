@@ -4,6 +4,7 @@ import static net.fexcraft.lib.mc.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.lwjgl.opengl.GL11;
 
@@ -162,8 +163,8 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 					return;
 				}
 			});*/
-			this.buttons.put("ad" + i, new B88("d" + i, guiLeft + 221, guiTop + 23 + (i * 12), 56, 240, 8, 8));
-			this.buttons.put("au" + i, new B88("u" + i, guiLeft + 230, guiTop + 23 + (i * 12), 64, 240, 8, 8));
+			if(i != 11) this.buttons.put("ad" + i, new B88("d" + i, guiLeft + 221, guiTop + 23 + (i * 12), 56, 240, 8, 8));
+			if(i != 0) this.buttons.put("au" + i, new B88("u" + i, guiLeft + 230, guiTop + 23 + (i * 12), 64, 240, 8, 8));
 			this.buttons.put("ar" + i, new B88("r" + i, guiLeft + 239, guiTop + 23 + (i * 12), 72, 240, 8, 8));
 		}
 	}
@@ -172,8 +173,8 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	protected void predraw(float pticks, int mouseX, int mouseY){
 		for(int i = 0; i < 12; i++){
 			//buttons.get("field" + i).visible = i < points.size();
-			buttons.get("ad" + i).visible = buttons.get("ad" + i).hovered;
-			buttons.get("au" + i).visible = buttons.get("au" + i).hovered;
+			if(i != 11) buttons.get("ad" + i).visible = buttons.get("ad" + i).hovered(mouseX, mouseY);
+			if(i != 0) buttons.get("au" + i).visible = buttons.get("au" + i).hovered(mouseX, mouseY);
 			buttons.get("ar" + i).visible = buttons.get("ar" + i).hovered;
 		}
 	}
@@ -223,9 +224,9 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	@Override
 	protected void drawlast(float pticks, int mouseX, int mouseY){
 		for(int i = 0; i < 12; i++){
-			if(i >= points.size()) break;
-			Vec316f vec = points.get(i);
-			fontRenderer.drawString(vec.x + ":" + vec.y + ":" + vec.z, guiLeft + 201, guiTop + 24 + (i * 12), MapColor.SNOW.colorValue);
+			if(i + 1 >= points.size()) break;
+			Vec316f vec = points.get(i + 1);
+			fontRenderer.drawString(vec.x + "-" + vec.y + "-" + vec.z, guiLeft + 201, guiTop + 24 + (i * 12), MapColor.BLACK.colorValue);
 		}
 		ttip.clear();
 		if(mouseX >= guiLeft + zoom.bo && mouseX < guiLeft + zoom.bo + zoom.ts && mouseY >= guiTop + zoom.bo && mouseY < guiTop + zoom.bo + zoom.ts){
@@ -307,12 +308,12 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
         		}
         	}
         	else if(junc != null){
-            	demotrack = new Track(null, points.toArray(new Vec316f[0]), end = pos, null);
+            	retrack(end = pos);
             	points.add(pos);
         	}
         	else if(begin != null){
-        		if(points.size() < 12){
-	        		demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
+        		if(points.size() < 13){
+                	retrack(pos);
 	        		buttons.put("p" + pos.asIDString(), new PointButton(pos));
 	        		points.add(pos);
         		}
@@ -354,15 +355,34 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
     		return true;
 		}
 		else if(button.name.startsWith("d")){
-			
+			int i = Integer.parseInt(button.name.replace("d", "")) + 1;
+			if(i < 0 || i + 1 >= points.size()) return true;
+			Collections.swap(points, i, i + 1);
+			retrack(null);
 		}
 		else if(button.name.startsWith("u")){
-			
+			int i = Integer.parseInt(button.name.replace("u", "")) + 1;
+			if(i - 1 < 0 || i >= points.size()) return true;
+			Collections.swap(points, i, i - 1);
+			retrack(null);
 		}
 		else if(button.name.startsWith("r")){
-			
+			int i = Integer.parseInt(button.name.replace("r", "")) + 1;
+			if(i < 0 || i >= points.size()) return true;
+			Vec316f vec = points.remove(i);
+			buttons.remove("p" + vec.asIDString());
+			retrack(null);
 		}
 		return false;
+	}
+
+	private void retrack(Vec316f pos){
+		if(points.size() < 2){
+			demotrack = null;
+			return;
+		}
+		if(pos == null) demotrack = new Track(null, points.toArray(new Vec316f[0]), null);
+		else demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
 	}
 
 	private void resetPoints(){

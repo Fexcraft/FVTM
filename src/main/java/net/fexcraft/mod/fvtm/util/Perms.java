@@ -7,6 +7,9 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.server.permission.PermissionAPI;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Perms {
 	
 	public static final Perm RAIL_PLACER_GUI = new Perm("fvtm.gui.rail_placer");

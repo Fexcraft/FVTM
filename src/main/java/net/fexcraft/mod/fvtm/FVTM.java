@@ -58,6 +58,7 @@ import net.fexcraft.mod.fvtm.util.CrashCallable;
 import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.ListenerClient;
 import net.fexcraft.mod.fvtm.util.ListenerServer;
+import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.RailSpawnSystem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -118,6 +119,7 @@ public class FVTM {
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		//
+		Perms.register();
 		EntitySystem.add(new LegacySpawnSystem());
 		EntitySystem.add(new RailSpawnSystem());
 		EntitySystem.add(new BasicSpawnSystem());

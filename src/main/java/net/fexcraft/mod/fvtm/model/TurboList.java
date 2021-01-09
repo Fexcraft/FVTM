@@ -38,6 +38,10 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		this(name); for(ModelRendererTurbo mrt : mrts){ this.add(mrt); }
 	}
 
+	public TurboList(String name, ModelRendererTurbo mrt){
+		this(name); this.add(mrt);
+	}
+
 	public void render(Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 		/*GL11.glPushMatrix();
 		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);

@@ -1,7 +1,9 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
@@ -16,7 +18,8 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.common.utils.WavefrontObjUtil;
+import net.fexcraft.lib.common.utils.ObjParser;
+import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -108,25 +111,27 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 
 	public GenericModel(String type, ResourceLocation loc){
 		if(!type.equals("obj")) return;
-		String[][] authors = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 0, new String[]{ "# Creators:", "# Creator:", "# Editors:", "# Editor:", "# Model Creator:" });
-		for(String[] str : authors) for(String auth : str) this.creators.add(auth);
+		InputStream stream = Resources.getModelInputStream(loc);
+		ObjModel objcom = new ObjParser(stream).readComments(true).readModel(false).parse();
+		List<String> authors = ObjParser.getCommentValues(objcom, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
+		for(String auth : authors) this.creators.add(auth);
 		try{
-			this.textureX = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 1, "# TextureSizeX:")[0][0]);
-			this.textureY = Integer.parseInt(WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 1, "# TextureSizeY:")[0][0]);
+			this.textureX = Integer.parseInt(ObjParser.getCommentValue(objcom, "TextureSizeX:"));
+			this.textureY = Integer.parseInt(ObjParser.getCommentValue(objcom, "TextureSizeY:"));
 		}
-		catch(Exception e){ e.printStackTrace(); }
-		//String str[][] = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 1, "# FlipAxes:");
-		//boolean bool = false;str.length == 0 ? false : Boolean.parseBoolean(str[0][0]);
-		String[] ogroups = WavefrontObjUtil.getGroups(Resources.getModelInputStream(loc));
-		for(String group : ogroups){
-			try{
-				groups.add(new TurboList(group, new ModelRendererTurbo[]{
-					new ModelRendererTurbo(null, 0, 0, textureX, textureY).addObj(Resources.getModelInputStream(loc), group, false)
-				}));
-			} catch(Exception e){ e.printStackTrace(); }
+		catch(Exception e){
+			this.textureX = 256;
+			this.textureY = 256;
+			e.printStackTrace();
 		}
-		String[][] programs = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 0, new String[]{ "# Program:" }, null, "# ProgramsEnd");
-		if(programs.length > 0){
+		boolean flip = Boolean.parseBoolean(ObjParser.getCommentValue(objcom, "FlipAxes:"));
+		boolean objs = Boolean.parseBoolean(ObjParser.getCommentValue(objcom, "Objects:"));//TODO read other settings
+		ObjModel objmod = new ObjParser(Resources.getModelInputStream(loc)).flipAxes(flip).readComments(false).objectMode(objs).parse();
+		for(String str : objmod.polygons.keySet()){
+			groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
+		}
+		List<String[]> programs = ObjParser.getCommentValues(objcom, new String[]{ "Program:" }, null, null);
+		if(!programs.isEmpty()){
 			for(String[] args : programs){
 				try{
 					groups.get(args[0]).addProgram(parseProgram(args));
@@ -136,8 +141,8 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 				}
 			}
 		}
-		String[][] pivots = WavefrontObjUtil.findValues(Resources.getModelInputStream(loc), 0, new String[]{ "# Pivot:" }, null, "# PivotsEnd");
-		if(pivots.length > 0){
+		List<String[]> pivots = ObjParser.getCommentValues(objcom, new String[]{ "Pivot:" }, null, null);
+		if(!pivots.isEmpty()){
 			for(String[] args : pivots){
 				try{
 					TurboList group = groups.get(args[0]);

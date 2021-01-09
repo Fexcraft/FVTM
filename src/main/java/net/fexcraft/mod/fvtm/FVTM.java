@@ -119,7 +119,6 @@ public class FVTM {
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
 		//
-		Perms.register();
 		EntitySystem.add(new LegacySpawnSystem());
 		EntitySystem.add(new RailSpawnSystem());
 		EntitySystem.add(new BasicSpawnSystem());
@@ -178,6 +177,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
+		Perms.register();
 		if(event.getSide().isClient()){
 			ConstructorBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			ConstCenterBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());

@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -35,7 +36,7 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
 	
 	public ContainerModel(JsonObject obj){ super(obj); }
 	
-	public ContainerModel(String type, ResourceLocation loc){ super(type, loc); }
+	public ContainerModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
     
 	@Override
 	public void render(ContainerData data, Object key){
@@ -44,6 +45,7 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
 
 	@Override
 	public void render(ContainerData data, Object key, Entity ent, RenderCache cache){
+        GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
 		for(TurboList list : groups){ list.render(ent, null, data, null, cache); }
 	}
 	

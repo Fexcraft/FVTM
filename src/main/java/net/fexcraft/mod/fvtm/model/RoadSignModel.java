@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RoadSign;
@@ -26,7 +27,7 @@ public class RoadSignModel extends GenericModel<RoadSignEntity, RoadSign> implem
 	
 	public RoadSignModel(JsonObject obj){ super(obj); }
 	
-	public RoadSignModel(String type, ResourceLocation loc){ super(type, loc); }
+	public RoadSignModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
 
 	@Override
 	public void render(RoadSignEntity data, RoadSign key){

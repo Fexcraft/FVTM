@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.model;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +40,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	public GroupList groups = new GroupList();
 	private ArrayList<String> creators = new ArrayList<>();
 	protected int textureX, textureY;
+	public boolean smooth_shading;
 	public Float scale;
 	
 	public GenericModel(){
@@ -109,28 +109,27 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		}
 	}
 
-	public GenericModel(String type, ResourceLocation loc){
-		if(!type.equals("obj")) return;
-		InputStream stream = Resources.getModelInputStream(loc);
-		ObjModel objcom = new ObjParser(stream).readComments(true).readModel(false).parse();
-		List<String> authors = ObjParser.getCommentValues(objcom, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
+	public GenericModel(ResourceLocation loc, ObjModel objdata){
+		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
 		for(String auth : authors) this.creators.add(auth);
 		try{
-			this.textureX = Integer.parseInt(ObjParser.getCommentValue(objcom, "TextureSizeX:"));
-			this.textureY = Integer.parseInt(ObjParser.getCommentValue(objcom, "TextureSizeY:"));
+			this.textureX = Integer.parseInt(ObjParser.getCommentValue(objdata, "TextureSizeX:"));
+			this.textureY = Integer.parseInt(ObjParser.getCommentValue(objdata, "TextureSizeY:"));
 		}
 		catch(Exception e){
 			this.textureX = 256;
 			this.textureY = 256;
 			e.printStackTrace();
 		}
-		boolean flip = Boolean.parseBoolean(ObjParser.getCommentValue(objcom, "FlipAxes:"));
-		boolean objs = Boolean.parseBoolean(ObjParser.getCommentValue(objcom, "Objects:"));//TODO read other settings
-		ObjModel objmod = new ObjParser(Resources.getModelInputStream(loc)).flipAxes(flip).readComments(false).objectMode(objs).parse();
+		boolean flip = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipAxes:"));
+		this.smooth_shading = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:"));
+		boolean norm = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:"));//TODO read other settings
+		ObjModel objmod = new ObjParser(Resources.getModelInputStream(loc)).flipAxes(flip).readComments(false).noNormals(norm).parse();
 		for(String str : objmod.polygons.keySet()){
 			groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
 		}
-		List<String[]> programs = ObjParser.getCommentValues(objcom, new String[]{ "Program:" }, null, null);
+		//
+		List<String[]> programs = ObjParser.getCommentValues(objdata, new String[]{ "Program:" }, null, null);
 		if(!programs.isEmpty()){
 			for(String[] args : programs){
 				try{
@@ -141,7 +140,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 				}
 			}
 		}
-		List<String[]> pivots = ObjParser.getCommentValues(objcom, new String[]{ "Pivot:" }, null, null);
+		List<String[]> pivots = ObjParser.getCommentValues(objdata, new String[]{ "Pivot:" }, null, null);
 		if(!pivots.isEmpty()){
 			for(String[] args : pivots){
 				try{
@@ -264,6 +263,11 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			GL11.glPopMatrix();
 		}
 		
+	}
+
+	@Override
+	public Class<?> getScaledVariant(){
+		return ScaledGenericModel.class;
 	}
 	
 }

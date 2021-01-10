@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -36,7 +37,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	
 	public VehicleModel(JsonObject obj){ super(obj); }
 	
-	public VehicleModel(String type, ResourceLocation loc){ super(type, loc); }
+	public VehicleModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
 
 	@Override
 	public void render(VehicleData data, Object key){
@@ -45,6 +46,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 
 	@Override
 	public void render(VehicleData data, Object key, Entity ent, RenderCache cache){
+        GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
 		for(TurboList list : groups) list.render(ent, data, data, null, cache);
 	}
 	
@@ -108,6 +110,8 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	
 	public static class ScaledVehicleModel extends VehicleModel {
 		
+		public ScaledVehicleModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
+		
 		@Override
 		public void render(VehicleData data, Object key){
 			GL11.glPushMatrix();
@@ -124,6 +128,11 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 			GL11.glPopMatrix();
 		}
 		
+	}
+
+	@Override
+	public Class<?> getScaledVariant(){
+		return ScaledVehicleModel.class;
 	}
 
 }

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
@@ -46,7 +47,7 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 	
 	public PartModel(JsonObject obj){ super(obj); }
 	
-	public PartModel(String type, ResourceLocation loc){ super(type, loc); }
+	public PartModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
 
 	@Override
 	public void render(VehicleData data, String key){
@@ -55,6 +56,7 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 
 	@Override
 	public void render(VehicleData data, String key, Entity ent, RenderCache cache){
+        GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
 		for(TurboList list : groups) list.render(ent, data, data, key, cache);
 	}
 	
@@ -142,6 +144,8 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 	
 	public static class ScaledPartModel extends PartModel {
 		
+		public ScaledPartModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
+		
 		@Override
 		public void render(VehicleData data, String key){
 			GL11.glPushMatrix();
@@ -158,6 +162,11 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 			GL11.glPopMatrix();
 		}
 		
+	}
+
+	@Override
+	public Class<?> getScaledVariant(){
+		return ScaledPartModel.class;
 	}
 	
 }

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
@@ -53,7 +54,7 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	
 	public RailGaugeModel(JsonObject obj){ super(obj); }
 	
-	public RailGaugeModel(String type, ResourceLocation loc){ super(type, loc); }
+	public RailGaugeModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
 
 	@Override
 	public void render(Track data, Integer index){

@@ -36,4 +36,8 @@ public interface Model<T, /*KD, */K> {
 	/** Only in use on Model init/generation. **/
 	public boolean addToCreators(String str);
 	
+	public default Class<?> getScaledVariant(){
+		return null;
+	}
+	
 }

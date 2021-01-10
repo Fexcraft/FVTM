@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLBlockModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.lib.mc.utils.Print;
@@ -41,7 +42,7 @@ public class BlockModel extends GenericModel<BlockData, TileEntity> implements F
 	
 	public BlockModel(JsonObject obj){ super(obj); }
 	
-	public BlockModel(String type, ResourceLocation loc){ super(type, loc); }
+	public BlockModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
 
 	@Override
 	public void render(BlockData data, TileEntity tile){

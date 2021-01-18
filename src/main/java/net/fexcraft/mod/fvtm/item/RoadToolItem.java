@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
+import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -106,8 +107,9 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote){ return EnumActionResult.PASS; }
-        if(hand == EnumHand.OFF_HAND){
-        	player.openGui(FVTM.getInstance(), GuiHandler.ROADTOOL, world, pos.getX(), pos.getY(), pos.getZ());
+        ItemStack stack = player.getHeldItem(hand);
+        if(player.isSneaking() && hand != EnumHand.OFF_HAND){
+        	player.openGui(FVTM.getInstance(), GuiHandler.ROADTOOL, world, player.inventory.getSlotFor(stack), 0, 0);
         	return EnumActionResult.SUCCESS;
         }
         if(!player.capabilities.isCreativeMode){
@@ -116,7 +118,6 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         if(!Static.getServer().isSinglePlayer() && !Static.isOp(player)){
         	Print.chat(player, "&cYou need to be OPERATOR to use this item."); return EnumActionResult.FAIL;
         }
-        ItemStack stack = player.getHeldItem(hand);
         Vec316f vector = new Vec316f(world, new Vec3d(pos.down()).add(hitX, hitY, hitZ), Config.ROAD_PLACING_GRID);
         if(player.isSneaking()){
 			stack.getTagCompound().removeTag("fvtm:roadpoints");
@@ -293,6 +294,10 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			return EnumActionResult.SUCCESS;
 		}
     }
+
+	public void placeRoad(EntityPlayer player, World world, ItemStack stack, Vec316f vec, GuiCommandSender sender, boolean boolean1){
+		//TODO
+	}
 	
 	public static final Vec3f grv(float rad, Vec3f vec){
         double co = Math.cos(rad), si = Math.sin(rad); return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);

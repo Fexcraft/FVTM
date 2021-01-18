@@ -21,7 +21,8 @@ import net.fexcraft.mod.fvtm.gui.other.SpawnSystemContainer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacerContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadContainer;
-import net.fexcraft.mod.fvtm.gui.road.RoadPlacingTool;
+import net.fexcraft.mod.fvtm.gui.road.RoadPlacer;
+import net.fexcraft.mod.fvtm.gui.road.RoadPlacerContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacingToolFill;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
@@ -79,7 +80,7 @@ public class GuiHandler implements IGuiHandler {
 		switch(ID){
 			case STREETSIGN_ADJUSTER: return new StreetSignAdjusterContainer(player, world, x, y, z);
 			case JUNCTION_ADJUSTER: return new JunctionAdjusterContainer(player);
-			case ROADTOOL:
+			case ROADTOOL: return new RoadPlacerContainer(player, x, y, z);
 			case ROADTOOLFILL: return new RoadContainer(player, x);
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
@@ -114,7 +115,7 @@ public class GuiHandler implements IGuiHandler {
 			switch(ID){
 				case STREETSIGN_ADJUSTER: return new StreetSignAdjuster(player, world, x, y, z);
 				case JUNCTION_ADJUSTER: return new JunctionAdjuster(player);
-				case ROADTOOL: return new RoadPlacingTool(player, x);
+				case ROADTOOL: return new RoadPlacer(player, x, y, z);
 				case ROADTOOLFILL: return new RoadPlacingToolFill(player, x);
 				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);
 				case RAILPLACER: return new RailPlacer(player, x, y, z);

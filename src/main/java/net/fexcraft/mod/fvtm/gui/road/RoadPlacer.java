@@ -336,11 +336,8 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 	}
 
 	private void retrack(Vec316f pos){
-		if(points.size() < 1){
-			demoroad = null;
-			return;
-		}
-		if(pos == null) demoroad = new Road(null, points.toArray(new Vec316f[0]));
+		if(points.size() < 2 && pos == null) demoroad = null;
+		else if(pos == null) demoroad = new Road(null, points.toArray(new Vec316f[0]));
 		else demoroad = new Road(null, points.toArray(new Vec316f[0]), pos);
 	}
 

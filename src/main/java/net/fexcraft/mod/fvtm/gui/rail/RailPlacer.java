@@ -379,12 +379,9 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	}
 
 	private void retrack(Vec316f pos){
-		if(points.size() < 2){
-			demotrack = null;
-			return;
-		}
-		if(pos == null) demotrack = new Track(null, points.toArray(new Vec316f[0]), null);
-		else demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
+		if(points.size() < 2 && pos == null) demotrack = null;
+		else if(pos != null) demotrack = new Track(null, points.toArray(new Vec316f[0]), pos, null);
+		else demotrack = new Track(null, points.toArray(new Vec316f[0]), null);
 	}
 
 	private void resetPoints(){

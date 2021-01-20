@@ -260,6 +260,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		}
 		else if(button.name.equals("field")){
 			int x = (mouseX - guiLeft - zoom.bo) / zoom.cs, y = (mouseY - guiTop - zoom.bo) / zoom.cs;
+			if(x < 0 || y < 0 || x >= zoom.gs || y >= zoom.gs) return true;
         	Vec316f pos = new Vec316f(POSGRID[x][y].up(), (byte)orient.x, (byte)(16 - HEIGHTGRID[x][y]), (byte)orient.z);
         	if(mouseButton > 0){
         		//

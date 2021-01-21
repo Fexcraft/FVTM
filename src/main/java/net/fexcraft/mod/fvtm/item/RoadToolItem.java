@@ -15,7 +15,7 @@ import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.road.Road;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.state.IBlockState;
@@ -132,8 +132,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			return EnumActionResult.SUCCESS;
 		}
 		else{
-			Track track = new Track(null, getVectors(list), vector, null);
-			if(track.length > Config.MAX_ROAD_LENGTH){
+			Road road = new Road(null, getVectors(list), vector);
+			if(road.length > Config.MAX_ROAD_LENGTH){
 				Print.chat(player, "&cRoad vector length exceeds the configured max length.");
 				return EnumActionResult.FAIL;
 			}
@@ -178,23 +178,23 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			//
 			int width = stack.getCount(), height; float angle, passed = 0, half = (width * 0.5f) - 0.5f; Vec3f last, vec;
 			ArrayList<Vec316f> path = fill == null ? new ArrayList<>() : null; IBlockState state; BlockPos blk;
-			vec = track.getVectorPosition0(0.001f, false); passed = 0;
-			angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
+			vec = road.getVectorPosition0(0.001f, false); passed = 0;
+			angle = (float)Math.atan2(road.vecpath[0].zCoord - vec.zCoord, road.vecpath[0].xCoord - vec.xCoord);
 			angle += Static.rad90;
 			for(float fl = -half; fl <= half; fl += 0.25f){
-				if(path != null) path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
-				if(ground != null) ground.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
-				if(roof != null) roof.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, topheight, 0)))));
+				if(path != null) path.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
+				if(ground != null) ground.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
+				if(roof != null) roof.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(fl, topheight, 0)))));
 			}
 			if(fill != null){
 				for(int i = 0; i < fill.size(); i++){
-					fill.get(i).add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+					fill.get(i).add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
 				}
 			}
-			if(border_l != null) border_l.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
-			if(border_r != null) border_r.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
-			while(passed < track.length){ passed += 0.125f;
-				last = vec; vec = track.getVectorPosition0(passed, false);
+			if(border_l != null) border_l.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
+			if(border_r != null) border_r.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
+			while(passed < road.length){ passed += 0.125f;
+				last = vec; vec = road.getVectorPosition0(passed, false);
 				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
 				angle += Static.rad90;
 				for(float fl = -half; fl <= half; fl += 0.25f){

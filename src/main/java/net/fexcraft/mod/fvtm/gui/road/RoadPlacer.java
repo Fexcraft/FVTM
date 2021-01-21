@@ -12,6 +12,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.RailBlock;
 import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
@@ -43,18 +44,20 @@ import net.minecraftforge.fml.relauncher.Side;
 public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/road_gen.png");
+	private static final RGB GRAY = new RGB(31, 31, 31), YELLOW = new RGB(255, 255, 0);
 	private static RGB[][] GRID;
 	private static byte[][] HEIGHTGRID;
 	private static BlockPos[][] POSGRID;
 	private static IBlockState[][] STATEGRID;
 	private static boolean noterrain, noblocks;
 	private static Orient orient;
-	private static int cx, cz;
+	private static int cx, cz, mx, mz;
 	private static Zoom zoom;
 	//
 	private static int itemslot;
 	private static Road demoroad;
 	private static Vec316f begin;
+	private static Vec316f[][] preview;
 	private static ArrayList<Vec316f> points = new ArrayList<>();
 	//
 	private OrientButton orientbutton;
@@ -68,6 +71,8 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		itemslot = x;
         cx = (player.getPosition().getX() >> 4) - zoom.co;
         cz = (player.getPosition().getZ() >> 4) - zoom.co;
+        mx = cx * 16;
+        mz = cz * 16;
 		this.defbackground = true;
 		this.deftexrect = true;
 		container.gui = this;
@@ -106,6 +111,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 				GRID[i][j] = new RGB(STATEGRID[i][j].getMapColor(player.world, POSGRID[i][j]).getMapColor(m));
 			}
 		}
+		preview = new Vec316f[zoom.gs][zoom.gs];
 	}
 
 	private byte getHeight(AxisAlignedBB box){
@@ -190,7 +196,16 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		if(!noterrain){
 			for(int i = 0; i < zoom.gs; i++){
 				for(int j = 0; j < zoom.gs; j++){
-					GRID[i][j].glColorApply();
+					(preview[i][j] != null ? YELLOW : GRID[i][j]).glColorApply();
+					this.drawTexturedModalRect(guiLeft + zoom.bo + (i * zoom.cs), guiTop + zoom.bo + (j * zoom.cs), 7, 7, zoom.cs, zoom.cs);
+				}
+			}
+		}
+		else if(demoroad != null){
+			for(int i = 0; i < zoom.gs; i++){
+				for(int j = 0; j < zoom.gs; j++){
+					if(preview[i][j] == null) continue;
+					GRAY.glColorApply();
 					this.drawTexturedModalRect(guiLeft + zoom.bo + (i * zoom.cs), guiTop + zoom.bo + (j * zoom.cs), 7, 7, zoom.cs, zoom.cs);
 				}
 			}
@@ -273,7 +288,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
         	}
         	else if(begin != null){
         		if(points.size() < 12){
-                	retrack(pos);
+                	reroad(pos);
 	        		buttons.put("p" + pos.asIDString(), new PointButton(pos));
 	        		points.add(pos);
         		}
@@ -317,33 +332,73 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 			int i = Integer.parseInt(button.name.replace("d", "")) + 1;
 			if(i < 0 || i + 1 >= points.size()) return true;
 			Collections.swap(points, i, i + 1);
-			retrack(null);
+			reroad(null);
 		}
 		else if(button.name.startsWith("u")){
 			int i = Integer.parseInt(button.name.replace("u", "")) + 1;
 			if(i - 1 < 0 || i >= points.size()) return true;
 			Collections.swap(points, i, i - 1);
-			retrack(null);
+			reroad(null);
 		}
 		else if(button.name.startsWith("r")){
 			int i = Integer.parseInt(button.name.replace("r", "")) + 1;
 			if(i < 0 || i >= points.size()) return true;
 			Vec316f vec = points.remove(i);
 			buttons.remove("p" + vec.asIDString());
-			retrack(null);
+			reroad(null);
 		}
 		return false;
 	}
 
-	private void retrack(Vec316f pos){
-		if(points.size() < 2 && pos == null) demoroad = null;
-		else if(pos == null) demoroad = new Road(null, points.toArray(new Vec316f[0]));
+	private void reroad(Vec316f pos){
+		if(points.size() < 2 && pos == null){
+			demoroad = null;
+			clearPreview();
+		}
+		else if(pos == null){
+			demoroad = new Road(null, points.toArray(new Vec316f[0]));
+		}
 		else demoroad = new Road(null, points.toArray(new Vec316f[0]), pos);
+		if(demoroad != null){
+			clearPreview();
+			ArrayList<Vec316f> path = new ArrayList<>();
+			int width = 3;//TODO
+			float angle, passed = 0, half = (width * 0.5f) - 0.5f; Vec3f last, vec;
+			IBlockState state; BlockPos blk;
+			vec = demoroad.getVectorPosition0(0.001f, false); passed = 0;
+			angle = (float)Math.atan2(demoroad.vecpath[0].zCoord - vec.zCoord, demoroad.vecpath[0].xCoord - vec.xCoord);
+			angle += Static.rad90;
+			for(float fl = -half; fl <= half; fl += 0.25f){
+				path.add(new Vec316f(demoroad.vecpath[0].add(RoadToolItem.grv(angle, new Vec3f(fl, 0, 0)))));
+			}
+			while(passed < demoroad.length){ passed += 0.125f;
+				last = vec; vec = demoroad.getVectorPosition0(passed, false);
+				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+				angle += Static.rad90;
+				for(float fl = -half; fl <= half; fl += 0.25f){
+					path.add(new Vec316f(vec.add(RoadToolItem.grv(angle, new Vec3f(fl, 0, 0)))));
+				}
+			}
+			for(Vec316f v : path){
+				int x = v.pos.getX() - mx, y = v.pos.getZ() - mz;
+				if(x < 0 || y < 0 || x >= zoom.gs || y >= zoom.gs) continue;
+				preview[x][y] = pos;
+			}
+		}
+	}
+
+	private void clearPreview(){
+		for(int i = 0; i < preview.length; i++){
+			for(int j = 0; j < preview.length; j++){
+				preview[i][j] = null;
+			}
+		}
 	}
 
 	private void resetPoints(){
 		buttons.entrySet().removeIf(entry -> entry.getKey().startsWith("p"));
 		demoroad = null;
+		clearPreview();
 		points.clear();
 		begin = null;
 	}

@@ -243,9 +243,15 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		ttip.clear();
 		if(mouseX >= guiLeft + zoom.bo && mouseX < guiLeft + zoom.bo + zoom.ts && mouseY >= guiTop + zoom.bo && mouseY < guiTop + zoom.bo + zoom.ts){
 			int x = (mouseX - guiLeft - zoom.bo) / zoom.cs, y = (mouseY - guiTop - zoom.bo) / zoom.cs;
-			ttip.add(PARAGRAPH_SIGN + "7Pos: " + POSGRID[x][y].getX() + "x, " + POSGRID[x][y].getY() + "y, " + POSGRID[x][y].getZ() + "Z, ");
+			ttip.add(PARAGRAPH_SIGN + "7Pos: " + POSGRID[x][y].getX() + "x, " + POSGRID[x][y].getY() + "y, " + POSGRID[x][y].getZ() + "z, ");
         	ttip.add(PARAGRAPH_SIGN + "7Block: " + STATEGRID[x][y].getBlock().getLocalizedName());
         	ttip.add(PARAGRAPH_SIGN + "7Height: " + HEIGHTGRID[x][y] + "mb");
+        	if(preview[x][y] != null){
+    			ttip.add(PARAGRAPH_SIGN + "6Approximate road block preview.");
+            	ttip.add(PARAGRAPH_SIGN + "9Road Pos: " + preview[x][y].pos.getX() + "x, " + preview[x][y].pos.getY() + "y, " + preview[x][y].pos.getZ() + "z, ");
+            	ttip.add(PARAGRAPH_SIGN + "9Steps: " + (preview[x][y].y == 0 ? "none/full block" : preview[x][y].y + "/16"));
+    			ttip.add(PARAGRAPH_SIGN + "8Remember that roads do stack if a higher one is at that x/z position!");
+        	}
 		}
 		if(orientbutton.hovered){
 			ttip.add(PARAGRAPH_SIGN + "6Selected orientation: " + orient.name());
@@ -362,16 +368,16 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		if(demoroad != null){
 			clearPreview();
 			ArrayList<Vec316f> path = new ArrayList<>();
-			int width = 3;//TODO
-			float angle, passed = 0, half = (width * 0.5f) - 0.5f; Vec3f last, vec;
-			IBlockState state; BlockPos blk;
+			int width = 5;//TODO
+			float angle, passed = 0, half = (width * 0.5f) - (width % 2 == 0 ? 0.5f : 0); Vec3f last, vec;
 			vec = demoroad.getVectorPosition0(0.001f, false); passed = 0;
 			angle = (float)Math.atan2(demoroad.vecpath[0].zCoord - vec.zCoord, demoroad.vecpath[0].xCoord - vec.xCoord);
 			angle += Static.rad90;
 			for(float fl = -half; fl <= half; fl += 0.25f){
 				path.add(new Vec316f(demoroad.vecpath[0].add(RoadToolItem.grv(angle, new Vec3f(fl, 0, 0)))));
 			}
-			while(passed < demoroad.length){ passed += 0.125f;
+			while(passed < demoroad.length){
+				passed += 0.125f;
 				last = vec; vec = demoroad.getVectorPosition0(passed, false);
 				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
 				angle += Static.rad90;

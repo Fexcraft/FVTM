@@ -233,7 +233,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		ttip.clear();
 		if(mouseX >= guiLeft + zoom.bo && mouseX < guiLeft + zoom.bo + zoom.ts && mouseY >= guiTop + zoom.bo && mouseY < guiTop + zoom.bo + zoom.ts){
 			int x = (mouseX - guiLeft - zoom.bo) / zoom.cs, y = (mouseY - guiTop - zoom.bo) / zoom.cs;
-			ttip.add(PARAGRAPH_SIGN + "7Pos: " + POSGRID[x][y].getX() + "x, " + POSGRID[x][y].getY() + "y, " + POSGRID[x][y].getZ() + "Z, ");
+			ttip.add(PARAGRAPH_SIGN + "7Pos: " + POSGRID[x][y].getX() + "x, " + POSGRID[x][y].getY() + "y, " + POSGRID[x][y].getZ() + "z, ");
         	ttip.add(PARAGRAPH_SIGN + "7Block: " + STATEGRID[x][y].getBlock().getLocalizedName());
         	//Junction junc = system.getJunction(new Vec316f(POSGRID[x][y].up(), orient.x, 0, orient.z));
         	ArrayList<Junction> juncs = system.getJunctionsAt(POSGRID[x][y].up());

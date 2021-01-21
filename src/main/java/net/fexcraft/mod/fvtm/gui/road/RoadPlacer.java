@@ -249,8 +249,8 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
         	if(preview[x][y] != null){
     			ttip.add(PARAGRAPH_SIGN + "6Approximate road block preview.");
             	ttip.add(PARAGRAPH_SIGN + "9Road Pos: " + preview[x][y].pos.getX() + "x, " + preview[x][y].pos.getY() + "y, " + preview[x][y].pos.getZ() + "z, ");
-            	ttip.add(PARAGRAPH_SIGN + "9Steps: " + (preview[x][y].y == 0 ? "none/full block" : preview[x][y].y + "/16"));
-    			ttip.add(PARAGRAPH_SIGN + "8Remember that roads do stack if a higher one is at that x/z position!");
+            	ttip.add(PARAGRAPH_SIGN + "9Steps: " + (preview[x][y].y == 0 ? "none / full height" : preview[x][y].y + "mb"));
+    			ttip.add(PARAGRAPH_SIGN + "8Remember that roads do stack if a higher one is at that position!");
         	}
 		}
 		if(orientbutton.hovered){
@@ -377,8 +377,8 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 				path.add(new Vec316f(demoroad.vecpath[0].add(RoadToolItem.grv(angle, new Vec3f(fl, 0, 0)))));
 			}
 			while(passed < demoroad.length){
-				passed += 0.125f;
-				last = vec; vec = demoroad.getVectorPosition0(passed, false);
+				passed += 0.125f; last = vec;
+				vec = demoroad.getVectorPosition0(passed, false);
 				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
 				angle += Static.rad90;
 				for(float fl = -half; fl <= half; fl += 0.25f){
@@ -388,7 +388,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 			for(Vec316f v : path){
 				int x = v.pos.getX() - mx, y = v.pos.getZ() - mz;
 				if(x < 0 || y < 0 || x >= zoom.gs || y >= zoom.gs) continue;
-				preview[x][y] = pos;
+				preview[x][y] = v;
 			}
 		}
 	}

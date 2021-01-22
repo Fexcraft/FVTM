@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui.road;
 
 import static net.fexcraft.lib.mc.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOLFILL;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -179,6 +180,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 			if(i != 0) this.buttons.put("au" + i, new B88("u" + i, guiLeft + 230, guiTop + 23 + (i * 12), 64, 240, 8, 8));
 			this.buttons.put("ar" + i, new B88("r" + i, guiLeft + 239, guiTop + 23 + (i * 12), 72, 240, 8, 8));
 		}
+		this.buttons.put("layers", new BasicButton("layers", guiLeft + 201, guiTop + 173, 201, 173, 48, 12, true));
 	}
 
 	@Override
@@ -352,6 +354,10 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 			Vec316f vec = points.remove(i);
 			buttons.remove("p" + vec.asIDString());
 			reroad(null);
+		}
+		else if(button.name.equals("layers")){
+			openGui(ROADTOOLFILL, null, LISTENERID);
+			return true;
 		}
 		return false;
 	}

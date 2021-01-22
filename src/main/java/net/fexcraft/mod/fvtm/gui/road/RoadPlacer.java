@@ -364,7 +364,9 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		else if(pos == null){
 			demoroad = new Road(null, points.toArray(new Vec316f[0]));
 		}
-		else demoroad = new Road(null, points.toArray(new Vec316f[0]), pos);
+		else{
+			demoroad = new Road(null, points.toArray(new Vec316f[0]), pos);
+		}
 		if(demoroad != null){
 			clearPreview();
 			ArrayList<Vec316f> path = new ArrayList<>();

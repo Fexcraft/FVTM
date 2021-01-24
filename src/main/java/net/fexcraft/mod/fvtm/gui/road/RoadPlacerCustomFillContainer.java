@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.road;
 
-import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOL;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOLFILL;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -13,46 +13,32 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class RoadPlacerFillContainer extends GenericContainer {
+public class RoadPlacerCustomFillContainer extends GenericContainer {
 	
-	public static final String[] fills = new String[]{ "RoadFill", "BottomFill", "SideLeftFill", "SideRightFill", "TopFill" };
-	protected GenericGui<RoadPlacerFillContainer> gui;
+	protected GenericGui<RoadPlacerCustomFillContainer> gui;
 	protected GuiCommandSender sender;
 	protected RoadInventory roadinv;
 	protected ItemStack stack;
-	protected boolean cr, ct;
 	protected int slots;
 	
-	public RoadPlacerFillContainer(EntityPlayer player, int x, int y, int z){
+	public RoadPlacerCustomFillContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
 		if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
 		sender = new GuiCommandSender(player);
 		stack = player.getHeldItemMainhand();
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		if(stack.getTagCompound().hasKey("CustomRoadFill")){
-			cr = stack.getTagCompound().getBoolean("CustomRoadFill");
-		}
-		if(stack.getTagCompound().hasKey("CustomTopFill")){
-			cr = stack.getTagCompound().getBoolean("CustomTopFill");
-		}
-		roadinv = new RoadInventory(slots = 5);
+		roadinv = new RoadInventory(slots = 9);
         for(int i = 0; i < slots; i++){
-        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 8, 8 + i * 20, false));
+        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 8, 8 + i * 20, true));
         }
 		//
         for(int row = 0; row < 3; row++){
             for(int col = 0; col < 9; col++){
-                addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 112 + row * 18));
+                addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 8 + row * 18));
             }
         }
         for(int col = 0; col < 9; col++){
-            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 168));
-        }
-        //
-        for(int i = 0; i < fills.length; i++){
-        	if(stack.getTagCompound().hasKey(fills[i])){
-                roadinv.setInventorySlotContents(i, new ItemStack(stack.getTagCompound().getCompoundTag(fills[i])));
-        	}
+            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 64));
         }
 	}
 
@@ -66,9 +52,9 @@ public class RoadPlacerFillContainer extends GenericContainer {
 		//RoadToolItem item = (RoadToolItem)stack.getItem();
 		switch(packet.getString("cargo")){
 			case "save":{
-				stack.getTagCompound().setIntArray("RoadLayers", packet.getIntArray("sizes"));
+				//TODO
 				player.closeScreen();
-				player.openGui(FVTM.getInstance(), ROADTOOL, player.world, 0, 0, 0);
+				player.openGui(FVTM.getInstance(), ROADTOOLFILL, player.world, 0, 0, 0);
 				break;
 			}
 		}
@@ -101,13 +87,6 @@ public class RoadPlacerFillContainer extends GenericContainer {
     @Override
     public void onContainerClosed(EntityPlayer player){
         super.onContainerClosed(player);
-        for(int i = 0; i < fills.length; i++){
-        	if(!roadinv.getStackInSlot(i).isEmpty()){
-        		stack.getTagCompound().setTag(fills[i], roadinv.getStackInSlot(i).writeToNBT(new NBTTagCompound()));
-        	}
-        	else stack.getTagCompound().removeTag(fills[i]);
-        }
-    	roadinv.clear();
     }
     
     @Override

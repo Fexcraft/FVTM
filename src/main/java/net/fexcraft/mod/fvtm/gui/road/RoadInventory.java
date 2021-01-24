@@ -121,15 +121,18 @@ public class RoadInventory implements IInventory {
     }
     
     public static class RoadSlot extends Slot {
+    	
+    	private boolean road;
 
-        public RoadSlot(IInventory inventory, int index, int xPosition, int yPosition){
+        public RoadSlot(IInventory inventory, int index, int xPosition, int yPosition, boolean road){
             super(inventory, index, xPosition, yPosition);
+            this.road = road;
         }
 
         @Override
         public boolean isItemValid(ItemStack stack){
         	if(stack.getItem() instanceof ItemBlock == false) return false;
-        	if(this.getSlotIndex() == 0){
+        	if(road || this.getSlotIndex() == 0){
         		ItemBlock iblock = (ItemBlock)stack.getItem();
         		if(iblock.getBlock() instanceof Asphalt || iblock.getBlock() instanceof G_ROAD) return true;
         		if(isValidFlenix(iblock.getRegistryName().getNamespace(), iblock.getRegistryName().getPath())) return true;

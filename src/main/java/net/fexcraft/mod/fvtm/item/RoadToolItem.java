@@ -73,8 +73,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLeftFill"));
                 tooltip.add(Formatter.format("&9L Border Fill: &7" + stack0.getDisplayName() + " x" + stack0.getCount()));
         	}
-        	if(stack.getTagCompound().hasKey("RoadFill")){
-        		NBTTagList fill = (NBTTagList)stack.getTagCompound().getTag("RoadFill");
+        	if(stack.getTagCompound().hasKey("CustomRoadFill")){
+        		NBTTagList fill = (NBTTagList)stack.getTagCompound().getTag("CustomRoadFill");
         		NBTTagList half = (NBTTagList)stack.getTagCompound().getTag("RoadFillHalf");
                 tooltip.add(Formatter.format("&6Road Fill:")); NBTTagCompound com; String str;
                 for(int i = 0; i < fill.tagCount(); i++){

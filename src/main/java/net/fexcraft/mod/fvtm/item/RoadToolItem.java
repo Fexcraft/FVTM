@@ -65,12 +65,12 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
                 tooltip.add(Formatter.format("&9Roof Fill: &7" + stack0.getDisplayName()));
         	}
-        	if(stack.getTagCompound().hasKey("SideRFill")){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRFill"));
+        	if(stack.getTagCompound().hasKey("SideRightFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRightFill"));
                 tooltip.add(Formatter.format("&9R Border Fill: &7" + stack0.getDisplayName() + " x" + stack0.getCount()));
         	}
-        	if(stack.getTagCompound().hasKey("SideLFill")){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLFill"));
+        	if(stack.getTagCompound().hasKey("SideLeftFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLeftFill"));
                 tooltip.add(Formatter.format("&9L Border Fill: &7" + stack0.getDisplayName() + " x" + stack0.getCount()));
         	}
         	if(stack.getTagCompound().hasKey("RoadFill")){
@@ -151,13 +151,13 @@ public class RoadToolItem extends Item implements JunctionGridItem {
                 top = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
                 roof = new ArrayList<>();
         	}
-        	if(stack.getTagCompound().hasKey("SideRFill")){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRFill"));
+        	if(stack.getTagCompound().hasKey("SideRightFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRightFill"));
                 righ = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
                 borderheight_r = stack0.getCount(); border_r = new ArrayList<>();
         	}
-        	if(stack.getTagCompound().hasKey("SideLFill")){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLFill"));
+        	if(stack.getTagCompound().hasKey("SideLelftFill")){
+        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLeftFill"));
                 left = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
                 borderheight_l = stack0.getCount(); border_l = new ArrayList<>();
         	}

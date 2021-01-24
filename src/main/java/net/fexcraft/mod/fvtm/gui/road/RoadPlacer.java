@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.gui.road;
 import static net.fexcraft.lib.mc.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.ROADTOOLFILL;
+import static net.fexcraft.mod.fvtm.util.Compat.isValidFlenix;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -139,16 +140,6 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 	private static boolean isRoadBlock(IBlockState state){
 		if(state.getBlock() instanceof Asphalt || state.getBlock() instanceof G_ROAD) return true;
 		if(isValidFlenix(state.getBlock().getRegistryName().getNamespace(), state.getBlock().getRegistryName().getPath())) return true;
-		return false;
-	}
-	
-	private static final String[] valid_flenix_blocks = { "road_block", "sidewalk" };
-
-	private static boolean isValidFlenix(String domain, String path){
-		if(!domain.equals("furenikusroads"))
-		for(String str : valid_flenix_blocks){
-			if(path.startsWith(str)) return true;
-		}
 		return false;
 	}
 
@@ -376,7 +367,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		if(demoroad != null){
 			clearPreview();
 			ArrayList<Vec316f> path = new ArrayList<>();
-			int width = 5;//TODO
+			int width = 7;//TODO
 			float angle, passed = 0, half = (width * 0.5f) - (width % 2 == 0 ? 0.5f : 0); Vec3f last, vec;
 			vec = demoroad.getVectorPosition0(0.001f, false); passed = 0;
 			angle = (float)Math.atan2(demoroad.vecpath[0].zCoord - vec.zCoord, demoroad.vecpath[0].xCoord - vec.xCoord);

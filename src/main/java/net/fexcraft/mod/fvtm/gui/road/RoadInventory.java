@@ -1,5 +1,9 @@
 package net.fexcraft.mod.fvtm.gui.road;
 
+import static net.fexcraft.mod.fvtm.util.Compat.isValidFlenix;
+
+import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -21,7 +25,7 @@ public class RoadInventory implements IInventory {
 
     @Override
     public String getName(){
-        return "Road Inventory";
+        return "RoadFill Inventory";
     }
 
     @Override
@@ -51,48 +55,22 @@ public class RoadInventory implements IInventory {
 
     @Override
     public ItemStack decrStackSize(int index, int count){
-    	ItemStack stack = !getStackInSlot(index).isEmpty() ? ItemStackHelper.getAndSplit(stacks, index, count) : ItemStack.EMPTY;
-    	if(index < 6){
-        	ItemStack stack0 = stacks.get(index);
-    		if(index < 3){
-    			stacks.set(0, stack0); stacks.set(1, stack0); stacks.set(2, stack0);
-    		}
-    		else{
-    			stacks.set(3, stack0); stacks.set(4, stack0); stacks.set(5, stack0);
-    		}
-    	}
-        return stack;
+        return !getStackInSlot(index).isEmpty() ? ItemStackHelper.getAndSplit(stacks, index, count) : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeStackFromSlot(int index){
-    	if(index < 6){
-    		if(index < 3){
-    			stacks.set(0, ItemStack.EMPTY); stacks.set(1, ItemStack.EMPTY); stacks.set(2, ItemStack.EMPTY);
-    		}
-    		else{
-    			stacks.set(3, ItemStack.EMPTY); stacks.set(4, ItemStack.EMPTY); stacks.set(5, ItemStack.EMPTY);
-    		}
-    	}
         return stacks.set(index, ItemStack.EMPTY);
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack){
-    	if(index < 6){
-    		if(index < 3){
-    			stacks.set(0, stack); stacks.set(1, stack); stacks.set(2, stack);
-    		}
-    		else{
-    			stacks.set(3, stack); stacks.set(4, stack); stacks.set(5, stack);
-    		}
-    	}
         stacks.set(index, stack);
     }
 
     @Override
     public int getInventoryStackLimit(){
-        return 64;
+        return 1;
     }
 
     @Override
@@ -112,10 +90,9 @@ public class RoadInventory implements IInventory {
 
     @Override
     public void closeInventory(EntityPlayer player){
-    	if(!stacks.get(0).isEmpty() && !player.addItemStackToInventory(stacks.get(0))) player.dropItem(stacks.get(0), false);
-    	if(!stacks.get(3).isEmpty() && !player.addItemStackToInventory(stacks.get(3))) player.dropItem(stacks.get(3), false);
-    	if(!stacks.get(6).isEmpty() && !player.addItemStackToInventory(stacks.get(6))) player.dropItem(stacks.get(6), false);
-    	if(!stacks.get(7).isEmpty() && !player.addItemStackToInventory(stacks.get(7))) player.dropItem(stacks.get(7), false);
+    	for(int i = 0; i < stacks.size(); i++){
+        	if(!stacks.get(i).isEmpty() && !player.addItemStackToInventory(stacks.get(i))) player.dropItem(stacks.get(i), false);
+    	}
     }
 
     @Override
@@ -151,7 +128,14 @@ public class RoadInventory implements IInventory {
 
         @Override
         public boolean isItemValid(ItemStack stack){
-        	return stack.getItem() instanceof ItemBlock;
+        	if(stack.getItem() instanceof ItemBlock == false) return false;
+        	if(this.getSlotIndex() == 0){
+        		ItemBlock iblock = (ItemBlock)stack.getItem();
+        		if(iblock.getBlock() instanceof Asphalt || iblock.getBlock() instanceof G_ROAD) return true;
+        		if(isValidFlenix(iblock.getRegistryName().getNamespace(), iblock.getRegistryName().getPath())) return true;
+        		return false;
+        	}
+        	else return true;
         	//if(stack.getItem() instanceof ItemBlock == false) return false;
             //Block block = ((ItemBlock)stack.getItem()).getBlock();
             //return block.isFullBlock(block.getDefaultState());

@@ -25,9 +25,10 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 	public RoadPlacerFill(EntityPlayer player, int x, int y, int z){
 		super(texture, new RoadPlacerFillContainer(player, x, y, z), player);
 		if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
-		if(!container.stack.getTagCompound().hasKey("Layers")){
-			container.stack.getTagCompound().setIntArray("Layers", size);
+		if(!container.stack.getTagCompound().hasKey("RoadLayers")){
+			container.stack.getTagCompound().setIntArray("RoadLayers", size);
 		}
+		else size = container.stack.getTagCompound().getIntArray("RoadLayers");
 		this.defbackground = true;
 		this.deftexrect = true;
 		container.gui = this;
@@ -142,7 +143,7 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 			container.send(Side.SERVER, compound);
             return;
         }
-        super.keyTyped(typedChar, keyCode);
+        else super.keyTyped(typedChar, keyCode);
     }
 	
 	@Override

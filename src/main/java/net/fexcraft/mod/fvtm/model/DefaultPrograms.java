@@ -249,7 +249,7 @@ public class DefaultPrograms {
 	};
 	public static final Program BRAKE_LIGHTS = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return (ent != null && ((GenericVehicle)ent).isBraking()); }
-		@Override public String getId(){ return "fvtm:reverse_lights"; }
+		@Override public String getId(){ return "fvtm:brake_lights"; }
 	};
 	
 	public static final Program LIGHTS_FRONT_FORWARD = new AlwaysGlow(){

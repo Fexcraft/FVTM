@@ -16,10 +16,11 @@ import net.minecraftforge.fml.relauncher.Side;
 public class RoadPlacerCustomFillContainer extends GenericContainer {
 	
 	protected GenericGui<RoadPlacerCustomFillContainer> gui;
+	protected int[] size = new int[]{ 1, 0, 0, 0, 0 };
 	protected GuiCommandSender sender;
 	protected RoadInventory roadinv;
 	protected ItemStack stack;
-	protected int slots;
+	protected int slots, off;
 	
 	public RoadPlacerCustomFillContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
@@ -27,18 +28,23 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 		sender = new GuiCommandSender(player);
 		stack = player.getHeldItemMainhand();
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-		roadinv = new RoadInventory(slots = 9);
+		if(!stack.getTagCompound().hasKey("RoadLayers")){
+			stack.getTagCompound().setIntArray("RoadLayers", size);
+		}
+		else size = stack.getTagCompound().getIntArray("RoadLayers");
+		roadinv = new RoadInventory(slots = size[0]);
+		off = (size[0] * 9);
         for(int i = 0; i < slots; i++){
-        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 8, 8 + i * 20, true));
+        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 88 - off + 1 + i * 18, 8, true));
         }
 		//
         for(int row = 0; row < 3; row++){
             for(int col = 0; col < 9; col++){
-                addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 8 + row * 18));
+                addSlotToContainer(new Slot(player.inventory, col + row * 9 + 9, 8 + col * 18, 44 + row * 18));
             }
         }
         for(int col = 0; col < 9; col++){
-            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 64));
+            addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 100));
         }
 	}
 

@@ -132,15 +132,21 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 				break;
 			case 4: if(size[idx] + am >= 0 && size[idx] + am < 2) size[idx] += am; break;
 		}
+		save(false);
+	}
+
+	private void save(boolean close){
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setIntArray("sizes", size);
+		compound.setString("cargo", "save");
+		compound.setBoolean("close", close);
+		container.send(Side.SERVER, compound);
 	}
 
 	@Override
     public void keyTyped(char typedChar, int keyCode) throws IOException{
         if(keyCode == 1){
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setIntArray("sizes", size);
-			compound.setString("cargo", "save");
-			container.send(Side.SERVER, compound);
+        	save(true);
             return;
         }
         else super.keyTyped(typedChar, keyCode);

@@ -67,8 +67,10 @@ public class RoadPlacerFillContainer extends GenericContainer {
 		switch(packet.getString("cargo")){
 			case "save":{
 				stack.getTagCompound().setIntArray("RoadLayers", packet.getIntArray("sizes"));
-				player.closeScreen();
-				player.openGui(FVTM.getInstance(), ROADTOOL, player.world, 0, 0, 0);
+				if(packet.getBoolean("close")){
+					player.closeScreen();
+					player.openGui(FVTM.getInstance(), ROADTOOL, player.world, 0, 0, 0);
+				}
 				break;
 			}
 		}

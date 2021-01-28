@@ -20,7 +20,7 @@ public class RoadPlacerCustomFill extends GenericGui<RoadPlacerCustomFillContain
 		this.deftexrect = true;
 		container.gui = this;
 		this.xSize = 176;
-		this.ySize = 88;
+		this.ySize = 128;
 	}
 
 	@Override
@@ -35,7 +35,17 @@ public class RoadPlacerCustomFill extends GenericGui<RoadPlacerCustomFillContain
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		//
+		int left = guiLeft + 88 - container.off;
+		this.drawTexturedModalRect(left - 7, guiTop, 188, 0, 25, 32);
+		if(container.size[0] == 1){
+			this.drawTexturedModalRect(left + 18, guiTop, 249, 0, 7, 32);
+		}
+		else{
+			for(int i = 1; i < container.size[0] - 1; i++){
+				this.drawTexturedModalRect(left + i * 18, guiTop, 213, 0, 18, 32);
+			}
+			this.drawTexturedModalRect(left + (container.size[0] - 1) * 18, guiTop, 231, 0, 25, 32);
+		}
 	}
 
 	@Override

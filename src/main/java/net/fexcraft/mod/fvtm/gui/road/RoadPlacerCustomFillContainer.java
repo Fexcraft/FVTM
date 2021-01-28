@@ -7,11 +7,13 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.util.Perms;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class RoadPlacerCustomFillContainer extends GenericContainer {
@@ -48,6 +50,18 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
         }
         for(int col = 0; col < 9; col++){
             addSlotToContainer(new Slot(player.inventory, col, 8 + col * 18, 100));
+        }
+        //
+		String tagname = notroad ? "CustomTopFill" : "CustomRoadFill";
+        if(stack.getTagCompound().hasKey(tagname)){
+        	NBTTagCompound compound = stack.getTagCompound().getCompoundTag(tagname);
+        	int size = compound.getInteger("Size");
+        	for(int i = 0; i < size; i++){
+        		if(!compound.hasKey("Block" + i)) continue;
+        		Block block = Block.REGISTRY.getObject(new ResourceLocation(compound.getString("Block" + i)));
+        		byte meta = compound.hasKey("Meta" + i) ? compound.getByte("Meta" + i) : 0;
+        		roadinv.setInventorySlotContents(i, new ItemStack(block, 1, meta));
+        	}
         }
 	}
 

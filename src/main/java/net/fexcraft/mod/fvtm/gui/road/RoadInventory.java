@@ -147,4 +147,8 @@ public class RoadInventory implements IInventory {
 
     }
 
+	public NonNullList<ItemStack> getStacks(){
+		return stacks;
+	}
+
 }

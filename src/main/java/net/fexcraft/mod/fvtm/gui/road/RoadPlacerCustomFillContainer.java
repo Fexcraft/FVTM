@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,6 +21,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 	protected GuiCommandSender sender;
 	protected RoadInventory roadinv;
 	protected ItemStack stack;
+	protected boolean notroad;
 	protected int slots, off;
 	
 	public RoadPlacerCustomFillContainer(EntityPlayer player, int x, int y, int z){
@@ -34,8 +36,9 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 		else size = stack.getTagCompound().getIntArray("RoadLayers");
 		roadinv = new RoadInventory(slots = size[0]);
 		off = (size[0] * 9);
+		notroad = x != 0;
         for(int i = 0; i < slots; i++){
-        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 88 - off + 1 + i * 18, 8, true, x != 0));
+        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 88 - off + 1 + i * 18, 8, true, notroad));
         }
 		//
         for(int row = 0; row < 3; row++){
@@ -55,10 +58,31 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 
 	@Override
 	protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
-		//RoadToolItem item = (RoadToolItem)stack.getItem();
 		switch(packet.getString("cargo")){
 			case "save":{
-				//TODO
+				boolean empty = true;
+				for(ItemStack stack : roadinv.getStacks()){
+					if(!stack.isEmpty()){
+						empty = false;
+						break;
+					}
+				}
+				String tagname = notroad ? "CustomTopFill" : "CustomRoadFill";
+				if(empty){
+					if(stack.getTagCompound().hasKey(tagname)) stack.getTagCompound().removeTag(tagname);
+				}
+				else{
+					NBTTagCompound com = new NBTTagCompound();
+					com.setInteger("Size", size[0]);
+					for(int i = 0; i < roadinv.getSizeInventory(); i++){
+						ItemStack item = roadinv.getStackInSlot(i);
+						if(!item.isEmpty()){
+							com.setString("Block" + i, ((ItemBlock)item.getItem()).getBlock().getRegistryName().toString());
+							if(notroad) com.setByte("Meta" + i, (byte)item.getMetadata());
+						}
+					}
+					stack.getTagCompound().setTag(tagname, com);
+				}
 				player.closeScreen();
 				player.openGui(FVTM.getInstance(), ROADTOOLFILL, player.world, 0, 0, 0);
 				break;

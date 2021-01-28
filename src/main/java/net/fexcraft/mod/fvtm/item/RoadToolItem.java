@@ -74,7 +74,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
                 tooltip.add(Formatter.format("&9L Border Fill: &7" + stack0.getDisplayName() + " x" + stack0.getCount()));
         	}
         	if(stack.getTagCompound().hasKey("CustomRoadFill")){
-        		NBTTagList fill = (NBTTagList)stack.getTagCompound().getTag("CustomRoadFill");
+        		/*NBTTagList fill = (NBTTagList)stack.getTagCompound().getTag("CustomRoadFill");
         		NBTTagList half = (NBTTagList)stack.getTagCompound().getTag("RoadFillHalf");
                 tooltip.add(Formatter.format("&6Road Fill:")); NBTTagCompound com; String str;
                 for(int i = 0; i < fill.tagCount(); i++){
@@ -85,7 +85,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
                 	stack0 = com.hasKey("Empty") ? ItemStack.EMPTY : new ItemStack(com);
                 	str += stack0.isEmpty() ? "" : Formatter.format(" &2/ &7" + stack0.getDisplayName());
                 	tooltip.add(str);
-                }
+                }*/
+        		tooltip.add(stack.getTagCompound().getTag("CustomRoadFill").toString());
         	}
         	else{
                 tooltip.add(Formatter.format("&6Road Fill: &bSOLID ASPHALT &7x" + stack.getCount()));

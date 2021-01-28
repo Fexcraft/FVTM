@@ -37,7 +37,7 @@ public class RoadPlacerFillContainer extends GenericContainer {
 		}
 		roadinv = new RoadInventory(slots = 5);
         for(int i = 0; i < slots; i++){
-        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 8, 8 + i * 20, false));
+        	addSlotToContainer(new RoadInventory.RoadSlot(roadinv, i, 8, 8 + i * 20, false, false));
         }
 		//
         for(int row = 0; row < 3; row++){

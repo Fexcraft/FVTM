@@ -316,6 +316,9 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
     		return true;
 		}
 		else if(button.name.equals("reset")){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("cargo", "reset");
+			container.send(Side.SERVER, compound);
 			resetPoints();
     		return true;
 		}

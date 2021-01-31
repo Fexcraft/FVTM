@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/road_gen_sel.png");
-	private static int minheight = 3;
+	//private static int minheight = 3;
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
 	private int[] size = new int[]{ 1, 0, 0, 0, 0 };
@@ -121,13 +121,7 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 			case 1: if(size[idx] + am >= 0 && size[idx] + am < 2) size[idx] += am; break;
 			case 2:
 			case 3:
-				if(size[2] + am > 0 && size[2] < minheight){
-					if(size[2] + am < minheight) size[2] = minheight;
-					else size[2] += am;
-				}
-				else if(size[2] + am < minheight) size[2] = 0;
-				else if(size[2] + am < 64) size[2] += am;
-				else;
+				if(size[2] + am >= 0 && size[2] + am < 64) size[2] += am;
 				size[3] = size[2];
 				break;
 			case 4: if(size[idx] + am >= 0 && size[idx] + am < 2) size[idx] += am; break;

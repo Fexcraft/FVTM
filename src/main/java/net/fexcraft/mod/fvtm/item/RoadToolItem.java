@@ -249,8 +249,8 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		}
 		if(rooffill != null){
 			for(int i = 0; i < rooffill.size(); i++){
-				block = roadfillB.get(i);
-				for(Vec316f v : roadfill.get(i)){
+				block = rooffillB.get(i);
+				for(Vec316f v : rooffill.get(i)){
 					state = world.getBlockState(blk = v.y != 0 ? v.pos.up() : v.pos);
 					if(state.getBlock() != block.getBlock()){
 						world.setBlockState(blk, block);

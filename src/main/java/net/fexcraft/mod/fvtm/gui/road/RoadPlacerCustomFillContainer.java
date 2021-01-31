@@ -58,6 +58,7 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
         	int size = compound.getInteger("Size");
         	for(int i = 0; i < size; i++){
         		if(!compound.hasKey("Block" + i)) continue;
+        		if(i >= roadinv.getSizeInventory()) break;
         		Block block = Block.REGISTRY.getObject(new ResourceLocation(compound.getString("Block" + i)));
         		byte meta = compound.hasKey("Meta" + i) ? compound.getByte("Meta" + i) : 0;
         		roadinv.setInventorySlotContents(i, new ItemStack(block, 1, meta));

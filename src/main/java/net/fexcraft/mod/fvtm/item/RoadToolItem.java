@@ -174,6 +174,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
             top = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
     	}
     	topheight = borderheight_l > borderheight_r ? borderheight_l : borderheight_r;
+    	if(topheight == 0) topheight = 1;
     	ArrayList<IBlockState> roadfillB = null, rooffillB = null;
     	if(stack.getTagCompound().hasKey("CustomRoadFill")){
     		roadfill = new ArrayList<>();

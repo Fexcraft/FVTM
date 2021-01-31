@@ -151,7 +151,6 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     		flnx = Compat.isValidFlenix(stack0.getItem());
             roadB = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(Compat.getRoadHeight(0, flnx));
     	}
-    	else roadB = Asphalt.INSTANCE.getDefaultState();
     	if(layers[1] > 0 && stack.getTagCompound().hasKey("BottomFill")){
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
             bot = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
@@ -192,7 +191,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		IBlockState state;
 		int width = layers[0], height;
 		float angle, passed = 0, half = (width * 0.5f) - 0.5f;
-		road = roadfill == null ? new ArrayList<>() : null;
+		road = roadfill == null && roadB != null ? new ArrayList<>() : null;
 		roof = rooffill == null && layers[4] > 0 ? new ArrayList<>() : null;
 		//
 		vec = _road.getVectorPosition0(0.001f, false); passed = 0;

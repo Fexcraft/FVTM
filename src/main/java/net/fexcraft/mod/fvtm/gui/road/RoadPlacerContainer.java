@@ -49,6 +49,12 @@ public class RoadPlacerContainer extends GenericContainer {
 				reopen();
 				break;
 			}
+			case "reset":{
+				if(stack.hasTagCompound() && stack.getTagCompound().hasKey("fvtm:roadpoints")){
+					stack.getTagCompound().removeTag("fvtm:roadpoints");
+				}
+				break;
+			}
 		}
 	}
 

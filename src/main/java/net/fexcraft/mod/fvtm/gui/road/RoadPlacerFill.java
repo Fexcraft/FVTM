@@ -20,7 +20,7 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 	private static int minheight = 3;
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
-	private int[] size = new int[]{ 1, 0, 0, 0, 0};
+	private int[] size = new int[]{ 1, 0, 0, 0, 0 };
 	
 	public RoadPlacerFill(EntityPlayer player, int x, int y, int z){
 		super(texture, new RoadPlacerFillContainer(player, x, y, z), player);

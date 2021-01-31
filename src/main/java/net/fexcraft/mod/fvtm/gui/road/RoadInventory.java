@@ -1,9 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.road;
 
+import static net.fexcraft.mod.fvtm.util.Compat.isFVTMRoad;
 import static net.fexcraft.mod.fvtm.util.Compat.isValidFlenix;
 
-import net.fexcraft.mod.fvtm.block.Asphalt;
-import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -135,9 +134,7 @@ public class RoadInventory implements IInventory {
         	if(stack.getItem() instanceof ItemBlock == false) return false;
         	if(!any && (road || this.getSlotIndex() == 0)){
         		ItemBlock iblock = (ItemBlock)stack.getItem();
-        		if(iblock.getBlock() instanceof Asphalt || iblock.getBlock() instanceof G_ROAD) return true;
-        		if(isValidFlenix(iblock.getRegistryName().getNamespace(), iblock.getRegistryName().getPath())) return true;
-        		return false;
+        		return isFVTMRoad(iblock.getBlock()) || isValidFlenix(iblock.getBlock().getRegistryName());
         	}
         	else return true;
         	//if(stack.getItem() instanceof ItemBlock == false) return false;

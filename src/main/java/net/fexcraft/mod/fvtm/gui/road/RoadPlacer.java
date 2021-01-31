@@ -22,6 +22,7 @@ import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.Road;
+import net.fexcraft.mod.fvtm.util.Compat;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.Block;
@@ -41,6 +42,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
@@ -56,7 +58,6 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 	private static int cx, cz, mx, mz;
 	private static Zoom zoom;
 	//
-	private static int itemslot;
 	private static Road demoroad;
 	private static Vec316f begin;
 	private static Vec316f[][] preview;
@@ -64,13 +65,19 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 	//
 	private OrientButton orientbutton;
 	private ArrayList<String> ttip = new ArrayList<String>();
+	private int[] size = new int[]{ 1, 0, 0, 0, 0};
 	
 	public RoadPlacer(EntityPlayer player, int x, int y, int z){
 		super(texture, new RoadPlacerContainer(player, x, y, z), player);
 		if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
 		zoom = y < 0 || y >= Zoom.values().length ? Zoom.NONE :  Zoom.values()[y];
 		if(orient == null) orient = Orient.C;
-		itemslot = x;
+		ItemStack stack = player.getHeldItemMainhand();
+		if(!stack.getTagCompound().hasKey("RoadLayers")){
+			stack.getTagCompound().setIntArray("RoadLayers", size);
+		}
+		else size = stack.getTagCompound().getIntArray("RoadLayers");
+		//
         cx = (player.getPosition().getX() >> 4) - zoom.co;
         cz = (player.getPosition().getZ() >> 4) - zoom.co;
         mx = cx * 16;
@@ -84,6 +91,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		POSGRID = new BlockPos[zoom.gs][zoom.gs];
 		STATEGRID = new IBlockState[zoom.gs][zoom.gs];
 		HEIGHTGRID = new byte[zoom.gs][zoom.gs];
+		boolean flnx = Loader.isModLoaded("furenikusroads");
 		for(int i = 0; i < zoom.gs; i++){
 			for(int j = 0; j < zoom.gs; j++){
 				BlockPos pos = getPos(player.world, i + (cx * 16), j + (cz * 16));
@@ -111,6 +119,9 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 					if(player.world.getBlockState(POSGRID[i][j].add(0, 0, -1)).getMapColor(player.world, POSGRID[i][j]) == MapColor.AIR) m++;
 				}
 				GRID[i][j] = new RGB(STATEGRID[i][j].getMapColor(player.world, POSGRID[i][j]).getMapColor(m));
+				if(flnx && Compat.isValidFlenix(STATEGRID[i][j].getBlock())){
+					GRID[i][j] = new RGB(MapColor.BLACK_STAINED_HARDENED_CLAY.colorValue);
+				}
 			}
 		}
 		preview = new Vec316f[zoom.gs][zoom.gs];
@@ -275,7 +286,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		else if(button.name.equals("field")){
 			int x = (mouseX - guiLeft - zoom.bo) / zoom.cs, y = (mouseY - guiTop - zoom.bo) / zoom.cs;
 			if(x < 0 || y < 0 || x >= zoom.gs || y >= zoom.gs) return true;
-        	Vec316f pos = new Vec316f(POSGRID[x][y].up(), (byte)orient.x, (byte)(16 - HEIGHTGRID[x][y]), (byte)orient.z);
+        	Vec316f pos = new Vec316f(POSGRID[x][y], (byte)orient.x, (byte)(16 - HEIGHTGRID[x][y]), (byte)orient.z);
         	if(mouseButton > 0){
         		//
         		return true;
@@ -299,12 +310,10 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		}
 		else if(button.name.equals("confirm")){
 			if(begin == null || points.size() < 2) return true;
-			ItemStack stack = player.inventory.getStackInSlot(itemslot);
+			ItemStack stack = player.getHeldItemMainhand();
 			if(stack.getItem() instanceof RoadToolItem){
 				NBTTagList list = new NBTTagList();
-				for(int i = 0; i < points.size() - 1; i++){
-					list.appendTag(points.get(i).write());
-				}
+				for(Vec316f vec : points) list.appendTag(vec.write());
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setTag("points", list);
 				compound.setBoolean("noblocks", noblocks);
@@ -370,7 +379,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		if(demoroad != null){
 			clearPreview();
 			ArrayList<Vec316f> path = new ArrayList<>();
-			int width = 7;//TODO
+			int width = size[0];
 			float angle, passed = 0, half = (width * 0.5f) - (width % 2 == 0 ? 0.5f : 0); Vec3f last, vec;
 			vec = demoroad.getVectorPosition0(0.001f, false); passed = 0;
 			angle = (float)Math.atan2(demoroad.vecpath[0].zCoord - vec.zCoord, demoroad.vecpath[0].xCoord - vec.xCoord);

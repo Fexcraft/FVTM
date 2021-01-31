@@ -13,13 +13,15 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
-import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.road.Road;
+import net.fexcraft.mod.fvtm.util.Compat;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -30,6 +32,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -96,13 +99,12 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         }
     }
 	
-	@SuppressWarnings("deprecation")
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote){ return EnumActionResult.PASS; }
         ItemStack stack = player.getHeldItem(hand);
         if(player.isSneaking() && hand != EnumHand.OFF_HAND){
-        	player.openGui(FVTM.getInstance(), GuiHandler.ROADTOOL, world, player.inventory.getSlotFor(stack), 0, 0);
+        	player.openGui(FVTM.getInstance(), GuiHandler.ROADTOOL, world, 0, 0, 0);
         	return EnumActionResult.SUCCESS;
         }
         if(!player.capabilities.isCreativeMode){
@@ -125,173 +127,231 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 			return EnumActionResult.SUCCESS;
 		}
 		else{
-			Road road = new Road(null, getVectors(list), vector);
-			if(road.length > Config.MAX_ROAD_LENGTH){
-				Print.chat(player, "&cRoad vector length exceeds the configured max length.");
-				return EnumActionResult.FAIL;
-			}
-			IBlockState top = null, bot = null, righ = null, left = null;
-			ArrayList<Vec316f> border_r = null, border_l = null, roof = null, ground = null;
-        	ItemStack stack0 = null; int borderheight_l = 0, borderheight_r = 0, topheight = 0;
-        	ArrayList<ArrayList<Vec316f>> fill = null;
-        	if(stack.getTagCompound().hasKey("BottomFill")){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
-                bot = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
-                ground = new ArrayList<>();
-        	}
-        	if(stack.getTagCompound().hasKey("TopFill")){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
-                top = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
-                roof = new ArrayList<>();
-        	}
-        	if(stack.getTagCompound().hasKey("SideRightFill")){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRightFill"));
-                righ = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
-                borderheight_r = stack0.getCount(); border_r = new ArrayList<>();
-        	}
-        	if(stack.getTagCompound().hasKey("SideLelftFill")){
-        		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLeftFill"));
-                left = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
-                borderheight_l = stack0.getCount(); border_l = new ArrayList<>();
-        	}
-        	topheight = borderheight_l > borderheight_r ? borderheight_l : borderheight_r;
-        	ArrayList<IBlockState> blockfill = null, blockhalf = null;
-        	if(stack.getTagCompound().hasKey("RoadFill")){
-        		fill = new ArrayList<>(); blockfill = new ArrayList<>(); blockhalf = new ArrayList<>();
-        		NBTTagList filllist = (NBTTagList)stack.getTagCompound().getTag("RoadFill");
-        		NBTTagList halflist = (NBTTagList)stack.getTagCompound().getTag("RoadFillHalf");
-        		for(int i = 0; i < filllist.tagCount(); i++){
-        			fill.add(new ArrayList<>());
-        			stack0 = new ItemStack(filllist.getCompoundTagAt(i));
-        			blockfill.add(((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata()));
-        			stack0 = new ItemStack(halflist.getCompoundTagAt(i));
-        			blockhalf.add(((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata()));
-        		}
-        	}
-			//
-			int width = stack.getCount(), height; float angle, passed = 0, half = (width * 0.5f) - 0.5f; Vec3f last, vec;
-			ArrayList<Vec316f> path = fill == null ? new ArrayList<>() : null; IBlockState state; BlockPos blk;
-			vec = road.getVectorPosition0(0.001f, false); passed = 0;
-			angle = (float)Math.atan2(road.vecpath[0].zCoord - vec.zCoord, road.vecpath[0].xCoord - vec.xCoord);
-			angle += Static.rad90;
-			for(float fl = -half; fl <= half; fl += 0.25f){
-				if(path != null) path.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
-				if(ground != null) ground.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
-				if(roof != null) roof.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(fl, topheight, 0)))));
-			}
-			if(fill != null){
-				for(int i = 0; i < fill.size(); i++){
-					fill.get(i).add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
-				}
-			}
-			if(border_l != null) border_l.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
-			if(border_r != null) border_r.add(new Vec316f(road.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
-			while(passed < road.length){ passed += 0.125f;
-				last = vec; vec = road.getVectorPosition0(passed, false);
-				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
-				angle += Static.rad90;
-				for(float fl = -half; fl <= half; fl += 0.25f){
-					if(path != null) path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
-					if(ground != null) ground.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, -1, 0)))));
-					if(roof != null) roof.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, topheight, 0)))));
-				}
-				if(fill != null){
-					for(int i = 0; i < fill.size(); i++){
-						fill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
-					}
-				}
-				if(border_l != null) border_l.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
-				if(border_r != null) border_r.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1, 0, 0)))));
-			}
-			if(path != null){
-				for(Vec316f v : path){
-					height = v.y; state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
-					if(state.getBlock() != Asphalt.INSTANCE || state.getValue(Asphalt.HEIGHT) < height){
-						if(world.getBlockState(blk.up()).getBlock() instanceof Asphalt) height = 0;
-						world.setBlockState(blk, Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, height));
-					}
-					if((height < 9 && height != 0) || world.getBlockState(blk.down()).getBlock() instanceof Asphalt){
-						world.setBlockState(blk.down(), Asphalt.INSTANCE.getDefaultState().withProperty(Asphalt.HEIGHT, 0));
-					}
-					int checkheight = topheight == 0 ? 4 : topheight;
-					for(int i = 1; i < checkheight; i++){
-						if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-							world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
-						}
-					}
-				}
-			}
-			if(fill != null){
-				IBlockState block = null;
-				for(int i = 0; i < fill.size(); i++){
-					for(Vec316f v : fill.get(i)){
-						height = v.y; state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
-						block = height <= 8 && blockhalf.get(i).getBlock() != Blocks.AIR ? blockhalf.get(i) : blockfill.get(i);
-						//
-						if(state != block){
-							world.setBlockState(blk, block);
-						}
-						if((height < 9 && height != 0) || world.getBlockState(blk.down()) != blockfill.get(i)){
-							world.setBlockState(blk.down(), blockfill.get(i));
-						}
-						int checkheight = topheight == 0 ? 4 : topheight;
-						for(int j = 1; j < checkheight; j++){
-							if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-								world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
-							}
-						}
-					}
-				}
-			}
-			if(border_l != null){
-				for(Vec316f v : border_l){
-					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-					for(int i = -1/*1*/; i < borderheight_l + 1; i++){
-						//if(i == 1 && height > 8) continue;
-						//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-							world.setBlockState(blk.up(i), left);
-						//}
-					}
-				}
-			}
-			if(border_r != null){
-				for(Vec316f v : border_r){
-					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-					for(int i = -1/*1*/; i < borderheight_r + 1; i++){
-						//if(i == 1 && height > 8) continue;
-						//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
-							world.setBlockState(blk.up(i), righ);
-						//}
-					}
-				}
-			}
-			if(ground != null){
-				for(Vec316f v : ground){
-					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-					if(world.getBlockState(blk).getBlock() != Asphalt.INSTANCE){
-						world.setBlockState(blk, bot);
-					}
-				}
-			}
-			if(roof != null){
-				for(Vec316f v : roof){
-					height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
-					//if(world.getBlockState(blk).isOpaqueCube()){
-						world.setBlockState(blk, top);
-					//}
-				}
-			}
-			//
-			Print.bar(player, "&bRoad placed!");
-			stack.getTagCompound().removeTag("fvtm:roadpoints");
-			return EnumActionResult.SUCCESS;
+			return placeRoad(player, world, stack, vector, list, player, true);
 		}
     }
 
-	public void placeRoad(EntityPlayer player, World world, ItemStack stack, Vec316f vec, GuiCommandSender sender, boolean boolean1){
-		//TODO
+	@SuppressWarnings("deprecation")
+	public EnumActionResult placeRoad(EntityPlayer player, World world, ItemStack stack, Vec316f vector, NBTTagList list, ICommandSender sender, boolean noblocks){
+		Print.debug(list);
+		Road _road = new Road(null, getVectors(list, true));
+		if(_road.length > Config.MAX_ROAD_LENGTH){
+			Print.chatbar(sender, "&cRoad vector length exceeds the configured max length.");
+			return EnumActionResult.FAIL;
+		}
+    	ItemStack stack0 = null;
+		int[] layers = stack.getTagCompound().getIntArray("RoadLayers");
+		IBlockState top = null, bot = null, righ = null, left = null, roadB = null;
+		ArrayList<Vec316f> border_r = null, border_l = null, roof = null, ground = null, road;
+    	int borderheight_l = 0, borderheight_r = 0, topheight = 0;
+    	ArrayList<ArrayList<Vec316f>> roadfill = null, rooffill = null;
+    	boolean flnx = false;
+    	if(stack.getTagCompound().hasKey("RoadFill")){
+    		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("RoadFill"));
+    		flnx = Compat.isValidFlenix(stack0.getItem());
+            roadB = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(Compat.getRoadHeight(0, flnx));
+    	}
+    	else roadB = Asphalt.INSTANCE.getDefaultState();
+    	if(layers[1] > 0 && stack.getTagCompound().hasKey("BottomFill")){
+    		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("BottomFill"));
+            bot = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+            ground = new ArrayList<>();
+    	}
+    	if(layers[2] > 0 && stack.getTagCompound().hasKey("SideLeftFill")){
+    		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLeftFill"));
+            left = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+            borderheight_l = stack0.getCount(); border_l = new ArrayList<>();
+    	}
+    	if(layers[3] > 0 && stack.getTagCompound().hasKey("SideRightFill")){
+    		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRightFill"));
+            righ = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+            borderheight_r = stack0.getCount(); border_r = new ArrayList<>();
+    	}
+    	if(layers[4] > 0 && stack.getTagCompound().hasKey("TopFill") && !stack.getTagCompound().hasKey("CustomTopFill")){
+    		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));
+            top = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
+    	}
+    	topheight = borderheight_l > borderheight_r ? borderheight_l : borderheight_r;
+    	ArrayList<IBlockState> roadfillB = null, rooffillB = null;
+    	if(stack.getTagCompound().hasKey("CustomRoadFill")){
+    		roadfill = new ArrayList<>();
+    		roadfillB = new ArrayList<>();
+    		loadFill(roadfill, roadfillB, layers[0], stack.getTagCompound().getCompoundTag("CustomRoadFill"));
+    	}
+    	if(stack.getTagCompound().hasKey("CustomTopFill")){
+    		rooffill = new ArrayList<>();
+    		rooffillB = new ArrayList<>();
+    		loadFill(rooffill, rooffillB, layers[0], stack.getTagCompound().getCompoundTag("CustomTopFill"));
+    	}
+		//
+		BlockPos blk;
+		Vec3f last, vec;
+		IBlockState state;
+		int width = layers[0], height;
+		float angle, passed = 0, half = (width * 0.5f) - 0.5f;
+		road = roadfill == null ? new ArrayList<>() : null;
+		roof = rooffill == null ? new ArrayList<>() : null;
+		//
+		vec = _road.getVectorPosition0(0.001f, false); passed = 0;
+		angle = (float)Math.atan2(_road.vecpath[0].zCoord - vec.zCoord, _road.vecpath[0].xCoord - vec.xCoord);
+		angle += Static.rad90;
+		for(float fl = -half; fl <= half; fl += 0.25f){
+			if(road != null) road.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
+			if(ground != null) ground.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, -1, 0)))));
+			if(roof != null) roof.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, topheight, 0)))));
+		}
+		if(roadfill != null){
+			for(int i = 0; i < roadfill.size(); i++){
+				roadfill.get(i).add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+			}
+		}
+		if(rooffill != null){
+			for(int i = 0; i < rooffill.size(); i++){
+				rooffill.get(i).add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), topheight, 0)))));
+			}
+		}
+		if(border_l != null) border_l.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
+		if(border_r != null) border_r.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
+		while(passed < _road.length){ passed += 0.125f;
+			last = vec; vec = _road.getVectorPosition0(passed, false);
+			angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+			angle += Static.rad90;
+			for(float fl = -half; fl <= half; fl += 0.25f){
+				if(road != null) road.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
+				if(ground != null) ground.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, -1, 0)))));
+				if(roof != null) roof.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, topheight, 0)))));
+			}
+			if(roadfill != null){
+				for(int i = 0; i < roadfill.size(); i++){
+					roadfill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), 0, 0)))));
+				}
+			}
+			if(rooffill != null){
+				for(int i = 0; i < rooffill.size(); i++){
+					rooffill.get(i).add(new Vec316f(vec.add(grv(angle, new Vec3f(-half + 0.25 + (i * 1), topheight, 0)))));
+				}
+			}
+			if(border_l != null) border_l.add(new Vec316f(vec.add(grv(angle, new Vec3f(-half - 1, 0, 0)))));
+			if(border_r != null) border_r.add(new Vec316f(vec.add(grv(angle, new Vec3f(half + 1, 0, 0)))));
+		}
+		if(road != null){
+			roadFill(world, road, roadB, topheight, flnx);
+		}
+		IBlockState block = null;
+		if(roadfill != null){
+			for(int i = 0; i < roadfill.size(); i++){
+				block = roadfillB.get(i);
+				flnx = Compat.isValidFlenix(block.getBlock());
+				roadFill(world, roadfill.get(i), block, topheight, flnx);
+			}
+		}
+		if(rooffill != null){
+			for(int i = 0; i < rooffill.size(); i++){
+				block = roadfillB.get(i);
+				for(Vec316f v : roadfill.get(i)){
+					state = world.getBlockState(blk = v.y != 0 ? v.pos.up() : v.pos);
+					if(state.getBlock() != block.getBlock()){
+						world.setBlockState(blk, block);
+					}
+				}
+			}
+		}
+		if(border_l != null){
+			for(Vec316f v : border_l){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				for(int i = -1/*1*/; i < borderheight_l + 1; i++){
+					//if(i == 1 && height > 8) continue;
+					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+						world.setBlockState(blk.up(i), left);
+					//}
+				}
+			}
+		}
+		if(border_r != null){
+			for(Vec316f v : border_r){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				for(int i = -1/*1*/; i < borderheight_r + 1; i++){
+					//if(i == 1 && height > 8) continue;
+					//if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+						world.setBlockState(blk.up(i), righ);
+					//}
+				}
+			}
+		}
+		if(ground != null){
+			for(Vec316f v : ground){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				if(world.getBlockState(blk).getBlock() != Asphalt.INSTANCE){
+					world.setBlockState(blk, bot);
+				}
+			}
+		}
+		if(roof != null){
+			for(Vec316f v : roof){
+				height = v.y; blk = height != 0 ? v.pos.up() : v.pos;
+				//if(world.getBlockState(blk).isOpaqueCube()){
+					world.setBlockState(blk, top);
+				//}
+			}
+		}
+		//
+		Print.chatbar(player, "&bRoad placed!");
+		stack.getTagCompound().removeTag("fvtm:roadpoints");
+		return EnumActionResult.SUCCESS;
+	
 	}
 	
+	@SuppressWarnings("deprecation")
+	private void loadFill(ArrayList<ArrayList<Vec316f>> fill, ArrayList<IBlockState> fillB, int layers, NBTTagCompound compound){
+		for(int i = 0; i < layers; i++){
+			fill.add(new ArrayList<>());
+			IBlockState state = Blocks.AIR.getDefaultState();
+			if(compound.hasKey("Block" + i)){
+				Block block = Block.REGISTRY.getObject(new ResourceLocation(compound.getString("Block" + i)));
+				Integer meta = compound.hasKey("Meta" + i) ? compound.getInteger("Meta" + i) : null;
+				if(block != null) state = meta == null ? block.getDefaultState() : block.getStateFromMeta(meta);
+			}
+			fillB.add(state);
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private void roadFill(World world, ArrayList<Vec316f> fill, IBlockState block, int topheight, boolean flenix){
+		int height = 0;
+		BlockPos blk;
+		boolean bool;
+		for(Vec316f v : fill){
+			height = v.y;
+			IBlockState state = world.getBlockState(blk = height != 0 ? v.pos.up() : v.pos);
+			if(!isRoad(state, block) || isLower(state, height)){
+				if(bool = isRoad(world.getBlockState(blk.up()))) height = 0;
+				world.setBlockState(blk, block.getBlock().getStateFromMeta(Compat.getRoadHeight(bool ? 0 : height, flenix)));
+			}
+			if((height < 9 && height != 0) || isRoad(world.getBlockState(blk.down()))){
+				world.setBlockState(blk.down(), block.getBlock().getStateFromMeta(Compat.getRoadHeight(0, flenix)));
+			}
+			int checkheight = topheight == 0 ? 4 : topheight;
+			for(int i = 1; i < checkheight; i++){
+				if(world.getBlockState(blk.up(i)).isOpaqueCube()){
+					world.setBlockState(blk.up(i), Blocks.AIR.getDefaultState());
+				}
+			}
+		}
+	}
+
+	private boolean isRoad(IBlockState state){
+		return Compat.isFVTMRoad(state.getBlock()) || Compat.isValidFlenix(state.getBlock());
+	}
+
+	private boolean isRoad(IBlockState state, IBlockState roadB){
+		return isRoad(state) && state.getBlock() == roadB.getBlock();
+	}
+
+	private boolean isLower(IBlockState state, int height){
+		int h = Compat.isFVTMRoad(state.getBlock()) ? state.getValue(Asphalt.HEIGHT) : state.getBlock().getMetaFromState(state);
+		return h > height;
+	}
+
 	public static final Vec3f grv(float rad, Vec3f vec){
         double co = Math.cos(rad), si = Math.sin(rad); return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);
 	}
@@ -311,11 +371,11 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	@Override
 	public Vec316f[] getVectors(ItemStack stack){
 		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("fvtm:roadpoints")) return new Vec316f[0];
-		return getVectors((NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints"));
+		return getVectors((NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints"), false);
 	}
 
-	public Vec316f[] getVectors(NBTTagList list){
-		Vec316f[] arr = new Vec316f[list.tagCount() - 1];
+	public Vec316f[] getVectors(NBTTagList list, boolean all){
+		Vec316f[] arr = new Vec316f[list.tagCount() - (all ? 0 : 1)];
 		for(int i = 0; i < arr.length; i++){
 			arr[i] = new Vec316f(list.getCompoundTagAt(i));
 		} return arr;

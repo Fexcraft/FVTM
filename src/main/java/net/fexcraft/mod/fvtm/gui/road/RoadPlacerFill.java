@@ -119,11 +119,8 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 		switch(idx){
 			case 0: if(size[idx] + am >= 0 && size[idx] + am < 64) size[idx] += am; break;
 			case 1: if(size[idx] + am >= 0 && size[idx] + am < 2) size[idx] += am; break;
-			case 2:
-			case 3:
-				if(size[2] + am >= 0 && size[2] + am < 64) size[2] += am;
-				size[3] = size[2];
-				break;
+			case 2: if(size[idx] + am >= 0 && size[idx] + am < 64) size[idx] += am; break;
+			case 3: if(size[idx] + am >= 0 && size[idx] + am < 64) size[idx] += am; break;
 			case 4: if(size[idx] + am >= 0 && size[idx] + am < 2) size[idx] += am; break;
 		}
 		save(false);

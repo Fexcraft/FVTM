@@ -38,8 +38,8 @@ public class RoadPlacerContainer extends GenericContainer {
 		RoadToolItem item = (RoadToolItem)stack.getItem();
 		switch(packet.getString("cargo")){
 			case "place":{
-				if(packet.getBoolean("noblocks") && !Perms.ROAD_PLACER_GUI_NOBLOCK.has(null)){
-					Print.chat(sender, "&cNo permission to place blockless roads.");
+				if(packet.getBoolean("noblocks") /*&& !Perms.ROAD_PLACER_GUI_NOBLOCK.has(null)*/){
+					Print.chat(sender, "&cNo permission to place material-less roads.");
 					return;
 				}
 				if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());

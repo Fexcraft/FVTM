@@ -180,7 +180,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     		roadfillB = new ArrayList<>();
     		loadFill(roadfill, roadfillB, layers[0], stack.getTagCompound().getCompoundTag("CustomRoadFill"));
     	}
-    	if(stack.getTagCompound().hasKey("CustomTopFill")){
+    	if(layers[4] > 0 && stack.getTagCompound().hasKey("CustomTopFill")){
     		rooffill = new ArrayList<>();
     		rooffillB = new ArrayList<>();
     		loadFill(rooffill, rooffillB, layers[0], stack.getTagCompound().getCompoundTag("CustomTopFill"));
@@ -192,7 +192,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		int width = layers[0], height;
 		float angle, passed = 0, half = (width * 0.5f) - 0.5f;
 		road = roadfill == null ? new ArrayList<>() : null;
-		roof = rooffill == null ? new ArrayList<>() : null;
+		roof = rooffill == null && layers[4] > 0 ? new ArrayList<>() : null;
 		//
 		vec = _road.getVectorPosition0(0.001f, false); passed = 0;
 		angle = (float)Math.atan2(_road.vecpath[0].zCoord - vec.zCoord, _road.vecpath[0].xCoord - vec.xCoord);

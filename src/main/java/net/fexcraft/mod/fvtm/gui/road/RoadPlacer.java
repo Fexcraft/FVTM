@@ -73,6 +73,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 		zoom = y < 0 || y >= Zoom.values().length ? Zoom.NONE :  Zoom.values()[y];
 		if(orient == null) orient = Orient.C;
 		ItemStack stack = player.getHeldItemMainhand();
+		if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
 		if(!stack.getTagCompound().hasKey("RoadLayers")){
 			stack.getTagCompound().setIntArray("RoadLayers", size);
 		}

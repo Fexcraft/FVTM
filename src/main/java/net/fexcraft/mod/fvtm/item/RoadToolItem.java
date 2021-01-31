@@ -160,12 +160,14 @@ public class RoadToolItem extends Item implements JunctionGridItem {
     	if(layers[2] > 0 && stack.getTagCompound().hasKey("SideLeftFill")){
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideLeftFill"));
             left = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
-            borderheight_l = stack0.getCount(); border_l = new ArrayList<>();
+            borderheight_l = layers[2];
+            border_l = new ArrayList<>();
     	}
     	if(layers[3] > 0 && stack.getTagCompound().hasKey("SideRightFill")){
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("SideRightFill"));
             righ = ((ItemBlock)stack0.getItem()).getBlock().getStateFromMeta(stack0.getMetadata());
-            borderheight_r = stack0.getCount(); border_r = new ArrayList<>();
+            borderheight_r = layers[3];
+            border_r = new ArrayList<>();
     	}
     	if(layers[4] > 0 && stack.getTagCompound().hasKey("TopFill") && !stack.getTagCompound().hasKey("CustomTopFill")){
     		stack0 = new ItemStack(stack.getTagCompound().getCompoundTag("TopFill"));

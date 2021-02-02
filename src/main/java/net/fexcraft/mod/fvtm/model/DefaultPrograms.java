@@ -26,6 +26,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
@@ -35,6 +36,7 @@ import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -1116,17 +1118,26 @@ public class DefaultPrograms {
 		
 		private byte axis;
 		private float minrot, maxrot, minval, maxval;
-		private String attribute;
-		private Attribute<?> attr;
+		private String attribute, maxvalattr;
+		private Attribute<?> attr, mvattr;
 		private float current, rotdiff, valdiff;
+		private GaugeLimit limit;
 		
-		public Gauge(String attribute, int axis, float min_rot, float max_rot, float min_value, float max_value){
+		public <V> Gauge(String attribute, int axis, float min_rot, float max_rot, float min_value, V max_value){
 			this.attribute = attribute;
 			this.axis = (byte)axis;
 			minrot = min_rot;
 			maxrot = max_rot;
 			minval = min_value;
-			maxval = max_value;
+			if(max_value instanceof GaugeLimit){
+				limit = (GaugeLimit)max_value;
+				maxval = min_value * 2;
+			}
+			else if(max_value instanceof String){
+				maxvalattr = (String)max_value;
+				maxval = min_value * 2;
+			}
+			else maxval = ((Number)max_value).floatValue();
 			rotdiff = maxrot - minrot;
 			valdiff = maxval - minval;
 		}
@@ -1140,10 +1151,21 @@ public class DefaultPrograms {
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			if((attr = data.getAttribute(attribute)) == null) return;
 			current = attr.getFloatValue() < minval ? minval : attr.getFloatValue();
-			if(current > maxval) current = maxval;
-			list.rotateAxis(minrot + ((current - minval) / valdiff) * rotdiff, axis, true);
+			if(current > maxval(ent, data)) current = maxval;
+			list.rotateAxis(minrot + ((current - minval) / valdiff()) * rotdiff, axis, true);
+		}
+
+		private float maxval(Entity ent, VehicleData data){
+			if(maxvalattr != null && (mvattr = data.getAttribute(maxvalattr)) != null) return maxval = mvattr.getFloatValue();
+			else if(limit != null) return maxval = limit.getMaxValue(maxval, ent, data);
+			else return maxval;
 		}
 		
+		private float valdiff(){
+			if(maxvalattr != null || limit != null) return valdiff = maxval - minval;
+			else return valdiff;
+		}
+
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			list.rotateAxis(0, axis, true);
@@ -1166,5 +1188,25 @@ public class DefaultPrograms {
 		}
 		
 	};
+	
+	public static enum GaugeLimit {
+		
+		RPM{
+			@Override
+			public float getMaxValue(float maxval, Entity ent, VehicleData data){
+				part = data.getPart("engine");
+				if(part == null) return maxval;
+				func = part.getFunction("fvtm:engine");
+				if(func == null) return maxval;
+				return func.maxRPM();
+			}
+		};
+		
+		private static PartData part;
+		private static EngineFunction func;
+		
+		public abstract float getMaxValue(float maxval, Entity ent, VehicleData data);
+		
+	}
 	
 }

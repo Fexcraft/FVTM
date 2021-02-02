@@ -530,6 +530,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
             }
         	rek.data().getAttribute("throttle").setValue((float)throttle);
+        	rek.data().getAttribute("speed").setValue((float)speed);
+        	//rek.data().getAttribute("rpm").setValue(rpm / 100 * 100);
         	//
         	Vec3f bf0 = rek.moveOnly(rek.passed + 0.1f), bf1 = rek.moveOnly(rek.passed - 0.1f);
         	Vec3f br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
@@ -540,6 +542,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         		rek.data().getAttribute("bogie_front_angle").setValue(front); rek.data().getAttribute("bogie_rear_angle").setValue(rear);
         	}
     		//
+        	
     		/*if(Command.DEBUG)*/ rek.updatePosition();
         }
         if(!world.isRemote){

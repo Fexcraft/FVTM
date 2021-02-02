@@ -70,6 +70,8 @@ public enum VehicleType {
 		attrs.add(new Attribute.FloatAttribute(true, "air_resistance", 2.5f).setMinMax(0, Integer.MAX_VALUE));
 		attrs.add(new Attribute.FloatAttribute(true, "differential_ratio", 3.5f).setMinMax(0, Integer.MAX_VALUE));
 		attrs.add(new Attribute.IntegerAttribute(true, "gear", 0).setMinMax(-64, 64));
+		attrs.add(new Attribute.FloatAttribute(true, "speed", 0f).setMinMax(Integer.MIN_VALUE, Integer.MAX_VALUE).setEditable(false));
+		attrs.add(new Attribute.IntegerAttribute(true, "rpm", 0).setMinMax(0, Integer.MAX_VALUE).setEditable(false));
 		switch(this){
 			case LAND:{
 				attrs.add(new Attribute.BooleanAttribute(true, "lights_fog", false).setSeat("driver"));

@@ -598,6 +598,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
         	vehicle.getAttribute("throttle").setValue((float)throttle);
+        	vehicle.getAttribute("speed").setValue((float)speed);
         }
 		float throttlePull = 0.99F;
 		if(vehicle.getType().getVehicleType().isHeli() && canThrust())

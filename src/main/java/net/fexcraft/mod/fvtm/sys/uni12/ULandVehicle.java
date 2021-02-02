@@ -839,6 +839,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
         	vehicle.getAttribute("throttle").setValue((float)throttle);
+        	//
+        	vehicle.getAttribute("speed").setValue((float)speed);
+        	vehicle.getAttribute("rpm").setValue(crpm / 100 * 100);
         }
         for(WheelEntity wheel : wheels){
             if(wheel != null){

@@ -1183,7 +1183,18 @@ public class DefaultPrograms {
 			int minr = args.length < 3 ? 0 : Integer.parseInt(args[2]);
 			int maxr = args.length < 4 ? 0 : Integer.parseInt(args[3]);
 			int minv = args.length < 5 ? 0 : Integer.parseInt(args[4]);
-			int maxv = args.length < 6 ? 0 : Integer.parseInt(args[5]);
+			Object maxv = 0;
+			if(args.length > 5){
+				if(NumberUtils.isCreatable(args[5])){
+					maxv = Integer.parseInt(args[5]);
+				}
+				else if(GaugeLimit.parseable(args[5])){
+					maxv = GaugeLimit.valueOf(args[5]);
+				}
+				else{
+					maxv = args[5];
+				}
+			}
 			return new Gauge(args[0], axis, minr, maxr, minv, maxv);
 		}
 		
@@ -1206,6 +1217,13 @@ public class DefaultPrograms {
 		private static EngineFunction func;
 		
 		public abstract float getMaxValue(float maxval, Entity ent, VehicleData data);
+
+		static boolean parseable(String string){
+			for(GaugeLimit limit : GaugeLimit.values()){
+				if(string.equals(limit.name())) return true;
+			}
+			return false;
+		}
 		
 	}
 	

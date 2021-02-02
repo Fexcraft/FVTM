@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
@@ -107,6 +108,7 @@ public class RenderULV extends Render<ULandVehicle> implements IRenderFactory<UL
 					PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 					if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
 						GL11.glDisable(GL11.GL_TEXTURE_2D);
+						TexturedPolygon.TRIANGULATED_QUADS = false;
 						GL11.glLineWidth(4f);
 	        			for(Entry<String, PartData> data : vehicle.getVehicleData().getParts().entrySet()){
 	        				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
@@ -127,6 +129,7 @@ public class RenderULV extends Render<ULandVehicle> implements IRenderFactory<UL
 	        				}
 	        			}
 	        			GL11.glLineWidth(1f);
+						TexturedPolygon.TRIANGULATED_QUADS = true;
 						GL11.glEnable(GL11.GL_TEXTURE_2D);
 					}
 	            }

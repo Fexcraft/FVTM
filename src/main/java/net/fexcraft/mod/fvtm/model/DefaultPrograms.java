@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
+import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Pos;
@@ -89,6 +90,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(TRANSPARENT);
 		TurboList.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
+		TurboList.PROGRAMS.add(new Gauge("", 0, 0, 0, 0, 0));//jtmt/obj init only
 		//
 		DIDLOAD = true;
 	}
@@ -1109,4 +1111,60 @@ public class DefaultPrograms {
 			}
 		}, new Date(mid), Config.BLINKER_INTERVAL);
 	}
+	
+	public static class Gauge implements Program {
+		
+		private byte axis;
+		private float minrot, maxrot, minval, maxval;
+		private String attribute;
+		private Attribute<?> attr;
+		private float current, rotdiff, valdiff;
+		
+		public Gauge(String attribute, int axis, float min_rot, float max_rot, float min_value, float max_value){
+			this.attribute = attribute;
+			this.axis = (byte)axis;
+			minrot = min_rot;
+			maxrot = max_rot;
+			minval = min_value;
+			maxval = max_value;
+			rotdiff = maxrot - minrot;
+			valdiff = maxval - minval;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:gauge";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if((attr = data.getAttribute(attribute)) == null) return;
+			current = attr.getFloatValue() < minval ? minval : attr.getFloatValue();
+			if(current > maxval) current = maxval;
+			list.rotateAxis(minrot + ((current - minval) / valdiff) * rotdiff, axis, true);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			list.rotateAxis(0, axis, true);
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			return parse(JsonUtil.jsonArrayToStringArray(elm.getAsJsonArray()).toArray(new String[0]));
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			int axis = args.length < 2 ? 0 : Integer.parseInt(args[1]);
+			int minr = args.length < 3 ? 0 : Integer.parseInt(args[2]);
+			int maxr = args.length < 4 ? 0 : Integer.parseInt(args[3]);
+			int minv = args.length < 5 ? 0 : Integer.parseInt(args[4]);
+			int maxv = args.length < 6 ? 0 : Integer.parseInt(args[5]);
+			return new Gauge(args[0], axis, minr, maxr, minv, maxv);
+		}
+		
+	};
+	
 }

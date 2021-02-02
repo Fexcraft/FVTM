@@ -1180,13 +1180,13 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			int axis = args.length < 2 ? 0 : Integer.parseInt(args[1]);
-			int minr = args.length < 3 ? 0 : Integer.parseInt(args[2]);
-			int maxr = args.length < 4 ? 0 : Integer.parseInt(args[3]);
-			int minv = args.length < 5 ? 0 : Integer.parseInt(args[4]);
+			float minr = args.length < 3 ? 0 : Float.parseFloat(args[2]);
+			float maxr = args.length < 4 ? 0 : Float.parseFloat(args[3]);
+			float minv = args.length < 5 ? 0 : Float.parseFloat(args[4]);
 			Object maxv = 0;
 			if(args.length > 5){
 				if(NumberUtils.isCreatable(args[5])){
-					maxv = Integer.parseInt(args[5]);
+					maxv = Float.parseFloat(args[5]);
 				}
 				else if(GaugeLimit.parseable(args[5])){
 					maxv = GaugeLimit.valueOf(args[5]);

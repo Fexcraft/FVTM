@@ -46,14 +46,13 @@ public class BlockModel extends GenericModel<BlockData, TileEntity> implements F
 
 	@Override
 	public void render(BlockData data, TileEntity tile){
-		for(TurboList list : groups){
-			list.renderBlock(tile, data, null);
-		}
+		for(TurboList list : groups) list.renderBlock(tile, data, null);
 	}
 
 	@Override
 	public void render(BlockData data, TileEntity tile, Entity ent, RenderCache cache){
-		for(TurboList list : groups){ list.renderBlock(tile, data, cache); }
+		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
+		for(TurboList list : groups) list.renderBlock(tile, data, cache);
 	}
 	
 	@Override

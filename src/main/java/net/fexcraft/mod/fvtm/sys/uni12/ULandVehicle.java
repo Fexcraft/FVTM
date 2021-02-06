@@ -375,9 +375,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 return true;
             }
             case ENGINE: {
-                NBTTagCompound compound = new NBTTagCompound();
-                compound.setString("task", "engine_toggle");
-                this.toggleEngine(compound); return true;
+                this.toggleEngine();
+                return true;
             }
             case DISMOUNT: {
                 Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
@@ -1285,9 +1284,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
-                case "engine_toggle": {
-                	this.toggleEngine(pkt.nbt); break;
-                }
                 case "resync": {
                     NBTTagCompound nbt = this.vehicle.write(new NBTTagCompound());
                     nbt.setString("task", "update_vehicledata");
@@ -1297,23 +1293,20 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
     }
 
-    private void toggleEngine(NBTTagCompound compound){
+    private void toggleEngine(){
         if(lr + 1000 >= Time.getDate()){ return; }
-        lr = Time.getDate(); /*boolean on = false, nf = false;*/ EngineFunction engine = vehicle.getPart("engine").getFunction("fvtm:engine");
-        compound.setBoolean("engine_toggle_result", /*on =*/ engine.toggle());
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setString("task", "engine_toggle");
+        lr = Time.getDate();
+        EngineFunction engine = vehicle.getPart("engine").getFunction("fvtm:engine");
+        if(world.isRemote) engine.setState(compound.getBoolean("engine_toggle_result"));
+        else compound.setBoolean("engine_toggle_result", engine.toggle());
         if(vehicle.getStoredFuel() == 0){
-        	compound.setBoolean("engine_toggle_result", /*on =*/ false);
-            compound.setBoolean("no_fuel", /*nf =*/ true);
+        	compound.setBoolean("engine_toggle_result", engine.setState(false));
+            compound.setBoolean("no_fuel", true);
         }
-        ApiUtil.sendEntityUpdatePacketToAllAround(this, compound); throttle = 0;
-        /*Sound sound = vehicle.getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
-        if(sound != null){
-            this.playSound(sound.event, 0.5f, 1f);
-            Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Playing!");
-        }
-        else{
-            Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Not found.");
-        }*///Think that's already done client side?
+        ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
+        throttle = 0;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -1330,12 +1323,15 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
                 	boolean riding = net.minecraft.client.Minecraft.getMinecraft().player.isRiding();
-                    if(riding && getDriver() == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
-                    	boolean state = pkt.nbt.getBoolean("engine_toggle_result"); EntityPlayer player = net.minecraft.client.Minecraft.getMinecraft().player;
+                    if(riding && getDriver() == net.minecraft.client.Minecraft.getMinecraft().player){
+                    	boolean state = pkt.nbt.getBoolean("engine_toggle_result");
+                    	EntityPlayer player = net.minecraft.client.Minecraft.getMinecraft().player;
                         Print.chat(player, "Engine toggled " + (vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
-                            Print.chat(player, "Out of fuel!"); vehicle.playSound(this, "engine_fail");
-                        } else vehicle.playSound(this, state ? "engine_start" : "engine_stop");
+                            Print.chat(player, "Out of fuel!");
+                            vehicle.playSound(this, "engine_fail");
+                        }
+                        else vehicle.playSound(this, state ? "engine_start" : "engine_stop");
                     }
                     throttle = 0;
                     if(vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){

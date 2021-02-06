@@ -280,7 +280,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setString("task", "engine_toggle");
                 ApiUtil.sendEntityUpdatePacketToServer(this, nbt);
-                //TODO correct this
+                //TODO update this
                 return true;
             }
             case DISMOUNT: {

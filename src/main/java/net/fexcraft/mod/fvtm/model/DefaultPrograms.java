@@ -93,6 +93,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new Gauge("", 0, 0, 0, 0, 0));//jtmt/obj init only
+		TurboList.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
+		TurboList.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
 		//
 		DIDLOAD = true;
 	}
@@ -1225,6 +1227,108 @@ public class DefaultPrograms {
 			return false;
 		}
 		
+	}
+	
+	public static class RotationSetter implements Program {
+		
+		private Float defrot;
+		private int axis;
+		private boolean override;
+		private float rot;
+		
+		public RotationSetter(int axis, float rot_by, float def_rot, boolean set){
+			this.override = true;
+			this.axis = axis;
+			defrot = def_rot;
+			rot = rot_by;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:rotation_setter";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			list.rotateAxis(rot + defrot, axis, override);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			list.rotateAxis(override ? defrot : -(rot + defrot), axis, override);
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			int axis = array.get(0).getAsInt();
+			int to = array.get(1).getAsInt();
+			int def = array.get(2).getAsInt();
+			boolean set = array.get(3).getAsBoolean();
+			return new RotationSetter(axis, def, to, set);
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			int axis = Integer.parseInt(args[0]);
+			float to = Float.parseFloat(args[1]);
+			float def = Float.parseFloat(args[2]);
+			boolean set = Boolean.parseBoolean(args[3]);
+			return new RotationSetter(axis, def, to, set);
+		}
+		
+	}
+	
+	public static class TranslationSetter implements Program {
+		
+		private float x, y, z;
+		
+		public TranslationSetter(float x, float y, float z){
+			this(x, y, z, Static.sixteenth);
+		}
+		
+		public TranslationSetter(float x, float y, float z, float scale){
+			this.x = x * scale;
+			this.y = y * scale;
+			this.z = z * scale;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:translation_setter";
+		}
+
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glPushMatrix();
+			GL11.glTranslatef(x, y, z);
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glPopMatrix();
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			float x = array.get(0).getAsFloat();
+			float y = array.get(1).getAsFloat();
+			float z = array.get(2).getAsFloat();
+			float s = array.size() > 3 ? array.get(3).getAsFloat() : Static.sixteenth;
+			return new TranslationSetter(x, y, z, s);
+		}
+
+		@Override
+		public Program parse(String[] args){
+			float x = Float.parseFloat(args[0]);
+			float y = Float.parseFloat(args[1]);
+			float z = Float.parseFloat(args[2]);
+			float s = args.length > 3 ? Float.parseFloat(args[3]) : Static.sixteenth;
+			return new TranslationSetter(x, y, z, s);
+		}
+
 	}
 	
 }

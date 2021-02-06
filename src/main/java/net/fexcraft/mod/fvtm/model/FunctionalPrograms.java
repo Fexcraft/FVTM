@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.model;
 
 import net.fexcraft.mod.fvtm.model.TurboList.FunctionalProgram;
 
-public class FuntionalPrograms {
+public class FunctionalPrograms {
 	
 	public static class EngineOn extends FunctionalProgram {
 

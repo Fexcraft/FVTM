@@ -237,8 +237,8 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 	
 	public static class FunctionalProgram extends ConditionalProgram {
 		
-		private Predicate<GeneralProgramObject> general;
-		private Predicate<BlockProgramObject> block;
+		protected Predicate<GeneralProgramObject> general;
+		protected Predicate<BlockProgramObject> block;
 		
 		public FunctionalProgram(Predicate<?> pred, int index){
 			switch(index){

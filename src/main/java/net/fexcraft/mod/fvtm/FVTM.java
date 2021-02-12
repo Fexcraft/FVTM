@@ -249,8 +249,10 @@ public class FVTM {
 	public void onStop(FMLServerStoppingEvent event){
 		if(RAILSYSTEM != null) RAILSYSTEM.cancel(); if(ROADSYSTEM != null) ROADSYSTEM.cancel();
 		for(World world : Static.getServer().worlds){
-			world.getCapability(Capabilities.RAILSYSTEM, null).unload();
-			world.getCapability(Capabilities.ROADSYSTEM, null).unload();
+			RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
+			if(sys != null) sys.unload();
+			RoadSystem rys = world.getCapability(Capabilities.ROADSYSTEM, null);
+			if(rys != null) rys.unload();
 		}
 	}
 

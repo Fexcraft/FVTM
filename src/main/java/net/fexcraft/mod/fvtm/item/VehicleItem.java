@@ -66,6 +66,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         }
         tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getStringValue() + "kg"));
         tooltip.add(Formatter.format("&9Seats: &7" + data.getSeats().size()));
+    	tooltip.add(Formatter.format("&9LockCode: &7" + data.getLockCode()));
         //temporary
         /*if(flag.isAdvanced() && !data.getAttributes().isEmpty()){
         	for(Attribute attr : data.getAttributes().values()){

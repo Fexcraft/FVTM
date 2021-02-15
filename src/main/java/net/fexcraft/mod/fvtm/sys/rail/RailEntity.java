@@ -174,32 +174,36 @@ public class RailEntity implements Comparable<RailEntity>{
     	if(engine == null) return false;
     	if(vehdata.getAttributeInteger("fuel_stored", 0) <= 0) return false;
     	if(fuel_accu < 20){
-    		if(!engine.isOn()){
-    			//pass
+    		if(engine.isOn()){
+    			if(throttle == 0f || (throttle < 0.05f && throttle > -0.05f)){
+        			consumed += engine.getIdleFuelConsumption();
+        		}
+        		else{
+        			consumed += engine.getFuelConsumption(vehdata.getAttribute("fuel_secondary").getStringValue()) * throttle;
+        		}
     		}
-    		else if(throttle == 0f || (throttle < 0.05f && throttle > -0.05f)){
-    			consumed += engine.getIdleFuelConsumption();
-    		}
-    		else{
-    			consumed += engine.getFuelConsumption(vehdata.getAttribute("fuel_secondary").getStringValue()) * throttle;
-    		}
-    		fuel_accu++; return true;
+    		fuel_accu++;
+    		return true;
     	}
     	else{
+    		boolean bool = false;
     		if(consumed > 0){
     			int con = (int)(consumed / 20f);
     			vehdata.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
+    			bool = true;
     		}
     		if(entity != null && engine.isOn() && vehdata.getAttribute("fuel_stored").getFloatValue() <= 0){
     			NBTTagCompound compound  = new NBTTagCompound();
     			compound.setString("task", "engine_toggle");
     			compound.setBoolean("engine_toggle_result", false);
-            	compound.setBoolean("no_fuel", true); throttle = 0; engine.setState(false);
+            	compound.setBoolean("no_fuel", true);
+            	throttle = 0;
+            	engine.setState(false);
                 ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
     		}
     		fuel_accu = 0;
     		consumed = 0;
-    		return true;
+    		return bool;
     	}
 	}
 

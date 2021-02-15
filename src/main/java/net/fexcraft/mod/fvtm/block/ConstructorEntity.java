@@ -149,7 +149,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					vdata.getColorChannel(channel).packed = rgb;
 				}
 				else{
-					vdata.getColorChannel(channel).packed = rgb;
+					cdata.getColorChannel(channel).packed = rgb;
 				}
 				container.setTitleText("Color Applied.", null); this.updateClient("color"); return;
 			}

@@ -799,7 +799,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		            wheel.motionZ *= 0.9F;
 		            wheel.motionY -= 0.98F / 20F;//Gravity
 		            if(engine != null){
-		                if((canThrustCreatively || consumed)){
+		                if(canThrustCreatively || consumed){
 		                    double velocityScale;
 		                    if(lata.is_tracked){
 		                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
@@ -863,7 +863,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		            wheel.motionZ *= 0.9F;
 		            wheel.motionY -= 0.98F / 20F;//Gravity
 		            if(engine != null){
-		                if((canThrustCreatively || consumed)){
+		                if(canThrustCreatively || consumed){
 		                    double velocityScale;
 		                    if(lata.is_tracked){
 		                        boolean left = wheel.wheelid == 0 || wheel.wheelid == 3;
@@ -964,6 +964,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
     private boolean processConsumption(EngineFunction engine){
     	if(engine == null) return false;
+    	if(vehicle.getAttributeInteger("fuel_stored", 0) <= 0) return false;
     	if(accumulator < 20){
     		if(!engine.isOn()){
     			//pass
@@ -988,7 +989,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             	compound.setBoolean("no_fuel", true); throttle = 0;
                 ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
     		}
-    		accumulator = 0; consumed = 0; return true;
+    		accumulator = 0;
+    		consumed = 0;
+    		return true;
     	}
 	}
 

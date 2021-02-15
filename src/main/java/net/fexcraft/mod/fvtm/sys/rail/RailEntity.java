@@ -172,6 +172,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private boolean processConsumption(EngineFunction engine){
     	if(engine == null) return false;
+    	if(vehdata.getAttributeInteger("fuel_stored", 0) <= 0) return false;
     	if(fuel_accu < 20){
     		if(!engine.isOn()){
     			//pass
@@ -196,7 +197,9 @@ public class RailEntity implements Comparable<RailEntity>{
             	compound.setBoolean("no_fuel", true); throttle = 0; engine.setState(false);
                 ApiUtil.sendEntityUpdatePacketToAllAround(entity, compound);
     		}
-    		fuel_accu = 0; consumed = 0; return true;
+    		fuel_accu = 0;
+    		consumed = 0;
+    		return true;
     	}
 	}
 

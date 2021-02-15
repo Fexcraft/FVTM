@@ -78,7 +78,7 @@ public class Config {
             
     	}
     	{//GENERAL
-            VEHICLES_NEED_FUEL = config.getBoolean("vehicles_need_fuel", GENERAL, false, "If vehicles need Fuel (in survival mode) to function.");
+            VEHICLES_NEED_FUEL = config.getBoolean("vehicle_consume_fuel", GENERAL, true, "If vehicles need Fuel (in survival mode) to function.");
             VEHICLE_UPDATE_RANGE = config.getFloat("vehicle_update_range", GENERAL, 256, 8, 4096, "Range in which Vehicle Update Packets will be sent.");
             VEHICLE_DROP_CONTENTS = config.getBoolean("vehicle_drop_contents", GENERAL, false, "If vehicles should drop their inventory contents upon being 'broken' or removed by hand.");
             UNBREAKABLE_CONTAINERS = config.getBoolean("unbreakable_containers", GENERAL, false, "If containers should be unbreakable (via tools/hand).");

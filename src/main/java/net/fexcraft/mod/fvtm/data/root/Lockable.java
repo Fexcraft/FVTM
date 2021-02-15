@@ -37,7 +37,7 @@ public interface Lockable {
 		String code = item.getLockCode(stack);
 		if(code.equals(lockable.getLockCode())){
 			lockable.setLocked(null);
-			Print.chatbar(sender, lockable.isLocked() ? "&cLocked." : "Unlocked.");
+			Print.chatbar(sender, lockable.isLocked() ? "&cLocked." : "&aUnlocked.");
 		}
 		else{
 			Print.chatbar(sender, "&cKey code does not match.");

@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
@@ -49,7 +50,7 @@ public class ContainerBlock extends BlockContainer {
         this.setSoundType(SoundType.METAL);
         //
         this.setHarvestLevel("pickaxe", 0);
-        this.setHardness(8.0F);
+        this.setHardness(Config.UNBREAKABLE_CONTAINERS ? -1F : 8.0F);
         this.setResistance(50.0F);
         //
         INSTANCE = this;

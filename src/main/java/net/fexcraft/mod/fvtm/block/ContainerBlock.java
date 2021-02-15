@@ -49,8 +49,8 @@ public class ContainerBlock extends BlockContainer {
         this.setSoundType(SoundType.METAL);
         //
         this.setHarvestLevel("pickaxe", 0);
-        this.setHardness(50.0F);
-        this.setResistance(280.0F);
+        this.setHardness(8.0F);
+        this.setResistance(50.0F);
         //
         INSTANCE = this;
     }

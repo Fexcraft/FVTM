@@ -9,8 +9,8 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
@@ -151,14 +151,9 @@ public class ContainerBlock extends BlockContainer {
                 return true;
             }
             ItemStack stack = player.getHeldItem(hand);
-            if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
-                /*if(te.isLocked()){
-                    te.unlock(world, player, stack, (KeyItem) stack.getItem());
-                }
-                else{
-                    te.lock(world, player, stack, (KeyItem) stack.getItem());
-                }*/
-            	return true;//TODO locking system
+            if(Lockable.isKey(stack.getItem())){
+            	Lockable.toggle(te.getContainerData(), player, stack);
+            	return true;
             }
             if(te.isLocked()){
                 Print.chat(player, "Container is Locked.");

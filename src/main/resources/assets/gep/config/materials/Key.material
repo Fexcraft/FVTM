@@ -2,6 +2,6 @@
     "RegistryName": "gep:key",
     "Addon": "fvtm:gep",
     "Name": "Generic Car Key",
-    "MaxItemStackSize": 4,
+    "MaxItemStackSize": 5,
     "VehicleKey": true
 }

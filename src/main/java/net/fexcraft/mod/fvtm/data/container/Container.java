@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -38,6 +39,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected List<NamedResourceLocation> textures;
 	protected Model<ContainerData, Object> model;
+	protected ResourceLocation keytype;
 	protected ContentFilter filter;
 	protected InventoryType invtype;
 	protected ContainerType type;
@@ -84,6 +86,7 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 				channels.put(entry.getKey(), new RGB(entry.getValue().getAsString()));
 			}
 		}
+		this.keytype = obj.has("KeyType") ? new ResourceLocation(obj.get("KeyType").getAsString()) : Lockable.DEFAULT_KEY;
 		this.invtype = InventoryType.valueOf(JsonUtil.getIfExists(obj, "InventoryType", "ITEM").toUpperCase());
 		this.capacity = JsonUtil.getIfExists(obj, "InventorySize", invtype == InventoryType.ITEM ? 8 : 16000).intValue();
         if(obj.has("FluidType")){
@@ -167,6 +170,10 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 	@Override
 	public String getCreativeTab(){
 		return ctab;
+	}
+	
+	public ResourceLocation getKeyType(){
+		return keytype;
 	}
 
 }

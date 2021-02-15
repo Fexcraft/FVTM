@@ -6,6 +6,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
@@ -62,6 +63,10 @@ public class SeatCache {
 	public boolean processInteract(EntityPlayer player, EnumHand hand){
         if(vehicle.world.isRemote){ return false; }
         ItemStack stack = player.getHeldItem(hand);
+        if(Lockable.isKey(stack.getItem())){
+        	Lockable.toggle(vehicle.getVehicleData(), player, stack);
+        	return true;
+        }
         if(vehicle.getVehicleData().isLocked()){
             Print.chat(player, "Vehicle is Locked.");
             return true;

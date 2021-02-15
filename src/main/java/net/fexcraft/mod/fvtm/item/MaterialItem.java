@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.resources.I18n;
@@ -86,7 +87,7 @@ public class MaterialItem extends TypeCoreItem<Material> {
     public String getLockCode(ItemStack stack){
     	if(!type.isVehicleKey()) return null;
     	if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-    	if(!stack.getTagCompound().hasKey("LockCode")) stack.getTagCompound().setString("LockCode", java.util.UUID.randomUUID().toString().substring(0, 8));
+    	if(!stack.getTagCompound().hasKey("LockCode")) stack.getTagCompound().setString("LockCode", Lockable.newCode());
     	return stack.getTagCompound().getString("LockCode");
     }
     

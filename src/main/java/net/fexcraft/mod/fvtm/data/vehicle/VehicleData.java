@@ -55,7 +55,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected int selected_texture;
-	protected String extex, preset;
+	protected String extex, preset, lockcode;
 	protected ResourceLocation seltex;
 	protected boolean isTextureExternal, locked;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
@@ -172,6 +172,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//if(customname != null) compound.setString("CustomName", customname);
 		if(preset != null) compound.setString("Preset", preset);
 		if(displayname != null) compound.setString("DisplayName", displayname);
+		if(lockcode != null) compound.setString("LockCode", lockcode);
 		/*Print.debug("write", compound);*/ return compound;
 	}
 
@@ -274,6 +275,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//if(compound.hasKey("CustomName")) customname = compound.getString("CustomName");
 		if(compound.hasKey("Preset")) preset = compound.getString("Preset"); else preset = null;
 		if(compound.hasKey("DisplayName")) displayname = compound.getString("DisplayName");
+		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : Lockable.newCode();
 		//
 		/*Print.debug("read", compound);*/ return this;
 	}
@@ -632,6 +634,16 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	@Override
 	public boolean isLocked(){
 		return locked;
+	}
+
+	@Override
+	public String getLockCode(){
+		return lockcode;
+	}
+
+	@Override
+	public void setLocked(Boolean bool){
+		locked = bool == null ? !locked : bool;
 	}
 
 	public double getThrottle(){

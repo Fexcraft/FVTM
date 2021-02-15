@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
@@ -725,7 +726,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
         if(isDead || world.isRemote || hand == EnumHand.OFF_HAND){ return false; }
         ItemStack stack = player.getHeldItem(hand);
-        //TODO keyitem/lock check
+        if(Lockable.isKey(stack.getItem())){
+        	Lockable.toggle(vehicle, player, stack);
+        	return true;
+        }
         if(vehicle.isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
         if(!stack.isEmpty()){
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){

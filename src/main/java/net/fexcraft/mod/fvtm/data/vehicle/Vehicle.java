@@ -52,6 +52,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	protected float coupler_range = 0.25f;
 	protected HashMap<String, LiftingPoint> liftingpoints = new HashMap<>();
+	protected ResourceLocation keytype;
+	protected int maxkeys;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -92,6 +94,8 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		this.required = (ArrayList<String>)DataUtil.getStringArray(obj, "RequiredParts", true, false);
 		this.categories = (ArrayList<String>)DataUtil.getStringArray(obj, new String[]{ "Category", "Categories" }, ",", false);
+		this.maxkeys = JsonUtil.getIfExists(obj, "MaxKeys", 5).intValue();
+		this.keytype = obj.has("KeyType") ? new ResourceLocation(obj.get("KeyType").getAsString()) : Lockable.DEFAULT_KEY;
 		//
 		if(obj.has("Attributes")){
 			JsonArray array = obj.get("Attributes").getAsJsonArray();
@@ -362,6 +366,14 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	@Override
 	public String getCreativeTab(){
 		return ctab;
+	}
+	
+	public int getMaxKeys(){
+		return maxkeys;
+	}
+	
+	public ResourceLocation getKeyType(){
+		return keytype;
 	}
 
 }

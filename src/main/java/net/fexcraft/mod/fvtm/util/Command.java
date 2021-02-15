@@ -12,18 +12,24 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
+import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 
 @fCommand
 public class Command extends CommandBase {
@@ -59,22 +65,88 @@ public class Command extends CommandBase {
         switch(args[0]){
             case "help": {
         		Print.chat(sender, "&9Command arguments");
-        		Print.chat(sender, "&7- /fvtm rrr (reload rail region)");
-        		Print.chat(sender, "&7- /fvtm rrs (reload rail sections)");
-        		Print.chat(sender, "&7- /fvtm debug (toggle debug mode)");
+        		Print.chat(sender, "&7- /fvtm get-key <vehicle/container>");
         		Print.chat(sender, "&7- /fvtm preset <args>");
         		Print.chat(sender, "&7- /fvtm attr <args>");
         		Print.chat(sender, "&7- /fvtm vals <args> (debug values)");
+        		Print.chat(sender, "&7- /fvtm rrr (reload rail region)");
+        		Print.chat(sender, "&7- /fvtm rrs (reload rail sections)");
+        		Print.chat(sender, "&7- /fvtm debug (toggle debug mode)");
         		Print.chat(sender, "&7- /fvtm spawn-sys");
                 break;
             }
+            case "get-key": {
+            	EntityPlayer player = (EntityPlayer)sender.getCommandSenderEntity();
+            	if(args.length < 2){
+            		Print.chat(sender, "&cPlease select a key type! &7(vehicle or container)");
+            	}
+            	else if(args[1].equals("vehicle")){
+            		if(player.isRiding() && player.getRidingEntity() instanceof GenericVehicle){
+            			GenericVehicle ent = (GenericVehicle)player.getRidingEntity();
+            			VehicleData data = ent.getVehicleData();
+            			if(data.isLocked()){
+                    		Print.chat(sender, "&cPlease unlock the Vehicle first.");
+            			}
+            			else if(!ent.getSeatOf(player).seatdata.driver){
+                    		Print.chat(sender, "&eYou need to be the driver to get a key.");
+            			}
+            			else if(data.getAttributeInteger("generated_keys", 0) >= data.getType().getMaxKeys()){
+                    		Print.chat(sender, "&cMax amount of keys for this vehicle has been given already.");
+            			}
+            			else{
+            				giveKeyItem(player, data.getType().getKeyType(), data.getLockCode());
+            				Attribute<Integer> attr = data.getAttributeCasted("generated_keys");
+            				attr.setValue(attr.getIntegerValue() + 1);
+            			}
+            		}
+            		else if(player.getHeldItemMainhand().getItem() instanceof VehicleItem){
+            			ItemStack stack = player.getHeldItemMainhand();
+            			VehicleItem item = (VehicleItem)stack.getItem();
+            			if(item.getData(stack).isLocked()){
+                    		Print.chat(sender, "&cPlease unlock the Container first.");
+            			}
+            			else if(item.getData(stack).getAttributeInteger("generated_keys", 0) >= item.getType().getMaxKeys()){
+                    		Print.chat(sender, "&cMax amount of keys for this vehicle has been given already.");
+            			}
+            			else{
+            				giveKeyItem(player, item.getType().getKeyType(), item.getData(stack).getLockCode());
+            				Attribute<Integer> attr = item.getData(stack).getAttributeCasted("generated_keys");
+            				attr.setValue(attr.getIntegerValue() + 1);
+            			}
+            		}
+            		else{
+                		Print.chat(sender, "&eYou need to sit in a vehicle or hold the item in hand.");
+            		}
+            	}
+            	else if(args[1].equals("container")){
+            		if(player.getHeldItemMainhand().getItem() instanceof ContainerItem){
+            			ItemStack stack = player.getHeldItemMainhand();
+            			ContainerItem item = (ContainerItem)stack.getItem();
+            			if(item.getData(stack).isLocked()){
+                    		Print.chat(sender, "&cPlease unlock the Container first.");
+            			}
+            			else{
+            				giveKeyItem(player, item.getType().getKeyType(), item.getData(stack).getLockCode());
+            			}
+            		}
+            		else{
+                		Print.chat(sender, "&eYou need to hold a Container item in hand.");
+            		}
+            	}
+            	else{
+            		Print.chat(sender, "&cKey type not found.");
+            	}
+            	break;
+            }
             case "rrr": case "reload-railregion":{
             	((RailSys)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("all", sender);
-            	Print.chat(sender, "&oRail-Regions Reloading."); break;
+            	Print.chat(sender, "&oRail-Regions Reloading.");
+            	break;
             }
             case "rrs": case "reload-railsections":{
             	((RailSys)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("sections", sender);
-            	Print.chat(sender, "&oRail-Sections Reloading."); break;
+            	Print.chat(sender, "&oRail-Sections Reloading.");
+            	break;
             }
             case "debug":{
             	Print.chat(sender, "&7Debug: " + ((DEBUG = !DEBUG) ? "&cenabled" : "&adisabled") + "&7.");
@@ -219,6 +291,23 @@ public class Command extends CommandBase {
         }
         //
     }
+
+	private Item giveKeyItem(EntityPlayer player, ResourceLocation keytype, String lockcode){
+		Item ki = Item.REGISTRY.getObject(keytype);
+		if(ki == null) ki = Item.REGISTRY.getObject(Lockable.DEFAULT_KEY);
+		if(ki == null){
+			Print.chat(player, "&cKey item and replacement not found.");
+			Print.chat(player, "&ePlease make sure you have at least GEP installed.");
+		}
+		else{
+			ItemStack keystack = new ItemStack(ki, 1);
+			if(keystack.getTagCompound() == null) keystack.setTagCompound(new NBTTagCompound());
+			keystack.getTagCompound().setString("LockCode", lockcode);
+			player.addItemStackToInventory(keystack);
+			Print.chat(player, "&aKey added to inventory.");
+		}
+		return null;
+	}
 
 	public static String getValS(String string){
 		return VALS.get(string);

@@ -27,7 +27,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected int selected_texture;
-	protected String extex;
+	protected String extex, lockcode;
 	protected ResourceLocation seltex;
 	protected boolean externaltex, locked;
     private NonNullList<ItemStack> stacks;
@@ -71,6 +71,16 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	@Override
 	public boolean isLocked(){
 		return locked;
+	}
+
+	@Override
+	public String getLockCode(){
+		return lockcode;
+	}
+
+	@Override
+	public void setLocked(Boolean bool){
+		locked = bool == null ? !locked : bool;
 	}
 
 	public ItemStack newItemStack(){
@@ -141,6 +151,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
             fluidtank.writeToNBT(compound);
         }
 		compound.setBoolean("Locked", locked);
+		if(lockcode != null) compound.setString("LockCode", lockcode);
 		return compound;
 	}
 
@@ -171,6 +182,7 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
             fluidtank.readFromNBT(compound);
         }
 		this.locked = compound.getBoolean("Locked");
+		lockcode = compound.hasKey("LockCode") ? compound.getString("LockCode") : Lockable.newCode();
 		return this;
 	}
 

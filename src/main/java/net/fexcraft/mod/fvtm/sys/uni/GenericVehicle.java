@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -17,6 +19,7 @@ import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.util.Axis3D;
 import net.fexcraft.mod.fvtm.util.LoopSound;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -269,6 +272,15 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 
 	public int getSpeed(){
 		return (int)speed;
+	}
+	
+	public void sendLockStateUpdate(){
+		NBTTagCompound packet = new NBTTagCompound();
+		packet.setString("target_listener", Resources.UTIL_LISTENER);
+		packet.setString("task", "lock_state");
+		packet.setBoolean("state", getVehicleData().isLocked());
+		packet.setInteger("entity", getEntityId());
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
 	}
 
 }

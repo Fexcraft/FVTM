@@ -85,7 +85,7 @@ public class VehicleContainer extends GenericContainer {
 			for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
 				InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 				if(inv == null || inv.getInventoryType() == InventoryType.CONTAINER) continue;
-				if(seat == null ? inv.getSeats().contains("external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
+				if(seat == null ? inv.getSeats().contains(veh.isLocked() ? "external-locked" : "external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
 					if(invid == z){
 						inv_id = entry.getKey();
 						break;

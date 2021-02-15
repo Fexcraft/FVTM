@@ -134,7 +134,6 @@ public class InventoryFunction extends Function {
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <T> T getInventory(InventoryType type){
 		switch(type){
 			case CONTAINER: break;

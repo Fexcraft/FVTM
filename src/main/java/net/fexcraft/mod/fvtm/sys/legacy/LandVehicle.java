@@ -583,9 +583,9 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         ItemStack stack = player.getHeldItem(hand);
         if(Lockable.isKey(stack.getItem())){
         	Lockable.toggle(vehicle, player, stack);
+        	this.sendLockStateUpdate();
         	return true;
         }
-        if(vehicle.isLocked()){ Print.chat(player, "Vehicle is locked."); return true; }
         if(!stack.isEmpty()){
             if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isFuelContainer()){
             	player.openGui(FVTM.getInstance(), VEHICLE_FUEL, world, VEHICLE_FUEL, this.getEntityId(), 0);
@@ -622,6 +622,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 }
                 return true;
             }
+        }
+        if(vehicle.isLocked()){
+        	Print.chat(player, "Vehicle is locked.");
+        	return true;
         }
         //else if(ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT)) return true;
         if(!vehicle.getScripts().isEmpty()){

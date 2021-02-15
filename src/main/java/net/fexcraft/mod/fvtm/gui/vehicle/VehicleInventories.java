@@ -37,10 +37,11 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 		for(Map.Entry<String, PartData> entry : veh.getVehicleData().getParts().entrySet()){
 			InventoryFunction inv = entry.getValue().getFunction("fvtm:inventory");
 			if(inv == null || inv.getInventoryType() == InventoryType.CONTAINER) continue;
-			if(seat == null ? inv.getSeats().contains("external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
+			if(seat == null ? inv.getSeats().contains(veh.isLocked() ? "external-locked" : "external") : (seat.seatdata.driver || (inv.getSeats().contains(seat.seatdata.name)))){
 				inventories.add(entry.getValue()); inv_names.add(entry.getKey());
 			}
-		} for(int i = 0; i < 8; i++) colors[i] = RGB.WHITE;
+		}
+		for(int i = 0; i < 8; i++) colors[i] = RGB.WHITE;
 	}
 
 	@Override

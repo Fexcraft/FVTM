@@ -30,7 +30,10 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 		SeatCache seat = veh.getSeatOf(player);
 		veh.getVehicleData().getAttributes().values().forEach(attr -> {
-			if(seat.seatdata.driver || (attr.seat() != null && attr.seat().equals(seat.seatdata.name))){
+			if(seat == null && attr.external()){
+				attributes.add(attr);
+			}
+			else if(seat.seatdata.driver || (attr.seat() != null && attr.seat().equals(seat.seatdata.name))){
 				attributes.add(attr);
 			}
 		});

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.Entity;
@@ -32,6 +33,12 @@ public class ListenerClient implements IPacketListener<PacketNBTTagCompound> {
 			}
 			case "config_sync":{
 				ULandVehicle.SYNC_RATE = packet.nbt.hasKey("u12_sync_rate") ? packet.nbt.getInteger("u12_sync_rate") : Config.U12_SYNC_RATE;
+				return;
+			}
+			case "lock_state":{
+				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				if(ent == null || ent instanceof VehicleEntity) return;
+				((VehicleEntity)ent).getVehicleData().setLocked(packet.nbt.getBoolean("state"));
 				return;
 			}
 			default: return;

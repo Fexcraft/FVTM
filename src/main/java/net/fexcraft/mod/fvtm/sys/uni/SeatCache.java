@@ -65,6 +65,7 @@ public class SeatCache {
         ItemStack stack = player.getHeldItem(hand);
         if(Lockable.isKey(stack.getItem())){
         	Lockable.toggle(vehicle.getVehicleData(), player, stack);
+        	vehicle.sendLockStateUpdate();
         	return true;
         }
         if(vehicle.getVehicleData().isLocked()){

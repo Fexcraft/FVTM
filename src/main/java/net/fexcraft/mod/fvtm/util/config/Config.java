@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigElement;
@@ -26,7 +27,7 @@ public class Config {
     	//PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS;
     public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
-    public static boolean NO_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS;
+    public static boolean NO_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
 	public static long UNLOAD_INTERVAL;
@@ -80,7 +81,7 @@ public class Config {
             VEHICLES_NEED_FUEL = config.getBoolean("vehicles_need_fuel", GENERAL, false, "If vehicles need Fuel (in survival mode) to function.");
             VEHICLE_UPDATE_RANGE = config.getFloat("vehicle_update_range", GENERAL, 256, 8, 4096, "Range in which Vehicle Update Packets will be sent.");
             VEHICLE_DROP_CONTENTS = config.getBoolean("vehicle_drop_contents", GENERAL, false, "If vehicles should drop their inventory contents upon being 'broken' or removed by hand.");
-            
+            UNBREAKABLE_CONTAINERS = config.getBoolean("unbreakable_containers", GENERAL, false, "If containers should be unbreakable (via tools/hand).");
     	}
     	{//LEGACY
     		
@@ -127,6 +128,7 @@ public class Config {
             DISABLE_ROADS = config.getBoolean("disable_roads", ROADSYS, false, "If FVTM road system should be disabled.");
             
     	}
+    	ContainerBlock.INSTANCE.setHardness(UNBREAKABLE_CONTAINERS ? -1f : 8f);
     }
 
     public static void add(List<IConfigElement> list){

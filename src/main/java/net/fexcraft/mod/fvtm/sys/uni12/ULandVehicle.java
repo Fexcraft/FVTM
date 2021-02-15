@@ -1187,6 +1187,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     private boolean processConsumption(EngineFunction engine){
     	if(engine == null) return false;
     	if(!Config.VEHICLES_NEED_FUEL) return true;
+    	if(vehicle.getAttributeInteger("fuel_stored", 0) <= 0) return false;
     	if(accumulator < 20){
     		if(!engine.isOn() || isDriverInCreative()){
     			//pass
@@ -1211,7 +1212,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             	compound.setBoolean("no_fuel", true); throttle = 0;
                 ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
     		}
-    		accumulator = 0; consumed = 0; return true;
+    		accumulator = 0;
+    		consumed = 0;
+    		return true;
     	}
 	}
 

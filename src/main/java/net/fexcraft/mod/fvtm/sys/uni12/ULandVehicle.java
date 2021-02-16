@@ -1197,7 +1197,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         			consumed += engine.getFuelConsumption(vehicle.getAttribute("fuel_secondary").getStringValue()) * throttle;
         		}
     		}
-    		accumulator++; return true;
+    		accumulator++;
+    		return engine.isOn();
     	}
     	else{
     		boolean bool = false;

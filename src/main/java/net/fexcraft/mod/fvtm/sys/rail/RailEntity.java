@@ -183,7 +183,7 @@ public class RailEntity implements Comparable<RailEntity>{
         		}
     		}
     		fuel_accu++;
-    		return true;
+    		return engine.isOn();
     	}
     	else{
     		boolean bool = false;

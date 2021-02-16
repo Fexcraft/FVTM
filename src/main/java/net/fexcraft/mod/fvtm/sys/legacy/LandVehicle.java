@@ -975,7 +975,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         		}
     		}
     		accumulator++;
-    		return true;
+    		return engine.isOn();
     	}
     	else{
     		boolean bool = false;

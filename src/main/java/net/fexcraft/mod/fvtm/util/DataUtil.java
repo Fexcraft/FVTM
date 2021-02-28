@@ -79,9 +79,10 @@ public class DataUtil {
 				reslocs.add(new NamedResourceLocation(elm.getAsString()));
 			});
 		}
-		else{
+		if(reslocs.isEmpty()){
 			reslocs.add(new NamedResourceLocation("NullTex|fvtm:textures/entity/null.png"));
-		} return reslocs;
+		}
+		return reslocs;
 	}
 
 	public static RGB getColor(JsonObject obj, String prefix, boolean nell){

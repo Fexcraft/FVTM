@@ -562,7 +562,7 @@ public class DefaultPrograms {
 			this.max = max;
 			this.step = step;
 			this.axis = axis;
-			this.defrot = defrot;
+			this.defrot = defrot == null ? 0 : defrot;
 			if(min == max || (min == 0f && max == 0f)){
 				min = -360; max = 360;
 			}

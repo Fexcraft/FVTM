@@ -43,7 +43,7 @@ public class ListenerServer implements IPacketListener<PacketNBTTagCompound> {
 				PartData source = entity.getVehicleData().getPart(packet.nbt.getString("source"));
 				PartSlotsFunction func = source.getFunction(PartSlotsFunction.class, "fvtm:part_slots");
 				int index = packet.nbt.getInteger("index");
-				String slot = func.getSlotCategories().get(index);;
+				String slot = func.getSlotCategories().get(index);
 				if(entity.getVehicleData().getPart(slot) != null){
 					PartData oldpart = entity.getVehicleData().getPart(slot);
 					boolean valid = oldpart.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)oldpart.getType().getInstallationHandlerData()).hotswap;

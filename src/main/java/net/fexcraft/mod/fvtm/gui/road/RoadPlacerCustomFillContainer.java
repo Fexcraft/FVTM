@@ -75,28 +75,33 @@ public class RoadPlacerCustomFillContainer extends GenericContainer {
 	protected void packet(Side side, NBTTagCompound packet, EntityPlayer player){
 		switch(packet.getString("cargo")){
 			case "save":{
-				boolean empty = true;
-				for(ItemStack stack : roadinv.getStacks()){
-					if(!stack.isEmpty()){
-						empty = false;
-						break;
-					}
-				}
-				String tagname = notroad ? "CustomTopFill" : "CustomRoadFill";
-				if(empty){
-					if(stack.getTagCompound().hasKey(tagname)) stack.getTagCompound().removeTag(tagname);
-				}
-				else{
-					NBTTagCompound com = new NBTTagCompound();
-					com.setInteger("Size", size[0]);
-					for(int i = 0; i < roadinv.getSizeInventory(); i++){
-						ItemStack item = roadinv.getStackInSlot(i);
-						if(!item.isEmpty()){
-							com.setString("Block" + i, ((ItemBlock)item.getItem()).getBlock().getRegistryName().toString());
-							if(notroad) com.setByte("Meta" + i, (byte)item.getMetadata());
+				try{
+					boolean empty = true;
+					for(ItemStack stack : roadinv.getStacks()){
+						if(!stack.isEmpty()){
+							empty = false;
+							break;
 						}
 					}
-					stack.getTagCompound().setTag(tagname, com);
+					String tagname = notroad ? "CustomTopFill" : "CustomRoadFill";
+					if(empty){
+						if(stack.getTagCompound().hasKey(tagname)) stack.getTagCompound().removeTag(tagname);
+					}
+					else{
+						NBTTagCompound com = new NBTTagCompound();
+						com.setInteger("Size", size[0]);
+						for(int i = 0; i < roadinv.getSizeInventory(); i++){
+							ItemStack item = roadinv.getStackInSlot(i);
+							if(!item.isEmpty()){
+								com.setString("Block" + i, ((ItemBlock)item.getItem()).getBlock().getRegistryName().toString());
+								if(notroad) com.setByte("Meta" + i, (byte)item.getMetadata());
+							}
+						}
+						stack.getTagCompound().setTag(tagname, com);
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
 				}
 				player.closeScreen();
 				player.openGui(FVTM.getInstance(), ROADTOOLFILL, player.world, 0, 0, 0);

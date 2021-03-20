@@ -73,14 +73,16 @@ public class RailRenderer {
     			vecs = jitem.getVectors(stack);
     		}
         	//
-    		EntityPlayer player = event.getPlayer(); GlStateManager.disableTexture2D();
+    		EntityPlayer player = event.getPlayer();
+    		GlStateManager.disableTexture2D();
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
             double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
             double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
     		GL11.glTranslated(-x, -y, -z); GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     		GL11.glPushMatrix();
             GL11.glTranslated(vec.vector.xCoord, vec.vector.yCoord, vec.vector.zCoord);
-            model1.render(); GL11.glPopMatrix();
+            model1.render();
+            GL11.glPopMatrix();
             //
             for(int v = 0; v < vecs.length; v++){
         		GL11.glPushMatrix();

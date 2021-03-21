@@ -10,27 +10,34 @@
     "Modifiers":[
     	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "120", "priority": "veryhigh" }
     ],
-    "Function": {
-    	"id": "fvtm:engine",
-    	"engine_speed": 1,
-    	"idle_consumption": 1,
-    	"active_consumption": 8,
-    	"consumptions": {
-    		"petrodiesel": 9,
-    		"synthetic": 6,
-    		"biodiesel": 7
-    	},
-    	"fuel_group": "diesel",
-    	
-    	"min_rpm": 1000,
-	    "max_rpm": 5000,
-	    "torque_chart":{
-	        "1000": 300,
-	        "4000": 450,
-	        "5000": 400
+    "Functions": [
+    	{
+	    	"id": "fvtm:engine",
+	    	"engine_speed": 1,
+	    	"idle_consumption": 1,
+	    	"active_consumption": 8,
+	    	"consumptions": {
+	    		"petrodiesel": 9,
+	    		"synthetic": 6,
+	    		"biodiesel": 7
+	    	},
+	    	"fuel_group": "diesel",
+	    	
+	    	"min_rpm": 1000,
+		    "max_rpm": 5000,
+		    "torque_chart":{
+		        "1000": 300,
+		        "4000": 450,
+		        "5000": 400
+		    },
+		    "__comment": "example/testing values"
 	    },
-	    "__comment": "example/testing values"
-    },
+    	{
+    		"id": "fvtm_potr:emission_emitter",
+    		"emissions": [ 0.8, 0.1, 0.8 ],
+    		"engine": true
+    	}
+	],
     "Sounds":[
     	{
     		"event": "engine_start",

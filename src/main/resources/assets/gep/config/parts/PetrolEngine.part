@@ -10,18 +10,25 @@
     "Modifiers":[
     	{ "id": "weight", "type": "additive", "target": "vehicle:weight", "value": "116.8", "priority": "veryhigh" }
     ],
-    "Function": {
-    	"id": "fvtm:engine",
-    	"engine_speed": 1,
-    	"idle_consumption": 1.5,
-    	"active_consumption": 9,
-    	"consumptions": {
-    		"super95": 10,
-    		"super98": 8,
-    		"e10": 6.7
-    	},
-    	"fuel_group": "petrol"
-    },
+    "Functions": [
+    	{
+	    	"id": "fvtm:engine",
+	    	"engine_speed": 1,
+	    	"idle_consumption": 1.5,
+	    	"active_consumption": 9,
+	    	"consumptions": {
+	    		"super95": 10,
+	    		"super98": 8,
+	    		"e10": 6.7
+	    	},
+	    	"fuel_group": "petrol"
+	    },
+    	{
+    		"id": "fvtm_potr:emission_emitter",
+    		"emissions": [ 0.7, 0.1, 0.7 ],
+    		"engine": true
+    	}
+	],
     "Sounds":[
     	{
     		"event": "engine_start",

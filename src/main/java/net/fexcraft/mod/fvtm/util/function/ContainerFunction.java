@@ -6,10 +6,10 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
-import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
+import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 
-public class ContainerFunction extends StaticFuntion {
+public class ContainerFunction extends StaticFunction {
 	
 	private ContainerType onlytype;
 	private Pos position;

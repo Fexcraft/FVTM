@@ -7,10 +7,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.data.WheelSlot;
-import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
+import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 
-public class WheelPositionsFunction extends StaticFuntion {
+public class WheelPositionsFunction extends StaticFunction {
 	
 	private HashMap<String, WheelSlot> wheels = new HashMap<>();
 

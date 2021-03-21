@@ -9,14 +9,14 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
+import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class TransmissionFunction extends StaticFuntion {
+public class TransmissionFunction extends StaticFunction {
 	
 	private ArrayList<Float> ratios = new ArrayList<>();
 	private float u_low, u_mid, u_high;

@@ -8,10 +8,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
+import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 
-public class SeatsFunction extends StaticFuntion {
+public class SeatsFunction extends StaticFunction {
 	
 	private ArrayList<Seat> seats = new ArrayList<>();
 

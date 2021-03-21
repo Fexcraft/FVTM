@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.part.Function.StaticFuntion;
+import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.minecraft.client.util.ITooltipFlag;
@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PartSlotsFunction extends StaticFuntion {
+public class PartSlotsFunction extends StaticFunction {
 	
 	private ArrayList<String> slot_type = new ArrayList<>();
 	private ArrayList<Pos> slot_pos = new ArrayList<>();

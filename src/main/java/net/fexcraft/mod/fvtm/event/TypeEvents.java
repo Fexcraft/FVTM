@@ -18,8 +18,8 @@ public class TypeEvents<T extends TypeCore<T>> extends Event {
 		this.type = type;
 	}
 	
-	public TypeCore<T> getType(){
-		return type;
+	public T getType(){
+		return (T)type;
 	}
 	
 	public JsonObject getConfig(){

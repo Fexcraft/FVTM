@@ -389,6 +389,10 @@ public class Resources {
 		return FUNCTIONS.get(id);
 	}
 
+	public static TreeMap<String, Class<? extends Function>> getFunctions(){
+		return FUNCTIONS;
+	}
+
 	private static Field flightdata;
 	private static boolean flightdata_failed = false;
 	/** do not remember on what this is based **/

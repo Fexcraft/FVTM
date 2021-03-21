@@ -25,11 +25,11 @@ public class ResourceEvents extends Event {
 		}
 		
 		public void registerFunction(String regname, Class<? extends Function> function){
-			Resources.registerFunction("fvtm:transmission", function, false);
+			Resources.registerFunction(regname, function, false);
 		}
 		
 		public void registerFunction(ResourceLocation regname, Class<? extends Function> function){
-			Resources.registerFunction("fvtm:transmission", function, false);
+			Resources.registerFunction(regname, function, false);
 		}
 		
 	}

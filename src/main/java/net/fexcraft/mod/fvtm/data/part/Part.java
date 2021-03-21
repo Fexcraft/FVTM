@@ -186,7 +186,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 					}
 				}
 				else{
-					Print.log("Function with ID '" + id + "' for PART '" + registryname.toString() + "' not found!"); Static.stop();
+					Print.log("Function with ID '" + id + "' for PART '" + registryname.toString() + "' not found!"); //Static.stop();
 				}
 			}
 		}

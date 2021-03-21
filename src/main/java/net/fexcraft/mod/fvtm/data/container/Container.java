@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -26,6 +27,7 @@ import net.fexcraft.mod.fvtm.util.handler.ContentFilter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -98,7 +100,9 @@ public class Container extends TypeCore<Container> implements Textureable.Textur
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-		this.item = new ContainerItem(this); return this;
+		this.item = new ContainerItem(this);
+		MinecraftForge.EVENT_BUS.post(new TypeEvents.ContainerCreated(this, obj));
+		return this;
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
+import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -40,6 +41,7 @@ import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -266,7 +268,9 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-		this.item = new PartItem(this); return this;
+		this.item = new PartItem(this);
+		MinecraftForge.EVENT_BUS.post(new TypeEvents.PartCreated(this, obj));
+		return this;
 	}
 
 	@Override

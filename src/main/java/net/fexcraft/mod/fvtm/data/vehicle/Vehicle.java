@@ -22,6 +22,7 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.root.*;
+import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
@@ -30,6 +31,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -243,6 +245,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new VehicleItem(this);
+		MinecraftForge.EVENT_BUS.post(new TypeEvents.VehicleCreated(this, obj));
 		return this;
 	}
 

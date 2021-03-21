@@ -6,12 +6,14 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -65,7 +67,9 @@ public class Material extends TypeCore<Material> implements Tabbed {
 		this.fuelgroup = obj.has("FuelGroup") ? obj.get("FuelGroup").getAsString() : null;
 		//
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-		this.item = new MaterialItem(this); return this;
+		this.item = new MaterialItem(this);
+		MinecraftForge.EVENT_BUS.post(new TypeEvents.MaterialCreated(this, obj));
+		return this;
 	}
 
 	@Override

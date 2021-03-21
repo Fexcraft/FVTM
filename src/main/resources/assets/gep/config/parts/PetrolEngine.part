@@ -25,7 +25,7 @@
 	    },
     	{
     		"id": "fvtm_potr:emission_emitter",
-    		"emissions": [ 0.7, 0.1, 0.7 ],
+    		"emissions": [ 0.25, 0.01, 0.25 ],
     		"engine": true
     	}
 	],

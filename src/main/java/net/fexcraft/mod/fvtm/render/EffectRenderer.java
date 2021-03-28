@@ -247,9 +247,12 @@ public class EffectRenderer {
 				if(Command.TOGG_LABEL){
 					postMeshCalls();
 					float by = (consim(temp) * (scal * .5f));
-		        	GL11.glTranslated(0, by, 0);
+		        	GL11.glTranslatef(0, by, 0);
 					drawString(box.getKey(), scal * 2, RGB.WHITE.packed, true);
-		        	GL11.glTranslated(0, -by, 0);
+		        	GL11.glTranslatef(0, -by, 0);
+		        	GL11.glTranslatef(0, -(by = scal * .5f), 0);
+					drawString(attr.id(), scal * 2, RGB.WHITE.packed, true);
+		        	GL11.glTranslatef(0, by, 0);
 			        preMeshCalls();
 			        toggpos.add(temp);
 				}

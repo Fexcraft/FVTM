@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByte;
@@ -14,7 +15,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
 /**
- * 4th prototype.
+ * 5th prototype.
  * @author Ferdinand Calo' (FEX___96)
  */
 public abstract class Attribute<V> {
@@ -77,6 +78,7 @@ public abstract class Attribute<V> {
 	public abstract String getStringValue();
 	public abstract boolean getBooleanValue();
 	public abstract Boolean getTriStateValue();
+	public abstract Vec3f getVectorValue();
 	
 	public Attribute<?> updateValue(Update call){
 		for(Modifier<?> mod : modifiers){
@@ -143,7 +145,7 @@ public abstract class Attribute<V> {
 	
 	public static enum Type {
 		
-		STRING, INTEGER, FLOAT, BOOLEAN, TRISTATE, STRING_ARRAY, INT_ARRAY, FLOAT_ARRAY, BOOL_ARRAY, OBJECT;
+		STRING, INTEGER, FLOAT, BOOLEAN, TRISTATE, VEC3, STRING_ARRAY, INT_ARRAY, FLOAT_ARRAY, BOOL_ARRAY, OBJECT;
 		
 		public boolean isString(){ return this == STRING; }
 		public boolean isInteger(){ return this == INTEGER; }
@@ -272,6 +274,11 @@ public abstract class Attribute<V> {
 		@Override public String getStringValue(){ return value(); }
 		@Override public boolean getBooleanValue(){ return Boolean.parseBoolean(value()); }
 		@Override public Boolean getTriStateValue(){ return value().equalsIgnoreCase("null") ? null : Boolean.parseBoolean(value()); }
+
+		@Override
+		public Vec3f getVectorValue(){
+			return new Vec3f();
+		}
 		
 	}
 	
@@ -326,6 +333,11 @@ public abstract class Attribute<V> {
 		@Override
 		public void validate(){
 			if(value() > max()) setValue(max()); if(value() < min()) setValue(min());
+		}
+
+		@Override
+		public Vec3f getVectorValue(){
+			return new Vec3f(value());
 		}
 		
 	}
@@ -384,6 +396,11 @@ public abstract class Attribute<V> {
 			if(value() > max()){ setValue(((Float)max()).intValue()); }
 			if(value() < min()){ setValue(((Float)min()).intValue()); }
 		}
+
+		@Override
+		public Vec3f getVectorValue(){
+			return new Vec3f(value());
+		}
 		
 	}
 	
@@ -414,6 +431,11 @@ public abstract class Attribute<V> {
 		@Override public String getStringValue(){ return value() + ""; }
 		@Override public boolean getBooleanValue(){ return value(); }
 		@Override public Boolean getTriStateValue(){ return value(); }
+
+		@Override
+		public Vec3f getVectorValue(){
+			return new Vec3f(getIntegerValue());
+		}
 		
 	}
 	
@@ -446,6 +468,11 @@ public abstract class Attribute<V> {
 		@Override public String getStringValue(){ return value() + ""; }
 		@Override public boolean getBooleanValue(){ return value() == null ? false : value(); }
 		@Override public Boolean getTriStateValue(){ return value(); }
+
+		@Override
+		public Vec3f getVectorValue(){
+			return new Vec3f(getIntegerValue());
+		}
 		
 	}
 

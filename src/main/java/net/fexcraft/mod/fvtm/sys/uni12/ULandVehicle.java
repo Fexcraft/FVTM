@@ -88,9 +88,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	//
 	//public double throttle;
 	public float wheelsAngle, serverWY;//, wheelsYaw;
-    public float prevRotationYaw;
-    public float prevRotationPitch;
-    public float prevRotationRoll;
     public ULandVehicle truck, trailer;
     //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
     protected byte toggle_timer, gear_timer, autogear_timer;

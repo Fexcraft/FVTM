@@ -80,8 +80,7 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 	private UUID placer = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
 	//=
 	public float wheelsAngle, propelerAngle;
-	public float serverFY, flapsPitchLeft, flapsPitchRight;	
-    public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
+	public float serverFY, flapsPitchLeft, flapsPitchRight;
     protected byte doorToggleTimer;
     protected Object engineloop;//TODO sound
     public boolean gearout;

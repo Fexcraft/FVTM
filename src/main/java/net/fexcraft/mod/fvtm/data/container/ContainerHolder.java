@@ -30,7 +30,7 @@ public interface ContainerHolder {
 	public void sync(boolean fromside);
 	
 	@SideOnly(Side.CLIENT) /** Call in entity rendering, with the parameters being entity position. */
-	public void render(double x, double y, double z);
+	public void render(double x, double y, double z, double yaw, double pitch, double roll);
 	
 	public static interface ContainerHoldingEntity {
 		

@@ -49,6 +49,9 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	public SeatCache[] seats;
 	public WheelEntity[] wheels;
 	public LoopSound engineloop;
+    public float prevRotationYaw;
+    public float prevRotationPitch;
+    public float prevRotationRoll;
 
 	public GenericVehicle(World world){ super(world); }
 	

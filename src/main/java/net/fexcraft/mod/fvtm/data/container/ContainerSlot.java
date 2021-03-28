@@ -118,12 +118,15 @@ public class ContainerSlot {
 	private float[] renderoffset;
 
 	@SideOnly(Side.CLIENT)
-	public void render(Entity entity){
+	public void render(Entity entity, double y, double p, double r){
 		if(renderoffset == null) loadRenderOffset();
 		org.lwjgl.opengl.GL11.glPushMatrix();
-		org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 1f, 0f);
+		if(entity instanceof VehicleEntity) y += 180;
+		org.lwjgl.opengl.GL11.glRotated(y, 0, 1, 0);
+		org.lwjgl.opengl.GL11.glRotated(p, 0, 0, 1);
+		org.lwjgl.opengl.GL11.glRotated(r, 1, 0, 0);
 		org.lwjgl.opengl.GL11.glTranslated(position.x, position.y, position.z);
-		org.lwjgl.opengl.GL11.glRotatef(180f, 0f, 0f, 1f);
+		org.lwjgl.opengl.GL11.glRotated(180, 0, 0, 1);
 		org.lwjgl.opengl.GL11.glRotatef(rotation, 0, 1, 0);
 		if(rotpoint != null && entity != null){
 			VehicleEntity ent = (VehicleEntity)entity;

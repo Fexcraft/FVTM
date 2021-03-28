@@ -82,7 +82,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	//
 	//public double throttle;
 	public float wheelsAngle, serverWY;//, wheelsYaw;
-    public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
     public LandVehicle truck, trailer;
     //public Vec3d angularVelocity = new Vec3d(0f, 0f, 0f);
     protected byte doorToggleTimer;

@@ -2,20 +2,41 @@ package net.fexcraft.mod.fvtm.render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.TexturedPolygon;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
+import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
+import net.fexcraft.mod.fvtm.data.container.ContainerType;
+import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
+import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
+import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
+import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -34,6 +55,7 @@ public class EffectRenderer {
 	public static final HashMap<Integer, Vec3f> RENDER_VEHROT = new HashMap<>();
 	public static final HashMap<Integer, Vec3d> RENDER_VEHPOS = new HashMap<>();
 	public static final ResourceLocation LIGHT_TEXTURE = new ResourceLocation("fvtm:textures/entity/light_beam.png");
+	public static ContainerHolder tempholder;
 	public static ResourceLocation last;
 	
     @SubscribeEvent
@@ -136,5 +158,126 @@ public class EffectRenderer {
         BLOCK_LIGHTRAYTILES.clear();
         last = null;
     }
+
+	public static void renderHotInstallInfo(GenericVehicle vehicle){
+		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
+		if(vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
+		//
+		PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
+		if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
+			preMeshCalls();
+			for(Entry<String, PartData> data : vehicle.getVehicleData().getParts().entrySet()){
+				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
+				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
+				for(int i = 0; i < func.getSlotTypes().size(); i++){
+					String type = func.getSlotTypes().get(i);
+					for(String str : part.getType().getCategories()){
+						if(str.equals(type)){
+							func.getSlotPositions().get(i).translate();
+			            	GL11.glPushMatrix();
+			            	float scal = func.getSlotRadius().get(i);
+			            	GL11.glScalef(scal, scal, scal);
+							DebugModels.HOTINSTALLCUBE.render(1f);
+			            	GL11.glPopMatrix();
+							func.getSlotPositions().get(i).translateR();
+						}
+					}
+				}
+			}
+			postMeshCalls();
+		}
+	}
+
+	private static void preMeshCalls(){
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		TexturedPolygon.TRIANGULATED_QUADS = false;
+		GL11.glLineWidth(4f);
+	}
+
+	private static void postMeshCalls(){
+		GL11.glLineWidth(1f);
+		TexturedPolygon.TRIANGULATED_QUADS = true;
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	}
+
+	public static void renderDebugInfo(GenericVehicle vehicle){
+		if(!Command.DEBUG) return;
+    	GL11.glPushMatrix();
+    	float scal = vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() * 16;
+    	GL11.glScalef(scal, scal, scal);
+    	GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glLineWidth(2f);
+    	DebugModels.CENTERSPHERE.render();
+		GL11.glLineWidth(1f);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+    	GL11.glPopMatrix();
+    	//
+    	GL11.glPushMatrix();
+        preMeshCalls();
+		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){
+			if(!attr.hasAABBs()) continue;
+			for(Map.Entry<String, float[]> box : attr.getAABBs().entrySet()){
+				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(attr.getAABBSP(box.getKey()));
+				Vec3d temp = point.getRelativeVector(box.getValue()[0] * Static.sixteenth, -box.getValue()[1] * Static.sixteenth, -box.getValue()[2] * Static.sixteenth);
+	        	//temp = temp.add(vehicle.getEntity().getPositionVector());
+            	GL11.glPushMatrix();
+	        	GL11.glTranslated(temp.x, temp.y, temp.z);
+            	scal = box.getValue()[3] * Static.sixteenth;
+            	GL11.glScalef(scal, scal, scal);
+				DebugModels.ATTRBOXCUBE.render(2f);
+            	GL11.glPopMatrix();
+			}
+		}
+		postMeshCalls();
+    	GL11.glPopMatrix();
+	}
+
+	public static void renderContainerInfo(GenericVehicle vehicle, Vec3f rot){
+        if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.xCoord, rot.yCoord, rot.zCoord);
+		if(!Command.DEBUG) return;
+    	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug();
+    	ContainerHolder cap = vehicle.getCapability(Capabilities.CONTAINER, null);
+    	if(cap != null){
+    		ContainerHoldingEntity ent = vehicle;
+    		for(String slotid : cap.getContainerSlotIds()){
+    			ContainerSlot slot = cap.getContainerSlot(slotid);
+    			ContainerType type = ContainerType.values()[Time.getSecond() % 5];
+            	for(int i = 0; i < slot.length; i += type.length()){
+            		Vec3d vec = ent.getContainerInSlotPosition(slot.id, cap, type, i);
+            		vehicle.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, vec.x, vec.y, vec.z, 0, 0, 0);
+            	}
+    		}
+    	}
+	}
+	
+	public static final void drawString(String str, float scale, int color){
+        FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(-0.025F, -0.025F, 0.025F);
+        if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
+        if(true) GlStateManager.disableLighting();
+        GlStateManager.depthMask(false);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.depthMask(true);
+        fontRenderer.drawString(str, -fontRenderer.getStringWidth(str) / 2, 0, color);
+        if(true) GlStateManager.enableLighting();
+        GlStateManager.disableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
+    }
+
+	public static Vec3f getRotations(GenericVehicle vehicle, float ticks){
+        float yaw = (vehicle.getRotPoint().getAxes().getYaw() - vehicle.prevRotationYaw);
+        while(yaw > 180f) yaw -= 360f;
+        while(yaw <= -180f) yaw += 360f;
+        float pitch = (vehicle.getRotPoint().getAxes().getPitch() - vehicle.prevRotationPitch);
+        while(pitch > 180f) pitch -= 360f;
+        while(pitch <= -180f) pitch += 360f;
+        float roll = (vehicle.getRotPoint().getAxes().getRoll() - vehicle.prevRotationRoll);
+        while(roll > 180f) roll -= 360f;
+        while(roll <= -180f) roll += 360f;
+        return new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks);
+	}
 
 }

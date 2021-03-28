@@ -70,8 +70,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public Reltrs rek;
 	public SwivelPoint rotpoint;
 	private byte toggletimer;
-	//
-    public float prevRotationYaw, prevRotationPitch, prevRotationRoll;
     //
     public double serverPosX, serverPosY, serverPosZ;
     public double serverYaw, serverPitch, serverRoll;

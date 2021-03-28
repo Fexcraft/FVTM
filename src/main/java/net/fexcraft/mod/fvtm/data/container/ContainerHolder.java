@@ -32,11 +32,18 @@ public interface ContainerHolder {
 	@SideOnly(Side.CLIENT) /** Call in entity rendering, with the parameters being entity position. */
 	public void render(double x, double y, double z, double yaw, double pitch, double roll);
 	
-	public static interface ContainerHoldingEntity {
+	public ContainerHolder setWrapper(ContainerHolderWrapper wrapper);
+	
+	public ContainerHolderWrapper getWrapper();
+	
+	public static interface ContainerHolderWrapper {
 		
-		public void setupCapability(ContainerHolder capability);
+		/** Due to Minecraft's load order and differing load orders in various mods, this is mainly used internally or by mods which implement this directly. */
+		public default void setupCapability(ContainerHolder capability){}
 		
-		public double[] getEntityRotationForFvtmContainers();
+		/** Seems not to be used anywhere? */
+		@Deprecated
+		public default double[] getEntityRotationForFvtmContainers(){ return new double[4]; }
 		
 		public Vec3d getContainerSlotPosition(String slot, ContainerHolder capability);
 		

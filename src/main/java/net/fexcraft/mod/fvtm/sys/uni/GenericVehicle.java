@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
-import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
@@ -40,7 +40,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public abstract class GenericVehicle extends Entity implements VehicleEntity, ContainerHoldingEntity {
+public abstract class GenericVehicle extends Entity implements VehicleEntity, ContainerHolderWrapper {
 	
 	public float wheelsYaw;
 	public double throttle;

@@ -33,7 +33,10 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 	
 	public ContainerHolderUtil(Entity entity){
 		instance = new Implementation().setEntity(entity);
-		instance.conhol.setupCapability(instance); instance.setup = true;
+		if(instance.getWrapper() != null){
+			instance.getWrapper().setupCapability(instance);
+			instance.setup = true;
+		}
 	}
 
 	@Override
@@ -83,7 +86,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 	public static class Implementation implements ContainerHolder {
 		
 		private Entity entity;
-		private ContainerHoldingEntity conhol;
+		private ContainerHolderWrapper conhol;
 		private ContainerSlot[] slots = new ContainerSlot[0];
 		public boolean setup;
 		
@@ -93,7 +96,8 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			NBTTagCompound compound = new NBTTagCompound();
 			for(int i = 0; i < slots.length; i++){
 				compound.setTag("Slot" + i, slots[i].write(null));
-			} compound.setInteger("Slots", slots.length); return compound;
+			}
+			compound.setInteger("Slots", slots.length); return compound;
 		}
 		
 		public void read(EnumFacing side, NBTTagCompound compound){
@@ -105,7 +109,9 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		}
 
 		public Implementation setEntity(Entity ent){
-			conhol = (ContainerHoldingEntity)(entity = ent); return this;
+			entity = ent;
+			if(entity instanceof ContainerHolderWrapper) conhol = (ContainerHolderWrapper)ent;
+			return this;
 		}
 
 		@Override
@@ -185,6 +191,17 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 				}
 				slot.clear();
 			}
+		}
+
+		@Override
+		public ContainerHolder setWrapper(ContainerHolderWrapper wrapper){
+			conhol = wrapper;
+			return this;
+		}
+
+		@Override
+		public ContainerHolderWrapper getWrapper(){
+			return conhol;
 		}
 		
 	}

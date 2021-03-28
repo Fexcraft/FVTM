@@ -6,7 +6,6 @@ import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
-import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
@@ -111,7 +110,7 @@ public class LCCScript extends VehicleScript {
 			for(Entity entity : player.world.loadedEntityList){
 				if(capent != null) break;
 				if(entity == ent) continue;
-				if((cap = entity.getCapability(Capabilities.CONTAINER, null)) == null) continue;
+				if((cap = entity.getCapability(Capabilities.CONTAINER, null)) == null || cap.getWrapper() == null) continue;
 				for(String str : cap.getContainerSlotIds()){
 					if(capent != null) break;
 					if(single){
@@ -121,7 +120,7 @@ public class LCCScript extends VehicleScript {
 							if(slot.getContainers()[i] == null) continue;
 							ContainerData data = slot.getContainers()[i];
 							//if(i + data.getContainerType().length() >= slot.length) break;
-							Vec3d capos = ((ContainerHoldingEntity)entity).getContainerInSlotPosition(str, cap, data.getContainerType(), i);
+							Vec3d capos = cap.getWrapper().getContainerInSlotPosition(str, cap, data.getContainerType(), i);
 							AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.45, 0, -.45), capos.add(0.45, 1, 0.45));
 							if(bb.contains(vec2)){
 								slotid = str;
@@ -133,7 +132,7 @@ public class LCCScript extends VehicleScript {
 						if(index == null) capent = null;
 					}
 					else{
-						Vec3d capos = ((ContainerHoldingEntity)entity).getContainerSlotPosition(str, cap);
+						Vec3d capos = cap.getWrapper().getContainerSlotPosition(str, cap);
 						AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.5, 0, -.5), capos.add(0.5, 1, 0.5));
 						if(bb.contains(vec2)){
 							slotid = str;
@@ -274,7 +273,7 @@ public class LCCScript extends VehicleScript {
 		for(Entity entity : player.world.loadedEntityList){
 			if(capent != null) break;
 			if(entity == ent) continue;
-			if((cap = entity.getCapability(Capabilities.CONTAINER, null)) == null) continue;
+			if((cap = entity.getCapability(Capabilities.CONTAINER, null)) == null || cap.getWrapper() == null) continue;
 			for(String str : cap.getContainerSlotIds()){
 				if(capent != null) break;
 				if(single){
@@ -285,7 +284,7 @@ public class LCCScript extends VehicleScript {
 							i += slot.getContainers()[i].getContainerType().length();
 							continue;
 						}
-						Vec3d capos = ((ContainerHoldingEntity)entity).getContainerInSlotPosition(str, cap, firstcon.getContainerType(), i);
+						Vec3d capos = cap.getWrapper().getContainerInSlotPosition(str, cap, firstcon.getContainerType(), i);
 						AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.45, 0, -.45), capos.add(0.45, 1, 0.45));
 						if(bb.contains(vec1)){
 							slotid = str;
@@ -298,7 +297,7 @@ public class LCCScript extends VehicleScript {
 					if(index == null) cap = null;
 				}
 				else{
-					Vec3d capos = ((ContainerHoldingEntity)entity).getContainerSlotPosition(str, cap);
+					Vec3d capos = cap.getWrapper().getContainerSlotPosition(str, cap);
 					AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.5, 0, -.5), capos.add(0.5, 1, 0.5));
 					if(bb.contains(vec1)){
 						slotid = str;

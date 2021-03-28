@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
-import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -280,14 +280,13 @@ public class EffectRenderer {
         if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.xCoord, rot.yCoord, rot.zCoord);
 		if(!Command.CONTAINER) return;
     	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug();
-    	ContainerHolder cap = vehicle.getCapability(Capabilities.CONTAINER, null);
-    	if(cap != null){
-    		ContainerHoldingEntity ent = vehicle;
-    		for(String slotid : cap.getContainerSlotIds()){
-    			ContainerSlot slot = cap.getContainerSlot(slotid);
+    	if(tempholder != null){
+    		ContainerHolderWrapper ent = tempholder.getWrapper();
+    		for(String slotid : tempholder.getContainerSlotIds()){
+    			ContainerSlot slot = tempholder.getContainerSlot(slotid);
     			ContainerType type = ContainerType.values()[Time.getSecond() % 5];
             	for(int i = 0; i < slot.length; i += type.length()){
-            		Vec3d vec = ent.getContainerInSlotPosition(slot.id, cap, type, i);
+            		Vec3d vec = ent.getContainerInSlotPosition(slot.id, tempholder, type, i);
             		vehicle.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, vec.x, vec.y, vec.z, 0, 0, 0);
             	}
     		}

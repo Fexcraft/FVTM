@@ -37,7 +37,7 @@ import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
-import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHoldingEntity;
+import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapper;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -472,7 +472,7 @@ public class Resources {
 	@SubscribeEvent
 	public void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> event){
 		if(event.getObject().world == null) return;
-		if(event.getObject() instanceof ContainerHoldingEntity){
+		if(event.getObject() instanceof ContainerHolderWrapper){
 			event.addCapability(new ResourceLocation("fvtm:container"), new ContainerHolderUtil(event.getObject()));
 		}
 		if(event.getObject().world.isRemote && event.getObject() instanceof VehicleEntity){

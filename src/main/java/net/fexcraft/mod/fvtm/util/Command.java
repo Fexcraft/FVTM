@@ -144,10 +144,10 @@ public class Command extends CommandBase {
             	if(args.length < 2){
             		Print.chat(sender, "&9Debug commands:");
             		Print.chat(sender, "&7- /fvtm debug all");
-            		Print.chat(sender, "&7- /fvtm debug toggable");
-            		Print.chat(sender, "&7- /fvtm debug toggable-label");
-            		Print.chat(sender, "&7- /fvtm debug hotswap");
-            		Print.chat(sender, "&7- /fvtm debug container");
+            		Print.chat(sender, "&7- /fvtm debug toggable (/tog)");
+            		Print.chat(sender, "&7- /fvtm debug toggable-label (/togl)");
+            		Print.chat(sender, "&7- /fvtm debug hotswap (/hot)");
+            		Print.chat(sender, "&7- /fvtm debug container (/con)");
             		Print.chat(sender, "&7- /fvtm debug other");
             		break;
             	}
@@ -161,19 +161,23 @@ public class Command extends CommandBase {
                     	Print.chat(sender, "&7Debug ALL: " + (any ? "&cenabled" : "&adisabled") + "&7.");
             			return;
             		}
+            		case "tog":
             		case "toggable":{
                     	Print.chat(sender, "&7Debug TOGGABLE: " + ((TOGGABLE = !TOGGABLE) ? "&cenabled" : "&adisabled") + "&7.");
             			return;
             		}
+            		case "togl":
             		case "toggable-label":{
             			TOGGABLE = TOGG_LABEL = !TOGGABLE;
                     	Print.chat(sender, "&7Debug TOGGABE-LABEL: " + (TOGGABLE ? "&cenabled" : "&adisabled") + "&7.");
             			return;
             		}
+            		case "hot":
             		case "hotswap":{
                     	Print.chat(sender, "&7Debug HOT-SWAP: " + ((HOTSWAP = !HOTSWAP) ? "&cenabled" : "&adisabled") + "&7.");
             			return;
             		}
+            		case "con":
             		case "container":{
                     	Print.chat(sender, "&7Debug CONTAINER: " + ((CONTAINER = !CONTAINER) ? "&cenabled" : "&adisabled") + "&7.");
             			return;

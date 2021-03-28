@@ -293,16 +293,18 @@ public class EffectRenderer {
 	public static final void drawString(String str, float scale, int color, boolean rot){
         FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
         GlStateManager.pushMatrix();
+        RGB.WHITE.glColorApply();
         GlStateManager.scale(-0.025F, -0.025F, 0.025F);
         if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
         if(true) GlStateManager.disableLighting();
         if(rot) GL11.glRotatef(Minecraft.getMinecraft().player.rotationYawHead, 0, 1, 0);
         GlStateManager.depthMask(false);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.depthMask(true);
         fontRenderer.drawString(str, -fontRenderer.getStringWidth(str) / 2, 0, color);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.depthMask(true);
         if(true) GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

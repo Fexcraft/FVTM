@@ -246,7 +246,7 @@ public class ToggableHandler {
 		for(float f = 0; f < (external ? 3 : 2); f += Static.sixteenth / 2){
 			Vec3f dis = vec0.distance(vec1, f);
 			vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
-			if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);
+			if(Command.TOGGABLE) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);
 			for(Collidable coll : collidables)
 				if(aabbs.get(coll.id()).contains(vec)) return coll;
 		}
@@ -309,7 +309,7 @@ public class ToggableHandler {
 				float te = func.getSlotRadius().get(index) / 2;
 				aabbs.put(id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
-			if(Command.DEBUG) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
+			//if(Command.TOGGABLE) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);
 		}
 		
 	}

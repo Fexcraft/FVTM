@@ -280,7 +280,8 @@ public class RailRenderer {
         		ModelBase.bindTexture(track.gauge.getTiesTexture());
         		track.restmodel.render();
         	}
-        	if(Command.DEBUG){ Track track;
+        	if(Command.OTHER){
+        		Track track;
         		for(int i = 0; i < value.size(); i++){ track = value.tracks.get(i);
 	    			Vec3f pos = track.getVectorPosition(track.length * 0.5f, false); float off = track.isOppositeCopy() ? 0.125f : -0.125f;
 	    			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
@@ -328,7 +329,7 @@ public class RailRenderer {
         			value.tracks.get(1).gauge.getModel().renderSignal(value, EntryDirection.FORWARD, value.signal1);
         			GL11.glPopMatrix();
     			}
-    			if(Command.DEBUG){
+    			if(Command.OTHER){
         			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
         			long uid = value.tracks.get(value.signal_dir.getTrackId()).getUnit().section().getUID(); Vec3f pos = value.signalpos0;
         			RenderStreetSign.drawString(uid + "/" + value.signal0, pos.xCoord, pos.yCoord + 1, pos.zCoord, true, true, 0.8f, 0xffffff, deg);

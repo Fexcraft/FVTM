@@ -160,28 +160,47 @@ public class EffectRenderer {
     }
 
 	public static void renderHotInstallInfo(GenericVehicle vehicle){
-		if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
-		if(vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
-		//
-		PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
-		if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
+		if(!Command.HOTSWAP){
+			if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
+			if(vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
+			//
+			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
+			if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
+				preMeshCalls();
+				for(Entry<String, PartData> data : vehicle.getVehicleData().getParts().entrySet()){
+					if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
+					PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
+					for(int i = 0; i < func.getSlotTypes().size(); i++){
+						String type = func.getSlotTypes().get(i);
+						for(String str : part.getType().getCategories()){
+							if(str.equals(type)){
+								func.getSlotPositions().get(i).translate();
+				            	GL11.glPushMatrix();
+				            	float scal = func.getSlotRadius().get(i);
+				            	GL11.glScalef(scal, scal, scal);
+								DebugModels.HOTINSTALLCUBE.render(1f);
+				            	GL11.glPopMatrix();
+								func.getSlotPositions().get(i).translateR();
+							}
+						}
+					}
+				}
+				postMeshCalls();
+			}
+		}
+		else{
 			preMeshCalls();
 			for(Entry<String, PartData> data : vehicle.getVehicleData().getParts().entrySet()){
 				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
 				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
 				for(int i = 0; i < func.getSlotTypes().size(); i++){
-					String type = func.getSlotTypes().get(i);
-					for(String str : part.getType().getCategories()){
-						if(str.equals(type)){
-							func.getSlotPositions().get(i).translate();
-			            	GL11.glPushMatrix();
-			            	float scal = func.getSlotRadius().get(i);
-			            	GL11.glScalef(scal, scal, scal);
-							DebugModels.HOTINSTALLCUBE.render(1f);
-			            	GL11.glPopMatrix();
-							func.getSlotPositions().get(i).translateR();
-						}
-					}
+					func.getSlotPositions().get(i).translate();
+	            	GL11.glPushMatrix();
+	            	float scal = func.getSlotRadius().get(i);
+	            	GL11.glScalef(scal, scal, scal);
+					DebugModels.HOTINSTALLCUBE.render(1f);
+	            	GL11.glPopMatrix();
+					func.getSlotPositions().get(i).translateR();
 				}
 			}
 			postMeshCalls();
@@ -200,8 +219,8 @@ public class EffectRenderer {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
-	public static void renderDebugInfo(GenericVehicle vehicle){
-		if(!Command.DEBUG) return;
+	public static void renderToggableInfo(GenericVehicle vehicle){
+		if(!Command.TOGGABLE) return;
     	GL11.glPushMatrix();
     	float scal = vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() * 16;
     	GL11.glScalef(scal, scal, scal);
@@ -234,7 +253,7 @@ public class EffectRenderer {
 
 	public static void renderContainerInfo(GenericVehicle vehicle, Vec3f rot){
         if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.xCoord, rot.yCoord, rot.zCoord);
-		if(!Command.DEBUG) return;
+		if(!Command.CONTAINER) return;
     	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug();
     	ContainerHolder cap = vehicle.getCapability(Capabilities.CONTAINER, null);
     	if(cap != null){

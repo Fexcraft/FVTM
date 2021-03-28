@@ -83,7 +83,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
             GL11.glPopMatrix();
             //
             GL11.glPopMatrix();
-            EffectRenderer.renderDebugInfo(vehicle);
+            EffectRenderer.renderToggableInfo(vehicle);
             EffectRenderer.renderContainerInfo(vehicle, rot);
         }
         GL11.glPopMatrix();

@@ -15,7 +15,7 @@ public class RenderWheel extends Render<Entity> implements IRenderFactory<Entity
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialticks){
-    	if(Command.DEBUG) shadowSize = 0.125f;
+    	if(Command.OTHER) shadowSize = 0.125f;
     	else shadowSize = 0f;
         return;
     }

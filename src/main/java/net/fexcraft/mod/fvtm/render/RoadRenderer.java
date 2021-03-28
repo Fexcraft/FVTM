@@ -80,7 +80,7 @@ public class RoadRenderer {
     }
 
 	private void renderLines(RoadJunc point){
-        if(Command.DEBUG){
+        if(Command.OTHER){
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             Vec3f vec0, vec1; float flfl, glgl;

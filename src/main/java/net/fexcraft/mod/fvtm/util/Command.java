@@ -5,6 +5,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.util.HashMap;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
@@ -34,7 +35,7 @@ import net.minecraft.util.ResourceLocation;
 @fCommand
 public class Command extends CommandBase {
 	
-	public static boolean DEBUG;
+	public static boolean OTHER, TOGGABLE, HOTSWAP, CONTAINER;
 	public static HashMap<String, String> VALS = new HashMap<>();
 
     @Override
@@ -68,11 +69,12 @@ public class Command extends CommandBase {
         		Print.chat(sender, "&7- /fvtm get-key <vehicle/container>");
         		Print.chat(sender, "&7- /fvtm preset <args>");
         		Print.chat(sender, "&7- /fvtm attr <args>");
+        		Print.chat(sender, "&7- /fvtm debug <args>");
+        		Print.chat(sender, "&7- /fvtm spawn-sys");
+        		Print.chat(sender, "&8- - - - - -");
         		Print.chat(sender, "&7- /fvtm vals <args> (debug values)");
         		Print.chat(sender, "&7- /fvtm rrr (reload rail region)");
         		Print.chat(sender, "&7- /fvtm rrs (reload rail sections)");
-        		Print.chat(sender, "&7- /fvtm debug (toggle debug mode)");
-        		Print.chat(sender, "&7- /fvtm spawn-sys");
                 break;
             }
             case "get-key": {
@@ -138,18 +140,43 @@ public class Command extends CommandBase {
             	}
             	break;
             }
-            case "rrr": case "reload-railregion":{
-            	((RailSys)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("all", sender);
-            	Print.chat(sender, "&oRail-Regions Reloading.");
-            	break;
-            }
-            case "rrs": case "reload-railsections":{
-            	((RailSys)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("sections", sender);
-            	Print.chat(sender, "&oRail-Sections Reloading.");
-            	break;
-            }
             case "debug":{
-            	Print.chat(sender, "&7Debug: " + ((DEBUG = !DEBUG) ? "&cenabled" : "&adisabled") + "&7.");
+            	if(args.length < 2){
+            		Print.chat(sender, "&9Debug commands:");
+            		Print.chat(sender, "&7- /fvtm debug all");
+            		Print.chat(sender, "&7- /fvtm debug toggable");
+            		Print.chat(sender, "&7- /fvtm debug hotswap");
+            		Print.chat(sender, "&7- /fvtm debug container");
+            		Print.chat(sender, "&7- /fvtm debug other");
+            		break;
+            	}
+            	if(sender instanceof EntityPlayer == false){
+            		Print.chat(sender, "Can be only used by online players."); return;
+            	}
+            	switch(args[1]){
+            		case "all":{
+            			boolean any = !(OTHER || TOGGABLE || HOTSWAP || CONTAINER);
+            			OTHER = TOGGABLE = HOTSWAP = CONTAINER = any;
+                    	Print.chat(sender, "&7Debug ALL: " + (any ? "&cenabled" : "&adisabled") + "&7.");
+            			return;
+            		}
+            		case "toggable":{
+                    	Print.chat(sender, "&7Debug TOGGABLE: " + ((TOGGABLE = !TOGGABLE) ? "&cenabled" : "&adisabled") + "&7.");
+            			return;
+            		}
+            		case "hotswap":{
+                    	Print.chat(sender, "&7Debug HOT-SWAP: " + ((HOTSWAP = !HOTSWAP) ? "&cenabled" : "&adisabled") + "&7.");
+            			return;
+            		}
+            		case "container":{
+                    	Print.chat(sender, "&7Debug CONTAINER: " + ((CONTAINER = !CONTAINER) ? "&cenabled" : "&adisabled") + "&7.");
+            			return;
+            		}
+            		case "other":{
+                    	Print.chat(sender, "&7Debug OTHER: " + ((OTHER = !OTHER) ? "&cenabled" : "&adisabled") + "&7.");
+            			return;
+            		}
+            	}
             	break;
             }
             case "preset":{
@@ -219,15 +246,6 @@ public class Command extends CommandBase {
             	}
             	break;
             }
-            case "vals":{
-            	if(!server.isSinglePlayer()) return;
-            	if(args.length < 3){
-            		Print.chat(sender, VALS.get(args[1]));
-            		return;
-            	}
-            	VALS.put(args[1], args[2]);
-            	return;
-            }
             case "attr":{
             	if(args.length < 2){
             		Print.chat(sender, "&9Attribute commands:");
@@ -283,6 +301,27 @@ public class Command extends CommandBase {
             case "spawn-sys":{
             	((EntityPlayer)sender).openGui(FVTM.getInstance(), GuiHandler.SPAWNSYS, sender.getEntityWorld(), 0, 0, 1);
             	break;
+            }
+            case "rrr": case "reload-railregion":{
+            	if(!Static.dev()) return;
+            	((RailSys)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("all", sender);
+            	Print.chat(sender, "&oRail-Regions Reloading.");
+            	break;
+            }
+            case "rrs": case "reload-railsections":{
+            	if(!Static.dev()) return;
+            	((RailSys)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("sections", sender);
+            	Print.chat(sender, "&oRail-Sections Reloading.");
+            	break;
+            }
+            case "vals":{
+            	if(!Static.dev() || !server.isSinglePlayer()) return;
+            	if(args.length < 3){
+            		Print.chat(sender, VALS.get(args[1]));
+            		return;
+            	}
+            	VALS.put(args[1], args[2]);
+            	return;
             }
             default: {
                 Print.chat(sender, "null [0]");

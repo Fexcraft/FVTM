@@ -235,34 +235,38 @@ public class EffectRenderer {
     	//
     	GL11.glPushMatrix();
         preMeshCalls();
+        GlStateManager.disableLighting();
 		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){
 			if(!attr.hasAABBs()) continue;
 			for(Map.Entry<String, float[]> box : attr.getAABBs().entrySet()){
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(attr.getAABBSP(box.getKey()));
 				Vec3d temp = point.getRelativeVector(box.getValue()[0] * Static.sixteenth, -box.getValue()[1] * Static.sixteenth, -box.getValue()[2] * Static.sixteenth);
 	        	//temp = temp.add(vehicle.getEntity().getPositionVector());
-            	GL11.glPushMatrix();
+				boolean depth = temp.add(vehicle.getEntity().getPositionVector()).distanceTo(Minecraft.getMinecraft().player.getPositionVector()) < 4;
 	        	GL11.glTranslated(temp.x, temp.y, temp.z);
             	scal = box.getValue()[3] * Static.sixteenth;
+            	GL11.glPushMatrix();
+            	GL11.glScalef(scal, scal, scal);
+				DebugModels.ATTRBOXCUBE.render(2f);
+            	GL11.glPopMatrix();
 				if(Command.TOGG_LABEL){
 					postMeshCalls();
 					float by = (consim(temp) * (scal * .5f));
 		        	GL11.glTranslatef(0, by, 0);
-					drawString(box.getKey(), scal * 2, RGB.WHITE.packed, true);
+					drawString(box.getKey(), scal * 2, RGB.WHITE.packed, false, true, depth);
 		        	GL11.glTranslatef(0, -by, 0);
 		        	GL11.glTranslatef(0, -(by = scal * .5f), 0);
-					drawString(attr.id(), scal * 2, RGB.WHITE.packed, true);
+					drawString(attr.id(), scal * 2, RGB.WHITE.packed, false, true, depth);
 		        	GL11.glTranslatef(0, by, 0);
 			        preMeshCalls();
 			        toggpos.add(temp);
 				}
-            	GL11.glScalef(scal, scal, scal);
-				DebugModels.ATTRBOXCUBE.render(2f);
-            	GL11.glPopMatrix();
+	        	GL11.glTranslated(-temp.x, -temp.y, -temp.z);
 			}
 			toggpos.clear();
 		}
 		postMeshCalls();
+        GlStateManager.enableLighting();
     	GL11.glPopMatrix();
 	}
 
@@ -290,22 +294,22 @@ public class EffectRenderer {
     	}
 	}
 	
-	public static final void drawString(String str, float scale, int color, boolean rot){
+	public static final void drawString(String str, float scale, int color, boolean light, boolean rot, boolean depth){
         FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
         GlStateManager.pushMatrix();
         RGB.WHITE.glColorApply();
         GlStateManager.scale(-0.025F, -0.025F, 0.025F);
         if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
-        if(true) GlStateManager.disableLighting();
+        if(light) GlStateManager.disableLighting();
         if(rot) GL11.glRotatef(Minecraft.getMinecraft().player.rotationYawHead, 0, 1, 0);
         GlStateManager.depthMask(false);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        if(depth) GL11.glDisable(GL11.GL_DEPTH_TEST);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         fontRenderer.drawString(str, -fontRenderer.getStringWidth(str) / 2, 0, color);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        if(depth) GL11.glEnable(GL11.GL_DEPTH_TEST);
         GlStateManager.depthMask(true);
-        if(true) GlStateManager.enableLighting();
+        if(light) GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();

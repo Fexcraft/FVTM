@@ -33,7 +33,7 @@ public class RenderRailTestEnt extends Render<RailTestEntity> implements IRender
         	GL11.glTranslated(x, y, z); GL11.glPushMatrix();
 	        this.bindTexture(this.getEntityTexture(entity)); box.render();
 	        GL11.glPopMatrix(); GL11.glTranslated(0, 1, 0);
-        	EffectRenderer.drawString(getPosString(entity), 0.8f, 0xffffff);
+        	EffectRenderer.drawString(getPosString(entity), 0.8f, 0xffffff, true);
         }
         GL11.glPopMatrix();
     }

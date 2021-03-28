@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
@@ -55,7 +56,8 @@ public class EffectRenderer {
 	public static final HashMap<Integer, Vec3f> RENDER_VEHROT = new HashMap<>();
 	public static final HashMap<Integer, Vec3d> RENDER_VEHPOS = new HashMap<>();
 	public static final ResourceLocation LIGHT_TEXTURE = new ResourceLocation("fvtm:textures/entity/light_beam.png");
-	public static ContainerHolder tempholder;
+	private static ArrayList<Vec3d> toggpos = new ArrayList<>();
+	private static ContainerHolder tempholder;
 	public static ResourceLocation last;
 	
     @SubscribeEvent
@@ -242,13 +244,29 @@ public class EffectRenderer {
             	GL11.glPushMatrix();
 	        	GL11.glTranslated(temp.x, temp.y, temp.z);
             	scal = box.getValue()[3] * Static.sixteenth;
+				if(Command.TOGG_LABEL){
+					postMeshCalls();
+					float by = (consim(temp) * (scal * .5f));
+		        	GL11.glTranslated(0, by, 0);
+					drawString(box.getKey(), scal * 2, RGB.WHITE.packed, true);
+		        	GL11.glTranslated(0, -by, 0);
+			        preMeshCalls();
+			        toggpos.add(temp);
+				}
             	GL11.glScalef(scal, scal, scal);
 				DebugModels.ATTRBOXCUBE.render(2f);
             	GL11.glPopMatrix();
 			}
+			toggpos.clear();
 		}
 		postMeshCalls();
     	GL11.glPopMatrix();
+	}
+
+	private static float consim(Vec3d temp){
+		int i = 0;
+		for(Vec3d vec : toggpos) if(vec.distanceTo(temp) < 0.01f) i++;
+		return i;
 	}
 
 	public static void renderContainerInfo(GenericVehicle vehicle, Vec3f rot){
@@ -269,13 +287,15 @@ public class EffectRenderer {
     	}
 	}
 	
-	public static final void drawString(String str, float scale, int color){
+	public static final void drawString(String str, float scale, int color, boolean rot){
         FontRenderer fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
         GlStateManager.pushMatrix();
         GlStateManager.scale(-0.025F, -0.025F, 0.025F);
         if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
         if(true) GlStateManager.disableLighting();
+        if(rot) GL11.glRotatef(Minecraft.getMinecraft().player.rotationYawHead, 0, 1, 0);
         GlStateManager.depthMask(false);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.depthMask(true);

@@ -35,7 +35,7 @@ import net.minecraft.util.ResourceLocation;
 @fCommand
 public class Command extends CommandBase {
 	
-	public static boolean OTHER, TOGGABLE, HOTSWAP, CONTAINER;
+	public static boolean OTHER, TOGGABLE, TOGG_LABEL, HOTSWAP, CONTAINER;
 	public static HashMap<String, String> VALS = new HashMap<>();
 
     @Override
@@ -145,6 +145,7 @@ public class Command extends CommandBase {
             		Print.chat(sender, "&9Debug commands:");
             		Print.chat(sender, "&7- /fvtm debug all");
             		Print.chat(sender, "&7- /fvtm debug toggable");
+            		Print.chat(sender, "&7- /fvtm debug toggable-label");
             		Print.chat(sender, "&7- /fvtm debug hotswap");
             		Print.chat(sender, "&7- /fvtm debug container");
             		Print.chat(sender, "&7- /fvtm debug other");
@@ -162,6 +163,11 @@ public class Command extends CommandBase {
             		}
             		case "toggable":{
                     	Print.chat(sender, "&7Debug TOGGABLE: " + ((TOGGABLE = !TOGGABLE) ? "&cenabled" : "&adisabled") + "&7.");
+            			return;
+            		}
+            		case "toggable-label":{
+            			TOGGABLE = TOGG_LABEL = !TOGGABLE;
+                    	Print.chat(sender, "&7Debug TOGGABE-LABEL: " + (TOGGABLE ? "&cenabled" : "&adisabled") + "&7.");
             			return;
             		}
             		case "hotswap":{

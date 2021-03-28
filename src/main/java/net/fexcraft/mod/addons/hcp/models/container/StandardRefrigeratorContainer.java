@@ -3,7 +3,6 @@ package net.fexcraft.mod.addons.hcp.models.container;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -186,11 +185,11 @@ public class StandardRefrigeratorContainer extends ContainerModel {
 		fan.addProgram(new TurboList.Program(){
 			@Override
 			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	            list.rotate(Static.rad1, 0, 0, false);
+	            for(ModelRendererTurbo turbo : list) turbo.rotationAngleX += 1f;
 			}
 			@Override
 			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-				//list.rotate(-Static.rad1, 0, 0, false);
+	            for(ModelRendererTurbo turbo : list) turbo.rotationAngleX -= 1f;
 			}
 			@Override public String getId(){ return "hcp:refrigerator_container_fan"; }
 		});

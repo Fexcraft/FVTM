@@ -44,152 +44,157 @@ public class StandardRefrigeratorContainer extends ContainerModel {
 		);
 		fan.add(new ModelRendererTurbo(fan, 145, 41, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-0.17453294f, 0, 0).setName("Box 15")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-10f, 0, 0).setName("Box 15")
 		);
 		fan.add(new ModelRendererTurbo(fan, 233, 49, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-0.34906587f, 0, 0).setName("Box 16")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-20f, 0, 0).setName("Box 16")
 		);
 		fan.add(new ModelRendererTurbo(fan, 249, 49, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-0.5235988f, 0, 0).setName("Box 17")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-30f, 0, 0).setName("Box 17")
 		);
 		fan.add(new ModelRendererTurbo(fan, 265, 49, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-0.69813174f, 0, 0).setName("Box 18")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-40f, 0, 0).setName("Box 18")
 		);
 		fan.add(new ModelRendererTurbo(fan, 281, 49, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-0.87266463f, 0, 0).setName("Box 19")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-50f, 0, 0).setName("Box 19")
 		);
 		fan.add(new ModelRendererTurbo(fan, 297, 49, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-1.0471976f, 0, 0).setName("Box 20")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-60f, 0, 0).setName("Box 20")
 		);
 		fan.add(new ModelRendererTurbo(fan, 329, 57, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-1.2217305f, 0, 0).setName("Box 21")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-70f, 0, 0).setName("Box 21")
 		);
 		fan.add(new ModelRendererTurbo(fan, 345, 57, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-1.3962635f, 0, 0).setName("Box 22")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-80f, 0, 0).setName("Box 22")
 		);
 		fan.add(new ModelRendererTurbo(fan, 1, 65, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-1.5707964f, 0, 0).setName("Box 23")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-90f, 0, 0).setName("Box 23")
 		);
 		fan.add(new ModelRendererTurbo(fan, 33, 65, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-1.7453293f, 0, 0).setName("Box 24")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-100f, 0, 0).setName("Box 24")
 		);
 		fan.add(new ModelRendererTurbo(fan, 57, 65, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-1.9198622f, 0, 0).setName("Box 25")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-110f, 0, 0).setName("Box 25")
 		);
 		fan.add(new ModelRendererTurbo(fan, 81, 65, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-2.0943952f, 0, 0).setName("Box 26")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-120f, 0, 0).setName("Box 26")
 		);
 		fan.add(new ModelRendererTurbo(fan, 329, 65, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-2.268928f, 0, 0).setName("Box 27")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-130f, 0, 0).setName("Box 27")
 		);
 		fan.add(new ModelRendererTurbo(fan, 345, 65, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-2.443461f, 0, 0).setName("Box 28")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-140f, 0, 0).setName("Box 28")
 		);
 		fan.add(new ModelRendererTurbo(fan, 425, 65, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-2.6179938f, 0, 0).setName("Box 29")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-150f, 0, 0).setName("Box 29")
 		);
 		fan.add(new ModelRendererTurbo(fan, 457, 65, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-2.792527f, 0, 0).setName("Box 30")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-160f, 0, 0).setName("Box 30")
 		);
 		fan.add(new ModelRendererTurbo(fan, 1, 73, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-2.9670596f, 0, 0).setName("Box 31")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(-170f, 0, 0).setName("Box 31")
 		);
 		fan.add(new ModelRendererTurbo(fan, 33, 73, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(0.17453294f, 0, 0).setName("Box 32")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(10f, 0, 0).setName("Box 32")
 		);
 		fan.add(new ModelRendererTurbo(fan, 57, 73, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(0.34906587f, 0, 0).setName("Box 33")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(20f, 0, 0).setName("Box 33")
 		);
 		fan.add(new ModelRendererTurbo(fan, 81, 73, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(0.5235988f, 0, 0).setName("Box 34")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(30f, 0, 0).setName("Box 34")
 		);
 		fan.add(new ModelRendererTurbo(fan, 345, 73, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(0.69813174f, 0, 0).setName("Box 35")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(40f, 0, 0).setName("Box 35")
 		);
 		fan.add(new ModelRendererTurbo(fan, 425, 73, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(0.87266463f, 0, 0).setName("Box 36")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(50f, 0, 0).setName("Box 36")
 		);
 		fan.add(new ModelRendererTurbo(fan, 457, 73, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(1.0471976f, 0, 0).setName("Box 37")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(60f, 0, 0).setName("Box 37")
 		);
 		fan.add(new ModelRendererTurbo(fan, 345, 81, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(1.2217305f, 0, 0).setName("Box 38")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(70f, 0, 0).setName("Box 38")
 		);
 		fan.add(new ModelRendererTurbo(fan, 393, 89, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(1.3962635f, 0, 0).setName("Box 39")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(80f, 0, 0).setName("Box 39")
 		);
 		fan.add(new ModelRendererTurbo(fan, 1, 97, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(1.5707964f, 0, 0).setName("Box 40")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(90f, 0, 0).setName("Box 40")
 		);
 		fan.add(new ModelRendererTurbo(fan, 17, 97, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(1.7453293f, 0, 0).setName("Box 41")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(100f, 0, 0).setName("Box 41")
 		);
 		fan.add(new ModelRendererTurbo(fan, 33, 97, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(1.9198622f, 0, 0).setName("Box 42")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(110f, 0, 0).setName("Box 42")
 		);
 		fan.add(new ModelRendererTurbo(fan, 393, 97, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(2.0943952f, 0, 0).setName("Box 43")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(120f, 0, 0).setName("Box 43")
 		);
 		fan.add(new ModelRendererTurbo(fan, 161, 105, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(2.268928f, 0, 0).setName("Box 44")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(130f, 0, 0).setName("Box 44")
 		);
 		fan.add(new ModelRendererTurbo(fan, 177, 105, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(2.443461f, 0, 0).setName("Box 45")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(140f, 0, 0).setName("Box 45")
 		);
 		fan.add(new ModelRendererTurbo(fan, 193, 105, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(2.6179938f, 0, 0).setName("Box 46")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(150f, 0, 0).setName("Box 46")
 		);
 		fan.add(new ModelRendererTurbo(fan, 209, 105, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(2.792527f, 0, 0).setName("Box 47")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(160f, 0, 0).setName("Box 47")
 		);
 		fan.add(new ModelRendererTurbo(fan, 225, 105, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(2.9670596f, 0, 0).setName("Box 48")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(170f, 0, 0).setName("Box 48")
 		);
 		fan.add(new ModelRendererTurbo(fan, 241, 105, textureX, textureY)
 			.addShapeBox(0, 1.5f, -0.5f, 5, 6, 1, 0, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 0, 0, -0.4f, 1, 0, -1.2f, -1, 0, -0.4f, -1, 0, -0.4f, 1, 0, 0.4f)
-			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(3.1415927f, 0, 0).setName("Box 49")
+			.setRotationPoint(-43.5f, -27.5f, -1.5f).setRotationAngle(180f, 0, 0).setName("Box 49")
 		);
 		fan.addProgram(new TurboList.Program(){
+			private float by;
 			@Override
 			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	            for(ModelRendererTurbo turbo : list) turbo.rotationAngleX += 1f;
+				if(cache == null) return;
+				by = cache.getValue("fan", 0f);
+				cache.setValue("fan", by += 1f);
+	            for(ModelRendererTurbo turbo : list) turbo.rotationAngleX += by;
 			}
 			@Override
 			public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	            for(ModelRendererTurbo turbo : list) turbo.rotationAngleX -= 1f;
+				if(cache == null) return;
+	            for(ModelRendererTurbo turbo : list) turbo.rotationAngleX -= by;
 			}
 			@Override public String getId(){ return "hcp:refrigerator_container_fan"; }
 		});

@@ -156,9 +156,10 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		}
 
 		@SideOnly(Side.CLIENT)
-		public void renderDebug(){
+		public void renderDebug(double x, double y, double z, double yaw, double pitch, double roll){
 			org.lwjgl.opengl.GL11.glPushMatrix();
-			for(ContainerSlot slot : slots) slot.renderDebug(entity, ContainerType.values()[Time.getSecond() % 10 / 2]);
+			if(x != 0d || y != 0d || z != 0d) org.lwjgl.opengl.GL11.glTranslated(x, y, z);
+			for(ContainerSlot slot : slots) slot.renderDebug(entity, yaw, pitch, roll, ContainerType.values()[Time.getSecond() % 10 / 2]);
 			org.lwjgl.opengl.GL11.glPopMatrix();
 		}
 

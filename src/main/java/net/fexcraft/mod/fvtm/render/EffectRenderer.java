@@ -35,6 +35,7 @@ import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
@@ -276,10 +277,10 @@ public class EffectRenderer {
 		return i;
 	}
 
-	public static void renderContainerInfo(GenericVehicle vehicle, Vec3f rot){
-        if((tempholder = vehicle.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.xCoord, rot.yCoord, rot.zCoord);
-		if(!Command.CONTAINER) return;
-    	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug();
+	public static void renderContainerInfo(Entity entity, Vec3f rot){
+        if((tempholder = entity.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.xCoord, rot.yCoord, rot.zCoord);
+        if(!Command.CONTAINER) return;
+    	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug(0, 0, 0, rot.xCoord, rot.yCoord, rot.zCoord);
     	if(tempholder != null){
     		ContainerHolderWrapper ent = tempholder.getWrapper();
     		for(String slotid : tempholder.getContainerSlotIds()){
@@ -287,10 +288,14 @@ public class EffectRenderer {
     			ContainerType type = ContainerType.values()[Time.getSecond() % 5];
             	for(int i = 0; i < slot.length; i += type.length()){
             		Vec3d vec = ent.getContainerInSlotPosition(slot.id, tempholder, type, i);
-            		vehicle.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, vec.x, vec.y, vec.z, 0, 0, 0);
+            		entity.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, vec.x, vec.y, vec.z, 0, 0, 0);
             	}
     		}
     	}
+	}
+	
+	public static void renderContainerDebug(Entity entity, Vec3f rot){
+
 	}
 	
 	public static final void drawString(String str, float scale, int color, boolean light, boolean rot, boolean depth){

@@ -121,7 +121,7 @@ public class LCCScript extends VehicleScript {
 							ContainerData data = slot.getContainers()[i];
 							//if(i + data.getContainerType().length() >= slot.length) break;
 							Vec3d capos = cap.getWrapper().getContainerInSlotPosition(str, cap, data.getContainerType(), i);
-							AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.45, 0, -.45), capos.add(0.45, 1, 0.45));
+							AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.49, 0, -.49), capos.add(0.49, 1, 0.49));
 							if(bb.contains(vec2)){
 								slotid = str;
 								capent = entity;

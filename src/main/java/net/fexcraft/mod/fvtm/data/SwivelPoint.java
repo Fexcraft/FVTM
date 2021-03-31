@@ -29,6 +29,8 @@ import net.minecraft.util.math.Vec3d;
  */
 public class SwivelPoint {
 
+	public static final String DEFAULT = "vehicle";
+	//
 	public final String id, parid;
 	public String origin;
 	public SwivelPoint parent;
@@ -41,12 +43,11 @@ public class SwivelPoint {
 	//
 	public ArrayList<SwivelPointMover> movers;
 
-	@SuppressWarnings("unchecked")
 	public SwivelPoint(JsonObject obj){
-		this.id = JsonUtil.getIfExists(obj, "id", "vehicle");
+		this.id = JsonUtil.getIfExists(obj, "id", DEFAULT);
 		this.position = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true).to16Double() : new Vec3d(0, 0, 0);
 		this.prevpos = new Vec3d(position.x, position.y, position.z);
-		this.parid = obj.has("parent") ? obj.get("parent").getAsString() : "vehicle";
+		this.parid = obj.has("parent") ? obj.get("parent").getAsString() : DEFAULT;
 		axe.setAngles(JsonUtil.getIfExists(obj, "yaw", 0).doubleValue(), JsonUtil.getIfExists(obj, "pitch", 0).doubleValue(), JsonUtil.getIfExists(obj, "roll", 0).doubleValue());
 		if(obj.has("movers")){
 			movers = new ArrayList<>();
@@ -284,7 +285,7 @@ public class SwivelPoint {
 	}*/
 
 	public final boolean isVehicle(){
-		return id.equals("vehicle");
+		return id.equals(DEFAULT);
 	}
 
 	public void sendClientUpdate(Entity entity){

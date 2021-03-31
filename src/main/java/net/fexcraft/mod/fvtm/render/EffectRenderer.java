@@ -2,12 +2,10 @@ package net.fexcraft.mod.fvtm.render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
@@ -22,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.AttributeBB;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -238,14 +237,14 @@ public class EffectRenderer {
         preMeshCalls();
         GlStateManager.disableLighting();
 		for(Attribute<?> attr : vehicle.getVehicleData().getAttributes().values()){
-			if(!attr.hasAABBs()) continue;
-			for(Map.Entry<String, float[]> box : attr.getAABBs().entrySet()){
-				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(attr.getAABBSP(box.getKey()));
-				Vec3d temp = point.getRelativeVector(box.getValue()[0] * Static.sixteenth, -box.getValue()[1] * Static.sixteenth, -box.getValue()[2] * Static.sixteenth);
+			if(!attr.hasBBs()) continue;
+			for(AttributeBB box : attr.getBBs().values()){
+				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(box.swivel_point);
+				Vec3d temp = point.getRelativeVector(box.pos.x16, -box.pos.y16, -box.pos.z16);
 	        	//temp = temp.add(vehicle.getEntity().getPositionVector());
 				boolean depth = temp.add(vehicle.getEntity().getPositionVector()).distanceTo(Minecraft.getMinecraft().player.getPositionVector()) < 4;
 	        	GL11.glTranslated(temp.x, temp.y, temp.z);
-            	scal = box.getValue()[3] * Static.sixteenth;
+            	scal = box.size;
             	GL11.glPushMatrix();
             	GL11.glScalef(scal, scal, scal);
 				DebugModels.ATTRBOXCUBE.render(2f);
@@ -254,7 +253,7 @@ public class EffectRenderer {
 					postMeshCalls();
 					float by = (consim(temp) * (scal * .5f));
 		        	GL11.glTranslatef(0, by, 0);
-					drawString(box.getKey(), scal * 2, RGB.WHITE.packed, false, true, depth);
+					drawString(box.id, scal * 2, RGB.WHITE.packed, false, true, depth);
 		        	GL11.glTranslatef(0, -by, 0);
 		        	GL11.glTranslatef(0, -(by = scal * .5f), 0);
 					drawString(attr.id(), scal * 2, RGB.WHITE.packed, false, true, depth);

@@ -155,7 +155,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 						for(int i = 0; i < expected; i++){
 							arr[i] = erray.get(i).getAsFloat();
 						}
-						attr.addAABB("default", arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
+						attr.addBB("default", arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
 					}
 					else if(json.get("hitbox").isJsonObject()){
 						for(Map.Entry<String, JsonElement> entry : json.get("hitbox").getAsJsonObject().entrySet()){
@@ -165,7 +165,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 							for(int i = 0; i < expected; i++){
 								arr[i] = erray.get(i).getAsFloat();
 							}
-							attr.addAABB(entry.getKey(), arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
+							attr.addBB(entry.getKey(), arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
 						}
 					}
 				}

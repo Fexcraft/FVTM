@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.root.AttributeBB;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -88,7 +89,7 @@ public class ToggableHandler {
 	        }
 			return false;
 		}
-		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasAABBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
+		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasBBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
 			/*Print.debug(player, "none found");*/ return false;
 		}
@@ -115,13 +116,13 @@ public class ToggableHandler {
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.type().isFloat()){
-					float flaot = attr.getFloatValue() + attr.getAABB(attr.getStringValue())[4];
+					float flaot = attr.getFloatValue() + attr.getBB(attr.getStringValue()).increase;
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
 					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.type().isInteger()){
-					int ent = attr.getIntegerValue() + (int)attr.getAABB(attr.getStringValue())[4];
+					int ent = attr.getIntegerValue() + (int)attr.getBB(attr.getStringValue()).increase;
 					packet.setFloat("value", ent);
 					attr.setValue(ent);
 					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
@@ -134,13 +135,13 @@ public class ToggableHandler {
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.type().isFloat()){
-					float flaot = attr.getFloatValue() - attr.getAABB(attr.getStringValue())[5];
+					float flaot = attr.getFloatValue() - attr.getBB(attr.getStringValue()).decrease;
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.type().isInteger()){
-					int ent = attr.getIntegerValue() - (int)attr.getAABB(attr.getStringValue())[5];
+					int ent = attr.getIntegerValue() - (int)attr.getBB(attr.getStringValue()).decrease;
 					packet.setFloat("value", ent);
 					attr.setValue(ent);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
@@ -154,13 +155,13 @@ public class ToggableHandler {
 					Print.bar(player, "&7Resetting: &6" + attr.id());
 				}
 				else if(attr.type().isFloat()){
-					float flaot = attr.getAABB(attr.getStringValue())[6];
+					float flaot = attr.getBB(attr.getStringValue()).reset;
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
 					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.type().isInteger()){
-					int ent = (int)attr.getAABB(attr.getStringValue())[6];
+					int ent = (int)attr.getBB(attr.getStringValue()).reset;
 					packet.setFloat("value", ent);
 					attr.setValue(ent);
 					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
@@ -294,11 +295,11 @@ public class ToggableHandler {
 		public void collectAABBs(boolean external, VehicleEntity vehicle, EntityPlayer player, TreeMap<String, AxisAlignedBB> aabbs, Vec3d temp){
 			if(attr != null){
 				String attrid = (external ? "external-" : "") + attr.getStringValue();
-				float[] arr = attr.getAABB(attrid);
-				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(attr.getAABBSP(attrid));
-				temp = point.getRelativeVector(arr[0] * Static.sixteenth, -arr[1] * Static.sixteenth, -arr[2] * Static.sixteenth);
+				AttributeBB abb = attr.getBB(attrid);
+				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(abb.swivel_point);
+				temp = point.getRelativeVector(abb.pos.x16, -abb.pos.y16, -abb.pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());
-				float te = arr[3] * Static.sixteenth;
+				float te = abb.size;
 				aabbs.put(attr.id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
 			else{

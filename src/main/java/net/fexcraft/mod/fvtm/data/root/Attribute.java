@@ -26,16 +26,15 @@ public abstract class Attribute<V> {
 	private TreeSet<Modifier<V>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	private TreeMap<String, AttributeBB> abbs = null;
 	private String id, target, origin, seat, group;
-	private boolean iscopy, editable, external;
+	private boolean editable, external;
 	private float min, max;
 	private Type type;
 	private V value, init;
 	
-	public Attribute(boolean original, String id, Type type, V initvalue){
-		this.iscopy = !original; this.id = id; this.type = type; init = initvalue; value = init;
+	public Attribute(String id, Type type, V initvalue){
+		this.id = id; this.type = type; init = initvalue; value = init;
 	}
 	
-	public boolean isCopy(){ return iscopy; }
 	public boolean editable(){ return editable; }
 	public boolean external(){ return external; }
 	//
@@ -165,7 +164,6 @@ public abstract class Attribute<V> {
 	}
 	
 	public NBTTagCompound write(NBTTagCompound compound){
-		compound.setBoolean("org", !iscopy);
 		compound.setString("id", id);
 		compound.setString("type", type.name());
 		compound.setFloat("min", min); compound.setFloat("max", max);
@@ -179,15 +177,18 @@ public abstract class Attribute<V> {
 		compound.setTag("value", this.writeValue(false));
 		if(!modifiers.isEmpty()){
 			NBTTagList list = new NBTTagList();
-			for(Modifier<V> mod : modifiers) list.appendTag(mod.write(new NBTTagCompound()));
+			for(Modifier<V> mod : modifiers){
+				list.appendTag(mod.write(new NBTTagCompound()));
+			}
 			compound.setTag("modifiers", list);
-		} return compound;
+		}
+		return compound;
 	}
 	
 	protected abstract NBTBase writeValue(boolean initial);
 
 	public Attribute<?> read(NBTTagCompound compound){
-		iscopy = !compound.getBoolean("org"); id = compound.getString("id");
+		id = compound.getString("id");
 		min = compound.getFloat("min"); max = compound.getFloat("max");
 		if(compound.hasKey("target")) this.target = compound.getString("target");
 		if(compound.hasKey("origin")) this.origin = compound.getString("origin");
@@ -197,10 +198,14 @@ public abstract class Attribute<V> {
 		external = compound.hasKey("external") ? compound.getBoolean("external") : false;
 		init = this.readValue(compound.getTag("initial"));
 		value = compound.hasKey("value") ? this.readValue(compound.getTag("value")) : init;
-		modifiers.clear(); if(compound.hasKey("modifiers")){
+		modifiers.clear();
+		if(compound.hasKey("modifiers")){
 			NBTTagList list = (NBTTagList)compound.getTag("modifiers");
-			for(NBTBase base : list) modifiers.add((Modifier<V>)Modifier.parse((NBTTagCompound)base));
-		} return this;
+			for(NBTBase base : list){
+				modifiers.add((Modifier<V>)Modifier.parse((NBTTagCompound)base));
+			}
+		}
+		return this;
 	}
 	
 	protected abstract V readValue(NBTBase basetag);
@@ -208,26 +213,27 @@ public abstract class Attribute<V> {
 	public static Attribute<?> parse(NBTTagCompound compound){
 		Attribute<?> attr = null; Type type = Type.valueOf(compound.getString("type"));
 		switch(type){
-			case BOOLEAN: attr = new BooleanAttribute(false, null, null);
+			case BOOLEAN: attr = new BooleanAttribute(null, null);
 			case BOOL_ARRAY: break;
-			case FLOAT: attr = new FloatAttribute(false, null, null);
+			case FLOAT: attr = new FloatAttribute(null, null);
 			case FLOAT_ARRAY: break;
-			case INTEGER: attr = new IntegerAttribute(false, null, null); break;
+			case INTEGER: attr = new IntegerAttribute(null, null); break;
 			case INT_ARRAY: break;
 			case OBJECT: break;//TODO
-			case STRING: attr = new StringAttribute(false, null,  null); break;
+			case STRING: attr = new StringAttribute(null,  null); break;
 			case STRING_ARRAY: break;
-			case TRISTATE: attr = new TriStateAttribute(false, null, null); break;
+			case TRISTATE: attr = new TriStateAttribute(null, null); break;
 			default: return null;
-		} attr.read(compound); return attr;
+		}
+		return attr.read(compound);
 	}
 	
 	public abstract Attribute<V> copy(String origin);
 	
 	public static class StringAttribute extends Attribute<String> {
 
-		public StringAttribute(boolean original, String id, String initvalue){
-			super(original, id, Type.STRING, initvalue); 
+		public StringAttribute(String id, String initvalue){
+			super(id, Type.STRING, initvalue); 
 		}
 
 		@Override
@@ -242,7 +248,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<String> copy(String origin){
-			return new StringAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new StringAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
@@ -261,8 +267,8 @@ public abstract class Attribute<V> {
 	
 	public static class FloatAttribute extends Attribute<Float> {
 
-		public FloatAttribute(boolean original, String id, Float initvalue){
-			super(original, id, Type.FLOAT, initvalue);
+		public FloatAttribute(String id, Float initvalue){
+			super(id, Type.FLOAT, initvalue);
 		}
 
 		@Override
@@ -277,7 +283,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Float> copy(String origin){
-			return new FloatAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new FloatAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
@@ -321,8 +327,8 @@ public abstract class Attribute<V> {
 	
 	public static class IntegerAttribute extends Attribute<Integer> {
 
-		public IntegerAttribute(boolean original, String id, Integer initvalue){
-			super(original, id, Type.INTEGER, initvalue);
+		public IntegerAttribute(String id, Integer initvalue){
+			super(id, Type.INTEGER, initvalue);
 		}
 
 		@Override
@@ -337,7 +343,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Integer> copy(String origin){
-			return new IntegerAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new IntegerAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
@@ -383,8 +389,8 @@ public abstract class Attribute<V> {
 	
 	public static class BooleanAttribute extends Attribute<Boolean> {
 
-		public BooleanAttribute(boolean original, String id, Boolean initvalue){
-			super(original, id, Type.BOOLEAN, initvalue);
+		public BooleanAttribute(String id, Boolean initvalue){
+			super(id, Type.BOOLEAN, initvalue);
 		}
 
 		@Override
@@ -399,7 +405,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new BooleanAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new BooleanAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
@@ -418,8 +424,8 @@ public abstract class Attribute<V> {
 	
 	public static class TriStateAttribute extends Attribute<Boolean> {
 
-		public TriStateAttribute(boolean original, String id, Boolean initvalue){
-			super(original, id, Type.TRISTATE, initvalue);
+		public TriStateAttribute(String id, Boolean initvalue){
+			super(id, Type.TRISTATE, initvalue);
 		}
 
 		@Override
@@ -436,7 +442,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new TriStateAttribute(false, id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new TriStateAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		

@@ -101,20 +101,20 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 				Attribute<?> attr = null; boolean isbool = false;
 				switch(type){
 					case "string": case "text": {
-						attr = new Attribute.StringAttribute(true, id, json.get("value").getAsString()).setTarget(target); break;
+						attr = new Attribute.StringAttribute(id, json.get("value").getAsString()).setTarget(target); break;
 					}
 					case "float": case "double": {
-						attr = new Attribute.FloatAttribute(true, id, json.get("value").getAsFloat()).setTarget(target); break;
+						attr = new Attribute.FloatAttribute(id, json.get("value").getAsFloat()).setTarget(target); break;
 					}
 					case "integer": case "number": {
-						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt()).setTarget(target); break;
+						attr = new Attribute.IntegerAttribute(id, json.get("value").getAsInt()).setTarget(target); break;
 					}
 					case "boolean": case "bool": {
-						attr = new Attribute.BooleanAttribute(true, id, json.get("value").getAsBoolean()).setTarget(target); isbool = true; break;
+						attr = new Attribute.BooleanAttribute(id, json.get("value").getAsBoolean()).setTarget(target); isbool = true; break;
 					}
 					case "tristate": case "threestate": case "ternary": {
 						Boolean bool = !json.has("value") || json.get("value").toString().equals("null") ? null : json.get("value").getAsBoolean();
-						attr = new Attribute.TriStateAttribute(true, id, bool); isbool = true; break;
+						attr = new Attribute.TriStateAttribute(id, bool); isbool = true; break;
 					}
 					default: continue;
 				}

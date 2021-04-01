@@ -110,22 +110,22 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				switch(type){
 					case "string":
 					case "text":{
-						attr = new Attribute.StringAttribute(true, id, json.get("value").getAsString());
+						attr = new Attribute.StringAttribute(id, json.get("value").getAsString());
 						break;
 					}
 					case "float":
 					case "double":{
-						attr = new Attribute.FloatAttribute(true, id, json.get("value").getAsFloat());
+						attr = new Attribute.FloatAttribute(id, json.get("value").getAsFloat());
 						break;
 					}
 					case "integer":
 					case "number":{
-						attr = new Attribute.IntegerAttribute(true, id, json.get("value").getAsInt());
+						attr = new Attribute.IntegerAttribute(id, json.get("value").getAsInt());
 						break;
 					}
 					case "boolean":
 					case "bool":{
-						attr = new Attribute.BooleanAttribute(true, id, json.get("value").getAsBoolean());
+						attr = new Attribute.BooleanAttribute(id, json.get("value").getAsBoolean());
 						isbool = true;
 						break;
 					}
@@ -133,7 +133,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 					case "threestate":
 					case "ternary":{
 						Boolean bool = !json.has("value") || json.get("value").getAsString().equals("null") ? null : json.get("value").getAsBoolean();
-						attr = new Attribute.TriStateAttribute(true, id, bool);
+						attr = new Attribute.TriStateAttribute(id, bool);
 						isbool = true;
 						break;
 					}

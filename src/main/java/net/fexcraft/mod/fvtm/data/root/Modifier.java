@@ -94,7 +94,6 @@ public abstract class Modifier<V> {
 		} mod.read(compound); return mod;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <VL> VL modify(Attribute<VL> attribute, Update call){
 		switch(type){
 			case FLOAT: case INTEGER: /*case BOOLEAN:*/ {

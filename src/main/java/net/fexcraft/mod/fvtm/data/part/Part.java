@@ -147,7 +147,14 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 						}
 					}
 				}
-				attr.setSeat(json.has("seat") ? json.get("seat").getAsString() : null);
+				if(json.has("seat")){
+					if(json.get("seat").isJsonArray()){
+						for(JsonElement str : json.get("seat").getAsJsonArray()){
+							attr.addSeat(str.getAsString());
+						}
+					}
+					else attr.addSeat(json.get("seat").getAsString());
+				}
 				this.attributes.add(attr);
 			}
 		}

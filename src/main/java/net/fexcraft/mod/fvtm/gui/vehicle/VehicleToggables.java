@@ -33,7 +33,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			if(seat == null){
 				if(attr.external()) attributes.add(attr);
 			}
-			else if(seat.seatdata.driver || (attr.seat() != null && attr.seat().equals(seat.seatdata.name))){
+			else if(seat.seatdata.driver || (attr.seats().contains(seat.seatdata.name))){
 				attributes.add(attr);
 			}
 		});

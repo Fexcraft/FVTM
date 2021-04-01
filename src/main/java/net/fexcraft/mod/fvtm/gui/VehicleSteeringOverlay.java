@@ -540,7 +540,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		Print.debug("Toggled " + (toggables ? "ON" : "OFF"));
 		if(instance.seat == null || instance.seat.vehicle == null) return;
 		for(Attribute<?> attr : instance.seat.vehicle.getVehicleData().getAttributes().values()){
-			if(attr.seat() != null && attr.seat().equals(instance.seat.seatdata.name)){
+			if(attr.seats().contains(instance.seat.seatdata.name)){
 				attributes.add(attr);
 			}
 		}

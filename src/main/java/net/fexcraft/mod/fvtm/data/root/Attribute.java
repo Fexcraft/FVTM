@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.root;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -18,21 +19,22 @@ import net.minecraft.nbt.NBTTagString;
  * 5th prototype.
  * @author Ferdinand Calo' (FEX___96)
  */
-public abstract class Attribute<V> {
+public abstract class Attribute<VT> {
 	
 	public static final Comparator<Modifier<?>> MODIFIER_COMPARATOR = new Comparator<Modifier<?>>() {
 		@Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
 	};
-	private TreeSet<Modifier<V>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
+	private TreeSet<Modifier<VT>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
+	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
-	private String id, target, origin, seat, group;
+	private String id, target, origin, group;
 	private boolean editable, external;
 	private float min, max;
 	private Type type;
-	private V value, init;
+	private VT value, init;
 	
-	public Attribute(String id, Type type, V initvalue){
-		this.id = id; this.type = type; init = initvalue; value = init;
+	public Attribute(String id, Type type, VT initial_value){
+		this.id = id; this.type = type; init = initial_value; value = init;
 	}
 	
 	public boolean editable(){ return editable; }
@@ -42,34 +44,48 @@ public abstract class Attribute<V> {
 	public String target(){ return target; }
 	public String origin(){ return origin; }
 	public String group(){ return group; }
-	public String seat(){ return seat; }
 	public Type type(){ return type; }
 	public float min(){ return min; }
 	public float max(){ return max; }
-	public V value(){ return value; }
-	public V init(){ return init; }
+	public VT value(){ return value; }
+	public VT init(){ return init; }
 	//
 	public <VAL> VAL getValue(){ return (VAL)value; }
 	public <VAL> VAL getInitValue(){ return (VAL)init; };
-	public <VAL> Attribute<V> setValue(VAL value){ this.value = (V)value; validate(); return this; };
-	public <VAL> Attribute<V> setInitValue(VAL value){ this.init = (V)value; validate(); return this; };
+	public <VAL> Attribute<VT> setValue(VAL value){ this.value = (VT)value; validate(); return this; };
+	public <VAL> Attribute<VT> setInitValue(VAL value){ this.init = (VT)value; validate(); return this; };
 	public void increase(int amount){}; public void decrease(int amount){};
 	public void increase(float amount){}; public void decrease(float amount){};
-	public Attribute<V> reset(){ return setValue(init); };
+	public Attribute<VT> reset(){ return setValue(init); };
 	protected void validate(){};
 	//
-	public Attribute<V> setTarget(String string){ this.target = string; return this; }
-	public Attribute<V> setOrigin(String string){ this.origin = string; return this; }
-	public Attribute<V> setGroup(String string){ this.group = string; return this; }
-	public Attribute<V> setSeat(String string){ this.seat = string; return this; }
-	public Attribute<V> setMinMax(float min, float max){ this.min = min; this.max = max; return this; }
-	public Attribute<V> setEditable(boolean bool){ this.editable = bool; return this; }
-	public Attribute<V> setExternal(boolean bool){ this.external = bool; return this; }
+	public Attribute<VT> setTarget(String string){ this.target = string; return this; }
+	public Attribute<VT> setOrigin(String string){ this.origin = string; return this; }
+	public Attribute<VT> setGroup(String string){ this.group = string; return this; }
+	public Attribute<VT> setMinMax(float min, float max){ this.min = min; this.max = max; return this; }
+	public Attribute<VT> setEditable(boolean bool){ this.editable = bool; return this; }
+	public Attribute<VT> setExternal(boolean bool){ this.external = bool; return this; }
 	//
-	public Attribute<V> addModifier(Modifier<?> mod){
-		if(mod.type() == type() || mod.type().isNumber() == type().isNumber()) modifiers.add((Modifier<V>)mod); return this;
+	
+	public ArrayList<String> seats(){return seats; }
+	
+	public Attribute<VT> addSeat(String string){
+		if(!seats.contains(string)) seats.add(string);
+		return this;
 	}
-	public TreeSet<Modifier<V>> getModifiers(){ return modifiers; }
+	
+	public Attribute<VT> remSeat(String string){
+		if(seats != null && seats.contains(string)){
+			seats.remove(string);
+		}
+		return this;
+	}
+	
+	//
+	public Attribute<VT> addModifier(Modifier<?> mod){
+		if(mod.type() == type() || mod.type().isNumber() == type().isNumber()) modifiers.add((Modifier<VT>)mod); return this;
+	}
+	public TreeSet<Modifier<VT>> getModifiers(){ return modifiers; }
 	//
 	public abstract int getIntegerValue();
 	public abstract float getFloatValue();
@@ -170,14 +186,23 @@ public abstract class Attribute<V> {
 		if(target != null) compound.setString("target", target);
 		if(origin != null) compound.setString("origin", origin);
 		if(group != null) compound.setString("group", group);
-		if(seat != null) compound.setString("seat", seat);
+		if(!seats.isEmpty()){
+			if(seats.size() == 1) compound.setString("seat", seats.get(0));
+			else{
+				String sts = seats.get(0);
+				for(int i = 1; i < seats.size(); i++){
+					sts += ";" + seats.get(i);
+				}
+				compound.setString("seats", sts);
+			}
+		}
 		compound.setBoolean("editable", editable);
 		compound.setBoolean("external", external);
 		compound.setTag("initial", this.writeValue(true));
 		compound.setTag("value", this.writeValue(false));
 		if(!modifiers.isEmpty()){
 			NBTTagList list = new NBTTagList();
-			for(Modifier<V> mod : modifiers){
+			for(Modifier<VT> mod : modifiers){
 				list.appendTag(mod.write(new NBTTagCompound()));
 			}
 			compound.setTag("modifiers", list);
@@ -193,7 +218,15 @@ public abstract class Attribute<V> {
 		if(compound.hasKey("target")) this.target = compound.getString("target");
 		if(compound.hasKey("origin")) this.origin = compound.getString("origin");
 		if(compound.hasKey("group")) this.group = compound.getString("group");
-		if(compound.hasKey("seat")) this.seat = compound.getString("seat");
+		if(compound.hasKey("seat")){
+			seats.clear();
+			seats.add(compound.getString("seat"));
+		}
+		if(compound.hasKey("seats")){
+			seats.clear();
+			String[] sts = compound.getString("seats").split(";");
+			for(String str : sts) seats.add(str);
+		}
 		editable = compound.hasKey("editable") ? compound.getBoolean("editable") : true;
 		external = compound.hasKey("external") ? compound.getBoolean("external") : false;
 		init = this.readValue(compound.getTag("initial"));
@@ -202,13 +235,13 @@ public abstract class Attribute<V> {
 		if(compound.hasKey("modifiers")){
 			NBTTagList list = (NBTTagList)compound.getTag("modifiers");
 			for(NBTBase base : list){
-				modifiers.add((Modifier<V>)Modifier.parse((NBTTagCompound)base));
+				modifiers.add((Modifier<VT>)Modifier.parse((NBTTagCompound)base));
 			}
 		}
 		return this;
 	}
 	
-	protected abstract V readValue(NBTBase basetag);
+	protected abstract VT readValue(NBTBase basetag);
 
 	public static Attribute<?> parse(NBTTagCompound compound){
 		Attribute<?> attr = null; Type type = Type.valueOf(compound.getString("type"));
@@ -228,7 +261,7 @@ public abstract class Attribute<V> {
 		return attr.read(compound);
 	}
 	
-	public abstract Attribute<V> copy(String origin);
+	public abstract Attribute<VT> copy(String origin);
 	
 	public static class StringAttribute extends Attribute<String> {
 
@@ -248,7 +281,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<String> copy(String origin){
-			return new StringAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new StringAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
@@ -283,7 +316,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Float> copy(String origin){
-			return new FloatAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new FloatAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
@@ -343,7 +376,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Integer> copy(String origin){
-			return new IntegerAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new IntegerAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
@@ -405,7 +438,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new BooleanAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new BooleanAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		
@@ -442,7 +475,7 @@ public abstract class Attribute<V> {
 
 		@Override
 		public Attribute<Boolean> copy(String origin){
-			return new TriStateAttribute(id(), init()).setMinMax(min(), max()).setValue(value()).setSeat(seat())
+			return new TriStateAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
 				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
 		}
 		

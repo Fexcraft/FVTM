@@ -89,7 +89,7 @@ public class ToggableHandler {
 	        }
 			return false;
 		}
-		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasBBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seat().equals(seat.seatdata.name)))).collect(Collectors.toList());
+		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasBBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seats().contains(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
 			/*Print.debug(player, "none found");*/ return false;
 		}

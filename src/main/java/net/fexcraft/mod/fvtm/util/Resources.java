@@ -41,6 +41,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapp
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
@@ -118,6 +119,7 @@ public class Resources {
 	public static IForgeRegistry<RailGauge> RAILGAUGES;
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
+	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
@@ -164,6 +166,7 @@ public class Resources {
 		//
 		//TODO check addon on/off state
 		//
+		registerAttributeTypes();
 		registerFunctions();
 		//
 		searchInAddonsFor(DataType.FUEL);
@@ -198,6 +201,12 @@ public class Resources {
 		for(Addon addon : ADDONS.getValuesCollection()){
 			addon.loadRecipes();
 		}
+	}
+
+	private void registerAttributeTypes(){
+		registerAttributeType("string", Attribute.StringAttribute.class, true);
+		//TODO
+		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));
 	}
 
 	private void registerFunctions(){
@@ -371,6 +380,29 @@ public class Resources {
 		catch(Throwable e){ e.printStackTrace(); return null; }
 	}
 	
+	/** Registers a Attribute class into FVTM Resources.*/
+	public static void registerAttributeType(ResourceLocation regname, Class<? extends Attribute<?>> clazz, boolean override){
+		registerAttributeType(regname.toString(), clazz, override);
+	}
+	
+	/** Registers a Attribute class into FVTM Resources.*/
+	public static void registerAttributeType(String regname, Class<? extends Attribute<?>> clazz, boolean override){
+		if(ATTRIBUTE_TYPES.containsKey(regname) && !override) return;
+		ATTRIBUTE_TYPES.put(regname, clazz);
+	}
+	
+	public static Class<? extends Attribute<?>> getAttributeType(ResourceLocation regname){
+		return getAttributeType(regname.toString());
+	}
+	
+	public static Class<? extends Attribute<?>> getAttributeType(String id){
+		return ATTRIBUTE_TYPES.get(id);
+	}
+
+	public static TreeMap<String, Class<? extends Attribute<?>>> getAttributeTypes(){
+		return ATTRIBUTE_TYPES;
+	}
+	
 	/** Registers a Functon class into FVTM Resources.*/
 	public static void registerFunction(ResourceLocation regname, Class<? extends Function> clazz, boolean override){
 		registerFunction(regname.toString(), clazz, override);
@@ -378,7 +410,8 @@ public class Resources {
 	
 	/** Registers a Functon class into FVTM Resources.*/
 	public static void registerFunction(String regname, Class<? extends Function> clazz, boolean override){
-		if(FUNCTIONS.containsKey(regname) && !override) return; FUNCTIONS.put(regname, clazz);
+		if(FUNCTIONS.containsKey(regname) && !override) return;
+		FUNCTIONS.put(regname, clazz);
 	}
 	
 	public static Class<? extends Function> getFunction(ResourceLocation regname){

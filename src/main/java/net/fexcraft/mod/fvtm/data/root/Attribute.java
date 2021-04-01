@@ -19,7 +19,7 @@ import net.minecraft.nbt.NBTTagString;
  * @author Ferdinand Calo' (FEX___96)
  */
 public abstract class Attribute<V> {
-	 
+	
 	public static final Comparator<Modifier<?>> MODIFIER_COMPARATOR = new Comparator<Modifier<?>>() {
 		@Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
 	};

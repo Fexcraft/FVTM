@@ -1,7 +1,6 @@
-package net.fexcraft.mod.fvtm.data.attr;
+package net.fexcraft.mod.fvtm.data.attribute;
 
 import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
 import net.minecraft.nbt.NBTBase;
 
 public class StringAttribute extends Attribute<String> {

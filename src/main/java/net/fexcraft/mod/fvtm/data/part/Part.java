@@ -17,10 +17,10 @@ import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Modifier;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable.SoundHolder;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
@@ -94,68 +94,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		if(obj.has("Attributes")){
 			JsonArray array = obj.get("Attributes").getAsJsonArray();
 			for(JsonElement elm : array){
-				JsonObject json = elm.getAsJsonObject();
-				String id = json.get("id").getAsString();
-				String type = json.get("type").getAsString();
-				String target = json.has("target") ? json.get("target").getAsString() : "vehicle";
-				Attribute<?> attr = null; boolean isbool = false;
-				switch(type){
-					case "string": case "text": {
-						attr = new Attribute.StringAttribute(id, json.get("value").getAsString()).setTarget(target); break;
-					}
-					case "float": case "double": {
-						attr = new Attribute.FloatAttribute(id, json.get("value").getAsFloat()).setTarget(target); break;
-					}
-					case "integer": case "number": {
-						attr = new Attribute.IntegerAttribute(id, json.get("value").getAsInt()).setTarget(target); break;
-					}
-					case "boolean": case "bool": {
-						attr = new Attribute.BooleanAttribute(id, json.get("value").getAsBoolean()).setTarget(target); isbool = true; break;
-					}
-					case "tristate": case "threestate": case "ternary": {
-						Boolean bool = !json.has("value") || json.get("value").toString().equals("null") ? null : json.get("value").getAsBoolean();
-						attr = new Attribute.TriStateAttribute(id, bool); isbool = true; break;
-					}
-					default: continue;
-				}
-				if((json.has("max") || json.has("min")) && !isbool){
-					float min = JsonUtil.getIfExists(json, "min", Integer.MIN_VALUE).floatValue();
-					float max = JsonUtil.getIfExists(json, "max", Integer.MAX_VALUE).floatValue();
-					attr.setMinMax(min, max);
-				}
-				if(json.has("editable")) attr.setEditable(json.get("editable").getAsBoolean());
-				if(json.has("external")) attr.setExternal(json.get("external").getAsBoolean());
-				if(json.has("hitbox")){
-					if(json.get("hitbox").isJsonArray()){
-						JsonArray erray = json.get("hitbox").getAsJsonArray();
-						int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
-						float[] arr = new float[expected];
-						for(int i = 0; i < expected; i++){
-							arr[i] = erray.get(i).getAsFloat();
-						}
-						attr.addBB("default", arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
-					}
-					else if(json.get("hitbox").isJsonObject()){
-						for(Map.Entry<String, JsonElement> entry : json.get("hitbox").getAsJsonObject().entrySet()){
-							JsonArray erray = entry.getValue().getAsJsonArray();
-							int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
-							float[] arr = new float[expected];
-							for(int i = 0; i < expected; i++){
-								arr[i] = erray.get(i).getAsFloat();
-							}
-							attr.addBB(entry.getKey(), arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
-						}
-					}
-				}
-				if(json.has("seat")){
-					if(json.get("seat").isJsonArray()){
-						for(JsonElement str : json.get("seat").getAsJsonArray()){
-							attr.addSeat(str.getAsString());
-						}
-					}
-					else attr.addSeat(json.get("seat").getAsString());
-				}
-				this.attributes.add(attr);
+				Attribute<?> attr = Attribute.parse(elm.getAsJsonObject());
+				if(attr != null) this.attributes.add(attr);
 			}
 		}
 		if(obj.has("Modifiers")){

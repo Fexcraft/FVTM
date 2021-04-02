@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.fvtm.data.Seat;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;

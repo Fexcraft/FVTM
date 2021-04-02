@@ -2,7 +2,7 @@ package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.ArrayList;
 
-import net.fexcraft.mod.fvtm.data.root.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 
 /**
  * @author Ferdinand Calo' (FEX___96)

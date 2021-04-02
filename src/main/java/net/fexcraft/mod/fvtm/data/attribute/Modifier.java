@@ -1,7 +1,7 @@
-package net.fexcraft.mod.fvtm.data.root;
+package net.fexcraft.mod.fvtm.data.attribute;
 
-import net.fexcraft.mod.fvtm.data.root.Attribute.Type;
-import net.fexcraft.mod.fvtm.data.root.Attribute.Update;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute.Type;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute.Update;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagCompound;

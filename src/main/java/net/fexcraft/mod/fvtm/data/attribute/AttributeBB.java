@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.data.root;
+package net.fexcraft.mod.fvtm.data.attribute;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Pos;

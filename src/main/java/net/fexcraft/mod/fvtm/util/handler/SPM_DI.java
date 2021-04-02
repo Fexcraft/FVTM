@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.SwivelPointMover;
-import net.fexcraft.mod.fvtm.data.root.Attribute;
-import net.fexcraft.mod.fvtm.data.root.Attribute.Type;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute.Type;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 
 public class SPM_DI implements SwivelPointMover {

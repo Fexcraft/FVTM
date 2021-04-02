@@ -1,10 +1,16 @@
-package net.fexcraft.mod.fvtm.data.root;
+package net.fexcraft.mod.fvtm.data.attribute;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
@@ -82,11 +88,14 @@ public abstract class Attribute<VT> {
 	}
 	
 	//
+	
 	public Attribute<VT> addModifier(Modifier<?> mod){
 		if(mod.type() == type() || mod.type().isNumber() == type().isNumber()) modifiers.add((Modifier<VT>)mod); return this;
 	}
 	public TreeSet<Modifier<VT>> getModifiers(){ return modifiers; }
+	
 	//
+	
 	public abstract int getIntegerValue();
 	public abstract float getFloatValue();
 	public abstract String getStringValue();
@@ -490,6 +499,90 @@ public abstract class Attribute<VT> {
 			return new Vec3f(getIntegerValue());
 		}
 		
+	}
+	
+	public static Attribute<?> parse(JsonObject obj){
+		String id = obj.get("id").getAsString();
+		String type = obj.get("type").getAsString();
+		/*Class<? extends Attribute<?>> clazz = Resources.getAttributeType(id);
+		if(clazz == null){
+			Print.debug("Attribute class of type '" + type + "' not found!");
+			return null;
+		}*/
+		Attribute<?> attr = null;
+		boolean isbool = false;
+		switch(type){
+			case "string":
+			case "text":{
+				attr = new Attribute.StringAttribute(id, obj.get("value").getAsString());
+				break;
+			}
+			case "float":
+			case "double":{
+				attr = new Attribute.FloatAttribute(id, obj.get("value").getAsFloat());
+				break;
+			}
+			case "integer":
+			case "number":{
+				attr = new Attribute.IntegerAttribute(id, obj.get("value").getAsInt());
+				break;
+			}
+			case "boolean":
+			case "bool":{
+				attr = new Attribute.BooleanAttribute(id, obj.get("value").getAsBoolean());
+				isbool = true;
+				break;
+			}
+			case "tristate":
+			case "threestate":
+			case "ternary":{
+				Boolean bool = !obj.has("value") || obj.get("value").getAsString().equals("null") ? null : obj.get("value").getAsBoolean();
+				attr = new Attribute.TriStateAttribute(id, bool);
+				isbool = true;
+				break;
+			}
+			default:
+				return null;
+		}
+		attr.setTarget(obj.has("target") ? obj.get("target").getAsString() : "vehicle");
+		if((obj.has("max") || obj.has("min") && !isbool)){
+			float min = JsonUtil.getIfExists(obj, "min", Integer.MIN_VALUE).floatValue();
+			float max = JsonUtil.getIfExists(obj, "max", Integer.MAX_VALUE).floatValue();
+			attr.setMinMax(min, max);
+		}
+		if(obj.has("editable")) attr.setEditable(obj.get("editable").getAsBoolean());
+		if(obj.has("external")) attr.setExternal(obj.get("external").getAsBoolean());
+		if(obj.has("hitbox")){
+			if(obj.get("hitbox").isJsonArray()){
+				JsonArray erray = obj.get("hitbox").getAsJsonArray();
+				int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
+				float[] arr = new float[expected];
+				for(int i = 0; i < expected; i++){
+					arr[i] = erray.get(i).getAsFloat();
+				}
+				attr.addBB("default", arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
+			}
+			else if(obj.get("hitbox").isJsonObject()){
+				for(Map.Entry<String, JsonElement> entry : obj.get("hitbox").getAsJsonObject().entrySet()){
+					JsonArray erray = entry.getValue().getAsJsonArray();
+					int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
+					float[] arr = new float[expected];
+					for(int i = 0; i < expected; i++){
+						arr[i] = erray.get(i).getAsFloat();
+					}
+					attr.addBB(entry.getKey(), arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
+				}
+			}
+		}
+		if(obj.has("seat")){
+			if(obj.get("seat").isJsonArray()){
+				for(JsonElement str : obj.get("seat").getAsJsonArray()){
+					attr.addSeat(str.getAsString());
+				}
+			}
+			else attr.addSeat(obj.get("seat").getAsString());
+		}
+		return attr;
 	}
 
 }

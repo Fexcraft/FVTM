@@ -28,9 +28,8 @@ public class BooleanAttribute extends Attribute<Boolean> {
 	}
 
 	@Override
-	public Attribute<Boolean> copy(String origin){
-		return new BooleanAttribute(id(), init()).setMinMax(min(), max()).setValue(value())// .setSeat(seat())
-			.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
+	protected Attribute<Boolean> copyNewInstance(){
+		return new BooleanAttribute(id(), init());
 	}
 
 	@Override

@@ -34,9 +34,8 @@ public class IntegerAttribute extends Attribute<Integer> {
 	}
 
 	@Override
-	public Attribute<Integer> copy(String origin){
-		return new IntegerAttribute(id(), init()).setMinMax(min(), max()).setValue(value())// .setSeat(seat())
-			.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
+	public Attribute<Integer> copyNewInstance(){
+		return new IntegerAttribute(id(), init());
 	}
 
 	@Override

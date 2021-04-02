@@ -27,9 +27,8 @@ public class StringAttribute extends Attribute<String> {
 	}
 
 	@Override
-	public Attribute<String> copy(String origin){
-		return new StringAttribute(id(), init()).setMinMax(min(), max()).setValue(value())// .setSeat(seat())
-			.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
+	public Attribute<String> copyNewInstance(){
+		return new StringAttribute(id(), init());
 	}
 
 	@Override

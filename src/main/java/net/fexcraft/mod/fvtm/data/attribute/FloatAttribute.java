@@ -34,9 +34,8 @@ public class FloatAttribute extends Attribute<Float> {
 	}
 
 	@Override
-	public Attribute<Float> copy(String origin){
-		return new FloatAttribute(id(), init()).setMinMax(min(), max()).setValue(value())// .setSeat(seat())
-			.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
+	public Attribute<Float> copyNewInstance(){
+		return new FloatAttribute(id(), init());
 	}
 
 	@Override

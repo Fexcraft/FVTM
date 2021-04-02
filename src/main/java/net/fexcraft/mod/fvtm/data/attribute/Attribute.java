@@ -248,6 +248,15 @@ public abstract class Attribute<VT> {
 	}
 	
 	protected abstract VT readValue(NBTBase basetag);
+	
+	public Attribute<VT> copy(String origin){
+		Attribute<VT> attr = copyNewInstance();
+		return attr.setMinMax(min(), max()).setValue(value())// .setSeat(seat())
+			.setTarget(target()).setGroup(group()).setOrigin(origin)
+			.setEditable(editable()).setExternal(external()).copyAABBs(this);
+	}
+
+	protected abstract Attribute<VT> copyNewInstance();
 
 	public static Attribute<?> parse(NBTTagCompound compound){
 		Attribute<?> attr = null; Type type = Type.valueOf(compound.getString("type"));
@@ -266,8 +275,6 @@ public abstract class Attribute<VT> {
 		}
 		return attr.read(compound);
 	}
-	
-	public abstract Attribute<VT> copy(String origin);
 	
 	public static Attribute<?> parse(JsonObject obj){
 		String id = obj.get("id").getAsString();

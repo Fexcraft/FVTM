@@ -30,9 +30,8 @@ public class TriStateAttribute extends Attribute<Boolean> {
 	}
 
 	@Override
-	public Attribute<Boolean> copy(String origin){
-		return new TriStateAttribute(id(), init()).setMinMax(min(), max()).setValue(value())// .setSeat(seat())
-			.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
+	public Attribute<Boolean> copyNewInstance(){
+		return new TriStateAttribute(id(), init());
 	}
 
 	@Override

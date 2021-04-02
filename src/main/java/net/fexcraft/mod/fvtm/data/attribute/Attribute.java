@@ -12,14 +12,11 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTPrimitive;
-import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 
 /**
  * 5th prototype.
@@ -272,264 +269,35 @@ public abstract class Attribute<VT> {
 	
 	public abstract Attribute<VT> copy(String origin);
 	
-	public static class StringAttribute extends Attribute<String> {
-
-		public StringAttribute(String id, String initvalue){
-			super(id, Type.STRING, initvalue); 
-		}
-
-		@Override
-		protected NBTBase writeValue(boolean initial){
-			return new NBTTagString(initial ? init() : value());
-		}
-
-		@Override
-		protected String readValue(NBTBase basetag){
-			return ((NBTTagString)basetag).getString();
-		}
-
-		@Override
-		public Attribute<String> copy(String origin){
-			return new StringAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
-				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
-		}
-		
-		@Override public int getIntegerValue(){ return 0; }
-		@Override public float getFloatValue(){ return 0; }
-		@Override public String getStringValue(){ return value(); }
-		@Override public boolean getBooleanValue(){ return Boolean.parseBoolean(value()); }
-		@Override public Boolean getTriStateValue(){ return value().equalsIgnoreCase("null") ? null : Boolean.parseBoolean(value()); }
-
-		@Override
-		public Vec3f getVectorValue(){
-			return new Vec3f();
-		}
-		
-	}
-	
-	public static class FloatAttribute extends Attribute<Float> {
-
-		public FloatAttribute(String id, Float initvalue){
-			super(id, Type.FLOAT, initvalue);
-		}
-
-		@Override
-		protected NBTBase writeValue(boolean initial){
-			return new NBTTagFloat(initial ? init() : value());
-		}
-
-		@Override
-		protected Float readValue(NBTBase basetag){
-			try{ return ((NBTPrimitive)basetag).getFloat(); } catch (Exception e){ e.printStackTrace(); return 0f; }
-		}
-
-		@Override
-		public Attribute<Float> copy(String origin){
-			return new FloatAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
-				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
-		}
-		
-		@Override public int getIntegerValue(){ return (int) + value(); }
-		@Override public float getFloatValue(){ return value(); }
-		@Override public String getStringValue(){ return value() + ""; }
-		@Override public boolean getBooleanValue(){ return value() > 0; }
-		@Override public Boolean getTriStateValue(){ return value() == 0f ? null : value() > 0; }
-		
-		@Override
-		public void increase(int amount){
-			this.increase(amount + 0f);
-		}
-		
-		@Override
-		public void increase(float amount){
-			this.setValue(value() + amount);
-		}
-		
-		@Override
-		public void decrease(int amount){
-			this.decrease(amount + 0f);
-		}
-		
-		@Override
-		public void decrease(float amount){
-			this.setValue(value() - amount);
-		}
-		
-		@Override
-		public void validate(){
-			if(value() > max()) setValue(max()); if(value() < min()) setValue(min());
-		}
-
-		@Override
-		public Vec3f getVectorValue(){
-			return new Vec3f(value());
-		}
-		
-	}
-	
-	public static class IntegerAttribute extends Attribute<Integer> {
-
-		public IntegerAttribute(String id, Integer initvalue){
-			super(id, Type.INTEGER, initvalue);
-		}
-
-		@Override
-		protected NBTBase writeValue(boolean initial){
-			return new NBTTagInt(initial ? init() : value());
-		}
-
-		@Override
-		protected Integer readValue(NBTBase basetag){
-			try{ return ((NBTPrimitive)basetag).getInt(); } catch (Exception e){ e.printStackTrace(); return 0; }
-		}
-
-		@Override
-		public Attribute<Integer> copy(String origin){
-			return new IntegerAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
-				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
-		}
-		
-		@Override public int getIntegerValue(){ return value(); }
-		@Override public float getFloatValue(){ return value(); }
-		@Override public String getStringValue(){ return value() + ""; }
-		@Override public boolean getBooleanValue(){ return value() > 0; }
-		@Override public Boolean getTriStateValue(){ return value() == 0 ? null : value() > 0; }
-		
-		@Override
-		public void increase(float amount){
-			this.increase((int)amount);
-		}
-		
-		@Override
-		public void increase(int amount){
-			this.setValue(value() + amount);
-		}
-		
-		@Override
-		public void decrease(float amount){
-			this.decrease((int)amount);
-		}
-		
-		@Override
-		public void decrease(int amount){
-			this.setValue(value() - amount);
-		}
-		
-		@Override
-		public void validate(){
-			if((Object)value() instanceof Float) setValue(((Float)(Object)value()).intValue());
-			if(value() > max()){ setValue(((Float)max()).intValue()); }
-			if(value() < min()){ setValue(((Float)min()).intValue()); }
-		}
-
-		@Override
-		public Vec3f getVectorValue(){
-			return new Vec3f(value());
-		}
-		
-	}
-	
-	public static class BooleanAttribute extends Attribute<Boolean> {
-
-		public BooleanAttribute(String id, Boolean initvalue){
-			super(id, Type.BOOLEAN, initvalue);
-		}
-
-		@Override
-		protected NBTBase writeValue(boolean initial){
-			return new NBTTagByte((initial ? init() : value()) ? (byte)1 : (byte)0);
-		}
-
-		@Override
-		protected Boolean readValue(NBTBase basetag){
-			return ((NBTPrimitive)basetag).getByte() > 0;
-		}
-
-		@Override
-		public Attribute<Boolean> copy(String origin){
-			return new BooleanAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
-				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
-		}
-		
-		@Override public int getIntegerValue(){ return value() ? 1 : 0; }
-		@Override public float getFloatValue(){ return value() ? 1 : 0; }
-		@Override public String getStringValue(){ return value() + ""; }
-		@Override public boolean getBooleanValue(){ return value(); }
-		@Override public Boolean getTriStateValue(){ return value(); }
-
-		@Override
-		public Vec3f getVectorValue(){
-			return new Vec3f(getIntegerValue());
-		}
-		
-	}
-	
-	public static class TriStateAttribute extends Attribute<Boolean> {
-
-		public TriStateAttribute(String id, Boolean initvalue){
-			super(id, Type.TRISTATE, initvalue);
-		}
-
-		@Override
-		protected NBTBase writeValue(boolean initial){
-			Boolean bool = initial ? init() : value();
-			return new NBTTagByte(bool == null ? -1 : bool ? (byte)1 : (byte)0);
-		}
-
-		@Override
-		protected Boolean readValue(NBTBase basetag){
-			byte val = ((NBTPrimitive)basetag).getByte();
-			return val < 0 ? null : val > 0;
-		}
-
-		@Override
-		public Attribute<Boolean> copy(String origin){
-			return new TriStateAttribute(id(), init()).setMinMax(min(), max()).setValue(value())//.setSeat(seat())
-				.setTarget(target()).setGroup(group()).setOrigin(origin).setEditable(editable()).setExternal(external()).copyAABBs(this);
-		}
-		
-		@Override public int getIntegerValue(){ return value() == null ? -1 : value() ? 1 : 0; }
-		@Override public float getFloatValue(){ return value() == null ? -1 : value() ? 1 : 0; }
-		@Override public String getStringValue(){ return value() + ""; }
-		@Override public boolean getBooleanValue(){ return value() == null ? false : value(); }
-		@Override public Boolean getTriStateValue(){ return value(); }
-
-		@Override
-		public Vec3f getVectorValue(){
-			return new Vec3f(getIntegerValue());
-		}
-		
-	}
-	
 	public static Attribute<?> parse(JsonObject obj){
 		String id = obj.get("id").getAsString();
 		String type = obj.get("type").getAsString();
-		/*Class<? extends Attribute<?>> clazz = Resources.getAttributeType(id);
+		Class<? extends Attribute<?>> clazz = Resources.getAttributeType(id);
 		if(clazz == null){
 			Print.debug("Attribute class of type '" + type + "' not found!");
 			return null;
-		}*/
+		}
 		Attribute<?> attr = null;
 		boolean isbool = false;
 		switch(type){
 			case "string":
 			case "text":{
-				attr = new Attribute.StringAttribute(id, obj.get("value").getAsString());
+				attr = new StringAttribute(id, obj.get("value").getAsString());
 				break;
 			}
 			case "float":
 			case "double":{
-				attr = new Attribute.FloatAttribute(id, obj.get("value").getAsFloat());
+				attr = new FloatAttribute(id, obj.get("value").getAsFloat());
 				break;
 			}
 			case "integer":
 			case "number":{
-				attr = new Attribute.IntegerAttribute(id, obj.get("value").getAsInt());
+				attr = new IntegerAttribute(id, obj.get("value").getAsInt());
 				break;
 			}
 			case "boolean":
 			case "bool":{
-				attr = new Attribute.BooleanAttribute(id, obj.get("value").getAsBoolean());
+				attr = new BooleanAttribute(id, obj.get("value").getAsBoolean());
 				isbool = true;
 				break;
 			}
@@ -537,7 +305,7 @@ public abstract class Attribute<VT> {
 			case "threestate":
 			case "ternary":{
 				Boolean bool = !obj.has("value") || obj.get("value").getAsString().equals("null") ? null : obj.get("value").getAsBoolean();
-				attr = new Attribute.TriStateAttribute(id, bool);
+				attr = new TriStateAttribute(id, bool);
 				isbool = true;
 				break;
 			}

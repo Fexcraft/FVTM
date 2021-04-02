@@ -34,6 +34,7 @@ import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.StringAttribute;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
@@ -204,7 +205,7 @@ public class Resources {
 	}
 
 	private void registerAttributeTypes(){
-		registerAttributeType("string", Attribute.StringAttribute.class, true);
+		registerAttributeType("string", StringAttribute.class, true);
 		//TODO
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));
 	}

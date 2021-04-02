@@ -21,8 +21,8 @@ public abstract class Modifier<V> {
 	protected Attribute<V> attr;
 	protected V value;
 	
-	public Modifier(String id, ValueType type, ModifierType mtype, Update call, Priority priority){
-		this.id = id; this.type = type; this.mtype = mtype; this.calltype = call; this.priority = priority;
+	public Modifier(String id, ModifierType mtype, Update call, Priority priority){
+		this.id = id; this.mtype = mtype; this.calltype = call; this.priority = priority;
 	}
 
 	public String id(){ return id; }
@@ -31,7 +31,7 @@ public abstract class Modifier<V> {
 	public Update update(){ return calltype; }
 	public Priority priority(){ return priority; }
 	public ModifierType modifertype(){ return mtype; }
-	public ValueType type(){ return type; }
+	//public ValueType type(){ return type; }
 	//
 	public Modifier<V> setTarget(String string){ target = string; return this; }
 	public Modifier<V> setOrigin(String string){ origin = string; return this; }
@@ -51,7 +51,7 @@ public abstract class Modifier<V> {
 
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound.setString("id", id);
-		compound.setString("valuetype", type);
+		//compound.setString("valuetype", type);
 		if(target != null) compound.setString("target", target);
 		if(origin != null) compound.setString("origin", origin);
 		compound.setString("calltype", calltype.name());
@@ -65,7 +65,7 @@ public abstract class Modifier<V> {
 	
 	public Modifier<?> read(NBTTagCompound compound){
 		id = compound.getString("id");
-		type = ValueType.valueOf(compound.getString("valuetype"));
+		//type = ValueType.valueOf(compound.getString("valuetype"));
 		if(compound.hasKey("target")) this.target = compound.getString("target");
 		if(compound.hasKey("origin")) this.origin = compound.getString("origin");
 		calltype = Update.valueOf(compound.getString("calltype"));
@@ -79,8 +79,8 @@ public abstract class Modifier<V> {
 
 	public static Modifier<?> parse(NBTTagCompound compound){
 		Modifier<?> mod = null;
-		ValueType type = ValueType.valueOf(compound.getString("valuetype"));
-		switch(type){
+		//ValueType type = ValueType.valueOf(compound.getString("valuetype"));
+		/*switch(type){
 			case BOOLEAN: break;
 			case BOOL_ARRAY: break;
 			case FLOAT: mod = new FloatModifier(null, 0, null, null, null); break;
@@ -91,12 +91,14 @@ public abstract class Modifier<V> {
 			case STRING: mod = new StringModifier(null, "", null, null, null); break;
 			case STRING_ARRAY: break;
 			default: break;
-		} mod.read(compound); return mod;
+		}*/
+		mod.read(compound);
+		return mod;
 	}
 
 	public <VL> VL modify(Attribute<VL> attribute, Update call){
-		switch(type){
-			case FLOAT: case INTEGER: /*case BOOLEAN:*/ {
+		/*switch(type){
+			case FLOAT: case INTEGER: /*case BOOLEAN:*//* {
 				float result = attribute.getFloatValue();
 				float value = type.isFloat() ? this.getFloatValue() : this.getIntegerValue();
 				switch(mtype){
@@ -126,7 +128,8 @@ public abstract class Modifier<V> {
 			case OBJECT: break;
 			case STRING_ARRAY: break;
 			default: break;
-		} return null;
+		}*/
+		return null;
 	}
 	
 	private String reverseText(String val){
@@ -142,7 +145,7 @@ public abstract class Modifier<V> {
 	public static class StringModifier extends Modifier<String> {
 
 		public StringModifier(String id, String value, ModifierType type, Update call, Priority priority){
-			super(id, ValueType.STRING, type, call, priority); this.value = value;
+			super(id, type, call, priority); this.value = value;
 		}
 
 		@Override
@@ -180,7 +183,7 @@ public abstract class Modifier<V> {
 	public static class IntegerModifier extends Modifier<Integer> {
 		
 		public IntegerModifier(String id, int value, ModifierType type, Update call, Priority priority){
-			super(id, ValueType.INTEGER, type, call, priority); this.value = value;
+			super(id, type, call, priority); this.value = value;
 		}
 
 		@Override
@@ -218,7 +221,7 @@ public abstract class Modifier<V> {
 	public static class FloatModifier extends Modifier<Float> {
 		
 		public FloatModifier(String id, float value, ModifierType type, Update call, Priority priority){
-			super(id, ValueType.FLOAT, type, call, priority); this.value = value;
+			super(id, type, call, priority); this.value = value;
 		}
 
 		@Override

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
+import com.google.gson.JsonObject;
+
 import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
@@ -7,8 +9,12 @@ import net.minecraft.nbt.NBTTagFloat;
 
 public class FloatAttribute extends Attribute<Float> {
 
-	public FloatAttribute(String id, Float initvalue){
-		super(id, Type.FLOAT, initvalue);
+	public FloatAttribute(String id, Float initial_value){
+		super(id, Type.FLOAT, initial_value);
+	}
+	
+	public FloatAttribute(String id, JsonObject obj){
+		super(id, Type.FLOAT, obj.get("value").getAsFloat());
 	}
 
 	@Override

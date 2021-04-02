@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
+import com.google.gson.JsonObject;
+
 import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
@@ -7,8 +9,12 @@ import net.minecraft.nbt.NBTTagInt;
 
 public class IntegerAttribute extends Attribute<Integer> {
 
-	public IntegerAttribute(String id, Integer initvalue){
-		super(id, Type.INTEGER, initvalue);
+	public IntegerAttribute(String id, Integer initial_value){
+		super(id, Type.INTEGER, initial_value);
+	}
+	
+	public IntegerAttribute(String id, JsonObject obj){
+		super(id, Type.INTEGER, obj.get("value").getAsInt());
 	}
 
 	@Override

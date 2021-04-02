@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
+import com.google.gson.JsonObject;
+
 import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
@@ -7,8 +9,12 @@ import net.minecraft.nbt.NBTTagByte;
 
 public class BooleanAttribute extends Attribute<Boolean> {
 
-	public BooleanAttribute(String id, Boolean initvalue){
-		super(id, Type.BOOLEAN, initvalue);
+	public BooleanAttribute(String id, Boolean initial_value){
+		super(id, Type.BOOLEAN, initial_value);
+	}
+	
+	public BooleanAttribute(String id, JsonObject obj){
+		super(id, Type.BOOLEAN, obj.get("value").getAsBoolean());
 	}
 
 	@Override

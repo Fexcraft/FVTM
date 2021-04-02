@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
+import com.google.gson.JsonObject;
+
 import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
@@ -7,8 +9,12 @@ import net.minecraft.nbt.NBTTagByte;
 
 public class TriStateAttribute extends Attribute<Boolean> {
 
-	public TriStateAttribute(String id, Boolean initvalue){
-		super(id, Type.TRISTATE, initvalue);
+	public TriStateAttribute(String id, Boolean initial_value){
+		super(id, Type.TRISTATE, initial_value);
+	}
+	
+	public TriStateAttribute(String id, JsonObject obj){
+		super(id, Type.TRISTATE, !obj.has("value") || obj.get("value").getAsString().equals("null") ? null : obj.get("value").getAsBoolean());
 	}
 
 	@Override

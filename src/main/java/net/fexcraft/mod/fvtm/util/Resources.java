@@ -34,7 +34,11 @@ import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.BooleanAttribute;
+import net.fexcraft.mod.fvtm.data.attribute.FloatAttribute;
+import net.fexcraft.mod.fvtm.data.attribute.IntegerAttribute;
 import net.fexcraft.mod.fvtm.data.attribute.StringAttribute;
+import net.fexcraft.mod.fvtm.data.attribute.TriStateAttribute;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
@@ -206,7 +210,16 @@ public class Resources {
 
 	private void registerAttributeTypes(){
 		registerAttributeType("string", StringAttribute.class, true);
-		//TODO
+		registerAttributeType("text", StringAttribute.class, true);
+		registerAttributeType("float", FloatAttribute.class, true);
+		registerAttributeType("double", FloatAttribute.class, true);
+		registerAttributeType("integer", IntegerAttribute.class, true);
+		registerAttributeType("number", IntegerAttribute.class, true);
+		registerAttributeType("boolean", BooleanAttribute.class, true);
+		registerAttributeType("bool", BooleanAttribute.class, true);
+		registerAttributeType("tristate", TriStateAttribute.class, true);
+		registerAttributeType("threestate", TriStateAttribute.class, true);
+		registerAttributeType("ternary", TriStateAttribute.class, true);
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));
 	}
 

@@ -252,16 +252,16 @@ public abstract class Attribute<VT> {
 	public static Attribute<?> parse(NBTTagCompound compound){
 		Attribute<?> attr = null; Type type = Type.valueOf(compound.getString("type"));
 		switch(type){
-			case BOOLEAN: attr = new BooleanAttribute(null, null);
+			case BOOLEAN: attr = new BooleanAttribute(null, (Boolean)null);
 			case BOOL_ARRAY: break;
-			case FLOAT: attr = new FloatAttribute(null, null);
+			case FLOAT: attr = new FloatAttribute(null, (Float)null);
 			case FLOAT_ARRAY: break;
-			case INTEGER: attr = new IntegerAttribute(null, null); break;
+			case INTEGER: attr = new IntegerAttribute(null, (Integer)null); break;
 			case INT_ARRAY: break;
 			case OBJECT: break;//TODO
-			case STRING: attr = new StringAttribute(null,  null); break;
+			case STRING: attr = new StringAttribute(null, (String)null); break;
 			case STRING_ARRAY: break;
-			case TRISTATE: attr = new TriStateAttribute(null, null); break;
+			case TRISTATE: attr = new TriStateAttribute(null, (Boolean)null); break;
 			default: return null;
 		}
 		return attr.read(compound);
@@ -278,40 +278,14 @@ public abstract class Attribute<VT> {
 			return null;
 		}
 		Attribute<?> attr = null;
-		boolean isbool = false;
-		switch(type){
-			case "string":
-			case "text":{
-				attr = new StringAttribute(id, obj.get("value").getAsString());
-				break;
-			}
-			case "float":
-			case "double":{
-				attr = new FloatAttribute(id, obj.get("value").getAsFloat());
-				break;
-			}
-			case "integer":
-			case "number":{
-				attr = new IntegerAttribute(id, obj.get("value").getAsInt());
-				break;
-			}
-			case "boolean":
-			case "bool":{
-				attr = new BooleanAttribute(id, obj.get("value").getAsBoolean());
-				isbool = true;
-				break;
-			}
-			case "tristate":
-			case "threestate":
-			case "ternary":{
-				Boolean bool = !obj.has("value") || obj.get("value").getAsString().equals("null") ? null : obj.get("value").getAsBoolean();
-				attr = new TriStateAttribute(id, bool);
-				isbool = true;
-				break;
-			}
-			default:
-				return null;
+		try{
+			attr = clazz.getConstructor(String.class, JsonObject.class).newInstance();
 		}
+		catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		boolean isbool = attr.type.isTristate();
 		attr.setTarget(obj.has("target") ? obj.get("target").getAsString() : "vehicle");
 		if((obj.has("max") || obj.has("min") && !isbool)){
 			float min = JsonUtil.getIfExists(obj, "min", Integer.MIN_VALUE).floatValue();

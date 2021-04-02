@@ -85,7 +85,7 @@ public enum VehicleType {
 				attrs.add(new BooleanAttribute("lights_other", false).addSeat("driver"));
 				//attrs.add(new BooleanAttribute("turn_light_left", false).setSeat("driver"));
 				//attrs.add(new BooleanAttribute("turn_light_right", false).setSeat("driver"));
-				attrs.add(new TriStateAttribute("turn_lights", null).addSeat("driver"));
+				attrs.add(new TriStateAttribute("turn_lights", (Boolean)null).addSeat("driver"));
 				attrs.add(new BooleanAttribute("warning_lights", false).addSeat("driver"));
 				//
 				attrs.add(new FloatAttribute("steering_angle", 0f).setMinMax(-90f, 90f));

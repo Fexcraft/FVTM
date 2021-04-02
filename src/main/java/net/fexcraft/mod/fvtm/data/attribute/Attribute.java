@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
@@ -31,10 +32,11 @@ public abstract class Attribute<VT> {
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
 	private ValueType value_type;
-	private String id, target, origin, group;
+	private String target, origin, group;
 	private boolean editable, external;
 	private float min, max;
 	private VT value, init;
+	public final String id;
 	
 	public Attribute(String id, VT initial_value){
 		this.id = id;
@@ -69,6 +71,7 @@ public abstract class Attribute<VT> {
 	public Attribute<VT> setMinMax(float min, float max){ this.min = min; this.max = max; return this; }
 	public Attribute<VT> setEditable(boolean bool){ this.editable = bool; return this; }
 	public Attribute<VT> setExternal(boolean bool){ this.external = bool; return this; }
+	
 	//
 	
 	public ArrayList<String> seats(){return seats; }
@@ -87,11 +90,33 @@ public abstract class Attribute<VT> {
 	
 	//
 	
+	/** Must be same as Registry Entry. */
+	public abstract String type();
+	
+	public abstract ValueType valuetype();
+
+	public abstract VT parseValue(String string);
+	
+	public static enum Update {
+		INITIAL, ENTITY, MANUAL
+	}
+	
+	//
+	
 	public Attribute<VT> addModifier(Modifier<?> mod){
-		if(mod.type() == value_type || mod.type().isNumber() == valuetype().isNumber()) modifiers.add((Modifier<VT>)mod);
+		//TODO if(mod.type() == value_type || mod.type().isNumber() == valuetype().isNumber()) modifiers.add((Modifier<VT>)mod);
 		return this;
 	}
+	
 	public TreeSet<Modifier<VT>> getModifiers(){ return modifiers; }
+	
+	public Attribute<?> updateValue(Update call){
+		for(Modifier<?> mod : modifiers){
+			if(mod.update() != call) continue;
+			setValue(mod.modify(this, call));
+		}
+		return this;
+	}
 	
 	//
 	
@@ -102,12 +127,7 @@ public abstract class Attribute<VT> {
 	public abstract Boolean getTriStateValue();
 	public abstract Vec3f getVectorValue();
 	
-	public Attribute<?> updateValue(Update call){
-		for(Modifier<?> mod : modifiers){
-			if(mod.update() != call) continue;
-			setValue(mod.modify(this, call));
-		} return this;
-	}
+	//
 	
 	public boolean hasBBs(){
 		return abbs != null && abbs.size() > 0;
@@ -119,7 +139,8 @@ public abstract class Attribute<VT> {
 			if(id.startsWith("external-")) return getBB("external");
 			if(!abbs.containsKey("default")) return null;
 			return abbs.get("default");
-		} return abbs.get(id);
+		}
+		return abbs.get(id);
 	}
 	
 	public <T> Attribute<T> addBB(String id, float[] data, String point){
@@ -145,17 +166,6 @@ public abstract class Attribute<VT> {
 	
 	//
 	
-	/** Must be same as Registry Entry. */
-	public abstract String type();
-	
-	public abstract ValueType valuetype();
-
-	public abstract VT parseValue(String string);
-	
-	public static enum Update {
-		INITIAL, ENTITY, MANUAL
-	}
-	
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound.setString("id", id);
 		compound.setString("type", type());
@@ -180,7 +190,7 @@ public abstract class Attribute<VT> {
 		if(!modifiers.isEmpty()){
 			NBTTagList list = new NBTTagList();
 			for(Modifier<VT> mod : modifiers){
-				list.appendTag(mod.write(new NBTTagCompound()));
+				//list.appendTag(mod.write(new NBTTagCompound()));
 			}
 			compound.setTag("modifiers", list);
 		}
@@ -190,7 +200,6 @@ public abstract class Attribute<VT> {
 	protected abstract NBTBase writeValue(boolean initial);
 
 	public Attribute<?> read(NBTTagCompound compound){
-		id = compound.getString("id");
 		min = compound.getFloat("min"); max = compound.getFloat("max");
 		if(compound.hasKey("target")) this.target = compound.getString("target");
 		if(compound.hasKey("origin")) this.origin = compound.getString("origin");
@@ -212,13 +221,15 @@ public abstract class Attribute<VT> {
 		if(compound.hasKey("modifiers")){
 			NBTTagList list = (NBTTagList)compound.getTag("modifiers");
 			for(NBTBase base : list){
-				modifiers.add((Modifier<VT>)Modifier.parse((NBTTagCompound)base));
+				//modifiers.add((Modifier<VT>)Modifier.parse((NBTTagCompound)base));
 			}
 		}
 		return this;
 	}
 	
 	protected abstract VT readValue(NBTBase basetag);
+	
+	//
 	
 	public Attribute<VT> copy(String origin){
 		Attribute<VT> attr = copyNewInstance();
@@ -228,6 +239,8 @@ public abstract class Attribute<VT> {
 	}
 
 	protected abstract Attribute<VT> copyNewInstance();
+	
+	//
 
 	public static Attribute<?> parse(NBTTagCompound compound){
 		Class<? extends Attribute<?>> clazz = Resources.getAttributeType(compound.getString("type").toLowerCase());
@@ -237,10 +250,11 @@ public abstract class Attribute<VT> {
 		}
 		Attribute<?> attr = null;
 		try{
-			attr = clazz.getConstructor(String.class, JsonObject.class).newInstance();
+			attr = clazz.getConstructor(String.class).newInstance(compound.getString("id"));//TODO
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			Static.stop();
 			return null;
 		}
 		return attr.read(compound);
@@ -256,7 +270,7 @@ public abstract class Attribute<VT> {
 		}
 		Attribute<?> attr = null;
 		try{
-			attr = clazz.getConstructor(String.class, JsonObject.class).newInstance();
+			attr = clazz.getConstructor(String.class, JsonObject.class).newInstance(id, obj);
 		}
 		catch(Exception e){
 			e.printStackTrace();

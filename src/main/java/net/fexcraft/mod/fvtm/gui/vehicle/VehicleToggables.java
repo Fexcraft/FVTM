@@ -85,7 +85,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				if(!attr.editable()){
 					texts.get("row" + row).string = " [ Not Editable ]"; return true;
 				}
-				if(attr.type().isBoolean()){
+				if(attr.valuetype().isBoolean()){
 					NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
 					packet.setString("task", "attr_update"); packet.setString("attr", attr.id());
 					packet.setString("value", !attr.getBooleanValue() + ""); attr.setValue(!attr.getBooleanValue());

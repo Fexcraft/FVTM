@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.data.attribute;
 
-import net.fexcraft.mod.fvtm.data.attribute.Attribute.Type;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute.Update;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
@@ -19,10 +18,10 @@ public abstract class Modifier<V> {
 	protected Update calltype;
 	protected Priority priority;
 	protected ModifierType mtype;
-	protected Type type;
+	protected Attribute<V> attr;
 	protected V value;
 	
-	public Modifier(String id, Type type, ModifierType mtype, Update call, Priority priority){
+	public Modifier(String id, ValueType type, ModifierType mtype, Update call, Priority priority){
 		this.id = id; this.type = type; this.mtype = mtype; this.calltype = call; this.priority = priority;
 	}
 
@@ -32,7 +31,7 @@ public abstract class Modifier<V> {
 	public Update update(){ return calltype; }
 	public Priority priority(){ return priority; }
 	public ModifierType modifertype(){ return mtype; }
-	public Type type(){ return type; }
+	public ValueType type(){ return type; }
 	//
 	public Modifier<V> setTarget(String string){ target = string; return this; }
 	public Modifier<V> setOrigin(String string){ origin = string; return this; }
@@ -52,7 +51,7 @@ public abstract class Modifier<V> {
 
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound.setString("id", id);
-		compound.setString("valuetype", type.name());
+		compound.setString("valuetype", type);
 		if(target != null) compound.setString("target", target);
 		if(origin != null) compound.setString("origin", origin);
 		compound.setString("calltype", calltype.name());
@@ -66,7 +65,7 @@ public abstract class Modifier<V> {
 	
 	public Modifier<?> read(NBTTagCompound compound){
 		id = compound.getString("id");
-		type = Type.valueOf(compound.getString("valuetype"));
+		type = ValueType.valueOf(compound.getString("valuetype"));
 		if(compound.hasKey("target")) this.target = compound.getString("target");
 		if(compound.hasKey("origin")) this.origin = compound.getString("origin");
 		calltype = Update.valueOf(compound.getString("calltype"));
@@ -79,7 +78,8 @@ public abstract class Modifier<V> {
 	protected abstract V readValue(NBTBase basetag);
 
 	public static Modifier<?> parse(NBTTagCompound compound){
-		Modifier<?> mod = null; Type type = Type.valueOf(compound.getString("valuetype"));
+		Modifier<?> mod = null;
+		ValueType type = ValueType.valueOf(compound.getString("valuetype"));
 		switch(type){
 			case BOOLEAN: break;
 			case BOOL_ARRAY: break;
@@ -108,7 +108,7 @@ public abstract class Modifier<V> {
 					case PROCENT_SET: result  = result * 0.01f * value; break;
 					default: return null;
 				}
-				return (VL)(Object)(attribute.type().isInteger() ? (int)result : result);
+				return (VL)(Object)(attribute.valuetype().isInteger() ? (int)result : result);
 			}
 			case STRING:{
 				String val = attribute.getStringValue();
@@ -142,7 +142,7 @@ public abstract class Modifier<V> {
 	public static class StringModifier extends Modifier<String> {
 
 		public StringModifier(String id, String value, ModifierType type, Update call, Priority priority){
-			super(id, Type.STRING, type, call, priority); this.value = value;
+			super(id, ValueType.STRING, type, call, priority); this.value = value;
 		}
 
 		@Override
@@ -180,7 +180,7 @@ public abstract class Modifier<V> {
 	public static class IntegerModifier extends Modifier<Integer> {
 		
 		public IntegerModifier(String id, int value, ModifierType type, Update call, Priority priority){
-			super(id, Type.INTEGER, type, call, priority); this.value = value;
+			super(id, ValueType.INTEGER, type, call, priority); this.value = value;
 		}
 
 		@Override
@@ -218,7 +218,7 @@ public abstract class Modifier<V> {
 	public static class FloatModifier extends Modifier<Float> {
 		
 		public FloatModifier(String id, float value, ModifierType type, Update call, Priority priority){
-			super(id, Type.FLOAT, type, call, priority); this.value = value;
+			super(id, ValueType.FLOAT, type, call, priority); this.value = value;
 		}
 
 		@Override

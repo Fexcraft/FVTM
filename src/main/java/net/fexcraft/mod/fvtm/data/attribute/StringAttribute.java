@@ -9,11 +9,11 @@ import net.minecraft.nbt.NBTTagString;
 public class StringAttribute extends Attribute<String> {
 
 	public StringAttribute(String id, String initial_value){
-		super(id, Type.STRING, initial_value);
+		super(id, initial_value);
 	}
 	
 	public StringAttribute(String id, JsonObject obj){
-		super(id, Type.STRING, obj.get("value").getAsString());
+		super(id, obj.get("value").getAsString());
 	}
 
 	@Override
@@ -59,6 +59,21 @@ public class StringAttribute extends Attribute<String> {
 	@Override
 	public Vec3f getVectorValue(){
 		return new Vec3f();
+	}
+
+	@Override
+	public ValueType valuetype(){
+		return ValueType.STRING;
+	}
+
+	@Override
+	public String type(){
+		return "string";
+	}
+
+	@Override
+	public String parseValue(String string){
+		return string;
 	}
 
 }

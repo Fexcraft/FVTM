@@ -142,7 +142,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		packet.setString("task", "attr_toggle");
 		packet.setString("attr", attr.id());
 		if(i > 1) packet.setBoolean("reset", true);
-		packet.setBoolean("bool", !attr.type().isBoolean() ? i < 0 : i > 0);
+		packet.setBoolean("bool", !attr.valuetype().isBoolean() ? i < 0 : i > 0);
 		packet.setInteger("entity", seat.vehicle.getEntityId());
 		Print.debug(packet);
 		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
@@ -391,13 +391,13 @@ public class VehicleSteeringOverlay extends GuiScreen {
 				Attribute<?> attr = attributes.get(i);
 				offset = j * 12 + 34;
 				mc.renderEngine.bindTexture(ICON_BOOL_BACK);
-				if(attr.type().isTristate()){
+				if(attr.valuetype().isTristate()){
 					int width = fontRenderer.getStringWidth(attr.id());
 					if(scroll == j) HOVER.glColorApply();
 					this.drawTexturedModalRect(this.width - width - 14, offset, 0, 0, width + 2, 12);
 					if(scroll == j) RGB.glColorReset();
 					mc.fontRenderer.drawString(attr.id(), this.width - width - 12, offset + 3, 0xffffff);
-					if(attr.type().isBoolean()){
+					if(attr.valuetype().isBoolean()){
 						mc.renderEngine.bindTexture(attr.getBooleanValue() ? ICON_BOOL_TRUE : ICON_BOOL_FALSE);
 					}
 					else{

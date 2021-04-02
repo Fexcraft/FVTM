@@ -10,11 +10,11 @@ import net.minecraft.nbt.NBTTagByte;
 public class BooleanAttribute extends Attribute<Boolean> {
 
 	public BooleanAttribute(String id, Boolean initial_value){
-		super(id, Type.BOOLEAN, initial_value);
+		super(id, initial_value);
 	}
 	
 	public BooleanAttribute(String id, JsonObject obj){
-		super(id, Type.BOOLEAN, obj.get("value").getAsBoolean());
+		super(id, obj.get("value").getAsBoolean());
 	}
 
 	@Override
@@ -60,6 +60,21 @@ public class BooleanAttribute extends Attribute<Boolean> {
 	@Override
 	public Vec3f getVectorValue(){
 		return new Vec3f(getIntegerValue());
+	}
+
+	@Override
+	public ValueType valuetype(){
+		return ValueType.BOOLEAN;
+	}
+
+	@Override
+	public String type(){
+		return "boolean";
+	}
+
+	@Override
+	public Boolean parseValue(String string){
+		return Boolean.parseBoolean(string);
 	}
 
 }

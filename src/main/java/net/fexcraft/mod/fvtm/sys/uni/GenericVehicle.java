@@ -245,10 +245,10 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		if(attr == null) return;
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", "fvtm:gui");
-		packet.setString("task", attr.type().isString() ? "attr_update" : "attr_toggle");
+		packet.setString("task", attr.valuetype().isString() ? "attr_update" : "attr_toggle");
 		packet.setString("attr", attr.id());
 		packet.setInteger("entity", getEntityId());
-		if(attr.type().isTristate()){
+		if(attr.valuetype().isTristate()){
 			if(attr.getTriStateValue() == null){
 				packet.setBoolean("bool", false);
 				packet.setBoolean("reset", true);
@@ -257,13 +257,13 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 				packet.setBoolean("bool", attr.getBooleanValue());
 			}
 		}
-		else if(attr.type().isFloat()){
+		else if(attr.valuetype().isFloat()){
 			packet.setFloat("value", attr.getFloatValue());
 		}
-		else if(attr.type().isInteger()){
+		else if(attr.valuetype().isInteger()){
 			packet.setFloat("value", attr.getIntegerValue());
 		}
-		else if(attr.type().isString()){
+		else if(attr.valuetype().isString()){
 			packet.setString("value", attr.getStringValue());
 		}
 		ServerReceiver.INSTANCE.process(packet, null, world);

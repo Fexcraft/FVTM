@@ -45,8 +45,8 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				String attribute = packet.nbt.getString("attr");
 				final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
 				Object old = attr.getValue();
-				if(attr.type().isTristate()){
-					if(attr.type().isBoolean() || !packet.nbt.hasKey("reset")){
+				if(attr.valuetype().isTristate()){
+					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
 						attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue());
 					}
 					else{
@@ -61,7 +61,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 							if(ent.entity != null){
 								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute); if(attr0 == null) continue;
 								NBTTagCompound compound = packet.nbt.copy(); 
-								if(attr0.type().isBoolean() || !packet.nbt.hasKey("reset")){
+								if(attr0.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
 									attr0.setValue(bool); compound.setBoolean("bool", attr0.getBooleanValue());
 								}
 								else{
@@ -78,7 +78,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 							Attribute<?> attr0 = trailer.getVehicleData().getAttribute(attribute);
 							if(attr0 != null){
 								NBTTagCompound compound = packet.nbt.copy();
-								if(attr0.type().isBoolean() || !packet.nbt.hasKey("reset")){
+								if(attr0.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
 									attr0.setValue(bool); compound.setBoolean("bool", attr0.getBooleanValue());
 								}
 								else{
@@ -90,8 +90,8 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						}
 					}
 				}
-				else if(attr.type().isNumber()){
-					attr.setValue(attr.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+				else if(attr.valuetype().isNumber()){
+					attr.setValue(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 					if(veh.getVehicleType().isRailVehicle()){
 						RailVehicle reil = (RailVehicle)veh;
@@ -101,7 +101,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 							if(ent.entity != null){
 								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute); if(attr0 == null) continue;
 								NBTTagCompound compound = packet.nbt.copy();
-								attr0.setValue(attr0.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								attr0.setValue(attr0.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
 							}
 						}
@@ -113,7 +113,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 							Attribute<?> attr0 = trailer.getVehicleData().getAttribute(attribute);
 							if(attr0 != null){
 								NBTTagCompound compound = packet.nbt.copy();
-								attr0.setValue(attr0.type().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								attr0.setValue(attr0.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
 							}
 							trailer = trailer.getRearCoupledEntity();
@@ -133,7 +133,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
 				//TODO other checks?
-				attr.setValue(attr.type().tryParse(packet.nbt.getString("value"))); packet.nbt.setString("value", attr.getStringValue());
+				attr.setValue(attr.parseValue(packet.nbt.getString("value"))); packet.nbt.setString("value", attr.getStringValue());
 				PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 				break;
 			}

@@ -89,7 +89,7 @@ public class ToggableHandler {
 	        }
 			return false;
 		}
-		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasBBs() && (pr.type().isTristate() || pr.type().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seats().contains(seat.seatdata.name)))).collect(Collectors.toList());
+		Collection<Attribute<?>> attributes = entity.getVehicleData().getAttributes().values().stream().filter(pr -> pr.hasBBs() && (pr.valuetype().isTristate() || pr.valuetype().isNumber()) && (seat == null ? pr.external() : (seat.seatdata.driver || pr.seats().contains(seat.seatdata.name)))).collect(Collectors.toList());
 		if(attributes.size() == 0){
 			/*Print.debug(player, "none found");*/ return false;
 		}
@@ -111,17 +111,17 @@ public class ToggableHandler {
 		Object old = attr.getValue();
 		switch(press){
 			case MOUSE_MAIN:{
-				if(attr.type().isTristate()){
-					packet.setBoolean("bool", !attr.type().isBoolean() ? false : !attr.getBooleanValue());
+				if(attr.valuetype().isTristate()){
+					packet.setBoolean("bool", !attr.valuetype().isBoolean() ? false : !attr.getBooleanValue());
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
-				else if(attr.type().isFloat()){
+				else if(attr.valuetype().isFloat()){
 					float flaot = attr.getFloatValue() + attr.getBB(attr.getStringValue()).increase;
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
 					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
-				else if(attr.type().isInteger()){
+				else if(attr.valuetype().isInteger()){
 					int ent = attr.getIntegerValue() + (int)attr.getBB(attr.getStringValue()).increase;
 					packet.setFloat("value", ent);
 					attr.setValue(ent);
@@ -130,17 +130,17 @@ public class ToggableHandler {
 				break;
 			}
 			case MOUSE_RIGHT:{
-				if(attr.type().isTristate()){
-					packet.setBoolean("bool", !attr.type().isBoolean() ? true : !attr.getBooleanValue());
+				if(attr.valuetype().isTristate()){
+					packet.setBoolean("bool", !attr.valuetype().isBoolean() ? true : !attr.getBooleanValue());
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
-				else if(attr.type().isFloat()){
+				else if(attr.valuetype().isFloat()){
 					float flaot = attr.getFloatValue() - attr.getBB(attr.getStringValue()).decrease;
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
-				else if(attr.type().isInteger()){
+				else if(attr.valuetype().isInteger()){
 					int ent = attr.getIntegerValue() - (int)attr.getBB(attr.getStringValue()).decrease;
 					packet.setFloat("value", ent);
 					attr.setValue(ent);
@@ -149,18 +149,18 @@ public class ToggableHandler {
 				break;
 			}
 			case RESET:{
-				if(attr.type().isTristate()){
+				if(attr.valuetype().isTristate()){
 					packet.setBoolean("bool", false);
 					packet.setBoolean("reset", true);
 					Print.bar(player, "&7Resetting: &6" + attr.id());
 				}
-				else if(attr.type().isFloat()){
+				else if(attr.valuetype().isFloat()){
 					float flaot = attr.getBB(attr.getStringValue()).reset;
 					packet.setFloat("value", flaot);
 					attr.setValue(flaot);
 					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
-				else if(attr.type().isInteger()){
+				else if(attr.valuetype().isInteger()){
 					int ent = (int)attr.getBB(attr.getStringValue()).reset;
 					packet.setFloat("value", ent);
 					attr.setValue(ent);

@@ -10,11 +10,11 @@ import net.minecraft.nbt.NBTTagInt;
 public class IntegerAttribute extends Attribute<Integer> {
 
 	public IntegerAttribute(String id, Integer initial_value){
-		super(id, Type.INTEGER, initial_value);
+		super(id, initial_value);
 	}
 	
 	public IntegerAttribute(String id, JsonObject obj){
-		super(id, Type.INTEGER, obj.get("value").getAsInt());
+		super(id, obj.get("value").getAsInt());
 	}
 
 	@Override
@@ -97,6 +97,21 @@ public class IntegerAttribute extends Attribute<Integer> {
 	@Override
 	public Vec3f getVectorValue(){
 		return new Vec3f(value());
+	}
+
+	@Override
+	public ValueType valuetype(){
+		return ValueType.INTEGER;
+	}
+
+	@Override
+	public String type(){
+		return "integer";
+	}
+
+	@Override
+	public Integer parseValue(String string){
+		return Integer.parseInt(string);
 	}
 
 }

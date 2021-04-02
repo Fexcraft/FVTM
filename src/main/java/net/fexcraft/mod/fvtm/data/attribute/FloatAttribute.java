@@ -10,11 +10,11 @@ import net.minecraft.nbt.NBTTagFloat;
 public class FloatAttribute extends Attribute<Float> {
 
 	public FloatAttribute(String id, Float initial_value){
-		super(id, Type.FLOAT, initial_value);
+		super(id, initial_value);
 	}
 	
 	public FloatAttribute(String id, JsonObject obj){
-		super(id, Type.FLOAT, obj.get("value").getAsFloat());
+		super(id, obj.get("value").getAsFloat());
 	}
 
 	@Override
@@ -92,6 +92,21 @@ public class FloatAttribute extends Attribute<Float> {
 	@Override
 	public Vec3f getVectorValue(){
 		return new Vec3f(value());
+	}
+
+	@Override
+	public ValueType valuetype(){
+		return ValueType.FLOAT;
+	}
+
+	@Override
+	public String type(){
+		return "float";
+	}
+
+	@Override
+	public Float parseValue(String string){
+		return Float.parseFloat(string);
 	}
 
 }

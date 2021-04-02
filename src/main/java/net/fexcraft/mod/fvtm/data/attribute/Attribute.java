@@ -30,14 +30,16 @@ public abstract class Attribute<VT> {
 	private TreeSet<Modifier<VT>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
+	private ValueType value_type;
 	private String id, target, origin, group;
 	private boolean editable, external;
 	private float min, max;
-	private Type type;
 	private VT value, init;
 	
-	public Attribute(String id, Type type, VT initial_value){
-		this.id = id; this.type = type; init = initial_value; value = init;
+	public Attribute(String id, VT initial_value){
+		this.id = id;
+		init = initial_value;
+		value = init;
 	}
 	
 	public boolean editable(){ return editable; }
@@ -47,7 +49,6 @@ public abstract class Attribute<VT> {
 	public String target(){ return target; }
 	public String origin(){ return origin; }
 	public String group(){ return group; }
-	public Type type(){ return type; }
 	public float min(){ return min; }
 	public float max(){ return max; }
 	public VT value(){ return value; }
@@ -87,7 +88,8 @@ public abstract class Attribute<VT> {
 	//
 	
 	public Attribute<VT> addModifier(Modifier<?> mod){
-		if(mod.type() == type() || mod.type().isNumber() == type().isNumber()) modifiers.add((Modifier<VT>)mod); return this;
+		if(mod.type() == value_type || mod.type().isNumber() == valuetype().isNumber()) modifiers.add((Modifier<VT>)mod);
+		return this;
 	}
 	public TreeSet<Modifier<VT>> getModifiers(){ return modifiers; }
 	
@@ -141,45 +143,14 @@ public abstract class Attribute<VT> {
 		return abbs;
 	}
 	
-	public static enum Type {
-		
-		STRING, INTEGER, FLOAT, BOOLEAN, TRISTATE, VEC3, STRING_ARRAY, INT_ARRAY, FLOAT_ARRAY, BOOL_ARRAY, OBJECT;
-		
-		public boolean isString(){ return this == STRING; }
-		public boolean isInteger(){ return this == INTEGER; }
-		public boolean isFloat(){ return this == FLOAT; }
-		public boolean isBoolean(){ return this == BOOLEAN; }
-		public boolean isTristate(){ return this == TRISTATE || this == BOOLEAN; }
-		//
-		public boolean isObject(){ return this == OBJECT; }
-		public boolean isNumber(){ return this == INTEGER || this == FLOAT || this == BOOLEAN; }
-		public boolean isArray(){ return this == STRING_ARRAY || this == INT_ARRAY || this == FLOAT_ARRAY || this == BOOL_ARRAY; }
-		//
-		public boolean isStringArray(){ return this == STRING_ARRAY; }
-		public boolean isIntegerArray(){ return this == INT_ARRAY; }
-		public boolean isFloatArray(){ return this == FLOAT_ARRAY; }
-		public boolean isBooleanArray(){ return this == BOOL_ARRAY; }
-		
-		public Object tryParse(String string){
-			switch(this){
-				case BOOLEAN: return Boolean.parseBoolean(string);
-				case BOOL_ARRAY: break;
-				case FLOAT: return Float.parseFloat(string);
-				case FLOAT_ARRAY: break;
-				case INTEGER: return Float.parseFloat(string);
-				case INT_ARRAY: break;
-				case OBJECT: return null;//TODO
-				case STRING: return string;
-				case STRING_ARRAY: break;
-				case TRISTATE:{
-					if(string == null || string.equals("null")) return null;
-					else return Boolean.parseBoolean(string);
-				}
-				default: return null;
-			} return null;
-		}
-		
-	}
+	//
+	
+	/** Must be same as Registry Entry. */
+	public abstract String type();
+	
+	public abstract ValueType valuetype();
+
+	public abstract VT parseValue(String string);
 	
 	public static enum Update {
 		INITIAL, ENTITY, MANUAL
@@ -187,7 +158,7 @@ public abstract class Attribute<VT> {
 	
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound.setString("id", id);
-		compound.setString("type", type.name());
+		compound.setString("type", type());
 		compound.setFloat("min", min); compound.setFloat("max", max);
 		if(target != null) compound.setString("target", target);
 		if(origin != null) compound.setString("origin", origin);
@@ -259,29 +230,9 @@ public abstract class Attribute<VT> {
 	protected abstract Attribute<VT> copyNewInstance();
 
 	public static Attribute<?> parse(NBTTagCompound compound){
-		Attribute<?> attr = null; Type type = Type.valueOf(compound.getString("type"));
-		switch(type){
-			case BOOLEAN: attr = new BooleanAttribute(null, (Boolean)null);
-			case BOOL_ARRAY: break;
-			case FLOAT: attr = new FloatAttribute(null, (Float)null);
-			case FLOAT_ARRAY: break;
-			case INTEGER: attr = new IntegerAttribute(null, (Integer)null); break;
-			case INT_ARRAY: break;
-			case OBJECT: break;//TODO
-			case STRING: attr = new StringAttribute(null, (String)null); break;
-			case STRING_ARRAY: break;
-			case TRISTATE: attr = new TriStateAttribute(null, (Boolean)null); break;
-			default: return null;
-		}
-		return attr.read(compound);
-	}
-	
-	public static Attribute<?> parse(JsonObject obj){
-		String id = obj.get("id").getAsString();
-		String type = obj.get("type").getAsString();
-		Class<? extends Attribute<?>> clazz = Resources.getAttributeType(id);
+		Class<? extends Attribute<?>> clazz = Resources.getAttributeType(compound.getString("type").toLowerCase());
 		if(clazz == null){
-			Print.debug("Attribute class of type '" + type + "' not found!");
+			Print.log("Attribute class of type '" + compound.getString("type") + "' not found! (NBT LOAD)");
 			return null;
 		}
 		Attribute<?> attr = null;
@@ -292,7 +243,26 @@ public abstract class Attribute<VT> {
 			e.printStackTrace();
 			return null;
 		}
-		boolean isbool = attr.type.isTristate();
+		return attr.read(compound);
+	}
+	
+	public static Attribute<?> parse(JsonObject obj){
+		String id = obj.get("id").getAsString();
+		String type = obj.get("type").getAsString();
+		Class<? extends Attribute<?>> clazz = Resources.getAttributeType(id);
+		if(clazz == null){
+			Print.log("Attribute class of type '" + type + "' not found! (OBJ LOAD)");
+			return null;
+		}
+		Attribute<?> attr = null;
+		try{
+			attr = clazz.getConstructor(String.class, JsonObject.class).newInstance();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		boolean isbool = attr.value_type.isTristate();
 		attr.setTarget(obj.has("target") ? obj.get("target").getAsString() : "vehicle");
 		if((obj.has("max") || obj.has("min") && !isbool)){
 			float min = JsonUtil.getIfExists(obj, "min", Integer.MIN_VALUE).floatValue();
@@ -304,7 +274,7 @@ public abstract class Attribute<VT> {
 		if(obj.has("hitbox")){
 			if(obj.get("hitbox").isJsonArray()){
 				JsonArray erray = obj.get("hitbox").getAsJsonArray();
-				int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
+				int expected = attr.value_type.isFloat() || attr.value_type.isInteger() ? 7 : 4;
 				float[] arr = new float[expected];
 				for(int i = 0; i < expected; i++){
 					arr[i] = erray.get(i).getAsFloat();
@@ -314,7 +284,7 @@ public abstract class Attribute<VT> {
 			else if(obj.get("hitbox").isJsonObject()){
 				for(Map.Entry<String, JsonElement> entry : obj.get("hitbox").getAsJsonObject().entrySet()){
 					JsonArray erray = entry.getValue().getAsJsonArray();
-					int expected = attr.type().isFloat() || attr.type().isInteger() ? 7 : 4;
+					int expected = attr.value_type.isFloat() || attr.value_type.isInteger() ? 7 : 4;
 					float[] arr = new float[expected];
 					for(int i = 0; i < expected; i++){
 						arr[i] = erray.get(i).getAsFloat();

@@ -14,7 +14,7 @@ public class FloatAttribute extends Attribute<Float> {
 	}
 	
 	public FloatAttribute(String id, JsonObject obj){
-		super(id, obj.get("value").getAsFloat());
+		super(id, obj == null ? 0f : obj.get("value").getAsFloat());
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public class StringAttribute extends Attribute<String> {
 	}
 	
 	public StringAttribute(String id, JsonObject obj){
-		super(id, obj.get("value").getAsString());
+		super(id, obj == null ? "" : obj.get("value").getAsString());
 	}
 
 	@Override

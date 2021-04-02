@@ -169,7 +169,8 @@ public abstract class Attribute<VT> {
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound.setString("id", id);
 		compound.setString("type", type());
-		compound.setFloat("min", min); compound.setFloat("max", max);
+		compound.setFloat("min", min);
+		compound.setFloat("max", max);
 		if(target != null) compound.setString("target", target);
 		if(origin != null) compound.setString("origin", origin);
 		if(group != null) compound.setString("group", group);
@@ -200,7 +201,8 @@ public abstract class Attribute<VT> {
 	protected abstract NBTBase writeValue(boolean initial);
 
 	public Attribute<?> read(NBTTagCompound compound){
-		min = compound.getFloat("min"); max = compound.getFloat("max");
+		min = compound.getFloat("min");
+		max = compound.getFloat("max");
 		if(compound.hasKey("target")) this.target = compound.getString("target");
 		if(compound.hasKey("origin")) this.origin = compound.getString("origin");
 		if(compound.hasKey("group")) this.group = compound.getString("group");
@@ -250,7 +252,7 @@ public abstract class Attribute<VT> {
 		}
 		Attribute<?> attr = null;
 		try{
-			attr = clazz.getConstructor(String.class).newInstance(compound.getString("id"));//TODO
+			attr = clazz.getConstructor(String.class, JsonObject.class).newInstance(compound.getString("id"), null);
 		}
 		catch(Exception e){
 			e.printStackTrace();

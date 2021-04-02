@@ -14,7 +14,7 @@ public class TriStateAttribute extends Attribute<Boolean> {
 	}
 	
 	public TriStateAttribute(String id, JsonObject obj){
-		super(id, !obj.has("value") || obj.get("value").getAsString().equals("null") ? null : obj.get("value").getAsBoolean());
+		super(id, obj == null || !obj.has("value") || obj.get("value").getAsString().equals("null") ? null : obj.get("value").getAsBoolean());
 	}
 
 	@Override

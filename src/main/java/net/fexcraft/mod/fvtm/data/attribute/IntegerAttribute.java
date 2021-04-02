@@ -14,7 +14,7 @@ public class IntegerAttribute extends Attribute<Integer> {
 	}
 	
 	public IntegerAttribute(String id, JsonObject obj){
-		super(id, obj.get("value").getAsInt());
+		super(id, obj == null ? 0 : obj.get("value").getAsInt());
 	}
 
 	@Override

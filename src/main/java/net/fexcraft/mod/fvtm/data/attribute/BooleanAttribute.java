@@ -14,7 +14,7 @@ public class BooleanAttribute extends Attribute<Boolean> {
 	}
 	
 	public BooleanAttribute(String id, JsonObject obj){
-		super(id, obj.get("value").getAsBoolean());
+		super(id, obj == null ? false : obj.get("value").getAsBoolean());
 	}
 
 	@Override

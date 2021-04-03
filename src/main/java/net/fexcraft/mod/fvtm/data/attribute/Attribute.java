@@ -446,6 +446,7 @@ public abstract class Attribute<VT> {
 			}
 			else attr.addSeat(obj.get("seat").getAsString());
 		}
+		if(obj.has("group")) attr.group(obj.get("group").getAsString());
 		return attr;
 	}
 

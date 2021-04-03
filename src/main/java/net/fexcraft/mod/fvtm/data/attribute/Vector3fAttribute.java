@@ -69,6 +69,11 @@ public class Vector3fAttribute extends Attribute<Vec3f> {
 	}
 
 	@Override
+	public Vec3f vector_value(){
+		return value();
+	}
+
+	@Override
 	public ValueType valuetype(){
 		return ValueType.VECTOR;
 	}

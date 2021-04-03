@@ -437,8 +437,6 @@ public abstract class Attribute<VT> {
 					attr.addBB(entry.getKey(), arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
 				}
 			}
-			attr.abbs.forEach((key, val) -> Print.debug(val));
-			Static.stop();
 		}
 		if(obj.has("seat")){
 			if(obj.get("seat").isJsonArray()){

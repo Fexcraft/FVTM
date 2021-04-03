@@ -39,6 +39,7 @@ import net.fexcraft.mod.fvtm.data.attribute.FloatAttribute;
 import net.fexcraft.mod.fvtm.data.attribute.IntegerAttribute;
 import net.fexcraft.mod.fvtm.data.attribute.StringAttribute;
 import net.fexcraft.mod.fvtm.data.attribute.TriStateAttribute;
+import net.fexcraft.mod.fvtm.data.attribute.Vector3fAttribute;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
@@ -220,6 +221,10 @@ public class Resources {
 		registerAttributeType("tristate", TriStateAttribute.class, true);
 		registerAttributeType("threestate", TriStateAttribute.class, true);
 		registerAttributeType("ternary", TriStateAttribute.class, true);
+		registerAttributeType("vec3", Vector3fAttribute.class, true);
+		registerAttributeType("vec3f", Vector3fAttribute.class, true);
+		registerAttributeType("vector3", Vector3fAttribute.class, true);
+		registerAttributeType("vector3f", Vector3fAttribute.class, true);
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));
 	}
 

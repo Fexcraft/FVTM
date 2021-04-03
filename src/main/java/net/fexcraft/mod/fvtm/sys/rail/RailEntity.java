@@ -69,7 +69,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		uid = data.getNewEntityId(); data.updateEntityEntry(uid, region.getKey()); vehdata = vdata;
 		frbogiedis = (float)vdata.getWheelPositions().get("bogie_front").x;
 		rrbogiedis  = (float)-vdata.getWheelPositions().get("bogie_rear").x;
-		frconndis = (float)vdata.getFrontConnector().x; rrconndis = (float)-vdata.getRearConnector().x;
+		frconndis = (float)vdata.getFrontConnector().x;
+		rrconndis = (float)-vdata.getRearConnector().x;
 		com = new Compound.Singular(this); 
 		//
 		//this.passed = passed + rrconndis + frbogiedis;

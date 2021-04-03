@@ -99,7 +99,8 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     	});
                     	heightoffset[0] /= vehicledata.getWheelPositions().size();
                     }
-                    GL11.glTranslated(0, heightoffset[0] + tile.getLiftState(), 0);
+                    if(!vehicledata.getType().getVehicleType().isRailVehicle()) heightoffset[0] += tile.getLiftState();
+                    GL11.glTranslated(0, heightoffset[0], 0);
                     modvec.render(vehicledata, null, null, null);
                     vehicledata.getParts().forEach((key, partdata) -> {
                         ModelBase.bindTexture(partdata.getTexture());

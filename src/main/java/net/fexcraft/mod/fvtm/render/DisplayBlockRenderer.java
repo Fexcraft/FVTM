@@ -13,9 +13,12 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.math.Vec3d;
 
 @fTESR
 public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntity> {
+	
+	private static float heightoffset = 0;
 
     @Override
     public void render(DisplayEntity te, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
@@ -27,13 +30,20 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
         GL11.glRotatef(90, 0, 1f, 0);
         Minecraft.getMinecraft().renderEngine.bindTexture(Resources.NULL_TEXTURE);
         RenderCache cache = te.getCapability(Capabilities.RENDERCACHE, null);
+        heightoffset = 0;
         //
         if(te.getVehicleData() != null){
             VehicleData vehicledata = te.getVehicleData();
             Model<VehicleData, Object> modvec = vehicledata.getType().getModel();
             if(modvec != null){
                 ModelBase.bindTexture(vehicledata.getTexture());
-                GL11.glTranslated(0, (vehicledata.getAttributeFloat("constructor_height", 0f) * 0.0625f), 0);//TODO update
+                if(!vehicledata.getWheelPositions().isEmpty()){
+                	for(Vec3d vec : vehicledata.getWheelPositions().values()){
+                		heightoffset += -vec.y;
+                	}
+                	heightoffset /= vehicledata.getWheelPositions().size();
+                }
+                GL11.glTranslated(0, -heightoffset, 0);
                 modvec.render(vehicledata, null, null, cache);
                 vehicledata.getParts().forEach((key, partdata) -> {
                     ModelBase.bindTexture(partdata.getTexture());
@@ -49,7 +59,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 		partdata.getInstalledPos().translateR();
                 	}
                 });
-                GL11.glTranslated(0, (vehicledata.getAttributeFloat("constructor_height", 0f) * -0.0625f), 0);//TODO update
+                GL11.glTranslated(0, heightoffset, 0);
             }
         }
         GL11.glPopMatrix();

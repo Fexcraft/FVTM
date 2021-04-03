@@ -599,13 +599,13 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
                 float old = wheelsYaw; wheelsYaw = wheelsYaw + (serverFY - wheelsYaw) / serverPositionTransitionTicker;
                 if(wheelsYaw != wheelsYaw) wheelsYaw = old;
             }
-            vehicle.getAttribute("steering_angle").setValue(wheelsYaw);
+            vehicle.getAttribute("steering_angle").value(wheelsYaw);
             if(!vehicle.hasPart("third_wheel")){ Print.log("Third Wheel Missing || " + this.toString());return; }
             double cir = ((WheelData)vehicle.getPart("third_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
-        	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
-        	vehicle.getAttribute("throttle").setValue((float)throttle);
-        	vehicle.getAttribute("speed").setValue((float)speed);
+        	vehicle.getAttribute("wheel_angle").value(wheelsAngle);
+        	vehicle.getAttribute("throttle").value((float)throttle);
+        	vehicle.getAttribute("speed").value((float)speed);
         }
 		float throttlePull = 0.99F;
 		if(vehicle.getType().getVehicleType().isHeli() && canThrust())

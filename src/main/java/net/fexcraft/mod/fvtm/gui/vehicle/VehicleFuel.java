@@ -32,14 +32,14 @@ public class VehicleFuel extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		texts.get("row1").string = veh.getVehicleData().getAttribute("fuel_primary").getStringValue() + " - " + veh.getVehicleData().getAttribute("fuel_secondary").getStringValue() + " - "
-			+ (veh.getVehicleData().getAttribute("fuel_quality").getFloatValue() * 100) + "%";
-		texts.get("row2").string = veh.getVehicleData().getAttribute("fuel_stored").getIntegerValue() + "/" + veh.getVehicleData().getAttribute("fuel_capacity").getIntegerValue() + "mB";
+		texts.get("row1").string = veh.getVehicleData().getAttribute("fuel_primary").string_value() + " - " + veh.getVehicleData().getAttribute("fuel_secondary").string_value() + " - "
+			+ (veh.getVehicleData().getAttribute("fuel_quality").float_value() * 100) + "%";
+		texts.get("row2").string = veh.getVehicleData().getAttribute("fuel_stored").initial() + "/" + veh.getVehicleData().getAttribute("fuel_capacity").integer_value() + "mB";
 	}
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		float percent = veh.getVehicleData().getAttribute("fuel_stored").getFloatValue() / veh.getVehicleData().getAttribute("fuel_capacity").getFloatValue() * 100f;
+		float percent = veh.getVehicleData().getAttribute("fuel_stored").float_value() / veh.getVehicleData().getAttribute("fuel_capacity").float_value() * 100f;
 		if(percent > 0) drawTexturedModalRect(guiLeft + 10, guiTop + 49, 0, 238, (int)percent, 18);
 	}
 

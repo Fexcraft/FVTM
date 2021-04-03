@@ -33,34 +33,35 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				String attribute = packet.nbt.getString("attr");
 				Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
 				if(attr.valuetype().isTristate()){
-					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.setValue(bool); else attr.setValue(null);
+					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.value(bool);
+					else attr.value(null);
 					if(!veh.getVehicleType().isRailVehicle()){
 						VehicleEntity trailer = veh.getRearCoupledEntity();
 						while(trailer != null){
 							attr = trailer.getVehicleData().getAttribute(attribute);
 							if(attr != null){
-								if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.setValue(bool);
-								else attr.setValue(null);
+								if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.value(bool);
+								else attr.value(null);
 							}
 							trailer = trailer.getRearCoupledEntity();
 						}
 					}
 				}
 				else if(attr.valuetype().isNumber()){
-					attr.setValue(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+					attr.value(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 					if(!veh.getVehicleType().isRailVehicle()){
 						VehicleEntity trailer = veh.getRearCoupledEntity();
 						while(trailer != null){
 							attr = trailer.getVehicleData().getAttribute(attribute);
 							if(attr != null){
-								attr.setValue(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								attr.value(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 							}
 							trailer = trailer.getRearCoupledEntity();
 						}
 					}
 				}
 				else{
-					//TODO
+					// TODO
 					Print.log("no code for toggling this attribute type yet");
 				}
 				break;
@@ -68,15 +69,19 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "attr_update":{
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
-				attr.setValue(attr.parseValue(packet.nbt.getString("value")));
+				attr.value(attr.parseValue(packet.nbt.getString("value")));
 				break;
 			}
 			case "update_container_holder":{
 				Entity ent = player.world.getEntityByID(packet.nbt.getInteger("entity"));
-				if(ent == null){ Print.debug("Entity not found. CHP " + packet.nbt.getInteger("entity")); return; }
+				if(ent == null){
+					Print.debug("Entity not found. CHP " + packet.nbt.getInteger("entity"));
+					return;
+				}
 				ContainerHolderUtil.Implementation impl = (Implementation)ent.getCapability(Capabilities.CONTAINER, null);
 				if(impl == null) Print.debug("Capability is null. CHP " + packet.nbt.getInteger("entity"));
-				else impl.read(null, packet.nbt); return;
+				else impl.read(null, packet.nbt);
+				return;
 			}
 			case "update_region":
 			case "update_junction":
@@ -87,21 +92,25 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "spawn_railentity":
 			case "update_sections":
 			case "remove_entity":
-			case "update_unit_section":{ Print.debug("task: " + task + " " + packet.nbt); Static.stop(); return; }
+			case "update_unit_section":{
+				Print.debug("task: " + task + " " + packet.nbt);
+				Static.stop();
+				return;
+			}
 			case "open_gui":{
-                if(packet.nbt.hasKey("data")){
-                	//gui should have been already opened server side
-                	if(player.openContainer instanceof GenericContainer && !((GenericContainer)player.openContainer).isInit()){
-                		((GenericContainer)player.openContainer).initPacket(packet.nbt.getCompoundTag("data"));
-                		Print.debug("Loaded client compound.");
-                	}
-                	else{
-                		GuiHandler.CLIENT_GUIDATA_CACHE = packet.nbt.getCompoundTag("data");
-                		Print.debug("Cached client compound.");
-                		//int[] xyz = packet.nbt.getIntArray("args");
-                		//player.openGui(FVTM.getInstance(), packet.nbt.getInteger("gui"), player.world, xyz[0], xyz[1], xyz[2]);
-                	}
-                }
+				if(packet.nbt.hasKey("data")){
+					// gui should have been already opened server side
+					if(player.openContainer instanceof GenericContainer && !((GenericContainer)player.openContainer).isInit()){
+						((GenericContainer)player.openContainer).initPacket(packet.nbt.getCompoundTag("data"));
+						Print.debug("Loaded client compound.");
+					}
+					else{
+						GuiHandler.CLIENT_GUIDATA_CACHE = packet.nbt.getCompoundTag("data");
+						Print.debug("Cached client compound.");
+						// int[] xyz = packet.nbt.getIntArray("args");
+						// player.openGui(FVTM.getInstance(), packet.nbt.getInteger("gui"), player.world, xyz[0], xyz[1], xyz[2]);
+					}
+				}
 				return;
 			}
 			case "gui:cmd:msg":{

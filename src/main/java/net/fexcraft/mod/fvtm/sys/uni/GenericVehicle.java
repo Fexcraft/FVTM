@@ -229,7 +229,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 	
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox(){
-        return this.getEntityBoundingBox().grow(getVehicleData().getAttribute("collision_range").getFloatValue());
+        return this.getEntityBoundingBox().grow(getVehicleData().getAttribute("collision_range").float_value() + 2);
     }
 	
 	@Override
@@ -249,22 +249,22 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		packet.setString("attr", attr.id());
 		packet.setInteger("entity", getEntityId());
 		if(attr.valuetype().isTristate()){
-			if(attr.getTriStateValue() == null){
+			if(attr.tristate_value() == null){
 				packet.setBoolean("bool", false);
 				packet.setBoolean("reset", true);
 			}
 			else{
-				packet.setBoolean("bool", attr.getBooleanValue());
+				packet.setBoolean("bool", attr.boolean_value());
 			}
 		}
 		else if(attr.valuetype().isFloat()){
-			packet.setFloat("value", attr.getFloatValue());
+			packet.setFloat("value", attr.float_value());
 		}
 		else if(attr.valuetype().isInteger()){
-			packet.setFloat("value", attr.getIntegerValue());
+			packet.setFloat("value", attr.integer_value());
 		}
 		else if(attr.valuetype().isString()){
-			packet.setString("value", attr.getStringValue());
+			packet.setString("value", attr.string_value());
 		}
 		ServerReceiver.INSTANCE.process(packet, null, world);
 	}

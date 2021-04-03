@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagString;
 
@@ -18,7 +17,7 @@ public class StringAttribute extends Attribute<String> {
 
 	@Override
 	protected NBTBase writeValue(boolean initial){
-		return new NBTTagString(initial ? init() : value());
+		return new NBTTagString(initial ? initial() : value());
 	}
 
 	@Override
@@ -28,37 +27,22 @@ public class StringAttribute extends Attribute<String> {
 
 	@Override
 	public Attribute<String> copyNewInstance(){
-		return new StringAttribute(id(), init());
+		return new StringAttribute(id(), initial());
 	}
 
 	@Override
-	public int getIntegerValue(){
-		return 0;
+	public int integer_value(){
+		return value() == null ? 0 : value().length();
 	}
 
 	@Override
-	public float getFloatValue(){
-		return 0;
+	public float float_value(){
+		return integer_value();
 	}
 
 	@Override
-	public String getStringValue(){
+	public String string_value(){
 		return value();
-	}
-
-	@Override
-	public boolean getBooleanValue(){
-		return Boolean.parseBoolean(value());
-	}
-
-	@Override
-	public Boolean getTriStateValue(){
-		return value().equalsIgnoreCase("null") ? null : Boolean.parseBoolean(value());
-	}
-
-	@Override
-	public Vec3f getVectorValue(){
-		return new Vec3f();
 	}
 
 	@Override

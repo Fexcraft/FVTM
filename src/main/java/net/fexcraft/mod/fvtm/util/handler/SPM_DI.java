@@ -66,16 +66,16 @@ public class SPM_DI implements SwivelPointMover {
 	public void update(VehicleEntity entity, SwivelPoint point){
 		if(attr == null){
 			attr = entity.getVehicleData().getAttribute(attribute);
-			last = bool ? attr.getFloatValue() : def;
+			last = bool ? attr.float_value() : def;
 			move(point, axe, pos, last);
 			//Print.bar(Minecraft.getMinecraft().player, get(point) + "=" + last);
 		}
 		if(bool){
 			if(attr.valuetype().isTristate()){
-				last += attr.getTriStateValue() == null ? 0 : attr.getBooleanValue() ? speed : -speed;
+				last += attr.conditional_tristate(0f, speed, -speed);
 			}
 			else{
-				if(attr.getBooleanValue()) last += speed;
+				if(attr.boolean_value()) last += speed;
 			}
 			if(last > max){
 				if(loop) last = min + (last - max);
@@ -89,12 +89,12 @@ public class SPM_DI implements SwivelPointMover {
 			move(point, axe, pos, last);
 			return;
 		}
-		if(last != attr.getFloatValue()){
+		if(last != attr.float_value()){
 			//Print.bar(Minecraft.getMinecraft().player, last + "/" + attr.getFloatValue());
-			float diff = attr.getFloatValue() - last;
+			float diff = attr.float_value() - last;
 			if(diff < 0.001 && diff > -0.001) return;
 			if(Math.abs(diff) <= speed){
-				move(point, axe, pos, last = attr.getFloatValue());
+				move(point, axe, pos, last = attr.float_value());
 			}
 			else{
 				last += diff > 0 ? speed : -speed;

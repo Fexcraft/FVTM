@@ -365,11 +365,11 @@ public class VehicleSteeringOverlay extends GuiScreen {
 			mc.getTextureManager().bindTexture(turnright ? INDICATOR_RIGHT_ON : INDICATOR_RIGHT_OFF);
 			drawRectIcon(width - 65 + 16, 1, 16, 16);
 			//
-			mc.getTextureManager().bindTexture(data.getAttribute("lights").getBooleanValue() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF);
+			mc.getTextureManager().bindTexture(data.getAttribute("lights").boolean_value() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF);
 			drawRectIcon(width - 97 + 32, 1, 16, 16);
-			mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getBooleanValue() ? LIGHTS_HIGH_ON : LIGHTS_HIGH_OFF);
+			mc.getTextureManager().bindTexture(data.getAttribute("lights_long").boolean_value() ? LIGHTS_HIGH_ON : LIGHTS_HIGH_OFF);
 			drawRectIcon(width - 97 + 16, 1, 16, 16);
-			mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getBooleanValue() ? LIGHTS_FOG_ON : LIGHTS_FOG_OFF);
+			mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").boolean_value() ? LIGHTS_FOG_ON : LIGHTS_FOG_OFF);
 			drawRectIcon(width - 97, 1, 16, 16);
 			//
 			if(uni12){
@@ -398,16 +398,15 @@ public class VehicleSteeringOverlay extends GuiScreen {
 					if(scroll == j) RGB.glColorReset();
 					mc.fontRenderer.drawString(attr.id(), this.width - width - 12, offset + 3, 0xffffff);
 					if(attr.valuetype().isBoolean()){
-						mc.renderEngine.bindTexture(attr.getBooleanValue() ? ICON_BOOL_TRUE : ICON_BOOL_FALSE);
+						mc.renderEngine.bindTexture(attr.boolean_value() ? ICON_BOOL_TRUE : ICON_BOOL_FALSE);
 					}
 					else{
-						Boolean bool = attr.getTriStateValue();
-						mc.renderEngine.bindTexture(bool == null ? ICON_BOOL_FALSE : bool ? ICON_BOOL_TRI1 : ICON_BOOL_TRI0);
+						mc.renderEngine.bindTexture(attr.conditional_tristate(ICON_BOOL_FALSE, ICON_BOOL_TRI1, ICON_BOOL_TRI0));
 					}
 					drawRectIcon(this.width - 12, offset, 12, 12);
 				}
 				else{
-					String str = attr.id() + " - " + attr.getFloatValue();
+					String str = attr.id() + " - " + attr.float_value();
 					int width = fontRenderer.getStringWidth(str);
 					if(scroll == j) HOVER.glColorApply();
 					this.drawTexturedModalRect(this.width - width - 2, offset, 0, 0, width + 2, 12);

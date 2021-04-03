@@ -88,13 +88,13 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				if(attr.valuetype().isBoolean()){
 					NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
 					packet.setString("task", "attr_update"); packet.setString("attr", attr.id());
-					packet.setString("value", !attr.getBooleanValue() + ""); attr.setValue(!attr.getBooleanValue());
+					packet.setString("value", attr.toggle_value() + "");
 					packet.setInteger("entity", veh.getEntity().getEntityId()); Print.debug(packet);
 					PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 					updatePageEdit(null, -1); return true;
 				}
 				field.x = guiLeft + 203; field.y = guiTop + 7 + (edited * 14);
-				field.setText(attr.getStringValue()); field.setVisible(true);
+				field.setText(attr.string_value()); field.setVisible(true);
 				return true;
 			}
 			return true;
@@ -112,7 +112,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				texts.get("row" + k).string = "------"; texts.get("val" + k).string = "---";
 			}
 			else{
-				texts.get("row" + k).string = attributes.get(l).id(); texts.get("val" + k).string = attributes.get(l).getStringValue();
+				texts.get("row" + k).string = attributes.get(l).id(); texts.get("val" + k).string = attributes.get(l).string_value();
 			}
 		}
 		texts.forEach((key, value) -> { if(key.startsWith("val")) value.visible = true; });

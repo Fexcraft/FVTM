@@ -1149,8 +1149,8 @@ public class LargeContainerCrane extends VehicleModel {
 			@Override
 			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 				if(ent == null) return;
-				list.get(2).rotationAngleX = (data.getAttribute("lcc_h").getIntegerValue() + 9) * 2.25f;
-				list.get(3).rotationAngleX = data.getAttribute("lcc_v").getIntegerValue() * -6;
+				list.get(2).rotationAngleX = (data.getAttribute("lcc_h").integer_value() + 9) * 2.25f;
+				list.get(3).rotationAngleX = data.getAttribute("lcc_v").integer_value() * -6;
 			}
 
 			@Override

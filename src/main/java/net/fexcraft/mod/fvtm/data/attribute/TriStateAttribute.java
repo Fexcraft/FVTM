@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByte;
@@ -19,7 +18,7 @@ public class TriStateAttribute extends Attribute<Boolean> {
 
 	@Override
 	protected NBTBase writeValue(boolean initial){
-		Boolean bool = initial ? init() : value();
+		Boolean bool = initial ? initial() : value();
 		return new NBTTagByte(bool == null ? -1 : bool ? (byte)1 : (byte)0);
 	}
 
@@ -31,37 +30,27 @@ public class TriStateAttribute extends Attribute<Boolean> {
 
 	@Override
 	public Attribute<Boolean> copyNewInstance(){
-		return new TriStateAttribute(id(), init());
+		return new TriStateAttribute(id(), initial());
 	}
 
 	@Override
-	public int getIntegerValue(){
+	public int integer_value(){
 		return value() == null ? -1 : value() ? 1 : 0;
 	}
 
 	@Override
-	public float getFloatValue(){
+	public float float_value(){
 		return value() == null ? -1 : value() ? 1 : 0;
 	}
 
 	@Override
-	public String getStringValue(){
-		return value() + "";
-	}
-
-	@Override
-	public boolean getBooleanValue(){
+	public boolean boolean_value(){
 		return value() == null ? false : value();
 	}
 
 	@Override
-	public Boolean getTriStateValue(){
+	public Boolean tristate_value(){
 		return value();
-	}
-
-	@Override
-	public Vec3f getVectorValue(){
-		return new Vec3f(getIntegerValue());
 	}
 
 	@Override

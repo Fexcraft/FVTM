@@ -261,19 +261,19 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case LIGHTS: {
                 if(toggletimer <= 0){
-                	boolean bool = !rek.data().getAttribute("lights").getBooleanValue();
-                	rek.data().getAttribute("lights").setValue(bool);
+                	boolean bool = !rek.data().getAttribute("lights").boolean_value();
+                	rek.data().getAttribute("lights").value(bool);
                     NBTTagCompound nbt = new NBTTagCompound(); nbt.setString("task", "toggle_lights");
-                    nbt.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
+                    nbt.setBoolean("lights", rek.data().getAttribute("lights").boolean_value());
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                     toggletimer = 10;
                     //
                     if(rek.ent().getCompound().isMultiple()){
                     	for(RailEntity ent : rek.ent().getCompound().getEntitites()){
-                    		ent.vehdata.getAttribute("lights").setValue(bool);
+                    		ent.vehdata.getAttribute("lights").value(bool);
                     		if(ent.entity != null){
     	                        NBTTagCompound com = new NBTTagCompound(); com.setString("task", "toggle_lights");
-    	                        com.setBoolean("lights", rek.data().getAttribute("lights").getBooleanValue());
+    	                        com.setBoolean("lights", rek.data().getAttribute("lights").boolean_value());
     	                        ApiUtil.sendEntityUpdatePacketToAllAround(ent.entity, com);
                     		}
                     	}
@@ -349,7 +349,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             prevRotationRoll = roll;
             setRotation(yaw, pitch, roll);
         }
-        this.throttle = throttle; rek.data().getAttribute("fuel_stored").setValue(fuel);
+        this.throttle = throttle; rek.data().getAttribute("fuel_stored").value(fuel);
 	}
 
     @Override
@@ -534,9 +534,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 --sptt; setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
             }
-        	rek.data().getAttribute("throttle").setValue((float)throttle);
-        	rek.data().getAttribute("speed").setValue((float)speed);
-        	//rek.data().getAttribute("rpm").setValue(rpm / 100 * 100);
+        	rek.data().getAttribute("throttle").value((float)throttle);
+        	rek.data().getAttribute("speed").value((float)speed);
+        	//rek.data().getAttribute("rpm").value(rpm / 100 * 100);
         	//
         	Vec3f bf0 = rek.moveOnly(rek.passed + 0.1f), bf1 = rek.moveOnly(rek.passed - 0.1f);
         	Vec3f br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
@@ -544,7 +544,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	if(bf0 != null && br0 != null && bf1 != null && br1 != null){
         		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - rotpoint.getAxes().getYaw());
         		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - rotpoint.getAxes().getYaw());
-        		rek.data().getAttribute("bogie_front_angle").setValue(front); rek.data().getAttribute("bogie_rear_angle").setValue(rear);
+        		rek.data().getAttribute("bogie_front_angle").value(front); rek.data().getAttribute("bogie_rear_angle").value(rear);
         	}
     		//
         	
@@ -578,7 +578,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         for(SeatCache seat : seats) if(seat != null) seat.updatePosition();
         if(!world.isRemote && ticksExisted % servtick == 0){
         	throttle = rek.ent().throttle;
-        	rek.data().getAttribute("throttle").setValue((float)throttle);
+        	rek.data().getAttribute("throttle").value((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
             for(SwivelPoint point : rek.data().getRotationPoints().values()) point.sendClientUpdate(this);
         }
@@ -714,7 +714,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                     break;
                 }
                 case "toggle_lights": {
-                	rek.data().getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
+                	rek.data().getAttribute("lights").value(pkt.nbt.getBoolean("lights"));
                 	break;
                 }
                 case "update_track":{

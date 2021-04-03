@@ -160,7 +160,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         //stepHeight = lata.wheel_step_height;
         rotpoint = vehicle.getRotationPoint("vehicle");
-        this.setSize(vehicle.getAttribute("hitbox_width").getFloatValue(), vehicle.getAttribute("hitbox_height").getFloatValue());
+        this.setSize(vehicle.getAttribute("hitbox_width").float_value(), vehicle.getAttribute("hitbox_height").float_value());
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCap Implementation Found!");}
@@ -399,17 +399,17 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 	int gear = vehicle.getAttributeInteger("gear", 0);
                 	if(transmission.isAutomatic()){
                 		if(gear < 0){
-                    		vehicle.getAttribute("gear").setValue(0);
+                    		vehicle.getAttribute("gear").value(0);
                     		sendAttributeUpdate("gear");
                 		}
                 		else if(gear == 0){
-                    		vehicle.getAttribute("gear").setValue(1);
+                    		vehicle.getAttribute("gear").value(1);
                     		sendAttributeUpdate("gear");
                 		}
                 		autogear_timer += transmission.getShiftSpeed();
                 	}
                 	else if(gear + 1 <= transmission.getFGearAmount()){
-                		vehicle.getAttribute("gear").setValue(gear + 1);
+                		vehicle.getAttribute("gear").value(gear + 1);
                 		sendAttributeUpdate("gear");
                 	}
                 	gear_timer += 10;
@@ -422,17 +422,17 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 	int gear = vehicle.getAttributeInteger("gear", 0);
                 	if(transmission.isAutomatic()){
                 		if(gear > 0){
-                    		vehicle.getAttribute("gear").setValue(0);
+                    		vehicle.getAttribute("gear").value(0);
                     		sendAttributeUpdate("gear");
                 		}
                 		else if(gear == 0){
-                    		vehicle.getAttribute("gear").setValue(-1);
+                    		vehicle.getAttribute("gear").value(-1);
                     		sendAttributeUpdate("gear");
                 		}
                 		autogear_timer += transmission.getShiftSpeed();
                 	}
                 	else if(gear - 1 >= -transmission.getRGearAmount()){
-                		vehicle.getAttribute("gear").setValue(gear - 1);
+                		vehicle.getAttribute("gear").value(gear - 1);
                 		sendAttributeUpdate("gear");
                 	}
                 	gear_timer += 10;
@@ -448,31 +448,31 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
             case LIGHTS: {
                 if(toggle_timer <= 0){
-                	if(vehicle.getAttribute("lights").getBooleanValue()){
-                		if(vehicle.getAttribute("lights_long").getBooleanValue()){
-                    		vehicle.getAttribute("lights").setValue(false);
-                    		vehicle.getAttribute("lights_long").setValue(false);
+                	if(vehicle.getAttribute("lights").boolean_value()){
+                		if(vehicle.getAttribute("lights_long").boolean_value()){
+                    		vehicle.getAttribute("lights").value(false);
+                    		vehicle.getAttribute("lights_long").value(false);
                 		}
                 		else{
-                    		vehicle.getAttribute("lights_long").setValue(true);
+                    		vehicle.getAttribute("lights_long").value(true);
                 		}
                 	}
                 	else{
-                		vehicle.getAttribute("lights").setValue(true);
+                		vehicle.getAttribute("lights").value(true);
                 	}
                 	//
                     ULandVehicle trailer = this.trailer;
                     while(trailer != null){
-                        trailer.vehicle.getAttribute("lights").setValue(vehicle.getAttribute("lights").getBooleanValue());
-                        trailer.vehicle.getAttribute("lights_long").setValue(vehicle.getAttribute("lights_long").getBooleanValue());
+                        trailer.vehicle.getAttribute("lights").value(vehicle.getAttribute("lights").boolean_value());
+                        trailer.vehicle.getAttribute("lights_long").value(vehicle.getAttribute("lights_long").boolean_value());
                         trailer = trailer.trailer;
                     }
                 	//TODO find a way for fog lights
                     toggle_timer = 10;
                     NBTTagCompound nbt = new NBTTagCompound();
                     nbt.setString("task", "toggle_lights");
-                    nbt.setBoolean("lights", vehicle.getAttribute("lights").getBooleanValue());
-                    nbt.setBoolean("lights_long", vehicle.getAttribute("lights_long").getBooleanValue());
+                    nbt.setBoolean("lights", vehicle.getAttribute("lights").boolean_value());
+                    nbt.setBoolean("lights_long", vehicle.getAttribute("lights_long").boolean_value());
                     ApiUtil.sendEntityUpdatePacketToAllAround(this, nbt);
                 }
                 return true;
@@ -595,7 +595,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             setRotation(yaw, pitch, roll);
         }
         this.throttle = throttle; serverWY = (float)steeringYaw;
-        vehicle.getAttribute("fuel_stored").setValue(fuel);
+        vehicle.getAttribute("fuel_stored").value(fuel);
 	}
 	
 	/*@Override
@@ -837,14 +837,14 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
             }
-            vehicle.getAttribute("steering_angle").setValue(wheelsYaw);
+            vehicle.getAttribute("steering_angle").value(wheelsYaw);
             wheelsAngle += speed * (wheel_radius * 2 * Static.PI) * (vehicle.getAttributeInteger("gear", 0) >= 0 ? 1 : -1);
             if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
-        	vehicle.getAttribute("wheel_angle").setValue(wheelsAngle);
-        	vehicle.getAttribute("throttle").setValue((float)throttle);
+        	vehicle.getAttribute("wheel_angle").value(wheelsAngle);
+        	vehicle.getAttribute("throttle").value((float)throttle);
         	//
-        	vehicle.getAttribute("speed").setValue((float)speed);
-        	vehicle.getAttribute("rpm").setValue(crpm / 100 * 100);
+        	vehicle.getAttribute("speed").value((float)speed);
+        	vehicle.getAttribute("rpm").value(crpm / 100 * 100);
         }
         for(WheelEntity wheel : wheels){
             if(wheel != null){
@@ -854,7 +854,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
         }
         if(!world.isRemote){// && vehicle.getType().isTrailerOrWagon() ? this.wheels.length > 2 : true){
-            if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").getIntegerValue() > 0)){
+            if(getDriver() == null || !(isDriverInCreative() || vehicle.getAttribute("fuel_stored").integer_value() > 0)){
                 throttle *= 0.98F;
             }
             if(truck == null){
@@ -876,7 +876,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         checkForCollisions();
         for(SeatCache seat : seats) seat.updatePosition();
         if(!world.isRemote && ticksExisted % SYNC_RATE == 0 && truck == null){
-        	vehicle.getAttribute("throttle").setValue((float)throttle);
+        	vehicle.getAttribute("throttle").value((float)throttle);
             Packets.sendToAllAround(new PKT_VehControl(this), Resources.getTargetPoint(this));
             for(SwivelPoint point : vehicle.getRotationPoints().values()) point.sendClientUpdate(this);
             ULandVehicle trailer = this.trailer;
@@ -936,7 +936,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         	if(transmission.isAutomatic() && autogear_timer <= 0){
         		int ngear = transmission.processAutoShift(gear, rpm, engine.maxRPM(), throttle);
         		if(ngear != gear){
-        			vehicle.getAttribute("gear").setValue(ngear);
+        			vehicle.getAttribute("gear").value(ngear);
         			sendAttributeUpdate("gear");
         		}
         		autogear_timer += transmission.getShiftSpeed();
@@ -1190,7 +1190,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         			consumed += engine.getIdleFuelConsumption();
         		}
         		else{
-        			consumed += engine.getFuelConsumption(vehicle.getAttribute("fuel_secondary").getStringValue()) * throttle;
+        			consumed += engine.getFuelConsumption(vehicle.getAttribute("fuel_secondary").string_value()) * throttle;
         		}
     		}
     		accumulator++;
@@ -1203,7 +1203,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     			vehicle.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
     			bool = true;
     		}
-    		if(engine.isOn() && vehicle.getAttribute("fuel_stored").getFloatValue() <= 0){
+    		if(engine.isOn() && vehicle.getAttribute("fuel_stored").float_value() <= 0){
     			NBTTagCompound compound  = new NBTTagCompound();
     			compound.setString("task", "engine_toggle");
     			compound.setBoolean("engine_toggle_result", false);
@@ -1364,12 +1364,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                     break;
                 }
                 case "toggle_lights": {
-                    vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
-                    vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
+                    vehicle.getAttribute("lights").value(pkt.nbt.getBoolean("lights"));
+                    vehicle.getAttribute("lights_long").value(pkt.nbt.getBoolean("lights_long"));
                     ULandVehicle trailer = this.trailer;
                     while(trailer != null){
-                        trailer.vehicle.getAttribute("lights").setValue(pkt.nbt.getBoolean("lights"));
-                        trailer.vehicle.getAttribute("lights_long").setValue(pkt.nbt.getBoolean("lights_long"));
+                        trailer.vehicle.getAttribute("lights").value(pkt.nbt.getBoolean("lights"));
+                        trailer.vehicle.getAttribute("lights_long").value(pkt.nbt.getBoolean("lights_long"));
                         trailer = trailer.trailer;
                     }
                     break;

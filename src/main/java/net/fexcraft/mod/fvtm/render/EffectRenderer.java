@@ -164,7 +164,7 @@ public class EffectRenderer {
 	public static void renderHotInstallInfo(GenericVehicle vehicle){
 		if(!Command.HOTSWAP){
 			if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
-			if(vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
+			if(vehicle.getVehicleData().getAttribute("collision_range").float_value() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
 			//
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 			if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
@@ -224,7 +224,7 @@ public class EffectRenderer {
 	public static void renderToggableInfo(GenericVehicle vehicle){
 		if(!Command.TOGGABLE) return;
     	GL11.glPushMatrix();
-    	float scal = vehicle.getVehicleData().getAttribute("collision_range").getFloatValue() * 16;
+    	float scal = vehicle.getVehicleData().getAttribute("collision_range").float_value() * 16;
     	GL11.glScalef(scal, scal, scal);
     	GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glLineWidth(2f);

@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagFloat;
@@ -19,7 +18,7 @@ public class FloatAttribute extends Attribute<Float> {
 
 	@Override
 	protected NBTBase writeValue(boolean initial){
-		return new NBTTagFloat(initial ? init() : value());
+		return new NBTTagFloat(initial ? initial() : value());
 	}
 
 	@Override
@@ -35,63 +34,43 @@ public class FloatAttribute extends Attribute<Float> {
 
 	@Override
 	public Attribute<Float> copyNewInstance(){
-		return new FloatAttribute(id(), init());
+		return new FloatAttribute(id(), initial());
 	}
 
 	@Override
-	public int getIntegerValue(){
+	public int integer_value(){
 		return (int)+value();
 	}
 
 	@Override
-	public float getFloatValue(){
+	public float float_value(){
 		return value();
 	}
 
 	@Override
-	public String getStringValue(){
-		return value() + "";
-	}
-
-	@Override
-	public boolean getBooleanValue(){
-		return value() > 0;
-	}
-
-	@Override
-	public Boolean getTriStateValue(){
-		return value() == 0f ? null : value() > 0;
-	}
-
-	@Override
 	public void increase(int amount){
-		this.increase(amount + 0f);
+		increase(amount + 0f);
 	}
 
 	@Override
 	public void increase(float amount){
-		this.setValue(value() + amount);
+		value(value() + amount);
 	}
 
 	@Override
 	public void decrease(int amount){
-		this.decrease(amount + 0f);
+		decrease(amount + 0f);
 	}
 
 	@Override
 	public void decrease(float amount){
-		this.setValue(value() - amount);
+		value(value() - amount);
 	}
 
 	@Override
 	public void validate(){
-		if(value() > max()) setValue(max());
-		if(value() < min()) setValue(min());
-	}
-
-	@Override
-	public Vec3f getVectorValue(){
-		return new Vec3f(value());
+		if(value() > max()) value(max());
+		if(value() < min()) value(min());
 	}
 
 	@Override

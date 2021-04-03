@@ -118,7 +118,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		compound.setTag("Parts", list);
 		//
 		NBTTagList alist = new NBTTagList();
-		for(Attribute<?> attr : attributes.values()){ alist.appendTag(attr.write(new NBTTagCompound())); }
+		for(Attribute<?> attr : attributes.values()){
+			alist.appendTag(attr.write(new NBTTagCompound()));
+		}
 		compound.setTag("Attributes", alist);
 		//
 		compound.setInteger("SelectedTexture", selected_texture);
@@ -198,16 +200,23 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			for(NBTBase base : alist){
 				NBTTagCompound com = (NBTTagCompound)base; if(!com.hasKey("id")) continue;
 				if(com.getString("id").startsWith("turn_light_")) continue;
-				Attribute<?> attr = getAttribute(com.getString("id")); if(attr != null){ attr.read(com); }
-				else{ attr = Attribute.parse(com); if(attr != null) attributes.put(attr.id(), attr); }
+				Attribute<?> attr = getAttribute(com.getString("id"));
+				if(attr != null){
+					attr.read(com);
+				}
+				else{
+					attr = Attribute.parse(com);
+					if(attr != null) attributes.put(attr.id(), attr);
+				}
 			}
 		}
 		for(Attribute<?> attr : type.getBaseAttributes().values()){
 			if(!attributes.containsKey(attr.id())){
-				Attribute<?> copy = attr.copy(null); attributes.put(copy.id(), copy);
+				Attribute<?> copy = attr.copy(null);
+				attributes.put(copy.id(), copy);
 			}
 			attributes.get(attr.id()).copyAABBs(attr);
-			attributes.get(attr.id()).setExternal(attr.external());
+			attributes.get(attr.id()).external(attr.external());
 		}
 		//
 		this.selected_texture = compound.getInteger("SelectedTexture");
@@ -215,7 +224,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			isTextureExternal = compound.getBoolean("ExternalTexture");
 			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
-		} else{ seltex = null; extex = null; isTextureExternal = false; }
+		}
+		else{
+			seltex = null;
+			extex = null;
+			isTextureExternal = false;
+		}
 		//
 		if(compound.hasKey("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");
@@ -352,7 +366,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			if(part == null) continue;
 			for(Attribute<?> ettr : part.getType().getBaseAttributes()){
 				if(ettr.id().equals(attr.id())){
-					attr.copyAABBs(ettr); attr.setExternal(ettr.external()); break;
+					attr.copyAABBs(ettr);
+					attr.external(ettr.external());
+					break;
 				}
 			}
 		}
@@ -387,25 +403,25 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	/** Null-Safe attribute value check. Works with tri-state attributes too. */
 	public Boolean getAttributeBoolean(String id, boolean def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null /*|| !attr.type().isTristate()*/ ? def : attr.getTriStateValue();
+		return attr == null ? def : attr.tristate_value();
 	}
 
 	/** Null-Safe attribute value check. Works with integer attributes too. */
 	public float getAttributeFloat(String id, float def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null ? def : attr.getFloatValue();
+		return attr == null ? def : attr.float_value();
 	}
 
 	/** Null-Safe attribute value check. */
 	public int getAttributeInteger(String id, int def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null ? def : attr.getIntegerValue();
+		return attr == null ? def : attr.integer_value();
 	}
 
 	/** Null-Safe attribute value check. Works with other attribute types too. */
 	public String getAttributeString(String id, String def){
 		Attribute<?> attr = getAttribute(id);
-		return attr == null ? def : attr.getStringValue();
+		return attr == null ? def : attr.string_value();
 	}
 	
 	/** @return null if installed successfully. */
@@ -647,7 +663,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public double getThrottle(){
-		return getAttribute("throttle").getFloatValue();
+		return getAttribute("throttle").float_value();
 	}
 
 	public ArrayList<String> getInventories(){
@@ -661,39 +677,39 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	}
 
 	public boolean getLightsState(){
-		return getAttribute("lights").getBooleanValue();
+		return getAttribute("lights").boolean_value();
 	}
 
 	public boolean getFogLightsState(){
-		return getAttribute("lights_fog").getBooleanValue();
+		return getAttribute("lights_fog").boolean_value();
 	}
 
 	public boolean getLongLightsState(){
-		return getAttribute("lights_long").getBooleanValue();
+		return getAttribute("lights_long").boolean_value();
 	}
 
 	public boolean getSpecialLightsState(){
-		return getAttribute("lights_other").getBooleanValue();
+		return getAttribute("lights_other").boolean_value();
 	}
 
 	public boolean getTurnLightLeft(){
-		return Boolean.FALSE.equals(getAttribute("turn_lights").getTriStateValue());
+		return Boolean.FALSE.equals(getAttribute("turn_lights").tristate_value());
 	}
 
 	public boolean getTurnLightRight(){
-		return Boolean.TRUE.equals(getAttribute("turn_lights").getTriStateValue());
+		return Boolean.TRUE.equals(getAttribute("turn_lights").tristate_value());
 	}
 
 	public boolean getWarningLights(){
-		return getAttribute("warning_lights").getBooleanValue();
+		return getAttribute("warning_lights").boolean_value();
 	}
 
 	public int getStoredFuel(){
-		return getAttribute("fuel_stored").getIntegerValue();
+		return getAttribute("fuel_stored").integer_value();
 	}
 
 	public int getFuelCapacity(){
-		return getAttribute("fuel_capacity").getIntegerValue();
+		return getAttribute("fuel_capacity").integer_value();
 	}
 
 	public VehicleScript getVehicleScript(String string){

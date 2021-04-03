@@ -24,9 +24,12 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
-	
+
 	public static ServerReceiver INSTANCE;
-	public ServerReceiver(){ INSTANCE = this; }
+
+	public ServerReceiver(){
+		INSTANCE = this;
+	}
 
 	@Override
 	public String getId(){
@@ -44,13 +47,15 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity veh = (VehicleEntity)world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
 				final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
-				Object old = attr.getValue();
+				Object old = attr.value();
 				if(attr.valuetype().isTristate()){
 					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
-						attr.setValue(bool); packet.nbt.setBoolean("bool", attr.getBooleanValue());
+						attr.value(bool);
+						packet.nbt.setBoolean("bool", attr.boolean_value());
 					}
 					else{
-						attr.setValue(null); packet.nbt.setBoolean("reset", true);
+						attr.value(null);
+						packet.nbt.setBoolean("reset", true);
 					}
 					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 					if(veh.getVehicleType().isRailVehicle()){
@@ -59,13 +64,16 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						if(!com.isHead(reil.rek.ent()) && !com.isEnd(reil.rek.ent())) return;
 						for(RailEntity ent : com.getEntitites()){
 							if(ent.entity != null){
-								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute); if(attr0 == null) continue;
-								NBTTagCompound compound = packet.nbt.copy(); 
+								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute);
+								if(attr0 == null) continue;
+								NBTTagCompound compound = packet.nbt.copy();
 								if(attr0.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
-									attr0.setValue(bool); compound.setBoolean("bool", attr0.getBooleanValue());
+									attr0.value(bool);
+									compound.setBoolean("bool", attr0.boolean_value());
 								}
 								else{
-									attr0.setValue(null); compound.setBoolean("reset", true);
+									attr0.value(null);
+									compound.setBoolean("reset", true);
 								}
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
 							}
@@ -79,10 +87,12 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 							if(attr0 != null){
 								NBTTagCompound compound = packet.nbt.copy();
 								if(attr0.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
-									attr0.setValue(bool); compound.setBoolean("bool", attr0.getBooleanValue());
+									attr0.value(bool);
+									compound.setBoolean("bool", attr0.boolean_value());
 								}
 								else{
-									attr0.setValue(null); compound.setBoolean("reset", true);
+									attr0.value(null);
+									compound.setBoolean("reset", true);
 								}
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
 							}
@@ -91,7 +101,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 					}
 				}
 				else if(attr.valuetype().isNumber()){
-					attr.setValue(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+					attr.value(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 					if(veh.getVehicleType().isRailVehicle()){
 						RailVehicle reil = (RailVehicle)veh;
@@ -99,9 +109,10 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						if(!com.isHead(reil.rek.ent()) && !com.isEnd(reil.rek.ent())) return;
 						for(RailEntity ent : com.getEntitites()){
 							if(ent.entity != null){
-								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute); if(attr0 == null) continue;
+								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute);
+								if(attr0 == null) continue;
 								NBTTagCompound compound = packet.nbt.copy();
-								attr0.setValue(attr0.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								attr0.value(attr0.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
 							}
 						}
@@ -113,7 +124,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 							Attribute<?> attr0 = trailer.getVehicleData().getAttribute(attribute);
 							if(attr0 != null){
 								NBTTagCompound compound = packet.nbt.copy();
-								attr0.setValue(attr0.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
+								attr0.value(attr0.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
 								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
 							}
 							trailer = trailer.getRearCoupledEntity();
@@ -121,7 +132,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 					}
 				}
 				else{
-					//TODO
+					// TODO
 					Print.log("no code for toggling this attribute type yet");
 				}
 				veh.getVehicleData().getScripts().forEach(script -> {
@@ -132,30 +143,37 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "attr_update":{
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
-				//TODO other checks?
-				attr.setValue(attr.parseValue(packet.nbt.getString("value"))); packet.nbt.setString("value", attr.getStringValue());
+				// TODO other checks?
+				attr.value(attr.parseValue(packet.nbt.getString("value")));
+				packet.nbt.setString("value", attr.string_value());
 				PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 				break;
 			}
 			case "update_container_holder":{
 				Entity ent = world.getEntityByID(packet.nbt.getInteger("entity"));
-				if(ent == null){ Print.debug("Entity not found. CHP " + packet.nbt.getInteger("entity")); return; }
+				if(ent == null){
+					Print.debug("Entity not found. CHP " + packet.nbt.getInteger("entity"));
+					return;
+				}
 				ContainerHolderUtil.Implementation impl = (Implementation)ent.getCapability(Capabilities.CONTAINER, null);
 				if(impl == null) Print.debug("Capability is null. CHP " + packet.nbt.getInteger("entity"));
-					else impl.sync(false); return;
-			}
-			case "update_region": Static.stop(); return;
-			case "open_gui":{
-                if(packet.nbt.hasKey("data")){
-                	GuiHandler.SERVER_GUIDATA_CACHE.put(player.getGameProfile().getId().toString(), packet.nbt.getCompoundTag("data"));
-                	PacketHandler.getInstance().sendTo(packet, player);
-                }
-                int gui = packet.nbt.getInteger("gui");
-                int[] args = packet.nbt.hasKey("args") ? packet.nbt.getIntArray("args") : new int[3];
-                player.openGui(FVTM.getInstance(), gui, player.world, args[0], args[1], args[2]);
+				else impl.sync(false);
 				return;
 			}
-			//TODO validation
+			case "update_region":
+				Static.stop();
+				return;
+			case "open_gui":{
+				if(packet.nbt.hasKey("data")){
+					GuiHandler.SERVER_GUIDATA_CACHE.put(player.getGameProfile().getId().toString(), packet.nbt.getCompoundTag("data"));
+					PacketHandler.getInstance().sendTo(packet, player);
+				}
+				int gui = packet.nbt.getInteger("gui");
+				int[] args = packet.nbt.hasKey("args") ? packet.nbt.getIntArray("args") : new int[3];
+				player.openGui(FVTM.getInstance(), gui, player.world, args[0], args[1], args[2]);
+				return;
+			}
+			// TODO validation
 			case "toggle_seat":{
 				GenericVehicle veh = (GenericVehicle)world.getEntityByID(packet.nbt.getInteger("entity"));
 				int seatindex = packet.nbt.getInteger("seat");
@@ -163,7 +181,8 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				veh.seats[packet.nbt.getInteger("seat")].processInteract(player, packet.nbt.getBoolean("main") ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
 				return;
 			}
-			default: return;
+			default:
+				return;
 		}
 	}
 
@@ -172,7 +191,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 	}
 
 	public void process(NBTTagCompound compound, EntityPlayer player, World world){
-		this.process(new PacketNBTTagCompound(compound), new Object[]{ player, world == null ? player.world : world });
+		this.process(new PacketNBTTagCompound(compound), new Object[] { player, world == null ? player.world : world });
 	}
 
 }

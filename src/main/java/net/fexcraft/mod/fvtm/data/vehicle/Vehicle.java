@@ -22,7 +22,15 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.root.*;
+import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.fexcraft.mod.fvtm.data.root.DataType;
+import net.fexcraft.mod.fvtm.data.root.Lockable;
+import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Sound;
+import net.fexcraft.mod.fvtm.data.root.Soundable;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
@@ -115,7 +123,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				attributes.put(copy.id(), copy);
 			}
 			else{
-				attributes.get(attr.id()).setMinMax(attr.min(), attr.max());
+				attributes.get(attr.id()).minmax(attr.min(), attr.max());
 			}
 		}
 		if(obj.has("WheelPositions")){

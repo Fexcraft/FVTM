@@ -147,7 +147,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			last = current; current = tro.track; passed = tro.passed;
 			if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
 			if(!region.getKey().isInRegion(current.start)) this.updateRegion(current.start);
-			updatePosition(); vehdata.getAttribute("forward").setValue(am > 0);//TODO attr sync
+			updatePosition(); vehdata.getAttribute("forward").value(am > 0);//TODO attr sync
 			//
 			if(!hascoupled && isCoupled()){
 				//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
@@ -179,7 +179,7 @@ public class RailEntity implements Comparable<RailEntity>{
         			consumed += engine.getIdleFuelConsumption();
         		}
         		else{
-        			consumed += engine.getFuelConsumption(vehdata.getAttribute("fuel_secondary").getStringValue()) * throttle;
+        			consumed += engine.getFuelConsumption(vehdata.getAttribute("fuel_secondary").string_value()) * throttle;
         		}
     		}
     		fuel_accu++;
@@ -192,7 +192,7 @@ public class RailEntity implements Comparable<RailEntity>{
     			vehdata.getAttribute("fuel_stored").decrease(con < 1 ? 1 : con);
     			bool = true;
     		}
-    		if(entity != null && engine.isOn() && vehdata.getAttribute("fuel_stored").getFloatValue() <= 0){
+    		if(entity != null && engine.isOn() && vehdata.getAttribute("fuel_stored").float_value() <= 0){
     			NBTTagCompound compound  = new NBTTagCompound();
     			compound.setString("task", "engine_toggle");
     			compound.setBoolean("engine_toggle_result", false);
@@ -212,7 +212,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		boolean decrease = false;
 		Entity con = entity.getDriver();
 		if(!isActive() && con != null){
-			if(!((EntityPlayer)con).capabilities.isCreativeMode && vehdata.getAttribute("fuel_stored").getIntegerValue() <= 0) decrease = true;
+			if(!((EntityPlayer)con).capabilities.isCreativeMode && vehdata.getAttribute("fuel_stored").integer_value() <= 0) decrease = true;
 		}
 		if(decrease) throttle *= 0.98F;
 	}
@@ -606,23 +606,23 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void setForward(EntityPlayer player, boolean bool){
-		vehdata.getAttribute("forward").setValue(forward = com.forward = bool);
+		vehdata.getAttribute("forward").value(forward = com.forward = bool);
 		if(player != null) Print.bar(player, "&e&oDirection set to " + (forward ? "FORWARD" : "REVERSE"));
 		if(entity != null && !region.getWorld().getWorld().isRemote){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
 			packet.setString("task", "attr_update"); packet.setString("attr", "forward");
-			packet.setString("value", vehdata.getAttribute("forward").getBooleanValue() + "");
+			packet.setString("value", vehdata.getAttribute("forward").boolean_value() + "");
 			packet.setInteger("entity", entity.getEntityId());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 		}
 	}
 
 	public void setActive(boolean bool){
-		vehdata.getAttribute("active").setValue(bool);
+		vehdata.getAttribute("active").value(bool);
 		if(entity != null && !region.getWorld().getWorld().isRemote){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
 			packet.setString("task", "attr_update"); packet.setString("attr", "active");
-			packet.setString("value", vehdata.getAttribute("active").getBooleanValue() + "");
+			packet.setString("value", vehdata.getAttribute("active").boolean_value() + "");
 			packet.setInteger("entity", entity.getEntityId());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 		}
@@ -633,7 +633,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public boolean isActive(){
-		return vehdata.getAttribute("active").getBooleanValue();
+		return vehdata.getAttribute("active").boolean_value();
 	}
 	
 	@Override
@@ -642,11 +642,11 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void setPaused(boolean bool){
-		vehdata.getAttribute("paused").setValue(com.paused = bool);
+		vehdata.getAttribute("paused").value(com.paused = bool);
 		if(entity != null && !region.getWorld().getWorld().isRemote){
 			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
 			packet.setString("task", "attr_update"); packet.setString("attr", "paused");
-			packet.setString("value", vehdata.getAttribute("paused").getBooleanValue() + "");
+			packet.setString("value", vehdata.getAttribute("paused").boolean_value() + "");
 			packet.setInteger("entity", entity.getEntityId());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 		}

@@ -31,46 +31,184 @@ public abstract class Attribute<VT> {
 	private TreeSet<Modifier<VT>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
-	private ValueType value_type;
 	private String target, origin, group;
 	private boolean editable, external;
+	private VT value, initial;
 	private float min, max;
-	private VT value, init;
 	public final String id;
 	
 	public Attribute(String id, VT initial_value){
 		this.id = id;
-		init = initial_value;
-		value = init;
+		initial = initial_value;
+		value = initial;
 	}
 	
-	public boolean editable(){ return editable; }
-	public boolean external(){ return external; }
+	public String id(){
+		return id;
+	}
+
+	public String target(){
+		return target;
+	}
+
+	public String origin(){
+		return origin;
+	}
+
+	public String group(){
+		return group;
+	}
+	
+	public boolean editable(){
+		return editable;
+	}
+
+	public boolean external(){
+		return external;
+	}
+
+	public float min(){
+		return min;
+	}
+
+	public float max(){
+		return max;
+	}
+
+	public VT value(){
+		return value;
+	}
+
+	public VT initial(){
+		return initial;
+	}
+
 	//
-	public String id(){ return id; }
-	public String target(){ return target; }
-	public String origin(){ return origin; }
-	public String group(){ return group; }
-	public float min(){ return min; }
-	public float max(){ return max; }
-	public VT value(){ return value; }
-	public VT init(){ return init; }
-	//
-	public <VAL> VAL getValue(){ return (VAL)value; }
-	public <VAL> VAL getInitValue(){ return (VAL)init; };
-	public <VAL> Attribute<VT> setValue(VAL value){ this.value = (VT)value; validate(); return this; };
-	public <VAL> Attribute<VT> setInitValue(VAL value){ this.init = (VT)value; validate(); return this; };
-	public void increase(int amount){}; public void decrease(int amount){};
-	public void increase(float amount){}; public void decrease(float amount){};
-	public Attribute<VT> reset(){ return setValue(init); };
+	public <VAL> VAL value_c(){
+		return (VAL)value;
+	}
+
+	public <VAL> VAL initial_c(){
+		return (VAL)initial;
+	};
+
+	public <VAL> Attribute<VT> value(VAL value){
+		this.value = (VT)value;
+		validate();
+		return this;
+	};
+
+	public <VAL> Attribute<VT> initial(VAL value){
+		this.initial = (VT)value;
+		validate();
+		return this;
+	};
+
+	public void increase(int amount){};
+
+	public void decrease(int amount){};
+
+	public void increase(float amount){};
+
+	public void decrease(float amount){};
+
+	public Attribute<VT> reset(){
+		return value(initial);
+	};
+	
 	protected void validate(){};
+	
+	public Attribute<VT> target(String string){
+		this.target = string;
+		return this;
+	}
+
+	public Attribute<VT> origin(String string){
+		this.origin = string;
+		return this;
+	}
+
+	public Attribute<VT> group(String string){
+		this.group = string;
+		return this;
+	}
+
+	public Attribute<VT> minmax(float min, float max){
+		this.min = min;
+		this.max = max;
+		return this;
+	}
+
+	public Attribute<VT> editable(boolean bool){
+		this.editable = bool;
+		return this;
+	}
+
+	public Attribute<VT> external(boolean bool){
+		this.external = bool;
+		return this;
+	}
+	
 	//
-	public Attribute<VT> setTarget(String string){ this.target = string; return this; }
-	public Attribute<VT> setOrigin(String string){ this.origin = string; return this; }
-	public Attribute<VT> setGroup(String string){ this.group = string; return this; }
-	public Attribute<VT> setMinMax(float min, float max){ this.min = min; this.max = max; return this; }
-	public Attribute<VT> setEditable(boolean bool){ this.editable = bool; return this; }
-	public Attribute<VT> setExternal(boolean bool){ this.external = bool; return this; }
+	
+	public int integer_value(){
+		return (int)float_value();
+	}
+
+	public abstract float float_value();
+
+	public String string_value(){
+		return value + "";
+	}
+
+	public boolean boolean_value(){
+		if(valuetype().isBoolean()){
+			return value_c();
+		}
+		else if(valuetype().isNumber()){
+			return float_value() > 0;
+		}
+		else if(valuetype().isTristate()){
+			return value() != null || (Boolean)value();
+		}
+		else if(valuetype().isString()){
+			return Boolean.parseBoolean(string_value());
+		}
+		else if(valuetype().isVector()){
+			return vector_value().xCoord > 0;
+		}
+		else return value != null;
+	}
+
+	public Boolean tristate_value(){
+		if(valuetype().isNumber()){
+			return float_value() == 0f ? null : float_value() > 0;
+		}
+		else return boolean_value();
+	}
+
+	public Vec3f vector_value(){
+		return new Vec3f(float_value());
+	}
+	
+	//
+	
+	public <VAL> VAL conditional_tristate(VAL n, VAL t, VAL f){
+		return tristate_value() == null ? n : tristate_value() ? t : f;
+	}
+	
+	public <VAL> VAL conditional_boolean(VAL t, VAL f){
+		return boolean_value() ? t : f;
+	}
+	
+	/** Only works with booleans. */
+	public boolean toggle_value(){
+		if(valuetype().isBoolean()){
+			value(!boolean_value());
+			return boolean_value();
+		}
+		return false;
+	}
 	
 	//
 	
@@ -113,19 +251,10 @@ public abstract class Attribute<VT> {
 	public Attribute<?> updateValue(Update call){
 		for(Modifier<?> mod : modifiers){
 			if(mod.update() != call) continue;
-			setValue(mod.modify(this, call));
+			value(mod.modify(this, call));
 		}
 		return this;
 	}
-	
-	//
-	
-	public abstract int getIntegerValue();
-	public abstract float getFloatValue();
-	public abstract String getStringValue();
-	public abstract boolean getBooleanValue();
-	public abstract Boolean getTriStateValue();
-	public abstract Vec3f getVectorValue();
 	
 	//
 	
@@ -217,8 +346,8 @@ public abstract class Attribute<VT> {
 		}
 		editable = compound.hasKey("editable") ? compound.getBoolean("editable") : true;
 		external = compound.hasKey("external") ? compound.getBoolean("external") : false;
-		init = this.readValue(compound.getTag("initial"));
-		value = compound.hasKey("value") ? this.readValue(compound.getTag("value")) : init;
+		initial = this.readValue(compound.getTag("initial"));
+		value = compound.hasKey("value") ? this.readValue(compound.getTag("value")) : initial;
 		modifiers.clear();
 		if(compound.hasKey("modifiers")){
 			NBTTagList list = (NBTTagList)compound.getTag("modifiers");
@@ -235,9 +364,9 @@ public abstract class Attribute<VT> {
 	
 	public Attribute<VT> copy(String origin){
 		Attribute<VT> attr = copyNewInstance();
-		return attr.setMinMax(min(), max()).setValue(value())// .setSeat(seat())
-			.setTarget(target()).setGroup(group()).setOrigin(origin)
-			.setEditable(editable()).setExternal(external()).copyAABBs(this);
+		return attr.minmax(min(), max()).value(value())// .setSeat(seat())
+			.target(target()).group(group()).origin(origin)
+			.editable(editable()).external(external()).copyAABBs(this);
 	}
 
 	protected abstract Attribute<VT> copyNewInstance();
@@ -248,6 +377,7 @@ public abstract class Attribute<VT> {
 		Class<? extends Attribute<?>> clazz = Resources.getAttributeType(compound.getString("type").toLowerCase());
 		if(clazz == null){
 			Print.log("Attribute class of type '" + compound.getString("type") + "' not found! (NBT LOAD)");
+			Static.stop();
 			return null;
 		}
 		Attribute<?> attr = null;
@@ -256,7 +386,6 @@ public abstract class Attribute<VT> {
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			Static.stop();
 			return null;
 		}
 		return attr.read(compound);
@@ -265,9 +394,9 @@ public abstract class Attribute<VT> {
 	public static Attribute<?> parse(JsonObject obj){
 		String id = obj.get("id").getAsString();
 		String type = obj.get("type").getAsString();
-		Class<? extends Attribute<?>> clazz = Resources.getAttributeType(id);
+		Class<? extends Attribute<?>> clazz = Resources.getAttributeType(type);
 		if(clazz == null){
-			Print.log("Attribute class of type '" + type + "' not found! (OBJ LOAD)");
+			Print.log("Attribute class of type '" + type + "' not found! (JSON LOAD)");
 			return null;
 		}
 		Attribute<?> attr = null;
@@ -278,19 +407,19 @@ public abstract class Attribute<VT> {
 			e.printStackTrace();
 			return null;
 		}
-		boolean isbool = attr.value_type.isTristate();
-		attr.setTarget(obj.has("target") ? obj.get("target").getAsString() : "vehicle");
+		boolean isbool = attr.valuetype().isTristate();
+		attr.target(obj.has("target") ? obj.get("target").getAsString() : "vehicle");
 		if((obj.has("max") || obj.has("min") && !isbool)){
 			float min = JsonUtil.getIfExists(obj, "min", Integer.MIN_VALUE).floatValue();
 			float max = JsonUtil.getIfExists(obj, "max", Integer.MAX_VALUE).floatValue();
-			attr.setMinMax(min, max);
+			attr.minmax(min, max);
 		}
-		if(obj.has("editable")) attr.setEditable(obj.get("editable").getAsBoolean());
-		if(obj.has("external")) attr.setExternal(obj.get("external").getAsBoolean());
+		if(obj.has("editable")) attr.editable(obj.get("editable").getAsBoolean());
+		if(obj.has("external")) attr.external(obj.get("external").getAsBoolean());
 		if(obj.has("hitbox")){
 			if(obj.get("hitbox").isJsonArray()){
 				JsonArray erray = obj.get("hitbox").getAsJsonArray();
-				int expected = attr.value_type.isFloat() || attr.value_type.isInteger() ? 7 : 4;
+				int expected = attr.valuetype().isFloat() || attr.valuetype().isInteger() ? 7 : 4;
 				float[] arr = new float[expected];
 				for(int i = 0; i < expected; i++){
 					arr[i] = erray.get(i).getAsFloat();
@@ -300,7 +429,7 @@ public abstract class Attribute<VT> {
 			else if(obj.get("hitbox").isJsonObject()){
 				for(Map.Entry<String, JsonElement> entry : obj.get("hitbox").getAsJsonObject().entrySet()){
 					JsonArray erray = entry.getValue().getAsJsonArray();
-					int expected = attr.value_type.isFloat() || attr.value_type.isInteger() ? 7 : 4;
+					int expected = attr.valuetype().isFloat() || attr.valuetype().isInteger() ? 7 : 4;
 					float[] arr = new float[expected];
 					for(int i = 0; i < expected; i++){
 						arr[i] = erray.get(i).getAsFloat();
@@ -308,6 +437,8 @@ public abstract class Attribute<VT> {
 					attr.addBB(entry.getKey(), arr, erray.size() > expected ? erray.get(expected).getAsString() : null);
 				}
 			}
+			attr.abbs.forEach((key, val) -> Print.debug(val));
+			Static.stop();
 		}
 		if(obj.has("seat")){
 			if(obj.get("seat").isJsonArray()){

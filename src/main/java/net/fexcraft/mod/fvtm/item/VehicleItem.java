@@ -58,13 +58,13 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
         if(data.hasPart("engine")){
             tooltip.add(Formatter.format("&9Engine: &7" + data.getPart("engine").getType().getName()));
             tooltip.add(Formatter.format("&9Fuel Group: &7" + data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").getFuelGroup()[0]));
-            tooltip.add(Formatter.format("&9Fuel Stored: &7" + data.getAttribute("fuel_stored").getIntegerValue() + "mB"));
+            tooltip.add(Formatter.format("&9Fuel Stored: &7" + data.getAttribute("fuel_stored").integer_value() + "mB"));
         }
         if(data.hasPart("transmission")){
         	TransmissionFunction func = data.getFunctionInPart("transmission", "fvtm:transmission");
             tooltip.add(Formatter.format("&9Transmission: &7" + (func == null ? "disfunctional" : func.isAutomatic() ? "automatic" : "manual")));
         }
-        tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").getStringValue() + "kg"));
+        tooltip.add(Formatter.format("&9Weight: &7" + data.getAttribute("weight").float_value() + "kg"));
         tooltip.add(Formatter.format("&9Seats: &7" + data.getSeats().size()));
     	tooltip.add(Formatter.format("&9LockCode: &7" + data.getLockCode()));
         //temporary

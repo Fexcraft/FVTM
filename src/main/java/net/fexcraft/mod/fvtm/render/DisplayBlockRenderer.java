@@ -33,7 +33,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
             Model<VehicleData, Object> modvec = vehicledata.getType().getModel();
             if(modvec != null){
                 ModelBase.bindTexture(vehicledata.getTexture());
-                GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * 0.0625f), 0);
+                GL11.glTranslated(0, (vehicledata.getAttributeFloat("constructor_height", 0f) * 0.0625f), 0);//TODO update
                 modvec.render(vehicledata, null, null, cache);
                 vehicledata.getParts().forEach((key, partdata) -> {
                     ModelBase.bindTexture(partdata.getTexture());
@@ -49,7 +49,7 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 		partdata.getInstalledPos().translateR();
                 	}
                 });
-                GL11.glTranslated(0, (vehicledata.getAttribute("constructor_height").getFloatValue() * -0.0625f), 0);
+                GL11.glTranslated(0, (vehicledata.getAttributeFloat("constructor_height", 0f) * -0.0625f), 0);//TODO update
             }
         }
         GL11.glPopMatrix();

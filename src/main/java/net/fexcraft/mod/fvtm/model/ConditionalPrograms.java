@@ -75,7 +75,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() && data.getAttribute("forward").getBooleanValue();
+			return data.getLightsState() && data.getAttribute("forward").boolean_value();
 		}
 		
 	}
@@ -84,7 +84,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() && !data.getAttribute("forward").getBooleanValue();
+			return data.getLightsState() && !data.getAttribute("forward").boolean_value();
 		}
 		
 	}
@@ -93,7 +93,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() && data.getAttribute("forward").getBooleanValue();
+			return data.getLightsState() && data.getAttribute("forward").boolean_value();
 		}
 		
 	}
@@ -102,7 +102,7 @@ public class ConditionalPrograms {
 		
 		@Override
 		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
-			return data.getLightsState() && !data.getAttribute("forward").getBooleanValue();
+			return data.getLightsState() && !data.getAttribute("forward").boolean_value();
 		}
 		
 	}

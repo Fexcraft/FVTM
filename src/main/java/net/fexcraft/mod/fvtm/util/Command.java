@@ -98,7 +98,7 @@ public class Command extends CommandBase {
             			else{
             				giveKeyItem(player, data.getType().getKeyType(), data.getLockCode());
             				Attribute<Integer> attr = data.getAttributeCasted("generated_keys");
-            				attr.setValue(attr.getIntegerValue() + 1);
+            				attr.value(attr.integer_value() + 1);
             			}
             		}
             		else if(player.getHeldItemMainhand().getItem() instanceof VehicleItem){
@@ -113,7 +113,7 @@ public class Command extends CommandBase {
             			else{
             				giveKeyItem(player, item.getType().getKeyType(), item.getData(stack).getLockCode());
             				Attribute<Integer> attr = item.getData(stack).getAttributeCasted("generated_keys");
-            				attr.setValue(attr.getIntegerValue() + 1);
+            				attr.value(attr.integer_value() + 1);
             			}
             		}
             		else{
@@ -282,7 +282,7 @@ public class Command extends CommandBase {
                 		return;
                 	}
                 	if(args[1].equals("see")){
-                		Print.chat(sender, attr.getStringValue());
+                		Print.chat(sender, attr.string_value());
                 		return;
                 	}
                 	else if(args[1].equals("set")){
@@ -295,8 +295,8 @@ public class Command extends CommandBase {
                 		}
                 		else{
                 			Attribute<?> base = data.getType().getBaseAttributes().get(args[2]);
-                			attr.setInitValue(base.getInitValue());
-                			attr.setValue(base.getValue());
+                			attr.initial(base.initial());
+                			attr.value(base.value());
                 			data.write(stack.getTagCompound());
                     		Print.chat(sender, "Attribute reset.");
                 		}

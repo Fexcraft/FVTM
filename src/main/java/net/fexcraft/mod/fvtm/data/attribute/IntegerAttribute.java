@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagInt;
@@ -19,7 +18,7 @@ public class IntegerAttribute extends Attribute<Integer> {
 
 	@Override
 	protected NBTBase writeValue(boolean initial){
-		return new NBTTagInt(initial ? init() : value());
+		return new NBTTagInt(initial ? initial() : value());
 	}
 
 	@Override
@@ -35,68 +34,48 @@ public class IntegerAttribute extends Attribute<Integer> {
 
 	@Override
 	public Attribute<Integer> copyNewInstance(){
-		return new IntegerAttribute(id(), init());
+		return new IntegerAttribute(id(), initial());
 	}
 
 	@Override
-	public int getIntegerValue(){
+	public int integer_value(){
 		return value();
 	}
 
 	@Override
-	public float getFloatValue(){
+	public float float_value(){
 		return value();
-	}
-
-	@Override
-	public String getStringValue(){
-		return value() + "";
-	}
-
-	@Override
-	public boolean getBooleanValue(){
-		return value() > 0;
-	}
-
-	@Override
-	public Boolean getTriStateValue(){
-		return value() == 0 ? null : value() > 0;
 	}
 
 	@Override
 	public void increase(float amount){
-		this.increase((int)amount);
+		increase((int)amount);
 	}
 
 	@Override
 	public void increase(int amount){
-		this.setValue(value() + amount);
+		value(value() + amount);
 	}
 
 	@Override
 	public void decrease(float amount){
-		this.decrease((int)amount);
+		decrease((int)amount);
 	}
 
 	@Override
 	public void decrease(int amount){
-		this.setValue(value() - amount);
+		value(value() - amount);
 	}
 
 	@Override
 	public void validate(){
-		if((Object)value() instanceof Float) setValue(((Float)(Object)value()).intValue());
+		if((Object)value() instanceof Float) value(((Float)(Object)value()).intValue());
 		if(value() > max()){
-			setValue(((Float)max()).intValue());
+			value(((Float)max()).intValue());
 		}
 		if(value() < min()){
-			setValue(((Float)min()).intValue());
+			value(((Float)min()).intValue());
 		}
-	}
-
-	@Override
-	public Vec3f getVectorValue(){
-		return new Vec3f(value());
 	}
 
 	@Override

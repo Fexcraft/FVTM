@@ -51,5 +51,10 @@ public class AttributeBB {
 	public AttributeBB copy(){
 		return new AttributeBB(id, pos, size, increase, decrease, reset, swivel_point);
 	}
+	
+	@Override
+	public String toString(){
+		return String.format("ABB{%s, %s, %s, %s, %s, %s, %s}", id, pos, size, increase, decrease, reset, swivel_point);
+	}
 
 }

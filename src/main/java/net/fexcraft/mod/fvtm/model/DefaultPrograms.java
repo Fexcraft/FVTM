@@ -259,22 +259,22 @@ public class DefaultPrograms {
 	};
 	
 	public static final Program LIGHTS_FRONT_FORWARD = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").getBooleanValue(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").boolean_value(); }
 		@Override public String getId(){ return "fvtm:lights_front_forward"; }
 	};
 	
 	public static final Program LIGHTS_FRONT_BACKWARD = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").getBooleanValue(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").boolean_value(); }
 		@Override public String getId(){ return "fvtm:lights_front_backward"; }
 	};
 	
 	public static final Program LIGHTS_REAR_FORWARD = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").getBooleanValue(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").boolean_value(); }
 		@Override public String getId(){ return "fvtm:lights_rear_forward"; }
 	};
 	
 	public static final Program LIGHTS_REAR_BACKWARD = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").getBooleanValue(); }
+		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").boolean_value(); }
 		@Override public String getId(){ return "fvtm:lights_rear_backward"; }
 	};
 	
@@ -373,16 +373,16 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getFloatValue(), 0, 1, 0);
-			GL11.glRotatef(data.getAttribute("wheel_angle").getFloatValue(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(data.getAttribute("wheel_angle").float_value(), 0, 0, 1);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
-			GL11.glRotatef(-data.getAttribute("wheel_angle").getFloatValue(), 0, 0, 1);
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getFloatValue(), 0, 1, 0);
+			GL11.glRotatef(-data.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
 		}
 		
 	};
@@ -397,12 +397,12 @@ public class DefaultPrograms {
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
-			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").getFloatValue(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").float_value(), 0, 1, 0);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").getFloatValue(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		
@@ -430,12 +430,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(data.getAttribute(part + "_angle").getFloatValue(), 0, 1, 0);
+			GL11.glRotatef(data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(-data.getAttribute(part + "_angle").getFloatValue(), 0, 1, 0);
+			GL11.glRotatef(-data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
 		}
 		
 	};
@@ -463,7 +463,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.rotateAxis(rotated = data.getAttribute("steering_angle").getFloatValue() * ratio, axis, true);
+			list.rotateAxis(rotated = data.getAttribute("steering_angle").float_value() * ratio, axis, true);
 		}
 		
 		@Override
@@ -501,12 +501,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(data.getAttribute("steering_angle").getFloatValue() * ratio, x, y, z);
+			GL11.glRotatef(data.getAttribute("steering_angle").float_value() * ratio, x, y, z);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glRotatef(-data.getAttribute("steering_angle").getFloatValue() * ratio, x, y, z);
+			GL11.glRotatef(-data.getAttribute("steering_angle").float_value() * ratio, x, y, z);
 		}
 		
 		@Override
@@ -584,7 +584,7 @@ public class DefaultPrograms {
 			if((attr = data.getAttribute(attribute)) == null) return;
 			current = cache.getValue(cacheid);
 			if(current == null) current = 0f;
-			current = boolstatebased ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
+			current = boolstatebased ? (attr.boolean_value() ? current + step : current - step) : attr.float_value();
 			if(current > max) current = max;
 			if(current < min) current = min;
 			list.rotateAxis(current + defrot, axis, override);
@@ -655,7 +655,7 @@ public class DefaultPrograms {
 			if((attr = data.getAttribute(attribute)) == null) return;
 			current = cache.getValue(cacheid);
 			if(current == null) current = 0f;
-			current = bool ? (attr.getBooleanValue() ? current + step : current - step) : attr.getFloatValue();
+			current = bool ? (attr.boolean_value() ? current + step : current - step) : attr.float_value();
 			if(current > max) current = max; if(current < min) current = min;
 			GL11.glPushMatrix();
 			GL11.glTranslatef(
@@ -708,7 +708,7 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			attr = data.getAttribute(attribute); if(attr == null) return;
-			if(attr.getBooleanValue() != ifis) list.visible = false;
+			if(attr.boolean_value() != ifis) list.visible = false;
 		}
 		
 		@Override
@@ -1091,11 +1091,11 @@ public class DefaultPrograms {
 	}
 
 	public static AlwaysGlow getCustomLights(String attr_id){
-		if(CUSTOM_LIGHTS.containsKey(attr_id)) CUSTOM_LIGHTS.get(attr_id);
+		if(CUSTOM_LIGHTS.containsKey(attr_id)) return CUSTOM_LIGHTS.get(attr_id);
 		AlwaysGlow glow = new AlwaysGlow(){
 			@Override
 			public boolean shouldGlow(Entity ent, VehicleData data){
-				return data.getAttribute(attr_id).getBooleanValue();
+				return data.getAttribute(attr_id).boolean_value();
 			}
 		};
 		CUSTOM_LIGHTS.put(attr_id, glow);
@@ -1152,13 +1152,13 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			if((attr = data.getAttribute(attribute)) == null) return;
-			current = attr.getFloatValue() < minval ? minval : attr.getFloatValue();
+			current = attr.float_value() < minval ? minval : attr.float_value();
 			if(current > maxval(ent, data)) current = maxval;
 			list.rotateAxis(minrot + ((current - minval) / valdiff()) * rotdiff, axis, true);
 		}
 
 		private float maxval(Entity ent, VehicleData data){
-			if(maxvalattr != null && (mvattr = data.getAttribute(maxvalattr)) != null) return maxval = mvattr.getFloatValue();
+			if(maxvalattr != null && (mvattr = data.getAttribute(maxvalattr)) != null) return maxval = mvattr.float_value();
 			else if(limit != null) return maxval = limit.getMaxValue(maxval, ent, data);
 			else return maxval;
 		}

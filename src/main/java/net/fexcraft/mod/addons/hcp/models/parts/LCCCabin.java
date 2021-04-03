@@ -423,8 +423,8 @@ public class LCCCabin extends PartModel {
 			@Override
 			public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 				if(ent == null) return;
-				list.get(0).rotationAngleZ = -27 + (data.getAttribute("lcc_h").getIntegerValue() * 4.5f);
-				list.get(1).rotationAngleZ = -35 + (data.getAttribute("lcc_v").getIntegerValue() * -7);
+				list.get(0).rotationAngleZ = -27 + (data.getAttribute("lcc_h").integer_value() * 4.5f);
+				list.get(1).rotationAngleZ = -35 + (data.getAttribute("lcc_v").integer_value() * -7);
 			}
 
 			@Override

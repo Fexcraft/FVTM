@@ -108,42 +108,42 @@ public class ToggableHandler {
 		packet.setString("task", "attr_toggle");
 		packet.setString("attr", attr.id());
 		packet.setInteger("entity", entity.getEntity().getEntityId());
-		Object old = attr.getValue();
+		Object old = attr.value();
 		switch(press){
 			case MOUSE_MAIN:{
 				if(attr.valuetype().isTristate()){
-					packet.setBoolean("bool", !attr.valuetype().isBoolean() ? false : !attr.getBooleanValue());
+					packet.setBoolean("bool", !attr.valuetype().isBoolean() ? false : !attr.boolean_value());
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.valuetype().isFloat()){
-					float flaot = attr.getFloatValue() + attr.getBB(attr.getStringValue()).increase;
+					float flaot = attr.float_value() + attr.getBB(attr.string_value()).increase;
 					packet.setFloat("value", flaot);
-					attr.setValue(flaot);
+					attr.value(flaot);
 					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.valuetype().isInteger()){
-					int ent = attr.getIntegerValue() + (int)attr.getBB(attr.getStringValue()).increase;
+					int ent = attr.integer_value() + (int)attr.getBB(attr.string_value()).increase;
 					packet.setFloat("value", ent);
-					attr.setValue(ent);
+					attr.value(ent);
 					Print.bar(player, "&7Increasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				break;
 			}
 			case MOUSE_RIGHT:{
 				if(attr.valuetype().isTristate()){
-					packet.setBoolean("bool", !attr.valuetype().isBoolean() ? true : !attr.getBooleanValue());
+					packet.setBoolean("bool", !attr.valuetype().isBoolean() ? true : !attr.boolean_value());
 					Print.bar(player, "&7Toggling: &6" + attr.id() + " &a> " + packet.getBoolean("bool"));
 				}
 				else if(attr.valuetype().isFloat()){
-					float flaot = attr.getFloatValue() - attr.getBB(attr.getStringValue()).decrease;
+					float flaot = attr.float_value() - attr.getBB(attr.string_value()).decrease;
 					packet.setFloat("value", flaot);
-					attr.setValue(flaot);
+					attr.value(flaot);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.valuetype().isInteger()){
-					int ent = attr.getIntegerValue() - (int)attr.getBB(attr.getStringValue()).decrease;
+					int ent = attr.integer_value() - (int)attr.getBB(attr.string_value()).decrease;
 					packet.setFloat("value", ent);
-					attr.setValue(ent);
+					attr.value(ent);
 					Print.bar(player, "&7Decreasing: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				break;
@@ -155,15 +155,15 @@ public class ToggableHandler {
 					Print.bar(player, "&7Resetting: &6" + attr.id());
 				}
 				else if(attr.valuetype().isFloat()){
-					float flaot = attr.getBB(attr.getStringValue()).reset;
+					float flaot = attr.getBB(attr.string_value()).reset;
 					packet.setFloat("value", flaot);
-					attr.setValue(flaot);
+					attr.value(flaot);
 					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				else if(attr.valuetype().isInteger()){
-					int ent = (int)attr.getBB(attr.getStringValue()).reset;
+					int ent = (int)attr.getBB(attr.string_value()).reset;
 					packet.setFloat("value", ent);
-					attr.setValue(ent);
+					attr.value(ent);
 					Print.bar(player, "&7Resetting: &6" + attr.id() + " &a> " + packet.getFloat("value"));
 				}
 				break;
@@ -259,8 +259,8 @@ public class ToggableHandler {
 		for(Entity entity : Minecraft.getMinecraft().world.loadedEntityList){
 			if(entity instanceof VehicleEntity == false) continue;
 			Print.debug("test");
-			if(((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").getFloatValue() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
-				Print.debug("veh dis: " + ((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").getFloatValue() + " " + entity.getName());
+			if(((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").float_value() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
+				Print.debug("veh dis: " + ((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").float_value() + " " + entity.getName());
 				Print.debug("ply dis: " + entity.getDistance(Minecraft.getMinecraft().player));
 				continue;
 			}
@@ -294,7 +294,7 @@ public class ToggableHandler {
 
 		public void collectAABBs(boolean external, VehicleEntity vehicle, EntityPlayer player, TreeMap<String, AxisAlignedBB> aabbs, Vec3d temp){
 			if(attr != null){
-				String attrid = (external ? "external-" : "") + attr.getStringValue();
+				String attrid = (external ? "external-" : "") + attr.string_value();
 				AttributeBB abb = attr.getBB(attrid);
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(abb.swivel_point);
 				temp = point.getRelativeVector(abb.pos.x16, -abb.pos.y16, -abb.pos.z16);

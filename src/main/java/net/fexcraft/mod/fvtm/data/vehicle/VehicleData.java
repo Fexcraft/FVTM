@@ -812,5 +812,9 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	public VehicleData copy(){
 		return new VehicleData(type).read(write(null));
 	}
+	
+	public List<Attribute<?>> getAttributeGroup(String group){
+		return attributes.values().stream().filter(attr -> attr.group().equals(group)).collect(Collectors.toList());
+	}
 
 }

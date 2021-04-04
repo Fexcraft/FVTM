@@ -296,6 +296,7 @@ public class ToggableHandler {
 			if(attr != null){
 				String attrid = (external ? "external-" : "") + attr.string_value();
 				AttributeBB abb = attr.getBB(attrid);
+				if(abb == null) return;
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(abb.swivel_point);
 				temp = point.getRelativeVector(abb.pos.x16, -abb.pos.y16, -abb.pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());

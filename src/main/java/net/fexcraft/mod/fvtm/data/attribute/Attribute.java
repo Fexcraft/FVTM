@@ -392,8 +392,8 @@ public abstract class Attribute<VT> {
 	}
 	
 	public static Attribute<?> parse(JsonObject obj){
-		if(obj.has("mod-dependency") || obj.has("mod-dep")){
-			JsonElement dep = obj.has("mod-dependency") ? obj.get("mod-dependency") : obj.get("mod-dep");
+		if(/*obj.has("mod-dependency") ||*/ obj.has("mod-dep")){
+			JsonElement dep = /*obj.has("mod-dependency") ? obj.get("mod-dependency") :*/ obj.get("mod-dep");
 			if(dep.isJsonArray()){
 				for(JsonElement elm : dep.getAsJsonArray()){
 					if(!Resources.isModLoaded(elm.getAsString())) return null;

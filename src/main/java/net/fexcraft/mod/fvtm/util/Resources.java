@@ -96,6 +96,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -126,6 +127,7 @@ public class Resources {
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
+	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
@@ -641,5 +643,12 @@ public class Resources {
 	public void onSpawn(EntityJoinWorldEvent event){
 		Print.debug(event.getEntity());
 	}*/
+	
+	public static final boolean isModLoaded(String modid){
+		if(LOADED_MODS.containsKey(modid)) return LOADED_MODS.get(modid);
+		boolean bool = Loader.isModLoaded(modid);
+		LOADED_MODS.put(modid, bool);
+		return bool;
+	}
 
 }

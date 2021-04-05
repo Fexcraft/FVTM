@@ -56,7 +56,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         		if(tile.track == null) tile.track = generateNewTrack();
         		if(tile.track.gauge == null) tile.track.gauge = getGauge(tile.getVehicleData().getAttribute("gauge").integer_value());
             	if(tile.track.railmodel == null){ RailRenderer.generateTrackModel(tile.track, tile.track.gauge.getModel()); }
-            	int l = tile.getVehicleData().getAttributeInteger("constructor_length", 4);//TODO replace
+            	int l = 0;
             	if(tile.getVehicleData().getFrontConnector() != null && tile.getVehicleData().getRearConnector() != null){
             		l = (int)(tile.getVehicleData().getFrontConnector().x + -tile.getVehicleData().getRearConnector().x + 1);
             	}

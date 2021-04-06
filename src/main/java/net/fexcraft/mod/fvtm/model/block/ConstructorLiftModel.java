@@ -436,12 +436,12 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		holder0 = new TurboList("holder0");
 		holder0.add(new ModelRendererTurbo(holder0, 48, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
-			.setRotationPoint(hol0.xCoord, hol0.yCoord + 0.5f, hol0.zCoord).setRotationAngle(0, 0, 0)
+			.setRotationPoint(hol0.x, hol0.y + 0.5f, hol0.z).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		holder0.add(new ModelRendererTurbo(holder0, 48, 35, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.5, 0.0), new boolean[]{ false, true, false, true })
-			.setRotationPoint(hol0.xCoord, hol0.yCoord, hol0.zCoord).setRotationAngle(0, 0, 0)
+			.setRotationPoint(hol0.x, hol0.y, hol0.z).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		this.groups.add(holder0);
@@ -450,12 +450,12 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		holder1 = new TurboList("holder1");
 		holder1.add(new ModelRendererTurbo(holder1, 39, 42, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 0.75f, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.375, 0.0), new boolean[]{ true, false, false, true })
-			.setRotationPoint(hol1.xCoord, hol1.yCoord + 0.5f, hol1.zCoord).setRotationAngle(0, 0, 0)
+			.setRotationPoint(hol1.x, hol1.y + 0.5f, hol1.z).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		holder1.add(new ModelRendererTurbo(holder1, 39, 35, textureX, textureY).addHollowCylinder(0, 0, 0, 2, 0.001f, 1, 12, 0, 1, 1, 4,
 			new net.fexcraft.lib.common.math.Vec3f(0.0, -0.5, 0.0), new boolean[]{ false, true, false, true })
-			.setRotationPoint(hol1.xCoord, hol1.yCoord, hol1.zCoord).setRotationAngle(0, 0, 0)
+			.setRotationPoint(hol1.x, hol1.y, hol1.z).setRotationAngle(0, 0, 0)
 			.setTextured(true).setLines(false)
 		);
 		this.groups.add(holder1);
@@ -463,7 +463,7 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 		Vec3f ar0m = new Vec3f(3, -2, -1);
 		arm0 = new TurboList("arm0");
 		arm0.add(new ModelRendererTurbo(arm0, 39, 49, textureX, textureY).newBoxBuilder()
-			.setOffset(0, 0, -0.5f).setSize((int)ar0m.distanceTo(hol0) + 1, 2, 1)
+			.setOffset(0, 0, -0.5f).setSize((int)ar0m.dis(hol0) + 1, 2, 1)
 			.setCorners(0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, -0.25f, -0.75f, -2, -0.25f, -0.75f, -2, -0.25f, 0, 0, -0.25f)
 			.setPolygonUV(0, new float[]{ 16.0f, 0.0f })
 			.setPolygonUV(1, new float[]{ 16.0f, 2.0f })
@@ -471,15 +471,15 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 			.setPolygonUV(3, new float[]{ 0.0f, 2.0f, 2.0f, 4.0f })
 			.setPolygonUV(4, new float[]{ 2.0f, 0.0f, 16.0f, 2.0f })
 			.setPolygonUV(5, new float[]{ 2.0f, 2.0f, 16.0f, 4.0f }).build()
-			.setRotationPoint(ar0m.xCoord, ar0m.yCoord, ar0m.zCoord)
-			.setRotationAngle(0, (float)Math.toDegrees(Math.atan2(ar0m.xCoord - hol0.xCoord, ar0m.zCoord - hol0.zCoord)) + 90, 0)
+			.setRotationPoint(ar0m.x, ar0m.y, ar0m.z)
+			.setRotationAngle(0, (float)Math.toDegrees(Math.atan2(ar0m.x - hol0.x, ar0m.z - hol0.z)) + 90, 0)
 		);
 		this.groups.add(arm0);
 		//
 		Vec3f ar1m = new Vec3f(-3, -2, -1);
 		arm1 = new TurboList("arm1");
 		arm1.add(new ModelRendererTurbo(arm1, 39, 54, textureX, textureY).newBoxBuilder()
-			.setOffset(0, 0, -0.5f).setSize((int)ar1m.distanceTo(hol1) + 1, 2, 1)
+			.setOffset(0, 0, -0.5f).setSize((int)ar1m.dis(hol1) + 1, 2, 1)
 			.setCorners(0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, -0.25f, -0.75f, -2, -0.25f, -0.75f, -2, -0.25f, 0, 0, -0.25f)
 			.setPolygonUV(0, new float[]{ 16.0f, 0.0f })
 			.setPolygonUV(1, new float[]{ 16.0f, 2.0f })
@@ -487,8 +487,8 @@ public class ConstructorLiftModel extends GenericModel<ConstCenterEntity, Float>
 			.setPolygonUV(3, new float[]{ 0.0f, 2.0f, 2.0f, 4.0f })
 			.setPolygonUV(4, new float[]{ 2.0f, 0.0f, 16.0f, 2.0f })
 			.setPolygonUV(5, new float[]{ 2.0f, 2.0f, 16.0f, 4.0f }).build()
-			.setRotationPoint(ar1m.xCoord, ar1m.yCoord, ar1m.zCoord)
-			.setRotationAngle(0, (float)Math.toDegrees(Math.atan2(ar1m.xCoord - hol1.xCoord, ar1m.zCoord - hol1.zCoord)) + 90, 0)
+			.setRotationPoint(ar1m.x, ar1m.y, ar1m.z)
+			.setRotationAngle(0, (float)Math.toDegrees(Math.atan2(ar1m.x - hol1.x, ar1m.z - hol1.z)) + 90, 0)
 		);
 		this.groups.add(arm1);
 	}

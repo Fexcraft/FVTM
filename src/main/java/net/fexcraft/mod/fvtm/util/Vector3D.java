@@ -37,7 +37,7 @@ public class Vector3D {
     }
 
 	public static double[] newVector(Vec3f vec){
-		return new double[]{ vec.xCoord, vec.yCoord, vec.zCoord };
+		return new double[]{ vec.x, vec.y, vec.z };
 	}
 	
 }

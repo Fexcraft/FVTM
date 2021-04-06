@@ -232,8 +232,8 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 			vec0 = conn.vecpath[j];
 			vec1 = conn.vecpath[j + 1];
 			bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-			bufferbuilder.pos((vec0.xCoord - (cx * 16)) * zoom.cs + guiLeft + zoom.bo, (vec0.zCoord - (cz * 16)) * zoom.cs + guiTop + zoom.bo, zLevel + 1).color(0f, glgl, flfl, 1F).endVertex();
-			bufferbuilder.pos((vec1.xCoord - (cx * 16)) * zoom.cs + guiLeft + zoom.bo, (vec1.zCoord - (cz * 16)) * zoom.cs + guiTop + zoom.bo, zLevel + 1).color(0f, glgl, flfl, 1F).endVertex();
+			bufferbuilder.pos((vec0.x - (cx * 16)) * zoom.cs + guiLeft + zoom.bo, (vec0.z - (cz * 16)) * zoom.cs + guiTop + zoom.bo, zLevel + 1).color(0f, glgl, flfl, 1F).endVertex();
+			bufferbuilder.pos((vec1.x - (cx * 16)) * zoom.cs + guiLeft + zoom.bo, (vec1.z - (cz * 16)) * zoom.cs + guiTop + zoom.bo, zLevel + 1).color(0f, glgl, flfl, 1F).endVertex();
 			tessellator.draw();
 		}
 	}
@@ -384,7 +384,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 			int width = size[0];
 			float angle, passed = 0, half = (width * 0.5f) - (width % 2 == 0 ? 0.5f : 0); Vec3f last, vec;
 			vec = demoroad.getVectorPosition0(0.001f, false); passed = 0;
-			angle = (float)Math.atan2(demoroad.vecpath[0].zCoord - vec.zCoord, demoroad.vecpath[0].xCoord - vec.xCoord);
+			angle = (float)Math.atan2(demoroad.vecpath[0].z - vec.z, demoroad.vecpath[0].x - vec.x);
 			angle += Static.rad90;
 			for(float fl = -half; fl <= half; fl += 0.25f){
 				path.add(new Vec316f(demoroad.vecpath[0].add(RoadToolItem.grv(angle, new Vec3f(fl, 0, 0)))));
@@ -392,7 +392,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 			while(passed < demoroad.length){
 				passed += 0.125f; last = vec;
 				vec = demoroad.getVectorPosition0(passed, false);
-				angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 				angle += Static.rad90;
 				for(float fl = -half; fl <= half; fl += 0.25f){
 					path.add(new Vec316f(vec.add(RoadToolItem.grv(angle, new Vec3f(fl, 0, 0)))));

@@ -70,7 +70,7 @@ public class RoadRenderer {
         		if(!fru.isBoundingBoxInFrustum(roadpoints[i].getAABB())) continue;
             	GL11.glPushMatrix();
             	ModelBase.bindTexture(Resources.NULL_TEXTURE);
-            	GL11.glTranslatef(roadpoints[i].getVec3f().xCoord, roadpoints[i].getVec3f().yCoord, roadpoints[i].getVec3f().zCoord);
+            	GL11.glTranslatef(roadpoints[i].getVec3f().x, roadpoints[i].getVec3f().y, roadpoints[i].getVec3f().z);
             	if(roadpoints[i].roads.isEmpty() || RailRenderer.HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();
         		renderLines(roadpoints[i]);
@@ -97,8 +97,8 @@ public class RoadRenderer {
     			for(int j = 0; j < conn.vecpath.length - 1; j++){
     				vec0 = conn.vecpath[j]; vec1 = conn.vecpath[j + 1];
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vec0.xCoord, vec0.yCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec0.zCoord).color(0f, glgl, flfl, 1F).endVertex();
-                    bufferbuilder.pos(vec1.xCoord, vec1.yCoord + (conn.isOppositeCopy() ? 0.1f : 0), vec1.zCoord).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec0.x, vec0.y + (conn.isOppositeCopy() ? 0.1f : 0), vec0.z).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec1.x, vec1.y + (conn.isOppositeCopy() ? 0.1f : 0), vec1.z).color(0f, glgl, flfl, 1F).endVertex();
                     tessellator.draw();
     			}
                 GlStateManager.depthMask(true);

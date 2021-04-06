@@ -195,7 +195,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		roof = rooffill == null && layers[4] > 0 ? new ArrayList<>() : null;
 		//
 		vec = _road.getVectorPosition0(0.001f, false); passed = 0;
-		angle = (float)Math.atan2(_road.vecpath[0].zCoord - vec.zCoord, _road.vecpath[0].xCoord - vec.xCoord);
+		angle = (float)Math.atan2(_road.vecpath[0].z - vec.z, _road.vecpath[0].x - vec.x);
 		angle += Static.rad90;
 		for(float fl = -half; fl <= half; fl += 0.25f){
 			if(road != null) road.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(fl, 0, 0)))));
@@ -216,7 +216,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		if(border_r != null) border_r.add(new Vec316f(_road.vecpath[0].add(grv(angle, new Vec3f(half + 1, 0, 0)))));
 		while(passed < _road.length){ passed += 0.125f;
 			last = vec; vec = _road.getVectorPosition0(passed, false);
-			angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+			angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 			angle += Static.rad90;
 			for(float fl = -half; fl <= half; fl += 0.25f){
 				if(road != null) road.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, 0, 0)))));
@@ -355,7 +355,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	}
 
 	public static final Vec3f grv(float rad, Vec3f vec){
-        double co = Math.cos(rad), si = Math.sin(rad); return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);
+        double co = Math.cos(rad), si = Math.sin(rad); return new Vec3f(co * vec.x - si * vec.z, vec.y, si * vec.x + co * vec.z);
 	}
 
 	private boolean lastEquals(NBTTagList list, Vec316f vector){

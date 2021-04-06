@@ -12,19 +12,19 @@ public class TransformMap extends EnumMap<TransformType, Vec3f> {
 		for(TransformType type : TransformType.values()){
 			Vec3f vector = new Vec3f();
 			if(gltype == 0){
-				vector.xCoord = vector.yCoord = vector.zCoord = .125f;
+				vector.x = vector.y = vector.z = .125f;
 			}
 			else if(gltype == 1 && type == TransformType.GROUND){
-				vector.xCoord = -.45f;
-				vector.yCoord = -.05f;
+				vector.x = -.45f;
+				vector.y = -.05f;
 			}
 			else if(gltype == 2 && (type == TransformType.FIRST_PERSON_LEFT_HAND || type == TransformType.FIRST_PERSON_RIGHT_HAND)){
-				vector.yCoord = type == TransformType.FIRST_PERSON_LEFT_HAND ? 60f : 120f;
+				vector.y = type == TransformType.FIRST_PERSON_LEFT_HAND ? 60f : 120f;
 			}
 			else if(gltype == 2 && type == TransformType.GUI){
-				vector.xCoord = -30f;
-				vector.yCoord = -135f;
-				vector.zCoord = -30f;
+				vector.x = -30f;
+				vector.y = -135f;
+				vector.z = -30f;
 			}
 			put(type, vector);
 		}
@@ -35,9 +35,9 @@ public class TransformMap extends EnumMap<TransformType, Vec3f> {
 	}
 	
 	public void set(TransformType type, float x, float y, float z){
-		get(type).xCoord = x;
-		get(type).yCoord = y;
-		get(type).zCoord = z;
+		get(type).x = x;
+		get(type).y = y;
+		get(type).z = z;
 	}
 	
 	public void setAll(float x, float y, float z){
@@ -53,9 +53,9 @@ public class TransformMap extends EnumMap<TransformType, Vec3f> {
 	}
 	
 	public void add(TransformType type, float x, float y, float z){
-		get(type).xCoord += x;
-		get(type).yCoord += y;
-		get(type).zCoord += z;
+		get(type).x += x;
+		get(type).y += y;
+		get(type).z += z;
 	}
 	
 	public void addAll(float x, float y, float z){
@@ -65,9 +65,9 @@ public class TransformMap extends EnumMap<TransformType, Vec3f> {
 	}
 	
 	public void sub(TransformType type, float x, float y, float z){
-		get(type).xCoord -= x;
-		get(type).yCoord -= y;
-		get(type).zCoord -= z;
+		get(type).x -= x;
+		get(type).y -= y;
+		get(type).z -= z;
 	}
 	
 	public void subAll(float x, float y, float z){

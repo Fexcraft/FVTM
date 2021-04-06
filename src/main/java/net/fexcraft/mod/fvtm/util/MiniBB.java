@@ -23,24 +23,24 @@ public class MiniBB {
     public MiniBB(){}
 
 	public boolean contains(Vec3f vec){
-        if(vec.xCoord >= this.x0 && vec.xCoord <= this.x1){
-            if(vec.yCoord >= this.y0 && vec.yCoord <= this.y1){
-                return vec.zCoord >= this.z0 && vec.zCoord <= this.z1;
+        if(vec.x >= this.x0 && vec.x <= this.x1){
+            if(vec.y >= this.y0 && vec.y <= this.y1){
+                return vec.z >= this.z0 && vec.z <= this.z1;
             }
         } return false;
     }
     
     public MiniBB update(Vec3f pos, float radius){
-		x0 = pos.xCoord - radius; x1 = pos.xCoord + radius;
-		y0 = pos.yCoord - radius; y1 = pos.yCoord + radius;
-		z0 = pos.zCoord - radius; z1 = pos.zCoord + radius;
+		x0 = pos.x - radius; x1 = pos.x + radius;
+		y0 = pos.y - radius; y1 = pos.y + radius;
+		z0 = pos.z - radius; z1 = pos.z + radius;
 		center = pos/*new Vec3f(pos)*/; return this;
     }
     
     public MiniBB update(Vec3f one, Vec3f two){
-		x0 = Math.min(one.xCoord, two.xCoord); x1 = Math.max(one.xCoord, two.xCoord);
-		y0 = Math.min(one.yCoord, two.yCoord); y1 = Math.max(one.yCoord, two.yCoord);
-		z0 = Math.min(one.zCoord, two.zCoord); z1 = Math.max(one.zCoord, two.zCoord);
+		x0 = Math.min(one.x, two.x); x1 = Math.max(one.x, two.x);
+		y0 = Math.min(one.y, two.y); y1 = Math.max(one.y, two.y);
+		z0 = Math.min(one.z, two.z); z1 = Math.max(one.z, two.z);
 		center = new Vec3f((x0 + x1) * 0.5f, (y0 + y1) * 0.5f, (z0 + z1) * 0.5f); return this;
     }
 

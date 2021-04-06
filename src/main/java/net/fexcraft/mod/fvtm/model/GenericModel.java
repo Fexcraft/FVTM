@@ -154,15 +154,15 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 					for(ModelRendererTurbo turbo : group){
 						for(TexturedPolygon poly : turbo.getFaces()){
 							for(TexturedVertex vert : poly.getVertices()){
-								vert.vector = vert.vector.subtract(vector);
+								vert.vector = vert.vector.sub(vector);
 							}
 						}
-						turbo.rotationPointX = vector.xCoord;
-						turbo.rotationPointY = vector.yCoord;
-						turbo.rotationPointZ = vector.zCoord;
-						turbo.rotationAngleX = rotation.xCoord;
-						turbo.rotationAngleY = rotation.yCoord;
-						turbo.rotationAngleZ = rotation.zCoord;
+						turbo.rotationPointX = vector.x;
+						turbo.rotationPointY = vector.y;
+						turbo.rotationPointZ = vector.z;
+						turbo.rotationAngleX = rotation.x;
+						turbo.rotationAngleY = rotation.y;
+						turbo.rotationAngleZ = rotation.z;
 					}
 				}
 				catch(Exception e){

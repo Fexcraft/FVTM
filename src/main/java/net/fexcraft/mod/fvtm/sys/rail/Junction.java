@@ -102,7 +102,7 @@ public class Junction {
 		if(compound.hasKey("SwitchFacing")) this.entityFacing = EnumFacing.byIndex(compound.getInteger("SwitchFacing"));
 		if(switchlocation != null && entityFacing == null) entityFacing = EnumFacing.NORTH;
 		if(entity != null){
-			if(switchlocation != null) entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
+			if(switchlocation != null) entity.setPosition(switchlocation.x, switchlocation.y, switchlocation.z);
 			else entity.setDead();
 		}
 		station = compound.hasKey("Station") ? compound.getString("Station") : null;
@@ -342,7 +342,7 @@ public class Junction {
 				else{
 					if(isInPlayerRange()){
 						entity = new JunctionSwitchEntity(root.getWorld(), this);
-						entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
+						entity.setPosition(switchlocation.x, switchlocation.y, switchlocation.z);
 						root.getWorld().spawnEntity(entity);
 					}
 				}
@@ -369,13 +369,13 @@ public class Junction {
 
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : root.getWorld().playerEntities){
-			if(vecpos.vector.distanceTo(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
+			if(vecpos.vector.dis(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
 		} return false;
 	}
 
 	public void updateSwitchLocation(Vec3f vector, EnumFacing opposite){
 		this.switchlocation = vector; entityFacing = opposite;
-		if(entity != null) entity.setPosition(switchlocation.xCoord, switchlocation.yCoord, switchlocation.zCoord);
+		if(entity != null) entity.setPosition(switchlocation.x, switchlocation.y, switchlocation.z);
 	}
 
 	public boolean onSwitchInteract(EntityPlayer player, JunctionSwitchEntity entity, boolean left){
@@ -416,25 +416,25 @@ public class Junction {
 		Vec3f min = new Vec3f(), max = new Vec3f(), other;
 		for(Track track : tracks){
 			other = track.start.vector;
-			if(other.xCoord < min.xCoord) min.xCoord = other.xCoord;
-			if(other.yCoord < min.yCoord) min.yCoord = other.yCoord;
-			if(other.zCoord < min.zCoord) min.zCoord = other.zCoord;
-			if(other.xCoord > max.xCoord) max.xCoord = other.xCoord;
-			if(other.yCoord > max.yCoord) max.yCoord = other.yCoord;
-			if(other.zCoord > max.zCoord) max.zCoord = other.zCoord;
+			if(other.x < min.x) min.x = other.x;
+			if(other.y < min.y) min.y = other.y;
+			if(other.z < min.z) min.z = other.z;
+			if(other.x > max.x) max.x = other.x;
+			if(other.y > max.y) max.y = other.y;
+			if(other.z > max.z) max.z = other.z;
 			other = track.end.vector;
-			if(other.xCoord < min.xCoord) min.xCoord = other.xCoord;
-			if(other.yCoord < min.yCoord) min.yCoord = other.yCoord;
-			if(other.zCoord < min.zCoord) min.zCoord = other.zCoord;
-			if(other.xCoord > max.xCoord) max.xCoord = other.xCoord;
-			if(other.yCoord > max.yCoord) max.yCoord = other.yCoord;
-			if(other.zCoord > max.zCoord) max.zCoord = other.zCoord;
+			if(other.x < min.x) min.x = other.x;
+			if(other.y < min.y) min.y = other.y;
+			if(other.z < min.z) min.z = other.z;
+			if(other.x > max.x) max.x = other.x;
+			if(other.y > max.y) max.y = other.y;
+			if(other.z > max.z) max.z = other.z;
 		}
 		if(size() == 0){
-			min = vecpos.vector.addVector(-.5f,-.5f,-.5f);
-			max = vecpos.vector.addVector(+.5f,+.5f,+.5f);
+			min = vecpos.vector.add(-.5f,-.5f,-.5f);
+			max = vecpos.vector.add(+.5f,+.5f,+.5f);
 		}
-		return frustumbb = new AxisAlignedBB(min.xCoord, min.yCoord, min.zCoord, max.xCoord, max.yCoord, max.zCoord);
+		return frustumbb = new AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z);
 	}
 
 	public void setSignal(SignalType signal, EntryDirection entrydir){

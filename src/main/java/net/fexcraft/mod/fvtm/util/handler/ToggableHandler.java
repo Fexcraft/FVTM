@@ -207,7 +207,7 @@ public class ToggableHandler {
 				AxisAlignedBB aabb = SEATBB.offset(temp);
 				for(float f = 0; f < 4; f += Static.sixteenth / 2){
 					Vec3f dis = vec0.distance(vec1, f);
-					vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
+					vec = new Vec3d(dis.x, dis.y, dis.z);
 					if(aabb.contains(vec)){
 						NBTTagCompound packet = new NBTTagCompound();
 						packet.setString("target_listener", "fvtm:gui");
@@ -246,8 +246,8 @@ public class ToggableHandler {
 		}
 		for(float f = 0; f < (external ? 3 : 2); f += Static.sixteenth / 2){
 			Vec3f dis = vec0.distance(vec1, f);
-			vec = new Vec3d(dis.xCoord, dis.yCoord, dis.zCoord);
-			if(Command.TOGGABLE) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.xCoord, dis.yCoord, dis.zCoord, 0, 0, 0);
+			vec = new Vec3d(dis.x, dis.y, dis.z);
+			if(Command.TOGGABLE) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.x, dis.y, dis.z, 0, 0, 0);
 			for(Collidable coll : collidables)
 				if(aabbs.get(coll.id()).contains(vec)) return coll;
 		}

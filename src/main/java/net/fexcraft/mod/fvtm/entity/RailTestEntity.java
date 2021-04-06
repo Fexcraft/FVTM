@@ -32,7 +32,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
 
     public RailTestEntity(World world, Track start){
         this(world); current = start;
-        this.setPosition(start.start.vector.xCoord, start.start.vector.yCoord, start.start.vector.zCoord);
+        this.setPosition(start.start.vector.x, start.start.vector.y, start.start.vector.z);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class RailTestEntity extends Entity implements IEntityAdditionalSpawnData
     		}
     		else{
     			Vec3f vec = current.getVectorPosition(passed, false);
-    			this.setPosition(vec.xCoord, vec.yCoord, vec.zCoord);
+    			this.setPosition(vec.x, vec.y, vec.z);
     		}
     	}
     	else{

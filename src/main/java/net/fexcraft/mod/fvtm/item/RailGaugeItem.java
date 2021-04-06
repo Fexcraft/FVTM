@@ -187,7 +187,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		float angle, half = (width * 0.5f) - 0.25f;
 		ArrayList<Vec316f> path = new ArrayList<>();
 		Vec3f last, vec = track.getVectorPosition0(0.001f, false);
-		angle = (float)Math.atan2(track.vecpath[0].zCoord - vec.zCoord, track.vecpath[0].xCoord - vec.xCoord);
+		angle = (float)Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
 		angle += Static.rad90;
 		/*for(float fl = -half; fl <= half; fl += 0.25f){
 			path.add(new Vec316f(track.vecpath[0].add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
@@ -195,7 +195,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		float passed = 0.125f;
 		while(passed < track.length){
 			last = vec; vec = track.getVectorPosition0(passed, false);
-			angle = (float)Math.atan2(last.zCoord - vec.zCoord, last.xCoord - vec.xCoord);
+			angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 			angle += Static.rad90;
 			for(float fl = -half; fl <= half; fl += 0.25f){
 				path.add(new Vec316f(vec.add(grv(angle, new Vec3f(fl, type.getBlockHeight(), 0)))));
@@ -298,7 +298,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 
 	public static final Vec3f grv(float rad, Vec3f vec){
         double co = Math.cos(rad), si = Math.sin(rad);
-        return new Vec3f(co * vec.xCoord - si * vec.zCoord, vec.yCoord, si * vec.xCoord + co * vec.zCoord);
+        return new Vec3f(co * vec.x - si * vec.z, vec.y, si * vec.x + co * vec.z);
 	}
 
 	private boolean createdJunction(ICommandSender sender, RailSys syscap, EntityPlayer player, NBTTagList list, Vec316f vector){

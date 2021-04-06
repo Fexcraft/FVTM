@@ -61,7 +61,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 		if(model == null) { return; }
 		//
 		Vec3f translate = model.item_translate.get(type);
-		GL11.glTranslatef(translate.xCoord, translate.yCoord, translate.zCoord);
+		GL11.glTranslatef(translate.x, translate.y, translate.z);
 		if(data.getType().isTrailerOrWagon() && !data.getType().getVehicleType().isRailVehicle()){
 			if(type == TransformType.GUI){
 				GL11.glTranslatef(-.375f, -.375f, 0);
@@ -72,16 +72,16 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 		}
 		Vec3f rotate = model.item_rotate.get(type);
 		GL11.glPushMatrix();
-		GL11.glRotatef(rotate.yCoord, 0F, 1F, 0F);
+		GL11.glRotatef(rotate.y, 0F, 1F, 0F);
 		if(type == TransformType.THIRD_PERSON_RIGHT_HAND || type == TransformType.THIRD_PERSON_LEFT_HAND){
 			GL11.glRotatef(data.getType().getVehicleType().isAirVehicle() ? -90f : 90f, 0F, 1F, 0F);
 		}
-		GL11.glRotatef(rotate.xCoord, 1F, 0F, 0F);
-		GL11.glRotatef(rotate.zCoord, 0F, 0F, 1F);
+		GL11.glRotatef(rotate.x, 1F, 0F, 0F);
+		GL11.glRotatef(rotate.z, 0F, 0F, 1F);
 		//
 		//
 		Vec3f scale = model.item_scale.get(type);
-		GL11.glScalef(scale.xCoord, scale.yCoord, scale.zCoord);
+		GL11.glScalef(scale.x, scale.y, scale.z);
 		//
 		{
 			GL11.glPushMatrix();

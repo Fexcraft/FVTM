@@ -42,9 +42,9 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
             GL11.glTranslated(x, y, z);
             GL11.glPushMatrix();
             Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
-            GL11.glRotatef(rot.xCoord, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(rot.yCoord, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(rot.zCoord, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
+            GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
             EffectRenderer.RENDER_VEHROT.put(vehicle.getEntityId(), rot);
             //
             GL11.glPushMatrix();

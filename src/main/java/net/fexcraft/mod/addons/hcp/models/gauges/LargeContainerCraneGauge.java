@@ -45,8 +45,8 @@ public class LargeContainerCraneGauge extends RailGaugeModel {
 		rail_tempcull = true;
 		for(int i = 0; i < rails.length; i++){
 			for(int j = 0; j < rails[i].length; j++){
-				rails[i][j].xCoord /*= (179 - rails[i][j].xCoord) **/*= Static.sixteenth;
-				rails[i][j].yCoord *= Static.sixteenth;
+				rails[i][j].x /*= (179 - rails[i][j].x) **/*= Static.sixteenth;
+				rails[i][j].y *= Static.sixteenth;
 			}
 		}
 		this.groups.add(new TurboList("ties"));

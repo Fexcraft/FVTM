@@ -91,7 +91,7 @@ public class Track extends Path {
 	
 	public Vec3f getVectorPosition(float distance, boolean reverse){
 		Vec3f vec = this.getVectorPosition0(distance, reverse);
-		vec.yCoord += gauge.height16(); return vec;
+		vec.y += gauge.height16(); return vec;
 	}
 	
 	@Override
@@ -114,9 +114,9 @@ public class Track extends Path {
 
 	public Vec3f getVectorOnTrack(Vec3f ext){
 		Vec3f at = vecpath[0];
-		float dis = ext.distanceTo(vecpath[0]), tes;
+		float dis = ext.dis(vecpath[0]), tes;
 		for(Vec3f vec : vecpath){
-			if((tes = vec.distanceTo(ext)) < dis){
+			if((tes = vec.dis(ext)) < dis){
 				dis = tes;
 				at = vec;
 			}
@@ -128,7 +128,7 @@ public class Track extends Path {
 		float passed = 0;
 		Vec3f at = getVectorOnTrack(ext), last = at;
 		for(int i = 1; i < vecpath.length; i++){
-			float dis = last.distanceTo(vecpath[i]);
+			float dis = last.dis(vecpath[i]);
 			if(dis < 0.001f) break;
 			passed += dis;
 		}

@@ -542,8 +542,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	Vec3f br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
         	Vec3f br1 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis - 0.1f);
         	if(bf0 != null && br0 != null && bf1 != null && br1 != null){
-        		float front = (float)(Math.toDegrees(Math.atan2(bf0.zCoord - bf1.zCoord, bf0.xCoord - bf1.xCoord)) - rotpoint.getAxes().getYaw());
-        		float rear  = (float)(Math.toDegrees(Math.atan2(br0.zCoord - br1.zCoord, br0.xCoord - br1.xCoord)) - rotpoint.getAxes().getYaw());
+        		float front = (float)(Math.toDegrees(Math.atan2(bf0.z - bf1.z, bf0.x - bf1.x)) - rotpoint.getAxes().getYaw());
+        		float rear  = (float)(Math.toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x)) - rotpoint.getAxes().getYaw());
         		rek.data().getAttribute("bogie_front_angle").value(front); rek.data().getAttribute("bogie_rear_angle").value(rear);
         	}
     		//
@@ -553,8 +553,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(!world.isRemote){
             rek.ent().alignEntity(false);
             //
-            Vec3d front = new Vec3d(rek.ent().bfront.xCoord, rek.ent().bfront.yCoord, rek.ent().bfront.zCoord);
-            Vec3d back = new Vec3d(rek.ent().brear.xCoord, rek.ent().brear.yCoord, rek.ent().brear.zCoord);
+            Vec3d front = new Vec3d(rek.ent().bfront.x, rek.ent().bfront.y, rek.ent().bfront.z);
+            Vec3d back = new Vec3d(rek.ent().brear.x, rek.ent().brear.y, rek.ent().brear.z);
             Vec3d left = new Vec3d((front.x + back.x) / 2F, (front.y + back.y) / 2F, (front.x + back.z) / 2F);
             Vec3d right = new Vec3d((front.x + back.x) / 2F, (front.y + back.y) / 2F, (front.x + back.z) / 2F);
             //

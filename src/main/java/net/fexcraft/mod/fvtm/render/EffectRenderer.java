@@ -87,9 +87,9 @@ public class EffectRenderer {
             GL11.glTranslated(vehpos.x, vehpos.y, vehpos.z);
             //
             Vec3f vehrot = RENDER_VEHROT.get(veh.getEntity().getEntityId());
-            GL11.glRotatef(vehrot.xCoord, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(vehrot.yCoord, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(vehrot.zCoord, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(vehrot.x, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(vehrot.y, 0.0F, 0.0F, 1.0F);
+            GL11.glRotatef(vehrot.z, 1.0F, 0.0F, 0.0F);
             GL11.glPushMatrix();
             GL11.glRotatef(180f, 0f, 0f, 1f);
             if(light.swivel == null || light.swivel.equals("vehicle")){
@@ -277,9 +277,9 @@ public class EffectRenderer {
 	}
 
 	public static void renderContainerInfo(Entity entity, Vec3f rot){
-        if((tempholder = entity.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.xCoord, rot.yCoord, rot.zCoord);
+        if((tempholder = entity.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.x, rot.y, rot.z);
         if(!Command.CONTAINER) return;
-    	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug(0, 0, 0, rot.xCoord, rot.yCoord, rot.zCoord);
+    	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug(0, 0, 0, rot.x, rot.y, rot.z);
     	if(tempholder != null){
     		ContainerHolderWrapper ent = tempholder.getWrapper();
     		for(String slotid : tempholder.getContainerSlotIds()){

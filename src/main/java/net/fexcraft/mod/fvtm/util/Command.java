@@ -232,16 +232,16 @@ public class Command extends CommandBase {
             	}
             	else if(stack.getItem() instanceof RailGaugeItem){
             		Vec316f[] origin = ((JunctionGridItem)stack.getItem()).getVectors(stack), vecs = new Vec316f[origin.length];
-            		for(int i = 0; i < vecs.length; i++) vecs[i] = new Vec316f(origin[i].vector.subtract(origin[0].vector));
+            		for(int i = 0; i < vecs.length; i++) vecs[i] = new Vec316f(origin[i].vector.sub(origin[0].vector));
                 	if(args[1].equals("print")){
                 		for(Vec316f vec : vecs){
-                    		Print.chat(sender, vec.vector.xCoord + ", " + vec.vector.yCoord + ", " + vec.vector.zCoord);
+                    		Print.chat(sender, vec.vector.x + ", " + vec.vector.y + ", " + vec.vector.z);
                 		} return;
                 	}
                 	if(args[1].equals("copy")){
                 		String str = new String(); Vec316f vec = null;
                 		for(int i = 0; i < vecs.length; i++){ vec = vecs[i];
-                    		str += "[ " + vec.vector.xCoord + ", " + vec.vector.yCoord + ", " + vec.vector.zCoord + (i == vecs.length - 1 ? "]" : "],\n");
+                    		str += "[ " + vec.vector.x + ", " + vec.vector.y + ", " + vec.vector.z + (i == vecs.length - 1 ? "]" : "],\n");
                 		}
                 		StringSelection stringSelection = new StringSelection(str);
                 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);

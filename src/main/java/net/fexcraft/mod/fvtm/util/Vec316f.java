@@ -29,10 +29,10 @@ public class Vec316f implements Comparable<Vec316f> {
 	}
 
 	public Vec316f(Vec3f pos){
-		this.pos = new BlockPos(pos.xCoord, pos.yCoord, pos.zCoord);
-		x = (byte)((pos.xCoord - this.pos.getX()) / 0.0625);
-		y = (byte)((pos.yCoord - this.pos.getY()) / 0.0625);
-		z = (byte)((pos.zCoord - this.pos.getZ()) / 0.0625);
+		this.pos = new BlockPos(pos.x, pos.y, pos.z);
+		x = (byte)((pos.x - this.pos.getX()) / 0.0625);
+		y = (byte)((pos.y - this.pos.getY()) / 0.0625);
+		z = (byte)((pos.z - this.pos.getZ()) / 0.0625);
 		vector = toVec3f();
 	}
 
@@ -53,7 +53,7 @@ public class Vec316f implements Comparable<Vec316f> {
 	}
 
 	public Vec316f(Vec3f pos, int rgs){
-		this(pos.xCoord, pos.yCoord, pos.zCoord, rgs);
+		this(pos.x, pos.y, pos.z, rgs);
 	}
 
 	public Vec316f(double posx, double posy, double posz, int rgs){
@@ -143,7 +143,7 @@ public class Vec316f implements Comparable<Vec316f> {
 	
 	@Override
 	public String toString(){
-		return "(" + vector.xCoord + ", " + vector.yCoord + ", " + vector.zCoord + ")";
+		return "(" + vector.x + ", " + vector.y + ", " + vector.z + ")";
 	}
 
 	public String asIDString(){

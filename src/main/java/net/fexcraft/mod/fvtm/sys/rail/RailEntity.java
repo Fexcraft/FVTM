@@ -85,7 +85,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	private Vec3f medium(Vec3f vec0, Vec3f vec1){
-		return new Vec3f((vec0.xCoord + vec1.xCoord) * 0.5f, (vec0.yCoord + vec1.yCoord) * 0.5f, (vec0.zCoord + vec1.zCoord) * 0.5f);
+		return new Vec3f((vec0.x + vec1.x) * 0.5f, (vec0.y + vec1.y) * 0.5f, (vec0.z + vec1.z) * 0.5f);
 	}
 
 	/** only to use with read() afterwards 
@@ -246,16 +246,16 @@ public class RailEntity implements Comparable<RailEntity>{
 					//float entpos = ent.pos.distanceTo(pos);
 					//float coupos = ent.crear.distanceTo(pos);
 					//if(entpos < coupos) continue;//we're probably inside the other entity, abort!
-					hascoupled = true; couplers[i].couple(ent, false); am = coucen.distanceTo(ent.crear); 
-					if(ent.brear.distanceTo(coucen) < ent.crear.distanceTo(coucen)) am = -am;
+					hascoupled = true; couplers[i].couple(ent, false); am = coucen.dis(ent.crear); 
+					if(ent.brear.dis(coucen) < ent.crear.dis(coucen)) am = -am;
 					Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to rear");
 				}
 				if(ent.front.mbb.contains(coucen)){
 					//float entpos = ent.pos.distanceTo(pos);
 					//float coupos = ent.cfront.distanceTo(pos);
 					//if(entpos < coupos) continue;//upon testing, we're for sure in the other entity
-					hascoupled = true; couplers[i].couple(ent, true); am = coucen.distanceTo(ent.cfront);
-					if(ent.bfront.distanceTo(coucen) < ent.cfront.distanceTo(coucen)) am = -am;
+					hascoupled = true; couplers[i].couple(ent, true); am = coucen.dis(ent.cfront);
+					if(ent.bfront.dis(coucen) < ent.cfront.dis(coucen)) am = -am;
 					Print.debug("coupling " + (i == 0 ? "front" : "rear") + " to front");
 				}
 			}//TODO align the freshly connected entities
@@ -284,7 +284,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		brear = move(passed - frbogiedis - rrbogiedis, TrainPoint.BOGIE_REAR);
 		cfront = move(passed + (frconndis - frbogiedis), TrainPoint.COUPLER_FRONT);
 		crear = move(passed - frbogiedis - rrconndis, TrainPoint.COUPLER_REAR);
-		prev.copyFrom(pos); pos = medium(bfront, brear);
+		prev.copy(pos); pos = medium(bfront, brear);
 		front.mbb.update(cfront, vehdata.getType().getCouplerRange()); rear.mbb.update(crear, vehdata.getType().getCouplerRange());
 	}
 
@@ -435,7 +435,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : region.getWorld().getWorld().playerEntities){
-			if(pos.distanceTo(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 256) return true;
+			if(pos.dis(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 256) return true;
 		} return false;
 	}
 
@@ -527,13 +527,13 @@ public class RailEntity implements Comparable<RailEntity>{
 	public void alignEntity(boolean initial){
 		if(entity == null) return;
 		if(initial){
-			entity.prevPosX = entity.lastTickPosX = entity.posX = pos.xCoord;
-			entity.prevPosY = entity.lastTickPosY = entity.posY = pos.yCoord;
-			entity.prevPosZ = entity.lastTickPosZ = entity.posZ = pos.zCoord;
-	        entity.setEntityBoundingBox(new AxisAlignedBB(pos.xCoord - 0.25, pos.yCoord, pos.zCoord - 0.25,
-	        	pos.xCoord + 0.25, pos.yCoord + 0.25, pos.zCoord + 0.25));
+			entity.prevPosX = entity.lastTickPosX = entity.posX = pos.x;
+			entity.prevPosY = entity.lastTickPosY = entity.posY = pos.y;
+			entity.prevPosZ = entity.lastTickPosZ = entity.posZ = pos.z;
+	        entity.setEntityBoundingBox(new AxisAlignedBB(pos.x - 0.25, pos.y, pos.z - 0.25,
+	        	pos.x + 0.25, pos.y + 0.25, pos.z + 0.25));
 		}
-		else{ entity.setPosition(pos.xCoord, pos.yCoord, pos.zCoord); }
+		else{ entity.setPosition(pos.x, pos.y, pos.z); }
 	}
 
 	public void dispose(){

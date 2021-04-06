@@ -719,14 +719,14 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
 					atmw.x = (newWheelPos.x - currentWheelPos.x) * (1F - wheelProportion);
 					atmw.y = (newWheelPos.y - currentWheelPos.y) * (1F - wheelProportion);
 					atmw.z = (newWheelPos.z - currentWheelPos.z) * (1F - wheelProportion);		
-					atmc.xCoord -= (newWheelPos.x - currentWheelPos.x) * (1F - wheelProportion);
-					atmc.yCoord -= (newWheelPos.y - currentWheelPos.y) * (1F - wheelProportion);
-					atmc.zCoord -= (newWheelPos.z - currentWheelPos.z) * (1F - wheelProportion);
-					atmc.yCoord += ((wheel.posY - wheel.prevPosY) - (motionY)) * 0.5F / wheels.length;
+					atmc.x -= (newWheelPos.x - currentWheelPos.x) * (1F - wheelProportion);
+					atmc.y -= (newWheelPos.y - currentWheelPos.y) * (1F - wheelProportion);
+					atmc.z -= (newWheelPos.z - currentWheelPos.z) * (1F - wheelProportion);
+					atmc.y += ((wheel.posY - wheel.prevPosY) - (motionY)) * 0.5F / wheels.length;
 					wheel.move(MoverType.SELF, atmw.x, atmw.y, atmw.z);
 				}
 			}
-			move(MoverType.SELF, atmc.xCoord, atmc.yCoord, atmc.zCoord);
+			move(MoverType.SELF, atmc.x, atmc.y, atmc.z);
 		}
         vehicle.getScripts().forEach((script) -> script.onUpdate(this, vehicle));
         checkForCollisions();

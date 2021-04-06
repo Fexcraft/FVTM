@@ -26,9 +26,9 @@ public class Vector3fAttribute extends Attribute<Vec3f> {
 	protected NBTBase writeValue(boolean initial){
 		Vec3f vec = initial ? initial() : value();
 		NBTTagCompound com = new NBTTagCompound();
-		com.setFloat("x", vec.xCoord);
-		com.setFloat("y", vec.yCoord);
-		com.setFloat("z", vec.zCoord);
+		com.setFloat("x", vec.x);
+		com.setFloat("y", vec.y);
+		com.setFloat("z", vec.z);
 		return com;
 	}
 
@@ -45,27 +45,27 @@ public class Vector3fAttribute extends Attribute<Vec3f> {
 
 	@Override
 	public int integer_value(){
-		return (int)value().xCoord;
+		return (int)value().x;
 	}
 
 	@Override
 	public float float_value(){
-		return value().xCoord;
+		return value().x;
 	}
 
 	@Override
 	public boolean boolean_value(){
-		return value().xCoord > 0;
+		return value().x > 0;
 	}
 
 	@Override
 	public Boolean tristate_value(){
-		return value().xCoord == 0 ? null : value().xCoord > 0;
+		return value().x == 0 ? null : value().x > 0;
 	}
 
 	@Override
 	public String string_value(){
-		return value().xCoord + "," + value().yCoord + "," + value().zCoord;
+		return value().x + "," + value().y + "," + value().z;
 	}
 
 	@Override

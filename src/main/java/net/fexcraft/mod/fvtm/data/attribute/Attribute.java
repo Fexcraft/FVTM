@@ -179,7 +179,7 @@ public abstract class Attribute<VT> {
 			return Boolean.parseBoolean(string_value());
 		}
 		else if(valuetype().isVector()){
-			return vector_value().xCoord > 0;
+			return vector_value().x > 0;
 		}
 		else return value != null;
 	}

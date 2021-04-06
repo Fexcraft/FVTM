@@ -145,25 +145,25 @@ public class RoadJunc {
 		Vec3f min = new Vec3f(), max = new Vec3f(), other;
 		for(Road road : roads){
 			other = road.start.vector;
-			if(other.xCoord < min.xCoord) min.xCoord = other.xCoord;
-			if(other.yCoord < min.yCoord) min.yCoord = other.yCoord;
-			if(other.zCoord < min.zCoord) min.zCoord = other.zCoord;
-			if(other.xCoord > max.xCoord) max.xCoord = other.xCoord;
-			if(other.yCoord > max.yCoord) max.yCoord = other.yCoord;
-			if(other.zCoord > max.zCoord) max.zCoord = other.zCoord;
+			if(other.x < min.x) min.x = other.x;
+			if(other.y < min.y) min.y = other.y;
+			if(other.z < min.z) min.z = other.z;
+			if(other.x > max.x) max.x = other.x;
+			if(other.y > max.y) max.y = other.y;
+			if(other.z > max.z) max.z = other.z;
 			other = road.end.vector;
-			if(other.xCoord < min.xCoord) min.xCoord = other.xCoord;
-			if(other.yCoord < min.yCoord) min.yCoord = other.yCoord;
-			if(other.zCoord < min.zCoord) min.zCoord = other.zCoord;
-			if(other.xCoord > max.xCoord) max.xCoord = other.xCoord;
-			if(other.yCoord > max.yCoord) max.yCoord = other.yCoord;
-			if(other.zCoord > max.zCoord) max.zCoord = other.zCoord;
+			if(other.x < min.x) min.x = other.x;
+			if(other.y < min.y) min.y = other.y;
+			if(other.z < min.z) min.z = other.z;
+			if(other.x > max.x) max.x = other.x;
+			if(other.y > max.y) max.y = other.y;
+			if(other.z > max.z) max.z = other.z;
 		}
 		if(size() == 0){
-			min = vecpos.vector.addVector(-.5f,-.5f,-.5f);
-			max = vecpos.vector.addVector(+.5f,+.5f,+.5f);
+			min = vecpos.vector.add(-.5f,-.5f,-.5f);
+			max = vecpos.vector.add(+.5f,+.5f,+.5f);
 		}
-		return frustumbb = new AxisAlignedBB(min.xCoord, min.yCoord, min.zCoord, max.xCoord, max.yCoord, max.zCoord);
+		return frustumbb = new AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z);
 	}
 
 	public void addnew(Road road){

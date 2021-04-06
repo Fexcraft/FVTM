@@ -264,7 +264,7 @@ public class Region {
 		}
 		if(compound == null) return;
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(),
-			new BlockPos(entity.pos.xCoord, entity.pos.yCoord, entity.pos.zCoord)));
+			new BlockPos(entity.pos.x, entity.pos.y, entity.pos.z)));
 	}
 
 	public void updateClient(EntityPlayerMP player){
@@ -283,7 +283,7 @@ public class Region {
 		/*NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "spawn_railentity"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
-			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.pos.xCoord, ent.pos.yCoord, ent.pos.zCoord)));*/
+			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.pos.x, ent.pos.y, ent.pos.z)));*/
 	}
 	
 	public RailSys getWorld(){

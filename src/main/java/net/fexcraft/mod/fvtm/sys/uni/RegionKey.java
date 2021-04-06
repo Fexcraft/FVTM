@@ -65,7 +65,7 @@ public class RegionKey implements Comparable<RegionKey> {
 	}
 
 	public static int[] getRegionXZ(Vec3f pos){
-		return getRegionXZ((int)pos.xCoord >> 4, (int)pos.zCoord >> 4);
+		return getRegionXZ((int)pos.x >> 4, (int)pos.z >> 4);
 	}
 
 	public static int[] getRegionXZ(Vec3d vec){

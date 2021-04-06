@@ -154,9 +154,9 @@ public class DataUtil {
 
 	public static NBTBase writeVec3f(Vec3f vec){
 		NBTTagList list = new NBTTagList();
-		list.appendTag(new NBTTagFloat(vec.xCoord));
-		list.appendTag(new NBTTagFloat(vec.yCoord));
-		list.appendTag(new NBTTagFloat(vec.zCoord));
+		list.appendTag(new NBTTagFloat(vec.x));
+		list.appendTag(new NBTTagFloat(vec.y));
+		list.appendTag(new NBTTagFloat(vec.z));
 		return list;
 	}
 

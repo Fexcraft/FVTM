@@ -44,7 +44,7 @@ public abstract class Path {
 		vecpath = new Vec3f[rootpath.length];
 		if(vecpath.length == 2){
 			vecpath[0] = rootpath[0].vector; vecpath[1] = rootpath[rootpath.length - 1].vector;
-			this.length = vecpath[0].distanceTo(vecpath[1]);
+			this.length = vecpath[0].dis(vecpath[1]);
 		}
 		else{
 			for(int i = 0; i < rootpath.length; i++){ vecpath[i] = rootpath[i].vector; }
@@ -66,10 +66,10 @@ public abstract class Path {
 			while(moved.length > 2){
 				Vec3f[] arr = new Vec3f[moved.length - 1];
 				for(int i = 0; i < moved.length - 1; i++){
-					arr[i] = move(moved[i], moved[i + 1], moved[i].distanceTo(moved[i + 1]) * d);
+					arr[i] = move(moved[i], moved[i + 1], moved[i].dis(moved[i + 1]) * d);
 				} moved = arr;
 			} d += increment;//0.0625//0.05;
-			vecs.add(move(moved[0], moved[1], moved[0].distanceTo(moved[1]) * d));
+			vecs.add(move(moved[0], moved[1], moved[0].dis(moved[1]) * d));
 		}
 		return vecs.toArray(new Vec3f[0]);
 	}
@@ -83,7 +83,7 @@ public abstract class Path {
 	
 	public float getLength(Vec3f[] vecs){
 		vecs = vecs == null ? vecpath : vecs; float temp = 0;
-		for(int i = 0; i < vecs.length - 1; i++){ temp += vecs[i].distanceTo(vecs[i + 1]); } return temp;
+		for(int i = 0; i < vecs.length - 1; i++){ temp += vecs[i].dis(vecs[i + 1]); } return temp;
 	}
 	
 	protected float calcLength(){
@@ -159,7 +159,7 @@ public abstract class Path {
 		}
 		float traveled = 0, temp, multi;
 		for(int i = 0; i < vecpath.length - 1; i++){
-			temp = traveled + (multi = vecpath[i].distanceTo(vecpath[i + 1]));
+			temp = traveled + (multi = vecpath[i].dis(vecpath[i + 1]));
 			if(temp >= distance){
 				if(temp == distance) return vecpath[i + 1].toFloatArray();
 				return vecpath[i + 1].distance(vecpath[i], temp - distance).toFloatArray();
@@ -180,7 +180,7 @@ public abstract class Path {
 		}
 		float traveled = 0, temp, multi;
 		for(int i = 0; i < vecpath.length - 1; i++){
-			temp = traveled + (multi = vecpath[i].distanceTo(vecpath[i + 1]));
+			temp = traveled + (multi = vecpath[i].dis(vecpath[i + 1]));
 			if(temp >= distance){
 				if(temp == distance) return new Vec3f(vecpath[i + 1]);
 				return vecpath[i + 1].distance(vecpath[i], temp - distance);

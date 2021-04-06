@@ -64,9 +64,14 @@ public class StringModifier extends Modifier<String> {
 	}
 
 	@Override
-	public <VL> VL modify(VehicleData data, VehicleEntity ent, Attribute<VL> attribute, AttrUpdate call){
-		// TODO Auto-generated method stub
-		return null;
+	public Object modify(VehicleData data, VehicleEntity ent, Attribute<?> attribute, AttrUpdate call){
+		String val = attribute.string_value();
+		switch(mtype){
+			case ADDITIVE: return val + value;
+			case OPPOSITE: return reverseText(val);
+			case OVERRIDE: return value;
+			default: return val;
+		}
 	}
 
 	public String reverseText(String val){

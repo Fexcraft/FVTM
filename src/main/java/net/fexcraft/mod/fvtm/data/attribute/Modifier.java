@@ -139,7 +139,7 @@ public abstract class Modifier<VT> {
 		return mod;
 	}
 
-	public abstract <VL> VL modify(VehicleData data, @Nullable VehicleEntity ent, Attribute<VL> attribute, AttrUpdate call);
+	public abstract Object modify(VehicleData data, @Nullable VehicleEntity ent, Attribute<?> attribute, AttrUpdate call);
 
 	public Modifier<VT> copy(String origin){
 		Modifier<VT> copy = copyNewInstance();

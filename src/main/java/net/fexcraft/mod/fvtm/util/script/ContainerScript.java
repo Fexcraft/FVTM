@@ -1,14 +1,14 @@
-package net.fexcraft.mod.addons.hcp.scripts;
+package net.fexcraft.mod.fvtm.util.script;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.Vector3fAttribute;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
-import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
@@ -28,26 +28,24 @@ import net.minecraft.util.math.Vec3d;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class LCCScript extends VehicleScript {
+public class ContainerScript extends VehicleScript {
 	
-	public boolean alright;
-
 	@Override
 	public String getId(){
-		return "hcp:lcc";
+		return "fvtm:container_script";
 	}
 
 	@Override
 	public String getName(){
-		return "HCP LCC Script";
+		return "Container Base/Basic Script";
 	}
 	
 	@Override
 	public void onAttributeToggle(Entity entity, Attribute<?> attr, Object oldvalue, EntityPlayer player){
 		if(entity.world.isRemote || attr == null) return;
 		boolean bool;
-		if(!attr.id().startsWith("lcc_catch")){
-			if(!attr.id().startsWith("lcc_release")){
+		if(!attr.id().startsWith("container_script:break")){
+			if(!attr.id().startsWith("container_script:place")){
 				return;
 			}
 			else bool = false;
@@ -62,23 +60,27 @@ public class LCCScript extends VehicleScript {
     		Print.chat(player, "&6Please make sure the crane is in a valid 90\u00B0 rotation!");
     		return;
     	}
+    	String holderid = ent.getVehicleData().getAttributeString("container_script:holder", "holder");
+    	String rotpoint = ent.getVehicleData().getAttributeString("container_script:rotpoint", "lcc_holder");
+    	Vector3fAttribute vecattr = (Vector3fAttribute)ent.getVehicleData().getAttribute("container_script:offset");
+    	Vec3d offset = vecattr == null ? Vec3d.ZERO : vecattr.vec3d_value();
     	if(bool){
-    		tryCatch(ent, player, attr.id().endsWith("_single"));
+    		ContainerScript.tryBreak(ent, player, holderid, rotpoint, offset, attr.id().endsWith("_single"));
     	}
     	else{
-    		tryRelease(ent, player, attr.id().endsWith("_single"));
+    		ContainerScript.tryPlace(ent, player, holderid, rotpoint, offset, attr.id().endsWith("_single"));
     	}
 	}
-
-	private void tryCatch(VehicleEntity ent, EntityPlayer player, boolean single){
+	
+	public static void tryBreak(VehicleEntity ent, EntityPlayer player, String holderid, String rotpoint, Vec3d offset, boolean single){
 		ContainerHolder ch = ent.getEntity().getCapability(Capabilities.CONTAINER, null);
 		if(ch == null){
 			Print.bar(player, "&cERROR: Could not find ContainerHolder Capability in Entity!");
 			return;
 		}
-		ContainerSlot holder = ch.getContainerSlot("holder");
+		ContainerSlot holder = ch.getContainerSlot(holderid);
 		if(holder == null){
-			Print.bar(player, "&cERROR: Could not find 'holder' ContainerSlot in Entity!");
+			Print.bar(player, "&cERROR: Could not find '" + holderid + "' ContainerSlot in Entity!");
 			return;
 		}
 		for(ContainerData data : holder.getContainers()){
@@ -87,8 +89,8 @@ public class LCCScript extends VehicleScript {
 				return;
 			}
 		}
-		BlockPos vec0 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-0.4, 0.1, 0)));
-		BlockPos vec1 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector( 0.4, 0.1, 0)));
+		BlockPos vec0 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(-0.4, 0.1, 0))));
+		BlockPos vec1 = new BlockPos(ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add( 0.4, 0.1, 0))));
 		Block block0 = player.world.getBlockState(vec0).getBlock();
 		Block block1 = player.world.getBlockState(vec1).getBlock();
 		boolean first = false;
@@ -102,7 +104,7 @@ public class LCCScript extends VehicleScript {
 			if(!tile.isCore()) tile = null;
 		}
 		if(tile == null){
-			Vec3d vec2 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(0, .1, 0));
+			Vec3d vec2 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(0, .1, 0)));
 			ContainerHolder cap = null;
 			String slotid = null;
 			Entity capent = null;
@@ -224,15 +226,15 @@ public class LCCScript extends VehicleScript {
 		ch.sync(player.world.isRemote);
 	}
 
-	private void tryRelease(VehicleEntity ent, EntityPlayer player, boolean single){
+	public static void tryPlace(VehicleEntity ent, EntityPlayer player, String holderid, String rotpoint, Vec3d offset, boolean single){
 		ContainerHolder ch = ent.getEntity().getCapability(Capabilities.CONTAINER, null);
 		if(ch == null){
 			Print.bar(player, "&cERROR: Could not find ContainerHolder Capability in Entity!");
 			return;
 		}
-		ContainerSlot holder = ch.getContainerSlot("holder");
+		ContainerSlot holder = ch.getContainerSlot(holderid);
 		if(holder == null){
-			Print.bar(player, "&cERROR: Could not find 'holder' ContainerSlot in Entity!");
+			Print.bar(player, "&cERROR: Could not find '" + holderid + "' ContainerSlot in Entity!");
 			return;
 		}
 		boolean found = false;
@@ -260,11 +262,11 @@ public class LCCScript extends VehicleScript {
 			for(ContainerData data : holder.getContainers()){
 				if(data != null) hlength += data.getContainerType().length();
 			}
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(0, .1, 0));
+			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(0, .1, 0)));
 		}
 		else{
-			float offset = firstid - (holder.getContainers().length / 2) + (firstcon.getContainerType().length() / 2);
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(offset, .1, 0));
+			float off = firstid - (holder.getContainers().length / 2) + (firstcon.getContainerType().length() / 2);
+			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(off, .1, 0)));
 		}
 		ContainerHolder cap = null;
 		String slotid = null;
@@ -285,7 +287,7 @@ public class LCCScript extends VehicleScript {
 							continue;
 						}
 						Vec3d capos = cap.getWrapper().getContainerInSlotPosition(str, cap, firstcon.getContainerType(), i);
-						AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.45, 0, -.45), capos.add(0.45, 1, 0.45));
+						AxisAlignedBB bb = new AxisAlignedBB(capos.add(-.48, 0, -.48), capos.add(0.48, 1, 0.48));
 						if(bb.contains(vec1)){
 							slotid = str;
 							capent = entity;
@@ -314,13 +316,13 @@ public class LCCScript extends VehicleScript {
 		if(cap != null && slotid != null){
 			ContainerSlot slot = cap.getContainerSlot(slotid);
 			if(!single && hlength > slot.length){
-				Print.bar(player, "&cLoaded Containers are longer than the Slot. " + String.format("%s > %s",hlength, slot.length));
+				Print.bar(player, "&cLoaded Containers are longer than the Slot. " + String.format("%s > %s", hlength, slot.length));
 				return;
 			}
 			if(index != null){
 				for(int i = 0; i < firstcon.getContainerType().length(); i++){
 					if(index + i >= slot.getContainers().length || slot.getContainers()[index + i] != null){
-						Print.bar(player, "&cNo space to load Container into slot!" + String.format("%s !> %s", index, index + i));
+						Print.bar(player, "&cNo space to load Container into slot! " + String.format("%s !> %s", index, index + i));
 						return;
 					}
 				}
@@ -336,7 +338,7 @@ public class LCCScript extends VehicleScript {
 					else i += slot.getContainers()[i].getContainerType().length();
 				}
 				if(free < hlength){
-					Print.bar(player, "&cNo space to load all Containers into slot!" + String.format("%s !> %s", free, hlength));
+					Print.bar(player, "&cNo space to load all Containers into slot! " + String.format("%s !> %s", free, hlength));
 					return;
 				}
 				int last = slot.reSort();
@@ -362,8 +364,8 @@ public class LCCScript extends VehicleScript {
 			if(passed && single) break;
 			passed = true;
 			ContainerData condata = holder.getContainers()[i];
-			float offset = i - (holder.getContainers().length / 2) + (condata.getContainerType().length() / 2);
-			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(offset, 0.1, 0));
+			float off = i - (holder.getContainers().length / 2) + (condata.getContainerType().length() / 2);
+			vec1 = ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint(rotpoint).getRelativeVector(offset.add(off, 0.1, 0)));
 			BlockPos vec0 = new BlockPos(vec1);//ent.getEntity().getPositionVector().add(ent.getVehicleData().getRotationPoint("lcc_holder").getRelativeVector(-0.4, 0, 0)));
 			Block block0 = player.world.getBlockState(vec0).getBlock();
 			if(block0 == Blocks.AIR || block0.isReplaceable(player.world, vec0)){
@@ -372,7 +374,7 @@ public class LCCScript extends VehicleScript {
 						Print.bar(player, "&cNot solid block bellow core Position.");
 					}
 					else{
-						Print.chat(player, "&cNot solid block bellow core Position." + (single ? "" : "&3slot:" + i));
+						Print.chat(player, "&cNot solid block bellow core Position." + (single ? "" : " &3slot:" + i));
 					}
 					return;
 				}
@@ -389,7 +391,7 @@ public class LCCScript extends VehicleScript {
 			            Print.bar(player, "&3" + condata.getType().getName() + " &6placed.");
 		            }
 		            else{
-			            Print.chat(player, "&3" + condata.getType().getName() + " &6placed." + (single ? "" : "&3slot:" + i));
+			            Print.chat(player, "&3" + condata.getType().getName() + " &6placed." + (single ? "" : " &3slot:" + i));
 		            }
 		            holder.setContainer(i, null);
 		            ch.sync(false);
@@ -399,7 +401,7 @@ public class LCCScript extends VehicleScript {
 						Print.bar(player, "&cContainer could not be placed.");
 					}
 					else{
-						Print.chat(player, "&cContainer could not be placed." + (single ? "" : "&3slot:" + i));
+						Print.chat(player, "&cContainer could not be placed." + (single ? "" : " &3slot:" + i));
 					}
 				}
 			}
@@ -408,19 +410,11 @@ public class LCCScript extends VehicleScript {
 					Print.bar(player, "&cNot replaceable block at core Position.");
 				}
 				else{
-					Print.chat(player, "&cNot replaceable block at core Position." + (single ? "" : "&3slot:" + i));
+					Print.chat(player, "&cNot replaceable block at core Position." + (single ? "" : " &3slot:" + i));
 				}
 				return;
 			}
 		}
-	}
-
-	@Override
-	public void onUpdate(Entity entity, VehicleData data){
-    	VehicleEntity ent = (VehicleEntity)entity;
-    	if(ent.getVehicleData().getThrottle() > 0){
-    		alright = false;
-    	}
 	}
 
 }

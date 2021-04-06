@@ -84,7 +84,6 @@ public class LCCHolder extends PartModel {
 		holder.add(new ModelRendererTurbo(holder, 1004, 26, textureX, textureY).addBox(0.5f, 0, 0, 2, 1, 2)
 			.setRotationPoint(93, -150, 21).setRotationAngle(0, 0, 0)
 		);
-		holder.addProgram("//TODO");
 		this.groups.add(holder);
 		//
 		translate(0, -10 + 112.0625f, 0);

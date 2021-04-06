@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.Vec3d;
 
 public class Vector3fAttribute extends Attribute<Vec3f> {
 
@@ -90,6 +91,10 @@ public class Vector3fAttribute extends Attribute<Vec3f> {
 		float y = split.length > 1 ? Float.parseFloat(split[1].trim()) : 0;
 		float z = split.length > 2 ? Float.parseFloat(split[2].trim()) : 0;
 		return new Vec3f(x, y, z);
+	}
+
+	public Vec3d vec3d_value(){
+		return new Vec3d(value().x, value().y, value().z);
 	}
 
 }

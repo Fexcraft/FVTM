@@ -33,13 +33,7 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.BooleanAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.FloatAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.IntegerAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.StringAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.TriStateAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.Vector3fAttribute;
+import net.fexcraft.mod.fvtm.data.attribute.*;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
@@ -127,6 +121,7 @@ public class Resources {
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
+	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
@@ -175,6 +170,7 @@ public class Resources {
 		//TODO check addon on/off state
 		//
 		registerAttributeTypes();
+		registerModifierImpls();
 		registerFunctions();
 		//
 		searchInAddonsFor(DataType.FUEL);
@@ -227,6 +223,13 @@ public class Resources {
 		registerAttributeType("vec3f", Vector3fAttribute.class, true);
 		registerAttributeType("vector3", Vector3fAttribute.class, true);
 		registerAttributeType("vector3f", Vector3fAttribute.class, true);
+		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));
+	}
+
+	private void registerModifierImpls(){
+		registerModifierImpl("string", StringModifier.class, true);
+		registerModifierImpl("float", FloatModifier.class, true);
+		registerModifierImpl("integer", IntegerModifier.class, true);
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));
 	}
 
@@ -422,6 +425,29 @@ public class Resources {
 
 	public static TreeMap<String, Class<? extends Attribute<?>>> getAttributeTypes(){
 		return ATTRIBUTE_TYPES;
+	}
+
+	/** Registers a Attribute class into FVTM Resources.*/
+	public static void registerModifierImpl(ResourceLocation regname, Class<? extends Modifier<?>> clazz, boolean override){
+		registerModifierImpl(regname.toString(), clazz, override);
+	}
+	
+	/** Registers a Attribute class into FVTM Resources.*/
+	public static void registerModifierImpl(String regname, Class<? extends Modifier<?>> clazz, boolean override){
+		if(MODIFIER_IMPLS.containsKey(regname) && !override) return;
+		MODIFIER_IMPLS.put(regname, clazz);
+	}
+	
+	public static Class<? extends Modifier<?>> getModifierImpl(ResourceLocation regname){
+		return getModifierImpl(regname.toString());
+	}
+	
+	public static Class<? extends Modifier<?>> getModifierImpl(String id){
+		return MODIFIER_IMPLS.get(id);
+	}
+
+	public static TreeMap<String, Class<? extends Modifier<?>>> getModifierImpl(){
+		return MODIFIER_IMPLS;
 	}
 	
 	/** Registers a Functon class into FVTM Resources.*/

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.event;
 
 
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.util.ResourceLocation;
@@ -47,6 +48,22 @@ public class ResourceEvents extends Event {
 		
 		public void registerAttrType(ResourceLocation regname, Class<? extends Attribute<?>> attr_type){
 			Resources.registerAttributeType(regname, attr_type, false);
+		}
+		
+	}
+	
+	public static class RegisterModifierImpls extends ResourceEvents {
+		
+		public RegisterModifierImpls(Resources resources){
+			super(resources);
+		}
+		
+		public void registerModifierImpl(String regname, Class<? extends Modifier<?>> attr_type){
+			Resources.registerModifierImpl(regname, attr_type, false);
+		}
+		
+		public void registerModifierImpl(ResourceLocation regname, Class<? extends Modifier<?>> attr_type){
+			Resources.registerModifierImpl(regname, attr_type, false);
 		}
 		
 	}

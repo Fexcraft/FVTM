@@ -19,6 +19,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
+import net.fexcraft.mod.fvtm.data.attribute.AttrUpdate;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.part.Function;
@@ -434,7 +435,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			//
 			if(!hotinst){
 				this.resetAttributes();
-				this.updateAttributes(Attribute.Update.INITIAL);
+				this.updateAttributes(null, AttrUpdate.INITIAL);
 			}
 			//
 			this.refreshModificableDataByParts();
@@ -452,7 +453,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			//
 			if(!hotinst){
 				this.resetAttributes();
-				this.updateAttributes(Attribute.Update.INITIAL);
+				this.updateAttributes(null, AttrUpdate.INITIAL);
 			}
 			//
 			this.refreshModificableDataByParts();
@@ -535,8 +536,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		for(Attribute<?> attr : attributes.values()){ attr.reset(); }
 	}
 
-	public void updateAttributes(Attribute.Update call){
-		for(Attribute<?> attr : attributes.values()){ attr.updateValue(call); }
+	public void updateAttributes(VehicleEntity ent, AttrUpdate call){
+		for(Attribute<?> attr : attributes.values()){ attr.updateValue(this, ent, call); }
 	}
 
 	public void clearAttributes(){

@@ -101,21 +101,8 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		if(obj.has("Modifiers")){
 			JsonArray array = obj.get("Modifiers").getAsJsonArray();
 			for(JsonElement elm : array){
-				JsonObject json = elm.getAsJsonObject();
-				Modifier.Priority priority = Modifier.Priority.valueOf(json.get("priority").getAsString().toUpperCase());
-				Modifier.ModifierType type = Modifier.ModifierType.valueOf(json.get("type").getAsString().toUpperCase());
-				Attribute.Update interval = json.has("update") ? Attribute.Update.valueOf(json.get("update").getAsString().toUpperCase()) : null;
-				if(priority == null || type == null){ Print.debug(json); Static.stop(); continue;  }
-				if(interval == null) interval = Attribute.Update.INITIAL;
-				String id = json.get("id").getAsString(), target = json.get("target").getAsString();
-				String val = json.has("val") ? json.get("val").getAsString() : null;
-				float value = json.has("value") ? json.get("value").getAsFloat() : 0f;
-				if(val == null){
-					this.modifiers.add(new Modifier.FloatModifier(id, value, type, interval, priority).setTarget(target));
-				}
-				else{
-					this.modifiers.add(new Modifier.StringModifier(id, val, type, interval, priority).setTarget(target));
-				}
+				Modifier<?> mod = Modifier.parse(elm.getAsJsonObject());
+				if(mod != null) this.modifiers.add(mod);
 			}
 		} 
 		if(obj.has("Function") || obj.has("Functions")){

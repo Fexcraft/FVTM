@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,6 +16,8 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +32,7 @@ public abstract class Attribute<VT> {
 	public static final Comparator<Modifier<?>> MODIFIER_COMPARATOR = new Comparator<Modifier<?>>() {
 		@Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
 	};
-	private TreeSet<Modifier<VT>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
+	private TreeSet<Modifier<?>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
 	private String target, origin, group;
@@ -235,23 +239,19 @@ public abstract class Attribute<VT> {
 
 	public abstract VT parseValue(String string);
 	
-	public static enum Update {
-		INITIAL, ENTITY, MANUAL
-	}
-	
 	//
 	
 	public Attribute<VT> addModifier(Modifier<?> mod){
-		//TODO if(mod.type() == value_type || mod.type().isNumber() == valuetype().isNumber()) modifiers.add((Modifier<VT>)mod);
+		if(mod.valid_valuetype(valuetype())) modifiers.add((Modifier<VT>)mod);
 		return this;
 	}
 	
-	public TreeSet<Modifier<VT>> getModifiers(){ return modifiers; }
+	public TreeSet<Modifier<?>> getModifiers(){ return modifiers; }
 	
-	public Attribute<?> updateValue(Update call){
+	public Attribute<?> updateValue(VehicleData data, @Nullable VehicleEntity ent, AttrUpdate call){
 		for(Modifier<?> mod : modifiers){
 			if(mod.update() != call) continue;
-			value(mod.modify(this, call));
+			value(mod.modify(data, ent, this, call));
 		}
 		return this;
 	}
@@ -319,8 +319,8 @@ public abstract class Attribute<VT> {
 		compound.setTag("value", this.writeValue(false));
 		if(!modifiers.isEmpty()){
 			NBTTagList list = new NBTTagList();
-			for(Modifier<VT> mod : modifiers){
-				//list.appendTag(mod.write(new NBTTagCompound()));
+			for(Modifier<?> mod : modifiers){
+				list.appendTag(mod.write(new NBTTagCompound()));
 			}
 			compound.setTag("modifiers", list);
 		}
@@ -352,7 +352,8 @@ public abstract class Attribute<VT> {
 		if(compound.hasKey("modifiers")){
 			NBTTagList list = (NBTTagList)compound.getTag("modifiers");
 			for(NBTBase base : list){
-				//modifiers.add((Modifier<VT>)Modifier.parse((NBTTagCompound)base));
+				Modifier<?> mod = Modifier.parse((NBTTagCompound)base);
+				if(mod != null) modifiers.add(mod);
 			}
 		}
 		return this;

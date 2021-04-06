@@ -65,7 +65,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
         	tooltip.add(Formatter.format("&0&3This part has &7%s &3Modifier/s.", type.getBaseModifiers().size()));
         	if(Static.dev()){
         		for(Modifier<?> mod : type.getBaseModifiers()){
-                    tooltip.add(Formatter.format("&9" + mod.id() + ": &7" + mod.target() + " / " + mod.getStringValue()));
+                    tooltip.add(Formatter.format("&9" + mod.id() + ": &7" + mod.target() + " / " + mod.string_value()));
         		}
         	}
         }

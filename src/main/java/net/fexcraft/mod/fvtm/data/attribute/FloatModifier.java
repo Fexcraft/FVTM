@@ -45,7 +45,7 @@ public class FloatModifier extends Modifier<Float> {
 	}
 
 	@Override
-	protected String impl(){
+	public String impl(){
 		return "float";
 	}
 

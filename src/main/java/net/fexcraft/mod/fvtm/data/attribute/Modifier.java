@@ -71,7 +71,7 @@ public abstract class Modifier<VT> {
 		return this;
 	}
 
-	protected abstract String impl();
+	public abstract String impl();
 	
 	//
 	

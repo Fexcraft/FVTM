@@ -517,7 +517,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//Print.console(attributes);
 		//add modifiers
 		for(Modifier<?> mod : data.getType().getBaseModifiers()){
-			String target = mod.target().contains(":") ? mod.target().split(":")[0] : mod.target();
+			String target = mod.target().contains(":") ? mod.target().split(":")[1] : mod.target();
 			if(this.getAttributes().containsKey(target)){
 				this.getAttributes().get(target).addModifier(mod.copy(dataid));
 			}

@@ -45,7 +45,7 @@ public class IntegerModifier extends Modifier<Integer> {
 	}
 
 	@Override
-	protected String impl(){
+	public String impl(){
 		return "integer";
 	}
 

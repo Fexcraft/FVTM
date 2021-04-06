@@ -242,7 +242,7 @@ public abstract class Attribute<VT> {
 	//
 	
 	public Attribute<VT> addModifier(Modifier<?> mod){
-		if(mod.valid_valuetype(valuetype())) modifiers.add((Modifier<VT>)mod);
+		if(mod.valid_valuetype(valuetype())) modifiers.add(mod);
 		return this;
 	}
 	

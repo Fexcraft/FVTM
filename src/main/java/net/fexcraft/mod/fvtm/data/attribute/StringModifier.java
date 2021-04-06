@@ -44,7 +44,7 @@ public class StringModifier extends Modifier<String> {
 	}
 
 	@Override
-	protected String impl(){
+	public String impl(){
 		return "string";
 	}
 

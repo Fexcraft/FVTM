@@ -71,9 +71,18 @@ public class IntegerModifier extends Modifier<Integer> {
 	}
 
 	@Override
-	public <VL> VL modify(VehicleData data, VehicleEntity ent, Attribute<VL> attribute, AttrUpdate call){
-		// TODO Auto-generated method stub
-		return null;
+	public Object modify(VehicleData data, VehicleEntity ent, Attribute<?> attribute, AttrUpdate call){
+		float result = attribute.integer_value();
+		switch(mtype){
+			case ADDITIVE: result += value; break;
+			case OPPOSITE: result = -result; break;
+			case OVERRIDE: result = value; break;
+			case PROCENT_ADD: result += result * 0.01f * value; break;
+			case PROCENT_DEC: result -= result * 0.01f * value; break;
+			case PROCENT_SET: result  = result * 0.01f * value; break;
+			default: return null;
+		}
+		return attribute.valuetype().isInteger() ? (int)result : result;
 	}
 
 }

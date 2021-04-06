@@ -11,61 +11,88 @@
     },
     "Attributes": [
     	{
-    		"id": "lcc_h", "type": "integer", "value": 0, "min": -9, "max": 9,
+    		"id": "lcc_h",
+    		"type": "integer",
+    		"value": 0,
+    		"min": -9,
+    		"max": 9,
     		"hitbox":{
     			"default": [   20, -68,     4.5, 3, 1, 1, 0, "lcc_main" ],
     			"external": [ -40, -13, -184.25, 1, 1, 1, 0, "vehicle" ]
     		},
-    		"external": true, "seat": "driver"
+    		"external": true,
+    		"seat": "driver"
     	},
     	{
-    		"id": "lcc_v", "type": "integer", "value": 0, "min": -7, "max": 0,
+    		"id": "lcc_v",
+    		"type": "integer",
+    		"value": 0,
+    		"min": -7,
+    		"max": 0,
     		"hitbox":{
     			"default": [   20, -68,    -4.5, 3, 1, 1, 0, "lcc_main" ],
     			"external": [ -37, -13, -184.25, 1, 1, 1, 0, "vehicle" ]
     		},
-    		"external": true, "seat": "driver"
+    		"external": true,
+    		"seat": "driver"
     	},
     	{
-    		"id": "container_script:break", "type": "boolean", "value": false,
+    		"id": "container_script:break",
+    		"type": "boolean",
+    		"value": false,
     		"hitbox":{
-    			"default": [    18.5, -66.2,      15,   1, "lcc_main" ],
+    			"default": [   18.5,  -66.2,      15,   1, "lcc_main" ],
     			"external": [ -43.5, -12.25, -184.25, 0.5, "vehicle" ]
     		},
     		"external": true, "seat": "driver"
     	},
     	{
-    		"id": "container_script:break_single", "type": "boolean", "value": false,
+    		"id": "container_script:break_single",
+    		"type": "boolean",
+    		"value": false,
     		"hitbox":{
-    			"default": [    18.5, -66.2,      11,   1, "lcc_main" ],
+    			"default": [   18.5,  -66.2,      11,   1, "lcc_main" ],
     			"external": [ -33.5, -12.25, -184.25, 0.5, "vehicle" ]
     		},
-    		"external": true, "seat": "driver"
+    		"external": true,
+    		"seat": "driver"
     	},
     	{
-    		"id":"container_script:place", "type": "boolean", "value": false,
+    		"id":"container_script:place",
+    		"type": "boolean",
+    		"value": false,
     		"hitbox":{
     			"default": [   18.5, -66.2,     -15,   1, "lcc_main" ],
     			"external": [ -43.5,   -14, -184.25, 0.5, "vehicle" ]
     		},
-    		"external": true, "seat": "driver"
+    		"external": true,
+    		"seat": "driver"
     	},
     	{
-    		"id": "container_script:place_single", "type": "boolean", "value": false,
+    		"id": "container_script:place_single",
+    		"type": "boolean",
+    		"value": false,
     		"hitbox":{
     			"default": [   18.5, -66.2,     -11,   1, "lcc_main" ],
     			"external": [ -33.5,   -14, -184.25, 0.5, "vehicle" ]
     		},
-    		"external": true, "seat": "driver"
+    		"external": true,
+    		"seat": "driver"
     	},
     	{
-    		"id": "container_script:holder", "type": "string", "value": "holder"
+    		"id": "container_script:holder",
+    		"type": "string",
+    		"value": "holder"
     	},
     	{
-    		"id": "container_script:rotpoint", "type": "string", "value": "lcc_holder"
+    		"id": "container_script:rotpoint",
+    		"type": "string",
+    		"value": "lcc_holder"
     	},
     	{
-    		"id": "container_script:offset", "type": "vector", "value": [ 0, 0, 0 ]
+    		"id": "container_script:offset",
+    		"type": "vector",
+    		"value": [ 0, 0, 0 ]
     	}
     ],
     "Function":{

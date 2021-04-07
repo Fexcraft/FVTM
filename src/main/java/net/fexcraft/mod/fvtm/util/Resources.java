@@ -221,6 +221,7 @@ public class Resources {
 		registerAttributeType("ternary", TriStateAttribute.class, true);
 		registerAttributeType("vec3", Vector3fAttribute.class, true);
 		registerAttributeType("vec3f", Vector3fAttribute.class, true);
+		registerAttributeType("vector", Vector3fAttribute.class, true);
 		registerAttributeType("vector3", Vector3fAttribute.class, true);
 		registerAttributeType("vector3f", Vector3fAttribute.class, true);
 		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));

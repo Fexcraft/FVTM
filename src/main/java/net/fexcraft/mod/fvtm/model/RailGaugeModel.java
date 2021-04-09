@@ -22,7 +22,12 @@ import net.minecraft.util.math.Vec3d;
 
 public class RailGaugeModel extends GenericModel<Track, Integer> {
 
-	public static final RailGaugeModel EMPTY = new RailGaugeModel();
+	public static final RailGaugeModel EMPTY = new RailGaugeModel(){
+		public void renderDoubleSwitch(JunctionSwitchEntity entity, Junction junction){}
+		public void renderFork2Switch(JunctionSwitchEntity entity, Junction junction){}
+		public void renderFork3Switch(JunctionSwitchEntity entity, Junction junction){}
+		public void renderSignal(Junction junction, EntryDirection dir, boolean state){}
+	};
 	public ArrayList<Vec3f[]> rail_model = new ArrayList<>();
 	/*public Vec3f[][] rails = new Vec3f[][]{
 		{ new Vec3f(-1.0625, 0.25, 0), new Vec3f(-0.9375, 0.25, 0) },
@@ -41,11 +46,6 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	public float ties_distance = 0.5f;
 	public float signal_offset = 0.5f;
 	public float buffer_length = 2f;
-	//
-	public TurboList fork2_base, fork2_lever;
-	public TurboList fork3_base, fork3_lever;
-	public TurboList double_base, double_lever0, double_lever1;
-	public TurboList simple_signal_base, simple_signal_stop, simple_signal_clear;
 	//
 	public Track buffer_track;
 	//
@@ -101,52 +101,36 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		if(mirror) addRailRectShape(scale, -start_x - width, start_y, width, height, tl, tr, bl, br, false);
 	}
 
-	//TODO rotation programs for levers
 	public void renderSwitch(JunctionSwitchEntity entity, Junction junction){
 		switch(junction.type){
 			case DOUBLE:{
-				double_base.renderPlain();
-				double_lever0.renderPlain();
-				double_lever1.renderPlain();
+				renderDoubleSwitch(entity, junction);
 				break;
 			}
 			case FORK_2:{
-				fork2_base.renderPlain();
-				fork2_lever.renderPlain();
+				renderFork2Switch(entity, junction);
 				break;
 			}
 			case FORK_3:{
-				fork3_base.renderPlain();
-				fork3_lever.renderPlain();
+				renderFork3Switch(entity, junction);
 				break;
 			}
 			case CROSSING: case STRAIGHT: default: return;
 		}
 	}
 	
-	//TODO
-	public void renderSignal(Junction junction, EntryDirection dir, boolean state){
-		if(junction.signal == null) return;
-		switch(junction.signal.type){
-			case BLOCK:
-				simple_signal_base.renderPlain();
-				if(!state) simple_signal_stop.renderPlain();
-				if(state) simple_signal_clear.renderPlain();
-				break;
-			case CUSTOM:
-				break;
-			case PATH:
-				break;
-			default:
-				break;
-		}
-	}
+	public void renderDoubleSwitch(JunctionSwitchEntity entity, Junction junction){}
+	
+	public void renderFork2Switch(JunctionSwitchEntity entity, Junction junction){}
+	
+	public void renderFork3Switch(JunctionSwitchEntity entity, Junction junction){}
+
+	public void renderSignal(Junction junction, EntryDirection dir, boolean state){}
 
 	public void renderBuffer(Junction junc){
 		if(!groups.contains("buffer")) return;
 		if(buffer_track == null){
-			buffer_track = new Track(null, new Vec316f[]{ new Vec316f(new Vec3d(0, 0, 0)) },
-				new Vec316f(new Vec3d(buffer_length, 0, 0)), junc.tracks.get(0).gauge);
+			buffer_track = new Track(null, new Vec316f[]{ new Vec316f(new Vec3d(0, 0, 0)) }, new Vec316f(new Vec3d(buffer_length, 0, 0)), junc.tracks.get(0).gauge);
 		}
 		if(buffer_track.railmodel == null){ RailRenderer.generateTrackModel(buffer_track, this); }
 		ModelBase.bindTexture(buffer_track.gauge.getModelTexture());

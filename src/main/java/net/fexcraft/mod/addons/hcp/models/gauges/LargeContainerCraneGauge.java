@@ -1,9 +1,9 @@
 //FMT-Marker FVTM-1.3
 package net.fexcraft.mod.addons.hcp.models.gauges;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.api.registry.fModel;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.TurboList;
@@ -22,33 +22,10 @@ public class LargeContainerCraneGauge extends RailGaugeModel {
 		//
 		this.ties_distance = 0.5f;
 		this.buffer_length = 0.2f;
-		this.rails = new Vec3f[][]{
-			{ new Vec3f(-174.5, 2, 0), new Vec3f(-173.5, 2, 0) },
-			{ new Vec3f(-182.5, 2, 0), new Vec3f(-181.5, 2, 0) },
-			{ new Vec3f(173.5, 2, 0), new Vec3f(174.5, 2, 0) },
-			{ new Vec3f(181.5, 2, 0), new Vec3f(182.5, 2, 0) },
-			//
-			{ new Vec3f(-175, 0, 0), new Vec3f(-174.5, 2, 0) },
-			{ new Vec3f(-173.5, 2, 0), new Vec3f(-173, 0, 0) },
-			{ new Vec3f(-183, 0, 0), new Vec3f(-182.5, 2, 0) },
-			{ new Vec3f(-181.5, 2, 0), new Vec3f(-181, 0, 0) },
-			{ new Vec3f(173, 0, 0), new Vec3f(173.5, 2, 0) },
-			{ new Vec3f(174.5, 2, 0), new Vec3f(175, 0, 0) },
-			{ new Vec3f(181, 0, 0), new Vec3f(181.5, 2, 0) },
-			{ new Vec3f(182.5, 2, 0), new Vec3f(183, 0, 0) },
-			//
-			{ new Vec3f(-175, 0, 0), new Vec3f(-173, 0, 0) },
-			{ new Vec3f(-183, 0, 0), new Vec3f(-181, 0, 0) },
-			{ new Vec3f(173, 0, 0), new Vec3f(175, 0, 0) },
-			{ new Vec3f(181, 0, 0), new Vec3f(183, 0, 0) },
-		};
-		rail_tempcull = true;
-		for(int i = 0; i < rails.length; i++){
-			for(int j = 0; j < rails[i].length; j++){
-				rails[i][j].x /*= (179 - rails[i][j].x) **/*= Static.sixteenth;
-				rails[i][j].y *= Static.sixteenth;
-			}
-		}
+		Vec3f tr = new Vec3f(-0.5f, 0, 0), tl = new Vec3f(0.5f, 0, 0);
+		Vec3f br = new Vec3f(0, -0.1f, 0), bl = new Vec3f(0, -0.1f, 0);
+		this.addRailRectShape(Static.sixteenth, -183, 2, 2, 2, tr, tl, bl, br, true);
+		this.addRailRectShape(Static.sixteenth, -175, 2, 2, 2, tr, tl, bl, br, true);
 		this.groups.add(new TurboList("ties"));
 	}
 	

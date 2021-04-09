@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
@@ -21,7 +23,8 @@ import net.minecraft.util.math.Vec3d;
 public class RailGaugeModel extends GenericModel<Track, Integer> {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
-	public Vec3f[][] rails = new Vec3f[][]{
+	public ArrayList<Vec3f[]> rail_model = new ArrayList<>();
+	/*public Vec3f[][] rails = new Vec3f[][]{
 		{ new Vec3f(-1.0625, 0.25, 0), new Vec3f(-0.9375, 0.25, 0) },
 		{ new Vec3f( 0.9375, 0.25, 0), new Vec3f( 1.0625, 0.25, 0) },
 		//
@@ -33,7 +36,7 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		//
 		{ new Vec3f(-1.0625, 0.125, 0), new Vec3f(-0.9375, 0.125, 0) },
 		{ new Vec3f(0.9375, 0.125, 0), new Vec3f(1.0625, 0.125, 0) }
-	};
+	};*/
 	public boolean rail_tempcull = false;
 	public float ties_distance = 0.5f;
 	public float signal_offset = 0.5f;
@@ -64,6 +67,38 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	@Override
 	public void render(Track data, Integer index, Entity ent, RenderCache cache){
 		for(TurboList list : groups){ list.renderPlain(); }
+	}
+	
+	public void addRailRect(float scale, float start_x, float start_y, float width, float height, boolean mirror){
+		rail_model.add(new Vec3f[]{ new Vec3f(start_x, start_y, 0).scale(scale), new Vec3f(start_x + width, start_y, 0).scale(scale) });
+		if(height > 0){
+			rail_model.add(new Vec3f[]{ new Vec3f(start_x, start_y - height, 0).scale(scale), new Vec3f(start_x, start_y, 0).scale(scale) });
+			rail_model.add(new Vec3f[]{ new Vec3f(start_x + width, start_y, 0).scale(scale), new Vec3f(start_x + width, start_y - height, 0).scale(scale) });
+			rail_model.add(new Vec3f[]{ new Vec3f(start_x, start_y - height, 0).scale(scale), new Vec3f(start_x + width, start_y - height, 0).scale(scale) });
+		}
+		else{
+			float h = 0.01f / scale;
+			rail_model.add(new Vec3f[]{ new Vec3f(start_x, start_y - h, 0).scale(scale), new Vec3f(start_x + width, start_y - h, 0).scale(scale) });
+		}
+		if(mirror) addRailRect(scale, -start_x - width, start_y, width, height, false);
+	}
+	
+	public void addRailRectShape(float scale, float start_x, float start_y, float width, float height, Vec3f tl, Vec3f tr, Vec3f bl, Vec3f br, boolean mirror){
+		if(tl == null) tl = new Vec3f();
+		if(tr == null) tr = new Vec3f();
+		if(bl == null) bl = new Vec3f();
+		if(br == null) br = new Vec3f();
+		rail_model.add(new Vec3f[]{ new Vec3f(start_x + bl.x, start_y + tl.y, 0).scale(scale), new Vec3f(start_x + width + br.x, start_y + tr.y, 0).scale(scale) });
+		if(height > 0){
+			rail_model.add(new Vec3f[]{ new Vec3f(start_x + tl.x, start_y - height + bl.y, 0).scale(scale), new Vec3f(start_x + bl.x, start_y + tl.y, 0).scale(scale) });
+			rail_model.add(new Vec3f[]{ new Vec3f(start_x + width + br.x, start_y + tr.y, 0).scale(scale), new Vec3f(start_x + width + tr.x, start_y - height + br.y, 0).scale(scale) });
+			rail_model.add(new Vec3f[]{ new Vec3f(start_x + tl.x, start_y - height + bl.y, 0).scale(scale), new Vec3f(start_x + width + tr.x, start_y - height + br.y, 0).scale(scale) });
+		}
+		else{
+			float h = 0.01f / scale;
+			rail_model.add(new Vec3f[]{ new Vec3f(start_x + tl.x, start_y - h + bl.y, 0).scale(scale), new Vec3f(start_x + width + tr.x, start_y - h + br.y, 0).scale(scale) });
+		}
+		if(mirror) addRailRectShape(scale, -start_x - width, start_y, width, height, tl, tr, bl, br, false);
 	}
 
 	//TODO rotation programs for levers

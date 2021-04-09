@@ -364,18 +364,18 @@ public class RailRenderer {
 		float angle, passed = 0; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
 		TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly0;
 		//
-		for(int p = 0; p < model.rails.length; p++){
+		for(int p = 0; p < model.rail_model.size(); p++){
 			path.clear(); vec = track.getVectorPosition0(0.001f, false); passed = 0;
 			angle = (float)Math.atan2(track.vecpath[0].z - vec.z, track.vecpath[0].x - vec.x);
 			angle += Static.rad90;
-			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rails[p][0])));
-			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rails[p][1])));
+			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])));
+			path.add(track.vecpath[0].add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])));
 			for(int v = 0; v < track.vecpath.length - 1; v++){
 				last = track.vecpath[v]; vec = track.vecpath[v + 1];
 				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 				angle += Static.rad90;
-				path.add(vec.add(VecUtil.rotByRad(angle, model.rails[p][0])));
-				path.add(vec.add(VecUtil.rotByRad(angle, model.rails[p][1])));
+				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[0])));
+				path.add(vec.add(VecUtil.rotByRad(angle, model.rail_model.get(p)[1])));
 			}
 			for(int k = 0; k < track.vecpath.length - 1; k++){
 				vert0 = new TexturedVertex(path.get(k * 2), 1, 1);

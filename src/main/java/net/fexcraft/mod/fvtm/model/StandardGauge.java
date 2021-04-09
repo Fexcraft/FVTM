@@ -6,10 +6,16 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
+import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 
 @fModel(registryname = "fvtm:models/gauges/standard")
 public class StandardGauge extends RailGaugeModel {
+	
+	public TurboList double_base, double_lever0, double_lever1;
+	public TurboList simple_signal_base, simple_signal_stop, simple_signal_clear;
+	public TurboList switch_lever, switch_base, switch_fork2, switch_fork3;
 	
 	public StandardGauge(){
 		super(); textureX = 128; textureY = 64;
@@ -85,65 +91,65 @@ public class StandardGauge extends RailGaugeModel {
 		);
 		this.groups.add(switch_fork3);
 	}
-	
-	private TurboList switch_lever, switch_base, switch_fork2, switch_fork3;
 
 	@Override
-	public void renderSwitch(JunctionSwitchEntity entity, Junction junction){
-		switch(junction.type){
-			case DOUBLE:{
-				{
-					GL11.glTranslatef(0, 0, -.25f);
-					switch_base.get(0).render();
-					if(junction.switch0){
-						switch_lever.get(0).rotationAngleZ = 30;
-						switch_fork2.get(0).setRotationAngle(-30, 90, 0);
-					}
-					else{
-						switch_lever.get(0).rotationAngleZ = -30;
-						switch_fork2.get(0).setRotationAngle(0, 0, -30);
-					}
-					switch_lever.get(0).render();
-					switch_fork2.get(0).render();
-					GL11.glTranslatef(0, 0, 0.5f);
-					switch_base.get(0).render();
-					if(junction.switch1){
-						switch_lever.get(0).rotationAngleZ = 30;
-						switch_fork2.get(0).setRotationAngle(-30, 90, 0);
-					}
-					else{
-						switch_lever.get(0).rotationAngleZ = -30;
-						switch_fork2.get(0).setRotationAngle(0, 0, -30);
-					}
-					switch_lever.get(0).render();
-					switch_fork2.get(0).render();
-				}
-				break;
-			}
-			case FORK_2:{
-				switch_base.get(0).render();
-				if(junction.switch0){
-					switch_lever.get(0).rotationAngleZ = 30;
-					switch_fork2.get(0).setRotationAngle(-30, 90, 0);
-				}
-				else{
-					switch_lever.get(0).rotationAngleZ = -30;
-					switch_fork2.get(0).setRotationAngle(0, 0, -30);
-				}
-				switch_lever.get(0).render();
-				switch_fork2.get(0).render();
-				break;
-			}
-			case FORK_3:{
-				switch_base.get(0).render();
-				switch_lever.get(0).rotationAngleZ = 0;
-				switch_lever.get(0).render();
-				switch_fork3.get(0).rotationAngleY = junction.switch0 ? -90 : junction.switch1 ? 30 : -30;
-				switch_fork3.get(0).render();
-				break;
-			}
-			case CROSSING: case STRAIGHT: default: return;
+	public void renderDoubleSwitch(JunctionSwitchEntity entity, Junction junction){
+		GL11.glTranslatef(0, 0, -.25f);
+		switch_base.get(0).render();
+		if(junction.switch0){
+			switch_lever.get(0).rotationAngleZ = 30;
+			switch_fork2.get(0).setRotationAngle(-30, 90, 0);
 		}
+		else{
+			switch_lever.get(0).rotationAngleZ = -30;
+			switch_fork2.get(0).setRotationAngle(0, 0, -30);
+		}
+		switch_lever.get(0).render();
+		switch_fork2.get(0).render();
+		GL11.glTranslatef(0, 0, 0.5f);
+		switch_base.get(0).render();
+		if(junction.switch1){
+			switch_lever.get(0).rotationAngleZ = 30;
+			switch_fork2.get(0).setRotationAngle(-30, 90, 0);
+		}
+		else{
+			switch_lever.get(0).rotationAngleZ = -30;
+			switch_fork2.get(0).setRotationAngle(0, 0, -30);
+		}
+		switch_lever.get(0).render();
+		switch_fork2.get(0).render();
+	}
+
+	@Override
+	public void renderFork2Switch(JunctionSwitchEntity entity, Junction junction){
+		switch_base.get(0).render();
+		if(junction.switch0){
+			switch_lever.get(0).rotationAngleZ = 30;
+			switch_fork2.get(0).setRotationAngle(-30, 90, 0);
+		}
+		else{
+			switch_lever.get(0).rotationAngleZ = -30;
+			switch_fork2.get(0).setRotationAngle(0, 0, -30);
+		}
+		switch_lever.get(0).render();
+		switch_fork2.get(0).render();
+	}
+
+	@Override
+	public void renderFork3Switch(JunctionSwitchEntity entity, Junction junction){
+		switch_base.get(0).render();
+		switch_lever.get(0).rotationAngleZ = 0;
+		switch_lever.get(0).render();
+		switch_fork3.get(0).rotationAngleY = junction.switch0 ? -90 : junction.switch1 ? 30 : -30;
+		switch_fork3.get(0).render();
+	}
+
+	@Override
+	public void renderSignal(Junction junction, EntryDirection dir, boolean state){
+		if(junction.signal == null || junction.signal.type != SignalType.Kind.BLOCK) return;
+		simple_signal_base.renderPlain();
+		if(!state) simple_signal_stop.renderBlock(null, null, null);
+		if(state) simple_signal_clear.renderBlock(null, null, null);
 	}
 	
 }

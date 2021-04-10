@@ -6,8 +6,8 @@ public class SignalTileEntity extends BlockTileEntity {
 		super(type);
 	}
 
-	public Boolean getSignalState(){
-		return false;
+	public byte getSignalState(){
+		return -1;
 	}
 
 }

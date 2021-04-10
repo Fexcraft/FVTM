@@ -43,7 +43,7 @@ public class InternalAddon extends Addon {
 			JsonObject obj = new JsonObject(); RailGauge gauge;
 			obj.addProperty("RegistryName", STANDARD_GAUGE.toString());
 			obj.addProperty("Addon", REGNAME.toString());
-			obj.addProperty("Name", "30px Standard Gauge");
+			obj.addProperty("Name", "30px Standard Gauge (FVTM)");
 			obj.addProperty("Description", "fvtm:standard.gauge_desc");
 			obj.addProperty("Width", 30);
 			obj.addProperty("Height", 4);

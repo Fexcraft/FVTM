@@ -5,24 +5,18 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_INVENTORY;
 import static net.fexcraft.mod.fvtm.util.Properties.FACING;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.gui.GenericContainer;
-import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
-import net.fexcraft.mod.fvtm.data.block.MB_Access;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
-import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -34,16 +28,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 
 public class M_4ROT_TE extends BlockBase {
 
@@ -73,7 +66,7 @@ public class M_4ROT_TE extends BlockBase {
     		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     	}
         if(!world.isRemote){
-            TileEntity te = (TileEntity)world.getTileEntity(pos);
+        	MultiblockTileEntity te = (MultiblockTileEntity)world.getTileEntity(pos);
             if(te == null){
                 Print.chat(player, "No TileEntity found.");
                 return true;
@@ -132,7 +125,7 @@ public class M_4ROT_TE extends BlockBase {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
         world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
-        ((TileEntity)world.getTileEntity(pos)).setCore(pos, stack).setup();
+        ((MultiblockTileEntity)world.getTileEntity(pos)).setCore(pos, stack).setup();
     }
 
     @Override
@@ -161,7 +154,7 @@ public class M_4ROT_TE extends BlockBase {
     }
     
 	public static void processBreak(World world, BlockPos pos, boolean hastile){
-		TileEntity broken = hastile ? (TileEntity)world.getTileEntity(pos) : null;
+		MultiblockTileEntity broken = hastile ? (MultiblockTileEntity)world.getTileEntity(pos) : null;
 		MultiBlockData data = broken == null ? world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlock(pos) : broken.getMultiBlockData();
 		if(data == null){
 			//Print.debug("Multiblock at " + pos + " not found!");
@@ -181,7 +174,7 @@ public class M_4ROT_TE extends BlockBase {
 		positions.forEach(blkpos -> {
 			IBlockState posstate = world.getBlockState(blkpos);
 			if(posstate.getBlock() instanceof M_4ROT_TE || posstate.getBlock() instanceof M_4ROT){
-				TileEntity tile = (TileEntity)world.getTileEntity(blkpos);
+				MultiblockTileEntity tile = (MultiblockTileEntity)world.getTileEntity(blkpos);
 				if(tile != null && tile.iscore){
 					//TODO empty out inventories (drop)
 					EntityItem item = new EntityItem(world);
@@ -197,13 +190,13 @@ public class M_4ROT_TE extends BlockBase {
 
 	@Override
 	public net.minecraft.tileentity.TileEntity createNewTileEntity(World world, int meta){
-		return type.getMultiBlock() != null && type.getMultiBlock().isTickable() ? new M_4ROT_TE.TickableTE(this) : new M_4ROT_TE.TileEntity(this);
+		return type.getMultiBlock() != null && type.getMultiBlock().isTickable() ? new MultiblockTickableTE(this) : new MultiblockTileEntity(this);
 	}
 
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
-    	TileEntity our = (TileEntity)world.getTileEntity(pos);
-        TileEntity tile = our.iscore ? our : our.reference;
+    	MultiblockTileEntity our = (MultiblockTileEntity)world.getTileEntity(pos);
+    	MultiblockTileEntity tile = our.iscore ? our : our.reference;
         return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
     }
     
@@ -219,8 +212,8 @@ public class M_4ROT_TE extends BlockBase {
     
     @Override
     public ItemStack getItem(World world, BlockPos pos, IBlockState state){
-    	TileEntity our = (TileEntity)world.getTileEntity(pos);
-        TileEntity tile = our.iscore ? our : our.reference;
+    	MultiblockTileEntity our = (MultiblockTileEntity)world.getTileEntity(pos);
+    	MultiblockTileEntity tile = our.iscore ? our : our.reference;
         return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
     }
     
@@ -228,164 +221,6 @@ public class M_4ROT_TE extends BlockBase {
     public boolean isReplaceable(IBlockAccess world, BlockPos pos){
         return false;
     }
-	
-	public static class TileEntity extends BlockBase.TileEntity {
-		
-		public List<MB_Trigger> triggers;
-		private TileEntity reference;
-		private BlockPos core;
-		private boolean iscore;
-		
-		public TileEntity(BlockBase type){
-			super(type);
-		}
-
-		public TileEntity(){}
-		
-		public TileEntity setCore(BlockPos pos, ItemStack stack){
-	        BlockPos core = BlockPos.fromLong(stack.getTagCompound().getLong("PlacedPos"));
-	        if(!pos.equals(core)){
-	            this.core = core;
-	        }
-	        else{
-	        	iscore = true;
-		        data = ((BlockItem)stack.getItem()).getData(stack);
-	        }
-	        this.markDirty();
-	        return this;
-		}
-		
-		public BlockPos getCore(){
-			return iscore ? pos : core;
-		}
-		
-		public boolean isCore(){
-			return iscore;
-		}
-
-		public MultiBlockData getMultiBlockData(){
-			return iscore ? data.getMultiBlockData() : getMultiBlockDataFromCore();
-		}
-		
-		private MultiBlockData getMultiBlockDataFromCore(){
-			if(reference != null) return reference.getMultiBlockData();
-			if(core == null){
-				//Print.debug("no core from");
-				return null;
-			}
-			TileEntity tile = (TileEntity)world.getTileEntity(core);
-			reference = (tile == null ? null : tile);
-			return reference == null ? null : reference.getMultiBlockData();
-		}
-
-		public void setup(){
-			if(data == null || data.getMultiBlockData() == null){
-				//Print.debug("data is null");
-				return;
-			}
-			//Print.debug("data is NOT null");
-			world.getCapability(Capabilities.MULTIBLOCKS, null).registerMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
-		}
-		
-		@Override
-		public void invalidate(){
-			super.invalidate();
-			if(data == null || data.getMultiBlockData() == null) return;
-			world.getCapability(Capabilities.MULTIBLOCKS, null).unregisterMultiBlock(pos, EnumFacing.byIndex(this.getBlockMetadata()).getOpposite(), data.getMultiBlockData());
-		}
-	    
-	    @Override
-	    public void readFromNBT(NBTTagCompound compound){
-	        super.readFromNBT(compound);
-	        if(compound.hasKey("MultiBlockCore")) core = BlockPos.fromLong(compound.getLong("MultiBlockCore"));
-	        if(iscore = core == null) reference = this;
-	    }
-
-	    @Override
-	    public NBTTagCompound writeToNBT(NBTTagCompound compound){
-	        super.writeToNBT(compound);
-	        if(core != null) compound.setLong("MultiBlockCore", core.toLong());
-	        return compound;
-	    }
-	    
-	    private Map<EnumFacing, List<MB_Access.CapabilityContainer>> capabilities;
-
-	    private void loadCapabilities(){
-	    	MultiBlockData data = getMultiBlockData();
-	    	if(data == null){
-	    		//Print.debug("no data");
-	    		return;
-	    	}
-	    	if(reference == null){
-	    		//Print.debug("no core");
-	    		return;
-	    	}
-			data.getType().getCapabilities(data, EnumFacing.byIndex(reference.getBlockMetadata()), pos, isCore() ? pos : getCore(), capabilities = new HashMap<>());
-		}
-
-	    @Override
-	    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing){
-	    	if(capabilities == null) loadCapabilities();
-	    	if(capabilities != null && capabilities.containsKey(facing)){
-    			for(MB_Access.CapabilityContainer con : capabilities.get(facing)){
-    				if(con.cap == capability) return true;
-    			}
-	    	}
-	        return super.hasCapability(capability, facing);
-	    }
-
-		@SuppressWarnings("unchecked")
-	    @Override
-	    @Nullable
-	    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
-	    	if(capabilities == null) loadCapabilities();
-	    	if(capabilities != null && capabilities.containsKey(facing)){
-    			for(MB_Access.CapabilityContainer con : capabilities.get(facing)){
-    				if(con.cap == capability) return (T)con.value;
-    			}
-	    	}
-	        return super.getCapability(capability, facing);
-	    }
-
-	    @Override
-	    public void processClientPacket(PacketTileEntityUpdate pkt){
-	    	if(pkt.nbt.hasKey("target") && pkt.nbt.getString("target").equals("script")){
-	    		if(this.getMultiBlockData() != null && this.getMultiBlockData().getScript() != null){
-	    			this.getMultiBlockData().getScript().onUpdatePacket(this, pkt.nbt);
-	    		}
-	    		return;
-	    	}
-	    	super.processClientPacket(pkt);
-	    }
-
-	    @Override
-	    public void processServerPacket(PacketTileEntityUpdate pkt){
-	    	if(pkt.nbt.hasKey("target") && pkt.nbt.getString("target").equals("script")){
-	    		if(this.getMultiBlockData() != null && this.getMultiBlockData().getScript() != null){
-	    			this.getMultiBlockData().getScript().onUpdatePacket(this, pkt.nbt);
-	    		}
-	    		return;
-	    	}
-	    	super.processServerPacket(pkt);
-	    }
-
-	}
-	
-	public static class TickableTE extends TileEntity implements IPacketReceiver<PacketTileEntityUpdate>, ITickable {
-		
-		public TickableTE(BlockBase type){
-			super(type);
-		}
-		
-		public TickableTE(){}
-
-		@Override
-		public void update(){
-			if(data == null || data.getMultiBlockData() == null || data.getMultiBlockData().getScript() == null) return;
-			data.getMultiBlockData().getScript().onUpdate(this);
-		}
-
-	}
 
 }
 

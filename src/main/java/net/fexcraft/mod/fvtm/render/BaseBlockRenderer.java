@@ -4,15 +4,15 @@ import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.mc.api.registry.fTESR;
 import net.fexcraft.lib.tmt.ModelBase;
-import net.fexcraft.mod.fvtm.block.generated.BlockBase;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 @fTESR
-public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockBase.TileEntity> {
+public class BaseBlockRenderer extends TileEntitySpecialRenderer<BlockTileEntity> {
 
     @Override
-    public void render(BlockBase.TileEntity tile, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
+    public void render(BlockTileEntity tile, double posX, double posY, double posZ, float partialticks, int destroystage, float f){
         GL11.glPushMatrix();
         GL11.glTranslated(posX + 0.5F, posY, posZ + 0.5F);
         ModelBase.bindTexture(tile.getBlockData().getTexture());

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.data.block;
 
 import net.fexcraft.lib.mc.utils.ApiUtil;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +21,7 @@ public interface BlockScript {
 
 	public NBTTagCompound write(MultiBlockData data, NBTTagCompound compound);
 
-	public void onUpdate(TickableTE tile);
+	public void onUpdate(MultiblockTickableTE tile);
 
 	public boolean onTrigger(MultiBlockData data, MB_Trigger trigger, EntityPlayer player, EnumHand hand, BlockPos core, BlockPos pos, EnumFacing side, Vec3d hit);
 	

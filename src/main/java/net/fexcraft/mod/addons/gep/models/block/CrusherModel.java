@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
@@ -768,7 +768,7 @@ public class CrusherModel extends BlockModel {
 			@Override
 			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 				if(tile == null || cache == null) return;
-				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				MultiBlockData multidata = ((MultiblockTickableTE)tile).getMultiBlockData();
 				if(multidata != null && multidata.getScript() != null && ((CraftBlockScript)multidata.getScript()).getProcessed() > 0){
 			    	float rotation = cache.getValue("rot_state", 0f) + 1;
 			    	cache.setValue("rot_state", rotation > 360 ? 0 : rotation);
@@ -802,7 +802,7 @@ public class CrusherModel extends BlockModel {
 			@Override
 			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 				if(tile == null || cache == null) return;
-				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				MultiBlockData multidata = ((MultiblockTickableTE)tile).getMultiBlockData();
 				if(multidata != null && multidata.getInventory("output") != null){
 					List<ItemStack> stacks = multidata.getInventory("output");
 					fullstate = 0;

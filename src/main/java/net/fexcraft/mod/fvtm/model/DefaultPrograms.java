@@ -24,6 +24,7 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -87,6 +88,9 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(LIGHTS_REAR_FORWARD);
 		TurboList.PROGRAMS.add(LIGHTS_REAR_BACKWARD);
 		TurboList.PROGRAMS.add(BOGIE_AUTO);
+		//
+		TurboList.PROGRAMS.add(BASIC_SIGNAL_CLEAR);
+		TurboList.PROGRAMS.add(BASIC_SIGNAL_STOP);
 		//
 		TurboList.PROGRAMS.add(new Scale(1f));
 		TurboList.PROGRAMS.add(TRANSPARENT);
@@ -313,6 +317,30 @@ public class DefaultPrograms {
 	
 	public static final Program TAIL_LIGHTS_SIGNAL_LEFT = BACK_LIGHTS_SIGNAL_LEFT;
 	public static final Program TAIL_LIGHTS_SIGNAL_RIGHT = BACK_LIGHTS_SIGNAL_RIGHT;
+	
+	//
+	
+	public static final Program BASIC_SIGNAL_CLEAR = new AlwaysGlow(){
+		@Override
+		public boolean shouldGlow(TileEntity tile, BlockData data){
+			return tile != null && ((SignalTileEntity)tile).getSignalState() == true;
+		}
+		@Override
+		public String getId(){ return "fvtm:basic_signal_clear"; }
+	};
+	public static final Program BASIC_SIGNAL_GREEN = BASIC_SIGNAL_CLEAR;
+	
+	public static final Program BASIC_SIGNAL_STOP = new AlwaysGlow(){
+		@Override
+		public boolean shouldGlow(TileEntity tile, BlockData data){
+			return tile != null && ((SignalTileEntity)tile).getSignalState() == false;
+		}
+		@Override
+		public String getId(){ return "fvtm:basic_signal_stop"; }
+	};
+	public static final Program BASIC_SIGNAL_RED = BASIC_SIGNAL_STOP;
+	
+	//
 	
 	public static final Program TRANSPARENT = new Transparent(63f, 63f){
 		@Override public String getId(){ return "fvtm:transparent"; }
@@ -724,7 +752,9 @@ public class DefaultPrograms {
 		
 		public AlwaysGlow(){ super(189f, 4f); }
 		
-		public abstract boolean shouldGlow(Entity ent, VehicleData data);
+		public boolean shouldGlow(Entity ent, VehicleData data){ return true;}
+		
+		public boolean shouldGlow(TileEntity tile, BlockData data){ return true; }
 		//TurboList list, TileEntity ent, BlockData data, RenderCache cache, int meta
 
 		@Override
@@ -739,7 +769,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
-			if(!(didglow = shouldGlow(null, null))) return; super.preRender(list, null, null, null, null, cache);
+			if(!(didglow = shouldGlow(ent, data))) return; super.preRender(list, null, null, null, null, cache);
 		}
 
 		@Override

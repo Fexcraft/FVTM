@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.gui.block;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.gui.GenericIInventory;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
@@ -26,7 +26,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public class GBlockInvContainer extends GenericContainer {
 
 	protected GenericGui<GBlockInvContainer> gui;
-	protected M_4ROT_TE.TileEntity tile;
+	protected MultiblockTileEntity tile;
 	//
 	protected String inv_id;
 	protected ItemStackHandler temp;
@@ -42,7 +42,7 @@ public class GBlockInvContainer extends GenericContainer {
 
 	public GBlockInvContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
-		tile = (M_4ROT_TE.TileEntity)player.world.getTileEntity(new BlockPos(x, y, z));
+		tile = (MultiblockTileEntity)player.world.getTileEntity(new BlockPos(x, y, z));
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
 		//
 		initPacket(null);

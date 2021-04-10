@@ -18,8 +18,8 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TileEntity;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript.InputWrapper.InputType;
@@ -74,7 +74,7 @@ public abstract class CraftBlockScript implements BlockScript {
 	}
 
 	@Override
-	public void onUpdate(TickableTE tile){
+	public void onUpdate(MultiblockTickableTE tile){
 		if(tile.getWorld().isRemote) return;
 		if(!ready(tile)){
 			prepare(tile);
@@ -100,7 +100,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		else addCooldown();
 	}
 
-	protected void tryCrafting(TickableTE tile, Recipe recipe){
+	protected void tryCrafting(MultiblockTickableTE tile, Recipe recipe){
 		if(!recipe.canCraft(this, tile.getMultiBlockData(), true)) return;
 		if(!instant()){
 			int question = recipe.crafttime == 0 ? process_time() : recipe.crafttime;
@@ -162,13 +162,13 @@ public abstract class CraftBlockScript implements BlockScript {
 	public abstract boolean instant();
 	
 	/** If this block is ready to process recipes. */
-	public abstract boolean ready(TickableTE tile);
+	public abstract boolean ready(MultiblockTickableTE tile);
 
 	/** If the block returned not to be ready this method is called and further recipe processing skipped.*/
-	public abstract void prepare(TickableTE tile);
+	public abstract void prepare(MultiblockTickableTE tile);
 
 	/** This method is called after the ready check and before recipes are processed. */
-	public abstract void running(TickableTE tile);
+	public abstract void running(MultiblockTickableTE tile);
 	
 	public abstract int process_speed();
 	
@@ -534,7 +534,7 @@ public abstract class CraftBlockScript implements BlockScript {
 		TEXT, TEXT_VALUE, PROGRESS_BAR, BUTTONS
 	}
 
-	public void setSelectedRecipe(TileEntity tile, String string){
+	public void setSelectedRecipe(MultiblockTileEntity tile, String string){
 		if(blockid == null){
 			blockid = tile.getMultiBlockData().getData().getType().getRegistryName().toString();
 		}

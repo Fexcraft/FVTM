@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -48,7 +48,7 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public boolean ready(TickableTE tile){
+	public boolean ready(MultiblockTickableTE tile){
 		return true;
 	}
 
@@ -68,12 +68,12 @@ public class DefaultCraftBlockScript extends CraftBlockScript {
 	}
 
 	@Override
-	public void prepare(TickableTE tile){
+	public void prepare(MultiblockTickableTE tile){
 		//
 	}
 
 	@Override
-	public void running(TickableTE tile){
+	public void running(MultiblockTickableTE tile){
 		//
 	}
 

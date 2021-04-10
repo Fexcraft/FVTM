@@ -5,8 +5,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_CHOOSE;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TileEntity;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class GBlockCraftContainer extends GenericContainer {
 
 	protected GenericGui<GBlockCraftContainer> gui;
-	protected M_4ROT_TE.TileEntity tile;
+	protected MultiblockTileEntity tile;
 	protected CraftBlockScript script;
 	protected EntityPlayerMP mpp;
 	public int page, crafted;
@@ -31,7 +30,7 @@ public class GBlockCraftContainer extends GenericContainer {
 	public GBlockCraftContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
 		if(!player.world.isRemote) mpp = (EntityPlayerMP)player;
-		tile = (TileEntity)world.getTileEntity(new BlockPos(x, y, z));
+		tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		script = (CraftBlockScript)tile.getMultiBlockData().getScript();
 		tickable = tile.getMultiBlockData().getType().isTickable();
 	}

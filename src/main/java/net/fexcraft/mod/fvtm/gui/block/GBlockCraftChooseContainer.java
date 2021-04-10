@@ -5,8 +5,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.MULTIBLOCK_CRAFT_MAIN;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TileEntity;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,12 +16,12 @@ import net.minecraftforge.fml.relauncher.Side;
 public class GBlockCraftChooseContainer extends GenericContainer {
 
 	protected GenericGui<GBlockCraftChooseContainer> gui;
-	protected M_4ROT_TE.TileEntity tile;
+	protected MultiblockTileEntity tile;
 	public int page;
 
 	public GBlockCraftChooseContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
-		tile = (TileEntity)world.getTileEntity(new BlockPos(x, y, z));
+		tile = (MultiblockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 	}
 
 	@Override

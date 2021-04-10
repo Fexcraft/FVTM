@@ -7,7 +7,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.addons.gep.scripts.SmelteryScript;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
@@ -186,7 +186,7 @@ public class SmelteryModel extends BlockModel {
 			@Override
 			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 				if(tile == null) return;
-				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				MultiBlockData multidata = ((MultiblockTickableTE)tile).getMultiBlockData();
 				if(multidata == null || multidata.getScript() == null) return;
 				float random = Static.random.nextFloat();
 				if(random > 0.5f) random -= 1f;
@@ -217,7 +217,7 @@ public class SmelteryModel extends BlockModel {
 			@Override
 			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 				if(tile == null) return;
-				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				MultiBlockData multidata = ((MultiblockTickableTE)tile).getMultiBlockData();
 				if(multidata != null && multidata.getScript() != null && ((SmelteryScript)multidata.getScript()).isOpen()){
 					list.rotate(0, -45, 0, true);
 					wasopen = true;
@@ -251,7 +251,7 @@ public class SmelteryModel extends BlockModel {
 			@Override
 			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 				if(tile == null) return;
-				MultiBlockData multidata = ((M_4ROT_TE.TileEntity)tile).getMultiBlockData();
+				MultiBlockData multidata = ((MultiblockTickableTE)tile).getMultiBlockData();
 				if(multidata != null && multidata.getScript() != null && ((SmelteryScript)multidata.getScript()).isOpen()){
 					list.rotate(0, 45, 0, true);
 					wasopen = true;

@@ -6,15 +6,12 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
-import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 
 @fModel(registryname = "fvtm:models/gauges/standard")
 public class StandardGauge extends RailGaugeModel {
 	
 	public TurboList double_base, double_lever0, double_lever1;
-	public TurboList simple_signal_base, simple_signal_stop, simple_signal_clear;
 	public TurboList switch_lever, switch_base, switch_fork2, switch_fork3;
 	
 	public StandardGauge(){
@@ -27,44 +24,6 @@ public class StandardGauge extends RailGaugeModel {
 		addRailRect(Static.sixteenth, 15, 4, 2, 2, true);
 		TurboList ties = new TurboList("ties"); this.groups.add(ties);
 		ties.add(new ModelRendererTurbo(ties, 0, 0, textureX, textureY).addBox(-2, 0, -20, 4, 2, 40).setRotationAngle(0, 0, 0).setName("center_ties"));
-		//
-		simple_signal_base = new TurboList("simple_signal_base");
-		simple_signal_base.add(new ModelRendererTurbo(simple_signal_base, 101, 0, textureX, textureY).addBox(0, 0, 0, 6, 12, 5)
-			.setRotationPoint(-3, -62, -2.5f).setRotationAngle(0, 0, 0)
-		);
-		simple_signal_base.add(new ModelRendererTurbo(simple_signal_base, 92, 0, textureX, textureY).addCylinder(0, 0, 0, 2, 50, 8, 0.75f, 0.75f, 4, null)
-			.setRotationPoint(0, -50, 0).setRotationAngle(0, 0, 0)
-		);
-		simple_signal_base.add(new ModelRendererTurbo(simple_signal_base, 67, 9, textureX, textureY).addBox(0, 0, 0, 4, 1, 4)
-			.setRotationPoint(-2, -1, -2).setRotationAngle(0, 0, 0)
-		);
-		simple_signal_base.add(new ModelRendererTurbo(simple_signal_base, 82, 0, textureX, textureY).addHollowCylinder(0, 0, 0, 2.125f, 2, 2, 16, 8, 1, 1, 1, null)
-			.setRotationPoint(0, -53, -4).setRotationAngle(0, 0, -90)
-		);
-		simple_signal_base.add(new ModelRendererTurbo(simple_signal_base, 72, 0, textureX, textureY).addHollowCylinder(0, 0, 0, 2.125f, 2, 2, 16, 8, 1, 1, 1, null)
-			.setRotationPoint(0, -59, -4).setRotationAngle(0, 0, -90)
-		);
-		simple_signal_base.add(new ModelRendererTurbo(simple_signal_base, 54, 15, textureX, textureY).addCylinder(0, 0, 0, 2, 2, 16, 0.9375f, 0.9375f, 1, null)
-			.setRotationPoint(0, -59, -2.75f).setRotationAngle(0, 0, 0)
-		);
-		simple_signal_base.add(new ModelRendererTurbo(simple_signal_base, 63, 15, textureX, textureY).addCylinder(0, 0, 0, 2, 2, 16, 0.9375f, 0.9375f, 1, null)
-			.setRotationPoint(0, -53, -2.75f).setRotationAngle(0, 0, 0)
-		);
-		this.groups.add(simple_signal_base);
-		//
-		simple_signal_stop = new TurboList("simple_signal_stop");
-		simple_signal_stop.add(new ModelRendererTurbo(simple_signal_stop, 54, 0, textureX, textureY).addCylinder(0, 0, 0, 2, 2, 16, 1, 1, 1, null)
-			.setRotationPoint(0, -59, -3).setRotationAngle(0, 0, 0)
-		);
-		simple_signal_stop.addProgram(DefaultPrograms.ALWAYS_GLOW);
-		this.groups.add(simple_signal_stop);
-		//
-		simple_signal_clear = new TurboList("simple_signal_clear");
-		simple_signal_clear.add(new ModelRendererTurbo(simple_signal_clear, 63, 0, textureX, textureY).addCylinder(0, 0, 0, 2, 2, 16, 1, 1, 1, null)
-			.setRotationPoint(0, -53, -3).setRotationAngle(0, 0, 0)
-		);
-		simple_signal_clear.addProgram(DefaultPrograms.ALWAYS_GLOW);
-		this.groups.add(simple_signal_clear);
 		//
 		switch_lever = new TurboList("switch_lever");
 		switch_lever.add(new ModelRendererTurbo(switch_lever, 84, 9, textureX, textureY).addBox(-0.5f, -7, -0.5f, 1, 7, 1)
@@ -142,14 +101,6 @@ public class StandardGauge extends RailGaugeModel {
 		switch_lever.get(0).render();
 		switch_fork3.get(0).rotationAngleY = junction.switch0 ? -90 : junction.switch1 ? 30 : -30;
 		switch_fork3.get(0).render();
-	}
-
-	@Override
-	public void renderSignal(Junction junction, EntryDirection dir, boolean state){
-		if(junction.signal == null || junction.signal.type != SignalType.Kind.BLOCK) return;
-		simple_signal_base.renderPlain();
-		if(!state) simple_signal_stop.renderBlock(null, null, null);
-		if(state) simple_signal_clear.renderBlock(null, null, null);
 	}
 	
 }

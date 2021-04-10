@@ -1,20 +1,15 @@
 package net.fexcraft.mod.fvtm.data.block;
 
-import net.fexcraft.mod.fvtm.block.generated.G_16ROT;
-import net.fexcraft.mod.fvtm.block.generated.G_16ROT_TE;
-import net.fexcraft.mod.fvtm.block.generated.G_4ROT;
-import net.fexcraft.mod.fvtm.block.generated.G_4ROT_TE;
-import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
-import net.fexcraft.mod.fvtm.block.generated.G_ROAD_TE;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
+import net.fexcraft.mod.fvtm.block.generated.*;
 
 public enum BlockType {
 	
 	GENERIC_4ROT(G_4ROT_TE.class, G_4ROT.class),
 	GENERIC_16ROT(G_16ROT_TE.class, G_16ROT.class),
 	GENERIC_ROAD(G_ROAD_TE.class, G_ROAD.class),
-	MULTIBLOCK_4ROT(M_4ROT_TE.class, M_4ROT.class)
+	MULTIBLOCK_4ROT(M_4ROT_TE.class, M_4ROT.class),
+	SIGNAL_4ROT(SG_4ROT_TE.class, null),
+	SIGNAL_16ROT(SG_16ROT_TE.class, null)
 	;
 	
 	public final Class<? extends net.minecraft.block.Block> blockclass, plainclass;
@@ -27,7 +22,8 @@ public enum BlockType {
 	public double getRotationForMeta(int meta){
 		switch(this){
 			case MULTIBLOCK_4ROT:
-			case GENERIC_4ROT:{
+			case GENERIC_4ROT:
+			case SIGNAL_4ROT:{
 		        switch(meta){
 		            case 2: return 0;
 		            case 3: return -180d;
@@ -35,7 +31,10 @@ public enum BlockType {
 		            case 5: return -270d;
 		        }
 			}
-			case GENERIC_16ROT: return meta * 22.5 + 180;
+			case GENERIC_16ROT:
+			case SIGNAL_16ROT:{
+				return meta * 22.5 + 180;
+			}
 			default: return 0;
 		}
 	}

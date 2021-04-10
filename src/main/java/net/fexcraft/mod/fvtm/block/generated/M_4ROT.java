@@ -7,7 +7,6 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
@@ -109,7 +108,7 @@ public class M_4ROT extends PlainBase {
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
     	BlockPos core = world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos);
     	if(core == null) return ItemStack.EMPTY;
-        TileEntity tile = (TileEntity)world.getTileEntity(core);
+    	MultiblockTileEntity tile = (MultiblockTileEntity)world.getTileEntity(core);
         return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
     }
     
@@ -125,7 +124,7 @@ public class M_4ROT extends PlainBase {
     
     @Override
     public ItemStack getItem(World world, BlockPos pos, IBlockState state){
-        TileEntity tile = (TileEntity)world.getTileEntity(world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos));
+    	MultiblockTileEntity tile = (MultiblockTileEntity)world.getTileEntity(world.getCapability(Capabilities.MULTIBLOCKS, null).getMultiBlockCore(pos));
         return tile == null ? ItemStack.EMPTY : tile.getBlockData().newItemStack();
     }
     

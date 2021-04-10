@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE.TickableTE;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.data.block.MB_Trigger;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockData;
 import net.fexcraft.mod.fvtm.util.script.DefaultCraftBlockScript;
@@ -48,13 +48,13 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	}
 	
 	@Override
-	public boolean ready(TickableTE tile){
+	public boolean ready(MultiblockTickableTE tile){
 		lava = tile.getMultiBlockData().getFluidTank("tank").getFluidAmount();
 		return heat > 1500;
 	}
 	
 	@Override
-	public void prepare(TickableTE tile){
+	public void prepare(MultiblockTickableTE tile){
 		if(lava <= 0){
 			if(processed > 0) processed--;
 			if(heat > 0) heat--; 
@@ -73,7 +73,7 @@ public class SmelteryScript extends DefaultCraftBlockScript {
 	}
 	
 	@Override
-	public void running(TickableTE tile){
+	public void running(MultiblockTickableTE tile){
 		int coolby = open ? 2 : 1;
 		if(isCoolingDown()) coolby /= 2;
 		if(coolby <= 0) return;

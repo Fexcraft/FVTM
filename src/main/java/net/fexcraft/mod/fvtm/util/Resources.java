@@ -23,8 +23,8 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
-import net.fexcraft.mod.fvtm.block.generated.BlockBase;
-import net.fexcraft.mod.fvtm.block.generated.M_4ROT_TE;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
@@ -570,7 +570,7 @@ public class Resources {
 	@SubscribeEvent
 	public void onAttachTileEntityCapabilities(AttachCapabilitiesEvent<TileEntity> event){
 		if(Static.side().isClient() && (event.getObject() instanceof DisplayEntity ||
-			event.getObject() instanceof BlockBase.TileEntity || event.getObject() instanceof ContainerEntity)){
+			event.getObject() instanceof BlockTileEntity || event.getObject() instanceof ContainerEntity)){
 			event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
 		}
 	}
@@ -596,8 +596,8 @@ public class Resources {
 		if(Config.DISABLE_RAILS) return;
 		event.getWorld().getCapability(Capabilities.RAILSYSTEM, null).onChunkLoad(event.getChunk());
 		event.getChunk().getTileEntityMap().values().forEach(tile -> {
-			if(tile instanceof M_4ROT_TE.TileEntity){
-				((M_4ROT_TE.TileEntity)tile).setup();
+			if(tile instanceof MultiblockTileEntity){
+				((MultiblockTileEntity)tile).setup();
 			}
 		});
 	}

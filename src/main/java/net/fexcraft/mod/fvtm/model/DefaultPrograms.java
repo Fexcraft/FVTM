@@ -323,7 +323,7 @@ public class DefaultPrograms {
 	public static final Program BASIC_SIGNAL_CLEAR = new AlwaysGlow(){
 		@Override
 		public boolean shouldGlow(TileEntity tile, BlockData data){
-			return tile != null && ((SignalTileEntity)tile).getSignalState() == true;
+			return tile != null && ((SignalTileEntity)tile).getSignalState() == 1;
 		}
 		@Override
 		public String getId(){ return "fvtm:basic_signal_clear"; }
@@ -333,7 +333,7 @@ public class DefaultPrograms {
 	public static final Program BASIC_SIGNAL_STOP = new AlwaysGlow(){
 		@Override
 		public boolean shouldGlow(TileEntity tile, BlockData data){
-			return tile != null && ((SignalTileEntity)tile).getSignalState() == false;
+			return tile != null && ((SignalTileEntity)tile).getSignalState() == 0;
 		}
 		@Override
 		public String getId(){ return "fvtm:basic_signal_stop"; }

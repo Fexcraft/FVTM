@@ -333,7 +333,7 @@ public class DefaultPrograms {
 	public static final Program BASIC_SIGNAL_STOP = new AlwaysGlow(){
 		@Override
 		public boolean shouldGlow(TileEntity tile, BlockData data){
-			return tile != null && ((SignalTileEntity)tile).getSignalState() == 0;
+			return tile == null || ((SignalTileEntity)tile).getSignalState() == 0;
 		}
 		@Override
 		public String getId(){ return "fvtm:basic_signal_stop"; }

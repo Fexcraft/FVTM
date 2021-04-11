@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import static net.fexcraft.mod.fvtm.util.Properties.POWERED;
+
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -8,8 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackingTileEntity {
 	
-	public Vec316f juncpos;
-	public Junction junction;
+	protected Vec316f juncpos;
+	protected Junction junction;
 	
 	public SwitchTileEntity(){}
 
@@ -43,10 +45,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
         super.readFromNBT(compound);
         if(compound.hasKey("junction")){
         	juncpos = new Vec316f(compound.getCompoundTag("junction"));
-        	if(world != null){
-            	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
-            	if(sys != null) junction = sys.get().getJunction(juncpos, true);
-        	}
+
         }
         else{
         	juncpos = null;
@@ -58,9 +57,6 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
 	public void setJunction(Vec316f vec){
 		juncpos = vec;
 		sendUpdate();
-		if(juncpos == null) return;
-    	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
-    	if(sys != null) junction = sys.get().getJunction(juncpos, true);
 	}
 
     @Override
@@ -69,6 +65,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
         	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
         	if(sys != null) junction = sys.get().getJunction(juncpos, false);
         	if(junction == null) juncpos = null;//TODO control
+        	junction.entities.add(this);
 		}
 		return junction;
 	}
@@ -77,5 +74,20 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
 	public Vec316f getJuncPos(){
 		return juncpos;
 	}
+    
+    @Override
+    public void invalidate(){
+       super.invalidate();
+       if(junction != null) junction.entities.remove(this);
+    }
+    
+    @Override
+    public void updateSwitchState(){
+    	if(world == null || junction == null) return;
+    	boolean state = world.getBlockState(pos).getValue(POWERED);
+    	if(true){//TODO
+    		world.setBlockState(pos, world.getBlockState(pos).withProperty(POWERED, !state));
+    	}
+    }
 
 }

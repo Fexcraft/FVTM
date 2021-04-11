@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
@@ -9,9 +11,9 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class SignalTileEntity extends BlockTileEntity implements JunctionTrackingTileEntity {
 	
-	public Vec316f juncpos;
-	public Junction junction;
-	public EntryDirection dir = EntryDirection.FORWARD;
+	protected Vec316f juncpos;
+	protected Junction junction;
+	protected EntryDirection dir = EntryDirection.FORWARD;
 	
 	public SignalTileEntity(){}
 
@@ -38,10 +40,6 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
         super.readFromNBT(compound);
         if(compound.hasKey("junction")){
         	juncpos = new Vec316f(compound.getCompoundTag("junction"));
-        	if(world != null){
-            	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
-            	if(sys != null) junction = sys.get().getJunction(juncpos, true);
-        	}
         	dir = EntryDirection.getFromSaveByte(compound.getByte("direction"));
         }
         else{
@@ -55,9 +53,6 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
 	public void setJunction(Vec316f vec){
 		juncpos = vec;
 		sendUpdate();
-		if(juncpos == null) return;
-    	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
-    	if(sys != null) junction = sys.get().getJunction(juncpos, true);
 	}
 
     @Override
@@ -65,7 +60,11 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
 		if(junction == null && juncpos != null){
         	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
         	if(sys != null) junction = sys.get().getJunction(juncpos, false);
-        	if(junction == null) juncpos = null;//TODO control
+        	if(junction == null){
+        		juncpos = null;//TODO control
+        		Static.stop();
+        	}
+        	junction.entities.add(this);
 		}
 		return junction;
 	}
@@ -74,6 +73,19 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
 	public Vec316f getJuncPos(){
 		return juncpos;
 	}
+    
+    @Override
+    public void invalidate(){
+       super.invalidate();
+       if(junction != null) junction.entities.remove(this);
+    }
+    
+    @Override
+    public void updateSignalState(){
+    	Print.debug(world, junction, juncpos);
+    	if(world == null || junction == null) return;
+    	world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
+    }
 
     @Override
 	public void toggleDirection(){

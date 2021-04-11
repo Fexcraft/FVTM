@@ -80,4 +80,10 @@ public interface JunctionTrackingTileEntity {
 		return false;
 	}
 
+	/** For Signals. */
+	public default void updateSignalState(){}
+
+	/** For Switches. */
+	public default void updateSwitchState(){}
+
 }

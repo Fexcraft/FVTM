@@ -50,7 +50,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-		tooltip.add(Formatter.format("&9Rightclick on a Junction to apply."));
+		tooltip.add(Formatter.format("&9Rightclick on a Junction to change Signal type."));
 	}
 
 	@Override

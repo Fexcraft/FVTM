@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class SG_16ROT_TE extends G_16ROT_TE {
@@ -43,6 +44,21 @@ public class SG_16ROT_TE extends G_16ROT_TE {
             }
         }
         return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+    }
+	
+	@Override
+    public boolean canProvidePower(IBlockState state){
+        return true;
+    }
+
+    @Override
+    public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
+        return ((SignalTileEntity)world.getTileEntity(pos)).getSignalState() > 0 ? 15 : 0;
+    }
+    
+    @Override
+    public int getStrongPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
+        return ((SignalTileEntity)world.getTileEntity(pos)).getSignalState() > 0 ? 15 : 0;
     }
 
 }

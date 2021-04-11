@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import static net.fexcraft.mod.fvtm.util.Properties.POWERED;
+
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
@@ -10,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class SG_4ROT_TE extends G_4ROT_TE {
@@ -43,6 +46,21 @@ public class SG_4ROT_TE extends G_4ROT_TE {
             }
         }
         return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+    }
+	
+	@Override
+    public boolean canProvidePower(IBlockState state){
+        return true;
+    }
+
+    @Override
+    public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
+        return state.getValue(POWERED).booleanValue() ? 15 : 0;
+    }
+    
+    @Override
+    public int getStrongPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
+        return state.getValue(POWERED).booleanValue() ? 15 : 0;
     }
 
 }

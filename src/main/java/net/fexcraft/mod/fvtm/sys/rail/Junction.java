@@ -40,7 +40,7 @@ public class Junction {
 	public PathJuncType type;
 	public String station;
 	//
-	public ArrayList<JunctionTrackingTileEntity> entities;
+	public ArrayList<JunctionTrackingTileEntity> entities = new ArrayList<>();
 	private ArrayList<JEC> fortrains = new ArrayList<>();
 	private ArrayList<JEC> forswitch = new ArrayList<>();
 	//
@@ -276,19 +276,35 @@ public class Junction {
 			}
 			case DOUBLE:{
 				if(eqTrack(track, 0)){
-					if(applystate && !switch1){ switch1 = true; region.updateClient("junction_state", vecpos); }
+					if(applystate && !switch1){
+						switch1 = true;
+						region.updateClient("junction_state", vecpos);
+						entities.forEach(ent -> ent.updateSwitchState());
+					}
 					return tracks.get(switch0 ? 1 : 2);
 				}
 				if(eqTrack(track, 1)){
-					if(applystate && !switch0){ switch0 = true; region.updateClient("junction_state", vecpos); }
+					if(applystate && !switch0){
+						switch0 = true;
+						region.updateClient("junction_state", vecpos);
+						entities.forEach(ent -> ent.updateSwitchState());
+					}
 					return tracks.get(switch1 ? 0 : 3);
 				}
 				if(eqTrack(track, 2)){
-					if(applystate && switch0){ switch0 = false; region.updateClient("junction_state", vecpos); }
+					if(applystate && switch0){
+						switch0 = false;
+						region.updateClient("junction_state", vecpos);
+						entities.forEach(ent -> ent.updateSwitchState());
+					}
 					return tracks.get(switch1 ? 0 : 3);
 				}
 				if(eqTrack(track, 3)){
-					if(applystate && switch1){ switch1 = false; region.updateClient("junction_state", vecpos); }
+					if(applystate && switch1){
+						switch1 = false;
+						region.updateClient("junction_state", vecpos);
+						entities.forEach(ent -> ent.updateSwitchState());
+					}
 					return tracks.get(switch0 ? 1 : 2);
 				}
 				break;
@@ -338,7 +354,10 @@ public class Junction {
 			}
 		}
 		//
-		if(oldsig0 != signal0 || oldsig1 != signal1) this.region.updateClient("junction_signal_state", vecpos);
+		if(oldsig0 != signal0 || oldsig1 != signal1){
+			this.region.updateClient("junction_signal_state", vecpos);
+			entities.forEach(tile -> tile.updateSignalState());
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -370,7 +389,9 @@ public class Junction {
 			if(left){ switch1 = !switch1; Print.bar(player, "&aChanged Junction State. [1]"); }
 			else{ switch0 = !switch0; Print.bar(player, "&aChanged Junction State. [0]"); }
 		}
-		region.updateClient("junction_state", vecpos); return true;
+		region.updateClient("junction_state", vecpos);
+		entities.forEach(ent -> ent.updateSwitchState());
+		return true;
 	}
 
 	public int getIndex(PathKey key){

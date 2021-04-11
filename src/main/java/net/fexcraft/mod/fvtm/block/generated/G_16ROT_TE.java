@@ -1,10 +1,11 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import static net.fexcraft.mod.fvtm.util.Properties.ROTATION;
+
 import javax.annotation.Nullable;
 
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,8 +18,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class G_16ROT_TE extends BlockBase {
-
-    public static final PropertyInteger ROTATION = PropertyInteger.create("rotation", 0, 15);
 
     public G_16ROT_TE(Block type){
         super(type); this.setDefaultState(this.blockState.getBaseState().withProperty(ROTATION, 0));

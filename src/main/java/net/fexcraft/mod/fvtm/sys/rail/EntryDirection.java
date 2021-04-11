@@ -37,4 +37,8 @@ public enum EntryDirection {
 		return (byte)(this == BOTH ? 0 : this == FORWARD ? 1 : -1);
 	}
 
+	public EntryDirection toggle(){
+		return this == BOTH ? BOTH : this == FORWARD ? BACKWARD : FORWARD;
+	}
+
 }

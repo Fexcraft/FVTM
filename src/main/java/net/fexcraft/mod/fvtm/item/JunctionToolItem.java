@@ -67,14 +67,14 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
         if(player.isSneaking()){
         	Junction junc = syscap.getJunction(vector);
         	if(junc == null){
-				Print.chat(player, "&cNo junction at position.");
+				Print.bar(player, "&cNo junction at position.");
         	}
         	else if(junc.size() > 0){
-				Print.chat(player, "&cDisconnect all tracks before removing a Junction.");
+				Print.bar(player, "&cDisconnect all tracks before removing a Junction.");
         	}
         	else{
             	syscap.delJunction(vector);
-            	Print.chat(player, "&c&oRemoving Junction...");
+            	Print.bar(player, "&c&oRemoving Junction...");
         	}
 			return EnumActionResult.SUCCESS;
 		}
@@ -87,10 +87,10 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
         		junk.updateSwitchLocation(vector.vector, player.getHorizontalFacing().getOpposite());
         		junk.updateClient(); Print.chat(player, "&aNew Switch Location for Junction set!");
         		stack.getTagCompound().removeTag("fvtm:junction");
-    			Print.chat(player, "&7&oResetting Cached Position.");
+    			Print.bar(player, "&7&oResetting Cached Position.");
 	        }
 	        else{
-    			Print.chat(player, "&cNo Junction at this Position.");
+    			Print.bar(player, "&cNo Junction at this Position.");
 	        }
 	        return EnumActionResult.SUCCESS;
 		}
@@ -103,15 +103,15 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 	        	}
 	        	if(junk.tracks.size() <= 2){
 	        		stack.getTagCompound().removeTag("fvtm:junction");
-	    			Print.chat(player, "&7&oResetting previous Cached Position.");
+	    			Print.bar(player, "&7&oResetting previous Cached Position.");
 	        	}
 	        }
-			if(junk.tracks.size() <= 2){
+			if(junk.tracks.size() < 2){
         		GenericContainer.openGui(JUNCTION_ADJUSTER, new int[]{ 0, 0, 0 }, LISTENERID, vector.write(), player);
 			}
 			else{
 				stack.getTagCompound().setTag("fvtm:junction", vector.write());
-    			Print.chat(player, "&a&lJunction Position Cached.");
+    			Print.bar(player, "&a&lJunction Position Cached.");
 			}
             return EnumActionResult.SUCCESS;
 		}

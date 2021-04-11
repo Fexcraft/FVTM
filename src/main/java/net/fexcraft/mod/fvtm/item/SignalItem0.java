@@ -69,21 +69,25 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 			return EnumActionResult.SUCCESS;
 		}
         if(junction.signal != null){
-        	if(junction.signal.type == SignalType.Kind.BLOCK){ byte b = 0;
+        	if(junction.signal.type == SignalType.Kind.BLOCK){
+        		EntryDirection dir = EntryDirection.FORWARD;
         		if(junction.signal.oneway && junction.signal_dir == EntryDirection.FORWARD){
-        			junction.setSignal(SignalType.ONE_WAY_BLOCK, EntryDirection.BACKWARD); b = 0;
+        			junction.setSignal(SignalType.ONE_WAY_BLOCK, EntryDirection.BACKWARD);
+        			dir = EntryDirection.BACKWARD;
         		}
         		else if(junction.signal.oneway && junction.signal_dir == EntryDirection.BACKWARD){
-        			junction.setSignal(SignalType.TWO_WAY_BLOCK, EntryDirection.BOTH); b = -1;
+        			junction.setSignal(SignalType.TWO_WAY_BLOCK, EntryDirection.BOTH);
+        			dir = EntryDirection.BOTH;
         		}
         		else if(!junction.signal.oneway){
-        			junction.setSignal(SignalType.ONE_WAY_BLOCK, EntryDirection.FORWARD); b = 1;
+        			junction.setSignal(SignalType.ONE_WAY_BLOCK, EntryDirection.FORWARD);
+        			dir = EntryDirection.FORWARD;
         		}
         		else{
         			Print.chat(player, "A strange error happened, see location in log.");
         			Static.exception(null, false);
         		} junction.pollSignal(null);
-        		Print.chat(player, "&bJunction Signal &aupdated&b. [" + b + "]");
+        		Print.chat(player, "&bJunction Signal &aupdated&b. [" + dir.getSaveByte() + "/" + dir.name().toLowerCase() + "]");
     	        return EnumActionResult.SUCCESS;
         	}
         	else{

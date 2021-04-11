@@ -44,7 +44,7 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	};*/
 	public boolean rail_tempcull = false;
 	public float ties_distance = 0.5f;
-	public float signal_offset = 0.5f;
+	public float signal_offset = 0.25f;
 	public float buffer_length = 2f;
 	//
 	public Track buffer_track;
@@ -125,7 +125,9 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	
 	public void renderFork3Switch(JunctionSwitchEntity entity, Junction junction){}
 
-	public void renderSignal(Junction junction, EntryDirection dir, boolean state){}
+	public void renderSignal(Junction junction, EntryDirection dir, boolean state){
+		RailRenderer.junction_signal.render();
+	}
 
 	public void renderBuffer(Junction junc){
 		if(!groups.contains("buffer")) return;

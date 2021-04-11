@@ -19,7 +19,6 @@ public class StandardGauge extends RailGaugeModel {
 		this.addToCreators("Ferdinand (FEX___96)");
 		//
 		ties_distance = 0.5f;
-		signal_offset = 2.0f;
 		//
 		addRailRect(Static.sixteenth, 15, 4, 2, 2, true);
 		TurboList ties = new TurboList("ties"); this.groups.add(ties);

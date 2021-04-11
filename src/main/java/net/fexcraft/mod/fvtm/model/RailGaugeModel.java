@@ -10,7 +10,6 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -22,12 +21,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class RailGaugeModel extends GenericModel<Track, Integer> {
 
-	public static final RailGaugeModel EMPTY = new RailGaugeModel(){
-		public void renderDoubleSwitch(JunctionSwitchEntity entity, Junction junction){}
-		public void renderFork2Switch(JunctionSwitchEntity entity, Junction junction){}
-		public void renderFork3Switch(JunctionSwitchEntity entity, Junction junction){}
-		public void renderSignal(Junction junction, EntryDirection dir, boolean state){}
-	};
+	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	public ArrayList<Vec3f[]> rail_model = new ArrayList<>();
 	/*public Vec3f[][] rails = new Vec3f[][]{
 		{ new Vec3f(-1.0625, 0.25, 0), new Vec3f(-0.9375, 0.25, 0) },
@@ -100,30 +94,6 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 		}
 		if(mirror) addRailRectShape(scale, -start_x - width, start_y, width, height, tl, tr, bl, br, false);
 	}
-
-	public void renderSwitch(JunctionSwitchEntity entity, Junction junction){
-		switch(junction.type){
-			case DOUBLE:{
-				renderDoubleSwitch(entity, junction);
-				break;
-			}
-			case FORK_2:{
-				renderFork2Switch(entity, junction);
-				break;
-			}
-			case FORK_3:{
-				renderFork3Switch(entity, junction);
-				break;
-			}
-			case CROSSING: case STRAIGHT: default: return;
-		}
-	}
-	
-	public void renderDoubleSwitch(JunctionSwitchEntity entity, Junction junction){}
-	
-	public void renderFork2Switch(JunctionSwitchEntity entity, Junction junction){}
-	
-	public void renderFork3Switch(JunctionSwitchEntity entity, Junction junction){}
 
 	public void renderSignal(Junction junction, EntryDirection dir, boolean state){
 		RailRenderer.junction_signal.render();

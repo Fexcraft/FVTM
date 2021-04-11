@@ -6,18 +6,17 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
+import net.fexcraft.mod.fvtm.block.generated.JunctionTrackingTileEntity;
+import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -41,9 +40,7 @@ public class Junction {
 	public PathJuncType type;
 	public String station;
 	//
-	private Vec3f switchlocation;
-	public JunctionSwitchEntity entity;
-	public EnumFacing entityFacing;
+	public ArrayList<JunctionTrackingTileEntity> entities;
 	private ArrayList<JEC> fortrains = new ArrayList<>();
 	private ArrayList<JEC> forswitch = new ArrayList<>();
 	//
@@ -97,14 +94,6 @@ public class Junction {
 		if(compound.hasKey("SignalDir")) signal_dir = EntryDirection.getFromSaveByte(compound.getByte("SignalDir"));
 		if(tracks.size() > 2) type = compound.hasKey("Type")? PathJuncType.valueOf(compound.getString("Type")) : PathJuncType.byTracksAmount(size());
 		else type = PathJuncType.STRAIGHT;
-		if(compound.hasKey("SwitchPos")) this.switchlocation = DataUtil.readVec3f(compound.getTag("SwitchPos"));
-		else this.switchlocation = null;
-		if(compound.hasKey("SwitchFacing")) this.entityFacing = EnumFacing.byIndex(compound.getInteger("SwitchFacing"));
-		if(switchlocation != null && entityFacing == null) entityFacing = EnumFacing.NORTH;
-		if(entity != null){
-			if(switchlocation != null) entity.setPosition(switchlocation.x, switchlocation.y, switchlocation.z);
-			else entity.setDead();
-		}
 		station = compound.hasKey("Station") ? compound.getString("Station") : null;
 		if(compound.hasKey("JunctionCommands")){
 			forswitch.clear(); NBTTagList list = (NBTTagList)compound.getTag("JunctionCommands");
@@ -140,10 +129,6 @@ public class Junction {
 		if(signal != null) compound.setString("SignalType", signal.name());
 		if(signal_dir != null) compound.setByte("SignalDir", signal_dir.getSaveByte());
 		if(tracks.size() > 2) compound.setString("Type", type.name());
-		if(switchlocation != null && tracks.size() > 2){
-			compound.setTag("SwitchPos", DataUtil.writeVec3f(switchlocation));
-			compound.setInteger("SwitchFacing", entityFacing == null ? EnumFacing.NORTH.getIndex() : entityFacing.getIndex());
-		}
 		if(station != null) compound.setString("Station", station);
 		if(!forswitch.isEmpty()){
 			NBTTagList list = new NBTTagList();
@@ -172,7 +157,6 @@ public class Junction {
 
 	public void addnew(Track track){
 		tracks.add(track); type = PathJuncType.byTracksAmount(size());
-		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
 		if(signal != null){ this.setSignal(null, null); } updateClient(); return;
 	}
 	
@@ -206,7 +190,6 @@ public class Junction {
 			track.unit.section().splitAtTrack(track); track.unit.section().remove(track);
 		}
 		type = PathJuncType.byTracksAmount(size());
-		if(!type.hasEntity()){ switchlocation = null; if(entity != null) entity.setDead(); }
 		this.updateClient();
 		//
 		if(firstcall){
@@ -330,25 +313,16 @@ public class Junction {
 		return tracks.size();
 	}
 	
-	private byte checktimer = 0;
+	//private byte checktimer = 0;
 
 	public void onUpdate(){
 		pollSignal(null);
-		if(checktimer == 0){
-			if(switchlocation != null){
-				if(entity != null && !isInPlayerRange()){
-					entity.setDead(); entity = null;
-				}
-				else{
-					if(isInPlayerRange()){
-						entity = new JunctionSwitchEntity(root.getWorld(), this);
-						entity.setPosition(switchlocation.x, switchlocation.y, switchlocation.z);
-						root.getWorld().spawnEntity(entity);
-					}
-				}
-			}
+		/*if(checktimer == 0){
+			// junction switch entities been updated here,
+			// right now there's nothing to update here though
 			checktimer = 5;
-		} checktimer--;
+		}
+		checktimer--;*/
 	}
 	
 	public void pollSignal(RailEntity ent){
@@ -367,18 +341,14 @@ public class Junction {
 		if(oldsig0 != signal0 || oldsig1 != signal1) this.region.updateClient("junction_signal_state", vecpos);
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isInPlayerRange(){
 		for(EntityPlayer pl : root.getWorld().playerEntities){
 			if(vecpos.vector.dis(new Vec3f(pl.posX, pl.posY, pl.posZ)) < 1024) return true;
 		} return false;
 	}
 
-	public void updateSwitchLocation(Vec3f vector, EnumFacing opposite){
-		this.switchlocation = vector; entityFacing = opposite;
-		if(entity != null) entity.setPosition(switchlocation.x, switchlocation.y, switchlocation.z);
-	}
-
-	public boolean onSwitchInteract(EntityPlayer player, JunctionSwitchEntity entity, boolean left){
+	public boolean onSwitchInteract(EntityPlayer player, SwitchTileEntity tile, boolean left){
 		if(type == PathJuncType.STRAIGHT){
 			Print.chat(player, "&cThis Junction has only 2 tracks! It cannot be switched."); return true;
 		}
@@ -401,10 +371,6 @@ public class Junction {
 			else{ switch0 = !switch0; Print.bar(player, "&aChanged Junction State. [0]"); }
 		}
 		region.updateClient("junction_state", vecpos); return true;
-	}
-
-	public void resetSwitchPosition(){
-		this.switchlocation = null; entityFacing = null; if(entity != null) entity.setDead(); region.updateClient("junction", vecpos);
 	}
 
 	public int getIndex(PathKey key){

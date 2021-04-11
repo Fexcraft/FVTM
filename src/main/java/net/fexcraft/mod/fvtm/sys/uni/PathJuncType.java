@@ -1,5 +1,10 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import net.fexcraft.mod.fvtm.block.generated.DBSW_4ROT_TE;
+import net.fexcraft.mod.fvtm.block.generated.F2SW_4ROT_TE;
+import net.fexcraft.mod.fvtm.block.generated.F3SW_4ROT_TE;
+import net.minecraft.block.Block;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -38,9 +43,12 @@ public enum PathJuncType {
 	public boolean isStraight(){
 		return this == STRAIGHT;
 	}
-	
-	public boolean hasEntity(){
-		return isSwitch() || isDouble();
+
+	public static PathJuncType fromAddonBlock(Block block){
+		if(block instanceof DBSW_4ROT_TE) return DOUBLE;
+		if(block instanceof F2SW_4ROT_TE) return FORK_2;
+		if(block instanceof F3SW_4ROT_TE) return FORK_3;
+		return STRAIGHT;
 	}
 
 }

@@ -9,7 +9,10 @@ public enum BlockType {
 	GENERIC_ROAD(G_ROAD_TE.class, G_ROAD.class),
 	MULTIBLOCK_4ROT(M_4ROT_TE.class, M_4ROT.class),
 	SIGNAL_4ROT(SG_4ROT_TE.class, null),
-	SIGNAL_16ROT(SG_16ROT_TE.class, null)
+	SIGNAL_16ROT(SG_16ROT_TE.class, null),
+	FORK2_SWITCH_4ROT(F2SW_4ROT_TE.class, null),
+	FORK3_SWITCH_4ROT(F3SW_4ROT_TE.class, null),
+	DOUBLE_SWITCH_4ROT(DBSW_4ROT_TE.class, null),
 	;
 	
 	public final Class<? extends net.minecraft.block.Block> blockclass, plainclass;
@@ -23,7 +26,10 @@ public enum BlockType {
 		switch(this){
 			case MULTIBLOCK_4ROT:
 			case GENERIC_4ROT:
-			case SIGNAL_4ROT:{
+			case SIGNAL_4ROT:
+			case FORK2_SWITCH_4ROT:
+			case FORK3_SWITCH_4ROT:
+			case DOUBLE_SWITCH_4ROT: {
 		        switch(meta){
 		            case 2: return 0;
 		            case 3: return -180d;

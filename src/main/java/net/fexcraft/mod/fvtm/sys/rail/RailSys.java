@@ -202,7 +202,7 @@ public class RailSys implements RailSystem {
 		else{
 			if(junc != null){
 				if(!junc.tracks.isEmpty()) return false;
-				if(junc.entity != null) junc.entity.setDead();
+				junc.entities.forEach(ent -> ent.setJunction(null));
 			}
 			region.setAccessed().updateClient("no_junction", vector); return true;
 		}

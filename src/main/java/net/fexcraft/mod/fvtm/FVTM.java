@@ -24,6 +24,7 @@ import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
+import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
@@ -34,7 +35,6 @@ import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
-import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
 import net.fexcraft.mod.fvtm.entity.RailTestEntity;
 import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
@@ -125,7 +125,8 @@ public class FVTM {
 		EntitySystem.add(new RailSpawnSystem());
 		EntitySystem.add(new BasicSpawnSystem());
 		GameRegistry.registerTileEntity(BlockTileEntity.class, new ResourceLocation("fvtm:blockbase"));
-		GameRegistry.registerTileEntity(SignalTileEntity.class, new ResourceLocation("fvtm:signal"));
+		GameRegistry.registerTileEntity(SignalTileEntity.class, new ResourceLocation("fvtm:rail_signal"));
+		GameRegistry.registerTileEntity(SwitchTileEntity.class, new ResourceLocation("fvtm:rail_switch"));
 		GameRegistry.registerTileEntity(MultiblockTileEntity.class, new ResourceLocation("fvtm:multiblock"));
 		GameRegistry.registerTileEntity(MultiblockTickableTE.class, new ResourceLocation("fvtm:multiblock_tickable"));
 		GameRegistry.registerTileEntity(RailEntity.class, new ResourceLocation("fvtm:rail"));
@@ -143,7 +144,7 @@ public class FVTM {
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:streetsign"), StreetSign.class, "fvtm.streetsign", 7000, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:roadsign"), RoadSignEntity.class, "fvtm.roadsign", 7001, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:railvehicle"), RailVehicle.class, "fvtm.railvehicle", 9001, this, 256, 1, false);
-		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:junctionswitch"), JunctionSwitchEntity.class, "fvtm.junctionswitch", 7002, this, 256, 600, false);
+		//EntityRegistry.registerModEntity(new ResourceLocation("fvtm:junctionswitch"), JunctionSwitchEntity.class, "fvtm.junctionswitch", 7002, this, 256, 600, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("fvtm:basic_landvehicle"), net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle.class, "fvtm.landvehicle", 9002, this, 256, 1, false);
 		if(event.getSide().isClient()){
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(LandVehicle.class, RenderLandVehicle::new);
@@ -153,7 +154,7 @@ public class FVTM {
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(StreetSign.class, RenderStreetSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RoadSignEntity.class, RenderRoadSign::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RailVehicle.class, RenderRailVehicle::new);
-			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(JunctionSwitchEntity.class, RenderJunctionSwitch::new);
+			//net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(JunctionSwitchEntity.class, RenderJunctionSwitch::new);
 			net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(ULandVehicle.class, RenderULV::new);
 			CapabilityManager.INSTANCE.register(RenderCache.class, new RenderCacheHandler.Storage(), new RenderCacheHandler.Callable());
 			MinecraftForge.EVENT_BUS.register(new net.fexcraft.mod.fvtm.util.handler.KeyHandler());

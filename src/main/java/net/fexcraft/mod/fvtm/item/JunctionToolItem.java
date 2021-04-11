@@ -81,17 +81,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		Junction junk = syscap.getJunction(vector, true);
 		if(junk == null){
-	        if(stack.getTagCompound().hasKey("fvtm:junction")){
-	        	cached = new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:junction"));
-        		junk = syscap.getJunction(cached, true);
-        		junk.updateSwitchLocation(vector.vector, player.getHorizontalFacing().getOpposite());
-        		junk.updateClient(); Print.chat(player, "&aNew Switch Location for Junction set!");
-        		stack.getTagCompound().removeTag("fvtm:junction");
-    			Print.bar(player, "&7&oResetting Cached Position.");
-	        }
-	        else{
-    			Print.bar(player, "&cNo Junction at this Position.");
-	        }
+			Print.bar(player, "&cNo Junction at this Position.");
 	        return EnumActionResult.SUCCESS;
 		}
 		else{

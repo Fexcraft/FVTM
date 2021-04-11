@@ -1,12 +1,8 @@
 package net.fexcraft.mod.fvtm.model;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.entity.JunctionSwitchEntity;
-import net.fexcraft.mod.fvtm.sys.rail.Junction;
 
 @fModel(registryname = "fvtm:models/gauges/standard")
 public class StandardGauge extends RailGaugeModel {
@@ -50,7 +46,7 @@ public class StandardGauge extends RailGaugeModel {
 		this.groups.add(switch_fork3);
 	}
 
-	@Override
+	/*@Override
 	public void renderDoubleSwitch(JunctionSwitchEntity entity, Junction junction){
 		GL11.glTranslatef(0, 0, -.25f);
 		switch_base.get(0).render();
@@ -100,6 +96,6 @@ public class StandardGauge extends RailGaugeModel {
 		switch_lever.get(0).render();
 		switch_fork3.get(0).rotationAngleY = junction.switch0 ? -90 : junction.switch1 ? 30 : -30;
 		switch_fork3.get(0).render();
-	}
+	}*/
 	
 }

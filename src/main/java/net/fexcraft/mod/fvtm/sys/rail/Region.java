@@ -79,8 +79,6 @@ public class Region {
 	public Region read(NBTTagCompound compound){
 		if(compound.hasKey("Junctions")){
 			if(!junctions.isEmpty()){
-				for(Junction junction : junctions.values())
-					if(junction.entity != null) junction.entity.setDead();
 				junctions.clear();
 			}
 			NBTTagList list = (NBTTagList)compound.getTag("Junctions");

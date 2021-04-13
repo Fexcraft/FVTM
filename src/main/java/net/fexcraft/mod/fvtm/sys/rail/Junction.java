@@ -427,7 +427,7 @@ public class Junction {
 			TileEntity tile = root.getWorld().getTileEntity(pos);
 			if(tile instanceof JunctionTrackingTileEntity){
 				JunctionTrackingTileEntity ent = (JunctionTrackingTileEntity)tile;
-				if(!ent.getJuncPos().equals(this.vecpos)) return true;
+				if(ent.getJuncPos() == null || !ent.getJuncPos().equals(this.vecpos)) return true;
 				if(signal) ent.updateSignalState();
 				else ent.updateSwitchState();
 			}

@@ -644,7 +644,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
     //--- PACKETS ---//
     private long lr = -1;
 
-    @SuppressWarnings("unused") @Override
+    @Override
     public void processServerPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
             for(VehicleScript script : rek.data().getScripts()){
@@ -655,28 +655,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
         if(pkt.nbt.hasKey("task")){
             switch(pkt.nbt.getString("task")){
-                case "engine_toggle": {
-                    if(lr + 1000 >= Time.getDate()){ break; }
-                    lr = Time.getDate(); boolean on = false, nf = false; EngineFunction engine = rek.data().getPart("engine").getFunction("fvtm:engine");
-                    pkt.nbt.setBoolean("engine_toggle_result", on = engine.toggle());
-                    if(rek.data().getStoredFuel() == 0){
-                        pkt.nbt.setBoolean("engine_toggle_result", on = false);
-                        pkt.nbt.setBoolean("no_fuel", nf = true);
-                    }
-                    ApiUtil.sendEntityUpdatePacketToAllAround(this, pkt.nbt);
-                    rek.ent().throttle = 0;
-                    //
-                    /*SoundEvent event = vehicledata.getPart("engine").getPart().getSound(nf ? "engine_fail" : on ? "engine_start" : "engine_stop");
-                    if(event != null){
-                        this.playSound(event, 0.5f, 1f);
-                        //this.world.playSound(null, this.posX, this.posY, this.posZ, event, this.getSoundCategory(), 1f, 1f);
-                        Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Playing!");
-                    }
-                    else{
-                        Print.debug((nf ? "engine_fail" : on ? "engine_start" : "engine_stop") + " -> Not found.");
-                    }*///TODO SOUND
-                    break;
-                }
                 case "resync": {
                     NBTTagCompound nbt = this.rek.data().write(new NBTTagCompound());
                     nbt.setString("task", "update_vehicledata");

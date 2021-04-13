@@ -34,6 +34,7 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
@@ -51,6 +52,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -231,10 +233,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 return true;
             }
             case ENGINE: {
-            	//TODO check this (server/client)
-                NBTTagCompound nbt = new NBTTagCompound();
-                nbt.setString("task", "engine_toggle");
-                ApiUtil.sendEntityUpdatePacketToServer(this, nbt);
+                this.toggleEngine();
                 return true;
             }
             case DISMOUNT: {
@@ -687,6 +686,22 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         }
     }
 
+    private void toggleEngine(){
+        if(lr + 1000 >= Time.getDate()){ return; }
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setString("task", "engine_toggle");
+        lr = Time.getDate();
+        EngineFunction engine = rek.data().getPart("engine").getFunction("fvtm:engine");
+        if(world.isRemote) engine.setState(compound.getBoolean("engine_toggle_result"));
+        else compound.setBoolean("engine_toggle_result", engine.toggle());
+        if(rek.data().getStoredFuel() == 0){
+        	compound.setBoolean("engine_toggle_result", engine.setState(false));
+            compound.setBoolean("no_fuel", true);
+        }
+        ApiUtil.sendEntityUpdatePacketToAllAround(this, compound);
+        throttle = 0;
+	}
+
     @SideOnly(Side.CLIENT) @Override
     public void processClientPacket(PacketEntityUpdate pkt){
         if(pkt.nbt.hasKey("ScriptId")){
@@ -700,12 +715,28 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             switch(pkt.nbt.getString("task")){
                 case "engine_toggle": {
                 	boolean riding = net.minecraft.client.Minecraft.getMinecraft().player.isRiding();
-                    if(riding && getDriver() == net.minecraft.client.Minecraft.getMinecraft().player.getRidingEntity()){
-                        Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Engine toggled " + (rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(pkt.nbt.getBoolean("engine_toggle_result")) ? "on" : "off") + ".");
+                    if(riding && getDriver() == net.minecraft.client.Minecraft.getMinecraft().player){
+                    	boolean state = pkt.nbt.getBoolean("engine_toggle_result");
+                    	EntityPlayer player = net.minecraft.client.Minecraft.getMinecraft().player;
+                        Print.chat(player, "Engine toggled " + (rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").setState(state) ? "on" : "off") + ".");
                         if(pkt.nbt.hasKey("no_fuel") && pkt.nbt.getBoolean("no_fuel")){
-                            Print.chat(net.minecraft.client.Minecraft.getMinecraft().player, "Out of fuel!");
+                            Print.chat(player, "Out of fuel!");
+                            rek.data().playSound(this, "engine_fail");
                         }
-                    } throttle = 0;
+                        else rek.data().playSound(this, state ? "engine_start" : "engine_stop");
+                    }
+                    throttle = 0;
+                    if(rek.data().getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
+                        SoundEvent event = rek.data().getSound("engine_running").event;
+                        if(event != null){
+                            this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
+                            net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
+                            Print.debug("engine_running -> Playing! (LOOP)");
+                        }
+                        else{
+                            Print.debug("engine_running -> Not found.");
+                        }
+                    }
                     break;
                 }
                 case "resync":

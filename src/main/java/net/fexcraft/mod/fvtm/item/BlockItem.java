@@ -47,8 +47,9 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
-        if(type.isFunctional()) tooltip.add(Formatter.format("&b&oFunctional Block"));
-        if(type.isDecoration()) tooltip.add(Formatter.format("&e&oDecoration Block"));
+    	if(type.isRailBlock()) tooltip.add(Formatter.format("&6&oRailway Block"));
+    	else if(type.isFunctional()) tooltip.add(Formatter.format("&b&oFunctional Block"));
+    	else if(type.isDecoration()) tooltip.add(Formatter.format("&e&oDecoration Block"));
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
     	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){

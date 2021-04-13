@@ -57,4 +57,8 @@ public enum BlockType {
 		return this == MULTIBLOCK_4ROT;
 	}
 
+	boolean isRailBlock(){
+		return this == SIGNAL_16ROT || this == SIGNAL_4ROT || this == FORK2_SWITCH_4ROT || this == FORK3_SWITCH_4ROT || this == DOUBLE_SWITCH_4ROT;
+	}
+
 }

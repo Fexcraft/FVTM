@@ -187,6 +187,10 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		return multiblock == null;
 	}
 
+	public boolean isRailBlock(){
+		return blocktype.isRailBlock();
+	}
+
 	public byte getMaxStackSize(){
 		return maxstacksize;
 	}

@@ -14,7 +14,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
-import net.fexcraft.mod.fvtm.event.RailEvents;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
@@ -28,7 +27,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.MinecraftForge;
 
 /**
  * "Rail System Data"
@@ -204,8 +202,8 @@ public class RailSys implements RailSystem {
 		else{
 			if(junc != null){
 				if(!junc.tracks.isEmpty()) return false;
-				junc.entities.forEach(ent -> ent.setJunction(null));
-				MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionRemoved(this, junc));
+				junc.unlinkLinkedTileEntities();
+				//MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionRemoved(this, junc));
 			}
 			region.setAccessed().updateClient("no_junction", vector);
 			return true;
@@ -228,7 +226,7 @@ public class RailSys implements RailSystem {
 		Junction junction = new Junction(region, vector);
 		region.getJunctions().put(vector, junction);
 		region.setAccessed().updateClient("junction", vector);
-		MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionAdded(this, junction));
+		//MinecraftForge.EVENT_BUS.post(new RailEvents.JunctionEvent.JunctionAdded(this, junction));
 		return;
 	}
 

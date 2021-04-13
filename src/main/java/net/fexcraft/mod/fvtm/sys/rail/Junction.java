@@ -17,7 +17,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -40,7 +43,7 @@ public class Junction {
 	public PathJuncType type;
 	public String station;
 	//
-	public ArrayList<JunctionTrackingTileEntity> entities = new ArrayList<>();
+	public ArrayList<BlockPos> entities = new ArrayList<>();
 	private ArrayList<JEC> fortrains = new ArrayList<>();
 	private ArrayList<JEC> forswitch = new ArrayList<>();
 	//
@@ -113,6 +116,13 @@ public class Junction {
 			signal0 = compound.getBoolean("Signal0");
 			signal1 = compound.getBoolean("Signal1");
 		}
+		entities.clear();
+		if(compound.hasKey("LinkedBlocks")){
+			NBTTagList list = (NBTTagList)compound.getTag("LinkedBlocks");
+			for(int i = 0; i < list.tagCount(); i++){
+				entities.add(BlockPos.fromLong(((NBTTagLong)list.get(i)).getLong()));
+			}
+		}
 		return this;
 	}
 
@@ -143,6 +153,13 @@ public class Junction {
 		if(signal != null){
 			compound.setBoolean("Signal0", signal0);
 			compound.setBoolean("Signal1", signal1);
+		}
+		if(!entities.isEmpty()){
+			NBTTagList list = new NBTTagList();
+			for(BlockPos pos : entities){
+				list.appendTag(new NBTTagLong(pos.toLong()));
+			}
+			compound.setTag("LinkedBlocks", list);
 		}
 		return compound;
 	}
@@ -279,7 +296,7 @@ public class Junction {
 					if(applystate && !switch1){
 						switch1 = true;
 						region.updateClient("junction_state", vecpos);
-						entities.forEach(ent -> ent.updateSwitchState());
+						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch0 ? 1 : 2);
 				}
@@ -287,7 +304,7 @@ public class Junction {
 					if(applystate && !switch0){
 						switch0 = true;
 						region.updateClient("junction_state", vecpos);
-						entities.forEach(ent -> ent.updateSwitchState());
+						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch1 ? 0 : 3);
 				}
@@ -295,7 +312,7 @@ public class Junction {
 					if(applystate && switch0){
 						switch0 = false;
 						region.updateClient("junction_state", vecpos);
-						entities.forEach(ent -> ent.updateSwitchState());
+						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch1 ? 0 : 3);
 				}
@@ -303,7 +320,7 @@ public class Junction {
 					if(applystate && switch1){
 						switch1 = false;
 						region.updateClient("junction_state", vecpos);
-						entities.forEach(ent -> ent.updateSwitchState());
+						updateLinkedTileEntities(false);
 					}
 					return tracks.get(switch0 ? 1 : 2);
 				}
@@ -356,7 +373,7 @@ public class Junction {
 		//
 		if(oldsig0 != signal0 || oldsig1 != signal1){
 			this.region.updateClient("junction_signal_state", vecpos);
-			entities.forEach(tile -> tile.updateSignalState());
+			updateLinkedTileEntities(true);
 		}
 	}
 
@@ -390,8 +407,39 @@ public class Junction {
 			else{ switch0 = !switch0; Print.bar(player, "&aChanged Junction State. [0]"); }
 		}
 		region.updateClient("junction_state", vecpos);
-		entities.forEach(ent -> ent.updateSwitchState());
+		updateLinkedTileEntities(false);
 		return true;
+	}
+
+	private void updateLinkedTileEntities(boolean signal){
+		entities.removeIf(pos -> {
+			if(!root.getWorld().isBlockLoaded(pos)) return false;
+			TileEntity tile = root.getWorld().getTileEntity(pos);
+			if(tile instanceof JunctionTrackingTileEntity){
+				JunctionTrackingTileEntity ent = (JunctionTrackingTileEntity)tile;
+				if(!ent.getJuncPos().equals(this.vecpos)) return true;
+				if(signal) ent.updateSignalState();
+				else ent.updateSwitchState();
+			}
+			else return true;
+			return false;
+		});
+	}
+	
+	public void unlinkLinkedTileEntities(){
+		for(BlockPos pos : entities){
+			if(!root.getWorld().isBlockLoaded(pos)) continue;
+			TileEntity tile = root.getWorld().getTileEntity(pos);
+			if(tile instanceof JunctionTrackingTileEntity){
+				JunctionTrackingTileEntity ent = (JunctionTrackingTileEntity)tile;
+				if(!ent.getJuncPos().equals(this.vecpos)) continue;
+				ent.setJunction(null);
+			}
+		}
+	}
+
+	public void addLinkedTileEntity(BlockPos pos){
+		if(!entities.contains(pos)) entities.add(pos);
 	}
 
 	public int getIndex(PathKey key){

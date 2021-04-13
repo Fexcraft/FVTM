@@ -5,12 +5,15 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
  * 
@@ -60,6 +63,13 @@ public interface JunctionTrackingTileEntity {
     		tile.toggleDirection();
         	Print.bar(player, "&bSignal entry direction set to &7" + tile.getDirection() + "&b.");
     	}
+	}
+	
+	public default void linkJunction(World world, BlockPos pos, Vec316f vec){
+		if(world == null || !world.hasCapability(Capabilities.RAILSYSTEM, null)) return;
+		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		Junction junc = system.getJunction(vec);
+		if(junc != null) junc.entities.add(pos);
 	}
 
 	public Vec316f getJuncPos();

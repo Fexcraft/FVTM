@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.block.generated;
 
 import static net.fexcraft.mod.fvtm.util.Properties.POWERED;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -56,6 +57,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
     @Override
 	public void setJunction(Vec316f vec){
 		juncpos = vec;
+		linkJunction(world, pos, vec);
 		sendUpdate();
 	}
 
@@ -64,8 +66,11 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
 		if(junction == null && juncpos != null){
         	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
         	if(sys != null) junction = sys.get().getJunction(juncpos, false);
-        	if(junction == null) juncpos = null;//TODO control
-        	junction.entities.add(this);
+        	if(junction == null){
+        		juncpos = null;//TODO control
+        		Static.stop();
+        	}
+        	junction.addLinkedTileEntity(this.pos);
 		}
 		return junction;
 	}

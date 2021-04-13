@@ -52,6 +52,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
     @Override
 	public void setJunction(Vec316f vec){
 		juncpos = vec;
+		linkJunction(world, pos, vec);
 		sendUpdate();
 	}
 
@@ -64,7 +65,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
         		juncpos = null;//TODO control
         		Static.stop();
         	}
-        	junction.entities.add(this);
+        	junction.addLinkedTileEntity(this.pos);
 		}
 		return junction;
 	}

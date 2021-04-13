@@ -43,8 +43,8 @@ public class SimpleSwitchFork2Model extends BlockModel {
 		lever_prog.addElse(new DefaultPrograms.RotationSetter(2, -20, 0, true));
 		//
 		TurboList lever = new TurboList("lever");
-		lever.add(new ModelRendererTurbo(lever, 9, 6, textureX, textureY).addBox(0.25f, -8, 0.25f, 0.5f, 8, 0.5f)
-			.setRotationPoint(-0.5f, -1, -0.5f).setRotationAngle(0, 0, 0)
+		lever.add(new ModelRendererTurbo(lever, 9, 6, textureX, textureY).addBox(-0.25f, -8, -0.25f, 0.5f, 8, 0.5f)
+			.setRotationPoint(0, -1, 0).setRotationAngle(0, 0, 0)
 		);
 		lever.addProgram(lever_prog);
 		this.groups.add(lever);

@@ -261,6 +261,7 @@ public class Junction {
 						boolean bool = eqTrack(track, 1);
 						if(switch0 != bool){ switch0 = bool;
 							region.updateClient("junction_state", vecpos);
+							updateLinkedTileEntities(false);
 						}
 					}
 					return tracks.get(0);
@@ -272,13 +273,22 @@ public class Junction {
 					if(applystate){
 						boolean bool0 = eqTrack(track, 1), bool1 = eqTrack(track, 2);
 						if(bool0 && !switch0){
-							switch0 = true; switch1 = false; region.updateClient("junction_state", vecpos);
+							switch0 = true;
+							switch1 = false;
+							region.updateClient("junction_state", vecpos);
+							updateLinkedTileEntities(false);
 						}
 						else if(bool1 && (switch0 || switch1)){
-							switch0 = false; switch1 = false; region.updateClient("junction_state", vecpos);
+							switch0 = false;
+							switch1 = false;
+							region.updateClient("junction_state", vecpos);
+							updateLinkedTileEntities(false);
 						}
 						else if(!bool1 && !switch1){
-							switch0 = false; switch1 = true; region.updateClient("junction_state", vecpos);
+							switch0 = false;
+							switch1 = true;
+							region.updateClient("junction_state", vecpos);
+							updateLinkedTileEntities(false);
 						}
 					}
 					return tracks.get(0);

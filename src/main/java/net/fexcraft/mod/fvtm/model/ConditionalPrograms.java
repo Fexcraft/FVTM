@@ -4,12 +4,16 @@ import static net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
+import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.TurboList.ConditionalProgram;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 
 public class ConditionalPrograms {
 	
@@ -183,6 +187,71 @@ public class ConditionalPrograms {
 		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
 			for(String str : groups) if(str.equals(part)) return true;
 			return false;
+		}
+		
+	}
+	
+	public static class SignalState extends ConditionalProgram {
+
+		@Override
+		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			return tile != null && ((SignalTileEntity)tile).getSignalState() > 0;
+		}
+		
+	}
+	
+	public static class SwitchFork2State extends ConditionalProgram {
+
+		@Override
+		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			return tile != null && ((SwitchTileEntity)tile).getSwitch0State();
+		}
+		
+	}
+	
+	public static class SwitchFork3State extends ConditionalProgram {
+		
+		private int tracked;
+
+		public SwitchFork3State(int tracked){
+			this.tracked = tracked;
+		}
+
+		@Override
+		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			return tile != null && ((SwitchTileEntity)tile).getSwitch2State() == tracked;
+		}
+		
+	}
+	
+	public static class SwitchDoubleState extends ConditionalProgram {
+		
+		private boolean switch0, switch1;
+
+		public SwitchDoubleState(boolean switch0, boolean switch1){
+			this.switch0 = switch0;
+			this.switch1 = switch1;
+		}
+
+		@Override
+		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			return tile != null && ((SwitchTileEntity)tile).isDoubleSwitchState(switch0, switch1);
+		}
+		
+	}
+	
+	public static class SwitchDoubleStateSide extends ConditionalProgram {
+		
+		private boolean side, state;
+
+		public SwitchDoubleStateSide(boolean side, boolean state){
+			this.side = side;
+			this.state = state;
+		}
+
+		@Override
+		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			return tile != null && ((SwitchTileEntity)tile).isDoubleSwitchStateOnSide(side, state);
 		}
 		
 	}

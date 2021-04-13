@@ -1267,7 +1267,7 @@ public class DefaultPrograms {
 		private float rot;
 		
 		public RotationSetter(int axis, float rot_by, float def_rot, boolean set){
-			this.override = true;
+			this.override = set;
 			this.axis = axis;
 			defrot = def_rot;
 			rot = rot_by;
@@ -1285,6 +1285,16 @@ public class DefaultPrograms {
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			list.rotateAxis(override ? defrot : -(rot + defrot), axis, override);
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			list.rotateAxis(rot + defrot, axis, override);
+		}
+		
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
 			list.rotateAxis(override ? defrot : -(rot + defrot), axis, override);
 		}
 		
@@ -1337,6 +1347,17 @@ public class DefaultPrograms {
 
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glPopMatrix();
+		}
+
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			GL11.glPushMatrix();
+			GL11.glTranslatef(x, y, z);
+		}
+
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
 			GL11.glPopMatrix();
 		}
 		

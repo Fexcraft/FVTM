@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
@@ -78,12 +77,11 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
     @Override
     public void invalidate(){
        super.invalidate();
-       if(junction != null) junction.entities.remove(this);
+       if(junction != null) junction.entities.remove(this.pos);
     }
     
     @Override
     public void updateSignalState(){
-    	Print.debug(world, junction, juncpos);
     	if(world == null || junction == null) return;
     	world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
     }

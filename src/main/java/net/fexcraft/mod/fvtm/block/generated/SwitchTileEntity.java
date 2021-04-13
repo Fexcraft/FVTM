@@ -1,8 +1,7 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import static net.fexcraft.mod.fvtm.util.Properties.POWERED;
-
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -30,6 +29,20 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
 
 	public Boolean getSwitchStateFork3(){
 		return getJunction() == null || junction.switch0 ? null : junction.switch1;
+	}
+
+	public int getSwitch2State(){
+		return getJunction() == null || junction.switch0 ? 0 : junction.switch1 ? 1 : 2;
+	}
+
+	public boolean isDoubleSwitchState(boolean switch0, boolean switch1){
+		if(getJunction() == null) return false;
+		return junction.switch0 == switch0 && junction.switch1 == switch1;
+	}
+
+	public boolean isDoubleSwitchStateOnSide(boolean side, boolean state){
+		if(getJunction() == null) return false;
+		return side ? junction.switch1 == state : junction.switch0 == state;
 	}
 
     @Override
@@ -83,16 +96,14 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
     @Override
     public void invalidate(){
        super.invalidate();
-       if(junction != null) junction.entities.remove(this);
+       if(junction != null) junction.entities.remove(this.pos);
     }
     
     @Override
     public void updateSwitchState(){
+    	Print.debug(world, juncpos, junction);
     	if(world == null || junction == null) return;
-    	boolean state = world.getBlockState(pos).getValue(POWERED);
-    	if(true){//TODO
-    		world.setBlockState(pos, world.getBlockState(pos).withProperty(POWERED, !state));
-    	}
+    	world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
     }
 
 }

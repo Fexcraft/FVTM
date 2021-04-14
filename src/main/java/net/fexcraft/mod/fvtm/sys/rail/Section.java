@@ -5,7 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.util.Resources;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 /**
  * 
@@ -46,7 +51,8 @@ public class Section {
 	public void fuseAtTrack(Track zero){
 		Print.debug("Fusing sections at track: " + zero);
 		Section old = null;
-		ArrayList<TrackUnit> list = new ArrayList<>(); list.add(zero.unit);
+		ArrayList<TrackUnit> list = new ArrayList<>();
+		list.add(zero.unit);
 		list = explore(data.getJunction(zero.start), list);
 		list = explore(data.getJunction(zero.end), list);
 		//TODO check which section is the largest, and fuse with that one instead
@@ -62,6 +68,7 @@ public class Section {
 				}
 			}
 		}
+		this.updateClientSections(zero.junction, this, null);
 	}
 
 	/** Called after a track was removed from a junction.*/
@@ -82,7 +89,7 @@ public class Section {
 		}
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 		track.junction.region.updateClient("sections", track.junction.getVec316f());
-		//TODO fine tuned method that only sends updated
+		this.updateClientSections(track.junction, this, section);
 	}
 
 	public void splitAtSignal(Junction junction){
@@ -102,7 +109,7 @@ public class Section {
 		for(TrackUnit unit : less){ unit.setSection(section); }
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 		junction.region.updateClient("sections", junction.getVec316f());
-		//TODO fine tuned method that only sends updated
+		this.updateClientSections(junction, this, section);
 	}
 
 	private ArrayList<TrackUnit> explore(Junction junction, ArrayList<TrackUnit> list){
@@ -138,6 +145,32 @@ public class Section {
 
 	public boolean remove(TrackUnit unit){
 		return units.remove(unit);
+	}
+
+	private void updateClientSections(Junction junction, Section sec0, Section sec1){
+		NBTTagCompound compound = null;
+		compound = new NBTTagCompound();
+		compound.setString("target_listener", "fvtm:railsys");
+		compound.setString("task", "update_sections");
+		NBTTagList list = new NBTTagList();
+		if(sec0 != null){
+			for(TrackUnit unit : sec0.units){
+				NBTTagCompound com = new NBTTagCompound();
+				com.setString("unit", unit.getUID());
+				com.setLong("section", unit.getSectionId());
+				list.appendTag(com);
+			}
+		}
+		if(sec1 != null){
+			for(TrackUnit unit : sec1.units){
+				NBTTagCompound com = new NBTTagCompound();
+				com.setString("unit", unit.getUID());
+				com.setLong("section", unit.getSectionId());
+				list.appendTag(com);
+			}
+		}
+		compound.setTag("units", list);
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(junction.region.getWorld().getDimension(), junction.getVec316f().pos));
 	}
 
 }

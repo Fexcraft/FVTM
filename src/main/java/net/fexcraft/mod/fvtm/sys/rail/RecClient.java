@@ -81,7 +81,8 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				case "update_sections":{
 					NBTTagList list = (NBTTagList)packet.nbt.getTag("units"); TrackUnit unit; NBTTagCompound com;
 					for(NBTBase base : list){
-						com = (NBTTagCompound)base; unit = system.getTrackUnits().get(com.getString("unit"));
+						com = (NBTTagCompound)base;
+						unit = system.getTrackUnits().get(com.getString("unit"));
 						if(unit != null) unit.setSection(system.getSection(com.getLong("section")));
 					}
 					return;

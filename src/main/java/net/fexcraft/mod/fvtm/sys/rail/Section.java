@@ -26,11 +26,13 @@ public class Section {
 	}
 	
 	public Section fill(TrackUnit... tracks){
-		for(TrackUnit track : tracks) units.add(track); return this;
+		for(TrackUnit track : tracks) units.add(track);
+		return this;
 	}
 	
 	public Section fill(Collection<TrackUnit> tracks){
-		units.addAll(tracks); return this;
+		units.addAll(tracks);
+		return this;
 	}
 
 	public void insert(TrackUnit unit){
@@ -42,14 +44,17 @@ public class Section {
 	}
 
 	public void fuseAtTrack(Track zero){
-		Print.debug("Fusing sections at track: " + zero); Section old = null;
+		Print.debug("Fusing sections at track: " + zero);
+		Section old = null;
 		ArrayList<TrackUnit> list = new ArrayList<>(); list.add(zero.unit);
 		list = explore(data.getJunction(zero.start), list);
 		list = explore(data.getJunction(zero.end), list);
 		//TODO check which section is the largest, and fuse with that one instead
 		for(TrackUnit unit : list){
 			if(unit.getSectionId() != uid){
-				old = unit.section(); old.units.remove(unit); unit.setSection(this);
+				old = unit.section();
+				old.units.remove(unit);
+				unit.setSection(this);
 				Print.debug("Added into section '" + uid + "': " + unit);
 				if(old.units.size() == 0){
 					data.getSections().remove(old.getUID());
@@ -68,7 +73,8 @@ public class Section {
 		for(TrackUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
-		if(list0.size() > list1.size()){ /*more = list0;*/ less = list1; } else{ /*more = list1;*/ less = list0; }
+		if(list0.size() > list1.size()){ /*more = list0;*/ less = list1; }
+		else{ /*more = list1;*/ less = list0; }
 		if(less.isEmpty()) return;//no connected tracks, needs no action either
 		Section section = data.getSection(null);//create new section
 		for(TrackUnit unit : less){
@@ -78,31 +84,37 @@ public class Section {
 		track.junction.region.updateClient("sections", track.junction.getVec316f());
 		//TODO fine tuned method that only sends updated
 	}
-	
+
 	public void splitAtSignal(Junction junction){
 		Print.debug("Splitting section at junction: " + junction);
 		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
-		list0.add(junction.tracks.get(0).unit); list1.add(junction.tracks.get(1).unit);
+		list0.add(junction.tracks.get(0).unit);
+		list1.add(junction.tracks.get(1).unit);
 		list0 = explore(data.getJunction(junction.tracks.get(0).end), list0);
 		list1 = explore(data.getJunction(junction.tracks.get(1).end), list1);
 		for(TrackUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
-		if(list0.size() > list1.size()){ less = list1; } else{ less = list0; } if(less.isEmpty()) return;
-		Section section = data.getSection(null); for(TrackUnit unit : less){ unit.setSection(section); }
+		if(list0.size() > list1.size()){ less = list1; }
+		else{ less = list0; }
+		if(less.isEmpty()) return;
+		Section section = data.getSection(null);
+		for(TrackUnit unit : less){ unit.setSection(section); }
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
 		junction.region.updateClient("sections", junction.getVec316f());
 		//TODO fine tuned method that only sends updated
 	}
 
 	private ArrayList<TrackUnit> explore(Junction junction, ArrayList<TrackUnit> list){
-		if(junction == null) return list; ArrayList<Track> tracks = new ArrayList<>();
+		if(junction == null) return list;
+		ArrayList<Track> tracks = new ArrayList<>();
 		//for(Track track : junction.tracks){ if(track.unit.getSectionId() == uid) tracks.add(track); }
 		if(!junction.hasSignal(null)) tracks.addAll(junction.tracks);
 		for(Track track : tracks){
 			if(list.contains(track.unit)) continue; list.add(track.unit);
 			list = explore(data.getJunction(track.end), list);
-		} return list;
+		}
+		return list;
 	}
 
 	public boolean isFree(RailEntity except){
@@ -112,7 +124,8 @@ public class Section {
 	public boolean isFree(Compound except){
 		for(TrackUnit unit : units){
 			if(unit.hasCompound(except)) return false;
-		} return true;
+		}
+		return true;
 	}
 
 	public int size(){

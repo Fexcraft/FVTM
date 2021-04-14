@@ -158,6 +158,10 @@ public abstract class Attribute<VT> {
 	public int integer_value(){
 		return (int)float_value();
 	}
+	
+	public long long_value(){
+		return integer_value();
+	}
 
 	public abstract float float_value();
 

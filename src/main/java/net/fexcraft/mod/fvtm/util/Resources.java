@@ -214,6 +214,7 @@ public class Resources {
 		registerAttributeType("double", FloatAttribute.class, true);
 		registerAttributeType("integer", IntegerAttribute.class, true);
 		registerAttributeType("number", IntegerAttribute.class, true);
+		registerAttributeType("long", LongAttribute.class, true);
 		registerAttributeType("boolean", BooleanAttribute.class, true);
 		registerAttributeType("bool", BooleanAttribute.class, true);
 		registerAttributeType("tristate", TriStateAttribute.class, true);

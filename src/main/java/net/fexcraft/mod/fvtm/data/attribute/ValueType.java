@@ -7,6 +7,7 @@ public class ValueType {
 	public static final ValueType TRISTATE = new Builder().setTristate().build();
 	public static final ValueType INTEGER = new Builder().setInteger().build();
 	public static final ValueType FLOAT = new Builder().setFloat().build();
+	public static final ValueType LONG = new Builder().setLong().build();
 	public static final ValueType VECTOR = new Builder().setVector().build();
 	public static final ValueType OBJECT = new Builder().setObject().build();
 	//
@@ -16,7 +17,7 @@ public class ValueType {
 	public static final ValueType FLOAT_ARRAY = new Builder().setFloat().setArray().build();
 	public static final ValueType OBJECT_ARRAY = new Builder().setObject().setArray().build();
 	
-	private boolean string, bool, tristate, integer, float_, vector, array, object;
+	private boolean string, bool, tristate, integer, float_, long_, vector, array, object;
 	
 	public boolean isString(){
 		return string;
@@ -31,7 +32,7 @@ public class ValueType {
 	}
 	
 	public boolean isNumber(){
-		return integer || float_ || bool;
+		return integer || float_ || long_ || bool;
 	}
 	
 	public boolean isInteger(){
@@ -40,6 +41,10 @@ public class ValueType {
 	
 	public boolean isFloat(){
 		return float_;
+	}
+	
+	public boolean isLong(){
+		return long_;
 	}
 	
 	public boolean isVector(){
@@ -84,6 +89,11 @@ public class ValueType {
 		
 		public Builder setFloat(){
 			valtype.float_ = true;
+			return this;
+		}
+		
+		public Builder setLong(){
+			valtype.long_ = true;
 			return this;
 		}
 		

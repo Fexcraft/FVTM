@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.BooleanAttribute;
 import net.fexcraft.mod.fvtm.data.attribute.FloatAttribute;
 import net.fexcraft.mod.fvtm.data.attribute.IntegerAttribute;
+import net.fexcraft.mod.fvtm.data.attribute.LongAttribute;
 import net.fexcraft.mod.fvtm.data.attribute.StringAttribute;
 import net.fexcraft.mod.fvtm.data.attribute.TriStateAttribute;
 
@@ -106,6 +107,7 @@ public enum VehicleType {
 				attrs.add(new BooleanAttribute("paused", false).editable(true));//for automatic/steered/AI traffic
 				attrs.add(new BooleanAttribute("doors_left", false));
 				attrs.add(new BooleanAttribute("doors_right", false));
+				attrs.add(new LongAttribute("section_on", 0l));
 				break;
 			}
 			default: break;

@@ -571,6 +571,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         else{
         	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);
         }
+        if(rek.current != null && rek.current.getUnit() != null){
+        	rek.data().getAttribute("section_on").value(rek.current.getUnit().section().getUID());
+        }
         for(SwivelPoint point : rek.data().getRotationPoints().values()) point.update(this);
         rek.data().getScripts().forEach((script) -> script.onUpdate(this, rek.data()));
         checkForCollisions();

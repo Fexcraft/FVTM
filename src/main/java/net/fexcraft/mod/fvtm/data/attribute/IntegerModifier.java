@@ -51,7 +51,7 @@ public class IntegerModifier extends Modifier<Integer> {
 
 	@Override
 	public boolean valid_valuetype(ValueType type){
-		return type.isInteger() || type.isFloat();
+		return type.isNumber() && !type.isBoolean();
 	}
 
 	@Override

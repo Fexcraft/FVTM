@@ -69,7 +69,7 @@ public interface JunctionTrackingTileEntity {
 		if(world == null || !world.hasCapability(Capabilities.RAILSYSTEM, null)) return;
 		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
 		Junction junc = system.getJunction(vec);
-		if(junc != null) junc.entities.add(pos);
+		if(junc != null) junc.addLinkedTileEntity(pos);
 	}
 
 	public Vec316f getJuncPos();

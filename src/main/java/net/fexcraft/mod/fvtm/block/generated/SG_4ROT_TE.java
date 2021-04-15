@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
-import static net.fexcraft.mod.fvtm.util.Properties.POWERED;
-
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
@@ -55,12 +53,12 @@ public class SG_4ROT_TE extends G_4ROT_TE {
 
     @Override
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
-        return state.getValue(POWERED).booleanValue() ? 15 : 0;
+        return ((SignalTileEntity)world.getTileEntity(pos)).getSignalState() > 0 ? 15 : 0;
     }
     
     @Override
     public int getStrongPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
-        return state.getValue(POWERED).booleanValue() ? 15 : 0;
+        return ((SignalTileEntity)world.getTileEntity(pos)).getSignalState() > 0 ? 15 : 0;
     }
 
 }

@@ -5,12 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.util.Resources;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 /**
  * 
@@ -68,7 +63,9 @@ public class Section {
 				}
 			}
 		}
-		this.updateClientSections(zero.junction, this, null);
+		units.clear();
+		units.addAll(list);
+		//this.updateClientSections(zero.junction, this, null);
 	}
 
 	/** Called after a track was removed from a junction.*/
@@ -87,8 +84,10 @@ public class Section {
 		for(TrackUnit unit : less){
 			unit.setSection(section);//assign new section to the smaller list
 		}
+		this.units.removeAll(less);
+		section.units.addAll(less);
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
-		this.updateClientSections(track.junction, this, section);
+		//this.updateClientSections(track.junction, this, section);
 	}
 
 	public void splitAtSignal(Junction junction){
@@ -106,8 +105,10 @@ public class Section {
 		if(less.isEmpty()) return;
 		Section section = data.getSection(null);
 		for(TrackUnit unit : less){ unit.setSection(section); }
+		this.units.removeAll(less);
+		section.units.addAll(less);
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
-		this.updateClientSections(junction, this, section);
+		//this.updateClientSections(junction, this, section);
 	}
 
 	private ArrayList<TrackUnit> explore(Junction junction, ArrayList<TrackUnit> list){
@@ -145,7 +146,7 @@ public class Section {
 		return units.remove(unit);
 	}
 
-	private void updateClientSections(Junction junction, Section sec0, Section sec1){
+	/*private void updateClientSections(Junction junction, Section sec0, Section sec1){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "update_sections");
@@ -168,6 +169,6 @@ public class Section {
 		}
 		compound.setTag("units", list);
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(junction.region.getWorld().getDimension(), junction.getVec316f().pos));
-	}
+	}*/
 
 }

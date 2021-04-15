@@ -35,7 +35,7 @@ public class SG_4ROT_TE extends G_4ROT_TE {
             if(held.isEmpty()){
             	SignalTileEntity tile = (SignalTileEntity)world.getTileEntity(pos);
             	Print.chat(player, "&a[&6FVTM RAIL&a]>>&6==========================");
-            	Print.chat(player, "&bSignal Status: " + (tile.getJuncPos() == null ? "&cnot linked" : "&alinked") + " &8| &bDir: &7" + tile.getDirection());
+            	Print.chat(player, "&bSignal Status: " + (tile.getJuncPos() == null ? "&cnot linked" : "&alinked") + " &8| &bDir: &7" + tile.getDirection() + "/" + (tile.getSectionId()));
             	Print.chat(player, "&bJunction Position: " + (tile.getJuncPos() == null ? "&cnull" : "&a" + tile.getJuncPos()));
             	Print.chat(player, "&bJunction Status: " + (tile.getJunction() == null ? "&enot found/loaded" : tile.getValidatedJunctionStatus()));
             	return true;

@@ -502,5 +502,10 @@ public class Junction {
 	public boolean getSignalState(PathKey track){
 		return getSignalState(eqTrack(track, 0) ? EntryDirection.FORWARD : EntryDirection.BACKWARD);
 	}
+	
+	@Override
+	public String toString(){
+		return "Junction{ " + vecpos + ", " + tracks.size() + ", " + signal_dir + " }";
+	}
 
 }

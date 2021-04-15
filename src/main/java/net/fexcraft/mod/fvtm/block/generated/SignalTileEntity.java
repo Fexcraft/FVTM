@@ -110,4 +110,9 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
 		return true;
 	}
 
+	public long getSectionId(){
+		if(getJunction() == null) return 0l;
+		return junction.tracks.get(dir.getTrackId()).getUnit().getSectionId();
+	}
+
 }

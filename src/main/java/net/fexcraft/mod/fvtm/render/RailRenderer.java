@@ -285,8 +285,10 @@ public class RailRenderer {
         	}
         	if(Command.OTHER){
         		Track track;
-        		for(int i = 0; i < value.size(); i++){ track = value.tracks.get(i);
-	    			Vec3f pos = track.getVectorPosition(track.length * 0.5f, false); float off = track.isOppositeCopy() ? 0.125f : -0.125f;
+        		for(int i = 0; i < value.size(); i++){
+        			track = value.tracks.get(i);
+	    			Vec3f pos = track.getVectorPosition(track.length * 0.5f, false);
+	    			float off = track.isOppositeCopy() ? 0.125f : -0.125f;
 	    			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
 	    			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, track.isOppositeCopy() ? 0xb8bc38 : 0x32a852, deg);
 	    			//

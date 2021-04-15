@@ -155,10 +155,11 @@ public class Region {
 
 	public void updateTick(){
 		if(!entities.isEmpty()) this.setAccessed();
-		for(RailEntity ent : entities.values()){ ent.onUpdate(); }
+		for(RailEntity ent : entities.values()) ent.onUpdate();
 		if(timer > 20){ timer = -1;
-			for(Junction junction : junctions.values()){ junction.onUpdate(); }
-		} timer++;
+			for(Junction junction : junctions.values()) junction.onUpdate();
+		}
+		timer++;
 	}
 	
 	public Region setAccessed(){
@@ -178,15 +179,19 @@ public class Region {
 	}
 	
 	public void updateClient(String kind, Vec316f vector){
-		if(world.getWorld().isRemote) return; NBTTagCompound compound = null;
+		if(world.getWorld().isRemote) return;
+		NBTTagCompound compound = null;
 		switch(kind){
 			case "all":{
-				compound = this.write(true); compound.setString("target_listener", "fvtm:railsys");
-				compound.setString("task", "update_region"); compound.setIntArray("XZ", key.toArray());
+				compound = this.write(true);
+				compound.setString("target_listener", "fvtm:railsys");
+				compound.setString("task", "update_region");
+				compound.setIntArray("XZ", key.toArray());
 				break;
 			}
 			case "junction":{
-				Junction junction = getJunction(vector); if(junction == null) return;
+				Junction junction = getJunction(vector);
+				if(junction == null) return;
 				compound = junction.write(new NBTTagCompound());
 				compound.setString("target_listener", "fvtm:railsys");
 				compound.setString("task", "update_junction");
@@ -199,7 +204,8 @@ public class Region {
 				break;
 			}
 			case "junction_state":{
-				Junction junction = getJunction(vector); if(junction == null) return;
+				Junction junction = getJunction(vector);
+				if(junction == null) return;
 				compound = new NBTTagCompound();
 				compound.setString("target_listener", "fvtm:railsys");
 				compound.setString("task", "update_junction_state");
@@ -209,7 +215,8 @@ public class Region {
 				break;
 			}
 			case "junction_signal":{
-				Junction junction = getJunction(vector); if(junction == null) return;
+				Junction junction = getJunction(vector);
+				if(junction == null) return;
 				compound = new NBTTagCompound();
 				compound.setString("target_listener", "fvtm:railsys");
 				compound.setString("task", "update_junction_signal");
@@ -224,7 +231,8 @@ public class Region {
 				break;
 			}
 			case "junction_signal_state":{
-				Junction junction = getJunction(vector); if(junction == null) return;
+				Junction junction = getJunction(vector);
+				if(junction == null) return;
 				compound = new NBTTagCompound();
 				compound.setString("target_listener", "fvtm:railsys");
 				compound.setString("task", "update_junction_signal_state");
@@ -253,7 +261,8 @@ public class Region {
 	}
 
 	public void updateClient(String kind, RailEntity entity){
-		if(world.getWorld().isRemote) return; NBTTagCompound compound = null;
+		if(world.getWorld().isRemote) return;
+		NBTTagCompound compound = null;
 		switch(kind){
 			case "removed":{
 				compound = new NBTTagCompound();
@@ -263,8 +272,7 @@ public class Region {
 			}
 		}
 		if(compound == null) return;
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(),
-			new BlockPos(entity.pos.x, entity.pos.y, entity.pos.z)));
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(world.getDimension(), new BlockPos(entity.pos.x, entity.pos.y, entity.pos.z)));
 	}
 
 	public void updateClient(EntityPlayerMP player){

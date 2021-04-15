@@ -110,10 +110,18 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public void onUpdate(){
-		if(region.getWorld().isRemote()) return;
+		if(region.getWorld().isRemote()){
+			this.updatePosition();
+			Print.debug(current, current.unit);
+			return;
+		}
 		//
-		if(current == null || vehdata == null){ this.dispose(); return; }
-		checkIfShouldHaveEntity(); checkIfShouldStop();
+		if(current == null || vehdata == null){
+			this.dispose();
+			return;
+		}
+		checkIfShouldHaveEntity();
+		checkIfShouldStop();
 		for(JEC command : commands) command.processEntity(this);
 		commands.removeIf(cmd -> cmd.isDone());
 		//
@@ -129,24 +137,36 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(com.isMultiple() && (com.forward ? com.isHead(this) : com.isEnd(this))){
 			float amount = com.accumulator;
 			if(com.forward && com.isHead(this)){
-				am += front.hasEntity() ? -amount : amount; com.accumulator = 0; move = true;
+				am += front.hasEntity() ? -amount : amount;
+				com.accumulator = 0;
+				move = true;
 			}
 			else if(!com.forward && com.isEnd(this)){
-				am += rear.hasEntity() ? amount : -amount; com.accumulator = 0; move = true;
+				am += rear.hasEntity() ? amount : -amount;
+				com.accumulator = 0;
+				move = true;
 			}
-		} else if(com.isSingular()) move = true;
+		}
+		else if(com.isSingular()) move = true;
 		if(am != 0f && (am > 0.001 || am < -0.001)){//prevents unnecessary calculations, theoretically, comment out otherwise
-			TRO tro = getTrack(current, passed + am, false, false); am = checkForPushCoupling(tro, am);
+			TRO tro = getTrack(current, passed + am, false, false);
+			am = checkForPushCoupling(tro, am);
 			//
 			if(move){
 				tro = getTrack(current, passed + (am > 0 ? frconndis - frbogiedis : -rrconndis - frbogiedis) + am, true, true);
-				if(com.last_stop != null && tro.track != com.last_stop)
-					if(tro.passed > com.last_stop_passed || tro.passed < com.last_stop_passed)
-						{ com.last_stop = null; com.last_stop_passed = tro.passed;}
+				if(com.last_stop != null && tro.track != com.last_stop){
+					if(tro.passed > com.last_stop_passed || tro.passed < com.last_stop_passed){
+						com.last_stop = null;
+						com.last_stop_passed = tro.passed;
+					}
+				}
 			}
 			tro = getTrack(current, passed + am, true, false);
-			last = current; current = tro.track; passed = tro.passed;
-			if(!last.equals(current)) this.updateClient("track"); this.updateClient("passed");
+			last = current;
+			current = tro.track;
+			passed = tro.passed;
+			if(!last.equals(current)) this.updateClient("track");
+			this.updateClient("passed");
 			if(!region.getKey().isInRegion(current.start)) this.updateRegion(current.start);
 			updatePosition(); vehdata.getAttribute("forward").value(am > 0);//TODO attr sync
 			//
@@ -154,7 +174,8 @@ public class RailEntity implements Comparable<RailEntity>{
 				//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
 				//if(am > 0 && rear.hasEntity() && !rear.coupled && !rear.inRange()) rear.decouple();
 				if(com.isMultiple() && move) moveCompound(am);
-			} hascoupled = false; moverq = 0;
+			}
+			hascoupled = false; moverq = 0;
 		}
 		//
 		region.getWorld().updateEntityEntry(uid, region.getKey());
@@ -165,7 +186,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(entity != null){
 	    	Entity con = entity.getDriver();
 	    	return con != null && ((EntityPlayer)con).capabilities.isCreativeMode;
-		} else return false;
+		}
+		else return false;
 	}
 
 	private byte fuel_accu;
@@ -307,7 +329,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		if(entity == null) return; NBTTagCompound compound = new NBTTagCompound();
 		switch(string){
 			case "track":{
-				compound.setString("task", "update_track"); current.getId().write(compound);
+				compound.setString("task", "update_track");
+				current.getId().write(compound);
 				break;
 			}
 			case "passed":{

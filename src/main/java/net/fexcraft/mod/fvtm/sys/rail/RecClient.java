@@ -37,25 +37,29 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					else{
 						Region region = system.getRegions().get(vec, false);
 						if(region != null) region.getJunctions().put(vec, new Junction(region, vec).read(packet.nbt));
-					} return;
+					}
+					return;
 				}
 				case "rem_junction":{
 					Vec316f vec = new Vec316f(packet.nbt); //RailRegion region = system.getRegions().get(vec, false);
 					//if(region != null) region.getJunctions().remove(vec); return;
-					system.delJunction(vec); return;
+					system.delJunction(vec);
+					return;
 				}
 				case "update_junction_state":{
 					Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
 					if(junction != null){
 						junction.switch0 = packet.nbt.getBoolean("switch0");
 						junction.switch1 = packet.nbt.getBoolean("switch1");
-					} return;
+					}
+					return;
 				}
 				case "update_junction_signal":{
 					Junction junction = system.getJunction(new Vec316f(packet.nbt.getCompoundTag("pos")));
 					if(junction != null){
 						if(packet.nbt.hasKey("nosignal") && packet.nbt.getBoolean("nosignal")){
-							junction.signal = null; junction.signal_dir = EntryDirection.FORWARD;
+							junction.signal = null;
+							junction.signal_dir = EntryDirection.FORWARD;
 						}
 						else{
 							junction.signal = SignalType.values()[packet.nbt.getInteger("signal")];
@@ -83,8 +87,11 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					for(NBTBase base : list){
 						com = (NBTTagCompound)base;
 						unit = system.getTrackUnits().get(com.getString("unit"));
-						if(unit != null) unit.setSection(system.getSection(com.getLong("section")));
+						if(unit != null){
+							unit.setSection(system.getSection(com.getLong("section")));
+						}
 					}
+					Print.debug(list);
 					return;
 				}
 				case "remove_entity":{
@@ -98,7 +105,12 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				}
 				default: Print.debug(packet.nbt); return;
 			}
-		} catch(Exception e){ e.printStackTrace(); Print.debug(packet.nbt); Static.stop(); }
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			Print.debug(packet.nbt);
+			Static.stop();
+		}
 	}
 
 }

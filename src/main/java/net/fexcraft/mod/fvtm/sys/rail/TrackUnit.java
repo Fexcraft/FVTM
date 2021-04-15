@@ -21,7 +21,9 @@ public class TrackUnit {
 	private String uid;
 	
 	public TrackUnit(RailSys data, String str, Long sid){
-		uid = str; section = (this.data = data).getSection(sid); section.insert(this);
+		uid = str;
+		section = (this.data = data).getSection(sid);
+		section.insert(this);
 	}
 	
 	public void update(RailEntity ent, boolean add){
@@ -37,7 +39,8 @@ public class TrackUnit {
 		if(except == null) return entities.size() > 0;
 		for(RailEntity ent : entities.values()){
 			if(ent.com.getUID() != except.getUID()) return true;
-		} return false;
+		}
+		return false;
 	}
 
 	public String getUID(){
@@ -54,11 +57,14 @@ public class TrackUnit {
 	
 	@Override
 	public boolean equals(Object o){
-		if(o instanceof TrackUnit == false) return false; return ((TrackUnit)o).uid.equals(uid);
+		if(o instanceof TrackUnit == false) return false;
+		return ((TrackUnit)o).uid.equals(uid);
 	}
 
 	public TrackUnit setSection(Section section){
-		this.section = section; this.updateClient(); return this;
+		this.section = section;
+		this.updateClient();
+		return this;
 	}
 	
 	@Override
@@ -78,11 +84,9 @@ public class TrackUnit {
 		}
 		else{
 			Track track = orig == null ? copy : orig;
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
-				Resources.getTargetPoint(track.junction.root.getDimension(), track.start.pos));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(track.junction.root.getDimension(), track.start.pos));
 			if(track.length > 16){
-				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),
-					Resources.getTargetPoint(track.junction.root.getDimension(), track.end.pos));
+				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(track.junction.root.getDimension(), track.end.pos));
 			}
 		}
 	}

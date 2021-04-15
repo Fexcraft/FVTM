@@ -88,7 +88,6 @@ public class Section {
 			unit.setSection(section);//assign new section to the smaller list
 		}
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
-		track.junction.region.updateClient("sections", track.junction.getVec316f());
 		this.updateClientSections(track.junction, this, section);
 	}
 
@@ -108,7 +107,6 @@ public class Section {
 		Section section = data.getSection(null);
 		for(TrackUnit unit : less){ unit.setSection(section); }
 		Print.debug("Created section '" + section.getUID() + "' and assigned TrackUnits.");
-		junction.region.updateClient("sections", junction.getVec316f());
 		this.updateClientSections(junction, this, section);
 	}
 
@@ -148,8 +146,7 @@ public class Section {
 	}
 
 	private void updateClientSections(Junction junction, Section sec0, Section sec1){
-		NBTTagCompound compound = null;
-		compound = new NBTTagCompound();
+		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "update_sections");
 		NBTTagList list = new NBTTagList();

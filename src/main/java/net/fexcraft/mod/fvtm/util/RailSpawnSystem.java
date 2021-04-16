@@ -72,6 +72,11 @@ public class RailSpawnSystem extends EntitySystem {
         			Print.bar(player, "&c&oTrack too short to spawn this vehicle.");
         			return false;
     			}
+    			else if(track.gauge.width() != data.getAttributeInteger("gauge", 30)){
+        			Print.bar(player, "&c&oWrong rail gauge width for this vehicle.");
+        			Print.chat(player, "&eTrack: &7" + track.gauge.width() + " &8!= &eVehicle: &7" + data.getAttributeInteger("gauge", 30));
+        			return false;
+    			}
     			else{
     				if(spawn){
             			Print.bar(player, "&b&oSpawning vehicle...");
@@ -92,6 +97,11 @@ public class RailSpawnSystem extends EntitySystem {
 		else{
 			if(junk.tracks.get(0).length < length){
     			Print.bar(player, "&c&oFirst Track of Junction too short to spawn this vehicle.");
+    			return false;
+			}
+			else if(junk.tracks.get(0).gauge.width() != data.getAttributeInteger("gauge", 30)){
+    			Print.bar(player, "&c&oWrong rail gauge width for this vehicle.");
+    			Print.chat(player, "&eTrack: &7" + junk.tracks.get(0).gauge.width() + " &8!= &eVehicle: &7" + data.getAttributeInteger("gauge", 30));
     			return false;
 			}
 			if(spawn){

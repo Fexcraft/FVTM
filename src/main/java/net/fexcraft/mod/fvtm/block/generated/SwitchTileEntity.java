@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
@@ -101,7 +100,6 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
     
     @Override
     public void updateSwitchState(){
-    	Print.debug(world, juncpos, junction);
     	if(world == null || junction == null) return;
     	world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
     }

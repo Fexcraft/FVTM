@@ -82,7 +82,7 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
     
     @Override
     public void updateSignalState(){
-    	if(world == null || junction == null) return;
+    	if(world == null || getJunction() == null) return;
     	world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
     }
 

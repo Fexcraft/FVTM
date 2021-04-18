@@ -54,7 +54,7 @@ public class DBSW_4ROT_TE extends G_4ROT_TE {
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
     	if(side.getAxis().isVertical()) return 0;
     	boolean s0 = ((SwitchTileEntity)world.getTileEntity(pos)).getSwitch0State();
-    	boolean s1 = ((SwitchTileEntity)world.getTileEntity(pos)).getSwitch0State();
+    	boolean s1 = ((SwitchTileEntity)world.getTileEntity(pos)).getSwitch1State();
     	switch(MultiBlock.rotate(side, state.getValue(FACING))){
     		case NORTH: return s0? 15 : 0;
     		case SOUTH: return !s0 ? 15 : 0;

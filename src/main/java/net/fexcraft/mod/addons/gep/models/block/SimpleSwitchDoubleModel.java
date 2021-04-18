@@ -1,19 +1,13 @@
 //FMT-Marker FVTM-1.5
 package net.fexcraft.mod.addons.gep.models.block;
 
-import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.mc.api.registry.fModel;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.lib.tmt.RotationOrder;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.TurboList;
-import net.minecraft.tileentity.TileEntity;
 
 /** This file was exported via the FVTM Exporter v1.5 of<br>
  *  FMT (Fex's Modelling Toolbox) v.2.6.5 &copy; 2021 - Fexcraft.net<br>
@@ -54,23 +48,15 @@ public class SimpleSwitchDoubleModel extends BlockModel {
 		//
 		TurboList sign0 = new TurboList("sign0");
 		sign0.add(new ModelRendererTurbo(sign0, 14, 6, textureX, textureY).addBox(-0.2f, -11, -1.5f, 0.4f, 3, 3)
-			.setRotationPoint(0, -1, 2).setRotationAngle(0, 0, 16)
+			.setRotationPoint(0, -1, 2).setRotationAngle(0, 0, 16).setRotationOrder(RotationOrder.ZYX)
 		);
 		sign0.add(new ModelRendererTurbo(sign0, 23, 6, textureX, textureY).addBox(-1.5f, -11, -0.2f, 3, 3, 0.4f)
-			.setRotationPoint(0, -1, 2).setRotationAngle(0, 0, 16)
+			.setRotationPoint(0, -1, 2).setRotationAngle(0, 0, 16).setRotationOrder(RotationOrder.ZYX)
 		);
-		sign0.addPrograms(new ConditionalPrograms.SwitchDoubleStateSide(false, true).add(new TurboList.Program(){
-			@Override
-			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-				GL11.glPushMatrix();
-				GL11.glRotatef(20, 0, 0, 2);
-				GL11.glRotatef(90, 0, 1, 0);
-			}
-			@Override
-			public void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-				GL11.glPopMatrix();
-			}
-		}).addElse(new DefaultPrograms.RotationSetter(2, -20, 0, true)));
+		sign0.addPrograms(new ConditionalPrograms.SwitchDoubleStateSide(false, true)
+			.add(new DefaultPrograms.RotationSetter(2, 20, 0, true))
+			.add(new DefaultPrograms.RotationSetter(1, 90, 0, true))
+			.addElse(new DefaultPrograms.RotationSetter(2, -20, 0, true)));
 		this.groups.add(sign0);
 		//
 		TurboList lever1 = new TurboList("lever1");
@@ -84,23 +70,15 @@ public class SimpleSwitchDoubleModel extends BlockModel {
 		//
 		TurboList sign1 = new TurboList("sign1");
 		sign1.add(new ModelRendererTurbo(sign1, 14, 22, textureX, textureY).addBox(-0.2f, -11, -1.5f, 0.4f, 3, 3)
-			.setRotationPoint(0, -1, -2).setRotationAngle(0, 0, -16)
+			.setRotationPoint(0, -1, -2).setRotationAngle(0, 0, -16).setRotationOrder(RotationOrder.ZYX)
 		);
 		sign1.add(new ModelRendererTurbo(sign1, 23, 22, textureX, textureY).addBox(-1.5f, -11, -0.2f, 3, 3, 0.4f)
-			.setRotationPoint(0, -1, -2).setRotationAngle(0, 0, -16)
+			.setRotationPoint(0, -1, -2).setRotationAngle(0, 0, -16).setRotationOrder(RotationOrder.ZYX)
 		);
-		sign1.addPrograms(new ConditionalPrograms.SwitchDoubleStateSide(true, true).add(new TurboList.Program(){
-			@Override
-			public void preRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-				GL11.glPushMatrix();
-				GL11.glRotatef(20, 0, 0, 2);
-				GL11.glRotatef(90, 0, 1, 0);
-			}
-			@Override
-			public void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
-				GL11.glPopMatrix();
-			}
-		}).addElse(new DefaultPrograms.RotationSetter(2, -20, 0, true)));
+		sign1.addPrograms(new ConditionalPrograms.SwitchDoubleStateSide(true, true)
+			.add(new DefaultPrograms.RotationSetter(2, 20, 0, true))
+			.add(new DefaultPrograms.RotationSetter(1, 90, 0, true))
+			.addElse(new DefaultPrograms.RotationSetter(2, -20, 0, true)));
 		this.groups.add(sign1);
 		//
 	}

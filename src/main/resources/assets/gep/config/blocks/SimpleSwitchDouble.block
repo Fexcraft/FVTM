@@ -1,7 +1,7 @@
 {
     "RegistryName": "gep:switch_simple_double",
     "Addon": "fvtm:gep",
-    "Name": "Simple Switch (Fork 2)",
+    "Name": "Simple Switch (Double)",
     "Model": "gep:models/block/simple_switch_double",
     "Texture": "gep:textures/blocks/simple_switch_double.png",
     "BlockType": "DOUBLE_SWITCH_4ROT",

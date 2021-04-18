@@ -1,6 +1,9 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
+import static net.fexcraft.mod.fvtm.util.Properties.FACING;
+
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class F3SW_4ROT_TE extends G_4ROT_TE {
@@ -40,5 +44,27 @@ public class F3SW_4ROT_TE extends G_4ROT_TE {
 		if(player.isSneaking()) return true;
 		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
 	}
+	
+	@Override
+    public boolean canProvidePower(IBlockState state){
+        return true;
+    }
+
+    @Override
+    public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
+    	if(side.getAxis().isVertical()) return 0;
+    	int track = ((SwitchTileEntity)world.getTileEntity(pos)).getSwitch2State();
+    	switch(MultiBlock.rotate(side, state.getValue(FACING))){
+    		case NORTH: return track == 1 ? 15 : 0;
+    		case WEST: return track == 0 ? 15 : 0;
+    		case EAST: return track == 2 ? 15 : 0;
+    		default: return 0;
+    	}
+    }
+    
+    @Override
+    public int getStrongPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side){
+        return getWeakPower(state, world, pos, side);
+    }
 
 }

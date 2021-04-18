@@ -1,0 +1,15 @@
+{
+    "RegistryName": "gep:switch_simple_double",
+    "Addon": "fvtm:gep",
+    "Name": "Simple Switch (Fork 2)",
+    "Model": "gep:models/block/simple_switch_double",
+    "Texture": "gep:textures/blocks/simple_switch_double.png",
+    "BlockType": "DOUBLE_SWITCH_4ROT",
+    "AABBs":{
+    	"normal": [ 0.25, 0.0, 0.25, 0.75, 0.5, 0.75 ]
+    },
+    "Material": "IRON",
+    "MapColor": "CLAY",
+    "FullBlock": false,
+    "Opaque": false
+}

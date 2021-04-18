@@ -13,7 +13,6 @@ import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.model.TurboList;
-import net.fexcraft.mod.fvtm.model.TurboList.ConditionalProgram;
 import net.minecraft.tileentity.TileEntity;
 
 /** This file was exported via the FVTM Exporter v1.5 of<br>
@@ -38,15 +37,13 @@ public class SimpleSwitchFork2Model extends BlockModel {
 		);
 		this.groups.add(base);
 		//
-		ConditionalProgram lever_prog = new ConditionalPrograms.SwitchFork2State();
-		lever_prog.add(new DefaultPrograms.RotationSetter(2, 20, 0, true));
-		lever_prog.addElse(new DefaultPrograms.RotationSetter(2, -20, 0, true));
-		//
 		TurboList lever = new TurboList("lever");
 		lever.add(new ModelRendererTurbo(lever, 9, 6, textureX, textureY).addBox(-0.25f, -8, -0.25f, 0.5f, 8, 0.5f)
 			.setRotationPoint(0, -1, 0).setRotationAngle(0, 0, 0)
 		);
-		lever.addProgram(lever_prog);
+		lever.addProgram(new ConditionalPrograms.SwitchFork2State()
+			.add(new DefaultPrograms.RotationSetter(2, 20, 0, true))
+			.addElse(new DefaultPrograms.RotationSetter(2, -20, 0, true)));
 		this.groups.add(lever);
 		//
 		TurboList sign = new TurboList("sign");

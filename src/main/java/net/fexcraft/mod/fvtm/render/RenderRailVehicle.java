@@ -51,12 +51,12 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
             RenderCache cache = vehicle.getCapability(Capabilities.RENDERCACHE, null);
             {
 	            GL11.glRotatef(180f, 0f, 0f, 1f);
-	            float[] heightoffset = { 0 };
+	            /*float[] heightoffset = { 0 };
 	            vehicle.getVehicleData().getWheelPositions().values().forEach(cons -> {
             		heightoffset[0] += -cons.y;
             	});
             	heightoffset[0] /= vehicle.getVehicleData().getWheelPositions().size();
-                GL11.glTranslated(0, heightoffset[0], 0);
+                GL11.glTranslated(0, heightoffset[0], 0);*/
 	            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getType().getModel();
 	            if(modVehicle != null){
 	                this.bindTexture(vehicle.getVehicleData().getTexture());

@@ -98,6 +98,10 @@ public class Seat {
 		this.scale = scale;
 		return this;
 	}
+	
+	public float scale(){
+		return scale == null ? 1f : scale;
+	}
 
 	public boolean isDriver(){
 		return driver;

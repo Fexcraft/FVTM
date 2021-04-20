@@ -45,7 +45,8 @@ public class ToggableHandler {
 	
 	private static String last;
 	private static long tilltime = 0;
-	public static final AxisAlignedBB SEATBB = new AxisAlignedBB(-.375, 0, -.375, 0.375, 0.75, 0.375);
+	private static final float SBBS = .375f;
+	public static final AxisAlignedBB NULBB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
 	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatCache seat, EntityPlayer player, ItemStack stack){
 		if(press == KeyPress.MOUSE_RIGHT && foundSeat(entity, seat, player, stack)) return true;
@@ -204,7 +205,7 @@ public class ToggableHandler {
 				SwivelPoint point = entity.getVehicleData().getRotationPoint(seat.swivel_point);
 				temp = point.getRelativeVector(seat.x, seat.y, seat.z);
 				temp = temp.add(entity.getEntity().getPositionVector());
-				AxisAlignedBB aabb = SEATBB.offset(temp);
+				AxisAlignedBB aabb = NULBB.offset(temp).grow(SBBS * seat.scale());
 				for(float f = 0; f < 4; f += Static.sixteenth / 2){
 					Vec3f dis = vec0.distance(vec1, f);
 					vec = new Vec3d(dis.x, dis.y, dis.z);

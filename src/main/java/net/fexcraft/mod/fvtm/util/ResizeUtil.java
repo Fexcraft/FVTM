@@ -12,18 +12,18 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ResizeUtil {
 
-	public static final float SITH = 0.1875f;
+	public static final float SITH = 0.125f;//0.1875f;
 	
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event) throws Exception {
     	//if(event.phase == Phase.END) return;
-		resize(event.player, true);
+		if(!resize(event.player, true)) event.player.eyeHeight = event.player.getDefaultEyeHeight();
     }
     
-    private void resize(EntityPlayer player, boolean eyes) throws Exception {
-    	if(player.getRidingEntity() instanceof GenericVehicle == false) return;
+    private boolean resize(EntityPlayer player, boolean eyes) throws Exception {
+    	if(player.getRidingEntity() instanceof GenericVehicle == false) return false;
     	SeatCache cache = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
-    	if(cache == null || cache.seatdata == null || cache.seatdata.scale == null) return;
+    	if(cache == null || cache.seatdata == null || cache.seatdata.scale == null) return false;
     	float width = player.width * cache.seatdata.scale;
 		float height = player.height * cache.seatdata.scale;
         getMethod().invoke(player, width, height);
@@ -31,6 +31,7 @@ public class ResizeUtil {
 			player.eyeHeight = player.getDefaultEyeHeight() * cache.seatdata.scale;
 			player.eyeHeight += SITH;
         }
+        return true;
 	}
 	
 	private static Method method = null;

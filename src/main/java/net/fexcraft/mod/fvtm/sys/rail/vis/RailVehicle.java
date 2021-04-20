@@ -544,7 +544,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	if(bf0 != null && br0 != null && bf1 != null && br1 != null){
         		float front = (float)(Math.toDegrees(Math.atan2(bf0.z - bf1.z, bf0.x - bf1.x)) - rotpoint.getAxes().getYaw());
         		float rear  = (float)(Math.toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x)) - rotpoint.getAxes().getYaw());
-        		rek.data().getAttribute("bogie_front_angle").value(front); rek.data().getAttribute("bogie_rear_angle").value(rear);
+        		rek.data().getAttribute("bogie_front_angle").value(front);
+        		rek.data().getAttribute("bogie_rear_angle").value(rear);
         	}
     		//
         	

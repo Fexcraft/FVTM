@@ -335,13 +335,14 @@ public class EffectRenderer {
 
 	@SubscribeEvent
     public void onRender(RenderPlayerEvent.Pre event) throws Exception {
-		float height = event.getEntityPlayer().height;
-		float scale = height * ResizeUtil.getScale(event.getEntityPlayer()) / height;
+		float scale = ResizeUtil.getScale(event.getEntityPlayer());
 		GlStateManager.pushMatrix();
-		if(event.getEntityPlayer().isRiding()){
+		if(scale != 1){
+			float height = event.getEntityPlayer().height;
+			scale = height * scale / height;
 			GlStateManager.translate(0, ResizeUtil.SITH, 0);
+			GlStateManager.scale(scale, scale, scale);
 		}
-		GlStateManager.scale(scale, scale, scale);
     }
     
     @SubscribeEvent

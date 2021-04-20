@@ -101,6 +101,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
 		if(compound != null) rek = new Reltrs(world.getCapability(Capabilities.RAILSYSTEM, null).get(), compound);
 		rotpoint = rek.data().getRotationPoint("vehicle");
+        this.setSize(rek.data().getAttribute("hitbox_width").float_value(), rek.data().getAttribute("hitbox_height").float_value());
         if(seats == null) seats = new SeatCache[rek.data().getSeats().size()];
         for(int i = 0; i < seats.length; i++) seats[i] = new SeatCache(this, i);
         ContainerHolderUtil.Implementation impl = (Implementation)this.getCapability(Capabilities.CONTAINER, null);

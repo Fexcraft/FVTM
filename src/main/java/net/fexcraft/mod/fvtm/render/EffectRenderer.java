@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
+import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
@@ -40,12 +41,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class EffectRenderer {
-	
-
 	
 	public static final ArrayList<LightBeam> LIGHTRAYS = new ArrayList<>();
 	public static final ArrayList<VehicleData> LIGHTRAYDATAS = new ArrayList<>();
@@ -330,5 +330,23 @@ public class EffectRenderer {
         while(roll <= -180f) roll += 360f;
         return new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks);
 	}
+	
+	//
+
+	@SubscribeEvent
+    public void onRender(RenderPlayerEvent.Pre event) throws Exception {
+		float height = event.getEntityPlayer().height;
+		float scale = height * ResizeUtil.getScale(event.getEntityPlayer()) / height;
+		GlStateManager.pushMatrix();
+		if(event.getEntityPlayer().isRiding()){
+			GlStateManager.translate(0, ResizeUtil.SITH, 0);
+		}
+		GlStateManager.scale(scale, scale, scale);
+    }
+    
+    @SubscribeEvent
+    public void onRender(RenderPlayerEvent.Post event) throws Exception {
+		GlStateManager.popMatrix();
+    }
 
 }

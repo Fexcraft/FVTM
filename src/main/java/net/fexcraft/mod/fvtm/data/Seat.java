@@ -29,6 +29,7 @@ public class Seat {
 	public boolean nofirst, nothird;
 	public boolean relative;
 	public TreeMap<String, Boolean> filter = null;
+	public Float scale;
 
 	public Seat(JsonObject obj){
 		Pos pos = Pos.fromJson(obj, false);
@@ -59,6 +60,7 @@ public class Seat {
 				filter.put(str, bool);
 			}
 		}
+		if(obj.has("scale")) scale = obj.get("scale").getAsFloat();
 	}
 
 	public Seat(String name, float x, float y, float z, boolean driver, String point, boolean nof, boolean not){
@@ -91,6 +93,11 @@ public class Seat {
 		this(name, x, y, z, driver, sitting, point, nof, not, relative);
 		defyaw = defpitch = 0;
 	}
+	
+	public Seat scale(Float scale){
+		this.scale = scale;
+		return this;
+	}
 
 	public boolean isDriver(){
 		return driver;
@@ -110,7 +117,7 @@ public class Seat {
 
 	@Override
 	public String toString(){
-		return String.format("Seat@[(%s, %s, %s), %s, %s-driver, %s-%sy, %s-%sp, %s-sit, %s-nof, %s-not]", x, y, z, name, driver, minyaw, maxyaw, minpitch, maxpitch, sitting, nofirst, nothird);
+		return String.format("Seat@[(%s, %s, %s), %s, %s-driver, %s-%sy, %s-%sp, %s-sit, %s-nof, %s-not, %s-scl]", x, y, z, name, driver, minyaw, maxyaw, minpitch, maxpitch, sitting, nofirst, nothird, scale);
 	}
 
 	public int getViewValue(int current, boolean additive){

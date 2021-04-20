@@ -62,6 +62,7 @@ import net.fexcraft.mod.fvtm.util.ListenerClient;
 import net.fexcraft.mod.fvtm.util.ListenerServer;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.RailSpawnSystem;
+import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
@@ -177,6 +178,7 @@ public class FVTM {
 			Resources.RAILGAUGES.getValuesCollection().forEach(gauge -> gauge.loadModel());
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(new ResourceLocation("fvtm:roadsign"), RoadSignModel.EMPTY);
 		}
+		MinecraftForge.EVENT_BUS.register(new ResizeUtil());
 	}
 
 	@Mod.EventHandler

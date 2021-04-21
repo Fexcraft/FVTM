@@ -40,6 +40,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -338,7 +339,11 @@ public class EffectRenderer {
 		float scale = ResizeUtil.getScale(event.getEntityPlayer());
 		GlStateManager.pushMatrix();
 		if(scale != 1){
-			float height = event.getEntityPlayer().height;
+			EntityPlayer player = event.getEntityPlayer();
+	    	float width = player.width, height = player.height;
+			float hw = width * 0.5f;
+			player.setEntityBoundingBox(new AxisAlignedBB(player.posX - hw, player.posY + ResizeUtil.SITH, player.posZ - hw, player.posX + hw, player.posY + height + ResizeUtil.SITH, player.posZ + hw));
+			//float height = event.getEntityPlayer().height;
 			scale = height * scale / height;
 			GlStateManager.translate(0, ResizeUtil.SITH, 0);
 			GlStateManager.scale(scale, scale, scale);

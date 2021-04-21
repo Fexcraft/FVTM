@@ -1,12 +1,9 @@
 package net.fexcraft.mod.fvtm.util;
 
-import java.lang.reflect.Method;
-
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -24,9 +21,11 @@ public class ResizeUtil {
     	if(player.getRidingEntity() instanceof GenericVehicle == false) return false;
     	SeatCache cache = ((GenericVehicle)player.getRidingEntity()).getSeatOf(player);
     	if(cache == null || cache.seatdata == null || cache.seatdata.scale == null) return false;
-    	float width = player.width * cache.seatdata.scale;
-		float height = player.height * cache.seatdata.scale;
-        getMethod().invoke(player, width, height);
+    	float width = player.width *= cache.seatdata.scale;
+		float height = player.height *= cache.seatdata.scale;
+		float hw = width * 0.5f;
+		player.setEntityBoundingBox(new AxisAlignedBB(player.posX - hw, player.posY + SITH, player.posZ - hw, player.posX + hw, player.posY + height + SITH, player.posZ + hw));
+        //getMethod().invoke(player, width, height);
         if(eyes){
 			player.eyeHeight = player.getDefaultEyeHeight() * cache.seatdata.scale;
 			player.eyeHeight += SITH;
@@ -34,7 +33,7 @@ public class ResizeUtil {
         return true;
 	}
 	
-	private static Method method = null;
+	/*private static Method method = null;
 	
 	public static Method getMethod() throws NoSuchMethodException, SecurityException{
 		if(method == null){
@@ -42,7 +41,7 @@ public class ResizeUtil {
 	        method.setAccessible(true);
 		}
 		return method;
-	}
+	}*/
 
 	public static float getScale(EntityPlayer player){
     	if(player.getRidingEntity() instanceof GenericVehicle == false) return 1f;

@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ResizeUtil {
 
-	public static final float SITH = 0.125f;//0.1875f;
+	public static final float SITH = 0.25f;//0.1875f;
 	
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event) throws Exception {

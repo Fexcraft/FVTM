@@ -288,7 +288,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             case COUPLER_REAR: {
             	if(toggletimer > 0) return true;
-    			rek.ent().tryCoupling(player, true);
+    			rek.ent().tryCoupling(player, false);
             	toggletimer = 10; return true;
             }
             case MOUSE_MAIN: case MOUSE_RIGHT: return false;
@@ -757,6 +757,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             				if(command != null) railentity.getCommands().add(command);
             			}
             		}*/
+                	break;
+                }
+                case "update_forward":{
+                	rek.data().getAttribute("forward").value(pkt.nbt.getBoolean("forward"));
                 	break;
                 }
             }

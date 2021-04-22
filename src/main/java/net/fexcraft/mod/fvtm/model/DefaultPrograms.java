@@ -83,10 +83,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(STEERING_WHEEL_X);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_Y);
 		//
-		TurboList.PROGRAMS.add(LIGHTS_FRONT_FORWARD);
-		TurboList.PROGRAMS.add(LIGHTS_FRONT_BACKWARD);
-		TurboList.PROGRAMS.add(LIGHTS_REAR_FORWARD);
-		TurboList.PROGRAMS.add(LIGHTS_REAR_BACKWARD);
+		TurboList.PROGRAMS.add(LIGHTS_RAIL_FORWARD);
+		TurboList.PROGRAMS.add(LIGHTS_RAIL_BACKWARD);
 		TurboList.PROGRAMS.add(BOGIE_AUTO);
 		//
 		TurboList.PROGRAMS.add(BASIC_SIGNAL_CLEAR);
@@ -262,24 +260,14 @@ public class DefaultPrograms {
 		@Override public String getId(){ return "fvtm:brake_lights"; }
 	};
 	
-	public static final Program LIGHTS_FRONT_FORWARD = new AlwaysGlow(){
+	public static final Program LIGHTS_RAIL_FORWARD = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").boolean_value(); }
-		@Override public String getId(){ return "fvtm:lights_front_forward"; }
+		@Override public String getId(){ return "fvtm:lights_rail_forward"; }
 	};
 	
-	public static final Program LIGHTS_FRONT_BACKWARD = new AlwaysGlow(){
+	public static final Program LIGHTS_RAIL_BACKWARD = new AlwaysGlow(){
 		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").boolean_value(); }
-		@Override public String getId(){ return "fvtm:lights_front_backward"; }
-	};
-	
-	public static final Program LIGHTS_REAR_FORWARD = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && data.getAttribute("forward").boolean_value(); }
-		@Override public String getId(){ return "fvtm:lights_rear_forward"; }
-	};
-	
-	public static final Program LIGHTS_REAR_BACKWARD = new AlwaysGlow(){
-		@Override public boolean shouldGlow(Entity ent, VehicleData data){ return data.getLightsState() && !data.getAttribute("forward").boolean_value(); }
-		@Override public String getId(){ return "fvtm:lights_rear_backward"; }
+		@Override public String getId(){ return "fvtm:lights_rail_backward"; }
 	};
 	
 	public static final Program TURN_SIGNAL_LEFT = new AlwaysGlow(){

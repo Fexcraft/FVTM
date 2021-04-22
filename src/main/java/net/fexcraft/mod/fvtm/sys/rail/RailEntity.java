@@ -10,6 +10,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.CMD_SignalWait;
 import net.fexcraft.mod.fvtm.sys.rail.cmds.JEC;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
@@ -45,7 +46,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	public RailVehicle entity;
 	public long uid;
 	public Region region;
-	protected boolean forward = true;
+	//protected boolean forward = true;
 	public float throttle, passed;
 	public Vec3f pos = new Vec3f(), prev = new Vec3f(),
 		cfront = new Vec3f(), crear = new Vec3f(),
@@ -63,6 +64,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	protected Compound com;
 	protected ArrayList<JEC> commands = new ArrayList<>();
 	public ArrayList<String> lines = new ArrayList<>();//TODO use attribute instead
+	private byte ticks;
 	
 	public RailEntity(RailSys data, VehicleData vdata, Track track, UUID placer){
 		current = track; region = data.getRegions().get(track.start, true); if(placer != null) this.placer = placer;
@@ -130,7 +132,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			if(CMODE() || processConsumption(engine)){
 				float eng = throttle * engine.getLegacyEngineSpeed();
 				if(com.isMultiple()) com.accumulator += eng;
-				else moverq = forward ? eng : -eng;
+				else moverq = com.forward ? eng : -eng;
 			}
 		}
 		float am = moverq; boolean move = false;
@@ -168,7 +170,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			if(!last.equals(current)) this.updateClient("track");
 			this.updateClient("passed");
 			if(!region.getKey().isInRegion(current.start)) this.updateRegion(current.start);
-			updatePosition(); vehdata.getAttribute("forward").value(am > 0);//TODO attr sync
+			updatePosition();
 			//
 			if(!hascoupled && isCoupled()){
 				//if(am < 0 && front.hasEntity() && !front.coupled && !front.inRange()) front.decouple();
@@ -178,9 +180,16 @@ public class RailEntity implements Comparable<RailEntity>{
 			hascoupled = false; moverq = 0;
 		}
 		//
+		if(com.isHead(this)){
+			if(++ticks > 10){
+				updateOrientationAttr();
+				ticks = 0;
+			}
+		}
+		//
 		region.getWorld().updateEntityEntry(uid, region.getKey());
 	}
-	
+
 	private boolean CMODE(){
 		if(!Config.VEHICLES_NEED_FUEL) return true;
 		if(entity != null){
@@ -257,7 +266,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private float checkForPushCoupling(TRO tro, float am){
 		if(front.hasEntity() && rear.hasEntity()) return am;
-		Collection<RailEntity> ents = getEntitiesOnTrackAndNext(tro.track, forward);
+		Collection<RailEntity> ents = getEntitiesOnTrackAndNext(tro.track);
 		Coupler[] couplers = new Coupler[]{ front, rear };
 		for(int i = 0; i < 2; i++){
 			if(couplers[i].hasEntity()) continue; Vec3f coucen = i == 0 ? cfront : crear;
@@ -312,7 +321,7 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	private ArrayList<RailEntity> railentlist = new ArrayList<>();
 
-	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track, boolean forward){
+	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track){
 		railentlist.clear(); railentlist.addAll(track.unit.getEntities().values());
 		Junction junction = region.getJunction(track.start); Track track0;
 		//TODO alternative for when a specific path is followed
@@ -351,6 +360,11 @@ public class RailEntity implements Comparable<RailEntity>{
 				NBTTagList list = new NBTTagList();
 				for(JEC cmd : commands) list.appendTag(cmd.write(null));
 				compound.setTag("commands", list);
+				break;
+			}
+			case "forward":{
+				compound.setString("task", "update_forward");
+				compound.setBoolean("forward", vehdata.getAttribute("forward").boolean_value());
 				break;
 			}
 		}
@@ -473,7 +487,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		compound.setTag("bfront", DataUtil.writeVec3f(bfront));
 		compound.setTag("crear", DataUtil.writeVec3f(crear));
 		compound.setTag("brear", DataUtil.writeVec3f(brear));
-		compound.setBoolean("forward", forward);
+		compound.setBoolean("forward", com.getOrient(this));
 		compound.setFloat("passed", passed);
 		compound.setLong("Placer0", placer.getMostSignificantBits());
 		compound.setLong("Placer1", placer.getLeastSignificantBits());
@@ -509,7 +523,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		bfront = DataUtil.readVec3f(compound.getTag("bfront"));
 		crear = DataUtil.readVec3f(compound.getTag("crear"));
 		brear = DataUtil.readVec3f(compound.getTag("brear"));
-		forward = compound.hasKey("forward") ? compound.getBoolean("forward") : true;
+		//forward = compound.hasKey("forward") ? compound.getBoolean("forward") : true;
 		passed = compound.getFloat("passed");
 		throttle = compound.getFloat("throttle");
 		front.autocoupler = compound.getBoolean("front_auto");
@@ -596,7 +610,7 @@ public class RailEntity implements Comparable<RailEntity>{
 			coupler.decouple(); Print.chat(player, (thefront ? "Front" : "Rear") + " disconnected.");
 		}
 		else{
-			Collection<RailEntity> ents = getEntitiesOnTrackAndNext(current, forward);
+			Collection<RailEntity> ents = getEntitiesOnTrackAndNext(current);
 			RailEntity found = null;
 			for(RailEntity ent : ents){
 				Print.debug(ent.vehdata.getName());
@@ -630,22 +644,38 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 
 	public void setForward(EntityPlayer player, boolean bool){
-		vehdata.getAttribute("forward").value(forward = com.forward = bool);
-		if(player != null) Print.bar(player, "&e&oDirection set to " + (forward ? "FORWARD" : "REVERSE"));
-		if(entity != null && !region.getWorld().getWorld().isRemote){
-			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
-			packet.setString("task", "attr_update"); packet.setString("attr", "forward");
-			packet.setString("value", vehdata.getAttribute("forward").boolean_value() + "");
-			packet.setInteger("entity", entity.getEntityId());
-			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+		com.forward = bool;
+		if(player != null) Print.bar(player, "&e&oDirection set to " + (bool ? "FORWARD" : "REVERSE"));
+		for(RailEntity ent : com.entities){
+			ent.vehdata.getAttribute("forward").value(com.getOrient(this));
+			ent.sendForwardUpdate();
+		}
+	}
+	
+	private void sendForwardUpdate(){
+		if(entity == null || region.getWorld().getWorld().isRemote) return;
+		NBTTagCompound packet = new NBTTagCompound();
+		packet.setString("target_listener", GuiHandler.LISTENERID);
+		packet.setString("task", "attr_update");
+		packet.setString("attr", "forward");
+		packet.setString("value", vehdata.getAttribute("forward").boolean_value() + "");
+		packet.setInteger("entity", entity.getEntityId());
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(entity));
+	}
+
+	private void updateOrientationAttr(){
+		for(RailEntity ent : com.entities){
+			ent.vehdata.getAttribute("forward").if_bool_differs(com.getOrient(this), true, bool -> ent.sendForwardUpdate());
 		}
 	}
 
 	public void setActive(boolean bool){
 		vehdata.getAttribute("active").value(bool);
 		if(entity != null && !region.getWorld().getWorld().isRemote){
-			NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:railsys");
-			packet.setString("task", "attr_update"); packet.setString("attr", "active");
+			NBTTagCompound packet = new NBTTagCompound();
+			packet.setString("target_listener", GuiHandler.LISTENERID);
+			packet.setString("task", "attr_update");
+			packet.setString("attr", "active");
 			packet.setString("value", vehdata.getAttribute("active").boolean_value() + "");
 			packet.setInteger("entity", entity.getEntityId());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
@@ -653,7 +683,7 @@ public class RailEntity implements Comparable<RailEntity>{
 	}
 	
 	public boolean isHeadingForward(){
-		return forward;
+		return com.getOrient(this);
 	}
 	
 	public boolean isActive(){

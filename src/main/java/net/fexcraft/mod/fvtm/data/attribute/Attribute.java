@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
@@ -462,6 +463,13 @@ public abstract class Attribute<VT> {
 		}
 		if(obj.has("group")) attr.group(obj.get("group").getAsString());
 		return attr;
+	}
+
+	public void if_bool_differs(boolean compare, boolean apply, Consumer<Boolean> consumer){
+		if(boolean_value() != compare){
+			if(apply) value(compare);
+			consumer.accept(boolean_value());
+		}
 	}
 
 }

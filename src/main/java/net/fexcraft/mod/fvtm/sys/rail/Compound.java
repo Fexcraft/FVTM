@@ -83,6 +83,11 @@ public abstract class Compound {
 		protected boolean isActive(){
 			return entities.get(0).isActive();
 		}
+
+		@Override
+		protected boolean getOrient(RailEntity ent){
+			return forward;
+		}
 		
 	}
 	
@@ -156,6 +161,21 @@ public abstract class Compound {
 		protected boolean isActive(){
 			for(RailEntity ent : entities) if(ent.isActive()) return true; return false;
 		}
+
+		@Override
+		protected boolean getOrient(RailEntity ent){
+			RailEntity head = entities.get(0);
+			boolean rev = head.front.hasEntity();
+			if(ent == head) return rev ? !forward : forward;
+			Coupler coupler = rev ? head.rear : head.front;
+			while(coupler.getOpposite().hasEntity()){
+				coupler = coupler.getOpposite();
+				if(coupler.isFrontal() ? coupler.isFront() : coupler.isRear()) rev = !rev;
+				coupler = coupler.getCounterpart();
+				if(coupler.root == ent) break;
+			}
+			return rev ? !forward : forward;
+		}
 		
 	}
 	
@@ -200,5 +220,7 @@ public abstract class Compound {
 	protected void dispose(){
 		COMPOUNDS.remove(uid);
 	}
+
+	protected abstract boolean getOrient(RailEntity ent);
 
 }

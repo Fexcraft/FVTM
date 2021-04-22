@@ -31,7 +31,7 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
 	}
 
 	public int getSwitch2State(){
-		return getJunction() == null || junction.switch0 ? 0 : junction.switch1 ? 1 : 2;
+		return getJunction() == null || junction.switch0 ? 0 : junction.switch1 ? 2 : 1;
 	}
 
 	public boolean isDoubleSwitchState(boolean switch0, boolean switch1){

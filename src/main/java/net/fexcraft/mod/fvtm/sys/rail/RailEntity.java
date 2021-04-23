@@ -647,7 +647,7 @@ public class RailEntity implements Comparable<RailEntity>{
 		com.forward = bool;
 		if(player != null) Print.bar(player, "&e&oDirection set to " + (bool ? "FORWARD" : "REVERSE"));
 		for(RailEntity ent : com.entities){
-			ent.vehdata.getAttribute("forward").value(com.getOrient(this));
+			ent.vehdata.getAttribute("forward").value(com.getOrient(ent));
 			ent.sendForwardUpdate();
 		}
 	}
@@ -658,14 +658,14 @@ public class RailEntity implements Comparable<RailEntity>{
 		packet.setString("target_listener", GuiHandler.LISTENERID);
 		packet.setString("task", "attr_update");
 		packet.setString("attr", "forward");
-		packet.setString("value", vehdata.getAttribute("forward").boolean_value() + "");
+		packet.setString("value", vehdata.getAttribute("forward").string_value());
 		packet.setInteger("entity", entity.getEntityId());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(entity));
 	}
 
 	private void updateOrientationAttr(){
 		for(RailEntity ent : com.entities){
-			ent.vehdata.getAttribute("forward").if_bool_differs(com.getOrient(this), true, bool -> ent.sendForwardUpdate());
+			ent.vehdata.getAttribute("forward").if_bool_differs(com.getOrient(ent), true, bool -> ent.sendForwardUpdate());
 		}
 	}
 

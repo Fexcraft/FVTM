@@ -51,7 +51,7 @@ public class ToggableHandler {
 	public static boolean handleClick(KeyPress press, VehicleEntity entity, SeatCache seat, EntityPlayer player, ItemStack stack){
 		if(press == KeyPress.MOUSE_RIGHT && foundSeat(entity, seat, player, stack)) return true;
 		if(!stack.isEmpty()){
-			Print.debug("item");
+			//Print.debug("item");
 			if(stack.getItem() instanceof PartItem){
 				PartData part = stack.getCapability(Capabilities.VAPDATA, null).getPartData();
 				if(part.getType().getInstallationHandlerData() instanceof DPIHData == false) return false;
@@ -256,13 +256,13 @@ public class ToggableHandler {
 	}
 
 	public static boolean handleClick(KeyPress press, ItemStack stack){
-		if(!stack.isEmpty() && !(stack.getItem() instanceof PartItem)) return false;
+		if(!stack.isEmpty() && !(stack.getItem() instanceof PartItem || stack.getItem() instanceof ItemLead)) return false;
 		for(Entity entity : Minecraft.getMinecraft().world.loadedEntityList){
 			if(entity instanceof VehicleEntity == false) continue;
-			Print.debug("test");
+			//Print.debug("test");
 			if(((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").float_value() + 1 < entity.getDistance(Minecraft.getMinecraft().player)){
-				Print.debug("veh dis: " + ((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").float_value() + " " + entity.getName());
-				Print.debug("ply dis: " + entity.getDistance(Minecraft.getMinecraft().player));
+				//Print.debug("veh dis: " + ((VehicleEntity)entity).getVehicleData().getAttribute("collision_range").float_value() + " " + entity.getName());
+				//Print.debug("ply dis: " + entity.getDistance(Minecraft.getMinecraft().player));
 				continue;
 			}
 			if(handleClick(press, (VehicleEntity)entity, null, Minecraft.getMinecraft().player, stack)) return true;

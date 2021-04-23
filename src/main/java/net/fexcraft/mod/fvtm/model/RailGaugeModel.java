@@ -1,14 +1,20 @@
 package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.math.TexturedPolygon;
+import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.tmt.ModelBase;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
@@ -23,19 +29,6 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 
 	public static final RailGaugeModel EMPTY = new RailGaugeModel();
 	public ArrayList<Vec3f[]> rail_model = new ArrayList<>();
-	/*public Vec3f[][] rails = new Vec3f[][]{
-		{ new Vec3f(-1.0625, 0.25, 0), new Vec3f(-0.9375, 0.25, 0) },
-		{ new Vec3f( 0.9375, 0.25, 0), new Vec3f( 1.0625, 0.25, 0) },
-		//
-		{ new Vec3f(-1.0625, 0.125, 0), new Vec3f(-1.0625, 0.25, 0) },
-		{ new Vec3f(-0.9375, 0.25, 0), new Vec3f(-0.9375, 0.125, 0) },
-		//
-		{ new Vec3f(0.9375, 0.125, 0), new Vec3f(0.9375, 0.25, 0) },
-		{ new Vec3f(1.0625, 0.25, 0), new Vec3f(1.0625, 0.125, 0) },
-		//
-		{ new Vec3f(-1.0625, 0.125, 0), new Vec3f(-0.9375, 0.125, 0) },
-		{ new Vec3f(0.9375, 0.125, 0), new Vec3f(1.0625, 0.125, 0) }
-	};*/
 	public boolean rail_tempcull = false;
 	public float ties_distance = 0.5f;
 	public float signal_offset = 0.25f;
@@ -51,7 +44,59 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	
 	public RailGaugeModel(JsonObject obj){ super(obj); }
 	
-	public RailGaugeModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
+	public RailGaugeModel(ResourceLocation loc, ObjModel data){
+		super(loc, data);
+		rail_tempcull = Boolean.parseBoolean(ObjParser.getCommentValue(data, "RailCulling:"));
+		String tdis = ObjParser.getCommentValue(data, "TiesDistance:");
+		if(tdis != null && NumberUtils.isCreatable(tdis)) ties_distance = Float.parseFloat(tdis);
+		String sifoff = ObjParser.getCommentValue(data, "SignalOffset:");
+		if(sifoff != null && NumberUtils.isCreatable(sifoff)) signal_offset = Float.parseFloat(sifoff);
+		String bufflen = ObjParser.getCommentValue(data, "BufferLength:");
+		if(bufflen != null && NumberUtils.isCreatable(bufflen)) buffer_length = Float.parseFloat(bufflen);
+		List<String[]> rails = ObjParser.getCommentValues(data, new String[]{ "Rail:" }, null, null);
+		if(rails.isEmpty()) return;
+		for(String[] args : rails){
+			boolean rect = args[0].equals("rect") || args[0].equals("flat");
+			float scale = Float.parseFloat(args[1]);
+			float sx = Float.parseFloat(args[2]);
+			float sy = Float.parseFloat(args[3]);
+			float w = Float.parseFloat(args[4]);
+			float h = Float.parseFloat(args[5]);
+			boolean m = Boolean.parseBoolean(args[6]);
+			if(rect){
+				this.addRailRect(scale, sx, sy, w, h, m);
+			}
+			else{
+				Vec3f tl = new Vec3f(args, 7), tr = new Vec3f(args, 10), bl = new Vec3f(args, 13), br = new Vec3f(args, 16);
+				this.addRailRectShape(scale, sx, sy, w, h, tl, tr, bl, br, m);
+			}
+			try{
+				TurboList group = groups.get(args[0]);
+				Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+				Vec3f rotation = new Vec3f(
+					args.length > 4 ? Float.parseFloat(args[4]) : 0,
+					args.length > 5 ? Float.parseFloat(args[5]) : 0,
+					args.length > 6 ? Float.parseFloat(args[6]) : 0
+				);
+				for(ModelRendererTurbo turbo : group){
+					for(TexturedPolygon poly : turbo.getFaces()){
+						for(TexturedVertex vert : poly.getVertices()){
+							vert.vector = vert.vector.sub(vector);
+						}
+					}
+					turbo.rotationPointX = vector.x;
+					turbo.rotationPointY = vector.y;
+					turbo.rotationPointZ = vector.z;
+					turbo.rotationAngleX = rotation.x;
+					turbo.rotationAngleY = rotation.y;
+					turbo.rotationAngleZ = rotation.z;
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
 
 	@Override
 	public void render(Track data, Integer index){

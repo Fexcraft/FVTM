@@ -36,12 +36,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -352,6 +354,29 @@ public class EffectRenderer {
     
     @SubscribeEvent
     public void onRender(RenderPlayerEvent.Post event) throws Exception {
+		GlStateManager.popMatrix();
+    }
+
+	@SubscribeEvent
+    public void onRender(RenderLivingEvent.Pre<EntityLivingBase> event) throws Exception {
+		if(event.getEntity() instanceof EntityPlayer) return; 
+		float scale = ResizeUtil.getScale(event.getEntity());
+		GlStateManager.pushMatrix();
+		if(scale != 1){
+			Entity entity = event.getEntity();
+	    	float width = entity.width, height = entity.height;
+			float hw = width * 0.5f;
+			entity.setEntityBoundingBox(new AxisAlignedBB(entity.posX - hw, entity.posY + ResizeUtil.SITH, entity.posZ - hw, entity.posX + hw, entity.posY + height + ResizeUtil.SITH, entity.posZ + hw));
+			//float height = event.getEntityPlayer().height;
+			scale = height * scale / height;
+			GlStateManager.translate(0, ResizeUtil.SITH, 0);
+			GlStateManager.scale(scale, scale, scale);
+		}
+    }
+    
+    @SubscribeEvent
+    public void onRender(RenderLivingEvent.Post<EntityLivingBase> event) throws Exception {
+		if(event.getEntity() instanceof EntityPlayer) return; 
 		GlStateManager.popMatrix();
     }
 

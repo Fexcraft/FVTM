@@ -113,8 +113,10 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
 		for(String auth : authors) this.creators.add(auth);
 		try{
-			this.textureX = Integer.parseInt(ObjParser.getCommentValue(objdata, "TextureSizeX:"));
-			this.textureY = Integer.parseInt(ObjParser.getCommentValue(objdata, "TextureSizeY:"));
+			String tex = ObjParser.getCommentValue(objdata, "TextureSizeX:");
+			String tey = ObjParser.getCommentValue(objdata, "TextureSizeY:");
+			this.textureX = tex == null ? 256 : Integer.parseInt(tex);
+			this.textureY = tey == null ? 256 : Integer.parseInt(tey);
 		}
 		catch(Exception e){
 			this.textureX = 256;

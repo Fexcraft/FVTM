@@ -8,13 +8,10 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.math.TexturedPolygon;
-import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.tmt.ModelBase;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.render.RailRenderer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
@@ -69,31 +66,6 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 			else{
 				Vec3f tl = new Vec3f(args, 7), tr = new Vec3f(args, 10), bl = new Vec3f(args, 13), br = new Vec3f(args, 16);
 				this.addRailRectShape(scale, sx, sy, w, h, tl, tr, bl, br, m);
-			}
-			try{
-				TurboList group = groups.get(args[0]);
-				Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
-				Vec3f rotation = new Vec3f(
-					args.length > 4 ? Float.parseFloat(args[4]) : 0,
-					args.length > 5 ? Float.parseFloat(args[5]) : 0,
-					args.length > 6 ? Float.parseFloat(args[6]) : 0
-				);
-				for(ModelRendererTurbo turbo : group){
-					for(TexturedPolygon poly : turbo.getFaces()){
-						for(TexturedVertex vert : poly.getVertices()){
-							vert.vector = vert.vector.sub(vector);
-						}
-					}
-					turbo.rotationPointX = vector.x;
-					turbo.rotationPointY = vector.y;
-					turbo.rotationPointZ = vector.z;
-					turbo.rotationAngleX = rotation.x;
-					turbo.rotationAngleY = rotation.y;
-					turbo.rotationAngleZ = rotation.z;
-				}
-			}
-			catch(Exception e){
-				e.printStackTrace();
 			}
 		}
 	}

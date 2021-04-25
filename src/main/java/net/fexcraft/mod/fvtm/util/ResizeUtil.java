@@ -16,30 +16,31 @@ public class ResizeUtil {
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event) throws Exception {
     	//if(event.phase == Phase.END) return;
-		if(!resize(event.player, true)) event.player.eyeHeight = event.player.getDefaultEyeHeight();
+		if(!resize(event.player)) event.player.eyeHeight = event.player.getDefaultEyeHeight();
     }
     
     @SubscribeEvent
     public void onTick(LivingEvent.LivingUpdateEvent event) throws Exception {
     	//if(event.phase == Phase.END) return;
-		if(event.getEntity() instanceof EntityPlayer == false) resize(event.getEntity(), false);
+		if(event.getEntity() instanceof EntityPlayer == false) resize(event.getEntity());
     }
     
-    private boolean resize(Entity entity, boolean eyes) throws Exception {
+    private boolean resize(Entity entity) throws Exception {
     	if(entity.getRidingEntity() instanceof GenericVehicle == false) return false;
     	SeatCache cache = ((GenericVehicle)entity.getRidingEntity()).getSeatOf(entity);
     	if(cache == null || cache.seatdata == null || cache.seatdata.scale == null) return false;
     	float width = entity.width * cache.seatdata.scale;
 		float height = entity.height * cache.seatdata.scale;
 		entity.ignoreFrustumCheck = true;
-		if(entity instanceof EntityPlayer){
+		boolean isplayer = entity instanceof EntityPlayer;
+		if(isplayer){
 			entity.width = width;
 			entity.height = height;
 		}
 		float hw = width * 0.5f;
-		entity.setEntityBoundingBox(new AxisAlignedBB(entity.posX - hw, entity.posY + SITH, entity.posZ - hw, entity.posX + hw, entity.posY + height + SITH, entity.posZ + hw));
+		entity.setEntityBoundingBox(new AxisAlignedBB(entity.posX - hw, entity.posY + (isplayer ? SITH : 0), entity.posZ - hw, entity.posX + hw, entity.posY + height + (isplayer ? SITH : 0), entity.posZ + hw));
         //getMethod().invoke(player, width, height);
-        if(eyes && entity instanceof EntityPlayer){
+        if(isplayer){
         	EntityPlayer player = (EntityPlayer)entity;
 			player.eyeHeight = player.getDefaultEyeHeight() * cache.seatdata.scale;
 			player.eyeHeight += SITH;

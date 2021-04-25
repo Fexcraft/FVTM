@@ -29,8 +29,13 @@ public class ResizeUtil {
     	if(entity.getRidingEntity() instanceof GenericVehicle == false) return false;
     	SeatCache cache = ((GenericVehicle)entity.getRidingEntity()).getSeatOf(entity);
     	if(cache == null || cache.seatdata == null || cache.seatdata.scale == null) return false;
-    	float width = entity.width *= cache.seatdata.scale;
-		float height = entity.height *= cache.seatdata.scale;
+    	float width = entity.width * cache.seatdata.scale;
+		float height = entity.height * cache.seatdata.scale;
+		entity.ignoreFrustumCheck = true;
+		if(entity instanceof EntityPlayer){
+			entity.width = width;
+			entity.height = height;
+		}
 		float hw = width * 0.5f;
 		entity.setEntityBoundingBox(new AxisAlignedBB(entity.posX - hw, entity.posY + SITH, entity.posZ - hw, entity.posX + hw, entity.posY + height + SITH, entity.posZ + hw));
         //getMethod().invoke(player, width, height);

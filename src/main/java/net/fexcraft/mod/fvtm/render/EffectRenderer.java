@@ -364,19 +364,19 @@ public class EffectRenderer {
 		GlStateManager.pushMatrix();
 		if(scale != 1){
 			Entity entity = event.getEntity();
-	    	float width = entity.width, height = entity.height;
-			float hw = width * 0.5f;
-			entity.setEntityBoundingBox(new AxisAlignedBB(entity.posX - hw, entity.posY + ResizeUtil.SITH, entity.posZ - hw, entity.posX + hw, entity.posY + height + ResizeUtil.SITH, entity.posZ + hw));
-			//float height = event.getEntityPlayer().height;
-			scale = height * scale / height;
-			GlStateManager.translate(0, ResizeUtil.SITH, 0);
+	    	float height = entity.height * scale;
+			float hw = entity.width * scale * 0.5f;
+			entity.setEntityBoundingBox(new AxisAlignedBB(entity.posX - hw, entity.posY, entity.posZ - hw, entity.posX + hw, entity.posY + height, entity.posZ + hw));
+	    	scale = height * scale / height;
+			GlStateManager.translate(event.getX(), event.getY(), event.getZ());
 			GlStateManager.scale(scale, scale, scale);
+			GlStateManager.translate(-event.getX(), -event.getY(), -event.getZ());
 		}
     }
     
     @SubscribeEvent
     public void onRender(RenderLivingEvent.Post<EntityLivingBase> event) throws Exception {
-		if(event.getEntity() instanceof EntityPlayer) return; 
+		if(event.getEntity() instanceof EntityPlayer) return;
 		GlStateManager.popMatrix();
     }
 

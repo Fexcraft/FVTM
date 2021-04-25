@@ -345,10 +345,10 @@ public class EffectRenderer {
 	    	float width = player.width, height = player.height;
 			float hw = width * 0.5f;
 			player.setEntityBoundingBox(new AxisAlignedBB(player.posX - hw, player.posY + ResizeUtil.SITH, player.posZ - hw, player.posX + hw, player.posY + height + ResizeUtil.SITH, player.posZ + hw));
-			//float height = event.getEntityPlayer().height;
 			scale = height * scale / height;
-			GlStateManager.translate(0, ResizeUtil.SITH, 0);
+			GlStateManager.translate(event.getX(), event.getY() + ResizeUtil.SITH, event.getZ());
 			GlStateManager.scale(scale, scale, scale);
+			GlStateManager.translate(-event.getX(), -event.getY(), -event.getZ());
 		}
     }
     

@@ -6,6 +6,7 @@ allprojects {
 }
 buildscript {
     repositories {
+    	maven { url = "https://sizableshrimp.me/maven"}
         jcenter()
         maven { url = "http://maven.minecraftforge.net" }
     }

@@ -132,9 +132,16 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		this.smooth_shading = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:"));
 		boolean norm = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:"));//TODO read other settings
 		ObjModel objmod = Resources.getObjModelFromCache(loc, flip, norm);
-		for(String str : objmod.polygons.keySet()){
-			if(!objgroups.isEmpty() && !objgroups.contains(str)) continue;
-			groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
+		if(objgroups.isEmpty()){
+			for(String str : objmod.polygons.keySet()){
+				groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
+			}
+		}
+		else{
+			for(String str : objgroups){
+				if(!objmod.polygons.containsKey(str)) continue;
+				groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
+			}
 		}
 		//
 		List<String[]> programs = ObjParser.getCommentValues(objdata, new String[]{ "Program:" }, null, null);

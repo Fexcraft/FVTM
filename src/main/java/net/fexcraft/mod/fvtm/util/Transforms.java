@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class Transforms {
 
-	private static ArrayList<Transformer> transformers = new ArrayList<>();
+	private ArrayList<Transformer> transformers = new ArrayList<>();
 	
 	public void apply(){
 		for(Transformer tr : transformers) tr.apply();

@@ -123,6 +123,8 @@ public class Resources {
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
+	private static TreeMap<String, ObjModel> OBJ_MODEL_INFO_CACHE = new TreeMap<>();
+	private static TreeMap<ResourceLocation, ObjModel> OBJ_MODEL_DATA_CACHE = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
@@ -338,13 +340,26 @@ public class Resources {
 					//TODO create a wrapper.
 					break;
 				case "obj":
-					ResourceLocation loc = new ResourceLocation(name);
-					ObjModel objdata = new ObjParser(Resources.getModelInputStream(loc)).readComments(true).readModel(false).parse();
+					String[] filter = name.split(";");
+					String id = filter.length > 1 ? filter[filter.length - 1] : name;
+					ResourceLocation loc = new ResourceLocation(id);
+					ObjModel objdata = null;
+					if(OBJ_MODEL_INFO_CACHE.containsKey(id)){
+						OBJ_MODEL_INFO_CACHE.get(id);
+					}
+					else{
+						objdata = new ObjParser(Resources.getModelInputStream(loc)).readComments(true).readModel(false).parse();
+						OBJ_MODEL_INFO_CACHE.put(id, objdata);
+					}
 					String scale = ObjParser.getCommentValue(objdata, "Scale:");
 					if(scale != null){
 						clazz = (Class<? extends Model<T, K>>)getEmptyModelFromClass(clazz).getScaledVariant();
 					}
-					model = clazz.getConstructor(ResourceLocation.class, ObjModel.class).newInstance(loc, objdata);
+					ArrayList<String> groups = new ArrayList<>();
+					if(filter.length > 1){
+						for(int i = 0; i < filter.length - 1; i++) groups.add(filter[i]);
+					}
+					model = clazz.getConstructor(ResourceLocation.class, ObjModel.class, ArrayList.class).newInstance(loc, objdata, groups);
 					if(scale != null) ((GenericModel<T, K>)model).scale = Float.parseFloat(scale);
 					break;
 				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);
@@ -677,6 +692,20 @@ public class Resources {
 		boolean bool = Loader.isModLoaded(modid);
 		LOADED_MODS.put(modid, bool);
 		return bool;
+	}
+	
+	public static ObjModel getObjModelFromCache(ResourceLocation loc, boolean flip, boolean norm){
+		if(OBJ_MODEL_DATA_CACHE.containsKey(loc)){
+			return OBJ_MODEL_DATA_CACHE.get(loc);
+		}
+		ObjModel objmod = new ObjParser(Resources.getModelInputStream(loc)).flipAxes(flip).readComments(false).noNormals(norm).parse();
+		OBJ_MODEL_DATA_CACHE.put(loc, objmod);
+		return objmod;
+	}
+
+	public static void clearObjModelCache(){
+		OBJ_MODEL_INFO_CACHE.clear();
+		OBJ_MODEL_DATA_CACHE.clear();
 	}
 	
 	/*private static final BiConsumer<ArrayList<TileEntity>, Junction> LINK_TO_JUNC = (tiles, junction) -> {

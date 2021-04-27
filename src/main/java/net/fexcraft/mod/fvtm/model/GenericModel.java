@@ -24,6 +24,7 @@ import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.Transforms;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -38,6 +39,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	//
 	//protected GroupMap groups = new GroupMap();
 	public GroupList groups = new GroupList();
+	public Transforms transforms = new Transforms();
 	private ArrayList<String> creators = new ArrayList<>();
 	protected int textureX, textureY;
 	public boolean smooth_shading;
@@ -109,7 +111,10 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		}
 	}
 
-	public GenericModel(ResourceLocation loc, ObjModel objdata){
+	/**
+	 * @param groups Empty when no filter been specified, every group is loaded then.
+	 */
+	public GenericModel(ResourceLocation loc, ObjModel objdata, ArrayList<String> objgroups){
 		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
 		for(String auth : authors) this.creators.add(auth);
 		try{
@@ -126,14 +131,16 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		boolean flip = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipAxes:"));
 		this.smooth_shading = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:"));
 		boolean norm = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:"));//TODO read other settings
-		ObjModel objmod = new ObjParser(Resources.getModelInputStream(loc)).flipAxes(flip).readComments(false).noNormals(norm).parse();
+		ObjModel objmod = Resources.getObjModelFromCache(loc, flip, norm);
 		for(String str : objmod.polygons.keySet()){
+			if(!objgroups.isEmpty() && !objgroups.contains(str)) continue;
 			groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
 		}
 		//
 		List<String[]> programs = ObjParser.getCommentValues(objdata, new String[]{ "Program:" }, null, null);
 		if(!programs.isEmpty()){
 			for(String[] args : programs){
+				if(!groups.contains(args[0])) continue;
 				try{
 					groups.get(args[0]).addProgram(parseProgram(args));
 				}
@@ -145,6 +152,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		List<String[]> pivots = ObjParser.getCommentValues(objdata, new String[]{ "Pivot:" }, null, null);
 		if(!pivots.isEmpty()){
 			for(String[] args : pivots){
+				if(!groups.contains(args[0])) continue;
 				try{
 					TurboList group = groups.get(args[0]);
 					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
@@ -166,6 +174,17 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 						turbo.rotationAngleY = rotation.y;
 						turbo.rotationAngleZ = rotation.z;
 					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		List<String[]> transforms = ObjParser.getCommentValues(objdata, new String[]{ "Transform:" }, null, null);
+		if(!transforms.isEmpty()){
+			for(String[] args : transforms){
+				try{
+					this.transforms.parse(args);
 				}
 				catch(Exception e){
 					e.printStackTrace();

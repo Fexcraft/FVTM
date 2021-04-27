@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
@@ -27,7 +29,7 @@ public class RoadSignModel extends GenericModel<RoadSignEntity, RoadSign> implem
 	
 	public RoadSignModel(JsonObject obj){ super(obj); }
 	
-	public RoadSignModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
+	public RoadSignModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
 
 	@Override
 	public void render(RoadSignEntity data, RoadSign key){

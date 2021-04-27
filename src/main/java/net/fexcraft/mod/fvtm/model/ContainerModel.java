@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
@@ -36,17 +38,21 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
 	
 	public ContainerModel(JsonObject obj){ super(obj); }
 	
-	public ContainerModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
+	public ContainerModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
     
 	@Override
 	public void render(ContainerData data, Object key){
+		transforms.apply();
 		render(data, key, null, null);
+		transforms.deapply();
 	}
 
 	@Override
 	public void render(ContainerData data, Object key, Entity ent, RenderCache cache){
+		transforms.apply();
         GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
 		for(TurboList list : groups){ list.render(ent, null, data, null, cache); }
+		transforms.deapply();
 	}
 	
 	////-///---/---///-////

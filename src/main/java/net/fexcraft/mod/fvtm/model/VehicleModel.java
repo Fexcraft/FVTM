@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
@@ -37,17 +39,21 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	
 	public VehicleModel(JsonObject obj){ super(obj); }
 	
-	public VehicleModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
+	public VehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
 
 	@Override
 	public void render(VehicleData data, Object key){
+		transforms.apply();
 		for(TurboList list : groups) list.render(null, data, data, null, null);
+		transforms.deapply();
 	}
 
 	@Override
 	public void render(VehicleData data, Object key, Entity ent, RenderCache cache){
+		transforms.apply();
         GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
 		for(TurboList list : groups) list.render(ent, data, data, null, cache);
+		transforms.deapply();
 	}
 	
 	////-///---/---///-////
@@ -110,7 +116,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	
 	public static class ScaledVehicleModel extends VehicleModel {
 		
-		public ScaledVehicleModel(ResourceLocation loc, ObjModel data){ super(loc, data); }
+		public ScaledVehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
 		
 		@Override
 		public void render(VehicleData data, Object key){

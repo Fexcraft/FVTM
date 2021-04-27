@@ -3,7 +3,7 @@
     "Addon": "fvtm:hcp",
     "Model": "hcp:models/gauges/container_crane",
     "Name": "Large Container Crane Rails",
-    "Width": -358,
+    "Width": 356,
     "Height": 0,
     "BlockHeight": 4,
     "BlockSpace": 0,

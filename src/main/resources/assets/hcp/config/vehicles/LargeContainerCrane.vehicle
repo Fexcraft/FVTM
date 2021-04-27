@@ -10,7 +10,7 @@
     	{ "id":"weight", "type": "float", "value": 5000 },
     	{ "id":"constructor_length", "type": "float", "value": 6 },
     	{ "id":"constructor_height", "type": "float", "value": 0 },
-    	{ "id": "gauge", "type": "integer", "value": -358 },
+    	{ "id": "gauge", "type": "integer", "value": 356 },
     	{ "id": "collision_range", "type": "float", "value": 14 }
     ],
     "WheelPositions":[

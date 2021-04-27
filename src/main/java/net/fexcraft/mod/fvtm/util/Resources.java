@@ -694,11 +694,11 @@ public class Resources {
 		return bool;
 	}
 	
-	public static ObjModel getObjModelFromCache(ResourceLocation loc, boolean flip, boolean norm){
+	public static ObjModel getObjModelFromCache(ResourceLocation loc, boolean flip, boolean flip_u, boolean flip_v, boolean norm){
 		if(OBJ_MODEL_DATA_CACHE.containsKey(loc)){
 			return OBJ_MODEL_DATA_CACHE.get(loc);
 		}
-		ObjModel objmod = new ObjParser(Resources.getModelInputStream(loc)).flipAxes(flip).readComments(false).noNormals(norm).parse();
+		ObjModel objmod = new ObjParser(Resources.getModelInputStream(loc)).flipAxes(flip).flipUV(flip_u, flip_v).readComments(false).noNormals(norm).parse();
 		OBJ_MODEL_DATA_CACHE.put(loc, objmod);
 		return objmod;
 	}

@@ -23,6 +23,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
@@ -97,6 +98,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(new Gauge("", 0, 0, 0, 0, 0));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
+		TurboList.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
 		//
 		DIDLOAD = true;
 	}
@@ -1368,6 +1370,56 @@ public class DefaultPrograms {
 			return new TranslationSetter(x, y, z, s);
 		}
 
+	}
+	
+	public static class TextureBinder implements Program {
+		
+		private ResourceLocation resloc;
+		
+		public TextureBinder(String rs){
+			resloc = new ResourceLocation(rs);
+		}
+		
+		public TextureBinder(ResourceLocation rs){
+			resloc = rs;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:bind_texture";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			ModelBase.bindTexture(resloc);
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			//
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			ModelBase.bindTexture(resloc);
+		}
+		
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			//
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			return new TextureBinder(elm.getAsJsonArray().get(0).getAsString());
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			return new TextureBinder(args[0]);
+		}
+		
 	}
 	
 }

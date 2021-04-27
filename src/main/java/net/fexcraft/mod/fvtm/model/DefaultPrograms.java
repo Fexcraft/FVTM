@@ -13,6 +13,7 @@ import java.util.function.BiPredicate;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -99,6 +100,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
+		TurboList.PROGRAMS.add(RESCALE_NORMAL);
 		//
 		DIDLOAD = true;
 	}
@@ -1421,5 +1423,34 @@ public class DefaultPrograms {
 		}
 		
 	}
+	
+	public static Program RESCALE_NORMAL = new Program(){
+
+		@Override
+		public String getId(){
+			return "fvtm:rescale_normal";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		}
+		
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		}
+		
+	}, GL_RESCALE_NORMAL = RESCALE_NORMAL;
 	
 }

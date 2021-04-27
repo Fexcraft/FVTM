@@ -359,6 +359,7 @@ public class Junction {
 	//private byte checktimer = 0;
 
 	public void onUpdate(){
+		if(this.isDecorational()) return;
 		pollSignal(null);
 		/*if(checktimer == 0){
 			// junction switch entities been updated here,
@@ -368,6 +369,10 @@ public class Junction {
 		checktimer--;*/
 	}
 	
+	private boolean isDecorational(){
+		return tracks.size() == 0 || tracks.get(0).gauge.width() < 0;
+	}
+
 	public void pollSignal(RailEntity ent){
 		if(signal == null) return;
 		boolean oldsig0 = signal0, oldsig1 = signal1;

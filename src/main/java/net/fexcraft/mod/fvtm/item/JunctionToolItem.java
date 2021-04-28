@@ -47,7 +47,7 @@ public class JunctionToolItem extends Item implements JunctionGridItem {
         tooltip.add(Formatter.format("&9- - - - - - &7-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:junction")){
         	NBTTagCompound com = stack.getTagCompound().getCompoundTag("fvtm:junction");
-        	tooltip.add(Formatter.format("&9Junction Selected:" + new Vec316f(com).toString()));
+        	tooltip.add(Formatter.format("&9Junction Selected: &7" + new Vec316f(com).toString()));
         }
         else{
         	tooltip.add("No Junction Position Cached.");

@@ -17,13 +17,13 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	public JunctionAdjuster(EntityPlayer player){
 		super(texture, new JunctionAdjusterContainer(player), player);
 		this.defbackground = true; this.deftexrect = true; container.gui = this;
-		this.xSize = 248; this.ySize = 206;
+		this.xSize = 248; this.ySize = 176;
 	}
 
 	@Override
 	protected void init(){
-		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 218, MapColor.SNOW.colorValue, "ID: " + container.junction.getVec316f().asIDString()));
-		for(int i = 0; i < 5; i ++){
+		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 205, MapColor.SNOW.colorValue, "ID: " + container.junction.getVec316f().asIDString()));
+		/*for(int i = 0; i < 5; i ++){
 			buttons.put("type" + i, new BasicButton("type" + i, guiLeft + 7 + (i * 18), guiTop + 21, 7 + (i * 18), 21, 18, 18,
 				i == 0 ? container.junction.size() <= 2 : i == 1 ? container.junction.size() == 3 : container.junction.size() == 4));
 		}
@@ -42,12 +42,12 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			if(i != 0) buttons.put("up" + i, new BasicButton("up" + i, guiLeft + 203, guiTop + 90 + j, 203, 90 + j, 12, 12, true));
 		}
 		buttons.put("s_del", new BasicButton("s_del", guiLeft + 229, guiTop + 69, 229, 69, 12, 12, true));
-		buttons.put("s_app", new BasicButton("s_app", guiLeft + 216, guiTop + 69, 216, 69, 12, 12, true));
+		buttons.put("s_app", new BasicButton("s_app", guiLeft + 216, guiTop + 69, 216, 69, 12, 12, true));*/
 	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		texts.get("type").string = "Current Type: " + container.junction.type.name();
+		/*texts.get("type").string = "Current Type: " + container.junction.type.name();
 		texts.get("signal").string = "Current Signal: " + (!container.junction.type.isStraight() ? "not available"
 			: container.junction.signal == null ? "none" : container.junction.signal.name());
 		for(int i = 0; i < 4; i++){
@@ -55,7 +55,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			if(i != 3) buttons.get("dw" + i).enabled = i + 1 < container.junction.size();
 			if(i != 0) buttons.get("up" + i).enabled = i > 0 && i < container.junction.size();
 			texts.get("track" + i).string = i >= container.junction.size() ? "" :  i + "| " + container.junction.tracks.get(i).end.asIDString();
-		}
+		}*/
 	}
 
 	@Override

@@ -66,7 +66,13 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 		Junction junction = syscap.getJunction(vector, true);
 		if(junction == null){ return EnumActionResult.PASS; }
-		if(player.isSneaking()){
+		EnumActionResult result = onSignalUse(junction, player, player.isSneaking());
+		if(result == EnumActionResult.SUCCESS && !player.capabilities.isCreativeMode) stack.shrink(1);
+		return result;
+	}
+
+	public static EnumActionResult onSignalUse(Junction junction, EntityPlayer player, boolean remove){
+		if(remove){
 			junction.setSignal(null, null);
 			Print.bar(player, "&bJunction Signal &creset&b.");
 			junction.checkTrackSectionConsistency();
@@ -109,7 +115,6 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 		Print.chat(player, "&bJunction Signal &7set&b.");
 		junction.checkTrackSectionConsistency();
 		junction.pollSignal(null);
-		if(!player.capabilities.isCreativeMode) stack.shrink(1);
 		return EnumActionResult.SUCCESS;
 	}
 

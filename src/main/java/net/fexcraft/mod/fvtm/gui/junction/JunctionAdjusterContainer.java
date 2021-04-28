@@ -44,8 +44,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 			if(junction.size() != 4){
 				Print.chat(player, "Type `" + type + "` not applicable to a junction bellow 4 tracks."); return;
 			}
-			junction.type = type == 2 ? PathJuncType.FORK_3 : type == 3 ? PathJuncType.CROSSING
-				: type == 4 ? PathJuncType.DOUBLE : PathJuncType.byTracksAmount(junction.size());
+			junction.type = PathJuncType.values()[type];
 			junction.updateClient(); Print.chat(player, "&a&lJunction Type Updated.");
 		}
 		else if(packet.hasKey("del")){

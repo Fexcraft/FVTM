@@ -1,10 +1,16 @@
 package net.fexcraft.mod.fvtm.gui.junction;
 
+import static net.fexcraft.lib.mc.utils.Formatter.format;
+
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +19,9 @@ import net.minecraftforge.fml.relauncher.Side;
 public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/junction_main.png");
+	private BasicButton[] type = new BasicButton[5];
+	private ArrayList<String> tooltip = new ArrayList<>();
+	private boolean crossing;
 	
 	public JunctionAdjuster(EntityPlayer player){
 		super(texture, new JunctionAdjusterContainer(player), player);
@@ -23,11 +32,15 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	@Override
 	protected void init(){
 		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 205, MapColor.SNOW.colorValue, "ID: " + container.junction.getVec316f().asIDString()));
-		/*for(int i = 0; i < 5; i ++){
-			buttons.put("type" + i, new BasicButton("type" + i, guiLeft + 7 + (i * 18), guiTop + 21, 7 + (i * 18), 21, 18, 18,
+		buttons.put("help", new BasicButton("help", guiLeft + 216, guiTop + 7, 216, 7, 12, 12, true));
+		buttons.put("copy", new BasicButton("copy", guiLeft + 229, guiTop + 7, 229, 7, 12, 12, true));
+		for(int i = 0; i < PathJuncType.values().length; i ++){
+			buttons.put("type" + i, type[i] = new BasicButton("type" + i, guiLeft + 76 + (i * 18), guiTop + 21, 76 + (i * 18), 21, 18, 18,
 				i == 0 ? container.junction.size() <= 2 : i == 1 ? container.junction.size() == 3 : container.junction.size() == 4));
 		}
-		texts.put("type", new BasicText(guiLeft + 9, guiTop + 43, 230, MapColor.SNOW.colorValue, " . . . "));
+		texts.put("switch0", new BasicText(guiLeft + 75, guiTop + 44, 127, MapColor.SNOW.colorValue, " . . . "));
+		texts.put("switch1", new BasicText(guiLeft + 75, guiTop + 57, 127, MapColor.SNOW.colorValue, " . . . "));
+		/*texts.put("type", new BasicText(guiLeft + 9, guiTop + 43, 230, MapColor.SNOW.colorValue, " . . . "));
 		texts.put("signal", new BasicText(guiLeft + 9, guiTop + 57, 230, MapColor.SNOW.colorValue, " . . . "));
 		for(int i = 0; i < 7; i ++){
 			buttons.put("command" + i, new BasicButton("command" + i, guiLeft + 7 + (i * 18), guiTop + 181, 7 + (i * 18), 181, 18, 18, true));
@@ -47,6 +60,10 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
+		if(container.junction == null) return;
+		crossing = container.junction.type.isCrossing();
+		texts.get("switch0").string = container.junction.size() > 2 && !crossing ? "switch [0]: " + container.junction.switch0 : "inactive";
+		texts.get("switch1").string = container.junction.size() > 3 && !crossing ? "switch [1]: " + container.junction.switch1 : "inactive";
 		/*texts.get("type").string = "Current Type: " + container.junction.type.name();
 		texts.get("signal").string = "Current Signal: " + (!container.junction.type.isStraight() ? "not available"
 			: container.junction.signal == null ? "none" : container.junction.signal.name());
@@ -60,7 +77,26 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 
 	@Override
 	protected void drawbackground(float pticks, int mouseX, int mouseY){
-		//
+		if(container.junction == null) return;
+		this.drawTexturedModalRect(guiLeft + 76 + (container.junction.type.ordinal() * 18), guiTop + 21, 0, 238, 18, 18);
+		if(container.junction.size() < 3 || crossing){
+			this.drawTexturedModalRect(guiLeft + 203, guiTop + 41, 18, 244, 38, 12);
+		}
+		if(!container.junction.type.is4Track() || crossing){
+			this.drawTexturedModalRect(guiLeft + 203, guiTop + 55, 18, 244, 38, 12);
+		}
+	}
+	
+	@Override
+	protected void drawlast(float pticks, int mouseX, int mouseY){
+		if(container.junction == null) return;
+		tooltip.clear();
+		for(int i = 0; i < type.length; i++){
+			if(!type[i].hovered) continue;
+			tooltip.add(format("&9Junction Type: &7" + PathJuncType.values()[i].name()));
+			if(i == container.junction.type.ordinal()) tooltip.add(format("&a&oCurrent type of this junction."));
+		}
+		if(tooltip.size() > 0) drawHoveringText(tooltip, mouseX, mouseY);
 	}
 
 	@Override
@@ -80,8 +116,24 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			compound.setString("station", fields.get("station").getText());
 			this.container.send(Side.SERVER, compound); return true;
 		}
-		int i = -1; try{ i = Integer.parseInt(button.name.replace("type", "").replace("command", "").replace("dw", "")
-			.replace("up", "").replace("del", "")); } catch(Exception e){ e.printStackTrace(); }
+		else if(button.name.equals("help")){
+			GuiScreen parent = this;
+			this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, "https://github.com/Fexcraft/FVTM/wiki/Junction", 31102009, true){
+                @Override
+                public void drawScreen(int mouseX, int mouseY, float partialTicks){
+                    parent.drawScreen(-1, -1, partialTicks);
+                    super.drawScreen(mouseX, mouseY, partialTicks);
+                }
+            });
+			return true;
+		}
+		int i = -1;
+		try{
+			i = Integer.parseInt(button.name.replace("type", "").replace("dw", "").replace("up", "").replace("del", ""));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 		if(button.name.startsWith("type")){
 			if(i < 0 || i > 5) return false;
 			switch(i){
@@ -93,13 +145,6 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 					compound.setByte("type", (byte)i); this.container.send(Side.SERVER, compound);
 					return true;
 				}
-				default: break;
-			}
-		}
-		else if(button.name.startsWith("command")){
-			if(i < 0 || i > 7) return false;
-			switch(i){
-				//TODO
 				default: break;
 			}
 		}

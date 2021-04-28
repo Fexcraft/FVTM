@@ -51,4 +51,12 @@ public enum PathJuncType {
 		return STRAIGHT;
 	}
 
+	public boolean is4Track(){
+		return this == CROSSING || this == DOUBLE || this == FORK_3;
+	}
+
+	public boolean is3Track(){
+		return this == FORK_2;
+	}
+
 }

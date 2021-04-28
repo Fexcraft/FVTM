@@ -78,7 +78,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 		}
 		else if(packet.hasKey("signal")){
 			boolean signal = packet.getBoolean("signal");
-			SignalItem0.onSignalUse(junction, player, signal);
+			SignalItem0.onSignalUse(junction, player, !signal);
 			junction.updateClient();
 			return;
 		}

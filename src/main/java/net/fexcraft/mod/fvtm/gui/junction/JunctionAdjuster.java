@@ -152,6 +152,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("station", "null");
 			this.container.send(Side.SERVER, compound);
+			fields.get("station").setText("deleted");
 			return true;
 		}
 		else if(button.name.equals("s_app")){

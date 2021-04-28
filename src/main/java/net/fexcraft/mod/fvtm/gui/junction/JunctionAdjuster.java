@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
@@ -56,6 +57,9 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			if(i != 3) buttons.put("dw" + i, new BasicButton("dw" + i, guiLeft + 226, guiTop + 94 + j, 226, 94 + j, 7, 12, true));
 			buttons.put("del" + i, new BasicButton("del" + i, guiLeft + 234, guiTop + 94 + j, 234, 94 + j, 7, 12, true));
 		}
+		texts.put("signal", new BasicText(guiLeft + 16, guiTop + 160, 162, MapColor.SNOW.colorValue, ""));
+		buttons.put("s_c", new BasicButton("sig_change", guiLeft + 181, guiTop + 157, 181, 157, 7, 12, true));
+		buttons.put("s_r", new BasicButton("sig_remove", guiLeft + 189, guiTop + 189, 229, 157, 7, 12, true));
 	}
 
 	@Override
@@ -70,6 +74,15 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			buttons.get("del" + i).enabled = i < container.junction.size();
 			texts.get("track" + i).string = i >= container.junction.size() ? "" : container.junction.tracks.get(i).end.asIDString();
 		}
+		String signal = new String();
+		if(container.junction.signal == null) signal = container.junction.size() > 2 ? "inactive" : "no signal mode";
+		else if(container.junction.signal_dir.isBoth()){
+			signal = EntryDirection.BOTH.name() + " | S0: " + container.junction.signal0 + " | S1: " + container.junction.signal1;
+		}
+		else{
+			signal = container.junction.signal_dir.name() + " | S0: " + container.junction.signal0;
+		}
+		texts.get("signal").string = signal;
 	}
 
 	@Override
@@ -122,6 +135,8 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			if(i != 3 && buttons.get("dw" + i).hovered) tooltip.add(format("&9Move track index &edown&9."));
 			if(buttons.get("del" + i).hovered) tooltip.add(format("&eRemove track from junction."));
 		}
+		if(buttons.get("s_c").hovered) tooltip.add(format("&9Change signal mode/direction."));
+		if(buttons.get("s_r").hovered) tooltip.add(format("&eRemove signal mode."));
 		if(tooltip.size() > 0) drawHoveringText(tooltip, mouseX, mouseY);
 	}
 
@@ -134,13 +149,16 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			return true;
 		}
 		else if(button.name.equals("s_del")){
-			NBTTagCompound compound = new NBTTagCompound(); compound.setString("station", "null");
-			this.container.send(Side.SERVER, compound); return true;
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("station", "null");
+			this.container.send(Side.SERVER, compound);
+			return true;
 		}
 		else if(button.name.equals("s_app")){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("station", fields.get("station").getText());
-			this.container.send(Side.SERVER, compound); return true;
+			this.container.send(Side.SERVER, compound);
+			return true;
 		}
 		else if(button.name.equals("help")){
 			GuiScreen parent = this;
@@ -151,6 +169,18 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
                     super.drawScreen(mouseX, mouseY, partialTicks);
                 }
             });
+			return true;
+		}
+		else if(button.name.equals("sig_change")){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setBoolean("signal", true);
+			this.container.send(Side.SERVER, compound);
+			return true;
+		}
+		else if(button.name.equals("sig_remove")){
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setBoolean("signal", false);
+			this.container.send(Side.SERVER, compound);
 			return true;
 		}
 		int i = -1;
@@ -175,16 +205,22 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			}
 		}
 		else if(button.name.startsWith("del")){
-			NBTTagCompound compound = new NBTTagCompound(); compound.setByte("del", (byte)i);
-			this.container.send(Side.SERVER, compound); return true;
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setByte("del", (byte)i);
+			this.container.send(Side.SERVER, compound);
+			return true;
 		}
 		else if(button.name.startsWith("dw")){
-			NBTTagCompound compound = new NBTTagCompound(); compound.setByte("dw", (byte)i);
-			this.container.send(Side.SERVER, compound); return true;
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setByte("dw", (byte)i);
+			this.container.send(Side.SERVER, compound);
+			return true;
 		}
 		else if(button.name.startsWith("up")){
-			NBTTagCompound compound = new NBTTagCompound(); compound.setByte("up", (byte)i);
-			this.container.send(Side.SERVER, compound); return true;
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setByte("up", (byte)i);
+			this.container.send(Side.SERVER, compound);
+			return true;
 		}
 		return false;
 	}

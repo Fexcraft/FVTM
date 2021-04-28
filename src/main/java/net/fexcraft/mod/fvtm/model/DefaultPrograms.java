@@ -94,6 +94,7 @@ public class DefaultPrograms {
 		//
 		TurboList.PROGRAMS.add(new Scale(1f));
 		TurboList.PROGRAMS.add(TRANSPARENT);
+		TurboList.PROGRAMS.add(WINDOW);
 		TurboList.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new Gauge("", 0, 0, 0, 0, 0));//jtmt/obj init only

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 /**
  * 
@@ -11,6 +12,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class Transforms {
 
+	public static final Transformer TF_RESCALE_NORMAL = new TF_RescaleNormal();
 	private ArrayList<Transformer> transformers = new ArrayList<>();
 	
 	public void apply(){
@@ -50,6 +52,10 @@ public class Transforms {
 					transformers.add(new TF_Scale(scale, scale, scale));
 				}
 				else transformers.add(new TF_Scale(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3])));
+				return;
+			case "gl_rescale_normal":
+			case "rescale_normal":
+				transformers.add(TF_RESCALE_NORMAL);
 				return;
 		}
 	}
@@ -112,6 +118,22 @@ public class Transforms {
 		public void deapply(){
 			//GL11.glScalef(-x, -y, -z);
 			GL11.glPopMatrix();
+		}
+		
+	}
+	
+	public static class TF_RescaleNormal implements Transformer {
+		
+		public TF_RescaleNormal(){}
+
+		@Override
+		public void apply(){
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		}
+
+		@Override
+		public void deapply(){
+			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		}
 		
 	}

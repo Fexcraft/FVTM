@@ -58,8 +58,8 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			buttons.put("del" + i, new BasicButton("del" + i, guiLeft + 234, guiTop + 94 + j, 234, 94 + j, 7, 12, true));
 		}
 		texts.put("signal", new BasicText(guiLeft + 16, guiTop + 160, 162, MapColor.SNOW.colorValue, ""));
-		buttons.put("s_c", new BasicButton("sig_change", guiLeft + 181, guiTop + 157, 181, 157, 7, 12, true));
-		buttons.put("s_r", new BasicButton("sig_remove", guiLeft + 189, guiTop + 189, 229, 157, 7, 12, true));
+		buttons.put("s_c", new BasicButton("sig_change", guiLeft + 181, guiTop + 156, 181, 156, 7, 12, true));
+		buttons.put("s_r", new BasicButton("sig_remove", guiLeft + 189, guiTop + 156, 189, 156, 7, 12, true));
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			if(i != 3 && buttons.get("dw" + i).hovered) tooltip.add(format("&9Move track index &edown&9."));
 			if(buttons.get("del" + i).hovered) tooltip.add(format("&eRemove track from junction."));
 		}
-		if(buttons.get("s_c").hovered) tooltip.add(format("&9Change signal mode/direction."));
+		if(buttons.get("s_c").hovered) tooltip.add(format("&7Change signal mode/direction."));
 		if(buttons.get("s_r").hovered) tooltip.add(format("&eRemove signal mode."));
 		if(tooltip.size() > 0) drawHoveringText(tooltip, mouseX, mouseY);
 	}

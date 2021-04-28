@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.minecraft.block.material.MapColor;
@@ -22,6 +23,10 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	private BasicButton[] type = new BasicButton[5];
 	private ArrayList<String> tooltip = new ArrayList<>();
 	private boolean crossing;
+	public static final RGB BLU = new RGB(0x0094FF);
+	public static final RGB RED = new RGB(0xCC1A29);
+	public static final RGB GRE = new RGB(0x00FF21);
+	public static final RGB ORA = new RGB(0xFF6A00);
 	
 	public JunctionAdjuster(EntityPlayer player){
 		super(texture, new JunctionAdjusterContainer(player), player);
@@ -40,13 +45,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		}
 		texts.put("switch0", new BasicText(guiLeft + 75, guiTop + 44, 127, MapColor.SNOW.colorValue, " . . . "));
 		texts.put("switch1", new BasicText(guiLeft + 75, guiTop + 57, 127, MapColor.SNOW.colorValue, " . . . "));
-		/*texts.put("type", new BasicText(guiLeft + 9, guiTop + 43, 230, MapColor.SNOW.colorValue, " . . . "));
-		texts.put("signal", new BasicText(guiLeft + 9, guiTop + 57, 230, MapColor.SNOW.colorValue, " . . . "));
-		for(int i = 0; i < 7; i ++){
-			buttons.put("command" + i, new BasicButton("command" + i, guiLeft + 7 + (i * 18), guiTop + 181, 7 + (i * 18), 181, 18, 18, true));
-		}
-		buttons.put("copy", new BasicButton("copy", guiLeft + 229, guiTop + 7, 229, 7, 12, 12, true));
-		fields.put("station", new TextField(0, fontRenderer, guiLeft + 7, guiTop + 69, 207, 12));
+		/*fields.put("station", new TextField(0, fontRenderer, guiLeft + 7, guiTop + 69, 207, 12));
 		fields.get("station").setText(container.junction.station == null ? "no station" : container.junction.station);
 		for(int i = 0; i < 4; i++){ int j =  + (i * 14);
 			texts.put("track" + i, new BasicText(guiLeft + 9, guiTop + 92 + j, 191, MapColor.SNOW.colorValue, ""));
@@ -64,10 +63,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		crossing = container.junction.type.isCrossing();
 		texts.get("switch0").string = container.junction.size() > 2 && !crossing ? "switch [0]: " + container.junction.switch0 : "inactive";
 		texts.get("switch1").string = container.junction.size() > 3 && !crossing ? "switch [1]: " + container.junction.switch1 : "inactive";
-		/*texts.get("type").string = "Current Type: " + container.junction.type.name();
-		texts.get("signal").string = "Current Signal: " + (!container.junction.type.isStraight() ? "not available"
-			: container.junction.signal == null ? "none" : container.junction.signal.name());
-		for(int i = 0; i < 4; i++){
+		/*for(int i = 0; i < 4; i++){
 			buttons.get("del" + i).enabled = i < container.junction.size();;
 			if(i != 3) buttons.get("dw" + i).enabled = i + 1 < container.junction.size();
 			if(i != 0) buttons.get("up" + i).enabled = i > 0 && i < container.junction.size();
@@ -82,8 +78,32 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		if(container.junction.size() < 3 || crossing){
 			this.drawTexturedModalRect(guiLeft + 203, guiTop + 41, 18, 244, 38, 12);
 		}
+		else{
+			BLU.glColorApply();
+			this.drawTexturedModalRect(guiLeft + 204, guiTop + 42, 204, 42, 10, 10);
+			if(container.junction.type.isFork2() || container.junction.type.isDouble()){
+				(container.junction.switch0 ? RED : GRE).glColorApply();
+			}
+			else if(container.junction.type.isFork3()){
+				(container.junction.switch0 ? RED : container.junction.switch1 ? ORA : GRE).glColorApply();
+			}
+			this.drawTexturedModalRect(guiLeft + 230, guiTop + 42, 230, 42, 10, 10);
+			RGB.glColorReset();
+		}
 		if(!container.junction.type.is4Track() || crossing){
 			this.drawTexturedModalRect(guiLeft + 203, guiTop + 55, 18, 244, 38, 12);
+		}
+		else{
+			(container.junction.type.isFork3() ? BLU : container.junction.switch0 ? RED : GRE).glColorApply();
+			this.drawTexturedModalRect(guiLeft + 204, guiTop + 56, 204, 56, 10, 10);
+			if(container.junction.type.isDouble()){
+				(container.junction.switch1 ? BLU : ORA).glColorApply();
+			}
+			else if(container.junction.type.isFork3()){
+				(container.junction.switch0 ? RED : container.junction.switch1 ? ORA : GRE).glColorApply();
+			}
+			this.drawTexturedModalRect(guiLeft + 230, guiTop + 56, 230, 56, 10, 10);
+			RGB.glColorReset();
 		}
 	}
 	

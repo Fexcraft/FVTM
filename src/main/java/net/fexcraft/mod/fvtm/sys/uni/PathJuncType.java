@@ -30,6 +30,14 @@ public enum PathJuncType {
 	public boolean isSwitch(){
 		return this == FORK_2 || this == FORK_3;
 	}
+
+	public boolean isFork2(){
+		return this == FORK_2;
+	}
+
+	public boolean isFork3(){
+		return this == FORK_3;
+	}
 	
 	public boolean isDouble(){
 		return this == DOUBLE;

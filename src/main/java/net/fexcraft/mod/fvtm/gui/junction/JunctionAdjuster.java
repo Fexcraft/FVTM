@@ -49,12 +49,13 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		fields.get("station").setText(container.junction.station == null ? "no station" : container.junction.station);
 		buttons.put("s_app", new BasicButton("s_app", guiLeft + 216, guiTop + 69, 216, 69, 12, 12, true));
 		buttons.put("s_del", new BasicButton("s_del", guiLeft + 229, guiTop + 69, 229, 69, 12, 12, true));
-		/*for(int i = 0; i < 4; i++){ int j =  + (i * 14);
-			texts.put("track" + i, new BasicText(guiLeft + 9, guiTop + 92 + j, 191, MapColor.SNOW.colorValue, ""));
-			buttons.put("del" + i, new BasicButton("del" + i, guiLeft + 229, guiTop + 90 + j, 229, 90 + j, 12, 12, true));
-			if(i != 3) buttons.put("dw" + i, new BasicButton("dw" + i, guiLeft + 216, guiTop + 90 + j, 216, 90 + j, 12, 12, true));
-			if(i != 0) buttons.put("up" + i, new BasicButton("up" + i, guiLeft + 203, guiTop + 90 + j, 203, 90 + j, 12, 12, true));
-		}*/
+		for(int i = 0; i < 4; i++){
+			int j =  + (i * 14);
+			texts.put("track" + i, new BasicText(guiLeft + 12, guiTop + 96 + j, 203, MapColor.SNOW.colorValue, ""));
+			if(i != 0) buttons.put("up" + i, new BasicButton("up" + i, guiLeft + 218, guiTop + 94 + j, 218, 94 + j, 7, 12, true));
+			if(i != 3) buttons.put("dw" + i, new BasicButton("dw" + i, guiLeft + 226, guiTop + 94 + j, 226, 94 + j, 7, 12, true));
+			buttons.put("del" + i, new BasicButton("del" + i, guiLeft + 234, guiTop + 94 + j, 234, 94 + j, 7, 12, true));
+		}
 	}
 
 	@Override
@@ -63,12 +64,12 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		crossing = container.junction.type.isCrossing();
 		texts.get("switch0").string = container.junction.size() > 2 && !crossing ? "switch [0]: " + container.junction.switch0 : "inactive";
 		texts.get("switch1").string = container.junction.size() > 3 && !crossing ? "switch [1]: " + container.junction.switch1 : "inactive";
-		/*for(int i = 0; i < 4; i++){
-			buttons.get("del" + i).enabled = i < container.junction.size();;
-			if(i != 3) buttons.get("dw" + i).enabled = i + 1 < container.junction.size();
+		for(int i = 0; i < 4; i++){
 			if(i != 0) buttons.get("up" + i).enabled = i > 0 && i < container.junction.size();
-			texts.get("track" + i).string = i >= container.junction.size() ? "" :  i + "| " + container.junction.tracks.get(i).end.asIDString();
-		}*/
+			if(i != 3) buttons.get("dw" + i).enabled = i + 1 < container.junction.size();
+			buttons.get("del" + i).enabled = i < container.junction.size();
+			texts.get("track" + i).string = i >= container.junction.size() ? "" : container.junction.tracks.get(i).end.asIDString();
+		}
 	}
 
 	@Override
@@ -115,6 +116,11 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			if(!type[i].hovered) continue;
 			tooltip.add(format("&9Junction Type: &7" + PathJuncType.values()[i].name()));
 			if(i == container.junction.type.ordinal()) tooltip.add(format("&a&oCurrent type of this junction."));
+		}
+		for(int i = 0; i < 4; i++){
+			if(i != 0 && buttons.get("up" + i).hovered) tooltip.add(format("&9Move track index &eup&9."));
+			if(i != 3 && buttons.get("dw" + i).hovered) tooltip.add(format("&9Move track index &edown&9."));
+			if(buttons.get("del" + i).hovered) tooltip.add(format("&eRemove track from junction."));
 		}
 		if(tooltip.size() > 0) drawHoveringText(tooltip, mouseX, mouseY);
 	}

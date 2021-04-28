@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
+import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
@@ -74,6 +75,12 @@ public class JunctionAdjusterContainer extends GenericContainer {
 				junction.station = null;
 			} else junction.station = station;
 			junction.updateClient(); return;
+		}
+		else if(packet.hasKey("signal")){
+			boolean signal = packet.getBoolean("signal");
+			SignalItem0.onSignalUse(junction, player, signal);
+			junction.updateClient();
+			return;
 		}
 	}
 

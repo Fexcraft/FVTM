@@ -45,9 +45,9 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		}
 		texts.put("switch0", new BasicText(guiLeft + 75, guiTop + 44, 127, MapColor.SNOW.colorValue, " . . . "));
 		texts.put("switch1", new BasicText(guiLeft + 75, guiTop + 57, 127, MapColor.SNOW.colorValue, " . . . "));
-		/*fields.put("station", new TextField(0, fontRenderer, guiLeft + 7, guiTop + 69, 207, 12));
+		fields.put("station", new TextField(0, fontRenderer, guiLeft + 73, guiTop + 69, 142, 12));
 		fields.get("station").setText(container.junction.station == null ? "no station" : container.junction.station);
-		for(int i = 0; i < 4; i++){ int j =  + (i * 14);
+		/*for(int i = 0; i < 4; i++){ int j =  + (i * 14);
 			texts.put("track" + i, new BasicText(guiLeft + 9, guiTop + 92 + j, 191, MapColor.SNOW.colorValue, ""));
 			buttons.put("del" + i, new BasicButton("del" + i, guiLeft + 229, guiTop + 90 + j, 229, 90 + j, 12, 12, true));
 			if(i != 3) buttons.put("dw" + i, new BasicButton("dw" + i, guiLeft + 216, guiTop + 90 + j, 216, 90 + j, 12, 12, true));

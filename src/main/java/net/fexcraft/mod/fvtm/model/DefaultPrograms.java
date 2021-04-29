@@ -772,7 +772,7 @@ public class DefaultPrograms {
 		
 	}
 	
-	public static abstract class Transparent implements Program {
+	public static class Transparent implements Program {
 		
 		protected float lx, ly, x, y;
 		
@@ -794,6 +794,23 @@ public class DefaultPrograms {
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
 	        GlStateManager.disableBlend();
 	        GlStateManager.enableAlpha();
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			if(array.size() == 0) return TRANSPARENT; 
+			float x = array.get(0).getAsFloat();
+			float y = array.get(1).getAsFloat();
+			return new Transparent(x, y);
+		}
+
+		@Override
+		public Program parse(String[] args){
+			if(args.length < 2) return TRANSPARENT;
+			float x = Float.parseFloat(args[0]);
+			float y = Float.parseFloat(args[1]);
+			return new Transparent(x, y);
 		}
 		
 	}

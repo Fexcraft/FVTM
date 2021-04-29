@@ -90,12 +90,14 @@ public class Transforms {
 
 		@Override
 		public void apply(){
+			GL11.glPushMatrix();
 			GL11.glRotatef(angle, x, y, z);
 		}
 
 		@Override
 		public void deapply(){
-			GL11.glRotatef(angle, -x, -y, -z);
+			//GL11.glRotatef(angle, -x, -y, -z);
+			GL11.glPopMatrix();
 		}
 		
 	}

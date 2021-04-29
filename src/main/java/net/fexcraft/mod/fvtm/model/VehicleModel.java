@@ -39,7 +39,7 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	
 	public VehicleModel(JsonObject obj){ super(obj); }
 	
-	public VehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
+	public VehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
 
 	@Override
 	public void render(VehicleData data, Object key){
@@ -112,33 +112,6 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 		}
 		//GL11.glScalef(-scale.xCoord, -scale.yCoord, -scale.zCoord);
 		GL11.glPopMatrix();
-	}
-	
-	public static class ScaledVehicleModel extends VehicleModel {
-		
-		public ScaledVehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
-		
-		@Override
-		public void render(VehicleData data, Object key){
-			GL11.glPushMatrix();
-			GL11.glScalef(scale, scale, scale);
-			super.render(data, key);
-			GL11.glPopMatrix();
-		}
-
-		@Override
-		public void render(VehicleData data, Object key, Entity ent, RenderCache cache){
-			GL11.glPushMatrix();
-			GL11.glScalef(scale, scale, scale);
-			super.render(data, key, ent, cache);
-			GL11.glPopMatrix();
-		}
-		
-	}
-
-	@Override
-	public Class<?> getScaledVariant(){
-		return ScaledVehicleModel.class;
 	}
 
 }

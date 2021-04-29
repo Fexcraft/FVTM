@@ -55,7 +55,6 @@ import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
-import net.fexcraft.mod.fvtm.model.GenericModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
@@ -351,10 +350,6 @@ public class Resources {
 						objdata = new ObjParser(Resources.getModelInputStream(loc)).readComments(true).readModel(false).parse();
 						OBJ_MODEL_INFO_CACHE.put(id, objdata);
 					}
-					String scale = ObjParser.getCommentValue(objdata, "Scale:");
-					if(scale != null){
-						clazz = (Class<? extends Model<T, K>>)getEmptyModelFromClass(clazz).getScaledVariant();
-					}
 					ArrayList<String> groups = new ArrayList<>();
 					boolean exclude = false;
 					if(filter.length > 1){
@@ -364,7 +359,6 @@ public class Resources {
 						}
 					}
 					model = clazz.getConstructor(ResourceLocation.class, ObjModel.class, ArrayList.class, boolean.class).newInstance(loc, objdata, groups, exclude);
-					if(scale != null) ((GenericModel<T, K>)model).scale = Float.parseFloat(scale);
 					break;
 				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);
 			}

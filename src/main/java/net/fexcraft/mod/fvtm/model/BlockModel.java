@@ -42,7 +42,7 @@ public class BlockModel extends GenericModel<BlockData, TileEntity> implements F
 	
 	public BlockModel(JsonObject obj){ super(obj); }
 	
-	public BlockModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
+	public BlockModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
 
 	@Override
 	public void render(BlockData data, TileEntity tile){

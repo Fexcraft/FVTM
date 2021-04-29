@@ -38,7 +38,7 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
 	
 	public ContainerModel(JsonObject obj){ super(obj); }
 	
-	public ContainerModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
+	public ContainerModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
     
 	@Override
 	public void render(ContainerData data, Object key){

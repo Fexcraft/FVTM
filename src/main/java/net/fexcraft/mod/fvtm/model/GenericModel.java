@@ -43,7 +43,6 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	private ArrayList<String> creators = new ArrayList<>();
 	protected int textureX, textureY;
 	public boolean smooth_shading;
-	public Float scale;
 	
 	public GenericModel(){
 		if(!DefaultPrograms.DIDLOAD) DefaultPrograms.init();
@@ -311,23 +310,6 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 
 	public void clearDisplayLists(){
 		for(TurboList list : groups) clearDisplayLists(list);
-	}
-	
-	public static abstract class ScaledGenericModel<T, K> extends GenericModel<T, K>{
-
-		@Override
-		public void render(ModelRendererTurbo[] mrts){
-			GL11.glPushMatrix();
-			GL11.glScalef(scale, scale, scale);
-			super.render(mrts);
-			GL11.glPopMatrix();
-		}
-		
-	}
-
-	@Override
-	public Class<?> getScaledVariant(){
-		return ScaledGenericModel.class;
 	}
 	
 }

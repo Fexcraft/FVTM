@@ -49,7 +49,7 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 	
 	public PartModel(JsonObject obj){ super(obj); }
 	
-	public PartModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
+	public PartModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
 
 	@Override
 	public void render(VehicleData data, String key){
@@ -146,33 +146,6 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
         GL11.glTranslated(pos.x, pos.y, pos.z);
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-	}
-	
-	public static class ScaledPartModel extends PartModel {
-		
-		public ScaledPartModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){ super(loc, data, objgroups); }
-		
-		@Override
-		public void render(VehicleData data, String key){
-			GL11.glPushMatrix();
-			GL11.glScalef(scale, scale, scale);
-			super.render(data, key);
-			GL11.glPopMatrix();
-		}
-
-		@Override
-		public void render(VehicleData data, String key, Entity ent, RenderCache cache){
-			GL11.glPushMatrix();
-			GL11.glScalef(scale, scale, scale);
-			super.render(data, key, ent, cache);
-			GL11.glPopMatrix();
-		}
-		
-	}
-
-	@Override
-	public Class<?> getScaledVariant(){
-		return ScaledPartModel.class;
 	}
 	
 }

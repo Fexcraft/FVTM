@@ -41,8 +41,8 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	
 	public RailGaugeModel(JsonObject obj){ super(obj); }
 	
-	public RailGaugeModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups){
-		super(loc, data, objgroups);
+	public RailGaugeModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
+		super(loc, data, objgroups, exclude);
 		rail_tempcull = Boolean.parseBoolean(ObjParser.getCommentValue(data, "RailCulling:"));
 		String tdis = ObjParser.getCommentValue(data, "TiesDistance:");
 		if(tdis != null && NumberUtils.isCreatable(tdis)) ties_distance = Float.parseFloat(tdis);

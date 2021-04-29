@@ -376,13 +376,13 @@ public class DefaultPrograms {
 		
 		@Override
 		public Program parse(JsonElement elm){
-			return new Window(elm.getAsJsonArray().get(0).getAsInt());
+			return new Window(Integer.parseInt(elm.getAsJsonArray().get(0).getAsString().replace("#", "").replace("0x", ""), 16));
 		}
 		
 
 		@Override
 		public Program parse(String[] args){
-			return new Window(Integer.parseInt(args[0]));
+			return new Window(Integer.parseInt(args[0].replace("#", "").replace("0x", ""), 16));
 		}
 		
 	}

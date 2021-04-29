@@ -114,7 +114,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	/**
 	 * @param groups Empty when no filter been specified, every group is loaded then.
 	 */
-	public GenericModel(ResourceLocation loc, ObjModel objdata, ArrayList<String> objgroups){
+	public GenericModel(ResourceLocation loc, ObjModel objdata, ArrayList<String> objgroups, boolean excludeobjs){
 		List<String> authors = ObjParser.getCommentValues(objdata, new String[]{ "Creators:", "Creator:", "Editors:", "Editor:", "Model Creator:" }, null);
 		for(String auth : authors) this.creators.add(auth);
 		try{
@@ -135,14 +135,20 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		boolean norm = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:"));//TODO read other settings
 		ObjModel objmod = Resources.getObjModelFromCache(loc, flip, flip_u, flip_v, norm);
 		if(objgroups.isEmpty()){
-			for(String str : objmod.polygons.keySet()){
-				groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
-			}
+			for(String str : objmod.polygons.keySet()) addGroup(str, objmod);
 		}
 		else{
-			for(String str : objgroups){
-				if(!objmod.polygons.containsKey(str)) continue;
-				groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
+			if(excludeobjs){
+				for(String str : objmod.polygons.keySet()){
+					if(objgroups.contains(str) && excludeobjs) continue;
+					addGroup(str, objmod);
+				}
+			}
+			else{
+				for(String str : objgroups){
+					if(!objmod.polygons.containsKey(str)) continue;
+					addGroup(str, objmod);
+				}
 			}
 		}
 		//
@@ -220,6 +226,10 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 				}
 			}
 		}
+	}
+
+	private void addGroup(String str, ObjModel objmod){
+		groups.add(new TurboList(str, new ModelRendererTurbo(null, 0, 0, textureX, textureY).copyTo(objmod.polygons.get(str))));
 	}
 
 	@Override

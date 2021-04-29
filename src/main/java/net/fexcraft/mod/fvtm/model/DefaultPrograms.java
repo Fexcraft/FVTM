@@ -88,6 +88,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(LIGHTS_RAIL_FORWARD);
 		TurboList.PROGRAMS.add(LIGHTS_RAIL_BACKWARD);
 		TurboList.PROGRAMS.add(BOGIE_AUTO);
+		TurboList.PROGRAMS.add(BOGIE_AUTO_OPPOSITE);
 		TurboList.PROGRAMS.add(BOGIE_FRONT);
 		TurboList.PROGRAMS.add(BOGIE_REAR);
 		//
@@ -459,6 +460,22 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			GL11.glRotatef(-data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
+		}
+		
+	};
+
+	public static final Program BOGIE_AUTO_OPPOSITE = new Program(){
+		
+		@Override public String getId(){ return "fvtm:bogie_auto_opposite"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glRotatef(-data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glRotatef(data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
 		}
 		
 	};

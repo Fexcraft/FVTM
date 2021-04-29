@@ -189,6 +189,26 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 				}
 			}
 		}
+		List<String[]> offsets = ObjParser.getCommentValues(objdata, new String[]{ "Offset:" }, null, null);
+		if(!offsets.isEmpty()){
+			for(String[] args : offsets){
+				if(!groups.contains(args[0])) continue;
+				try{
+					TurboList group = groups.get(args[0]);
+					Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+					for(ModelRendererTurbo turbo : group){
+						for(TexturedPolygon poly : turbo.getFaces()){
+							for(TexturedVertex vert : poly.getVertices()){
+								vert.vector = vert.vector.sub(vector);
+							}
+						}
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 		List<String[]> transforms = ObjParser.getCommentValues(objdata, new String[]{ "Transform:" }, null, null);
 		if(!transforms.isEmpty()){
 			for(String[] args : transforms){

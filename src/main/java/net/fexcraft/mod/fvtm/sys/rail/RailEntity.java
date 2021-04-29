@@ -128,11 +128,13 @@ public class RailEntity implements Comparable<RailEntity>{
 		commands.removeIf(cmd -> cmd.isDone());
 		//
 		if(!vehdata.getType().isTrailerOrWagon() && !isPaused() && throttle > 0.001f){
-			EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
-			if(CMODE() || processConsumption(engine)){
-				float eng = throttle * engine.getLegacyEngineSpeed();
-				if(com.isMultiple()) com.accumulator += eng;
-				else moverq = com.forward ? eng : -eng;
+			if(vehdata.hasPart("engine")){
+				EngineFunction engine = vehdata.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine");
+				if(CMODE() || processConsumption(engine)){
+					float eng = throttle * engine.getLegacyEngineSpeed();
+					if(com.isMultiple()) com.accumulator += eng;
+					else moverq = com.forward ? eng : -eng;
+				}
 			}
 		}
 		float am = moverq; boolean move = false;

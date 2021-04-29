@@ -344,7 +344,7 @@ public class Resources {
 					ResourceLocation loc = new ResourceLocation(id);
 					ObjModel objdata = null;
 					if(OBJ_MODEL_INFO_CACHE.containsKey(id)){
-						OBJ_MODEL_INFO_CACHE.get(id);
+						objdata = OBJ_MODEL_INFO_CACHE.get(id);
 					}
 					else{
 						objdata = new ObjParser(Resources.getModelInputStream(loc)).readComments(true).readModel(false).parse();

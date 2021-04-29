@@ -88,6 +88,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(LIGHTS_RAIL_FORWARD);
 		TurboList.PROGRAMS.add(LIGHTS_RAIL_BACKWARD);
 		TurboList.PROGRAMS.add(BOGIE_AUTO);
+		TurboList.PROGRAMS.add(BOGIE_FRONT);
+		TurboList.PROGRAMS.add(BOGIE_REAR);
 		//
 		TurboList.PROGRAMS.add(BASIC_SIGNAL_CLEAR);
 		TurboList.PROGRAMS.add(BASIC_SIGNAL_STOP);
@@ -457,6 +459,38 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			GL11.glRotatef(-data.getAttribute(part + "_angle").float_value(), 0, 1, 0);
+		}
+		
+	};
+	
+	public static final Program BOGIE_FRONT = new Program(){
+		
+		@Override public String getId(){ return "fvtm:bogie_front"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glRotatef(data.getAttribute("bogie_front_angle").float_value(), 0, 1, 0);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glRotatef(-data.getAttribute("bogie_front_angle").float_value(), 0, 1, 0);
+		}
+		
+	};
+	
+	public static final Program BOGIE_REAR = new Program(){
+		
+		@Override public String getId(){ return "fvtm:bogie_rear"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glRotatef(data.getAttribute("bogie_rear_angle").float_value(), 0, 1, 0);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			GL11.glRotatef(-data.getAttribute("bogie_rear_angle").float_value(), 0, 1, 0);
 		}
 		
 	};

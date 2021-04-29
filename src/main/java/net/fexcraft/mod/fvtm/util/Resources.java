@@ -356,10 +356,14 @@ public class Resources {
 						clazz = (Class<? extends Model<T, K>>)getEmptyModelFromClass(clazz).getScaledVariant();
 					}
 					ArrayList<String> groups = new ArrayList<>();
+					boolean exclude = false;
 					if(filter.length > 1){
-						for(int i = 0; i < filter.length - 1; i++) groups.add(filter[i]);
+						if(filter[0].equals("!") || filter[0].equals("exclude")) exclude = true;
+						if(!exclude || filter.length > 2){
+							for(int i = exclude ? 1 : 0; i < filter.length - 1; i++) groups.add(filter[i]);
+						}
 					}
-					model = clazz.getConstructor(ResourceLocation.class, ObjModel.class, ArrayList.class).newInstance(loc, objdata, groups);
+					model = clazz.getConstructor(ResourceLocation.class, ObjModel.class, ArrayList.class, boolean.class).newInstance(loc, objdata, groups, exclude);
 					if(scale != null) ((GenericModel<T, K>)model).scale = Float.parseFloat(scale);
 					break;
 				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);

@@ -8,14 +8,17 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
@@ -28,6 +31,10 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	public static final RGB RED = new RGB(0xCC1A29);
 	public static final RGB GRE = new RGB(0x00FF21);
 	public static final RGB ORA = new RGB(0xFF6A00);
+	private static int GRIDSIZE = 32;
+	private static RGB[][] GRID;
+	private static BlockPos[][] POSGRID;
+	private static IBlockState[][] STATEGRID;
 	
 	public JunctionAdjuster(EntityPlayer player){
 		super(texture, new JunctionAdjusterContainer(player), player);
@@ -61,10 +68,48 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		buttons.put("s_c", new BasicButton("sig_change", guiLeft + 181, guiTop + 156, 181, 156, 7, 12, true));
 		buttons.put("s_r", new BasicButton("sig_remove", guiLeft + 189, guiTop + 156, 189, 156, 7, 12, true));
 	}
+	
+	private void initGrid(){
+		GRID = new RGB[GRIDSIZE][GRIDSIZE];
+		POSGRID = new BlockPos[GRIDSIZE][GRIDSIZE];
+		STATEGRID = new IBlockState[GRIDSIZE][GRIDSIZE];
+		BlockPos junc = container.junction.getVec316f().pos;
+		int half = GRIDSIZE / 2;
+		for(int i = -half; i < half; i++){
+			for(int j = -half; j < half; j++){
+				BlockPos pos = RailPlacer.getPos(player.world, i + junc.getX(), j + junc.getZ());
+				IBlockState state = player.world.getBlockState(pos);
+				//GRID[i][j] = new Color(state.getMapColor(player.world, pos).colorValue);
+				POSGRID[i + half][j + half] = pos;
+				STATEGRID[i + half][j + half] = state;
+			}
+		}
+		int d;
+		for(int i = 0; i < GRIDSIZE; i++){
+			for(int j = 0; j < GRIDSIZE; j++){
+				int m = 0;
+				if(RailPlacer.isWater(STATEGRID[i][j].getBlock())){
+					d = 0;
+					for(int k = 0; k < 256; k++){
+						if(RailPlacer.isWater(player.world.getBlockState(POSGRID[i][j].down(k)).getBlock())) d++;
+						else break;
+					}
+					if(d > 5) m = d > 10 ? 0 : 1; else m = 2;
+				}
+				else{
+					m = 1;
+					if(player.world.getBlockState(POSGRID[i][j].add(0, 1, -1)).getMapColor(player.world, POSGRID[i][j]) != MapColor.AIR) m--;
+					if(player.world.getBlockState(POSGRID[i][j].add(0, 0, -1)).getMapColor(player.world, POSGRID[i][j]) == MapColor.AIR) m++;
+				}
+				GRID[i][j] = new RGB(STATEGRID[i][j].getMapColor(player.world, POSGRID[i][j]).getMapColor(m));
+			}
+		}
+	}
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
 		if(container.junction == null) return;
+		if(GRID == null) initGrid();
 		crossing = container.junction.type.isCrossing();
 		texts.get("switch0").string = container.junction.size() > 2 && !crossing ? "switch [0]: " + container.junction.switch0 : "inactive";
 		texts.get("switch1").string = container.junction.size() > 3 && !crossing ? "switch [1]: " + container.junction.switch1 : "inactive";
@@ -118,6 +163,12 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 			}
 			this.drawTexturedModalRect(guiLeft + 230, guiTop + 56, 230, 56, 10, 10);
 			RGB.glColorReset();
+		}
+		for(int i = 0; i < GRIDSIZE; i++){
+			for(int j = 0; j < GRIDSIZE; j++){
+				GRID[i][j].glColorApply();
+				this.drawTexturedModalRect(guiLeft + 7 + i * 2, guiTop + 21 + j * 2, 7, 21, 2, 2);
+			}
 		}
 	}
 	

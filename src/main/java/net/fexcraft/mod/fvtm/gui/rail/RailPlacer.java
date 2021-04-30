@@ -116,7 +116,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		}
 	}
 
-	private static final BlockPos getPos(World world, int x, int z){
+	public static final BlockPos getPos(World world, int x, int z){
 		for(int i = 255; i > 0; i--){
 			BlockPos pos = new BlockPos(x, i, z);
 			IBlockState state = world.getBlockState(pos);
@@ -132,7 +132,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 		return state.isSideSolid(world, pos, EnumFacing.UP) && !state.getBlock().isReplaceable(world, pos);
 	}
 
-	private static boolean isWater(Block block){
+	public static boolean isWater(Block block){
 		return block instanceof BlockLiquid || block instanceof BlockFluidBase;
 	}
 

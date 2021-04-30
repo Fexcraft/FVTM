@@ -195,12 +195,24 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         Vec3f vec0, vec1;
+        float x0, x1, z0, z1;
+        if(track.vecpath.length == 2){
+        	vec0 = track.vecpath[00];
+        	vec1 = vec0.distance(track.vecpath[1], 15);
+			bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+			bufferbuilder.pos((vec0.x - junc.getX() + 16) * 2 + guiLeft + 7, (vec0.z - junc.getZ() + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
+			bufferbuilder.pos((vec1.x - junc.getX() + 16) * 2 + guiLeft + 7, (vec1.z - junc.getZ() + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
+			tessellator.draw();
+        	return;
+        }
 		for(int j = 0; j < track.vecpath.length - 1; j++){
 			vec0 = track.vecpath[j];
 			vec1 = track.vecpath[j + 1];
-			float x0 = vec0.x - junc.getX(), z0 = vec0.z - junc.getZ();
+			x0 = vec0.x - junc.getX();
+			z0 = vec0.z - junc.getZ();
 			if(x0 < -16 || z0 < -16 || x0 > 16 || z0 > 16) continue;
-			float x1 = vec1.x - junc.getX(), z1 = vec1.z - junc.getZ();
+			x1 = vec1.x - junc.getX();
+			z1 = vec1.z - junc.getZ();
 			if(x1 < -16 || z1 < -16 || x1 > 16 || z1 > 16) continue;
 			bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
 			bufferbuilder.pos((x0 + 16) * 2 + guiLeft + 7, (z0 + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();

@@ -6,15 +6,22 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 
+import org.lwjgl.opengl.GL11;
+
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
+import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -31,6 +38,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	public static final RGB RED = new RGB(0xCC1A29);
 	public static final RGB GRE = new RGB(0x00FF21);
 	public static final RGB ORA = new RGB(0xFF6A00);
+	public static final float[][] TRACK_COLOR = { BLU.toFloatArray(), RED.toFloatArray(), GRE.toFloatArray(), ORA.toFloatArray() };
 	private static int GRIDSIZE = 32;
 	private static RGB[][] GRID;
 	private static BlockPos[][] POSGRID;
@@ -38,8 +46,12 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 	
 	public JunctionAdjuster(EntityPlayer player){
 		super(texture, new JunctionAdjusterContainer(player), player);
-		this.defbackground = true; this.deftexrect = true; container.gui = this;
-		this.xSize = 248; this.ySize = 176;
+		this.defbackground = true;
+		this.deftexrect = true;
+		container.gui = this;
+		this.xSize = 248;
+		this.ySize = 176;
+		GRID = null;
 	}
 
 	@Override
@@ -169,6 +181,31 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 				GRID[i][j].glColorApply();
 				this.drawTexturedModalRect(guiLeft + 7 + i * 2, guiTop + 21 + j * 2, 7, 21, 2, 2);
 			}
+		}
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glLineWidth(4f);
+		for(int i = 0; i < container.junction.size(); i++){
+			renderTrack(container.junction.tracks.get(i), TRACK_COLOR[i], container.junction.getVec316f().pos);
+		}
+		GL11.glLineWidth(1f);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	}
+	
+	private void renderTrack(Track track, float[] color,  BlockPos junc){
+		Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        Vec3f vec0, vec1;
+		for(int j = 0; j < track.vecpath.length - 1; j++){
+			vec0 = track.vecpath[j];
+			vec1 = track.vecpath[j + 1];
+			float x0 = vec0.x - junc.getX(), z0 = vec0.z - junc.getZ();
+			if(x0 < -16 || z0 < -16 || x0 > 16 || z0 > 16) continue;
+			float x1 = vec1.x - junc.getX(), z1 = vec1.z - junc.getZ();
+			if(x1 < -16 || z1 < -16 || x1 > 16 || z1 > 16) continue;
+			bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+			bufferbuilder.pos((x0 + 16) * 2 + guiLeft + 7, (z0 + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
+			bufferbuilder.pos((x1 + 16) * 2 + guiLeft + 7, (z1 + 16) * 2 + guiTop + 21, zLevel + 1).color(color[0], color[1], color[2], 1F).endVertex();
+			tessellator.draw();
 		}
 	}
 	

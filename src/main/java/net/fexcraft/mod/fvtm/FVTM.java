@@ -214,6 +214,7 @@ public class FVTM {
 	@Mod.EventHandler
 	public void initPost(FMLPostInitializationEvent event){
 		Packets.init();
+		Resources.registerDefaultRecipes();
 		Resources.loadRecipes();
 		SimpleUpdateHandler.register(MODID, 1, VERSION);
 		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");

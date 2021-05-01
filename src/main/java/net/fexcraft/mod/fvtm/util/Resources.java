@@ -16,11 +16,15 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
+import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.InternalAddon;
+import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
+import net.fexcraft.mod.fvtm.block.ConstructorBlock;
 import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
@@ -75,6 +79,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
@@ -729,5 +736,28 @@ public class Resources {
 		tiles.addAll(event.getWorld().loadedTileEntityList);
 		Static.getServer().addScheduledTask(() -> LINK_TO_JUNC.accept(tiles, event.getJunction()));
 	}*/
+
+	public static void registerDefaultRecipes(){
+		String blockcat = "fvtm.recipes.blocks";
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(ConstructorBlock.INSTANCE),
+			new ItemStack(Blocks.IRON_BLOCK), new ItemStack(Items.COMPARATOR, 4), new ItemStack(Items.REPEATER, 8),
+			new ItemStack(Items.REDSTONE, 16), new ItemStack(Items.BOOK, 2), new ItemStack(Blocks.LEVER, 8));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(ConstCenterBlock.INSTANCE),
+			new ItemStack(Blocks.IRON_BLOCK, 2), new ItemStack(Items.IRON_INGOT, 8), new ItemStack(Items.COMPARATOR, 2), new ItemStack(Items.REPEATER, 4),
+			new ItemStack(Items.REDSTONE, 4), new ItemStack(Items.BOOK, 1), new ItemStack(Blocks.LEVER, 2), new ItemStack(Blocks.PISTON, 2));
+		String gauge = InternalAddon.STANDARD_GAUGE.toString();
+		Item gaugeitem = Item.getByNameOrId(gauge);
+		Item gaugeitem16 = Item.getByNameOrId(gauge + ".16_straight");
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(gaugeitem),
+			new ItemStack(Items.IRON_INGOT, 4), new ItemStack(Blocks.PLANKS, 4));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".4_straight")), new ItemStack(gaugeitem, 4), new ItemStack(Items.IRON_INGOT, 2));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".8_straight")), new ItemStack(gaugeitem, 8), new ItemStack(Items.IRON_INGOT, 3));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".16_straight")), new ItemStack(gaugeitem, 16), new ItemStack(Items.IRON_INGOT, 4));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".32_straight")), new ItemStack(gaugeitem, 32), new ItemStack(Items.IRON_INGOT, 8));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_up")), new ItemStack(gaugeitem, 16), new ItemStack(Items.IRON_INGOT, 4), new ItemStack(Blocks.PLANKS, 4));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_down")), new ItemStack(gaugeitem, 16), new ItemStack(Items.IRON_INGOT, 4), new ItemStack(Blocks.PLANKS, 4));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_up")), new ItemStack(gaugeitem16), new ItemStack(Blocks.PLANKS, 4));
+		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_down")), new ItemStack(gaugeitem16), new ItemStack(Blocks.PLANKS, 4));
+	}
 
 }

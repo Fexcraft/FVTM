@@ -48,10 +48,6 @@ public class RailPlacerContainer extends GenericContainer {
 		Vec316f vec = new Vec316f(packet.getCompoundTag("pos"));
 		switch(packet.getString("cargo")){
 			case "place":{
-				if(packet.getBoolean("noblocks") && !Perms.RAIL_PLACER_GUI_NOBLOCK.has(null)){
-					Print.chat(sender, "&cNo permission to place blockless tracks.");
-					return;
-				}
 				if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 				stack.getTagCompound().setTag("fvtm:railpoints", packet.getTag("points"));
 				item.placeTrack(player, player.world, stack, system, vec, sender, packet.getBoolean("noblocks"));

@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -92,7 +93,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
         	start = syscap.getJunction(vector);
         }
         Track track = new Track(start, vecs, type).withPreset(type.getRegistryName() + "." + title);
-		if(!Config.NO_RAIL_BLOCKS && !RailGaugeItem.register(player, player, world, track, false)) return EnumActionResult.SUCCESS;
+		if(!TrackPlacer.set(player, player, world, null, track).place().result()) return EnumActionResult.SUCCESS;
         if(end == null){
         	syscap.addJunction(vecs[vecs.length - 1]);
         	end = syscap.getJunction(vecs[vecs.length - 1]);

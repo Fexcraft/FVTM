@@ -27,7 +27,7 @@ public class Config {
     	//PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS;
     public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
-    public static boolean NO_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS;
+    public static boolean DISABLE_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
 	public static long UNLOAD_INTERVAL;
@@ -93,7 +93,7 @@ public class Config {
             
     	}
     	{//RAIL
-    		NO_RAIL_BLOCKS = config.getBoolean("no_rail_blocks", RAILSYS, false, "If FVTM RailBlocks shouldn't be placed along FVTM rail tracks. This will also disable consumption/drop of rail items.");
+    		DISABLE_RAIL_BLOCKS = config.getBoolean("disable_rail_blocks", RAILSYS, false, "If FVTM RailBlocks shouldn't be placed along FVTM rail tracks.");
     		UNLOAD_INTERVAL = config.getInt("unload_interval", RAILSYS, 300000, 60000, 86400000, "Interval in which it is checked for trains/rails to be unloaded.");
             {
             	RAIL_PLACING_GRID = config.getInt("rail_placing_grid", RAILSYS, 4, 1, 16, "Grid size for when using the rail/junction creation tool, valid are 16 ('per-pixel accuracy'), 8, 4, 2 or 1 (full block)");

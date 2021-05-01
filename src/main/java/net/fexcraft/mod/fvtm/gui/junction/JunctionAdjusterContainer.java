@@ -7,13 +7,12 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
-import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
@@ -54,7 +53,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 			Print.debug("delpack: " + packet);
 			Track track = junction.tracks.get(del);
 			junction.remove(del, true);
-			if(track != null && !track.blockless && !Config.NO_RAIL_BLOCKS) RailGaugeItem.unregister(player, player.world, null, track);
+			if(track != null) TrackPlacer.set(player, player, player.world, null, track).remove().blocks().process();
 			return;
 		}
 		else if(packet.hasKey("dw")){

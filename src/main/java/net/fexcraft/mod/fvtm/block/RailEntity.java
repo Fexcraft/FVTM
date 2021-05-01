@@ -10,10 +10,10 @@ import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.state.IBlockState;
@@ -55,6 +55,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 			item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 			item.setItem(track.gauge.newItemStack());
 			world.spawnEntity(item);
+			track.items--;
 		}
 		control(world, true, null);
 	}
@@ -111,15 +112,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 					junc.remove(index, true);
 					if(junc.size() == 0) system.delJunction(junc.getVec316f());
 					if(seco.size() == 0) system.delJunction(seco.getVec316f());
-					if(track != null && !track.blockless){
-						RailGaugeItem.unregister(null, world, pos, track);
-						if(track.preset != null) continue;
-						//re-compensate the first one broken
-						EntityItem item = new EntityItem(world);
-						item.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-						item.setItem(track.gauge.newItemStack());
-						world.spawnEntity(item);
-					}
+					if(track != null) TrackPlacer.set(null, null, world, pos, track).remove().blocks().process();
 				}
 			}
 		}

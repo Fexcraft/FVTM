@@ -29,6 +29,7 @@ public class Track extends Path {
 	public TurboArrayPositioned restmodel;
 	public String preset;
 	public boolean blockless;
+	public int items;
 	
 	public Track(Junction junction, Vec316f[] vec316fs, Vec316f vector, RailGauge gauge){
 		super(vec316fs, vector); this.junction = junction; this.gauge = gauge;
@@ -58,6 +59,7 @@ public class Track extends Path {
 		}
 		if(compound.hasKey("preset")) preset = compound.getString("preset");
 		if(compound.hasKey("blockless")) blockless = compound.getBoolean("blockless");
+		if(compound.hasKey("items")) items = compound.getInteger("items");
 		return this;
 	}
 
@@ -73,12 +75,18 @@ public class Track extends Path {
 		compound.setString("gauge", (gauge == null ? InternalAddon.STANDARD_GAUGE : gauge.getRegistryName()).toString());
 		if(preset != null) compound.setString("preset", preset);
 		if(blockless) compound.setBoolean("blockless", true);
+		if(items > 0) compound.setInteger("items", items);
 		return compound;
 	}
 	
 	public Track createOppositeCopy(){
 		Track track = super.createOppositeCopy(new Track(junction));
-		track.unit = unit; track.gauge = gauge; return track;
+		track.unit = unit;
+		track.gauge = gauge;
+		track.blockless = blockless;
+		track.preset = preset;
+		track.items = items;
+		return track;
 	}
 
 	public boolean isCompatibleGauge(RailGauge gauge){
@@ -96,7 +104,7 @@ public class Track extends Path {
 	
 	@Override
 	public String toString(){
-		return String.format("Track[%s-%s, %s, %s, %s]", start, end, vecpath.length, unit == null ? "n/u" : unit.getSectionId(), copy ? "copy" : "original");
+		return String.format("Track[%s-%s, %s, %s, %s, %s]", start, end, vecpath.length, unit == null ? "n/u" : unit.getSectionId(), copy ? "copy" : "original", items);
 	}
 	
 	public TrackUnit getUnit(){

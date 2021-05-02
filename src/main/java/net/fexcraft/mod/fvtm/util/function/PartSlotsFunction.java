@@ -26,7 +26,7 @@ public class PartSlotsFunction extends StaticFunction {
 	private ArrayList<String> slot_cat = new ArrayList<>();
 	private ArrayList<Float> slot_rad = new ArrayList<>();
 	@SideOnly(Side.CLIENT)
-	private HashMap<String, Integer> count = new HashMap<>();
+	private HashMap<String, Integer> count;
 
 	public PartSlotsFunction(Part part, JsonObject obj){
 		super(part, obj);
@@ -39,6 +39,7 @@ public class PartSlotsFunction extends StaticFunction {
 			slot_rad.add(array.size() > 5 ? array.get(5).getAsInt() * Static.sixteenth : 0.25f);
 		}
 		if(Static.side().isClient()){
+			count = new HashMap<>();
 			for(String slot : slot_type){
 				if(count.containsKey(slot)) count.put(slot, count.get(slot) + 1);
 				else count.put(slot, 1);

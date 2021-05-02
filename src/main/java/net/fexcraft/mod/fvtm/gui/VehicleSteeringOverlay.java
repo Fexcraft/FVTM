@@ -338,6 +338,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks){
+		if(mc.gameSettings.hideGUI) return;
 		GenericVehicle ent = seat.vehicle;
 		if(ent == null){ return; }
 		VehicleData data = ent.getVehicleData();

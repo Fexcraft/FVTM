@@ -25,7 +25,7 @@ public class RoadPlacerFillContainer extends GenericContainer {
 	
 	public RoadPlacerFillContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
-		if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
+		if(!player.world.isRemote && !Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
 		sender = new GuiCommandSender(player);
 		stack = player.getHeldItemMainhand();
 		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());

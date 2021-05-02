@@ -24,7 +24,7 @@ public class RoadPlacerContainer extends GenericContainer {
 		super(player);
 		zoom = y;
 		sender = new GuiCommandSender(player);
-		if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
+		if(!player.world.isRemote && !Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
 	}
 
 	@Override

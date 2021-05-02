@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.gui.road;
 import java.io.IOException;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.util.Perms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +14,7 @@ public class RoadPlacerCustomFill extends GenericGui<RoadPlacerCustomFillContain
 	
 	public RoadPlacerCustomFill(EntityPlayer player, int x, int y, int z){
 		super(texture, new RoadPlacerCustomFillContainer(player, x, y, z), player);
-		if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
+		//if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
 		this.defbackground = true;
 		this.deftexrect = true;
 		container.gui = this;

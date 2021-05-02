@@ -23,7 +23,6 @@ import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.Road;
 import net.fexcraft.mod.fvtm.util.Compat;
-import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -69,7 +68,7 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 	
 	public RoadPlacer(EntityPlayer player, int x, int y, int z){
 		super(texture, new RoadPlacerContainer(player, x, y, z), player);
-		if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
+		//if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
 		zoom = y < 0 || y >= Zoom.values().length ? Zoom.NONE :  Zoom.values()[y];
 		if(orient == null) orient = Orient.C;
 		ItemStack stack = player.getHeldItemMainhand();

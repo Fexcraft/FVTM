@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.mod.fvtm.util.Perms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +23,7 @@ public class RoadPlacerFill extends GenericGui<RoadPlacerFillContainer> {
 	
 	public RoadPlacerFill(EntityPlayer player, int x, int y, int z){
 		super(texture, new RoadPlacerFillContainer(player, x, y, z), player);
-		if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
+		//if(!Perms.ROAD_PLACER_GUI.has(player)) player.closeScreen();
 		if(!container.stack.getTagCompound().hasKey("RoadLayers")){
 			container.stack.getTagCompound().setIntArray("RoadLayers", size);
 		}

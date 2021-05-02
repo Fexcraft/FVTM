@@ -29,7 +29,7 @@ public class RailPlacerContainer extends GenericContainer {
 		itemslot = x; zoom = y;
 		system = player.world.getCapability(Capabilities.RAILSYSTEM, null).get();
 		sender = new GuiCommandSender(player);
-		if(!Perms.RAIL_PLACER_GUI.has(player)) player.closeScreen();
+		if(!player.world.isRemote && !Perms.RAIL_PLACER_GUI.has(player)) player.closeScreen();
 	}
 
 	@Override

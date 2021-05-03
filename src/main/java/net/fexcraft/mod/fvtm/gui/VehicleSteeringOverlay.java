@@ -138,7 +138,7 @@ public class VehicleSteeringOverlay extends GuiScreen {
 		if(clicktimer > 0) return;
 		NBTTagCompound packet = new NBTTagCompound();
 		Attribute<?> attr = attributes.get((page * perpage) + scroll);
-		packet.setString("target_listener", "fvtm:gui");
+		packet.setString("target_listener", GuiHandler.LISTENERID);
 		packet.setString("task", "attr_toggle");
 		packet.setString("attr", attr.id());
 		if(i > 1) packet.setBoolean("reset", true);

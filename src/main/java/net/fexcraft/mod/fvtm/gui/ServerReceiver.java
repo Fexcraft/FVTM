@@ -48,92 +48,39 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				String attribute = packet.nbt.getString("attr");
 				final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
 				Object old = attr.value();
-				if(attr.valuetype().isTristate()){
-					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
-						attr.value(bool);
-						packet.nbt.setBoolean("bool", attr.boolean_value());
-					}
-					else{
-						attr.value(null);
-						packet.nbt.setBoolean("reset", true);
-					}
-					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
-					if(veh.getVehicleType().isRailVehicle()){
-						RailVehicle reil = (RailVehicle)veh;
-						Compound com = reil.rek.ent().getCompound();
-						if(!com.isHead(reil.rek.ent()) && !com.isEnd(reil.rek.ent())) return;
-						for(RailEntity ent : com.getEntitites()){
-							if(ent.entity != null){
-								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute);
-								if(attr0 == null) continue;
-								NBTTagCompound compound = packet.nbt.copy();
-								if(attr0.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
-									attr0.value(bool);
-									compound.setBoolean("bool", attr0.boolean_value());
-								}
-								else{
-									attr0.value(null);
-									compound.setBoolean("reset", true);
-								}
-								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
-							}
-						}
-					}
-					else{
-						if(veh.getFrontCoupledEntity() != null) return;
-						VehicleEntity trailer = veh.getRearCoupledEntity();
-						while(trailer != null){
-							Attribute<?> attr0 = trailer.getVehicleData().getAttribute(attribute);
-							if(attr0 != null){
-								NBTTagCompound compound = packet.nbt.copy();
-								if(attr0.valuetype().isBoolean() || !packet.nbt.hasKey("reset")){
-									attr0.value(bool);
-									compound.setBoolean("bool", attr0.boolean_value());
-								}
-								else{
-									attr0.value(null);
-									compound.setBoolean("reset", true);
-								}
-								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
-							}
-							trailer = trailer.getRearCoupledEntity();
-						}
-					}
-				}
-				else if(attr.valuetype().isNumber()){
-					attr.value(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
-					PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
-					if(veh.getVehicleType().isRailVehicle()){
-						RailVehicle reil = (RailVehicle)veh;
-						Compound com = reil.rek.ent().getCompound();
-						if(!com.isHead(reil.rek.ent()) && !com.isEnd(reil.rek.ent())) return;
-						for(RailEntity ent : com.getEntitites()){
-							if(ent.entity != null){
-								Attribute<?> attr0 = ent.vehdata.getAttribute(attribute);
-								if(attr0 == null) continue;
-								NBTTagCompound compound = packet.nbt.copy();
-								attr0.value(attr0.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
-								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
-							}
-						}
-					}
-					else{
-						if(veh.getFrontCoupledEntity() != null) return;
-						VehicleEntity trailer = veh.getRearCoupledEntity();
-						while(trailer != null){
-							Attribute<?> attr0 = trailer.getVehicleData().getAttribute(attribute);
-							if(attr0 != null){
-								NBTTagCompound compound = packet.nbt.copy();
-								attr0.value(attr0.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
-								PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
-							}
-							trailer = trailer.getRearCoupledEntity();
+				toggleAttr(attr, bool, packet.nbt, false, null);
+				Object syncval = attr.value();
+				PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
+				if(veh.getVehicleType().isRailVehicle()){
+					RailVehicle rail = (RailVehicle)veh;
+					Compound com = rail.rek.ent().getCompound();
+					if(!com.isHead(rail.rek.ent()) && !com.isEnd(rail.rek.ent())) return;
+					for(RailEntity ent : com.getEntitites()){
+						if(ent == rail.rek.ent()) continue;
+						Attribute<?> attr0 = ent.vehdata.getAttribute(attribute);
+						if(attr0 == null) continue;
+						Print.debug(attr0.string_value() + " " + ent.entity.getEntityId() + " PR");
+						NBTTagCompound compound = packet.nbt.copy();
+						toggleAttr(attr0, bool, compound, true, syncval);
+						Print.debug(attr0.string_value() + " " + ent.entity.getEntityId() + " PS");
+						if(ent.entity != null){
+							PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
+							Print.debug(attr0.string_value() + " " + ent.entity.getEntityId() + " SYNC?");
 						}
 					}
 				}
 				else{
-					// TODO
-					Print.log("no code for toggling this attribute type yet");
+					if(veh.getFrontCoupledEntity() != null) return;
+					VehicleEntity trailer = veh.getRearCoupledEntity();
+					while(trailer != null){
+						Attribute<?> attr0 = trailer.getVehicleData().getAttribute(attribute);
+						if(attr0 != null){
+							NBTTagCompound compound = packet.nbt.copy();
+							toggleAttr(attr0, bool, compound, true, syncval);
+							PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(trailer.getEntity()));
+						}
+						trailer = trailer.getRearCoupledEntity();
+					}
 				}
 				veh.getVehicleData().getScripts().forEach(script -> {
 					script.onAttributeToggle(veh.getEntity(), attr, old, player);
@@ -183,6 +130,29 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 			}
 			default:
 				return;
+		}
+	}
+
+	private void toggleAttr(Attribute<?> attr, boolean bool, NBTTagCompound nbt, boolean check, Object syncval){
+		if(check && attr.sync()){
+			attr.value(syncval);
+			return;
+		}
+		if(attr.valuetype().isTristate()){
+			if(attr.valuetype().isBoolean() || !nbt.hasKey("reset")){
+				attr.value(bool);
+				nbt.setBoolean("bool", attr.boolean_value());
+			}
+			else{
+				attr.value(null);
+				nbt.setBoolean("reset", true);
+			}
+		}
+		else if(attr.valuetype().isNumber()){
+			attr.value(attr.valuetype().isInteger() ? nbt.getInteger("value") : nbt.getFloat("value"));
+		}
+		else{
+			Print.log("no code for toggling this attribute type yet");
 		}
 	}
 

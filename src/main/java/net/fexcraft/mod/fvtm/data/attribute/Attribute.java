@@ -37,7 +37,7 @@ public abstract class Attribute<VT> {
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
 	private String target, origin, group;
-	private boolean editable, external;
+	private boolean editable, external, sync;
 	private VT value, initial;
 	private float min, max;
 	public final String id;
@@ -70,6 +70,10 @@ public abstract class Attribute<VT> {
 
 	public boolean external(){
 		return external;
+	}
+	
+	public boolean sync(){
+		return sync;
 	}
 
 	public float min(){
@@ -151,6 +155,11 @@ public abstract class Attribute<VT> {
 
 	public Attribute<VT> external(boolean bool){
 		this.external = bool;
+		return this;
+	}
+	
+	public Attribute<VT> sync(boolean bool){
+		this.sync = bool;
 		return this;
 	}
 	
@@ -325,6 +334,7 @@ public abstract class Attribute<VT> {
 		}
 		compound.setBoolean("editable", editable);
 		compound.setBoolean("external", external);
+		compound.setBoolean("sync", sync);
 		compound.setTag("initial", this.writeValue(true));
 		compound.setTag("value", this.writeValue(false));
 		if(!modifiers.isEmpty()){
@@ -356,6 +366,7 @@ public abstract class Attribute<VT> {
 		}
 		editable = compound.hasKey("editable") ? compound.getBoolean("editable") : true;
 		external = compound.hasKey("external") ? compound.getBoolean("external") : false;
+		sync = compound.hasKey("sync") ? compound.getBoolean("sync") : false;
 		initial = this.readValue(compound.getTag("initial"));
 		value = compound.hasKey("value") ? this.readValue(compound.getTag("value")) : initial;
 		modifiers.clear();
@@ -377,7 +388,7 @@ public abstract class Attribute<VT> {
 		Attribute<VT> attr = copyNewInstance();
 		return attr.minmax(min(), max()).value(value())// .setSeat(seat())
 			.target(target()).group(group()).origin(origin)
-			.editable(editable()).external(external())
+			.editable(editable()).external(external()).sync(sync())
 			.copyAABBs(this).copySeats(this);
 	}
 
@@ -468,6 +479,7 @@ public abstract class Attribute<VT> {
 			else attr.addSeat(obj.get("seat").getAsString());
 		}
 		if(obj.has("group")) attr.group(obj.get("group").getAsString());
+		if(obj.has("sync")) attr.sync(obj.get("sync").getAsBoolean());
 		return attr;
 	}
 

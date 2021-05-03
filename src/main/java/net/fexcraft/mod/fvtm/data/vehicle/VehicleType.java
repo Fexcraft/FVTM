@@ -66,7 +66,7 @@ public enum VehicleType {
 		attrs.add(new FloatAttribute("fuel_quality", 0f).minmax(0, 10f));
 		attrs.add(new IntegerAttribute("fuel_stored", 0).minmax(0, Integer.MAX_VALUE));
 		//animation
-		attrs.add(new BooleanAttribute("lights", false).addSeat("driver"));
+		attrs.add(new BooleanAttribute("lights", false).addSeat("driver").sync(true));
 		attrs.add(new FloatAttribute("throttle", 0f).minmax(-10f, 10f));
 		attrs.add(new BooleanAttribute("front_connected", false).editable(false));
 		attrs.add(new BooleanAttribute("rear_connected", false).editable(false));
@@ -81,13 +81,13 @@ public enum VehicleType {
 		attrs.add(new IntegerAttribute("generated_keys", 0).minmax(0, 8).editable(false));
 		switch(this){
 			case LAND:{
-				attrs.add(new BooleanAttribute("lights_fog", false).addSeat("driver"));
-				attrs.add(new BooleanAttribute("lights_long", false).addSeat("driver"));
-				attrs.add(new BooleanAttribute("lights_other", false).addSeat("driver"));
+				attrs.add(new BooleanAttribute("lights_fog", false).addSeat("driver").sync(true));
+				attrs.add(new BooleanAttribute("lights_long", false).addSeat("driver").sync(true));
+				attrs.add(new BooleanAttribute("lights_other", false).addSeat("driver").sync(true));
 				//attrs.add(new BooleanAttribute("turn_light_left", false).setSeat("driver"));
 				//attrs.add(new BooleanAttribute("turn_light_right", false).setSeat("driver"));
-				attrs.add(new TriStateAttribute("turn_lights", (Boolean)null).addSeat("driver"));
-				attrs.add(new BooleanAttribute("warning_lights", false).addSeat("driver"));
+				attrs.add(new TriStateAttribute("turn_lights", (Boolean)null).addSeat("driver").sync(true));
+				attrs.add(new BooleanAttribute("warning_lights", false).addSeat("driver").sync(true));
 				//
 				attrs.add(new FloatAttribute("steering_angle", 0f).minmax(-90f, 90f));
 				attrs.add(new FloatAttribute("wheel_angle", 0f).minmax(-360f, 360f));
@@ -105,8 +105,8 @@ public enum VehicleType {
 				attrs.add(new BooleanAttribute("forward", true).editable(false));
 				attrs.add(new BooleanAttribute("active", false).editable(true));//for automatic/steered/AI traffic
 				attrs.add(new BooleanAttribute("paused", false).editable(true));//for automatic/steered/AI traffic
-				attrs.add(new BooleanAttribute("doors_left", false));
-				attrs.add(new BooleanAttribute("doors_right", false));
+				attrs.add(new BooleanAttribute("doors_left", false).sync(true).group("mirror_lr"));
+				attrs.add(new BooleanAttribute("doors_right", false).sync(true).group("mirror_lr"));
 				attrs.add(new LongAttribute("section_on", 0l));
 				break;
 			}

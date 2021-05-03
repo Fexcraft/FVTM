@@ -123,7 +123,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 				attributes.put(copy.id(), copy);
 			}
 			else{
-				attributes.get(attr.id()).minmax(attr.min(), attr.max());
+				attributes.get(attr.id()).minmax(attr.min(), attr.max()).group(attr.group()).sync(attr.sync());
 			}
 		}
 		if(obj.has("WheelPositions")){

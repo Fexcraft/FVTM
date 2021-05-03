@@ -32,36 +32,15 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
 				Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
+				Print.debug(attr.string_value() + " " + veh.getEntity() + " CL");
 				if(attr.valuetype().isTristate()){
 					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.value(bool);
 					else attr.value(null);
-					if(!veh.getVehicleType().isRailVehicle()){
-						VehicleEntity trailer = veh.getRearCoupledEntity();
-						while(trailer != null){
-							attr = trailer.getVehicleData().getAttribute(attribute);
-							if(attr != null){
-								if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.value(bool);
-								else attr.value(null);
-							}
-							trailer = trailer.getRearCoupledEntity();
-						}
-					}
 				}
 				else if(attr.valuetype().isNumber()){
 					attr.value(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
-					if(!veh.getVehicleType().isRailVehicle()){
-						VehicleEntity trailer = veh.getRearCoupledEntity();
-						while(trailer != null){
-							attr = trailer.getVehicleData().getAttribute(attribute);
-							if(attr != null){
-								attr.value(attr.valuetype().isInteger() ? packet.nbt.getInteger("value") : packet.nbt.getFloat("value"));
-							}
-							trailer = trailer.getRearCoupledEntity();
-						}
-					}
 				}
 				else{
-					// TODO
 					Print.log("no code for toggling this attribute type yet");
 				}
 				break;

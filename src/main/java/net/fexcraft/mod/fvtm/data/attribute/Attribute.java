@@ -221,7 +221,7 @@ public abstract class Attribute<VT> {
 	
 	//
 	
-	public ArrayList<String> seats(){return seats; }
+	public ArrayList<String> seats(){ return seats; }
 	
 	public Attribute<VT> addSeat(String string){
 		if(!seats.contains(string)) seats.add(string);
@@ -233,6 +233,11 @@ public abstract class Attribute<VT> {
 			seats.remove(string);
 		}
 		return this;
+	}
+
+	private <U> Attribute<U> copySeats(Attribute<?> original){
+		for(String seat : original.seats) addSeat(seat);
+		return (Attribute<U>)this;
 	}
 	
 	//
@@ -372,7 +377,8 @@ public abstract class Attribute<VT> {
 		Attribute<VT> attr = copyNewInstance();
 		return attr.minmax(min(), max()).value(value())// .setSeat(seat())
 			.target(target()).group(group()).origin(origin)
-			.editable(editable()).external(external()).copyAABBs(this);
+			.editable(editable()).external(external())
+			.copyAABBs(this).copySeats(this);
 	}
 
 	protected abstract Attribute<VT> copyNewInstance();

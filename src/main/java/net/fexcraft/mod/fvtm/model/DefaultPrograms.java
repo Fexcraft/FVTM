@@ -78,6 +78,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(WINDOW);
 		TurboList.PROGRAMS.add(WHEEL_AUTO_ALL);
 		TurboList.PROGRAMS.add(WHEEL_AUTO_STEERING);
+		TurboList.PROGRAMS.add(WHEEL_AUTO_ALL_OPPOSITE);
+		TurboList.PROGRAMS.add(WHEEL_AUTO_STEERING_OPPOSITE);
 		TurboList.PROGRAMS.add(NO_CULLFACE);
 		TurboList.PROGRAMS.add(new SteeringWheel(0, 0));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new SteeringWheelCentered(0, 0));//jtmt/obj init only
@@ -411,6 +413,29 @@ public class DefaultPrograms {
 		
 	};
 	
+	public static final Program WHEEL_AUTO_ALL_OPPOSITE = new Program(){
+		
+		private WheelSlot slot;
+		
+		@Override public String getId(){ return "fvtm:wheel_auto_all_opposite"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			GL11.glRotatef(data.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
+			GL11.glRotatef(-data.getAttribute("wheel_angle").float_value(), 0, 0, 1);
+			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+		}
+		
+	};
+	
 	public static final Program WHEEL_AUTO_STEERING = new Program(){
 		
 		private WheelSlot slot;
@@ -427,6 +452,27 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
+		}
+		
+	};
+	
+	public static final Program WHEEL_AUTO_STEERING_OPPOSITE = new Program(){
+		
+		private WheelSlot slot;
+		
+		@Override public String getId(){ return "fvtm:wheel_auto_steering_opposite"; }
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			slot = data.getPart(part).getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data);
+			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(slot.yrot(), 0, 1, 0);
+			if(slot != null && slot.steering()) GL11.glRotatef(-data.getAttribute("steering_angle").float_value(), 0, 1, 0);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(slot != null && slot.steering()) GL11.glRotatef(data.getAttribute("steering_angle").float_value(), 0, 1, 0);
 			if(slot != null && slot.yrot() != 0f) GL11.glRotatef(-slot.yrot(), 0, 1, 0);
 		}
 		

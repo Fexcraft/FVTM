@@ -127,12 +127,13 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			this.textureY = 256;
 			e.printStackTrace();
 		}
-		boolean flip = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipAxes:"));
+		boolean flip_x = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipAxes:"));
+		boolean flip_f = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipFaces:"));
 		boolean flip_u = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipU:"));
 		boolean flip_v = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipV:"));
 		this.smooth_shading = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SmoothShading:"));
 		boolean norm = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "SkipNormals:"));//TODO read other settings
-		ObjModel objmod = Resources.getObjModelFromCache(loc, flip, flip_u, flip_v, norm);
+		ObjModel objmod = Resources.getObjModelFromCache(loc, flip_x, flip_f, flip_u, flip_v, norm);
 		if(objgroups.isEmpty()){
 			for(String str : objmod.polygons.keySet()) addGroup(str, objmod);
 		}

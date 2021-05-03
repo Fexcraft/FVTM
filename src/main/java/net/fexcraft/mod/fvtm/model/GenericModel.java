@@ -162,6 +162,9 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 					e.printStackTrace();
 				}
 			}
+			for(TurboList list : groups){
+				if(list.hasPrograms()) list.initPrograms();
+			}
 		}
 		List<String[]> pivots = ObjParser.getCommentValues(objdata, new String[]{ "Pivot:" }, null, null);
 		if(!pivots.isEmpty()){

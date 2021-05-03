@@ -536,8 +536,8 @@ public class VehicleSteeringOverlay extends GuiScreen {
 	public static void toggle(){
 		toggables = !toggables;
 		attributes.clear();
-		if(!toggables) return;
 		Print.debug("Toggled " + (toggables ? "ON" : "OFF"));
+		if(!toggables) return;
 		if(instance.seat == null || instance.seat.vehicle == null) return;
 		for(Attribute<?> attr : instance.seat.vehicle.getVehicleData().getAttributes().values()){
 			if(attr.seats().contains(instance.seat.seatdata.name)){

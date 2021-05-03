@@ -645,9 +645,9 @@ public class DefaultPrograms {
 		private static final TreeMap<String, Integer> linked = new TreeMap<>();
 		protected String attribute, cacheid;
 		
-		/*public AttributeBased(String attr){
+		public AttributeBased(String attr){
 			this.attribute = attr;
-		}*/
+		}
 
 		@Override
 		public void init(TurboList list){
@@ -673,7 +673,7 @@ public class DefaultPrograms {
 		private float defrot;
 		
 		public AttributeRotator(String attribute, boolean boolstatebased, float min, float max, float step, int axis, Float defrot){
-			this.attribute = attribute;
+			super(attribute);
 			this.boolstatebased = boolstatebased;
 			this.override = true;
 			this.min = min; 
@@ -747,14 +747,13 @@ public class DefaultPrograms {
 	public static class AttributeTranslator extends AttributeBased {
 		
 		private Attribute<?> attr;
-		private String attribute;
 		private boolean bool;
 		private float min, max, step;
 		private Float current;
 		private int axis;
 		
 		public AttributeTranslator(String attribute, boolean boolstatebased, float min, float max, float step, int axis){
-			this.attribute = attribute;
+			super(attribute);
 			this.bool = boolstatebased;
 			this.axis = axis;
 			this.step = step;

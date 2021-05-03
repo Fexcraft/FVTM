@@ -651,6 +651,7 @@ public class DefaultPrograms {
 
 		@Override
 		public void init(TurboList list){
+			if(cacheid != null) return;
 			if(linked.containsKey(attribute)){
 				cacheid = attribute + "_" + linked.get(attribute);
 				linked.put(attribute, linked.get(attribute) + 1);
@@ -774,7 +775,7 @@ public class DefaultPrograms {
 			if(current == null) current = 0f;
 			current = bool ? (attr.boolean_value() ? current + step : current - step) : attr.float_value();
 			if(current > max) current = max; if(current < min) current = min;
-			GL11.glPushMatrix();
+			//GL11.glPushMatrix();
 			GL11.glTranslatef(
 				axis == 0 ? current * Static.sixteenth : 0,
 				axis == 1 ? current * Static.sixteenth : 0,
@@ -784,7 +785,12 @@ public class DefaultPrograms {
 
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			GL11.glPopMatrix();
+			if(cache == null || attr == null) return;
+			GL11.glTranslatef(
+				axis == 0 ? current * -Static.sixteenth : 0,
+				axis == 1 ? current * -Static.sixteenth : 0,
+				axis == 2 ? current * -Static.sixteenth : 0);
+			//GL11.glPopMatrix();
 		}
 		
 		@Override

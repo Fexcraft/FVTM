@@ -667,7 +667,7 @@ public class DefaultPrograms {
 	public static class AttributeRotator extends AttributeBased {
 		
 		private Attribute<?> attr;
-		private float min, max, step;
+		private float min, max, step = 1;
 		private Float current;
 		private int axis;
 		private boolean boolstatebased, override;
@@ -703,7 +703,7 @@ public class DefaultPrograms {
 			if((attr = data.getAttribute(attribute)) == null) return;
 			current = cache.getValue(cacheid);
 			if(current == null) current = 0f;
-			current = boolstatebased ? (attr.boolean_value() ? current + step : current - step) : attr.float_value();
+			current = boolstatebased ? (attr.boolean_value() ? current + step : current - step) : attr.float_value() * step;
 			if(current > max) current = max;
 			if(current < min) current = min;
 			list.rotateAxis(current + defrot, axis, override);

@@ -726,7 +726,7 @@ public class DefaultPrograms {
 			float max = array.get(3).getAsFloat();
 			float step = array.get(4).getAsFloat();
 			int axis = array.get(5).getAsInt();
-			Float defrot = NumberUtils.isCreatable(array.get(6).getAsString()) ? array.get(6).getAsFloat() : null;
+			Float defrot = array.size() > 6 && NumberUtils.isCreatable(array.get(6).getAsString()) ? array.get(6).getAsFloat() : null;
 			return new AttributeRotator(attr, boolstate, min, max, step, axis, defrot, array.size() >= 7 && array.get(7).getAsBoolean());
 		}
 		
@@ -739,7 +739,7 @@ public class DefaultPrograms {
 			float max = Float.parseFloat(args[3]);
 			float step = Float.parseFloat(args[4]);
 			int axis = Integer.parseInt(args[5]);
-			Float defrot = NumberUtils.isCreatable(args[6]) ? Float.parseFloat(args[6]) : null;
+			Float defrot = args.length > 6 && NumberUtils.isCreatable(args[6]) ? Float.parseFloat(args[6]) : null;
 			return new AttributeRotator(attr, boolstate, min, max, step, axis, defrot, args.length >= 7 && Boolean.parseBoolean(args[7]));
 		}
 		

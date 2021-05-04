@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.sys.rail;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.minecraft.nbt.NBTTagCompound;
@@ -222,5 +224,18 @@ public abstract class Compound {
 	}
 
 	protected abstract boolean getOrient(RailEntity ent);
+	
+	public <V> void forEachMirror(boolean head, V value, Consumer<V> flip, Consumer<V> pass, BiConsumer<RailEntity, V> process){
+		if(this.isSingular()) return;
+		RailEntity ent = entities.get(head ? 0 : entities.size() - 1);
+		Coupler coupler = ent.front.hasEntity() ? ent.rear : ent.front;
+		while(coupler.getOpposite().hasEntity()){
+			coupler = coupler.getOpposite();
+			if(coupler.isFrontal() ? coupler.isFront() : coupler.isRear()) flip.accept(value);
+			else pass.accept(value);
+			coupler = coupler.getCounterpart();
+			if(coupler.root != ent) process.accept(coupler.root, value);
+		}
+	}
 
 }

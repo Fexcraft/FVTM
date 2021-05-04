@@ -44,7 +44,6 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 					Print.debug("Received packet for entity not found on client side!");
 					return;
 				}
-				Print.debug(attr.string_value() + " " + veh.getEntity() + " CL");
 				if(attr.valuetype().isTristate()){
 					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.value(bool);
 					else attr.value(null);

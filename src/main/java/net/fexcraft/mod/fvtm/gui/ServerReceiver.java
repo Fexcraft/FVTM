@@ -59,15 +59,12 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						if(ent == rail.rek.ent()) continue;
 						Attribute<?> attr0 = ent.vehdata.getAttribute(attribute);
 						if(attr0 == null) continue;
-						Print.debug(attr0.string_value() + " " + syncval + " " + ent.entity + " PR");
 						NBTTagCompound compound = packet.nbt.copy();
 						toggleAttr(attr0, bool, compound, true, syncval);
-						Print.debug(attr0.string_value() + " " + syncval + " " + ent.entity + " PS");
 						if(ent.entity != null){
 							compound.setLong("railid", ent.uid);
 							compound.setInteger("entity", ent.entity.getEntityId());
 							PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
-							Print.debug(attr0.string_value() + " " + syncval + " " + ent.entity + " SC");
 						}
 					}
 				}

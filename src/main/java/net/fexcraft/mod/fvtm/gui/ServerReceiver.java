@@ -51,20 +51,32 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				toggleAttr(attr, bool, packet.nbt, false, null);
 				Object syncval = attr.value();
 				PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
+				veh.getVehicleData().getScripts().forEach(script -> {
+					script.onAttributeToggle(veh.getEntity(), attr, old, player);
+				});
 				if(veh.getVehicleType().isRailVehicle()){
 					RailVehicle rail = (RailVehicle)veh;
 					Compound com = rail.rek.ent().getCompound();
-					if(!com.isHead(rail.rek.ent()) && !com.isEnd(rail.rek.ent())) return;
-					for(RailEntity ent : com.getEntitites()){
-						if(ent == rail.rek.ent()) continue;
-						Attribute<?> attr0 = ent.vehdata.getAttribute(attribute);
-						if(attr0 == null) continue;
-						NBTTagCompound compound = packet.nbt.copy();
-						toggleAttr(attr0, bool, compound, true, syncval);
-						if(ent.entity != null){
-							compound.setLong("railid", ent.uid);
-							compound.setInteger("entity", ent.entity.getEntityId());
-							PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
+					if(com.isSingular() || !com.isHead(rail.rek.ent()) && !com.isEnd(rail.rek.ent())) return;
+					boolean mirror = attr.valuetype().isBoolean() && attr.group() != null && attr.group().contains("mirror_lr");
+					NBTTagCompound compound = packet.nbt.copy();
+					if(mirror){
+						com.forEachMirror(com.isHead(rail.rek.ent()), new String[]{ attribute }, flip -> {
+							if(flip[0].contains("left")){
+								flip[0] = flip[0].replace("left", "right");
+							}
+							else{
+								flip[0] = flip[0].replace("right", "left");
+							}
+						}, pass -> {}, (ent, val) -> {
+							compound.setString("attr", val[0]);
+							toggleAttrRailEnt(ent, val[0], bool, compound, true, syncval);
+						});
+					}
+					else{
+						for(RailEntity ent : com.getEntitites()){
+							if(ent == rail.rek.ent()) continue;
+							toggleAttrRailEnt(ent, attribute, bool, compound, true, syncval);
 						}
 					}
 				}
@@ -82,9 +94,6 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 						trailer = trailer.getRearCoupledEntity();
 					}
 				}
-				veh.getVehicleData().getScripts().forEach(script -> {
-					script.onAttributeToggle(veh.getEntity(), attr, old, player);
-				});
 				break;
 			}
 			case "attr_update":{
@@ -130,6 +139,17 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 			}
 			default:
 				return;
+		}
+	}
+
+	private void toggleAttrRailEnt(RailEntity ent, String attribute, boolean bool, NBTTagCompound compound, boolean b, Object syncval){
+		Attribute<?> attr0 = ent.vehdata.getAttribute(attribute);
+		if(attr0 == null) return;
+		toggleAttr(attr0, bool, compound, true, syncval);
+		if(ent.entity != null){
+			compound.setLong("railid", ent.uid);
+			compound.setInteger("entity", ent.entity.getEntityId());
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(ent.entity));
 		}
 	}
 

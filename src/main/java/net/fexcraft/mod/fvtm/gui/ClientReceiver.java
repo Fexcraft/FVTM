@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.minecraft.entity.Entity;
@@ -29,9 +30,20 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 		switch(task){
 			case "attr_toggle":{
 				boolean bool = packet.nbt.getBoolean("bool");
-				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
-				Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
+				Attribute<?> attr = null;
+				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
+				if(veh == null && packet.nbt.hasKey("railid")){
+					RailEntity ent = player.world.getCapability(Capabilities.RAILSYSTEM, null).get().getEntity(packet.nbt.getLong("railid"), false);
+					attr = ent.vehdata.getAttribute(attribute);
+				}
+				else if(veh != null){
+					attr = veh.getVehicleData().getAttribute(attribute);
+				}
+				else{
+					Print.debug("Received packet for entity not found on client side!");
+					return;
+				}
 				Print.debug(attr.string_value() + " " + veh.getEntity() + " CL");
 				if(attr.valuetype().isTristate()){
 					if(attr.valuetype().isBoolean() || !packet.nbt.hasKey("reset")) attr.value(bool);

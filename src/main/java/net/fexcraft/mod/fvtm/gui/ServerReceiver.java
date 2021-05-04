@@ -54,6 +54,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				veh.getVehicleData().getScripts().forEach(script -> {
 					script.onAttributeToggle(veh.getEntity(), attr, old, player);
 				});
+				if(!attr.sync()) return;
 				if(veh.getVehicleType().isRailVehicle()){
 					RailVehicle rail = (RailVehicle)veh;
 					Compound com = rail.rek.ent().getCompound();

@@ -119,6 +119,8 @@ public class FVTM {
 		REGISTERER = new AutoRegisterer(MODID);
 		Config.initalize(event, event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().registerCrashCallable(new CrashCallable());
+		SimpleUpdateHandler.register(MODID, 1, VERSION);
+		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
 		//
 		EntitySystem.add(new LegacySpawnSystem());
 		EntitySystem.add(new RailSpawnSystem());
@@ -216,8 +218,6 @@ public class FVTM {
 		Packets.init();
 		Resources.registerDefaultRecipes();
 		Resources.loadRecipes();
-		SimpleUpdateHandler.register(MODID, 1, VERSION);
-		SimpleUpdateHandler.setUpdateMessage(MODID, PREFIX + " &7New Version available! &0(&8" + SimpleUpdateHandler.getLatestVersionOf(MODID) + "&0)");
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.rail.RecServer());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.road.RecServer());

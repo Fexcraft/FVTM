@@ -52,6 +52,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     public float prevRotationYaw;
     public float prevRotationPitch;
     public float prevRotationRoll;
+    public boolean should_sit = true;
 
 	public GenericVehicle(World world){ super(world); }
 	
@@ -135,6 +136,16 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
         return false;*/
 		return true;
     }
+	
+	@Override
+	public boolean shouldRiderSit(){
+		return should_sit;
+	}
+
+	public void updateSittingState(Entity pass){
+		SeatCache seat = getSeatOf(pass);
+		if(seat != null) should_sit = seat.seatdata.sitting;
+	}
 
 	public SeatCache getSeatOf(Entity entity){
 		Passenger pass = entity.getCapability(Capabilities.PASSENGER, null);

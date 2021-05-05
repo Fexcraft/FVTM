@@ -338,6 +338,9 @@ public class EffectRenderer {
 
 	@SubscribeEvent
     public void onRender(RenderPlayerEvent.Pre event) throws Exception {
+		if(event.getEntity().getRidingEntity() instanceof GenericVehicle){
+			((GenericVehicle)event.getEntity().getRidingEntity()).updateSittingState(event.getEntity());
+		}
 		float scale = ResizeUtil.getScale(event.getEntityPlayer());
 		GlStateManager.pushMatrix();
 		if(scale != 1){
@@ -360,6 +363,9 @@ public class EffectRenderer {
 	@SubscribeEvent
     public void onRender(RenderLivingEvent.Pre<EntityLivingBase> event) throws Exception {
 		if(event.getEntity() instanceof EntityPlayer) return; 
+		if(event.getEntity().getRidingEntity() instanceof GenericVehicle){
+			((GenericVehicle)event.getEntity().getRidingEntity()).updateSittingState(event.getEntity());
+		}
 		float scale = ResizeUtil.getScale(event.getEntity());
 		GlStateManager.pushMatrix();
 		if(scale != 1){

@@ -901,7 +901,7 @@ public class DefaultPrograms {
 		@Override
 		public Program parse(JsonElement elm){
 			JsonArray array = elm.getAsJsonArray();
-			if(array.size() == 0) return TRANSPARENT; 
+			if(array.size() == 0) return this; 
 			float x = array.get(0).getAsFloat();
 			float y = array.get(1).getAsFloat();
 			return new Transparent(x, y);
@@ -909,7 +909,7 @@ public class DefaultPrograms {
 
 		@Override
 		public Program parse(String[] args){
-			if(args.length < 2) return TRANSPARENT;
+			if(args.length < 2) return this;
 			float x = Float.parseFloat(args[0]);
 			float y = Float.parseFloat(args[1]);
 			return new Transparent(x, y);

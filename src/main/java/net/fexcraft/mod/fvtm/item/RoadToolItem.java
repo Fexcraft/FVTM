@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.road.Road;
 import net.fexcraft.mod.fvtm.util.Compat;
+import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.block.Block;
@@ -108,10 +109,12 @@ public class RoadToolItem extends Item implements JunctionGridItem {
         	return EnumActionResult.SUCCESS;
         }
         if(!player.capabilities.isCreativeMode){
-        	Print.chat(player, "&9This is a &6CREATIVE &9mode tool."); return EnumActionResult.FAIL;
+        	Print.chat(player, "&9This is a &6CREATIVE &9mode tool.");
+        	return EnumActionResult.FAIL;
         }
-        if(!Static.getServer().isSinglePlayer() && !Static.isOp(player)){
-        	Print.chat(player, "&cYou need to be OPERATOR to use this item."); return EnumActionResult.FAIL;
+        if(!Static.getServer().isSinglePlayer() && !Perms.ROAD_PLACER_ITEM.has(player)){
+        	Print.chat(player, "&cNo permission to use this item.");
+        	return EnumActionResult.FAIL;
         }
         Vec316f vector = new Vec316f(world, new Vec3d(pos.down()).add(hitX, hitY, hitZ), Config.ROAD_PLACING_GRID);
         if(player.isSneaking()){
@@ -123,7 +126,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:roadpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:roadpoints") : new NBTTagList();
 		if(!lastEquals(list, vector)){
 			list.appendTag(vector.write()); stack.getTagCompound().setTag("fvtm:roadpoints", list);
-			Print.bar(player, list.tagCount() + (getSuffix(list.tagCount())) +" Point Added!");
+			Print.bar(player, list.tagCount() + getSuffix(list.tagCount()) + " Point Added!");
 			return EnumActionResult.SUCCESS;
 		}
 		else{

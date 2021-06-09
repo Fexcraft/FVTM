@@ -75,14 +75,14 @@ public class SwitchTileEntity extends BlockTileEntity implements JunctionTrackin
 
     @Override
 	public Junction getJunction(){
-		if(junction == null && juncpos != null){
+		if(junction == null && juncpos != null && this.pos != null){
         	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
         	if(sys != null) junction = sys.get().getJunction(juncpos, false);
         	if(junction == null){
         		juncpos = null;//TODO control
         		Static.stop();
         	}
-        	junction.addLinkedTileEntity(this.pos);
+        	else junction.addLinkedTileEntity(this.pos);
 		}
 		return junction;
 	}

@@ -250,7 +250,7 @@ public class ToggableHandler {
 			vec = new Vec3d(dis.x, dis.y, dis.z);
 			if(Command.TOGGABLE) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, dis.x, dis.y, dis.z, 0, 0, 0);
 			for(Collidable coll : collidables)
-				if(aabbs.get(coll.id()).contains(vec)) return coll;
+				if(aabbs.containsKey(coll.id()) && aabbs.get(coll.id()).contains(vec)) return coll;
 		}
 		return null;
 	}

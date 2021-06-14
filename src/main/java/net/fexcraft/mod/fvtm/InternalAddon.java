@@ -26,11 +26,15 @@ public class InternalAddon extends Addon {
 	public static InternalAddon INSTANCE;
 
 	public InternalAddon(ContainerType type, File file){
-		super(type, file); registryname = REGNAME; INSTANCE = this;
-		name = "FVTM [Internal Addon]"; version = FVTM.VERSION;
-		this.authors.add("FEX___96"); update_id = "null";
-		url = "http://fexcraft.net/not_found";
-		license = "http://fexcraft.net/license?id=mods";
+		super(type, file);
+		registryname = REGNAME;
+		INSTANCE = this;
+		name = "FVTM [Internal Addon]";
+		version = FVTM.VERSION;
+		authors.add("FEX___96");
+		update_id = "null";//not checking for updates, since this is the internal Addon, FVTM does that
+		url = "https://fexcraft.net/minecraft/mod?id=fvtm";
+		license = "https://fexcraft.net/license?id=mods";
 		registerer = FVTM.getRegisterer();
 		if(Static.side().isClient()){
 			(creativetabs = new HashMap<>()).put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));

@@ -27,6 +27,7 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -298,6 +299,21 @@ public class EffectRenderer {
 	
 	public static void renderContainerDebug(Entity entity, Vec3f rot){
 
+	}
+	
+	public static void renderSeats(GenericVehicle vehicle){
+		if(!Command.HOTSWAP && !Command.TOGGABLE && !Command.OTHER) return;
+		preMeshCalls();
+    	GL11.glPushMatrix();
+		for(SeatCache seat : vehicle.seats){
+			Vec3d pos = seat.getFreshPosition().subtract(vehicle.posX, vehicle.posY, vehicle.posZ);
+			GL11.glTranslated(pos.x, pos.y, pos.z);
+			DebugModels.SEAT_CUBE.render(0.5f);
+			GL11.glTranslated(-pos.x, -pos.y, -pos.z);
+		}
+    	GL11.glPopMatrix();
+		postMeshCalls();
+		RGB.glColorReset();
 	}
 	
 	public static final void drawString(String str, float scale, int color, boolean light, boolean rot, boolean depth){

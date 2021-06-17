@@ -79,6 +79,7 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
             GL11.glPopMatrix();
             EffectRenderer.renderToggableInfo(vehicle);
             EffectRenderer.renderContainerInfo(vehicle, rot);
+            EffectRenderer.renderSeats(vehicle);
         }
         GL11.glPopMatrix();
     }

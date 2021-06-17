@@ -152,7 +152,7 @@ public class SeatCache {
 	}
 
 
-	private Vec3d getFreshPosition(){
+	public Vec3d getFreshPosition(){
         SwivelPoint point = vehicle.getVehicleData().getRotationPoint(seatdata.swivel_point);
         Vec3d relpos = point.getRelativeVector(seatdata.x, seatdata.y, seatdata.z);
 		return relpos.add(vehicle.posX, vehicle.posY, vehicle.posZ);

@@ -44,6 +44,7 @@ import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RoadSysItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.SignalItem0;
+import net.fexcraft.mod.fvtm.item.TrainAdjuster;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
@@ -195,6 +196,7 @@ public class FVTM {
 			Resources.BLOCKS.getValuesCollection().forEach(block -> block.linkItem());
 			JunctionToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			SignalItem0.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
+			TrainAdjuster.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			RoadSysItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());

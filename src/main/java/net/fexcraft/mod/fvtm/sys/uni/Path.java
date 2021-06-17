@@ -206,7 +206,7 @@ public abstract class Path {
 		return String.format("Track[%s-%s, %s, %s]", start, end, vecpath.length, copy ? "copy" : "original");
 	}
 
-	public double oppositePassed(double sec){
+	public float oppositePassed(float sec){
 		return sec >= length ? 0 : sec <= 0 ? length : this.length - sec;
 	}
 	

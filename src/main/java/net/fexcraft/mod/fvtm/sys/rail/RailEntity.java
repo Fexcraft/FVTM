@@ -320,7 +320,8 @@ public class RailEntity implements Comparable<RailEntity>{
 		cfront = move(passed + (frconndis - frbogiedis), TrainPoint.COUPLER_FRONT);
 		crear = move(passed - frbogiedis - rrconndis, TrainPoint.COUPLER_REAR);
 		prev.copy(pos); pos = medium(bfront, brear);
-		front.mbb.update(cfront, vehdata.getType().getCouplerRange()); rear.mbb.update(crear, vehdata.getType().getCouplerRange());
+		front.mbb.update(cfront, vehdata.getType().getCouplerRange());
+		rear.mbb.update(crear, vehdata.getType().getCouplerRange());
 	}
 
 	private ArrayList<RailEntity> railentlist = new ArrayList<>();
@@ -728,6 +729,14 @@ public class RailEntity implements Comparable<RailEntity>{
 
 	public ArrayList<JEC> getCommands(){
 		return commands;
+	}
+
+	public void flip(){
+		if(!com.isSingular()) return;
+		if(last != null) last = last.createOppositeCopy();
+		current = current.createOppositeCopy();
+		passed = current.oppositePassed(passed);
+		updatePosition();
 	}
 
 }

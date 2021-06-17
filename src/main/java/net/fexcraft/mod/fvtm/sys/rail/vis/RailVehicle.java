@@ -28,6 +28,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
+import net.fexcraft.mod.fvtm.item.TrainAdjuster;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
@@ -469,6 +470,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             }
             else if(stack.getItem() instanceof ContainerItem){
             	this.getCapability(Capabilities.CONTAINER, null).openGUI(player); return true;
+            }
+            else if(stack.getItem() instanceof TrainAdjuster){
+            	return stack.getItem().onLeftClickEntity(stack, player, this);
             }
             //space for other item interaction
             else{

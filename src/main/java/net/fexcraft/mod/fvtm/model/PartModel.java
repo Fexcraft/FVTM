@@ -72,7 +72,7 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 		PartData data = item.getCapability(Capabilities.VAPDATA, null).getPartData(); if(data == null){ return; }
 		PartModel model = (PartModel)data.getType().getModel(); if(model == null) { return; }
 		//
-		WheelData func = data.getType().getInstallationHandlerData();
+		WheelData ihdata = data.getType().getInstallationHandlerData();
 		GL11.glPushMatrix();
 		switch(type){
 			case GROUND: {
@@ -106,8 +106,8 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 				break;
 			}
 			case GUI: {
-				if(func.getRadius() > 8){
-					for(int i = (int)func.getRadius(); i > 8; i--)
+				if(ihdata.getRadius() > 8){
+					for(int i = (int)ihdata.getRadius(); i > 8; i--)
 					GL11.glScalef(1 - Static.sixteenth, 1 - Static.sixteenth, 1 - Static.sixteenth);
 				}
 				break;
@@ -119,13 +119,17 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 			default: break;
 		}
 		GL11.glPushMatrix();
-		model.transforms.apply();
-		bindTexture(data.getTexture());
 		GL11.glRotatef(1, 0, 180, 0);
-		for(TurboList list : model.groups) list.renderPlain();
+		model.transforms.apply();
+		model.renderItem(item, data, ihdata, entity);
 		model.transforms.deapply();
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
+	}
+
+	public void renderItem(ItemStack item, PartData data, WheelData ihdata, EntityLivingBase entity){
+		bindTexture(data.getTexture());
+		for(TurboList list : groups) list.renderPlain();
 	}
 
 	public static void translateAndRotatePartOnSwivelPoint(VehicleData vehicle, PartData data, float ticks){

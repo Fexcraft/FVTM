@@ -33,7 +33,7 @@ public class TrainAdjuster extends Item implements JunctionGridItem {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-		tooltip.add(Formatter.format("&9Rightclick on a &6disconnected &9Train to flip direction/facing."));
+		tooltip.add(Formatter.format("&9Rightclick on a &6disconnected &brail vehicle &9to flip direction/facing."));
 	}
 
 	@Override

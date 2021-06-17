@@ -310,7 +310,7 @@ public class EffectRenderer {
 		for(SeatCache seat : vehicle.seats){
 			Vec3d pos = seat.getFreshPosition().subtract(vehicle.posX, vehicle.posY, vehicle.posZ);
 			GL11.glTranslated(pos.x, pos.y, pos.z);
-			DebugModels.SEAT_CUBE.render(0.5f);
+			(seat.passenger() != null ? DebugModels.SEAT_CUBE_OCCUPIED : seat.seatdata.sitting ? DebugModels.SEAT_CUBE_SITTING : DebugModels.SEAT_CUBE_STANDING).render(0.5f);
 			GL11.glTranslated(-pos.x, -pos.y, -pos.z);
 		}
     	GL11.glPopMatrix();

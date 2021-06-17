@@ -26,7 +26,7 @@ public class Config {
     	ROADSYS = "FVTM Road System";//,
     	//PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS;
-    public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS;
+    public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS, DISABLE_LIGHT_BEAMS;
     public static boolean DISABLE_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
@@ -75,7 +75,7 @@ public class Config {
             if(Static.side().isClient()){
             	net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
             }
-            
+            DISABLE_LIGHT_BEAMS = config.getBoolean("disable_light_beams", CLIENT, false, "If light beam rendering should be disabled.");
     	}
     	{//GENERAL
             VEHICLES_NEED_FUEL = config.getBoolean("vehicle_consume_fuel", GENERAL, true, "If vehicles need Fuel (in survival mode) to function.");

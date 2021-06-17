@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFactory<RailVehicle> {
@@ -38,7 +37,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
         if(vehicle.getVehicleData() == null){ return; }
         GL11.glPushMatrix();
         {
-        	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new Vec3d(x, y, z));
+        	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });
             GL11.glTranslated(x, y, z);
             GL11.glPushMatrix();
             Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);

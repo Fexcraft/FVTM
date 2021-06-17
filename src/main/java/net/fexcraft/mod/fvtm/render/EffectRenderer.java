@@ -31,6 +31,7 @@ import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
@@ -58,7 +59,7 @@ public class EffectRenderer {
 	public static final ArrayList<BlockData> BLOCK_LIGHTRAYDATAS = new ArrayList<>();
 	public static final ArrayList<TileEntity> BLOCK_LIGHTRAYTILES = new ArrayList<>();
 	public static final HashMap<Integer, Vec3f> RENDER_VEHROT = new HashMap<>();
-	public static final HashMap<Integer, Vec3d> RENDER_VEHPOS = new HashMap<>();
+	public static final HashMap<Integer, double[]> RENDER_VEHPOS = new HashMap<>();
 	public static final ResourceLocation LIGHT_TEXTURE = new ResourceLocation("fvtm:textures/entity/light_beam.png");
 	private static ArrayList<Vec3d> toggpos = new ArrayList<>();
 	private static ContainerHolder tempholder;
@@ -66,6 +67,7 @@ public class EffectRenderer {
 	
     @SubscribeEvent
     public void renderLights(RenderWorldLastEvent event){
+    	if(Config.DISABLE_LIGHT_BEAMS) return;
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ModelBase.bindTexture(LIGHT_TEXTURE);
@@ -86,9 +88,9 @@ public class EffectRenderer {
         		last = null;
         		ModelBase.bindTexture(LIGHT_TEXTURE);
         	}
-        	Vec3d vehpos = RENDER_VEHPOS.get(veh.getEntity().getEntityId());
+        	double[] vehpos = RENDER_VEHPOS.get(veh.getEntity().getEntityId());
             GL11.glPushMatrix();
-            GL11.glTranslated(vehpos.x, vehpos.y, vehpos.z);
+            GL11.glTranslated(vehpos[0], vehpos[1], vehpos[2]);
             //
             Vec3f vehrot = RENDER_VEHROT.get(veh.getEntity().getEntityId());
             GL11.glRotatef(vehrot.x, 0.0F, 1.0F, 0.0F);

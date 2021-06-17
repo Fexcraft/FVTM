@@ -35,6 +35,7 @@ public class RenderAirVehicle extends Render<AirVehicle> implements IRenderFacto
         if(vehicle.getVehicleData() == null){ return; }
         GL11.glPushMatrix();
         {
+        	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });
             GL11.glTranslated(x, y, z);
             GL11.glPushMatrix();
             Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);

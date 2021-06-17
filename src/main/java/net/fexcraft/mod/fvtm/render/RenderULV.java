@@ -14,7 +14,6 @@ import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderULV extends Render<ULandVehicle> implements IRenderFactory<ULandVehicle> {
@@ -39,7 +38,7 @@ public class RenderULV extends Render<ULandVehicle> implements IRenderFactory<UL
         if(vehicle.getVehicleData() == null || vehicle.rotpoint == null){ return; }
         GL11.glPushMatrix();
         {
-        	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new Vec3d(x, y, z));
+        	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });
             GL11.glTranslated(x, y, z);
             GL11.glPushMatrix();
             Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);

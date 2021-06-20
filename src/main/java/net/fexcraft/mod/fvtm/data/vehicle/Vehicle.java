@@ -53,7 +53,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected List<NamedResourceLocation> textures;
 	protected ArrayList<String> required, categories;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected String modelid, ctab;
+	protected String modelid, ctab, overlayid;
 	protected LegacyData legacy_data;
 	protected Uni12Data uni12_data;
 	protected boolean trailer;
@@ -185,6 +185,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		}
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		this.overlayid = obj.has("Overlay") ? obj.get("Overlay").getAsString() : "default";
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new VehicleItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.VehicleCreated(this, obj));
@@ -319,6 +320,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	
 	public ResourceLocation getKeyType(){
 		return keytype;
+	}
+
+	public String getOverlay(){
+		return overlayid;
 	}
 
 }

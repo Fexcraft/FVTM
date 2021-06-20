@@ -179,6 +179,7 @@ public class FVTM {
 			Resources.RAILGAUGES.getValuesCollection().forEach(gauge -> gauge.loadModel());
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(new ResourceLocation("fvtm:roadsign"), RoadSignModel.EMPTY);
 			Resources.clearObjModelCache();
+			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);
 		}
 		MinecraftForge.EVENT_BUS.register(new ResizeUtil());
 	}

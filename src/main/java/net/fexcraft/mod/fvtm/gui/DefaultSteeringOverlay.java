@@ -31,7 +31,7 @@ import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -69,7 +69,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	public static CopyOnWriteArrayList<String> STRS = new CopyOnWriteArrayList<String>();
 	private static String gear_label;
 
-	public DefaultSteeringOverlay(VehicleSteeringOverlay root, EntityPlayerSP player){
+	public DefaultSteeringOverlay(VehicleSteeringOverlay root, EntityPlayer player){
 		super(root, player);
 	}
 

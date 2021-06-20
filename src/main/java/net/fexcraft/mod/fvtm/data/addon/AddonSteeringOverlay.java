@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.data.addon;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Prototype of Addon based steering overlays.
@@ -14,9 +14,9 @@ import net.minecraft.client.entity.EntityPlayerSP;
 public abstract class AddonSteeringOverlay {
 	
 	protected VehicleSteeringOverlay root;
-	protected EntityPlayerSP player;
+	protected EntityPlayer player;
 
-	public AddonSteeringOverlay(VehicleSteeringOverlay root, EntityPlayerSP player){
+	public AddonSteeringOverlay(VehicleSteeringOverlay root, EntityPlayer player){
 		this.root = root;
 		this.player = player;
 	}

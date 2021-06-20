@@ -52,6 +52,7 @@ import net.fexcraft.mod.fvtm.data.root.Model;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
+import net.fexcraft.mod.fvtm.event.OverlayEvent;
 import net.fexcraft.mod.fvtm.event.ResourceEvents;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
@@ -132,11 +133,10 @@ public class Resources {
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	private static TreeMap<String, ObjModel> OBJ_MODEL_INFO_CACHE = new TreeMap<>();
 	private static TreeMap<ResourceLocation, ObjModel> OBJ_MODEL_DATA_CACHE = new TreeMap<>();
+	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
-	@SideOnly(Side.CLIENT)
-	public static TreeMap<String, AddonSteeringOverlay> OVERLAYS = new TreeMap<>();
 	//
 	private File configroot; 
 	
@@ -779,6 +779,13 @@ public class Resources {
 		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_down")), new ItemStack(gaugeitem, 16), new ItemStack(Items.IRON_INGOT, 4), new ItemStack(Blocks.PLANKS, 4));
 		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_up")), new ItemStack(gaugeitem16), new ItemStack(Blocks.PLANKS, 4));
 		RecipeRegistry.addBluePrintRecipe(blockcat, new ItemStack(Item.getByNameOrId(gauge + ".16_straight_slope_down")), new ItemStack(gaugeitem16), new ItemStack(Blocks.PLANKS, 4));
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static Class<? extends AddonSteeringOverlay> getOverlayOf(GenericVehicle vehicle){
+		OverlayEvent event = new OverlayEvent(vehicle, vehicle.getVehicleData());
+		MinecraftForge.EVENT_BUS.post(event);
+		return OVERLAYS.containsKey(event.getOverlay()) ? OVERLAYS.get(event.getOverlay()) : OVERLAYS.get("default");
 	}
 
 }

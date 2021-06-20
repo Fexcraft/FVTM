@@ -37,6 +37,7 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
+import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.*;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -134,6 +135,8 @@ public class Resources {
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
+	@SideOnly(Side.CLIENT)
+	public static TreeMap<String, AddonSteeringOverlay> OVERLAYS = new TreeMap<>();
 	//
 	private File configroot; 
 	
@@ -164,15 +167,19 @@ public class Resources {
 				File file = entry.getCandidate().getModContainer();
 				if(addon.hasJson()){
 					InputStream stream = Resources.class.getClassLoader().getResourceAsStream("assets/" + id + "/addonpack.fvtm");
-					if(stream == null) continue; JsonObject obj = JsonUtil.getObjectFromInputStream(stream);
+					if(stream == null) continue;
+					JsonObject obj = JsonUtil.getObjectFromInputStream(stream);
 					ADDONS.register(new Addon(type, file).parse(obj));
 				}
 				else{
 					ADDONS.register((Addon)clazz.getConstructor(ContainerType.class, File.class).newInstance(type, file));
-					//TODO find out how to get the actual instance of the mod.
+					// TODO find out how to get the actual instance of the mod.
 				}
 				Print.log("Registered FVTM Addon with ID '" + addon.registryname() + "'!");
-			} catch(Exception e){ e.printStackTrace(); }
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		//
 		//TODO check addon on/off state
@@ -194,18 +201,26 @@ public class Resources {
 	}
 
 	public static final void loadPresets(){
-		for(Addon addon : ADDONS.getValuesCollection()){ addon.loadPresets(); }
+		for(Addon addon : ADDONS.getValuesCollection()){
+			addon.loadPresets();
+		}
 		File file = new File("./config/fvtm/presets/");
 		if(!file.exists()) file.mkdirs();
 		File[] files = file.listFiles();
 		for(File fl : files){
 			try{
-				JsonObject obj = JsonUtil.get(fl); if(obj.entrySet().isEmpty()) continue;
+				JsonObject obj = JsonUtil.get(fl);
+				if(obj.entrySet().isEmpty()) continue;
 				Vehicle vehicle = Resources.VEHICLES.getValue(new ResourceLocation(obj.get("Vehicle").getAsString()));
 				VehicleData data = (VehicleData)vehicle.getDataClass().getConstructor(Vehicle.class).newInstance(vehicle);
-				data.read(JsonToNBT.getTagFromJson(obj.toString())); data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
+				data.read(JsonToNBT.getTagFromJson(obj.toString()));
+				data.setPreset(JsonUtil.getIfExists(obj, "Preset", "Nameless"));
 				PresetTab.INSTANCE.add(data.newItemStack());
-			} catch(Exception e){ e.printStackTrace(); Static.stop(); }
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				Static.stop();
+			}
 		}
 	}
 
@@ -260,7 +275,13 @@ public class Resources {
 
 	private void searchInAddonsFor(DataType datatype){
 		for(Addon addon : ADDONS.getValuesCollection()){
-			try{ addon.searchFor(datatype); } catch (Throwable thr){ thr.printStackTrace(); Static.stop(); }
+			try{
+				addon.searchFor(datatype);
+			}
+			catch(Throwable thr){
+				thr.printStackTrace();
+				Static.stop();
+			}
 		}
 	}
 

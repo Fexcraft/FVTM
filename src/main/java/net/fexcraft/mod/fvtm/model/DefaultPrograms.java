@@ -86,6 +86,9 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(STEERING_WHEEL_Z);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_X);
 		TurboList.PROGRAMS.add(STEERING_WHEEL_Y);
+		TurboList.PROGRAMS.add(STEERING_WHEEL_ZN);
+		TurboList.PROGRAMS.add(STEERING_WHEEL_XN);
+		TurboList.PROGRAMS.add(STEERING_WHEEL_YN);
 		//
 		TurboList.PROGRAMS.add(LIGHTS_RAIL_FORWARD);
 		TurboList.PROGRAMS.add(LIGHTS_RAIL_BACKWARD);
@@ -561,17 +564,28 @@ public class DefaultPrograms {
 	public static final Program STEERING_WHEEL_Z = new SteeringWheel(2, 1f);
 	public static final Program STEERING_WHEEL_X = new SteeringWheel(0, 1f);
 	public static final Program STEERING_WHEEL_Y = new SteeringWheel(1, 1f);
+	public static final Program STEERING_WHEEL_ZN = new SteeringWheel(2, 1f, false);
+	public static final Program STEERING_WHEEL_XN = new SteeringWheel(0, 1f, false);
+	public static final Program STEERING_WHEEL_YN = new SteeringWheel(1, 1f, false);
 	public static final Program STEERING_WHEEL_CZ = new SteeringWheelCentered(2, 1f);
 	public static final Program STEERING_WHEEL_CX = new SteeringWheelCentered(0, 1f);
 	public static final Program STEERING_WHEEL_CY = new SteeringWheelCentered(1, 1f);
 	
 	public static class SteeringWheel implements Program {
 		
-		private byte axis; private float ratio, rotated; private String id;
+		private byte axis;
+		private float ratio, rotated;
+		private boolean apply;
+		private String id;
 		
 		public SteeringWheel(int axis, float ratio){
+			this(axis, ratio, true);
+		}
+		
+		public SteeringWheel(int axis, float ratio, boolean override){
 			this.axis = (byte)axis; this.ratio = ratio;
-			id = axis == 0 && ratio == 0 ? "fvtm:steering_base" : "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z");
+			id = axis == 0 && ratio == 0 ? "fvtm:steering_base" : "fvtm:steering_" + (axis == 0 ? "x" : axis == 1 ? "y" : "z") + (override ? "" : "_no_apply");
+			this.apply = override;
 		}
 
 		@Override
@@ -581,12 +595,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.rotateAxis(rotated = data.getAttribute("steering_angle").float_value() * ratio, axis, true);
+			list.rotateAxis(rotated = data.getAttribute("steering_angle").float_value() * ratio, axis, apply);
 		}
 		
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			list.rotateAxis(-rotated, axis, true);
+			list.rotateAxis(-rotated, axis, apply);
 		}
 		
 		@Override

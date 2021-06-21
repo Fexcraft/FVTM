@@ -21,7 +21,6 @@ import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -31,7 +30,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.translation.I18n;
 
+@SuppressWarnings("deprecation")
 @fCommand
 public class Command extends CommandBase {
 	
@@ -48,8 +49,8 @@ public class Command extends CommandBase {
         return "commands.fvtm.main_usage";
     }
 
-    public String trs(String string){
-        return I18n.format(string, new Object[0]);
+	public String trs(String string){
+        return I18n.translateToLocalFormatted(string, new Object[0]);
     }
     
     @Override
@@ -60,7 +61,7 @@ public class Command extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException{
         if(args.length < 1){
-            Print.chat(sender, I18n.format("commands.fvtm.main_usage", new Object[0]));
+            Print.chat(sender, I18n.translateToLocalFormatted("commands.fvtm.main_usage", new Object[0]));
             return;
         }
         switch(args[0]){
@@ -200,7 +201,12 @@ public class Command extends CommandBase {
             		break;
             	}
             	if(sender instanceof EntityPlayer == false){
-            		Print.chat(sender, "Can be only used by online players."); return;
+            		Print.chat(sender, "Can be only used by online players.");
+            		return;
+            	}
+            	if(!server.isSinglePlayer()){
+            		Print.chat(sender, "Can only be used in single player.");
+            		return;
             	}
             	EntityPlayer player = (EntityPlayer)sender;
             	ItemStack stack = player.getHeldItemMainhand();

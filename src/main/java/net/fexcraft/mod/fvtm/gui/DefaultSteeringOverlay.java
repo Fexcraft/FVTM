@@ -401,15 +401,16 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 
 	@Override
 	public void onToggablesToggle(){
+		Print.debug("Toggled " + (root.toggables ? "ON" : "OFF"));
 		attributes.clear();
 		if(!root.toggables) return;
 		if(root.seat() == null || root.seat().vehicle == null) return;
-		Print.debug("Toggled " + (root.toggables ? "ON" : "OFF"));
 		for(Attribute<?> attr : root.seat().vehicle.getVehicleData().getAttributes().values()){
 			if(attr.seats().contains(root.seat().seatdata.name)){
 				attributes.add(attr);
 			}
 		}
+		Print.debug("ATTRS " + attributes.size());
 	}
 
 }

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.util;
 import static net.minecraftforge.server.permission.DefaultPermissionLevel.ALL;
 import static net.minecraftforge.server.permission.DefaultPermissionLevel.OP;
 
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -19,7 +20,7 @@ public class Perms {
 	public static void register(){
 		PermissionAPI.registerNode(RAIL_PLACER_GUI.id(), ALL, "FVTM GUI for placing rails.");
 		PermissionAPI.registerNode(ROAD_PLACER_GUI.id(), OP, "FVTM GUI for placing (block) roads.");
-		PermissionAPI.registerNode(ROAD_PLACER_ITEM.id(), OP, "FVTM Item for placing (block) roads.");
+		PermissionAPI.registerNode(ROAD_PLACER_ITEM.id(), Config.ROADTOOL_FOR_ALL ? ALL : OP, "FVTM Item for placing (block) roads.");
 		//PermissionAPI.registerNode(ROAD_PLACER_GUI_NOBLOCK.id(), Config.NO_RAIL_BLOCKS ? ALL : OP, "Allows to place road blocks without inventory consumption via the RoadPlacer GUI.");
 	}
 	

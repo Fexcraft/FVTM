@@ -41,6 +41,7 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelFunction;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -110,6 +111,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
 		TurboList.PROGRAMS.add(RESCALE_NORMAL);
+		TurboList.PROGRAMS.add(new TextRenderer(0, 0, 0, 0, 0, 0, 0, true));
+		TurboList.PROGRAMS.add(new AttributeTextRenderer("", 0, 0, 0, 0, 0, 0, 0, true));
 		//
 		DIDLOAD = true;
 	}
@@ -1549,7 +1552,6 @@ public class DefaultPrograms {
 		public Program parse(JsonElement elm){
 			return new TextureBinder(elm.getAsJsonArray().get(0).getAsString());
 		}
-		
 
 		@Override
 		public Program parse(String[] args){
@@ -1586,5 +1588,149 @@ public class DefaultPrograms {
 		}
 		
 	}, GL_RESCALE_NORMAL = RESCALE_NORMAL;
+	
+	public static class TextRenderer implements Program {
+		
+		protected net.minecraft.client.gui.FontRenderer font_renderer;
+		protected float downscale_font = 0.00390625f;
+		protected float rx, ry, rz, scale;
+		protected boolean no_lighting = true, no_depth_test, centered;
+		protected String text = "";
+		protected int color = RGB.BLACK.packed;
+		protected Pos pos;
+		
+		public TextRenderer(float x, float y, float z, float rx, float ry, float rz, float scale, boolean centered){
+			this.centered = centered;
+			this.scale = scale;
+			this.rx = rx;
+			this.ry = ry;
+			this.rz = rz;
+			pos = new Pos(-x, y, z);
+		}
+		
+		public TextRenderer(float x, float y, float z, float rx, float ry, float rz, float scale, boolean centered, String string){
+			this(x, y, z, rx, ry, rz, scale, centered);
+			this.text = string;
+		}
+		
+		public TextRenderer setFontRenderer(net.minecraft.client.gui.FontRenderer renderer){
+			font_renderer = renderer;
+			return this;
+		}
+		
+		public TextRenderer disableLighting(boolean bool){
+			no_lighting = bool;
+			return this;
+		}
+		
+		public TextRenderer disableDepthTest(boolean bool){
+			no_depth_test = bool;
+			return this;
+		}
+		
+		public TextRenderer setColor(RGB rgb){
+			color = rgb.packed;
+			return this;
+		}
+		
+		public TextRenderer setColor(int color){
+			this.color = color;
+			return this;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:text_renderer";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			//
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(ent == null || text.length() == 0) return;
+			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
+	        GlStateManager.pushMatrix();
+			pos.translate();
+	        RGB.WHITE.glColorApply();
+	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
+	        if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
+	        if(no_lighting) GlStateManager.disableLighting();
+	        GL11.glRotatef(-90, 0, 1, 0);
+			if(ry != 0.0F) GL11.glRotatef(ry, 0.0F, 1.0F, 0.0F);
+	        if(rz != 0.0F) GL11.glRotatef(rz, 0.0F, 0.0F, 1.0F);
+	        if(rx != 0.0F) GL11.glRotatef(rx, 1.0F, 0.0F, 0.0F);
+	        GlStateManager.depthMask(false);
+	        if(no_depth_test) GL11.glDisable(GL11.GL_DEPTH_TEST);
+	        GlStateManager.enableBlend();
+	        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+	        font_renderer.drawString(text, centered ? -font_renderer.getStringWidth(text) / 2 : 0, 0, this.color);
+	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
+	        GlStateManager.depthMask(true);
+	        if(no_lighting) GlStateManager.enableLighting();
+	        GlStateManager.disableBlend();
+	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	        GlStateManager.popMatrix();
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			//
+		}
+		
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			if(ent == null || text.length() == 0) return;
+			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
+	        GlStateManager.pushMatrix();
+			pos.translate();
+	        RGB.WHITE.glColorApply();
+	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
+	        if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
+	        if(no_lighting) GlStateManager.disableLighting();
+	        GL11.glRotatef(-90, 0, 1, 0);
+			if(ry != 0.0F) GL11.glRotatef(ry, 0.0F, 1.0F, 0.0F);
+	        if(rz != 0.0F) GL11.glRotatef(rz, 0.0F, 0.0F, 1.0F);
+	        if(rx != 0.0F) GL11.glRotatef(rx, 1.0F, 0.0F, 0.0F);
+	        GlStateManager.depthMask(false);
+	        if(no_depth_test) GL11.glDisable(GL11.GL_DEPTH_TEST);
+	        GlStateManager.enableBlend();
+	        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+	        font_renderer.drawString(text, centered ? -font_renderer.getStringWidth(text) / 2 : 0, 0, this.color);
+	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
+	        GlStateManager.depthMask(true);
+	        if(no_lighting) GlStateManager.enableLighting();
+	        GlStateManager.disableBlend();
+	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	        GlStateManager.popMatrix();
+		}
+		
+	}
+	
+	public static class AttributeTextRenderer extends TextRenderer {
+		
+		protected Attribute<?> attr;
+		protected String attribute;
+		
+		public AttributeTextRenderer(String attribute, float x, float y, float z, float rx, float ry, float rz, float scale, boolean centered){
+			super(x, y, z, rx, ry, rz, scale, centered);
+			this.attribute = attribute;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:attr_text_renderer";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(ent == null) return;
+			if((attr = data.getAttribute(attribute)) == null) return;
+			text = attr.string_value();
+		}
+		
+	}
 	
 }

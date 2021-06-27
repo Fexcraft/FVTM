@@ -1591,6 +1591,7 @@ public class DefaultPrograms {
 	
 	public static class TextRenderer extends Transparent {
 		
+		protected static Attribute<?> attr;
 		protected net.minecraft.client.gui.FontRenderer font_renderer;
 		protected float downscale_font = 0.00390625f;
 		protected float rx, ry, rz, scale;
@@ -1664,7 +1665,7 @@ public class DefaultPrograms {
 			if(ent == null || text.length() == 0) return;
 			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 	        GlStateManager.pushMatrix();
-			if(glow || attr(data)) super.preRender(list, ent, data, color, part, cache);
+			if(glow || (attrid != null && attr(data))) super.preRender(list, ent, data, color, part, cache);
 			pos.translate();
 	        RGB.WHITE.glColorApply();
 	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
@@ -1679,12 +1680,13 @@ public class DefaultPrograms {
 	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GlStateManager.depthMask(true);
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			if(glow || attr(data)) super.postRender(list, ent, data, color, part, cache);
+			if(glow || (attrid != null && attr(data))) super.postRender(list, ent, data, color, part, cache);
 	        GlStateManager.popMatrix();
 		}
 		
 		protected boolean attr(VehicleData data){
-			return attrid != null && data.getAttributeBoolean(attrid, false);
+			attr = data.getAttribute(attrid);
+			return attr != null && attr.boolean_value();
 		}
 
 		@Override

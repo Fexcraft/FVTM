@@ -71,30 +71,44 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		if(button.name.startsWith("edit")){
 			int row = Integer.parseInt(button.name.replace("edit", ""));
 			if(field.getVisible() && edited == row){
-				if(edited < 0 || edited >= 14) return true; field.x = field.y = 0;
-				NBTTagCompound packet = new NBTTagCompound(); Attribute<?> attr = getAttr(edited);
-				packet.setString("target_listener", "fvtm:gui"); packet.setString("task", "attr_update");
-				packet.setString("attr", attr.id()); packet.setString("value", field.getText());
-				packet.setInteger("entity", veh.getEntity().getEntityId()); Print.debug(packet);
+				if(edited < 0 || edited >= 14) return true;
+				field.x = field.y = 0;
+				NBTTagCompound packet = new NBTTagCompound();
+				Attribute<?> attr = getAttr(page * 14 + edited);
+				packet.setString("target_listener", "fvtm:gui");
+				packet.setString("task", "attr_update");
+				packet.setString("attr", attr.id());
+				packet.setString("value", field.getText());
+				packet.setInteger("entity", veh.getEntity().getEntityId());
+				Print.debug(packet);
 				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
-				field.setVisible(false); updatePageEdit(null, -1);
+				field.setVisible(false);
+				updatePageEdit(null, -1);
 			}
 			else{
 				updatePageEdit(null, row);
-				Attribute<?> attr = getAttr(page * 14 + edited); if(attr == null) return true;
+				Attribute<?> attr = getAttr(page * 14 + edited);
+				if(attr == null) return true;
 				if(!attr.editable()){
-					texts.get("row" + row).string = " [ Not Editable ]"; return true;
+					texts.get("row" + row).string = " [ Not Editable ]";
+					return true;
 				}
 				if(attr.valuetype().isBoolean()){
-					NBTTagCompound packet = new NBTTagCompound(); packet.setString("target_listener", "fvtm:gui");
-					packet.setString("task", "attr_update"); packet.setString("attr", attr.id());
+					NBTTagCompound packet = new NBTTagCompound();
+					packet.setString("target_listener", "fvtm:gui");
+					packet.setString("task", "attr_update");
+					packet.setString("attr", attr.id());
 					packet.setString("value", attr.toggle_value() + "");
-					packet.setInteger("entity", veh.getEntity().getEntityId()); Print.debug(packet);
+					packet.setInteger("entity", veh.getEntity().getEntityId());
+					Print.debug(packet);
 					PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
-					updatePageEdit(null, -1); return true;
+					updatePageEdit(null, -1);
+					return true;
 				}
-				field.x = guiLeft + 203; field.y = guiTop + 7 + (edited * 14);
-				field.setText(attr.string_value()); field.setVisible(true);
+				field.x = guiLeft + 203;
+				field.y = guiTop + 7 + (edited * 14);
+				field.setText(attr.string_value());
+				field.setVisible(true);
 				return true;
 			}
 			return true;

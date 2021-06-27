@@ -1589,17 +1589,18 @@ public class DefaultPrograms {
 		
 	}, GL_RESCALE_NORMAL = RESCALE_NORMAL;
 	
-	public static class TextRenderer implements Program {
+	public static class TextRenderer extends Transparent {
 		
 		protected net.minecraft.client.gui.FontRenderer font_renderer;
 		protected float downscale_font = 0.00390625f;
 		protected float rx, ry, rz, scale;
-		protected boolean no_lighting = true, no_depth_test, centered;
-		protected String text = "";
-		protected int color = RGB.BLACK.packed;
+		protected boolean glow, no_depth_test, centered;
+		protected String text = "", attrid;
+		protected int color = RGB.BLACK.packed, lx, ly;
 		protected Pos pos;
 		
 		public TextRenderer(float x, float y, float z, float rx, float ry, float rz, float scale, boolean centered){
+			super(189f, 4f);
 			this.centered = centered;
 			this.scale = scale;
 			this.rx = rx;
@@ -1618,11 +1619,6 @@ public class DefaultPrograms {
 			return this;
 		}
 		
-		public TextRenderer disableLighting(boolean bool){
-			no_lighting = bool;
-			return this;
-		}
-		
 		public TextRenderer disableDepthTest(boolean bool){
 			no_depth_test = bool;
 			return this;
@@ -1637,6 +1633,21 @@ public class DefaultPrograms {
 			this.color = color;
 			return this;
 		}
+		
+		public TextRenderer setGlow(boolean bool){
+			glow = bool;
+			return this;
+		}
+		
+		public TextRenderer glow(){
+			glow = true;
+			return this;
+		}
+
+		public TextRenderer setLightAttribute(String string){
+			attrid = string;
+			return this;
+		}
 
 		@Override
 		public String getId(){
@@ -1645,7 +1656,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			//
+			if(ent == null || text.length() == 0) return;
 		}
 
 		@Override
@@ -1653,31 +1664,32 @@ public class DefaultPrograms {
 			if(ent == null || text.length() == 0) return;
 			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 	        GlStateManager.pushMatrix();
+			if(glow || attr(data)) super.preRender(list, ent, data, color, part, cache);
 			pos.translate();
 	        RGB.WHITE.glColorApply();
 	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
 	        if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
-	        if(no_lighting) GlStateManager.disableLighting();
 	        GL11.glRotatef(-90, 0, 1, 0);
 			if(ry != 0.0F) GL11.glRotatef(ry, 0.0F, 1.0F, 0.0F);
 	        if(rz != 0.0F) GL11.glRotatef(rz, 0.0F, 0.0F, 1.0F);
 	        if(rx != 0.0F) GL11.glRotatef(rx, 1.0F, 0.0F, 0.0F);
 	        GlStateManager.depthMask(false);
 	        if(no_depth_test) GL11.glDisable(GL11.GL_DEPTH_TEST);
-	        GlStateManager.enableBlend();
-	        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 	        font_renderer.drawString(text, centered ? -font_renderer.getStringWidth(text) / 2 : 0, 0, this.color);
 	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GlStateManager.depthMask(true);
-	        if(no_lighting) GlStateManager.enableLighting();
-	        GlStateManager.disableBlend();
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			if(glow || attr(data)) super.postRender(list, ent, data, color, part, cache);
 	        GlStateManager.popMatrix();
 		}
 		
+		protected boolean attr(VehicleData data){
+			return attrid != null && data.getAttributeBoolean(attrid, false);
+		}
+
 		@Override
 		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
-			//
+			//if(glow) super.preRender(list, ent, data, cache);
 		}
 		
 		@Override
@@ -1685,25 +1697,22 @@ public class DefaultPrograms {
 			if(ent == null || text.length() == 0) return;
 			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 	        GlStateManager.pushMatrix();
+			if(glow) super.preRender(list, ent, data, cache);
 			pos.translate();
 	        RGB.WHITE.glColorApply();
 	        GL11.glScalef(downscale_font, downscale_font, downscale_font);
 	        if(scale != 1f){ GL11.glScalef(scale, scale, scale); }
-	        if(no_lighting) GlStateManager.disableLighting();
 	        GL11.glRotatef(-90, 0, 1, 0);
 			if(ry != 0.0F) GL11.glRotatef(ry, 0.0F, 1.0F, 0.0F);
 	        if(rz != 0.0F) GL11.glRotatef(rz, 0.0F, 0.0F, 1.0F);
 	        if(rx != 0.0F) GL11.glRotatef(rx, 1.0F, 0.0F, 0.0F);
 	        GlStateManager.depthMask(false);
 	        if(no_depth_test) GL11.glDisable(GL11.GL_DEPTH_TEST);
-	        GlStateManager.enableBlend();
-	        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 	        font_renderer.drawString(text, centered ? -font_renderer.getStringWidth(text) / 2 : 0, 0, this.color);
 	        if(no_depth_test) GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GlStateManager.depthMask(true);
-	        if(no_lighting) GlStateManager.enableLighting();
-	        GlStateManager.disableBlend();
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			if(glow) super.postRender(list, ent, data, cache);
 	        GlStateManager.popMatrix();
 		}
 		

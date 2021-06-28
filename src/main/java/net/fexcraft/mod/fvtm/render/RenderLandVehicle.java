@@ -65,7 +65,9 @@ public class RenderLandVehicle extends Render<LandVehicle> implements IRenderFac
 	                    	}
 	                    	else{
 		                    	entry.getValue().getInstalledPos().translate();
+		                    	entry.getValue().getInstalledRot().rotate();
 		                        entry.getValue().getType().getModel().render(vehicle.getVehicleData(), entry.getKey(), vehicle, cache);
+		                    	entry.getValue().getInstalledRot().rotateR();
 		                        entry.getValue().getInstalledPos().translateR();
 	                    	}
 	                	}

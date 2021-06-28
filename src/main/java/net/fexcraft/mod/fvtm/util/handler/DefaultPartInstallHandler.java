@@ -11,6 +11,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -90,6 +91,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	public static void setPosAndSwivelPoint(TreeMap<String, Pos> compatible, String cat, PartData part, VehicleData data){
 		String vehid = data.getType().getRegistryName().toString();
 		Pos result = Pos.NULL;
+		Vec3f rosult = new Vec3f();
 		if(cat.startsWith("s:")){
 			String[] split = cat.split(":");
 			PartData mount = data.getPart(split[1]);
@@ -110,7 +112,9 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				}
 			}
 		}
+		rosult.y = 45f;
 		part.setInstalledPos(result);
+		part.setInstalledRot(rosult);
 		if(!cat.startsWith("s:") && part.getType().getInstallationHandlerData() instanceof DPIHData){
 			String point = ((DPIHData)part.getType().getInstallationHandlerData()).swivel_point;
 			if(point != null && !point.equals("vehicle") && data.getRotationPoints().containsKey(point)){
@@ -153,6 +157,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	public static class DPIHData {
 		
 		public TreeMap<String, Pos> compatible = new TreeMap<String, Pos>();
+		public TreeMap<String, Vec3f> com_rot = new TreeMap<String, Vec3f>();
 		public TreeMap<String, ArrayList<String>> incompatible = new TreeMap<>();
 		public TreeMap<String, ArrayList<String>> required = new TreeMap<>();
 		public boolean removable = true, custom_cat, sp_req = false, onslot, hotswap;
@@ -169,10 +174,22 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 					if(elm.isJsonObject()){
 						JsonObject jsn = elm.getAsJsonObject();
 						this.compatible.put(jsn.get("vehicle").getAsString(), Pos.fromJson(jsn, false));
+						if(jsn.has("rx") || jsn.has("ry") || jsn.has("rz")){
+							float x = JsonUtil.getIfExists(jsn, "rx", 0f).floatValue();
+							float y = JsonUtil.getIfExists(jsn, "ry", 0f).floatValue();
+							float z = JsonUtil.getIfExists(jsn, "rz", 0f).floatValue();
+							com_rot.put(jsn.get("vehicle").getAsString(), new Vec3f(x, y, z));
+						}
 					}
 					else if(elm.isJsonArray()){
 						JsonArray array = elm.getAsJsonArray();
 						this.compatible.put(array.get(3).getAsString(), Pos.fromJson(array, true));
+						if(array.size() > 4){
+							float x = array.get(4).getAsFloat();
+							float y = array.size() > 5 ? array.get(5).getAsFloat() : 0;
+							float z = array.size() > 6 ? array.get(6).getAsFloat() : 0;
+							com_rot.put(array.get(3).getAsString(), new Vec3f(x, y, z));
+						}
 					}
 					else{
 						this.compatible.put(elm.getAsString(), Pos.NULL);

@@ -165,6 +165,21 @@ public class DataUtil {
 		if(list.isEmpty() || list.tagCount() < 3) return null;
 		return new Vec3f(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2));
 	}
+
+	public static JsonElement writeVec3fJSON(Vec3f vec){
+		JsonArray array = new JsonArray();
+		array.add(vec.x);
+		array.add(vec.y);
+		array.add(vec.z);
+		return array;
+	}
+
+	public static Vec3f readVec3f(JsonElement elm){
+		if(elm == null || !elm.isJsonArray()) return null;
+		JsonArray array = elm.getAsJsonArray();
+		if(array.size() == 0) return null;
+		return new Vec3f(array.get(0).getAsFloat(), array.get(1).getAsFloat(), array.get(2).getAsFloat());
+	}
 	
 	public static BufferedImage tryDownload(String url){
         try{

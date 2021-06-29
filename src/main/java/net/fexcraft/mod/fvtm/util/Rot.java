@@ -85,4 +85,8 @@ public class Rot {
 		check();
 	}
 
+	public Rot add(Rot other){
+		return new Rot(vec.add(other.vec));
+	}
+
 }

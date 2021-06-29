@@ -27,6 +27,7 @@ public class PartSlotsFunction extends StaticFunction {
 	private ArrayList<String> slot_cat = new ArrayList<>();
 	private ArrayList<Float> slot_rad = new ArrayList<>();
 	private ArrayList<Rot> slot_rot = new ArrayList<>();
+	private boolean copy_rot;
 	@SideOnly(Side.CLIENT)
 	private HashMap<String, Integer> count;
 
@@ -44,6 +45,7 @@ public class PartSlotsFunction extends StaticFunction {
 			}
 			else slot_rot.add(Rot.NULL);
 		}
+		copy_rot = obj.has("copy_rot") ? obj.get("copy_rot").getAsBoolean() : false;
 		if(Static.side().isClient()){
 			count = new HashMap<>();
 			for(String slot : slot_type){
@@ -86,5 +88,9 @@ public class PartSlotsFunction extends StaticFunction {
             tooltip.add(Formatter.format("&7- " + type + (c > 0 ? " &ex" + c : "")));
     	}
     }
+
+	public boolean copyRot(){
+		return copy_rot;
+	}
 	
 }

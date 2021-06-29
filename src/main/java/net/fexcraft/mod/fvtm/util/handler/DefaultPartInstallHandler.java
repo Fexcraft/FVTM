@@ -104,6 +104,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
 			}
 			rosult = func.getSlotRotations().get(idx);
+			if(func.copyRot()) rosult = rosult.add(mount.getInstalledRot());
 		}
 		if(idata != null) compatible = idata.compatible;
 		if(compatible != null && !compatible.isEmpty()){

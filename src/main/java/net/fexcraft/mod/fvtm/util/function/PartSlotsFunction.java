@@ -8,12 +8,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.util.Rot;
+import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -22,11 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PartSlotsFunction extends StaticFunction {
 	
-	private ArrayList<String> slot_type = new ArrayList<>();
-	private ArrayList<Pos> slot_pos = new ArrayList<>();
-	private ArrayList<String> slot_cat = new ArrayList<>();
-	private ArrayList<Float> slot_rad = new ArrayList<>();
-	private ArrayList<Rot> slot_rot = new ArrayList<>();
+	private ArrayList<PartSlot> slots = new ArrayList<>();
 	private boolean copy_rot;
 	@SideOnly(Side.CLIENT)
 	private HashMap<String, Integer> count;
@@ -36,21 +31,14 @@ public class PartSlotsFunction extends StaticFunction {
 		JsonArray jslots = obj.get("slots").getAsJsonArray();
 		for(int i = 0; i < jslots.size(); i++){
 			JsonArray array = jslots.get(i).getAsJsonArray();
-			slot_type.add(array.get(3).getAsString());
-			slot_pos.add(Pos.fromJson(array, true));
-			slot_cat.add(array.size() > 4 ? array.get(4).getAsString() : part.getCategory() + "_" + i);
-			slot_rad.add(array.size() > 5 ? array.get(5).getAsInt() * Static.sixteenth : 0.25f);
-			if(array.size() > 6 && array.get(6).isJsonArray()){
-				slot_rot.add(new Rot(array.get(6).getAsJsonArray()));
-			}
-			else slot_rot.add(Rot.NULL);
+			slots.add(new PartSlot(part.getCategory(), array, i));
 		}
 		copy_rot = obj.has("copy_rot") ? obj.get("copy_rot").getAsBoolean() : false;
 		if(Static.side().isClient()){
 			count = new HashMap<>();
-			for(String slot : slot_type){
-				if(count.containsKey(slot)) count.put(slot, count.get(slot) + 1);
-				else count.put(slot, 1);
+			for(PartSlot slot : slots){
+				if(count.containsKey(slot.type)) count.put(slot.type, count.get(slot.type) + 1);
+				else count.put(slot.type, 1);
 			}
 		}
 	}
@@ -60,24 +48,8 @@ public class PartSlotsFunction extends StaticFunction {
 		return "fvtm:part_slots";
 	}
 	
-	public ArrayList<String> getSlotTypes(){
-		return slot_type;
-	}
-	
-	public ArrayList<Pos> getSlotPositions(){
-		return slot_pos;
-	}
-	
-	public ArrayList<String> getSlotCategories(){
-		return slot_cat;
-	}
-	
-	public ArrayList<Float> getSlotRadius(){
-		return slot_rad;
-	}
-
-	public ArrayList<Rot> getSlotRotations(){
-		return slot_rot;
+	public ArrayList<PartSlot> getPartSlots(){
+		return slots;
 	}
 
     @Override

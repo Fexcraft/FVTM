@@ -160,8 +160,8 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 			for(Entry<String, PartData> data : vehicle.getParts().entrySet()){
 				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
 				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
-				for(int i = 0; i < func.getSlotTypes().size(); i++){
-					String type = func.getSlotTypes().get(i);
+				for(int i = 0; i < func.getPartSlots().size(); i++){
+					String type = func.getPartSlots().get(i).type;
 					if(type.equals("front_connector") || type.equals("rear_connector")){
 						found.add(data.getKey() + ":" + (type.equals("front_connector") ? "front_connector" : "rear_connector"));
 					}

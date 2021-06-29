@@ -99,11 +99,11 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			result = mount.getInstalledPos();
 			PartSlotsFunction func = mount.getFunction("fvtm:part_slots");
 			int idx = Integer.parseInt(split[3]);
-			result = result.add(func.getSlotPositions().get(idx));
+			result = result.add(func.getPartSlots().get(idx).pos);
 			if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
 				part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
 			}
-			rosult = func.getSlotRotations().get(idx);
+			rosult = func.getPartSlots().get(idx).rotation;
 			if(func.copyRot()) rosult = rosult.add(mount.getInstalledRot());
 		}
 		if(idata != null) compatible = idata.compatible;
@@ -283,11 +283,11 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
 				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
 				int funds = 0;
-				for(int i = 0; i < func.getSlotTypes().size(); i++){
-					String type = func.getSlotTypes().get(i);
+				for(int i = 0; i < func.getPartSlots().size(); i++){
+					String type = func.getPartSlots().get(i).type;
 					for(String str : part.getType().getCategories()){
 						if(str.equals(type)){
-							found.add(data.getKey() + ":" + func.getSlotCategories().get(i) + ":" + funds++);
+							found.add(data.getKey() + ":" + func.getPartSlots().get(i).category + ":" + funds++);
 						}
 					}
 				}

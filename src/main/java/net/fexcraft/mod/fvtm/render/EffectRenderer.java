@@ -178,17 +178,17 @@ public class EffectRenderer {
 				for(Entry<String, PartData> data : vehicle.getVehicleData().getParts().entrySet()){
 					if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
 					PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
-					for(int i = 0; i < func.getSlotTypes().size(); i++){
-						String type = func.getSlotTypes().get(i);
+					for(int i = 0; i < func.getPartSlots().size(); i++){
+						String type = func.getPartSlots().get(i).type;
 						for(String str : part.getType().getCategories()){
 							if(str.equals(type)){
-								func.getSlotPositions().get(i).translate();
+								func.getPartSlots().get(i).pos.translate();
 				            	GL11.glPushMatrix();
-				            	float scal = func.getSlotRadius().get(i);
+				            	float scal = func.getPartSlots().get(i).radius;
 				            	GL11.glScalef(scal, scal, scal);
 								DebugModels.HOTINSTALLCUBE.render(1f);
 				            	GL11.glPopMatrix();
-								func.getSlotPositions().get(i).translateR();
+								func.getPartSlots().get(i).pos.translateR();
 							}
 						}
 					}
@@ -201,14 +201,14 @@ public class EffectRenderer {
 			for(Entry<String, PartData> data : vehicle.getVehicleData().getParts().entrySet()){
 				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
 				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
-				for(int i = 0; i < func.getSlotTypes().size(); i++){
-					func.getSlotPositions().get(i).translate();
+				for(int i = 0; i < func.getPartSlots().size(); i++){
+					func.getPartSlots().get(i).pos.translate();
 	            	GL11.glPushMatrix();
-	            	float scal = func.getSlotRadius().get(i);
+	            	float scal = func.getPartSlots().get(i).radius;
 	            	GL11.glScalef(scal, scal, scal);
 					DebugModels.HOTINSTALLCUBE.render(1f);
 	            	GL11.glPopMatrix();
-					func.getSlotPositions().get(i).translateR();
+					func.getPartSlots().get(i).pos.translateR();
 				}
 			}
 			postMeshCalls();

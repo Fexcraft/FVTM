@@ -61,8 +61,8 @@ public class ToggableHandler {
         			for(Entry<String, PartData> data : entity.getVehicleData().getParts().entrySet()){
         				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
         				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
-        				for(int i = 0; i < func.getSlotTypes().size(); i++){
-        					String type = func.getSlotTypes().get(i);
+        				for(int i = 0; i < func.getPartSlots().size(); i++){
+        					String type = func.getPartSlots().get(i).type;
         					for(String str : part.getType().getCategories()){
         						if(str.equals(type)){
         							colls.add(new Collidable(idata, data.getKey(), func, i));
@@ -306,10 +306,10 @@ public class ToggableHandler {
 			}
 			else{
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.swivel_point);
-				Pos pos = func.getSlotPositions().get(index);
+				Pos pos = func.getPartSlots().get(index).pos;
 				temp = point.getRelativeVector(pos.x16, -pos.y16, -pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());
-				float te = func.getSlotRadius().get(index) / 2;
+				float te = func.getPartSlots().get(index).radius / 2;
 				aabbs.put(id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
 			//if(Command.TOGGABLE) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);

@@ -55,7 +55,9 @@ public class DisplayBlockRenderer extends TileEntitySpecialRenderer<DisplayEntit
                 	}
                 	else{
                 		partdata.getInstalledPos().translate();
+                    	partdata.getInstalledRot().rotate();
                 		partdata.getType().getModel().render(vehicledata, key, null, cache);
+                    	partdata.getInstalledRot().rotateR();
                 		partdata.getInstalledPos().translateR();
                 	}
                 });

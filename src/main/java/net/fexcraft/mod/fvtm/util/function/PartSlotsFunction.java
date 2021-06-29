@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.util.Rot;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -25,6 +26,7 @@ public class PartSlotsFunction extends StaticFunction {
 	private ArrayList<Pos> slot_pos = new ArrayList<>();
 	private ArrayList<String> slot_cat = new ArrayList<>();
 	private ArrayList<Float> slot_rad = new ArrayList<>();
+	private ArrayList<Rot> slot_rot = new ArrayList<>();
 	@SideOnly(Side.CLIENT)
 	private HashMap<String, Integer> count;
 
@@ -37,6 +39,10 @@ public class PartSlotsFunction extends StaticFunction {
 			slot_pos.add(Pos.fromJson(array, true));
 			slot_cat.add(array.size() > 4 ? array.get(4).getAsString() : part.getCategory() + "_" + i);
 			slot_rad.add(array.size() > 5 ? array.get(5).getAsInt() * Static.sixteenth : 0.25f);
+			if(array.size() > 6 && array.get(6).isJsonArray()){
+				slot_rot.add(new Rot(array.get(6).getAsJsonArray()));
+			}
+			else slot_rot.add(Rot.NULL);
 		}
 		if(Static.side().isClient()){
 			count = new HashMap<>();
@@ -66,6 +72,10 @@ public class PartSlotsFunction extends StaticFunction {
 	
 	public ArrayList<Float> getSlotRadius(){
 		return slot_rad;
+	}
+
+	public ArrayList<Rot> getSlotRotations(){
+		return slot_rot;
 	}
 
     @Override

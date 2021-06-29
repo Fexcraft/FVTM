@@ -17,6 +17,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.util.Rot;
 import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.command.ICommandSender;
@@ -79,7 +80,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat.startsWith("s:") ? cat.split(":")[2] : cat, part);
 		DPIHData idata = part.getType().getInstallationHandlerData();
-		setPosAndSwivelPoint(idata == null ? null : idata.compatible, cat, part, data);
+		setPosAndSwivelPoint(idata, null, cat, part, data);
 		/*data.getAttributes().values().forEach(attr ->{
 			attr.getModifiers().forEach(mod -> {
 				Print.debug(mod.id(), mod.origin(), mod.target());
@@ -88,19 +89,23 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		Print.chatnn(sender, "Part installed into selected category."); return true;
 	}
 
-	public static void setPosAndSwivelPoint(TreeMap<String, Pos> compatible, String cat, PartData part, VehicleData data){
+	public static void setPosAndSwivelPoint(DPIHData idata, TreeMap<String, Pos> compatible, String cat, PartData part, VehicleData data){
 		String vehid = data.getType().getRegistryName().toString();
 		Pos result = Pos.NULL;
-		Vec3f rosult = new Vec3f();
+		Rot rosult = Rot.NULL;
 		if(cat.startsWith("s:")){
 			String[] split = cat.split(":");
 			PartData mount = data.getPart(split[1]);
 			result = mount.getInstalledPos();
-			result = result.add(mount.getFunction(PartSlotsFunction.class, "fvtm:part_slots").getSlotPositions().get(Integer.parseInt(split[3])));
+			PartSlotsFunction func = mount.getFunction("fvtm:part_slots");
+			int idx = Integer.parseInt(split[3]);
+			result = result.add(func.getSlotPositions().get(idx));
 			if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
 				part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
 			}
+			rosult = func.getSlotRotations().get(idx);
 		}
+		if(idata != null) compatible = idata.compatible;
 		if(compatible != null && !compatible.isEmpty()){
 			if(compatible.containsKey(vehid)){
 				result = result.add(compatible.get(vehid));
@@ -112,7 +117,17 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				}
 			}
 		}
-		rosult.y = 45f;
+		if(idata != null && idata.com_rot != null && !idata.com_rot.isEmpty()){
+			if(idata.com_rot.containsKey(vehid)){
+				rosult = new Rot((idata.com_rot.get(vehid)));
+			}
+			for(String str : wildcards){
+				if(idata.com_rot.containsKey(str)){
+					rosult = new Rot((idata.com_rot.get(str)));
+					break;
+				}
+			}
+		}
 		part.setInstalledPos(result);
 		part.setInstalledRot(rosult);
 		if(!cat.startsWith("s:") && part.getType().getInstallationHandlerData() instanceof DPIHData){

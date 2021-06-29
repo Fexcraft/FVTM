@@ -55,7 +55,7 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		data.getParts().put(cat.startsWith("s:") ? cat.split(":")[2] : cat, part);
 		ConnectorData idata = part.getType().getInstallationHandlerData();
-		DefaultPartInstallHandler.setPosAndSwivelPoint(idata.compatible, cat, part, data);
+		DefaultPartInstallHandler.setPosAndSwivelPoint(null, idata.compatible, cat, part, data);
 		boolean front = cat.startsWith("front");
 		String regname = data.getType().getRegistryName().toString();
 		Vec3d conn = front ? idata.getFrontPosition(regname) : idata.getRearPosition(regname);

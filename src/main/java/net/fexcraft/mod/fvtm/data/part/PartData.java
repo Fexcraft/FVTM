@@ -5,7 +5,6 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
@@ -153,8 +152,8 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		return currentrot;
 	}
 	
-	public void setInstalledRot(Vec3f rot){
-		currentrot.vec.copy(rot);
+	public void setInstalledRot(Rot rot){
+		currentrot = rot;
 	}
 
 	public void setInstalledOnSwivelPoint(String rotpoint){

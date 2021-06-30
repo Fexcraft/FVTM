@@ -22,6 +22,7 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
@@ -65,6 +66,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 	protected HashMap<String, LiftingPoint> liftingpoints = new HashMap<>();
 	protected ResourceLocation keytype;
 	protected int maxkeys;
+	protected PartSlots partslots;
 	//
 	protected VehicleType type;
 	protected VehicleItem item;
@@ -183,6 +185,7 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 			liftingpoints.put("placeholer0", new LiftingPoint("placeholer0", new Pos(0, 0, -20), null, 0));
 			liftingpoints.put("placeholer1", new LiftingPoint("placeholer1", new Pos(0, 0, 20), null, 0));
 		}
+		partslots = new PartSlots("vehicle", obj.has("PartSlots") ? obj.get("PartSlots").getAsJsonArray() : new JsonArray());
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
 		this.overlayid = obj.has("Overlay") ? obj.get("Overlay").getAsString() : "default";
@@ -324,6 +327,10 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 
 	public String getOverlay(){
 		return overlayid;
+	}
+
+	public PartSlots getPartSlots(){
+		return partslots;
 	}
 
 }

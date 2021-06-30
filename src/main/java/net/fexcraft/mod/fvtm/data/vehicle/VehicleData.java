@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
@@ -35,6 +36,7 @@ import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.ColorFunction;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
+import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.command.ICommandSender;
@@ -67,6 +69,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected Vec3d front_conn, rear_conn;
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
+	protected TreeMap<String, PartSlots> psproviders = new TreeMap<>();
 	protected SwivelPoint rootpoint;
 	protected String displayname;
 
@@ -103,6 +106,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		sounds.putAll(type.getSounds());
+		psproviders.put("vehicle_partslots", type.getPartSlots());
 	}
 
 	@Override
@@ -371,6 +375,15 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 					attr.external(ettr.external());
 					break;
 				}
+			}
+		}
+		//
+		psproviders.clear();
+		if(!type.getPartSlots().isEmpty()) psproviders.put("vehicle_partslots", type.getPartSlots());
+		for(Entry<String, PartData> data : this.getParts().entrySet()){
+			if(data.getValue().hasFunction("fvtm:part_slots")){
+				PartSlots ps = data.getValue().getFunction(PartSlotsFunction.class, "fvtm:part_slots").getPartSlotss();
+				if(!ps.isEmpty()) psproviders.put(data.getKey(), ps);
 			}
 		}
 	}
@@ -816,6 +829,14 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	
 	public List<Attribute<?>> getAttributeGroup(String group){
 		return attributes.values().stream().filter(attr -> attr.group() != null && attr.group().equals(group)).collect(Collectors.toList());
+	}
+
+	public TreeMap<String, PartSlots> getPartSlotProviders(){
+		return psproviders;
+	}
+
+	public PartSlots getPartSlotsProvider(String psp_id){
+		return psproviders.get(psp_id);
 	}
 
 }

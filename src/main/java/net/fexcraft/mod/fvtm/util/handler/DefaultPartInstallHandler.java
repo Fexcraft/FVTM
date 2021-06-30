@@ -16,9 +16,9 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
+import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.util.Rot;
-import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
 import net.minecraft.command.ICommandSender;
 
@@ -95,16 +95,18 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		Rot rosult = Rot.NULL;
 		if(cat.startsWith("s:")){
 			String[] split = cat.split(":");
-			PartData mount = data.getPart(split[1]);
-			result = mount.getInstalledPos();
-			PartSlotsFunction func = mount.getFunction("fvtm:part_slots");
 			int idx = Integer.parseInt(split[3]);
-			result = result.add(func.getPartSlots().get(idx).pos);
-			if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
-				part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
+			PartSlots slots = data.getPartSlotsProvider(split[1]);
+			rosult = slots.get(idx).rotation;
+			if(!split[1].equals("vehicle_partslots")){
+				PartData mount = data.getPart(split[1]);
+				result = mount.getInstalledPos();
+				if(mount.getSwivelPointInstalledOn() != null && !mount.getSwivelPointInstalledOn().equals("vehicle")){
+					part.setInstalledOnSwivelPoint(mount.getSwivelPointInstalledOn());
+				}
+				if(slots.copy_rot) rosult = rosult.add(data.getPart(split[1]).getInstalledRot());
 			}
-			rosult = func.getPartSlots().get(idx).rotation;
-			if(func.copyRot()) rosult = rosult.add(mount.getInstalledRot());
+			result = result.add(slots.get(idx).pos);
 		}
 		if(idata != null) compatible = idata.compatible;
 		if(compatible != null && !compatible.isEmpty()){
@@ -279,15 +281,13 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && idata.onslot){
 			ArrayList<String> found = new ArrayList<>();
-			for(Entry<String, PartData> data : vehicle.getParts().entrySet()){
-				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
-				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
+			for(Entry<String, PartSlots> data : vehicle.getPartSlotProviders().entrySet()){
 				int funds = 0;
-				for(int i = 0; i < func.getPartSlots().size(); i++){
-					String type = func.getPartSlots().get(i).type;
+				for(int i = 0; i < data.getValue().size(); i++){
+					String type = data.getValue().get(i).type;
 					for(String str : part.getType().getCategories()){
 						if(str.equals(type)){
-							found.add(data.getKey() + ":" + func.getPartSlots().get(i).category + ":" + funds++);
+							found.add(data.getKey() + ":" + data.getValue().get(i).category + ":" + funds++);
 						}
 					}
 				}

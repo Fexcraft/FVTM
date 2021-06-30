@@ -32,15 +32,18 @@ public class PartSlot {
 
 		@SideOnly(Side.CLIENT)
 		public HashMap<String, Integer> count;
-		public final boolean copy_rot;
+		public boolean copy_rot;
 
 		public PartSlots(Part part, JsonObject obj){
-			JsonArray jslots = obj.get("slots").getAsJsonArray();
+			this(part.getCategory(), obj.get("slots").getAsJsonArray());
+			copy_rot = obj.has("copy_rot") ? obj.get("copy_rot").getAsBoolean() : false;
+		}
+		
+		public PartSlots(String defcat, JsonArray jslots){
 			for(int i = 0; i < jslots.size(); i++){
 				JsonArray array = jslots.get(i).getAsJsonArray();
-				add(new PartSlot(part.getCategory(), array, i));
+				add(new PartSlot(defcat, array, i));
 			}
-			copy_rot = obj.has("copy_rot") ? obj.get("copy_rot").getAsBoolean() : false;
 			if(Static.side().isClient()){
 				count = new HashMap<>();
 				for(PartSlot slot : this){

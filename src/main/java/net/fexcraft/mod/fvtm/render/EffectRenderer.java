@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -21,6 +20,7 @@ import net.fexcraft.mod.fvtm.data.container.ContainerHolder.ContainerHolderWrapp
 import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -32,7 +32,6 @@ import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -175,20 +174,18 @@ public class EffectRenderer {
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 			if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
 				preMeshCalls();
-				for(Entry<String, PartData> data : vehicle.getVehicleData().getParts().entrySet()){
-					if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
-					PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
-					for(int i = 0; i < func.getPartSlots().size(); i++){
-						String type = func.getPartSlots().get(i).type;
+				for(PartSlots ps : vehicle.getVehicleData().getPartSlotProviders().values()){
+					for(int i = 0; i < ps.size(); i++){
+						String type = ps.get(i).type;
 						for(String str : part.getType().getCategories()){
 							if(str.equals(type)){
-								func.getPartSlots().get(i).pos.translate();
+								ps.get(i).pos.translate();
 				            	GL11.glPushMatrix();
-				            	float scal = func.getPartSlots().get(i).radius;
+				            	float scal = ps.get(i).radius;
 				            	GL11.glScalef(scal, scal, scal);
 								DebugModels.HOTINSTALLCUBE.render(1f);
 				            	GL11.glPopMatrix();
-								func.getPartSlots().get(i).pos.translateR();
+				            	ps.get(i).pos.translateR();
 							}
 						}
 					}
@@ -198,17 +195,15 @@ public class EffectRenderer {
 		}
 		else{
 			preMeshCalls();
-			for(Entry<String, PartData> data : vehicle.getVehicleData().getParts().entrySet()){
-				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
-				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
-				for(int i = 0; i < func.getPartSlots().size(); i++){
-					func.getPartSlots().get(i).pos.translate();
+			for(PartSlots ps : vehicle.getVehicleData().getPartSlotProviders().values()){
+				for(int i = 0; i < ps.size(); i++){
+					ps.get(i).pos.translate();
 	            	GL11.glPushMatrix();
-	            	float scal = func.getPartSlots().get(i).radius;
+	            	float scal = ps.get(i).radius;
 	            	GL11.glScalef(scal, scal, scal);
 					DebugModels.HOTINSTALLCUBE.render(1f);
 	            	GL11.glPopMatrix();
-					func.getPartSlots().get(i).pos.translateR();
+					ps.get(i).pos.translateR();
 				}
 			}
 			postMeshCalls();

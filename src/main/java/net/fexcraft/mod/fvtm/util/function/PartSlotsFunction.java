@@ -27,7 +27,7 @@ public class PartSlotsFunction extends StaticFunction {
 		return "fvtm:part_slots";
 	}
 	
-	public PartSlots getPartSlots(){
+	public PartSlots getPartSlotss(){
 		return partslots;
 	}
 

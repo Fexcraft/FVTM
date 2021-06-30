@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.AttributeBB;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.item.PartItem;
@@ -27,7 +28,6 @@ import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -58,14 +58,12 @@ public class ToggableHandler {
         		DPIHData idata = part.getType().getInstallationHandlerData();
         		if(idata.hotswap){
         			ArrayList<Collidable> colls = new ArrayList<>();
-        			for(Entry<String, PartData> data : entity.getVehicleData().getParts().entrySet()){
-        				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
-        				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
-        				for(int i = 0; i < func.getPartSlots().size(); i++){
-        					String type = func.getPartSlots().get(i).type;
+        			for(Entry<String, PartSlots> data : entity.getVehicleData().getPartSlotProviders().entrySet()){
+        				for(int i = 0; i < data.getValue().size(); i++){
+        					String type = data.getValue().get(i).type;
         					for(String str : part.getType().getCategories()){
         						if(str.equals(type)){
-        							colls.add(new Collidable(idata, data.getKey(), func, i));
+        							colls.add(new Collidable(idata, data.getKey(), data.getValue(), i));
         						}
         					}
         				}
@@ -273,7 +271,7 @@ public class ToggableHandler {
 	public static class Collidable {
 		
 		protected Attribute<?> attr;
-		private PartSlotsFunction func;
+		private PartSlots slots;
 		private DPIHData data;
 		private String source;
 		private int index;
@@ -282,10 +280,10 @@ public class ToggableHandler {
 			this.attr = attr;
 		}
 
-		public Collidable(DPIHData data, String source, PartSlotsFunction func, int index){
+		public Collidable(DPIHData data, String source, PartSlots slots, int index){
 			this.data = data;
 			this.source = source;
-			this.func = func;
+			this.slots = slots;
 			this.index = index;
 		}
 
@@ -306,10 +304,10 @@ public class ToggableHandler {
 			}
 			else{
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.swivel_point);
-				Pos pos = func.getPartSlots().get(index).pos;
+				Pos pos = slots.get(index).pos;
 				temp = point.getRelativeVector(pos.x16, -pos.y16, -pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());
-				float te = func.getPartSlots().get(index).radius / 2;
+				float te = slots.get(index).radius / 2;
 				aabbs.put(id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));
 			}
 			//if(Command.TOGGABLE) vehicle.getEntity().world.spawnParticle(EnumParticleTypes.FLAME, temp.x, temp.y, temp.z, 0, 0, 0);

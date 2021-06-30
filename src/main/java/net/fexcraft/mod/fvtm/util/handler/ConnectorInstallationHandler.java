@@ -16,8 +16,8 @@ import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartInstallationHandler;
+import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.Vec3d;
 
@@ -157,13 +157,11 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 		ConnectorData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && idata.onslot){
 			ArrayList<String> found = new ArrayList<>();
-			for(Entry<String, PartData> data : vehicle.getParts().entrySet()){
-				if(!data.getValue().hasFunction("fvtm:part_slots")) continue;
-				PartSlotsFunction func = data.getValue().getFunction("fvtm:part_slots");
-				for(int i = 0; i < func.getPartSlots().size(); i++){
-					String type = func.getPartSlots().get(i).type;
+			for(Entry<String, PartSlots> entry : vehicle.getPartSlotProviders().entrySet()){
+				for(int i = 0; i < entry.getValue().size(); i++){
+					String type = entry.getValue().get(i).type;
 					if(type.equals("front_connector") || type.equals("rear_connector")){
-						found.add(data.getKey() + ":" + (type.equals("front_connector") ? "front_connector" : "rear_connector"));
+						found.add(entry.getKey() + ":" + (type.equals("front_connector") ? "front_connector" : "rear_connector"));
 					}
 				}
 			}

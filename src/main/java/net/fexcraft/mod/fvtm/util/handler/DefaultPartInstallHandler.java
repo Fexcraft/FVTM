@@ -78,7 +78,7 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
-		data.getParts().put(cat.startsWith("s:") ? cat.split(":")[2] : cat, part);
+		data.getParts().put(cat.startsWith("s:") ? gscn(cat.split(":")) : cat, part);
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		setPosAndSwivelPoint(idata, null, cat, part, data);
 		/*data.getAttributes().values().forEach(attr ->{
@@ -87,6 +87,13 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			});
 		});*/
 		Print.chatnn(sender, "Part installed into selected category."); return true;
+	}
+
+	private String gscn(String[] split){
+		if(split[2].contains("*")){
+			return split[2].replace("*", split[1]);
+		}
+		return split[2];
 	}
 
 	public static void setPosAndSwivelPoint(DPIHData idata, TreeMap<String, Pos> compatible, String cat, PartData part, VehicleData data){

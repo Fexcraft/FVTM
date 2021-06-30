@@ -1,0 +1,18 @@
+{
+    "RegistryName": "gep:licenseplace_12x3_generic",
+    "Addon": "fvtm:fvp",
+    "Name": "Generic License Plate (12x3)",
+    "Model": "gep:models/part/lp_12x3_generic",
+    "Category": "license_plate_12x3",
+    "Textures": [
+    	"Blank;gep:textures/parts/lp_12x3_g_blank.png",
+    	"Framed;gep:textures/parts/lp_12x3_g_framed.png",
+    	"Framed FX;gep:textures/parts/lp_12x3_g_framed_fx.png"
+    ],
+    "Installation":{
+    	"Handler": "default",
+        "Removable": true,
+        "SlotBased": true,
+        "HotSwap": true
+    }
+}

@@ -19,7 +19,7 @@
 	    "id": "fvtm:part_slots",
 		"slots":[
 			[ 0, 0, 0, "license_plate_12x3", "*_lp"]
-		]
+		],
+		"copy_rot": true
     }
-}
 }

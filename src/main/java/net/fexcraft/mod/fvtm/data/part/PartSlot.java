@@ -30,6 +30,7 @@ public class PartSlot {
 	
 	public static class PartSlots extends ArrayList<PartSlot> {
 
+		public static final String VEHPARTSLOTS = "vehicle_partslots";
 		@SideOnly(Side.CLIENT)
 		public HashMap<String, Integer> count;
 		public boolean copy_rot;

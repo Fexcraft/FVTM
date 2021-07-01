@@ -305,6 +305,7 @@ public class ToggableHandler {
 			else{
 				SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.swivel_point);
 				Pos pos = slots.get(index).pos;
+				if(!source.equals(PartSlots.VEHPARTSLOTS)) pos = pos.add(vehicle.getVehicleData().getPart(source).getInstalledPos());
 				temp = point.getRelativeVector(pos.x16, -pos.y16, -pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());
 				float te = slots.get(index).radius / 2;

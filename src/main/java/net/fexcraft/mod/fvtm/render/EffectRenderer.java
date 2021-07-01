@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -9,6 +10,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
@@ -174,18 +176,21 @@ public class EffectRenderer {
 			PartData part = Minecraft.getMinecraft().player.getHeldItemMainhand().getCapability(Capabilities.VAPDATA, null).getPartData();
 			if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
 				preMeshCalls();
-				for(PartSlots ps : vehicle.getVehicleData().getPartSlotProviders().values()){
-					for(int i = 0; i < ps.size(); i++){
-						String type = ps.get(i).type;
+				for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
+					Pos pos = ps.getKey().equals(PartSlots.VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+					for(int i = 0; i < ps.getValue().size(); i++){
+						String type = ps.getValue().get(i).type;
 						for(String str : part.getType().getCategories()){
 							if(str.equals(type)){
-								ps.get(i).pos.translate();
+								pos.translate();
+								ps.getValue().get(i).pos.translate();
 				            	GL11.glPushMatrix();
-				            	float scal = ps.get(i).radius;
+				            	float scal = ps.getValue().get(i).radius;
 				            	GL11.glScalef(scal, scal, scal);
 								DebugModels.HOTINSTALLCUBE.render(1f);
 				            	GL11.glPopMatrix();
-				            	ps.get(i).pos.translateR();
+				            	ps.getValue().get(i).pos.translateR();
+				            	pos.translateR();
 							}
 						}
 					}
@@ -195,15 +200,18 @@ public class EffectRenderer {
 		}
 		else{
 			preMeshCalls();
-			for(PartSlots ps : vehicle.getVehicleData().getPartSlotProviders().values()){
-				for(int i = 0; i < ps.size(); i++){
-					ps.get(i).pos.translate();
+			for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
+				Pos pos = ps.getKey().equals(PartSlots.VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+				for(int i = 0; i < ps.getValue().size(); i++){
+					pos.translate();
+					ps.getValue().get(i).pos.translate();
 	            	GL11.glPushMatrix();
-	            	float scal = ps.get(i).radius;
+	            	float scal = ps.getValue().get(i).radius;
 	            	GL11.glScalef(scal, scal, scal);
 					DebugModels.HOTINSTALLCUBE.render(1f);
 	            	GL11.glPopMatrix();
-					ps.get(i).pos.translateR();
+					ps.getValue().get(i).pos.translateR();
+					pos.translateR();
 				}
 			}
 			postMeshCalls();

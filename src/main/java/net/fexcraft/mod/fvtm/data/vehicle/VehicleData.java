@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
+import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +108,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		rotpoints.values().forEach(point -> point.linkToParent(this));
 		sounds.putAll(type.getSounds());
-		psproviders.put("vehicle_partslots", type.getPartSlots());
+		psproviders.put(VEHPARTSLOTS, type.getPartSlots());
 	}
 
 	@Override
@@ -379,7 +381,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		//
 		psproviders.clear();
-		if(!type.getPartSlots().isEmpty()) psproviders.put("vehicle_partslots", type.getPartSlots());
+		if(!type.getPartSlots().isEmpty()) psproviders.put(VEHPARTSLOTS, type.getPartSlots());
 		for(Entry<String, PartData> data : this.getParts().entrySet()){
 			if(data.getValue().hasFunction("fvtm:part_slots")){
 				PartSlots ps = data.getValue().getFunction(PartSlotsFunction.class, "fvtm:part_slots").getPartSlotss();

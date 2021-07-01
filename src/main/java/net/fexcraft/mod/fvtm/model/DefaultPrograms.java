@@ -1777,6 +1777,40 @@ public class DefaultPrograms {
 			text = attr.string_value();
 		}
 		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonObject obj = elm.getAsJsonObject();
+			float px = JsonUtil.getIfExists(obj, "x", 0).floatValue();
+			float py = JsonUtil.getIfExists(obj, "y", 0).floatValue();
+			float pz = JsonUtil.getIfExists(obj, "z", 0).floatValue();
+			float rx = JsonUtil.getIfExists(obj, "rx", 0).floatValue();
+			float ry = JsonUtil.getIfExists(obj, "ry", 0).floatValue();
+			float rz = JsonUtil.getIfExists(obj, "rz", 0).floatValue();
+			float scale = JsonUtil.getIfExists(obj, "scale", 0).floatValue();
+			boolean cen = JsonUtil.getIfExists(obj, "centered", true);
+			String attr = JsonUtil.getIfExists(obj, "attr", "");
+			int color = new RGB(JsonUtil.getIfExists(obj, "color", RGB.BLACK.packed).intValue()).packed;
+			boolean glow = JsonUtil.getIfExists(obj, "glow", true);
+			return new AttributeTextRenderer(attr, px, py, pz, rx, ry, rz, scale, cen).setColor(color).setGlow(glow);
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			float px = args.length > 0 ? Float.parseFloat(args[0]) : 0;
+			float py = args.length > 1 ? Float.parseFloat(args[1]) : 0;
+			float pz = args.length > 2 ? Float.parseFloat(args[2]) : 0;
+			float rx = args.length > 3 ? Float.parseFloat(args[3]) : 0;
+			float ry = args.length > 4 ? Float.parseFloat(args[4]) : 0;
+			float rz = args.length > 5 ? Float.parseFloat(args[5]) : 0;
+			float scale = args.length > 6 ? Float.parseFloat(args[6]) : 4;
+			boolean cen = args.length > 7 ? Boolean.getBoolean(args[7]) : true;
+			String attr = args.length > 8 && !args[8].equals("null") ? args[8] : "";
+			int color = args.length > 9 ? new RGB(args[9]).packed : RGB.BLACK.packed;
+			boolean glow = args.length > 10 ? Boolean.getBoolean(args[10]) : false;
+			return new AttributeTextRenderer(attr, px, py, pz, rx, ry, rz, scale, cen).setColor(color).setGlow(glow);
+		}
+		
 	}
 	
 }

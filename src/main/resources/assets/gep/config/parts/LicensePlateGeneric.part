@@ -3,7 +3,7 @@
     "Addon": "fvtm:fvp",
     "Name": "Generic License Plate (12x3)",
     "Model": "gep:models/part/lp_12x3_generic",
-    "Category": "license_plate_12x3",
+    "Category": [ "license_plate_12x3", "license_plate" ],
     "Textures": [
     	"Blank;gep:textures/parts/lp_12x3_g_blank.png",
     	"Framed;gep:textures/parts/lp_12x3_g_framed.png",

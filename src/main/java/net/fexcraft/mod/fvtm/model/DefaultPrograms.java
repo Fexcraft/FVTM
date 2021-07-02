@@ -1658,12 +1658,12 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null || text.length() == 0) return;
+			//
 		}
 
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null || text.length() == 0) return;
+			if(text.length() == 0) return;
 			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 	        GlStateManager.pushMatrix();
 			if(glow || (attrid != null && attr(data))) super.preRender(list, ent, data, color, part, cache);
@@ -1692,12 +1692,12 @@ public class DefaultPrograms {
 
 		@Override
 		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
-			//if(glow) super.preRender(list, ent, data, cache);
+			//
 		}
 		
 		@Override
 		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
-			if(ent == null || text.length() == 0) return;
+			if(text.length() == 0) return;
 			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 	        GlStateManager.pushMatrix();
 			if(glow) super.preRender(list, ent, data, cache);
@@ -1772,7 +1772,6 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			if(ent == null) return;
 			if((attr = data.getAttribute(attribute)) == null) return;
 			text = attr.string_value();
 		}

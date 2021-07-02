@@ -1,6 +1,6 @@
 {
-    "RegistryName": "gep:licenseplace_holder_12x3",
-    "Addon": "fvtm:fvp",
+    "RegistryName": "gep:license_plate_holder_12x3",
+    "Addon": "fvtm:gep",
     "Name": "License Plate Holder (12x3)",
     "Model": "gep:models/part/lph_12x3",
     "Category": [ "license_plate_12x3", "license_plate" ],

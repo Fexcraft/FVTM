@@ -31,7 +31,11 @@ item.gep:turn_left.name=Turn Left
 item.gep:turn_right.name=Turn Right
 item.gep:rubber.name=Rubber
 item.gep:steel_ingot.name=Steel Ingot
-item.gep:steel_place.name=Steel Plate
+item.gep:steel_plate.name=Steel Plate
+item.gep:automatic_transmission.name=Automatic Transmission
+item.gep:transmission.name=Transmission
+item.gep:license_plate_12x3_generic.name=12x3 License Plate
+item.gep:license_plate_holder_12x3.name=12x3 License Plate Holder
 
 # Blocks
 tile.gep:pizza_oven.name=FRSM Pizza Oven
@@ -52,12 +56,3 @@ tile.gep:switch_simple_double.name=Switch (Double/X)
 gep.recipes.machines=GEP Machines/Blocks
 gep.recipes.materials=GEP Materials
 gep.recipes.rails=30px Rails
-item.generic:rubber.name=
-item.gep:steel_plate.name=
-item.gep:crusher.name=
-item.gep:crusher_body.name=
-item.gep:smeltery.name=
-item.gep:smeltery_body.name=
-item.gep:smeltery_tank.name=
-item.gep:automatic_transmission.name=
-item.gep:transmission.name=

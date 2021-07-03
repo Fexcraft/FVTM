@@ -54,37 +54,42 @@ public class SwivelPoint {
 			JsonElement movs = obj.get("movers");
 			if(movs.isJsonObject()){
 				movs.getAsJsonObject().entrySet().forEach(entry -> {
-					if(entry.getValue().isJsonPrimitive()){
-						if(entry.getKey().equals("class")){
-				            try{
-				            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(entry.getValue().getAsString().replace(".class", ""));
-				            	movers.add(clazz.newInstance());
-				            }
-				            catch(Exception e){
-				            	e.printStackTrace();
-				            }
-						}
-						else movers.add(new SPM_DI(entry.getKey(), entry.getValue().getAsString()));
-					}
+					parseMover(entry.getKey(), entry.getValue());
 				});
 			}
 			else if(movs.isJsonArray()){
 				movs.getAsJsonArray().forEach(elm -> {
-					if(elm.isJsonObject()){
-						JsonObject json = elm.getAsJsonObject();
-						if(json.has("class")){
-				            try{
-				            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
-				            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(json));
-				            }
-				            catch(Exception e){
-				            	e.printStackTrace();
-				            }
-						}
-						else movers.add(new SPM_DI(json.getAsJsonObject()));
-					}
+					parseMover(null, elm);
 				});
 			}
+		}
+	}
+
+	private void parseMover(String key, JsonElement elm){
+		if(elm.isJsonPrimitive()){
+			if(elm.getAsString().endsWith(".class")){
+	            try{
+	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(elm.getAsString().replace(".class", ""));
+	            	movers.add(clazz.newInstance());
+	            }
+	            catch(Exception e){
+	            	e.printStackTrace();
+	            }
+			}
+			else movers.add(new SPM_DI(key == null ? "arrinit" : key, elm.getAsString()));
+		}
+		if(elm.isJsonObject()){
+			JsonObject json = elm.getAsJsonObject();
+			if(json.has("class")){
+	            try{
+	            	Class<? extends SwivelPointMover> clazz = (Class<? extends SwivelPointMover>)Class.forName(json.get("class").getAsString().replace(".class", ""));
+	            	movers.add(clazz.getConstructor(JsonObject.class).newInstance(json));
+	            }
+	            catch(Exception e){
+	            	e.printStackTrace();
+	            }
+			}
+			else movers.add(new SPM_DI(json.getAsJsonObject()));
 		}
 	}
 
@@ -137,7 +142,7 @@ public class SwivelPoint {
 		SwivelPoint point = new SwivelPoint(com.getString("id"), com.getString("parent"));
 		point.origin = com.hasKey("origin") ? com.getString("origin") : null;
 		point.position = new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z"));
-		point.prevpos = new Vec3d(position.x, position.y, position.z);
+		point.prevpos = new Vec3d(point.position.x, point.position.y, point.position.z);
 		point.axe = Axis3D.read(null, com);
 		point.prevaxe = point.axe.clone();
 		if(origin != null){

@@ -58,8 +58,14 @@ public class SPM_DI implements SwivelPointMover {
 		}
 	}
 
-	public SPM_DI(String attr, String var, float speed){
-		this(attr, var); this.speed = speed;
+	public SPM_DI(String attr, String var, float speed, boolean bool, float min, float max, float def, boolean loop){
+		this(attr, var);
+		this.speed = speed;
+		this.bool = bool;
+		this.min = min;
+		this.max = max;
+		this.def = def;
+		this.loop = loop;
 	}
 
 	@Override
@@ -160,7 +166,7 @@ public class SPM_DI implements SwivelPointMover {
 
 	@Override
 	public SwivelPointMover clone(){
-		return new SPM_DI(attribute, varString(), speed);
+		return new SPM_DI(attribute, varString(), speed, bool, min, max, def, loop);
 	}
 
 	private String varString(){

@@ -279,7 +279,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			for(NBTBase base : points){
 				NBTTagCompound com = (NBTTagCompound)base;
 				if(rotpoints.containsKey(com.getString("id"))){
-					rotpoints.get(com.getString("id")).read(this, com);
+					rotpoints.get(com.getString("id")).read(null, this, com);
 				}
 				else{
 					SwivelPoint point = new SwivelPoint(this, com);

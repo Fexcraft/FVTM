@@ -103,7 +103,7 @@ public class SwivelPoint {
 	public SwivelPoint(VehicleData data, NBTTagCompound com){
 		this.id = com.getString("id");
 		this.parid = com.hasKey("parent") ? com.getString("parent") : null;
-		this.read(data, com);
+		this.read(this, data, com);
 	}
 
 	public Axis3D getAxes(){
@@ -138,8 +138,8 @@ public class SwivelPoint {
 		return compound;
 	}
 
-	public SwivelPoint read(VehicleData data, NBTTagCompound com){
-		SwivelPoint point = new SwivelPoint(com.getString("id"), com.getString("parent"));
+	public SwivelPoint read(SwivelPoint point, VehicleData data, NBTTagCompound com){
+		if(point == null) point = new SwivelPoint(com.getString("id"), com.getString("parent"));
 		point.origin = com.hasKey("origin") ? com.getString("origin") : null;
 		point.position = new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z"));
 		point.prevpos = new Vec3d(point.position.x, point.position.y, point.position.z);

@@ -664,7 +664,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             doorToggleTimer--;
         }
         //
-        if(!world.isRemote){ wheelsYaw *= 0.95F;  }
+        if(!world.isRemote){ wheelsYaw *= 0.95F; }
         if(wheelsYaw > 30){ wheelsYaw = 30; } if(wheelsYaw < -30){ wheelsYaw = -30; }
         if(world.isRemote){
             if(serverPositionTransitionTicker > 0){

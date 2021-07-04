@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -15,6 +16,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.render.EffectRenderer;
 import net.fexcraft.mod.fvtm.util.handler.WheelInstallationHandler.WheelData;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
@@ -139,9 +141,14 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 		Vec3d temp1 = point.getPrevRelativeVector(pos, true);
 		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslated(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
+		GL11.glTranslated(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
+		Vec3f rot = EffectRenderer.getRotations(point, ticks);
+		GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(rot.z, 1.0F, 0.0F, 0.0F);
+		data.getInstalledRot().rotate();
 	}
 
 	public static void translateAndRotatePartOnSwivelPointFast(VehicleData vehicle, PartData data){
@@ -149,9 +156,13 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 		Vec3d pos = point.getRelativeVector(data.getInstalledPos().to16Double(), true);
 		GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslated(pos.x, pos.y, pos.z);
+		GL11.glTranslated(pos.x, pos.y, pos.z);
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(point.getAxes().getYaw(), 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(point.getAxes().getPitch(), 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(point.getAxes().getRoll(), 1.0F, 0.0F, 0.0F);
+		data.getInstalledRot().rotate();
 	}
 	
 }

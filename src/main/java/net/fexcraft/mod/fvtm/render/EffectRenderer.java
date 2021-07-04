@@ -355,6 +355,19 @@ public class EffectRenderer {
         return new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks);
 	}
 	
+	public static Vec3f getRotations(SwivelPoint point, float ticks){
+        float yaw = (point.getAxes().getYaw() - point.getPrevAxes().getYaw());
+        while(yaw > 180f) yaw -= 360f;
+        while(yaw <= -180f) yaw += 360f;
+        float pitch = (point.getAxes().getPitch() - point.getPrevAxes().getPitch());
+        while(pitch > 180f) pitch -= 360f;
+        while(pitch <= -180f) pitch += 360f;
+        float roll = (point.getAxes().getRoll() - point.getPrevAxes().getRoll());
+        while(roll > 180f) roll -= 360f;
+        while(roll <= -180f) roll += 360f;
+        return new Vec3f(point.getPrevAxes().getYaw() - yaw * ticks, point.getPrevAxes().getPitch() + pitch * ticks, point.getPrevAxes().getRoll() + roll * ticks);
+	}
+	
 	//
 
 	@SubscribeEvent

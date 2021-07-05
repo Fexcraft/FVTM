@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -169,6 +171,8 @@ public class EffectRenderer {
     }
 
 	public static void renderHotInstallInfo(GenericVehicle vehicle){
+		Vec3d temp = null;
+		SwivelPoint point;
 		if(!Command.HOTSWAP){
 			if(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof PartItem == false) return;
 			if(vehicle.getVehicleData().getAttribute("collision_range").float_value() + 1 < vehicle.getDistance(Minecraft.getMinecraft().player)) return;
@@ -177,20 +181,36 @@ public class EffectRenderer {
 			if(part.getType().getInstallationHandlerData() instanceof DPIHData && ((DPIHData)part.getType().getInstallationHandlerData()).hotswap){
 				preMeshCalls();
 				for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
-					Pos pos = ps.getKey().equals(PartSlots.VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+					Pos pos = ps.getKey().equals(VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+					point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
 					for(int i = 0; i < ps.getValue().size(); i++){
 						String type = ps.getValue().get(i).type;
 						for(String str : part.getType().getCategories()){
 							if(str.equals(type)){
-								pos.translate();
-								ps.getValue().get(i).pos.translate();
+								Pos pes = pos.add(ps.getValue().get(i).pos);
+								if(point.isVehicle()){
+									temp = pes.to16Double();
+					            	GL11.glTranslated(temp.x, temp.y, temp.z);
+								}
+								else{
+									GL11.glPushMatrix();
+									Vec3d vec = point.getRelativeVector(pes.to16Double(), true);
+									GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
+									GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
+									GL11.glTranslated(vec.x, vec.y, vec.z);
+									GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
+									GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
+									GL11.glRotatef(point.getAxes().getYaw(), 0.0F, 1.0F, 0.0F);
+									GL11.glRotatef(point.getAxes().getPitch(), 0.0F, 0.0F, 1.0F);
+									GL11.glRotatef(point.getAxes().getRoll(), 1.0F, 0.0F, 0.0F);
+								}
 				            	GL11.glPushMatrix();
 				            	float scal = ps.getValue().get(i).radius;
 				            	GL11.glScalef(scal, scal, scal);
 								DebugModels.HOTINSTALLCUBE.render(1f);
 				            	GL11.glPopMatrix();
-				            	ps.getValue().get(i).pos.translateR();
-				            	pos.translateR();
+				            	if(!point.isVehicle()) GL11.glPopMatrix();
+				            	else GL11.glTranslated(-temp.x, -temp.y, -temp.z);
 							}
 						}
 					}
@@ -201,17 +221,33 @@ public class EffectRenderer {
 		else{
 			preMeshCalls();
 			for(Entry<String, PartSlots> ps : vehicle.getVehicleData().getPartSlotProviders().entrySet()){
-				Pos pos = ps.getKey().equals(PartSlots.VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+				Pos pos = ps.getKey().equals(VEHPARTSLOTS) ? Pos.NULL : vehicle.getVehicleData().getPart(ps.getKey()).getInstalledPos();
+				point = vehicle.getVehicleData().getRotationPointOfPart(ps.getKey());
 				for(int i = 0; i < ps.getValue().size(); i++){
-					pos.translate();
-					ps.getValue().get(i).pos.translate();
+					Pos pes = pos.add(ps.getValue().get(i).pos);
+					if(point.isVehicle()){
+						temp = pes.to16Double();
+		            	GL11.glTranslated(temp.x, temp.y, temp.z);
+					}
+					else{
+						GL11.glPushMatrix();
+						Vec3d vec = point.getRelativeVector(pes.to16Double(), true);
+						GL11.glRotated(-180f, 0.0F, 1.0F, 0.0F);
+						GL11.glRotated(-180f, 0.0F, 0.0F, 1.0F);
+						GL11.glTranslated(vec.x, vec.y, vec.z);
+						GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
+						GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
+						GL11.glRotatef(point.getAxes().getYaw(), 0.0F, 1.0F, 0.0F);
+						GL11.glRotatef(point.getAxes().getPitch(), 0.0F, 0.0F, 1.0F);
+						GL11.glRotatef(point.getAxes().getRoll(), 1.0F, 0.0F, 0.0F);
+					}
 	            	GL11.glPushMatrix();
 	            	float scal = ps.getValue().get(i).radius;
 	            	GL11.glScalef(scal, scal, scal);
 					DebugModels.HOTINSTALLCUBE.render(1f);
 	            	GL11.glPopMatrix();
-					ps.getValue().get(i).pos.translateR();
-					pos.translateR();
+	            	if(!point.isVehicle()) GL11.glPopMatrix();
+	            	else GL11.glTranslated(-temp.x, -temp.y, -temp.z);
 				}
 			}
 			postMeshCalls();

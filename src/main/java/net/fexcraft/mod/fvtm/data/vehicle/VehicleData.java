@@ -808,6 +808,12 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		if(point == null) return rootpoint;
 		return point;
 	}
+
+	public SwivelPoint getRotationPointOfPart(String cat){
+		if(cat == null || !parts.containsKey(cat)) return rootpoint;
+		cat = parts.get(cat).getSwivelPointInstalledOn();
+		return getRotationPoint(cat);
+	}
 	
 	public String getName(){
 		return displayname == null ? type.getName() : displayname;

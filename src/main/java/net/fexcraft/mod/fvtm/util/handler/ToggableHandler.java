@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.util.handler;
 
-import static net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots.VEHPARTSLOTS;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -65,7 +63,7 @@ public class ToggableHandler {
         					String type = data.getValue().get(i).type;
         					for(String str : part.getType().getCategories()){
         						if(str.equals(type)){
-        							SwivelPoint point = entity.getVehicleData().getRotationPoint(data.getKey().equals(VEHPARTSLOTS) ? "vehicle" : entity.getVehicleData().getPart(data.getKey()).getSwivelPointInstalledOn());
+        							SwivelPoint point = entity.getVehicleData().getRotationPointOfPart(data.getKey());
         							colls.add(new Collidable(point, data.getKey(), data.getValue(), i));
         						}
         					}
@@ -309,7 +307,7 @@ public class ToggableHandler {
 			else{
 				Pos pos = slots.get(index).pos;
 				if(!source.equals(PartSlots.VEHPARTSLOTS)) pos = pos.add(vehicle.getVehicleData().getPart(source).getInstalledPos());
-				temp = point.getRelativeVector(pos.x16, -pos.y16, -pos.z16);
+				temp = point.getRelativeVector(pos.x16, point.isVehicle() ? -pos.y16 : pos.y16, -pos.z16);
 				temp = temp.add(vehicle.getEntity().getPositionVector());
 				float te = slots.get(index).radius / 2;
 				aabbs.put(id(), new AxisAlignedBB(temp.x - te, temp.y - te, temp.z - te, temp.x + te, temp.y + te, temp.z + te));

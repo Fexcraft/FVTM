@@ -427,6 +427,14 @@ public class EffectRenderer {
     
     @SubscribeEvent
     public void onRender(RenderPlayerEvent.Post event) throws Exception {
+    	/*GL11.glTranslatef(0, 25 / 16f, 0);
+    	ModelBase.bindTexture(ConstructorGui.STONE);
+    	GL11.glRotatef(180, 0, 0, 1);
+    	GL11.glRotatef(event.getEntityPlayer().rotationYawHead - 90, 0, 1, 0);
+    	DebugModels.group0.renderPlain();
+    	GL11.glRotatef(-event.getEntityPlayer().rotationYawHead + 90, 0, 1, 0);
+    	GL11.glRotatef(-180, 0, 0, 1);
+    	GL11.glTranslatef(0, -25 / 16f, 0);*/
 		GlStateManager.popMatrix();
     }
 

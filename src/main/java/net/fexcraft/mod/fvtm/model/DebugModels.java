@@ -25,5 +25,27 @@ public class DebugModels {
     public static final ModelRendererTurbo SEAT_CUBE_SITTING = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, 0, -0.5f, 1, 1, 1).setLines(new RGB(0xeb8500));
     public static final ModelRendererTurbo SEAT_CUBE_STANDING = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, 0, -0.5f, 1, 1, 1).setLines(new RGB(0xcbcf00));
     public static final ModelRendererTurbo SEAT_CUBE_OCCUPIED = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, 0, -0.5f, 1, 1, 1).setLines(new RGB(0x619900));
+    
+    public static TurboList group0;
+    static {
+		group0 = new TurboList("group0");
+		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16).newCylinderBuilder()
+			.setPosition(0, 0, 0).setRadius(6, 5).setLength(3).setSegments(8, 0).setScale(1, 1).setDirection(4)
+			.setRadialTexture(3, 1).setTopOffset(null).setTopRotation(new net.fexcraft.lib.common.math.Vec3f(0.0, 0.0, 0.0)).build()
+			.setRotationPoint(0, -5, 0).setRotationAngle(0, 0, 0)
+		);
+		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16)
+			.addShapeBox(0, 0, 0, 5, 0.5f, 10, 0, 0, 0, -0.1f, 0, 0, -0.6f, 0, 0, -0.6f, 0, 0, -0.1f, 0, 0, 0, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0)
+			.setRotationPoint(2, -2.5f, -5).setRotationAngle(0, 0, 0)
+		);
+		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16).addCylinder(0, 0, 0, 6, 1, 8, 0.8f, 1, 4, null)
+			.setRotationPoint(0, -6, 0).setRotationAngle(0, 0, 0)
+		);
+		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16)
+			.addShapeBox(0, 0, 0, 1, 0.5f, 9, 0, 0, 0, -0.1f, -0.1f, 0, -1.5f, -0.1f, 0, -1.5f, 0, 0, -0.1f, 0, 0, 0, 0, 0, -1.4f, 0, 0, -1.4f, 0, 0, 0)
+			.setRotationPoint(7, -2.5f, -4.5f).setRotationAngle(0, 0, 0)
+		);
+		
+    }
 
 }

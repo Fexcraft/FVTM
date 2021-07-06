@@ -13,6 +13,7 @@ public class Sound {
 	public Sound(ResourceLocation resloc, float vol, float pitch){
 		this(resloc, vol, pitch, true); 
 	}
+	
 	public Sound(ResourceLocation resloc, float vol, float pitch, boolean override){
 		this.soundid = resloc; volume = vol; this.pitch = pitch; this.override = override;
 	}

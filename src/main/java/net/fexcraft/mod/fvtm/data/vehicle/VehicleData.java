@@ -793,7 +793,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	@Override
 	public void playSound(Entity at, String event){
-		Sound sound = getSound(event); if(sound == null) return;
+		Sound sound = getSound(event);
+		if(sound == null) return;
 		at.playSound(sound.event, sound.volume, sound.pitch);
 	}
 	

@@ -862,6 +862,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 else onUpdateMovement();
             }
         }
+        updateSounds();
         //
 		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
 		while(avsp.size() < 10) avsp.add(speed);
@@ -888,7 +889,28 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
     }
     
-    private ArrayList<Double> avsp = new ArrayList<>();
+    private void updateSounds(){
+    	if(!world.isRemote || engine == null) return;
+    	if(engine.isOn() && engineloop == null){
+            SoundEvent event = vehicle.getSound("engine_running").event;
+            if(event != null){
+                this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
+                net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
+                Print.debug("engine_running -> Playing! (LOOP)");
+            }
+            else{
+                Print.debug("engine_running -> Not found.");
+            }
+    	}
+    	else if(!engine.isOn()){
+    		engineloop = null;
+    	}
+    	if(engineloop != null){
+    		engineloop.patch = 1f;//TODO calc
+    	}
+	}
+
+	private ArrayList<Double> avsp = new ArrayList<>();
     public static final float GRAVITY = 9.81f, GRAVE = GRAVITY / 200F;
     public static final float TICKA = 1f / 20f, o132 = Static.sixteenth / 2;
     /*private double /*px, py, pz, oos, os;*/
@@ -1345,17 +1367,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                         else vehicle.playSound(this, state ? "engine_start" : "engine_stop");
                     }
                     throttle = 0;
-                    if(vehicle.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() && this.engineloop == null){
-                        SoundEvent event = vehicle.getSound("engine_running").event;
-                        if(event != null){
-                            this.engineloop = new LoopSound(event, SoundCategory.NEUTRAL, this);
-                            net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().playSound(this.engineloop);
-                            Print.debug("engine_running -> Playing! (LOOP)");
-                        }
-                        else{
-                            Print.debug("engine_running -> Not found.");
-                        }
-                    }
                     break;
                 }
                 case "resync":

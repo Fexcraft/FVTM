@@ -13,6 +13,8 @@ public class LoopSound extends PositionedSound implements ITickableSound {
 
     private VehicleEntity entity;
     private boolean done;
+    private Sound sound_;
+	public float patch;
 
     public LoopSound(SoundEvent soundIn, SoundCategory categoryIn, VehicleEntity entity){
         super(soundIn, categoryIn);
@@ -21,8 +23,9 @@ public class LoopSound extends PositionedSound implements ITickableSound {
         this.yPosF = (float)entity.getEntity().getPositionVector().y;
         this.zPosF = (float)entity.getEntity().getPositionVector().z;
         this.repeat = true;
-        Sound sound = entity.getVehicleData().getSound("engine_running");
-        this.volume = sound.volume; this.pitch = sound.pitch;
+        sound_ = entity.getVehicleData().getSound("engine_running");
+        this.volume = sound_.volume;
+        this.pitch = sound_.pitch;
     }
 
     @Override
@@ -34,6 +37,7 @@ public class LoopSound extends PositionedSound implements ITickableSound {
         this.xPosF = (float)entity.getEntity().getPositionVector().x;
         this.yPosF = (float)entity.getEntity().getPositionVector().y;
         this.zPosF = (float)entity.getEntity().getPositionVector().z;
+        pitch = sound_.pitch * patch;
     }
 
     @Override

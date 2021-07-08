@@ -45,7 +45,7 @@ public class DebugModels {
 			.addShapeBox(0, 0, 0, 1, 0.5f, 9, 0, 0, 0, -0.1f, -0.1f, 0, -1.5f, -0.1f, 0, -1.5f, 0, 0, -0.1f, 0, 0, 0, 0, 0, -1.4f, 0, 0, -1.4f, 0, 0, 0)
 			.setRotationPoint(7, -2.5f, -4.5f).setRotationAngle(0, 0, 0)
 		);
-		
+		group0.translate(0, 4, 0);
     }
 
 }

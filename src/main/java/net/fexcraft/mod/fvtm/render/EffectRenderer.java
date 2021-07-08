@@ -42,7 +42,6 @@ import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -427,47 +426,26 @@ public class EffectRenderer {
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(-event.getX(), -event.getY(), -event.getZ());
 		}
-		//if(!added) added = event.getRenderer().addLayer(layerplayer);
     }
     
     @SubscribeEvent
     public void onRender(RenderPlayerEvent.Post event) throws Exception {
-    	/*if(event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
-        	GL11.glTranslatef(0, 29 / 16f, 0);
+    	EntityPlayer player = event.getEntityPlayer();
+    	if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
+    		GL11.glPushMatrix();
+    		GL11.glScalef(.9375f, .9375f, .9375f);
+        	GL11.glTranslatef(0, 1.5f, 0);
         	ModelBase.bindTexture(ConstructorGui.STONE);
         	GL11.glRotatef(180, 0, 0, 1);
-        	GL11.glRotatef(event.getEntityPlayer().rotationYawHead - 90, 0, 1, 0);
+        	GL11.glRotatef(player.rotationYawHead + ((player.rotationYawHead - player.rotationYawHead) * event.getPartialRenderTick()), 0, 1, 0);
+        	GL11.glRotatef(player.rotationPitch + ((player.rotationPitch - player.prevRotationPitch) * event.getPartialRenderTick()), -1, 0, 0);
+        	GL11.glRotatef(-90, 0, 1, 0);
+        	if(!player.isSneaking()) GL11.glTranslatef(0, -.5f, 0);
         	DebugModels.group0.renderPlain();
-        	GL11.glRotatef(-event.getEntityPlayer().rotationYawHead + 90, 0, 1, 0);
-        	GL11.glRotatef(-180, 0, 0, 1);
-        	GL11.glTranslatef(0, -29 / 16f, 0);
-    	}*/
+        	GL11.glPopMatrix();
+    	}
 		GlStateManager.popMatrix();
     }
-    
-    private boolean added;
-    public LayerRenderer<EntityPlayer> layerplayer = new LayerRenderer<EntityPlayer>(){
-
-		@Override
-		public void doRenderLayer(EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale){
-			if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
-		    	ModelBase.bindTexture(ConstructorGui.STONE);
-		    	GL11.glPushMatrix();
-		    	GL11.glRotatef(netHeadYaw, 0, 1, 0);
-		    	GL11.glRotatef(headPitch, 1, 0, 0);
-		    	GL11.glRotatef(90, 0, 1, 0);
-		    	GL11.glTranslatef(0, -0.5f, 0);
-		    	DebugModels.group0.renderPlain();
-		    	GL11.glPopMatrix();
-			}
-		}
-
-		@Override
-		public boolean shouldCombineTextures(){
-			return false;
-		}
-    	
-    };
 
 	@SubscribeEvent
     public void onRender(RenderLivingEvent.Pre<EntityLivingBase> event) throws Exception {

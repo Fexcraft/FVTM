@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
@@ -437,10 +438,12 @@ public class EffectRenderer {
         	GL11.glTranslatef(0, 1.5f, 0);
         	ModelBase.bindTexture(ConstructorGui.STONE);
         	GL11.glRotatef(180, 0, 0, 1);
-        	GL11.glRotatef(player.rotationYawHead + ((player.rotationYawHead - player.rotationYawHead) * event.getPartialRenderTick()), 0, 1, 0);
-        	GL11.glRotatef(player.rotationPitch + ((player.rotationPitch - player.prevRotationPitch) * event.getPartialRenderTick()), -1, 0, 0);
+			GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleY), 0, 1, 0);
+	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleX), -1, 0, 0);
+        	//GL11.glRotatef(player.rotationYawHead + ((player.rotationYawHead - player.prevRotationYawHead) * event.getPartialRenderTick()), 0, 1, 0);
+        	//GL11.glRotatef(player.rotationPitch + ((player.rotationPitch - player.prevRotationPitch) * event.getPartialRenderTick()), -1, 0, 0);
         	GL11.glRotatef(-90, 0, 1, 0);
-        	if(!player.isSneaking()) GL11.glTranslatef(0, -.5f, 0);
+        	if(!player.isSneaking()) GL11.glTranslatef(0, -.4f, 0);
         	DebugModels.group0.renderPlain();
         	GL11.glPopMatrix();
     	}

@@ -40,6 +40,7 @@ import net.fexcraft.mod.fvtm.entity.StreetSign;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
+import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
 import net.fexcraft.mod.fvtm.item.RoadSysItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
@@ -73,6 +74,7 @@ import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -170,6 +172,10 @@ public class FVTM {
 		}*/
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
+		if(Static.dev()){
+			REGISTERER.addItem("cloth_head", new ClothItem(EntityEquipmentSlot.HEAD), 0, null);
+			REGISTERER.addItem("cloth_chest", new ClothItem(EntityEquipmentSlot.CHEST), 0, null);
+		}
 		if(event.getSide().isClient()){//moved from init into here cause of item models
 			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
 			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());

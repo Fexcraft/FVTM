@@ -435,14 +435,14 @@ public class EffectRenderer {
     	if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
     		GL11.glPushMatrix();
     		GL11.glScalef(.9375f, .9375f, .9375f);
-        	GL11.glTranslatef(0, 1.5f, 0);
+        	GL11.glTranslatef(0, player.isSneaking() ? 1.1f : 1.5f, 0);
         	ModelBase.bindTexture(ConstructorGui.STONE);
         	GL11.glRotatef(180, 0, 0, 1);
 			GL11.glRotatef(ipl(player.prevRenderYawOffset, player.renderYawOffset, event.getPartialRenderTick()), 0, 1, 0);
 	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleY), 0, 1, 0);
 	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleX), -1, 0, 0);
         	GL11.glRotatef(-90, 0, 1, 0);
-        	if(!player.isSneaking()) GL11.glTranslatef(0, -.4f, 0);
+        	//if(!player.isSneaking()) GL11.glTranslatef(0, -.4f, 0);
         	DebugModels.group0.renderPlain();
         	GL11.glPopMatrix();
     	}

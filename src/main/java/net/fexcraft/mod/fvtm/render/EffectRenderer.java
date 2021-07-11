@@ -438,10 +438,9 @@ public class EffectRenderer {
         	GL11.glTranslatef(0, 1.5f, 0);
         	ModelBase.bindTexture(ConstructorGui.STONE);
         	GL11.glRotatef(180, 0, 0, 1);
-			GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleY), 0, 1, 0);
+			GL11.glRotatef(ipl(player.prevRenderYawOffset, player.renderYawOffset, event.getPartialRenderTick()), 0, 1, 0);
+	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleY), 0, 1, 0);
 	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleX), -1, 0, 0);
-        	//GL11.glRotatef(player.rotationYawHead + ((player.rotationYawHead - player.prevRotationYawHead) * event.getPartialRenderTick()), 0, 1, 0);
-        	//GL11.glRotatef(player.rotationPitch + ((player.rotationPitch - player.prevRotationPitch) * event.getPartialRenderTick()), -1, 0, 0);
         	GL11.glRotatef(-90, 0, 1, 0);
         	if(!player.isSneaking()) GL11.glTranslatef(0, -.4f, 0);
         	DebugModels.group0.renderPlain();
@@ -449,6 +448,10 @@ public class EffectRenderer {
     	}
 		GlStateManager.popMatrix();
     }
+
+	private float ipl(float o, float p, float prt){
+		return o + (p - o) * prt;
+	}
 
 	@SubscribeEvent
     public void onRender(RenderLivingEvent.Pre<EntityLivingBase> event) throws Exception {

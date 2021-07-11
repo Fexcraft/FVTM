@@ -1,17 +1,15 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.lib.mc.api.registry.fItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
-@fItem(modid = "fvtm", name = "cloth")
+//@fItem(modid = "fvtm", name = "cloth")
 public class ClothItem extends ItemArmor {
 
-	public ClothItem(){
-		super(ArmorMaterial.IRON, 0, EntityEquipmentSlot.HEAD);
-		//
+	public ClothItem(EntityEquipmentSlot slot){
+		super(ArmorMaterial.IRON, 0, slot);
 	}
 	
 	@Override

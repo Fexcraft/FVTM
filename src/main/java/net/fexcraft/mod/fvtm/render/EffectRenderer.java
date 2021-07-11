@@ -442,7 +442,6 @@ public class EffectRenderer {
 	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleY), 0, 1, 0);
 	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleX), -1, 0, 0);
         	GL11.glRotatef(-90, 0, 1, 0);
-        	//if(!player.isSneaking()) GL11.glTranslatef(0, -.4f, 0);
         	DebugModels.group0.renderPlain();
         	GL11.glPopMatrix();
     	}

@@ -443,6 +443,20 @@ public class EffectRenderer {
 	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleX), -1, 0, 0);
         	GL11.glRotatef(-90, 0, 1, 0);
         	DebugModels.group0.renderPlain();
+        	DebugModels.center.renderPlain();
+        	GL11.glPopMatrix();
+    	}
+    	if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ClothItem){
+    		GL11.glPushMatrix();
+    		GL11.glScalef(.9375f, .9375f, .9375f);
+        	ModelBase.bindTexture(ConstructorGui.STONE);
+        	GL11.glRotatef(180, 0, 0, 1);
+			GL11.glRotatef(ipl(player.prevRenderYawOffset, player.renderYawOffset, event.getPartialRenderTick()), 0, 1, 0);
+	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedBody.rotateAngleY), 0, 1, 0);
+	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedBody.rotateAngleX), -1, 0, 0);
+        	GL11.glRotatef(-90, 0, 1, 0);
+        	DebugModels.chest.render();
+        	DebugModels.center.renderPlain();
         	GL11.glPopMatrix();
     	}
 		GlStateManager.popMatrix();

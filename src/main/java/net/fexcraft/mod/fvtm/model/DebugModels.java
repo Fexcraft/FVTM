@@ -25,8 +25,12 @@ public class DebugModels {
     public static final ModelRendererTurbo SEAT_CUBE_SITTING = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, 0, -0.5f, 1, 1, 1).setLines(new RGB(0xeb8500));
     public static final ModelRendererTurbo SEAT_CUBE_STANDING = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, 0, -0.5f, 1, 1, 1).setLines(new RGB(0xcbcf00));
     public static final ModelRendererTurbo SEAT_CUBE_OCCUPIED = new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, 0, -0.5f, 1, 1, 1).setLines(new RGB(0x619900));
-    
-    public static TurboList group0;
+
+	public static final ModelRendererTurbo centermarker0 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-0.25f, -8, -0.25f, .5f, 16, .5f).setTextured(false).setColor(RGB.GREEN.copy());
+	public static final ModelRendererTurbo centermarker1 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-8, -0.25f, -0.25f, 16, .5f, .5f).setTextured(false).setColor(RGB.RED.copy());
+	public static final ModelRendererTurbo centermarker2 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-0.25f, -0.25f, -8, .5f, .5f, 16).setTextured(false).setColor(RGB.BLUE.copy());
+    public static TurboList group0, center;
+    public static ModelRendererTurbo chest, alm, arm;
     static {
 		group0 = new TurboList("group0");
 		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16).newCylinderBuilder()
@@ -46,6 +50,15 @@ public class DebugModels {
 			.setRotationPoint(7, -2.5f, -4.5f).setRotationAngle(0, 0, 0)
 		);
 		group0.translate(0, -4, 0);
+		//
+		chest = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 12, 8.2f).setRotationPoint(-2, -24, -4).setRotationAngle(0, 0, 0);
+		alm = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f).setRotationPoint(-2, -24, 4).setRotationAngle(0, 0, 0);
+		arm = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f).setRotationPoint(-2, -24, -8).setRotationAngle(0, 0, 0);
+		//
+		center = new TurboList("center");
+		center.add(centermarker0);
+		center.add(centermarker1);
+		center.add(centermarker2);
     }
 
 }

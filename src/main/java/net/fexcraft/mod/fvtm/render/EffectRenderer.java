@@ -462,6 +462,28 @@ public class EffectRenderer {
         	RGB.glColorReset();
         	DebugModels.chest.render();
         	DebugModels.center.renderPlain();
+        	{
+            	GL11.glPushMatrix();
+            	RGB.glColorReset();
+            	GL11.glTranslatef(0, 0.125f, 0.3125f);
+    	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleY), 0, 1, 0);
+    	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleZ), -1, 0, 0);
+    	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleX), 0, 0, 1);
+            	DebugModels.alm.render();
+            	DebugModels.center.renderPlain();
+            	GL11.glPopMatrix();
+        	}
+        	{
+            	GL11.glPushMatrix();
+            	RGB.glColorReset();
+            	GL11.glTranslatef(0, 0.125f, -0.3125f);
+    	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleY), 0, 1, 0);
+    	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleZ), -1, 0, 0);
+    	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleX), 0, 0, 1);
+            	DebugModels.arm.render();
+            	DebugModels.center.renderPlain();
+            	GL11.glPopMatrix();
+        	}
         	GL11.glPopMatrix();
     	}
 		GlStateManager.popMatrix();

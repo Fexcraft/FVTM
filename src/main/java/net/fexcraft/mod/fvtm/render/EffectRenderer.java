@@ -42,6 +42,7 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -432,15 +433,16 @@ public class EffectRenderer {
     @SubscribeEvent
     public void onRender(RenderPlayerEvent.Post event) throws Exception {
     	EntityPlayer player = event.getEntityPlayer();
+    	ModelPlayer model = event.getRenderer().getMainModel();
     	if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
     		GL11.glPushMatrix();
     		GL11.glScalef(.9375f, .9375f, .9375f);
-        	GL11.glTranslatef(0, player.isSneaking() ? 1.1f : 1.5f, 0);
+        	GL11.glTranslatef(0, model.isSneak ? 1.1f : 1.5f, 0);
         	ModelBase.bindTexture(ConstructorGui.STONE);
         	GL11.glRotatef(180, 0, 0, 1);
 			GL11.glRotatef(ipl(player.prevRenderYawOffset, player.renderYawOffset, event.getPartialRenderTick()), 0, 1, 0);
-	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleY), 0, 1, 0);
-	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleX), -1, 0, 0);
+	        GL11.glRotatef(Static.toDegrees(model.bipedHead.rotateAngleY), 0, 1, 0);
+	        GL11.glRotatef(Static.toDegrees(model.bipedHead.rotateAngleX), -1, 0, 0);
         	GL11.glRotatef(-90, 0, 1, 0);
         	DebugModels.group0.renderPlain();
         	DebugModels.center.renderPlain();
@@ -449,12 +451,15 @@ public class EffectRenderer {
     	if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ClothItem){
     		GL11.glPushMatrix();
     		GL11.glScalef(.9375f, .9375f, .9375f);
+        	GL11.glTranslatef(0, 1.5f, 0);
         	ModelBase.bindTexture(ConstructorGui.STONE);
         	GL11.glRotatef(180, 0, 0, 1);
 			GL11.glRotatef(ipl(player.prevRenderYawOffset, player.renderYawOffset, event.getPartialRenderTick()), 0, 1, 0);
-	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedBody.rotateAngleY), 0, 1, 0);
-	        GL11.glRotatef(Static.toDegrees(event.getRenderer().getMainModel().bipedBody.rotateAngleX), -1, 0, 0);
+	        GL11.glRotatef(Static.toDegrees(model.bipedBody.rotateAngleY), 0, 1, 0);
+	        GL11.glRotatef(Static.toDegrees(model.bipedBody.rotateAngleX), -1, 0, 0);
         	GL11.glRotatef(-90, 0, 1, 0);
+        	if(model.isSneak) GL11.glTranslatef(0.165f, 0.3f, 0);
+        	RGB.glColorReset();
         	DebugModels.chest.render();
         	DebugModels.center.renderPlain();
         	GL11.glPopMatrix();

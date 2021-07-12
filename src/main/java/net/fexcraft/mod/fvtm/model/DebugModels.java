@@ -51,9 +51,9 @@ public class DebugModels {
 		);
 		group0.translate(0, -4, 0);
 		//
-		chest = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 12, 8.2f).setRotationPoint(-2, 0, -4).setRotationAngle(0, 0, 0);
-		alm = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f).setRotationPoint(-2, 0, 4).setRotationAngle(0, 0, 0);
-		arm = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f).setRotationPoint(-2, 0, -8).setRotationAngle(0, 0, 0);
+		chest = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 12, 8.2f).setRotationPoint(-2, 0, -4);
+		alm = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f).setRotationPoint(-2, 0 - 2, 4 - 5);
+		arm = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f).setRotationPoint(-2, 0 - 2, -8 + 5);
 		//
 		center = new TurboList("center");
 		center.add(centermarker0);

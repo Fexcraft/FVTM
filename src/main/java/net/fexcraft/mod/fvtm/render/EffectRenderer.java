@@ -434,14 +434,25 @@ public class EffectRenderer {
 			wrapper = MRWrapper.get(model, model.bipedHead, event.getRenderer());
 			wrapper.set(player, DebugModels.group0);
 		}
-
     	if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ClothItem){
 			wrapper = MRWrapper.get(model, model.bipedBody, event.getRenderer());
 			wrapper.set(player, DebugModels.chest);
 			wrapper = MRWrapper.get(model, model.bipedLeftArm, event.getRenderer());
-			wrapper.set(player, DebugModels.alm);
+			wrapper.set(player, DebugModels.arm_left);
 			wrapper = MRWrapper.get(model, model.bipedRightArm, event.getRenderer());
-			wrapper.set(player, DebugModels.arm);
+			wrapper.set(player, DebugModels.arm_right);
+    	}
+    	if(player.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem() instanceof ClothItem){
+			wrapper = MRWrapper.get(model, model.bipedLeftLeg, event.getRenderer());
+			wrapper.set(player, DebugModels.leg);
+			wrapper = MRWrapper.get(model, model.bipedRightLeg, event.getRenderer());
+			wrapper.set(player, DebugModels.reg);
+    	}
+    	if(player.getItemStackFromSlot(EntityEquipmentSlot.FEET).getItem() instanceof ClothItem){
+			wrapper = MRWrapper.get(model, model.bipedLeftLeg, event.getRenderer());
+			wrapper.set(player, DebugModels.bl);
+			wrapper = MRWrapper.get(model, model.bipedRightLeg, event.getRenderer());
+			wrapper.set(player, DebugModels.br);
     	}
     }
     

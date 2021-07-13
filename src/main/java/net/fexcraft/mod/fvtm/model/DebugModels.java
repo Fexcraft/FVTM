@@ -29,8 +29,8 @@ public class DebugModels {
 	public static final ModelRendererTurbo centermarker0 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-0.25f, -8, -0.25f, .5f, 16, .5f).setTextured(false).setColor(RGB.GREEN.copy());
 	public static final ModelRendererTurbo centermarker1 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-8, -0.25f, -0.25f, 16, .5f, .5f).setTextured(false).setColor(RGB.RED.copy());
 	public static final ModelRendererTurbo centermarker2 = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-0.25f, -0.25f, -8, .5f, .5f, 16).setTextured(false).setColor(RGB.BLUE.copy());
-    public static TurboList group0, center;
-    public static ModelRendererTurbo chest, alm, arm;
+    public static TurboList group0, center, arm_left, arm_right;
+    public static ModelRendererTurbo chest, leg, reg, br, bl;
     static {
 		group0 = new TurboList("group0");
 		group0.add(new ModelRendererTurbo(group0, -1, -1, 16, 16).newCylinderBuilder()
@@ -51,9 +51,31 @@ public class DebugModels {
 		);
 		group0.translate(0, -4, 0);
 		//
-		chest = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 12, 8.2f).setRotationPoint(-2, 0, -4);
-		alm = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f).setRotationPoint(-2, 0 - 2, 4 - 5);
-		arm = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f).setRotationPoint(-2, 0 - 2, -8 + 5);
+		arm_left = new TurboList("arm_left");
+		arm_left.add(new ModelRendererTurbo(arm_left, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f)
+			.setRotationPoint(-2, -24, 4).setRotationAngle(0, 0, 0).setName("arm_left")
+		);
+		arm_left.add(new ModelRendererTurbo(arm_left, -1, -1, 16, 16)
+			.addShapeBox(-0.1f, 0, -0.1f, 4.2f, 0.2f, 4.2f, 0, -0.5f, 0, 0, -0.5f, 0, 0, -0.5f, 0, -0.5f, -0.5f, 0, -0.5f, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-2, -24.2f, 4).setRotationAngle(0, 0, 0).setName("arm_leftcp")
+		);
+		arm_left.translate(0, 22, -5);
+		//
+		arm_right = new TurboList("arm_right");
+		arm_right.add(new ModelRendererTurbo(arm_right, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 10, 4.2f)
+			.setRotationPoint(-2, -24, -8).setRotationAngle(0, 0, 0).setName("arm_right")
+		);
+		arm_right.add(new ModelRendererTurbo(arm_right, -1, -1, 16, 16)
+			.addShapeBox(-0.1f, 0, -0.1f, 4.2f, 0.2f, 4.2f, 0, -0.5f, 0, -0.5f, -0.5f, 0, -0.5f, -0.5f, 0, 0, -0.5f, 0, 0, -0.5f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+			.setRotationPoint(-2, -24.2f, -8).setRotationAngle(0, 0, 0).setName("arm_rightcp")
+		);
+		arm_right.translate(0, 22, +5);
+		//
+		chest = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-0.1f, 0, -0.1f, 4.2f, 12, 8.2f).setRotationPoint(-2, 0, -4).setName("chest");
+		leg = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-2.1f, 0, -2, 4.2f, 10, 4.1f).setRotationPoint(0, 0, 0).setName("leg_left");
+		reg = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-2.1f, 0, -2.1f, 4.2f, 10, 4.1f).setRotationPoint(0, 0, 0).setName("leg_right");
+		bl = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-2.1f, 0, -2, 5, 2, 4.1f).setRotationPoint(0, 10, 0).setName("boot_left");
+		br = new ModelRendererTurbo(null, -1, -1, 16, 16).addBox(-2.1f, 0, -2.1f, 5, 2, 4.1f).setRotationPoint(0, 10, 0).setName("boot_right");
 		//
 		center = new TurboList("center");
 		center.add(centermarker0);

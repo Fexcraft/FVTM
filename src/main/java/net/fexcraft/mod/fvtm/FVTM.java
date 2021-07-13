@@ -172,10 +172,12 @@ public class FVTM {
 		}*/
 		//
 		MinecraftForge.EVENT_BUS.register(RESOURCES = new Resources(event));
-		if(Static.dev()){
+		//if(Static.dev()){
 			REGISTERER.addItem("cloth_head", new ClothItem(EntityEquipmentSlot.HEAD), 0, null);
 			REGISTERER.addItem("cloth_chest", new ClothItem(EntityEquipmentSlot.CHEST), 0, null);
-		}
+			REGISTERER.addItem("cloth_legs", new ClothItem(EntityEquipmentSlot.LEGS), 0, null);
+			REGISTERER.addItem("cloth_feet", new ClothItem(EntityEquipmentSlot.FEET), 0, null);
+		//}
 		if(event.getSide().isClient()){//moved from init into here cause of item models
 			Resources.PARTS.getValuesCollection().forEach(part -> part.loadModel());
 			Resources.VEHICLES.getValuesCollection().forEach(veh -> veh.loadModel());

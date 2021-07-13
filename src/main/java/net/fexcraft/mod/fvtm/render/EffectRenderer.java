@@ -468,7 +468,7 @@ public class EffectRenderer {
             	GL11.glTranslatef(0, 0.125f, 0.3125f);
     	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleY), 0, 1, 0);
     	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleZ), -1, 0, 0);
-    	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleX), 0, 0, 1);
+    	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleX - model.bipedBody.rotateAngleX), 0, 0, 1);
             	DebugModels.alm.render();
             	DebugModels.center.renderPlain();
             	GL11.glPopMatrix();
@@ -479,7 +479,7 @@ public class EffectRenderer {
             	GL11.glTranslatef(0, 0.125f, -0.3125f);
     	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleY), 0, 1, 0);
     	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleZ), -1, 0, 0);
-    	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleX), 0, 0, 1);
+    	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleX - model.bipedBody.rotateAngleX), 0, 0, 1);
             	DebugModels.arm.render();
             	DebugModels.center.renderPlain();
             	GL11.glPopMatrix();

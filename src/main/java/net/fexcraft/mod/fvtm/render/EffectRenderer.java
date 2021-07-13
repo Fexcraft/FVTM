@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.Time;
@@ -28,11 +27,11 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.DebugModels;
 import net.fexcraft.mod.fvtm.model.DefaultPrograms.LightBeam;
+import net.fexcraft.mod.fvtm.model.MRWrapper;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
@@ -428,13 +427,29 @@ public class EffectRenderer {
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(-event.getX(), -event.getY(), -event.getZ());
 		}
+    	EntityPlayer player = event.getEntityPlayer();
+    	ModelPlayer model = event.getRenderer().getMainModel();
+    	MRWrapper wrapper;
+    	if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
+			wrapper = MRWrapper.get(model, model.bipedHead, event.getRenderer());
+			wrapper.set(player, DebugModels.group0);
+		}
+
+    	if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ClothItem){
+			wrapper = MRWrapper.get(model, model.bipedBody, event.getRenderer());
+			wrapper.set(player, DebugModels.chest);
+			wrapper = MRWrapper.get(model, model.bipedLeftArm, event.getRenderer());
+			wrapper.set(player, DebugModels.alm);
+			wrapper = MRWrapper.get(model, model.bipedRightArm, event.getRenderer());
+			wrapper.set(player, DebugModels.arm);
+    	}
     }
     
     @SubscribeEvent
     public void onRender(RenderPlayerEvent.Post event) throws Exception {
     	EntityPlayer player = event.getEntityPlayer();
     	ModelPlayer model = event.getRenderer().getMainModel();
-    	if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
+    	/*if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
     		GL11.glPushMatrix();
     		GL11.glScalef(.9375f, .9375f, .9375f);
         	GL11.glTranslatef(0, model.isSneak ? 1.1f : 1.5f, 0);
@@ -447,8 +462,8 @@ public class EffectRenderer {
         	DebugModels.group0.renderPlain();
         	DebugModels.center.renderPlain();
         	GL11.glPopMatrix();
-    	}
-    	if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ClothItem){
+    	}*/
+    	/*if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ClothItem){
     		GL11.glPushMatrix();
     		GL11.glScalef(.9375f, .9375f, .9375f);
         	GL11.glTranslatef(0, 1.5f, 0);
@@ -485,7 +500,7 @@ public class EffectRenderer {
             	GL11.glPopMatrix();
         	}
         	GL11.glPopMatrix();
-    	}
+    	}*/
 		GlStateManager.popMatrix();
     }
 

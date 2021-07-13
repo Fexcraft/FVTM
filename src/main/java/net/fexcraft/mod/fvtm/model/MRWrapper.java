@@ -16,7 +16,7 @@ public class MRWrapper extends ModelRenderer {
 	
 	private ModelRenderer parent;
 	private TurboList list;
-	private ModelRendererTurbo turbo;
+	private TurboList turbo = new TurboList("test");
 	private RenderPlayer renderer;
 	private EntityPlayer player;
 
@@ -43,9 +43,16 @@ public class MRWrapper extends ModelRenderer {
     	net.fexcraft.lib.tmt.ModelBase.bindTexture(ConstructorGui.STONE);
     	GL11.glRotatef(90, 0, 1, 0);
 		if(list != null) list.renderPlain();
-		if(turbo != null) turbo.render();
+		if(!turbo.isEmpty()){
+			if(turbo.size() == 1) turbo.renderPlain();
+			else{
+				turbo.get(0).render();
+		    	net.fexcraft.lib.tmt.ModelBase.bindTexture(ConstructorGui.ANVIL);
+				turbo.get(1).render();
+			}
+		}
 		list = null;
-		turbo = null;
+		turbo.clear();;
     	DebugModels.center.renderPlain();
     	RGB.glColorReset();
     	GL11.glRotatef(90, 0, -1, 0);
@@ -59,7 +66,11 @@ public class MRWrapper extends ModelRenderer {
 
 	public void set(EntityPlayer player, ModelRendererTurbo turbo){
 		this.player = player;
-		this.turbo = turbo;
+		this.turbo.add(turbo);
+	}
+
+	public ModelRenderer getParent(){
+		return parent;
 	}
 
 }

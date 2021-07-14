@@ -3,7 +3,12 @@ package net.fexcraft.mod.fvtm.data.root;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import net.fexcraft.mod.fvtm.data.*;
+import net.fexcraft.mod.fvtm.data.Cloth;
+import net.fexcraft.mod.fvtm.data.Consumable;
+import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.Material;
+import net.fexcraft.mod.fvtm.data.RailGauge;
+import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
@@ -24,7 +29,8 @@ public enum DataType {
 	FUEL(".fuel", "fuels", Fuel.class),
 	ROADSIGN(".sign", "roadsigns", RoadSign.class),
 	BLOCK(".block", "blocks", Block.class),
-	RAILGAUGE(".gauge", "railgauges", RailGauge.class)
+	RAILGAUGE(".gauge", "railgauges", RailGauge.class),
+	CLOTH(".cloth", "clothes", Cloth.class),
 	;
 	
 	public final String suffix, cfg_folder;
@@ -34,7 +40,6 @@ public enum DataType {
 		this.suffix = suffix; this.cfg_folder = cfg_folder; this.core = type;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T extends IForgeRegistryEntry<T>> IForgeRegistry<T> getRegistry(){
 		switch(this){
 			case ADDON: return (IForgeRegistry<T>)Resources.ADDONS;
@@ -47,6 +52,7 @@ public enum DataType {
 			case CONTAINER: return (IForgeRegistry<T>)Resources.CONTAINERS;
 			case BLOCK: return (IForgeRegistry<T>)Resources.BLOCKS;
 			case RAILGAUGE: return (IForgeRegistry<T>)Resources.RAILGAUGES;
+			case CLOTH: return (IForgeRegistry<T>)Resources.CLOTHES;
 			default: return null;
 		}
 	}
@@ -73,6 +79,7 @@ public enum DataType {
 			case CONTAINER:{ Resources.CONTAINERS.register((Container)core); return; }
 			case BLOCK:{ Resources.BLOCKS.register((Block)core); return; }
 			case RAILGAUGE:{ Resources.RAILGAUGES.register((RailGauge)core); return; }
+			case CLOTH:{ Resources.CLOTHES.register((Cloth)core); return; }
 			default: return;
 		}
 	}

@@ -8,7 +8,9 @@ import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.ClothItem;
+import net.fexcraft.mod.fvtm.model.ClothModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
@@ -23,9 +25,10 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 	
 	protected short maxHealth;
 	protected ClothItem item;
-	protected String ctab;
+	protected String ctab, modelid;
 	protected EntityEquipmentSlot eq_slot;
 	protected ArmorMaterial material;
+	protected ClothModel model;
 	
 	public Cloth(){}
 
@@ -57,6 +60,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 		this.eq_slot = EntityEquipmentSlot.fromString(JsonUtil.getIfExists(obj, "EquipmentSlot", "head").toUpperCase());
 		this.material = parseMaterial(obj);
 		//
+		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new ClothItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.ClothCreated(this, obj));
@@ -111,6 +115,15 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 
 	public ArmorMaterial getArMaterial(){
 		return material;
+	}
+
+	public ClothModel getModel(){
+		return model;
+	}
+	
+	@Override
+	public void loadModel(){
+		this.model = (ClothModel)Resources.getModel(modelid, ClothModel.class);
 	}
 
 }

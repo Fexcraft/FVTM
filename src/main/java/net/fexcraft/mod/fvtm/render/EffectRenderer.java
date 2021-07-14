@@ -43,6 +43,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -427,97 +428,38 @@ public class EffectRenderer {
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(-event.getX(), -event.getY(), -event.getZ());
 		}
+		//
     	EntityPlayer player = event.getEntityPlayer();
     	ModelPlayer model = event.getRenderer().getMainModel();
     	MRWrapper wrapper;
-    	if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
-			wrapper = MRWrapper.get(model, model.bipedHead, event.getRenderer());
-			wrapper.set(player, DebugModels.group0);
-		}
-    	if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ClothItem){
-			wrapper = MRWrapper.get(model, model.bipedBody, event.getRenderer());
-			wrapper.set(player, DebugModels.chest);
-			wrapper = MRWrapper.get(model, model.bipedLeftArm, event.getRenderer());
-			wrapper.set(player, DebugModels.arm_left);
-			wrapper = MRWrapper.get(model, model.bipedRightArm, event.getRenderer());
-			wrapper.set(player, DebugModels.arm_right);
-    	}
-    	if(player.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem() instanceof ClothItem){
-			wrapper = MRWrapper.get(model, model.bipedLeftLeg, event.getRenderer());
-			wrapper.set(player, DebugModels.leg);
-			wrapper = MRWrapper.get(model, model.bipedRightLeg, event.getRenderer());
-			wrapper.set(player, DebugModels.reg);
-    	}
-    	if(player.getItemStackFromSlot(EntityEquipmentSlot.FEET).getItem() instanceof ClothItem){
-			wrapper = MRWrapper.get(model, model.bipedLeftLeg, event.getRenderer());
-			wrapper.set(player, DebugModels.bl);
-			wrapper = MRWrapper.get(model, model.bipedRightLeg, event.getRenderer());
-			wrapper.set(player, DebugModels.br);
+    	for(int idx = 2; idx < EntityEquipmentSlot.values().length; idx++){
+    		if(player.inventory.armorInventory.get(idx - 2).getItem() instanceof ClothItem){
+    			ClothItem item = (ClothItem)player.inventory.armorInventory.get(idx - 2).getItem();
+    			for(String key : item.getType().getModel().getClothGroups().keySet()){
+    				wrapper = getWrapper(model, event.getRenderer(), key);
+    				if(wrapper == null) continue;
+    				wrapper.set(player, item, item.getType().getModel().getClothGroups().get(key));
+    			}
+    		}
     	}
     }
     
-    @SubscribeEvent
+    private MRWrapper getWrapper(ModelPlayer model, RenderPlayer renderer, String key){
+		switch(key){
+			case "head": return MRWrapper.get(model, model.bipedHead, renderer);
+			case "body": return MRWrapper.get(model, model.bipedBody, renderer);
+			case "left_arm": return MRWrapper.get(model, model.bipedLeftArm, renderer);
+			case "right_arm": return MRWrapper.get(model, model.bipedRightArm, renderer);
+			case "left_leg": return MRWrapper.get(model, model.bipedLeftLeg, renderer);
+			case "right_leg": return MRWrapper.get(model, model.bipedRightLeg, renderer);
+		}
+		return null;
+	}
+
+	@SubscribeEvent
     public void onRender(RenderPlayerEvent.Post event) throws Exception {
-    	EntityPlayer player = event.getEntityPlayer();
-    	ModelPlayer model = event.getRenderer().getMainModel();
-    	/*if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ClothItem){
-    		GL11.glPushMatrix();
-    		GL11.glScalef(.9375f, .9375f, .9375f);
-        	GL11.glTranslatef(0, model.isSneak ? 1.1f : 1.5f, 0);
-        	ModelBase.bindTexture(ConstructorGui.STONE);
-        	GL11.glRotatef(180, 0, 0, 1);
-			GL11.glRotatef(ipl(player.prevRenderYawOffset, player.renderYawOffset, event.getPartialRenderTick()), 0, 1, 0);
-	        GL11.glRotatef(Static.toDegrees(model.bipedHead.rotateAngleY), 0, 1, 0);
-	        GL11.glRotatef(Static.toDegrees(model.bipedHead.rotateAngleX), -1, 0, 0);
-        	GL11.glRotatef(-90, 0, 1, 0);
-        	DebugModels.group0.renderPlain();
-        	DebugModels.center.renderPlain();
-        	GL11.glPopMatrix();
-    	}*/
-    	/*if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ClothItem){
-    		GL11.glPushMatrix();
-    		GL11.glScalef(.9375f, .9375f, .9375f);
-        	GL11.glTranslatef(0, 1.5f, 0);
-        	ModelBase.bindTexture(ConstructorGui.STONE);
-        	GL11.glRotatef(180, 0, 0, 1);
-			GL11.glRotatef(ipl(player.prevRenderYawOffset, player.renderYawOffset, event.getPartialRenderTick()), 0, 1, 0);
-	        GL11.glRotatef(Static.toDegrees(model.bipedBody.rotateAngleY), 0, 1, 0);
-	        GL11.glRotatef(Static.toDegrees(model.bipedBody.rotateAngleX), -1, 0, 0);
-        	GL11.glRotatef(-90, 0, 1, 0);
-        	if(model.isSneak) GL11.glTranslatef(0.165f, 0.3f, 0);
-        	RGB.glColorReset();
-        	DebugModels.chest.render();
-        	DebugModels.center.renderPlain();
-        	{
-            	GL11.glPushMatrix();
-            	RGB.glColorReset();
-            	GL11.glTranslatef(0, 0.125f, 0.3125f);
-    	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleY), 0, 1, 0);
-    	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleZ), -1, 0, 0);
-    	        GL11.glRotatef(Static.toDegrees(model.bipedLeftArm.rotateAngleX - model.bipedBody.rotateAngleX), 0, 0, 1);
-            	DebugModels.alm.render();
-            	DebugModels.center.renderPlain();
-            	GL11.glPopMatrix();
-        	}
-        	{
-            	GL11.glPushMatrix();
-            	RGB.glColorReset();
-            	GL11.glTranslatef(0, 0.125f, -0.3125f);
-    	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleY), 0, 1, 0);
-    	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleZ), -1, 0, 0);
-    	        GL11.glRotatef(Static.toDegrees(model.bipedRightArm.rotateAngleX - model.bipedBody.rotateAngleX), 0, 0, 1);
-            	DebugModels.arm.render();
-            	DebugModels.center.renderPlain();
-            	GL11.glPopMatrix();
-        	}
-        	GL11.glPopMatrix();
-    	}*/
 		GlStateManager.popMatrix();
     }
-
-	private float ipl(float o, float p, float prt){
-		return o + (p - o) * prt;
-	}
 
 	@SubscribeEvent
     public void onRender(RenderLivingEvent.Pre<EntityLivingBase> event) throws Exception {

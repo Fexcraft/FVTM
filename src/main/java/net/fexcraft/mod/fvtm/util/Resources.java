@@ -61,6 +61,7 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.BlockModel;
+import net.fexcraft.mod.fvtm.model.ClothModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
@@ -412,6 +413,7 @@ public class Resources {
 		if(clazz == RoadSignModel.class) return RoadSignModel.EMPTY;
 		if(clazz == BlockModel.class) return BlockModel.EMPTY;
 		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
+		if(clazz == ClothModel.class) return ClothModel.EMPTY;
 		return null;
 	}
 
@@ -607,6 +609,9 @@ public class Resources {
 		}
 		if(event.getObject() instanceof EntityPlayer){
 			event.addCapability(new ResourceLocation("fvtm:playerdata"), new PlayerDataHandler(event.getObject()));
+			if(event.getObject().world.isRemote){
+				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheHandler());
+			}
 		}
 		if(event.getObject() instanceof EntityLivingBase){
 			event.addCapability(new ResourceLocation("fvtm:passenger"), new PassengerCapHandler(event.getObject()));

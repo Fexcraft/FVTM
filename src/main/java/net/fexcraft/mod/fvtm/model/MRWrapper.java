@@ -1,10 +1,15 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.data.Capabilities;
+import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
+import net.fexcraft.mod.fvtm.item.ClothItem;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -15,8 +20,8 @@ import net.minecraft.entity.player.EntityPlayer;
 public class MRWrapper extends ModelRenderer {
 	
 	private ModelRenderer parent;
-	private TurboList list;
-	private TurboList turbo = new TurboList("test");
+	private ArrayList<ArrayList<String>> cloth_models;
+	private ArrayList<ClothItem> cloth_items;
 	private RenderPlayer renderer;
 	private EntityPlayer player;
 
@@ -40,33 +45,25 @@ public class MRWrapper extends ModelRenderer {
 	
 	@Override
 	public void render(float scale){
+		if(cloth_models.isEmpty()) return;
     	net.fexcraft.lib.tmt.ModelBase.bindTexture(ConstructorGui.STONE);
     	GL11.glRotatef(90, 0, 1, 0);
-		if(list != null) list.renderPlain();
-		if(!turbo.isEmpty()){
-			if(turbo.size() == 1) turbo.renderPlain();
-			else{
-				turbo.get(0).render();
-		    	net.fexcraft.lib.tmt.ModelBase.bindTexture(ConstructorGui.ANVIL);
-				turbo.get(1).render();
-			}
+    	RenderCache cache = player.getCapability(Capabilities.RENDERCACHE, null);
+		for(int i = 0; i < cloth_items.size(); i++){
+			cloth_items.get(i).getType().getModel().render(cloth_items.get(i), cloth_models.get(i), player, cache);
 		}
-		list = null;
-		turbo.clear();;
-    	DebugModels.center.renderPlain();
+		cloth_items.clear();
+		cloth_models.clear();
+    	if(Command.OTHER) DebugModels.center.renderPlain();
     	RGB.glColorReset();
     	GL11.glRotatef(90, 0, -1, 0);
     	renderer.bindTexture(renderer.getEntityTexture((AbstractClientPlayer)player));
 	}
 
-	public void set(EntityPlayer player, TurboList list){
+	public void set(EntityPlayer player, ClothItem item, ArrayList<String> list){
 		this.player = player;
-		this.list = list;
-	}
-
-	public void set(EntityPlayer player, ModelRendererTurbo turbo){
-		this.player = player;
-		this.turbo.add(turbo);
+		cloth_items.add(item);
+		cloth_models.add(list);
 	}
 
 	public ModelRenderer getParent(){

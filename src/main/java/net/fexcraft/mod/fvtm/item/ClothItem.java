@@ -30,4 +30,8 @@ public class ClothItem extends ItemArmor {
     	}
     }
 
+	public Cloth getType(){
+		return type;
+	}
+
 }

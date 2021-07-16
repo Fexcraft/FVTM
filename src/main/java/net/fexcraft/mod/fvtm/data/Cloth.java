@@ -59,7 +59,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Clothing");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.maxHealth = JsonUtil.getIfExists(obj, "MaxItemDamage", 0).shortValue();
-		this.eq_slot = EntityEquipmentSlot.fromString(JsonUtil.getIfExists(obj, "EquipmentSlot", "head").toUpperCase());
+		this.eq_slot = EntityEquipmentSlot.fromString(JsonUtil.getIfExists(obj, "EquipmentSlot", "head").toLowerCase());
 		this.material = parseMaterial(obj);
 		//
 		this.texture = new NamedResourceLocation(JsonUtil.getIfExists(obj, "Texture", Resources.NULL_TEXTURE.toString()));

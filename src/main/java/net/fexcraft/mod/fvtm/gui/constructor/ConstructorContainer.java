@@ -37,8 +37,11 @@ public class ConstructorContainer extends GenericContainer {
 	
 	/** To be used from server side. */
 	public final void setTitleText(String string, Integer color){
-		if(this.entity == null) return; if(this.entity.getWorld().isRemote){
-			this.gui.texttitle = string; this.gui.titletext.update(string, color); return;
+		if(this.entity == null) return;
+		if(this.entity.getWorld().isRemote){
+			this.gui.texttitle = string;
+			this.gui.titletext.update(string, color);
+			return;
 		}
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("cargo", "titletext");

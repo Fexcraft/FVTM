@@ -16,6 +16,16 @@ tile.fvtm:display_block.name=Display Block (Vehicles)
 tile.fvtm:streetpost.name=Streetpost
 tile.fvtm:asphalt.name=FVTM Asphalt
 
+# GUIs
+gui.fvtm.constructor.main.status=Const. Status
+gui.fvtm.constructor.main.info=Content Info
+gui.fvtm.constructor.main.lift=Lift Status
+gui.fvtm.constructor.main.part_cache=Part Cache
+gui.fvtm.constructor.main.part_manager=Part Manager
+gui.fvtm.constructor.main.part_installer=Part Installer
+gui.fvtm.constructor.main.texture=Texture Manager
+gui.fvtm.constructor.main.color=Spraying Tool
+gui.fvtm.constructor.main.exit=Exit
 
 # Items
 item.fvtm:streetsign.name=Streetsign

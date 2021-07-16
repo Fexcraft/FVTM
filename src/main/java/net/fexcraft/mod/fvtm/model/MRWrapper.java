@@ -19,8 +19,8 @@ import net.minecraft.entity.player.EntityPlayer;
 public class MRWrapper extends ModelRenderer {
 	
 	private ModelRenderer parent;
-	private ArrayList<ArrayList<String>> cloth_models;
-	private ArrayList<ClothItem> cloth_items;
+	private ArrayList<ArrayList<String>> cloth_models = new ArrayList<>();
+	private ArrayList<ClothItem> cloth_items = new ArrayList<>();
 	private RenderPlayer renderer;
 	private EntityPlayer player;
 

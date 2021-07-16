@@ -39,7 +39,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 			}
 		}
 		strarr[0] = "||gui.fvtm.constructor.part_install.custom"; strarr[1] = ""; strarr[2] = "gui.fvtm.constructor.part_install.custom_install";
-		strarr[3] = ""; strarr[4] = "gui.fvtm.constructor.part_install.back"; strarr[5] = ""; strarr[6] = "||gui.fvtm.constructor.part_install.default";
+		strarr[3] = ""; strarr[4] = "gui.fvtm.constructor.back"; strarr[5] = ""; strarr[6] = "||gui.fvtm.constructor.part_install.default";
 		this.buttontext = strarr;
 	}
 	

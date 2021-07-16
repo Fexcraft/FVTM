@@ -1,0 +1,11 @@
+{
+    "RegistryName": "gep:cap",
+    "Addon": "fvtm:gep",
+    "Name": "Generic Brown Cap",
+    "Description": [
+        "&oA original made with finest fabric."
+    ],
+    "EquipmentSlot": "head",
+    "Texture": "gep:textures/clothes/cap.png",
+    "Model": "gep:models/cloth/cap"
+}

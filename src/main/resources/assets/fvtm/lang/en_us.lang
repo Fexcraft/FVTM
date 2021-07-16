@@ -29,7 +29,7 @@ gui.fvtm.constructor.main.exit=Exit
 //
 gui.fvtm.constructor.request_sending=Request sending to Server.
 gui.fvtm.constructor.not_available=Not available yet!
-gui.fvtm.constructor.empty=No Vehicle|Container|Block in Constructor.
+gui.fvtm.constructor.empty=No Vehicle/Container/Block in Constructor.
 //
 
 # Items

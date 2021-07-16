@@ -51,7 +51,7 @@ public class ConstructorMain extends ConstructorGui {
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("cargo", "lift");
 				compound.setInteger("dir", -1); 
-				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+				this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 				this.container.send(Side.SERVER, compound);
 				return true;
 			}
@@ -59,7 +59,7 @@ public class ConstructorMain extends ConstructorGui {
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("cargo", "lift");
 				compound.setInteger("dir", 1); 
-				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+				this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 				this.container.send(Side.SERVER, compound);
 				return true;
 			}
@@ -67,19 +67,19 @@ public class ConstructorMain extends ConstructorGui {
 		}
 		if(button.name.equals("button1")){
 			if(buttons.get("icon_spawn").mousePressed(null, mouseX, mouseY)){
-				this.titletext.update("Not available yet! Sorry!", null); return true;
+				this.titletext.update("gui.fvtm.constructor.not_available", null); return true;
 			}
 			if(buttons.get("icon_veh").mousePressed(null, mouseX, mouseY)){
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("cargo", "drop"); compound.setString("what", "any"); 
-				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+				this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 				this.container.send(Side.SERVER, compound); return true;
 			}
 		}
 		if(button.name.equals("button4") && buttons.get("icon_part").mousePressed(null, mouseX, mouseY)){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "drop"); compound.setString("what", "part"); 
-			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+			this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound); return true;
 		}
 		int gui = Integer.parseInt(button.name.replace("button", ""));
@@ -87,7 +87,7 @@ public class ConstructorMain extends ConstructorGui {
 			if(container.getTileEntity().getVehicleData() == null
 				&& container.getTileEntity().getContainerData() == null
 				&& container.getTileEntity().getBlockData() == null){
-				titletext.update("No Vehicle|Container|Block in Constructor.", null);
+				titletext.update("gui.fvtm.constructor.empty", null);
 				return true;
 			}
 		}
@@ -95,7 +95,7 @@ public class ConstructorMain extends ConstructorGui {
 			if(container.getTileEntity().getVehicleData() == null
 				&& container.getTileEntity().getContainerData() == null
 				&& container.getTileEntity().getBlockData() == null){
-				titletext.update("No Vehicle|Container|Block in Constructor.", null);
+				titletext.update("gui.fvtm.constructor.empty", null);
 				return true;
 			}
 		}

@@ -74,9 +74,12 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 				this.texts.put("button" + i, tbuttons[i] = new BasicText(4, 21 + (i * buttonheight), xSize - 8, white, buttontext[i]));
 				this.buttons.put("button" + i, cbuttons[i] = new BasicButton("button" + i, 2, 20 + (i * buttonheight), 0, 0, getButtonWidth(buttontext[i]), 10, true));
 				cbuttons[i].rgb_hover = new RGB("#8f9924"/*"#d9df99"*/, 0.8f); cbuttons[i].rgb_none.alpha = 0.8f;
-				if(buttontext[i].equals("") || buttontext[i].startsWith("||")){ cbuttons[i].enabled = false; }
+				if(buttontext[i].equals("") || buttontext[i].startsWith("||")) cbuttons[i].enabled = false;
 				if(buttontext[i].startsWith("||")) tbuttons[i].string = buttontext[i].replace("||", "");
-				if(!buttontext[i].startsWith(";;")) tbuttons[i].translate();
+				if(!buttontext[i].startsWith(";;")){
+					tbuttons[i].translate();
+					cbuttons[i].sizex = getButtonWidth(tbuttons[i].string);
+				}
 				else tbuttons[i].string = buttontext[i].replace(";;", "");
 			}
 		}

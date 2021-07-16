@@ -38,15 +38,17 @@ public class ConstructorPartInstaller extends ConstructorGui {
 				categories[i] = str;
 			}
 		}
-		strarr[0] = "||Custom Category:"; strarr[1] = ""; strarr[2] = "Install Custom";
-		strarr[3] = ""; strarr[4] = "< Back"; strarr[5] = ""; strarr[6] = "||Default Category:";
+		strarr[0] = "||gui.fvtm.constructor.part_install.custom"; strarr[1] = ""; strarr[2] = "gui.fvtm.constructor.part_install.custom_install";
+		strarr[3] = ""; strarr[4] = "gui.fvtm.constructor.part_install.back"; strarr[5] = ""; strarr[6] = "||gui.fvtm.constructor.part_install.default";
 		this.buttontext = strarr;
 	}
 	
 	@Override
 	public void init(){
-		super.init(); this.menutitle.string = "Part Installation (from cache)";
-		this.container.setTitleText(container.getTileEntity().getPartData() == null ? "No Part in Constructor Cache." : container.getTileEntity().getPartData().getType().getName(), RGB.WHITE.packed);
+		super.init();
+		this.menutitle.string = "gui.fvtm.constructor.part_install.menu_title";
+		this.menutitle.translate();
+		this.container.setTitleText(container.getTileEntity().getPartData() == null ? "gui.fvtm.constructor.part_install.empty_title" : container.getTileEntity().getPartData().getType().getName(), RGB.WHITE.packed);
 		this.cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10);
 		this.cfields[1].setText("custom_cat"); this.fields.put("field2", cfields[1]);
 		for(int i = 7; i < buttontext.length; i++){
@@ -58,7 +60,8 @@ public class ConstructorPartInstaller extends ConstructorGui {
 	
 	private void updateIconsAndButtons(){
 		if(container.getTileEntity().getPartData() == null){
-			tbuttons[6].string = "cache empty";
+			tbuttons[6].string = "gui.fvtm.constructor.part_install.empty";
+			tbuttons[6].translate();
 			for(int i = 7; i < buttontext.length; i++){
 				buttons.get("icon" + i).visible = buttons.get("button" + i).visible = tbuttons[i].visible = false;
 			}
@@ -92,7 +95,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 			compound.setString("cargo", "part_install");
 			compound.setString("category", fields.get("field2").getText());
 			compound.setBoolean("custom_category", true);
-			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+			this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound);
 		}
 		else{
@@ -102,7 +105,7 @@ public class ConstructorPartInstaller extends ConstructorGui {
 				compound.setString("cargo", "part_install");
 				compound.setString("category", categories[in - 7]);
 				compound.setBoolean("custom_category", false);
-				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+				this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 				this.container.send(Side.SERVER, compound);
 			} else return false;
 		}

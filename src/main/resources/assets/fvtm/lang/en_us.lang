@@ -26,6 +26,11 @@ gui.fvtm.constructor.main.part_installer=Part Installer
 gui.fvtm.constructor.main.texture=Texture Manager
 gui.fvtm.constructor.main.color=Spraying Tool
 gui.fvtm.constructor.main.exit=Exit
+//
+gui.fvtm.constructor.request_sending=Request sending to Server.
+gui.fvtm.constructor.not_available=Not available yet!
+gui.fvtm.constructor.empty=No Vehicle|Container|Block in Constructor.
+//
 
 # Items
 item.fvtm:streetsign.name=Streetsign

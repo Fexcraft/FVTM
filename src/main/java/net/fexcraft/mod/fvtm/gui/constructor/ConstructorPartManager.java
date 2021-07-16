@@ -6,6 +6,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -20,15 +21,16 @@ public class ConstructorPartManager extends ConstructorGui {
 	public ConstructorPartManager(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		this.removeEmptyButtons = true;
-		this.buttontext = new String[]{"||Installed Parts:", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||Page -/-", "", "< Back"};
+		this.buttontext = new String[]{"||gui.fvtm.constructor.part_manager.installed", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||-", "||gui.fvtm.constructor.page", "", "gui.fvtm.constructor.back"};
 	}
 	
 	@Override
 	public void init(){
 		super.init();
-		this.menutitle.string = "Part Manager";
+		this.menutitle.string = "gui.fvtm.constructor.part_manager.menu_title";
+		this.menutitle.translate();
 		boolean noveh = container.getTileEntity().getVehicleData() == null;
-		this.container.setTitleText(noveh ? "No Vehicle in Constructor" : container.getTileEntity().getVehicleData().getName(), RGB.WHITE.packed);
+		this.container.setTitleText(noveh ? "gui.fvtm.constructor.part_manager.empty_title" : container.getTileEntity().getVehicleData().getName(), RGB.WHITE.packed);
 		this.buttons.put("next_page", next = new IconButton("next", 11, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_page", prev = new IconButton("prev", 11, 1, false, ICON_LEFT));
 		for(int i = 1; i < 11; i++){
@@ -47,7 +49,7 @@ public class ConstructorPartManager extends ConstructorGui {
 		}
 		else{
 			VehicleData vdata = container.getTileEntity().getVehicleData();
-			tbuttons[11].string = "Page " + (page + 1) + "/" + (vdata.getParts().size() / 10 + 1);
+			tbuttons[11].string = I18n.format("gui.fvtm.constructor.page") + " " + (page + 1) + "/" + (vdata.getParts().size() / 10 + 1);
 			for(int i = 1; i < 11; i++){
 				int j = i + (page * 10) - 1;
 				tbuttons[i].string = j >= vdata.getParts().size() ? " - - - - " : "." + (String)vdata.getParts().keySet().toArray()[j];
@@ -117,7 +119,7 @@ public class ConstructorPartManager extends ConstructorGui {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "part_remove");
 			compound.setString("category", tbuttons[Integer.parseInt(button.name.replace("icon_rem", ""))].string.replace(".", ""));
-			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+			this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound);
 		}
 		return true;

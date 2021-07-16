@@ -13,9 +13,18 @@ public class ConstructorMain extends ConstructorGui {
 	public ConstructorMain(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		this.buttontext = new String[]{
-			"Const. Status", "Content Info", "Lift Status", "",
-			"Part Cache", "Part Manager", "Part Installer",
-			"", "Texture Manager", "Spraying Tool", "", "Exit"};
+			"gui.fvtm.constructor.main.status",
+			"gui.fvtm.constructor.main.info",
+			"gui.fvtm.constructor.main.lift",
+			"",
+			"gui.fvtm.constructor.main.part_cache",
+			"gui.fvtm.constructor.main.part_manager",
+			"gui.fvtm.constructor.main.part_installer",
+			"",
+			"gui.fvtm.constructor.main.texture",
+			"gui.fvtm.constructor.main.color",
+			"",
+			"gui.fvtm.constructor.main.exit"};
 	}
 	
 	@Override

@@ -1,12 +1,14 @@
 package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.item.ClothItem;
@@ -24,7 +26,16 @@ public class ClothModel extends GenericModel<ClothItem, ArrayList<String>> {
 	
 	public ClothModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
 		super(loc, data, objgroups, exclude);
-		//TODO read group assignment/offset from obj
+		List<String[]> setas = ObjParser.getCommentValues(data, new String[]{ "SetGroupAs:" }, null, null);
+		if(setas.isEmpty()) return;
+		for(String[] args : setas){
+			String group = args[0];
+			String model = args[1];
+			float x = args.length > 2 ? Float.parseFloat(args[2]) : 0;
+			float y = args.length > 3 ? Float.parseFloat(args[3]) : 0;
+			float z = args.length > 4 ? Float.parseFloat(args[4]) : 0;
+			setGroupAs(group, model, x, y, z);
+		}
 	}
 	
 	public void setGroupAs(String group, String playermodelpart, float x, float y, float z){

@@ -31,6 +31,13 @@ gui.fvtm.constructor.request_sending=Request sending to Server.
 gui.fvtm.constructor.not_available=Not available yet!
 gui.fvtm.constructor.empty=No Vehicle/Container/Block in Constructor.
 //
+gui.fvtm.constructor.part_install.menu_title=Part Installation (from cache)
+gui.fvtm.constructor.part_install.custom=Custom Category:
+gui.fvtm.constructor.part_install.custom_install=Install Custom
+gui.fvtm.constructor.part_install.default=Default Category:
+gui.fvtm.constructor.part_install.back=< Back
+gui.fvtm.constructor.part_install.empty_title=No Part in Constructor Cache.
+gui.fvtm.constructor.part_install.empty=cache empty
 
 # Items
 item.fvtm:streetsign.name=Streetsign

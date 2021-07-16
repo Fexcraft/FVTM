@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Cloth;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -15,7 +16,9 @@ public class ClothItem extends ItemArmor {
 	public ClothItem(Cloth cloth){
 		super(cloth.getArMaterial(), 0, cloth.getEquitmentSlot());
 		this.setMaxDamage(cloth.getMaxDamage());
-		this.type = cloth;
+        (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
+        if(Static.side().isServer()) return;
+        this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
 	}
 
 	@Override

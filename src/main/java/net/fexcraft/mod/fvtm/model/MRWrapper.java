@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -46,10 +45,10 @@ public class MRWrapper extends ModelRenderer {
 	@Override
 	public void render(float scale){
 		if(cloth_models.isEmpty()) return;
-    	net.fexcraft.lib.tmt.ModelBase.bindTexture(ConstructorGui.STONE);
     	GL11.glRotatef(90, 0, 1, 0);
     	RenderCache cache = player.getCapability(Capabilities.RENDERCACHE, null);
 		for(int i = 0; i < cloth_items.size(); i++){
+			net.fexcraft.lib.tmt.ModelBase.bindTexture(cloth_items.get(i).getType().getTexture());
 			cloth_items.get(i).getType().getModel().render(cloth_items.get(i), cloth_models.get(i), player, cache);
 		}
 		cloth_items.clear();

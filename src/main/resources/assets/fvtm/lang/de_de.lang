@@ -1,0 +1,71 @@
+## FVTM Lang File
+
+##Contributors:
+#> FEX___96
+#>
+#>
+#>
+
+# Commands
+commands.fvtm.main_usage=Versuch: /fvtm help
+
+# Blocks
+tile.fvtm:constructor.name=Konstruktor Block
+tile.fvtm:constructor_lift.name=Konstruktor Mitte/Lift
+tile.fvtm:display_block.name=Display Block (Fahrzeuge)
+tile.fvtm:streetpost.name=Straßenmast
+tile.fvtm:asphalt.name=FVTM Asphalt
+
+# GUIs
+gui.fvtm.constructor.main.status=Konst. Status
+gui.fvtm.constructor.main.info=Inhalt Info
+gui.fvtm.constructor.main.lift=Lift Status
+gui.fvtm.constructor.main.part_cache=Teile Cache
+gui.fvtm.constructor.main.part_manager=Teile Manager
+gui.fvtm.constructor.main.part_installer=Teile Installateur
+gui.fvtm.constructor.main.texture=Textur Manager
+gui.fvtm.constructor.main.color=Lackierungs Tool
+gui.fvtm.constructor.main.exit=Verlassen
+
+# Items
+item.fvtm:streetsign.name=Straßenschild
+item.fvtm:standard.name=Standard FVTM Spurweite
+item.fvtm:standard.4_straight.name=FVTM-SW 4m Grade
+item.fvtm:standard.8_straight.name=FVTM-SW 8m Grade
+item.fvtm:standard.16_straight.name=FVTM-SW 16m Grade
+item.fvtm:standard.32_straight.name=FVTM-SW 32m Grade
+item.fvtm:standard.16_straight_slope_up.name=FVTM-RG 16m Grade Neigung aufwärts
+item.fvtm:standard.16_straight_slope_down.name=FVTM-RG 16m Grade Neigung abwärts
+item.fvtm:junction_tool.name=Knotenpunk-Werkzeut
+item.fvtm:simple_signal.name=Einfaches Signal (BLOCK)
+item.fvtm:road_tool.name=Wegbau-Werkzeug
+item.fvtm:train_adjuster.name=Zug-Ausgleicher/Rotierer
+
+
+# Entities
+
+
+# Other
+itemGroup.fvtm:fvtm=FVTM [Internes-Addon]
+itemGroup.fvtm:presets=FVTM Voreingestelltes
+itemGroup.fvtm:road_signs=FVTM Straßenschilder
+fvtm:standard.gauge_desc=Die 125% Skalierte (im vergleich zu 1:1 reallife)\n Standard Spurweite von FVTM!
+fvtm.recipes.blocks=FVTM Blöcke
+
+
+# Keys
+keycompound.fvtm.controls=FVTM Steuerung
+key.fvtm.engine=Motor an/aus
+key.fvtm.vehicle_inventory=Fahrzeug Inventar
+key.fvtm.vehicle_doors=Attribut Schaltung
+key.fvtm.vehicle_scripts=Skript Schaltung
+key.fvtm.vehicle_lights=Licht Modus (aus/an/lang)
+key.fvtm.vehicle_trailer=Anhänger oder Waggon (hinten) Koppeln
+key.fvtm.vehicle_wagon=Waggon (front) Koppeln
+key.fvtm.arrow_up=Pfeil Oben / Gang hochschalten
+key.fvtm.arrow_down=Pfeil Unten / Gang runterschalten
+key.fvtm.arrow_left=Pfeil Links
+key.fvtm.arrow_right=Pfeil Rechts
+key.fvtm.reset=Attribut zurücksetzen
+key.fvtm.brake=Bremse
+key.fvtm.pbrake=(Hand-/Park-) Bremse

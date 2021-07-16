@@ -43,7 +43,7 @@ public class ConstructorPartManager extends ConstructorGui {
 	
 	private void updateButtons(){
 		if(container.getTileEntity().getVehicleData() == null){
-			tbuttons[11].string = "Page -/-";
+			tbuttons[11].string = I18n.format("gui.fvtm.constructor.page") + " -/-";
 			for(int i = 1; i < 11; i++) tbuttons[i].string = " / / / / / ";
 			next.enabled = prev.enabled = false;
 		}

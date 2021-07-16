@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.data;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.TypeCore;
@@ -29,6 +30,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 	protected EntityEquipmentSlot eq_slot;
 	protected ArmorMaterial material;
 	protected ClothModel model;
+	protected ResourceLocation texture;
 	
 	public Cloth(){}
 
@@ -60,6 +62,7 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 		this.eq_slot = EntityEquipmentSlot.fromString(JsonUtil.getIfExists(obj, "EquipmentSlot", "head").toUpperCase());
 		this.material = parseMaterial(obj);
 		//
+		this.texture = new NamedResourceLocation(JsonUtil.getIfExists(obj, "Texture", Resources.NULL_TEXTURE.toString()));
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
         this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
 		this.item = new ClothItem(this);
@@ -124,6 +127,10 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 	@Override
 	public void loadModel(){
 		this.model = (ClothModel)Resources.getModel(modelid, ClothModel.class);
+	}
+	
+	public ResourceLocation getTexture(){
+		return texture;
 	}
 
 }

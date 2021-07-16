@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -134,7 +135,9 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		}
 		
 		public void update(String newtext, Integer color){
-			this.string = newtext; this.width = gui.mc.fontRenderer.getStringWidth(newtext);
+			this.string = newtext;
+			if(!string.startsWith(";;")) string = I18n.format(string);
+			this.width = gui.mc.fontRenderer.getStringWidth(string);
 			if(color != null) this.color = color;
 		}
 		

@@ -47,6 +47,7 @@ public class ConstructorStatus extends ConstructorGui {
 			this.cbuttons[5].visible = true;
 			this.tbuttons[5].visible = true;
 		}
+		this.tbuttons[4].translate();
 	}
 
 	@Override

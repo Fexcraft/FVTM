@@ -14,13 +14,13 @@ public class ConstructorStatus extends ConstructorGui {
 	public ConstructorStatus(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		this.removeEmptyButtons = true;
-		this.buttontext = new String[]{ "||Lift/Center Pos.", "", "", "", "Manual Connect", "Auto Connect", "", "< Return"};
+		this.buttontext = new String[]{ "||gui.fvtm.constructor.status.lift_pos", "", "", "", "gui.fvtm.constructor.status.manual", "gui.fvtm.constructor.status.auto", "", "gui.fvtm.constructor.return"};
 	}
 	
 	@Override
 	public void init(){
 		super.init();
-		this.menutitle.string = "Const. Status";
+		this.menutitle.string = "gui.fvtm.constructor.status.menu_title";
 		cfields[1] = new NumberField(1, fontRenderer, 2, 20 + (1 * buttonheight), xSize - 4, 10, true);
 		cfields[2] = new NumberField(2, fontRenderer, 2, 20 + (2 * buttonheight), xSize - 4, 10, true);
 		cfields[3] = new NumberField(3, fontRenderer, 2, 20 + (3 * buttonheight), xSize - 4, 10, true);
@@ -35,7 +35,7 @@ public class ConstructorStatus extends ConstructorGui {
 			cfields[1].setText(this.container.getTileEntity().getCenterPos().getX() + "");
 			cfields[2].setText(this.container.getTileEntity().getCenterPos().getY() + "");
 			cfields[3].setText(this.container.getTileEntity().getCenterPos().getZ() + "");
-			this.tbuttons[4].string = "Reset Connection";
+			this.tbuttons[4].string = "gui.fvtm.constructor.status.reset";
 			this.cbuttons[5].enabled = false;
 			this.cbuttons[5].visible = false;
 			this.tbuttons[5].visible = false;
@@ -62,19 +62,21 @@ public class ConstructorStatus extends ConstructorGui {
 			if(this.container.getTileEntity().getCenterPos() != null){
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("cargo", "constructor_disconnect");
-				this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
-				this.container.send(Side.SERVER, compound); return true;
+				this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
+				this.container.send(Side.SERVER, compound);
+				return true;
 			}
 			BlockPos pos = new BlockPos(cfields[1].getIntegerValue(), cfields[2].getIntegerValue(), cfields[3].getIntegerValue());
 			if(player.world.getTileEntity(pos) == null){
-				this.titletext.update("No TileEntity at selected position. [CLIENT]", RGB_ORANGE.packed); return true;
+				this.titletext.update("gui.fvtm.constructor.status.no_tile", RGB_ORANGE.packed);
+				return true;
 			}
 			this.container.send(Side.SERVER, newConnectPacket(false, pos));
-			this.titletext.update("Request sent to Server.", RGB_CYAN.packed);
+			this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 		}
 		else if(button.name.equals("button5")){
 			this.container.send(Side.SERVER, newConnectPacket(true, null));
-			this.titletext.update("Request sent to Server.", RGB_CYAN.packed);
+			this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 		}
 		return false;
 	}
@@ -85,7 +87,8 @@ public class ConstructorStatus extends ConstructorGui {
 		compound.setBoolean("Auto", auto);
 		if(pos != null || !auto){
 			compound.setLong("BlockPos", pos.toLong());
-		} return compound;
+		}
+		return compound;
 	}
 
 	@Override

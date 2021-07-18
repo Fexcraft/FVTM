@@ -26,6 +26,72 @@ gui.fvtm.constructor.main.part_installer=Teile Installateur
 gui.fvtm.constructor.main.texture=Textur Manager
 gui.fvtm.constructor.main.color=Lackierungs Tool
 gui.fvtm.constructor.main.exit=Verlassen
+//
+gui.fvtm.constructor.request_sending=Anfrage zum Server gesendet.
+gui.fvtm.constructor.not_available=Noch nicht verfügbar!
+gui.fvtm.constructor.invalid_input=Ungültige Eingabe / zu kurz.
+gui.fvtm.constructor.empty=Kein Fahrzeug/Block/Container im Konstruktor
+gui.fvtm.constructor.no_vehicle_title=Kein Fahrzeug im Konstruktor
+gui.fvtm.constructor.no_cache_title=Kein Teil in der Konstruktor Cache
+gui.fvtm.constructor.no_vehicle=kein Fahrzeug
+gui.fvtm.constructor.no_const=Konst. Offline
+gui.fvtm.constructor.no_cache=Cache Leer
+gui.fvtm.constructor.return=< Zurück
+gui.fvtm.constructor.back=< Zurück
+gui.fvtm.constructor.page=Seite
+//
+gui.fvtm.constructor.part_install.menu_title=Teile Installation (aus Cache)
+gui.fvtm.constructor.part_install.custom=benutzerdef. Kategorie
+gui.fvtm.constructor.part_install.custom_install=benut.def. installieren
+gui.fvtm.constructor.part_install.default=Standard-Kategorien
+gui.fvtm.constructor.part_install.empty_title=Kein Teil in der Constructor Cache
+gui.fvtm.constructor.part_install.empty=cache leer
+//
+gui.fvtm.constructor.part_manager.menu_title=Teile Manager
+gui.fvtm.constructor.part_manager.installed=Installierte Teile:
+//
+gui.fvtm.constructor.status.menu_title=Konst. Status
+gui.fvtm.constructor.status.lift_pos=Lift/Center Pos.
+gui.fvtm.constructor.status.manual=Manuell verbinden
+gui.fvtm.constructor.status.auto=Auto. verbinden
+gui.fvtm.constructor.status.reset=Verbindung trennen
+gui.fvtm.constructor.status.no_tile=Keine TileEntity an der gewählten position [CLIENT]
+//
+gui.fvtm.constructor.vehicle_info.menu_title=Fahrzeug-Daten Übersicht
+gui.fvtm.constructor.vehicle_info.name=Name:
+gui.fvtm.constructor.vehicle_info.attributes=Attribute
+gui.fvtm.constructor.vehicle_info.functions=Funktionen
+gui.fvtm.constructor.vehicle_info.scripts=Skripte
+//
+gui.fvtm.constructor.part_cache.menu_title=Teil-Daten Übersicht (CACHE)
+gui.fvtm.constructor.part_cache.name=Name:
+gui.fvtm.constructor.part_cache.attributes=Attribute
+gui.fvtm.constructor.part_cache.functions=Funktionen
+gui.fvtm.constructor.part_cache.textures=Standard Texturen
+gui.fvtm.constructor.part_cache.install_info=Installations Info
+gui.fvtm.constructor.part_cache.eject=Auswerfen
+//
+gui.fvtm.constructor.painter.menu_title_block=Block Lackierer
+gui.fvtm.constructor.painter.menu_title_container=Container Lackierer
+gui.fvtm.constructor.painter.menu_title_vehicle=Fahrzeug Lackierer
+gui.fvtm.constructor.painter.rgb=RGB
+gui.fvtm.constructor.painter.hex=HEX
+gui.fvtm.constructor.painter.channel=K:
+gui.fvtm.constructor.painter.error_rgb=Fehler beim RGB Color parsing.
+gui.fvtm.constructor.painter.error_hex=Fehler beim HEX Color parsing.
+//
+gui.fvtm.constructor.texture.menu_title_part=Teil [$0] Textur Management
+gui.fvtm.constructor.texture.menu_title_block=Block Textur Management
+gui.fvtm.constructor.texture.menu_title_container=Container Textur Management
+gui.fvtm.constructor.texture.menu_title_vehicle=Fahrzeug Textur Management
+gui.fvtm.constructor.texture.current=Derzeitige:
+gui.fvtm.constructor.texture.supplied=Mitgelieferte:
+gui.fvtm.constructor.texture.internal=Interne:
+gui.fvtm.constructor.texture.external=Externe:
+gui.fvtm.constructor.texture.tex_supplied=geliefert
+gui.fvtm.constructor.texture.tex_internal=intern
+gui.fvtm.constructor.texture.tex_external=extern
+gui.fvtm.constructor.texture.not_found_in_memory=Textur nicht gefunden im Speicher
 
 # Items
 item.fvtm:streetsign.name=Straßenschild

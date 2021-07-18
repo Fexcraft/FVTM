@@ -4,6 +4,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.CONSTRUCTOR_MAIN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -14,18 +15,22 @@ public class ConstructorPartCacheInfo extends ConstructorGui {
 	public ConstructorPartCacheInfo(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		this.removeEmptyButtons = true;
-		this.buttontext = new String[]{ "||Name:", "", "Attributes", "Functions", "Def. Textures", "Install Info", "Eject", "", "< Back" };
+		this.buttontext = new String[]{ "||gui.fvtm.constructor.part_cache.name", "",
+			"gui.fvtm.constructor.part_cache.attributes", "gui.fvtm.constructor.part_cache.functions",
+			"gui.fvtm.constructor.part_cache.textures", "gui.fvtm.constructor.part_cache.install_info",
+			"gui.fvtm.constructor.part_cache.eject", "", "gui.fvtm.constructor.back" };
 	}
 	
 	@Override
 	public void init(){
 		super.init();
-		this.menutitle.string = "Part Data Overview (CACHE)";
-		this.container.setTitleText(container.getTileEntity().getPartData() == null ? "No Part in Constructor Cache." : container.getTileEntity().getPartData().getType().getName(), RGB.WHITE.packed);
+		this.menutitle.string = "gui.fvtm.constructor.part_cache.menu_title";
+		this.menutitle.translate();
+		this.container.setTitleText(container.getTileEntity().getPartData() == null ? "gui.fvtm.constructor.no_cache_title" : container.getTileEntity().getPartData().getType().getName(), RGB.WHITE.packed);
 		this.cfields[1] = new TextField(2, fontRenderer, 2, 20 + buttonheight, xSize - 4, 10);
-		String string = container.getTileEntity() == null ? "Const.Offline" : container.getTileEntity().getPartData() == null ?
-			"Cache Empty" : container.getTileEntity().getPartData().getType().getName();
-		this.cfields[1].setText(string); this.fields.put("field2", cfields[1]);
+		String string = container.getTileEntity() == null ? "gui.fvtm.constructor.no_const" : container.getTileEntity().getPartData() == null ?
+			"gui.fvtm.constructor.no_cache" : container.getTileEntity().getPartData().getType().getName();
+		this.cfields[1].setText(I18n.format(string)); this.fields.put("field2", cfields[1]);
 	}
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
@@ -37,7 +42,7 @@ public class ConstructorPartCacheInfo extends ConstructorGui {
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button8")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		if(container.getTileEntity().getPartData() == null){
-			container.setTitleText("No Part in Constructor Cache.", RGB_ORANGE.packed);
+			container.setTitleText("gui.fvtm.constructor.no_cache_title", RGB_ORANGE.packed);
 		}
 		if(button.name.equals("button2")){
 			openGui(913, xyz, LISTENERID);//TODO
@@ -54,7 +59,7 @@ public class ConstructorPartCacheInfo extends ConstructorGui {
 		else if(button.name.equals("button6")){
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "part_cache_drop");
-			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+			this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound);
 			openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		}

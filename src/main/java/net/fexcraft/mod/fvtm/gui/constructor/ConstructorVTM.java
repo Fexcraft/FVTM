@@ -25,7 +25,10 @@ public class ConstructorVTM extends ConstructorGui {
 	public ConstructorVTM(EntityPlayer player, World world, int x, int y, int z){
 		super(new ConstructorContainerVTM(player, world, x, y, z), player, x, y, z);
 		this.removeEmptyButtons = true;
-		this.buttontext = new String[]{ "||Current:" , "||...", "", "||Supplied:", "", "", "||Internal:", "", "", "||External:", "", "", "< Back" };
+		this.buttontext = new String[]{ "||gui.fvtm.constructor.texture.current" , "||...", "", "||gui.fvtm.constructor.texture.supplied",
+			"", "", "||gui.fvtm.constructor.texture.internal",
+			"", "", "||gui.fvtm.constructor.texture.external",
+			"", "", "gui.fvtm.constructor.back" };
 	}
 	
 	private String part(){
@@ -34,13 +37,16 @@ public class ConstructorVTM extends ConstructorGui {
 	
 	@Override
 	public void init(){
-		super.init(); String title = null;
+		super.init();
+		String title = "part";
 		if(part() == null){
-			if(container.getTileEntity().getBlockData() != null) title = "Block"; 
-			if(container.getTileEntity().getContainerData() != null) title = "Container"; 
-			if(container.getTileEntity().getVehicleData() != null) title = "Vehicle"; 
-		} else title = "Part [" + part() + "]";
-		this.menutitle.string = title + " Texture Management";
+			if(container.getTileEntity().getBlockData() != null) title = "block"; 
+			if(container.getTileEntity().getContainerData() != null) title = "container"; 
+			if(container.getTileEntity().getVehicleData() != null) title = "vehicle"; 
+		}
+		this.menutitle.string = "gui.fvtm.constructor.texture.menu_title_" + title;
+		this.menutitle.translate();
+		if(part() != null) menutitle.string = menutitle.string.replace("$0", part());
 		Textureable textur = getTextureable();
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_supplied", prev = new IconButton("prev_supplied", 3, 1, false, ICON_LEFT));
@@ -64,13 +70,18 @@ public class ConstructorVTM extends ConstructorGui {
 	private void updateIconsAndButtons(){
 		Textureable textur = getTextureable();
 		if(textur.getSelectedTexture() < 0){
-			tbuttons[1].string = textur.isExternalTexture() ? "external" : "internal"; cfields[4].setText(" - - - - ");
+			tbuttons[1].string = "gui.fvtm.constructor.texture.tex_" + (textur.isExternalTexture() ? "external" : "internal");
+			tbuttons[1].translate();
+			cfields[4].setText(" - - - - ");
 		}
 		else{
-			tbuttons[1].string = "supplied:" + textur.getSelectedTexture();
+			tbuttons[1].string = "gui.fvtm.constructor.texture.tex_supplied";
+			tbuttons[1].translate();
+			tbuttons[1].string += ":" + textur.getSelectedTexture();
 			cfields[4].setText(textur.getHolder().getDefaultTextures().get(textur.getSelectedTexture()).getName());
 		}
-		prev.enabled = textur.getSelectedTexture() > 0; next.enabled = textur.getSelectedTexture() < textur.getHolder().getDefaultTextures().size() - 1;
+		prev.enabled = textur.getSelectedTexture() > 0;
+		next.enabled = textur.getSelectedTexture() < textur.getHolder().getDefaultTextures().size() - 1;
 	}
 	
 	@Override
@@ -93,7 +104,7 @@ public class ConstructorVTM extends ConstructorGui {
 			compound.setString("cargo", "vtm_supplied");
 			if(part() != null) compound.setString("part", part());
 			compound.setInteger("value", i);
-			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+			this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound);
 			return true;
 		}
@@ -101,14 +112,14 @@ public class ConstructorVTM extends ConstructorGui {
 			boolean external = button.name.startsWith("ex");
 			String value = external ? cfields[10].getText() : cfields[7].getText();
 			if(value.length() < 10){
-				this.titletext.update("Invalid input / too short.", RGB_ORANGE.packed);
+				this.titletext.update("gui.fvtm.constructor.invalid_input", RGB_ORANGE.packed);
 				return true;
 			}
 			if(!external){
 				ResourceLocation resloc = new ResourceLocation(value);
 				ITextureObject obj = Minecraft.getMinecraft().getTextureManager().getTexture(resloc);
 				if(obj == null && !Minecraft.getMinecraft().getTextureManager().loadTexture(resloc, obj = new SimpleTexture(resloc))){
-					this.titletext.update("Texture not found in memory.", RGB_ORANGE.packed);
+					this.titletext.update("gui.fvtm.constructor.texture.not_found_in_memory", RGB_ORANGE.packed);
 					return true;
 				}
 			}
@@ -117,7 +128,7 @@ public class ConstructorVTM extends ConstructorGui {
 			if(part() != null) compound.setString("part", part());
 			compound.setString("value", value);
 			compound.setBoolean("external", external);
-			this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+			this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 			this.container.send(Side.SERVER, compound);
 			return true;
 		}

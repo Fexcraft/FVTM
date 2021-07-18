@@ -70,6 +70,15 @@ gui.fvtm.constructor.part_cache.functions=Functions
 gui.fvtm.constructor.part_cache.textures=Def. Textures
 gui.fvtm.constructor.part_cache.install_info=Install Info
 gui.fvtm.constructor.part_cache.eject=Eject
+//
+gui.fvtm.constructor.painter.menu_title_block=Block Color Painter
+gui.fvtm.constructor.painter.menu_title_container=Container Color Painter
+gui.fvtm.constructor.painter.menu_title_vehicle=Vehicle Color Painter
+gui.fvtm.constructor.painter.rgb=RGB
+gui.fvtm.constructor.painter.hex=HEX
+gui.fvtm.constructor.painter.channel=T:
+gui.fvtm.constructor.painter.error_rgb=Error parsing RGB Color.
+gui.fvtm.constructor.painter.error_hex=Error parsing HEX Color.
 
 
 # Items

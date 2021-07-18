@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -20,23 +21,24 @@ public class ConstructorVP extends ConstructorGui {
 	private String channel = "primary";
 	private Spectrum spectrum;
 	private Palette palette;
-	// private Preview preview;
 	private TextField rgb, hex;
 
 	public ConstructorVP(EntityPlayer player, World world, int x, int y, int z){
 		super(player, world, x, y, z);
 		this.removeEmptyButtons = true;
-		this.buttontext = new String[] { "||RGB", "", "||HEX", "", "", "", "", "", "", "", "||", "||T: ----", "< Back" };
+		this.buttontext = new String[] { "||gui.fvtm.constructor.painter.rgb", "", "||gui.fvtm.constructor.painter.hex",
+			"", "", "", "", "", "", "", "||", "||gui.fvtm.constructor.painter.channel", "gui.fvtm.constructor.back" };
 	}
 
 	@Override
 	public void init(){
 		super.init();
 		String title = null;
-		if(container.getTileEntity().getBlockData() != null) title = "Block";
-		if(container.getTileEntity().getContainerData() != null) title = "Container";
-		if(container.getTileEntity().getVehicleData() != null) title = "Vehicle";
-		this.menutitle.string = title + " Color Painter";
+		if(container.getTileEntity().getBlockData() != null) title = "block";
+		if(container.getTileEntity().getContainerData() != null) title = "container";
+		if(container.getTileEntity().getVehicleData() != null) title = "vehicle";
+		this.menutitle.string = "gui.fvtm.constructor.painter.menu_title_" + title;
+		this.menutitle.translate();
 		this.buttons.put("icon_rgb", new IconButton("icon_rgb", 0, 0, false, ICON_CHECK));
 		this.buttons.put("icon_hex", new IconButton("icon_hex", 2, 0, false, ICON_CHECK));
 		this.buttons.put("icon_try", new IconButton("icon_try", 10, 2, false, ICON_QMARK).setEnabled(false));
@@ -63,7 +65,7 @@ public class ConstructorVP extends ConstructorGui {
 	}
 
 	private void updateIconsAndButtons(){
-		tbuttons[11].string = "T: " + channel;
+		tbuttons[11].string = I18n.format("gui.fvtm.constructor.painter.channel") +  " " + channel;
 	}
 
 	@Override
@@ -121,7 +123,7 @@ public class ConstructorVP extends ConstructorGui {
 		compound.setString("cargo", "color_update");
 		compound.setString("channel", channel);
 		compound.setInteger("rgb", current.packed);
-		this.titletext.update("Request sending to Server.", RGB_CYAN.packed);
+		this.titletext.update("gui.fvtm.constructor.request_sending", RGB_CYAN.packed);
 		this.container.send(Side.SERVER, compound);
 	}
 
@@ -139,7 +141,7 @@ public class ConstructorVP extends ConstructorGui {
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			this.titletext.update("Error parsing " + (hex ? "HEX Code" : "RGB Color") + ".", RGB_ORANGE.packed);
+			this.titletext.update("gui.fvtm.constructor.painter.error_" + (hex ? "hex" : "rgb"), RGB_ORANGE.packed);
 		}
 		return rgb;
 	}

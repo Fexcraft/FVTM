@@ -79,6 +79,19 @@ gui.fvtm.constructor.painter.hex=HEX
 gui.fvtm.constructor.painter.channel=T:
 gui.fvtm.constructor.painter.error_rgb=Error parsing RGB Color.
 gui.fvtm.constructor.painter.error_hex=Error parsing HEX Color.
+//
+gui.fvtm.constructor.texture.menu_title_part=Part [$0] Texture Management
+gui.fvtm.constructor.texture.menu_title_block=Block Texture Management
+gui.fvtm.constructor.texture.menu_title_container=Container Texture Management
+gui.fvtm.constructor.texture.menu_title_vehicle=Vehicle Texture Management
+gui.fvtm.constructor.texture.current=Current:
+gui.fvtm.constructor.texture.supplied=Supplied:
+gui.fvtm.constructor.texture.internal=Internal:
+gui.fvtm.constructor.texture.external=External:
+gui.fvtm.constructor.texture.tex_supplied=supplied
+gui.fvtm.constructor.texture.tex_internal=internal
+gui.fvtm.constructor.texture.tex_external=external
+gui.fvtm.constructor.texture.not_found_in_memory=Texture not found in memory.
 
 
 # Items

@@ -29,7 +29,11 @@ gui.fvtm.constructor.main.exit=Exit
 //
 gui.fvtm.constructor.request_sending=Request sending to Server.
 gui.fvtm.constructor.not_available=Not available yet!
+gui.fvtm.constructor.invalid_input=Invalid input / too short.
 gui.fvtm.constructor.empty=No Vehicle/Container/Block in Constructor.
+gui.fvtm.constructor.no_vehicle_title=No Vehicle in Constructor.
+gui.fvtm.constructor.no_vehicle=No Vehicle
+gui.fvtm.constructor.no_const=Const. Offline
 gui.fvtm.constructor.return=< Return
 gui.fvtm.constructor.back=< Back
 gui.fvtm.constructor.page=Page
@@ -42,7 +46,6 @@ gui.fvtm.constructor.part_install.empty_title=No Part in Constructor Cache.
 gui.fvtm.constructor.part_install.empty=cache empty
 //
 gui.fvtm.constructor.part_manager.menu_title=Part Manager
-gui.fvtm.constructor.part_manager.empty_title=No Vehicle in Constructor
 gui.fvtm.constructor.part_manager.installed=Installed Parts:
 //
 gui.fvtm.constructor.status.menu_title=Const. Status
@@ -52,6 +55,11 @@ gui.fvtm.constructor.status.auto=Auto Connect
 gui.fvtm.constructor.status.reset=Reset Connection
 gui.fvtm.constructor.status.no_tile=No TileEntity at selected position. [CLIENT]
 //
+gui.fvtm.constructor.vehicle_info.menu_title=Vehicle Data Overview
+gui.fvtm.constructor.vehicle_info.name=Name:
+gui.fvtm.constructor.vehicle_info.attributes=Attributes
+gui.fvtm.constructor.vehicle_info.functions=Functions
+gui.fvtm.constructor.vehicle_info.scripts=Scripts
 
 
 # Items

@@ -30,7 +30,7 @@ public class ConstructorPartManager extends ConstructorGui {
 		this.menutitle.string = "gui.fvtm.constructor.part_manager.menu_title";
 		this.menutitle.translate();
 		boolean noveh = container.getTileEntity().getVehicleData() == null;
-		this.container.setTitleText(noveh ? "gui.fvtm.constructor.part_manager.empty_title" : container.getTileEntity().getVehicleData().getName(), RGB.WHITE.packed);
+		this.container.setTitleText(noveh ? "gui.fvtm.constructor.no_vehicle_title" : container.getTileEntity().getVehicleData().getName(), RGB.WHITE.packed);
 		this.buttons.put("next_page", next = new IconButton("next", 11, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_page", prev = new IconButton("prev", 11, 1, false, ICON_LEFT));
 		for(int i = 1; i < 11; i++){

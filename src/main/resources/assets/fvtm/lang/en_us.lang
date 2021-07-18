@@ -32,8 +32,10 @@ gui.fvtm.constructor.not_available=Not available yet!
 gui.fvtm.constructor.invalid_input=Invalid input / too short.
 gui.fvtm.constructor.empty=No Vehicle/Container/Block in Constructor.
 gui.fvtm.constructor.no_vehicle_title=No Vehicle in Constructor.
+gui.fvtm.constructor.no_cache_title=No Part in Constructor Cache.
 gui.fvtm.constructor.no_vehicle=No Vehicle
 gui.fvtm.constructor.no_const=Const. Offline
+gui.fvtm.constructor.no_cache=Cache Empty
 gui.fvtm.constructor.return=< Return
 gui.fvtm.constructor.back=< Back
 gui.fvtm.constructor.page=Page
@@ -60,6 +62,14 @@ gui.fvtm.constructor.vehicle_info.name=Name:
 gui.fvtm.constructor.vehicle_info.attributes=Attributes
 gui.fvtm.constructor.vehicle_info.functions=Functions
 gui.fvtm.constructor.vehicle_info.scripts=Scripts
+//
+gui.fvtm.constructor.part_cache.menu_title=Part Data Overview (CACHE)
+gui.fvtm.constructor.part_cache.name=Name:
+gui.fvtm.constructor.part_cache.attributes=Attributes
+gui.fvtm.constructor.part_cache.functions=Functions
+gui.fvtm.constructor.part_cache.textures=Def. Textures
+gui.fvtm.constructor.part_cache.install_info=Install Info
+gui.fvtm.constructor.part_cache.eject=Eject
 
 
 # Items

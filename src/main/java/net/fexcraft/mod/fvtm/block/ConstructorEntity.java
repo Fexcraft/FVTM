@@ -100,7 +100,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				boolean bool = packet.getBoolean("custom_category");
 				PartData data = this.getPartData(); String cat = packet.getString("category");
 				if(bool && !data.getType().getInstallationHandler().allowsCustomCategory(data)){
-					container.setTitleText("Custom Category not allowed for this part.", null); return;
+					container.setTitleText("tile.fvtm.constructor.part_install.custom_cat_not_allowed", null); return;
 				}
 				/*if(data.getType().getInstallationHandler().allowInstall(container.getCommandSender(), data, cat, getVehicleData())){
 					if(data.getType().getInstallationHandler().processInstall(container.getCommandSender(), data, cat, getVehicleData())){
@@ -113,7 +113,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			case "part_remove":{
 				if(noveh(container)) return;
 				String cat = packet.getString("category"); PartData data = this.getVehicleData().getPart(cat);
-				if(data == null){ container.setTitleText("Selected Part not found (on server).", null); return; }
+				if(data == null){ container.setTitleText("tile.fvtm.constructor.part_remove.not_found_server", null); return; }
 				/*if(data.getType().getInstallationHandler().allowUninstall(container.getCommandSender(), data, cat, getVehicleData())){
 					if(data.getType().getInstallationHandler().processUninstall(container.getCommandSender(), data, cat, getVehicleData())){
 						this.dropItem(data.newItemStack()); this.updateClient(null);

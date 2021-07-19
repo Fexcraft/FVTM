@@ -100,6 +100,8 @@ tile.fvtm.constructor.constructor_connect.no_tile_found_null=No suitable TileEnt
 tile.fvtm.constructor.constructor_connect.no_tile_found=No suitable TileEntity found.
 tile.fvtm.constructor.constructor_connect.connected=Tile connected.
 tile.fvtm.constructor.constructor_disconnect.disconnected=Tile connection reset.
+tile.fvtm.constructor.part_install.custom_cat_not_allowed=Custom Category not allowed for this part.
+tile.fvtm.constructor.part_remove.not_found_server=Selected Part not found (on server).
 
 
 # Items

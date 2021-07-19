@@ -42,39 +42,48 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					BlockPos pos = BlockPos.fromLong(packet.getLong("BlockPos"));
 					TileEntity tile = world.getTileEntity(pos);
 					if(tile == null){
-						container.setTitleText("No TileEntity at selected position. [SERVER]", RGB.RED.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.no_tile", RGB.RED.packed); return;
 					}
 					if(tile instanceof ConstCenterEntity == false){
-						container.setTitleText("Tile at position is of wrong type.", RGB.RED.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.wrong_type", RGB.RED.packed); return;
 					}
 					ConstCenterEntity centerlift = (ConstCenterEntity)tile;
 					if(centerlift.getLinkPos() != null){
-						container.setTitleText("Tile at position has already connection data.", RGB.BLUE.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.already_connected", RGB.BLUE.packed); return;
 					}
 					else{
 						centerlift.setLinkPos(this.getPos(), true); this.setCenterPos(pos);
-						container.setTitleText("Tile connected.", RGB.BLACK.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.connected", RGB.BLACK.packed); return;
 					}
 				}
 				else{
-					boolean found = false; BlockPos searchpos; TileEntity searchtile; ConstCenterEntity centertile = null;
+					boolean found = false;
+					BlockPos searchpos;
+					TileEntity searchtile;
+					ConstCenterEntity centertile = null;
 					for(int x = -8; x < 9; x++){ if(found) break;
 						for(int z = -8; z < 9; z++){ if(found) break;
 							for(int y = -1; y < 2; y++){ if(found) break;
 								if(x == 0 && y == 0 && z == 0) continue; searchpos = pos.add(x, y, z);
 								if((searchtile = world.getTileEntity(searchpos)) != null && searchtile instanceof ConstCenterEntity){
 									if((centertile = (ConstCenterEntity)searchtile).getLinkPos() != null) continue;
-									else{ found = true; break; }
+									else{
+										found = true;
+										break;
+									}
 								}
 							}
 						}
 					}
 					if(found && centertile != null){
-						centertile.setLinkPos(pos, true); this.setCenterPos(centertile.getPos());
-						container.setTitleText("Tile connected.", RGB.BLACK.packed); return;
+						centertile.setLinkPos(pos, true);
+						this.setCenterPos(centertile.getPos());
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.connected", RGB.BLACK.packed);
+						return;
 					}
 					else{
-						container.setTitleText("No suitable TileEntity found. " + (centertile == null ? "[tilenull]" : "[]"), RGB.RED.packed); return;
+						container.setTitleText("tile.fvtm.constructor.constructor_connect.no_tile_found" + (centertile == null ? "_null" : ""), RGB.RED.packed);
+						return;
 					}
 				}
 			}
@@ -83,7 +92,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 					ConstCenterEntity tile = (ConstCenterEntity)world.getTileEntity(center);
 					if(tile != null) tile.setLinkPos(null, true);
 				} this.setCenterPos(null);
-				container.setTitleText("Tile connection reset.", RGB.BLACK.packed);
+				container.setTitleText("tile.fvtm.constructor.constructor_disconnect.disconnected", RGB.BLACK.packed);
 				return;
 			}
 			case "part_install":{

@@ -438,7 +438,7 @@ public class EffectRenderer {
     			for(String key : item.getType().getModel().getClothGroups().keySet()){
     				wrapper = getWrapper(model, event.getRenderer(), key);
     				if(wrapper == null) continue;
-    				wrapper.set(player, item, item.getType().getModel().getClothGroups().get(key));
+    				wrapper.set(player, item, item.getType().getModel().getClothGroups().get(key), key);
     			}
     		}
     	}
@@ -446,12 +446,24 @@ public class EffectRenderer {
     
     private MRWrapper getWrapper(ModelPlayer model, RenderPlayer renderer, String key){
 		switch(key){
-			case "head": return MRWrapper.get(model, model.bipedHead, renderer);
-			case "body": return MRWrapper.get(model, model.bipedBody, renderer);
-			case "left_arm": return MRWrapper.get(model, model.bipedLeftArm, renderer);
-			case "right_arm": return MRWrapper.get(model, model.bipedRightArm, renderer);
-			case "left_leg": return MRWrapper.get(model, model.bipedLeftLeg, renderer);
-			case "right_leg": return MRWrapper.get(model, model.bipedRightLeg, renderer);
+			case "head": return MRWrapper.get(model, model.bipedHead, renderer, key);
+			case "body": return MRWrapper.get(model, model.bipedBody, renderer, key);
+			case "left_arm": case "arm_left": return MRWrapper.get(model, model.bipedLeftArm, renderer, key);
+			case "right_arm": case "arm_right": return MRWrapper.get(model, model.bipedRightArm, renderer, key);
+			case "left_leg": case "leg_left": return MRWrapper.get(model, model.bipedLeftLeg, renderer, key);
+			case "right_leg": case "leg_right": return MRWrapper.get(model, model.bipedRightLeg, renderer, key);
+			case "garb_front":{
+				if(model.bipedLeftLeg.rotateAngleX < model.bipedRightLeg.rotateAngleX){
+					return MRWrapper.get(model, model.bipedLeftLeg, renderer, "left_leg");
+				}
+				else return MRWrapper.get(model, model.bipedRightLeg, renderer, "right_leg");
+			}
+			case "garb_back":{
+				if(model.bipedLeftLeg.rotateAngleX > model.bipedRightLeg.rotateAngleX){
+					return MRWrapper.get(model, model.bipedLeftLeg, renderer, "left_leg");
+				}
+				else return MRWrapper.get(model, model.bipedRightLeg, renderer, "right_leg");
+			}
 		}
 		return null;
 	}

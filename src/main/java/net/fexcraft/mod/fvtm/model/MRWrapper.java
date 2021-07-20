@@ -52,13 +52,13 @@ public class MRWrapper extends ModelRenderer {
     	RenderCache cache = player.getCapability(Capabilities.RENDERCACHE, null);
 		for(int i = 0; i < cloth_items.size(); i++){
 			net.fexcraft.lib.tmt.ModelBase.bindTexture(cloth_items.get(i).getType().getTexture());
-			if(cloth_groups.get(i).startsWith("garb") && id.equals("right_leg")){
-				GL11.glTranslatef(0, 0, 0.25f);
+			if(cloth_groups.get(i).startsWith("skirt")){
+				GL11.glPushMatrix();
+				if(id.contains("right")) GL11.glTranslatef(0, 0, 0.25f);
+				GL11.glRotated(parent.rotateAngleX * 5, 0, 0, 1);
 			}
 			cloth_items.get(i).getType().getModel().render(cloth_items.get(i), cloth_models.get(i), player, cache);
-			if(cloth_groups.get(i).startsWith("garb") && id.equals("right_leg")){
-				GL11.glTranslatef(0, 0, -0.25f);
-			}
+			if(cloth_groups.get(i).startsWith("skirt")) GL11.glPopMatrix();
 		}
 		cloth_items.clear();
 		cloth_models.clear();

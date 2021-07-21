@@ -105,8 +105,13 @@ public class StreetSign extends Entity implements IEntityAdditionalSpawnData, IP
         	byte bit = buffer.readByte();
         	arrows[i] = bit < 0 ? null : bit > 0;
         }
-        for(int i = 0; i < 4; i++){
-        	text[i] = buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString();
+        try{
+            for(int i = 0; i < 4; i++){
+            	text[i] = buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString();
+            }
+        }
+        catch(Exception e){
+        	e.printStackTrace();
         }
         //
         if(world.isRemote){

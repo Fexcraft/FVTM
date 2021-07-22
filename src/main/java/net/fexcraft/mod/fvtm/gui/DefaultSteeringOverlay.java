@@ -67,7 +67,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	protected static final int perpage = 8;
 	protected static int scroll = 0, page, timer, clicktimer, lastgear = -100;
 	protected static ArrayList<Attribute<?>> attributes = new ArrayList<>();
-	public static CopyOnWriteArrayList<String> STRS = new CopyOnWriteArrayList<String>();
+	public static CopyOnWriteArrayList<Object> STRS = new CopyOnWriteArrayList<>();
 	private static String gear_label;
 
 	public DefaultSteeringOverlay(VehicleSteeringOverlay root, EntityPlayer player){
@@ -372,8 +372,8 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		}
 		else if(STRS.size() > 0){
 			int i = 0;
-			for(String str : STRS){
-				root.mc.fontRenderer.drawString(Formatter.format(str), 7, 62 + (i++ * 11), 0xffffff);
+			for(Object str : STRS){
+				root.mc.fontRenderer.drawString(Formatter.format(str.toString()), 7, 62 + (i++ * 11), 0xffffff);
 			}
 		}
 		GL11.glPopMatrix();

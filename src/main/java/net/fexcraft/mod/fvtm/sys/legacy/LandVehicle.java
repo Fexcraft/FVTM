@@ -681,7 +681,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 --serverPositionTransitionTicker; setPosition(x, y, z);
                 setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
             }
-            vehicle.getAttribute("steering_angle").value(Static.toDegrees(wheelsYaw));
+            vehicle.getAttribute("steering_angle").value(wheelsYaw);
             double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
             wheelsAngle += throttle * cir; if(wheelsAngle > 360) wheelsAngle -= 360; if(wheelsAngle < -360) wheelsAngle += 360;
         	vehicle.getAttribute("wheel_angle").value(wheelsAngle);

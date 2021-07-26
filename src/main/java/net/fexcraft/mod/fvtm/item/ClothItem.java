@@ -1,13 +1,23 @@
 package net.fexcraft.mod.fvtm.item;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.Cloth;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClothItem extends ItemArmor {
 	
@@ -36,5 +46,15 @@ public class ClothItem extends ItemArmor {
 	public Cloth getType(){
 		return type;
 	}
+	
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
+    	tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
+        for(String s : type.getDescription()){
+            tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
+        }
+        super.addInformation(stack, world, tooltip, flag);
+    }
 
 }

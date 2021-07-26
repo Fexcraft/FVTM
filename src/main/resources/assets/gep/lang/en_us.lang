@@ -36,6 +36,7 @@ item.gep:automatic_transmission.name=Automatic Transmission
 item.gep:transmission.name=Transmission
 item.gep:license_plate_12x3_generic.name=12x3 License Plate
 item.gep:license_plate_holder_12x3.name=12x3 License Plate Holder
+item.gep:cap.name=GEP Cap
 
 # Blocks
 tile.gep:pizza_oven.name=FRSM Pizza Oven

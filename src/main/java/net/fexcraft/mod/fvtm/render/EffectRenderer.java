@@ -458,7 +458,7 @@ public class EffectRenderer {
 				}
 				else return MRWrapper.get(model, model.bipedRightLeg, renderer, "right_leg");
 			}
-			case "skirt_back":{
+			case "skirt_back": case "skirt_rear": {
 				if(model.bipedLeftLeg.rotateAngleX >= model.bipedRightLeg.rotateAngleX){
 					return MRWrapper.get(model, model.bipedLeftLeg, renderer, "left_leg");
 				}

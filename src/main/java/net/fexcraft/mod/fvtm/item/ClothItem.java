@@ -26,6 +26,7 @@ public class ClothItem extends ItemArmor {
 	public ClothItem(Cloth cloth){
 		super(cloth.getArMaterial(), 0, cloth.getEquitmentSlot());
 		this.setMaxDamage(cloth.getMaxDamage());
+		//
         (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
         this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));

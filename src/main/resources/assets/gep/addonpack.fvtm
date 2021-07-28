@@ -9,6 +9,13 @@
     "01e4af9b-2a30-471e-addf-f6338ffce04b"
   ],
   "Version": "2.3.0",
+  "ClothMaterials":{
+  	"cap":{
+  		"durability": 1500,
+  		"damage_reduction": [ 0, 0, 0, 2 ],
+  		"toughness": 1
+  	}
+  },
   "GenerateLang": false,
   "GenerateItemJson": false,
   "GenerateItemIcon": false

@@ -6,6 +6,7 @@
         "&oAn original made with finest fabric."
     ],
     "EquipmentSlot": "head",
+    "ClothMaterial": "gep:cap",
     "Texture": "gep:textures/clothes/cap.png",
     "Model": "gep:models/cloth/cap"
 }

@@ -71,13 +71,16 @@ public class Cloth extends TypeCore<Cloth> implements Tabbed {
 	}
 
 	private ArmorMaterial parseMaterial(JsonObject obj){
-		if(obj.has("ArmorMaterial")){
-			String mat = obj.get("ArmorMaterial").getAsString().toLowerCase();
+		if(obj.has("ArmorMaterial") || obj.has("ClothMaterial")){
+			String mat = (obj.has("ArmorMaterial") ? obj.get("ArmorMaterial") : obj.get("ClothMaterial")).getAsString().toLowerCase();
+			if(mat.contains(":")){
+				return Resources.getClothMaterial(mat);
+			}
 			for(ArmorMaterial armat : ArmorMaterial.values()){
 				if(armat.getName().equals(mat)) return armat;
 			}
 		}
-		return ArmorMaterial.LEATHER;
+		return Resources.NONE_MAT;
 	}
 
 	@Override

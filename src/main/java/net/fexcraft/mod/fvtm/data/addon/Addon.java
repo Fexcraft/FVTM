@@ -38,8 +38,11 @@ import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.discovery.ContainerType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -54,6 +57,7 @@ public class Addon extends TypeCore<Addon> {
 	protected boolean enabled = true, generatelang, generatejson, generateicon;
 	protected File file, lang;
 	protected ContainerType contype;
+	protected HashMap<String, ArmorMaterial> armats = new HashMap<>();
 	//
 	@SideOnly(Side.CLIENT)
 	protected HashMap<String, CreativeTabs> creativetabs;
@@ -93,6 +97,15 @@ public class Addon extends TypeCore<Addon> {
 			}
 		}
 		this.registerer = new AutoRegisterer(this.getRegistryName().getPath());
+		if(obj.has("ClothMaterials")){
+			obj.get("ClothMaterials").getAsJsonObject().entrySet().forEach(entry -> {
+				JsonObject data = entry.getValue().getAsJsonObject();
+				int durr = JsonUtil.getIfExists(data, "durability", 1f).intValue();
+				int[] ams = data.has("damage_reduction") ? JsonUtil.getIntegerArray(data.get("damage_reduction").getAsJsonArray()) : new int[]{ 0, 0, 0, 0 };
+				float tgh = JsonUtil.getIfExists(obj, "toughness", 0f).floatValue();
+				armats.put(entry.getKey(), EnumHelper.addArmorMaterial(entry.getKey(), Resources.NULL_TEXTURE.toString(), durr, ams, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, tgh));
+			});
+		}
 		return this;
 	}
 
@@ -418,6 +431,10 @@ public class Addon extends TypeCore<Addon> {
 				}
 			}
 		}
+	}
+	
+	public HashMap<String, ArmorMaterial> getClothMaterials(){
+		return armats;
 	}
 
 }

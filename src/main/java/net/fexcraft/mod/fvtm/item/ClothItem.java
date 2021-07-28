@@ -25,7 +25,7 @@ public class ClothItem extends ItemArmor {
 	
 	public ClothItem(Cloth cloth){
 		super(cloth.getArMaterial(), 0, cloth.getEquitmentSlot());
-		this.setMaxDamage(cloth.getMaxDamage());
+		if(cloth.getMaxDamage() > 0) this.setMaxDamage(cloth.getMaxDamage());
 		//
         (type = cloth).getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
         if(Static.side().isServer()) return;
@@ -55,6 +55,7 @@ public class ClothItem extends ItemArmor {
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
         }
+        tooltip.add(Formatter.format("&9Durability: &7" + stack.getItemDamage() + "/" + stack.getMaxDamage()));
         super.addInformation(stack, world, tooltip, flag);
     }
 

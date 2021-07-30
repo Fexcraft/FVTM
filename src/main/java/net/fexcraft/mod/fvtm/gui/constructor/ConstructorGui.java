@@ -138,8 +138,13 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		public void update(String newtext, Integer color){
 			this.string = newtext;
 			if(!string.startsWith(";;")){
-				String[] split = string.split(":");
-				string = I18n.format(split[0], split.length > 1 ? Arrays.copyOfRange(split, 1, split.length) : null);
+				if(!string.contains(":")){
+					string = I18n.format(string);
+				}
+				else{
+					String[] split = string.split(":");
+					string = I18n.format(split[0], (Object[])Arrays.copyOfRange(split, 1, split.length));
+				}
 			}
 			this.width = gui.mc.fontRenderer.getStringWidth(string);
 			if(color != null) this.color = color;

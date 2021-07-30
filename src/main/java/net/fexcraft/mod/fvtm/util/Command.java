@@ -18,9 +18,12 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
+import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -30,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 
 @SuppressWarnings("deprecation")
@@ -72,6 +76,7 @@ public class Command extends CommandBase {
         		Print.chat(sender, "&7- /fvtm attr <args>");
         		Print.chat(sender, "&7- /fvtm debug <args>");
         		Print.chat(sender, "&7- /fvtm spawn-sys");
+        		Print.chat(sender, "&7- /fvtm undo road");
         		Print.chat(sender, "&8- - - - - -");
         		Print.chat(sender, "&7- /fvtm vals <args> (debug values)");
         		Print.chat(sender, "&7- /fvtm rrr (reload rail region)");
@@ -337,6 +342,35 @@ public class Command extends CommandBase {
             		return;
             	}
             	VALS.put(args[1], args[2]);
+            	return;
+            }
+            case "undo":{
+            	EntityPlayer player = (EntityPlayer)sender;
+            	if(args.length > 1 || args[1].equals("road") || player.getHeldItemMainhand().getItem() instanceof RoadToolItem){
+            		ItemStack stack = player.getHeldItemMainhand();
+            		NBTTagCompound compound = stack.getTagCompound();
+            		if(compound == null || !compound.hasKey("LastRoad")){
+                		Print.chatbar(sender, "No last road data in item.");
+            			return;
+            		}
+            		if(compound.getInteger("LastRoadDim") != player.world.provider.getDimension()){
+                		Print.chatbar(sender, "Last road was placed in &6DIM" + compound.getInteger("LastRoadDim"));
+                		Print.chatbar(sender, "You are currenctly in &6DIM" + player.world.provider.getDimension());
+            			return;
+            		}
+            		Print.chatbar(sender, "&oUndo-ing last placed road...");
+            		NBTTagCompound blocks = compound.getCompoundTag("LastRoad");
+            		for(String str : blocks.getKeySet()){
+            			NBTTagCompound com = blocks.getCompoundTag(str);
+            			BlockPos pos = BlockPos.fromLong(com.getLong("pos"));
+            			Block block = Block.REGISTRY.getObject(new ResourceLocation(com.getString("id")));
+            			IBlockState state = block.getStateFromMeta(com.getInteger("meta"));
+            			player.world.setBlockState(pos, state);
+            		}
+            		compound.removeTag("LastRoad");
+            		compound.removeTag("LastRoadDim");
+            		Print.chat(sender, "&7Last road undone.");
+            	}
             	return;
             }
             default: {

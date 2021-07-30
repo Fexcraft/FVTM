@@ -30,31 +30,31 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		if(data.getParts().containsKey(cat.startsWith("s:") ? cat.split(":")[2] : cat)){
-			Print.chatnn(sender, "There is already another part with that category installed.");
+			Print.chatnn(sender, "handler.install.fvtm.default.category_occupied");
 			return false;
 		}
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		if(!part.getType().getCategories().contains(cat) && (idata != null && !idata.custom_cat && !idata.onslot)){
-			Print.chatnn(sender, "Part does not allow installing into this category.");
+			Print.chatnn(sender, "handler.install.fvtm.default.part_invalid_category");
 			return false;
 		}
 		if(!compatible(idata, data.getType().getRegistryName().toString())){
-			Print.chatnn(sender, "Part incompatible with this vehicle.");
+			Print.chatnn(sender, "handler.install.fvtm.default.part_incompatible_vehicle");
 			return false;
 		}
 		if(containsIncompatible(idata, data)){
-			Print.chatnn(sender, "Vehicle contains parts incompatible with this part.");
+			Print.chatnn(sender, "handler.install.fvtm.default.vehicle_contains_incompatible");
 			return false;
 		}
 		if(!containsRequired(idata, data)){
-			Print.chatnn(sender, "Vehicle does not contain all required parts.");
+			Print.chatnn(sender, "handler.install.fvtm.default.vehicle_missing_required_parts");
 			return false;
 		}
 		if(idata != null && idata.sp_req && !idata.onslot && !data.getRotationPoints().containsKey(idata.swivel_point)){
-			Print.chatnn(sender, "Vehicle does not contain a required swivel/rotation point. Missing: " + idata.swivel_point);
+			Print.chatnn(sender, "handler.install.fvtm.default.vehicle_missing_required_swivelpoint:" + idata.swivel_point);
 			return false;
 		}
-		Print.chatnn(sender, "Installation check passed."); return true;
+		Print.chatnn(sender, "handler.install.fvtm.default.check_passed"); return true;
 	}
 
 	private boolean compatible(DPIHData idata, String string){
@@ -86,7 +86,8 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 				Print.debug(mod.id(), mod.origin(), mod.target());
 			});
 		});*/
-		Print.chatnn(sender, "Part installed into selected category."); return true;
+		Print.chatnn(sender, "handler.install.fvtm.default.success");
+		return true;
 	}
 
 	private String gscn(String[] split){
@@ -152,11 +153,13 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
 		DPIHData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "Part is marked as non removable."); return false;
+			Print.chatnn(sender, "handler.deinstall.fvtm.default.part_not_removable");
+			return false;
 		}
 		//Function Check
 		if(!checkWheelSlotsInUse(sender, part, from)) return false;
-		Print.chatnn(sender, "Deinstallation check passed."); return true;
+		Print.chatnn(sender, "handler.deinstall.fvtm.default.check_passed");
+		return true;
 	}
 	
 	public static boolean checkWheelSlotsInUse(@Nullable ICommandSender sender, PartData part, VehicleData from){
@@ -164,7 +167,8 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 			WheelPositionsFunction func = part.getFunction("fvtm:wheel_positions");
 			for(String key : from.getParts().keySet()){
 				if(func.getPositions().containsKey(key)){
-					Print.chatnn(sender, "Please remove all linked wheels first."); return false;
+					Print.chatnn(sender, "handler.deinstall.fvtm.default.remove_linked_wheels");
+					return false;
 				}
 			}
 		}
@@ -175,7 +179,8 @@ public class DefaultPartInstallHandler extends PartInstallationHandler {
 	public boolean processUninstall(ICommandSender sender, PartData part, String cat, VehicleData data){
 		part.setInstalledPos(Pos.NULL);
 		data.getParts().remove(cat);
-		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
+		Print.chatnn(sender, "handler.deinstall.fvtm.default.success");
+		return true;
 	}
 	
 	/** Default Part Install Handler Data */

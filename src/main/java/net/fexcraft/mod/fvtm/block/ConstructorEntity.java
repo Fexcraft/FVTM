@@ -131,20 +131,30 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				if(nocon(container) && noveh(container) && noblk(container)) return;
 				int i = packet.getInteger("value");
 				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
-				if(textur == null && packet.hasKey("part")){ container.setTitleText("Invalid Part Request.", RGB.RED.packed); return; }
+				if(textur == null && packet.hasKey("part")){
+					container.setTitleText("tile.fvtm.constructor.texture.invalid_part", RGB.RED.packed);
+					return;
+				}
 				if(i < 0 || i >= textur.getHolder().getDefaultTextures().size()){
-					container.setTitleText("Invalid SUPPLIED ID.", RGB.RED.packed); return;
-				} textur.setSelectedTexture(i, null, false);
-				container.setTitleText("Texture Applied.", null);
+					container.setTitleText("tile.fvtm.constructor.texture.invalid_supplied_id", RGB.RED.packed);
+					return;
+				}
+				textur.setSelectedTexture(i, null, false);
+				container.setTitleText("tile.fvtm.constructor.texture.applied", null);
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}
 			case "vtm_custom":{
-				if(nocon(container) && noveh(container) && noblk(container)) return; String value = packet.getString("value"); boolean external = packet.getBoolean("external");
+				if(nocon(container) && noveh(container) && noblk(container)) return;
+				String value = packet.getString("value");
+				boolean external = packet.getBoolean("external");
 				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
-				if(textur == null && packet.hasKey("part")){ container.setTitleText("Invalid Part Request.", RGB.RED.packed); return; }
+				if(textur == null && packet.hasKey("part")){
+					container.setTitleText("tile.fvtm.constructor.texture.invalid_part", RGB.RED.packed);
+					return;
+				}
 				//TODO check if custom textures are allowed;
 				textur.setSelectedTexture(-1, value, external);
-				container.setTitleText("Texture Applied.", null);
+				container.setTitleText("tile.fvtm.constructor.texture.applied", null);
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}
 			case "color_update":{
@@ -160,25 +170,26 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				else{
 					cdata.getColorChannel(channel).packed = rgb;
 				}
-				container.setTitleText("Color Applied.", null); this.updateClient("color"); return;
+				container.setTitleText("tile.fvtm.constructor.color.applied", null);
+				this.updateClient("color"); return;
 			}
 			case "drop":{
 				String kind = packet.getString("what");
 				switch(kind){
-					case "container": this.dropContainer(true); container.setTitleText("Container Dropped.", null); break;
-					case "vehicle": this.dropVehicle(true); container.setTitleText("Vehicle Dropped.", null); break;
-					case "block": this.dropBlock(true); container.setTitleText("Block Dropped.", null); break;
-					case "part": this.dropPart(true); container.setTitleText("Part Cache Emptied.", null); break;
+					case "container": this.dropContainer(true); container.setTitleText("tile.fvtm.constructor.drop.container", null); break;
+					case "vehicle": this.dropVehicle(true); container.setTitleText("tile.fvtm.constructor.drop.vehicle", null); break;
+					case "block": this.dropBlock(true); container.setTitleText("tile.fvtm.constructor.drop.block", null); break;
+					case "part": this.dropPart(true); container.setTitleText("tile.fvtm.constructor.drop.part", null); break;
 					case "any": {
 						this.dropContainer(true); this.dropVehicle(true); this.dropBlock(true); this.dropPart(true);
-						container.setTitleText("Contents dropped.", null); break;
+						container.setTitleText("tile.fvtm.constructor.drop.all", null); break;
 					}
 				} return;
 			}
 			case "veh_name_change":{
 				if(noveh(container)) return;
 				vdata.setDisplayName(packet.hasKey("reset") && packet.getBoolean("reset") ? null : packet.getString("value"));
-				container.setTitleText("Name Changed.", null);
+				container.setTitleText("tile.fvtm.constructor.name.changed", null);
 				this.updateClient("vehicle");
 				return;
 			}
@@ -188,7 +199,7 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				if(liftstate < -3) liftstate = -3;
 				if(liftstate > 0) liftstate = 0;
 				this.updateClient("lift");
-				container.setTitleText("Lift state adjusted.", null);
+				container.setTitleText("tile.fvtm.constructor.lift.adjusted", null);
 				return;
 			}
 			//
@@ -197,19 +208,35 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 	}
 	
 	private boolean nocon(ConstructorContainer container){
-		if(this.getContainerData() == null){ container.setTitleText("No Container in Constructor.", null); return true; } return false;
+		if(this.getContainerData() == null){
+			container.setTitleText("tile.fvtm.constructor.no_container", null);
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean noveh(ConstructorContainer container){
-		if(this.getVehicleData() == null){ container.setTitleText("No Vehicle in Constructor.", null); return true; } return false;
+		if(this.getVehicleData() == null){
+			container.setTitleText("tile.fvtm.constructor.no_vehicle", null);
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean nopar(ConstructorContainer container){
-		if(this.getPartData() == null){ container.setTitleText("No Part in Constructor.", null); return true; } return false;
+		if(this.getPartData() == null){
+			container.setTitleText("tile.fvtm.constructor.no_part", null);
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean noblk(ConstructorContainer container){
-		if(this.getBlockData() == null){ container.setTitleText("No Block in Constructor.", null); return true; } return false;
+		if(this.getBlockData() == null){
+			container.setTitleText("tile.fvtm.constructor.no_block", null);
+			return true;
+		}
+		return false;
 	}
 
 	private void setCenterPos(BlockPos pos){

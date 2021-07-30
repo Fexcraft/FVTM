@@ -118,6 +118,20 @@ tile.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
 tile.fvtm.constructor.no_block=No Block in Constructor.
 tile.fvtm.constructor.no_part=No Part in Constructor.
 
+# Handlers
+handler.install.fvtm.default.category_occupied=There is already another part with that category installed.
+handler.install.fvtm.default.part_invalid_category=Part does not allow installing into this category.
+handler.install.fvtm.default.part_incompatible_vehicle=Part incompatible with this vehicle.
+handler.install.fvtm.default.vehicle_contains_incompatible=Vehicle contains parts incompatible with this part.
+handler.install.fvtm.default.vehicle_missing_required_parts=Vehicle does not contain all required parts.
+handler.install.fvtm.default.vehicle_missing_required_swivelpoint=Vehicle does not contain a required swivel/rotation point. Missing: %s
+handler.install.fvtm.default.check_passed=Installation check passed.
+handler.install.fvtm.default.success=Part installed into selected category.
+handler.deinstall.fvtm.default.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.default.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.default.remove_linked_wheels=Please remove all linked wheels first.
+handler.deinstall.fvtm.default.success=Part uninstalled and position reset.
+
 
 # Items
 item.fvtm:streetsign.name=Streetsign

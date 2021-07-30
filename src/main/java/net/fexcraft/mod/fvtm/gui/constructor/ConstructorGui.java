@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
+import scala.actors.threadpool.Arrays;
 
 public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	
@@ -136,7 +137,10 @@ public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 		
 		public void update(String newtext, Integer color){
 			this.string = newtext;
-			if(!string.startsWith(";;")) string = I18n.format(string);
+			if(!string.startsWith(";;")){
+				String[] split = string.split(":");
+				string = I18n.format(split[0], split.length > 1 ? Arrays.copyOfRange(split, 1, split.length) : null);
+			}
 			this.width = gui.mc.fontRenderer.getStringWidth(string);
 			if(color != null) this.color = color;
 		}

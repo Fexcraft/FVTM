@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui.constructor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.lwjgl.input.Keyboard;
 
@@ -15,7 +16,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
-import scala.actors.threadpool.Arrays;
 
 public abstract class ConstructorGui extends GenericGui<ConstructorContainer> {
 	

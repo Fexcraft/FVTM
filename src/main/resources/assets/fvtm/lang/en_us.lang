@@ -102,6 +102,21 @@ tile.fvtm.constructor.constructor_connect.connected=Tile connected.
 tile.fvtm.constructor.constructor_disconnect.disconnected=Tile connection reset.
 tile.fvtm.constructor.part_install.custom_cat_not_allowed=Custom Category not allowed for this part.
 tile.fvtm.constructor.part_remove.not_found_server=Selected Part not found (on server).
+tile.fvtm.constructor.texture.invalid_part=Invalid Part Request.
+tile.fvtm.constructor.texture.invalid_supplied_id=Invalid SUPPLIED ID.
+tile.fvtm.constructor.texture.applied=Texture Applied.
+tile.fvtm.constructor.color.applied=Color Applied.
+tile.fvtm.constructor.drop.container=Container Dropped.
+tile.fvtm.constructor.drop.vehicle=Vehicle Dropped.
+tile.fvtm.constructor.drop.block=Block Dropped.
+tile.fvtm.constructor.drop.part=Part Cache Emptied.
+tile.fvtm.constructor.drop.all=Contents dropped.
+tile.fvtm.constructor.name.changed=Name Changed.
+tile.fvtm.constructor.lift.adjusted=Lift state adjusted.
+tile.fvtm.constructor.no_container=No Container in Constructor.
+tile.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
+tile.fvtm.constructor.no_block=No Block in Constructor.
+tile.fvtm.constructor.no_part=No Part in Constructor.
 
 
 # Items

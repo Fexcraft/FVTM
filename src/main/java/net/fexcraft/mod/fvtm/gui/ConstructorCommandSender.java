@@ -26,7 +26,7 @@ public class ConstructorCommandSender implements ICommandSender {
 		if(container == null || container.getTileEntity() == null
 			|| container.getTileEntity().getWorld() == null
 			|| container.getTileEntity().getWorld().isRemote) return;
-		container.setTitleText(component.getFormattedText(), RGB.WHITE.packed);
+		container.setTitleText(component.getUnformattedText(), RGB.WHITE.packed);
     }
 
 	@Override

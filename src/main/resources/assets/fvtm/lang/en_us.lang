@@ -146,7 +146,13 @@ handler.deinstall.fvtm.default.part_not_removable=Part is marked as non removabl
 handler.deinstall.fvtm.default.remove_tire_first=Please remove the tire first.
 handler.deinstall.fvtm.default.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.default.success=Part uninstalled and position reset.
-
+//
+handler.install.fvtm.tire.category_occupied=There is already another part with that category installed.
+handler.install.fvtm.tire.wheelslot_missing=This Vehicle does not have the required WheelSlot configured.
+handler.install.fvtm.tire.no_wheel_at_slot=There is no wheel/rim to install this tire on, at that slot!
+handler.install.fvtm.tire.wheelslot_null=Error, slot not found.
+handler.install.fvtm.tire.radius_too_large=Tire radius too large. [%s>%s]
+handler.install.fvtm.tire.radius_too_small=Tire radius too small. [%s<%s]
 
 
 # Items

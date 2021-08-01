@@ -25,31 +25,31 @@ public class TireInstallationHandler extends PartInstallationHandler {
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		if(data.getParts().containsKey(cat)){
-			Print.chatnn(sender, "There is already another part with that category installed.");
+			Print.chatnn(sender, "handler.install.fvtm.tire.category_occupied");
 			return false;
 		}
 		String whcat = cat.split(":")[0];
 		if(!data.getWheelSlots().containsKey(whcat)){
-			Print.chatnn(sender, "This Vehicle does not have the required WheelSlot configured.");
+			Print.chatnn(sender, "handler.install.fvtm.tire.wheelslot_missing");
 			return false;
 		}
 		if(!data.hasPart(whcat)){
-			Print.chatnn(sender, "There is no wheel/rim to install this tire on at that slot!");
+			Print.chatnn(sender, "handler.install.fvtm.tire.no_wheel_at_slot");
 			return false;
 		}
 		TireData idata = part.getType().getInstallationHandlerData();
 		WheelSlot slot = data.getWheelSlots().get(whcat);
 		if(slot == null){
-			Print.chatnn(sender, "Error, slot not found.");
+			Print.chatnn(sender, "handler.install.fvtm.tire.wheelslot_null");
 			return false;
 		}
 		// Print.debug(idata.radius, slot.maxradius(), slot.minradius());
 		if(idata.outer_radius > slot.max_radius()){
-			Print.chatnn(sender, "Tire radius too large. [" + idata.outer_radius + ">" + slot.max_radius() + "]");
+			Print.chatnn(sender, "handler.install.fvtm.tire.radius_too_large:" + idata.outer_radius + ":" + slot.max_radius());
 			return false;
 		}
 		if(idata.outer_radius < slot.min_tire_radius()){
-			Print.chatnn(sender, "Tire radius too small. [" + idata.outer_radius + "<" + slot.min_tire_radius() + "]");
+			Print.chatnn(sender, "handler.install.fvtm.tire.radius_too_small:" + idata.outer_radius + ":" + slot.min_tire_radius());
 			return false;
 		}
 		WheelData wdata = data.getPart(whcat).getType().getInstallationHandlerData();

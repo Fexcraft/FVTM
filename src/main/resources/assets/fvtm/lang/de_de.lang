@@ -55,7 +55,7 @@ gui.fvtm.constructor.status.lift_pos=Lift/Center Pos.
 gui.fvtm.constructor.status.manual=Manuell verbinden
 gui.fvtm.constructor.status.auto=Auto. verbinden
 gui.fvtm.constructor.status.reset=Verbindung trennen
-gui.fvtm.constructor.status.no_tile=Keine TileEntity an der gewählten position [CLIENT]
+gui.fvtm.constructor.status.no_tile=Keine TileEntity an der gewählten Position. [CLIENT]
 //
 gui.fvtm.constructor.vehicle_info.menu_title=Fahrzeug-Daten Übersicht
 gui.fvtm.constructor.vehicle_info.name=Name:
@@ -92,6 +92,46 @@ gui.fvtm.constructor.texture.tex_supplied=geliefert
 gui.fvtm.constructor.texture.tex_internal=intern
 gui.fvtm.constructor.texture.tex_external=extern
 gui.fvtm.constructor.texture.not_found_in_memory=Textur nicht gefunden im Speicher
+//
+tile.fvtm.constructor.constructor_connect.no_tile=Keine TileEntity an der gewählten Position. [SERVER]
+tile.fvtm.constructor.constructor_connect.wrong_type=Falscher Typ der TileEntity an gewählter Position.
+tile.fvtm.constructor.constructor_connect.already_connected=TileEntity an gewählter Position ist bereits verbunden.
+tile.fvtm.constructor.constructor_connect.no_tile_found_null=Keine gültige TileEntity gefunden. [tilenull]
+tile.fvtm.constructor.constructor_connect.no_tile_found=Keine gültige TileEntity gefunden.
+tile.fvtm.constructor.constructor_connect.connected=TileEntity verbunden.
+tile.fvtm.constructor.constructor_disconnect.disconnected=TileEntity Verbindung zurückgesetzt.
+tile.fvtm.constructor.part_install.custom_cat_not_allowed=Custom Category not allowed for this part.
+tile.fvtm.constructor.part_remove.not_found_server=Selected Part not found (on server).
+tile.fvtm.constructor.texture.invalid_part=Invalid Part Request.
+tile.fvtm.constructor.texture.invalid_supplied_id=Invalid SUPPLIED ID.
+tile.fvtm.constructor.texture.applied=Texture Applied.
+tile.fvtm.constructor.color.applied=Color Applied.
+tile.fvtm.constructor.drop.container=Container Dropped.
+tile.fvtm.constructor.drop.vehicle=Vehicle Dropped.
+tile.fvtm.constructor.drop.block=Block Dropped.
+tile.fvtm.constructor.drop.part=Part Cache Emptied.
+tile.fvtm.constructor.drop.all=Contents dropped.
+tile.fvtm.constructor.name.changed=Name Changed.
+tile.fvtm.constructor.lift.adjusted=Lift state adjusted.
+tile.fvtm.constructor.no_container=No Container in Constructor.
+tile.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
+tile.fvtm.constructor.no_block=No Block in Constructor.
+tile.fvtm.constructor.no_part=No Part in Constructor.
+
+# Handlers
+handler.install.fvtm.default.category_occupied=There is already another part with that category installed.
+handler.install.fvtm.default.part_invalid_category=Part does not allow installing into this category.
+handler.install.fvtm.default.part_incompatible_vehicle=Part incompatible with this vehicle.
+handler.install.fvtm.default.vehicle_contains_incompatible=Vehicle contains parts incompatible with this part.
+handler.install.fvtm.default.vehicle_missing_required_parts=Vehicle does not contain all required parts.
+handler.install.fvtm.default.vehicle_missing_required_swivelpoint=Vehicle does not contain a required swivel/rotation point. Missing: %s
+handler.install.fvtm.default.check_passed=Installation check passed.
+handler.install.fvtm.default.success=Part installed into selected category.
+handler.deinstall.fvtm.default.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.default.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.default.remove_linked_wheels=Please remove all linked wheels first.
+handler.deinstall.fvtm.default.success=Part uninstalled and position reset.
+
 
 # Items
 item.fvtm:streetsign.name=Straßenschild

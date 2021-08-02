@@ -117,6 +117,14 @@ tile.fvtm.constructor.no_container=No Container in Constructor.
 tile.fvtm.constructor.no_vehicle=No Vehicle in Constructor.
 tile.fvtm.constructor.no_block=No Block in Constructor.
 tile.fvtm.constructor.no_part=No Part in Constructor.
+//
+gui.fvtm.overlay.default.no_engine=Kein Motor installiert.
+gui.fvtm.overlay.default.speed=Geschwindigkeit:
+gui.fvtm.overlay.default.fuel=Kraftstoff:
+gui.fvtm.overlay.default.throttle=Gaspedal:
+gui.fvtm.overlay.default.gear=Gang:
+gui.fvtm.overlay.default.rpm=RPM: 
+gui.fvtm.overlay.default.trailer=&a&oAnhänger verbunden.
 
 # Handlers
 handler.install.fvtm.default.category_occupied=There is already another part with that category installed.

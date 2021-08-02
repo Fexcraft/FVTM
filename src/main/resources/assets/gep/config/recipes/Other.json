@@ -1,0 +1,55 @@
+{
+	"OverrideExisting": true,
+	"Recipes": [
+		{
+			"block": "fcl:bpt",
+			"category": "gep.recipes.clothes",
+			"input":[
+				{
+					"id": "minecraft:leather",
+					"count": 5
+				},
+				{
+					"id": "minecraft:paper",
+					"count": 1
+				}
+			],
+			"output":{
+				"id": "gep:cap",
+				"count": 1
+			}
+		},
+		{
+			"block": "fcl:bpt",
+			"category": "gep.recipes.car_parts",
+			"input":[
+				{
+					"id": "minecraft:iron_ingot",
+					"count": 1
+				},
+				{
+					"id": "gep:rubber",
+					"count": 1
+				}
+			],
+			"output":{
+				"id": "gep:license_plate_holder_12x3",
+				"count": 1
+			}
+		},
+		{
+			"block": "fcl:bpt",
+			"category": "gep.recipes.car_parts",
+			"input":[
+				{
+					"id": "minecraft:iron_ingot",
+					"count": 1
+				}
+			],
+			"output":{
+				"id": "gep:license_plate_12x3_generic",
+				"count": 1
+			}
+		}
+	]
+}

@@ -45,11 +45,11 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 			return false;
 		}
 		if(idata.width > slot.max_width()){
-			Print.chatnn(sender, "handler.install.fvtm.wheel.radius_too_wide:" + idata.width + ":" + slot.max_width());
+			Print.chatnn(sender, "handler.install.fvtm.wheel.width_too_wide:" + idata.width + ":" + slot.max_width());
 			return false;
 		}
 		if(idata.width < slot.min_width(idata.has_tire)){
-			Print.chatnn(sender, "handler.install.fvtm.wheel.radius_too_thin:" + idata.width + ":" + slot.min_width(idata.has_tire));
+			Print.chatnn(sender, "handler.install.fvtm.wheel.width_too_thin:" + idata.width + ":" + slot.min_width(idata.has_tire));
 			return false;
 		}
 		if(idata.connector != slot.connector()){
@@ -84,14 +84,14 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
 		WheelData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "handler.deinstall.fvtm.default.part_not_removable");
+			Print.chatnn(sender, "handler.deinstall.fvtm.wheel.part_not_removable");
 			return false;
 		}
 		if(from.hasPart(is_category + ":tire")){
-			Print.chatnn(sender, "handler.deinstall.fvtm.default.remove_tire_first");
+			Print.chatnn(sender, "handler.deinstall.fvtm.wheel.remove_tire_first");
 			return false;
 		}
-		Print.chatnn(sender, "handler.deinstall.fvtm.default.check_passed");
+		Print.chatnn(sender, "handler.deinstall.fvtm.wheel.check_passed");
 		return true;
 	}
 
@@ -100,7 +100,7 @@ public class WheelInstallationHandler extends PartInstallationHandler {
 		part.setInstalledPos(new Pos(0, 0, 0));
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
-		Print.chatnn(sender, "handler.deinstall.fvtm.default.success");
+		Print.chatnn(sender, "handler.deinstall.fvtm.wheel.success");
 		return true;
 	}
 

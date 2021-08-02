@@ -32,6 +32,7 @@ import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.EngineFunction;
 import net.fexcraft.mod.fvtm.util.handler.KeyHandler;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -63,6 +64,8 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	public static final ResourceLocation BRAKE_OFF = new ResourceLocation("fvtm:textures/gui/icons/brake_off.png");
 	public static final ResourceLocation BRAKE_ON = new ResourceLocation("fvtm:textures/gui/icons/brake_on.png");
 	//
+	public static String NO_ENGINE, SPEED, FUEL, TRAILER, THROTTLE, GEAR, RPM;
+	//
 	protected static final RGB HOVER = new RGB(0, 255, 0, 0.5f);
 	protected static final int perpage = 8;
 	protected static int scroll = 0, page, timer, clicktimer, lastgear = -100;
@@ -80,6 +83,13 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		page = 0;
 		lastgear = 100;
 		attributes.clear();
+		NO_ENGINE = I18n.format("gui.fvtm.overlay.default.no_engine");
+		SPEED = I18n.format("gui.fvtm.overlay.default.speed");
+		FUEL = I18n.format("gui.fvtm.overlay.default.fuel");
+		THROTTLE = I18n.format("gui.fvtm.overlay.default.throttle");
+		GEAR = I18n.format("gui.fvtm.overlay.default.gear");
+		RPM = I18n.format("gui.fvtm.overlay.default.rpm");
+		TRAILER = I18n.format("gui.fvtm.overlay.default.trailer");
 	}
 
 	@Override
@@ -322,17 +332,17 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		if(clicktimer > 0) clicktimer--;
 		//
 		if(noengine){
-			root.mc.fontRenderer.drawString("No Engine installed.", 7, 7 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(NO_ENGINE, 7, 7 + yoff, 0xffffff);
 			GL11.glPopMatrix();
 			return;
 		}
-		root.mc.fontRenderer.drawString(Formatter.format("Speed: " + format((int)ent.getSpeed())), 7, 3 + yoff, 0xffffff);
-		root.mc.fontRenderer.drawString(Formatter.format("Fuel: " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25 + yoff, 0xffffff);
+		root.mc.fontRenderer.drawString(Formatter.format(SPEED + " " + format((int)ent.getSpeed())), 7, 3 + yoff, 0xffffff);
+		root.mc.fontRenderer.drawString(Formatter.format(FUEL + " " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25 + yoff, 0xffffff);
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
-			root.mc.fontRenderer.drawString(Formatter.format("&a&oTrailer Attached."), 167, 25 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(Formatter.format(TRAILER), 167, 25 + yoff, 0xffffff);
 		}
 		if(root.uni12){
-			root.mc.fontRenderer.drawString(Formatter.format("Throttle: "), 7, 14 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(Formatter.format(THROTTLE + " "), 7, 14 + yoff, 0xffffff);
 			{
 				RGB.BLACK.glColorApply();
 				root.mc.getTextureManager().bindTexture(ConstructorGui.STONE);
@@ -358,11 +368,11 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 					gear_label += gear;
 				}
 			}
-			root.mc.fontRenderer.drawString(Formatter.format("RPM: " + (veh.crpm / 100 * 100)), 167, 3 + yoff, 0xffffff);
-			root.mc.fontRenderer.drawString(Formatter.format("Gear: " + gear_label), 167, 14 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(Formatter.format(RPM + " " + (veh.crpm / 100 * 100)), 167, 3 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(Formatter.format(GEAR + " " + gear_label), 167, 14 + yoff, 0xffffff);
 		}
 		else{
-			root.mc.fontRenderer.drawString(Formatter.format("Throttle: " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(Formatter.format(THROTTLE + " " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14 + yoff, 0xffffff);
 		}
 		if(Command.OTHER && root.seat().vehicle.wheels != null){//debug info
 			for(int i = 0; i < root.seat().vehicle.wheels.length; i++){

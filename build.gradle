@@ -18,8 +18,8 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 version = "1.12.2"
-def modversion = "3.6.54"
-def gepversion = "2.3.0"
+def modversion = "3.6.55"
+def gepversion = "2.4.0"
 def hcpversion = "2.1.3"
 group = "net.fexcraft.mod.fvtm"
 archivesBaseName = "FVTM-ALL"

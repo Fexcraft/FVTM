@@ -211,6 +211,10 @@ handler.deinstall.fvtm.connector.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.connector.success=Part uninstalled and position reset.
 
 
+# Entities
+//
+
+
 # Items
 item.fvtm:streetsign.name=Streetsign
 item.fvtm:standard.name=Standard FVTM Rail Gauge

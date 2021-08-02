@@ -163,6 +163,14 @@ handler.deinstall.fvtm.tire.part_not_removable=Part is marked as non removable.
 handler.deinstall.fvtm.tire.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.tire.success=Part uninstalled and position reset.
 //
+handler.install.fvtm.bogie.category_occupied=There is already another part with that category installed.
+handler.install.fvtm.bogie.bogieslot_missing=This Vehicle does not have the required BogieSlot configured.
+handler.install.fvtm.bogie.check_passed=Installation check passed.
+handler.install.fvtm.bogie.success=Part installed into selected category.
+handler.deinstall.fvtm.bogie.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.bogie.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.bogie.success=Part uninstalled and position reset.
+//
 
 
 

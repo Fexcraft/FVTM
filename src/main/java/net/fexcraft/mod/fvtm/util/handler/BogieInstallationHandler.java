@@ -20,14 +20,14 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		if(data.getParts().containsKey(cat)){
-			Print.chatnn(sender, "There is already another part with that category installed.");
+			Print.chatnn(sender, "handler.install.fvtm.bogie.category_occupied");
 			return false;
 		}
 		if(!data.getWheelSlots().containsKey(cat)){
-			Print.chatnn(sender, "This Vehicle does not have the required BogieSlot configured.");
+			Print.chatnn(sender, "handler.install.fvtm.bogie.bogieslot_missing");
 			return false;
 		}
-		Print.chatnn(sender, "Installation check passed.");
+		Print.chatnn(sender, "handler.install.fvtm.bogie.check_passed");
 		return true;
 	}
 	@Override
@@ -40,7 +40,7 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 		Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.height, -partpos.z).to16Double());
 		//Print.debug("New BogiePos: " + data.getWheelPositions().get(cat));
-		Print.chatnn(sender, "Part installed into selected category.");
+		Print.chatnn(sender, "handler.install.fvtm.bogie.success");
 		return true;
 	}
 
@@ -48,10 +48,10 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
 		BogieData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "Part is marked as non removable.");
+			Print.chatnn(sender, "handler.deinstall.fvtm.bogie.part_not_removable");
 			return false;
 		}
-		Print.chatnn(sender, "Deinstallation check passed.");
+		Print.chatnn(sender, "handler.deinstall.fvtm.bogie.check_passed");
 		return true;
 	}
 
@@ -60,7 +60,7 @@ public class BogieInstallationHandler extends PartInstallationHandler {
 		part.setInstalledPos(new Pos(0, 0, 0));
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
-		Print.chatnn(sender, "Part uninstalled and position reset.");
+		Print.chatnn(sender, "handler.deinstall.fvtm.bogie.success");
 		return true;
 	}
 	

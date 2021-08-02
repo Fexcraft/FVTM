@@ -137,15 +137,15 @@ handler.install.fvtm.wheel.wheelslot_missing=This Vehicle does not have the requ
 handler.install.fvtm.wheel.wheelslot_null=Error, slot not found.
 handler.install.fvtm.wheel.radius_too_large=Wheel radius too large. [%s>%s]
 handler.install.fvtm.wheel.radius_too_small=Wheel radius too small. [%s<%s]
-handler.install.fvtm.wheel.radius_too_wide=Wheel radius too wide. [%s>%s]
-handler.install.fvtm.wheel.radius_too_thin=Wheel radius too thin. [%s<%s]
+handler.install.fvtm.wheel.width_too_wide=Wheel too wide. [%s>%s]
+handler.install.fvtm.wheel.width_too_thin=Wheel too thin. [%s<%s]
 handler.install.fvtm.wheel.incompatible_connector=Incompatible connector.
 handler.install.fvtm.wheel.check_passed=Installation check passed.
 handler.install.fvtm.wheel.success=Part installed into selected category.
-handler.deinstall.fvtm.default.part_not_removable=Part is marked as non removable.
-handler.deinstall.fvtm.default.remove_tire_first=Please remove the tire first.
-handler.deinstall.fvtm.default.check_passed=Deinstallation check passed.
-handler.deinstall.fvtm.default.success=Part uninstalled and position reset.
+handler.deinstall.fvtm.wheel.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.wheel.remove_tire_first=Please remove the tire first.
+handler.deinstall.fvtm.wheel.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.wheel.success=Part uninstalled and position reset.
 //
 handler.install.fvtm.tire.category_occupied=There is already another part with that category installed.
 handler.install.fvtm.tire.wheelslot_missing=This Vehicle does not have the required WheelSlot configured.
@@ -153,6 +153,17 @@ handler.install.fvtm.tire.no_wheel_at_slot=There is no wheel/rim to install this
 handler.install.fvtm.tire.wheelslot_null=Error, slot not found.
 handler.install.fvtm.tire.radius_too_large=Tire radius too large. [%s>%s]
 handler.install.fvtm.tire.radius_too_small=Tire radius too small. [%s<%s]
+handler.install.fvtm.tire.wheel_larger_than_tire_inner_radius=Wheel too large for Tire inner radius. [%s>%s]
+handler.install.fvtm.tire.tire_inner_radius_larger_than_wheel=Tire inner radius too large for this Wheel. [%s>%s]
+handler.install.fvtm.tire.width_too_wide=Tire is too wide. [%s>%s]
+handler.install.fvtm.tire.width_too_thin=Tire is too thin. [%s<%s]
+handler.install.fvtm.tire.check_passed=Installation check passed.
+handler.install.fvtm.tire.success=Part installed into selected category.
+handler.deinstall.fvtm.tire.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.tire.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.tire.success=Part uninstalled and position reset.
+//
+
 
 
 # Items

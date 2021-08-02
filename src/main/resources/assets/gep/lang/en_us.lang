@@ -57,3 +57,5 @@ tile.gep:switch_simple_double.name=Switch (Double/X)
 gep.recipes.machines=GEP Machines/Blocks
 gep.recipes.materials=GEP Materials
 gep.recipes.rails=30px Rails
+gep.recipes.clothes=GEP Clothes
+gep.recipes.car_parts=GEP Car Parts

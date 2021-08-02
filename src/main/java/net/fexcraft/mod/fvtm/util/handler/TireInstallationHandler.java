@@ -54,23 +54,23 @@ public class TireInstallationHandler extends PartInstallationHandler {
 		}
 		WheelData wdata = data.getPart(whcat).getType().getInstallationHandlerData();
 		if(idata.inner_radius < wdata.getRadius()){
-			Print.chatnn(sender, "Wheel too large for Tire inner radius. [" + wdata.getRadius() + ">" + idata.inner_radius + "]");
+			Print.chatnn(sender, "handler.install.fvtm.tire.wheel_larger_than_tire_inner_radius:" + wdata.getRadius() + ":" + idata.inner_radius);
 			return false;
 		}
 		if(idata.inner_radius > wdata.getRadius()){
-			Print.chatnn(sender, "Tire inner radius too large for this Wheel. [" + idata.inner_radius + ">" +  wdata.getRadius() + "]");
+			Print.chatnn(sender, "handler.install.fvtm.tire.tire_inner_radius_larger_than_wheel:" + idata.inner_radius + ":" +  wdata.getRadius());
 			return false;
 		}
 		//
 		if(idata.width > slot.max_width()){
-			Print.chatnn(sender, "Tire is too wide. [" + idata.width + ">" + slot.max_width() + "]");
+			Print.chatnn(sender, "handler.install.fvtm.tire.width_too_wide:" + idata.width + ":" + slot.max_width());
 			return false;
 		}
 		if(idata.width < slot.min_tire_width()){
-			Print.chatnn(sender, "Tire is too thin. [" + idata.width + "<" + slot.min_tire_width() + "]");
+			Print.chatnn(sender, "handler.install.fvtm.tire.width_too_thin:" + idata.width + ":" + slot.min_tire_width());
 			return false;
 		}
-		Print.chatnn(sender, "Installation check passed.");
+		Print.chatnn(sender, "handler.install.fvtm.tire.check_passed");
 		return true;
 	}
 
@@ -92,7 +92,7 @@ public class TireInstallationHandler extends PartInstallationHandler {
 		Pos partpos = part.getInstalledPos();
 		data.getWheelPositions().put(cat, new Pos(partpos.x, -partpos.y - idata.outer_radius, -partpos.z + ((cat.contains("left") ? -idata.width : idata.width) * 0.5f)).to16Double());
 		// Print.debug("New WheelPos: " + data.getWheelPositions().get(cat));
-		Print.chatnn(sender, "Part installed into selected category.");
+		Print.chatnn(sender, "handler.install.fvtm.tire.success");
 		return true;
 	}
 
@@ -100,10 +100,10 @@ public class TireInstallationHandler extends PartInstallationHandler {
 	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
 		TireData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "Part is marked as non removable.");
+			Print.chatnn(sender, "handler.deinstall.fvtm.tire.part_not_removable");
 			return false;
 		}
-		Print.chatnn(sender, "Deinstallation check passed.");
+		Print.chatnn(sender, "handler.deinstall.fvtm.tire.check_passed");
 		return true;
 	}
 
@@ -112,7 +112,7 @@ public class TireInstallationHandler extends PartInstallationHandler {
 		part.setInstalledPos(new Pos(0, 0, 0));
 		data.getParts().remove(cat);
 		data.getWheelPositions().remove(cat);
-		Print.chatnn(sender, "Part uninstalled and position reset.");
+		Print.chatnn(sender, "handler.deinstall.fvtm.tire.success");
 		return true;
 	}
 

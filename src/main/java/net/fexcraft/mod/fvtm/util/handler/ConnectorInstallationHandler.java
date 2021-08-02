@@ -28,28 +28,34 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 	@Override
 	public boolean allowInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
 		if(data.getParts().containsKey(cat)){
-			Print.chatnn(sender, "There is already another part with that category installed."); return false;
+			Print.chatnn(sender, "handler.install.fvtm.connector.category_occupied");
+			return false;
 		}
 		ConnectorData idata = part.getType().getInstallationHandlerData();
 		String regname = data.getType().getRegistryName().toString();
 		if(cat.startsWith("front")){
 			if(data.getFrontConnector() != null){
-				Print.chatnn(sender, "Front Connector Pos is already set."); return false;
+				Print.chatnn(sender, "handler.install.fvtm.connector.front_occupied");
+				return false;
 			}
 			if(idata.getFrontPosition(regname) == null){
-				Print.chatnn(sender, "This is not a Front Connector Part."); return false;
+				Print.chatnn(sender, "handler.install.fvtm.connector.not_front_part");
+				return false;
 			}
 		}
 		else{
 			if(data.getRearConnector() != null){
-				Print.chatnn(sender, "Rear Connector Pos is already set."); return false;
+				Print.chatnn(sender, "handler.install.fvtm.connector.rear_occupied");
+				return false;
 			}
 			if(idata.getRearPosition(regname) == null){
-				Print.chatnn(sender, "This is not a Rear Connector Part."); return false;
+				Print.chatnn(sender, "handler.install.fvtm.connector.not_rear_part");
+				return false;
 			}
 		}
 		//TODO connector kind
-		Print.chatnn(sender, "Installation check passed."); return true;
+		Print.chatnn(sender, "handler.install.fvtm.connector.check_passed");
+		return true;
 	}
 	@Override
 	public boolean processInstall(@Nullable ICommandSender sender, PartData part, String cat, VehicleData data){
@@ -63,15 +69,19 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 			conn = conn.add(part.getInstalledPos().to16Double());
 		}
 		data.setConnector(conn, front);
-		Print.chatnn(sender, "Part installed into selected category."); return true;
+		Print.chatnn(sender, "handler.install.fvtm.connector.success");
+		return true;
 	}
 
 	@Override
 	public boolean allowUninstall(@Nullable ICommandSender sender, PartData part, String is_category, VehicleData from){
 		ConnectorData idata = part.getType().getInstallationHandlerData();
 		if(idata != null && !idata.removable){
-			Print.chatnn(sender, "Part is marked as non removable."); return false;
-		} Print.chatnn(sender, "Deinstallation check passed."); return true;
+			Print.chatnn(sender, "handler.deinstall.fvtm.connector.part_not_removable");
+			return false;
+		}
+		Print.chatnn(sender, "handler.deinstall.fvtm.connector.check_passed");
+		return true;
 	}
 
 	@Override
@@ -79,7 +89,8 @@ public class ConnectorInstallationHandler extends PartInstallationHandler {
 		part.setInstalledPos(new Pos(0, 0, 0));
 		data.getParts().remove(cat);
 		data.setConnector(null, cat.startsWith("front"));
-		Print.chatnn(sender, "Part uninstalled and position reset."); return true;
+		Print.chatnn(sender, "handler.deinstall.fvtm.connector.success");
+		return true;
 	}
 	
 	/** Default Part Install Handler Data */

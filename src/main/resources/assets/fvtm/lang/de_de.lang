@@ -125,6 +125,15 @@ gui.fvtm.overlay.default.throttle=Gaspedal:
 gui.fvtm.overlay.default.gear=Gang:
 gui.fvtm.overlay.default.rpm=RPM: 
 gui.fvtm.overlay.default.trailer=&a&oAnhänger verbunden.
+//
+gui.fvtm.vehicle.main.info=Status/Info
+gui.fvtm.vehicle.main.settings=Einstellungen
+gui.fvtm.vehicle.main.fuel=Kraftstoff
+gui.fvtm.vehicle.main.attributes=Attribute
+gui.fvtm.vehicle.main.inventories=Inventare
+gui.fvtm.vehicle.main.containers=Container
+gui.fvtm.vehicle.main.connectors=Kupplungen
+gui.fvtm.vehicle.main.exit=Ausgang
 
 # Handlers
 handler.install.fvtm.default.category_occupied=There is already another part with that category installed.

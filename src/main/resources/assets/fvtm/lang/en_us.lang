@@ -125,6 +125,15 @@ gui.fvtm.overlay.default.throttle=Throttle:
 gui.fvtm.overlay.default.gear=Gear:
 gui.fvtm.overlay.default.rpm=RPM: 
 gui.fvtm.overlay.default.trailer=&a&oTrailer Attached.
+//
+gui.fvtm.vehicle.main.info=Status/Info
+gui.fvtm.vehicle.main.settings=Settings
+gui.fvtm.vehicle.main.fuel=Fuel
+gui.fvtm.vehicle.main.attributes=Attributes
+gui.fvtm.vehicle.main.inventories=Inventories
+gui.fvtm.vehicle.main.containers=Containers
+gui.fvtm.vehicle.main.connectors=Connectors
+gui.fvtm.vehicle.main.exit=Exit
 
 # Handlers
 handler.install.fvtm.default.category_occupied=There is already another part with that category installed.

@@ -28,14 +28,14 @@ public class VehicleMain extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected void init(){
-		this.texts.put("row0", new BasicText(20,  10, 160, MapColor.SNOW.colorValue, "Status/Info"));
-		this.texts.put("row1", new BasicText(20,  24, 160, MapColor.SNOW.colorValue, "Settings"));
-		this.texts.put("row2", new BasicText(20,  38, 160, MapColor.SNOW.colorValue, "Fuel"));
-		this.texts.put("row3", new BasicText(20,  52, 160, MapColor.SNOW.colorValue, "Attributes"));
-		this.texts.put("row4", new BasicText(20,  66, 160, MapColor.SNOW.colorValue, "Inventories"));
-		this.texts.put("row5", new BasicText(20,  80, 160, MapColor.SNOW.colorValue, "Containers"));
-		this.texts.put("row6", new BasicText(20,  94, 160, MapColor.SNOW.colorValue, "Connectors"));
-		this.texts.put("row7", new BasicText(20, 108, 160, MapColor.SNOW.colorValue, "Exit"));
+		this.texts.put("row0", new BasicText(20,  10, 160, MapColor.SNOW.colorValue, "gui.fvtm.vehicle.main.info").translate());
+		this.texts.put("row1", new BasicText(20,  24, 160, MapColor.SNOW.colorValue, "gui.fvtm.vehicle.main.settings").translate());
+		this.texts.put("row2", new BasicText(20,  38, 160, MapColor.SNOW.colorValue, "gui.fvtm.vehicle.main.fuel").translate());
+		this.texts.put("row3", new BasicText(20,  52, 160, MapColor.SNOW.colorValue, "gui.fvtm.vehicle.main.attributes").translate());
+		this.texts.put("row4", new BasicText(20,  66, 160, MapColor.SNOW.colorValue, "gui.fvtm.vehicle.main.inventories").translate());
+		this.texts.put("row5", new BasicText(20,  80, 160, MapColor.SNOW.colorValue, "gui.fvtm.vehicle.main.containers").translate());
+		this.texts.put("row6", new BasicText(20,  94, 160, MapColor.SNOW.colorValue, "gui.fvtm.vehicle.main.connectors").translate());
+		this.texts.put("row7", new BasicText(20, 108, 160, MapColor.SNOW.colorValue, "gui.fvtm.vehicle.main.exit").translate());
 		for(int i = 0; i < 8; i++){
 			this.buttons.put("row" + i, new BasicButton("row" + i, 7, 7 + (i * 14), 7, 7 + (i * 14), 155, 12, true));
 		}

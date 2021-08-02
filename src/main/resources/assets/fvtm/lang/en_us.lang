@@ -171,7 +171,16 @@ handler.deinstall.fvtm.bogie.part_not_removable=Part is marked as non removable.
 handler.deinstall.fvtm.bogie.check_passed=Deinstallation check passed.
 handler.deinstall.fvtm.bogie.success=Part uninstalled and position reset.
 //
-
+handler.install.fvtm.connector.category_occupied=There is already another part with that category installed.
+handler.install.fvtm.connector.front_occupied=Front Connector Pos is already set.
+handler.install.fvtm.connector.not_front_part=This is not a Front Connector Part.
+handler.install.fvtm.connector.rear_occupied=Rear Connector Pos is already set.
+handler.install.fvtm.connector.not_rear_part=This is not a Rear Connector Part.
+handler.install.fvtm.connector.check_passed=Installation check passed.
+handler.install.fvtm.connector.success=Part installed into selected category.
+handler.deinstall.fvtm.connector.part_not_removable=Part is marked as non removable.
+handler.deinstall.fvtm.connector.check_passed=Deinstallation check passed.
+handler.deinstall.fvtm.connector.success=Part uninstalled and position reset.
 
 
 # Items

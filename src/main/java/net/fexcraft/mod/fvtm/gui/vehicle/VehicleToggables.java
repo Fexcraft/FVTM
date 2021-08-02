@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -18,6 +19,7 @@ import net.minecraft.world.World;
 public class VehicleToggables extends GenericGui<VehicleContainer> {
 
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_toggables.png");
+	private static String CURRENT_PAGE, LAST_EDITED, NOT_EDITABLE;
 	private ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	private int page, edited;
 	private GenericVehicle veh;
@@ -42,6 +44,9 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				attributes.add(attr);
 			}
 		});
+		CURRENT_PAGE = I18n.format("gui.fvtm.vehicle.attribute.current_page");
+		LAST_EDITED = I18n.format("gui.fvtm.vehicle.attribute.last_edited");
+		NOT_EDITABLE = I18n.format("gui.fvtm.vehicle.attribute.not_editable");
 	}
 
 	@Override
@@ -52,7 +57,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			// this.buttons.put("row" + i, new BasicButton("row" + i, guiLeft + 7, guiTop + 7 + (i * 14), 7, 7 + (i * 14), 180, 12, true));
 			this.buttons.put("edit" + i, new BasicButton("edit" + i, guiLeft + 190, guiTop + 8 + (i * 14), 190, 8 + (i * 14), 10, 10, true));
 		}
-		this.texts.put("status", new BasicText(guiLeft + 8, guiTop + 203, 224, MapColor.SNOW.colorValue, "Current page: -/-"));
+		this.texts.put("status", new BasicText(guiLeft + 8, guiTop + 203, 224, MapColor.SNOW.colorValue, CURRENT_PAGE + " -/-"));
 		this.buttons.put("prev", new BasicButton("prev", guiLeft + 235, guiTop + 204, 235, 204, 6, 6, true));
 		this.buttons.put("next", new BasicButton("next", guiLeft + 242, guiTop + 204, 242, 204, 6, 6, true));
 		this.fields.put("field", field = new TextField(0, mc.fontRenderer, 0, 0, 46, 12));
@@ -102,7 +107,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				Attribute<?> attr = getAttr(page * 14 + edited);
 				if(attr == null) return true;
 				if(!attr.editable()){
-					texts.get("row" + row).string = " [ Not Editable ]";
+					texts.get("row" + row).string = NOT_EDITABLE;
 					return true;
 				}
 				if(attr.valuetype().isBoolean()){
@@ -136,7 +141,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		if(j != null){
 			edited = j;
 		}
-		texts.get("status").string = "Current page: " + (page + 1) + "/" + (attributes.size() / 14 + 1) + (edited >= 0 ? " | Last edit: " + (edited + 1) : "");
+		texts.get("status").string = CURRENT_PAGE + " " + (page + 1) + "/" + (attributes.size() / 14 + 1) + (edited >= 0 ? " | " + LAST_EDITED + " " + (edited + 1) : "");
 		//updateTexts();
 		texts.forEach((key, value) -> {
 			if(key.startsWith("val")) value.visible = true;

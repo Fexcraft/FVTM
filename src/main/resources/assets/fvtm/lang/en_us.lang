@@ -134,6 +134,10 @@ gui.fvtm.vehicle.main.inventories=Inventories
 gui.fvtm.vehicle.main.containers=Containers
 gui.fvtm.vehicle.main.connectors=Connectors
 gui.fvtm.vehicle.main.exit=Exit
+gui.fvtm.vehicle.fuel.accepts=Accepts: 
+gui.fvtm.vehicle.attribute.current_page=Current Page:
+gui.fvtm.vehicle.attribute.last_edited=Last Edited: 
+gui.fvtm.vehicle.attribute.not_editable=[ Not Editable ]
 
 # Handlers
 handler.install.fvtm.default.category_occupied=There is already another part with that category installed.

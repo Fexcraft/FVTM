@@ -4,6 +4,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -22,7 +23,7 @@ public class VehicleFuel extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected void init(){
-		String accepted = "Accepts: ";
+		String accepted = I18n.format("gui.fvtm.vehicle.fuel.accepts") + " ";
 		for(int i = 0; i < veh.getVehicleData().getFuelGroup().length; i++)
 			accepted += veh.getVehicleData().getFuelGroup()[i] + (i == veh.getVehicleData().getFuelGroup().length - 1 ? "" : ",");
 		texts.put("row0", new BasicText(guiLeft + 9, guiTop + 9, 158, MapColor.SNOW.colorValue, accepted));

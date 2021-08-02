@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -24,8 +25,8 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected void init(){
-		this.texts.put("row0", new BasicText(20,  10, 160, MapColor.SNOW.colorValue, "Status/Info"));
-		this.texts.put("row1", new BasicText(20,  24, 160, MapColor.SNOW.colorValue, "Settings"));
+		this.texts.put("row0", new BasicText(20,  10, 160, MapColor.SNOW.colorValue, "..."));
+		this.texts.put("row1", new BasicText(20,  24, 160, MapColor.SNOW.colorValue, "..."));
 		for(int i = 0; i < 2; i++){
 			this.buttons.put("row" + i, new BasicButton("row" + i, 7, 7 + (i * 14), 7, 7 + (i * 14), 155, 12, true));
 		}
@@ -50,8 +51,14 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(button.name.equals("row0")){ tryCouple(true); return true; }
-		if(button.name.equals("row1")){ tryCouple(false); return true; }
+		if(button.name.equals("row0")){
+			tryCouple(true);
+			return true;
+		}
+		if(button.name.equals("row1")){
+			tryCouple(false);
+			return true;
+		}
 		//
 		return false;
 	}
@@ -62,8 +69,12 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
 			if(front && land.truck != null){ land.truck.tryDetach(player); }
 			if(!front){
         		if(land.getVehicleData().getRearConnector() == null){
-        			Print.chat(player, "This vehicle does not have a rear connector installed.");
-        		} else { if(land.trailer != null) land.tryDetach(player); else land.tryAttach(player); }
+        			Print.chat(player, I18n.format("gui.fvtm.vehicle.connector.no_rear_connector"));
+        		}
+        		else{
+        			if(land.trailer != null) land.tryDetach(player);
+        			else land.tryAttach(player);
+        		}
 			}
 		}
 		else if(vehicle instanceof RailVehicle){
@@ -72,7 +83,7 @@ public class VehicleConnectors extends GenericGui<VehicleContainer> {
 			//TODO isn't this client side?
 		}
 		else {
-			Print.chat(player, "There is no connector/coupler function for this vehicle type yet.");
+			Print.chat(player, I18n.format("gui.fvtm.vehicle.connector.not_available_yet"));
 		}
 	}
 

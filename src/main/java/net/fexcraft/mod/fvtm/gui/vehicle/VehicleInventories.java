@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -21,6 +22,7 @@ import net.minecraft.world.World;
 public class VehicleInventories extends GenericGui<VehicleContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_inventories.png");
+	private static String INVENTORIES;
 	private ArrayList<PartData> inventories = new ArrayList<>();
 	private ArrayList<String> inv_names = new ArrayList<>();
 	private RGB[] colors = new RGB[8];
@@ -29,8 +31,11 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 
 	public VehicleInventories(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
-		this.defbackground = true; this.deftexrect = true; container.gui = this;
-		this.xSize = 194; this.ySize = 134;
+		this.defbackground = true;
+		this.deftexrect = true;
+		container.gui = this;
+		this.xSize = 194;
+		this.ySize = 134;
 		//if(!player.isRiding() || player.getRidingEntity() instanceof SeatEntity == false){ player.closeScreen(); return; }
 		veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 		SeatCache seat = veh.getSeatOf(player);
@@ -42,11 +47,12 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 			}
 		}
 		for(int i = 0; i < 8; i++) colors[i] = RGB.WHITE;
+		INVENTORIES = I18n.format("gui.fvtm.vehicle.inventory.inventories");
 	}
 
 	@Override
 	protected void init(){
-		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 162, MapColor.SNOW.colorValue, "Inventories [-/-]"));
+		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 162, MapColor.SNOW.colorValue, INVENTORIES + " [-/-]"));
 		for(int i = 0; i < 8; i++){
 			texts.put("row" + i, new BasicText(guiLeft + 9, guiTop + 19 + (i * 14), 162, MapColor.SNOW.colorValue, "<---->"));
 			buttons.put("inv" + i, new BasicButton("inv" + i, guiLeft + 7, guiTop + 17 + (i * 14), 7, 17, 166, 12, true));
@@ -90,7 +96,7 @@ public class VehicleInventories extends GenericGui<VehicleContainer> {
 
 	private void updatePage(int i){
 		page += i; if(page < 0) page = 0;
-		texts.get("top").string = String.format("Inventories [%s/%s]", page + 1, inventories.size() / 8 + 1);
+		texts.get("top").string = String.format(INVENTORIES + " [%s/%s]", page + 1, inventories.size() / 8 + 1);
 		for(int j = 0; j < 8; j++){ int k = j + (page * 8); boolean bool = k >= inventories.size();
 			texts.get("row" + j).string = bool ? "" : inv_names.get(k); buttons.get("inv" + j).enabled = !bool;
 			if(!bool){ colors[j] = inventories.get(k).getFunction(InventoryFunction.class, "fvtm:inventory").getInventoryType().getColor(); }

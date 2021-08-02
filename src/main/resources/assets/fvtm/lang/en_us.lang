@@ -138,6 +138,13 @@ gui.fvtm.vehicle.fuel.accepts=Accepts:
 gui.fvtm.vehicle.attribute.current_page=Current Page:
 gui.fvtm.vehicle.attribute.last_edited=Last Edited: 
 gui.fvtm.vehicle.attribute.not_editable=[ Not Editable ]
+gui.fvtm.vehicle.inventory.inventories=Inventories
+gui.fvtm.vehicle.inventory.fluid_tank=Fluid Tank
+gui.fvtm.vehicle.inventory.no_fluid=no fluid
+gui.fvtm.vehicle.inventory.empty=empty
+gui.fvtm.vehicle.container.containers=Container Slots
+gui.fvtm.vehicle.connector.no_rear_connector=This vehicle does not have a rear connector installed.
+gui.fvtm.vehicle.connector.not_available_yet=There is no connector/coupler function for this vehicle type yet.
 
 # Handlers
 handler.install.fvtm.default.category_occupied=There is already another part with that category installed.

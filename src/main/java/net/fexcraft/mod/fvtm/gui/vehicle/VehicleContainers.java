@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.InventoryType;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -16,6 +17,7 @@ import net.minecraft.world.World;
 public class VehicleContainers extends GenericGui<VehicleContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_inventories.png");
+	private String containers;
 	private RGB[] colors = new RGB[8];
 	private String[] inv_names;
 	private Entity entity;
@@ -23,14 +25,19 @@ public class VehicleContainers extends GenericGui<VehicleContainer> {
 
 	public VehicleContainers(EntityPlayer player, World world, int x, int y, int z){
 		super(texture, new VehicleContainer(player, world, x, y, z), player);
-		this.defbackground = true; this.deftexrect = true; container.gui = this; this.xSize = 194; this.ySize = 134;
+		this.defbackground = true;
+		this.deftexrect = true;
+		container.gui = this;
+		this.xSize = 194;
+		this.ySize = 134;
 		entity = world.getEntityByID(y); inv_names = entity.getCapability(Capabilities.CONTAINER, null).getContainerSlotIds();
 		for(int i = 0; i < 8; i++) colors[i] = InventoryType.CONTAINER.getColor();
+		containers = I18n.format("gui.fvtm.vehicle.container.containers");
 	}
 
 	@Override
 	protected void init(){
-		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 162, MapColor.SNOW.colorValue, "Container Slots [-/-]"));
+		texts.put("top", new BasicText(guiLeft + 7, guiTop + 6, 162, MapColor.SNOW.colorValue, containers + " [-/-]"));
 		for(int i = 0; i < 8; i++){
 			texts.put("row" + i, new BasicText(guiLeft + 9, guiTop + 19 + (i * 14), 162, MapColor.SNOW.colorValue, "<---->"));
 			buttons.put("inv" + i, new BasicButton("inv" + i, guiLeft + 7, guiTop + 17 + (i * 14), 7, 17, 166, 12, true));
@@ -74,7 +81,7 @@ public class VehicleContainers extends GenericGui<VehicleContainer> {
 
 	private void updatePage(int i){
 		page += i; if(page < 0) page = 0;
-		texts.get("top").string = String.format("Container Slots [%s/%s]", page + 1, inv_names.length / 8 + 1);
+		texts.get("top").string = String.format(containers + " [%s/%s]", page + 1, inv_names.length / 8 + 1);
 		for(int j = 0; j < 8; j++){ int k = j + (page * 8); boolean bool = k >= inv_names.length;
 			texts.get("row" + j).string = bool ? "" : inv_names[k]; buttons.get("inv" + j).enabled = !bool;
 		}

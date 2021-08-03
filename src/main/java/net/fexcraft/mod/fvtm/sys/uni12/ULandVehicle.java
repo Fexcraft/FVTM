@@ -862,7 +862,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 else onUpdateMovement();
             }
         }
-        updateSounds();
+        else updateSounds();
         //
 		double x = posX - prevPosX, y = posY - prevPosY, z = posZ - prevPosZ;
 		while(avsp.size() < 10) avsp.add(speed);
@@ -889,6 +889,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         }
     }
     
+    @SideOnly(Side.CLIENT)
     private void updateSounds(){
     	if(!world.isRemote || engine == null) return;
     	if(engine.isOn() && engineloop == null){

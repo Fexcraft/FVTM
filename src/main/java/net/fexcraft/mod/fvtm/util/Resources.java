@@ -39,18 +39,7 @@ import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.data.attribute.BooleanAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.FloatAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.FloatModifier;
-import net.fexcraft.mod.fvtm.data.attribute.IntegerAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.IntegerModifier;
-import net.fexcraft.mod.fvtm.data.attribute.LongAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.Modifier;
-import net.fexcraft.mod.fvtm.data.attribute.StringAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.StringModifier;
-import net.fexcraft.mod.fvtm.data.attribute.TriStateAttribute;
-import net.fexcraft.mod.fvtm.data.attribute.Vector3fAttribute;
+import net.fexcraft.mod.fvtm.data.attribute.*;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.Container;
@@ -89,17 +78,7 @@ import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
-import net.fexcraft.mod.fvtm.util.function.BogieFunction;
-import net.fexcraft.mod.fvtm.util.function.ColorFunction;
-import net.fexcraft.mod.fvtm.util.function.ContainerFunction;
-import net.fexcraft.mod.fvtm.util.function.EngineFunction;
-import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.fvtm.util.function.PartSlotsFunction;
-import net.fexcraft.mod.fvtm.util.function.SeatsFunction;
-import net.fexcraft.mod.fvtm.util.function.TireFunction;
-import net.fexcraft.mod.fvtm.util.function.TransmissionFunction;
-import net.fexcraft.mod.fvtm.util.function.WheelFunction;
-import net.fexcraft.mod.fvtm.util.function.WheelPositionsFunction;
+import net.fexcraft.mod.fvtm.util.function.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -166,6 +145,7 @@ public class Resources {
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 	//
+	private static Field respackfile = null;
 	private File configroot; 
 	
 	public Resources(FMLPreInitializationEvent event){
@@ -210,6 +190,27 @@ public class Resources {
 				e.printStackTrace();
 			}
 		}
+		if(event.getSide().isClient()){
+			try{
+				respackfile = ReflectionHelper.findField(net.minecraft.client.resources.AbstractResourcePack.class, "resourcePackFile", "field_110597_b");
+			}
+			catch(Exception e){
+				Print.log("Failed to get field. [RESPACKLOADER:ERR:0]");
+				Print.log("LiteAddon loading will be skipped.");
+			}
+			if(respackfile != null){
+				if(Config.LOAD_ALL_RESOURCEPACKS){
+					for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntriesAll()){
+						checkEntry(entry.getResourcePack());
+					}
+				}
+				else{
+					for(net.minecraft.client.resources.ResourcePackRepository.Entry entry : net.minecraft.client.Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntries()){
+						checkEntry(entry.getResourcePack());
+					}
+				}
+			}
+		}
 		//
 		//TODO check addon on/off state
 		//
@@ -228,6 +229,31 @@ public class Resources {
 		searchInAddonsFor(DataType.VEHICLE);
 		//
 		searchInAddonsFor(DataType.ROADSIGN);
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void checkEntry(net.minecraft.client.resources.IResourcePack pack) {
+		for(String str : pack.getResourceDomains()){
+			if(Static.dev()){
+				try {
+					Print.log("Checking " + respackfile.get(pack) + " " + str);
+					Print.log("Result: " + pack.resourceExists(new ResourceLocation(str + ":addonpack.fvtm")));
+				}
+				catch(IllegalArgumentException | IllegalAccessException e){
+					e.printStackTrace();
+				}
+			}
+			ResourceLocation resloc = new ResourceLocation(str + ":addonpack.fvtm");
+			if(pack.resourceExists(resloc)){
+				try {
+					Addon addon = new Addon(pack instanceof net.minecraft.client.resources.FolderResourcePack ? ContainerType.DIR : ContainerType.JAR, (File)respackfile.get(pack));
+					ADDONS.register(addon.parse(JsonUtil.getObjectFromInputStream(pack.getInputStream(resloc))));
+				}
+				catch(IllegalArgumentException | IllegalAccessException | IOException e){
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public static final void loadPresets(){

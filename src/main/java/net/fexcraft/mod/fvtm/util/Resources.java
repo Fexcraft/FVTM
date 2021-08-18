@@ -211,6 +211,27 @@ public class Resources {
 				}
 			}
 		}
+		File packfolder = new File(configroot, "packs/");
+		if(!packfolder.exists()) packfolder.mkdir();
+		for(File file : packfolder.listFiles()){
+			if(file.isHidden()) continue;
+			if(file.getName().endsWith(".zip")){
+				
+			}
+			else if(file.isDirectory()){
+				File assets = new File(file, "assets/");
+				if(assets.exists()){
+					for(File fl : assets.listFiles()){
+						if(!fl.isDirectory()) continue;
+						File dec = new File(fl, "addonpack.fvtm");
+						if(dec.exists()){
+							//
+						}
+					}
+				}
+			}
+		}
+		Static.stop();
 		//
 		//TODO check addon on/off state
 		//

@@ -54,7 +54,7 @@ public class Addon extends TypeCore<Addon> {
 	
 	protected ArrayList<String> authors = new ArrayList<>();
 	protected String version, url, license, update_id;
-	protected boolean enabled = true, generatelang, generatejson, generateicon;
+	protected boolean enabled = true, lite, generatelang, generatejson, generateicon;
 	protected File file, lang;
 	protected ContainerType contype;
 	protected HashMap<String, ArmorMaterial> armats = new HashMap<>();
@@ -63,7 +63,15 @@ public class Addon extends TypeCore<Addon> {
 	protected HashMap<String, CreativeTabs> creativetabs;
 	protected AutoRegisterer registerer;
 	
-	public Addon(ContainerType type, File file){ this.contype = type; this.file = file; }
+	public Addon(ContainerType type, File file){
+		this(type, file, false);
+	}
+	
+	public Addon(ContainerType type, File file, boolean lite){
+		this.contype = type;
+		this.file = file;
+		this.lite = lite;
+	}
 
 	@Override
 	public Addon parse(JsonObject obj){
@@ -435,6 +443,10 @@ public class Addon extends TypeCore<Addon> {
 	
 	public HashMap<String, ArmorMaterial> getClothMaterials(){
 		return armats;
+	}
+	
+	public boolean isLitePack(){
+		return lite;
 	}
 
 }

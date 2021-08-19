@@ -11,11 +11,13 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
+import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -216,7 +218,10 @@ public class Resources {
 		for(File file : packfolder.listFiles()){
 			if(file.isHidden()) continue;
 			if(file.getName().endsWith(".zip")){
-				
+				JsonArray array = ZipUtil.getJsonElementsAt(file, "assets", "addonpack.fvtm", 1);
+				if(array.size() > 0){
+					ADDONS.register(new Addon(ContainerType.JAR, file, true).parse(array.get(0).getAsJsonObject()));
+				}
 			}
 			else if(file.isDirectory()){
 				File assets = new File(file, "assets/");
@@ -225,13 +230,12 @@ public class Resources {
 						if(!fl.isDirectory()) continue;
 						File dec = new File(fl, "addonpack.fvtm");
 						if(dec.exists()){
-							//
+							ADDONS.register(new Addon(ContainerType.DIR, file, true).parse(JsonUtil.get(dec)));
 						}
 					}
 				}
 			}
 		}
-		Static.stop();
 		//
 		//TODO check addon on/off state
 		//
@@ -267,7 +271,7 @@ public class Resources {
 			ResourceLocation resloc = new ResourceLocation(str + ":addonpack.fvtm");
 			if(pack.resourceExists(resloc)){
 				try {
-					Addon addon = new Addon(pack instanceof net.minecraft.client.resources.FolderResourcePack ? ContainerType.DIR : ContainerType.JAR, (File)respackfile.get(pack));
+					Addon addon = new Addon(pack instanceof net.minecraft.client.resources.FolderResourcePack ? ContainerType.DIR : ContainerType.JAR, (File)respackfile.get(pack), true);
 					ADDONS.register(addon.parse(JsonUtil.getObjectFromInputStream(pack.getInputStream(resloc))));
 				}
 				catch(IllegalArgumentException | IllegalAccessException | IOException e){

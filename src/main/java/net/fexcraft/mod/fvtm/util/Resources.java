@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -217,13 +220,7 @@ public class Resources {
 		if(!packfolder.exists()) packfolder.mkdir();
 		for(File file : packfolder.listFiles()){
 			if(file.isHidden()) continue;
-			if(file.getName().endsWith(".zip")){
-				JsonArray array = ZipUtil.getJsonElementsAt(file, "assets", "addonpack.fvtm", 1);
-				if(array.size() > 0){
-					ADDONS.register(new Addon(ContainerType.JAR, file, true).parse(array.get(0).getAsJsonObject()));
-				}
-			}
-			else if(file.isDirectory()){
+			if(file.isDirectory()){
 				File assets = new File(file, "assets/");
 				if(assets.exists()){
 					for(File fl : assets.listFiles()){
@@ -235,6 +232,18 @@ public class Resources {
 					}
 				}
 			}
+			else if(file.getName().endsWith(".zip") || file.getName().endsWith(".jar")){
+				JsonArray array = ZipUtil.getJsonElementsAt(file, "assets", "addonpack.fvtm", 1);
+				JsonObject obj = array.get(0).getAsJsonObject();
+				if(array.size() > 0){
+					Addon addon = new Addon(ContainerType.JAR, file, true).parse(obj);
+					ADDONS.register(addon);
+					if(file.getName().endsWith(".jar") || (obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean())){
+						addToClassPath(addon, file);
+					}
+				}
+			}
+			
 		}
 		//
 		//TODO check addon on/off state
@@ -255,6 +264,28 @@ public class Resources {
 		//
 		searchInAddonsFor(DataType.ROADSIGN);
 	}
+	
+	private static Method cl_method;
+
+	private void addToClassPath(Addon addon, File file){
+		if(file.isDirectory()) return;
+		try{
+			cl_method = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", java.net.URL.class);
+			cl_method.setAccessible(true);
+		}
+		catch(Exception e){
+			Print.log("Failed to get method. [RESPACKLOADER:ERR:1]");
+			Print.log("LiteAddon JavaModel loading will be skipped.");
+		}
+		try {
+			ClassLoader loader = this.getClass().getClassLoader();
+			cl_method.invoke(loader, file.toURI().toURL());
+			FCLRegistry.scanForModels(file, loader);
+		}
+		catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | MalformedURLException e){
+			e.printStackTrace();
+		}
+	}
 
 	@SideOnly(Side.CLIENT)
 	private void checkEntry(net.minecraft.client.resources.IResourcePack pack) {
@@ -272,7 +303,11 @@ public class Resources {
 			if(pack.resourceExists(resloc)){
 				try {
 					Addon addon = new Addon(pack instanceof net.minecraft.client.resources.FolderResourcePack ? ContainerType.DIR : ContainerType.JAR, (File)respackfile.get(pack), true);
-					ADDONS.register(addon.parse(JsonUtil.getObjectFromInputStream(pack.getInputStream(resloc))));
+					JsonObject obj = JsonUtil.getObjectFromInputStream(pack.getInputStream(resloc));
+					if(obj.has("JavaModels") && obj.get("JavaModels").getAsBoolean() && !addon.getFile().isDirectory()){
+						addToClassPath(addon, addon.getFile());
+					}
+					ADDONS.register(addon.parse(obj));
 				}
 				catch(IllegalArgumentException | IllegalAccessException | IOException e){
 					e.printStackTrace();

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
+import com.google.gson.JsonElement;
+
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketEntityUpdate;
 import net.fexcraft.mod.fvtm.data.Seat;
@@ -14,6 +16,9 @@ import net.minecraftforge.fml.relauncher.Side;
 
 /** @author Ferdinand Calo' (FEX___96) */
 public abstract class VehicleScript {
+	
+	/** Optional init Data */
+	public VehicleScript init(JsonElement elm){ return this; }
 
 	/** The Unique ID of the Script. */
 	public abstract String getId();

@@ -137,7 +137,7 @@
     			"target": "input"
     		}
     	],
-    	"Script": "net.fexcraft.mod.addons.gep.scripts.SmelteryScript.class",
+    	"Script": "net.fexcraft.mod.addon.gep.scripts.SmelteryScript.class",
     	"ScriptData":{
     		"auto_recipe_chooser": true,
     		"instant": false,

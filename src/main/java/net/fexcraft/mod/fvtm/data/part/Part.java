@@ -59,6 +59,7 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	protected Object installhandler_data;
 	protected ArrayList<Function> functions = new ArrayList<>();
 	protected ArrayList<Class<? extends VehicleScript>> scripts = new ArrayList<>();
+	protected ArrayList<JsonElement> scripts_data = new ArrayList<>();
 	protected TreeMap<String, Sound> sounds = new TreeMap<>();
 	protected TreeMap<String, SwivelPoint> rotpoints = new TreeMap<>();
 	
@@ -168,15 +169,11 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		} else{ this.installhandler = DefaultPartInstallHandler.INSTANCE; }
 		//
 		if(obj.has("Script")){
-            try{ scripts.add((Class<? extends VehicleScript>)Class.forName(obj.get("Script").getAsString().replace(".class", ""))); }
-            catch(Exception e){ e.printStackTrace(); }
+			addScript(obj.get("Script"));
 		}
 		if(obj.has("Scripts")){
 			JsonArray array = obj.get("Scripts").getAsJsonArray();
-			for(JsonElement elm : array){
-	            try{ scripts.add((Class<? extends VehicleScript>)Class.forName(elm.getAsString().replace(".class", ""))); }
-	            catch(Exception e){ e.printStackTrace(); }
-			}
+			for(JsonElement elm : array) addScript(elm);
 		}
 		if(obj.has("SwivelPoints") && obj.get("SwivelPoints").isJsonArray()){
 			obj.get("SwivelPoints").getAsJsonArray().forEach(elm -> {
@@ -205,6 +202,27 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 		this.item = new PartItem(this);
 		MinecraftForge.EVENT_BUS.post(new TypeEvents.PartCreated(this, obj));
 		return this;
+	}
+
+	private void addScript(JsonElement elm){
+		String clazz = null;
+		JsonElement data = null;
+		if(elm.isJsonObject()){
+			clazz = elm.getAsJsonObject().get("class").getAsString().replace(".class", "");
+			data = elm.getAsJsonObject().get("data");
+		}
+		else{
+			clazz = elm.getAsString().replace(".class", "");
+			data = new JsonObject();
+		}
+        try{
+        	scripts.add((Class<? extends VehicleScript>)Class.forName(clazz));
+        	scripts_data.add(data);
+        }
+        catch(Exception e){
+        	e.printStackTrace();
+        	Static.stop();
+        }
 	}
 
 	@Override
@@ -276,6 +294,10 @@ public class Part extends TypeCore<Part> implements Textureable.TextureHolder, S
 	
 	public List<Class<? extends VehicleScript>> getVehicleScripts(){
 		return scripts;
+	}
+	
+	public List<JsonElement> getVehicleScriptsData(){
+		return scripts_data;
 	}
 
 	@Override

@@ -353,11 +353,19 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		//
 		for(PartData part : parts.values()){
 			if(part.getType().getVehicleScripts().size() > 0){
-				for(Class<? extends VehicleScript> clazz : part.getType().getVehicleScripts()){
+				for(int i = 0; i < part.getType().getVehicleScripts().size(); i++){
 					try{
-						VehicleScript scrapt = clazz.newInstance(); String id = scrapt.getId(); boolean found = false;
-						for(VehicleScript script : scripts) if(script.getId().equals(id)){ found = true; break; }
-						if(!found){ scripts.add(clazz.newInstance()); }
+						Class<? extends VehicleScript> clazz = part.getType().getVehicleScripts().get(i);
+						VehicleScript scrapt = clazz.newInstance();
+						String id = scrapt.getId();
+						boolean found = false;
+						for(VehicleScript script : scripts){
+							if(script.getId().equals(id)){
+								found = true;
+								break;
+							}
+						}
+						if(!found) scripts.add(clazz.newInstance().init(part.getType().getVehicleScriptsData().get(i)));
 					}
 					catch(InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e){
 						e.printStackTrace();

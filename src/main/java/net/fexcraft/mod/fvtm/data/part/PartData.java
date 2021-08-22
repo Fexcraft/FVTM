@@ -75,7 +75,13 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 			isTextureExternal = compound.getBoolean("ExternalTexture");
 			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
 			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
-		} else{ seltex = null; extex = null; isTextureExternal = false; }
+		}
+		else{
+			seltex = null;
+			extex = null;
+			isTextureExternal = false;
+		}
+		if(selected_texture >= type.getDefaultTextures().size()) selected_texture = 0;
 		//
 		NBTTagList flist = (NBTTagList)compound.getTag("Functions");
 		if(flist != null){

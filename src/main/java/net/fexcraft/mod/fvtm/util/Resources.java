@@ -41,6 +41,7 @@ import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RoadSign;
+import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
@@ -55,6 +56,7 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Textureable;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -918,6 +920,36 @@ public class Resources {
 			}
 		}
 		return NONE_MAT;
+	}
+
+	public static void linkTextureSuppliers(){
+		for(Addon addon : ADDONS.getValuesCollection()){
+			if(addon.getTextureSuppliers().isEmpty()) continue;
+			for(TextureSupply texsupp : addon.getTextureSuppliers().values()){
+				for(String tar : texsupp.targets()){
+					String[] split = tar.split(";");
+					ResourceLocation rl = new ResourceLocation(split[1]);
+					Textureable.TextureHolder holder = null;
+					switch(split[0]){
+						case "vehicle":{
+							holder =  VEHICLES.getValue(rl);
+							break;
+						}
+						case "part":{
+							holder = PARTS.getValue(rl);
+							break;
+						}
+						case "container":{
+							holder = CONTAINERS.getValue(rl);
+							break;
+						}
+					}
+					if(holder != null){
+						holder.getDefaultTextures().addAll(texsupp.textures());
+					}
+				}
+			}
+		}
 	}
 
 }

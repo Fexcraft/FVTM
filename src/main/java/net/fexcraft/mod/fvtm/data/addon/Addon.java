@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,6 +24,7 @@ import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.block.CraftBlockScript;
 import net.fexcraft.mod.fvtm.data.part.Part;
@@ -58,6 +60,7 @@ public class Addon extends TypeCore<Addon> {
 	protected File file, lang;
 	protected ContainerType contype;
 	protected HashMap<String, ArmorMaterial> armats = new HashMap<>();
+	protected LinkedHashMap<String, TextureSupply> supp_tex = new LinkedHashMap<>();
 	//
 	@SideOnly(Side.CLIENT)
 	protected HashMap<String, CreativeTabs> creativetabs;
@@ -112,6 +115,12 @@ public class Addon extends TypeCore<Addon> {
 				int[] ams = data.has("damage_reduction") ? JsonUtil.getIntegerArray(data.get("damage_reduction").getAsJsonArray()) : new int[]{ 0, 0, 0, 0 };
 				float tgh = JsonUtil.getIfExists(obj, "toughness", 0f).floatValue();
 				armats.put(entry.getKey(), EnumHelper.addArmorMaterial(entry.getKey(), Resources.NULL_TEXTURE.toString(), durr, ams, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, tgh));
+			});
+		}
+		if(obj.has("SupplyTextures")){
+			JsonObject supp = obj.get("SupplyTextures").getAsJsonObject();
+			supp.entrySet().forEach(entry -> {
+				supp_tex.put(entry.getKey(), new TextureSupply(entry.getKey(), entry.getValue().getAsJsonObject()));
 			});
 		}
 		return this;
@@ -447,6 +456,10 @@ public class Addon extends TypeCore<Addon> {
 	
 	public boolean isLitePack(){
 		return lite;
+	}
+
+	public LinkedHashMap<String, TextureSupply> getTextureSuppliers(){
+		return supp_tex;
 	}
 
 }

@@ -54,15 +54,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.road.RoadSys;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
-import net.fexcraft.mod.fvtm.util.BasicSpawnSystem;
-import net.fexcraft.mod.fvtm.util.CrashCallable;
-import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
-import net.fexcraft.mod.fvtm.util.ListenerClient;
-import net.fexcraft.mod.fvtm.util.ListenerServer;
-import net.fexcraft.mod.fvtm.util.Perms;
-import net.fexcraft.mod.fvtm.util.RailSpawnSystem;
-import net.fexcraft.mod.fvtm.util.ResizeUtil;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
 import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
@@ -187,6 +179,7 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
+		Resources.linkTextureSuppliers();
 		Perms.register();
 		if(event.getSide().isClient()){
 			ConstructorBlock.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());

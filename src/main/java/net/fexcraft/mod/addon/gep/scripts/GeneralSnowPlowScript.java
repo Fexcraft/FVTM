@@ -54,6 +54,8 @@ public class GeneralSnowPlowScript extends VehicleScript {
 		accuracy = JsonUtil.getIfExists(obj, "accuracy", 1f).floatValue();
 		for(float f = -(width / 2f) + accuracy / 2; f < width / 2; f += accuracy){
 			plow.add(pos.to16Double().add(0, 0, f));
+			plow.add(pos.to16Double().add(0, .5, f));
+			plow.add(pos.to16Double().add(0, 1, f));
 		}
 		if(obj.has("out")){
 			out = Pos.fromJson(obj.get("out"), true);
@@ -83,6 +85,7 @@ public class GeneralSnowPlowScript extends VehicleScript {
         for(Vec3d vec : plow){
         	bpos = new BlockPos(calculate(vehicle.getRotPoint().getAxes(), entity, vec));
         	state = entity.world.getBlockState(bpos);
+        	if(state.getBlock() == Blocks.AIR) continue; 
         	if(state.getMaterial() == Material.SNOW){
         		if(accumulate && state.getBlock() instanceof BlockSnow) accumulated += state.getBlock().getMetaFromState(state) + 1;
                 entity.world.setBlockState(bpos, Blocks.AIR.getDefaultState(), 2);
@@ -94,12 +97,18 @@ public class GeneralSnowPlowScript extends VehicleScript {
         if(accumulate && accumulated > 0){
         	bpos = new BlockPos(calculate(vehicle.getRotPoint().getAxes(), entity, out.to16Double()));
         	state = entity.world.getBlockState(bpos);
-        	if(state.getBlock() instanceof BlockSnow) accumulated += state.getBlock().getMetaFromState(state);
-            entity.world.setBlockState(bpos, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, accumulated > 8 ? 8 : accumulated), 2);
+        	boolean snow = state.getBlock() instanceof BlockSnow;
+        	if(snow) accumulated += state.getBlock().getMetaFromState(state);
+        	if(snow || state.getMaterial().isReplaceable() || state.getMaterial() == Material.CACTUS || state.getMaterial() == Material.CIRCUITS){
+                entity.world.setBlockState(bpos, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, accumulated > 8 ? 8 : accumulated), 2);
+        	}
             if(accumulated > 8){
             	accumulated -= 8;
-            	bpos = new BlockPos(calculate(vehicle.getRotPoint().getAxes(), entity, out.to16Double().add(0, 1, 0)));
-                entity.world.setBlockState(bpos, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, accumulated > 8 ? 8 : accumulated), 2);
+            	bpos = bpos.up();
+            	if(state.getBlock() instanceof BlockSnow || state.getMaterial().isReplaceable()
+            			|| state.getMaterial() == Material.CACTUS || state.getMaterial() == Material.CIRCUITS){
+                    entity.world.setBlockState(bpos, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, accumulated > 8 ? 8 : accumulated), 2);
+            	}
             }
         }
 	}

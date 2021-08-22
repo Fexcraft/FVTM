@@ -98,7 +98,7 @@ public class Addon extends TypeCore<Addon> {
 		//
 		if(Static.side().isClient()){
 			creativetabs = new HashMap<>();
-			if(!obj.has("CreativeTabs") || obj.get("CreativeTabs").getAsJsonArray().size() == 0){
+			if(!obj.has("CreativeTabs") /*|| obj.get("CreativeTabs").getAsJsonArray().size() == 0*/){
 				this.creativetabs.put(AddonTab.DEFAULT, new AddonTab(this, AddonTab.DEFAULT));
 			}
 			else{
@@ -346,6 +346,7 @@ public class Addon extends TypeCore<Addon> {
 
 	@SideOnly(Side.CLIENT)
 	public CreativeTabs getDefaultCreativeTab(){
+		if(creativetabs.size() == 0) return null;
 		if(creativetabs.containsKey("default"))
 			return creativetabs.get("default");
 		else return creativetabs.values().toArray(new CreativeTabs[0])[0];

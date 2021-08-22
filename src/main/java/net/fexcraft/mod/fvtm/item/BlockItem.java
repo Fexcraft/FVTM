@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.registry.ItemBlock16;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.generated.PlainBase;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.block.MultiBlock;
 import net.fexcraft.mod.fvtm.data.root.DataCore.DataCoreItem;
 import net.fexcraft.mod.fvtm.util.Properties;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -34,6 +36,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 	
+	@SideOnly(Side.CLIENT)
+	private CreativeTabs tab;
 	private Block type;
 
     public BlockItem(net.minecraft.block.Block block) throws Exception {
@@ -42,6 +46,8 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
 		this.setMaxStackSize(type.getMaxStackSize());
 		this.setRegistryName(block.getRegistryName());
 		this.setTranslationKey(block.getTranslationKey());
+		if(Static.side().isServer()) return;
+		tab = Resources.getCreativeTab(type);
 	}
 
     @SideOnly(Side.CLIENT)
@@ -102,7 +108,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
     
     @Override
     public CreativeTabs getCreativeTab(){
-        return type.getAddon().getCreativeTab(type.getCreativeTab());
+        return tab;
     }
     
     @Override

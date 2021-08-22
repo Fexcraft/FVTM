@@ -39,10 +39,6 @@ public class PlainBase extends net.minecraft.block.Block {
 		if(type.getCollisionDamage() > 0) entity.attackEntityFrom(DamageSource.CACTUS, type.getCollisionDamage());
 		if(type.isWebLike()) entity.setInWeb(); return;
     }
-
-	public void linkCreativeTab(){
-		this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
-	}
     
     @Override
     public BlockRenderLayer getRenderLayer(){

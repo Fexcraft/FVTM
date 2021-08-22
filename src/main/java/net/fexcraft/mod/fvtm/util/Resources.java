@@ -56,7 +56,9 @@ import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.DataType;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.data.root.Tabbed;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.TypeCore;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
@@ -86,6 +88,7 @@ import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.*;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -950,6 +953,27 @@ public class Resources {
 				}
 			}
 		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static CreativeTabs getCreativeTab(Tabbed type){
+		String tab = type.getCreativeTab();
+		Addon addon = null;
+		if(tab.contains(":")){
+			String[] split = tab.split(":");
+			addon = getAddon(split[0]);
+			if(addon == null) return null;
+			return addon.getCreativeTab(split[1]);
+		}
+		addon = ((TypeCore<?>)type).getAddon();
+		return addon.getDefaultCreativeTab();
+	}
+
+	public static Addon getAddon(String string){
+		for(Addon addon : ADDONS.getValuesCollection()){
+			if(addon.getRegistryName().getPath().equals(string)) return addon;
+		}
+		return null;
 	}
 
 }

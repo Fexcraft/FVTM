@@ -18,6 +18,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.util.Perms;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.resources.I18n;
@@ -44,7 +45,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		this.setMaxStackSize(64);
 		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath(), this, 0, null);
 		if(Static.side().isServer()) return;
-        this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
+        this.setCreativeTab(Resources.getCreativeTab(type));
     }
 
     @SideOnly(Side.CLIENT)

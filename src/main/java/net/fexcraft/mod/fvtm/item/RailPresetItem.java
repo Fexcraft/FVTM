@@ -15,6 +15,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -43,7 +44,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
 		this.setMaxStackSize(64);
 		this.type.getAddon().getFCLRegisterer().addItem(type.getRegistryName().getPath() + "." + (title = name), this, 0, null);
 		path = vecs; if(Static.side().isServer()) return;
-        this.setCreativeTab(type.getAddon().getCreativeTab(type.getCreativeTab()));
+        this.setCreativeTab(Resources.getCreativeTab(type));
     }
     
     public RailPresetItem setSegmentation(int segments){

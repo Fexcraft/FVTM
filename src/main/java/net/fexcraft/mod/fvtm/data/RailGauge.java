@@ -96,6 +96,10 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed {
 		}*/
 		this.compatible = DataUtil.getStringArray(obj, "Compatible", false, true);
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
+		//
+        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
+		this.item = new RailGaugeItem(this);
+		//
 		if(obj.has("PreSets")){
 			presets = new ArrayList<>();
 			for(JsonElement element : obj.get("PreSets").getAsJsonArray()){
@@ -120,9 +124,7 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed {
 				}
 			}
 		}
-		//
-        this.ctab = JsonUtil.getIfExists(obj, "CreativeTab", "default");
-		this.item = new RailGaugeItem(this); return this;
+		return this;
 	}
 
 	@Override

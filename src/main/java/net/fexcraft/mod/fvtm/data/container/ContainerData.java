@@ -117,7 +117,8 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 	@Override
 	public void setSelectedTexture(int i, String tex, boolean ex){
 		if(i < 0){
-			this.externaltex = ex; this.selected_texture = -1;
+			this.externaltex = ex;
+			this.selected_texture = -1;
 			this.seltex = ex ? null : new ResourceLocation(tex);
 			this.extex = ex ? tex : null;
 		}
@@ -174,7 +175,14 @@ public class ContainerData extends DataCore<Container, ContainerData> implements
 			externaltex = compound.getBoolean("ExternalTexture");
 			seltex = externaltex ? null : new ResourceLocation(compound.getString("CustomTexture"));
 			extex = externaltex ? compound.getString("CustomTexture") : null;
-		} else{ seltex = null; extex = null; externaltex = false; }
+		}
+		else{
+			seltex = null;
+			extex = null;
+			externaltex = false;
+		}
+		if(selected_texture >= type.getDefaultTextures().size()) selected_texture = 0;
+		//
         if(type.getInventoryType() == InventoryType.ITEM){
             DataUtil.loadAllItems(compound, stacks, null);
         }

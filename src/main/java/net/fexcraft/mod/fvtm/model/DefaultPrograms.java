@@ -111,6 +111,7 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(new RotationSetter(0, 0, 0, false));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new TranslationSetter(0, 0, 0, 0));//jtmt/obj init only
 		TurboList.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
+		TurboList.PROGRAMS.add(SELECTED_TEXTURE_BINDER);
 		TurboList.PROGRAMS.add(RESCALE_NORMAL);
 		TurboList.PROGRAMS.add(new TextRenderer(0, 0, 0, 0, 0, 0, 0, true));
 		TurboList.PROGRAMS.add(new AttributeTextRenderer("", 0, 0, 0, 0, 0, 0, 0, true));
@@ -1560,6 +1561,35 @@ public class DefaultPrograms {
 		}
 		
 	}
+	
+	public static Program SELECTED_TEXTURE_BINDER = new Program(){
+
+		@Override
+		public String getId(){
+			return "fvtm:bind_selected_texture";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			ModelBase.bindTexture(part == null ? data.getTexture() : data.getPart(part).getTexture());
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			//
+		}
+		
+		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			ModelBase.bindTexture(data.getTexture());
+		}
+		
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			//
+		}
+		
+	};
 	
 	public static Program RESCALE_NORMAL = new Program(){
 

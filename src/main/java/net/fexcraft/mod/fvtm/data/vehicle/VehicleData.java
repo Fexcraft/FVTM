@@ -237,6 +237,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			extex = null;
 			isTextureExternal = false;
 		}
+		if(selected_texture >= type.getDefaultTextures().size()) selected_texture = 0;
 		//
 		if(compound.hasKey("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");

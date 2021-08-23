@@ -94,22 +94,16 @@ public class GeneralSnowPlowScript extends VehicleScript {
         		entity.world.setBlockState(bpos, Blocks.AIR.getDefaultState(), 2);
         	}
         }
-        if(accumulate && accumulated > 0){
-        	bpos = new BlockPos(calculate(vehicle.getRotPoint().getAxes(), entity, out.to16Double()));
+        if(!accumulate || accumulated < 0) return;
+        for(int i = -1; i < width && accumulated > 0; i++){
+        	bpos = new BlockPos(calculate(vehicle.getRotPoint().getAxes(), entity, out.to16Double().add(0, i, 0)));
         	state = entity.world.getBlockState(bpos);
         	boolean snow = state.getBlock() instanceof BlockSnow;
         	if(snow) accumulated += state.getBlock().getMetaFromState(state);
         	if(snow || state.getMaterial().isReplaceable() || state.getMaterial() == Material.CACTUS || state.getMaterial() == Material.CIRCUITS){
                 entity.world.setBlockState(bpos, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, accumulated > 8 ? 8 : accumulated), 2);
+                if((accumulated -= 8) <= 0) break;
         	}
-            if(accumulated > 8){
-            	accumulated -= 8;
-            	bpos = bpos.up();
-            	if(state.getBlock() instanceof BlockSnow || state.getMaterial().isReplaceable()
-            			|| state.getMaterial() == Material.CACTUS || state.getMaterial() == Material.CIRCUITS){
-                    entity.world.setBlockState(bpos, Blocks.SNOW_LAYER.getDefaultState().withProperty(BlockSnow.LAYERS, accumulated > 8 ? 8 : accumulated), 2);
-            	}
-            }
         }
 	}
 

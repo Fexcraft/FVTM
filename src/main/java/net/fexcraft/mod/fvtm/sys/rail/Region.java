@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -34,7 +34,7 @@ public class Region {
 	//public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
-	public ArrayList<RegionKey> chucks = new ArrayList<>();
+	public CopyOnWriteArrayList<RegionKey> chucks = new CopyOnWriteArrayList<>();
 	public long lastaccess; private int timer = 0;
 	public boolean loaded;
 	private final RailSys world;
@@ -54,7 +54,7 @@ public class Region {
 			compound.setString("task", "update_region"); compound.setIntArray("XZ", key.toArray());
 			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound)); return this;
 		}
-		File file = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + ".dat");
+		File file = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + ".dat");
 		NBTTagCompound compound = null; boolean failed = false;
 		if(file.exists()){
 			try{ compound = CompressedStreamTools.read(file); }
@@ -62,7 +62,7 @@ public class Region {
 				failed = true; e.printStackTrace();
 				Print.log("FAILED TO LOAD RAIL REGION [ " + key.x +  ", " + key.z + " ]! THIS MAY BE NOT GOOD.");
 				try{
-					File newfile = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + "_" + Time.getAsString(null, true) + ".dat");
+					File newfile = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + "_" + Time.getAsString(null, true) + ".dat");
 					Files.copy(file.toPath(), newfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 					Print.log("If things gone well, created a backup copy of the 'broken' file!");
 				}
@@ -102,15 +102,22 @@ public class Region {
 	}
 	
 	public Region save(){
-		File file = new File(world.getRootFile(), "/railregions/" + key.x + "_" + key.z + ".dat");
+		File file = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + ".dat");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		NBTTagCompound compound = write(false);
 		if(compound.isEmpty()){
-			Print.debug("RailRegion [" + key.toString() + "] has no data to save, skipping."); return this;
+			Print.debug("RailRegion [" + key.toString() + "] has no data to save, skipping.");
+			return this;
 		}
 		compound.setLong("Saved", Time.getDate());
-		try{ CompressedStreamTools.write(compound, file); } catch(IOException e){ e.printStackTrace(); }
-		Print.debug("Saved RailRegion [" + key.toString() + "]."); return this;
+		try{
+			CompressedStreamTools.write(compound, file);
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
+		Print.debug("Saved RailRegion [" + key.toString() + "].");
+		return this;
 	}
 
 	private NBTTagCompound write(boolean clientpacket){

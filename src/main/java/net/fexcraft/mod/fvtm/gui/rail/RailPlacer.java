@@ -13,13 +13,14 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.RailBlock;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -87,7 +88,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 				STATEGRID[i][j] = state;
 			}
 		}
-		system = player.world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		system = SystemManager.get(Systems.RAIL, player.world, RailSys.class);
 		int d = zoom.co * 2 + 1;
 		for(int i = 0; i < d; i++){
 			for(int j = 0; j < d; j++){

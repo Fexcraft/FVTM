@@ -9,12 +9,13 @@ import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.signals.SignalType;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.util.ITooltipFlag;
@@ -56,7 +57,7 @@ public class SignalItem0 extends Item implements JunctionGridItem {
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
 		if(world.isRemote){ return EnumActionResult.PASS; }
-		RailSys syscap = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		RailSys syscap = SystemManager.get(Systems.RAIL, world);
 		if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");
 			return EnumActionResult.FAIL;

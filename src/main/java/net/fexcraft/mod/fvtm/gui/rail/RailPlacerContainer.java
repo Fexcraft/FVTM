@@ -4,12 +4,13 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.gui.GuiCommandSender;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +28,7 @@ public class RailPlacerContainer extends GenericContainer {
 	public RailPlacerContainer(EntityPlayer player, int x, int y, int z){
 		super(player);
 		itemslot = x; zoom = y;
-		system = player.world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		system = SystemManager.get(Systems.RAIL, player.world, RailSys.class);
 		sender = new GuiCommandSender(player);
 		if(!player.world.isRemote && !Perms.RAIL_PLACER_GUI.has(player)) player.closeScreen();
 	}

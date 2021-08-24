@@ -9,6 +9,9 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
 import net.minecraft.entity.Entity;
@@ -34,7 +37,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				Attribute<?> attr = null;
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				if(veh == null && packet.nbt.hasKey("railid")){
-					RailEntity ent = player.world.getCapability(Capabilities.RAILSYSTEM, null).get().getEntity(packet.nbt.getLong("railid"), false);
+					RailEntity ent = SystemManager.get(Systems.RAIL, player.world, RailSys.class).getEntity(packet.nbt.getLong("railid"), false);
 					attr = ent.vehdata.getAttribute(attribute);
 				}
 				else if(veh != null){

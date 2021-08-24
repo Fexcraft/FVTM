@@ -1,10 +1,11 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
+import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -58,8 +59,8 @@ public class SignalTileEntity extends BlockTileEntity implements JunctionTrackin
     @Override
 	public Junction getJunction(){
 		if(junction == null && juncpos != null && this.pos != null){
-        	RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
-        	if(sys != null) junction = sys.get().getJunction(juncpos, false);
+        	RailSys sys = SystemManager.get(Systems.RAIL, world);
+        	if(sys != null) junction = sys.getJunction(juncpos, false);
         	if(junction == null){
         		juncpos = null;//TODO control
         		Static.stop();

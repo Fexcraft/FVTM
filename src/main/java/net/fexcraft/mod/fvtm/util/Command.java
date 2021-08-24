@@ -10,7 +10,6 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.mc.api.registry.fCommand;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
@@ -22,6 +21,8 @@ import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
@@ -325,13 +326,13 @@ public class Command extends CommandBase {
             }
             case "rrr": case "reload-railregion":{
             	if(!Static.dev()) return;
-            	((RailSys)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("all", sender);
+            	((RailSys)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("all", sender);
             	Print.chat(sender, "&oRail-Regions Reloading.");
             	break;
             }
             case "rrs": case "reload-railsections":{
             	if(!Static.dev()) return;
-            	((RailSys)sender.getEntityWorld().getCapability(Capabilities.RAILSYSTEM, null)).sendReload("sections", sender);
+            	((RailSys)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("sections", sender);
             	Print.chat(sender, "&oRail-Sections Reloading.");
             	break;
             }

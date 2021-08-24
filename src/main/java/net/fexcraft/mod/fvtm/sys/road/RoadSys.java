@@ -93,7 +93,7 @@ public class RoadSys implements RoadSystem {
 		@Override
 		public void run(){
 			for(World world : Static.getServer().worlds){
-				if(world.isRemote) return; world.getCapability(Capabilities.RAILSYSTEM, null).scheduledCheck();
+				if(world.isRemote) return; world.getCapability(Capabilities.ROADSYSTEM, null).scheduledCheck();
 			}
 		}
 

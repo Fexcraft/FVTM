@@ -26,8 +26,8 @@ public class Capabilities {
 	public static final Capability<ContainerHolder> CONTAINER = null;
 	
 	/** Per-World RailSystem container. */
-	@CapabilityInject(RailSystem.class)
-	public static final Capability<RailSystem> RAILSYSTEM = null;
+	//@CapabilityInject(RailSystem.class)
+	//public static final Capability<RailSystem> RAILSYSTEM = null;
 	
 	/** Per-World RoadSystem container. */
 	@CapabilityInject(RoadSystem.class)

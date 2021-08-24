@@ -12,7 +12,6 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
@@ -21,6 +20,8 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -163,7 +164,7 @@ public class RailRenderer {
     //@SubscribeEvent
     public static void renderRails(World world, float partialticks){//RenderWorldLastEvent event){
     	if(Config.DISABLE_RAILS) return;
-	    raildata = Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null).get();
+	    raildata = SystemManager.get(Systems.RAIL, world, RailSys.class);
         //if(raildata.isLoading()) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * partialticks;

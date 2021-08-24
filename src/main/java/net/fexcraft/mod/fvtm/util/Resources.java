@@ -34,7 +34,6 @@ import net.fexcraft.mod.fvtm.block.ContainerEntity;
 import net.fexcraft.mod.fvtm.block.DisplayEntity;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Cloth;
 import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
@@ -76,13 +75,12 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
 import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
-import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
@@ -514,7 +512,7 @@ public class Resources {
 		}
 		catch(Throwable thr){
 			Print.log("Failed to find/parse model with adress '" + name + "'!");
-			thr.printStackTrace(); Static.stop();
+			thr.printStackTrace(); //Static.stop();
 			return (Model<T, K>)getEmptyModelFromClass(clazz);
 		}
 		MODELS.put(name, model);
@@ -709,7 +707,7 @@ public class Resources {
 	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		//event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
-		if(!Config.DISABLE_RAILS) event.addCapability(new ResourceLocation("fvtm:raildata"), new RailDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
+		SystemManager.onAttachWorldCapabilities(event);
 		if(!Config.DISABLE_ROADS) event.addCapability(new ResourceLocation("fvtm:roaddata"), new RoadDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
 		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
 	}
@@ -746,7 +744,7 @@ public class Resources {
 	public void onServerTick(TickEvent.ServerTickEvent event){
 		if(event.phase != Phase.START) return;
 		for(World world : Static.getServer().worlds){
-			if(!Config.DISABLE_RAILS) world.getCapability(Capabilities.RAILSYSTEM, null).updateTick();
+			SystemManager.onServerTick(world);
 		}
 	}
 	
@@ -760,8 +758,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onChunkLoad(ChunkEvent.Load event){
-		if(Config.DISABLE_RAILS) return;
-		event.getWorld().getCapability(Capabilities.RAILSYSTEM, null).onChunkLoad(event.getChunk());
+		SystemManager.onChunkLoad(event.getWorld(), event.getChunk());
 		event.getChunk().getTileEntityMap().values().forEach(tile -> {
 			if(tile instanceof MultiblockTileEntity){
 				((MultiblockTileEntity)tile).setup();
@@ -771,8 +768,8 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onChunkUnload(ChunkEvent.Unload event){
+		SystemManager.onChunkUnload(event.getWorld(), event.getChunk());
 		if(Config.DISABLE_RAILS) return;
-		event.getWorld().getCapability(Capabilities.RAILSYSTEM, null).onChunkUnload(event.getChunk());
 	}
 
 	@SubscribeEvent
@@ -811,12 +808,13 @@ public class Resources {
 			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(cfgsync), (EntityPlayerMP)event.player);
 		}
 		if(!Static.getServer().isSinglePlayer()) return;
-		RailSys.PLAYERON = true;
+		SystemManager.PLAYERON = true;
 	}
 	
 	@SubscribeEvent
 	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event){
-		if(!Static.getServer().isSinglePlayer()) return; RailSys.PLAYERON = false;
+		if(!Static.getServer().isSinglePlayer()) return;
+		SystemManager.PLAYERON = false;
 	}
 	
 	/*@SubscribeEvent

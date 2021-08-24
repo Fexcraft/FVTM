@@ -1,20 +1,11 @@
 package net.fexcraft.mod.fvtm;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.Timer;
-
-import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.SimpleUpdateHandler;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.ConstCenterBlock;
 import net.fexcraft.mod.fvtm.block.ConstructorBlock;
@@ -25,10 +16,8 @@ import net.fexcraft.mod.fvtm.block.generated.MultiblockTickableTE;
 import net.fexcraft.mod.fvtm.block.generated.MultiblockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
-import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.data.RoadSystem;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
@@ -51,16 +40,14 @@ import net.fexcraft.mod.fvtm.render.*;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
-import net.fexcraft.mod.fvtm.sys.road.RoadSys;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
 import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
-import net.fexcraft.mod.fvtm.util.caps.RailDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
 import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
@@ -68,7 +55,6 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.RVStore;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -106,8 +92,6 @@ public class FVTM {
 	private static FVTM INSTANCE;
 	private static AutoRegisterer REGISTERER;
 	private static Resources RESOURCES;
-	
-	private static Timer RAILSYSTEM, ROADSYSTEM;
 
 	@Mod.EventHandler
 	public void initPre(FMLPreInitializationEvent event){
@@ -128,7 +112,6 @@ public class FVTM {
 		GameRegistry.registerTileEntity(RailEntity.class, new ResourceLocation("fvtm:rail"));
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
-		if(!Config.DISABLE_RAILS) CapabilityManager.INSTANCE.register(RailSystem.class, new RailDataSerializer.Storage(), new RailDataSerializer.Callable());
 		if(!Config.DISABLE_ROADS) CapabilityManager.INSTANCE.register(RoadSystem.class, new RoadDataSerializer.Storage(), new RoadDataSerializer.Callable());
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
 		CapabilityManager.INSTANCE.register(PlayerData.class, new PlayerDataHandler.Storage(), new PlayerDataHandler.Callable());
@@ -242,26 +225,12 @@ public class FVTM {
 
 	@Mod.EventHandler
 	public void onStart(FMLServerStartingEvent event){
-		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
-		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli(); long date = Time.getDate();
-		while((mid += Config.UNLOAD_INTERVAL) < date);
-		if(RAILSYSTEM == null){
-			(RAILSYSTEM = new Timer()).schedule(new RailSys.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
-		}
-		if(ROADSYSTEM == null){
-			(ROADSYSTEM = new Timer()).schedule(new RoadSys.TimedTask(), new Date(mid), Config.UNLOAD_INTERVAL);
-		}
+		SystemManager.onServerStarting(event);
 	}
 
 	@Mod.EventHandler
 	public void onStop(FMLServerStoppingEvent event){
-		if(RAILSYSTEM != null) RAILSYSTEM.cancel(); if(ROADSYSTEM != null) ROADSYSTEM.cancel();
-		for(World world : Static.getServer().worlds){
-			RailSystem sys = world.getCapability(Capabilities.RAILSYSTEM, null);
-			if(sys != null) sys.unload();
-			RoadSystem rys = world.getCapability(Capabilities.ROADSYSTEM, null);
-			if(rys != null) rys.unload();
-		}
+		SystemManager.onServerStopping(event);
 	}
 
 	public static FVTM getInstance(){

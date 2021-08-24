@@ -1,12 +1,12 @@
 package net.fexcraft.mod.fvtm.block.generated;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,8 +28,8 @@ public interface JunctionTrackingTileEntity {
     	if(held.hasTagCompound() && held.getTagCompound().hasKey("fvtm:junction")){
     		Vec316f vector = new Vec316f(held.getTagCompound().getCompoundTag("fvtm:junction"));
     		Junction junc = null;
-        	RailSystem sys = tile_entity.getWorld().getCapability(Capabilities.RAILSYSTEM, null);
-        	if(sys != null) junc = sys.get().getJunction(vector, false);
+        	RailSys sys = SystemManager.get(Systems.RAIL, tile_entity.getWorld());
+        	if(sys != null) junc = sys.getJunction(vector, false);
         	if(junc == null){
             	Print.bar(player, "&eJunction at cached location in Item not found.");
             	return;
@@ -66,8 +66,9 @@ public interface JunctionTrackingTileEntity {
 	}
 	
 	public default void linkJunction(World world, BlockPos pos, Vec316f vec){
-		if(world == null || !world.hasCapability(Capabilities.RAILSYSTEM, null)) return;
-		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		if(world == null) return;
+		RailSys system = SystemManager.get(Systems.RAIL, world);
+		if(system == null) return;
 		Junction junc = system.getJunction(vec);
 		if(junc != null) junc.addLinkedTileEntity(pos);
 	}

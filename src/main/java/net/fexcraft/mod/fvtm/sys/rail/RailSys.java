@@ -1,7 +1,12 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
+import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.PLAYERON;
+import static net.fexcraft.mod.fvtm.sys.uni.SystemManager.SINGLEPLAYER;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TimerTask;
@@ -11,19 +16,18 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.data.Capabilities;
-import net.fexcraft.mod.fvtm.data.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
+import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -34,37 +38,45 @@ import net.minecraft.world.chunk.Chunk;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class RailSys implements RailSystem {
-	
+public class RailSys extends DetachedSystem {
+
 	private long gc_entities, gc_sections, gc_compounds;
-	private int dimension;
-	private World world;
 	//
 	private RegionMap regions = new RegionMap(this);
 	private TrackMap trackunits = new TrackMap(this);
 	private SectionMap sections = new SectionMap(this);
 	private TreeMap<Long, RegionKey> entities = new TreeMap<>();
-	//
-	public static boolean SINGLEPLAYER, PLAYERON;
-
-	@Override
-	public void setWorld(World world, int dimension){
-		this.world = world; this.dimension = dimension;
-		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
+	
+	public RailSys(World world){
+		super(world);
+		load();
 	}
 
-	@Override
-	public World getWorld(){
-		return world;
+	public void load(){
+		try{
+			NBTTagCompound compound = CompressedStreamTools.read(new File(getSaveRoot(), "/railsystem.dat"));
+			if(compound == null || compound.isEmpty()) return;
+			gc_entities = compound.getLong("GlobalCounterEntities");
+			gc_sections = compound.getLong("GlobalCounterSections");
+			gc_compounds = compound.getLong("GlobalCounterCompounds");
+			if(compound.hasKey("Entities")){
+				NBTTagCompound enty = compound.getCompoundTag("Entities");
+				for(String str : enty.getKeySet()){
+					try{
+						entities.put(Long.parseLong(str, 16), new RegionKey(enty.getLong(str)));
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
-	@Override
-	public int getDimension(){
-		return dimension;
-	}
-
-	@Override
-	public NBTBase write(EnumFacing side){
+	public void save(){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("GlobalCounterEntities", gc_entities);
 		compound.setLong("GlobalCounterSections", gc_sections);
@@ -73,21 +85,12 @@ public class RailSys implements RailSystem {
 			NBTTagCompound enty = new NBTTagCompound();
 			entities.forEach((key, value) -> { enty.setLong(Long.toHexString(key), value.toLong()); });
 			compound.setTag("Entities", enty);
-		} return compound;
-	}
-
-	@Override
-	public void read(EnumFacing side, NBTTagCompound compound){
-		if(compound == null || compound.isEmpty()) return;
-		gc_entities = compound.getLong("GlobalCounterEntities");
-		gc_sections = compound.getLong("GlobalCounterSections");
-		gc_compounds = compound.getLong("GlobalCounterCompounds");
-		if(compound.hasKey("Entities")){
-			NBTTagCompound enty = compound.getCompoundTag("Entities");
-			for(String str : enty.getKeySet()){
-				try{ entities.put(Long.parseLong(str, 16), new RegionKey(enty.getLong(str))); }
-				catch(Exception e){ e.printStackTrace(); }
-			}
+		}
+		try{
+			CompressedStreamTools.write(compound, new File(getSaveRoot(), "/railsystem.dat"));
+		}
+		catch(IOException e){
+			e.printStackTrace();
 		}
 	}
 	
@@ -96,12 +99,15 @@ public class RailSys implements RailSystem {
 		private RailSys data;
 		
 		public TrackMap(RailSys raildata){
-			super(); data = raildata;
+			super();
+			data = raildata;
 		}
 		
 		public TrackUnit get(String str, Long knownid, boolean create){
-			if(!create) return super.get(str); TrackUnit trk = super.get(str);
-			if(trk == null) this.put(str, trk = new TrackUnit(data, str, knownid)); return trk;
+			if(!create) return super.get(str);
+			TrackUnit trk = super.get(str);
+			if(trk == null) this.put(str, trk = new TrackUnit(data, str, knownid));
+			return trk;
 		}
 		
 	}
@@ -111,13 +117,21 @@ public class RailSys implements RailSystem {
 		private RailSys data;
 		
 		public SectionMap(RailSys raildata){
-			super(); data = raildata;
+			super();
+			data = raildata;
 		}
 		
 		public Section get(Long sid, boolean create){
-			if(create && sid == null){ Section sec = new Section(data, null); this.put(sec.getUID(), sec); return sec; }
-			if(sid == null) return null; if(!create) return super.get(sid); Section sec = super.get(sid);
-			if(sec == null) this.put(sid, sec = new Section(data, sid)); return sec;
+			if(create && sid == null){
+				Section sec = new Section(data, null);
+				this.put(sec.getUID(), sec);
+				return sec;
+			}
+			if(sid == null) return null;
+			if(!create) return super.get(sid);
+			Section sec = super.get(sid);
+			if(sec == null) this.put(sid, sec = new Section(data, sid));
+			return sec;
 		}
 		
 	}
@@ -130,28 +144,39 @@ public class RailSys implements RailSystem {
 		public Region get(int x, int z){
 			for(RegionKey key : keySet()){
 				if(x == key.x && z == key.z) return get(key);
-			} return null;
+			}
+			return null;
 		}
 		
 		public Region get(int[] xz){
 			for(RegionKey key : keySet()){
 				if(xz[0] == key.x && xz[1] == key.z) return get(key);
-			} return null;
+			}
+			return null;
 		}
 		
 		public Region get(Vec316f vec, boolean load){
-			Region region = get(RegionKey.getRegionXZ(vec)); if(region != null || !load) return region;
-			put(new RegionKey(vec), region = new Region(vec, root, false)); region.load().updateClient(vec); return region;
+			Region region = get(RegionKey.getRegionXZ(vec));
+			if(region != null || !load) return region;
+			put(new RegionKey(vec), region = new Region(vec, root, false));
+			region.load().updateClient(vec);
+			return region;
 		}
 
 		public Region get(int[] xz, boolean load){
-			Region region = get(xz); if(region != null || !load) return region;
-			put(new RegionKey(xz), region = new Region(xz[0], xz[1], root, false)); region.load(); return region;
+			Region region = get(xz);
+			if(region != null || !load) return region;
+			put(new RegionKey(xz), region = new Region(xz[0], xz[1], root, false));
+			region.load();
+			return region;
 		}
 
 		public Region get(RegionKey xz, boolean load){
-			Region region = get(xz); if(region != null || !load) return region;
-			put(new RegionKey(xz.x, xz.z), region = new Region(xz.x, xz.z, root, false)); region.load(); return region;
+			Region region = get(xz);
+			if(region != null || !load) return region;
+			put(new RegionKey(xz.x, xz.z), region = new Region(xz.x, xz.z, root, false));
+			region.load();
+			return region;
 		}
 		
 	}
@@ -237,31 +262,9 @@ public class RailSys implements RailSystem {
 		region.setAccessed().updateClient("junction", vector);
 		return;
 	}
-	
-	public static class TimedTask extends TimerTask {
-
-		@Override
-		public void run(){
-			for(World world : Static.getServer().worlds){
-				if(world.isRemote) return; world.getCapability(Capabilities.RAILSYSTEM, null).scheduledCheck();
-			}
-		}
-
-	}
 
 	@Override
-	public void scheduledCheck(){
-		ArrayList<Region> regs = new ArrayList<>();
-		for(Region region : regions.values()){
-			if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
-		}
-		for(Region region : regs){
-			region.save(); regions.remove(region.getKey());
-		}
-	}
-
-	@Override
-	public void updateTick(){
+	public void onServerTick(){
 		/*if(remote && !Region.clientqueue.isEmpty()){
 			Print.debug("Processing <NBT> Entities in Queue " + Region.clientqueue.size());
 			ArrayList<Long> torem = new ArrayList<>();
@@ -311,14 +314,11 @@ public class RailSys implements RailSystem {
 	}
 
 	@Override
-	public File getRootFile(){
-		if(dimension != 0){ return new File(world.getSaveHandler().getWorldDirectory(), world.provider.getSaveFolder() + "/fvtm"); }
-		return new File(world.getSaveHandler().getWorldDirectory(), "/fvtm");
-	}
-
-	@Override
 	public void unload(){
-		if(!world.isRemote) regions.values().forEach(reg -> reg.save()); regions.clear();
+		super.unload();
+		if(!world.isRemote) regions.values().forEach(reg -> reg.save());
+		regions.clear();
+		save();
 	}
 
 	public void updateRegion(NBTTagCompound compound, @Nullable EntityPlayerMP player){
@@ -356,7 +356,8 @@ public class RailSys implements RailSystem {
 		if(load && entities.containsKey(uid)){
 			Region region = regions.get(entities.get(uid), true);
 			if(region != null) return region.getEntities().get(uid);
-		} return null;
+		}
+		return null;
 	}
 
 	//@Deprecated
@@ -414,6 +415,39 @@ public class RailSys implements RailSystem {
 
 	public TreeMap<Long, RegionKey> getEntityIndex(){
 		return entities;
+	}
+	
+	//
+
+	@Override
+	public boolean hasTimer(){
+		return true;
+	}
+
+	@Override
+	public void addTimerTask(long time){
+		timer.schedule(new TimedTask(this), new Date(time), Config.UNLOAD_INTERVAL);
+	}
+	
+	public static class TimedTask extends TimerTask {
+
+		private RailSys railsys;
+
+		public TimedTask(RailSys railsys){
+			this.railsys = railsys;
+		}
+
+		@Override
+		public void run(){
+			ArrayList<Region> regs = new ArrayList<>();
+			for(Region region : railsys.regions.values()){
+				if(region.chucks.isEmpty() && region.lastaccess < Time.getDate() - 60000) regs.add(region);
+			}
+			for(Region region : regs){
+				region.save(); railsys.regions.remove(region.getKey());
+			}
+		}
+
 	}
 
 }

@@ -9,12 +9,13 @@ import net.fexcraft.lib.mc.api.packet.IPacketReceiver;
 import net.fexcraft.lib.mc.network.packet.PacketTileEntityUpdate;
 import net.fexcraft.lib.mc.utils.ApiUtil;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -62,7 +63,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 
 	public boolean control(World world, boolean checkjunc, EntityPlayer sender){
 		if(checkjunc){
-			RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+			RailSys system = SystemManager.get(Systems.RAIL, world);
 			List<PathKey> keys = tracks.keySet().stream().collect(Collectors.toList());
 			for(PathKey key : keys){
 				Track track = system.getTrack(key);
@@ -99,7 +100,7 @@ public class RailEntity extends TileEntity implements IPacketReceiver<PacketTile
 	}
 
 	public void remTracks(World world){
-		RailSys system = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+		RailSys system = SystemManager.get(Systems.RAIL, world);
 		try{
 			List<PathKey> keys = tracks.keySet().stream().collect(Collectors.toList());
 			for(PathKey key : keys){

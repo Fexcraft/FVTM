@@ -6,11 +6,12 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.entity.RailTestEntity;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +42,7 @@ public class RailItemTest extends Item implements JunctionGridItem {
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote || player.isSneaking()){ return EnumActionResult.PASS; }
-        RailSys syscap = world.getCapability(Capabilities.RAILSYSTEM, null).get();
+        RailSys syscap = SystemManager.get(Systems.RAIL, world);
         if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;

@@ -57,6 +57,7 @@ public class SystemManager {
 
 	public static void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
+		if(SINGLEPLAYER && event.getObject().isRemote) return;
 		int dim = event.getObject().provider.getDimension();
 		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new HashMap<>());
 		if(!Config.DISABLE_RAILS){

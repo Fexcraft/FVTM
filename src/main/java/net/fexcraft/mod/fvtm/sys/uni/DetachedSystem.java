@@ -17,7 +17,6 @@ public abstract class DetachedSystem {
 		this.world = world;
 		dimension = world.provider.getDimension();
 		root = new File(world.getSaveHandler().getWorldDirectory(), (dimension == 0 ? "" : world.provider.getSaveFolder()) + "/fvtm");
-		if(!root.exists()) root.mkdirs();
 	}
 	
 	public World getWorld(){

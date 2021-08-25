@@ -35,7 +35,7 @@ public class Junction {
 	private Vec316f vecpos;
 	public ArrayList<Track> tracks;
 	public boolean switch0, switch1;
-	public RailSys root;
+	public RailSystem root;
 	public Region region;
 	public SignalType signal;
 	public boolean signal0, signal1;
@@ -67,7 +67,7 @@ public class Junction {
 		this.root = region.getWorld(); this.region = region; tracks = new ArrayList<>();
 	}
 
-	public Junction setRoot(RailSys data){
+	public Junction setRoot(RailSystem data){
 		this.root = data; return this;
 	}
 	

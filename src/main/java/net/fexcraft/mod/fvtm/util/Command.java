@@ -19,7 +19,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
@@ -326,13 +326,13 @@ public class Command extends CommandBase {
             }
             case "rrr": case "reload-railregion":{
             	if(!Static.dev()) return;
-            	((RailSys)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("all", sender);
+            	((RailSystem)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("all", sender);
             	Print.chat(sender, "&oRail-Regions Reloading.");
             	break;
             }
             case "rrs": case "reload-railsections":{
             	if(!Static.dev()) return;
-            	((RailSys)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("sections", sender);
+            	((RailSystem)SystemManager.get(Systems.RAIL, sender.getEntityWorld())).sendReload("sections", sender);
             	Print.chat(sender, "&oRail-Sections Reloading.");
             	break;
             }

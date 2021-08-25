@@ -31,7 +31,7 @@ import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
@@ -103,7 +103,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
 	private void initializeVehicle(boolean remote, NBTTagCompound compound){
-		if(compound != null) rek = new Reltrs(SystemManager.get(Systems.RAIL, world, RailSys.class), compound);
+		if(compound != null) rek = new Reltrs(SystemManager.get(Systems.RAIL, world, RailSystem.class), compound);
 		rotpoint = rek.data().getRotationPoint("vehicle");
         this.setSize(rek.data().getAttribute("hitbox_width").float_value(), rek.data().getAttribute("hitbox_height").float_value());
         if(seats == null) seats = new SeatCache[rek.data().getSeats().size()];

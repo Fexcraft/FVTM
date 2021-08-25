@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.sys.rail.EntryDirection;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -158,13 +158,13 @@ public class RailRenderer {
 		}
 	}
 	
-	private static RailSys raildata;
+	private static RailSystem raildata;
     private static Frustum fru = new Frustum();
     
     //@SubscribeEvent
     public static void renderRails(World world, float partialticks){//RenderWorldLastEvent event){
     	if(Config.DISABLE_RAILS) return;
-	    raildata = SystemManager.get(Systems.RAIL, world, RailSys.class);
+	    raildata = SystemManager.get(Systems.RAIL, world, RailSystem.class);
         //if(raildata.isLoading()) return;
         Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
         double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * partialticks;

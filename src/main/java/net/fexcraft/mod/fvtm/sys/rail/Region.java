@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -34,32 +34,43 @@ public class Region {
 	//public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
-	public CopyOnWriteArrayList<RegionKey> chucks = new CopyOnWriteArrayList<>();
+	public ArrayList<RegionKey> chucks = new ArrayList<>();
 	public long lastaccess; private int timer = 0;
 	public boolean loaded;
-	private final RailSys world;
+	private final RailSystem world;
 	private final RegionKey key;
 
-	public Region(int i, int j, RailSys root, boolean load){
-		key = new RegionKey(i, j); world = root; if(load) load();
+	public Region(int i, int j, RailSystem root, boolean load){
+		key = new RegionKey(i, j);
+		world = root;
+		if(load) load();
 	}
 
-	public Region(Vec316f vec, RailSys root, boolean load){
-		key = new RegionKey(vec); world = root; if(load) load();//.updateClient(vec);
+	public Region(Vec316f vec, RailSystem root, boolean load){
+		key = new RegionKey(vec);
+		world = root;
+		if(load) load();//.updateClient(vec);
 	}
 
 	public Region load(){
 		if(world.getWorld().isRemote){
-			NBTTagCompound compound = new NBTTagCompound(); compound.setString("target_listener", "fvtm:railsys");
-			compound.setString("task", "update_region"); compound.setIntArray("XZ", key.toArray());
-			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound)); return this;
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("target_listener", "fvtm:railsys");
+			compound.setString("task", "update_region");
+			compound.setIntArray("XZ", key.toArray());
+			PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(compound));
+			return this;
 		}
 		File file = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + ".dat");
-		NBTTagCompound compound = null; boolean failed = false;
+		NBTTagCompound compound = null;
+		boolean failed = false;
 		if(file.exists()){
-			try{ compound = CompressedStreamTools.read(file); }
+			try{
+				compound = CompressedStreamTools.read(file);
+			}
 			catch(Throwable e){
-				failed = true; e.printStackTrace();
+				failed = true;
+				e.printStackTrace();
 				Print.log("FAILED TO LOAD RAIL REGION [ " + key.x +  ", " + key.z + " ]! THIS MAY BE NOT GOOD.");
 				try{
 					File newfile = new File(world.getSaveRoot(), "/railregions/" + key.x + "_" + key.z + "_" + Time.getAsString(null, true) + ".dat");
@@ -71,7 +82,8 @@ public class Region {
 					Print.log("FAILED TO CREATE BACKUP OF BROKEN RAIL REGION");
 				}
 			}
-		} if(!file.exists() || failed) compound = new NBTTagCompound();
+		}
+		if(!file.exists() || failed) compound = new NBTTagCompound();
 		//
 		return this.read(compound).setAccessed();
 	}
@@ -301,7 +313,7 @@ public class Region {
 			Resources.getTargetPoint(world.getDimension(), new BlockPos(ent.pos.x, ent.pos.y, ent.pos.z)));*/
 	}
 	
-	public RailSys getWorld(){
+	public RailSystem getWorld(){
 		return world;
 	}
 

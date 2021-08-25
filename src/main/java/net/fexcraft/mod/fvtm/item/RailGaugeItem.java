@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.root.TypeCore.TypeCoreItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -85,7 +85,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
         if(world.isRemote || Config.DISABLE_RAILS){ return EnumActionResult.PASS; }
-        RailSys syscap = SystemManager.get(Systems.RAIL, world);
+        RailSystem syscap = SystemManager.get(Systems.RAIL, world);
         if(syscap == null){
 			Print.chat(player, "&cWorld Capability not found.");
 	        return EnumActionResult.FAIL;
@@ -108,7 +108,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         return placeTrack(player, world, stack, syscap, vector, player, false);
     }
 	
-	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSys syscap, Vec316f vector, ICommandSender sender, boolean noblocks){
+	public EnumActionResult placeTrack(EntityPlayer player, World world, ItemStack stack, RailSystem syscap, Vec316f vector, ICommandSender sender, boolean noblocks){
 		Junction junk = syscap.getJunction(vector, true);
 		NBTTagList list = stack.getTagCompound().hasKey("fvtm:railpoints") ? (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints") : new NBTTagList();
 		if(junk == null || list.isEmpty()){
@@ -155,7 +155,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 		}
 	}
 
-	private boolean createdJunction(ICommandSender sender, RailSys syscap, EntityPlayer player, NBTTagList list, Vec316f vector){
+	private boolean createdJunction(ICommandSender sender, RailSystem syscap, EntityPlayer player, NBTTagList list, Vec316f vector){
 		if(list.tagCount() != 1) return false; Vec316f vec = getFirstVector(list); if(!vec.equals(vector)) return false;
 		syscap.addJunction(vector); Print.chat(sender, "Junction Created!"); return true;
 	}

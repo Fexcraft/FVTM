@@ -15,12 +15,12 @@ import net.minecraft.nbt.NBTTagCompound;
 public class TrackUnit {
 	
 	private TreeMap<Long, RailEntity> entities = new TreeMap<>();
-	private RailSys data;
+	private RailSystem data;
 	protected Track orig, copy;
 	private Section section;
 	private String uid;
 	
-	public TrackUnit(RailSys data, String str, Long sid){
+	public TrackUnit(RailSystem data, String str, Long sid){
 		uid = str;
 		section = (this.data = data).getSection(sid);
 		section.insert(this);

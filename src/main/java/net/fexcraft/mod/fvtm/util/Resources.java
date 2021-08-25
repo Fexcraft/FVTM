@@ -769,7 +769,6 @@ public class Resources {
 	@SubscribeEvent
 	public void onChunkUnload(ChunkEvent.Unload event){
 		SystemManager.onChunkUnload(event.getWorld(), event.getChunk());
-		if(Config.DISABLE_RAILS) return;
 	}
 
 	@SubscribeEvent

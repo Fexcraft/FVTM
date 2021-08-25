@@ -5,7 +5,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity.TRO;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,15 +17,15 @@ public class Reltrs {
 	public final Long uid;
 	public Track last, current;
 	public float passed;
-	public RailSys sys;
+	public RailSystem sys;
 	public float frbogiedis, rrbogiedis;
 	
-	public Reltrs(RailSys system, RailEntity entity, Long id){
+	public Reltrs(RailSystem system, RailEntity entity, Long id){
 		this.entity = entity; uid = entity == null ? id : entity.uid; sys = system;
 		frbogiedis = entity.frbogiedis; rrbogiedis = entity.rrbogiedis;
 	}
 	
-	public Reltrs(RailSys system, NBTTagCompound compound){
+	public Reltrs(RailSystem system, NBTTagCompound compound){
 		uid = compound.getLong("UID"); sys = system;
 		//current = sys.getTrack(new PathKey(compound));
 		current = new Track(null).read(compound.getCompoundTag("Track"));

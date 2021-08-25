@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Static;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -24,8 +24,8 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 public class SystemManager {
 
 	public static boolean SINGLEPLAYER, PLAYERON;
-	public static HashMap<Systems, HashMap<Integer, DetachedSystem>> SYSTEMS = new HashMap<>();
-	public static HashMap<Integer, HashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new HashMap<>();
+	private static HashMap<Systems, HashMap<Integer, DetachedSystem>> SYSTEMS = new HashMap<>();
+	private static HashMap<Integer, HashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new HashMap<>();
 	
 	public static void onServerTick(World world){
 		for(DetachedSystem sys : SYSTEMS_DIM.get(world.provider.getDimension()).values()){
@@ -58,10 +58,10 @@ public class SystemManager {
 	public static void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
 		int dim = event.getObject().provider.getDimension();
-		SYSTEMS_DIM.put(dim, new HashMap<>());
+		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new HashMap<>());
 		if(!Config.DISABLE_RAILS){
 			if(!SYSTEMS.containsKey(Systems.RAIL)) SYSTEMS.put(Systems.RAIL, new HashMap<>());
-			RailSys sys = new RailSys(event.getObject());
+			RailSystem sys = new RailSystem(event.getObject());
 			SYSTEMS.get(Systems.RAIL).put(dim, sys);
 			SYSTEMS_DIM.get(dim).put(Systems.RAIL, sys);
 		}

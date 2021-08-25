@@ -38,7 +38,7 @@ import net.minecraft.world.chunk.Chunk;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class RailSys extends DetachedSystem {
+public class RailSystem extends DetachedSystem {
 
 	private long gc_entities, gc_sections, gc_compounds;
 	//
@@ -47,9 +47,9 @@ public class RailSys extends DetachedSystem {
 	private SectionMap sections = new SectionMap(this);
 	private TreeMap<Long, RegionKey> entities = new TreeMap<>();
 	
-	public RailSys(World world){
+	public RailSystem(World world){
 		super(world);
-		load();
+		if(!world.isRemote) load();
 	}
 
 	public void load(){
@@ -88,6 +88,7 @@ public class RailSys extends DetachedSystem {
 		}
 		try{
 			CompressedStreamTools.write(compound, new File(getSaveRoot(), "/railsystem.dat"));
+			Print.debug(new File(getSaveRoot(), "/railsystem.dat"), "written!", compound);
 		}
 		catch(IOException e){
 			e.printStackTrace();
@@ -96,9 +97,9 @@ public class RailSys extends DetachedSystem {
 	
 	public static class TrackMap extends TreeMap<String, TrackUnit> {
 		
-		private RailSys data;
+		private RailSystem data;
 		
-		public TrackMap(RailSys raildata){
+		public TrackMap(RailSystem raildata){
 			super();
 			data = raildata;
 		}
@@ -114,9 +115,9 @@ public class RailSys extends DetachedSystem {
 	
 	public static class SectionMap extends TreeMap<Long, Section> {
 		
-		private RailSys data;
+		private RailSystem data;
 		
-		public SectionMap(RailSys raildata){
+		public SectionMap(RailSystem raildata){
 			super();
 			data = raildata;
 		}
@@ -138,8 +139,8 @@ public class RailSys extends DetachedSystem {
 	
 	public static class RegionMap extends HashMap<RegionKey, Region> {
 		
-		private RailSys root;
-		public RegionMap(RailSys data){ this.root = data; }
+		private RailSystem root;
+		public RegionMap(RailSystem data){ this.root = data; }
 		
 		public Region get(int x, int z){
 			for(RegionKey key : keySet()){
@@ -315,10 +316,14 @@ public class RailSys extends DetachedSystem {
 
 	@Override
 	public void unload(){
-		super.unload();
-		if(!world.isRemote) regions.values().forEach(reg -> reg.save());
+		if(!world.isRemote){
+			Print.debug("saving " + dimension);
+			regions.values().forEach(reg -> reg.save());
+			Print.debug("saving " + dimension);
+			save();
+			Print.debug("saving " + dimension);
+		}
 		regions.clear();
-		save();
 	}
 
 	public void updateRegion(NBTTagCompound compound, @Nullable EntityPlayerMP player){
@@ -431,9 +436,9 @@ public class RailSys extends DetachedSystem {
 	
 	public static class TimedTask extends TimerTask {
 
-		private RailSys railsys;
+		private RailSystem railsys;
 
-		public TimedTask(RailSys railsys){
+		public TimedTask(RailSystem railsys){
 			this.railsys = railsys;
 		}
 

@@ -15,12 +15,12 @@ import net.fexcraft.lib.mc.utils.Print;
 public class Section {
 	
 	private long uid;
-	private RailSys data;
+	private RailSystem data;
 	private HashSet<TrackUnit> units = new HashSet<>();
 	public Long reserved;
 	public RGB color = RGB.random();
 	
-	public Section(RailSys data, Long sid){
+	public Section(RailSystem data, Long sid){
 		this.data = data; uid = sid == null ? data.getNewSectionId() : sid;
 		Print.debug("Created Section [" + sid + "] " + (sid == null));
 	}

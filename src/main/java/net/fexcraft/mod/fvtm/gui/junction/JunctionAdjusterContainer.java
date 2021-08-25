@@ -8,7 +8,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.rail.TrackPlacer;
 import net.fexcraft.mod.fvtm.sys.uni.PathJuncType;
@@ -32,7 +32,7 @@ public class JunctionAdjusterContainer extends GenericContainer {
 	@Override
 	public void initPacket(NBTTagCompound compound){
 		if((compound = GuiHandler.validate(player, compound, player.world.isRemote)) == null) return;
-		junction = SystemManager.get(Systems.RAIL, player.world, RailSys.class).getJunction(new Vec316f(compound));
+		junction = SystemManager.get(Systems.RAIL, player.world, RailSystem.class).getJunction(new Vec316f(compound));
 	}
 
 	@Override

@@ -11,10 +11,13 @@ public abstract class DetachedSystem {
 	protected World world;
 	protected int dimension;
 	protected Timer timer;
+	protected File root;
 	
 	public DetachedSystem(World world){
 		this.world = world;
 		dimension = world.provider.getDimension();
+		root = new File(world.getSaveHandler().getWorldDirectory(), (dimension == 0 ? "" : world.provider.getSaveFolder()) + "/fvtm");
+		if(!root.exists()) root.mkdirs();
 	}
 	
 	public World getWorld(){
@@ -40,13 +43,10 @@ public abstract class DetachedSystem {
 	public abstract void addTimerTask(long time);
 	
 	public File getSaveRoot(){
-		if(dimension != 0){ return new File(world.getSaveHandler().getWorldDirectory(), world.provider.getSaveFolder() + "/fvtm"); }
-		return new File(world.getSaveHandler().getWorldDirectory(), "/fvtm");
+		return root;
 	}
 	
-	public void unload(){
-		stopTimer();
-	}
+	public abstract void unload();
 	
 	public abstract void onChunkLoad(Chunk chunk);
 	

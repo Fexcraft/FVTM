@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RailGaugeItem;
 import net.fexcraft.mod.fvtm.sys.rail.Junction;
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
@@ -51,7 +51,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 	private static Orient orient;
 	private static int cx, cz;
 	private static Zoom zoom;
-	private RailSys system;
+	private RailSystem system;
 	//
 	private static int itemslot;
 	private static Track demotrack;
@@ -88,7 +88,7 @@ public class RailPlacer extends GenericGui<RailPlacerContainer> {
 				STATEGRID[i][j] = state;
 			}
 		}
-		system = SystemManager.get(Systems.RAIL, player.world, RailSys.class);
+		system = SystemManager.get(Systems.RAIL, player.world, RailSystem.class);
 		int d = zoom.co * 2 + 1;
 		for(int i = 0; i < d; i++){
 			for(int j = 0; j < d; j++){

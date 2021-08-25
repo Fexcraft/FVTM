@@ -1,18 +1,18 @@
 package net.fexcraft.mod.fvtm.event;
 
-import net.fexcraft.mod.fvtm.sys.rail.RailSys;
+import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class RailEvents extends Event {
 	
-	private RailSys system;
+	private RailSystem system;
 	
-	private RailEvents(RailSys system){
+	private RailEvents(RailSystem system){
 		this.system = system;
 	}
 	
-	public RailSys getSystem(){
+	public RailSystem getSystem(){
 		return system;
 	}
 	

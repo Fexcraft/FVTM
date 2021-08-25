@@ -20,7 +20,7 @@ public class RecServer implements IPacketListener<PacketNBTTagCompound> {
 	public void process(PacketNBTTagCompound packet, Object[] objs){
 		String task = packet.nbt.getString("task");
 		EntityPlayerMP player = (EntityPlayerMP)objs[0];
-		RailSys system = SystemManager.get(Systems.RAIL, player.world, RailSys.class);
+		RailSystem system = SystemManager.get(Systems.RAIL, player.world, RailSystem.class);
 		if(system == null){
 			Print.log("Received packet but no capability found, aborting!\n" + packet.nbt);
 			return;

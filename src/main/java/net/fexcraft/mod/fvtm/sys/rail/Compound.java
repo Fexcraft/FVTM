@@ -106,7 +106,7 @@ public abstract class Compound {
 			for(RailEntity ent : entities) ent.com = this; COMPOUNDS.put(uid, this);
 		}
 
-		public Multiple(RailSys system, Region region, Long id, NBTTagList list){
+		public Multiple(RailSystem system, Region region, Long id, NBTTagList list){
 			super(id); RailEntity prev = null, curr; NBTTagCompound compound;
 			for(int i = 0; i < list.tagCount(); i++){
 				compound = (NBTTagCompound)list.get(i);

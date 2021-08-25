@@ -54,7 +54,9 @@ public class RailSystem extends DetachedSystem {
 
 	public void load(){
 		try{
-			NBTTagCompound compound = CompressedStreamTools.read(new File(getSaveRoot(), "/railsystem.dat"));
+			File file = new File(getSaveRoot(), "/railsystem.dat");
+			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
+			NBTTagCompound compound = CompressedStreamTools.read(file);
 			if(compound == null || compound.isEmpty()) return;
 			gc_entities = compound.getLong("GlobalCounterEntities");
 			gc_sections = compound.getLong("GlobalCounterSections");
@@ -87,8 +89,9 @@ public class RailSystem extends DetachedSystem {
 			compound.setTag("Entities", enty);
 		}
 		try{
-			CompressedStreamTools.write(compound, new File(getSaveRoot(), "/railsystem.dat"));
-			Print.debug(new File(getSaveRoot(), "/railsystem.dat"), "written!", compound);
+			File file = new File(getSaveRoot(), "/railsystem.dat");
+			if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
+			CompressedStreamTools.write(compound, file);
 		}
 		catch(IOException e){
 			e.printStackTrace();
@@ -317,11 +320,8 @@ public class RailSystem extends DetachedSystem {
 	@Override
 	public void unload(){
 		if(!world.isRemote){
-			Print.debug("saving " + dimension);
 			regions.values().forEach(reg -> reg.save());
-			Print.debug("saving " + dimension);
 			save();
-			Print.debug("saving " + dimension);
 		}
 		regions.clear();
 	}

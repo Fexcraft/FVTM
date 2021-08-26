@@ -71,14 +71,13 @@ public class Section {
 	/** Called after a track was removed from a junction.*/
 	public void splitAtTrack(Track track){
 		Print.debug("Splitting section at track: " + track);
-		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), /*more,*/ less;
+		ArrayList<TrackUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0 = explore(data.getJunction(track.start), list0);
 		list1 = explore(data.getJunction(track.end), list1);
 		for(TrackUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
-		if(list0.size() > list1.size()){ /*more = list0;*/ less = list1; }
-		else{ /*more = list1;*/ less = list0; }
+		less = list0.size() > list1.size() ? list1 : list0;
 		if(less.isEmpty()) return;//no connected tracks, needs no action either
 		Section section = data.getSection(null);//create new section
 		for(TrackUnit unit : less){

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
+import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -65,6 +66,12 @@ public class SystemManager {
 			RailSystem sys = new RailSystem(event.getObject());
 			SYSTEMS.get(Systems.RAIL).put(dim, sys);
 			SYSTEMS_DIM.get(dim).put(Systems.RAIL, sys);
+		}
+		if(!Config.DISABLE_WIRES){
+			if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new HashMap<>());
+			WireSystem sys = new WireSystem(event.getObject());
+			SYSTEMS.get(Systems.WIRE).put(dim, sys);
+			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
 		}
 	}
 

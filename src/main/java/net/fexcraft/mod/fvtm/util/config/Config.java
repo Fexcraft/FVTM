@@ -28,9 +28,10 @@ public class Config {
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, ROADTOOL_FOR_ALL, OVERLAY_ON_BOTTOM;
     public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS, DISABLE_LIGHT_BEAMS;
     public static boolean DISABLE_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS;
-    public static boolean LOAD_ALL_RESOURCEPACKS;
+    public static boolean LOAD_ALL_RESOURCEPACKS, DISABLE_WIRES;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
+    public static int WIRE_SEGMENTATOR, MAX_WIRE_LENGTH;
 	public static long UNLOAD_INTERVAL;
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
@@ -130,6 +131,19 @@ public class Config {
             }
             MAX_ROAD_LENGTH = config.getInt("road_max_length", ROADSYS, 256, 1, 4096, "Max vector (total) length of new placed roads (with the placing tool).");
             DISABLE_ROADS = config.getBoolean("disable_roads", ROADSYS, false, "If FVTM road system should be disabled.");
+            
+    	}
+    	{//RAIL
+            {
+            	RAIL_SEGMENTATOR = config.getInt("wire_generation_segmentator", RAILSYS, 4, 1, 16, "Segmentator divider for wire generator, valid are 16, 8, 4, 2 or 1.");
+                if(RAIL_SEGMENTATOR > 16) RAIL_SEGMENTATOR = 16;
+                if(RAIL_SEGMENTATOR > 8 && RAIL_SEGMENTATOR < 16) RAIL_SEGMENTATOR = 8;
+                if(RAIL_SEGMENTATOR > 4 && RAIL_SEGMENTATOR < 8) RAIL_SEGMENTATOR = 4;
+                if(RAIL_SEGMENTATOR > 2 && RAIL_SEGMENTATOR < 4) RAIL_SEGMENTATOR = 2;
+                if(RAIL_SEGMENTATOR < 1) RAIL_SEGMENTATOR = 1;
+            }
+            MAX_WIRE_LENGTH = config.getInt("wire_max_length", RAILSYS, 64, 1, 1024, "Max vector (total) length of new placed Wires.");
+            DISABLE_RAILS = config.getBoolean("disable_wires", RAILSYS, false, "If FVTM wire system should be disabled.");
             
     	}
     	ContainerBlock.INSTANCE.setHardness(UNBREAKABLE_CONTAINERS ? -1f : 8f);

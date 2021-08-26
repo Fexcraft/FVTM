@@ -93,6 +93,8 @@ public class SystemManager {
 				sys.unload();
 			}
 		}
+		SYSTEMS.clear();
+		SYSTEMS_DIM.clear();
 	}
 	
 	public static enum Systems {

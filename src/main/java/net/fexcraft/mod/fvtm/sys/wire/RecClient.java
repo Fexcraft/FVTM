@@ -1,0 +1,76 @@
+package net.fexcraft.mod.fvtm.sys.wire;
+
+import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.mc.api.packet.IPacketListener;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+
+public class RecClient implements IPacketListener<PacketNBTTagCompound> {
+
+	@Override
+	public String getId(){
+		return "fvtm:wiresys";
+	}
+
+	@Override
+	public void process(PacketNBTTagCompound packet, Object[] objs){
+		String task = packet.nbt.getString("task");
+		EntityPlayer player = (EntityPlayer)objs[0];
+		WireSystem system = SystemManager.get(Systems.WIRE, player.world, WireSystem.class);
+		try{
+			switch(task){
+				case "update_region":{
+					system.updateRegion(packet.nbt, null);
+					return;
+				}
+				case "update_relay":{
+					Vec316f vec = new Vec316f(packet.nbt.getCompoundTag("Pos"));
+					WireRelay relay = system.getRelay(vec);
+					if(relay != null) relay.read(packet.nbt);
+					else{
+						WireRegion region = system.getRegions().get(vec, false);
+						if(region != null) region.getRelays().put(vec, new WireRelay(region, vec).read(packet.nbt));
+					}
+					return;
+				}
+				case "rem_relay":{
+					system.delRelay(new Vec316f(packet.nbt));
+					return;
+				}
+				case "update_sections":{
+					NBTTagList list = (NBTTagList)packet.nbt.getTag("units");
+					WireUnit unit;
+					NBTTagCompound com;
+					for(NBTBase base : list){
+						com = (NBTTagCompound)base;
+						unit = system.getWireUnits().get(com.getString("unit"));
+						if(unit != null){
+							unit.setSection(system.getSection(com.getLong("section")));
+						}
+					}
+					Print.debug(list);
+					return;
+				}
+				case "update_unit_section":{
+					WireUnit unit = system.getWireUnits().get(packet.nbt.getString("unit"));
+					if(unit != null) unit.setSection(system.getSection(packet.nbt.getLong("section")));
+					return;
+				}
+				default: Print.debug(packet.nbt); return;
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			Print.debug(packet.nbt);
+			Static.stop();
+		}
+	}
+
+}

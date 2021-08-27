@@ -9,12 +9,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 
 /**
- * <i>Junctions are essential!</i>
  * 
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class WireBlock {
+public class WireRelay {
 	
 	private Vec316f vecpos;
 	public ArrayList<Wire> wires;
@@ -24,7 +23,7 @@ public class WireBlock {
 	protected AxisAlignedBB frustumbb;
 	
 	/** General Constructor */
-	public WireBlock(WireRegion region, Vec316f pos){
+	public WireRelay(WireRegion region, Vec316f pos){
 		vecpos = pos;
 		wires = new ArrayList<Wire>();
 		this.system = region.getSystem();
@@ -32,18 +31,18 @@ public class WireBlock {
 	}
 	
 	/** Only to be used from WireRegion.class */
-	protected WireBlock(WireRegion region){
+	protected WireRelay(WireRegion region){
 		this.system = region.getSystem();
 		this.region = region;
 		wires = new ArrayList<>();
 	}
 
-	public WireBlock setRoot(WireSystem data){
+	public WireRelay setRoot(WireSystem data){
 		this.system = data;
 		return this;
 	}
 	
-	public WireBlock read(NBTTagCompound compound){
+	public WireRelay read(NBTTagCompound compound){
 		this.vecpos = new Vec316f(compound.getCompoundTag("Pos"));
 		int wiream = compound.getInteger("Wires");
 		if(wiream > 0){
@@ -91,7 +90,7 @@ public class WireBlock {
 	}
 
 	public void updateClient(){
-		region.updateClient("block", vecpos);
+		region.updateClient("relay", vecpos);
 	}
 
 	public void remove(int index, boolean firstcall){
@@ -105,8 +104,8 @@ public class WireBlock {
 		this.updateClient();
 		//
 		if(firstcall){
-			WireBlock block = system.getBlock(wire.start.equals(vecpos) ? wire.end : wire.start);
-			if(block != null) block.remove(wire.getOppositeId(), false);
+			WireRelay relay = system.getRelay(wire.start.equals(vecpos) ? wire.end : wire.start);
+			if(relay != null) relay.remove(wire.getOppositeId(), false);
 		}
 		else this.checkWireSectionConsistency();
 	}
@@ -179,7 +178,7 @@ public class WireBlock {
 	
 	@Override
 	public String toString(){
-		return "WireBlock{ " + vecpos + ", " + wires.size() + " }";
+		return "WireRelay{ " + vecpos + ", " + wires.size() + " }";
 	}
 
 }

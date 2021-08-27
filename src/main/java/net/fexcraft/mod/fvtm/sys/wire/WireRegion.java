@@ -28,7 +28,7 @@ import net.minecraft.nbt.NBTTagList;
  */
 public class WireRegion {
 	
-	private TreeMap<Vec316f, WireBlock> blocks = new TreeMap<>();
+	private TreeMap<Vec316f, WireRelay> relays = new TreeMap<>();
 	public ArrayList<RegionKey> chucks = new ArrayList<>();
 	public long lastaccess;
 	private int timer = 0;
@@ -85,14 +85,14 @@ public class WireRegion {
 	}
 
 	public WireRegion read(NBTTagCompound compound){
-		if(compound.hasKey("Blocks")){
-			if(!blocks.isEmpty()){
-				blocks.clear();
+		if(compound.hasKey("Relays")){
+			if(!relays.isEmpty()){
+				relays.clear();
 			}
-			NBTTagList list = (NBTTagList)compound.getTag("Blocks");
+			NBTTagList list = (NBTTagList)compound.getTag("Relays");
 			for(NBTBase base : list){
-				WireBlock block = new WireBlock(this).read((NBTTagCompound)base);
-				blocks.put(block.getVec316f(), block);
+				WireRelay relay = new WireRelay(this).read((NBTTagCompound)base);
+				relays.put(relay.getVec316f(), relay);
 			}
 		}
 		loaded = true;
@@ -120,26 +120,26 @@ public class WireRegion {
 
 	private NBTTagCompound write(boolean clientpacket){
 		NBTTagCompound compound = new NBTTagCompound();
-		if(!blocks.isEmpty()){
+		if(!relays.isEmpty()){
 			NBTTagList list = new NBTTagList();
-			for(WireBlock block : blocks.values()){
-				list.appendTag(block.write(null));
+			for(WireRelay relay : relays.values()){
+				list.appendTag(relay.write(null));
 			}
-			compound.setTag("Blocks", list);
+			compound.setTag("Relays", list);
 		}
 		if(clientpacket) return compound;
 		return compound;
 	}
 
-	public WireBlock getBlock(Vec316f vec){
-		if(!key.isInRegion(vec)) return system.getBlock(vec);
-		return blocks.get(vec);
+	public WireRelay getRelay(Vec316f vec){
+		if(!key.isInRegion(vec)) return system.getRelay(vec);
+		return relays.get(vec);
 	}
 
 	public void updateTick(){
 		if(timer > 20){
 			timer = -1;
-			for(WireBlock block : blocks.values()) block.onUpdate();
+			for(WireRelay relay : relays.values()) relay.onUpdate();
 		}
 		timer++;
 	}
@@ -153,8 +153,8 @@ public class WireRegion {
 		return key;
 	}
 
-	public TreeMap<Vec316f, WireBlock> getBlocks(){
-		return blocks;
+	public TreeMap<Vec316f, WireRelay> getRelays(){
+		return relays;
 	}
 	
 	public void updateClient(Vec316f vector){
@@ -172,18 +172,18 @@ public class WireRegion {
 				compound.setIntArray("XZ", key.toArray());
 				break;
 			}
-			case "block":{
-				WireBlock block = getBlock(vector);
-				if(block == null) return;
-				compound = block.write(new NBTTagCompound());
+			case "relay":{
+				WireRelay relay = getRelay(vector);
+				if(relay == null) return;
+				compound = relay.write(new NBTTagCompound());
 				compound.setString("target_listener", "fvtm:wiresys");
-				compound.setString("task", "update_block");
+				compound.setString("task", "update_relay");
 				break;
 			}
-			case "no_block":{
+			case "no_relay":{
 				compound = vector.write();
 				compound.setString("target_listener", "fvtm:wiresys");
-				compound.setString("task", "rem_block");
+				compound.setString("task", "rem_relay");
 				break;
 			}
 			case "sections":{
@@ -219,8 +219,8 @@ public class WireRegion {
 	}
 
 	public Wire getWire(PathKey key){
-		WireBlock block = getBlock(key.toVec3f(0));
-		return block == null ? null : block.getWire(key);
+		WireRelay relay = getRelay(key.toVec3f(0));
+		return relay == null ? null : relay.getWire(key);
 	}
 
 }

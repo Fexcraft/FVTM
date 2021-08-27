@@ -160,21 +160,21 @@ public class WireSystem extends DetachedSystem {
 		return regions;
 	}
 
-	public WireBlock getBlock(Vec316f vec){
+	public WireRelay getRelay(Vec316f vec){
 		WireRegion region = regions.get(vec, false);
-		return region == null ? null : region.getBlock(vec);
+		return region == null ? null : region.getRelay(vec);
 	}
 
-	public WireBlock getBlock(Vec316f vec, boolean load){
+	public WireRelay getRelay(Vec316f vec, boolean load){
 		WireRegion region = regions.get(vec, load);
-		return region.getBlock(vec);
+		return region.getRelay(vec);
 	}
 
-	public ArrayList<WireBlock> getBlocksInChunk(int cx, int cz){
-		ArrayList<WireBlock> arr = new ArrayList<>();
+	public ArrayList<WireRelay> getRelayssInChunk(int cx, int cz){
+		ArrayList<WireRelay> arr = new ArrayList<>();
 		WireRegion region = regions.get(RegionKey.getRegionXZ(cx, cz));
 		if(region == null) return arr;
-		for(Entry<Vec316f, WireBlock> entry : region.getBlocks().entrySet()){
+		for(Entry<Vec316f, WireRelay> entry : region.getRelays().entrySet()){
 			if(entry.getKey().pos.getX() >> 4 == cx && entry.getKey().pos.getZ() >> 4 == cz){
 				arr.add(entry.getValue());
 			}
@@ -182,35 +182,35 @@ public class WireSystem extends DetachedSystem {
 		return arr;
 	}
 
-	public boolean delBlock(Vec316f vector){
+	public boolean delRelay(Vec316f vector){
 		WireRegion region = regions.get(vector, false);
-		if(region == null || region.getBlock(vector) == null) return false;
-		WireBlock block = region.getBlocks().remove(vector);
+		if(region == null || region.getRelay(vector) == null) return false;
+		WireRelay relay = region.getRelays().remove(vector);
 		if(world.isRemote){
-			return block != null;
+			return relay != null;
 		}
 		else{
-			if(block != null){
-				if(!block.wires.isEmpty()) return false;
+			if(relay != null){
+				if(!relay.wires.isEmpty()) return false;
 			}
-			region.setAccessed().updateClient("no_block", vector);
+			region.setAccessed().updateClient("no_relay", vector);
 			return true;
 		}
 	}
 
-	public void addBlock(Vec316f vector){
+	public void addRelay(Vec316f vector){
 		WireRegion region = regions.get(vector, true);
 		if(region == null) /** this rather an error */ return;
-		WireBlock block = new WireBlock(region, vector);
-		region.getBlocks().put(vector, block);
-		region.setAccessed().updateClient("block", vector);
+		WireRelay relay = new WireRelay(region, vector);
+		region.getRelays().put(vector, relay);
+		region.setAccessed().updateClient("relay", vector);
 		return;
 	}
 
 	public void updateJuncton(Vec316f vector){
 		WireRegion region = regions.get(vector, true);
 		if(region == null) /** This is rather bad. */ return;
-		region.setAccessed().updateClient("block", vector);
+		region.setAccessed().updateClient("relay", vector);
 		return;
 	}
 

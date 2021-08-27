@@ -17,37 +17,37 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Wire extends Path {
 	
 	protected WireUnit unit;
-	protected WireBlock block;
+	protected WireRelay relay;
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned wiremodel;
 	
-	public Wire(WireBlock block, Vec316f[] vec316fs, Vec316f vector){
+	public Wire(WireRelay relay, Vec316f[] vec316fs, Vec316f vector){
 		super(vec316fs, vector);
-		this.block = block;
-		if(block != null) unit = getUnit(block.size() == 0 ? null : block.wires.get(0).unit.getSectionId());
+		this.relay = relay;
+		if(relay != null) unit = getUnit(relay.size() == 0 ? null : relay.wires.get(0).unit.getSectionId());
 	}
 	
-	public Wire(WireBlock block, Vec316f[] vec316fs){
+	public Wire(WireRelay relay, Vec316f[] vec316fs){
 		super(vec316fs);
-		this.block = block;
-		if(block != null) unit = getUnit(block.size() == 0 ? null : block.wires.get(0).unit.getSectionId());
+		this.relay = relay;
+		if(relay != null) unit = getUnit(relay.size() == 0 ? null : relay.wires.get(0).unit.getSectionId());
 	}
 	
-	/** Only for the READ process. @param junk just to make sure it's not used elsewhere */
-	public Wire(WireBlock junk){
+	/** Only for the READ process. @param relay just to make sure it's not used elsewhere */
+	public Wire(WireRelay relay){
 		super();
-		this.block = junk;
+		this.relay = relay;
 	}
 
 	@Override
 	public Wire read(NBTTagCompound compound){
 		super.read(compound);
-		if(block != null) unit = getUnit(compound.getLong("section"));
+		if(relay != null) unit = getUnit(compound.getLong("section"));
 		return this;
 	}
 
 	public WireUnit getUnit(Long knownid){
-		WireUnit unit = block.system.getWireUnits().get(id.toUnitId(copy), knownid, true);
+		WireUnit unit = relay.system.getWireUnits().get(id.toUnitId(copy), knownid, true);
 		if(copy) unit.copy = this;
 		else unit.orig = this;
 		return unit;
@@ -61,7 +61,7 @@ public class Wire extends Path {
 	}
 	
 	public Wire createOppositeCopy(){
-		Wire track = super.createOppositeCopy(new Wire(block));
+		Wire track = super.createOppositeCopy(new Wire(relay));
 		track.unit = unit;
 		return track;
 	}
@@ -86,8 +86,8 @@ public class Wire extends Path {
 		return PathType.WIRE;
 	}
 	
-	public WireBlock getBlock(){
-		return block;
+	public WireRelay getRelay(){
+		return relay;
 	}
 
 	public Vec3f getVectorOnWire(Vec3f ext){

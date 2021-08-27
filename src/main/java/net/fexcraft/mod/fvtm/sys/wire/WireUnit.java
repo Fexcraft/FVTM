@@ -64,9 +64,9 @@ public class WireUnit {
 		}
 		else{
 			Wire wire = orig == null ? copy : orig;
-			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(wire.block.system.getDimension(), wire.start.pos));
+			PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(wire.relay.system.getDimension(), wire.start.pos));
 			if(wire.length > 16){
-				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(wire.block.system.getDimension(), wire.end.pos));
+				PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(wire.relay.system.getDimension(), wire.end.pos));
 			}
 		}
 	}

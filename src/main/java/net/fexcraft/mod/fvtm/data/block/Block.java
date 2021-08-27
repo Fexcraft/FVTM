@@ -59,6 +59,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	protected boolean isweblike, fullblock, fullcube, opaque, cutout, invisible;
 	//
 	protected MultiBlock multiblock;
+	protected RelayData relaydata;
 	
 	public Block(){}
 
@@ -137,9 +138,16 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 			this.multiblock = new MultiBlock(registryname, obj.get("MultiBlock").getAsJsonObject());
 		}
 		boolean sub = obj.has("MultiSubBlock") && obj.get("MultiSubBlock").getAsBoolean();
+		if(obj.has("WireRelay")){
+			relaydata = new RelayData(obj.get("WireRelay").getAsJsonObject());
+		}
 		try{
-			this.block = blocktype.getApplicableClass(sub || isFunctional(), plain_model).getConstructor(Block.class).newInstance(this);
-		} catch(Exception e){ e.printStackTrace(); Static.stop(); } return this;
+			this.block = blocktype.getApplicableClass(sub || isFunctional() || canBeWired(), plain_model).getConstructor(Block.class).newInstance(this);
+		}
+		catch(Exception e){
+			e.printStackTrace(); Static.stop();
+		}
+		return this;
 	}
 
 	@Override
@@ -316,6 +324,14 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 	@Override
 	public String getCreativeTab(){
 		return ctab;
+	}
+	
+	public boolean canBeWired(){
+		return relaydata != null;
+	}
+	
+	public RelayData getRelayData(){
+		return relaydata;
 	}
 
 }

@@ -103,4 +103,8 @@ public class SystemManager {
 		
 	}
 
+	public static boolean active(Systems sys){
+		return SYSTEMS.containsKey(sys);
+	}
+
 }

@@ -20,6 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockTileEntity extends net.minecraft.tileentity.TileEntity implements IPacketReceiver<PacketTileEntityUpdate> {
 	
+	public byte meta = -1;
 	public BlockData data;
 	
 	public BlockTileEntity(BlockBase type){
@@ -56,10 +57,24 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
         super.readFromNBT(pkt.getNbtCompound());
         this.readFromNBT(pkt.getNbtCompound());
     }
+    
+    @Override
+    public void onLoad(){
+        IBlockState state = world.getBlockState(pos);
+        meta = (byte)state.getBlock().getMetaFromState(state);
+    }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound){
-        super.writeToNBT(compound); if(data != null){ data.write(compound); }
+        super.writeToNBT(compound);
+        if(data != null) data.write(compound);
+        if(meta > -1){
+            compound.setByte("block_meta", meta);
+        }
+        else{
+            IBlockState state = world.getBlockState(pos);
+            compound.setByte("block_meta", (byte)state.getBlock().getMetaFromState(state));
+        }
         return compound;
     }
 
@@ -68,9 +83,15 @@ public class BlockTileEntity extends net.minecraft.tileentity.TileEntity impleme
         super.readFromNBT(compound);
         if(data != null) data.read(compound);
         else data = Resources.getBlockData(compound);
+        if(compound.hasKey("block_meta")) meta = compound.getByte("block_meta");
         if(data.getType().canBeWired() && SystemManager.active(Systems.WIRE)){
         	SystemManager.get(Systems.WIRE, world, WireSystem.class).register(this);
         }
+    }
+    
+    @Override
+    public void setWorldCreate(World world){
+    	this.world = world;
     }
 
     @SideOnly(Side.CLIENT)

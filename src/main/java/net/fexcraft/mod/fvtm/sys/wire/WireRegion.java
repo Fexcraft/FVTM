@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.chunk.Chunk;
 
 /**
  * 
@@ -29,7 +30,7 @@ import net.minecraft.nbt.NBTTagList;
 public class WireRegion {
 	
 	private TreeMap<Vec316f, WireRelay> relays = new TreeMap<>();
-	public ArrayList<RegionKey> chucks = new ArrayList<>();
+	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
 	public long lastaccess;
 	private int timer = 0;
 	public boolean loaded;

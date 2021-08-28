@@ -338,14 +338,12 @@ public class RailSystem extends DetachedSystem {
 
 	@Override
 	public void onChunkLoad(Chunk chunk){
-		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.add(new RegionKey(chunk.x, chunk.z));
+		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.put(new RegionKey(chunk.x, chunk.z), chunk);
 	}
 
 	@Override
 	public void onChunkUnload(Chunk chunk){
-		ArrayList<RegionKey> torem = new ArrayList<>();
-		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.forEach(pre -> { if(pre.x == chunk.x && pre.z == chunk.z) torem.add(pre); });
-		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.removeAll(torem);
+		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.values().removeIf(pre -> pre.x == chunk.x && pre.z == chunk.z);
 	}
 
 	//@Deprecated

@@ -246,7 +246,6 @@ public class Resources {
 					}
 				}
 			}
-			
 		}
 		//
 		//TODO check addon on/off state

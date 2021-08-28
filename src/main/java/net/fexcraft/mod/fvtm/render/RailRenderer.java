@@ -31,7 +31,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -270,7 +269,7 @@ public class RailRenderer {
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         	//GL11.glEnable(GL11.GL_LIGHTING);
         	//GL11.glDisable(GL11.GL_BLEND);
-        	RenderHelper.enableStandardItemLighting();
+        	//RenderHelper.enableStandardItemLighting();
         	//
         	for(int i = 0; i < value.size(); i++){
         		if(i > 2) GL11.glTranslatef(0, -0.02f, 0);

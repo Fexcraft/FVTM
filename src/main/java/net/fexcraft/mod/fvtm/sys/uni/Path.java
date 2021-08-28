@@ -172,7 +172,7 @@ public abstract class Path {
 	
 	public float[] getPosition(float distance){
 		if(distance >= this.length){
-			if(distance == this.length) end.vector.toFloatArray();
+			if(distance == this.length) vecpath[vecpath.length - 1].toFloatArray();
 			return new float[]{ distance - length };
 		}
 		float traveled = 0, temp, multi;
@@ -186,7 +186,7 @@ public abstract class Path {
 				traveled += multi;
 			}
 		}
-		return start.vector.toFloatArray();
+		return vecpath[0].toFloatArray();
 	}
 	
 	public Vec3f getVectorPosition0(float distance, boolean reverse){

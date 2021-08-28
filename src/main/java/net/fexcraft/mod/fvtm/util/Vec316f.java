@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.RailBlock;
-import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -197,14 +196,6 @@ public class Vec316f implements Comparable<Vec316f> {
 
 	public Vec316f copy(){
 		return new Vec316f(this);
-	}
-
-	public Vec316f rotate(BlockPos pos, int meta, BlockType type){
-		double rot = type.getRotationForMeta(meta);
-		if(type.is4Rot()){
-			
-		}
-		return new Vec316f(VecUtil.rotByDeg(rot, vector).add(pos.getX(), pos.getY(), pos.getZ()));
 	}
 
 }

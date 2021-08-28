@@ -23,6 +23,7 @@ public class RenderView extends Render<RenderViewEntity> implements IRenderFacto
         GL11.glPushMatrix();
         {
         	RailRenderer.renderRails(entity.world, ticks);
+        	WireRenderer.renderWires(entity.world, ticks);
         }
         GL11.glPopMatrix();
     }

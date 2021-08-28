@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,6 +21,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
 
 /**
  * 
@@ -34,7 +34,7 @@ public class Region {
 	//public static final TreeMap<Long, NBTTagCompound> clientqueue = new TreeMap<>();
 	private TreeMap<Vec316f, Junction> junctions = new TreeMap<>();
 	private ConcurrentHashMap<Long, RailEntity> entities = new ConcurrentHashMap<>();
-	public ArrayList<RegionKey> chucks = new ArrayList<>();
+	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
 	public long lastaccess; private int timer = 0;
 	public boolean loaded;
 	private final RailSystem world;

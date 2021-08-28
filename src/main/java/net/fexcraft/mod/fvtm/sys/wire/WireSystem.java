@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
@@ -21,6 +22,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -198,13 +200,13 @@ public class WireSystem extends DetachedSystem {
 		}
 	}
 
-	public void addRelay(Vec316f vector){
+	public WireRelay addRelay(Vec316f vector){
 		WireRegion region = regions.get(vector, true);
-		if(region == null) /** this rather an error */ return;
+		if(region == null) /** this rather an error */ return null;
 		WireRelay relay = new WireRelay(region, vector);
 		region.getRelays().put(vector, relay);
 		region.setAccessed().updateClient("relay", vector);
-		return;
+		return relay;
 	}
 
 	public void updateJuncton(Vec316f vector){
@@ -313,6 +315,40 @@ public class WireSystem extends DetachedSystem {
 			}
 		}
 
+	}
+
+	/** Adding when missing. */
+	public void register(BlockTileEntity tile){
+		ArrayList<Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
+		for(Vec316f vec : vectors){
+			WireRelay relay = getRelay(vec);
+			if(relay == null){
+				addRelay(vec).setTile(tile);
+			}
+			else{
+				relay.setTile(tile);
+			}
+		}
+	}
+
+	/** Unlinking TE */
+	public void unregister(BlockTileEntity tile){
+		ArrayList<Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
+		for(Vec316f vec : vectors){
+			WireRelay relay = getRelay(vec);
+			if(relay != null) relay.setTile(tile);
+		}
+	}
+	
+	/** Removing when present. */
+	public void deregister(TileEntity tileentity){
+		if(tileentity == null || tileentity instanceof BlockTileEntity == false) return;
+		BlockTileEntity tile = (BlockTileEntity)tileentity;
+		ArrayList<Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
+		for(Vec316f vec : vectors){
+			WireRelay relay = getRelay(vec);
+			if(relay != null) delRelay(relay.getVec316f());
+		}
 	}
 
 }

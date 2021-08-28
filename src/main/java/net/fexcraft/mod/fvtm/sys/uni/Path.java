@@ -23,16 +23,21 @@ public abstract class Path {
 	public float length;
 	
 	public Path(Vec316f[] vec316fs, Vec316f vector){
-		start = vec316fs[0]; end = vector;
-		id = new PathKey(start, end); op = new PathKey(id, true);
+		start = vec316fs[0];
+		end = vector;
+		id = new PathKey(start, end);
+		op = new PathKey(id, true);
 		rootpath = new Vec316f[vec316fs.length + 1];
 		for(int i = 0; i < rootpath.length - 1; i++) rootpath[i] = vec316fs[i].copy();
-		rootpath[rootpath.length - 1] = vector.copy(); construct();
+		rootpath[rootpath.length - 1] = vector.copy();
+		construct();
 	}
 
 	public Path(Vec316f[] vec316fs){
-		start = vec316fs[0]; end = vec316fs[vec316fs.length - 1];
-		id = new PathKey(start, end); op = new PathKey(id, true);
+		start = vec316fs[0];
+		end = vec316fs[vec316fs.length - 1];
+		id = new PathKey(start, end);
+		op = new PathKey(id, true);
 		rootpath = new Vec316f[vec316fs.length];
 		for(int i = 0; i < rootpath.length; i++) rootpath[i] = vec316fs[i].copy();
 		construct();
@@ -47,17 +52,22 @@ public abstract class Path {
 			this.length = vecpath[0].dis(vecpath[1]);
 		}
 		else{
-			for(int i = 0; i < rootpath.length; i++){ vecpath[i] = rootpath[i].vector; }
+			for(int i = 0; i < rootpath.length; i++){
+				vecpath[i] = rootpath[i].vector;
+			}
 			//
-			Vec3f[] vecs = curve(vecpath); vecpath = new Vec3f[vecs.length + 2];
+			Vec3f[] vecs = curve(vecpath);
+			vecpath = new Vec3f[vecs.length + 2];
 			vecpath[0] = new Vec3f(start.vector);
-			for(int i = 0; i < vecs.length; i++){ vecpath[i + 1] = vecs[i]; }
+			for(int i = 0; i < vecs.length; i++){
+				vecpath[i + 1] = vecs[i];
+			}
 			vecpath[vecpath.length - 1] = new Vec3f(end.vector);
 			this.length = this.calcLength();
 		}
 	}
 
-	private Vec3f[] curve(Vec3f[] vecpoints){
+	protected Vec3f[] curve(Vec3f[] vecpoints){
 		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
 		float length = getLength(vecpoints);
 		float increment = 1 / length / Config.RAIL_SEGMENTATOR;
@@ -67,8 +77,10 @@ public abstract class Path {
 				Vec3f[] arr = new Vec3f[moved.length - 1];
 				for(int i = 0; i < moved.length - 1; i++){
 					arr[i] = move(moved[i], moved[i + 1], moved[i].dis(moved[i + 1]) * d);
-				} moved = arr;
-			} d += increment;//0.0625//0.05;
+				}
+				moved = arr;
+			}
+			d += increment;//0.0625//0.05;
 			vecs.add(move(moved[0], moved[1], moved[0].dis(moved[1]) * d));
 		}
 		return vecs.toArray(new Vec3f[0]);
@@ -82,8 +94,12 @@ public abstract class Path {
 	}
 	
 	public float getLength(Vec3f[] vecs){
-		vecs = vecs == null ? vecpath : vecs; float temp = 0;
-		for(int i = 0; i < vecs.length - 1; i++){ temp += vecs[i].dis(vecs[i + 1]); } return temp;
+		vecs = vecs == null ? vecpath : vecs;
+		float temp = 0;
+		for(int i = 0; i < vecs.length - 1; i++){
+			temp += vecs[i].dis(vecs[i + 1]);
+		}
+		return temp;
 	}
 	
 	protected float calcLength(){
@@ -91,14 +107,16 @@ public abstract class Path {
 	}
 	
 	public Path read(NBTTagCompound compound){
-		this.id = new PathKey(compound); op = new PathKey(id, true);
+		id = new PathKey(compound);
+		op = new PathKey(id, true);
 		this.copy = compound.getBoolean("copy");
 		this.start = new Vec316f(compound.getCompoundTag("start"));
 		this.end = new Vec316f(compound.getCompoundTag("end"));
 		this.rootpath = new Vec316f[compound.getInteger("vectors")];
 		for(int i = 0; i < rootpath.length; i++){
 			rootpath[i] = new Vec316f(compound.getCompoundTag("vector-" + i));
-		} construct();
+		}
+		construct();
 		this.length = compound.hasKey("length") ? compound.getFloat("length") : calcLength();
 		return this;
 	}
@@ -203,7 +221,7 @@ public abstract class Path {
 	
 	@Override
 	public String toString(){
-		return String.format("Track[%s-%s, %s, %s]", start, end, vecpath.length, copy ? "copy" : "original");
+		return String.format("Path[%s-%s, %s, %s]", start, end, vecpath.length, copy ? "copy" : "original");
 	}
 
 	public float oppositePassed(float sec){

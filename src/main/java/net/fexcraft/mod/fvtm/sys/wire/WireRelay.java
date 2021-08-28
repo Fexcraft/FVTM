@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.wire;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +20,7 @@ public class WireRelay {
 	public ArrayList<Wire> wires;
 	public WireSystem system;
 	public WireRegion region;
+	protected BlockTileEntity tile;
 	//
 	protected AxisAlignedBB frustumbb;
 	
@@ -179,6 +181,10 @@ public class WireRelay {
 	@Override
 	public String toString(){
 		return "WireRelay{ " + vecpos + ", " + wires.size() + " }";
+	}
+
+	public void setTile(BlockTileEntity tile){
+		this.tile = tile;
 	}
 
 }

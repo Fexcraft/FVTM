@@ -16,4 +16,9 @@ public class VecUtil {
         return new Vec3f(co * vec.x - si * vec.z, vec.y, si * vec.x + co * vec.z);
 	}
 
+	public static Vec3f rotByDeg(double deg, Vec3f vec){
+        double co = Math.cos(Math.toRadians(deg)), si = Math.sin(Math.toRadians(deg));
+        return new Vec3f(co * vec.x - si * vec.z, vec.y, si * vec.x + co * vec.z);
+	}
+
 }

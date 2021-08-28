@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.data.block;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -8,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 
 public class RelayData {
@@ -30,6 +32,14 @@ public class RelayData {
 			byte z = array.get(2).getAsByte();
 			conns.put(entry.getKey(), new Vec316f(x / 16, y / 16, z / 16, (byte)(x % 16), (byte)(y % 16), (byte)(z % 16)));
 		}
+	}
+
+	public ArrayList<Vec316f> getVectors(BlockTileEntity tile){
+		ArrayList<Vec316f> list = new ArrayList<Vec316f>();
+		for(Vec316f conn : conns.values()){
+			list.add(conn.rotate(tile.getPos(), tile.getBlockMetadata(), tile.getBlockData().getType().getBlockType()));
+		}
+		return list;
 	}
 
 }

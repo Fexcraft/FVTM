@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.sys.wire;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,22 +16,37 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 public class Wire extends Path {
-	
+
+	public Vec3f[] rootpath0;
 	protected WireUnit unit;
 	protected WireRelay relay;
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned wiremodel;
 	
-	public Wire(WireRelay relay, Vec316f[] vec316fs, Vec316f vector){
-		super(vec316fs, vector);
-		this.relay = relay;
-		if(relay != null) unit = getUnit(relay.size() == 0 ? null : relay.wires.get(0).unit.getSectionId());
+	public Wire(WireRelay relay, Object wiretype, Vec3f[] vecs){
+		this.start = new Vec316f(vecs[0]);
+		this.end = new Vec316f(vecs[2]);
+		id = new PathKey(start, end);
+		op = new PathKey(id, true);
+		rootpath = new Vec316f[]{ start, end };
+		rootpath0 = vecs;
+		vecpath = new Vec3f[rootpath.length];
 	}
 	
-	public Wire(WireRelay relay, Vec316f[] vec316fs){
-		super(vec316fs);
-		this.relay = relay;
-		if(relay != null) unit = getUnit(relay.size() == 0 ? null : relay.wires.get(0).unit.getSectionId());
+	@Override
+	protected void construct(){
+		vecpath = new Vec3f[rootpath0.length];
+		for(int i = 0; i < rootpath0.length; i++){
+			vecpath[i] = rootpath0[i];
+		}
+		Vec3f[] vecs = curve(vecpath);
+		vecpath = new Vec3f[vecs.length + 2];
+		vecpath[0] = rootpath0[0];
+		for(int i = 0; i < vecs.length; i++){
+			vecpath[i + 1] = vecs[i];
+		}
+		vecpath[vecpath.length - 1] = rootpath0[2];
+		this.length = this.calcLength();
 	}
 	
 	/** Only for the READ process. @param relay just to make sure it's not used elsewhere */
@@ -41,6 +57,13 @@ public class Wire extends Path {
 
 	@Override
 	public Wire read(NBTTagCompound compound){
+		this.rootpath = new Vec316f[compound.getInteger("vectors0")];
+		for(int i = 0; i < rootpath0.length; i++){
+			rootpath0[i] = new Vec3f();
+			rootpath0[i].x = compound.getFloat("vector0-" + i + "x");
+			rootpath0[i].y = compound.getFloat("vector0-" + i + "y");
+			rootpath0[i].z = compound.getFloat("vector0-" + i + "z");
+		}
 		super.read(compound);
 		if(relay != null) unit = getUnit(compound.getLong("section"));
 		return this;
@@ -56,6 +79,12 @@ public class Wire extends Path {
 	@Override
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound = super.write(compound);
+		compound.setInteger("vectors0", rootpath0.length);
+		for(int i = 0; i < rootpath0.length; i++){
+			compound.setFloat("vector0-" + i + "x", rootpath0[i].x);
+			compound.setFloat("vector0-" + i + "y", rootpath0[i].y);
+			compound.setFloat("vector0-" + i + "z", rootpath0[i].z);
+		}
 		if(unit != null) compound.setLong("section", unit.getSectionId());
 		return compound;
 	}

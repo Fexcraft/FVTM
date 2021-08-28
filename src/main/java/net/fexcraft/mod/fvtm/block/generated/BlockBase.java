@@ -5,6 +5,9 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.block.Block;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -70,6 +73,14 @@ public class BlockBase extends PlainBase implements ITileEntityProvider {
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state){
         return type.isInvisible() ? EnumBlockRenderType.INVISIBLE : type.hasPlainModel() ? EnumBlockRenderType.MODEL : EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state){
+    	if(type.canBeWired() && SystemManager.active(Systems.WIRE)){
+    		SystemManager.get(Systems.WIRE, world, WireSystem.class).deregister(world.getTileEntity(pos));
+        }
+        super.breakBlock(world, pos, state);
     }
 
 }

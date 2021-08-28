@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.RailBlock;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -83,21 +84,34 @@ public class Vec316f implements Comparable<Vec316f> {
 			}
 			case 16: default: break;
 		}
-		this.x = x; this.y = y; this.z = z; vector = toVec3f();
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		vector = toVec3f();
 	}
 
 	public Vec316f(NBTTagCompound compound){
 		pos = BlockPos.fromLong(compound.getLong("vec_pos"));
-		x = compound.getByte("pos_x"); y = compound.getByte("pos_y");
-		z = compound.getByte("pos_z"); vector = toVec3f();
+		x = compound.getByte("pos_x");
+		y = compound.getByte("pos_y");
+		z = compound.getByte("pos_z");
+		vector = toVec3f();
 	}
 
 	public Vec316f(int px, int py, int pz, byte x, byte y, byte z){
-		pos = new BlockPos(px, py, pz); this.x = x; this.y = y; this.z = z; vector = toVec3f();
+		pos = new BlockPos(px, py, pz);
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		vector = toVec3f();
 	}
 
 	public Vec316f(BlockPos blkpos, byte x, byte y, byte z){
-		pos = new BlockPos(blkpos); this.x = x; this.y = y; this.z = z; vector = toVec3f();
+		pos = new BlockPos(blkpos);
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		vector = toVec3f();
 	}
 
 	public Vec316f(Vec316f other){
@@ -116,8 +130,10 @@ public class Vec316f implements Comparable<Vec316f> {
 	public NBTTagCompound write(){
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("vec_pos", pos.toLong());
-		compound.setByte("pos_x", x); compound.setByte("pos_y", y);
-		compound.setByte("pos_z", z); return compound;
+		compound.setByte("pos_x", x);
+		compound.setByte("pos_y", y);
+		compound.setByte("pos_z", z);
+		return compound;
 	}
 
 	private Vec3f toVec3f(){
@@ -131,7 +147,8 @@ public class Vec316f implements Comparable<Vec316f> {
 			if(o.x > x) return 1; else if(o.x < x) return -1;
 			if(o.z > z) return 1; else if(o.z < z) return -1;
 			return 0;
-		} return o.pos.compareTo(pos);
+		}
+		return o.pos.compareTo(pos);
 	}
 	
 	@Override
@@ -152,22 +169,42 @@ public class Vec316f implements Comparable<Vec316f> {
 	
 	public static Vec316f fromIDString(String str){
 		String[] arr0 = str.split("|"), arr1 = arr0[1].split(","); arr0 = arr0[0].split(",");
-		int[] pxyz = new int[3]; byte[] xyz = new byte[3];
-		for(int i = 0; i < 3; i++){ pxyz[i] = Integer.parseInt(arr0[i]); xyz[i] = Byte.parseByte(arr1[i]); }
+		int[] pxyz = new int[3];
+		byte[] xyz = new byte[3];
+		for(int i = 0; i < 3; i++){
+			pxyz[i] = Integer.parseInt(arr0[i]);
+			xyz[i] = Byte.parseByte(arr1[i]);
+		}
 		return new Vec316f(pxyz[0], pxyz[1], pxyz[2], xyz[0], xyz[1], xyz[2]);
 	}
 	
 	public static Vec316f fromIDString(String str, boolean safe){
 		if(!safe) return fromIDString(str); try{
 			String[] arr0 = str.split("|"), arr1 = arr0[1].split(","); arr0 = arr0[0].split(",");
-			int[] pxyz = new int[3]; byte[] xyz = new byte[3];
-			for(int i = 0; i < 3; i++){ pxyz[i] = Integer.parseInt(arr0[i]); xyz[i] = Byte.parseByte(arr1[i]); }
+			int[] pxyz = new int[3];
+			byte[] xyz = new byte[3];
+			for(int i = 0; i < 3; i++){
+				pxyz[i] = Integer.parseInt(arr0[i]);
+				xyz[i] = Byte.parseByte(arr1[i]);
+			}
 			return new Vec316f(pxyz[0], pxyz[1], pxyz[2], xyz[0], xyz[1], xyz[2]);
-		} catch(Exception e){ e.printStackTrace(); return null; }
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public Vec316f copy(){
 		return new Vec316f(this);
+	}
+
+	public Vec316f rotate(BlockPos pos, int meta, BlockType type){
+		double rot = type.getRotationForMeta(meta);
+		if(type.is4Rot()){
+			
+		}
+		return new Vec316f(VecUtil.rotByDeg(rot, vector).add(pos.getX(), pos.getY(), pos.getZ()));
 	}
 
 }

@@ -165,4 +165,8 @@ public class BlockData extends DataCore<Block, BlockData> implements Textureable
 		return channels;
 	}
 
+	public RelayData getRelayData(){
+		return type.getRelayData();
+	}
+
 }

@@ -250,7 +250,9 @@ public class WireSystem extends DetachedSystem {
 
 	@Override
 	public void onChunkUnload(Chunk chunk){
-		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.removeIf(pre -> pre.x == chunk.x && pre.z == chunk.z);
+		ArrayList<RegionKey> torem = new ArrayList<>();
+		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.forEach(pre -> { if(pre.x == chunk.x && pre.z == chunk.z) torem.add(pre); });
+		regions.get(RegionKey.getRegionXZ(chunk.x, chunk.z), true).chucks.removeAll(torem);
 	}
 
 	public long getNewSectionId(){

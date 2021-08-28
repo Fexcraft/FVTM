@@ -266,10 +266,10 @@ public class RailRenderer {
         }
         else{*/
         	GL11.glPushMatrix();
-        	Minecraft.getMinecraft().entityRenderer.enableLightmap();
+        	//Minecraft.getMinecraft().entityRenderer.enableLightmap();
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        	GL11.glEnable(GL11.GL_LIGHTING);
-        	GL11.glDisable(GL11.GL_BLEND);
+        	//GL11.glEnable(GL11.GL_LIGHTING);
+        	//GL11.glDisable(GL11.GL_BLEND);
         	RenderHelper.enableStandardItemLighting();
         	//
         	for(int i = 0; i < value.size(); i++){
@@ -358,9 +358,9 @@ public class RailRenderer {
     			GL11.glPopMatrix();
     		}
         	//
-    		Minecraft.getMinecraft().entityRenderer.disableLightmap();
+    		//Minecraft.getMinecraft().entityRenderer.disableLightmap();
     		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-    		GL11.glDisable(GL11.GL_LIGHTING);
+    		//GL11.glDisable(GL11.GL_LIGHTING);
     		GL11.glPopMatrix();
         /*}*/
 	}

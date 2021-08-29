@@ -18,6 +18,8 @@ import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjuster;
 import net.fexcraft.mod.fvtm.gui.junction.JunctionAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemChooser;
 import net.fexcraft.mod.fvtm.gui.other.SpawnSystemContainer;
+import net.fexcraft.mod.fvtm.gui.other.WireChooser;
+import net.fexcraft.mod.fvtm.gui.other.WireContainer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacerContainer;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacer;
@@ -111,6 +113,7 @@ public class GuiHandler implements IGuiHandler {
 			case MULTIBLOCK_INVENTORY: return new GBlockInvContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraftContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChooseContainer(player, world, x, y, z);
+			case WIRE_MAIN: return new WireContainer(player, world, x, y, z);
 		}
 		return null;
 	}
@@ -147,6 +150,7 @@ public class GuiHandler implements IGuiHandler {
 				case MULTIBLOCK_INVENTORY: return new GBlockInventory(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraft(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChoose(player, world, x, y, z);
+				case WIRE_MAIN: return new WireChooser(player, world, x, y, z);
 			}
 		}
 		catch(Exception e){

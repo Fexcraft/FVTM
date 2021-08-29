@@ -20,6 +20,8 @@ public class RelayData {
 	
 	public boolean input, output;
 	public HashMap<String, Vec3f> conns = new HashMap<>();
+	public HashMap<String, ArrayList<String>> types = new HashMap<>();
+	public HashMap<String, Integer> limits = new HashMap<>();
 
 	public RelayData(JsonObject obj){
 		input = JsonUtil.getIfExists(obj, "input", true);
@@ -35,6 +37,8 @@ public class RelayData {
 			byte y = array.get(1).getAsByte();
 			byte z = array.get(2).getAsByte();
 			conns.put(entry.getKey(), new Vec3f(x * Static.sixteenth, y * Static.sixteenth, z * Static.sixteenth));
+			limits.put(entry.getKey(), array.size() > 3 ? array.get(3).getAsInt() : 0);
+			types.put(entry.getKey(), array.size() > 4 ? JsonUtil.jsonArrayToStringArray(array.get(4).getAsJsonArray()) : new ArrayList<>());
 		}
 	}
 

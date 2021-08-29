@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RoadSign;
+import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.Block;
 import net.fexcraft.mod.fvtm.data.container.Container;
@@ -31,6 +32,7 @@ public enum DataType {
 	BLOCK(".block", "blocks", Block.class),
 	RAILGAUGE(".gauge", "railgauges", RailGauge.class),
 	CLOTH(".cloth", "clothes", Cloth.class),
+	WIRE(".wire", "wires", WireType.class),
 	;
 	
 	public final String suffix, cfg_folder;
@@ -53,6 +55,7 @@ public enum DataType {
 			case BLOCK: return (IForgeRegistry<T>)Resources.BLOCKS;
 			case RAILGAUGE: return (IForgeRegistry<T>)Resources.RAILGAUGES;
 			case CLOTH: return (IForgeRegistry<T>)Resources.CLOTHES;
+			case WIRE: return (IForgeRegistry<T>)Resources.WIRES;
 			default: return null;
 		}
 	}
@@ -80,6 +83,7 @@ public enum DataType {
 			case BLOCK:{ Resources.BLOCKS.register((Block)core); return; }
 			case RAILGAUGE:{ Resources.RAILGAUGES.register((RailGauge)core); return; }
 			case CLOTH:{ Resources.CLOTHES.register((Cloth)core); return; }
+			case WIRE:{ Resources.WIRES.register((WireType)core); return; }
 			default: return;
 		}
 	}

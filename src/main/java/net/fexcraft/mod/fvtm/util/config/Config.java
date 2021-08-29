@@ -23,7 +23,8 @@ public class Config {
     	//LEGACYSYS = "Legacy",
     	U12BASE = "U12/Basic",
     	RAILSYS = "FVTM Rail/Trains",
-    	ROADSYS = "FVTM Road System";//,
+    	ROADSYS = "FVTM Road System",
+    	WIRESYS = "FVTM Wire System";//,
     	//PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, ROADTOOL_FOR_ALL, OVERLAY_ON_BOTTOM;
     public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS, DISABLE_LIGHT_BEAMS;
@@ -57,6 +58,9 @@ public class Config {
         config.setCategoryRequiresWorldRestart(ROADSYS, true);
         config.setCategoryRequiresMcRestart(ROADSYS, false);
         config.setCategoryComment(ROADSYS, "FVTM Road System");
+        config.setCategoryRequiresWorldRestart(WIRESYS, true);
+        config.setCategoryRequiresMcRestart(WIRESYS, false);
+        config.setCategoryComment(WIRESYS, "FVTM Wire System");
         /*config.setCategoryRequiresWorldRestart(PROTOTYPING, true);
         config.setCategoryRequiresMcRestart(PROTOTYPING, true);
         config.setCategoryComment(PROTOTYPING, "Various Experimental Settings.");*/
@@ -133,17 +137,17 @@ public class Config {
             DISABLE_ROADS = config.getBoolean("disable_roads", ROADSYS, false, "If FVTM road system should be disabled.");
             
     	}
-    	{//RAIL
+    	{//WIRE
             {
-            	RAIL_SEGMENTATOR = config.getInt("wire_generation_segmentator", RAILSYS, 4, 1, 16, "Segmentator divider for wire generator, valid are 16, 8, 4, 2 or 1.");
-                if(RAIL_SEGMENTATOR > 16) RAIL_SEGMENTATOR = 16;
-                if(RAIL_SEGMENTATOR > 8 && RAIL_SEGMENTATOR < 16) RAIL_SEGMENTATOR = 8;
-                if(RAIL_SEGMENTATOR > 4 && RAIL_SEGMENTATOR < 8) RAIL_SEGMENTATOR = 4;
-                if(RAIL_SEGMENTATOR > 2 && RAIL_SEGMENTATOR < 4) RAIL_SEGMENTATOR = 2;
-                if(RAIL_SEGMENTATOR < 1) RAIL_SEGMENTATOR = 1;
+            	WIRE_SEGMENTATOR = config.getInt("wire_generation_segmentator", RAILSYS, 4, 1, 16, "Segmentator divider for wire generator, valid are 16, 8, 4, 2 or 1.");
+                if(WIRE_SEGMENTATOR > 16) WIRE_SEGMENTATOR = 16;
+                if(WIRE_SEGMENTATOR > 8 && WIRE_SEGMENTATOR < 16) WIRE_SEGMENTATOR = 8;
+                if(WIRE_SEGMENTATOR > 4 && WIRE_SEGMENTATOR < 8) WIRE_SEGMENTATOR = 4;
+                if(WIRE_SEGMENTATOR > 2 && WIRE_SEGMENTATOR < 4) WIRE_SEGMENTATOR = 2;
+                if(WIRE_SEGMENTATOR < 1) WIRE_SEGMENTATOR = 1;
             }
-            MAX_WIRE_LENGTH = config.getInt("wire_max_length", RAILSYS, 64, 1, 1024, "Max vector (total) length of new placed Wires.");
-            DISABLE_RAILS = config.getBoolean("disable_wires", RAILSYS, false, "If FVTM wire system should be disabled.");
+            MAX_WIRE_LENGTH = config.getInt("wire_max_length", WIRESYS, 64, 1, 1024, "Max vector (total) length of new placed Wires.");
+            DISABLE_WIRES = config.getBoolean("disable_wires", WIRESYS, false, "If FVTM wire system should be disabled.");
             
     	}
     	ContainerBlock.INSTANCE.setHardness(UNBREAKABLE_CONTAINERS ? -1f : 8f);
@@ -154,6 +158,7 @@ public class Config {
         list.add(new ConfigElement(config.getCategory(U12BASE)));
         list.add(new ConfigElement(config.getCategory(RAILSYS)));
         list.add(new ConfigElement(config.getCategory(ROADSYS)));
+        list.add(new ConfigElement(config.getCategory(WIRESYS)));
         //list.add(new ConfigElement(config.getCategory(LEGACYSYS)));
         list.add(new ConfigElement(config.getCategory(CLIENT)));
         //list.add(new ConfigElement(config.getCategory(PROTOTYPING)));

@@ -158,6 +158,7 @@ public class FVTM {
 			Resources.BLOCKS.getValuesCollection().forEach(block -> block.loadModel());
 			Resources.RAILGAUGES.getValuesCollection().forEach(gauge -> gauge.loadModel());
 			Resources.CLOTHES.getValuesCollection().forEach(cloth -> cloth.loadModel());
+			Resources.WIRES.getValuesCollection().forEach(cloth -> cloth.loadModel());
 			net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(new ResourceLocation("fvtm:roadsign"), RoadSignModel.EMPTY);
 			Resources.clearObjModelCache();
 			Resources.OVERLAYS.put("default", net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.class);

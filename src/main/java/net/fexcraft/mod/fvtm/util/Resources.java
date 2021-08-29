@@ -41,6 +41,7 @@ import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
 import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
+import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.addon.AddonClass;
 import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
@@ -140,6 +141,7 @@ public class Resources {
 	public static IForgeRegistry<Block> BLOCKS;
 	public static IForgeRegistry<RailGauge> RAILGAUGES;
 	public static IForgeRegistry<Cloth> CLOTHES;
+	public static IForgeRegistry<WireType> WIRES;
 	public static TreeMap<String, TreeMap<String, ArrayList<Fuel>>> FUELS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
@@ -171,6 +173,7 @@ public class Resources {
 		BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
 		RAILGAUGES = new RegistryBuilder<RailGauge>().setName(new ResourceLocation("fvtm:railgauges")).setType(RailGauge.class).create();
 		CLOTHES = new RegistryBuilder<Cloth>().setName(new ResourceLocation("fvtm:clothes")).setType(Cloth.class).create();
+		WIRES = new RegistryBuilder<WireType>().setName(new ResourceLocation("fvtm:wires")).setType(WireType.class).create();
 		/*PALLETS = new RegistryBuilder<Pallet>().setName(new ResourceLocation("fvtm:pallets")).setType(Pallet.class).create();*/
 		//
 		String addonclass = AddonClass.class.getCanonicalName();
@@ -259,6 +262,7 @@ public class Resources {
 		searchInAddonsFor(DataType.CONSUMABLE);
 		searchInAddonsFor(DataType.CLOTH);
 		searchInAddonsFor(DataType.RAILGAUGE);
+		searchInAddonsFor(DataType.WIRE);
 		searchInAddonsFor(DataType.CONTAINER);
 		searchInAddonsFor(DataType.BLOCK);
 		searchInAddonsFor(DataType.PART);

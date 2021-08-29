@@ -48,6 +48,8 @@ public class GuiHandler implements IGuiHandler {
 	public static final int ROADTOOLCUSTOMFILL = 704;
 	public static final int SPAWNSYS = 705;
 	public static final int RAILPLACER = 706;
+	public static final int WIRE_MAIN = 710;
+	public static final int WIRE_CUSTOM = 710;
 	/* 90x - constructor main */
 	public static final int CONSTRUCTOR_MAIN = 900;
 	public static final int CONSTRUCTOR_STATUS = 901;

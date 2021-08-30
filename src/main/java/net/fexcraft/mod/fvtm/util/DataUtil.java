@@ -69,6 +69,15 @@ public class DataUtil {
 		return immutable ? ImmutableList.copyOf(list) : list;
 	}
 
+	public static ArrayList<String> getStringArray(JsonElement elm){
+		ArrayList<String> list = new ArrayList<>();
+		if(elm.isJsonArray()){
+			for(JsonElement e : elm.getAsJsonArray()) list.add(e.getAsString());
+		}
+		else list.add(elm.getAsString());
+		return list;
+	}
+
 	public static List<NamedResourceLocation> getTextures(JsonObject obj){
 		ArrayList<NamedResourceLocation> reslocs = new ArrayList<>();
 		if(obj.has("Texture") && obj.get("Texture").isJsonPrimitive()){

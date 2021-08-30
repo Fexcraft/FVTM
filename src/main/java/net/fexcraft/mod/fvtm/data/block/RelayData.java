@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.block;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
@@ -12,6 +13,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
+import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 public class RelayData {
 	
 	public boolean input, output;
-	public HashMap<String, Vec3f> conns = new HashMap<>();
+	public LinkedHashMap<String, Vec3f> conns = new LinkedHashMap<>();
 	public HashMap<String, ArrayList<String>> types = new HashMap<>();
 	public HashMap<String, Integer> limits = new HashMap<>();
 
@@ -38,7 +40,7 @@ public class RelayData {
 			byte z = array.get(2).getAsByte();
 			conns.put(entry.getKey(), new Vec3f(x * Static.sixteenth, y * Static.sixteenth, z * Static.sixteenth));
 			limits.put(entry.getKey(), array.size() > 3 ? array.get(3).getAsInt() : 0);
-			types.put(entry.getKey(), array.size() > 4 ? JsonUtil.jsonArrayToStringArray(array.get(4).getAsJsonArray()) : new ArrayList<>());
+			types.put(entry.getKey(), array.size() > 4 ? DataUtil.getStringArray(array.get(4)) : new ArrayList<>());
 		}
 	}
 

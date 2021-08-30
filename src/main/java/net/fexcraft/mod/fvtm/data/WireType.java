@@ -89,6 +89,10 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 	public ItemStack newItemStack(){
 		return new ItemStack(item, 1);
 	}
+	
+	public String wire_type(){
+		return type;
+	}
 
 	public float default_slack(){
 		return def_slack;

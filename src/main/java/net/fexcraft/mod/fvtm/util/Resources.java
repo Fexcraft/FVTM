@@ -482,7 +482,7 @@ public class Resources {
 					model = (Model<T, K>)clasz.newInstance();
 					break;
 				case "jtmt":
-					JsonObject obj = JsonUtil.getObjectFromInputStream(net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation(name)).getInputStream());
+					JsonObject obj = JsonUtil.getObjectFromInputStream(getModelInputStream(new ResourceLocation(name)));
 					model = clazz.getConstructor(JsonObject.class).newInstance(obj);
 					break;
 				case "json":
@@ -497,7 +497,7 @@ public class Resources {
 						objdata = OBJ_MODEL_INFO_CACHE.get(id);
 					}
 					else{
-						objdata = new ObjParser(Resources.getModelInputStream(loc)).readComments(true).readModel(false).parse();
+						objdata = new ObjParser(getModelInputStream(loc)).readComments(true).readModel(false).parse();
 						OBJ_MODEL_INFO_CACHE.put(id, objdata);
 					}
 					ArrayList<String> groups = new ArrayList<>();

@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
+import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
@@ -83,7 +84,7 @@ public class WireRenderer {
     }
 
 	private static void renderWires(WireRelay relays){
-        //if(Command.DEBUG){
+        if(Command.OTHER){
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             Vec3f vec0, vec1; float flfl, glgl;
@@ -116,10 +117,10 @@ public class WireRenderer {
                 (conn.isOppositeCopy() ? model1 : model0).render();
                 GL11.glPopMatrix();
     		}
-        /*}
+        }
         else{
-        	//
-        }*/
+        	
+        }
 	}
 
 }

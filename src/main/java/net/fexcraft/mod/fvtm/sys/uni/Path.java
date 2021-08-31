@@ -194,7 +194,7 @@ public abstract class Path {
 		if(distance >= this.length){
 			//if(distance == this.length) blkposToVec3f(end).toFloatArray();
 			//return new float[]{ distance - length };
-			return new Vec3f(end.vector);
+			return new Vec3f(vecpath[vecpath.length - 1]);
 		}
 		float traveled = 0, temp, multi;
 		for(int i = 0; i < vecpath.length - 1; i++){
@@ -207,7 +207,7 @@ public abstract class Path {
 				traveled += multi;
 			}
 		}
-		return new Vec3f(start.vector);
+		return new Vec3f(vecpath[0]);
 	}
 	
 	@Override

@@ -81,7 +81,8 @@ public class WireRelay {
 		return vecpos.vector;
 	}
 
-	public void addnew(Wire track){
+	public void addnew(Wire wire){
+		wires.add(wire);
 		updateClient();
 		return;
 	}

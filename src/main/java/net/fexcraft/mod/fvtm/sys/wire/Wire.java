@@ -1,12 +1,15 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,19 +25,21 @@ public class Wire extends Path {
 	protected WireRelay relay;
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned wiremodel;
+	protected WireType type;
 	
-	public Wire(WireRelay relay, Object wiretype, Vec3f[] vecs){
+	public Wire(WireRelay relay, WireType wiretype, Vec3f... vecs){
 		this.start = new Vec316f(vecs[0]);
 		this.end = new Vec316f(vecs[2]);
 		id = new PathKey(start, end);
 		op = new PathKey(id, true);
 		rootpath = new Vec316f[]{ start, end };
 		rootpath0 = vecs;
-		vecpath = new Vec3f[rootpath.length];
+		vecpath = new Vec3f[rootpath0.length];
+		type = wiretype;
 	}
 	
 	@Override
-	protected void construct(){
+	public void construct(){
 		vecpath = new Vec3f[rootpath0.length];
 		for(int i = 0; i < rootpath0.length; i++){
 			vecpath[i] = rootpath0[i];
@@ -57,7 +62,8 @@ public class Wire extends Path {
 
 	@Override
 	public Wire read(NBTTagCompound compound){
-		this.rootpath = new Vec316f[compound.getInteger("vectors0")];
+		if(compound.hasKey("wiretype")) type = Resources.WIRES.getValue(new ResourceLocation(compound.getString("wiretype")));
+		this.rootpath0 = new Vec3f[compound.getInteger("vectors0")];
 		for(int i = 0; i < rootpath0.length; i++){
 			rootpath0[i] = new Vec3f();
 			rootpath0[i].x = compound.getFloat("vector0-" + i + "x");
@@ -79,6 +85,7 @@ public class Wire extends Path {
 	@Override
 	public NBTTagCompound write(NBTTagCompound compound){
 		compound = super.write(compound);
+		if(type != null) compound.setString("wiretype", type.getRegistryName().toString());
 		compound.setInteger("vectors0", rootpath0.length);
 		for(int i = 0; i < rootpath0.length; i++){
 			compound.setFloat("vector0-" + i + "x", rootpath0[i].x);
@@ -89,10 +96,33 @@ public class Wire extends Path {
 		return compound;
 	}
 	
+	@Override
+	public <T extends Path> T createOppositeCopy(T instance){
+		Wire wire = (Wire)instance;
+		wire.id = new PathKey(id, true);
+		wire.op = new PathKey(id, false);
+		wire.start = end;
+		wire.end = start;
+		wire.copy = true;
+		wire.rootpath = new Vec316f[rootpath.length];
+		int j = rootpath.length - 1;
+		for(int i = 0; i < wire.rootpath.length; i++){
+			wire.rootpath[i] = rootpath[j--].copy();
+		}
+		wire.rootpath0 = new Vec3f[rootpath0.length];
+		j = rootpath0.length - 1;
+		for(int i = 0; i < wire.rootpath0.length; i++){
+			wire.rootpath0[i] = new Vec3f(rootpath0[j--]);
+		}
+		wire.construct();
+		wire.length = wire.calcLength();
+		return (T)wire;
+	}
+	
 	public Wire createOppositeCopy(){
-		Wire track = super.createOppositeCopy(new Wire(relay));
-		track.unit = unit;
-		return track;
+		Wire wire = createOppositeCopy(new Wire(relay));
+		wire.unit = unit;
+		return wire;
 	}
 	
 	public Vec3f getVectorPosition(float distance, boolean reverse){
@@ -117,6 +147,10 @@ public class Wire extends Path {
 	
 	public WireRelay getRelay(){
 		return relay;
+	}
+	
+	public WireType getWireType(){
+		return type;
 	}
 
 	public Vec3f getVectorOnWire(Vec3f ext){

@@ -3,11 +3,14 @@ package net.fexcraft.mod.fvtm.gui.other;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class WireChooser extends GenericGui<WireContainer> {
 	
@@ -110,7 +113,34 @@ public class WireChooser extends GenericGui<WireContainer> {
 
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		//
+		if(button.name.equals("prev")){
+			scroll--;
+			if(scroll < 0 ) scroll = 0;
+		}
+		else if(button.name.equals("next")){
+			scroll++;
+		}
+		else if(button.name.startsWith("idx0")){
+			if(button.tx == 188){
+				Print.chat(player, "Relay reached wire limit.");
+			}
+			else if(button.tx == 174){
+				Print.chat(player, "Wire not compatible with relay.");
+			}
+			else{
+				NBTTagCompound com = new NBTTagCompound();
+				com.setString("cargo", "connect");
+				com.setInteger("index", Integer.parseInt(button.name.substring(4)) + scroll);
+				container.send(Side.SERVER, com);
+			}
+			return true;
+		}
+		else if(button.name.startsWith("idx1")){
+			NBTTagCompound com = new NBTTagCompound();
+			com.setString("cargo", "open_editor");
+			com.setInteger("index", Integer.parseInt(button.name.substring(4)) + scroll);
+			container.send(Side.SERVER, com);
+		}
 		return false;
 	}
 

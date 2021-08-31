@@ -53,24 +53,24 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
         }
         tooltip.add(Formatter.format("&9Def. Slack: &7" + type.default_slack()));
         tooltip.add(Formatter.format("&9Customisable: &7" + type.customisable()));
-        tooltip.add(Formatter.format("&9- - - - - - &7-"));
-        tooltip.add(Formatter.format("&6Usage:"));
-        tooltip.add(Formatter.format("&b- Rightclick on a wire supplying block to select connection slot."));
-        tooltip.add(Formatter.format("&b- Rightclick 2 blocks in sequence to create a wire. "));
-        tooltip.add(Formatter.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
-        tooltip.add(Formatter.format("&9- - - - - - &7-"));
+        tooltip.add(Formatter.format("&9- &6- &9- - - - &6-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:wirepoint")){
         	tooltip.add(Formatter.format("&9Block: &7" + BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:wirepoint"))));
-        	tooltip.add(Formatter.format("&9Slot: &7" + BlockPos.fromLong(stack.getTagCompound().getLong("fvtm:wirepoint_slot"))));
+        	tooltip.add(Formatter.format("&9Slot: &7" + stack.getTagCompound().getString("fvtm:wirepoint_slot")));
         }
         else{
         	tooltip.add("No Connection data.");
         }
+        tooltip.add(Formatter.format("&9- &6- &9- - - - &6-"));
+        tooltip.add(Formatter.format("&6Usage:"));
+        tooltip.add(Formatter.format("&b- Rightclick on a wire supplying block to select connection slot."));
+        tooltip.add(Formatter.format("&b- Rightclick 2 blocks in sequence to create a wire. "));
+        tooltip.add(Formatter.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
     }
 	
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-        if(world.isRemote || Config.DISABLE_WIRES) return EnumActionResult.PASS;
+        if(world.isRemote || Config.DISABLE_WIRES || hand != EnumHand.MAIN_HAND) return EnumActionResult.PASS;
         WireSystem system = SystemManager.get(Systems.WIRE, world);
         if(system == null){
 			Print.chat(player, "&cWire System not found. Is it enabled?");

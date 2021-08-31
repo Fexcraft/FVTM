@@ -57,4 +57,8 @@ public class RelayData {
 		return new Vec316f(VecUtil.rotByDeg(rot, vector).add(pos.getX() + .5f, pos.getY(), pos.getZ() + .5f));
 	}
 
+	public Vec3f getVec3f(String string, BlockPos pos, int meta, BlockType type){
+		return VecUtil.rotByDeg(type.getRotationForMeta(meta), conns.get(string)).add(pos.getX() + .5f, pos.getY(), pos.getZ() + .5f);
+	}
+
 }

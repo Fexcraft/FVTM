@@ -126,9 +126,7 @@ public class Wire extends Path {
 	}
 	
 	public Vec3f getVectorPosition(float distance, boolean reverse){
-		Vec3f vec = this.getVectorPosition0(distance, reverse);
-		//vec.y += offset;
-		return vec;
+		return getVectorPosition0(distance, reverse);
 	}
 	
 	@Override

@@ -39,6 +39,7 @@ import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
@@ -205,7 +206,7 @@ public class Addon extends TypeCore<Addon> {
 				}
 				data.register(core); Print.log("Registered "+ data.name() +  " with ID '" + core.getRegistryName() + "' into FVTM.");
 				if(Static.side().isClient() && data.has3DItemModel()){
-					if(data == DataType.VEHICLE){
+					if(data == DataType.VEHICLE && Config.RENDER_VEHILE_MODELS_AS_ITEMS){
 						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
 					}
 					else if(data == DataType.CONTAINER){
@@ -241,7 +242,7 @@ public class Addon extends TypeCore<Addon> {
 				}
 				data.register(core); Print.log("Registered " + data.name() + " with ID '" + core.getRegistryName() + "' into FVTM.");
 				if(Static.side().isClient() && data.has3DItemModel()){
-					if(data == DataType.VEHICLE){
+					if(data == DataType.VEHICLE && Config.RENDER_VEHILE_MODELS_AS_ITEMS){
 						net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), VehicleModel.EMPTY);
 					}
 					else if(data == DataType.CONTAINER){

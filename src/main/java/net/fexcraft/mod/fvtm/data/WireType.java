@@ -120,4 +120,8 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 		return ctab;
 	}
 
+	public WireModel getModel(){
+		return model;
+	}
+
 }

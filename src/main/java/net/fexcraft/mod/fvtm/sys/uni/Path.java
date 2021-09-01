@@ -210,6 +210,8 @@ public abstract class Path {
 		return new Vec3f(vecpath[0]);
 	}
 	
+	public abstract Vec3f getVectorPosition(float distance, boolean reverse);
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj == this) return true;

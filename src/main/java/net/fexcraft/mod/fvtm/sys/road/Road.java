@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.road;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -58,6 +59,11 @@ public class Road extends Path {
 	@Override
 	public String toString(){
 		return String.format("Road[%s-%s, %s, %s]", start, end, vecpath.length, copy ? "copy" : "original");
+	}
+
+	@Override
+	public Vec3f getVectorPosition(float distance, boolean reverse){
+		return getVectorPosition0(distance, reverse);
 	}
 
 }

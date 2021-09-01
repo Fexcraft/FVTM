@@ -1,13 +1,21 @@
 package net.fexcraft.mod.fvtm.render;
 
+import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
+
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
+import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.WireModel;
+import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
@@ -16,6 +24,7 @@ import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -29,18 +38,16 @@ import net.minecraft.world.World;
 public class WireRenderer {
     
 
-	protected static final ModelRendererTurbo model, model0, model1, rellay_core;
+	protected static final ModelRendererTurbo model, model0, model1;
 	protected static final ModelRendererTurbo[] all;
 	static{
 		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addCylinder(0, 0, 0, 0.4f, 8, 32, 1, 1, ModelRendererTurbo.MR_TOP).setColor(RGB.RED);
+			.addSphere(0, 0, 0, 2, 8, 8, 32, 32).setLines(new RGB(0x00ddff));
 		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(245, 234, 128));
 		model1 = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(123, 245, 126));
-		rellay_core = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addCylinder(0, -.5f, 0, 0.9f, 1, 8, 1, 1, ModelRendererTurbo.MR_TOP).setColor(new RGB(120, 120, 120));
-		all = new ModelRendererTurbo[]{ model, model0, model1, rellay_core };
+		all = new ModelRendererTurbo[]{ model, model0, model1 };
 		for(ModelRendererTurbo turbo : all){
 			for(TexturedPolygon poly : turbo.getFaces()){
 				poly.setColor(turbo.polygonColor);
@@ -70,11 +77,8 @@ public class WireRenderer {
             	GL11.glPushMatrix();
             	ModelBase.bindTexture(Resources.NULL_TEXTURE);
             	GL11.glTranslatef(relays[i].getVec3f().x, relays[i].getVec3f().y, relays[i].getVec3f().z);
-            	if(relays[i].wires.isEmpty()){
+            	if(Command.OTHER && relays[i].wires.isEmpty()){
             		model.render();
-            	}
-            	else{
-            		rellay_core.render();
             	}
             	GL11.glPopMatrix();
         		renderWires(relays[i]);
@@ -83,13 +87,13 @@ public class WireRenderer {
 		GL11.glPopMatrix();
     }
 
-	private static void renderWires(WireRelay relays){
+	private static void renderWires(WireRelay relay){
         if(Command.OTHER){
     		Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             Vec3f vec0, vec1; float flfl, glgl;
-    		for(int o = 0; o < relays.wires.size(); o++){
-    			Wire conn = relays.wires.get(o);
+    		for(int o = 0; o < relay.wires.size(); o++){
+    			Wire conn = relay.wires.get(o);
     	        flfl = conn.isOppositeCopy() ? 1 : 0;
     	        glgl = conn.isOppositeCopy() ? 0 : 1;
                 GL11.glPushMatrix();
@@ -119,8 +123,65 @@ public class WireRenderer {
     		}
         }
         else{
-        	
+        	GL11.glPushMatrix();
+        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        	for(int i = 0; i < relay.size(); i++){
+        		if(relay.wires.get(i).isOppositeCopy()) continue;
+        		Wire wire = relay.wires.get(i);
+        		WireModel model = wire.getWireType().getModel();
+        		if(wire.wiremodel == null) generateWireModel(wire, model);
+        		ModelBase.bindTexture(wire.getWireType().getWireTexture());
+        		if(wire.getWireType().getModel().rail_tempcull) GlStateManager.disableCull();
+        		wire.wiremodel.render();
+        		if(wire.getWireType().getModel().rail_tempcull) GlStateManager.enableCull();
+        		//ModelBase.bindTexture(wire.getWireType().getModelTexture());
+        		//wire.decomodel.render();
+        	}
+        	if(Command.OTHER){
+        		Wire wire;
+        		for(int i = 0; i < relay.size(); i++){
+        			wire = relay.wires.get(i);
+	    			Vec3f pos = wire.getVectorPosition(wire.length * 0.5f, false);
+	    			float off = wire.isOppositeCopy() ? 0.125f : -0.125f;
+	    			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
+	    			RenderStreetSign.drawString(wire.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, wire.isOppositeCopy() ? 0xb8bc38 : 0x32a852, deg);
+        		}
+        	}
+    		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    		GL11.glPopMatrix();
         }
+	}
+
+	private static void generateWireModel(Wire wire, WireModel model){
+		TurboArrayPositioned tarp = new TurboArrayPositioned(wire, MIDDLE_GRAY);
+		float angle, passed = 0; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
+		TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly0;
+		//
+		for(int p = 0; p < model.wire_model.size(); p++){
+			path.clear(); vec = wire.getVectorPosition0(0.001f, false); passed = 0;
+			angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
+			angle += Static.rad90;
+			path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, model.wire_model.get(p)[0])));
+			path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, model.wire_model.get(p)[1])));
+			for(int v = 0; v < wire.vecpath.length - 1; v++){
+				last = wire.vecpath[v]; vec = wire.vecpath[v + 1];
+				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
+				angle += Static.rad90;
+				path.add(vec.add(VecUtil.rotByRad(angle, model.wire_model.get(p)[0])));
+				path.add(vec.add(VecUtil.rotByRad(angle, model.wire_model.get(p)[1])));
+			}
+			for(int k = 0; k < wire.vecpath.length - 1; k++){
+				vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
+				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 1);
+				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
+				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 1, 0);
+				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
+				int pess = (int)passed; if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
+				tarp.turbos[pess].copyTo(new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
+				passed += wire.vecpath[k].dis(wire.vecpath[k + 1]);
+			}
+		}
+		wire.wiremodel = tarp;
 	}
 
 }

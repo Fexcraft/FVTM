@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
 import net.fexcraft.mod.fvtm.sys.rail.Region;
 import net.fexcraft.mod.fvtm.sys.rail.Track;
+import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Command;
@@ -425,10 +426,10 @@ public class RailRenderer {
 
 	public static class TurboArrayPositioned {
 		
-		private ModelRendererTurbo[] turbos;
-		private Vec3f[] positions;
+		protected ModelRendererTurbo[] turbos;
+		protected Vec3f[] positions;
 		
-		public TurboArrayPositioned(Track track, RGB colour){
+		public TurboArrayPositioned(Path track, RGB colour){
 			int i = (int)track.getLength(null);
 			if(track.length % 1f > 0) i++;
 			if(i == 0) i = 1;

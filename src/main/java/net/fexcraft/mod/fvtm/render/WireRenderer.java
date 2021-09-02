@@ -42,7 +42,7 @@ public class WireRenderer {
 	protected static final ModelRendererTurbo[] all;
 	static{
 		model = new ModelRendererTurbo(null, 0, 0, 32, 32)
-			.addSphere(0, 0, 0, 2, 8, 8, 32, 32).setLines(new RGB(0x00ddff));
+			.addSphere(0, 0, 0, 1.25f, 6, 6, 1, 1).setLines(new RGB(0x00ddff));
 		model0 = new ModelRendererTurbo(null, 0, 0, 32, 32)
 			.addSphere(0, 0, 0, 0.5f, 8, 8, 32, 32).setTextured(false).setColor(new RGB(245, 234, 128));
 		model1 = new ModelRendererTurbo(null, 0, 0, 32, 32)
@@ -77,7 +77,7 @@ public class WireRenderer {
             	GL11.glPushMatrix();
             	ModelBase.bindTexture(Resources.NULL_TEXTURE);
             	GL11.glTranslatef(relays[i].getVec3f().x, relays[i].getVec3f().y, relays[i].getVec3f().z);
-            	if(Command.OTHER && relays[i].wires.isEmpty()){
+            	if(Command.OTHER){// && relays[i].wires.isEmpty()){
             		model.render();
             	}
             	GL11.glPopMatrix();

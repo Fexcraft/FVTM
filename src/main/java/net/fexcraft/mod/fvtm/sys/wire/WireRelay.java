@@ -188,4 +188,11 @@ public class WireRelay {
 		this.tile = tile;
 	}
 
+	public boolean isDuplicate(Wire other){
+		for(Wire wire : wires){
+			if(wire.getId().equals(other.getId()) || wire.getOppositeId().equals(other.getId())) return true;
+		}
+		return false;
+	}
+
 }

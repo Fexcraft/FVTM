@@ -27,9 +27,9 @@ public class Wire extends Path {
 	public TurboArrayPositioned wiremodel;
 	protected WireType type;
 	
-	public Wire(WireRelay relay, WireType wiretype, Vec3f... vecs){
-		this.start = new Vec316f(vecs[0]);
-		this.end = new Vec316f(vecs[2]);
+	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f... vecs){
+		this.start = relay.getVec316f().copy();
+		this.end = relay0.getVec316f().copy();
 		id = new PathKey(start, end);
 		op = new PathKey(id, true);
 		rootpath = new Vec316f[]{ start, end };

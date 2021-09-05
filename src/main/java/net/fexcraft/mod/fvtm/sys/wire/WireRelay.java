@@ -21,6 +21,7 @@ public class WireRelay {
 	public WireSystem system;
 	public WireRegion region;
 	protected BlockTileEntity tile;
+	protected RelayHolder holder;
 	//
 	protected AxisAlignedBB frustumbb;
 	
@@ -93,7 +94,7 @@ public class WireRelay {
 	}
 
 	public void updateClient(){
-		region.updateClient("relay", vecpos);
+		region.updateClient("relay", vecpos, null);
 	}
 
 	public void remove(int index, boolean firstcall){

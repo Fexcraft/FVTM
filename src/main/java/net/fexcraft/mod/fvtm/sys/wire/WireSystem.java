@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -155,6 +156,10 @@ public class WireSystem extends DetachedSystem {
 			region.load();
 			return region;
 		}
+
+		public WireRegion get(BlockPos pos, boolean load){
+			return get(RegionKey.getRegionXZ(pos), load);
+		}
 		
 	}
 	
@@ -185,35 +190,16 @@ public class WireSystem extends DetachedSystem {
 	}
 
 	public boolean delRelay(Vec316f vector){
-		WireRegion region = regions.get(vector, false);
-		if(region == null || region.getRelay(vector) == null) return false;
-		WireRelay relay = region.getRelays().remove(vector);
-		if(world.isRemote){
-			return relay != null;
-		}
-		else{
-			if(relay != null){
-				if(!relay.wires.isEmpty()) return false;
-			}
-			region.setAccessed().updateClient("no_relay", vector);
-			return true;
-		}
+		WireRelay relay = this.getRelay(vector);
+		return relay.holder.remove(relay.getVec316f()) != null;
 	}
 
-	public WireRelay addRelay(Vec316f vector){
-		WireRegion region = regions.get(vector, true);
-		if(region == null) /** this rather an error */ return null;
-		WireRelay relay = new WireRelay(region, vector);
-		region.getRelays().put(vector, relay);
-		region.setAccessed().updateClient("relay", vector);
+	public WireRelay regRelay(WireRelay relay){
+		WireRegion region = regions.get(relay.getVec316f(), true);
+		if(region == null) return null;
+		region.getRelays().put(relay.getVec316f(), relay);
+		region.setAccessed().updateClient("relay", relay.getVec316f(), null);
 		return relay;
-	}
-
-	public void updateJuncton(Vec316f vector){
-		WireRegion region = regions.get(vector, true);
-		if(region == null) /** This is rather bad. */ return;
-		region.setAccessed().updateClient("relay", vector);
-		return;
 	}
 
 	@Override
@@ -276,7 +262,7 @@ public class WireSystem extends DetachedSystem {
 
 	public void sendReload(String string, ICommandSender sender){
 		WireRegion region = regions.get(RegionKey.getRegionXZ(sender.getPositionVector()));
-		if(region != null) region.updateClient(string, new Vec316f(sender.getPositionVector()));
+		if(region != null) region.updateClient(string, new Vec316f(sender.getPositionVector()), null);
 	}
 
 	public boolean isRemote(){
@@ -319,36 +305,46 @@ public class WireSystem extends DetachedSystem {
 
 	/** Adding when missing. */
 	public void register(BlockTileEntity tile){
+		RelayHolder holder = getHolder(tile.getPos());
+		if(holder == null) holder = addHolder(tile.getPos());
 		ArrayList<Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
 		for(Vec316f vec : vectors){
-			WireRelay relay = getRelay(vec);
-			if(relay == null){
-				addRelay(vec).setTile(tile);
-			}
-			else{
-				relay.setTile(tile);
-			}
+			holder.add(vec, false);
 		}
+		holder.setTile(tile);
 	}
 
 	/** Unlinking TE */
 	public void unregister(BlockTileEntity tile){
-		ArrayList<Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
-		for(Vec316f vec : vectors){
-			WireRelay relay = getRelay(vec);
-			if(relay != null) relay.setTile(tile);
-		}
+		RelayHolder holder = getHolder(tile.getPos());
+		if(holder != null) holder.setTile(null);
 	}
 	
 	/** Removing when present. */
 	public void deregister(TileEntity tileentity){
 		if(tileentity == null || tileentity instanceof BlockTileEntity == false) return;
 		BlockTileEntity tile = (BlockTileEntity)tileentity;
-		ArrayList<Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
-		for(Vec316f vec : vectors){
-			WireRelay relay = getRelay(vec);
-			if(relay != null) delRelay(relay.getVec316f());
-		}
+		delHolder(tile.getPos());
+	}
+
+	public RelayHolder getHolder(BlockPos pos){
+		WireRegion region = regions.get(pos, false);
+		return region == null ? null : region.getHolder(pos);
+	}
+
+	public RelayHolder getHolder(BlockPos pos, boolean load){
+		WireRegion region = regions.get(pos, load);
+		return region.getHolder(pos);
+	}
+
+	private RelayHolder addHolder(BlockPos pos){
+		WireRegion region = regions.get(pos, true);
+		return region.addHolder(pos);
+	}
+
+	protected void delHolder(BlockPos pos){
+		WireRegion region = regions.get(pos, true);
+		if(region != null) region.delHolder(pos);
 	}
 
 }

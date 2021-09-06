@@ -266,18 +266,23 @@ public class Addon extends TypeCore<Addon> {
 	}
 
 	private void checkLangFile(TypeCore<?> core){
-		if(lang == null) lang = new File(file.getParentFile(), "/src/main/resources/assets/" + registryname.getPath() + "/lang/en_us.lang");
+		if(lang == null) lang = new File((isLitePack() ? file : file.getParentFile()), (isLitePack() ? "" : "/src/main/resources") + "/assets/" + registryname.getPath() + "/lang/en_us.lang");
 		String regname = (core instanceof Block ? "tile." : "item.") + core.getRegistryName().toString() + ".name=";
 		if(!containsLangEntry(regname)){
-			try{ Files.write(lang.toPath(), ("\n" + regname).getBytes(), StandardOpenOption.APPEND); }
-			catch(IOException e){ e.printStackTrace(); }
+			try{
+				Files.write(lang.toPath(), ("\n" + regname).getBytes(), StandardOpenOption.APPEND);
+			}
+			catch(IOException e){
+				e.printStackTrace();
+			}
 			Print.log("Added lang entry '" + regname.replace("=", "") + "'!");
 		}
 	}
 
 	private void checkItemJson(TypeCore<?> core, DataType data){
-		File json = new File(file.getParentFile(), "/src/main/resources/assets/" + core.getRegistryName().getNamespace() + "/models/item/" + core.getRegistryName().getPath() + ".json");
-		if(!json.exists()){ if(!json.getParentFile().exists()) json.getParentFile().mkdirs();
+		File json = new File((isLitePack() ? file : file.getParentFile()), (isLitePack() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/models/item/" + core.getRegistryName().getPath() + ".json");
+		if(!json.exists()){
+			if(!json.getParentFile().exists()) json.getParentFile().mkdirs();
 			JsonObject obj = new JsonObject();
 			obj.addProperty("parent", "item/generated");
 			JsonObject textures = new JsonObject();
@@ -294,26 +299,34 @@ public class Addon extends TypeCore<Addon> {
 	private static BufferedImage img, img_veh, img_part;
 
 	private void checkItemIcon(TypeCore<?> core, DataType data){
-		File icon = new File(file.getParentFile(), "/src/main/resources/assets/" + core.getRegistryName().getNamespace() + "/textures/items/" + core.getRegistryName().getPath() + ".png");
-		if(!icon.exists()){ if(!icon.getParentFile().exists()) icon.getParentFile().mkdirs();
+		File icon = new File((isLitePack() ? file : file.getParentFile()), (isLitePack() ? "" : "/src/main/resources") + "/assets/" + core.getRegistryName().getNamespace() + "/textures/items/" + core.getRegistryName().getPath() + ".png");;
+		if(!icon.exists()){
+			if(!icon.getParentFile().exists()) icon.getParentFile().mkdirs();
 			BufferedImage image = null;
 			if(data == DataType.VEHICLE){
 				if(img_veh == null){
 					img_veh = DataUtil.tryDownload(String.format(gitph, "vehicle"));
-				} image = img_veh;
+				}
+				image = img_veh;
 			}
 			else if(data == DataType.PART){
 				if(img_part == null){
 					img_part = DataUtil.tryDownload(String.format(gitph, "part"));
-				} image = img_part;
+				}
+				image = img_part;
 			}
 			else{
 				if(img == null){
 					img = DataUtil.tryDownload(String.format(gitph, "general"));
-				} image = img;
+				}
+				image = img;
 			}
-			try{ ImageIO.write(image, "png", icon); }
-			catch(IOException e){ e.printStackTrace(); }
+			try{
+				ImageIO.write(image, "png", icon);
+			}
+			catch(IOException e){
+				e.printStackTrace();
+			}
 			Print.log("Generated item icon for '" + core.getRegistryName().toString() + "'!");
 		}
 	}
@@ -326,7 +339,10 @@ public class Addon extends TypeCore<Addon> {
 				if(scanner.nextLine().startsWith(regname)) return true;
 			} scanner.close();
 		}
-		catch(FileNotFoundException e){ e.printStackTrace(); } return false;
+		catch(FileNotFoundException e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	private ArrayList<File> findFiles(File file, String suffix){

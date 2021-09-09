@@ -134,8 +134,8 @@ public class WireRenderer {
         		if(wire.getWireType().getModel().rail_tempcull) GlStateManager.disableCull();
         		wire.wiremodel.render();
         		if(wire.getWireType().getModel().rail_tempcull) GlStateManager.enableCull();
-        		//ModelBase.bindTexture(wire.getWireType().getModelTexture());
-        		//wire.decomodel.render();
+        		ModelBase.bindTexture(wire.getWireType().getModelTexture());
+        		if(wire.getRelay().getTile() != null) model.render(wire.getRelay().getTile().getBlockData(), wire.getRelay().getTile());
         	}
         	if(Command.OTHER){
         		Wire wire;

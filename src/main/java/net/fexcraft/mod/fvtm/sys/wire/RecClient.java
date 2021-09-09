@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -51,7 +52,11 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					if(holder != null) holder.read(packet.nbt);
 					else{
 						WireRegion region = system.getRegions().get(pos, false);
-						if(region != null) region.addHolder(pos).read(packet.nbt);
+						if(region != null) holder = region.addHolder(pos).read(packet.nbt);
+					}
+					if(holder.blocktile == null){
+						BlockTileEntity tile = (BlockTileEntity)system.getWorld().getTileEntity(holder.pos);
+						if(tile != null) holder.setTile(tile);
 					}
 					return;
 				}

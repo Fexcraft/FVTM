@@ -3,17 +3,20 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
+import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.sys.rail.Track;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class WireModel extends GenericModel<Track, Integer> {
+public class WireModel extends GenericModel<BlockData, TileEntity> {
 
 	public static final WireModel EMPTY = new WireModel();
 	public ArrayList<Vec3f[]> wire_model = new ArrayList<>();
@@ -51,13 +54,18 @@ public class WireModel extends GenericModel<Track, Integer> {
 	}
 
 	@Override
-	public void render(Track data, Integer index){
-		for(TurboList list : groups){ list.renderPlain(); }
+	public void render(BlockData data, TileEntity tile){
+		transforms.apply();
+		for(TurboList list : groups) list.renderBlock(tile, data, null);
+		transforms.deapply();
 	}
 
 	@Override
-	public void render(Track data, Integer index, Entity ent, RenderCache cache){
-		for(TurboList list : groups){ list.renderPlain(); }
+	public void render(BlockData data, TileEntity tile, Entity ent, RenderCache cache){
+		transforms.apply();
+		GL11.glShadeModel(smooth_shading ? GL11.GL_FLAT : GL11.GL_SMOOTH);
+		for(TurboList list : groups) list.renderBlock(tile, data, cache);
+		transforms.deapply();
 	}
 	
 	public void addWireRect(float scale, float start_x, float start_y, float width, float height, boolean mirror){

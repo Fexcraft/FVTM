@@ -185,8 +185,8 @@ public class WireRelay {
 		return "WireRelay{ " + vecpos + ", " + wires.size() + " }";
 	}
 
-	public void setTile(BlockTileEntity tile){
-		this.tile = tile;
+	public BlockTileEntity getTile(){
+		return tile;
 	}
 
 	public boolean isDuplicate(Wire other){

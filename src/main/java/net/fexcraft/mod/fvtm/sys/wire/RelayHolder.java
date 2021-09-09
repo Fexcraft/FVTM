@@ -65,6 +65,7 @@ public class RelayHolder {
 
 	public void setTile(BlockTileEntity tile){
 		blocktile = tile;
+		for(WireRelay relay : relays) relay.tile = tile;
 	}
 
 	protected void delete(){

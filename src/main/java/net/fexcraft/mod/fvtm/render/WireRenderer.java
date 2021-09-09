@@ -135,7 +135,15 @@ public class WireRenderer {
         		wire.wiremodel.render();
         		if(wire.getWireType().getModel().rail_tempcull) GlStateManager.enableCull();
         		ModelBase.bindTexture(wire.getWireType().getModelTexture());
-        		if(wire.getRelay().getTile() != null) model.render(wire.getRelay().getTile().getBlockData(), wire.getRelay().getTile());
+        		if(wire.getRelay().getTile() != null){
+        			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
+        			model.render(wire.getRelay().getTile().getBlockData(), wire.getRelay().getTile());
+        			GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
+        			int l = wire.vecpath.length - 1;
+        			GL11.glTranslatef(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
+        			model.render(wire.getRelay().getTile().getBlockData(), wire.getRelay().getTile());
+        			GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
+        		}
         	}
         	if(Command.OTHER){
         		Wire wire;

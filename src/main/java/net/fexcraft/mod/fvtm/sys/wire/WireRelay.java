@@ -18,31 +18,21 @@ public class WireRelay {
 	
 	private Vec316f vecpos;
 	public ArrayList<Wire> wires;
-	public WireSystem system;
-	public WireRegion region;
-	protected BlockTileEntity tile;
 	protected RelayHolder holder;
 	//
 	protected AxisAlignedBB frustumbb;
 	
 	/** General Constructor */
-	public WireRelay(WireRegion region, Vec316f pos){
+	public WireRelay(RelayHolder holder, Vec316f pos){
 		vecpos = pos;
 		wires = new ArrayList<Wire>();
-		this.system = region.getSystem();
-		this.region = region;
+		this.holder = holder;
 	}
 	
-	/** Only to be used from WireRegion.class */
-	protected WireRelay(WireRegion region){
-		this.system = region.getSystem();
-		this.region = region;
+	/** Only to be used from WireRegion.class/Internally */
+	protected WireRelay(RelayHolder holder){
+		this.holder = holder;
 		wires = new ArrayList<>();
-	}
-
-	public WireRelay setRoot(WireSystem data){
-		this.system = data;
-		return this;
 	}
 	
 	public WireRelay read(NBTTagCompound compound){
@@ -94,7 +84,7 @@ public class WireRelay {
 	}
 
 	public void updateClient(){
-		region.updateClient("relay", vecpos, null);
+		holder.region.updateClient("relay", vecpos, null);
 	}
 
 	public void remove(int index, boolean firstcall){
@@ -108,7 +98,7 @@ public class WireRelay {
 		this.updateClient();
 		//
 		if(firstcall){
-			WireRelay relay = system.getRelay(wire.start.equals(vecpos) ? wire.end : wire.start);
+			WireRelay relay = holder.region.system.getRelay(wire.start.equals(vecpos) ? wire.end : wire.start);
 			if(relay != null) relay.remove(wire.getOppositeId(), false);
 		}
 		else this.checkWireSectionConsistency();
@@ -185,15 +175,19 @@ public class WireRelay {
 		return "WireRelay{ " + vecpos + ", " + wires.size() + " }";
 	}
 
-	public BlockTileEntity getTile(){
-		return tile;
-	}
-
 	public boolean isDuplicate(Wire other){
 		for(Wire wire : wires){
 			if(wire.getId().equals(other.getId()) || wire.getOppositeId().equals(other.getId())) return true;
 		}
 		return false;
+	}
+
+	public RelayHolder getHolder(){
+		return holder;
+	}
+
+	public BlockTileEntity getTile(){
+		return holder.blocktile;
 	}
 
 }

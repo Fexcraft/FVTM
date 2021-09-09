@@ -37,8 +37,8 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					WireRelay relay = system.getRelay(vec);
 					if(relay != null) relay.read(packet.nbt);
 					else{
-						WireRegion region = system.getRegions().get(vec, false);
-						if(region != null) region.getRelays().put(vec, new WireRelay(region, vec).read(packet.nbt));
+						RelayHolder holder = system.getHolder(BlockPos.fromLong(packet.nbt.getLong("holder")));
+						if(holder != null) holder.add(vec, false).read(packet.nbt);
 					}
 					return;
 				}

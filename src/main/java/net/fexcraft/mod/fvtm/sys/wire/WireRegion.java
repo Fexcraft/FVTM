@@ -180,6 +180,7 @@ public class WireRegion {
 				WireRelay relay = getRelay(vector);
 				if(relay == null) return;
 				compound = relay.write(new NBTTagCompound());
+				compound.setLong("holder", relay.holder.pos.toLong());
 				compound.setString("target_listener", "fvtm:wiresys");
 				compound.setString("task", "update_relay");
 				break;

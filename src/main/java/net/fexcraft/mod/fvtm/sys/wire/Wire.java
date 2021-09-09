@@ -76,7 +76,7 @@ public class Wire extends Path {
 	}
 
 	public WireUnit getUnit(Long knownid){
-		WireUnit unit = relay.system.getWireUnits().get(id.toUnitId(copy), knownid, true);
+		WireUnit unit = relay.holder.region.system.getWireUnits().get(id.toUnitId(copy), knownid, true);
 		if(copy) unit.copy = this;
 		else unit.orig = this;
 		return unit;

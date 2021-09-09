@@ -26,16 +26,22 @@ public class RelayHolder {
 		this.region = region;
 	}
 
-	public void add(Vec316f vec, boolean override){
+	public WireRelay add(Vec316f vec, boolean override){
 		if(contains(vec)){
 			if(override){
 				remove(vec);
 			}
-			else return;
+			else return get(vec);
 		}
-		WireRelay relay = new WireRelay(region, vec);
+		WireRelay relay = new WireRelay(this, vec);
 		relays.add(relay);
 		region.system.regRelay(relay);
+		return relay;
+	}
+
+	private WireRelay get(Vec316f vec){
+		for(WireRelay relay : relays) if(relay.getVec316f().equals(vec)) return relay;
+		return null;
 	}
 
 	private boolean contains(Vec316f vec){
@@ -65,7 +71,10 @@ public class RelayHolder {
 
 	public void setTile(BlockTileEntity tile){
 		blocktile = tile;
-		for(WireRelay relay : relays) relay.tile = tile;
+	}
+
+	public BlockTileEntity getTile(){
+		return blocktile;
 	}
 
 	protected void delete(){
@@ -90,7 +99,7 @@ public class RelayHolder {
 		pos = BlockPos.fromLong(compound.getLong("Pos"));
 		NBTTagList list = (NBTTagList)compound.getTag("Relays");
 		for(NBTBase base : list){
-			WireRelay relay = new WireRelay(region).read((NBTTagCompound)base);
+			WireRelay relay = new WireRelay(this).read((NBTTagCompound)base);
 			relays.add(relay);
 		}
 		return this;

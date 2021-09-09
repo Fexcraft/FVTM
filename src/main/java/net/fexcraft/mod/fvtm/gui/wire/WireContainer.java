@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.gui.other;
+package net.fexcraft.mod.fvtm.gui.wire;
 
 import java.util.ArrayList;
 import java.util.List;

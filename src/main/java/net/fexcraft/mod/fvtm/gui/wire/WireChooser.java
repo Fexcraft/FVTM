@@ -1,4 +1,4 @@
-package net.fexcraft.mod.fvtm.gui.other;
+package net.fexcraft.mod.fvtm.gui.wire;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class WireChooser extends GenericGui<WireContainer> {
 	
-	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/wires.png");
+	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/wire_relays.png");
 	private static BasicButton[] b0 = new BasicButton[8], b1 = new BasicButton[8];
 	private static BasicText[] t = new BasicText[8];
 	private ArrayList<String> tooltip = new ArrayList<>();

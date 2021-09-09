@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class WireChooser extends GenericGui<WireContainer> {
+public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 	
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/wire_relays.png");
 	private static BasicButton[] b0 = new BasicButton[8], b1 = new BasicButton[8];
@@ -20,8 +20,8 @@ public class WireChooser extends GenericGui<WireContainer> {
 	private ArrayList<String> tooltip = new ArrayList<>();
 	private static int scroll;
 
-	public WireChooser(EntityPlayer player, World world, int x, int y, int z){
-		super(texture, new WireContainer(player, world, x, y, z), player);
+	public WireRelayChooser(EntityPlayer player, World world, int x, int y, int z){
+		super(texture, new WireRelayContainer(player, world, x, y, z), player);
 		this.container.gui = this;
 		this.defbackground = true;
 		this.deftexrect = true;
@@ -138,15 +138,17 @@ public class WireChooser extends GenericGui<WireContainer> {
 		else if(button.name.startsWith("idx1")){
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("cargo", "open_editor");
-			com.setInteger("index", Integer.parseInt(button.name.substring(4)) + scroll);
+			int i = Integer.parseInt(button.name.substring(4)) + scroll;
+			com.setInteger("index", i);
 			container.send(Side.SERVER, com);
+			WireRelayContainer.SELRELAY = container.conns.get(i);
 		}
 		return false;
 	}
 
 	@Override
 	protected void scrollwheel(int am, int x, int y){
-		scroll += am > 0 ? -1 : 1;
+		scroll += am > 0 ? 1 : -1;
 		if(scroll < 0) scroll = 0;
 	}
 	

@@ -29,8 +29,9 @@ import net.fexcraft.mod.fvtm.gui.road.RoadPlacerFillContainer;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.vehicle.*;
-import net.fexcraft.mod.fvtm.gui.wire.WireChooser;
-import net.fexcraft.mod.fvtm.gui.wire.WireContainer;
+import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
+import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
+import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -50,8 +51,9 @@ public class GuiHandler implements IGuiHandler {
 	public static final int ROADTOOLCUSTOMFILL = 704;
 	public static final int SPAWNSYS = 705;
 	public static final int RAILPLACER = 706;
-	public static final int WIRE_MAIN = 710;
-	public static final int WIRE_CUSTOM = 710;
+	public static final int WIRE_RELAY_MAIN = 710;
+	public static final int WIRE_RELAY_EDIT = 711;
+	public static final int WIRE_EDIT = 712;
 	/* 90x - constructor main */
 	public static final int CONSTRUCTOR_MAIN = 900;
 	public static final int CONSTRUCTOR_STATUS = 901;
@@ -113,7 +115,8 @@ public class GuiHandler implements IGuiHandler {
 			case MULTIBLOCK_INVENTORY: return new GBlockInvContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraftContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChooseContainer(player, world, x, y, z);
-			case WIRE_MAIN: return new WireContainer(player, world, x, y, z);
+			case WIRE_RELAY_MAIN:
+			case WIRE_RELAY_EDIT: return new WireRelayContainer(player, world, x, y, z);
 		}
 		return null;
 	}
@@ -150,7 +153,8 @@ public class GuiHandler implements IGuiHandler {
 				case MULTIBLOCK_INVENTORY: return new GBlockInventory(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraft(player, world, x, y, z);
 				case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChoose(player, world, x, y, z);
-				case WIRE_MAIN: return new WireChooser(player, world, x, y, z);
+				case WIRE_RELAY_MAIN: return new WireRelayChooser(player, world, x, y, z);
+				case WIRE_RELAY_EDIT: return new WireRelayEditor(player, world, x, y, z);
 			}
 		}
 		catch(Exception e){

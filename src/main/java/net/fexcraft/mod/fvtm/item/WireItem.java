@@ -90,7 +90,7 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
         	BlockTileEntity tile = (BlockTileEntity) world.getTileEntity(pos);
         	if(tile != null && tile.getBlockData().getType().canBeWired()){
         		if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-        		player.openGui(FVTM.getInstance(), GuiHandler.WIRE_MAIN, world, pos.getX(), pos.getY(), pos.getZ());
+        		player.openGui(FVTM.getInstance(), GuiHandler.WIRE_RELAY_MAIN, world, pos.getX(), pos.getY(), pos.getZ());
         	}
         	else{
     			Print.chat(player, "&7This block can not be wired.");

@@ -8,12 +8,15 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.RelayData;
+import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
@@ -26,9 +29,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class WireContainer extends GenericContainer {
+public class WireRelayContainer extends GenericContainer {
 	
-	protected GenericGui<WireContainer> gui;
+	protected GenericGui<WireRelayContainer> gui;
 	protected WireSystem system;
 	protected BlockTileEntity tile;
 	protected RelayData data;
@@ -36,8 +39,13 @@ public class WireContainer extends GenericContainer {
 	protected ArrayList<WireRelay> relays = new ArrayList<>();
 	protected ItemStack stack;
 	protected WireType type;
+	//
+	protected static String SELRELAY;
+	protected RelayHolder holder;
+	protected WireRelay relay;
+	protected static  int WIRE;
 
-	public WireContainer(EntityPlayer player, World world, int x, int y, int z){
+	public WireRelayContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
 		system = SystemManager.get(Systems.WIRE, world);
 		tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
@@ -49,6 +57,10 @@ public class WireContainer extends GenericContainer {
 		type = ((WireItem)stack.getItem()).getType();
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
+		}
+		if(SELRELAY != null){
+			holder = system.getHolder(tile.getPos());
+			relay = relays.get(conns.indexOf(SELRELAY));
 		}
 	}
 
@@ -107,7 +119,15 @@ public class WireContainer extends GenericContainer {
 					return;
 				}
 				case "open_editor":{
-					Print.chatbar(player, "&bwork in progress");
+					player.openGui(FVTM.getInstance(), GuiHandler.WIRE_RELAY_EDIT, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+					return;
+				}
+				case "edit_wire":{
+					player.openGui(FVTM.getInstance(), GuiHandler.WIRE_EDIT, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+					return;
+				}
+				case "del_wire":{
+					relay.remove(packet.getInteger("index"), true);
 					return;
 				}
 			}

@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
 /**
@@ -30,12 +31,13 @@ import net.minecraft.world.chunk.Chunk;
 public class WireRegion {
 	
 	private TreeMap<Vec316f, WireRelay> relays = new TreeMap<>();
+	private TreeMap<BlockPos, RelayHolder> holders = new TreeMap<>();
 	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
 	public long lastaccess;
 	private int timer = 0;
 	public boolean loaded;
-	private final WireSystem system;
-	private final RegionKey key;
+	protected final WireSystem system;
+	protected final RegionKey key;
 
 	public WireRegion(int i, int j, WireSystem root, boolean load){
 		key = new RegionKey(i, j);
@@ -86,14 +88,15 @@ public class WireRegion {
 	}
 
 	public WireRegion read(NBTTagCompound compound){
-		if(compound.hasKey("Relays")){
-			if(!relays.isEmpty()){
-				relays.clear();
-			}
-			NBTTagList list = (NBTTagList)compound.getTag("Relays");
+		if(compound.hasKey("RelayHolders")){
+			if(!relays.isEmpty()) relays.values().removeIf(value -> !RegionKey.getRegionXZ(value.holder.pos).equals(key));
+			if(!holders.isEmpty()) holders.clear();
+			NBTTagList list = (NBTTagList)compound.getTag("RelayHolders");
 			for(NBTBase base : list){
-				WireRelay relay = new WireRelay(this).read((NBTTagCompound)base);
-				relays.put(relay.getVec316f(), relay);
+				RelayHolder holder = new RelayHolder(this);
+				holder.read((NBTTagCompound)base);
+				holders.put(holder.pos, holder);
+				holder.regRelays();
 			}
 		}
 		loaded = true;
@@ -123,10 +126,10 @@ public class WireRegion {
 		NBTTagCompound compound = new NBTTagCompound();
 		if(!relays.isEmpty()){
 			NBTTagList list = new NBTTagList();
-			for(WireRelay relay : relays.values()){
-				list.appendTag(relay.write(null));
+			for(RelayHolder holder : holders.values()){
+				list.appendTag(holder.write());
 			}
-			compound.setTag("Relays", list);
+			compound.setTag("RelayHolders", list);
 		}
 		if(clientpacket) return compound;
 		return compound;
@@ -159,10 +162,10 @@ public class WireRegion {
 	}
 	
 	public void updateClient(Vec316f vector){
-		updateClient("all", vector);
+		updateClient("all", vector, null);
 	}
 	
-	public void updateClient(String kind, Vec316f vector){
+	public void updateClient(String kind, Vec316f vector, BlockPos pos){
 		if(system.getWorld().isRemote) return;
 		NBTTagCompound compound = null;
 		switch(kind){
@@ -185,6 +188,21 @@ public class WireRegion {
 				compound = vector.write();
 				compound.setString("target_listener", "fvtm:wiresys");
 				compound.setString("task", "rem_relay");
+				break;
+			}
+			case "holder":{
+				RelayHolder holder = getHolder(pos);
+				if(holder == null) return;
+				compound = holder.write();
+				compound.setString("target_listener", "fvtm:wiresys");
+				compound.setString("task", "update_holder");
+				break;
+			}
+			case "no_holder":{
+				compound = new NBTTagCompound();
+				compound.setLong("pos", pos.toLong());
+				compound.setString("target_listener", "fvtm:wiresys");
+				compound.setString("task", "rem_holder");
 				break;
 			}
 			case "sections":{
@@ -222,6 +240,34 @@ public class WireRegion {
 	public Wire getWire(PathKey key){
 		WireRelay relay = getRelay(key.toVec3f(0));
 		return relay == null ? null : relay.getWire(key);
+	}
+
+	public RelayHolder getHolder(BlockPos pos){
+		return holders.get(pos);
+	}
+
+	public RelayHolder addHolder(BlockPos pos){
+		if(!holders.containsKey(pos)){
+			RelayHolder holder = new RelayHolder(this, pos);
+			holders.put(pos, holder);
+			return holder;
+		}
+		else return holders.get(pos);
+	}
+
+	public void delHolder(BlockPos pos){
+		RelayHolder holder = getHolder(pos);
+		if(holder == null) return;
+		holder.delete();
+		holders.remove(pos);
+	}
+
+	public void remRelay(WireRelay relay){
+		if(relays.containsKey(relay.getVec316f())){
+			relays.remove(relay.getVec316f());
+			updateClient("no_relay", relay.getVec316f(), null);
+			setAccessed();
+		}
 	}
 
 }

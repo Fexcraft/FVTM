@@ -81,7 +81,12 @@ public class RegionKey implements Comparable<RegionKey> {
 	}
 
 	public boolean isInRegion(Vec316f vec){
-		int[] id = getRegionXZ(vec); return id[0] == x && id[1] == z;
+		int[] id = getRegionXZ(vec);
+		return id[0] == x && id[1] == z;
+	}
+
+	public boolean equalsKeyArray(int[] key){
+		return key.length > 1 && key[0] == x && key[1] == z;
 	}
 	
 }

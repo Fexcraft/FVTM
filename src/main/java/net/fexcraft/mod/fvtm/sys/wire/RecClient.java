@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
 
 public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 
@@ -42,6 +43,20 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 				}
 				case "rem_relay":{
 					system.delRelay(new Vec316f(packet.nbt));
+					return;
+				}
+				case "update_holder":{
+					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+					RelayHolder holder = system.getHolder(pos);
+					if(holder != null) holder.read(packet.nbt);
+					else{
+						WireRegion region = system.getRegions().get(pos, false);
+						if(region != null) region.addHolder(pos).read(packet.nbt);
+					}
+					return;
+				}
+				case "rem_holder":{
+					system.delHolder(BlockPos.fromLong(packet.nbt.getLong("pos")));
 					return;
 				}
 				case "update_sections":{

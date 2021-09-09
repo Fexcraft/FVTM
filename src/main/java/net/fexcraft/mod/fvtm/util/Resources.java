@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm.util;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -11,6 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -454,6 +459,40 @@ public class Resources {
 			return null;
 		}
 	}
+
+	@SideOnly(Side.CLIENT)
+	public static Object[] getModelInputStreamWithFallback(ResourceLocation resloc){
+		Closeable[] close = null;
+		InputStream stream = getModelInputStream(resloc);
+		if(stream != null) return new Object[]{ stream };
+		try{
+			Addon addon = getAddon(resloc.getNamespace());
+			if(addon != null && addon.isLitePack()){
+				if(addon.getContainerType() == ContainerType.DIR){
+					File file = new File(addon.getFile(), "assets/" + resloc.getNamespace() + "/" + resloc.getPath());
+					if(file.exists()) stream = new FileInputStream(file);
+				}
+				else{
+					String filename = "assets/" + resloc.getNamespace() + "/" + resloc.getPath();
+					ZipFile zip = new ZipFile(addon.getFile());
+					ZipInputStream zipstream = new ZipInputStream(new FileInputStream(addon.getFile()));
+					close = new Closeable[]{ zip, zipstream };
+					while(true){
+						ZipEntry entry = zipstream.getNextEntry();
+						if(entry == null) break;
+						if(entry.getName().equals(filename)){
+							stream = zip.getInputStream(entry);
+							break;
+						}
+					}
+				}
+			}
+		}
+		catch(Throwable e){
+			e.printStackTrace();
+		}
+		return close == null ? new Object[]{ stream } : new Object[]{ stream, close};
+	}
 	
 	@SideOnly(Side.CLIENT)
 	public static <T, K> Model<T, K> getModel(String name, Class<? extends Model<T, K>> clazz){
@@ -497,8 +536,10 @@ public class Resources {
 						objdata = OBJ_MODEL_INFO_CACHE.get(id);
 					}
 					else{
-						objdata = new ObjParser(getModelInputStream(loc)).readComments(true).readModel(false).parse();
+						Object[] stream = getModelInputStreamWithFallback(loc);
+						objdata = new ObjParser((InputStream)stream[0]).readComments(true).readModel(false).parse();
 						OBJ_MODEL_INFO_CACHE.put(id, objdata);
+						if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
 					}
 					ArrayList<String> groups = new ArrayList<>();
 					boolean exclude = false;
@@ -849,7 +890,9 @@ public class Resources {
 		if(OBJ_MODEL_DATA_CACHE.containsKey(loc)){
 			return OBJ_MODEL_DATA_CACHE.get(loc);
 		}
-		ObjModel objmod = new ObjParser(Resources.getModelInputStream(loc)).flipAxes(flip_x).flipFaces(flip_f).flipUV(flip_u, flip_v).readComments(false).noNormals(norm).parse();
+		Object[] stream = getModelInputStreamWithFallback(loc);
+		ObjModel objmod = new ObjParser((InputStream)stream[0]).flipAxes(flip_x).flipFaces(flip_f).flipUV(flip_u, flip_v).readComments(false).noNormals(norm).parse();
+		if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) try{ c.close(); } catch(IOException e){ e.printStackTrace();}
 		OBJ_MODEL_DATA_CACHE.put(loc, objmod);
 		return objmod;
 	}

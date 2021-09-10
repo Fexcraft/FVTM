@@ -143,5 +143,9 @@ public class Transforms {
 	public ArrayList<Transformer> getTransformers(){
 		return transformers;
 	}
+
+	public void copy(Transforms transforms){
+		transformers.addAll(transforms.getTransformers());
+	}
 	
 }

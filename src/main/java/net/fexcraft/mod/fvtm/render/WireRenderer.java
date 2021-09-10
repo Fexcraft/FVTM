@@ -131,18 +131,23 @@ public class WireRenderer {
         		WireModel model = wire.getWireType().getModel();
         		if(wire.wiremodel == null) generateWireModel(wire, model);
         		ModelBase.bindTexture(wire.getWireType().getWireTexture());
-        		if(wire.getWireType().getModel().rail_tempcull) GlStateManager.disableCull();
+        		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.disableCull();
         		wire.wiremodel.render();
-        		if(wire.getWireType().getModel().rail_tempcull) GlStateManager.enableCull();
+        		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.enableCull();
         		ModelBase.bindTexture(wire.getWireType().getModelTexture());
         		if(wire.getRelay().getTile() != null){
-        			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
-        			model.render(wire.getRelay().getTile().getBlockData(), wire.getRelay().getTile());
-        			GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
-        			int l = wire.vecpath.length - 1;
-        			GL11.glTranslatef(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
-        			model.render(wire.getRelay().getTile().getBlockData(), wire.getRelay().getTile());
-        			GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
+        			model.sort();
+        			if(model.contains("s")){
+            			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
+            			model.sorted().render("s", relay.getTile().getBlockData(), relay.getTile());
+            			GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
+        			}
+        			if(model.contains("e")){
+            			int l = wire.vecpath.length - 1;
+            			GL11.glTranslatef(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
+            			model.sorted().render("e", relay.getTile().getBlockData(), relay.getTile());
+            			GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
+        			}
         		}
         	}
         	if(Command.OTHER){

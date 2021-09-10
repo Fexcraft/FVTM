@@ -1,7 +1,9 @@
 package net.fexcraft.mod.fvtm.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.lwjgl.opengl.GL11;
 
@@ -20,11 +22,9 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 
 	public static final WireModel EMPTY = new WireModel();
 	public ArrayList<Vec3f[]> wire_model = new ArrayList<>();
-	public boolean rail_tempcull = false;
-	//
-	//signals
-	
-	////-///---/---///-////
+	public boolean wire_tempcull = false;
+	protected boolean is_sorted;
+	protected WireModelMap sorted = new WireModelMap();
 	
 	public WireModel(){ super(); }
 	
@@ -32,7 +32,7 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 	
 	public WireModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
 		super(loc, data, objgroups, exclude);
-		rail_tempcull = Boolean.parseBoolean(ObjParser.getCommentValue(data, "WireCulling:"));
+		wire_tempcull = Boolean.parseBoolean(ObjParser.getCommentValue(data, "WireCulling:"));
 		List<String[]> wires = ObjParser.getCommentValues(data, new String[]{ "Wire:" }, null, null);
 		if(wires.isEmpty()) return;
 		for(String[] args : wires){
@@ -98,6 +98,56 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 			wire_model.add(new Vec3f[]{ new Vec3f(start_x + tl.x, start_y - h + bl.y, 0).scale(scale), new Vec3f(start_x + width + tr.x, start_y - h + br.y, 0).scale(scale) });
 		}
 		if(mirror) addWireRectShape(scale, -start_x - width, start_y, width, height, tl, tr, bl, br, false);
+	}
+	
+	public void sort(){
+		if(is_sorted) return;
+		List<TurboList> list = null;
+		if((list = filter("start_", "s_", "se_")) != null) sortout("s", list);
+		if((list = filter("end_", "e_", "se_")) != null) sortout("e", list);
+	}
+
+	private void sortout(String string, List<TurboList> list){
+		WireModel model = new WireModel();
+		model.smooth_shading = smooth_shading;
+		model.textureX = textureX;
+		model.textureY = textureY;
+		model.transforms.copy(transforms);
+		model.groups.addAll(list);
+		sorted.put(string, model);
+	}
+
+	private List<TurboList> filter(String... strings){
+		return groups.stream().filter(group -> {
+			for(String string : strings){
+				if(group.name.startsWith(string)) return true;
+			}
+			return false;
+		}).collect(Collectors.toList());
+	}
+	
+	public static class WireModelMap extends HashMap<String, WireModel> {
+		
+		public void render(String type, BlockData data, TileEntity tile){
+			//WireModel model = get(type);
+			//if(model != null) model.render(data, tile);
+			get(type).render(data, tile);
+		}
+
+		public void render(String type, BlockData data, TileEntity tile, Entity ent, RenderCache cache){
+			//WireModel model = get(type);
+			//if(model != null) model.render(data, tile, ent, cache);
+			get(type).render(data, tile, ent, cache);
+		}
+		
+	}
+	
+	public WireModelMap sorted(){
+		return sorted;
+	}
+
+	public boolean contains(String string){
+		return sorted.containsKey(string);
 	}
 	
 }

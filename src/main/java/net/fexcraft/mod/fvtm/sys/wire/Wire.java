@@ -23,9 +23,11 @@ public class Wire extends Path {
 	public Vec3f[] rootpath0;
 	protected WireUnit unit;
 	protected WireRelay relay;
+	protected WireType type;
+	//
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned wiremodel;
-	protected WireType type;
+	public float model_start_angle, model_end_angle;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f... vecs){
 		this.start = relay.getVec316f().copy();

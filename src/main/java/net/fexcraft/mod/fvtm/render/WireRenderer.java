@@ -37,7 +37,7 @@ import net.minecraft.world.World;
 
 public class WireRenderer {
     
-
+	public static Wire CURRENT;
 	protected static final ModelRendererTurbo model, model0, model1;
 	protected static final ModelRendererTurbo[] all;
 	static{
@@ -94,6 +94,7 @@ public class WireRenderer {
             Vec3f vec0, vec1; float flfl, glgl;
     		for(int o = 0; o < relay.wires.size(); o++){
     			Wire conn = relay.wires.get(o);
+        		if(conn.vecpath == null) return;
     	        flfl = conn.isOppositeCopy() ? 1 : 0;
     	        glgl = conn.isOppositeCopy() ? 0 : 1;
                 GL11.glPushMatrix();
@@ -128,6 +129,7 @@ public class WireRenderer {
         	for(int i = 0; i < relay.size(); i++){
         		if(relay.wires.get(i).isOppositeCopy()) continue;
         		Wire wire = relay.wires.get(i);
+        		if(wire.vecpath == null) return;
         		WireModel model = wire.getWireType().getModel();
         		if(wire.wiremodel == null) generateWireModel(wire, model);
         		ModelBase.bindTexture(wire.getWireType().getWireTexture());
@@ -136,17 +138,25 @@ public class WireRenderer {
         		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.enableCull();
         		ModelBase.bindTexture(wire.getWireType().getModelTexture());
         		if(wire.getRelay().getTile() != null){
-        			model.sort();
+        			CURRENT = wire;
         			if(model.contains("s")){
+        				GL11.glPushMatrix();
             			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
+            			GL11.glRotatef(wire.model_start_angle, 0, 1, 0);
             			model.sorted().render("s", relay.getTile().getBlockData(), relay.getTile());
-            			GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
+            			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
+            			GL11.glPopMatrix();
         			}
         			if(model.contains("e")){
             			int l = wire.vecpath.length - 1;
+        				GL11.glPushMatrix();
             			GL11.glTranslatef(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
+            			GL11.glRotatef(wire.model_end_angle, 0, 1, 0);
+            			RGB.RED.glColorApply();
             			model.sorted().render("e", relay.getTile().getBlockData(), relay.getTile());
-            			GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
+            			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
+            			RGB.glColorReset();
+            			GL11.glPopMatrix();
         			}
         		}
         	}
@@ -166,9 +176,13 @@ public class WireRenderer {
 	}
 
 	private static void generateWireModel(Wire wire, WireModel model){
+		model.sort();
 		TurboArrayPositioned tarp = new TurboArrayPositioned(wire, MIDDLE_GRAY);
-		float angle, passed = 0; Vec3f last, vec; ArrayList<Vec3f> path = new ArrayList<>();
-		TexturedVertex vert0, vert1, vert2, vert3; TexturedPolygon poly0;
+		float angle, passed = 0;
+		Vec3f last, vec;
+		ArrayList<Vec3f> path = new ArrayList<>();
+		TexturedVertex vert0, vert1, vert2, vert3;
+		TexturedPolygon poly0;
 		//
 		for(int p = 0; p < model.wire_model.size(); p++){
 			path.clear(); vec = wire.getVectorPosition0(0.001f, false); passed = 0;
@@ -195,6 +209,13 @@ public class WireRenderer {
 			}
 		}
 		wire.wiremodel = tarp;
+		//
+		vec = wire.getVectorPosition0(0.001f, false);
+		wire.model_start_angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
+		wire.model_start_angle = -Static.toDegrees(wire.model_start_angle) + 90;
+		vec = wire.getVectorPosition0(wire.length - 0.001f, false);
+		wire.model_end_angle = (float)Math.atan2(vec.z - wire.vecpath[wire.vecpath.length - 1].z, vec.x - wire.vecpath[wire.vecpath.length - 1].x);
+		wire.model_end_angle = -Static.toDegrees(wire.model_end_angle) - 90;
 	}
 
 }

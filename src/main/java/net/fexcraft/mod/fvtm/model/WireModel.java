@@ -14,6 +14,7 @@ import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -103,8 +104,8 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 	public void sort(){
 		if(is_sorted) return;
 		List<TurboList> list = null;
-		if((list = filter("start_", "s_", "se_")) != null) sortout("s", list);
-		if((list = filter("end_", "e_", "se_")) != null) sortout("e", list);
+		if((list = filter(WirePrograms.AT_START, WirePrograms.AT_BOTH)) != null) sortout("s", list);
+		if((list = filter(WirePrograms.AT_END, WirePrograms.AT_BOTH)) != null) sortout("e", list);
 	}
 
 	private void sortout(String string, List<TurboList> list){
@@ -117,10 +118,10 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 		sorted.put(string, model);
 	}
 
-	private List<TurboList> filter(String... strings){
+	private List<TurboList> filter(Program... programs){
 		return groups.stream().filter(group -> {
-			for(String string : strings){
-				if(group.name.startsWith(string)) return true;
+			for(Program program : programs){
+				if(group.programs.contains(program)) return true;
 			}
 			return false;
 		}).collect(Collectors.toList());

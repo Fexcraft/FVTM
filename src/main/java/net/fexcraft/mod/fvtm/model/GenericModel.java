@@ -45,7 +45,10 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	public boolean smooth_shading;
 	
 	public GenericModel(){
-		if(!DefaultPrograms.DIDLOAD) DefaultPrograms.init();
+		if(!DefaultPrograms.DIDLOAD){
+			DefaultPrograms.init();
+			WirePrograms.init();
+		}
 	}
 
 	public GenericModel(JsonObject obj){

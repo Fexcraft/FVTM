@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
@@ -20,6 +21,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.json.JsonUtil;
@@ -81,6 +83,7 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -159,6 +162,8 @@ public class Resources {
 	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
+	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
+	public static final ArrayList<JsonObject> WIRE_DECO_CACHE = new ArrayList<>();
 	//
 	private static Field respackfile = null;
 	private File configroot; 
@@ -572,6 +577,7 @@ public class Resources {
 		if(clazz == BlockModel.class) return BlockModel.EMPTY;
 		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;
+		if(clazz == WireModel.class) return WireModel.EMPTY;
 		return null;
 	}
 
@@ -1017,6 +1023,34 @@ public class Resources {
 			if(addon.getRegistryName().getPath().equals(string)) return addon;
 		}
 		return null;
+	}
+
+	public static void loadWireDecorations(boolean client){
+		for(JsonObject obj : WIRE_DECO_CACHE){
+			for(Entry<String, JsonElement> entry :obj.entrySet()){
+				if(client){
+					parseWireModel(entry.getKey(), entry.getValue());
+				}
+				WIRE_DECOS.add(entry.getKey());
+			}
+		}
+		WIRE_DECO_CACHE.clear();
+	}
+
+	@SideOnly(Side.CLIENT)
+	private static void parseWireModel(String key, JsonElement value){
+		String name = null;
+		JsonArray array = null;
+		if(value.isJsonArray()){
+			array = value.getAsJsonArray();
+			name = array.get(0).getAsString();
+		}
+		else{
+			name = value.getAsString();
+		}
+		WireModel model = (WireModel)getModel(name, WireModel.class);
+		if(array.size() > 0) model.texture(new ResourceLocation(array.get(1).getAsString()));
+		if(array.size() > 1) model.accepts(JsonUtil.jsonArrayToStringArray(array.get(2).getAsJsonArray()));
 	}
 
 }

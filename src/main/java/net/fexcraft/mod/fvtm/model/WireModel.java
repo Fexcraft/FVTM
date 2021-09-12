@@ -15,17 +15,21 @@ import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class WireModel extends GenericModel<BlockData, TileEntity> {
-
+	
+	public static final HashMap<String, WireModel> DECOS = new HashMap<>();
 	public static final WireModel EMPTY = new WireModel();
 	public ArrayList<Vec3f[]> wire_model = new ArrayList<>();
 	public boolean wire_tempcull = false;
 	protected boolean is_sorted;
 	protected WireModelMap sorted = new WireModelMap();
+	protected ResourceLocation texture = Resources.NULL_TEXTURE;
+	protected ArrayList<String> accepts = new ArrayList<>();
 	
 	public WireModel(){ super(); }
 	
@@ -149,6 +153,14 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 
 	public boolean contains(String string){
 		return sorted.containsKey(string);
+	}
+
+	public void texture(ResourceLocation resloc){
+		texture = resloc;
+	}
+
+	public void accepts(ArrayList<String> array){
+		accepts = array;
 	}
 	
 }

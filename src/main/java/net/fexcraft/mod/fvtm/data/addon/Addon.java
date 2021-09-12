@@ -124,6 +124,9 @@ public class Addon extends TypeCore<Addon> {
 				supp_tex.put(entry.getKey(), new TextureSupply(entry.getKey(), entry.getValue().getAsJsonObject()));
 			});
 		}
+		if(obj.has("WireDecos")){
+			Resources.WIRE_DECO_CACHE.add(obj.get("WireDecos").getAsJsonObject());
+		}
 		return this;
 	}
 

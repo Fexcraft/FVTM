@@ -28,6 +28,7 @@ public class Wire extends Path {
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned wiremodel;
 	public float model_start_angle, model_end_angle;
+	public float model_start_angle_down, model_end_angle_down;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f... vecs){
 		this.start = relay.getVec316f().copy();

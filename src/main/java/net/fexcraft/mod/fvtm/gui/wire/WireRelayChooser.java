@@ -136,12 +136,11 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 			return true;
 		}
 		else if(button.name.startsWith("idx1")){
+			int i = Integer.parseInt(button.name.substring(4)) + scroll;
+			WireRelayContainer.SELRELAY = container.conns.get(i);
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("cargo", "open_editor");
-			int i = Integer.parseInt(button.name.substring(4)) + scroll;
-			com.setInteger("index", i);
 			container.send(Side.SERVER, com);
-			WireRelayContainer.SELRELAY = container.conns.get(i);
 		}
 		return false;
 	}

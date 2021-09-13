@@ -33,6 +33,7 @@ public class Wire extends Path {
 	@SideOnly(Side.CLIENT)
 	public WireModel deco_s, deco_e;
 	public String deco_start, deco_end;
+	public float slack = 1;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f... vecs){
 		this.start = relay.getVec316f().copy();
@@ -43,6 +44,7 @@ public class Wire extends Path {
 		rootpath0 = vecs;
 		vecpath = new Vec3f[rootpath0.length];
 		type = wiretype;
+		slack = type.default_slack();
 	}
 	
 	@Override
@@ -81,6 +83,7 @@ public class Wire extends Path {
 		if(relay != null) unit = getUnit(compound.getLong("section"));
 		deco_start = compound.hasKey("deco_start") ? compound.getString("deco_start") : null;
 		deco_end = compound.hasKey("deco_end") ? compound.getString("deco_end") : null;
+		if(compound.hasKey("slack")) slack = compound.getFloat("slack");
 		return this;
 	}
 
@@ -104,6 +107,7 @@ public class Wire extends Path {
 		if(unit != null) compound.setLong("section", unit.getSectionId());
 		if(deco_start != null) compound.setString("deco_start", deco_start);
 		if(deco_end != null) compound.setString("deco_end", deco_end);
+		compound.setFloat("slack", slack);
 		return compound;
 	}
 	

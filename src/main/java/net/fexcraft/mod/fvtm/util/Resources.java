@@ -1051,6 +1051,7 @@ public class Resources {
 		WireModel model = (WireModel)getModel(name, WireModel.class);
 		if(array.size() > 1) model.texture(new ResourceLocation(array.get(1).getAsString()));
 		if(array.size() > 2) model.accepts(JsonUtil.jsonArrayToStringArray(array.get(2).getAsJsonArray()));
+		if(array.size() > 3) model.decotype(JsonUtil.jsonArrayToStringArray(array.get(3).getAsJsonArray()));
 		WireModel.DECOS.put(key, model);
 	}
 

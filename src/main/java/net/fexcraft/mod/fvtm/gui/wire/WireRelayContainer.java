@@ -43,7 +43,9 @@ public class WireRelayContainer extends GenericContainer {
 	protected static String SELRELAY;
 	protected RelayHolder holder;
 	protected WireRelay relay;
-	protected static  int WIRE;
+	protected static int WIRE;
+	protected Wire wire;
+	protected String CURRDECO = "relay";
 
 	public WireRelayContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
@@ -61,6 +63,7 @@ public class WireRelayContainer extends GenericContainer {
 		if(SELRELAY != null){
 			holder = system.getHolder(tile.getPos());
 			relay = relays.get(conns.indexOf(SELRELAY));
+			wire = relay.size() > WIRE ? relay.wires.get(WIRE) : null;
 		}
 	}
 

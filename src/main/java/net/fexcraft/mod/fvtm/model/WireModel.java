@@ -26,6 +26,7 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 	public boolean wire_tempcull = false;
 	protected ResourceLocation texture = Resources.NULL_TEXTURE;
 	protected ArrayList<String> accepts = new ArrayList<>();
+	protected ArrayList<String> decotype = new ArrayList<>();
 	
 	public WireModel(){ super(); }
 	
@@ -111,6 +112,10 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 
 	public void accepts(ArrayList<String> array){
 		accepts = array;
+	}
+
+	public void decotype(ArrayList<String> array){
+		decotype = array;
 	}
 	
 }

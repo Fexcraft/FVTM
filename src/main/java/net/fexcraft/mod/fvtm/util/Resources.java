@@ -163,7 +163,7 @@ public class Resources {
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
-	public static final ArrayList<JsonObject> WIRE_DECO_CACHE = new ArrayList<>();
+	public static final HashMap<String, JsonObject> WIRE_DECO_CACHE = new HashMap<>();
 	//
 	private static Field respackfile = null;
 	private File configroot; 
@@ -1026,12 +1026,12 @@ public class Resources {
 	}
 
 	public static void loadWireDecorations(boolean client){
-		for(JsonObject obj : WIRE_DECO_CACHE){
-			for(Entry<String, JsonElement> entry :obj.entrySet()){
+		for(Entry<String, JsonObject> cache : WIRE_DECO_CACHE.entrySet()){
+			for(Entry<String, JsonElement> entry : cache.getValue().entrySet()){
 				if(client){
-					parseWireModel(entry.getKey(), entry.getValue());
+					parseWireModel(cache.getKey() + ":" + entry.getKey(), entry.getValue());
 				}
-				WIRE_DECOS.add(entry.getKey());
+				WIRE_DECOS.add(cache.getKey() + ":" + entry.getKey());
 			}
 		}
 		WIRE_DECO_CACHE.clear();
@@ -1049,8 +1049,9 @@ public class Resources {
 			name = value.getAsString();
 		}
 		WireModel model = (WireModel)getModel(name, WireModel.class);
-		if(array.size() > 0) model.texture(new ResourceLocation(array.get(1).getAsString()));
-		if(array.size() > 1) model.accepts(JsonUtil.jsonArrayToStringArray(array.get(2).getAsJsonArray()));
+		if(array.size() > 1) model.texture(new ResourceLocation(array.get(1).getAsString()));
+		if(array.size() > 2) model.accepts(JsonUtil.jsonArrayToStringArray(array.get(2).getAsJsonArray()));
+		WireModel.DECOS.put(key, model);
 	}
 
 }

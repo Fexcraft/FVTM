@@ -139,21 +139,21 @@ public class WireRenderer {
         		ModelBase.bindTexture(wire.getWireType().getModelTexture());
         		if(wire.getRelay().getTile() != null){
         			CURRENT = wire;
-        			if(model.contains("s")){
+        			if(wire.deco_s != null){
         				GL11.glPushMatrix();
             			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
             			GL11.glRotatef(wire.model_start_angle, 0, 1, 0);
-            			model.sorted().render("s", relay.getTile().getBlockData(), relay.getTile());
+            			wire.deco_s.render(relay.getTile().getBlockData(), relay.getTile());
             			//GL11.glTranslatef(-wire.vecpath[0].x, -wire.vecpath[0].y, -wire.vecpath[0].z);
             			GL11.glPopMatrix();
         			}
-        			if(model.contains("e")){
+        			if(wire.deco_e != null){
             			int l = wire.vecpath.length - 1;
         				GL11.glPushMatrix();
             			GL11.glTranslatef(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
             			GL11.glRotatef(wire.model_end_angle, 0, 1, 0);
             			RGB.RED.glColorApply();
-            			model.sorted().render("e", relay.getTile().getBlockData(), relay.getTile());
+            			wire.deco_e.render(relay.getTile().getBlockData(), relay.getTile());
             			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
             			RGB.glColorReset();
             			GL11.glPopMatrix();
@@ -176,7 +176,6 @@ public class WireRenderer {
 	}
 
 	private static void generateWireModel(Wire wire, WireModel model){
-		model.sort();
 		TurboArrayPositioned tarp = new TurboArrayPositioned(wire, MIDDLE_GRAY);
 		float angle, passed = 0;
 		Vec3f last, vec;
@@ -216,6 +215,9 @@ public class WireRenderer {
 		vec = wire.getVectorPosition0(wire.length - 0.001f, false);
 		wire.model_end_angle = (float)Math.atan2(vec.z - wire.vecpath[wire.vecpath.length - 1].z, vec.x - wire.vecpath[wire.vecpath.length - 1].x);
 		wire.model_end_angle = -Static.toDegrees(wire.model_end_angle) - 90;
+		//
+		if(wire.deco_start != null) wire.deco_s = WireModel.DECOS.get(wire.deco_start);
+		if(wire.deco_end != null) wire.deco_e = WireModel.DECOS.get(wire.deco_end);
 	}
 
 }

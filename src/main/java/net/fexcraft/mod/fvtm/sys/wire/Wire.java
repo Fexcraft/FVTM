@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.wire;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.WireType;
+import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
@@ -29,6 +30,9 @@ public class Wire extends Path {
 	public TurboArrayPositioned wiremodel;
 	public float model_start_angle, model_end_angle;
 	public float model_start_angle_down, model_end_angle_down;
+	@SideOnly(Side.CLIENT)
+	public WireModel deco_s, deco_e;
+	public String deco_start, deco_end;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f... vecs){
 		this.start = relay.getVec316f().copy();
@@ -75,6 +79,8 @@ public class Wire extends Path {
 		}
 		super.read(compound);
 		if(relay != null) unit = getUnit(compound.getLong("section"));
+		deco_start = compound.hasKey("deco_start") ? compound.getString("deco_start") : null;
+		deco_end = compound.hasKey("deco_end") ? compound.getString("deco_end") : null;
 		return this;
 	}
 
@@ -96,6 +102,8 @@ public class Wire extends Path {
 			compound.setFloat("vector0-" + i + "z", rootpath0[i].z);
 		}
 		if(unit != null) compound.setLong("section", unit.getSectionId());
+		if(deco_start != null) compound.setString("deco_start", deco_start);
+		if(deco_end != null) compound.setString("deco_end", deco_end);
 		return compound;
 	}
 	

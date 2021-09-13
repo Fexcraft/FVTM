@@ -3,7 +3,6 @@ package net.fexcraft.mod.fvtm.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.lwjgl.opengl.GL11;
 
@@ -14,7 +13,6 @@ import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
-import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -26,8 +24,6 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 	public static final WireModel EMPTY = new WireModel();
 	public ArrayList<Vec3f[]> wire_model = new ArrayList<>();
 	public boolean wire_tempcull = false;
-	protected boolean is_sorted;
-	protected WireModelMap sorted = new WireModelMap();
 	protected ResourceLocation texture = Resources.NULL_TEXTURE;
 	protected ArrayList<String> accepts = new ArrayList<>();
 	
@@ -104,59 +100,13 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 		}
 		if(mirror) addWireRectShape(scale, -start_x - width, start_y, width, height, tl, tr, bl, br, false);
 	}
-	
-	public void sort(){
-		if(is_sorted) return;
-		List<TurboList> list = null;
-		if((list = filter(WirePrograms.AT_START, WirePrograms.AT_BOTH)) != null) sortout("s", list);
-		if((list = filter(WirePrograms.AT_END, WirePrograms.AT_BOTH)) != null) sortout("e", list);
-	}
-
-	private void sortout(String string, List<TurboList> list){
-		WireModel model = new WireModel();
-		model.smooth_shading = smooth_shading;
-		model.textureX = textureX;
-		model.textureY = textureY;
-		model.transforms.copy(transforms);
-		model.groups.addAll(list);
-		sorted.put(string, model);
-	}
-
-	private List<TurboList> filter(Program... programs){
-		return groups.stream().filter(group -> {
-			for(Program program : programs){
-				if(group.programs.contains(program)) return true;
-			}
-			return false;
-		}).collect(Collectors.toList());
-	}
-	
-	public static class WireModelMap extends HashMap<String, WireModel> {
-		
-		public void render(String type, BlockData data, TileEntity tile){
-			//WireModel model = get(type);
-			//if(model != null) model.render(data, tile);
-			get(type).render(data, tile);
-		}
-
-		public void render(String type, BlockData data, TileEntity tile, Entity ent, RenderCache cache){
-			//WireModel model = get(type);
-			//if(model != null) model.render(data, tile, ent, cache);
-			get(type).render(data, tile, ent, cache);
-		}
-		
-	}
-	
-	public WireModelMap sorted(){
-		return sorted;
-	}
-
-	public boolean contains(String string){
-		return sorted.containsKey(string);
-	}
 
 	public void texture(ResourceLocation resloc){
 		texture = resloc;
+	}
+
+	public void texture(String texloc){
+		texture = new ResourceLocation(texloc);
 	}
 
 	public void accepts(ArrayList<String> array){

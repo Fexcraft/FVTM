@@ -125,7 +125,7 @@ public class Addon extends TypeCore<Addon> {
 			});
 		}
 		if(obj.has("WireDecos")){
-			Resources.WIRE_DECO_CACHE.add(obj.get("WireDecos").getAsJsonObject());
+			Resources.WIRE_DECO_CACHE.put(this.getRegistryName().getPath(), obj.get("WireDecos").getAsJsonObject());
 		}
 		return this;
 	}

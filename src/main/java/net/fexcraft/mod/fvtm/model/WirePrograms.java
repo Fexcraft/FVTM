@@ -19,16 +19,8 @@ import net.minecraft.tileentity.TileEntity;
 public class WirePrograms {
 	
 	public static void init(){
-		TurboList.PROGRAMS.add(AT_START);
-		TurboList.PROGRAMS.add(AT_BOTH);
-		TurboList.PROGRAMS.add(AT_END);
-		//
 		TurboList.PROGRAMS.add(new RotateY(0));
 	}
-
-	public static final Program AT_START = new Program(){ public String getId(){ return "fvtm:wire_at_start"; } };
-	public static final Program AT_BOTH = new Program(){ public String getId(){ return "fvtm:wire_at_both"; } };
-	public static final Program AT_END = new Program(){ public String getId(){ return "fvtm:wire_at_end"; } };
 	
 	public static class RotateY implements Program {
 		

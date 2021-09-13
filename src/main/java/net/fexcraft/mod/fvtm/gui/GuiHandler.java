@@ -29,6 +29,7 @@ import net.fexcraft.mod.fvtm.gui.road.RoadPlacerFillContainer;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
 import net.fexcraft.mod.fvtm.gui.vehicle.*;
+import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayContainer;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayEditor;
@@ -116,7 +117,8 @@ public class GuiHandler implements IGuiHandler {
 			case MULTIBLOCK_CRAFT_MAIN: return new GBlockCraftContainer(player, world, x, y, z);
 			case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChooseContainer(player, world, x, y, z);
 			case WIRE_RELAY_MAIN:
-			case WIRE_RELAY_EDIT: return new WireRelayContainer(player, world, x, y, z);
+			case WIRE_RELAY_EDIT:
+			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z);
 		}
 		return null;
 	}
@@ -155,6 +157,7 @@ public class GuiHandler implements IGuiHandler {
 				case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChoose(player, world, x, y, z);
 				case WIRE_RELAY_MAIN: return new WireRelayChooser(player, world, x, y, z);
 				case WIRE_RELAY_EDIT: return new WireRelayEditor(player, world, x, y, z);
+				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
 			}
 		}
 		catch(Exception e){

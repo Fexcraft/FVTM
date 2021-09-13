@@ -41,9 +41,9 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 		buttons.put("change", new BasicButton("change", 131, 21, 131, 21, 7, 12, true));
 		for(int i = 0; i < b.length; i++){
 			buttons.put("b" + i, b[i] = new BasicButton("b" + i, 2, 40 + (i * 14), 2, 40, 128, 12, true));
-			texts.put("t" + i, t[i] = new BasicText(4, 42 + (i * 14), 124, MapColor.SNOW.colorValue, "..."));
+			texts.put("t" + i, t[i] = new BasicText(4, 42 + (i * 14), 124, MapColor.SNOW.colorValue, "...").autoscale());
 		}
-		texts.put("current", new BasicText(4, 23, 116, MapColor.SNOW.colorValue, "..."));
+		texts.put("current", new BasicText(4, 23, 116, MapColor.SNOW.colorValue, container.wire.deco_start).autoscale());
 		texts.put("slack", new BasicText(4, 168, 54, MapColor.SNOW.colorValue, "Slack"));
 		fields.put("slack", new TextField(0, fontRenderer, 60, 167, 60, 10));
 		fields.get("slack").setText(container.wire.slack + "");
@@ -52,7 +52,15 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 
 	@Override
 	protected void predraw(float pticks, int mouseX, int mouseY){
-		//
+		for(int i = 0; i < b.length; i++){
+			int j = i + scroll;
+			if(j >= container.models.get(container.currdeco).size()){
+				texts.get("t" + i).string = "";
+			}
+			else{
+				texts.get("t" + i).string = container.models.get(container.currdeco).get(j).key();
+			}
+		}
 	}
 
 	@Override
@@ -66,7 +74,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 		if(buttons.get("reset").hovered(mouseX, mouseY)) tooltip.add(Formatter.format("&eRemove current Wire-Deco."));
 		if(buttons.get("change").hovered(mouseX, mouseY)){
 			tooltip.add(Formatter.format("&eChange Deco Type"));
-			tooltip.add(Formatter.format("&7Current deco type: &6" + container.CURRDECO));
+			tooltip.add(Formatter.format("&7Current deco type: &6" + container.currdeco));
 		}
 		if(buttons.get("up").hovered(mouseX, mouseY)) tooltip.add(Formatter.format("&7Scroll up."));
 		if(buttons.get("dw").hovered(mouseX, mouseY)) tooltip.add(Formatter.format("&7Scroll down."));

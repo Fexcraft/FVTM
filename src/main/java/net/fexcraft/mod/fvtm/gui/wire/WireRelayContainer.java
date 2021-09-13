@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.gui.wire;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import net.fexcraft.lib.common.math.Vec3f;
@@ -14,6 +15,7 @@ import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.block.RelayData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.WireItem;
+import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
@@ -45,7 +47,8 @@ public class WireRelayContainer extends GenericContainer {
 	protected WireRelay relay;
 	protected static int WIRE;
 	protected Wire wire;
-	protected String CURRDECO = "relay";
+	protected String currdeco = "relay";
+	protected TreeMap<String, ArrayList<WireModel>> models = new TreeMap<>();
 
 	public WireRelayContainer(EntityPlayer player, World world, int x, int y, int z){
 		super(player);
@@ -64,6 +67,17 @@ public class WireRelayContainer extends GenericContainer {
 			holder = system.getHolder(tile.getPos());
 			relay = relays.get(conns.indexOf(SELRELAY));
 			wire = relay.size() > WIRE ? relay.wires.get(WIRE) : null;
+			if(wire != null){
+				List<WireModel> umodels = WireModel.DECOS.values().stream().filter(model -> {
+					return model.accepts(wire.getWireType().wire_type());
+				}).collect(Collectors.toList());
+				for(WireModel model : umodels){
+					if(!models.containsKey(model.decotype())){
+						models.put(model.decotype(), new ArrayList<>());
+					}
+					models.get(model.decotype()).add(model);
+				}
+			}
 		}
 	}
 

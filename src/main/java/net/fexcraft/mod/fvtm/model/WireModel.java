@@ -13,6 +13,8 @@ import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
+import net.fexcraft.mod.fvtm.model.TurboList.Program;
+import net.fexcraft.mod.fvtm.model.WirePrograms.DownwardAngled;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -133,6 +135,19 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 	
 	public String key(){
 		return key;
+	}
+
+	public float getLongestDownward(){
+		float l = 0.01f;
+		for(TurboList list : groups){
+			for(Program program : list.programs){
+				if(program instanceof DownwardAngled){
+					DownwardAngled prog = (DownwardAngled)program;
+					if(prog.length() > l) l = prog.length();
+				}
+			}
+		}
+		return l;
 	}
 	
 }

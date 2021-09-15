@@ -80,6 +80,7 @@ public class Wire extends Path {
 			rootpath0[i].z = compound.getFloat("vector0-" + i + "z");
 		}
 		super.read(compound);
+		if(length == 0) length = calcLength();
 		if(relay != null) unit = getUnit(compound.getLong("section"));
 		deco_start = compound.hasKey("deco_start") ? compound.getString("deco_start") : null;
 		deco_end = compound.hasKey("deco_end") ? compound.getString("deco_end") : null;

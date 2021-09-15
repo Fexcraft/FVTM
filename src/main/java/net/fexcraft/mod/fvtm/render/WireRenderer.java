@@ -38,6 +38,8 @@ import net.minecraft.world.World;
 public class WireRenderer {
     
 	public static Wire CURRENT;
+	//public static float ANGLE;
+	public static float ANGLE_DOWN;
 	protected static final ModelRendererTurbo model, model0, model1;
 	protected static final ModelRendererTurbo[] all;
 	static{
@@ -140,6 +142,8 @@ public class WireRenderer {
         		if(wire.getRelay().getTile() != null){
         			CURRENT = wire;
         			if(wire.deco_s != null){
+        				//ANGLE = wire.model_start_angle;
+        				ANGLE_DOWN = wire.model_start_angle_down;
         				GL11.glPushMatrix();
             			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
             			GL11.glRotatef(wire.model_start_angle, 0, 1, 0);
@@ -148,6 +152,8 @@ public class WireRenderer {
             			GL11.glPopMatrix();
         			}
         			if(wire.deco_e != null){
+        				//ANGLE = wire.model_end_angle;
+        				ANGLE_DOWN = wire.model_end_angle_down;
             			int l = wire.vecpath.length - 1;
         				GL11.glPushMatrix();
             			GL11.glTranslatef(wire.vecpath[l].x, wire.vecpath[l].y, wire.vecpath[l].z);
@@ -209,15 +215,29 @@ public class WireRenderer {
 		}
 		wire.wiremodel = tarp;
 		//
-		vec = wire.getVectorPosition0(0.001f, false);
+		vec = wire.vecpath[wire.vecpath.length - 1];
 		wire.model_start_angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
 		wire.model_start_angle = -Static.toDegrees(wire.model_start_angle) + 90;
-		vec = wire.getVectorPosition0(wire.length - 0.001f, false);
-		wire.model_end_angle = (float)Math.atan2(vec.z - wire.vecpath[wire.vecpath.length - 1].z, vec.x - wire.vecpath[wire.vecpath.length - 1].x);
-		wire.model_end_angle = -Static.toDegrees(wire.model_end_angle) - 90;
+		wire.model_end_angle = wire.model_start_angle - 180;
 		//
+		wire.deco_start = wire.deco_end = "test:d0";
 		if(wire.deco_start != null) wire.deco_s = WireModel.DECOS.get(wire.deco_start);
 		if(wire.deco_end != null) wire.deco_e = WireModel.DECOS.get(wire.deco_end);
+		float hwl = wire.length / 2;
+		if(wire.deco_s != null){
+			float len = wire.deco_s.getLongestDownward();
+			vec = wire.getVectorPosition0(len > hwl ? hwl : len, false);
+	        float dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
+			wire.model_start_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
+			wire.model_start_angle_down = -Static.toDegrees(wire.model_start_angle_down);
+		}
+		if(wire.deco_e != null){
+			float len = wire.deco_e.getLongestDownward();
+			vec = wire.getVectorPosition0(wire.length - (len > hwl ? hwl : len), false);
+	        float dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
+			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
+			wire.model_end_angle_down = -Static.toDegrees(wire.model_end_angle_down);
+		}
 	}
 
 }

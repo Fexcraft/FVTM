@@ -118,7 +118,7 @@ public class GuiHandler implements IGuiHandler {
 			case MULTIBLOCK_CRAFT_CHOOSE: return new GBlockCraftChooseContainer(player, world, x, y, z);
 			case WIRE_RELAY_MAIN:
 			case WIRE_RELAY_EDIT:
-			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z);
+			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
 		}
 		return null;
 	}

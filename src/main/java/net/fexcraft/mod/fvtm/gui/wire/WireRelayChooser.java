@@ -21,7 +21,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 	private static int scroll;
 
 	public WireRelayChooser(EntityPlayer player, World world, int x, int y, int z){
-		super(texture, new WireRelayContainer(player, world, x, y, z), player);
+		super(texture, new WireRelayContainer(player, world, x, y, z, true), player);
 		this.container.gui = this;
 		this.defbackground = true;
 		this.deftexrect = true;
@@ -138,6 +138,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 		else if(button.name.startsWith("idx1")){
 			int i = Integer.parseInt(button.name.substring(4)) + scroll;
 			WireRelayContainer.SELRELAY = container.conns.get(i);
+			WireRelayContainer.WIRE = -1;
 			NBTTagCompound com = new NBTTagCompound();
 			com.setString("cargo", "open_editor");
 			container.send(Side.SERVER, com);

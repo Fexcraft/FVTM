@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.gui.wire;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import net.fexcraft.mod.fvtm.data.block.RelayData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.WireModel;
+import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
@@ -45,12 +47,14 @@ public class WireRelayContainer extends GenericContainer {
 	protected static String SELRELAY;
 	protected RelayHolder holder;
 	protected WireRelay relay;
-	protected static int WIRE;
+	protected static int WIRE = -1;
 	protected Wire wire;
-	protected String currdeco = "relay";
+	protected boolean opp;
+	protected static String CURRDECO = "relay";
 	protected TreeMap<String, ArrayList<WireModel>> models = new TreeMap<>();
+	protected ArrayList<String> modelkeys = new ArrayList<>();
 
-	public WireRelayContainer(EntityPlayer player, World world, int x, int y, int z){
+	public WireRelayContainer(EntityPlayer player, World world, int x, int y, int z, boolean reset){
 		super(player);
 		system = SystemManager.get(Systems.WIRE, world);
 		tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
@@ -63,11 +67,17 @@ public class WireRelayContainer extends GenericContainer {
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}
-		if(SELRELAY != null){
+		if(!reset && SELRELAY != null){
 			holder = system.getHolder(tile.getPos());
 			relay = relays.get(conns.indexOf(SELRELAY));
-			wire = relay.size() > WIRE ? relay.wires.get(WIRE) : null;
+			wire = WIRE > -1 && relay.size() > WIRE ? relay.wires.get(WIRE) : null;
 			if(wire != null){
+				if(wire.isOppositeCopy()){
+					wire = system.getWire(wire.getOppositeId());
+					opp = true;
+				}
+				models.clear();
+				modelkeys.clear();
 				List<WireModel> umodels = WireModel.DECOS.values().stream().filter(model -> {
 					return model.accepts(wire.getWireType().wire_type());
 				}).collect(Collectors.toList());
@@ -77,6 +87,10 @@ public class WireRelayContainer extends GenericContainer {
 					}
 					models.get(model.decotype()).add(model);
 				}
+				for(String key : models.keySet()){
+					if(!modelkeys.contains(key)) modelkeys.add(key);
+				}
+				if(!modelkeys.contains(CURRDECO)) CURRDECO = "relay";
 			}
 		}
 	}
@@ -111,7 +125,7 @@ public class WireRelayContainer extends GenericContainer {
 						RelayData data0 = tile0.getBlockData().getType().getRelayData();
 						Vec3f r0 = data0.getVec3f(stack.getTagCompound().getString("fvtm:wirepoint_slot"), tile0.getPos(), tile0.meta, tile0.data.getType().getBlockType());
 						Vec3f r1 = data.getVec3f(relid, tile.getPos(), tile.meta, tile.data.getType().getBlockType());
-						Wire wire = new Wire(relay, relay0, type, r0, r0.middle(r1).add(0, -1, 0), r1);
+						Wire wire = new Wire(relay0, relay, type, r0, r0.middle(r1).add(0, -1, 0), r1);
 						if(relay0.isDuplicate(wire) || relay.isDuplicate(wire)){
 							Print.chat(player, "&cWire has same start/end as another wire.");
 							player.closeScreen();
@@ -144,7 +158,47 @@ public class WireRelayContainer extends GenericContainer {
 					return;
 				}
 				case "del_wire":{
+					holder = system.getHolder(BlockPos.fromLong(packet.getLong("holder")));
+					relay = relays.get(conns.indexOf(packet.getString("relay")));
 					relay.remove(packet.getInteger("index"), true);
+					return;
+				}
+				case "reset_deco":{
+					wire = system.getWire(new PathKey(packet.getCompoundTag("wire")));
+					String deco = packet.getString("type");
+					if(deco.equals("relay")){
+						if(!packet.getBoolean("opp")){
+							wire.deco_start = null;
+						}
+						else{
+							wire.deco_end = null;
+						}
+					}
+					else{
+						if(wire.decos != null) wire.decos.remove(deco);
+					}
+					wire.getRelay().updateClient();
+					player.openGui(FVTM.getInstance(), GuiHandler.WIRE_EDIT, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+					return;
+				}
+				case "select_deco":{
+					wire = system.getWire(new PathKey(packet.getCompoundTag("wire")));
+					String deco = packet.getString("type");
+					String seld = packet.getString("selected");
+					if(deco.equals("relay")){
+						if(!packet.getBoolean("opp")){
+							wire.deco_start = seld;
+						}
+						else{
+							wire.deco_end = seld;
+						}
+					}
+					else{
+						if(wire.decos == null) wire.decos = new HashMap<>();
+						wire.decos.put(deco, seld);
+					}
+					wire.getRelay().updateClient();
+					player.openGui(FVTM.getInstance(), GuiHandler.WIRE_EDIT, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
 					return;
 				}
 			}
@@ -160,5 +214,24 @@ public class WireRelayContainer extends GenericContainer {
     public boolean canInteractWith(EntityPlayer player){
         return true;
     }
+
+	public void nextdeco(){
+		int idx = modelkeys.indexOf(CURRDECO);
+		if(idx < 0 || idx >= modelkeys.size() - 1) idx = 0;
+		else idx++;
+		CURRDECO = modelkeys.get(idx);
+	}
+
+	public String currdeconame(){
+		if(CURRDECO.equals("relay")){
+			if(wire.start.equals(relay.getVec316f())){
+				return wire.deco_start;
+			}
+			else{
+				return wire.deco_end;
+			}
+		}
+		else return wire.decos == null ? null : wire.decos.get(CURRDECO);
+	}
 
 }

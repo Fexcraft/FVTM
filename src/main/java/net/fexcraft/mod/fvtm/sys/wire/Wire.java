@@ -150,6 +150,7 @@ public class Wire extends Path {
 		wire.start = end;
 		wire.end = start;
 		wire.copy = true;
+		wire.type = type;
 		wire.rootpath = new Vec316f[rootpath.length];
 		int j = rootpath.length - 1;
 		for(int i = 0; i < wire.rootpath.length; i++){

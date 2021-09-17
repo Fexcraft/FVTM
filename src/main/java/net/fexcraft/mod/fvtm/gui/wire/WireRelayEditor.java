@@ -45,7 +45,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 	private int scroll;
 	
 	public WireRelayEditor(EntityPlayer player, World world, int x, int y, int z){
-		super(texture, new WireRelayContainer(player, world, x, y, z), player);
+		super(texture, new WireRelayContainer(player, world, x, y, z, false), player);
 		this.defbackground = true;
 		this.deftexrect = true;
 		container.gui = this;
@@ -238,6 +238,8 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "del_wire");
 			compound.setInteger("index", i + scroll);
+			compound.setLong("holder", container.relay.getHolder().pos.toLong());
+			compound.setString("relay", WireRelayContainer.SELRELAY);
 			this.container.send(Side.SERVER, compound);
 			return true;
 		}

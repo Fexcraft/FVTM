@@ -53,7 +53,7 @@ public class Wire extends Path {
 		rootpath0 = vecs;
 		vecpath = new Vec3f[rootpath0.length];
 		type = wiretype;
-		slack = type.default_slack();
+		slack = type.default_slack() * vecs[0].dis(vecs[vecs.length - 1]);
 	}
 	
 	@Override
@@ -98,7 +98,7 @@ public class Wire extends Path {
 			if(decos == null) decos = new HashMap<>();
 			NBTTagList list = (NBTTagList)compound.getTag("decos");
 			for(NBTBase base : list){
-				String[] split = ((NBTTagString)base).getString().split(":");
+				String[] split = ((NBTTagString)base).getString().split(";");
 				decos.put(split[0], split[1]);
 			}
 		}
@@ -135,7 +135,7 @@ public class Wire extends Path {
 		if(decos != null && decos.size() > 0){
 			NBTTagList list = new NBTTagList();
 			for(Entry<String, String> entry : decos.entrySet()){
-				list.appendTag(new NBTTagString(entry.getKey() + ":" + entry.getValue()));
+				list.appendTag(new NBTTagString(entry.getKey() + ";" + entry.getValue()));
 			}
 			compound.setTag("decos", list);
 		}

@@ -52,8 +52,8 @@ public class Wire extends Path {
 		type = wiretype;
 		slack = type.default_slack();
 		rootpath = new Vec316f[]{ start, end };
-		rootpath0 = new Vec3f[]{ s_v, s_v.middle(e_v).add(0, -(slack * (s_v.dis(e_v))), 0), e_v };
-		vecpath = new Vec3f[rootpath0.length];
+		rootpath0 = new Vec3f[]{ s_v, null, e_v };
+		reslack();
 	}
 	
 	@Override
@@ -219,6 +219,13 @@ public class Wire extends Path {
 			passed += dis;
 		}
 		return passed;
+	}
+
+	public void reslack(){
+		Vec3f s = rootpath0[0], e = rootpath0[2];
+		rootpath0 = new Vec3f[]{ s, s.middle(e).add(0, -(slack * (s.dis(e))), 0), e };
+		vecpath = new Vec3f[rootpath0.length];
+		construct();
 	}
 
 }

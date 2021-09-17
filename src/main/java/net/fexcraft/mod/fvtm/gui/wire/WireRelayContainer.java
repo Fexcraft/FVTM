@@ -201,6 +201,19 @@ public class WireRelayContainer extends GenericContainer {
 					player.openGui(FVTM.getInstance(), GuiHandler.WIRE_EDIT, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
 					return;
 				}
+				case "set_slack":{
+					Wire wire0 = system.getWire(new PathKey(packet.getCompoundTag("wire")));
+					Wire wire1 = system.getWire(wire0.op);
+					float value = packet.getFloat("slack");
+					if(value > 2) value = 2;
+					if(value < 0) value = 0;
+					wire0.slack = wire1.slack = value;
+					wire0.reslack();
+					wire1.reslack();
+					wire0.getRelay().updateClient();
+					wire1.getRelay().updateClient();
+					return;
+				}
 			}
 		}
 		else{

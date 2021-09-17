@@ -140,6 +140,16 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 			this.container.send(Side.SERVER, compound);
 			return true;
 		}
+		else if(button.name.equals("slack")){
+			float value = Float.parseFloat(fields.get("slack").getText());
+			if(value > 2) value = 2;
+			if(value < 0) value = 0;
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("cargo", "set_slack");
+			compound.setFloat("slack", value);
+			compound.setTag("wire", container.wire.id.write(new NBTTagCompound()));
+			this.container.send(Side.SERVER, compound);
+		}
 		//
 		return false;
 	}

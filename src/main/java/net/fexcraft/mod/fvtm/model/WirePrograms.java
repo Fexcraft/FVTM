@@ -23,7 +23,7 @@ public class WirePrograms {
 	
 	public static void init(){
 		TurboList.PROGRAMS.add(new RotateY(0));
-		//TurboList.PROGRAMS.add(new Rotated());
+		TurboList.PROGRAMS.add(new Rotated());
 		TurboList.PROGRAMS.add(new DownwardAngled(0, false));
 	}
 	
@@ -53,7 +53,7 @@ public class WirePrograms {
 		
 	};
 	
-	/*public static class Rotated implements Program {
+	public static class Rotated implements Program {
 		
 		public Rotated(){}
 
@@ -65,7 +65,7 @@ public class WirePrograms {
 			GL11.glRotatef(WireRenderer.ANGLE, 0, 1, 0);
 		}
 		
-	};*/
+	};
 	
 	public static class DownwardAngled implements Program {
 		

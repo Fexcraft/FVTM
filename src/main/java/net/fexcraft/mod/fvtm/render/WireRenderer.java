@@ -40,7 +40,7 @@ import net.minecraft.world.World;
 public class WireRenderer {
     
 	public static Wire CURRENT;
-	//public static float ANGLE;
+	public static float ANGLE;
 	public static float ANGLE_DOWN;
 	protected static final ModelRendererTurbo model, model0, model1;
 	protected static final ModelRendererTurbo[] all;
@@ -142,8 +142,8 @@ public class WireRenderer {
         		ModelBase.bindTexture(wire.getWireType().getModelTexture());
         		if(wire.getRelay().getTile() != null){
         			CURRENT = wire;
+    				ANGLE = wire.model_end_angle;
         			if(wire.deco_s != null){
-        				//ANGLE = wire.model_start_angle;
         				ANGLE_DOWN = wire.model_start_angle_down;
         				GL11.glPushMatrix();
             			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);

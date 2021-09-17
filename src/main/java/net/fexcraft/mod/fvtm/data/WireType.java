@@ -56,7 +56,7 @@ public class WireType extends TypeCore<WireType> implements Tabbed {
 		this.name = JsonUtil.getIfExists(obj, "Name", "Unnamed Rail Gauge");
 		this.description = DataUtil.getStringArray(obj, "Description", true, true);
 		this.type = JsonUtil.getIfExists(obj, "Type", "universal");
-		this.def_slack = JsonUtil.getIfExists(obj, "Slack", 0.0625).floatValue();
+		this.def_slack = JsonUtil.getIfExists(obj, "Slack", 1f).floatValue();
 		this.customisable = JsonUtil.getIfExists(obj, "Customisable", true);
 		this.wire_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "WireTexture", "minecraft:textures/blocks/anvil_base.png"));
 		this.model_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "ModelTexture", "fvtm:textures/entity/null.png"));

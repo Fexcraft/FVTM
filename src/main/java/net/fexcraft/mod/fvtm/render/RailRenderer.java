@@ -429,16 +429,16 @@ public class RailRenderer {
 		protected ModelRendererTurbo[] turbos;
 		protected Vec3f[] positions;
 		
-		public TurboArrayPositioned(Path track, RGB colour){
-			int i = (int)track.getLength(null);
-			if(track.length % 1f > 0) i++;
+		public TurboArrayPositioned(Path path, RGB colour){
+			int i = (int)path.getLength(null);
+			if(path.length % 1f > 0) i++;
 			if(i == 0) i = 1;
 			turbos = new ModelRendererTurbo[i];
 			positions = new Vec3f[i];
 			for(int k = 0; k < i; k++){
-				turbos[k] = new ModelRendererTurbo(track, 0, 0, 16, 16);
+				turbos[k] = new ModelRendererTurbo(path, 0, 0, 16, 16);
 				if(colour != null) turbos[k].setColor(colour);
-				positions[k] = track.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? track.length - 0.125f : k, false);
+				positions[k] = path.getVectorPosition(k == 0 ? 0.125f : k == i - 1 ? path.length - 0.125f : k, false);
 			}
 		}
 

@@ -125,7 +125,7 @@ public class WireRelayContainer extends GenericContainer {
 						RelayData data0 = tile0.getBlockData().getType().getRelayData();
 						Vec3f r0 = data0.getVec3f(stack.getTagCompound().getString("fvtm:wirepoint_slot"), tile0.getPos(), tile0.meta, tile0.data.getType().getBlockType());
 						Vec3f r1 = data.getVec3f(relid, tile.getPos(), tile.meta, tile.data.getType().getBlockType());
-						Wire wire = new Wire(relay0, relay, type, r0, r0.middle(r1).add(0, -1, 0), r1);
+						Wire wire = new Wire(relay0, relay, type, r0, r1);
 						if(relay0.isDuplicate(wire) || relay.isDuplicate(wire)){
 							Print.chat(player, "&cWire has same start/end as another wire.");
 							player.closeScreen();

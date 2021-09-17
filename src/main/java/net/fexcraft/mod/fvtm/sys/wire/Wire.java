@@ -44,16 +44,16 @@ public class Wire extends Path {
 	public HashMap<String, WireModel> deco_m;
 	public float slack = 1;
 	
-	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f... vecs){
+	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f s_v, Vec3f e_v){
 		this.start = relay.getVec316f().copy();
 		this.end = relay0.getVec316f().copy();
 		id = new PathKey(start, end);
 		op = new PathKey(id, true);
-		rootpath = new Vec316f[]{ start, end };
-		rootpath0 = vecs;
-		vecpath = new Vec3f[rootpath0.length];
 		type = wiretype;
-		slack = type.default_slack() * vecs[0].dis(vecs[vecs.length - 1]);
+		slack = type.default_slack();
+		rootpath = new Vec316f[]{ start, end };
+		rootpath0 = new Vec3f[]{ s_v, s_v.middle(e_v).add(0, -(slack * (s_v.dis(e_v))), 0), e_v };
+		vecpath = new Vec3f[rootpath0.length];
 	}
 	
 	@Override

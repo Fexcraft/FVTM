@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.model.WireModel;
@@ -9,7 +12,10 @@ import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,6 +39,9 @@ public class Wire extends Path {
 	@SideOnly(Side.CLIENT)
 	public WireModel deco_s, deco_e;
 	public String deco_start, deco_end;
+	public HashMap<String, String> decos;
+	@SideOnly(Side.CLIENT)
+	public HashMap<String, WireModel> deco_m;
 	public float slack = 1;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f... vecs){
@@ -85,6 +94,20 @@ public class Wire extends Path {
 		deco_start = compound.hasKey("deco_start") ? compound.getString("deco_start") : null;
 		deco_end = compound.hasKey("deco_end") ? compound.getString("deco_end") : null;
 		if(compound.hasKey("slack")) slack = compound.getFloat("slack");
+		if(compound.hasKey("decos")){
+			if(decos == null) decos = new HashMap<>();
+			NBTTagList list = (NBTTagList)compound.getTag("decos");
+			for(NBTBase base : list){
+				String[] split = ((NBTTagString)base).getString().split(":");
+				decos.put(split[0], split[1]);
+			}
+		}
+		else{
+			if(decos != null) decos.clear();
+		}
+		if(relay.holder.region.system.isRemote()){
+			deco_m = null;
+		}
 		return this;
 	}
 
@@ -109,6 +132,13 @@ public class Wire extends Path {
 		if(deco_start != null) compound.setString("deco_start", deco_start);
 		if(deco_end != null) compound.setString("deco_end", deco_end);
 		compound.setFloat("slack", slack);
+		if(decos != null && decos.size() > 0){
+			NBTTagList list = new NBTTagList();
+			for(Entry<String, String> entry : decos.entrySet()){
+				list.appendTag(new NBTTagString(entry.getKey() + ":" + entry.getValue()));
+			}
+			compound.setTag("decos", list);
+		}
 		return compound;
 	}
 	

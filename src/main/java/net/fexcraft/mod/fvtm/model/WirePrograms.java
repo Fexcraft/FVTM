@@ -53,8 +53,7 @@ public class WirePrograms {
 		
 	};
 	
-	@Deprecated
-	public static class Rotated implements Program {
+	/*public static class Rotated implements Program {
 		
 		public Rotated(){}
 
@@ -66,7 +65,7 @@ public class WirePrograms {
 			GL11.glRotatef(WireRenderer.ANGLE, 0, 1, 0);
 		}
 		
-	};
+	};*/
 	
 	public static class DownwardAngled implements Program {
 		

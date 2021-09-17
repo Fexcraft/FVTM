@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.render;
 import static net.fexcraft.mod.fvtm.render.RailRenderer.MIDDLE_GRAY;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -132,8 +134,7 @@ public class WireRenderer {
         		if(relay.wires.get(i).isOppositeCopy()) continue;
         		Wire wire = relay.wires.get(i);
         		if(wire.vecpath == null) return;
-        		WireModel model = wire.getWireType().getModel();
-        		if(wire.wiremodel == null) generateWireModel(wire, model);
+        		if(wire.wiremodel == null) generateWireModel(wire);
         		ModelBase.bindTexture(wire.getWireType().getWireTexture());
         		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.disableCull();
         		wire.wiremodel.render();
@@ -164,6 +165,8 @@ public class WireRenderer {
             			RGB.glColorReset();
             			GL11.glPopMatrix();
         			}
+        			if(wire.deco_m == null) genWireDeco(wire);
+        			for(WireModel dm : wire.deco_m.values()) dm.render(relay.getTile().getBlockData(), relay.getTile());
         		}
         	}
         	if(Command.OTHER){
@@ -181,7 +184,8 @@ public class WireRenderer {
         }
 	}
 
-	private static void generateWireModel(Wire wire, WireModel model){
+	private static void generateWireModel(Wire wire){
+		WireModel model = wire.getWireType().getModel();
 		TurboArrayPositioned tarp = new TurboArrayPositioned(wire, MIDDLE_GRAY);
 		float angle, passed = 0;
 		Vec3f last, vec;
@@ -237,6 +241,14 @@ public class WireRenderer {
 	        float dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
 			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_end_angle_down = -Static.toDegrees(wire.model_end_angle_down);
+		}
+	}
+
+	private static void genWireDeco(Wire wire){
+		wire.deco_m = new HashMap<>();
+		for(Entry<String, String> entry : wire.decos.entrySet()){
+			WireModel deco = WireModel.DECOS.get(entry.getValue());
+			if(deco != null) wire.deco_m.put(entry.getKey(), deco);
 		}
 	}
 

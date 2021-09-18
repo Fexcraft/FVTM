@@ -43,6 +43,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	private ArrayList<String> creators = new ArrayList<>();
 	protected int textureX, textureY;
 	public boolean smooth_shading;
+	protected String name;
 	
 	public GenericModel(){
 		if(!DefaultPrograms.DIDLOAD){

@@ -2,8 +2,8 @@
 package net.fexcraft.mod.fvtm.model.block;
 
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
-import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
+import net.fexcraft.mod.fvtm.model.TurboList;
 
 /** This file was exported via the FVTM Exporter V1.2 of<br>
  *  FMT (Fex's Modelling Toolbox) v.1.2.9 &copy; 2019 - Fexcraft.net<br>
@@ -33,7 +33,7 @@ public class RS_Round extends RoadSignModel {
 		TurboList group0 = new TurboList("group0");
 		group0.add(new ModelRendererTurbo(group0, 0, 0, textureX, textureY).newCylinderBuilder()
 			.setPosition(0, 0, 0).setRadius(8, 7).setLength(1).setSegments(16, 0).setScale(1, 1).setDirection(0)
-			.setRadialTexture(4, 1).setSidesVisible(false, false, false, false).setTopOffset(null).build()
+			.setRadialTexture(4, 1)/*.setSidesVisible(false, false, false, false)*/.setTopOffset(null).build()
 			.setRotationPoint(0, -8, -3).setRotationAngle(0, 0, 0).setName("border")
 		);
 		if(l0){
@@ -44,7 +44,7 @@ public class RS_Round extends RoadSignModel {
 		if(l1){
 			group0.add(new ModelRendererTurbo(group0, 0, 25, textureX, textureY).newCylinderBuilder()
 				.setPosition(0, 0, 0).setRadius(7, 0.01f).setLength(0.125f).setSegments(16, 0).setScale(1, 1).setDirection(2)
-				.setRadialTexture(3, 6).setSidesVisible(false, true, true, true).setTopOffset(null).build()
+				.setRadialTexture(3, 6)/*.setSidesVisible(false, true, true, true)*/.setTopOffset(null).build()
 				.setRotationPoint(0, -8, -2.25f).setRotationAngle(0, 90, 0).setName("layer1")
 			);
 		}

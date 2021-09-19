@@ -1,7 +1,11 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -111,6 +115,20 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 				throw new Exception("TL-PROGRAM WITH ID '" + args[1] + "' NOT FOUND!");
 			}
 			return prog.parse(Arrays.copyOfRange(args, 2, args.length));
+		}
+	}
+	
+	public GenericModel(Object[] stream, String type){
+		if(!type.equals("fmf")) return;
+		try{
+			HashMap<String, Object> data = FMFParser.parse(this, (InputStream)stream[0]);
+			
+			
+
+			if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
+		}
+		catch(IOException e){
+			e.printStackTrace();
 		}
 	}
 

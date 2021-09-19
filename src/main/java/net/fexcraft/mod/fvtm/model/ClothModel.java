@@ -24,6 +24,8 @@ public class ClothModel extends GenericModel<ClothItem, ArrayList<String>> {
 	
 	public ClothModel(JsonObject obj){ super(obj); }
 	
+	public ClothModel(Object[] stream, String type){ super(stream, type); }
+	
 	public ClothModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
 		super(loc, data, objgroups, exclude);
 		List<String[]> setas = ObjParser.getCommentValues(data, new String[]{ "SetGroupAs:" }, null, null);

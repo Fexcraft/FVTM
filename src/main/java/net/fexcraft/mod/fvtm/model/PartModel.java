@@ -51,6 +51,8 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 	
 	public PartModel(JsonObject obj){ super(obj); }
 	
+	public PartModel(Object[] stream, String type){ super(stream, type); }
+	
 	public PartModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
 
 	@Override

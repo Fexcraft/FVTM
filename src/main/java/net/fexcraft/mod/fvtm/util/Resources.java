@@ -32,6 +32,7 @@ import net.fexcraft.lib.mc.crafting.RecipeRegistry;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
+import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.InternalAddon;
@@ -159,7 +160,7 @@ public class Resources {
 	private static TreeMap<ResourceLocation, ObjModel> OBJ_MODEL_DATA_CACHE = new TreeMap<>();
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
-	public static final ResourceLocation NULL_TEXTURE = new ResourceLocation("fvtm:textures/entity/null.png");
+	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();
@@ -532,7 +533,7 @@ public class Resources {
 				case "json":
 					//TODO create a wrapper.
 					break;
-				case "obj":
+				case "obj":{
 					String[] filter = name.split(";");
 					String id = filter.length > 1 ? filter[filter.length - 1] : name;
 					ResourceLocation loc = new ResourceLocation(id);
@@ -556,6 +557,12 @@ public class Resources {
 					}
 					model = clazz.getConstructor(ResourceLocation.class, ObjModel.class, ArrayList.class, boolean.class).newInstance(loc, objdata, groups, exclude);
 					break;
+				}
+				case "fmf":{
+					Object[] stream = getModelInputStreamWithFallback(new ResourceLocation(name));
+					model = clazz.getConstructor(Object[].class, String.class).newInstance(stream, ext);
+					break;
+				}
 				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);
 			}
 		}

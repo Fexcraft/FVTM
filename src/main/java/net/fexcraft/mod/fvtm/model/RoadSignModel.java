@@ -29,6 +29,8 @@ public class RoadSignModel extends GenericModel<RoadSignEntity, RoadSign> implem
 	
 	public RoadSignModel(JsonObject obj){ super(obj); }
 	
+	public RoadSignModel(Object[] stream, String type){ super(stream, type); }
+	
 	public RoadSignModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
 
 	@Override

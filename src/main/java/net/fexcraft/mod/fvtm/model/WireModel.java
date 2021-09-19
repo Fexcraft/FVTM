@@ -34,6 +34,8 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 	
 	public WireModel(JsonObject obj){ super(obj); }
 	
+	public WireModel(Object[] stream, String type){ super(stream, type); }
+	
 	public WireModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
 		super(loc, data, objgroups, exclude);
 		wire_tempcull = Boolean.parseBoolean(ObjParser.getCommentValue(data, "WireCulling:"));

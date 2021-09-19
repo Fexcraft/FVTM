@@ -11,6 +11,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.tmt.BoxBuilder;
 import net.fexcraft.lib.tmt.CylinderBuilder;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -36,9 +37,10 @@ public class FMFParser {
 		int f0 = stream.read(), f1 = stream.read(), f2 = stream.read(), format = stream.read();
 		if(f0 != 6 || f1 != 13 || f2 != 6 || format < 0) return null;
 		HashMap<String, Object> data = new HashMap<>();
-		int r = -1, tx = 256, ty = 256;
+		int r = -1;
 		String larray = null;
 		while((r = stream.read()) > -1){
+			Print.debug("#S " + r);
 			switch(r){
 				case N:{
 					model.name = readString(stream);
@@ -50,15 +52,17 @@ public class FMFParser {
 				}
 				case T:{
 					int[] in = readIntegers(stream, 2);
-					tx = in[0];
-					ty = in[1];
+					model.textureX = in[0];
+					model.textureY = in[1];
 					stream.read();//skipping unused E
 					break;
 				}
 				case G:{
 					TurboList list = new TurboList(readString(stream));
-					readPolygons(stream, list, tx, ty);
+					Print.debug(list.name + " parsing");
+					readPolygons(stream, list, model.textureX, model.textureY);
 					model.groups.add(list);
+					Print.debug(list.name + " added");
 					break;
 				}
 				case V:{
@@ -76,6 +80,7 @@ public class FMFParser {
 				}
 				default: continue;
 			}
+			Print.debug("#E " + r);
 		}
 		return data;
 	}
@@ -98,13 +103,22 @@ public class FMFParser {
 	
 	private static void readPolygons(InputStream stream, TurboList list, int tx, int ty) throws IOException {
 		int r = -1;
-		while((r = stream.read()) > -1){
+		boolean end = false;
+		while(!end){
+			if((r = stream.read()) == -1) break;
+			Print.debug("p " + r);
 			switch(r){
-				case PE: return;
+				case PE:{
+					end = true;
+					break;
+				}
 				case PB:{
 					BoxBuilder box = new BoxBuilder(new ModelRendererTurbo(list, 0, 0, tx, ty));
 					boolean done = false;
-					while(!done && (r = stream.read()) > -1){
+					Print.debug(box);
+					while(!done){
+						if((r = stream.read()) == -1) break;
+						Print.debug("b " + r);
 						switch(r){
 							case PP:{
 								float[] fl = readFloats(stream, 3);
@@ -136,9 +150,9 @@ public class FMFParser {
 								break;
 							}
 							case PBC:{
-								int[] in = readIntegers(stream, 1);
-								float[] fl = readFloats(stream, 4);
-								box.setCorner(in[0], fl[0], fl[1], fl[2]);
+								int in = stream.read();
+								float[] fl = readFloats(stream, 3);
+								box.setCorner(in, fl[0], fl[1], fl[2]);
 								break;
 							}
 							case PBE:{
@@ -154,9 +168,9 @@ public class FMFParser {
 								break;
 							}
 							case PCU:{
-								int[] in = readBytesAsInts(stream, 2);
-								float[] fl = readFloats(stream, in[1]);
-								box.setPolygonUV(in[0], fl);
+								int in = stream.read();
+								float[] fl = readFloats(stream, stream.read());
+								box.setPolygonUV(in, fl);
 								break;
 							}
 							case PM:{
@@ -164,7 +178,7 @@ public class FMFParser {
 								break;
 							}
 							case PRO:{
-								int[] ro = readBytesAsInts(stream, 3);
+								int[] ro = new int[]{ stream.read(), stream.read(), stream.read() };
 								box.getRoot().setRotationOrder(getRotationOrder(ro));
 								break;
 							}
@@ -184,7 +198,10 @@ public class FMFParser {
 				case PC:{
 					CylinderBuilder cyl = new CylinderBuilder(new ModelRendererTurbo(list, 0, 0, tx, ty));
 					boolean done = false;
-					while(!done && (r = stream.read()) > -1){
+					Print.debug(cyl);
+					while(!done){
+						if((r = stream.read()) == -1) break;
+						Print.debug("c " + r);
 						switch(r){
 							case PP:{
 								float[] fl = readFloats(stream, 3);
@@ -254,9 +271,9 @@ public class FMFParser {
 								break;
 							}
 							case PCU:{
-								int[] in = readBytesAsInts(stream, 2);
-								float[] fl = readFloats(stream, in[1]);
-								cyl.setPolygonUV(in[0], fl);
+								int in = stream.read();
+								float[] fl = readFloats(stream, stream.read());
+								cyl.setPolygonUV(in, fl);
 								break;
 							}
 							case PM:{
@@ -264,7 +281,7 @@ public class FMFParser {
 								break;
 							}
 							case PRO:{
-								int[] ro = readBytesAsInts(stream, 3);
+								int[] ro = new int[]{ stream.read(), stream.read(), stream.read() };
 								cyl.getRoot().setRotationOrder(getRotationOrder(ro));
 								break;
 							}
@@ -287,7 +304,8 @@ public class FMFParser {
 					ArrayList<TexturedVertex> verts = new ArrayList<>();
 					ArrayList<Vec3f> norms = new ArrayList<>();
 					int tv = 0;
-					while(!done && (r = stream.read()) > -1){
+					while(!done){
+						if((r = stream.read()) == -1) break;
 						switch(r){
 							case PP:{
 								float[] fl = readFloats(stream, 3);
@@ -340,7 +358,7 @@ public class FMFParser {
 								break;
 							}
 							case PRO:{
-								int[] ro = readBytesAsInts(stream, 3);
+								int[] ro = new int[]{ stream.read(), stream.read(), stream.read() };
 								turbo.setRotationOrder(getRotationOrder(ro));
 								break;
 							}
@@ -383,21 +401,12 @@ public class FMFParser {
 		return arr;
 	}
 
-	private static int[] readBytesAsInts(InputStream stream, int t) throws IOException {
-		int[] bit = new int[t];
-		for(int i = 0; i < bit.length; i++){
-			bit[i] = stream.read();
-		}
-		return bit;
-	}
-
 	private static boolean[] readBooleans(InputStream stream, int t) throws IOException {
 		boolean[] arr = new boolean[t];
 		for(int i = 0; i < t; i++){
-			byte[] bit = new byte[1];
-			int r = stream.read(bit);
+			int r = stream.read();
 			if(r < 1) return arr;//error
-			arr[i] = bit[0] == 1;
+			arr[i] = r == 1;
 		}
 		return arr;
 	}

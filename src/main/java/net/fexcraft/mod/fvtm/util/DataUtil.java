@@ -89,7 +89,7 @@ public class DataUtil {
 			});
 		}
 		if(reslocs.isEmpty()){
-			reslocs.add(new NamedResourceLocation("NullTex|fvtm:textures/entity/null.png"));
+			reslocs.add(Resources.NULL_TEXTURE);
 		}
 		return reslocs;
 	}

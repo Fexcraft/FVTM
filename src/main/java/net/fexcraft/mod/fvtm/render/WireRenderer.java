@@ -206,28 +206,41 @@ public class WireRenderer {
 		TexturedVertex vert0, vert1, vert2, vert3;
 		TexturedPolygon poly0;
 		//
-		for(int p = 0; p < model.wire_model.size(); p++){
-			path.clear(); vec = wire.getVectorPosition0(0.001f, false); passed = 0;
-			angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
-			angle += Static.rad90;
-			path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, model.wire_model.get(p)[0])));
-			path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, model.wire_model.get(p)[1])));
-			for(int v = 0; v < wire.vecpath.length - 1; v++){
-				last = wire.vecpath[v]; vec = wire.vecpath[v + 1];
-				angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
+		for(Entry<Integer, ArrayList<Vec3f[]>> entry : model.wire_model.entrySet()){
+			ArrayList<Vec3f[]> wodl = entry.getValue();
+			Object[] data = model.wire_data.get(entry.getKey());
+			for(int p = 0; p < wodl.size(); p++){
+				path.clear();
+				boolean noslack = data != null && (boolean)data[0] == true;
+				vec = noslack ? dis(wire, 0.001f) : wire.getVectorPosition0(0.001f, false);
+				passed = 0;
+				angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
 				angle += Static.rad90;
-				path.add(vec.add(VecUtil.rotByRad(angle, model.wire_model.get(p)[0])));
-				path.add(vec.add(VecUtil.rotByRad(angle, model.wire_model.get(p)[1])));
-			}
-			for(int k = 0; k < wire.vecpath.length - 1; k++){
-				vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
-				vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 1);
-				vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
-				vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 1, 0);
-				poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
-				int pess = (int)passed; if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
-				tarp.turbos[pess].copyTo(new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
-				passed += wire.vecpath[k].dis(wire.vecpath[k + 1]);
+				path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, wodl.get(p)[0])));
+				path.add(wire.vecpath[0].add(VecUtil.rotByRad(angle, wodl.get(p)[1])));
+				for(int v = 0; v < wire.vecpath.length - 1; v++){
+					last = wire.vecpath[v];
+					vec = wire.vecpath[v + 1];
+					if(noslack){
+						vec = dis(wire, passed += last.dis(vec));
+					}
+					angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
+					angle += Static.rad90;
+					path.add(vec.add(VecUtil.rotByRad(angle, wodl.get(p)[0])));
+					path.add(vec.add(VecUtil.rotByRad(angle, wodl.get(p)[1])));
+				}
+				passed = 0;
+				for(int k = 0; k < wire.vecpath.length - 1; k++){
+					vert0 = new TexturedVertex(path.get(k * 2), 1, 1);
+					vert1 = new TexturedVertex(path.get(k * 2 + 1), 0, 1);
+					vert2 = new TexturedVertex(path.get((k + 1) * 2), 0, 0);
+					vert3 = new TexturedVertex(path.get((k + 1) * 2 + 1), 1, 0);
+					poly0 = new TexturedPolygon(new TexturedVertex[]{ vert1, vert0, vert2, vert3 });
+					int pess = (int)passed;
+					if(pess >= tarp.turbos.length) pess = tarp.turbos.length - 1;
+					tarp.turbos[pess].copyTo(new TexturedPolygon[]{ poly0.setColor(MIDDLE_GRAY) });
+					passed += wire.vecpath[k].dis(wire.vecpath[k + 1]);
+				}
 			}
 		}
 		wire.wiremodel = tarp;
@@ -254,6 +267,10 @@ public class WireRenderer {
 			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_end_angle_down = Static.toDegrees(wire.model_end_angle_down);
 		}
+	}
+
+	private static Vec3f dis(Wire wire, float dis){
+		return wire.rootpath0[0].distance(wire.rootpath0[2], dis);
 	}
 
 	private static void genWireDeco(Wire wire){

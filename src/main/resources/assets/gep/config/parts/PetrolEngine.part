@@ -21,7 +21,17 @@
 	    		"super98": 8,
 	    		"e10": 6.7
 	    	},
-	    	"fuel_group": "petrol"
+	    	"fuel_group": "petrol",
+
+	    	"min_rpm": 1000,
+		    "max_rpm": 6000,
+		    "torque_chart":{
+		        "1000": 300,
+		        "4000": 380,
+		        "5000": 450,
+		        "6000": 400
+		    },
+		    "__comment": "example/testing values"
 	    },
     	{
     		"id": "fvtm_potr:emission_emitter",

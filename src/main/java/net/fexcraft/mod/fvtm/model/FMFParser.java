@@ -117,19 +117,18 @@ public class FMFParser {
 				norms = new ArrayList<>();
 				tv = 0;
 			}
-			boolean done = false;
-			while(!done){
+			while(true){
 				if((r = stream.read()) == -1) break;
 				if(r == PE){
 					if(type == PB) list.add(box.build());
 					else if(type == PC) list.add(cyl.build());
 					else if(type == PO) list.add(mrt);
-					done = true;
+					break;
 				}
 				switch(r){
 					case PP:{
 						float[] fl = readFloats(stream, 3);
-						mrt.setPosition(fl[0], fl[1], fl[2]);
+						mrt.setRotationPoint(fl[0], fl[1], fl[2]);
 						break;
 					}
 					case PR:{

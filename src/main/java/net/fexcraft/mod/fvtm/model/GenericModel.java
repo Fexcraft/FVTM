@@ -122,14 +122,28 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		if(!type.equals("fmf")) return;
 		try{
 			HashMap<String, Object> data = FMFParser.parse(this, (InputStream)stream[0]);
-			
-			
-
+			if(data.containsKey("Programs")){
+				for(String string : ((List<String>)data.get("Programs"))){
+					String[] args = string.trim().split(" ");
+					if(!groups.contains(args[0])) continue;
+					try{
+						groups.get(args[0]).addProgram(parseProgram(args));
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+				for(TurboList list : groups){
+					if(list.hasPrograms()) list.initPrograms();
+				}
+			}
 			if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
 		}
 		catch(IOException e){
 			e.printStackTrace();
+			Static.stop();
 		}
+		Static.stop();
 	}
 
 	/**

@@ -122,6 +122,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		if(!type.equals("fmf")) return;
 		try{
 			HashMap<String, Object> data = FMFParser.parse(this, (InputStream)stream[0]);
+			smooth_shading = data.containsKey("SmoothShading") && Boolean.parseBoolean(data.get("SmoothShading").toString());
 			if(data.containsKey("Programs")){
 				for(String string : ((List<String>)data.get("Programs"))){
 					String[] args = string.trim().split(" ");
@@ -135,6 +136,62 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 				}
 				for(TurboList list : groups){
 					if(list.hasPrograms()) list.initPrograms();
+				}
+			}
+			if(data.containsKey("Transforms")){
+				for(String string : ((List<String>)data.get("Transforms"))){
+					transforms.parse(string.trim().split(" "));
+				}
+			}
+			if(data.containsKey("Pivot")){
+				for(String string : ((List<String>)data.get("Programs"))){
+					String[] args = string.trim().split(" ");
+					if(!groups.contains(args[0])) continue;
+					try{
+						TurboList group = groups.get(args[0]);
+						Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+						Vec3f rotation = new Vec3f(
+							args.length > 4 ? Float.parseFloat(args[4]) : 0,
+							args.length > 5 ? Float.parseFloat(args[5]) : 0,
+							args.length > 6 ? Float.parseFloat(args[6]) : 0
+						);
+						for(ModelRendererTurbo turbo : group){
+							for(TexturedPolygon poly : turbo.getFaces()){
+								for(TexturedVertex vert : poly.getVertices()){
+									vert.vector = vert.vector.sub(vector);
+								}
+							}
+							turbo.rotationPointX = vector.x;
+							turbo.rotationPointY = vector.y;
+							turbo.rotationPointZ = vector.z;
+							turbo.rotationAngleX = rotation.x;
+							turbo.rotationAngleY = rotation.y;
+							turbo.rotationAngleZ = rotation.z;
+						}
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}
+			if(data.containsKey("Offset")){
+				for(String string : ((List<String>)data.get("Offset"))){
+					String[] args = string.trim().split(" ");
+					if(!groups.contains(args[0])) continue;
+					try{
+						TurboList group = groups.get(args[0]);
+						Vec3f vector = new Vec3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+						for(ModelRendererTurbo turbo : group){
+							for(TexturedPolygon poly : turbo.getFaces()){
+								for(TexturedVertex vert : poly.getVertices()){
+									vert.vector = vert.vector.sub(vector);
+								}
+							}
+						}
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
 				}
 			}
 			if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();

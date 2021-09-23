@@ -200,7 +200,6 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			e.printStackTrace();
 			Static.stop();
 		}
-		Static.stop();
 	}
 
 	/**

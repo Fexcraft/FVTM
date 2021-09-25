@@ -119,18 +119,12 @@ public class WirePrograms {
 	public static class SpacedDeco implements Program {
 		
 		private boolean symmetric, centered, symlit;
-		private float center_spacing;
-		private float ending_spacing;
-		private float between_spacing;
-		private int limit;
+		private float center_spacing = 0.5f;
+		private float ending_spacing = 0.5f;
+		private float between_spacing = 1f;
+		private int limit = 0;
 		
-		public SpacedDeco(){}
-
-		public String getId(){
-			return "fvtm:wire_spaced_deco";
-		}
-		
-		public Program parse(String[] args){
+		public SpacedDeco(String... args){
 			for(String arg : args){
 				String[] split = arg.split(":");
 				switch(split[0]){
@@ -164,13 +158,28 @@ public class WirePrograms {
 					}
 				}
 			}
-			return this;
+		}
+
+		public String getId(){
+			return "fvtm:wire_spaced_deco";
+		}
+		
+		public Program parse(String[] args){
+			return new SpacedDeco(args);
 		}
 
 		public ArrayList<Vec3f> generate(Wire wire, TurboList group){
 			ArrayList<Vec3f> list = new ArrayList<>();
-			list.add(wire.getVectorPosition0(1, false));
-			list.add(wire.getVectorPosition0(1, true));
+			if(symmetric){
+				
+			}
+			else{
+				float pass = ending_spacing;
+				while(pass < wire.length && (limit > 0 ? list.size() < limit : true)){
+					list.add(wire.getVectorPosition0(pass, false));
+					pass += between_spacing;
+				}
+			}
 			return list;
 		}
 		

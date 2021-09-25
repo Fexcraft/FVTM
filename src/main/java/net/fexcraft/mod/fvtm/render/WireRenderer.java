@@ -165,10 +165,10 @@ public class WireRenderer {
             			GL11.glRotated(180, 0, 0, 1);
             			GL11.glRotated(90, 0, 1, 0);
             			GL11.glRotatef(wire.model_end_angle, 0, 1, 0);
-            			RGB.RED.glColorApply();
+            			//RGB.RED.glColorApply();
             			wire.deco_e.render(relay.getTile().getBlockData(), relay.getTile());
             			//GL11.glTranslatef(-wire.vecpath[l].x, -wire.vecpath[l].y, -wire.vecpath[l].z);
-            			RGB.glColorReset();
+            			//RGB.glColorReset();
             			GL11.glPopMatrix();
         			}
         			if(wire.deco_m == null) genWireDeco(wire);
@@ -184,6 +184,7 @@ public class WireRenderer {
                             			GL11.glRotated(180, 0, 0, 1);
                             			GL11.glRotated(90, 0, 1, 0);
                     					wm.transforms.apply();
+                    	        		ModelBase.bindTexture(wm.texture());
                     					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
                     					wm.transforms.deapply();
                             			GL11.glPopMatrix();
@@ -195,6 +196,7 @@ public class WireRenderer {
                         			GL11.glRotated(180, 0, 0, 1);
                         			GL11.glRotated(90, 0, 1, 0);
                 					wm.transforms.apply();
+                	        		ModelBase.bindTexture(wm.texture());
                 					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
                 					wm.transforms.deapply();
                         			GL11.glPopMatrix();

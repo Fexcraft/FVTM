@@ -27,7 +27,7 @@ public class WirePrograms {
 	
 	public static void init(){
 		TurboList.PROGRAMS.add(new RotateY(0));
-		TurboList.PROGRAMS.add(new Rotated());
+		TurboList.PROGRAMS.add(ROTATED);
 		TurboList.PROGRAMS.add(new DownwardAngled(0, false));
 		TurboList.PROGRAMS.add(new SpacedDeco());
 	}
@@ -58,9 +58,7 @@ public class WirePrograms {
 		
 	};
 	
-	public static class Rotated implements Program {
-		
-		public Rotated(){}
+	public static Program ROTATED = new Program(){
 
 		public String getId(){
 			return "fvtm:wire_rotated";
@@ -172,7 +170,7 @@ public class WirePrograms {
 				float half = wire.length / 2f;
 				if(centered){
 					float pass = half - center_spacing;
-					while(pass - between_spacing > ending_spacing && (limit > 0 ? list.size() < limit : true)){
+					while(pass > ending_spacing && (limit > 0 ? list.size() < limit : true)){
 						list.add(wire.getVectorPosition0(pass, false));
 						list.add(wire.getVectorPosition0(pass, true));
 						pass -= between_spacing;
@@ -180,7 +178,7 @@ public class WirePrograms {
 				}
 				else{
 					float pass = ending_spacing;
-					while(pass + between_spacing < half - center_spacing && (limit > 0 ? list.size() < limit : true)){
+					while(pass < half - center_spacing && (limit > 0 ? list.size() < limit : true)){
 						list.add(wire.getVectorPosition0(pass, false));
 						list.add(wire.getVectorPosition0(pass, true));
 						pass += between_spacing;
@@ -189,7 +187,7 @@ public class WirePrograms {
 			}
 			else{
 				float pass = center_spacing;
-				while(pass + between_spacing < wire.length - ending_spacing && (limit > 0 ? list.size() < limit : true)){
+				while(pass < wire.length - ending_spacing && (limit > 0 ? list.size() < limit : true)){
 					list.add(wire.getVectorPosition0(pass, false));
 					pass += between_spacing;
 				}

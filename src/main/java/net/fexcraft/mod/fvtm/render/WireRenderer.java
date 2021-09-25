@@ -142,7 +142,7 @@ public class WireRenderer {
         		wire.wiremodel.render();
         		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.enableCull();
         		ModelBase.bindTexture(wire.getWireType().getModelTexture());
-        		if(wire.getRelay().getTile() != null){
+        		if(relay.getTile() != null){
         			CURRENT = wire;
     				ANGLE = wire.model_end_angle;
         			if(wire.deco_s != null){

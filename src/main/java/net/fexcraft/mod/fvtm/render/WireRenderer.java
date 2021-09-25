@@ -16,7 +16,9 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.model.WireModel;
+import net.fexcraft.mod.fvtm.model.WirePrograms;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
@@ -171,13 +173,33 @@ public class WireRenderer {
         			}
         			if(wire.deco_m == null) genWireDeco(wire);
         			if(wire.deco_m.size() > 0){
-        				for(WireModel dm : wire.deco_m.values()){
-                			GL11.glPushMatrix();
-                			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
-                			GL11.glRotated(180, 0, 0, 1);
-                			GL11.glRotated(90, 0, 1, 0);
-        					dm.render(relay.getTile().getBlockData(), relay.getTile());
-                			GL11.glPopMatrix();
+        				WireModel wm;
+        				for(Entry<String, WireModel> dm : wire.deco_m.entrySet()){
+                			wm = dm.getValue();
+                			for(TurboList list : wm.groups){
+                				if(wire.deco_d.get(dm.getKey()).containsKey(list.name)){
+                					for(Vec3f vec : wire.deco_d.get(dm.getKey()).get(list.name)){
+                            			GL11.glPushMatrix();
+                            			GL11.glTranslatef(vec.x, vec.y, vec.z);
+                            			GL11.glRotated(180, 0, 0, 1);
+                            			GL11.glRotated(90, 0, 1, 0);
+                    					wm.transforms.apply();
+                    					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
+                    					wm.transforms.deapply();
+                            			GL11.glPopMatrix();
+                					}
+                				}
+                				else{
+                        			GL11.glPushMatrix();
+                        			GL11.glTranslatef(wire.vecpath[0].x, wire.vecpath[0].y, wire.vecpath[0].z);
+                        			GL11.glRotated(180, 0, 0, 1);
+                        			GL11.glRotated(90, 0, 1, 0);
+                					wm.transforms.apply();
+                					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
+                					wm.transforms.deapply();
+                        			GL11.glPopMatrix();
+                				}
+                			}
         				}
         			}
         		}
@@ -275,10 +297,21 @@ public class WireRenderer {
 
 	private static void genWireDeco(Wire wire){
 		wire.deco_m = new HashMap<>();
+		wire.deco_d = new HashMap<>();
 		if(wire.decos == null) return;
 		for(Entry<String, String> entry : wire.decos.entrySet()){
 			WireModel deco = WireModel.DECOS.get(entry.getValue());
-			if(deco != null) wire.deco_m.put(entry.getKey(), deco);
+			if(deco != null){
+				wire.deco_m.put(entry.getKey(), deco);
+				wire.deco_d.put(entry.getKey(), new HashMap<>());
+				for(TurboList list : deco.groups){
+					for(TurboList.Program program : list.programs){
+						if(program instanceof WirePrograms.SpacedDeco == false) continue;
+						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(wire, list));
+						break;
+					}
+				}
+			}
 		}
 	}
 

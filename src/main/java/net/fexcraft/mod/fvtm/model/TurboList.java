@@ -140,10 +140,10 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		/** Block Specific */
 		public default void postRender(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){}
 
-		/** For creating instances from JTMT/OBJ if necessary. */
+		/** For creating instances from JTMT/OBJ/FMF if necessary. */
 		public default Program parse(JsonElement elm){ return this; }
 		
-		/** For creating instances from JTMT/OBJ if necessary. */
+		/** For creating instances from JTMT/OBJ/FMF if necessary. */
 		public default Program parse(String[] args){ return this; }
 		
 		public default <T extends Program> T register(){

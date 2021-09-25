@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -42,6 +43,8 @@ public class Wire extends Path {
 	public HashMap<String, String> decos;
 	@SideOnly(Side.CLIENT)
 	public HashMap<String, WireModel> deco_m;
+	@SideOnly(Side.CLIENT)
+	public HashMap<String, HashMap<String, ArrayList<Vec3f>>> deco_d;
 	public float slack = 1;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f s_v, Vec3f e_v){

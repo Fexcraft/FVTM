@@ -57,7 +57,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 		texts.get("current").string = container.currdeconame();
 		for(int i = 0; i < b.length; i++){
 			int j = i + scroll;
-			if(j >= container.models.get(WireRelayContainer.CURRDECO).size()){
+			if(!container.models.containsKey(WireRelayContainer.CURRDECO) || j >= container.models.get(WireRelayContainer.CURRDECO).size()){
 				texts.get("t" + i).string = "";
 			}
 			else{

@@ -133,6 +133,10 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 	public void texture(String texloc){
 		texture = new ResourceLocation(texloc);
 	}
+	
+	public ResourceLocation texture(){
+		return texture;
+	}
 
 	public void accepts(ArrayList<String> array){
 		accepts = array;

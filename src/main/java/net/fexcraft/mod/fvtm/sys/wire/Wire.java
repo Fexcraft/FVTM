@@ -223,7 +223,7 @@ public class Wire extends Path {
 
 	public void reslack(){
 		Vec3f s = rootpath0[0], e = rootpath0[2];
-		rootpath0 = new Vec3f[]{ s, s.middle(e).add(0, -(slack * (s.dis(e))), 0), e };
+		rootpath0 = new Vec3f[]{ s, s.middle(e).add(0, -slack, 0), e };
 		vecpath = new Vec3f[rootpath0.length];
 		construct();
 	}

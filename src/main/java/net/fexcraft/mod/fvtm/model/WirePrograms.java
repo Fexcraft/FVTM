@@ -2,16 +2,20 @@ package net.fexcraft.mod.fvtm.model;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nullable;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonElement;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.render.WireRenderer;
+import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -25,6 +29,7 @@ public class WirePrograms {
 		TurboList.PROGRAMS.add(new RotateY(0));
 		TurboList.PROGRAMS.add(new Rotated());
 		TurboList.PROGRAMS.add(new DownwardAngled(0, false));
+		TurboList.PROGRAMS.add(new SpacedDeco());
 	}
 	
 	public static class RotateY implements Program {
@@ -110,5 +115,65 @@ public class WirePrograms {
 		}
 		
 	};
+	
+	public static class SpacedDeco implements Program {
+		
+		private boolean symmetric, centered, symlit;
+		private float center_spacing;
+		private float ending_spacing;
+		private float between_spacing;
+		private int limit;
+		
+		public SpacedDeco(){}
+
+		public String getId(){
+			return "fvtm:wire_spaced_deco";
+		}
+		
+		public Program parse(String[] args){
+			for(String arg : args){
+				String[] split = arg.split(":");
+				switch(split[0]){
+					case "symmetric":{
+						symmetric = Boolean.parseBoolean(split[1]);
+						break;
+					}
+					case "centered":{
+						centered = Boolean.parseBoolean(split[1]);
+						break;
+					}
+					case "center_spacing":{
+						center_spacing = Float.parseFloat(split[1]);
+						break;
+					}
+					case "ending_spacing":{
+						ending_spacing = Float.parseFloat(split[1]);
+						break;
+					}
+					case "between_spacing":{
+						between_spacing = Float.parseFloat(split[1]);
+						break;
+					}
+					case "limit":{
+						limit = Integer.parseInt(split[1]);
+						break;
+					}
+					case "symmetric_limit":{
+						symlit = Boolean.parseBoolean(split[1]);
+						break;
+					}
+				}
+			}
+			return this;
+		}
+
+		public ArrayList<Vec3f> generate(Wire wire, TurboList group){
+			ArrayList<Vec3f> list = new ArrayList<>();
+			list.add(wire.getVectorPosition0(1, false));
+			list.add(wire.getVectorPosition0(1, true));
+			return list;
+		}
+		
+	}
 	
 }

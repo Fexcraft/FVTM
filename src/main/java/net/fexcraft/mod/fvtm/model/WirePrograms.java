@@ -136,6 +136,7 @@ public class WirePrograms {
 						centered = Boolean.parseBoolean(split[1]);
 						break;
 					}
+					case "start_spacing":
 					case "center_spacing":{
 						center_spacing = Float.parseFloat(split[1]);
 						break;
@@ -187,7 +188,7 @@ public class WirePrograms {
 				}
 			}
 			else{
-				float pass = ending_spacing;
+				float pass = center_spacing;
 				while(pass + between_spacing < wire.length - ending_spacing && (limit > 0 ? list.size() < limit : true)){
 					list.add(wire.getVectorPosition0(pass, false));
 					pass += between_spacing;

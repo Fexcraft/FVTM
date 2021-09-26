@@ -135,7 +135,7 @@ public class WireRenderer {
         	for(int i = 0; i < relay.size(); i++){
         		if(relay.wires.get(i).isOppositeCopy()) continue;
         		Wire wire = relay.wires.get(i);
-        		if(wire.vecpath == null) return;
+        		if(wire.vecpath == null || wire.getWireType() == null) continue;
         		if(wire.wiremodel == null) generateWireModel(wire);
         		ModelBase.bindTexture(wire.getWireType().getWireTexture());
         		if(wire.getWireType().getModel().wire_tempcull) GlStateManager.disableCull();

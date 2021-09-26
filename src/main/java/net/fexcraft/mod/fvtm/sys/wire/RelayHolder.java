@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.wire;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
@@ -12,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class RelayHolder {
 	
-	public ArrayList<WireRelay> relays = new ArrayList<>();
+	public LinkedHashMap<String, WireRelay> relays = new LinkedHashMap<>();
 	protected final WireRegion region;
 	protected BlockTileEntity blocktile;
 	public BlockPos pos;
@@ -26,7 +27,7 @@ public class RelayHolder {
 		this.region = region;
 	}
 
-	public WireRelay add(Vec316f vec, boolean override){
+	public WireRelay add(String key, Vec316f vec, boolean override){
 		if(contains(vec)){
 			if(override){
 				remove(vec);
@@ -34,39 +35,42 @@ public class RelayHolder {
 			else return get(vec);
 		}
 		WireRelay relay = new WireRelay(this, vec);
-		relays.add(relay);
+		relays.put(key, relay);
 		region.system.regRelay(relay);
 		return relay;
 	}
 
-	private WireRelay get(Vec316f vec){
-		for(WireRelay relay : relays) if(relay.getVec316f().equals(vec)) return relay;
+	public WireRelay get(Vec316f vec){
+		for(WireRelay relay : relays.values()) if(relay.getVec316f().equals(vec)) return relay;
 		return null;
 	}
 
+	public WireRelay get(String key){
+		return relays.get(key);
+	}
+
 	private boolean contains(Vec316f vec){
-		for(WireRelay relay : relays) if(relay.getVec316f().equals(vec)) return true;
+		for(WireRelay relay : relays.values()) if(relay.getVec316f().equals(vec)) return true;
 		return false;
 	}
 	
 	public WireRelay remove(Vec316f vec){
-		int idx = -1;
-		for(int i = 0; i < relays.size(); i++){
-			if(relays.get(i).getVec316f().equals(vec)){
-				idx = i;
+		String relkey = null;
+		for(Entry<String, WireRelay> entry : relays.entrySet()){
+			if(entry.getValue().getVec316f().equals(vec)){
+				relkey = entry.getKey();
 				break;
 			}
 		}
-		if(idx != -1){
-			WireRelay relay = relays.remove(idx);
+		if(relkey != null){
+			WireRelay relay = relays.remove(relkey);
 			int[] key = RegionKey.getRegionXZ(relay.getVec316f());
 			if(region.getKey().isInRegion(relay.getVec316f())){
 				region.remRelay(relay);
 			}
 			else this.region.system.getRegions().get(key, true).remRelay(relay);
-			return relay;
 		}
-		else return null;
+		return null;
 	}
 
 	public void setTile(BlockTileEntity tile){
@@ -78,7 +82,7 @@ public class RelayHolder {
 	}
 
 	protected void delete(){
-		for(WireRelay relay : relays){
+		for(WireRelay relay : relays.values()){
 			while(relay.wires.size() > 0) relay.remove(0, true);
 		}
 		relays.clear();
@@ -88,8 +92,10 @@ public class RelayHolder {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("Pos", pos.toLong());
 		NBTTagList list = new NBTTagList();
-		for(WireRelay relay : relays){
-			list.appendTag(relay.write(null));
+		for(Entry<String, WireRelay> relay : relays.entrySet()){
+			NBTTagCompound com = relay.getValue().write(null);
+			com.setString("Key", relay.getKey());
+			list.appendTag(com);
 		}
 		compound.setTag("Relays", list);
 		return compound;
@@ -99,14 +105,15 @@ public class RelayHolder {
 		pos = BlockPos.fromLong(compound.getLong("Pos"));
 		NBTTagList list = (NBTTagList)compound.getTag("Relays");
 		for(NBTBase base : list){
-			WireRelay relay = new WireRelay(this).read((NBTTagCompound)base);
-			relays.add(relay);
+			NBTTagCompound com = (NBTTagCompound)base;
+			WireRelay relay = new WireRelay(this).read(com);
+			relays.put(com.getString("Key"), relay);
 		}
 		return this;
 	}
 	
 	protected void regRelays(){
-		for(WireRelay relay : relays) region.system.regRelay(relay);
+		for(WireRelay relay : relays.values()) region.system.regRelay(relay);
 	}
 
 }

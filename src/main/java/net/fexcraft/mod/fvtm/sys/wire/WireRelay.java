@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
-import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -16,15 +15,15 @@ import net.minecraft.util.math.AxisAlignedBB;
  */
 public class WireRelay {
 	
-	private Vec316f vecpos;
+	protected String key;
 	public ArrayList<Wire> wires;
 	protected RelayHolder holder;
 	//
 	protected AxisAlignedBB frustumbb;
 	
 	/** General Constructor */
-	public WireRelay(RelayHolder holder, Vec316f pos){
-		vecpos = pos;
+	public WireRelay(RelayHolder holder, String key){
+		this.key = key;
 		wires = new ArrayList<Wire>();
 		this.holder = holder;
 	}
@@ -36,7 +35,7 @@ public class WireRelay {
 	}
 	
 	public WireRelay read(NBTTagCompound compound){
-		this.vecpos = new Vec316f(compound.getCompoundTag("Pos"));
+		key = compound.getString("Key");
 		int wiream = compound.getInteger("Wires");
 		if(wiream > 0){
 			wires.clear();
@@ -60,16 +59,12 @@ public class WireRelay {
 			compound.setTag("Wire" + i, wires.get(i).write(null));
 		}
 		compound.setInteger("Wires", wires.size());
-		compound.setTag("Pos", vecpos.write());
+		compound.setString("Key", key);
 		return compound;
 	}
 	
-	public Vec316f getVec316f(){
-		return vecpos;
-	}
-	
-	public Vec3f getVec3f(){
-		return vecpos.vector;
+	public String getKey(){
+		return key;
 	}
 
 	public void addnew(Wire wire){

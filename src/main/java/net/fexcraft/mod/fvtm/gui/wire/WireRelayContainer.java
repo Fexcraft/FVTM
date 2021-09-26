@@ -60,8 +60,8 @@ public class WireRelayContainer extends GenericContainer {
 		tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		data = tile.getBlockData().getType().getRelayData();
 		conns = data.conns.keySet().stream().collect(Collectors.toList());
-		ArrayList<Vec316f> list = data.getVectors(tile);
-		for(Vec316f vec : list) relays.add(system.getRelay(vec, false));
+		HashMap<String, Vec316f> list = data.getVectors(tile);
+		for(Vec316f vec : list.values()) relays.add(system.getRelay(vec, false));
 		stack = player.getHeldItemMainhand();
 		type = ((WireItem)stack.getItem()).getType();
 		if(!stack.hasTagCompound()){

@@ -10,10 +10,9 @@ import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.Path;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,12 +26,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author Ferdinand Calo' (FEX___96)
  *
  */
-public class Wire extends Path {
+public class Wire {
 
-	public Vec3f[] rootpath0;
+	public WireKey key, okey;
+	public Vec3f start, end;
+	public Vec3f[] rootpath, vecpath;
+	public float length;
 	protected WireUnit unit;
 	protected WireRelay relay;
 	protected WireType type;
+	public boolean copy;
 	//
 	@SideOnly(Side.CLIENT)
 	public TurboArrayPositioned wiremodel;
@@ -51,55 +54,95 @@ public class Wire extends Path {
 	public float slack = 1;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f s_v, Vec3f e_v){
-		this.start = relay.getVec316f().copy();
-		this.end = relay0.getVec316f().copy();
-		id = new PathKey(start, end);
-		op = new PathKey(id, true);
+		key = new WireKey(relay, relay0);
+		okey = new WireKey(relay0, relay);
 		type = wiretype;
 		slack = type.default_slack();
-		rootpath = new Vec316f[]{ start, end };
-		rootpath0 = new Vec3f[]{ s_v, null, e_v };
+		rootpath = new Vec3f[]{ s_v, null, e_v };
+		start = s_v;
+		end = e_v;
 		reslack();
 	}
+
+	public void reslack(){
+		rootpath[0] = start;
+		rootpath[1] = start.middle(end).add(0, -slack, 0);
+		rootpath[2] = end;
+		vecpath = new Vec3f[rootpath.length];
+		construct();
+	}
 	
-	@Override
 	public void construct(){
-		vecpath = new Vec3f[rootpath0.length];
-		for(int i = 0; i < rootpath0.length; i++){
-			vecpath[i] = rootpath0[i];
+		vecpath = new Vec3f[rootpath.length];
+		for(int i = 0; i < rootpath.length; i++){
+			vecpath[i] = rootpath[i];
 		}
 		Vec3f[] vecs = curve(vecpath);
 		vecpath = new Vec3f[vecs.length + 2];
-		vecpath[0] = rootpath0[0];
+		vecpath[0] = rootpath[0];
 		for(int i = 0; i < vecs.length; i++){
 			vecpath[i + 1] = vecs[i];
 		}
-		vecpath[vecpath.length - 1] = rootpath0[2];
+		vecpath[vecpath.length - 1] = rootpath[2];
 		this.length = this.calcLength();
 	}
 	
+	public float getLength(Vec3f[] vecs){
+		vecs = vecs == null ? vecpath : vecs;
+		float temp = 0;
+		for(int i = 0; i < vecs.length - 1; i++){
+			temp += vecs[i].dis(vecs[i + 1]);
+		}
+		return temp;
+	}
+	
+	protected float calcLength(){
+		return getLength(null);
+	}
+	
+	/** 
+	 * Based on Curve method from Path.class
+	 * @param vecpoints
+	 * @return
+	 */
+	private Vec3f[] curve(Vec3f[] vecpoints){
+		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
+		float length = getLength(vecpoints);
+		float increment = 1 / length / Config.WIRE_SEGMENTATOR;
+		double d = 0; while(d < 1){
+			Vec3f[] moved = vecpoints;
+			while(moved.length > 2){
+				Vec3f[] arr = new Vec3f[moved.length - 1];
+				for(int i = 0; i < moved.length - 1; i++){
+					arr[i] = Path.move(moved[i], moved[i + 1], moved[i].dis(moved[i + 1]) * d);
+				}
+				moved = arr;
+			}
+			d += increment;//0.0625//0.05;
+			vecs.add(Path.move(moved[0], moved[1], moved[0].dis(moved[1]) * d));
+		}
+		return vecs.toArray(new Vec3f[0]);
+	}
+
 	/** Only for the READ process. @param relay just to make sure it's not used elsewhere */
 	public Wire(WireRelay relay){
 		super();
 		this.relay = relay;
 	}
 
-	@Override
 	public Wire read(NBTTagCompound compound){
 		if(compound.hasKey("wiretype")) type = Resources.WIRES.getValue(new ResourceLocation(compound.getString("wiretype")));
-		this.rootpath0 = new Vec3f[compound.getInteger("vectors0")];
-		for(int i = 0; i < rootpath0.length; i++){
-			rootpath0[i] = new Vec3f();
-			rootpath0[i].x = compound.getFloat("vector0-" + i + "x");
-			rootpath0[i].y = compound.getFloat("vector0-" + i + "y");
-			rootpath0[i].z = compound.getFloat("vector0-" + i + "z");
-		}
-		super.read(compound);
-		if(length == 0) length = calcLength();
-		if(relay != null) unit = getUnit(compound.getLong("section"));
+		start = new Vec3f(compound.getFloat("sx"), compound.getFloat("sy"), compound.getFloat("sz"));
+		end = new Vec3f(compound.getFloat("ex"), compound.getFloat("ey"), compound.getFloat("ez"));
+		if(compound.hasKey("slack")) slack = compound.getFloat("slack");
+		reslack();
+		construct();
+		key = new WireKey(compound);
+		okey = key.opposite();
+		this.length = compound.hasKey("length") ? compound.getFloat("length") : calcLength();
+		//TODO if(relay != null) unit = getUnit(compound.getLong("section"));
 		deco_start = compound.hasKey("deco_start") ? compound.getString("deco_start") : null;
 		deco_end = compound.hasKey("deco_end") ? compound.getString("deco_end") : null;
-		if(compound.hasKey("slack")) slack = compound.getFloat("slack");
 		if(compound.hasKey("decos")){
 			if(decos == null) decos = new HashMap<>();
 			NBTTagList list = (NBTTagList)compound.getTag("decos");
@@ -117,27 +160,27 @@ public class Wire extends Path {
 		return this;
 	}
 
-	public WireUnit getUnit(Long knownid){
+	/*public WireUnit getUnit(Long knownid){
 		WireUnit unit = relay.holder.region.system.getWireUnits().get(id.toUnitId(copy), knownid, true);
 		if(copy) unit.copy = this;
 		else unit.orig = this;
 		return unit;
-	}
+	}*///TODO
 
-	@Override
 	public NBTTagCompound write(NBTTagCompound compound){
-		compound = super.write(compound);
+		compound.setFloat("sx", start.x);
+		compound.setFloat("sy", start.y);
+		compound.setFloat("sz", start.z);
+		compound.setFloat("ex", start.x);
+		compound.setFloat("ey", start.y);
+		compound.setFloat("ez", start.z);
+		compound.setFloat("slack", slack);
+		compound.setFloat("length", length);
+		key.save(compound);
 		if(type != null) compound.setString("wiretype", type.getRegistryName().toString());
-		compound.setInteger("vectors0", rootpath0.length);
-		for(int i = 0; i < rootpath0.length; i++){
-			compound.setFloat("vector0-" + i + "x", rootpath0[i].x);
-			compound.setFloat("vector0-" + i + "y", rootpath0[i].y);
-			compound.setFloat("vector0-" + i + "z", rootpath0[i].z);
-		}
-		if(unit != null) compound.setLong("section", unit.getSectionId());
+		//TODO if(unit != null) compound.setLong("section", unit.getSectionId());
 		if(deco_start != null) compound.setString("deco_start", deco_start);
 		if(deco_end != null) compound.setString("deco_end", deco_end);
-		compound.setFloat("slack", slack);
 		if(decos != null && decos.size() > 0){
 			NBTTagList list = new NBTTagList();
 			for(Entry<String, String> entry : decos.entrySet()){
@@ -148,38 +191,49 @@ public class Wire extends Path {
 		return compound;
 	}
 	
-	@Override
-	public <T extends Path> T createOppositeCopy(T instance){
-		Wire wire = (Wire)instance;
-		wire.id = new PathKey(id, true);
-		wire.op = new PathKey(id, false);
+	public Wire copyTo(Wire wire){
+		wire.key = okey;
+		wire.okey = key;
 		wire.start = end;
 		wire.end = start;
 		wire.copy = true;
 		wire.type = type;
-		wire.rootpath = new Vec316f[rootpath.length];
-		int j = rootpath.length - 1;
-		for(int i = 0; i < wire.rootpath.length; i++){
-			wire.rootpath[i] = rootpath[j--].copy();
-		}
-		wire.rootpath0 = new Vec3f[rootpath0.length];
-		j = rootpath0.length - 1;
-		for(int i = 0; i < wire.rootpath0.length; i++){
-			wire.rootpath0[i] = new Vec3f(rootpath0[j--]);
-		}
+		wire.rootpath = new Vec3f[rootpath.length];
+		wire.rootpath[0] = rootpath[2];
+		wire.rootpath[1] = rootpath[1];
+		wire.rootpath[2] = rootpath[0];
 		wire.construct();
 		wire.length = wire.calcLength();
-		return (T)wire;
+		return wire;
 	}
 	
 	public Wire createOppositeCopy(){
-		Wire wire = createOppositeCopy(new Wire(relay));
+		Wire wire = copyTo(new Wire(relay));
 		wire.unit = unit;
 		return wire;
 	}
 	
 	public Vec3f getVectorPosition(float distance, boolean reverse){
-		return getVectorPosition0(distance, reverse);
+		if(reverse) distance = (float)this.oppositePassed(distance);
+		if(distance >= this.length){
+			return new Vec3f(vecpath[vecpath.length - 1]);
+		}
+		float traveled = 0, temp, multi;
+		for(int i = 0; i < vecpath.length - 1; i++){
+			temp = traveled + (multi = vecpath[i].dis(vecpath[i + 1]));
+			if(temp >= distance){
+				if(temp == distance) return new Vec3f(vecpath[i + 1]);
+				return vecpath[i + 1].distance(vecpath[i], temp - distance);
+			}
+			else{
+				traveled += multi;
+			}
+		}
+		return new Vec3f(vecpath[0]);
+	}
+
+	public float oppositePassed(float sec){
+		return sec >= length ? 0 : sec <= 0 ? length : this.length - sec;
 	}
 	
 	@Override
@@ -191,7 +245,6 @@ public class Wire extends Path {
 		return unit;
 	}
 
-	@Override
 	public PathType getType(){
 		return PathType.WIRE;
 	}
@@ -225,13 +278,6 @@ public class Wire extends Path {
 			passed += dis;
 		}
 		return passed;
-	}
-
-	public void reslack(){
-		Vec3f s = rootpath0[0], e = rootpath0[2];
-		rootpath0 = new Vec3f[]{ s, s.middle(e).add(0, -slack, 0), e };
-		vecpath = new Vec3f[rootpath0.length];
-		construct();
 	}
 
 }

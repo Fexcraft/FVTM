@@ -7,6 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -176,21 +177,6 @@ public class WireRegion {
 				compound.setIntArray("XZ", key.toArray());
 				break;
 			}
-			case "relay":{
-				WireRelay relay = getRelay(vector);
-				if(relay == null) return;
-				compound = relay.write(new NBTTagCompound());
-				compound.setLong("holder", relay.holder.pos.toLong());
-				compound.setString("target_listener", "fvtm:wiresys");
-				compound.setString("task", "update_relay");
-				break;
-			}
-			case "no_relay":{
-				compound = vector.write();
-				compound.setString("target_listener", "fvtm:wiresys");
-				compound.setString("task", "rem_relay");
-				break;
-			}
 			case "holder":{
 				RelayHolder holder = getHolder(pos);
 				if(holder == null) return;
@@ -218,6 +204,10 @@ public class WireRegion {
 					list.appendTag(com);
 				}
 				compound.setTag("units", list);
+				break;
+			}
+			default:{
+				Static.stop();
 				break;
 			}
 		}

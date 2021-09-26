@@ -7,7 +7,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
-import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,20 +29,6 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 			switch(task){
 				case "update_region":{
 					system.updateRegion(packet.nbt, null);
-					return;
-				}
-				case "update_relay":{
-					Vec316f vec = new Vec316f(packet.nbt.getCompoundTag("Pos"));
-					WireRelay relay = system.getRelay(vec);
-					if(relay != null) relay.read(packet.nbt);
-					else{
-						RelayHolder holder = system.getHolder(BlockPos.fromLong(packet.nbt.getLong("holder")));
-						if(holder != null) holder.add(vec, false).read(packet.nbt);
-					}
-					return;
-				}
-				case "rem_relay":{
-					system.delRelay(new Vec316f(packet.nbt));
 					return;
 				}
 				case "update_holder":{

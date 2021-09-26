@@ -67,7 +67,12 @@ public abstract class Path {
 		}
 	}
 
-	protected Vec3f[] curve(Vec3f[] vecpoints){
+	/**
+	 * Multi-Point Curve Creation
+	 * @param vecpoints
+	 * @return
+	 */
+	private Vec3f[] curve(Vec3f[] vecpoints){
 		ArrayList<Vec3f> vecs = new ArrayList<Vec3f>();
 		float length = getLength(vecpoints);
 		float increment = 1 / length / Config.RAIL_SEGMENTATOR;
@@ -86,7 +91,7 @@ public abstract class Path {
 		return vecs.toArray(new Vec3f[0]);
 	}
 
-	private Vec3f move(Vec3f vec0, Vec3f vec1, double dis){
+	public static Vec3f move(Vec3f vec0, Vec3f vec1, double dis){
 		double[] dest = Vector3D.newVector(vec1), beg = Vector3D.newVector(vec0);
     	dest = Vector3D.direction(dest[0] - beg[0], dest[1] - beg[1], dest[2] - beg[2]);
     	dest = Vector3D.newVector(beg[0] + (dest[0] * dis), beg[1] + (dest[1] * dis), beg[2] + (dest[2] * dis));

@@ -198,7 +198,7 @@ public class WireSystem extends DetachedSystem {
 		WireRegion region = regions.get(relay.getVec316f(), true);
 		if(region == null) return null;
 		region.getRelays().put(relay.getVec316f(), relay);
-		region.setAccessed().updateClient("relay", relay.getVec316f(), null);
+		region.setAccessed().updateClient("holder", relay.getVec316f(), null);
 		return relay;
 	}
 
@@ -307,9 +307,9 @@ public class WireSystem extends DetachedSystem {
 	public void register(BlockTileEntity tile){
 		RelayHolder holder = getHolder(tile.getPos());
 		if(holder == null) holder = addHolder(tile.getPos());
-		ArrayList<Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
-		for(Vec316f vec : vectors){
-			holder.add(vec, false);
+		HashMap<String, Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
+		for(Entry<String, Vec316f> vec : vectors.entrySet()){
+			holder.add(vec.getKey(), vec.getValue(), false);
 		}
 		holder.setTile(tile);
 	}

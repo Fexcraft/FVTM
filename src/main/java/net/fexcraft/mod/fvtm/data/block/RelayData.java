@@ -44,10 +44,10 @@ public class RelayData {
 		}
 	}
 
-	public ArrayList<Vec316f> getVectors(BlockTileEntity tile){
-		ArrayList<Vec316f> list = new ArrayList<Vec316f>();
-		for(Vec3f conn : conns.values()){
-			list.add(rotate(conn, tile.getPos(), tile.meta, tile.getBlockData().getType().getBlockType()));
+	public HashMap<String, Vec316f> getVectors(BlockTileEntity tile){
+		LinkedHashMap<String, Vec316f> list = new LinkedHashMap<>();
+		for(Entry<String, Vec3f> entry : conns.entrySet()){
+			list.put(entry.getKey(), rotate(entry.getValue(), tile.getPos(), tile.meta, tile.getBlockData().getType().getBlockType()));
 		}
 		return list;
 	}

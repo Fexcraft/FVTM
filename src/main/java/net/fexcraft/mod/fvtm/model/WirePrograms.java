@@ -201,7 +201,7 @@ public class WirePrograms {
 	
 	public static class CatenaryDropper extends SpacedDeco {
 		
-		public ArrayList<Vec3f[]> model = new ArrayList<>();
+		public Vec3f[][] model = new Vec3f[8][];
 		public float sx, sz, sl;
 
 		public CatenaryDropper(String... args){
@@ -224,10 +224,14 @@ public class WirePrograms {
 				}
 			}
 			float hx = sx / 2, hz = sz / 2;
-			model.add(new Vec3f[]{ new Vec3f(-hx, 0, -hz).scale(sl), new Vec3f(hx, -hz, 0).scale(sl) });
-			model.add(new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(-hx, -hz, 0).scale(sl) });
-			model.add(new Vec3f[]{ new Vec3f(hx, 0, -hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) });
-			model.add(new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) });
+			model[0] = new Vec3f[]{ new Vec3f(-hx, 0, -hz).scale(sl), new Vec3f(hx, -hz, 0).scale(sl) };
+			model[1] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(-hx, -hz, 0).scale(sl) };
+			model[2] = new Vec3f[]{ new Vec3f(hx, 0, -hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
+			model[3] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
+			model[4] = new Vec3f[]{ new Vec3f(-hx, 0, -hz).scale(sl), new Vec3f(hx, -hz, 0).scale(sl) };
+			model[5] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(-hx, -hz, 0).scale(sl) };
+			model[6] = new Vec3f[]{ new Vec3f(hx, 0, -hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
+			model[7] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
 		}
 
 		public String getId(){
@@ -235,7 +239,7 @@ public class WirePrograms {
 		}
 
 		public ArrayList<Vec3f> generate(WireRelay relay, Wire wire, TurboList group){
-			
+			//Wire other = relay.getHolder().getRelay("contact");
 			
 			
 			

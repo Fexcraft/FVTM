@@ -12,10 +12,8 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
 import net.fexcraft.mod.fvtm.util.Resources;
-import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -31,7 +29,6 @@ import net.minecraft.world.chunk.Chunk;
  */
 public class WireRegion {
 	
-	private TreeMap<Vec316f, WireRelay> relays = new TreeMap<>();
 	private TreeMap<BlockPos, RelayHolder> holders = new TreeMap<>();
 	public ConcurrentHashMap<RegionKey, Chunk> chucks = new ConcurrentHashMap<>();
 	public long lastaccess;
@@ -46,8 +43,8 @@ public class WireRegion {
 		if(load) load();
 	}
 
-	public WireRegion(Vec316f vec, WireSystem root, boolean load){
-		key = new RegionKey(vec);
+	public WireRegion(BlockPos pos, WireSystem root, boolean load){
+		key = new RegionKey(RegionKey.getRegionXZ(pos));
 		system = root;
 		if(load) load();
 	}
@@ -90,14 +87,12 @@ public class WireRegion {
 
 	public WireRegion read(NBTTagCompound compound){
 		if(compound.hasKey("RelayHolders")){
-			if(!relays.isEmpty()) relays.values().removeIf(value -> !RegionKey.getRegionXZ(value.holder.pos).equals(key));
 			if(!holders.isEmpty()) holders.clear();
 			NBTTagList list = (NBTTagList)compound.getTag("RelayHolders");
 			for(NBTBase base : list){
 				RelayHolder holder = new RelayHolder(this);
 				holder.read((NBTTagCompound)base);
 				holders.put(holder.pos, holder);
-				holder.regRelays();
 			}
 		}
 		loaded = true;
@@ -125,7 +120,7 @@ public class WireRegion {
 
 	private NBTTagCompound write(boolean clientpacket){
 		NBTTagCompound compound = new NBTTagCompound();
-		if(!relays.isEmpty()){
+		if(!holders.isEmpty()){
 			NBTTagList list = new NBTTagList();
 			for(RelayHolder holder : holders.values()){
 				list.appendTag(holder.write());
@@ -136,15 +131,18 @@ public class WireRegion {
 		return compound;
 	}
 
-	public WireRelay getRelay(Vec316f vec){
-		if(!key.isInRegion(vec)) return system.getRelay(vec);
-		return relays.get(vec);
+	public WireRelay getRelay(WireKey wkey){
+		if(!key.isInRegion(wkey.start_pos)) return system.getRelay(wkey);
+		RelayHolder holder = getHolder(wkey.start_pos);
+		return holder == null ? null : holder.get(wkey.start_relay);
 	}
 
 	public void updateTick(){
 		if(timer > 20){
 			timer = -1;
-			for(WireRelay relay : relays.values()) relay.onUpdate();
+			for(RelayHolder holder : holders.values()){
+				for(WireRelay relay : holder.relays.values()) relay.onUpdate();
+			}
 		}
 		timer++;
 	}
@@ -157,44 +155,51 @@ public class WireRegion {
 	public RegionKey getKey(){
 		return key;
 	}
-
-	public TreeMap<Vec316f, WireRelay> getRelays(){
-		return relays;
+	
+	public void updateClient(BlockPos pos){
+		updateClient("all", null, pos, null);
 	}
 	
-	public void updateClient(Vec316f vector){
-		updateClient("all", vector, null);
-	}
-	
-	public void updateClient(String kind, Vec316f vector, BlockPos pos){
+	public void updateClient(String kind, String key, BlockPos pos, Object obj){
 		if(system.getWorld().isRemote) return;
 		NBTTagCompound compound = null;
 		switch(kind){
 			case "all":{
 				compound = this.write(true);
-				compound.setString("target_listener", "fvtm:wiresys");
 				compound.setString("task", "update_region");
-				compound.setIntArray("XZ", key.toArray());
+				compound.setLong("pos", pos.toLong());
+				compound.setIntArray("XZ", RegionKey.getRegionXZ(pos));
+				break;
+			}
+			case "relay":{
+				compound = new NBTTagCompound();
+				compound.setString("task", "update_relay");
+				compound.setLong("pos", ((WireRelay)obj).holder.pos.toLong());
+				((WireRelay)obj).write(compound);
+				break;
+			}
+			case "no_relay":{
+				compound = new NBTTagCompound();
+				compound.setString("task", "remove_relay");
+				compound.setLong("pos", pos.toLong());
+				compound.setString("key", key);
 				break;
 			}
 			case "holder":{
 				RelayHolder holder = getHolder(pos);
 				if(holder == null) return;
 				compound = holder.write();
-				compound.setString("target_listener", "fvtm:wiresys");
 				compound.setString("task", "update_holder");
 				break;
 			}
 			case "no_holder":{
 				compound = new NBTTagCompound();
 				compound.setLong("pos", pos.toLong());
-				compound.setString("target_listener", "fvtm:wiresys");
 				compound.setString("task", "rem_holder");
 				break;
 			}
 			case "sections":{
 				compound = new NBTTagCompound();
-				compound.setString("target_listener", "fvtm:wiresys");
 				compound.setString("task", "update_sections");
 				NBTTagList list = new NBTTagList();
 				for(WireUnit unit : system.getWireUnits().values()){
@@ -212,7 +217,8 @@ public class WireRegion {
 			}
 		}
 		if(compound == null) return;
-		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(system.getDimension(), vector.pos));
+		compound.setString("target_listener", "fvtm:wiresys");
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound), Resources.getTargetPoint(system.getDimension(), pos));
 	}
 
 	public void updateClient(EntityPlayerMP player){
@@ -228,8 +234,8 @@ public class WireRegion {
 		return system;
 	}
 
-	public Wire getWire(PathKey key){
-		WireRelay relay = getRelay(key.toVec3f(0));
+	public Wire getWire(WireKey key){
+		WireRelay relay = getRelay(key);
 		return relay == null ? null : relay.getWire(key);
 	}
 
@@ -252,13 +258,9 @@ public class WireRegion {
 		holder.delete();
 		holders.remove(pos);
 	}
-
-	public void remRelay(WireRelay relay){
-		if(relays.containsKey(relay.getVec316f())){
-			relays.remove(relay.getVec316f());
-			updateClient("no_relay", relay.getVec316f(), null);
-			setAccessed();
-		}
+	
+	public TreeMap<BlockPos, RelayHolder> getHolders(){
+		return holders;
 	}
 
 }

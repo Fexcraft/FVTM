@@ -31,6 +31,21 @@ public class RecClient implements IPacketListener<PacketNBTTagCompound> {
 					system.updateRegion(packet.nbt, null);
 					return;
 				}
+				case "update_relay":{
+					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+					RelayHolder holder = system.getHolder(pos);
+					String key = packet.nbt.getString("Key");
+					if(holder != null && holder.contains(key)){
+						holder.get(key).read(packet.nbt);
+					}
+					return;
+				}
+				case "remove_relay":{
+					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
+					RelayHolder holder = system.getHolder(pos);
+					holder.remove(packet.nbt.getString("key"));
+					return;
+				}
 				case "update_holder":{
 					BlockPos pos = BlockPos.fromLong(packet.nbt.getLong("pos"));
 					RelayHolder holder = system.getHolder(pos);

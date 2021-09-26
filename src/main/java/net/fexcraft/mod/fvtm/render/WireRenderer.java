@@ -12,7 +12,6 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.TexturedPolygon;
 import net.fexcraft.lib.common.math.TexturedVertex;
-import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -22,6 +21,7 @@ import net.fexcraft.mod.fvtm.model.WirePrograms;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
+import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.sys.wire.WireRegion;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
@@ -77,17 +77,18 @@ public class WireRenderer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(-x, -y, -z);
         for(WireRegion reg : wiredata.getRegions().values()){
-        	WireRelay[] relays = reg.getRelays().values().toArray(new WireRelay[0]);
-        	for(int i = 0; i < relays.length; i++){
-        		if(!fru.isBoundingBoxInFrustum(relays[i].getAABB())) continue;
-            	GL11.glPushMatrix();
-            	ModelBase.bindTexture(Resources.NULL_TEXTURE);
-            	GL11.glTranslatef(relays[i].getVec3f().x, relays[i].getVec3f().y, relays[i].getVec3f().z);
-            	if(Command.OTHER){// && relays[i].wires.isEmpty()){
-            		model.render();
+        	for(RelayHolder holder : reg.getHolders().values()){
+            	for(WireRelay relay : holder.relays.values()){
+            		if(!fru.isBoundingBoxInFrustum(relay.getAABB())) continue;
+                	GL11.glPushMatrix();
+                	ModelBase.bindTexture(Resources.NULL_TEXTURE);
+                	GL11.glTranslatef(relay.pos.x, relay.pos.y, relay.pos.z);
+                	if(Command.OTHER){// && relays[i].wires.isEmpty()){
+                		model.render();
+                	}
+                	GL11.glPopMatrix();
+            		renderWires(relay);
             	}
-            	GL11.glPopMatrix();
-        		renderWires(relays[i]);
         	}
         }
 		GL11.glPopMatrix();
@@ -101,8 +102,8 @@ public class WireRenderer {
     		for(int o = 0; o < relay.wires.size(); o++){
     			Wire conn = relay.wires.get(o);
         		if(conn.vecpath == null) return;
-    	        flfl = conn.isOppositeCopy() ? 1 : 0;
-    	        glgl = conn.isOppositeCopy() ? 0 : 1;
+    	        flfl = conn.copy ? 1 : 0;
+    	        glgl = conn.copy ? 0 : 1;
                 GL11.glPushMatrix();
                 GlStateManager.enableBlend();
                 GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -112,8 +113,8 @@ public class WireRenderer {
     			for(int j = 0; j < conn.vecpath.length - 1; j++){
     				vec0 = conn.vecpath[j]; vec1 = conn.vecpath[j + 1];
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    bufferbuilder.pos(vec0.x, vec0.y + (conn.isOppositeCopy() ? 0.1f : 0), vec0.z).color(0f, glgl, flfl, 1F).endVertex();
-                    bufferbuilder.pos(vec1.x, vec1.y + (conn.isOppositeCopy() ? 0.1f : 0), vec1.z).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec0.x, vec0.y + (conn.copy ? 0.1f : 0), vec0.z).color(0f, glgl, flfl, 1F).endVertex();
+                    bufferbuilder.pos(vec1.x, vec1.y + (conn.copy ? 0.1f : 0), vec1.z).color(0f, glgl, flfl, 1F).endVertex();
                     tessellator.draw();
     			}
                 GlStateManager.depthMask(true);
@@ -121,19 +122,19 @@ public class WireRenderer {
                 GlStateManager.disableBlend();
                 GL11.glPopMatrix();
                 //
-                float[] vec = conn.getPosition(conn.length * (Time.getSecond() / 60f));
+                /*float[] vec = conn.getPosition(conn.length * (Time.getSecond() / 60f));
                 if(vec.length == 1){ continue; }
                 GL11.glPushMatrix();
-                GL11.glTranslatef(vec[0], vec[1] + (conn.isOppositeCopy() ? 0.1f : 0), vec[2]);
-                (conn.isOppositeCopy() ? model1 : model0).render();
-                GL11.glPopMatrix();
+                GL11.glTranslatef(vec[0], vec[1] + (conn.copy ? 0.1f : 0), vec[2]);
+                (conn.copy ? model1 : model0).render();
+                GL11.glPopMatrix();*///TODO
     		}
         }
         else{
         	GL11.glPushMatrix();
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         	for(int i = 0; i < relay.size(); i++){
-        		if(relay.wires.get(i).isOppositeCopy()) continue;
+        		if(relay.wires.get(i).copy) continue;
         		Wire wire = relay.wires.get(i);
         		if(wire.vecpath == null || wire.getWireType() == null) continue;
         		if(wire.wiremodel == null) generateWireModel(wire);
@@ -211,9 +212,9 @@ public class WireRenderer {
         		for(int i = 0; i < relay.size(); i++){
         			wire = relay.wires.get(i);
 	    			Vec3f pos = wire.getVectorPosition(wire.length * 0.5f, false);
-	    			float off = wire.isOppositeCopy() ? 0.125f : -0.125f;
+	    			float off = wire.copy ? 0.125f : -0.125f;
 	    			float deg = Minecraft.getMinecraft().player.getHorizontalFacing().getHorizontalIndex() * 90f;
-	    			RenderStreetSign.drawString(wire.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, wire.isOppositeCopy() ? 0xb8bc38 : 0x32a852, deg);
+	    			RenderStreetSign.drawString(wire.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, wire.copy ? 0xb8bc38 : 0x32a852, deg);
         		}
         	}
     		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -234,7 +235,7 @@ public class WireRenderer {
 			ArrayList<Vec3f[]> wodl = entry.getValue();
 			for(int p = 0; p < wodl.size(); p++){
 				path.clear();
-				vec = wire.getVectorPosition0(0.001f, false);
+				vec = wire.getVectorPosition(0.001f, false);
 				passed = 0;
 				angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
 				angle += Static.rad90;
@@ -274,14 +275,14 @@ public class WireRenderer {
 		float hwl = wire.length / 2;
 		if(wire.deco_s != null){
 			float len = wire.deco_s.getLongestDownward();
-			vec = wire.getVectorPosition0(len > hwl ? hwl : len, false);
+			vec = wire.getVectorPosition(len > hwl ? hwl : len, false);
 	        float dx = wire.vecpath[0].x - vec.x, dy = wire.vecpath[0].y - vec.y, dz = wire.vecpath[0].z - vec.z;
 			wire.model_start_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_start_angle_down = Static.toDegrees(wire.model_start_angle_down);
 		}
 		if(wire.deco_e != null){
 			float len = wire.deco_e.getLongestDownward();
-			vec = wire.getVectorPosition0(wire.length - (len > hwl ? hwl : len), false);
+			vec = wire.getVectorPosition(wire.length - (len > hwl ? hwl : len), false);
 	        float dx = wire.vecpath[wire.vecpath.length - 1].x - vec.x, dy = wire.vecpath[wire.vecpath.length - 1].y - vec.y, dz = wire.vecpath[wire.vecpath.length - 1].z - vec.z;
 			wire.model_end_angle_down = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
 			wire.model_end_angle_down = Static.toDegrees(wire.model_end_angle_down);

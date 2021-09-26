@@ -12,11 +12,10 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -133,11 +132,11 @@ public class WireSystem extends DetachedSystem {
 			return null;
 		}
 		
-		public WireRegion get(Vec316f vec, boolean load){
-			WireRegion region = get(RegionKey.getRegionXZ(vec));
+		public WireRegion get(BlockPos pos, boolean load){
+			WireRegion region = get(RegionKey.getRegionXZ(pos));
 			if(region != null || !load) return region;
-			put(new RegionKey(vec), region = new WireRegion(vec, root, false));
-			region.load().updateClient(vec);
+			put(new RegionKey(RegionKey.getRegionXZ(pos)), region = new WireRegion(pos, root, false));
+			region.load().updateClient(pos);
 			return region;
 		}
 
@@ -156,10 +155,6 @@ public class WireSystem extends DetachedSystem {
 			region.load();
 			return region;
 		}
-
-		public WireRegion get(BlockPos pos, boolean load){
-			return get(RegionKey.getRegionXZ(pos), load);
-		}
 		
 	}
 	
@@ -167,39 +162,31 @@ public class WireSystem extends DetachedSystem {
 		return regions;
 	}
 
-	public WireRelay getRelay(Vec316f vec){
-		WireRegion region = regions.get(vec, false);
-		return region == null ? null : region.getRelay(vec);
+	public WireRelay getRelay(WireKey key){
+		WireRegion region = regions.get(key.start_pos, false);
+		return region == null ? null : region.getRelay(key);
 	}
 
-	public WireRelay getRelay(Vec316f vec, boolean load){
-		WireRegion region = regions.get(vec, load);
-		return region.getRelay(vec);
+	public WireRelay getRelay(WireKey key, boolean load){
+		WireRegion region = regions.get(key.start_pos, load);
+		return region.getRelay(key);
 	}
 
 	public ArrayList<WireRelay> getRelayssInChunk(int cx, int cz){
 		ArrayList<WireRelay> arr = new ArrayList<>();
 		WireRegion region = regions.get(RegionKey.getRegionXZ(cx, cz));
 		if(region == null) return arr;
-		for(Entry<Vec316f, WireRelay> entry : region.getRelays().entrySet()){
-			if(entry.getKey().pos.getX() >> 4 == cx && entry.getKey().pos.getZ() >> 4 == cz){
-				arr.add(entry.getValue());
+		for(Entry<BlockPos, RelayHolder> entry : region.getHolders().entrySet()){
+			if(entry.getKey().getX() >> 4 == cx && entry.getKey().getZ() >> 4 == cz){
+				arr.addAll(entry.getValue().relays.values());
 			}
 		}
 		return arr;
 	}
 
-	public boolean delRelay(Vec316f vector){
-		WireRelay relay = this.getRelay(vector);
-		return relay.holder.remove(relay.getVec316f()) != null;
-	}
-
-	public WireRelay regRelay(WireRelay relay){
-		WireRegion region = regions.get(relay.getVec316f(), true);
-		if(region == null) return null;
-		region.getRelays().put(relay.getVec316f(), relay);
-		region.setAccessed().updateClient("holder", relay.getVec316f(), null);
-		return relay;
+	public boolean delRelay(WireKey key){
+		RelayHolder holder = getHolder(key.start_pos);
+		return holder.remove(key.start_relay) != null;
 	}
 
 	@Override
@@ -243,8 +230,8 @@ public class WireSystem extends DetachedSystem {
 		return gc_sections++;
 	}
 
-	public Wire getWire(PathKey key){
-		WireRegion region = regions.get(RegionKey.getRegionXZ(key), true);
+	public Wire getWire(WireKey key){
+		WireRegion region = regions.get(RegionKey.getRegionXZ(key.start_pos), true);
 		return region == null ? null : region.getWire(key);
 	}
 	
@@ -262,7 +249,7 @@ public class WireSystem extends DetachedSystem {
 
 	public void sendReload(String string, ICommandSender sender){
 		WireRegion region = regions.get(RegionKey.getRegionXZ(sender.getPositionVector()));
-		if(region != null) region.updateClient(string, new Vec316f(sender.getPositionVector()), null);
+		if(region != null) region.updateClient(string, null, sender.getPosition(), null);
 	}
 
 	public boolean isRemote(){
@@ -307,9 +294,8 @@ public class WireSystem extends DetachedSystem {
 	public void register(BlockTileEntity tile){
 		RelayHolder holder = getHolder(tile.getPos());
 		if(holder == null) holder = addHolder(tile.getPos());
-		HashMap<String, Vec316f> vectors = tile.getBlockData().getRelayData().getVectors(tile);
-		for(Entry<String, Vec316f> vec : vectors.entrySet()){
-			holder.add(vec.getKey(), vec.getValue(), false);
+		for(Entry<String, Vec3f> entry : tile.getBlockData().getRelayData().getVectors(tile).entrySet()){
+			holder.add(entry.getKey(), entry.getValue(), false);
 		}
 		holder.setTile(tile);
 	}

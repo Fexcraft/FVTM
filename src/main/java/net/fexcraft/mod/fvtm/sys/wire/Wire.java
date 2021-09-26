@@ -30,7 +30,7 @@ public class Wire {
 
 	public WireKey key, okey;
 	public Vec3f start, end;
-	public Vec3f[] rootpath, vecpath;
+	public Vec3f[] rootpath = new Vec3f[3], vecpath;
 	public float length;
 	protected WireUnit unit;
 	protected WireRelay relay;
@@ -168,12 +168,13 @@ public class Wire {
 	}*///TODO
 
 	public NBTTagCompound write(NBTTagCompound compound){
+		if(compound == null) compound = new NBTTagCompound();
 		compound.setFloat("sx", start.x);
 		compound.setFloat("sy", start.y);
 		compound.setFloat("sz", start.z);
-		compound.setFloat("ex", start.x);
-		compound.setFloat("ey", start.y);
-		compound.setFloat("ez", start.z);
+		compound.setFloat("ex", end.x);
+		compound.setFloat("ey", end.y);
+		compound.setFloat("ez", end.z);
 		compound.setFloat("slack", slack);
 		compound.setFloat("length", length);
 		key.save(compound);

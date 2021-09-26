@@ -23,13 +23,13 @@ public class WireSection {
 		Print.debug("Created Section [" + sid + "] " + (sid == null));
 	}
 	
-	public WireSection fill(WireUnit... tracks){
-		for(WireUnit track : tracks) units.add(track);
+	public WireSection fill(WireUnit... wires){
+		for(WireUnit wire : wires) units.add(wire);
 		return this;
 	}
 	
-	public WireSection fill(Collection<WireUnit> tracks){
-		units.addAll(tracks);
+	public WireSection fill(Collection<WireUnit> wires){
+		units.addAll(wires);
 		return this;
 	}
 
@@ -46,8 +46,8 @@ public class WireSection {
 		WireSection old = null;
 		ArrayList<WireUnit> list = new ArrayList<>();
 		list.add(zero.unit);
-		list = explore(data.getRelay(zero.start), list);
-		list = explore(data.getRelay(zero.end), list);
+		list = explore(data.getRelay(zero.key), list);
+		list = explore(data.getRelay(zero.okey), list);
 		//TODO check which section is the largest, and fuse with that one instead
 		for(WireUnit unit : list){
 			if(unit.getSectionId() != uid){
@@ -70,8 +70,8 @@ public class WireSection {
 	public void splitAtWire(Wire wire){
 		Print.debug("Splitting section at wire: " + wire);
 		ArrayList<WireUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
-		list0 = explore(data.getRelay(wire.start), list0);
-		list1 = explore(data.getRelay(wire.end), list1);
+		list0 = explore(data.getRelay(wire.key), list0);
+		list1 = explore(data.getRelay(wire.okey), list1);
 		for(WireUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
@@ -91,8 +91,8 @@ public class WireSection {
 		ArrayList<WireUnit> list0 = new ArrayList<>(), list1 = new ArrayList<>(), less;
 		list0.add(relay.wires.get(0).unit);
 		list1.add(relay.wires.get(1).unit);
-		list0 = explore(data.getRelay(relay.wires.get(0).end), list0);
-		list1 = explore(data.getRelay(relay.wires.get(1).end), list1);
+		list0 = explore(data.getRelay(relay.wires.get(0).okey), list0);
+		list1 = explore(data.getRelay(relay.wires.get(1).okey), list1);
 		for(WireUnit unit : list0){
 			if(list1.contains(unit)) return;//section still linked somewhere, do not split
 		}
@@ -109,11 +109,11 @@ public class WireSection {
 
 	private ArrayList<WireUnit> explore(WireRelay relay, ArrayList<WireUnit> list){
 		if(relay == null) return list;
-		ArrayList<Wire> tracks = new ArrayList<>();
-		tracks.addAll(relay.wires);
-		for(Wire track : tracks){
-			if(list.contains(track.unit)) continue; list.add(track.unit);
-			list = explore(data.getRelay(track.end), list);
+		ArrayList<Wire> wires = new ArrayList<>();
+		wires.addAll(relay.wires);
+		for(Wire wire : wires){
+			if(list.contains(wire.unit)) continue; list.add(wire.unit);
+			list = explore(data.getRelay(wire.okey, true), list);
 		}
 		return list;
 	}

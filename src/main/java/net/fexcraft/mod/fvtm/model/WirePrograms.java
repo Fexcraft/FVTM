@@ -173,16 +173,16 @@ public class WirePrograms {
 				if(centered){
 					float pass = half - center_spacing;
 					while(pass > ending_spacing && (limit > 0 ? list.size() < limit : true)){
-						list.add(wire.getVectorPosition0(pass, false));
-						list.add(wire.getVectorPosition0(pass, true));
+						list.add(wire.getVectorPosition(pass, false));
+						list.add(wire.getVectorPosition(pass, true));
 						pass -= between_spacing;
 					}
 				}
 				else{
 					float pass = ending_spacing;
 					while(pass < half - center_spacing && (limit > 0 ? list.size() < limit : true)){
-						list.add(wire.getVectorPosition0(pass, false));
-						list.add(wire.getVectorPosition0(pass, true));
+						list.add(wire.getVectorPosition(pass, false));
+						list.add(wire.getVectorPosition(pass, true));
 						pass += between_spacing;
 					}
 				}
@@ -190,7 +190,7 @@ public class WirePrograms {
 			else{
 				float pass = center_spacing;
 				while(pass < wire.length - ending_spacing && (limit > 0 ? list.size() < limit : true)){
-					list.add(wire.getVectorPosition0(pass, false));
+					list.add(wire.getVectorPosition(pass, false));
 					pass += between_spacing;
 				}
 			}

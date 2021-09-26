@@ -81,7 +81,6 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
         	if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:wirepoint")){
     			stack.getTagCompound().removeTag("fvtm:wirepoint");
     			stack.getTagCompound().removeTag("fvtm:wirepoint_slot");
-    			stack.getTagCompound().removeTag("fvtm:wirepoint_vec");
     			Print.chat(player, "&bItem Cache reset.");
         	}
 			return EnumActionResult.SUCCESS;

@@ -56,8 +56,8 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 			else{
 				t[i].string = container.conns.get(j);
 				list = container.data.types.get(container.conns.get(j));
+				relay = container.holder.get(j);
 				if(list.isEmpty() || list.contains(container.type.wire_type())){
-					relay = container.relays.get(j);
 					l = container.data.limits.get(t[i].string);
 					if(relay.size() == 0){
 						b0[i].tx = 202;
@@ -74,7 +74,7 @@ public class WireRelayChooser extends GenericGui<WireRelayContainer> {
 				}
 				else{
 					b0[i].tx = 174;
-					b1[i].tx = container.relays.get(j).size() > 0 ? 230 : 216;
+					b1[i].tx = relay.size() > 0 ? 230 : 216;
 				}
 			}
 		}

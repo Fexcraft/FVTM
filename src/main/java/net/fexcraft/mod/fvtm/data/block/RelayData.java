@@ -14,7 +14,6 @@ import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.util.DataUtil;
-import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.minecraft.util.math.BlockPos;
 
@@ -44,17 +43,17 @@ public class RelayData {
 		}
 	}
 
-	public HashMap<String, Vec316f> getVectors(BlockTileEntity tile){
-		LinkedHashMap<String, Vec316f> list = new LinkedHashMap<>();
+	public HashMap<String, Vec3f> getVectors(BlockTileEntity tile){
+		LinkedHashMap<String, Vec3f> list = new LinkedHashMap<>();
 		for(Entry<String, Vec3f> entry : conns.entrySet()){
 			list.put(entry.getKey(), rotate(entry.getValue(), tile.getPos(), tile.meta, tile.getBlockData().getType().getBlockType()));
 		}
 		return list;
 	}
 
-	public static Vec316f rotate(Vec3f vector, BlockPos pos, int meta, BlockType type){
+	public static Vec3f rotate(Vec3f vector, BlockPos pos, int meta, BlockType type){
 		double rot = type.getRotationForMeta(meta);
-		return new Vec316f(VecUtil.rotByDeg(rot, vector).add(pos.getX() + .5f, pos.getY(), pos.getZ() + .5f));
+		return VecUtil.rotByDeg(rot, vector).add(pos.getX() + .5f, pos.getY(), pos.getZ() + .5f);
 	}
 
 	public Vec3f getVec3f(String string, BlockPos pos, int meta, BlockType type){

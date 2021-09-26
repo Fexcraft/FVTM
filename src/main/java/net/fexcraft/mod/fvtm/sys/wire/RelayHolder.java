@@ -3,9 +3,8 @@ package net.fexcraft.mod.fvtm.sys.wire;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
-import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
-import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,50 +26,28 @@ public class RelayHolder {
 		this.region = region;
 	}
 
-	public WireRelay add(String key, Vec316f vec, boolean override){
-		if(contains(vec)){
+	public WireRelay add(String key, Vec3f vec, boolean override){
+		if(relays.containsKey(key)){
 			if(override){
-				remove(vec);
+				remove(key);
 			}
-			else return get(vec);
+			else return get(key);
 		}
-		WireRelay relay = new WireRelay(this, vec);
+		WireRelay relay = new WireRelay(this, key, vec);
 		relays.put(key, relay);
-		region.system.regRelay(relay);
 		return relay;
-	}
-
-	public WireRelay get(Vec316f vec){
-		for(WireRelay relay : relays.values()) if(relay.getVec316f().equals(vec)) return relay;
-		return null;
 	}
 
 	public WireRelay get(String key){
 		return relays.get(key);
 	}
-
-	private boolean contains(Vec316f vec){
-		for(WireRelay relay : relays.values()) if(relay.getVec316f().equals(vec)) return true;
-		return false;
-	}
 	
-	public WireRelay remove(Vec316f vec){
-		String relkey = null;
-		for(Entry<String, WireRelay> entry : relays.entrySet()){
-			if(entry.getValue().getVec316f().equals(vec)){
-				relkey = entry.getKey();
-				break;
-			}
-		}
-		if(relkey != null){
-			WireRelay relay = relays.remove(relkey);
-			int[] key = RegionKey.getRegionXZ(relay.getVec316f());
-			if(region.getKey().isInRegion(relay.getVec316f())){
-				region.remRelay(relay);
-			}
-			else this.region.system.getRegions().get(key, true).remRelay(relay);
-		}
-		return null;
+	public WireRelay remove(String relkey){
+		return relays.remove(relkey);
+	}
+
+	public boolean contains(String key){
+		return relays.containsKey(key);
 	}
 
 	public void setTile(BlockTileEntity tile){
@@ -111,9 +88,14 @@ public class RelayHolder {
 		}
 		return this;
 	}
-	
-	protected void regRelays(){
-		for(WireRelay relay : relays.values()) region.system.regRelay(relay);
+
+	public WireRelay get(int index){
+		int idx = 0;
+		for(WireRelay relay : relays.values()){
+			if(idx == index) return relay;
+			idx++;
+		}
+		return null;
 	}
 
 }

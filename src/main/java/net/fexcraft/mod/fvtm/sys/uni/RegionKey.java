@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.Vec316f;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
@@ -82,6 +83,11 @@ public class RegionKey implements Comparable<RegionKey> {
 
 	public boolean isInRegion(Vec316f vec){
 		int[] id = getRegionXZ(vec);
+		return id[0] == x && id[1] == z;
+	}
+
+	public boolean isInRegion(BlockPos pos){
+		int[] id = getRegionXZ(pos);
 		return id[0] == x && id[1] == z;
 	}
 

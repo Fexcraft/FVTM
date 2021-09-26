@@ -91,7 +91,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("copy")){
 			texts.get("title").string = "Position Copied to clipboard!";
-			StringSelection selection = new StringSelection(container.wire.getId().toString());
+			StringSelection selection = new StringSelection(container.wire.key.toString());
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
 			return true;
 		}
@@ -124,7 +124,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "reset_deco");
 			compound.setString("type", WireRelayContainer.CURRDECO);
-			compound.setTag("wire", container.wire.id.write(new NBTTagCompound()));
+			compound.setTag("wire", container.wire.key.save(new NBTTagCompound()));
 			compound.setBoolean("opp", container.opp);
 			this.container.send(Side.SERVER, compound);
 			return true;
@@ -135,7 +135,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 			compound.setString("cargo", "select_deco");
 			compound.setString("type", WireRelayContainer.CURRDECO);
 			compound.setString("selected", container.models.get(WireRelayContainer.CURRDECO).get(index + scroll).key());
-			compound.setTag("wire", container.wire.id.write(new NBTTagCompound()));
+			compound.setTag("wire", container.wire.key.save(new NBTTagCompound()));
 			compound.setBoolean("opp", container.opp);
 			this.container.send(Side.SERVER, compound);
 			return true;
@@ -147,7 +147,7 @@ public class WireEditor extends GenericGui<WireRelayContainer> {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("cargo", "set_slack");
 			compound.setFloat("slack", value);
-			compound.setTag("wire", container.wire.id.write(new NBTTagCompound()));
+			compound.setTag("wire", container.wire.key.save(new NBTTagCompound()));
 			this.container.send(Side.SERVER, compound);
 		}
 		//

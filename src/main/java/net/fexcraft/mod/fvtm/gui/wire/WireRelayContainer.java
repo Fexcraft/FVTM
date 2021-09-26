@@ -17,14 +17,13 @@ import net.fexcraft.mod.fvtm.data.block.RelayData;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.WireItem;
 import net.fexcraft.mod.fvtm.model.WireModel;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.RelayHolder;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
+import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
-import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -40,7 +39,6 @@ public class WireRelayContainer extends GenericContainer {
 	protected BlockTileEntity tile;
 	protected RelayData data;
 	protected List<String> conns;
-	protected ArrayList<WireRelay> relays = new ArrayList<>();
 	protected ItemStack stack;
 	protected WireType type;
 	//
@@ -60,20 +58,18 @@ public class WireRelayContainer extends GenericContainer {
 		tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		data = tile.getBlockData().getType().getRelayData();
 		conns = data.conns.keySet().stream().collect(Collectors.toList());
-		HashMap<String, Vec316f> list = data.getVectors(tile);
-		for(Vec316f vec : list.values()) relays.add(system.getRelay(vec, false));
+		holder = system.getHolder(tile.getPos());
 		stack = player.getHeldItemMainhand();
 		type = ((WireItem)stack.getItem()).getType();
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		if(!reset && SELRELAY != null){
-			holder = system.getHolder(tile.getPos());
-			relay = relays.get(conns.indexOf(SELRELAY));
+			relay = holder.get(SELRELAY);
 			wire = WIRE > -1 && relay.size() > WIRE ? relay.wires.get(WIRE) : null;
 			if(wire != null){
-				if(wire.isOppositeCopy()){
-					wire = system.getWire(wire.getOppositeId());
+				if(wire.copy){
+					wire = system.getWire(wire.okey);
 					opp = true;
 				}
 				models.clear();
@@ -102,7 +98,7 @@ public class WireRelayContainer extends GenericContainer {
 			switch(packet.getString("cargo")){
 				case "connect":{
 					int index = packet.getInteger("index");
-					WireRelay relay = relays.get(index);
+					WireRelay relay = holder.get(index);
 					String relid = conns.get(index);
 					ArrayList<String> list = data.types.get(relid);
 					if(!list.isEmpty() && !list.contains(type.wire_type())){
@@ -115,8 +111,8 @@ public class WireRelayContainer extends GenericContainer {
 						return;
 					}
 					if(stack.getTagCompound().hasKey("fvtm:wirepoint")){
-						WireRelay relay0 = system.getRelay(new Vec316f(stack.getTagCompound().getCompoundTag("fvtm:wirepoint_vec")));
-						if(relay0.getVec3f().dis(relay.getVec3f()) > Config.MAX_WIRE_LENGTH){
+						WireRelay relay0 = system.getRelay(new WireKey(stack.getTagCompound().getLong("fvtm:wirepoint"), stack.getTagCompound().getString("fvtm:wirepoint_slot")));
+						if(relay0.pos.dis(relay.pos) > Config.MAX_WIRE_LENGTH){
 							Print.chat(player, "&cWire length exceeds the configured max length.");
 							player.closeScreen();
 							return;
@@ -136,14 +132,12 @@ public class WireRelayContainer extends GenericContainer {
 						relay0.checkWireSectionConsistency();
 		    			stack.getTagCompound().removeTag("fvtm:wirepoint");
 		    			stack.getTagCompound().removeTag("fvtm:wirepoint_slot");
-		    			stack.getTagCompound().removeTag("fvtm:wirepoint_vec");
 						Print.chatbar(player, "&aWire created.");
 						player.closeScreen();
 					}
 					else{
 						stack.getTagCompound().setLong("fvtm:wirepoint", tile.getPos().toLong());
 						stack.getTagCompound().setString("fvtm:wirepoint_slot", relid);
-						stack.getTagCompound().setTag("fvtm:wirepoint_vec", relay.getVec316f().write());
 						Print.chatbar(player, "&aRelay position cached.");
 						player.closeScreen();
 					}
@@ -159,12 +153,12 @@ public class WireRelayContainer extends GenericContainer {
 				}
 				case "del_wire":{
 					holder = system.getHolder(BlockPos.fromLong(packet.getLong("holder")));
-					relay = relays.get(conns.indexOf(packet.getString("relay")));
+					relay = holder.get(conns.indexOf(packet.getString("relay")));
 					relay.remove(packet.getInteger("index"), true);
 					return;
 				}
 				case "reset_deco":{
-					wire = system.getWire(new PathKey(packet.getCompoundTag("wire")));
+					wire = system.getWire(new WireKey(packet.getCompoundTag("wire")));
 					String deco = packet.getString("type");
 					if(deco.equals("relay")){
 						if(!packet.getBoolean("opp")){
@@ -182,7 +176,7 @@ public class WireRelayContainer extends GenericContainer {
 					return;
 				}
 				case "select_deco":{
-					wire = system.getWire(new PathKey(packet.getCompoundTag("wire")));
+					wire = system.getWire(new WireKey(packet.getCompoundTag("wire")));
 					String deco = packet.getString("type");
 					String seld = packet.getString("selected");
 					if(deco.equals("relay")){
@@ -202,8 +196,8 @@ public class WireRelayContainer extends GenericContainer {
 					return;
 				}
 				case "set_slack":{
-					Wire wire0 = system.getWire(new PathKey(packet.getCompoundTag("wire")));
-					Wire wire1 = system.getWire(wire0.op);
+					Wire wire0 = system.getWire(new WireKey(packet.getCompoundTag("wire")));
+					Wire wire1 = system.getWire(wire0.okey);
 					float value = packet.getFloat("slack");
 					if(value > 2) value = 2;
 					if(value < 0) value = 0;
@@ -237,7 +231,7 @@ public class WireRelayContainer extends GenericContainer {
 
 	public String currdeconame(){
 		if(CURRDECO.equals("relay")){
-			if(wire.start.equals(relay.getVec316f())){
+			if(wire.key.start_relay.equals(relay.getKey())){
 				return wire.deco_start;
 			}
 			else{

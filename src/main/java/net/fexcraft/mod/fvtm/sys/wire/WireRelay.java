@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
-import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -16,16 +15,18 @@ import net.minecraft.util.math.AxisAlignedBB;
 public class WireRelay {
 	
 	protected String key;
+	public Vec3f pos = new Vec3f();
 	public ArrayList<Wire> wires;
 	protected RelayHolder holder;
 	//
 	protected AxisAlignedBB frustumbb;
 	
 	/** General Constructor */
-	public WireRelay(RelayHolder holder, String key){
+	public WireRelay(RelayHolder holder, String key, Vec3f pos){
 		this.key = key;
 		wires = new ArrayList<Wire>();
 		this.holder = holder;
+		this.pos = pos;
 	}
 	
 	/** Only to be used from WireRegion.class/Internally */
@@ -49,6 +50,7 @@ public class WireRelay {
 			}
 		}
 		else wires.clear();
+		pos = new Vec3f(compound.getFloat("PosX"), compound.getFloat("PosY"), compound.getFloat("PosZ"));
 		frustumbb = null;
 		return this;
 	}
@@ -60,6 +62,9 @@ public class WireRelay {
 		}
 		compound.setInteger("Wires", wires.size());
 		compound.setString("Key", key);
+		compound.setFloat("PosX", pos.x);
+		compound.setFloat("PosY", pos.y);
+		compound.setFloat("PosZ", pos.z);
 		return compound;
 	}
 	
@@ -79,7 +84,7 @@ public class WireRelay {
 	}
 
 	public void updateClient(){
-		holder.region.updateClient("relay", vecpos, null);
+		holder.region.updateClient("relay", null, holder.pos, this);
 	}
 
 	public void remove(int index, boolean firstcall){
@@ -93,15 +98,15 @@ public class WireRelay {
 		this.updateClient();
 		//
 		if(firstcall){
-			WireRelay relay = holder.region.system.getRelay(wire.start.equals(vecpos) ? wire.end : wire.start);
-			if(relay != null) relay.remove(wire.getOppositeId(), false);
+			WireRelay relay = holder.region.system.getRelay(wire.key.start_relay.equals(key) ? wire.okey : wire.key);
+			if(relay != null) relay.remove(wire.okey, false);
 		}
 		else this.checkWireSectionConsistency();
 	}
 
-	private void remove(PathKey key, boolean firstcall){
+	private void remove(WireKey key, boolean firstcall){
 		for(int i = 0; i < wires.size(); i++){
-			if(wires.get(i).getId().equals(key)){
+			if(wires.get(i).key.equals(key)){
 				remove(i, firstcall);
 				return;
 			}
@@ -112,17 +117,17 @@ public class WireRelay {
 	public void clear(){
 		ArrayList<Wire> wirrs = new ArrayList<Wire>();
 		for(Wire wire : wires){ wirrs.add(wire); }
-		for(Wire wire : wirrs) this.remove(wire.getId(), true);
+		for(Wire wire : wirrs) this.remove(wire.key, true);
 		wires.clear();
 		this.updateClient();
 	}
 
-	public final boolean eqWire(PathKey wire, int i){
-		return wires.get(i).getId().equals(wire);
+	public final boolean eqWire(WireKey wire, int i){
+		return wires.get(i).key.equals(wire);
 	}
 
-	public Wire getWire(PathKey key){
-		for(Wire wire : wires) if(wire.getId().equals(key)) return wire;
+	public Wire getWire(WireKey key){
+		for(Wire wire : wires) if(wire.key.equals(key)) return wire;
 		return null;
 	}
 
@@ -134,7 +139,7 @@ public class WireRelay {
 		//
 	}
 
-	public int getIndex(PathKey key){
+	public int getIndex(WireKey key){
 		for(int i = 0; i < wires.size(); i++) if(eqWire(key, i)) return i;
 		return -1;
 	}
@@ -142,15 +147,15 @@ public class WireRelay {
 	public AxisAlignedBB getAABB(){
 		if(frustumbb != null) return frustumbb;
 		Vec3f min = new Vec3f(), max = new Vec3f(), other;
-		for(Wire track : wires){
-			other = track.start.vector;
+		for(Wire wire : wires){
+			other = wire.start;
 			if(other.x < min.x) min.x = other.x;
 			if(other.y < min.y) min.y = other.y;
 			if(other.z < min.z) min.z = other.z;
 			if(other.x > max.x) max.x = other.x;
 			if(other.y > max.y) max.y = other.y;
 			if(other.z > max.z) max.z = other.z;
-			other = track.end.vector;
+			other = wire.end;
 			if(other.x < min.x) min.x = other.x;
 			if(other.y < min.y) min.y = other.y;
 			if(other.z < min.z) min.z = other.z;
@@ -159,20 +164,20 @@ public class WireRelay {
 			if(other.z > max.z) max.z = other.z;
 		}
 		if(size() == 0){
-			min = vecpos.vector.add(-.5f,-.5f,-.5f);
-			max = vecpos.vector.add(+.5f,+.5f,+.5f);
+			min = new Vec3f(-.1f,-.1f,-.1f);
+			max = new Vec3f(+.1f,+.1f,+.1f);
 		}
 		return frustumbb = new AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z);
 	}
 	
 	@Override
 	public String toString(){
-		return "WireRelay{ " + vecpos + ", " + wires.size() + " }";
+		return "WireRelay{ " + key + ", " + wires.size() + " }";
 	}
 
 	public boolean isDuplicate(Wire other){
 		for(Wire wire : wires){
-			if(wire.getId().equals(other.getId()) || wire.getOppositeId().equals(other.getId())) return true;
+			if(wire.key.equals(other.key) || wire.okey.equals(other.key)) return true;
 		}
 		return false;
 	}

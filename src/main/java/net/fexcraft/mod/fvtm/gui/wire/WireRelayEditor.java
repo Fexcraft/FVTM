@@ -12,6 +12,7 @@ import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.gui.rail.RailPlacer;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
+import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
@@ -56,7 +57,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 
 	@Override
 	protected void init(){
-		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 205, MapColor.SNOW.colorValue, container.relay.getVec316f().asIDString()));
+		texts.put("title", new BasicText(guiLeft + 9, guiTop + 9, 205, MapColor.SNOW.colorValue, container.relay.getKey()));
 		buttons.put("help", new BasicButton("help", guiLeft + 216, guiTop + 7, 216, 7, 12, 12, true));
 		buttons.put("copy", new BasicButton("copy", guiLeft + 229, guiTop + 7, 229, 7, 12, 12, true));
 		for(int i = 0; i < 6; i++){
@@ -120,7 +121,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 				texts.get("wire" + i).string = "";
 			}
 			else{
-				texts.get("wire" + i).string = container.relay.wires.get(j).start.asIDString();
+				texts.get("wire" + i).string = container.relay.wires.get(j).key.toString();
 			}
 		}
 		texts.get("info2").string = "Wires: " + container.relay.size();
@@ -146,7 +147,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glLineWidth(4f);
 		for(int i = 0; i < container.relay.size(); i++){
-			renderWire(container.relay.wires.get(i), WIRE_COLOR[i], container.relay.getVec316f().pos);
+			renderWire(container.relay.wires.get(i), WIRE_COLOR[i], container.relay.getHolder().pos);
 		}
 		GL11.glLineWidth(1f);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -196,7 +197,7 @@ public class WireRelayEditor extends GenericGui<WireRelayContainer> {
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
 		if(button.name.equals("copy")){
 			texts.get("title").string = "Position Copied to clipboard!";
-			StringSelection selection = new StringSelection(container.relay.getVec316f().asIDString());
+			StringSelection selection = new StringSelection(WireKey.str(container.relay.getHolder().pos) + ":" + container.relay.getKey());
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
 			return true;
 		}

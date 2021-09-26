@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.model.WireModel;
 import net.fexcraft.mod.fvtm.render.RailRenderer.TurboArrayPositioned;
@@ -45,6 +46,8 @@ public class Wire extends Path {
 	public HashMap<String, WireModel> deco_m;
 	@SideOnly(Side.CLIENT)
 	public HashMap<String, HashMap<String, ArrayList<Vec3f>>> deco_d;
+	@SideOnly(Side.CLIENT)
+	public HashMap<String, HashMap<String, ArrayList<ModelRendererTurbo>>> deco_g;
 	public float slack = 1;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f s_v, Vec3f e_v){

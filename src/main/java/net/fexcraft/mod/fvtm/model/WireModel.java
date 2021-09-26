@@ -25,7 +25,7 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 	public static final HashMap<String, WireModel> DECOS = new HashMap<>();
 	public static final WireModel EMPTY = new WireModel();
 	public HashMap<Integer, ArrayList<Vec3f[]>> wire_model = new HashMap<>();
-	public HashMap<Integer, Object[]> wire_data = new HashMap<>();
+	//public HashMap<Integer, Object[]> wire_data = new HashMap<>();
 	public boolean wire_tempcull = false;
 	protected ResourceLocation texture = Resources.NULL_TEXTURE;
 	protected ArrayList<String> accepts = new ArrayList<>();
@@ -59,7 +59,7 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 				this.addWireRectShape(i, scale, sx, sy, w, h, tl, tr, bl, br, m);
 			}
 		}
-		wires = ObjParser.getCommentValues(data, new String[]{ "WireData:" }, null, null);
+		/*wires = ObjParser.getCommentValues(data, new String[]{ "WireData:" }, null, null);
 		for(String[] args : wires){
 			int idx = Integer.parseInt(args[0]);
 			if(args.length < 2) continue;
@@ -74,7 +74,7 @@ public class WireModel extends GenericModel<BlockData, TileEntity> {
 				}
 			}
 			wire_data.put(idx, odata);
-		}
+		}*/
 	}
 
 	@Override

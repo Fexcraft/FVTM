@@ -171,7 +171,7 @@ public class WireRenderer {
             			//RGB.glColorReset();
             			GL11.glPopMatrix();
         			}
-        			if(wire.deco_m == null) genWireDeco(wire);
+        			if(wire.deco_m == null) genWireDeco(relay, wire);
         			if(wire.deco_m.size() > 0){
         				WireModel wm;
         				for(Entry<String, WireModel> dm : wire.deco_m.entrySet()){
@@ -232,11 +232,9 @@ public class WireRenderer {
 		//
 		for(Entry<Integer, ArrayList<Vec3f[]>> entry : model.wire_model.entrySet()){
 			ArrayList<Vec3f[]> wodl = entry.getValue();
-			Object[] data = model.wire_data.get(entry.getKey());
 			for(int p = 0; p < wodl.size(); p++){
 				path.clear();
-				boolean noslack = data != null && (boolean)data[0] == true;
-				vec = noslack ? dis(wire, 0.001f) : wire.getVectorPosition0(0.001f, false);
+				vec = wire.getVectorPosition0(0.001f, false);
 				passed = 0;
 				angle = (float)Math.atan2(wire.vecpath[0].z - vec.z, wire.vecpath[0].x - vec.x);
 				angle += Static.rad90;
@@ -245,9 +243,6 @@ public class WireRenderer {
 				for(int v = 0; v < wire.vecpath.length - 1; v++){
 					last = wire.vecpath[v];
 					vec = wire.vecpath[v + 1];
-					if(noslack){
-						vec = dis(wire, passed += last.dis(vec));
-					}
 					angle = (float)Math.atan2(last.z - vec.z, last.x - vec.x);
 					angle += Static.rad90;
 					path.add(vec.add(VecUtil.rotByRad(angle, wodl.get(p)[0])));
@@ -293,13 +288,10 @@ public class WireRenderer {
 		}
 	}
 
-	private static Vec3f dis(Wire wire, float dis){
-		return wire.rootpath0[0].distance(wire.rootpath0[2], dis);
-	}
-
-	private static void genWireDeco(Wire wire){
+	private static void genWireDeco(WireRelay relay, Wire wire){
 		wire.deco_m = new HashMap<>();
 		wire.deco_d = new HashMap<>();
+		wire.deco_g = new HashMap<>();
 		if(wire.decos == null) return;
 		for(Entry<String, String> entry : wire.decos.entrySet()){
 			WireModel deco = WireModel.DECOS.get(entry.getValue());
@@ -309,7 +301,7 @@ public class WireRenderer {
 				for(TurboList list : deco.groups){
 					for(TurboList.Program program : list.programs){
 						if(program instanceof WirePrograms.SpacedDeco == false) continue;
-						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(wire, list));
+						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list));
 						break;
 					}
 				}

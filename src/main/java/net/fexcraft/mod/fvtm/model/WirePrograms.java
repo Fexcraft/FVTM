@@ -16,6 +16,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.render.WireRenderer;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
+import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -30,6 +31,7 @@ public class WirePrograms {
 		TurboList.PROGRAMS.add(ROTATED);
 		TurboList.PROGRAMS.add(new DownwardAngled(0, false));
 		TurboList.PROGRAMS.add(new SpacedDeco());
+		TurboList.PROGRAMS.add(new CatenaryDropper());
 	}
 	
 	public static class RotateY implements Program {
@@ -116,11 +118,11 @@ public class WirePrograms {
 	
 	public static class SpacedDeco implements Program {
 		
-		private boolean symmetric, centered;
-		private float center_spacing = 0.5f;
-		private float ending_spacing = 0.5f;
-		private float between_spacing = 1f;
-		private int limit = 0;
+		protected boolean symmetric, centered;
+		protected float center_spacing = 0.5f;
+		protected float ending_spacing = 0.5f;
+		protected float between_spacing = 1f;
+		protected int limit = 0;
 		
 		public SpacedDeco(String... args){
 			for(String arg : args){
@@ -163,7 +165,7 @@ public class WirePrograms {
 			return new SpacedDeco(args);
 		}
 
-		public ArrayList<Vec3f> generate(Wire wire, TurboList group){
+		public ArrayList<Vec3f> generate(WireRelay relay, Wire wire, TurboList group){
 			ArrayList<Vec3f> list = new ArrayList<>();
 			if(symmetric){
 				int limit = this.limit * 2;
@@ -193,6 +195,51 @@ public class WirePrograms {
 				}
 			}
 			return list;
+		}
+		
+	}
+	
+	public static class CatenaryDropper extends SpacedDeco {
+		
+		public ArrayList<Vec3f[]> model = new ArrayList<>();
+		public float sx, sz, sl;
+
+		public CatenaryDropper(String... args){
+			super(args);
+			for(String arg : args){
+				String[] split = arg.split(":");
+				switch(split[0]){
+					case "width":{
+						sx = Float.parseFloat(split[1]);
+						break;
+					}
+					case "depth":{
+						sz = Float.parseFloat(split[1]);
+						break;
+					}
+					case "scale":{
+						sl = Float.parseFloat(split[1]);
+						break;
+					}
+				}
+			}
+			float hx = sx / 2, hz = sz / 2;
+			model.add(new Vec3f[]{ new Vec3f(-hx, 0, -hz).scale(sl), new Vec3f(hx, -hz, 0).scale(sl) });
+			model.add(new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(-hx, -hz, 0).scale(sl) });
+			model.add(new Vec3f[]{ new Vec3f(hx, 0, -hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) });
+			model.add(new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) });
+		}
+
+		public String getId(){
+			return "fvtm:wire_catenary_dropper";
+		}
+
+		public ArrayList<Vec3f> generate(WireRelay relay, Wire wire, TurboList group){
+			
+			
+			
+			
+			return super.generate(relay, wire, group);
 		}
 		
 	}

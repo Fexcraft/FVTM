@@ -139,6 +139,7 @@ public class Wire {
 		construct();
 		key = new WireKey(compound);
 		okey = key.opposite();
+		copy = compound.hasKey("copy") && compound.getBoolean("copy");
 		this.length = compound.hasKey("length") ? compound.getFloat("length") : calcLength();
 		//TODO if(relay != null) unit = getUnit(compound.getLong("section"));
 		deco_start = compound.hasKey("deco_start") ? compound.getString("deco_start") : null;
@@ -178,6 +179,7 @@ public class Wire {
 		compound.setFloat("slack", slack);
 		compound.setFloat("length", length);
 		key.save(compound);
+		if(copy) compound.setBoolean("copy", copy);
 		if(type != null) compound.setString("wiretype", type.getRegistryName().toString());
 		//TODO if(unit != null) compound.setLong("section", unit.getSectionId());
 		if(deco_start != null) compound.setString("deco_start", deco_start);

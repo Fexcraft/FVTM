@@ -60,7 +60,7 @@ public class WireKey {
 	public boolean equals(Object obj){
 		if(obj instanceof WireKey){
 			WireKey o = (WireKey)obj;
-			return start_pos == o.start_pos && end_pos == o.end_pos && start_relay.endsWith(o.start_relay) && end_relay.equals(o.end_relay);
+			return start_pos.equals(o.start_pos) && end_pos.equals(o.end_pos) && start_relay.endsWith(o.start_relay) && end_relay.equals(o.end_relay);
 		}
 		else return String.valueOf(obj).equals(toString());
 	}

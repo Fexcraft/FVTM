@@ -199,8 +199,8 @@ public class WireRelayContainer extends GenericContainer {
 					Wire wire0 = system.getWire(new WireKey(packet.getCompoundTag("wire")));
 					Wire wire1 = system.getWire(wire0.okey);
 					float value = packet.getFloat("slack");
-					if(value > 2) value = 2;
-					if(value < 0) value = 0;
+					if(value > 8) value = 8;
+					if(value < -8) value = -8;
 					wire0.slack = wire1.slack = value;
 					wire0.reslack();
 					wire1.reslack();

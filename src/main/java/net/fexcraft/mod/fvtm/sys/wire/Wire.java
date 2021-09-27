@@ -51,7 +51,7 @@ public class Wire {
 	public HashMap<String, HashMap<String, ArrayList<Vec3f>>> deco_d;
 	@SideOnly(Side.CLIENT)
 	public HashMap<String, HashMap<String, ArrayList<ModelRendererTurbo>>> deco_g;
-	public float slack = 1;
+	public float slack = 0;
 	
 	public Wire(WireRelay relay, WireRelay relay0, WireType wiretype, Vec3f s_v, Vec3f e_v){
 		key = new WireKey(relay, relay0);
@@ -155,7 +155,7 @@ public class Wire {
 		else{
 			if(decos != null) decos.clear();
 		}
-		if(relay.holder.region.system.isRemote()){
+		if(relay.holder.getRegion().system.isRemote()){
 			deco_m = null;
 		}
 		return this;
@@ -207,6 +207,7 @@ public class Wire {
 		wire.rootpath[2] = rootpath[0];
 		wire.construct();
 		wire.length = wire.calcLength();
+		wire.slack = slack;
 		return wire;
 	}
 	

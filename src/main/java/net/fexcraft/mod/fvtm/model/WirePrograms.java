@@ -10,12 +10,15 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonElement;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.model.TurboList.Program;
 import net.fexcraft.mod.fvtm.render.WireRenderer;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
+import net.fexcraft.mod.fvtm.sys.wire.WireKey;
 import net.fexcraft.mod.fvtm.sys.wire.WireRelay;
 import net.minecraft.tileentity.TileEntity;
 
@@ -165,24 +168,25 @@ public class WirePrograms {
 			return new SpacedDeco(args);
 		}
 
-		public ArrayList<Vec3f> generate(WireRelay relay, Wire wire, TurboList group){
-			ArrayList<Vec3f> list = new ArrayList<>();
+		@SuppressWarnings("rawtypes")
+		public ArrayList generate(WireRelay relay, Wire wire, TurboList group, String decoid, boolean vecs){
+			ArrayList list = vecs ? new ArrayList<Vec3f>() : new ArrayList<Float>();
 			if(symmetric){
 				int limit = this.limit * 2;
 				float half = wire.length / 2f;
 				if(centered){
 					float pass = half - center_spacing;
 					while(pass > ending_spacing && (limit > 0 ? list.size() < limit : true)){
-						list.add(wire.getVectorPosition(pass, false));
-						list.add(wire.getVectorPosition(pass, true));
+						list.add(vecs ? wire.getVectorPosition(pass, false) : pass);
+						list.add(vecs ? wire.getVectorPosition(pass, true) : pass);
 						pass -= between_spacing;
 					}
 				}
 				else{
 					float pass = ending_spacing;
 					while(pass < half - center_spacing && (limit > 0 ? list.size() < limit : true)){
-						list.add(wire.getVectorPosition(pass, false));
-						list.add(wire.getVectorPosition(pass, true));
+						list.add(vecs ? wire.getVectorPosition(pass, false) : pass);
+						list.add(vecs ? wire.getVectorPosition(pass, true) : pass);
 						pass += between_spacing;
 					}
 				}
@@ -190,7 +194,7 @@ public class WirePrograms {
 			else{
 				float pass = center_spacing;
 				while(pass < wire.length - ending_spacing && (limit > 0 ? list.size() < limit : true)){
-					list.add(wire.getVectorPosition(pass, false));
+					list.add(vecs ? wire.getVectorPosition(pass, false) : pass);
 					pass += between_spacing;
 				}
 			}
@@ -201,8 +205,8 @@ public class WirePrograms {
 	
 	public static class CatenaryDropper extends SpacedDeco {
 		
-		public Vec3f[][] model = new Vec3f[8][];
-		public float sx, sz, sl;
+		public Vec3f[][] model = new Vec3f[4][];
+		public float sx = 0.5f, sz = 0.5f, sl = Static.sixteenth;
 
 		public CatenaryDropper(String... args){
 			super(args);
@@ -228,22 +232,44 @@ public class WirePrograms {
 			model[1] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(-hx, -hz, 0).scale(sl) };
 			model[2] = new Vec3f[]{ new Vec3f(hx, 0, -hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
 			model[3] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
-			model[4] = new Vec3f[]{ new Vec3f(-hx, 0, -hz).scale(sl), new Vec3f(hx, -hz, 0).scale(sl) };
-			model[5] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(-hx, -hz, 0).scale(sl) };
-			model[6] = new Vec3f[]{ new Vec3f(hx, 0, -hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
-			model[7] = new Vec3f[]{ new Vec3f(-hx, 0, hz).scale(sl), new Vec3f(hx, 0, hz).scale(sl) };
 		}
 
 		public String getId(){
 			return "fvtm:wire_catenary_dropper";
 		}
+		
+		public Program parse(String[] args){
+			return new CatenaryDropper(args);
+		}
 
-		public ArrayList<Vec3f> generate(WireRelay relay, Wire wire, TurboList group){
-			//Wire other = relay.getHolder().getRelay("contact");
-			
-			
-			
-			return super.generate(relay, wire, group);
+		@SuppressWarnings("rawtypes")
+		@Override
+		public ArrayList generate(WireRelay relay, Wire wire, TurboList group, String decoid, boolean bool){
+			ArrayList<Vec3f> veclis = super.generate(relay, wire, group, decoid, true);
+			if(!relay.getKey().equals("contact")) return veclis;
+			WireRelay other = relay.getHolder().relays.get("support");
+			if(other == null) return veclis;
+			ArrayList<Float> dislis = super.generate(relay, wire, group, decoid, false);
+			Wire owir = other.getWire(new WireKey(wire.key.start_pos, "support", wire.key.end_pos, "support"));
+			//if(owir.copy) owir = relay.getHolder().getRegion().getSystem().getWire(owir.okey);
+			if(owir != null){
+				ArrayList<ModelRendererTurbo> tlist = new ArrayList<>();
+				float rat = owir.length / wire.length;
+				float last = -1;
+				int idx = 0;
+				for(Float dis : dislis){
+					Vec3f vec = owir.getVectorPosition(dis * rat, last == dis);
+					Vec3f vecl = veclis.get(idx);
+					float hei = vec.y - vecl.y;
+					tlist.add(new ModelRendererTurbo(null, 0, 0, 16, 16)
+						.addBox(-sx/2, 0, -sz/2, sx, hei * 16, sz)
+						.setRotationPoint(0, -hei * 16, 0));
+					last = dis;
+					idx++;
+				}
+				wire.deco_g.get(decoid).put(group.name, tlist);
+			}
+			return veclis;
 		}
 		
 	}

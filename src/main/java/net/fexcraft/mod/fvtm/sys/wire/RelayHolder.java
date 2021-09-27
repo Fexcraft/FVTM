@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 public class RelayHolder {
 	
 	public LinkedHashMap<String, WireRelay> relays = new LinkedHashMap<>();
-	protected final WireRegion region;
+	private final WireRegion region;
 	protected BlockTileEntity blocktile;
 	public BlockPos pos;
 	
@@ -96,6 +96,10 @@ public class RelayHolder {
 			idx++;
 		}
 		return null;
+	}
+
+	public WireRegion getRegion(){
+		return region;
 	}
 
 }

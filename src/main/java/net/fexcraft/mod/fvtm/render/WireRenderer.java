@@ -179,6 +179,8 @@ public class WireRenderer {
                 			wm = dm.getValue();
                 			for(TurboList list : wm.groups){
                 				if(wire.deco_d.get(dm.getKey()).containsKey(list.name)){
+                					ArrayList<ModelRendererTurbo> tlist = wire.deco_g.containsKey(dm.getKey()) ? wire.deco_g.get(dm.getKey()).get(list.name) : null;
+                					int didx = 0;
                 					for(Vec3f vec : wire.deco_d.get(dm.getKey()).get(list.name)){
                             			GL11.glPushMatrix();
                             			GL11.glTranslatef(vec.x, vec.y, vec.z);
@@ -187,6 +189,10 @@ public class WireRenderer {
                     					wm.transforms.apply();
                     	        		ModelBase.bindTexture(wm.texture());
                     					list.renderBlock(relay.getTile(), relay.getTile().getBlockData(), null);
+                    					if(tlist != null){
+                    		        		ModelBase.bindTexture(wire.getWireType().getWireTexture());
+                    						tlist.get(didx++).render();
+                    					}
                     					wm.transforms.deapply();
                             			GL11.glPopMatrix();
                 					}
@@ -299,10 +305,11 @@ public class WireRenderer {
 			if(deco != null){
 				wire.deco_m.put(entry.getKey(), deco);
 				wire.deco_d.put(entry.getKey(), new HashMap<>());
+				wire.deco_g.put(entry.getKey(), new HashMap<>());
 				for(TurboList list : deco.groups){
 					for(TurboList.Program program : list.programs){
 						if(program instanceof WirePrograms.SpacedDeco == false) continue;
-						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list));
+						wire.deco_d.get(entry.getKey()).put(list.name, ((WirePrograms.SpacedDeco)program).generate(relay, wire, list, entry.getKey(), true));
 						break;
 					}
 				}

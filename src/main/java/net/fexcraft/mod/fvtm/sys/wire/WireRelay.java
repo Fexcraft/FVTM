@@ -84,7 +84,7 @@ public class WireRelay {
 	}
 
 	public void updateClient(){
-		holder.region.updateClient("relay", null, holder.pos, this);
+		holder.getRegion().updateClient("relay", null, holder.pos, this);
 	}
 
 	public void remove(int index, boolean firstcall){
@@ -98,7 +98,7 @@ public class WireRelay {
 		this.updateClient();
 		//
 		if(firstcall){
-			WireRelay relay = holder.region.system.getRelay(wire.key.start_relay.equals(key) ? wire.okey : wire.key);
+			WireRelay relay = holder.getRegion().system.getRelay(wire.key.start_relay.equals(key) ? wire.okey : wire.key);
 			if(relay != null) relay.remove(wire.okey, false);
 		}
 		else this.checkWireSectionConsistency();

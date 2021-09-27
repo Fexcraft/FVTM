@@ -92,8 +92,8 @@ public class WireRelay {
 		if(wire == null) return;
 		//
 		if(!firstcall){
-			wire.unit.section().splitAtWire(wire);
-			wire.unit.section().remove(wire);
+			//TODO wire.unit.section().splitAtWire(wire);
+			//TODO wire.unit.section().remove(wire);
 		}
 		this.updateClient();
 		//

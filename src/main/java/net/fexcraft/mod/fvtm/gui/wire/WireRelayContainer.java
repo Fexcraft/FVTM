@@ -57,8 +57,8 @@ public class WireRelayContainer extends GenericContainer {
 		system = SystemManager.get(Systems.WIRE, world);
 		tile = (BlockTileEntity)world.getTileEntity(new BlockPos(x, y, z));
 		data = tile.getBlockData().getType().getRelayData();
-		conns = data.conns.keySet().stream().collect(Collectors.toList());
 		holder = system.getHolder(tile.getPos());
+		conns = new ArrayList<>(holder.relays.keySet());
 		stack = player.getHeldItemMainhand();
 		type = ((WireItem)stack.getItem()).getType();
 		if(!stack.hasTagCompound()){

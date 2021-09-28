@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -34,7 +35,7 @@ public class RenderRailVehicle extends Render<RailVehicle> implements IRenderFac
 
     @Override
     public void doRender(RailVehicle vehicle, double x, double y, double z, float entity_yaw, float ticks){
-        if(vehicle.getVehicleData() == null){ return; }
+        if(Config.RENDER_VEHICLES_SEPARATELY || vehicle.getVehicleData() == null){ return; }
         GL11.glPushMatrix();
         {
         	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });

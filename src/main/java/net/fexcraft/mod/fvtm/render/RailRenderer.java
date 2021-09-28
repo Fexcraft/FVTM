@@ -34,9 +34,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -160,28 +158,21 @@ public class RailRenderer {
 	}
 	
 	private static RailSystem raildata;
-    private static Frustum fru = new Frustum();
     
     //@SubscribeEvent
-    public static void renderRails(World world, float partialticks){//RenderWorldLastEvent event){
+    public static void renderRails(World world, double cx, double cy, double cz, float partialticks){//RenderWorldLastEvent event){
     	if(Config.DISABLE_RAILS) return;
 	    raildata = SystemManager.get(Systems.RAIL, world, RailSystem.class);
         //if(raildata.isLoading()) return;
-        Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
-        double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * partialticks;
-        double y = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * partialticks;
-        double z = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * partialticks;
-        fru.setPosition(x, y, z);
-        //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(-x, -y, -z);
+        GL11.glTranslated(-cx, -cy, -cz);
         //ModelBase.bindTexture(Resources.NULL_TEXTURE);
         for(Region reg : raildata.getRegions().values()){
         	//if(reg.READING) continue;
         	Junction[] junctions = reg.getJunctions().values().toArray(new Junction[0]);
         	for(int i = 0; i < junctions.length; i++){
-        		if(!fru.isBoundingBoxInFrustum(junctions[i].getAABB())) continue;
+        		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB())) continue;
             	GL11.glPushMatrix();
             	ModelBase.bindTexture(Resources.NULL_TEXTURE);
             	GL11.glTranslatef(junctions[i].getVec3f().x, junctions[i].getVec3f().y, junctions[i].getVec3f().z);

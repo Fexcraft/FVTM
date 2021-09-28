@@ -112,6 +112,10 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCapability Implementation Found!");}
         rek.data().getScripts().forEach((script) -> script.onSpawn(this, rek.data()));
+        if(remote){
+        	float c = rek.data().getAttributeFloat("collision_range", 2f);
+        	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
+        }
 	}
 	
 	@Override

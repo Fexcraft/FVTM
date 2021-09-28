@@ -127,6 +127,10 @@ public class AirVehicle extends GenericVehicle implements IEntityAdditionalSpawn
         this.setupCapability(null);//TODO this.getCapability(FVTMCaps.CONTAINER, null));
         vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
         Print.debug("INITIALIZED " + remote + " " + this.getEntityId());
+        if(remote){
+        	float c = vehicle.getAttributeFloat("collision_range", 2f);
+        	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
+        }
 	}
 
 	@Override

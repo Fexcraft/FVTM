@@ -53,6 +53,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     public float prevRotationPitch;
     public float prevRotationRoll;
     public boolean should_sit = true;
+	public AxisAlignedBB renderbox;
 
 	public GenericVehicle(World world){ super(world); }
 	

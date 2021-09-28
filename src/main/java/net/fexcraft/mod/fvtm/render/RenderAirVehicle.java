@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -32,7 +33,7 @@ public class RenderAirVehicle extends Render<AirVehicle> implements IRenderFacto
 
     @Override
     public void doRender(AirVehicle vehicle, double x, double y, double z, float entity_yaw, float ticks){
-        if(vehicle.getVehicleData() == null){ return; }
+        if(Config.RENDER_VEHICLES_SEPARATELY || vehicle.getVehicleData() == null){ return; }
         GL11.glPushMatrix();
         {
         	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });

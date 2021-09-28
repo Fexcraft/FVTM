@@ -141,6 +141,10 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(!remote && truck != null){
         	this.sendConnectionUpdate(); truck.sendConnectionUpdate();
         }
+        if(remote){
+        	float c = vehicle.getAttributeFloat("collision_range", 2f);
+        	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
+        }
 	}
 	
 	@Override

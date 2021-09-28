@@ -165,6 +165,10 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         if(impl != null){ impl.setup = false; this.setupCapability(impl); }
         else{ Print.debug("No ContainerCap Implementation Found!");}
         vehicle.getScripts().forEach((script) -> script.onSpawn(this, vehicle));
+        if(remote){
+        	float c = vehicle.getAttributeFloat("collision_range", 2f);
+        	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
+        }
 	}
 
 	private void setupAxles(){

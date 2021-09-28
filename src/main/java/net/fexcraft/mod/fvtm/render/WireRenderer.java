@@ -34,9 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 public class WireRenderer {
@@ -62,24 +60,18 @@ public class WireRenderer {
 	}
 	
 	private static WireSystem wiredata;
-    private static Frustum fru = new Frustum();
     
-    public static void renderWires(World world, float partialticks){
+    public static void renderWires(World world, double cx, double cy, double cz, float partialticks){
     	if(Config.DISABLE_RAILS) return;
 	    wiredata = SystemManager.get(Systems.WIRE, world);
-        Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
-        double x = camera.lastTickPosX + (camera.posX - camera.lastTickPosX) * partialticks;
-        double y = camera.lastTickPosY + (camera.posY - camera.lastTickPosY) * partialticks;
-        double z = camera.lastTickPosZ + (camera.posZ - camera.lastTickPosZ) * partialticks;
-        fru.setPosition(x, y, z);
         //
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(-x, -y, -z);
+        GL11.glTranslated(-cx, -cy, -cz);
         for(WireRegion reg : wiredata.getRegions().values()){
         	for(RelayHolder holder : reg.getHolders().values()){
             	for(WireRelay relay : holder.relays.values()){
-            		if(!fru.isBoundingBoxInFrustum(relay.getAABB())) continue;
+            		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(relay.getAABB())) continue;
                 	GL11.glPushMatrix();
                 	ModelBase.bindTexture(Resources.NULL_TEXTURE);
                 	GL11.glTranslatef(relay.pos.x, relay.pos.y, relay.pos.z);

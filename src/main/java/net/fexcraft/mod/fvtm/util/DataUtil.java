@@ -32,7 +32,9 @@ import net.minecraft.util.math.Vec3d;
 public class DataUtil {
 
 	public static ResourceLocation getRegistryName(JsonObject obj){
-		return obj.has("RegistryName") ? new ResourceLocation(obj.get("RegistryName").getAsString()) : null;
+		String regname = obj.has("RegistryName") ? obj.get("RegistryName").getAsString() : null;
+		if(regname == null) return null;
+		return new ResourceLocation(regname.contains(":") ? regname : "fvtm:" + regname);
 	}
 
 	public static ResourceLocation getRegistryName(String key, JsonObject obj){

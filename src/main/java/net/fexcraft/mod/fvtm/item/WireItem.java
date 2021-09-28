@@ -49,7 +49,7 @@ public class WireItem extends TypeCoreItem<WireType> implements JunctionGridItem
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){
-            tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
+            tooltip.add(Formatter.format(I18n.format(s)));
         }
         tooltip.add(Formatter.format("&9Def. Slack: &7" + type.default_slack()));
         tooltip.add(Formatter.format("&9Customisable: &7" + type.customisable()));

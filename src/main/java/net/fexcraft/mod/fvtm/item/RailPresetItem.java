@@ -57,7 +57,7 @@ public class RailPresetItem extends TypeCoreItem<RailGauge> implements JunctionG
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){
-            tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
+            tooltip.add(Formatter.format(I18n.format(s)));
         }
         tooltip.add(Formatter.format("&9Width: &7" + type.width() + "mb"));
         if(type.getCompatible().size() > 0){

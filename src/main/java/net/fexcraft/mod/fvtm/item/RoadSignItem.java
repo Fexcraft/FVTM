@@ -51,7 +51,7 @@ public class RoadSignItem extends Item {
             return;
     	}
         tooltip.add(Formatter.format("&9&o" + sign.getAddon().getName()));
-        for(String s : sign.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
+        for(String s : sign.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
     }
 
     @SuppressWarnings("deprecation")

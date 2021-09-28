@@ -42,7 +42,7 @@ public class MaterialItem extends TypeCoreItem<Material> {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
+        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
         if(type.getOreDictionaryId() != null){
         	tooltip.add(Formatter.format("&9OreDict: &7" + type.getOreDictionaryId()));
         }

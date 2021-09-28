@@ -59,7 +59,7 @@ public class BlockItem extends ItemBlock16 implements DataCoreItem<BlockData> {
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
     	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){
-            tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
+            tooltip.add(Formatter.format(I18n.format(s)));
         }
         if(type.getBlockType().isGenericRoad()){
         	tooltip.add(Formatter.format("&9Height: &7" + (stack.getMetadata() == 0 ? 16 : stack.getMetadata())));

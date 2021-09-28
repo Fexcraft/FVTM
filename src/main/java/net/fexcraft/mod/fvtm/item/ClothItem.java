@@ -54,7 +54,7 @@ public class ClothItem extends ItemArmor {
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
     	tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){
-            tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
+            tooltip.add(Formatter.format(I18n.format(s)));
         }
         tooltip.add(Formatter.format("&9Worn: &7" + net.fexcraft.mod.fvtm.gui.DefaultSteeringOverlay.format((stack.getItemDamage() / (float)stack.getMaxDamage()) * 100) + "%"));
         super.addInformation(stack, world, tooltip, flag);

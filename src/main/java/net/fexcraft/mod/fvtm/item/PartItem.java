@@ -45,7 +45,7 @@ public class PartItem extends TypeCoreItem<Part> implements DataCoreItem<PartDat
     	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         tooltip.add(Formatter.format("&9Type: &7" + type.getCategory()));
         for(String s : type.getDescription()){
-            tooltip.add(Formatter.format(I18n.format(s, new Object[0])));
+            tooltip.add(Formatter.format(I18n.format(s)));
         }
         PartData data = cache.getPartData();
         if(data == null) return;

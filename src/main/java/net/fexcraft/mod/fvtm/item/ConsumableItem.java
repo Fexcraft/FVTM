@@ -39,7 +39,7 @@ public class ConsumableItem extends ItemFood {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
+        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
         tooltip.add(Formatter.format("&9Type: &7" + (type.isDrinkable() ? "drink/beverage" : "food")));
         tooltip.add(Formatter.format("&9Heal Amout: &7" + type.getHealAmount()));
         tooltip.add(Formatter.format("&9Saturation: &7" + type.getSaturation()));

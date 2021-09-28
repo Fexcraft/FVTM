@@ -51,7 +51,7 @@ public class VehicleItem extends TypeCoreItem<Vehicle> implements DataCoreItem<V
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag){
     	VehicleAndPartDataCache cache = stack.getCapability(Capabilities.VAPDATA, null);
     	if(!cache.overridesLang(false)) tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
-        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s, new Object[0]))); }
+        for(String s : type.getDescription()){ tooltip.add(Formatter.format(I18n.format(s))); }
         VehicleData data = cache.getVehicleData();
         if(data == null) return;
         if(data.isPreset()) tooltip.add(Formatter.format("&6Preset: &7" + data.getPreset()));

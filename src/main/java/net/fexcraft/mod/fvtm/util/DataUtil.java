@@ -43,9 +43,12 @@ public class DataUtil {
 
 	public static Addon getAddon(JsonObject obj){
 		if(obj.has("Addon")){
-			Addon addon = Resources.ADDONS.getValue(new ResourceLocation(obj.get("Addon").getAsString()));
+			String addin = obj.get("Addon").getAsString();
+			if(addin.contains(":")) addin = addin.split(":")[1];
+			Addon addon = Resources.getAddon(addin);
 			if(addon != null) return addon;
-		} return Resources.ADDONS.getValue(InternalAddon.REGNAME);
+		}
+		return Resources.ADDONS.getValue(InternalAddon.REGNAME);
 	}
 	
 	public static List<String> getStringArray(JsonObject obj, String key, boolean split, boolean immutable){

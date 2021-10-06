@@ -87,7 +87,7 @@ task fvtm(type: Jar) {
     appendix = modversion
 }
 task gep(type: Jar){
-    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/gep/'}
+    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addon/gep/'}
     from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/gep/'}
     from(sourceSets.main.resources){
         include 'gep_mcmod.info'
@@ -102,7 +102,7 @@ task gep(type: Jar){
     appendix = gepversion
 }
 task hcp(type: Jar){
-    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addons/hcp/'}
+    from (zipTree("${destinationDir}/${archiveName}")) { include 'net/fexcraft/mod/addon/hcp/'}
     from (zipTree("${destinationDir}/${archiveName}")) { include 'assets/hcp/'}
     from(sourceSets.main.resources){
         include 'hcp_mcmod.info'

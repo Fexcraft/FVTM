@@ -143,8 +143,8 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 					transforms.parse(string.trim().split(" "));
 				}
 			}
-			if(data.containsKey("Pivot")){
-				for(String string : ((List<String>)data.get("Programs"))){
+			if(data.containsKey("Pivots")){
+				for(String string : ((List<String>)data.get("Pivots"))){
 					String[] args = string.trim().split(" ");
 					if(!groups.contains(args[0])) continue;
 					try{

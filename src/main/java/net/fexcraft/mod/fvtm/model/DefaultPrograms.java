@@ -115,6 +115,8 @@ public class DefaultPrograms {
 		TurboList.PROGRAMS.add(RESCALE_NORMAL);
 		TurboList.PROGRAMS.add(new TextRenderer(0, 0, 0, 0, 0, 0, 0, true));
 		TurboList.PROGRAMS.add(new AttributeTextRenderer("", 0, 0, 0, 0, 0, 0, 0, true));
+		TurboList.PROGRAMS.add(new Rotator(0, 0, 0, 0, null, false, false));//parsed init only
+		TurboList.PROGRAMS.add(new Translator(0, 0, 0, 0, false));//parsed init only
 		//
 		DIDLOAD = true;
 	}
@@ -1840,6 +1842,218 @@ public class DefaultPrograms {
 			return new AttributeTextRenderer(attr, px, py, pz, rx, ry, rz, scale, cen).setColor(color).setGlow(glow);
 		}
 		
+	}
+	
+	public static abstract class Duplicable implements Program {
+		
+		private static final TreeMap<String, Integer> linked = new TreeMap<>();
+		protected String cacheid;
+
+		@Override
+		public void init(TurboList list){
+			if(cacheid != null) return;
+			String id = getId();
+			if(linked.containsKey(id)){
+				cacheid = id + "_" + linked.get(id);
+				linked.put(id, linked.get(id) + 1);
+			}
+			else{
+				cacheid = id + "_0";
+				linked.put(id, 1);
+			}
+		}
+		
+	}
+	
+	public static class Rotator extends Duplicable {
+		
+		private float min, max, step = 1;
+		private float current, dir, defrot;
+		private int axis;
+		private boolean loop, override;
+		private String cacheids;
+		
+		public Rotator(float min, float max, float step, int axis, Float defrot, boolean loop, boolean ntadd){
+			this.override = true;
+			this.min = min; 
+			this.max = max;
+			this.step = step;
+			this.axis = axis;
+			this.defrot = defrot == null ? 0 : defrot;
+			if(min == max || (min == 0f && max == 0f)){
+				min = -180; max = 180;
+			}
+			this.loop = loop;
+			this.override = ntadd;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:rotator";
+		}
+		
+		@Override
+		public void init(TurboList list){
+			super.init(list);
+			cacheids = cacheid + "s";
+		}
+		
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(cache == null) return;
+			current = cache.getValue(cacheid, 0f);
+			dir = cache.getValue(cacheids, step);
+			current += dir;
+			if(current > max){
+				if(loop){
+					current = min + (current - max);
+					cache.setValue(cacheids, dir);
+				}
+				else{
+					current = max - (current - max);
+					cache.setValue(cacheids, -dir);
+				}
+			}
+			if(current < min){
+				if(loop){
+					current = max + (current - min);
+					cache.setValue(cacheids, dir);
+				}
+				else{
+					current = min - (current - min);
+					cache.setValue(cacheids, -dir);
+				}
+			}
+			list.rotateAxis(current + defrot, axis, override);
+			cache.setValue(cacheid, current);
+		}
+		
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(cache == null) return;
+			list.rotateAxis(override ? defrot : -(current + defrot), axis, override);
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			float min = array.get(0).getAsFloat();
+			float max = array.get(1).getAsFloat();
+			float step = array.get(2).getAsFloat();
+			int axis = array.get(3).getAsInt();
+			float dero = array.get(4).getAsFloat();
+			boolean loop = array.get(5).getAsBoolean();
+			boolean noad = array.size() > 6 ? array.get(6).getAsBoolean() : true;
+			return new Rotator(min, max, step, axis, dero, loop, noad);
+		}
+		
+
+		@Override
+		public Program parse(String[] args){
+			float min = Float.parseFloat(args[0]);
+			float max = Float.parseFloat(args[1]);
+			float step = Float.parseFloat(args[2]);
+			int axis = Integer.parseInt(args[3]);
+			float dero = Float.parseFloat(args[4]);
+			boolean loop = Boolean.parseBoolean(args[5]);
+			boolean noad = args.length > 6 ? Boolean.parseBoolean(args[6]) : true;
+			return new Rotator(min, max, step, axis, dero, loop, noad);
+		}
+		
+	}
+	
+	public static class Translator extends Duplicable {
+		
+		private boolean loop;
+		private float min, max, step;
+		private float current, dir;
+		private int axis;
+		private String cacheids;
+		
+		public Translator(float min, float max, float step, int axis, boolean loop){
+			this.axis = axis;
+			this.step = step;
+			this.min = min;
+			this.max = max;
+			this.loop = loop;
+		}
+
+		@Override
+		public String getId(){
+			return "fvtm:translator";
+		}
+		
+		@Override
+		public void init(TurboList list){
+			super.init(list);
+			cacheids = cacheid + "s";
+		}
+
+		@Override
+		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(cache == null) return;
+			current = cache.getValue(cacheid, 0f);
+			dir = cache.getValue(cacheids, step);
+			current += dir;
+			if(current > max){
+				if(loop){
+					current = min + (current - max);
+					cache.setValue(cacheids, dir);
+				}
+				else{
+					current = max - (current - max);
+					cache.setValue(cacheids, -dir);
+				}
+			}
+			if(current < min){
+				if(loop){
+					current = max + (current - min);
+					cache.setValue(cacheids, dir);
+				}
+				else{
+					current = min - (current - min);
+					cache.setValue(cacheids, -dir);
+				}
+			}
+			//GL11.glPushMatrix();
+			GL11.glTranslatef(
+				axis == 0 ? current * Static.sixteenth : 0,
+				axis == 1 ? current * Static.sixteenth : 0,
+				axis == 2 ? current * Static.sixteenth : 0);
+			cache.setValue(cacheid, current);
+		}
+
+		@Override
+		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
+			if(cache == null) return;
+			GL11.glTranslatef(
+				axis == 0 ? current * -Static.sixteenth : 0,
+				axis == 1 ? current * -Static.sixteenth : 0,
+				axis == 2 ? current * -Static.sixteenth : 0);
+			//GL11.glPopMatrix();
+		}
+		
+		@Override
+		public Program parse(JsonElement elm){
+			JsonArray array = elm.getAsJsonArray();
+			float min = array.get(0).getAsFloat();
+			float max = array.get(1).getAsFloat();
+			float step = array.get(2).getAsFloat();
+			int axis = array.get(3).getAsInt();
+			boolean loop = array.get(4).getAsBoolean();
+			return new Translator(min, max, step, axis, loop);
+		}
+
+		@Override
+		public Program parse(String[] args){
+			float min = Float.parseFloat(args[0]);
+			float max = Float.parseFloat(args[1]);
+			float step = Float.parseFloat(args[2]);
+			int axis = Integer.parseInt(args[3]);
+			boolean loop = Boolean.parseBoolean(args[4]);
+			return new Translator(min, max, step, axis, loop);
+		}
+
 	}
 	
 }

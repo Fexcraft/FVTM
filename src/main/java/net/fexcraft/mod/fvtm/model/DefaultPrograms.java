@@ -1935,6 +1935,16 @@ public class DefaultPrograms {
 		}
 		
 		@Override
+		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			preRender(list, null, null, data, null, cache);
+		}
+
+		@Override
+		public void postRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
+			postRender(list, null, null, data, null, cache);
+		}
+		
+		@Override
 		public Program parse(JsonElement elm){
 			JsonArray array = elm.getAsJsonArray();
 			float min = array.get(0).getAsFloat();

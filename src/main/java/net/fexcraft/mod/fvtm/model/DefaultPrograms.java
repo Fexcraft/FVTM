@@ -367,18 +367,18 @@ public class DefaultPrograms {
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
             GlStateManager.pushMatrix();
-            GL11.glEnable(GL11.GL_BLEND);
+            enableBlend();
             GL11.glDepthMask(false);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
+            enableAlpha();
             this.color.glColorApply();
 		}
 
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
             RGB.glColorReset();
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            disableAlpha();
             GL11.glDepthMask(true);
-            GL11.glDisable(GL11.GL_BLEND);
+            disableBlend();
             GlStateManager.popMatrix();
 		}
 		
@@ -903,8 +903,8 @@ public class DefaultPrograms {
 
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-	        GlStateManager.enableBlend();
-	        GlStateManager.disableAlpha();
+	        enableBlend();
+	        disableAlphaTest();
 	        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.SRC_COLOR);
 	        //if(ent != null) GlStateManager.depthMask(!ent.isInvisible());
 	        lx = OpenGlHelper.lastBrightnessX; ly = OpenGlHelper.lastBrightnessY;
@@ -915,10 +915,10 @@ public class DefaultPrograms {
 		@Override
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
-	        GlStateManager.disableBlend();
-	        GlStateManager.enableAlpha();
+	        disableBlend();
+	        enableAlphaTest();
 		}
-		
+
 		@Override
 		public Program parse(JsonElement elm){
 			JsonArray array = elm.getAsJsonArray();
@@ -2074,6 +2074,32 @@ public class DefaultPrograms {
 			return new Translator(min, max, step, axis, loop);
 		}
 
+	}
+
+	private static boolean was_blended, was_alpha, was_alpha_tested;
+	
+	public static void enableBlend(){
+		if(!(was_blended = GL11.glGetBoolean(GL11.GL_BLEND))) GL11.glEnable(GL11.GL_BLEND);
+	}
+	
+	public static void disableBlend(){
+		if(!was_blended) GL11.glDisable(GL11.GL_BLEND);
+	}
+	
+	public static void enableAlpha(){
+		if(!(was_alpha = GL11.glGetBoolean(GL11.GL_ALPHA_TEST))) GL11.glEnable(GL11.GL_ALPHA_TEST);
+	}
+	
+	public static void disableAlpha(){
+		if(!was_alpha) GL11.glDisable(GL11.GL_ALPHA_TEST);
+	}
+	
+	public static void disableAlphaTest(){
+		if(!(was_alpha_tested = GL11.glGetBoolean(GL11.GL_ALPHA_TEST))) GL11.glDisable(GL11.GL_ALPHA_TEST);
+	}
+	
+	public static void enableAlphaTest(){
+		if(!was_alpha_tested) GL11.glEnable(GL11.GL_ALPHA_TEST);
 	}
 	
 }

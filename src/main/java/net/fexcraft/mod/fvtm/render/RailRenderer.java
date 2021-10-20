@@ -25,7 +25,6 @@ import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.sys.wire.Wire;
 import net.fexcraft.mod.fvtm.util.Command;
-import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.VecUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -37,6 +36,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -157,6 +157,7 @@ public class RailRenderer {
 		}
 	}
 	
+	public static final ResourceLocation WOOLTEX = new ResourceLocation("minecraft:textures/blocks/wool_colored_white.png");
 	private static RailSystem raildata;
     
     //@SubscribeEvent
@@ -174,7 +175,7 @@ public class RailRenderer {
         	for(int i = 0; i < junctions.length; i++){
         		if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(junctions[i].getAABB())) continue;
             	GL11.glPushMatrix();
-            	ModelBase.bindTexture(Resources.NULL_TEXTURE);
+            	ModelBase.bindTexture(WOOLTEX);
             	GL11.glTranslatef(junctions[i].getVec3f().x, junctions[i].getVec3f().y, junctions[i].getVec3f().z);
             	if(junctions[i].tracks.isEmpty() || HOLDING){ model.render(); } else{ junction_core.render(); }
             	GL11.glPopMatrix();

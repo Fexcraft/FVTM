@@ -78,7 +78,7 @@ public class RailGauge extends TypeCore<RailGauge> implements Tabbed {
 			this.blockheight = obj.get("BlockHeight").getAsFloat() * Static.sixteenth;
 		}
 		this.blockwidth = JsonUtil.getIfExists(obj, "BlockSpace", 2).floatValue();
-		this.rail_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "RailTexture", "fvtm:textures/entity/null.png"));
+		this.rail_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "RailTexture", "minecraft:textures/blocks/iron_block.png"));
 		this.ties_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "TiesTexture", "minecraft:textures/blocks/anvil_base.png"));
 		this.model_texture = new ResourceLocation(JsonUtil.getIfExists(obj, "ModelTexture", "fvtm:textures/entity/null.png"));
 		/*if(obj.has("RailWidth") && !obj.get("RailWidth").isJsonPrimitive()){

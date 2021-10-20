@@ -1697,6 +1697,7 @@ public class DefaultPrograms {
 		public void postRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
 			if(text.length() == 0) return;
 			if(font_renderer == null) font_renderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
+			if(font_renderer == null) return;
 	        GlStateManager.pushMatrix();
 			if(glow || (attrid != null && attr(data))) super.preRender(list, ent, data, color, part, cache);
 			pos.translate();

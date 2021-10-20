@@ -142,6 +142,7 @@ public class TireFunction extends Function {
     private static HashMap<Material, MatTireAttr> DEFAULT_TABLE = new HashMap<>();
     static {
     	float dc = 5.2f, ds = 5f;
+    	DEFAULT_TABLE.put(null, new MatTireAttr(1f, 1f, dc, ds));
     	DEFAULT_TABLE.put(Material.AIR, new MatTireAttr(0.1f, 0.1f, dc, ds));
     	DEFAULT_TABLE.put(Material.GRASS, new MatTireAttr(0.7f, 0.4f, dc, ds));
     	DEFAULT_TABLE.put(Material.GROUND, new MatTireAttr(0.9f, 0.75f, dc, ds));

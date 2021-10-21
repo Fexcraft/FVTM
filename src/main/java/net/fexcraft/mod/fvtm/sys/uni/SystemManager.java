@@ -73,6 +73,10 @@ public class SystemManager {
 			SYSTEMS.get(Systems.WIRE).put(dim, sys);
 			SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
 		}
+		if(!SYSTEMS.containsKey(Systems.ENTITY)) SYSTEMS.put(Systems.ENTITY, new HashMap<>());
+		EntitySystem ensys = new EntitySystem(event.getObject());
+		SYSTEMS.get(Systems.ENTITY).put(dim, ensys);
+		SYSTEMS_DIM.get(dim).put(Systems.ENTITY, ensys);
 	}
 
 	public static void onServerStarting(FMLServerStartingEvent event){
@@ -99,7 +103,7 @@ public class SystemManager {
 	
 	public static enum Systems {
 		
-		RAIL, ROAD, WIRE
+		RAIL, ROAD, WIRE, ENTITY
 		
 	}
 

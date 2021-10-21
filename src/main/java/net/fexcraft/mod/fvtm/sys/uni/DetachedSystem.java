@@ -39,7 +39,7 @@ public abstract class DetachedSystem {
 	
 	public abstract boolean hasTimer();
 	
-	public abstract void addTimerTask(long time);
+	public void addTimerTask(long time){}
 	
 	public File getSaveRoot(){
 		return root;

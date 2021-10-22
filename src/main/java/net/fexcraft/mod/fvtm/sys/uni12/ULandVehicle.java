@@ -792,7 +792,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
     @Override
     public void onUpdate(){
-        super.onUpdate(); if(this.isDead) return;
+        super.onUpdate();
+        if(this.isDead) return;
         if(vehicle == null){ Print.log("VehicleData is NULL; Not ticking vehicle."); Static.stop(); return; }
         if(!world.isRemote){
             for(int i = 0; i < wheels.length; i++){

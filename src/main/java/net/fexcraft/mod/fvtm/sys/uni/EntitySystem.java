@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.sys.uni;
 
+import java.util.ArrayList;
+
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -8,6 +11,7 @@ public class EntitySystem extends DetachedSystem {
 	public Thread thread;
 	public static final int TARGET_TICKS = 20;
 	public static final float RATE = 1f / (TARGET_TICKS + 1);
+	private ArrayList<Entity> entities = new ArrayList<>();
 	private TTimer timer = new TTimer();
 	private boolean run = true;
 	private float accumulator, delta;
@@ -24,11 +28,17 @@ public class EntitySystem extends DetachedSystem {
 	@Override
 	public void setupTimer(long time){
 		thread = new Thread(() -> {
+			System.out.println("Starting Entity Logic Thread.");
 			timer.init();
 			while(run){
 				accumulator += (delta = timer.getDelta());
 				while(accumulator >= RATE){
-					update();
+					try{
+						update();
+					}
+					catch(Throwable thr){
+						thr.printStackTrace();
+					}
 					timer.updateUPS();
 					accumulator -= RATE;
 				}
@@ -40,12 +50,16 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	private void update(){
-		// TODO Auto-generated method stub
-		
+		entities.addAll(world.loadedEntityList);
+		/*for(Entity entity : entities){
+			//
+		}*/
+		entities.clear();
 	}
 
 	@Override
 	public void stopTimer(){
+		System.out.println("Stopping Entity Logic Thread.");
 		run = false;
 	}
 

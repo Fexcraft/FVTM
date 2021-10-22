@@ -61,6 +61,14 @@ public class RailSpawnSystem extends EntitySystem {
 		Junction junk = syscap.getJunction(vector, true);
 		BlockPos bpos = new BlockPos(pos);
 		net.fexcraft.mod.fvtm.block.RailEntity tile = world.getBlockState(bpos).getBlock() instanceof RailBlock ? (net.fexcraft.mod.fvtm.block.RailEntity)world.getTileEntity(bpos) : null;
+		if(!data.getWheelPositions().containsKey("bogie_front")){
+			Print.chat(player, "Vehicle is missing a front bogie.");
+			return false;
+		}
+		if(!data.getWheelPositions().containsKey("bogie_rear")){
+			Print.chat(player, "Vehicle is missing a rear bogie.");
+			return false;
+		}
 		double length = data.getWheelPositions().get("bogie_front").x + -data.getWheelPositions().get("bogie_rear").x;
 		if((junk == null || junk.tracks.isEmpty()) && tile != null){
 			if(tile.getTracks().size() > 1){

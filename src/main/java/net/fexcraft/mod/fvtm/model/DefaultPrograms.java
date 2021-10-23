@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.model;
 
+import static net.fexcraft.lib.common.Static.sixteenth;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -1057,7 +1059,7 @@ public class DefaultPrograms {
 		private int[] params;
 		
 		public ParticleEmitter(net.minecraft.util.EnumParticleTypes particle, boolean ignorerange, float x, float y, float z, float sx, float sy, float sz, int... params){
-			this.particle = particle; this.ignore = ignorerange; this.x = x; this.y = y; this.z = z; this.sx = sx; this.sy = sy; this.sz = sz; this.params = params;
+			this.particle = particle; this.ignore = ignorerange; this.x = x * sixteenth; this.y = y * sixteenth; this.z = z * sixteenth; this.sx = sx; this.sy = sy; this.sz = sz; this.params = params;
 		}
 		
 		@Override
@@ -1073,7 +1075,7 @@ public class DefaultPrograms {
 			if(cache != null){
 				if(ent != null && ent instanceof VehicleEntity){
 					//TODO apply rotation
-					ent.world.spawnParticle(particle, ignore, x, y, z, sx, sy, sz, params);
+					ent.world.spawnParticle(particle, ent.posX + x, ent.posY + y, ent.posZ + z, sx, sy, sz, params);
 				}
 				else{
 					//cache.getWorld().spawnParticle(particle, ignore, x, y, z, sx, sy, sz, params);

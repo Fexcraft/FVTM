@@ -333,4 +333,9 @@ public class WireSystem extends DetachedSystem {
 		if(region != null) region.delHolder(pos);
 	}
 
+	@Override
+	public void onClientTick(){
+		//unused
+	}
+
 }

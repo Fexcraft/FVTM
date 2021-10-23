@@ -121,6 +121,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -805,13 +806,12 @@ public class Resources {
 		}
 	}
 	
-	/*@SideOnly(Side.CLIENT) @SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event){
 		if(event.phase != Phase.START) return;
-		if(net.minecraft.client.Minecraft.getMinecraft().world == null) return;
-		if(net.minecraft.client.Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null) == null) return;
-		net.minecraft.client.Minecraft.getMinecraft().world.getCapability(Capabilities.RAILSYSTEM, null).updateTick(true);
-	}*/
+		SystemManager.onClientTick(net.minecraft.client.Minecraft.getMinecraft().world);
+	}
 	
 	@SubscribeEvent
 	public void onChunkLoad(ChunkEvent.Load event){
@@ -826,6 +826,18 @@ public class Resources {
 	@SubscribeEvent
 	public void onChunkUnload(ChunkEvent.Unload event){
 		SystemManager.onChunkUnload(event.getWorld(), event.getChunk());
+	}
+	
+	@SubscribeEvent
+	public void onWorldLoad(WorldEvent.Load event){
+		if(!event.getWorld().isRemote) return;
+		SystemManager.onWorldLoad(event.getWorld());
+	}
+	
+	@SubscribeEvent
+	public void onWorldUnload(WorldEvent.Unload event){
+		if(!event.getWorld().isRemote) return;
+		SystemManager.onWorldUnload(event.getWorld());
 	}
 
 	@SubscribeEvent

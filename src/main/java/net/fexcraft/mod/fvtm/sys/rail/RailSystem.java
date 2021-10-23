@@ -455,4 +455,9 @@ public class RailSystem extends DetachedSystem {
 
 	}
 
+	@Override
+	public void onClientTick(){
+		//unused
+	}
+
 }

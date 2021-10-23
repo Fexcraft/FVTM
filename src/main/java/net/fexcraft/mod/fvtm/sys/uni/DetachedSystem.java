@@ -52,6 +52,8 @@ public abstract class DetachedSystem {
 	public abstract void onChunkUnload(Chunk chunk);
 
 	public abstract void onServerTick();
+
+	public abstract void onClientTick();
 	
 	public void onTimerTick(){
 		//

@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.render;
 import org.lwjgl.opengl.GL11;
 
 import net.fexcraft.mod.fvtm.entity.RenderViewEntity;
+import net.fexcraft.mod.fvtm.sys.particle.ParticleRenderer;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -33,6 +34,7 @@ public class RenderView extends Render<RenderViewEntity> implements IRenderFacto
         	RailRenderer.renderRails(entity.world, cx, cy, cz, ticks);
         	VehicleRenderer.renderVehicles(entity.world, cx, cy, cz, ticks);
         	WireRenderer.renderWires(entity.world, cx, cy, cz, ticks);
+        	ParticleRenderer.renderParticles(entity.world, cx, cy, cz, ticks);
         }
         GL11.glPopMatrix();
     }

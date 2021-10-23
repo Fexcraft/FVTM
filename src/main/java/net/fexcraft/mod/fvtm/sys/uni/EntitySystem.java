@@ -2,7 +2,11 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import java.util.ArrayList;
 
+import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.sys.particle.Particle;
+import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -15,6 +19,8 @@ public class EntitySystem extends DetachedSystem {
 	private TTimer timer = new TTimer();
 	private boolean run = true;
 	private float accumulator, delta;
+	//
+	public ArrayList<ParticleEntity> particles = new ArrayList<>();
 
 	public EntitySystem(World world){
 		super(world);
@@ -48,12 +54,25 @@ public class EntitySystem extends DetachedSystem {
 		thread.setName("FVTM-EL-DIM" + dimension);
 		thread.start();
 	}
+	
+	private int cooldown;
 
 	private void update(){
+		for(ParticleEntity part : particles){
+			part.update();
+		}
+		if(cooldown < 200){
+			cooldown++;
+			return;
+		}
+		cooldown = 0;
 		entities.addAll(world.loadedEntityList);
-		/*for(Entity entity : entities){
-			//
-		}*/
+		particles.clear();
+		for(Entity entity : entities){
+			if(entity instanceof GenericVehicle == false) continue;
+			Vec3d pos = entity.getPositionVector();
+			particles.add(new ParticleEntity(Particle.TEST, new Vec3f(pos.x, pos.y + 1, pos.z)));
+		}
 		entities.clear();
 	}
 
@@ -70,13 +89,13 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	@Override
-	public void onChunkLoad(Chunk chunk) {
+	public void onChunkLoad(Chunk chunk){
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onChunkUnload(Chunk chunk) {
+	public void onChunkUnload(Chunk chunk){
 		// TODO Auto-generated method stub
 		
 	}
@@ -85,6 +104,11 @@ public class EntitySystem extends DetachedSystem {
 	public void onServerTick(){
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onClientTick(){
+		//
 	}
 
 }

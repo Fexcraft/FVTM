@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.particle;
 
-import net.fexcraft.lib.common.Static;
+import static net.fexcraft.lib.common.Static.sixteenth;
+
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
@@ -10,13 +11,13 @@ public class Particle {
 	public ParticleType type;
 	public int persistence, frequency;
 	public Vec3f dir, speed;
-	public RGB color, end_color;
-	public float scale, scale_end;
+	public RGB color = RGB.GREEN, end_color;
+	public float scale = sixteenth, scale_end;
 	public final String id;
 	//
 	protected ModelRendererTurbo model;
-	public static ModelRendererTurbo testmodel = new ModelRendererTurbo(null).addBox(-.5f, -.5f, -.5f, 1, 1, 1).setTextured(false);
-	public static Particle TEST = new Particle("test").setTiming(20, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.01f, 0)).setModel(testmodel);
+	public static ModelRendererTurbo testmodel = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-.5f, -.5f, -.5f, 1, 1, 1);
+	public static Particle TEST = new Particle("test").setTiming(200, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.01f, 0)).setModel(testmodel);
 	
 	public Particle(String id){
 		this(id, ParticleType.CUBOID);
@@ -62,8 +63,8 @@ public class Particle {
 		this.scale = _scale;
 		this.scale_end = end;
 		if(!sth){
-			scale *= Static.sixteenth;
-			scale_end *= Static.sixteenth;
+			scale *= sixteenth;
+			scale_end *= sixteenth;
 		}
 		return this;
 	}

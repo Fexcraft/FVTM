@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import java.util.ArrayList;
 
+import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
@@ -61,17 +63,20 @@ public class EntitySystem extends DetachedSystem {
 		for(ParticleEntity part : particles){
 			part.update();
 		}
-		if(cooldown < 200){
+		if(cooldown < 1){
 			cooldown++;
 			return;
 		}
 		cooldown = 0;
 		entities.addAll(world.loadedEntityList);
-		particles.clear();
+		particles.removeIf(part -> part.expired());
 		for(Entity entity : entities){
 			if(entity instanceof GenericVehicle == false) continue;
+			float x = Static.random.nextFloat() * 0.1f - 0.05f, z = Static.random.nextFloat() * 0.1f - 0.05f;
 			Vec3d pos = entity.getPositionVector();
-			particles.add(new ParticleEntity(Particle.TEST, new Vec3f(pos.x, pos.y + 1, pos.z)));
+			ParticleEntity ent = new ParticleEntity(Particle.TEST, new Vec3f(pos.x + x, pos.y + 1, pos.z + z));
+			ent.color = RGB.random();
+			particles.add(ent);
 		}
 		entities.clear();
 	}

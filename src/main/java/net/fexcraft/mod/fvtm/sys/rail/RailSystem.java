@@ -7,10 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 
@@ -140,7 +140,7 @@ public class RailSystem extends DetachedSystem {
 		
 	}
 	
-	public static class RegionMap extends HashMap<RegionKey, Region> {
+	public static class RegionMap extends ConcurrentHashMap<RegionKey, Region> {
 		
 		private RailSystem root;
 		public RegionMap(RailSystem data){ this.root = data; }

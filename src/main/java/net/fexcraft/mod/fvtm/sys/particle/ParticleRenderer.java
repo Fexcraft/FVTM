@@ -24,7 +24,7 @@ public class ParticleRenderer {
         EntitySystem sys = SystemManager.get(Systems.ENTITY, world);
         ents.addAll(sys.particles);
         for(ParticleEntity part : ents){
-	        int z = RailRenderer.getBrightness(part.prev), x = z % 65536, y = z / 65536;
+	        int z = RailRenderer.getBrightness(part.pos), x = z % 65536, y = z / 65536;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)x / 1.0F, (float)y / 1.0F);
             part.render(ticks);
         }

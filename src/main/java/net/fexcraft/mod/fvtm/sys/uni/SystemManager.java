@@ -4,8 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Static;
@@ -26,8 +27,8 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 public class SystemManager {
 
 	public static boolean SINGLEPLAYER, PLAYERON;
-	private static HashMap<Systems, HashMap<Integer, DetachedSystem>> SYSTEMS = new HashMap<>();
-	private static HashMap<Integer, HashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new HashMap<>();
+	private static ConcurrentHashMap<Systems, ConcurrentHashMap<Integer, DetachedSystem>> SYSTEMS = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Integer, ConcurrentHashMap<Systems, DetachedSystem>> SYSTEMS_DIM = new ConcurrentHashMap<>();
 	
 	public static void onServerTick(World world){
 		if(world == null || !SYSTEMS_DIM.containsKey(world.provider.getDimension())) return;
@@ -68,22 +69,22 @@ public class SystemManager {
 	public static void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		SINGLEPLAYER = Static.getServer() != null && Static.getServer().isSinglePlayer();
 		int dim = event.getObject().provider.getDimension();
-		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new HashMap<>());
+		if(!SYSTEMS_DIM.containsKey(dim)) SYSTEMS_DIM.put(dim, new ConcurrentHashMap<>());
 		if(event.getObject().isRemote){
-			if(!SYSTEMS.containsKey(Systems.ENTITY)) SYSTEMS.put(Systems.ENTITY, new HashMap<>());
+			if(!SYSTEMS.containsKey(Systems.ENTITY)) SYSTEMS.put(Systems.ENTITY, new ConcurrentHashMap<>());
 			EntitySystem ensys = new EntitySystem(event.getObject());
 			SYSTEMS.get(Systems.ENTITY).put(dim, ensys);
 			SYSTEMS_DIM.get(dim).put(Systems.ENTITY, ensys);
 		}
 		else{
 			if(!Config.DISABLE_RAILS){
-				if(!SYSTEMS.containsKey(Systems.RAIL)) SYSTEMS.put(Systems.RAIL, new HashMap<>());
+				if(!SYSTEMS.containsKey(Systems.RAIL)) SYSTEMS.put(Systems.RAIL, new ConcurrentHashMap<>());
 				RailSystem sys = new RailSystem(event.getObject());
 				SYSTEMS.get(Systems.RAIL).put(dim, sys);
 				SYSTEMS_DIM.get(dim).put(Systems.RAIL, sys);
 			}
 			if(!Config.DISABLE_WIRES){
-				if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new HashMap<>());
+				if(!SYSTEMS.containsKey(Systems.WIRE)) SYSTEMS.put(Systems.WIRE, new ConcurrentHashMap<>());
 				WireSystem sys = new WireSystem(event.getObject());
 				SYSTEMS.get(Systems.WIRE).put(dim, sys);
 				SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
@@ -100,7 +101,7 @@ public class SystemManager {
 
 	public static void onServerStarting(FMLServerStartingEvent event){
 		long mid = getDate();
-		for(HashMap<Integer, DetachedSystem> entry : SYSTEMS.values()){
+		for(Map<Integer, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.setupTimer(mid);
 			}
@@ -115,7 +116,7 @@ public class SystemManager {
 	}
 
 	public static void onServerStopping(FMLServerStoppingEvent event){
-		for(HashMap<Integer, DetachedSystem> entry : SYSTEMS.values()){
+		for(Map<Integer, DetachedSystem> entry : SYSTEMS.values()){
 			for(DetachedSystem sys : entry.values()){
 				sys.stopTimer();
 				sys.unload();

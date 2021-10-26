@@ -62,7 +62,7 @@ public class EntitySystem extends DetachedSystem {
 		for(ParticleEntity part : particles){
 			part.update();
 		}
-		if(cooldown < 10){
+		if(cooldown < 1){
 			cooldown++;
 			return;
 		}
@@ -70,7 +70,7 @@ public class EntitySystem extends DetachedSystem {
 		entities.addAll(world.loadedEntityList);
 		particles.removeIf(part -> part.expired());
 		for(Entity entity : entities){
-			if(entity instanceof GenericVehicle == false) continue;
+			if(entity instanceof GenericVehicle == false || ((GenericVehicle)entity).getVehicleData().getType().isTrailerOrWagon()) continue;
 			float x = Static.random.nextFloat() * 0.1f - 0.05f, z = Static.random.nextFloat() * 0.1f - 0.05f;
 			Vec3d pos = entity.getPositionVector();
 			ParticleEntity ent = new ParticleEntity(Particle.TEST[Static.random.nextInt(4)], new Vec3f(pos.x + x, pos.y + 1, pos.z + z));

@@ -466,7 +466,7 @@ public class RailRenderer {
 		
 	}
 
-	@Deprecated
+	//@Deprecated
 	public static int getBrightness(Vec3f vec){
         BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(vec.x), 0, MathHelper.floor(vec.z));
         if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){
@@ -474,7 +474,7 @@ public class RailRenderer {
         } else { return 0; }
 	}
 
-	@Deprecated
+	//@Deprecated
 	public static int getBrightness(double x, double y, double z){
         BlockPos.MutableBlockPos mutblk = new BlockPos.MutableBlockPos(MathHelper.floor(x), 0, MathHelper.floor(z));
         if(Minecraft.getMinecraft().world.isBlockLoaded(mutblk)){

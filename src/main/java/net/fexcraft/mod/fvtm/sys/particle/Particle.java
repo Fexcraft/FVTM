@@ -17,10 +17,10 @@ public class Particle {
 	//
 	protected ModelRendererTurbo model;
 	public static ModelRendererTurbo testmodel = new ModelRendererTurbo(null, 0, 0, 0, 0).addBox(-.5f, -.5f, -.5f, 1, 1, 1);
-	public static Particle TEST0 = new Particle("test").setTiming(500, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.01f, 0)).setModel(testmodel).setScale(sixteenth, 0.25f).setColor(RGB.RED, RGB.WHITE);
-	public static Particle TEST1 = new Particle("test").setTiming(500, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.01f, 0)).setModel(testmodel).setScale(sixteenth, 0.25f).setColor(RGB.GREEN, RGB.WHITE);
-	public static Particle TEST2 = new Particle("test").setTiming(500, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.01f, 0)).setModel(testmodel).setScale(sixteenth, 0.25f).setColor(RGB.BLUE, RGB.WHITE);
-	public static Particle TEST3 = new Particle("test").setTiming(500, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.01f, 0)).setModel(testmodel).setScale(sixteenth, 0.25f).setColor(RGB.BLACK, RGB.WHITE);
+	public static Particle TEST0 = new Particle("test0").setTiming(500, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.05f, 0)).setModel(testmodel).setScale(sixteenth, 0.5f).setColor(RGB.RED, RGB.WHITE);
+	public static Particle TEST1 = new Particle("test1").setTiming(500, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.05f, 0)).setModel(testmodel).setScale(sixteenth, 0.5f).setColor(RGB.GREEN, RGB.WHITE);
+	public static Particle TEST2 = new Particle("test2").setTiming(500, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.05f, 0)).setModel(testmodel).setScale(sixteenth, 0.5f).setColor(RGB.BLUE, RGB.WHITE);
+	public static Particle TEST3 = new Particle("test3").setTiming(500, 5).setDirection(new Vec3f(0, 1, 0)).setSpeed(new Vec3f(0, 0.05f, 0)).setModel(testmodel).setScale(sixteenth, 0.5f).setColor(RGB.BLACK, RGB.WHITE);
 	public static Particle[] TEST = { TEST0, TEST1, TEST2, TEST3 };
 	
 	public Particle(String id){

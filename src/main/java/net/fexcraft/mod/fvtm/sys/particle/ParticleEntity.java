@@ -33,9 +33,9 @@ public class ParticleEntity {
 	}
 	
 	public void render(float ticks){
-		temp.x = prev.x + (pos.x - prev.x) * ticks;
-		temp.y = prev.y + (pos.y - prev.y) * ticks;
-		temp.z = prev.z + (pos.z - prev.z) * ticks;
+		temp.x = pos.x;//prev.x + (pos.x - prev.x) * ticks;
+		temp.y = pos.y;//prev.y + (pos.y - prev.y) * ticks;
+		temp.z = pos.z;//prev.z + (pos.z - prev.z) * ticks;
 		GL11.glPushMatrix();
 		GL11.glTranslatef(temp.x, temp.y, temp.z);
 		color.glColorApply();
@@ -65,9 +65,12 @@ public class ParticleEntity {
 	public int mix(RGB base, RGB mix, float percent){
 		float[] fl = base.toFloatArray();
 		float[] f1 = mix.toFloatArray();
-		int r = (int)(fl[0] + (f1[0] - fl[0]) * percent * 256);
-		int g = (int)(fl[1] + (f1[1] - fl[1]) * percent * 256);
-		int b = (int)(fl[2] + (f1[2] - fl[2]) * percent * 256);
+		int r = (int)((fl[0] + (f1[0] - fl[0]) * percent) * 256);
+		int g = (int)((fl[1] + (f1[1] - fl[1]) * percent) * 256);
+		int b = (int)((fl[2] + (f1[2] - fl[2]) * percent) * 256);
+		r = r > 255 ? 255 : r < 0 ? 0 : r;
+		g = g > 255 ? 255 : g < 0 ? 0 : g;
+		b = b > 255 ? 255 : b < 0 ? 0 : b;
 		return (65536 * r) + (256 * g) + b;
 	}
 

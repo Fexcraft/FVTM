@@ -162,6 +162,7 @@ public class Resources {
 	public static TreeMap<String, Class<? extends AddonSteeringOverlay>> OVERLAYS = new TreeMap<>();
 	public static final HashMap<String, Model<?, ?>> MODELS = new HashMap<>();
 	public static final NamedResourceLocation NULL_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/null.png");
+	public static final NamedResourceLocation WHITE_TEXTURE = new NamedResourceLocation("No Texture;fvtm:textures/entity/white.png");
 	public static final String UTIL_LISTENER = "fvtm:utils";
 	public static final ArmorMaterial NONE_MAT = EnumHelper.addArmorMaterial("fvtm:none", Resources.NULL_TEXTURE.toString(), 1024, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0f);
 	public static final ArrayList<String> WIRE_DECOS = new ArrayList<>();

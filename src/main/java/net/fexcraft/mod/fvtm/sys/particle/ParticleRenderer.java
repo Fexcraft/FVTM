@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.world.World;
 
 public class ParticleRenderer {
@@ -22,8 +23,13 @@ public class ParticleRenderer {
         Minecraft.getMinecraft().renderEngine.bindTexture(RailRenderer.WOOLTEX);
         EntitySystem sys = SystemManager.get(Systems.ENTITY, world);
         ents.addAll(sys.particles);
-        for(ParticleEntity part : ents) part.render(ticks);
+        for(ParticleEntity part : ents){
+	        int z = RailRenderer.getBrightness(part.prev), x = z % 65536, y = z / 65536;
+	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)x / 1.0F, (float)y / 1.0F);
+            part.render(ticks);
+        }
 		GL11.glPopMatrix();
+		ents.clear();
 	}
 
 }

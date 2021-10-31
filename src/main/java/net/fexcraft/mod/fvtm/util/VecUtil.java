@@ -29,7 +29,7 @@ public class VecUtil {
 		return new Vec3f(arr[0], arr[1], arr[2]);
 	}
 
-	private static float[] rotate(float[] vec, float angle, int ax, int ay, int az){
+	public static float[] rotate(float[] vec, float angle, int ax, int ay, int az){
 		float c = (float)Math.cos(angle), s = (float)Math.sin(angle), oc = 1.0f - c;
 		float xy = ax * ay, yz = ay * az, xz = ax * az;
 		float xs = ax * s, ys = ay * s, zs = az * s;

@@ -53,15 +53,6 @@ public class Axis3D {
 		return VecUtil.rotate(relpos, (float)roll * PI / 180f, (float)pitch * PI / 180f, (float)yaw * PI / 180f);
 	}
 
-	public Axis3D rotate(Axis3D axes){
-		Matrix4f mat = new Matrix4f();
-		mat.load(axes.getMatrix());
-		mat.rotate((float)(roll * 3.14159265F / 180F), new Vector3f(1F, 0F, 0F));
-		mat.rotate((float)(pitch * 3.14159265F / 180F), new Vector3f(0F, 0F, 1F));
-		mat.rotate((float)(yaw * 3.14159265F / 180F), new Vector3f(0F, 1F, 0F));
-		return new Axis3D(mat);
-	}
-
 	public static final double toRad(double d){
 		return d * Math.PI / 180d;
 	}

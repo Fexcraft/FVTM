@@ -327,15 +327,15 @@ public class RailEntity implements Comparable<RailEntity>{
 	private ArrayList<RailEntity> railentlist = new ArrayList<>();
 
 	private ArrayList<RailEntity> getEntitiesOnTrackAndNext(Track track){
-		railentlist.clear(); railentlist.addAll(track.unit.getEntities().values());
+		railentlist.clear(); railentlist.addAll(track.unit.getEntities());
 		Junction junction = region.getJunction(track.start); Track track0;
 		//TODO alternative for when a specific path is followed
 		if(junction != null){ track0 = junction.getNext(null, track.getId(), false);
-			if(track0 != null) railentlist.addAll(track0.unit.getEntities().values());
+			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
 		}
 		junction = region.getJunction(track.end);
 		if(junction != null){ track0 = junction.getNext(null, track.getOppositeId(), false);
-			if(track0 != null) railentlist.addAll(track0.unit.getEntities().values());
+			if(track0 != null) railentlist.addAll(track0.unit.getEntities());
 		} return railentlist;
 	}
 

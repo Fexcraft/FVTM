@@ -110,7 +110,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		this(world); this.setPosition(pos.x, pos.y, pos.z); this.vehicle = data;
 		if(placer != null) this.placer = placer.getGameProfile().getId();
 		initializeVehicle(false);
-		this.rotateYaw((placer == null || meta >= 0 ? (meta * 90f) : placer.rotationYaw) + 90f);
+		rotpoint.getAxes().set_yaw((placer == null || meta >= 0 ? (meta * 90f) : placer.rotationYaw) + 90f, true);
 	}
 
 	public LandVehicle(World world, VehicleData data, EntityPlayer player, LandVehicle truck){
@@ -406,24 +406,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public UUID getPlacer(){
 		return placer;
 	}
-	
-    public void rotateYaw(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotateYawD(rotateBy);
-        updatePrevAngles();
-    }
-
-    public void rotatePitch(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotatePitchD(rotateBy);
-        updatePrevAngles();
-    }
-
-    public void rotateRoll(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotateRollD(rotateBy);
-        updatePrevAngles();
-    }
 
     public void updatePrevAngles(){
         double yaw = rotpoint.getAxes().getYaw() - prevRotationYaw;
@@ -601,7 +583,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 		Print.debug(vehicle.getRearConnector(), vehicle.getType().getDefaultRearConnector());
                 		return true;
                 	}
-                	if(!LegacySpawnSystem.validToSpawn(player, stack, data, false)) return true;
+                	if(!LegacySpawnSystem.validToSpawn(player, stack, data)) return true;
                 	if(trailer != null){
                 		Print.chat(player, "&cPlease disconnect the currently connected trailer first.");
                 		return true;

@@ -308,24 +308,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	public UUID getPlacer(){
 		return world.isRemote ? null : rek.ent().getPlacer();
 	}
-	
-    public void rotateYaw(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotateYawD(rotateBy);
-        updatePrevAngles();
-    }
-
-    public void rotatePitch(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotatePitchD(rotateBy);
-        updatePrevAngles();
-    }
-
-    public void rotateRoll(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotateRollD(rotateBy);
-        updatePrevAngles();
-    }
 
     public void updatePrevAngles(){
         double yaw = rotpoint.getAxes().getYaw() - prevRotationYaw;

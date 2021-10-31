@@ -128,7 +128,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 		initializeVehicle(false);
 		if(meta > -2){
 			float prot = placer != null ? (MathHelper.floor(((placer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15) * 22.5f : 0;
-			rotpoint.getAxes().rotateYawD((placer == null || meta >= 0 ? (meta * 90f) : prot) + -90F);
+			rotpoint.getAxes().set_yaw((placer == null || meta >= 0 ? (meta * 90f) : prot) + -90F, true);
 			rotpoint.updatePrevAxe();
 		}
 	}
@@ -550,24 +550,6 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	public UUID getPlacer(){
 		return placer;
 	}
-	
-    public void rotateYaw(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotateYawD(rotateBy);
-        updatePrevAngles();
-    }
-
-    public void rotatePitch(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotatePitchD(rotateBy);
-        updatePrevAngles();
-    }
-
-    public void rotateRoll(float rotateBy){
-        if(Math.abs(rotateBy) < 0.01F){ return; }
-        rotpoint.getAxes().rotateRollD(rotateBy);
-        updatePrevAngles();
-    }
 
     public void updatePrevAngles(){
         double yaw = rotpoint.getAxes().getYaw() - prevRotationYaw;

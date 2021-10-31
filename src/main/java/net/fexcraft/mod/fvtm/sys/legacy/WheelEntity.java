@@ -170,7 +170,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
 	}
 
 	public String getIndex(){
-		return vehicle.getVehicleType().isAirVehicle() ? AirVehicle.WHEELINDEX[wheelid] : LandVehicle.WHEELINDEX[wheelid];
+		return LandVehicle.WHEELINDEX[wheelid];
 	}
 
 }

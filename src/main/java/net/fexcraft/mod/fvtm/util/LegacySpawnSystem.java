@@ -4,7 +4,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.vehicle.EntitySystem;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
-import net.fexcraft.mod.fvtm.sys.legacy.AirVehicle;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,9 +33,6 @@ public class LegacySpawnSystem extends EntitySystem {
 		World world = placer.getEntityWorld();
 		EntityPlayer player = (EntityPlayer)placer;
 		switch(data.getType().getVehicleType()){
-			case AIR:
-    			world.spawnEntity(new AirVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), player, -1));
-    			break;
 			case WATER:
 			case LAND:
 				world.spawnEntity(new LandVehicle(world, data, new Vec3d(pos.x, pos.y + 2, pos.z), player, -1));
@@ -49,15 +45,14 @@ public class LegacySpawnSystem extends EntitySystem {
 	@Override
 	public boolean canSpawn(ICommandSender placer, Vec3d pos, ItemStack stack, VehicleData data, SpawnMode mode){
 		switch(data.getType().getVehicleType()){
-			case AIR: return validToSpawn((EntityPlayer)placer, stack, data, true); 
 			case WATER:
-			case LAND: return validToSpawn((EntityPlayer)placer, stack, data, false); 
+			case LAND: return validToSpawn((EntityPlayer)placer, stack, data); 
 			default: return false;
 		}
 	}
     
-    public static boolean validToSpawn(EntityPlayer player, ItemStack stack, VehicleData data, boolean plane){
-		String[] index = plane ? AirVehicle.WHEELINDEX : data.getType().isTrailerOrWagon() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX;
+    public static boolean validToSpawn(EntityPlayer player, ItemStack stack, VehicleData data){
+		String[] index = data.getType().isTrailerOrWagon() ? LandVehicle.TRAILERWHEELINDEX : LandVehicle.WHEELINDEX;
 		boolean failed = false;
 		for(String str : index){
 			if(!data.getWheelPositions().containsKey(str)){

@@ -134,7 +134,7 @@ public class SeatCache {
         //
         //this.updatePassenger();
         //
-        Axis3D glookaxes = vehicle.getRotPoint().getAxes().getRelativeVector(passlooking);
+        Axis3D glookaxes = vehicle.getRotPoint().getAxes().rotate(passlooking);
         pass_yaw = -90F + glookaxes.getYaw();
         pass_pitch = glookaxes.getPitch();
         //

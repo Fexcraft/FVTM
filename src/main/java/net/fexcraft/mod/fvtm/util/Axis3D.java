@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
+import static net.fexcraft.lib.common.Static.PI;
+
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.util.vector.Matrix4f;
 import net.fexcraft.mod.fvtm.util.vector.Vector3f;
@@ -34,14 +36,8 @@ public class Axis3D {
 	}
 
 	public Vec3d getRelativeVector(float x, float y, float z){
-		Matrix4f mat = new Matrix4f();
-		mat.m00 = x;
-		mat.m10 = y;
-		mat.m20 = z;
-		Matrix4f.rotate((float)(roll * 3.14159265F / 180D), new Vector3f(1F, 0F, 0F), mat, mat);
-		Matrix4f.rotate((float)(pitch * 3.14159265F / 180D), new Vector3f(0F, 0F, 1F), mat, mat);
-		Matrix4f.rotate((float)(yaw * 3.14159265F / 180D), new Vector3f(0F, 1F, 0F), mat, mat);
-		return new Vec3d(mat.m00, mat.m10, mat.m20);
+		float[] arr = VecUtil.rotate(new float[]{ x, y, z }, (float)roll * PI / 180f, (float)pitch * PI / 180f, (float)yaw * PI / 180f);
+		return new Vec3d(arr[0], arr[1], arr[2]);
 	}
 
 	public Vec3d getRelativeVector(Vec3d vec){
@@ -49,22 +45,15 @@ public class Axis3D {
 	}
 
 	public Vec3d getRelativeVector(Vec3d vec, float yawmod){
-		Matrix4f mat = new Matrix4f();
-		mat.m00 = (float)vec.x;
-		mat.m10 = (float)vec.y;
-		mat.m20 = (float)vec.z;
-		Matrix4f.rotate((float)(roll * 3.14159265F / 180D), new Vector3f(1F, 0F, 0F), mat, mat);
-		Matrix4f.rotate((float)(pitch * 3.14159265F / 180D), new Vector3f(0F, 0F, 1F), mat, mat);
-		Matrix4f.rotate((float)((yaw + yawmod) * 3.14159265F / 180D), new Vector3f(0F, 1F, 0F), mat, mat);
-		return new Vec3d(mat.m00, mat.m10, mat.m20);
+		float[] arr = VecUtil.rotate(new float[]{ (float)vec.x, (float)vec.y, (float)vec.z }, (float)roll * PI / 180f, (float)pitch * PI / 180f, (float)(yaw + yawmod) * PI / 180f);
+		return new Vec3d(arr[0], arr[1], arr[2]);
 	}
 
 	public Vec3f getRelativeVector(Vec3f relpos){
-		Vec3d vec = getRelativeVector(new Vec3d(relpos.x, relpos.y, relpos.z));
-		return new Vec3f(vec.x, vec.y, vec.z);
+		return VecUtil.rotate(relpos, (float)roll * PI / 180f, (float)pitch * PI / 180f, (float)yaw * PI / 180f);
 	}
 
-	public Axis3D getRelativeVector(Axis3D axes){
+	public Axis3D rotate(Axis3D axes){
 		Matrix4f mat = new Matrix4f();
 		mat.load(axes.getMatrix());
 		mat.rotate((float)(roll * 3.14159265F / 180F), new Vector3f(1F, 0F, 0F));

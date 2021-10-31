@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.sys.rail;
 
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class TrackUnit {
 	
-	private TreeMap<Long, RailEntity> entities = new TreeMap<>();
+	private ConcurrentLinkedQueue<RailEntity> entities = new ConcurrentLinkedQueue<>();
 	private RailSystem data;
 	protected Track orig, copy;
 	private Section section;
@@ -27,17 +27,17 @@ public class TrackUnit {
 	}
 	
 	public void update(RailEntity ent, boolean add){
-		if(add) entities.put(ent.getUID(), ent);
-		else entities.remove(ent.getUID());
+		if(add) entities.add(ent);
+		else entities.remove(ent);
 	}
 	
-	public TreeMap<Long, RailEntity> getEntities(){
+	public ConcurrentLinkedQueue<RailEntity> getEntities(){
 		return entities;
 	}
 
 	public boolean hasCompound(Compound except){
 		if(except == null) return entities.size() > 0;
-		for(RailEntity ent : entities.values()){
+		for(RailEntity ent : entities){
 			if(ent.com.getUID() != except.getUID()) return true;
 		}
 		return false;

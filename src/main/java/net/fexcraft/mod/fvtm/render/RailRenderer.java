@@ -287,7 +287,7 @@ public class RailRenderer {
 	    			RenderStreetSign.drawString(track.getUnit().section().getUID() + "", pos.x + off, pos.y + 0.5, pos.z, true, true, 0.8f, track.isOppositeCopy() ? 0xb8bc38 : 0x32a852, deg);
 	    			//
 	    			if(!track.isOppositeCopy() && track.getUnit().getEntities().size() > 0){
-	    				RailEntity[] ents = track.getUnit().getEntities().values().toArray(new RailEntity[0]);
+	    				RailEntity[] ents = track.getUnit().getEntities().toArray(new RailEntity[0]);
 	    				String str = ents[0].uid + ""; for(int j = 1; j < ents.length; j++) str += ", " + ents[j].uid;
 	        			RenderStreetSign.drawString(str, pos.x, pos.y + 0.75, pos.z, true, true, 0.8f, 0x4287f5, deg);
 	    			}

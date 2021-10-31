@@ -54,7 +54,7 @@ public class PKTH_SeatUpdate {
             	GenericVehicle veh = (GenericVehicle)ent;
             	SeatCache seat = veh.seats[packet.seatid];
             	seat.prevlooking = seat.looking.clone();
-            	seat.looking.setAngles(packet.yaw, packet.pitch, 0F);
+            	seat.looking.set_rotation(packet.yaw, packet.pitch, 0F, true);
             	if(send){
                     Packets.sendToAllAround(packet, new TargetPoint(veh.dimension, veh.posX, veh.posY, veh.posZ, Config.VEHICLE_UPDATE_RANGE));
             	}

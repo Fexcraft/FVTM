@@ -48,7 +48,7 @@ public class SwivelPoint {
 		this.position = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true).to16Double() : new Vec3d(0, 0, 0);
 		this.prevpos = new Vec3d(position.x, position.y, position.z);
 		this.parid = obj.has("parent") ? obj.get("parent").getAsString() : DEFAULT;
-		axe.setAngles(JsonUtil.getIfExists(obj, "yaw", 0).doubleValue(), JsonUtil.getIfExists(obj, "pitch", 0).doubleValue(), JsonUtil.getIfExists(obj, "roll", 0).doubleValue());
+		axe.set_rotation(JsonUtil.getIfExists(obj, "yaw", 0).floatValue(), JsonUtil.getIfExists(obj, "pitch", 0).floatValue(), JsonUtil.getIfExists(obj, "roll", 0).floatValue(), true);
 		if(obj.has("movers")){
 			movers = new ArrayList<>();
 			JsonElement movs = obj.get("movers");
@@ -227,7 +227,7 @@ public class SwivelPoint {
 		double yaw = MathHelper.wrapDegrees(servrot.x - axe.getYaw());
 		double pitch = MathHelper.wrapDegrees(servrot.y - axe.getPitch());
 		double roll = MathHelper.wrapDegrees(servrot.z - axe.getRoll());
-		axe.setAngles(axe.getYaw() + yaw / servticker, axe.getPitch() + pitch / servticker, axe.getRoll() + roll / servticker);
+		axe.set_rotation(axe.getYaw() + yaw / servticker, axe.getPitch() + pitch / servticker, axe.getRoll() + roll / servticker, true);
 		--servticker;
 	}
 
@@ -240,7 +240,7 @@ public class SwivelPoint {
 		else{
 			setPos(pkt.posX, pkt.posY, pkt.posZ);
 			updatePrevAxe();
-			getAxes().setAngles(pkt.yaw, pkt.pitch, pkt.roll);
+			getAxes().set_rotation(pkt.yaw, pkt.pitch, pkt.roll, true);
 		}
 	}
 

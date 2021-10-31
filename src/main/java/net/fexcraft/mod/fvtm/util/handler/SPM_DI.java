@@ -131,15 +131,15 @@ public class SPM_DI implements SwivelPointMover {
 		else{
 			switch(axe){
 				case 0:{//yaw
-					point.getAxes().setAngles(last, point.getAxes().getPitch(), point.getAxes().getRoll());
+					point.getAxes().set_rotation(last, point.getAxes().getPitch(), point.getAxes().getRoll(), true);
 					return;
 				}
 				case 1:{//pitch
-					point.getAxes().setAngles(point.getAxes().getYaw(), last, point.getAxes().getRoll());
+					point.getAxes().set_rotation(point.getAxes().getYaw(), last, point.getAxes().getRoll(), true);
 					return;
 				}
 				case 2:{//roll
-					point.getAxes().setAngles(point.getAxes().getYaw(), point.getAxes().getPitch(), last);
+					point.getAxes().set_rotation(point.getAxes().getYaw(), point.getAxes().getPitch(), last, true);
 					return;
 				}
 			}

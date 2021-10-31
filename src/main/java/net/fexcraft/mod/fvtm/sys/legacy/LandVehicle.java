@@ -117,7 +117,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		this(world, data, truck.getPositionVector(), player, 0);
 		this.truck = truck; truck.trailer = this;
 		rotpoint.updatePrevAxe();
-		rotpoint.getAxes().setAngles(truck.rotpoint.getAxes().getYaw(), rotpoint.getAxes().getPitch(), rotpoint.getAxes().getRoll());
+		rotpoint.getAxes().set_rotation(truck.rotpoint.getAxes().getYaw(), rotpoint.getAxes().getPitch(), rotpoint.getAxes().getRoll(), true);
 	}
 
 	@Override
@@ -419,10 +419,6 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(roll < -180){ prevRotationRoll -= 360F; }
     }
 
-    public void setRotation(float rotYaw, float rotPitch, float rotRoll){
-    	rotpoint.getAxes().setAngles(rotYaw, rotPitch, rotRoll);
-    }
-
     @Override
 	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double throttle, double steeringYaw, int fuel){
         if(world.isRemote){
@@ -435,7 +431,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             prevRotationYaw = yaw;
             prevRotationPitch = pitch;
             prevRotationRoll = roll;
-            setRotation(yaw, pitch, roll);
+            rotpoint.getAxes().set_rotation(yaw, pitch, roll, true);
         }
         this.throttle = throttle; serverWY = (float)steeringYaw;
         vehicle.getAttribute("fuel_stored").value(fuel);
@@ -665,7 +661,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / serverPositionTransitionTicker);
                 wheelsYaw += (serverWY - wheelsYaw) / serverPositionTransitionTicker;
                 --serverPositionTransitionTicker; setPosition(x, y, z);
-                setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
+                rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, true); //return;
             }
             vehicle.getAttribute("steering_angle").value(wheelsYaw);
             double cir = ((WheelData)vehicle.getPart("left_back_wheel").getType().getInstallationHandlerData()).getRadius() * 2 * Static.PI;
@@ -710,7 +706,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 if(lata.is_tracked){
                     yaw = (float) Math.atan2(wheels[3].posZ - wheels[2].posZ, wheels[3].posX - wheels[2].posX) + (float) Math.PI / 2F;
                 }
-                rotpoint.getAxes().setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+                rotpoint.getAxes().set_rotation(yaw, pitch, roll, false);
             }
         }
         else{
@@ -905,7 +901,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         double diff = rawy * thrt * 0.2;
         //Print.debug(rawy, diff);
         diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
-        rotpoint.getAxes().setRotation(rotpoint.getAxes().getRadianYaw() + Math.toRadians(diff), rotpoint.getAxes().getRadianPitch(), rotpoint.getAxes().getRadianRoll());
+        rotpoint.getAxes().set_rotation(rotpoint.getAxes().getRadianYaw() + Math.toRadians(diff), rotpoint.getAxes().getRadianPitch(), rotpoint.getAxes().getRadianRoll(), false);
         //
         alignWheels();
 	}

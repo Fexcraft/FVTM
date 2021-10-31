@@ -21,13 +21,8 @@ public class Axis3D {
 
 	public Axis3D(){}
 
-	public Axis3D(Matrix4f mat){
-		matrix = mat;
-		convertMatrixToAngles();
-	}
-
 	public Axis3D(float yaw, float pitch, float roll){
-		setAngles(yaw, pitch, roll);
+		set_rotation(yaw, pitch, roll, false);
 	}
 
 	@Override
@@ -89,8 +84,8 @@ public class Axis3D {
 		return (float)yaw;
 	}
 
-	public double getRadianYaw(){
-		return yaw * 3.14159265F / 180F;
+	public float getRadianYaw(){
+		return (float) (yaw * 3.14159265F / 180F);
 	}
 
 	public float getPitch(){
@@ -115,50 +110,16 @@ public class Axis3D {
 		this.pitch = axes.pitch;
 	}
 
-	private final void convertMatrixToAngles(){
-		yaw = (float)Math.atan2(matrix.m20, matrix.m00) * 180F / 3.14159265F;
-		pitch = (float)Math.atan2(-matrix.m10, Math.sqrt(matrix.m12 * matrix.m12 + matrix.m11 * matrix.m11)) * 180F / 3.14159265F;
-		roll = (float)Math.atan2(matrix.m12, matrix.m11) * 180F / 3.14159265F;
-	}
-
-	private final void convertToMatrix(boolean rad){
-		matrix = new Matrix4f();
-		matrix.rotate((float)(rad ? roll : roll * 3.14159265F / 180F), new Vector3f(1F, 0F, 0F));
-		matrix.rotate((float)(rad ? pitch : pitch * 3.14159265F / 180F), new Vector3f(0F, 0F, 1F));
-		matrix.rotate((float)(rad ? yaw : yaw * 3.14159265F / 180F), new Vector3f(0F, 1F, 0F));
-		convertMatrixToAngles();
-	}
-
 	@Override
 	public Axis3D clone(){
-		return null;
+		Axis3D axes = new Axis3D();
+		axes.yaw = yaw;
+		axes.pitch = pitch;
+		axes.roll = roll;
+		return axes;
 	}
-
-	public void setAngles(double yaw, double pitch, double roll){
-		this.yaw = yaw;
-		this.pitch = pitch;
-		this.roll = roll;
-		convertToMatrix(false);
-	}
-
-	public void setRotation(float yaw, float pitch, float roll){
-		this.yaw = yaw;
-		this.pitch = pitch;
-		this.roll = roll;
-		convertToMatrix(true);
-	}
-
-	public void setRotation(double yaw, double pitch, double roll){
-		setRotation((float)yaw, (float)pitch, (float)roll);
-	}
-
-	public void setRotationYaw(double yaw){
-		setRotation((float)yaw, getRadianPitch(), getRadianRoll());
-	}
-
-	public void setRotationPitch(double pitch){
-		setRotation(getRadianYaw(), (float)pitch, getRadianRoll());
-	}
+	
+	public void set_rotation(float y, float p, float r, boolean degrees){}
 
 	public double[] toDoubles(){
 		return new double[]{ yaw, pitch, roll };
@@ -168,9 +129,25 @@ public class Axis3D {
 		return new Vec3d(yaw, pitch, roll);
 	}
 
-	public void set_yaw(float f, boolean b) {
-		// TODO Auto-generated method stub
-		
+	public void set_yaw(float f, boolean b){
+		set_rotation(b ? toRad(f) : f, pitch, roll, false);
+	}
+
+	public void set_rotation(double d, double e, double f, boolean degrees){
+		yaw = degrees ? toRad(d) : d;
+		pitch = degrees ? toRad(e) : e;
+		roll = degrees ? toRad(f) : f;
+		convert();
+	}
+
+	private final void convert(){
+		matrix = new Matrix4f();
+		matrix.rotate((float)roll, new Vector3f(1F, 0F, 0F));
+		matrix.rotate((float)pitch, new Vector3f(0F, 0F, 1F));
+		matrix.rotate((float)yaw, new Vector3f(0F, 1F, 0F));
+		yaw = (float)Math.atan2(matrix.m20, matrix.m00) * 180F / 3.14159265F;
+		pitch = (float)Math.atan2(-matrix.m10, Math.sqrt(matrix.m12 * matrix.m12 + matrix.m11 * matrix.m11)) * 180F / 3.14159265F;
+		roll = (float)Math.atan2(matrix.m12, matrix.m11) * 180F / 3.14159265F;
 	}
 
 }

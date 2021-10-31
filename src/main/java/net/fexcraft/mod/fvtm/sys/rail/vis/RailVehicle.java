@@ -321,10 +321,6 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(roll < -180){ prevRotationRoll -= 360F; }
     }
 
-    public void setRotation(float rotYaw, float rotPitch, float rotRoll){
-    	rotpoint.getAxes().setAngles(rotYaw, rotPitch, rotRoll);
-    }
-
     @Override
 	public void setPositionRotationAndMotion(double posX, double posY, double posZ, float yaw, float pitch, float roll, double throttle, double steeringYaw, int fuel){
         if(world.isRemote){
@@ -337,7 +333,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             prevRotationYaw = yaw;
             prevRotationPitch = pitch;
             prevRotationRoll = roll;
-            setRotation(yaw, pitch, roll);
+            rotpoint.getAxes().set_rotation(yaw, pitch, roll, true);
         }
         this.throttle = throttle; rek.data().getAttribute("fuel_stored").value(fuel);
 	}
@@ -525,7 +521,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / sptt);
                 float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / sptt);
                 --sptt; setPosition(x, y, z);
-                setRotation(rotationYaw, rotationPitch, rotationRoll); //return;
+                rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, false); //return;
             }
         	rek.data().getAttribute("throttle").value((float)throttle);
         	rek.data().getAttribute("speed").value((float)speed);
@@ -561,7 +557,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             double pitch = -Math.atan2(dy, dxz);
             double roll = 0F;
             roll = -(float) Math.atan2(dry, drxz);
-            rotpoint.getAxes().setAngles(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F);
+            rotpoint.getAxes().set_rotation(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F, true);
         }
         else{
         	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);

@@ -57,8 +57,8 @@ public class SeatCache {
 	public void resetAxes(){
         prevlooking = new Axis3D(); looking = new Axis3D();
         passlooking = new Axis3D(); prevpasslooking = new Axis3D();
-        looking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
-        prevlooking.setAngles((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F);
+        looking.set_rotation((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F, true);
+        prevlooking.set_rotation((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F, true);
 	}
 
 
@@ -95,7 +95,7 @@ public class SeatCache {
                 		continue;
                 	}
                 	entity.getCapability(Capabilities.PASSENGER, null).set(vehicle.getEntityId(), seatindex);
-                    looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0F);
+                    looking.set_rotation(-entity.rotationYaw, entity.rotationPitch, 0F, true);
                     entity.clearLeashed(true, !player.capabilities.isCreativeMode);
                     entity.startRiding(vehicle);
                     break;
@@ -219,7 +219,7 @@ public class SeatCache {
                 else{ npassyaw = opassyaw + 360F; }
             }
         }
-        passlooking.setAngles(npassyaw, npasspitch, 0F);
+        passlooking.set_rotation(npassyaw, npasspitch, 0F, true);
         //
         Vec3d vecais = new Vec3d(1, 1, 0);
         double targetx = passlooking.getYaw();
@@ -272,7 +272,7 @@ public class SeatCache {
         else{ newPitch = looking.getPitch(); }
         if(newPitch > -seatdata.minpitch){ newPitch = -seatdata.minpitch; }
         if(newPitch < -seatdata.maxpitch){ newPitch = -seatdata.maxpitch; }
-        looking.setAngles(newYaw, newPitch, 0F);
+        looking.set_rotation(newYaw, newPitch, 0F, true);
         Packets.sendToServer(new PKT_SeatUpdate(this));
         return;
 	}
@@ -298,10 +298,10 @@ public class SeatCache {
 		resetAxes();
 		pass_yaw = prev_pass_yaw = seatdata.defyaw;
 		pass_pitch = prev_pass_pitch = seatdata.defpitch;
-		looking.setAngles(pass_yaw, pass_pitch, 0);
-		prevlooking.setAngles(pass_yaw, pass_pitch, 0);
-		passlooking.setAngles(pass_yaw, pass_pitch, 0);
-		prevpasslooking.setAngles(pass_yaw, pass_pitch, 0);
+		looking.set_rotation(pass_yaw, pass_pitch, 0, true);
+		prevlooking.set_rotation(pass_yaw, pass_pitch, 0, true);
+		passlooking.set_rotation(pass_yaw, pass_pitch, 0, true);
+		prevpasslooking.set_rotation(pass_yaw, pass_pitch, 0, true);
 	}
 	
 	public Entity passenger(){

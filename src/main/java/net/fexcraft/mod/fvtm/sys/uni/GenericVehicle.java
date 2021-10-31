@@ -233,7 +233,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		if(slot == null) return new Vec3d(0, 0, 0);
         SwivelPoint point = getVehicleData().getRotationPoint(slot.rotpoint);
         float off = index + (type.length() / 2f) - (slot.length / 2f);
-        calcaxis.setAngles(slot.rotation, 0, 0);
+        calcaxis.set_rotation(slot.rotation, 0, 0, true);
         Vec3d offv = calcaxis.getRelativeVector(-off, 0, 0);
         Vec3d relpos = point.getRelativeVector(slot.position.x + offv.x, slot.position.y + offv.y, slot.position.z + offv.z);
 		return relpos.add(posX, posY, posZ);

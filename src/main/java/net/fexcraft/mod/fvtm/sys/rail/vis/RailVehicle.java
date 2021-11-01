@@ -521,7 +521,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / sptt);
                 float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / sptt);
                 --sptt; setPosition(x, y, z);
-                rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, false); //return;
+                rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, true); //return;
             }
         	rek.data().getAttribute("throttle").value((float)throttle);
         	rek.data().getAttribute("speed").value((float)speed);
@@ -557,7 +557,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             double pitch = -Math.atan2(dy, dxz);
             double roll = 0F;
             roll = -(float) Math.atan2(dry, drxz);
-            rotpoint.getAxes().set_rotation(yaw * 180F / 3.14159F, pitch * 180F / 3.14159F, roll * 180F / 3.14159F, true);
+            rotpoint.getAxes().set_rotation(yaw, pitch, roll, false);
         }
         else{
         	speed = net.fexcraft.mod.fvtm.gui.VehicleSteeringOverlay.calculateSpeed(this);

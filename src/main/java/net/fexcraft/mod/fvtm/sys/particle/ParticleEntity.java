@@ -8,10 +8,9 @@ import net.fexcraft.lib.common.math.Vec3f;
 
 public class ParticleEntity {
 	
-	private Particle particle;
-	protected Vec3f pos, prev, temp;
-	protected Vec3f dir, speed;
-	protected float percent, scale;
+	public final Particle particle;
+	public Vec3f pos, prev, temp, dir;
+	public float percent, scale, speed;
 	public RGB color;
 	public int passed;
 	
@@ -27,7 +26,7 @@ public class ParticleEntity {
 		color = new RGB(particle.color);
 	}
 	
-	public void setDirSpeed(Vec3f dir, Vec3f speed){
+	public void setDirSpeed(Vec3f dir, float speed){
 		this.dir = dir;
 		this.speed = speed;
 	}
@@ -49,15 +48,15 @@ public class ParticleEntity {
 		prev = pos;
 		pos = new Vec3f();
 		float x = (Static.random.nextFloat() - 0.5f) / 50f, z = (Static.random.nextFloat() - 0.5f) / 50f;
-		pos.x = prev.x + dir.x * speed.x + x;
-		pos.y = prev.y + dir.y * speed.y;
-		pos.z = prev.z + dir.z * speed.z + z;
+		pos.x = prev.x + dir.x * speed + x;
+		pos.y = prev.y + dir.y * speed;
+		pos.z = prev.z + dir.z * speed + z;
 		percent = passed / (float)particle.persistence;
-		if(particle.scale_end > 0){
-			scale = particle.scale + (particle.scale_end - particle.scale) * percent;
+		if(particle.scale_to > 0){
+			scale = particle.scale + (particle.scale_to - particle.scale) * percent;
 		}
-		if(particle.end_color != null){
-			color.packed = mix(particle.color, particle.end_color, percent);
+		if(particle.color_to != null){
+			color.packed = mix(particle.color, particle.color_to, percent);
 		}
 		passed++;
 	}

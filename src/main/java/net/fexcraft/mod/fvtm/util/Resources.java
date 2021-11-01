@@ -85,6 +85,7 @@ import net.fexcraft.mod.fvtm.model.RailGaugeModel;
 import net.fexcraft.mod.fvtm.model.RoadSignModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.model.WireModel;
+import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -156,6 +157,7 @@ public class Resources {
 	private static TreeMap<String, Class<? extends Function>> FUNCTIONS = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Attribute<?>>> ATTRIBUTE_TYPES = new TreeMap<>();
 	private static TreeMap<String, Class<? extends Modifier<?>>> MODIFIER_IMPLS = new TreeMap<>();
+	public static HashMap<String, Particle> PARTICLES = new HashMap<>();
 	private static TreeMap<String, Boolean> LOADED_MODS = new TreeMap<>();
 	private static TreeMap<String, ObjModel> OBJ_MODEL_INFO_CACHE = new TreeMap<>();
 	private static TreeMap<ResourceLocation, ObjModel> OBJ_MODEL_DATA_CACHE = new TreeMap<>();

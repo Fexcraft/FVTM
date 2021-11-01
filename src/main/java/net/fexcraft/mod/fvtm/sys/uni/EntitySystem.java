@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -22,6 +23,7 @@ public class EntitySystem extends DetachedSystem {
 	private float accumulator, delta;
 	//
 	public ArrayList<ParticleEntity> particles = new ArrayList<>();
+	public ArrayList<ParticleEntity> expired = new ArrayList<>();
 
 	public EntitySystem(World world){
 		super(world);
@@ -62,20 +64,31 @@ public class EntitySystem extends DetachedSystem {
 		for(ParticleEntity part : particles){
 			part.update();
 		}
-		if(cooldown < 1){
+		if(cooldown < 10){
 			cooldown++;
 			return;
 		}
 		cooldown = 0;
+		particles.removeIf(part -> {
+			if(part.expired()){
+				if(part.particle.next != null) expired.add(part);
+				return true;
+			}
+			return false;
+		});
+		if(expired.size() > 0){
+			for(ParticleEntity part : expired){
+				Particle particle = Resources.PARTICLES.get(part.particle.next);
+				if(particle != null) particles.add(new ParticleEntity(particle, new Vec3f(part.pos)));
+			}
+			expired.clear();
+		}
 		entities.addAll(world.loadedEntityList);
-		particles.removeIf(part -> part.expired());
 		for(Entity entity : entities){
 			if(entity instanceof GenericVehicle == false || ((GenericVehicle)entity).getVehicleData().getType().isTrailerOrWagon()) continue;
 			float x = Static.random.nextFloat() * 0.1f - 0.05f, z = Static.random.nextFloat() * 0.1f - 0.05f;
 			Vec3d pos = entity.getPositionVector();
-			ParticleEntity ent = new ParticleEntity(Particle.TEST[Static.random.nextInt(4)], new Vec3f(pos.x + x, pos.y + 1, pos.z + z));
-			//ent.color = RGB.random();
-			particles.add(ent);
+			particles.add(new ParticleEntity(Particle.TEST[Static.random.nextInt(4)], new Vec3f(pos.x + x, pos.y + 1, pos.z + z)));
 		}
 		entities.clear();
 	}

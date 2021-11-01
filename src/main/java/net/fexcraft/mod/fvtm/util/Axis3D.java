@@ -119,7 +119,12 @@ public class Axis3D {
 		return axes;
 	}
 	
-	public void set_rotation(float y, float p, float r, boolean degrees){}
+	public void set_rotation(float y, float p, float r, boolean degrees){
+		yaw = degrees ? toRad(y) : y;
+		pitch = degrees ? toRad(p) : p;
+		roll = degrees ? toRad(r) : r;
+		convert();
+	}
 
 	public double[] toDoubles(){
 		return new double[]{ yaw, pitch, roll };

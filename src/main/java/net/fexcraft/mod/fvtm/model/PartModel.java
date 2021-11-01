@@ -161,9 +161,9 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 		GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-		GL11.glRotatef(point.getAxes().getYaw(), 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(point.getAxes().getPitch(), 0.0F, 0.0F, 1.0F);
-		GL11.glRotatef(point.getAxes().getRoll(), 1.0F, 0.0F, 0.0F);
+		GL11.glRotatef(point.getAxes().deg_yaw(), 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(point.getAxes().deg_pitch(), 0.0F, 0.0F, 1.0F);
+		GL11.glRotatef(point.getAxes().deg_roll(), 1.0F, 0.0F, 0.0F);
 		data.getInstalledRot().rotate();
 	}
 	

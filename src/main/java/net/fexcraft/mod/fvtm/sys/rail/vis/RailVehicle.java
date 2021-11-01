@@ -146,9 +146,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
             NBTTagCompound compound = ByteBufUtils.readTag(buffer); //Print.debug("recd: " + compound);
             initializeVehicle(true, compound.getCompoundTag("Entity"));
             rotpoint.loadAxes(this, compound);
-            prevRotationYaw = rotpoint.getAxes().getYaw();
-            prevRotationPitch = rotpoint.getAxes().getPitch();
-            prevRotationRoll = rotpoint.getAxes().getRoll();
+            prevRotationYaw = rotpoint.getAxes().deg_yaw();
+            prevRotationPitch = rotpoint.getAxes().deg_pitch();
+            prevRotationRoll = rotpoint.getAxes().deg_roll();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -310,13 +310,13 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 	}
 
     public void updatePrevAngles(){
-        double yaw = rotpoint.getAxes().getYaw() - prevRotationYaw;
+        double yaw = rotpoint.getAxes().deg_yaw() - prevRotationYaw;
         if(yaw > 180){ prevRotationYaw += 360F; }
         if(yaw < -180){ prevRotationYaw -= 360F; }
-        double pitch = rotpoint.getAxes().getPitch() - prevRotationPitch;
+        double pitch = rotpoint.getAxes().deg_pitch() - prevRotationPitch;
         if(pitch > 180){ prevRotationPitch += 360F; }
         if(pitch < -180){ prevRotationPitch -= 360F; }
-        double roll = rotpoint.getAxes().getRoll() - prevRotationRoll;
+        double roll = rotpoint.getAxes().deg_roll() - prevRotationRoll;
         if(roll > 180){ prevRotationRoll += 360F; }
         if(roll < -180){ prevRotationRoll -= 360F; }
     }
@@ -496,9 +496,9 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         /*if(!world.isRemote){
         	//
         }*/
-        prevRotationYaw = rotpoint.getAxes().getYaw();
-        prevRotationPitch = rotpoint.getAxes().getPitch();
-        prevRotationRoll = rotpoint.getAxes().getRoll();
+        prevRotationYaw = rotpoint.getAxes().deg_yaw();
+        prevRotationPitch = rotpoint.getAxes().deg_pitch();
+        prevRotationRoll = rotpoint.getAxes().deg_roll();
         rotpoint.updatePrevAxe();
         this.ticksExisted++;
         if(this.ticksExisted >= Integer.MAX_VALUE){
@@ -514,12 +514,12 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
                 double x = posX + (serverPosX - posX) / sptt;
                 double y = posY + (serverPosY - posY) / sptt;
                 double z = posZ + (serverPosZ - posZ) / sptt;
-                double dYaw = MathHelper.wrapDegrees(serverYaw - rotpoint.getAxes().getYaw());
-                double dPitch = MathHelper.wrapDegrees(serverPitch - rotpoint.getAxes().getPitch());
-                double dRoll = MathHelper.wrapDegrees(serverRoll - rotpoint.getAxes().getRoll());
-                rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / sptt);
-                rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / sptt);
-                float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / sptt);
+                double dYaw = MathHelper.wrapDegrees(serverYaw - rotpoint.getAxes().deg_yaw());
+                double dPitch = MathHelper.wrapDegrees(serverPitch - rotpoint.getAxes().deg_pitch());
+                double dRoll = MathHelper.wrapDegrees(serverRoll - rotpoint.getAxes().deg_roll());
+                rotationYaw = (float)(rotpoint.getAxes().deg_yaw() + dYaw / sptt);
+                rotationPitch = (float)(rotpoint.getAxes().deg_pitch() + dPitch / sptt);
+                float rotationRoll = (float)(rotpoint.getAxes().deg_roll() + dRoll / sptt);
                 --sptt; setPosition(x, y, z);
                 rotpoint.getAxes().set_rotation(rotationYaw, rotationPitch, rotationRoll, true); //return;
             }
@@ -531,8 +531,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         	Vec3f br0 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis + 0.1f);
         	Vec3f br1 = rek.moveOnly(rek.passed - rek.frbogiedis - rek.rrbogiedis - 0.1f);
         	if(bf0 != null && br0 != null && bf1 != null && br1 != null){
-        		float front = (float)(Math.toDegrees(Math.atan2(bf0.z - bf1.z, bf0.x - bf1.x)) - rotpoint.getAxes().getYaw());
-        		float rear  = (float)(Math.toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x)) - rotpoint.getAxes().getYaw());
+        		float front = (float)(Math.toDegrees(Math.atan2(bf0.z - bf1.z, bf0.x - bf1.x)) - rotpoint.getAxes().deg_yaw());
+        		float rear  = (float)(Math.toDegrees(Math.atan2(br0.z - br1.z, br0.x - br1.x)) - rotpoint.getAxes().deg_yaw());
         		rek.data().getAttribute("bogie_front_angle").value(front);
         		rek.data().getAttribute("bogie_rear_angle").value(rear);
         	}
@@ -768,7 +768,7 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 
 	@Override
 	public double[] getEntityRotationForFvtmContainers(){
-		return rotpoint.getAxes().toDoubles();
+		return rotpoint.getAxes().toArrayD();
 	}
 
 	@Override

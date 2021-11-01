@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.sys.legacy.LandVehicle;
-import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.Axes;
 import net.fexcraft.mod.fvtm.util.handler.SPM_DI;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SPUpdate;
 import net.fexcraft.mod.fvtm.util.packet.Packets;
@@ -35,7 +35,7 @@ public class SwivelPoint {
 	public String origin;
 	public SwivelPoint parent;
 	protected Vec3d position, prevpos;//, prerot;
-	private Axis3D axe = new Axis3D(), prevaxe = new Axis3D();
+	private Axes axe = new Axes(), prevaxe = new Axes();
 	// sync
 	private static final int ticker = LandVehicle.servtick;
 	private int servticker;
@@ -106,11 +106,11 @@ public class SwivelPoint {
 		this.read(this, data, com);
 	}
 
-	public Axis3D getAxes(){
+	public Axes getAxes(){
 		return axe;
 	}
 
-	public Axis3D getPrevAxes(){
+	public Axes getPrevAxes(){
 		return prevaxe;
 	}
 
@@ -120,7 +120,7 @@ public class SwivelPoint {
 
 	public void loadAxes(Entity entityfrom, NBTTagCompound compound){
 		updatePrevAxe();
-		axe = Axis3D.read(entityfrom, compound);
+		axe = Axes.read(entityfrom, compound);
 	}
 
 	public NBTTagCompound saveAxes(Entity entityfrom, NBTTagCompound compound){
@@ -143,7 +143,7 @@ public class SwivelPoint {
 		point.origin = com.hasKey("origin") ? com.getString("origin") : null;
 		point.position = new Vec3d(com.getDouble("pos_x"), com.getDouble("pos_y"), com.getDouble("pos_z"));
 		point.prevpos = new Vec3d(point.position.x, point.position.y, point.position.z);
-		point.axe = Axis3D.read(null, com);
+		point.axe = Axes.read(null, com);
 		point.prevaxe = point.axe.clone();
 		if(origin != null){
 			PartData part = data.getPart(origin.split("\\|")[0]);
@@ -224,10 +224,10 @@ public class SwivelPoint {
 		double y = position.y + (servpos.y - position.y) / servticker;
 		double z = position.z + (servpos.z - position.z) / servticker;
 		setPos(x, y, z);
-		double yaw = MathHelper.wrapDegrees(servrot.x - axe.getYaw());
-		double pitch = MathHelper.wrapDegrees(servrot.y - axe.getPitch());
-		double roll = MathHelper.wrapDegrees(servrot.z - axe.getRoll());
-		axe.set_rotation(axe.getYaw() + yaw / servticker, axe.getPitch() + pitch / servticker, axe.getRoll() + roll / servticker, true);
+		double yaw = MathHelper.wrapDegrees(servrot.x - axe.deg_yaw());
+		double pitch = MathHelper.wrapDegrees(servrot.y - axe.deg_pitch());
+		double roll = MathHelper.wrapDegrees(servrot.z - axe.deg_roll());
+		axe.set_rotation(axe.deg_yaw() + yaw / servticker, axe.deg_pitch() + pitch / servticker, axe.deg_roll() + roll / servticker, true);
 		--servticker;
 	}
 
@@ -245,7 +245,7 @@ public class SwivelPoint {
 	}
 
 	public Vec3d getRelativeVector(double x, double y, double z){
-		Vec3d rel = axe.getRelativeVector((float)x, (float)y, (float)z);
+		Vec3d rel = axe.get_vector((float)x, (float)y, (float)z);
 		if(parent != null){
 			return parent.getRelativeVector(position.x + rel.x, position.y + rel.y, position.z + rel.z);
 		}
@@ -257,7 +257,7 @@ public class SwivelPoint {
 	}
 
 	public Vec3d getRelativeVector(Vec3d root, boolean render){
-		Vec3d rel = axe.getRelativeVector(root, isVehicle() ? 90 : 0);
+		Vec3d rel = axe.get_vector(root, isVehicle() ? 90 : 0);
 		if(parent != null){
 			Vec3d new0 = position.add(rel);
 			if(parent.isVehicle() && render) return new0;
@@ -267,7 +267,7 @@ public class SwivelPoint {
 	}
 
 	public Vec3d getPrevRelativeVector(Vec3d root, boolean render){
-		Vec3d rel = prevaxe.getRelativeVector(root, isVehicle() ? 90 : 0);
+		Vec3d rel = prevaxe.get_vector(root, isVehicle() ? 90 : 0);
 		if(parent != null){
 			Vec3d new0 = prevpos.add(rel);
 			if(parent.isVehicle() && render) return new0;

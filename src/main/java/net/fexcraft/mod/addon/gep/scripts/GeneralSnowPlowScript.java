@@ -13,7 +13,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleScript;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
-import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.Axes;
 import net.minecraft.block.BlockSnow;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -107,8 +107,8 @@ public class GeneralSnowPlowScript extends VehicleScript {
         }
 	}
 
-    private Vec3d calculate(Axis3D axes, Entity ent, Vec3d vec){
-        Vec3d rel = axes.getRelativeVector(vec);
+    private Vec3d calculate(Axes axes, Entity ent, Vec3d vec){
+        Vec3d rel = axes.get_vector(vec);
         return new Vec3d(ent.posX + rel.x, ent.posY + rel.y, ent.posZ + rel.z);
     }
 

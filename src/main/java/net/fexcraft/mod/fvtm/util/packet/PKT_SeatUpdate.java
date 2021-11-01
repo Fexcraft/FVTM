@@ -15,8 +15,8 @@ public class PKT_SeatUpdate implements IPacket, IMessage {
     public PKT_SeatUpdate(SeatCache seat){
     	entid = seat.vehicle.getEntityId();
     	seatid = seat.seatindex;
-        yaw = seat.looking.getYaw();
-        pitch = seat.looking.getPitch();
+        yaw = seat.looking.deg_yaw();
+        pitch = seat.looking.deg_pitch();
     }
 
     @Override

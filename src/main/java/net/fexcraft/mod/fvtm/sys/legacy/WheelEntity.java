@@ -80,11 +80,11 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
     		return;
     	}
     	if(isTrailerWheel()){
-            vec = vehicle.getRotPoint().getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid == 2 ? 1 : 0]));
+            vec = vehicle.getRotPoint().getAxes().get_vector(vehicle.getVehicleData().getWheelPositions().get(LandVehicle.WHEELINDEX[wheelid == 2 ? 1 : 0]));
             vec = new Vec3d(0, vec.y, vec.z);
     	}
     	else{
-            vec = vehicle.getRotPoint().getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(index));
+            vec = vehicle.getRotPoint().getAxes().get_vector(vehicle.getVehicleData().getWheelPositions().get(index));
     	}
         setPosition(vehicle.getEntity().posX + vec.x, vehicle.getEntity().posY + vec.y, vehicle.getEntity().posZ + vec.z);
         if(vehicle instanceof ULandVehicle){
@@ -135,7 +135,7 @@ public class WheelEntity extends Entity implements IEntityAdditionalSpawnData {
         if(vehicle == null){ return; }
         if(!addedToChunk){ world.spawnEntity(this); }
         /*if(world.isRemote){
-        	Vec3d pos = vehicle.getRotPoint().getAxes().getRelativeVector(vehicle.getVehicleData().getWheelPositions().get(getIndex()));
+        	Vec3d pos = vehicle.getRotPoint().getAxes().get_vector(vehicle.getVehicleData().getWheelPositions().get(getIndex()));
         	this.setPosition(vehicle.posX + pos.x, vehicle.posY + pos.y, vehicle.posZ + pos.z);
         }*///testing
     }

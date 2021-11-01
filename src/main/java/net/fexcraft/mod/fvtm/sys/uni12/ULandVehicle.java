@@ -134,9 +134,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	}
 
 	public ULandVehicle(World world, VehicleData data, EntityPlayer player, ULandVehicle truck){
-		this(world, data, truck.rotpoint.getAxes().getRelativeVector(truck.vehicle.getRearConnector()).add(truck.getPositionVector()), player, -2);
+		this(world, data, truck.rotpoint.getAxes().get_vector(truck.vehicle.getRearConnector()).add(truck.getPositionVector()), player, -2);
 		(this.truck = truck).trailer = this;
-		rotpoint.getAxes().set_yaw(truck.rotpoint.getAxes().getRadianYaw(), false);
+		rotpoint.getAxes().set_yaw(truck.rotpoint.getAxes().yaw(), false);
 		rotpoint.updatePrevAxe();
         if(!world.isRemote && truck != null){
         	this.sendConnectionUpdate();
@@ -266,9 +266,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     		vehicle = Resources.getVehicleData(compound);
     		rotpoint = vehicle.getRotationPoint("vehicle");
             rotpoint.loadAxes(this, compound);
-            prevRotationYaw = rotpoint.getAxes().getYaw();
-            prevRotationPitch = rotpoint.getAxes().getPitch();
-            prevRotationRoll = rotpoint.getAxes().getRoll();
+            prevRotationYaw = rotpoint.getAxes().deg_yaw();
+            prevRotationPitch = rotpoint.getAxes().deg_pitch();
+            prevRotationRoll = rotpoint.getAxes().deg_roll();
             if(compound.hasKey("TruckId")){
             	truck = (ULandVehicle)world.getEntityByID(compound.getInteger("TruckId"));
             }
@@ -516,7 +516,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	}
 
 	public void tryAttach(EntityPlayer player){
-		Vec3d vec = this.getRotPoint().getAxes().getRelativeVector(this.getVehicleData().getRearConnector()).add(this.getPositionVector());
+		Vec3d vec = this.getRotPoint().getAxes().get_vector(this.getVehicleData().getRearConnector()).add(this.getPositionVector());
 		AxisAlignedBB aabb = new AxisAlignedBB(vec.x - 0.5, vec.y - 0.5, vec.z - 0.5, vec.x + 0.5, vec.y + 0.5, vec.z + 0.5);
 		List<Entity> list = world.getEntitiesInAABBexcluding(this, aabb, ent -> ent instanceof ULandVehicle || ent instanceof LandVehicle);
 		for(Entity ent : list){
@@ -552,13 +552,13 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	}
 
     public void updatePrevAngles(){
-        double yaw = rotpoint.getAxes().getYaw() - prevRotationYaw;
+        double yaw = rotpoint.getAxes().deg_yaw() - prevRotationYaw;
         if(yaw > 180){ prevRotationYaw += 360F; }
         if(yaw < -180){ prevRotationYaw -= 360F; }
-        double pitch = rotpoint.getAxes().getPitch() - prevRotationPitch;
+        double pitch = rotpoint.getAxes().deg_pitch() - prevRotationPitch;
         if(pitch > 180){ prevRotationPitch += 360F; }
         if(pitch < -180){ prevRotationPitch -= 360F; }
-        double roll = rotpoint.getAxes().getRoll() - prevRotationRoll;
+        double roll = rotpoint.getAxes().deg_roll() - prevRotationRoll;
         if(roll > 180){ prevRotationRoll += 360F; }
         if(roll < -180){ prevRotationRoll -= 360F; }
     }
@@ -780,9 +780,9 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 }
             }
         }
-        prevRotationYaw = rotpoint.getAxes().getYaw();
-        prevRotationPitch = rotpoint.getAxes().getPitch();
-        prevRotationRoll = rotpoint.getAxes().getRoll();
+        prevRotationYaw = rotpoint.getAxes().deg_yaw();
+        prevRotationPitch = rotpoint.getAxes().deg_pitch();
+        prevRotationRoll = rotpoint.getAxes().deg_roll();
         rotpoint.updatePrevAxe();
         this.ticksExisted++;
         if(this.ticksExisted > Integer.MAX_VALUE){
@@ -808,12 +808,12 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
                 double x = posX + (serverPosX - posX) / server_pos_ticker;
                 double y = posY + (serverPosY - posY) / server_pos_ticker;
                 double z = posZ + (serverPosZ - posZ) / server_pos_ticker;
-                double dYaw = MathHelper.wrapDegrees(serverYaw - rotpoint.getAxes().getYaw());
-                double dPitch = MathHelper.wrapDegrees(serverPitch - rotpoint.getAxes().getPitch());
-                double dRoll = MathHelper.wrapDegrees(serverRoll - rotpoint.getAxes().getRoll());
-                rotationYaw = (float)(rotpoint.getAxes().getYaw() + dYaw / server_pos_ticker);
-                rotationPitch = (float)(rotpoint.getAxes().getPitch() + dPitch / server_pos_ticker);
-                float rotationRoll = (float)(rotpoint.getAxes().getRoll() + dRoll / server_pos_ticker);
+                double dYaw = MathHelper.wrapDegrees(serverYaw - rotpoint.getAxes().deg_yaw());
+                double dPitch = MathHelper.wrapDegrees(serverPitch - rotpoint.getAxes().deg_pitch());
+                double dRoll = MathHelper.wrapDegrees(serverRoll - rotpoint.getAxes().deg_roll());
+                rotationYaw = (float)(rotpoint.getAxes().deg_yaw() + dYaw / server_pos_ticker);
+                rotationPitch = (float)(rotpoint.getAxes().deg_pitch() + dPitch / server_pos_ticker);
+                float rotationRoll = (float)(rotpoint.getAxes().deg_roll() + dRoll / server_pos_ticker);
                 wheelsYaw += (serverWY - wheelsYaw) / server_pos_ticker;
                 crpm += (rpm - crpm) / server_pos_ticker;
                 --server_pos_ticker;
@@ -954,8 +954,8 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
     		if(player != null) Print.bar(player, "&cTEMP: Towing limit reached, vehicle is overloaded.");
     	}
     	double thr = this.throttle * force;
-    	double cos = Math.cos(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
-    	double sin = Math.sin(rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
+    	double cos = Math.cos(rotpoint.getAxes().deg_yaw() * 3.14159265F / 180F);
+    	double sin = Math.sin(rotpoint.getAxes().deg_yaw() * 3.14159265F / 180F);
     	boolean slowdown = throttle < 0.001f || gear == 0;
     	double val;
     	onGround = true;
@@ -965,7 +965,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             if(wheel == null){ continue; }
             WTD wheeldata = getWheelData(wheel.getIndex());
             wheel.onGround = true;
-            wheel.rotationYaw = rotpoint.getAxes().getYaw();
+            wheel.rotationYaw = rotpoint.getAxes().deg_yaw();
             /*if(!lata.is_tracked && (wheel.wheelid == 2 || wheel.wheelid == 3)){
                 wheel.rotationYaw += wheelsYaw;
             }*/////TODO TRACKED DEFINITION
@@ -1040,19 +1040,19 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
             }
         	atmc = new Vec3d(0, 0, 0);
             Vec3d opos = trailer.getPositionVector();
-            Vec3d conn = trailer.truck.rotpoint.getAxes().getRelativeVector(trailer.truck.getVehicleData().getRearConnector());
+            Vec3d conn = trailer.truck.rotpoint.getAxes().get_vector(trailer.truck.getVehicleData().getRearConnector());
             val = opos.distanceTo(conn = conn.add(trailer.truck.getPositionVector()));
-        	cos = Math.cos(trailer.rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
-        	sin = Math.sin(trailer.rotpoint.getAxes().getYaw() * 3.14159265F / 180F);
+        	cos = Math.cos(trailer.rotpoint.getAxes().deg_yaw() * 3.14159265F / 180F);
+        	sin = Math.sin(trailer.rotpoint.getAxes().deg_yaw() * 3.14159265F / 180F);
             //
-            Vec3d trax = trailer.rotpoint.getAxes().getRelativeVector(trailer.rear.pos).add(trailer.getPositionVector());
+            Vec3d trax = trailer.rotpoint.getAxes().get_vector(trailer.rear.pos).add(trailer.getPositionVector());
             trailer.rotpoint.getAxes().set_yaw((float)Math.atan2(conn.z - trax.z, conn.x - trax.x), false);
     		int wheelid = 0;
         	trailer.onGround = true;
         	for(WheelEntity wheel : trailer.wheels){
         		if(wheel == null) continue;
         		wheel.onGround = true;
-                wheel.rotationYaw = trailer.rotpoint.getAxes().getYaw();
+                wheel.rotationYaw = trailer.rotpoint.getAxes().deg_yaw();
                 wheel.motionX = wheel.motionZ = 0;
                 if(val < GRAVE) wheel.motionY = 0;
                 wheel.motionX += Math.cos(wheel.rotationYaw * 3.14159265F / 180F) * val;
@@ -1085,7 +1085,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
         for(WheelEntity wheel : wheels){
             if(wheel == null) continue;
             onGround = true; wheel.onGround = true;
-            wheel.rotationYaw = rotpoint.getAxes().getYaw();
+            wheel.rotationYaw = rotpoint.getAxes().deg_yaw();
             wheel.motionX *= 0.9F;
             wheel.motionY *= 0.9F;
             wheel.motionZ *= 0.9F;
@@ -1109,7 +1109,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 	private void opos(){ prevPosX = posX; prevPosY = posY; prevPosZ = posZ; }
 	
 	private static Vec3d alignWheel(ULandVehicle vehicle, WheelEntity wheel, Vec3d vec, Vec3d atmc, boolean corrcheck){
-        Vec3d targetpos = vehicle.rotpoint.getAxes().getRelativeVector(vec);
+        Vec3d targetpos = vehicle.rotpoint.getAxes().get_vector(vec);
         Vec3d current = new Vec3d(wheel.posX - vehicle.posX, wheel.posY - vehicle.posY, wheel.posZ - vehicle.posZ);
         Vec3d despos = new Vec3d(targetpos.x - current.x, targetpos.y - current.y, targetpos.z - current.z).scale(0.5f);//TODO lata.wss
         if(despos.lengthSquared() > 0.001F){
@@ -1417,7 +1417,7 @@ public class ULandVehicle extends GenericVehicle implements IEntityAdditionalSpa
 
 	@Override
 	public double[] getEntityRotationForFvtmContainers(){
-		return rotpoint.getAxes().toDoubles();//radians?
+		return rotpoint.getAxes().toArrayD();
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.Seat;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
-import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.Axes;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.handler.ToggableHandler;
 import net.fexcraft.mod.fvtm.util.packet.PKT_SeatUpdate;
@@ -32,8 +32,8 @@ public class SeatCache {
     protected SwivelPoint point;
     //
     public Seat seatdata;
-    public Axis3D looking, prevlooking;
-    public Axis3D passlooking, prevpasslooking;
+    public Axes looking, prevlooking;
+    public Axes passlooking, prevpasslooking;
     //
     //private double pass_x, pass_y, pass_z;
     private float pass_yaw, pass_pitch;//, pass_roll;
@@ -55,8 +55,8 @@ public class SeatCache {
 	}
 
 	public void resetAxes(){
-        prevlooking = new Axis3D(); looking = new Axis3D();
-        passlooking = new Axis3D(); prevpasslooking = new Axis3D();
+        prevlooking = new Axes(); looking = new Axes();
+        passlooking = new Axes(); prevpasslooking = new Axes();
         looking.set_rotation((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F, true);
         prevlooking.set_rotation((seatdata.minyaw + seatdata.maxyaw) / 2, 0F, 0F, true);
 	}
@@ -136,8 +136,8 @@ public class SeatCache {
         //
         //this.updatePassenger();
         //
-        pass_yaw = -90F + passlooking.getYaw() + point.getAxes().getYaw();
-        pass_pitch = passlooking.getPitch() + point.getAxes().getPitch();
+        pass_yaw = -90F + passlooking.deg_yaw() + point.getAxes().deg_yaw();
+        pass_pitch = passlooking.deg_pitch() + point.getAxes().deg_pitch();
         //
         double yaw = pass_yaw - prev_pass_yaw;
         if(yaw > 180){ prev_pass_yaw += 360F; }
@@ -149,7 +149,7 @@ public class SeatCache {
             passenger.rotationYaw = pass_yaw;
             passenger.rotationPitch = pass_pitch;
         //}
-        //if(world.isRemote){ pass_roll = -glookaxes.getRoll(); }
+        //if(world.isRemote){ pass_roll = -glookaxes.deg_roll(); }
 	}
 
 
@@ -198,11 +198,11 @@ public class SeatCache {
         prevpasslooking = passlooking.clone();
         //
         double lookSpeed = 4F;
-        double npasspitch = passlooking.getPitch() - dy / lookSpeed * net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+        double npasspitch = passlooking.deg_pitch() - dy / lookSpeed * net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;
         if(npasspitch > -seatdata.minpitch){ npasspitch = -seatdata.minpitch; }
         if(npasspitch < -seatdata.maxpitch){ npasspitch = -seatdata.maxpitch; }
         //
-        double npassyaw = passlooking.getYaw() + dx / lookSpeed * net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+        double npassyaw = passlooking.deg_yaw() + dx / lookSpeed * net.minecraft.client.Minecraft.getMinecraft().gameSettings.mouseSensitivity;
         double opassyaw = npassyaw - 360F;
         if(npassyaw < 0){ opassyaw = npassyaw + 360F; }
         if(!(npassyaw >= seatdata.minyaw && npassyaw <= seatdata.maxyaw) || (opassyaw >= seatdata.minyaw && opassyaw <= seatdata.maxyaw)){
@@ -222,8 +222,8 @@ public class SeatCache {
         passlooking.set_rotation(npassyaw, npasspitch, 0F, true);
         //
         Vec3d vecais = new Vec3d(1, 1, 0);
-        double targetx = passlooking.getYaw();
-        double yawToMove = (targetx - looking.getYaw());
+        double targetx = passlooking.deg_yaw();
+        double yawToMove = (targetx - looking.deg_yaw());
         for(; yawToMove > 180F; yawToMove -= 360F){}
         for(; yawToMove <= -180F; yawToMove += 360F){}
         float signDeltaX = 0;
@@ -232,8 +232,8 @@ public class SeatCache {
         else{ signDeltaX = 0; }
         //
         double newYaw = 0f;
-        if((signDeltaX == 0 && dx == 0)){ newYaw = passlooking.getYaw(); }
-        else{ newYaw = looking.getYaw() + signDeltaX * vecais.x; }
+        if((signDeltaX == 0 && dx == 0)){ newYaw = passlooking.deg_yaw(); }
+        else{ newYaw = looking.deg_yaw() + signDeltaX * vecais.x; }
         //
         double otherNewYaw = newYaw - 360F;
         if(newYaw < 0){ otherNewYaw = newYaw + 360F; }
@@ -252,8 +252,8 @@ public class SeatCache {
             }
         }
         //
-        double targetY = passlooking.getPitch();
-        double pitchToMove = (targetY - looking.getPitch());
+        double targetY = passlooking.deg_pitch();
+        double pitchToMove = (targetY - looking.deg_pitch());
         for(; pitchToMove > 180F; pitchToMove -= 360F){}
         for(; pitchToMove <= -180F; pitchToMove += 360F){}
         //
@@ -267,9 +267,9 @@ public class SeatCache {
         double currentYawToMove = 0f;
         minYawToMove = (Math.sqrt((pitchToMove / vecais.y) * (pitchToMove / vecais.y))) * vecais.x;
         currentYawToMove = (float) Math.sqrt((yawToMove) * (yawToMove));
-        if((signDeltaY == 0 && dy == 0)){ newPitch = passlooking.getPitch(); }
-        else if(currentYawToMove < minYawToMove){ newPitch = looking.getPitch() + signDeltaY * vecais.y; }
-        else{ newPitch = looking.getPitch(); }
+        if((signDeltaY == 0 && dy == 0)){ newPitch = passlooking.deg_pitch(); }
+        else if(currentYawToMove < minYawToMove){ newPitch = looking.deg_pitch() + signDeltaY * vecais.y; }
+        else{ newPitch = looking.deg_pitch(); }
         if(newPitch > -seatdata.minpitch){ newPitch = -seatdata.minpitch; }
         if(newPitch < -seatdata.maxpitch){ newPitch = -seatdata.maxpitch; }
         looking.set_rotation(newYaw, newPitch, 0F, true);

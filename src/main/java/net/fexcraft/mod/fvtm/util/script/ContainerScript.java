@@ -56,7 +56,7 @@ public class ContainerScript extends VehicleScript {
     		Print.chat(player, "&6Please stop the vehicle first!");
     		return;
     	}
-    	if((int)(ent.getRotPoint().getAxes().getYaw()) % 90 != 0){
+    	if((int)(ent.getRotPoint().getAxes().deg_yaw()) % 90 != 0){
     		Print.chat(player, "&6Please make sure the crane is in a valid 90\u00B0 rotation!");
     		return;
     	}
@@ -378,7 +378,7 @@ public class ContainerScript extends VehicleScript {
 					}
 					return;
 				}
-				EnumFacing facing = EnumFacing.fromAngle(ent.getRotPoint().getAxes().getYaw());
+				EnumFacing facing = EnumFacing.fromAngle(ent.getRotPoint().getAxes().deg_yaw());
 				if(ContainerItem.isValidPostitionForContainer(ent.getEntity().world, player, vec0, facing, condata)){
 		            ItemStack stack = condata.newItemStack();
 		            stack.getTagCompound().setLong("PlacedPos", vec0.toLong());

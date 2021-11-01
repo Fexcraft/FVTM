@@ -1,10 +1,11 @@
 package net.fexcraft.mod.fvtm.util;
 
 import static net.fexcraft.lib.common.Static.PI;
-import static net.fexcraft.lib.common.Static.toDegrees;
 import static net.fexcraft.lib.common.Static.toRadians;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.util.vector.Matrix4f;
+import net.fexcraft.mod.fvtm.util.vector.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
@@ -17,45 +18,34 @@ import net.minecraft.util.math.Vec3d;
  */
 public class Axes {
 	
-	//radians
-	private float yaw, pitch, roll;
-	private float dyaw, dpitch, droll;
+	private float yaw, pitch, roll;//radians
+	private float dyaw, dpitch, droll;//degrees
+	private Matrix4f matrix = new Matrix4f();
 	
 	public Axes(){}
-	
-	public Axes(Axes axes){
-		this.yaw = axes.yaw;
-		this.pitch = axes.pitch;
-		this.roll = axes.roll;
-	}
-	
-	public Axes(float y, float p, float r){
-		yaw = y;
-		pitch = p;
-		roll = r;
-	}
 	
 	@Override
 	public String toString(){
 		return "Axes[ " + yaw + "y, " + pitch + "p, " + roll + "r ]";
 	}
 
-	public Vec3d getRelativeVector(float x, float y, float z){
-		float[] arr = VecUtil.rotate(new float[]{ x, y, z }, (float)roll * PI / 180f, (float)pitch * PI / 180f, (float)yaw * PI / 180f);
+	public Vec3d get_vector(float x, float y, float z){
+		float[] arr = VecUtil.rotate(new float[]{ x, y, z }, roll, pitch, yaw);
 		return new Vec3d(arr[0], arr[1], arr[2]);
 	}
 
-	public Vec3d getRelativeVector(Vec3d vec){
-		return getRelativeVector(vec, 0);
-	}
-
-	public Vec3d getRelativeVector(Vec3d vec, float yawmod){
-		float[] arr = VecUtil.rotate(new float[]{ (float)vec.x, (float)vec.y, (float)vec.z }, (float)roll * PI / 180f, (float)pitch * PI / 180f, (float)(yaw + yawmod) * PI / 180f);
+	public Vec3d get_vector(Vec3d vec){
+		float[] arr = VecUtil.rotate(new float[]{ (float)vec.x, (float)vec.y, (float)vec.z }, roll, pitch, yaw);
 		return new Vec3d(arr[0], arr[1], arr[2]);
 	}
 
-	public Vec3f getRelativeVector(Vec3f relpos){
-		return VecUtil.rotate(relpos, (float)roll * PI / 180f, (float)pitch * PI / 180f, (float)yaw * PI / 180f);
+	public Vec3d get_vector(Vec3d vec, float yawmod){
+		float[] arr = VecUtil.rotate(new float[]{ (float)vec.x, (float)vec.y, (float)vec.z }, roll, pitch, (yaw + yawmod));
+		return new Vec3d(arr[0], arr[1], arr[2]);
+	}
+
+	public Vec3f get_vector(Vec3f relpos){
+		return VecUtil.rotate(relpos, roll, pitch, yaw);
 	}
 
 	/** Saving as degrees to be compatible with old saves.*/
@@ -116,9 +106,12 @@ public class Axes {
 	}
 
 	public void copy(Axes axe){
-		this.yaw = axe.yaw;
-		this.roll = axe.roll;
-		this.pitch = axe.pitch;
+		yaw = axe.yaw;
+		roll = axe.roll;
+		pitch = axe.pitch;
+		dyaw = axe.dyaw;
+		dpitch = axe.dpitch;
+		droll = axe.droll;
 	}
 
 	@Override
@@ -127,28 +120,36 @@ public class Axes {
 		axes.yaw = yaw;
 		axes.pitch = pitch;
 		axes.roll = roll;
+		axes.dyaw = dyaw;
+		axes.dpitch = dpitch;
+		axes.droll = droll;
 		return axes;
 	}
 	
 	public void set_yaw(float value, boolean degree){
-		if(degree) yaw = toRadians(dyaw = value);
-		else dyaw = toDegrees(yaw = value);
+		set_rotation(degree ? toRadians(value) : value, pitch, roll, false);
 	}
 	
 	public void set_pitch(float value, boolean degree){
-		if(degree) pitch = toRadians(dpitch = value);
-		else dpitch = toDegrees(pitch = value);
+		set_rotation(yaw, degree ? toRadians(value) : value, roll, false);
 	}
 	
 	public void set_roll(float value, boolean degree){
-		if(degree) roll = toRadians(droll = value);
-		else droll = toDegrees(roll = value);
+		set_rotation(yaw, pitch, degree ? toRadians(value) : value, false);
 	}
 	
 	public void set_rotation(float y, float p, float r, boolean degrees){
-		set_yaw(y, degrees);
-		set_pitch(p, degrees);
-		set_roll(r, degrees);
+		if(degrees){
+			dyaw = y;
+			dpitch = p;
+			droll = r;
+		}
+		else{
+			yaw = y;
+			pitch = p;
+			roll = r;
+		}
+		convert(degrees);
 	}
 	
 	public void set_rot(float y, float p, float r, boolean degrees){
@@ -156,13 +157,33 @@ public class Axes {
 	}
 	
 	public void set_rotation(double y, double p, double r, boolean degrees){
-		set_yaw((float)y, degrees);
-		set_pitch((float)p, degrees);
-		set_roll((float)r, degrees);
+		set_rotation((float)y, (float)p, (float)r, degrees);
 	}
 	
 	public void set_rot(double y, double p, double r, boolean degrees){
-		set_rotation(y, p, r, degrees);
+		set_rotation((float)y, (float)p, (float)r, degrees);
+	}
+
+	private final void convert(boolean deg){
+		Matrix4f.setIdentity(matrix);
+		matrix.rotate(deg ? toRadians(droll) : roll, new Vector3f(1F, 0F, 0F));
+		matrix.rotate(deg ? toRadians(dpitch) : pitch, new Vector3f(0F, 0F, 1F));
+		matrix.rotate(deg ? toRadians(dyaw) : yaw, new Vector3f(0F, 1F, 0F));
+		dyaw = (yaw = (float)Math.atan2(matrix.m20, matrix.m00)) * 180f / PI;
+		dpitch = (pitch = (float)Math.atan2(-matrix.m10, Math.sqrt(matrix.m12 * matrix.m12 + matrix.m11 * matrix.m11))) * 180f / PI;
+		droll = (roll = (float)Math.atan2(matrix.m12, matrix.m11)) * 180f / PI;
+	}
+
+	public double[] toArrayD(){
+		return new double[]{ dyaw, dpitch, droll };
+	}
+
+	public float[] toArrayF(){
+		return new float[]{ dyaw, dpitch, droll };
+	}
+
+	public Vec3d toVec3d(){
+		return new Vec3d(dyaw, dpitch, droll);
 	}
 
 }

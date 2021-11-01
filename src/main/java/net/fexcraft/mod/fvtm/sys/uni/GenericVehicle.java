@@ -17,7 +17,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
-import net.fexcraft.mod.fvtm.util.Axis3D;
+import net.fexcraft.mod.fvtm.util.Axes;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -234,12 +234,12 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
         SwivelPoint point = getVehicleData().getRotationPoint(slot.rotpoint);
         float off = index + (type.length() / 2f) - (slot.length / 2f);
         calcaxis.set_rotation(slot.rotation, 0, 0, true);
-        Vec3d offv = calcaxis.getRelativeVector(-off, 0, 0);
+        Vec3d offv = calcaxis.get_vector(-off, 0, 0);
         Vec3d relpos = point.getRelativeVector(slot.position.x + offv.x, slot.position.y + offv.y, slot.position.z + offv.z);
 		return relpos.add(posX, posY, posZ);
 	}
 	
-	private static final Axis3D calcaxis = new Axis3D();
+	private static final Axes calcaxis = new Axes();
 	
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox(){

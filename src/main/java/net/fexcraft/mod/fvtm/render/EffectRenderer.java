@@ -205,9 +205,9 @@ public class EffectRenderer {
 									GL11.glTranslated(vec.x, vec.y, vec.z);
 									GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 									GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-									GL11.glRotatef(point.getAxes().getYaw(), 0.0F, 1.0F, 0.0F);
-									GL11.glRotatef(point.getAxes().getPitch(), 0.0F, 0.0F, 1.0F);
-									GL11.glRotatef(point.getAxes().getRoll(), 1.0F, 0.0F, 0.0F);
+									GL11.glRotatef(point.getAxes().deg_yaw(), 0.0F, 1.0F, 0.0F);
+									GL11.glRotatef(point.getAxes().deg_pitch(), 0.0F, 0.0F, 1.0F);
+									GL11.glRotatef(point.getAxes().deg_roll(), 1.0F, 0.0F, 0.0F);
 								}
 				            	GL11.glPushMatrix();
 				            	float scal = ps.getValue().get(i).radius;
@@ -242,9 +242,9 @@ public class EffectRenderer {
 						GL11.glTranslated(vec.x, vec.y, vec.z);
 						GL11.glRotated(180f, 0.0F, 1.0F, 0.0F);
 						GL11.glRotated(180f, 0.0F, 0.0F, 1.0F);
-						GL11.glRotatef(point.getAxes().getYaw(), 0.0F, 1.0F, 0.0F);
-						GL11.glRotatef(point.getAxes().getPitch(), 0.0F, 0.0F, 1.0F);
-						GL11.glRotatef(point.getAxes().getRoll(), 1.0F, 0.0F, 0.0F);
+						GL11.glRotatef(point.getAxes().deg_yaw(), 0.0F, 1.0F, 0.0F);
+						GL11.glRotatef(point.getAxes().deg_pitch(), 0.0F, 0.0F, 1.0F);
+						GL11.glRotatef(point.getAxes().deg_roll(), 1.0F, 0.0F, 0.0F);
 					}
 	            	GL11.glPushMatrix();
 	            	float scal = ps.getValue().get(i).radius;
@@ -384,29 +384,29 @@ public class EffectRenderer {
     }
 
 	public static Vec3f getRotations(GenericVehicle vehicle, float ticks){
-        float yaw = (vehicle.getRotPoint().getAxes().getYaw() - vehicle.prevRotationYaw);
+        float yaw = (vehicle.getRotPoint().getAxes().deg_yaw() - vehicle.prevRotationYaw);
         while(yaw > 180f) yaw -= 360f;
         while(yaw <= -180f) yaw += 360f;
-        float pitch = (vehicle.getRotPoint().getAxes().getPitch() - vehicle.prevRotationPitch);
+        float pitch = (vehicle.getRotPoint().getAxes().deg_pitch() - vehicle.prevRotationPitch);
         while(pitch > 180f) pitch -= 360f;
         while(pitch <= -180f) pitch += 360f;
-        float roll = (vehicle.getRotPoint().getAxes().getRoll() - vehicle.prevRotationRoll);
+        float roll = (vehicle.getRotPoint().getAxes().deg_roll() - vehicle.prevRotationRoll);
         while(roll > 180f) roll -= 360f;
         while(roll <= -180f) roll += 360f;
         return new Vec3f(180F - vehicle.prevRotationYaw - yaw * ticks, vehicle.prevRotationPitch + pitch * ticks, vehicle.prevRotationRoll + roll * ticks);
 	}
 	
 	public static Vec3f getRotations(SwivelPoint point, float ticks){
-        float yaw = (point.getAxes().getYaw() - point.getPrevAxes().getYaw());
+        float yaw = (point.getAxes().deg_yaw() - point.getPrevAxes().deg_yaw());
         while(yaw > 180f) yaw -= 360f;
         while(yaw <= -180f) yaw += 360f;
-        float pitch = (point.getAxes().getPitch() - point.getPrevAxes().getPitch());
+        float pitch = (point.getAxes().deg_pitch() - point.getPrevAxes().deg_pitch());
         while(pitch > 180f) pitch -= 360f;
         while(pitch <= -180f) pitch += 360f;
-        float roll = (point.getAxes().getRoll() - point.getPrevAxes().getRoll());
+        float roll = (point.getAxes().deg_roll() - point.getPrevAxes().deg_roll());
         while(roll > 180f) roll -= 360f;
         while(roll <= -180f) roll += 360f;
-        return new Vec3f(point.getPrevAxes().getYaw() - yaw * ticks, point.getPrevAxes().getPitch() + pitch * ticks, point.getPrevAxes().getRoll() + roll * ticks);
+        return new Vec3f(point.getPrevAxes().deg_yaw() - yaw * ticks, point.getPrevAxes().deg_pitch() + pitch * ticks, point.getPrevAxes().deg_roll() + roll * ticks);
 	}
 	
 	//

@@ -76,7 +76,7 @@ public class SystemManager {
 			SYSTEMS.get(Systems.ENTITY).put(dim, ensys);
 			SYSTEMS_DIM.get(dim).put(Systems.ENTITY, ensys);
 		}
-		else{
+		if(!event.getObject().isRemote || !SINGLEPLAYER){
 			if(!Config.DISABLE_RAILS){
 				if(!SYSTEMS.containsKey(Systems.RAIL)) SYSTEMS.put(Systems.RAIL, new ConcurrentHashMap<>());
 				RailSystem sys = new RailSystem(event.getObject());

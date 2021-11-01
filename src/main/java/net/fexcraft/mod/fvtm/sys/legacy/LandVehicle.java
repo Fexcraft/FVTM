@@ -117,7 +117,7 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
 		this(world, data, truck.getPositionVector(), player, 0);
 		this.truck = truck; truck.trailer = this;
 		rotpoint.updatePrevAxe();
-		rotpoint.getAxes().set_rotation(truck.rotpoint.getAxes().getYaw(), rotpoint.getAxes().getPitch(), rotpoint.getAxes().getRoll(), true);
+		rotpoint.getAxes().copy(truck.getRotPoint().getAxes());
 	}
 
 	@Override

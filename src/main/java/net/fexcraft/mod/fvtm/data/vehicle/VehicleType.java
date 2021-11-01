@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm.data.vehicle;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.BooleanAttribute;
@@ -97,7 +96,7 @@ public enum VehicleType {
 				if(vehicle.isTrailerOrWagon()){
 					attrs.add(new FloatAttribute("trailer_weight_ratio", 0.2f).minmax(0f, 1f));
 				}
-				attrs.add(new StringAttribute("license_plate", UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase()).editable(true));//TODO not editable later
+				attrs.add(new StringAttribute("license_plate", "FVTM").editable(true));//TODO not editable later
 				break;
 			}
 			case RAIL:{

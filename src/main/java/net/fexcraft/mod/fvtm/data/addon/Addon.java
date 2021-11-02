@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
@@ -19,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.lib.common.json.JsonUtil;
 import net.fexcraft.lib.common.utils.ZipUtil;
 import net.fexcraft.lib.mc.registry.FCLRegistry.AutoRegisterer;
@@ -126,6 +128,12 @@ public class Addon extends TypeCore<Addon> {
 		}
 		if(obj.has("WireDecos")){
 			Resources.WIRE_DECO_CACHE.put(this.getRegistryName().getPath(), obj.get("WireDecos").getAsJsonObject());
+		}
+		if(obj.has("Particles") && Static.isClient()){
+			JsonObject par = obj.get("Particles").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : par.entrySet()){
+				new net.fexcraft.mod.fvtm.sys.particle.Particle(registryname.getPath() + ":" + entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap());
+			}
 		}
 		return this;
 	}

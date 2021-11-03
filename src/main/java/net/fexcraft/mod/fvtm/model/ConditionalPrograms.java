@@ -11,6 +11,8 @@ import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.TurboList.ConditionalProgram;
+import net.fexcraft.mod.fvtm.sys.condition.Condition.Conditional;
+import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -252,6 +254,21 @@ public class ConditionalPrograms {
 		@Override
 		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
 			return tile != null && ((SwitchTileEntity)tile).isDoubleSwitchStateOnSide(side, state);
+		}
+		
+	}
+	
+	public static class ConditionBased extends ConditionalProgram {
+		
+		protected Conditional cond;
+		
+		public ConditionBased(String condition){
+			cond = ConditionRegistry.CONDITIONALS.get(condition);
+		}
+		
+		@Override
+		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
+			return cond.isMet((GenericVehicle)ent, null, data, null, null, null, part, list, cache);
 		}
 		
 	}

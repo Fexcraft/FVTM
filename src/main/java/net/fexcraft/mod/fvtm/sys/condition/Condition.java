@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.condition;
 
+import java.util.ArrayList;
+
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
@@ -15,7 +17,8 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 public class Condition {
 	
 	public final String id;
-	public String type, target, target2, condi, mode;
+	public String type, target, condi, mode;
+	public String[] targets;
 	
 	public Condition(String id){
 		this.id = id;
@@ -26,12 +29,15 @@ public class Condition {
 		type = map.getString("type", "null");
 		if(map.get("target").isArray()){
 			JsonArray arr = map.getArray("target");
-			target = arr.get(0).string_value();
-			target2 = arr.get(1).string_value();
+			targets = new String[arr.size()];
+			for(int i = 0; i < targets.length; i++){
+				targets[0] = arr.get(i).string_value();
+			}
+			target = targets[0];
 		}
 		else{
 			target = map.getString("target", "null");
-			target2 = "null";
+			targets = new String[]{ target };
 		}
 		condi = map.has("con") ? map.getString("con", "null") : map.getString("condition", "null");
 		mode = map.getString("mode", "equals");
@@ -42,19 +48,28 @@ public class Condition {
 		type = array.get(0).string_value();
 		if(array.get(1).isArray()){
 			JsonArray arr = array.getArray(1);
-			target = arr.get(0).string_value();
-			target2 = arr.get(1).string_value();
+			targets = new String[arr.size()];
+			for(int i = 0; i < targets.length; i++){
+				targets[0] = arr.get(i).string_value();
+			}
+			target = targets[0];
 		}
 		else{
 			target = array.get(1).string_value();
-			target2 = "null";
+			targets = new String[]{ target };
 		}
 		mode = array.size() > 2 ? array.get(2).string_value() : "null";
 		condi = array.size() > 3 ? array.get(3).string_value() : "null";
 	}
 	
 	public String toCompare(){
-		return type + ":" + target + ":" + mode + ":" + condi;
+		String tars = target;
+		if(targets.length > 1){
+			for(int i = 1; i < targets.length; i++){
+				tars += "-" + targets[1];
+			}
+		}
+		return type + ":" + tars + ":" + mode + ":" + condi;
 	}
 	
 	public Conditional build(){
@@ -170,8 +185,28 @@ public class Condition {
 			case "partfunc":{
 				return (e, t, v, c, b, p, s, tl, r) -> {
 					PartData data = s.equals(target) ? p : v.getPart(target);
-					Function func = data == null ? null : data.getFunction(target2);
+					Function func = data == null ? null : data.getFunction(targets[1]);
 					return func == null ? false : func.onCondition(target, mode, condi);
+				};
+			}
+			case "multiple":
+			case "multi":
+			case "group":{
+				int m = mode.equals("any") ? 1 : mode.equals("none") ? 2 : 0;
+				ArrayList<Conditional> cons = new ArrayList<>();
+				for(String str : targets){
+					Conditional con = ConditionRegistry.get(str);
+					if(con != null) cons.add(con);
+				}
+				return (e, t, v, c, b, p, s, tl, r) -> {
+					for(Conditional con : cons){
+						if(con.isMet(e, t, v, c, b, p, s, tl, r)){
+							if(m == 1) return true;
+							else if(m == 2) return false;
+						}
+						else if(m == 0) return false;
+					}
+					return true;
 				};
 			}
 		}

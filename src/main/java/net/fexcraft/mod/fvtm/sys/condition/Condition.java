@@ -11,8 +11,10 @@ import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.event.ConditionEvent;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.minecraftforge.common.MinecraftForge;
 
 public class Condition {
 	
@@ -208,6 +210,11 @@ public class Condition {
 					}
 					return true;
 				};
+			}
+			default:{
+				ConditionEvent.ConditionalCreate event = new ConditionEvent.ConditionalCreate(this);
+				MinecraftForge.EVENT_BUS.post(event);
+				return event.getConditional();
 			}
 		}
 		return null;

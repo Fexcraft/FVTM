@@ -263,7 +263,7 @@ public class ConditionalPrograms {
 		protected Conditional cond;
 		
 		public ConditionBased(String condition){
-			cond = ConditionRegistry.CONDITIONALS.get(condition);
+			cond = ConditionRegistry.get(condition);
 		}
 		
 		@Override

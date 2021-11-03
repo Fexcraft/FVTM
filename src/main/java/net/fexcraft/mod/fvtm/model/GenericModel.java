@@ -27,6 +27,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.root.Model;
+import net.fexcraft.mod.fvtm.model.ConditionalPrograms.ConditionBased;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Transforms;
 import net.minecraft.util.ResourceLocation;
@@ -129,6 +130,32 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 					if(!groups.contains(args[0])) continue;
 					try{
 						groups.get(args[0]).addProgram(parseProgram(args));
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+				for(TurboList list : groups){
+					if(list.hasPrograms()) list.initPrograms();
+				}
+			}
+			if(data.containsKey("CondPrograms")){
+				for(String string : ((List<String>)data.get("CondPrograms"))){
+					String[] args = string.trim().split("||");
+					if(!groups.contains(args[0])) continue;
+					try{
+						ConditionBased prog = new ConditionBased(args[1]);
+						String[] sub = args[2].split("|");
+						for(String s : sub){
+							prog.add(parseProgram(s.trim().split(" ")));
+						}
+						if(args.length > 3){
+							sub = args[3].split("|");
+							for(String s : sub){
+								prog.addElse(parseProgram(s.trim().split(" ")));
+							}
+						}
+						groups.get(args[0]).addProgram(prog);
 					}
 					catch(Exception e){
 						e.printStackTrace();

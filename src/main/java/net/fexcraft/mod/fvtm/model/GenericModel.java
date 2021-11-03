@@ -282,10 +282,35 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 					e.printStackTrace();
 				}
 			}
-			for(TurboList list : groups){
-				if(list.hasPrograms()) list.initPrograms();
+		}
+		List<String[]> condprograms = ObjParser.getCommentValues(objdata, new String[]{ "CondPrograms:" }, "||", null);
+		if(!condprograms.isEmpty()){
+			for(String[] args : condprograms){
+				if(!groups.contains(args[0])) continue;
+				try{
+					ConditionBased prog = new ConditionBased(args[1]);
+					String[] sub = args[2].split("|");
+					for(String s : sub){
+						prog.add(parseProgram(s.trim().split(" ")));
+					}
+					if(args.length > 3){
+						sub = args[3].split("|");
+						for(String s : sub){
+							prog.addElse(parseProgram(s.trim().split(" ")));
+						}
+					}
+					groups.get(args[0]).addProgram(prog);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
+		//
+		for(TurboList list : groups){
+			if(list.hasPrograms()) list.initPrograms();
+		}
+		//
 		List<String[]> pivots = ObjParser.getCommentValues(objdata, new String[]{ "Pivot:" }, null, null);
 		if(!pivots.isEmpty()){
 			for(String[] args : pivots){

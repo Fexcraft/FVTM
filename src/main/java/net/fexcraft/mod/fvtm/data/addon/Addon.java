@@ -38,6 +38,8 @@ import net.fexcraft.mod.fvtm.model.BlockModel;
 import net.fexcraft.mod.fvtm.model.ContainerModel;
 import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
+import net.fexcraft.mod.fvtm.sys.condition.Condition;
+import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -133,6 +135,20 @@ public class Addon extends TypeCore<Addon> {
 			JsonObject par = obj.get("Particles").getAsJsonObject();
 			for(Entry<String, JsonElement> entry : par.entrySet()){
 				new net.fexcraft.mod.fvtm.sys.particle.Particle(registryname.getPath() + ":" + entry.getKey(), JsonHandler.parse(entry.getValue().toString(), true).asMap());
+			}
+		}
+		if(obj.has("Conditions")){
+			JsonObject par = obj.get("Conditions").getAsJsonObject();
+			for(Entry<String, JsonElement> entry : par.entrySet()){
+				net.fexcraft.app.json.JsonObject<?> jsn = JsonHandler.parse(entry.getValue().toString(), true);
+				Condition cond = null;
+				if(jsn.isArray()){
+					cond = new Condition(registryname.getPath() + ":" + entry.getKey(), jsn.asArray());
+				}
+				else{
+					cond = new Condition(registryname.getPath() + ":" + entry.getKey(), jsn.asMap());
+				}
+				ConditionRegistry.register(cond);
 			}
 		}
 		return this;

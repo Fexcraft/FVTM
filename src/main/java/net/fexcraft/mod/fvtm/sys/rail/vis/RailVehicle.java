@@ -32,6 +32,7 @@ import net.fexcraft.mod.fvtm.item.TrainAdjuster;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
+import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
@@ -115,6 +116,8 @@ public class RailVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(remote){
         	float c = rek.data().getAttributeFloat("collision_range", 2f);
         	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
+    		EntitySystem system = SystemManager.get(Systems.ENTITY, world);
+    		if(system != null) system.add(this);
         }
 	}
 	

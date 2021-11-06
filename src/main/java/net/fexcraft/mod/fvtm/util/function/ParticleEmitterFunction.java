@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Pos;
-import net.fexcraft.mod.fvtm.data.part.Function;
 import net.fexcraft.mod.fvtm.data.part.Function.StaticFunction;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -48,17 +47,6 @@ public class ParticleEmitterFunction extends StaticFunction {
 	@Override
 	public String getId(){
 		return "fvtm:particle_emitter";
-	}
-
-	@Override
-	public Function copy(Part part){
-		return new ParticleEmitterFunction(part, null).set(pos, particle);
-	}
-
-    private Function set(Pos pos2, Particle particle2){
-		this.particle = particle2;
-		this.pos = pos2;
-		return this;
 	}
 
 	@Override

@@ -31,9 +31,12 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleType;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.sys.uni.EntitySystem;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
+import net.fexcraft.mod.fvtm.sys.uni.SystemManager.Systems;
 import net.fexcraft.mod.fvtm.util.LegacySpawnSystem;
 import net.fexcraft.mod.fvtm.util.LoopSound;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -144,6 +147,8 @@ public class LandVehicle extends GenericVehicle implements IEntityAdditionalSpaw
         if(remote){
         	float c = vehicle.getAttributeFloat("collision_range", 2f);
         	renderbox = new AxisAlignedBB(-c, -c, -c, c, c, c);
+    		EntitySystem system = SystemManager.get(Systems.ENTITY, world);
+    		if(system != null) system.add(this);
         }
 	}
 	

@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.sys.uni;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.SwivelPoint;
@@ -10,6 +11,7 @@ import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -19,7 +21,7 @@ public class EntitySystem extends DetachedSystem {
 	public Thread thread;
 	public static final int TARGET_TICKS = 20;
 	public static final float RATE = 1f / (TARGET_TICKS + 1);
-	private ArrayList<Emitter> emitters = new ArrayList<>();
+	private ConcurrentLinkedQueue<Emitter> emitters = new ConcurrentLinkedQueue<>();
 	private TTimer timer = new TTimer();
 	private boolean run = true;
 	private float accumulator, delta;
@@ -45,7 +47,9 @@ public class EntitySystem extends DetachedSystem {
 				accumulator += (delta = timer.getDelta());
 				while(accumulator >= RATE){
 					try{
-						update();
+						if(!Minecraft.getMinecraft().isGamePaused()){
+							update();
+						}
 					}
 					catch(Throwable thr){
 						thr.printStackTrace();
@@ -74,11 +78,12 @@ public class EntitySystem extends DetachedSystem {
 		if(expired.size() > 0){
 			for(ParticleEntity part : expired){
 				Particle particle = Resources.PARTICLES.get(part.particle.next);
-				if(particle != null) particles.add(new ParticleEntity(particle, new Vec3f(part.pos)));
+				if(particle != null) particles.add(new ParticleEntity(particle, new Vec3f(part.pos), null, null));
 			}
 			expired.clear();
 		}
-		emitters.removeIf(emi -> emi.invalid(particles));
+		int mul = Minecraft.getMinecraft().gameSettings.particleSetting == 0 ? 1 : Minecraft.getMinecraft().gameSettings.particleSetting == 1 ? 2 : 4;
+		emitters.removeIf(emi -> emi.invalid(particles, mul));
 	}
 
 	@Override
@@ -147,13 +152,13 @@ public class EntitySystem extends DetachedSystem {
 			speed = func.getSpeed() == null ? func.getParticle().speed : func.getSpeed();
 		}
 
-		public boolean invalid(ArrayList<ParticleEntity> particles){
+		public boolean invalid(ArrayList<ParticleEntity> particles, int mul){
 			if(func.getConditional() == null || func.getConditional().isMet(vehicle, null, vehicle.getVehicleData(), null, null, data, part, null, null)){
 				cool++;
-				if(cool >= freq){
+				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());
 					Vec3d pos = point.getRelativeVector(off).add(vehicle.getPositionVector());
-					particles.add(new ParticleEntity(func.getParticle(), new Vec3f(pos.x, pos.y, pos.z)));
+					particles.add(new ParticleEntity(func.getParticle(), new Vec3f(pos.x, pos.y, pos.z), dir, speed));
 					cool = 0;
 				}
 			}

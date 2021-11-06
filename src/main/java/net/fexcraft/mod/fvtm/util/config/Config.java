@@ -29,7 +29,7 @@ public class Config {
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, ROADTOOL_FOR_ALL, OVERLAY_ON_BOTTOM;
     public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS, DISABLE_LIGHT_BEAMS;
     public static boolean DISABLE_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS;
-    public static boolean LOAD_ALL_RESOURCEPACKS, DISABLE_WIRES, RENDER_VEHICLES_SEPARATELY;
+    public static boolean LOAD_ALL_RESOURCEPACKS, DISABLE_WIRES, RENDER_VEHICLES_SEPARATELY, DISABLE_PARTICLES;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
     public static int WIRE_SEGMENTATOR, MAX_WIRE_LENGTH;
@@ -84,6 +84,7 @@ public class Config {
             DISABLE_LIGHT_BEAMS = config.getBoolean("disable_light_beams", CLIENT, false, "If light beam rendering should be disabled.");
             OVERLAY_ON_BOTTOM = config.getBoolean("default_overlay_on_bottom", CLIENT, true, "If the default steering overlay should be on bottom rather than on top of screen.");
             RENDER_VEHICLES_SEPARATELY = config.getBoolean("render_vehicles_separately", CLIENT, true, "If vehicles should be rendered separately new a new render pass. Allows for higher view distance.");
+            DISABLE_PARTICLES = config.getBoolean("disable_particles", CLIENT, false, "If FVTM particles (particle system) should be disabled.");
     	}
     	{//GENERAL
             VEHICLES_NEED_FUEL = config.getBoolean("vehicle_consume_fuel", GENERAL, true, "If vehicles need Fuel (in survival mode) to function.");

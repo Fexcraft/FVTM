@@ -392,7 +392,7 @@ public class Resources {
 		registerModifierImpl("string", StringModifier.class, true);
 		registerModifierImpl("float", FloatModifier.class, true);
 		registerModifierImpl("integer", IntegerModifier.class, true);
-		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterAttributeTypes(this));
+		MinecraftForge.EVENT_BUS.post(new ResourceEvents.RegisterModifierImpls(this));
 	}
 
 	private void registerFunctions(){

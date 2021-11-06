@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.Vec3d;
@@ -40,6 +41,7 @@ public class EntitySystem extends DetachedSystem {
 
 	@Override
 	public void setupTimer(long time){
+		if(Config.DISABLE_PARTICLES) return;
 		thread = new Thread(() -> {
 			System.out.println("Starting Entity Logic Thread.");
 			timer.init();
@@ -94,26 +96,23 @@ public class EntitySystem extends DetachedSystem {
 
 	@Override
 	public void unload(){
-		// TODO Auto-generated method stub
-		
+		emitters.clear();
+		particles.clear();
 	}
 
 	@Override
 	public void onChunkLoad(Chunk chunk){
-		// TODO Auto-generated method stub
-		
+		//
 	}
 
 	@Override
 	public void onChunkUnload(Chunk chunk){
-		// TODO Auto-generated method stub
-		
+		//
 	}
 
 	@Override
 	public void onServerTick(){
-		// TODO Auto-generated method stub
-		
+		//
 	}
 
 	@Override
@@ -122,6 +121,7 @@ public class EntitySystem extends DetachedSystem {
 	}
 
 	public void add(GenericVehicle vehicle){
+		if(Config.DISABLE_PARTICLES) return;
 		for(Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:particle_emitter")) continue;
 			ParticleEmitterFunction func = entry.getValue().getFunction("fvtm:particle_emitter");

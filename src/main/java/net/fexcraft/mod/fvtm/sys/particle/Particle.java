@@ -47,6 +47,7 @@ public class Particle {
 		setScale(map.getFloat("scale", sixteenth), map.has("scale_to") ? map.getFloat("scale_to", 0.5f) : 0);
 		if(map.has("color")) color = new RGB(map.getString("color", "#ffffff"));
 		if(map.has("color_to")) color_to = new RGB(map.getString("color_to", "#000000"));
+		next = map.getString("next", null);
 		switch(type){
 			case CUBOID: model = cubemodel;
 				break;

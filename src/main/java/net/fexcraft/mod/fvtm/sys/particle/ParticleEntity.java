@@ -14,13 +14,13 @@ public class ParticleEntity {
 	public RGB color;
 	public int passed;
 	
-	public ParticleEntity(Particle part, Vec3f pos){
+	public ParticleEntity(Particle part, Vec3f pos, Vec3f dir, Float speed){
 		particle = part;
 		this.pos = pos;
 		prev = new Vec3f(pos);
 		temp = new Vec3f();
-		dir = particle.dir;
-		speed = particle.speed;
+		this.dir = dir == null ? part.dir : dir;
+		this.speed = speed == null ? part.speed : speed;
 		percent = 0;
 		scale = particle.scale;
 		color = new RGB(particle.color);

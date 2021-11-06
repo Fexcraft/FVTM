@@ -55,7 +55,9 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
     public boolean should_sit = true;
 	public AxisAlignedBB renderbox;
 
-	public GenericVehicle(World world){ super(world); }
+	public GenericVehicle(World world){
+		super(world);
+	}
 	
 	public abstract SwivelPoint getRotPoint();
 

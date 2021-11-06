@@ -33,7 +33,7 @@ public class Condition {
 			JsonArray arr = map.getArray("target");
 			targets = new String[arr.size()];
 			for(int i = 0; i < targets.length; i++){
-				targets[0] = arr.get(i).string_value();
+				targets[i] = arr.get(i).string_value();
 			}
 			target = targets[0];
 		}
@@ -42,7 +42,7 @@ public class Condition {
 			targets = new String[]{ target };
 		}
 		condi = map.has("con") ? map.getString("con", "null") : map.getString("condition", "null");
-		mode = map.getString("mode", "equals");
+		mode = map.getString("mode", "equal");
 	}
 	
 	public Condition(String id, JsonArray array){
@@ -52,7 +52,7 @@ public class Condition {
 			JsonArray arr = array.getArray(1);
 			targets = new String[arr.size()];
 			for(int i = 0; i < targets.length; i++){
-				targets[0] = arr.get(i).string_value();
+				targets[i] = arr.get(i).string_value();
 			}
 			target = targets[0];
 		}

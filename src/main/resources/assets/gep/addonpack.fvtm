@@ -37,6 +37,16 @@
 				"fvtm:engine"
 			],
 			"mode": "on"
+		},
+		"throttle_0.5": {
+			"type": "attribute",
+			"target": "throttle",
+			"mode": ">=",
+			"condition": 0.5
+		},
+		"engine_throttle_0.5":{
+			"type": "group",
+			"target": [ "gep:engine_on", "gep:throttle_0.5" ]
 		}
 	},
 	"GenerateLang": false,

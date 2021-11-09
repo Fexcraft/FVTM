@@ -46,7 +46,7 @@ public abstract class Function {
 
     public void addInformation(ItemStack stack, World world, PartData data, List<String> list, ITooltipFlag flag){}
 
-	public boolean onCondition(String target, String mode, String condi){
+	public boolean onCondition(String[] targets, String mode, String condi){
 		return false;
 	}
 

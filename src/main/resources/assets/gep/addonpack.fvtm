@@ -1,22 +1,45 @@
 {
-  "RegistryName": "fvtm:gep",
-  "Name": "General Essentials Pack",
-  "URL": "http://fexcraft.net/download?modid=addon-gep",
-  "UpdateID": "addon-gep",
-  "License": "http://fexcraft.net/license?id=mods",
-  "Dependencies": ["fvtm:generic"],
-  "Authors": [
-    "01e4af9b-2a30-471e-addf-f6338ffce04b"
-  ],
-  "Version": "2.4.1",
-  "ClothMaterials":{
-  	"cap":{
-  		"durability": 256,
-  		"damage_reduction": [ 0, 0, 0, 2 ],
-  		"toughness": 1
-  	}
-  },
-  "GenerateLang": false,
-  "GenerateItemJson": false,
-  "GenerateItemIcon": false
+	"RegistryName": "fvtm:gep",
+	"Name": "General Essentials Pack",
+	"URL": "http://fexcraft.net/download?modid=addon-gep",
+	"UpdateID": "addon-gep",
+	"License": "http://fexcraft.net/license?id=mods",
+	"Dependencies": ["fvtm:generic"],
+	"Authors": [
+		"01e4af9b-2a30-471e-addf-f6338ffce04b"
+	],
+	"Version": "2.4.1",
+	"ClothMaterials":{
+		"cap":{
+			"durability": 256,
+			"damage_reduction": [ 0, 0, 0, 2 ],
+			"toughness": 1
+		}
+	},
+	"Particles": {
+		"smoke_normal": {
+			"type": "cuboid",
+			"ticks": 100,
+			"frequency": 10,
+			"direction": [ 0, 1, 0 ],
+			"speed": 0.025,
+			"scale": 0.0625,
+			"scale_to": 0.75,
+			"color": "#000000",
+			"color_to": "#b0b0b0"
+		}
+	},
+	"Conditions": {
+		"engine_on": {
+			"type": "part_function",
+			"target": [
+				"engine",
+				"fvtm:engine"
+			],
+			"mode": "on"
+		}
+	},
+	"GenerateLang": false,
+	"GenerateItemJson": false,
+	"GenerateItemIcon": false
 }

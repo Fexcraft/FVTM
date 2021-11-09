@@ -158,7 +158,8 @@ public class EntitySystem extends DetachedSystem {
 				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());
 					Vec3d pos = point.getRelativeVector(off).add(vehicle.getPositionVector());
-					particles.add(new ParticleEntity(func.getParticle(), new Vec3f(pos.x, pos.y, pos.z), dir, speed));
+					Vec3d vdr = point.getRelativeVector(dir.x, dir.y, dir.z);
+					particles.add(new ParticleEntity(func.getParticle(), new Vec3f(pos.x, pos.y, pos.z), new Vec3f(vdr.x, vdr.y, vdr.z), speed));
 					cool = 0;
 				}
 			}

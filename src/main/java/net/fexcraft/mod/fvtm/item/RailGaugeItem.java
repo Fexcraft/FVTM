@@ -99,7 +99,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
         	}
         	else{
         		if(Perms.RAIL_PLACER_GUI.has(player)){
-        			player.openGui(FVTM.getInstance(), GuiHandler.RAILPLACER, world, player.inventory.getSlotFor(stack), 0, 0);
+        			player.openGui(FVTM.getInstance(), GuiHandler.RAILPLACER, world, getSlotOf(player, stack), 0, 0);
         		}
         	}
 			return EnumActionResult.SUCCESS;

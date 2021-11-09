@@ -188,7 +188,7 @@ public class Condition {
 				return (e, t, v, c, b, p, s, tl, r) -> {
 					PartData data = s.equals(target) ? p : v.getPart(target);
 					Function func = data == null ? null : data.getFunction(targets[1]);
-					return func == null ? false : func.onCondition(target, mode, condi);
+					return func == null ? false : func.onCondition(targets, mode, condi);
 				};
 			}
 			case "multiple":

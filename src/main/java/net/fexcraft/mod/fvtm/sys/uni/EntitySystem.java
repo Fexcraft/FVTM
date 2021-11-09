@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.sys.particle.ParticleEntity;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction;
+import net.fexcraft.mod.fvtm.util.function.ParticleEmitterFunction.EmitterData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -125,14 +126,16 @@ public class EntitySystem extends DetachedSystem {
 		for(Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
 			if(!entry.getValue().hasFunction("fvtm:particle_emitter")) continue;
 			ParticleEmitterFunction func = entry.getValue().getFunction("fvtm:particle_emitter");
-			emitters.add(new Emitter(vehicle, entry.getKey(), entry.getValue(), func));
+			for(EmitterData data : func.emitters){
+				emitters.add(new Emitter(vehicle, entry.getKey(), entry.getValue(), data));
+			}
 		}
 	}
 	
 	public static class Emitter {
 		
 		private GenericVehicle vehicle;
-		private ParticleEmitterFunction func;
+		private EmitterData edata;
 		private PartData data;
 		private String part;
 		//
@@ -141,25 +144,25 @@ public class EntitySystem extends DetachedSystem {
 		private int freq, cool;
 		private float speed;
 
-		public Emitter(GenericVehicle vehicle, String key, PartData data, ParticleEmitterFunction func){
+		public Emitter(GenericVehicle vehicle, String key, PartData data, EmitterData edata){
 			this.vehicle = vehicle;
 			this.part = key;
 			this.data = data;
-			this.func = func;
-			off = data.getInstalledPos().add(func.getOffset()).to16Double();
-			freq = func.getFrequency() == 0 ? func.getParticle().frequency : func.getFrequency();
-			dir = func.getDirection() == null ? func.getParticle().dir : func.getDirection();
-			speed = func.getSpeed() == null ? func.getParticle().speed : func.getSpeed();
+			this.edata = edata;
+			off = data.getInstalledPos().add(edata.pos).to16Double();
+			freq = edata.frequency == 0 ? edata.particle.frequency : edata.frequency;
+			dir = edata.dir == null ? edata.particle.dir : edata.dir;
+			speed = edata.speed == null ? edata.particle.speed : edata.speed;
 		}
 
 		public boolean invalid(ArrayList<ParticleEntity> particles, int mul){
-			if(func.getConditional() == null || func.getConditional().isMet(vehicle, null, vehicle.getVehicleData(), null, null, data, part, null, null)){
+			if(edata.getConditional() == null || edata.getConditional().isMet(vehicle, null, vehicle.getVehicleData(), null, null, data, part, null, null)){
 				cool++;
 				if(cool >= freq * mul){
 					SwivelPoint point = vehicle.getVehicleData().getRotationPoint(data.getSwivelPointInstalledOn());
 					Vec3d pos = point.getRelativeVector(off).add(vehicle.getPositionVector());
 					Vec3d vdr = point.getRelativeVector(dir.x, dir.y, dir.z);
-					particles.add(new ParticleEntity(func.getParticle(), new Vec3f(pos.x, pos.y, pos.z), new Vec3f(vdr.x, vdr.y, vdr.z), speed));
+					particles.add(new ParticleEntity(edata.particle, new Vec3f(pos.x, pos.y, pos.z), new Vec3f(vdr.x, vdr.y, vdr.z), speed));
 					cool = 0;
 				}
 			}

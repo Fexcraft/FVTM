@@ -1,8 +1,10 @@
 package net.fexcraft.mod.fvtm.util.function;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.Vec3f;
@@ -20,28 +22,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ParticleEmitterFunction extends StaticFunction {
-
-	private Conditional conditional;
-	private Particle particle;
-	private String condition;
-	private int frequency;
-	private Float speed;
-	private Vec3f dir;
-	private Pos pos;
+	
+	public ArrayList<EmitterData> emitters = new ArrayList<EmitterData>();
 
 	public ParticleEmitterFunction(Part part, JsonObject obj){
 		super(part, obj);
 		if(obj == null) return;
-		pos = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true) : Pos.NULL;
-		pos = new Pos(pos.x, -pos.y, -pos.z);
-		particle = obj.has("particle") ? Resources.PARTICLES.get(obj.get("particle").getAsString()) : null;
-		frequency = obj.has("frequency") ? obj.get("frequency").getAsInt() : 0;
-		condition = obj.has("condition") ? obj.get("condition").getAsString() : null;
-		if(obj.has("direction")){
-			JsonArray array = obj.get("direction").getAsJsonArray();
-			dir = new Vec3f(array.get(0).getAsFloat(), array.get(1).getAsFloat(), array.get(2).getAsFloat());
+		if(obj.has("emitters")){
+			JsonArray array = obj.getAsJsonArray("emitters");
+			for(JsonElement elm : array){
+				emitters.add(new EmitterData(elm.getAsJsonObject()));
+			}
 		}
-		speed = obj.has("speed") ? obj.get("speed").getAsFloat() : null;
+		else{
+			emitters.add(new EmitterData(obj));
+		}
 	}
 	
 	@Override
@@ -52,34 +47,46 @@ public class ParticleEmitterFunction extends StaticFunction {
 	@Override
     public void addInformation(ItemStack stack, World world, PartData data, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&6[&b#&6]&2 Particle Emitter"));
-        tooltip.add(Formatter.format("&9Particle: &7" + particle.id));
-        tooltip.add(Formatter.format("&9Frequncy: &7" + (frequency == 0 ? particle.frequency : frequency) / 20f + "/tick"));
+        if(emitters.size() == 1){
+            tooltip.add(Formatter.format("&9Particle: &7" + emitters.get(0).particle.id));
+            EmitterData e = emitters.get(0);
+            tooltip.add(Formatter.format("&9Frequncy: &7" + (e.frequency == 0 ? e.particle.frequency : e.frequency) / 20f + "/tick"));
+        }
+        else{
+            tooltip.add(Formatter.format("&9Emitters: &7" + emitters.size()));
+        }
     }
 	
-	public Particle getParticle(){
-		return particle;
-	}
-	
-	public Pos getOffset(){
-		return pos;
-	}
-	
-	public int getFrequency(){
-		return frequency;
-	}
-	
-	public Conditional getConditional(){
-		if(condition == null) return null;
-		if(conditional == null) conditional = ConditionRegistry.get(condition);
-		return conditional;
-	}
-	
-	public Vec3f getDirection(){
-		return dir;
-	}
-	
-	public Float getSpeed(){
-		return speed;
+	public static class EmitterData {
+		
+		public EmitterData(JsonObject obj){
+			Pos pos = obj.has("pos") ? Pos.fromJson(obj.get("pos"), true) : Pos.NULL;
+			this.pos = new Pos(pos.x, -pos.y, -pos.z);
+			particle = obj.has("particle") ? Resources.PARTICLES.get(obj.get("particle").getAsString()) : null;
+			frequency = obj.has("frequency") ? obj.get("frequency").getAsInt() : 0;
+			condition = obj.has("condition") ? obj.get("condition").getAsString() : null;
+			if(obj.has("direction")){
+				JsonArray array = obj.get("direction").getAsJsonArray();
+				dir = new Vec3f(array.get(0).getAsFloat(), array.get(1).getAsFloat(), array.get(2).getAsFloat());
+			}
+			else dir = null;
+			speed = obj.has("speed") ? obj.get("speed").getAsFloat() : null;
+		}
+		
+		public Conditional conditional;
+		public final Particle particle;
+		public final String condition;
+		public final int frequency;
+		public final Float speed;
+		public final Vec3f dir;
+		public final Pos pos;
+		
+		public Conditional getConditional(){
+			if(condition == null) return null;
+			if(conditional == null) conditional = ConditionRegistry.get(condition);
+			return conditional;
+		}
+		
 	}
 
 }

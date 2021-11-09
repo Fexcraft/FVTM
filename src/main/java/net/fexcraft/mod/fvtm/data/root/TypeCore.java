@@ -8,6 +8,7 @@ import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -64,6 +65,21 @@ public abstract class TypeCore<SELF> implements IForgeRegistryEntry<SELF> {
 	        	if(cache != null) stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
 	    	}
 	        return Formatter.format(type.getName());
+	    }
+	    
+	    public int getSlotOf(EntityPlayer player, ItemStack stack){
+	    	ItemStack istack = null;
+	        for(int i = 0; i < player.inventory.mainInventory.size(); ++i){
+	        	istack = player.inventory.mainInventory.get(i);
+	            if(!istack.isEmpty() && areStacksEqual(stack, istack)) return i;
+	        }
+	        return -1;
+	    }
+	    
+	    public boolean areStacksEqual(ItemStack stack0, ItemStack stack1){
+	    	if(stack0.getItem() != stack1.getItem()) return false;
+	    	if(stack0.getHasSubtypes() && stack0.getMetadata() != stack1.getMetadata()) return false;
+	        return ItemStack.areItemStackTagsEqual(stack0, stack1);
 	    }
 		
 	}

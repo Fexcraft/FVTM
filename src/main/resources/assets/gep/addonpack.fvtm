@@ -19,7 +19,7 @@
 	"Particles": {
 		"smoke_normal": {
 			"type": "cuboid",
-			"ticks": 100,
+			"ticks": 200,
 			"frequency": 10,
 			"direction": [ 0, 1, 0 ],
 			"speed": 0.025,

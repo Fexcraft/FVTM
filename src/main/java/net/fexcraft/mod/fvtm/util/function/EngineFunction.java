@@ -161,7 +161,8 @@ public class EngineFunction extends Function {
 		return 0;
 	}
 	
-	public boolean onCondition(String target, String mode, String condi){
+	@Override
+	public boolean onCondition(String[] targets, String mode, String condi){
 		if(mode.equals("on")) return ison;
 		else if(mode.equals("off")) return !ison;
 		else return ison = Boolean.parseBoolean(condi);

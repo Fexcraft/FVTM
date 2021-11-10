@@ -24,6 +24,7 @@ public class ParticleEntity {
 		percent = 0;
 		scale = particle.scale;
 		color = new RGB(particle.color);
+		if(particle.alpha == -1) color.alpha = Static.random.nextFloat();
 	}
 	
 	public void setDirSpeed(Vec3f dir, float speed){
@@ -57,6 +58,9 @@ public class ParticleEntity {
 		}
 		if(particle.color_to != null){
 			color.packed = mix(particle.color, particle.color_to, percent);
+		}
+		if(particle.alpha >= 0 && particle.alpha_to != particle.alpha){
+			color.alpha = particle.alpha + (particle.alpha_to - particle.alpha) * percent;
 		}
 		passed++;
 	}

@@ -15,7 +15,7 @@ public class Particle {
 	public int persistence, frequency;
 	public Vec3f dir;
 	public RGB color = RGB.GREEN, color_to;
-	public float scale = sixteenth, scale_to, speed;
+	public float scale = sixteenth, scale_to, speed, alpha = 1, alpha_to;
 	public final String id;
 	public String next;
 	//
@@ -60,6 +60,8 @@ public class Particle {
 			default:
 				break;
 		}
+		if(map.has("alpha")) alpha = map.getFloat("alpha", alpha);
+		if(map.has("alpha_to")) alpha_to = map.getFloat("alpha_to", 0);
 	}
 	
 	public Particle setTiming(int persistence, int frequency){
@@ -100,6 +102,12 @@ public class Particle {
 			scale *= sixteenth;
 			scale_to *= sixteenth;
 		}
+		return this;
+	}
+	
+	public Particle setTransparency(float trans, float trans_to){
+		this.alpha = trans;
+		this.alpha_to = trans_to;
 		return this;
 	}
 	

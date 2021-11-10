@@ -24,12 +24,15 @@ public class ParticleRenderer {
         Minecraft.getMinecraft().renderEngine.bindTexture(Resources.WHITE_TEXTURE);
         EntitySystem sys = SystemManager.get(Systems.ENTITY, world);
         ents.addAll(sys.particles);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for(ParticleEntity part : ents){
         	if(part == null || part.pos == null) return;
 	        int z = RailRenderer.getBrightness(part.pos), x = z % 65536, y = z / 65536;
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)x / 1.0F, (float)y / 1.0F);
             part.render(ticks);
         }
+        GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 		ents.clear();
 	}

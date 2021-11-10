@@ -26,7 +26,9 @@
 			"scale": 0.0625,
 			"scale_to": 0.75,
 			"color": "#000000",
-			"color_to": "#b0b0b0"
+			"color_to": "#b0b0b0",
+			"alpha": 0.75,
+			"alpha_to": 0
 		}
 	},
 	"Conditions": {

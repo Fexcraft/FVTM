@@ -30,16 +30,22 @@ public class Condition {
 	public Condition(String id, JsonMap map){
 		this(id);
 		type = map.getString("type", "null");
-		if(map.get("target").isArray()){
-			JsonArray arr = map.getArray("target");
-			targets = new String[arr.size()];
-			for(int i = 0; i < targets.length; i++){
-				targets[i] = arr.get(i).string_value();
+		if(map.has("target")){
+			if(map.get("target").isArray()){
+				JsonArray arr = map.getArray("target");
+				targets = new String[arr.size()];
+				for(int i = 0; i < targets.length; i++){
+					targets[i] = arr.get(i).string_value();
+				}
+				target = targets[0];
 			}
-			target = targets[0];
+			else{
+				target = map.getString("target", "null");
+				targets = new String[]{ target };
+			}
 		}
 		else{
-			target = map.getString("target", "null");
+			target = "null";
 			targets = new String[]{ target };
 		}
 		condi = map.has("con") ? map.getString("con", "null") : map.getString("condition", "null");

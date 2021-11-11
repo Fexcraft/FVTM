@@ -14,6 +14,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.event.ConditionEvent;
 import net.fexcraft.mod.fvtm.model.TurboList;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 public class Condition {
@@ -210,6 +211,54 @@ public class Condition {
 					}
 					return true;
 				};
+			}
+			case "world_time":{
+				int value = Integer.parseInt(condi);
+				switch(mode){
+					case "equal":
+					case "=":{
+						return (e, t, v, c, b, p, s, tl, r) -> {
+							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+							return world.getWorldTime() == value;
+						};
+					}
+					case "nequal":
+					case "!=":{
+						return (e, t, v, c, b, p, s, tl, r) -> {
+							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+							return world.getWorldTime() != value;
+						};
+					}
+					case "lequal":
+					case "<=":{
+						return (e, t, v, c, b, p, s, tl, r) -> {
+							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+							return world.getWorldTime() <= value;
+						};
+					}
+					case "gequal":
+					case ">=":{
+						return (e, t, v, c, b, p, s, tl, r) -> {
+							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+							return world.getWorldTime() >= value;
+						};
+					}
+					case "less":
+					case "<":{
+						return (e, t, v, c, b, p, s, tl, r) -> {
+							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+							return world.getWorldTime() < value;
+						};
+					}
+					case "greater":
+					case ">":{
+						return (e, t, v, c, b, p, s, tl, r) -> {
+							World world = e == null ? t == null ? null : t.getWorld() : e.world;
+							return world.getWorldTime() > value;
+						};
+					}
+				}
+				break;
 			}
 			default:{
 				ConditionEvent.ConditionalCreate event = new ConditionEvent.ConditionalCreate(this);

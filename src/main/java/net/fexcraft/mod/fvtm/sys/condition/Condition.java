@@ -219,42 +219,42 @@ public class Condition {
 					case "=":{
 						return (e, t, v, c, b, p, s, tl, r) -> {
 							World world = e == null ? t == null ? null : t.getWorld() : e.world;
-							return world.getWorldTime() == value;
+							return world == null ? false : world.getWorldTime() == value;
 						};
 					}
 					case "nequal":
 					case "!=":{
 						return (e, t, v, c, b, p, s, tl, r) -> {
 							World world = e == null ? t == null ? null : t.getWorld() : e.world;
-							return world.getWorldTime() != value;
+							return world == null ? false : world.getWorldTime() != value;
 						};
 					}
 					case "lequal":
 					case "<=":{
 						return (e, t, v, c, b, p, s, tl, r) -> {
 							World world = e == null ? t == null ? null : t.getWorld() : e.world;
-							return world.getWorldTime() <= value;
+							return world == null ? false : world.getWorldTime() <= value;
 						};
 					}
 					case "gequal":
 					case ">=":{
 						return (e, t, v, c, b, p, s, tl, r) -> {
 							World world = e == null ? t == null ? null : t.getWorld() : e.world;
-							return world.getWorldTime() >= value;
+							return world == null ? false : world.getWorldTime() >= value;
 						};
 					}
 					case "less":
 					case "<":{
 						return (e, t, v, c, b, p, s, tl, r) -> {
 							World world = e == null ? t == null ? null : t.getWorld() : e.world;
-							return world.getWorldTime() < value;
+							return world == null ? false : world.getWorldTime() < value;
 						};
 					}
 					case "greater":
 					case ">":{
 						return (e, t, v, c, b, p, s, tl, r) -> {
 							World world = e == null ? t == null ? null : t.getWorld() : e.world;
-							return world.getWorldTime() > value;
+							return world == null ? false : world.getWorldTime() > value;
 						};
 					}
 				}

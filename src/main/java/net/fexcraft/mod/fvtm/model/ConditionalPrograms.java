@@ -4,6 +4,7 @@ import static net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TOGGLE;
 
 import javax.annotation.Nullable;
 
+import net.fexcraft.mod.fvtm.block.generated.BlockTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
@@ -269,6 +270,11 @@ public class ConditionalPrograms {
 		@Override
 		public boolean test(TurboList list, @Nullable Entity ent, VehicleData data, @Nullable Colorable color, @Nullable String part, @Nullable RenderCache cache){
 			return cond.isMet((GenericVehicle)ent, null, data, null, null, null, part, list, cache);
+		}
+
+		@Override
+		public boolean test(TurboList list, @Nullable TileEntity tile, BlockData data, @Nullable RenderCache cache){
+			return cond.isMet(null, (BlockTileEntity)tile, null, null, data, null, null, list, cache);
 		}
 		
 	}

@@ -49,6 +49,11 @@
 		"engine_throttle_0.5":{
 			"type": "group",
 			"target": [ "gep:engine_on", "gep:throttle_0.5" ]
+		},
+		"daytime":{
+			"type": "world_time",
+			"mode": "<",
+			"condition": 12000
 		}
 	},
 	"GenerateLang": false,

@@ -222,8 +222,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 				Attribute<?> copy = attr.copy(null);
 				attributes.put(copy.id(), copy);
 			}
-			attributes.get(attr.id()).copyAABBs(attr);
-			attributes.get(attr.id()).external(attr.external());
+			attributes.get(attr.id()).copyAABBs(attr).external(attr.external()).perm(attr.perm());
 		}
 		//
 		this.selected_texture = compound.getInteger("SelectedTexture");

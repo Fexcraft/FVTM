@@ -36,7 +36,7 @@ public abstract class Attribute<VT> {
 	private TreeSet<Modifier<?>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
-	private String target, origin, group;
+	private String target, origin, group, perm;
 	private boolean editable, external, sync;
 	private VT value, initial;
 	private float min, max;
@@ -90,6 +90,10 @@ public abstract class Attribute<VT> {
 
 	public VT initial(){
 		return initial;
+	}
+	
+	public String perm(){
+		return perm;
 	}
 
 	//
@@ -160,6 +164,11 @@ public abstract class Attribute<VT> {
 	
 	public Attribute<VT> sync(boolean bool){
 		this.sync = bool;
+		return this;
+	}
+	
+	public Attribute<VT> perm(String perm){
+		this.perm = perm;
 		return this;
 	}
 	
@@ -386,10 +395,10 @@ public abstract class Attribute<VT> {
 	
 	public Attribute<VT> copy(String origin){
 		Attribute<VT> attr = copyNewInstance();
-		return attr.minmax(min(), max()).value(value())// .setSeat(seat())
+		return attr.minmax(min(), max()).value(value())//.setSeat(seat())
 			.target(target()).group(group()).origin(origin)
 			.editable(editable()).external(external()).sync(sync())
-			.copyAABBs(this).copySeats(this);
+			.perm(perm()).copyAABBs(this).copySeats(this);
 	}
 
 	protected abstract Attribute<VT> copyNewInstance();
@@ -480,6 +489,7 @@ public abstract class Attribute<VT> {
 		}
 		if(obj.has("group")) attr.group(obj.get("group").getAsString());
 		if(obj.has("sync")) attr.sync(obj.get("sync").getAsBoolean());
+		if(obj.has("perm")) attr.perm(obj.get("perm").getAsString());
 		return attr;
 	}
 

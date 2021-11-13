@@ -49,7 +49,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity veh = (VehicleEntity)world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
 				final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
-				if((player.getRidingEntity() != veh.getEntity() && !attr.external()) || !attr.editable()){
+				if(player.getRidingEntity() != veh.getEntity() && !attr.external()){
 					if(!Perms.EDIT_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
 						Print.chat(player, "No permission. " + (!attr.editable() ? "[ED]" : "[EX]"));
 						return;

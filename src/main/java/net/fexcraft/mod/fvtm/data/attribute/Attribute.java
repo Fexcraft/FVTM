@@ -500,4 +500,8 @@ public abstract class Attribute<VT> {
 		}
 	}
 
+	public boolean hasPerm(){
+		return perm != null;
+	}
+
 }

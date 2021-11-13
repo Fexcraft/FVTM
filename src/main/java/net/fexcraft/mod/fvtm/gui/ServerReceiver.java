@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Compound;
 import net.fexcraft.mod.fvtm.sys.rail.RailEntity;
 import net.fexcraft.mod.fvtm.sys.rail.vis.RailVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
+import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil.Implementation;
@@ -22,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 
@@ -47,6 +49,12 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				VehicleEntity veh = (VehicleEntity)world.getEntityByID(packet.nbt.getInteger("entity"));
 				String attribute = packet.nbt.getString("attr");
 				final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
+				if((player.getRidingEntity() != veh.getEntity() && !attr.external()) || !attr.editable()){
+					if(!Perms.EDIT_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
+						Print.chat(player, "No permission. " + (!attr.editable() ? "[ED]" : "[EX]"));
+						return;
+					}
+				}
 				Object old = attr.value();
 				toggleAttr(attr, bool, packet.nbt, false, null);
 				Object syncval = attr.value();

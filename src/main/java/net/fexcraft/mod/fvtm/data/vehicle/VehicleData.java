@@ -856,4 +856,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return psproviders.get(psp_id);
 	}
 
+	public int getAttributeIndex(Attribute<?> attribute){
+		return new ArrayList<>(attributes.keySet()).indexOf(attribute.id());
+	}
+
 }

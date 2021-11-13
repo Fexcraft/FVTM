@@ -77,6 +77,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int VEHICLE_CONTAINERS = 937;
 	public static final int VEHICLE_CONTAINER = 938;
 	public static final int VEHICLE_CONNECTORS = 939;
+	public static final int VEHICLE_ATTRIBUTE_EDITOR = 932;
 	/* 94x - container */
 	public static final int CONTAINER_ITEM = 941;
 	public static final int CONTAINER_FLUID = 942;

@@ -135,7 +135,7 @@ gui.fvtm.vehicle.main.containers=Containers
 gui.fvtm.vehicle.main.connectors=Connectors
 gui.fvtm.vehicle.main.exit=Exit
 gui.fvtm.vehicle.fuel.accepts=Accepts: 
-gui.fvtm.vehicle.attribute.current_page=Current Page:
+gui.fvtm.vehicle.attribute.scroll_value=Scroll:
 gui.fvtm.vehicle.attribute.open_editor=Open Attribute Editor
 gui.fvtm.vehicle.attribute.toggle_value=Toggle Attribute Value
 gui.fvtm.vehicle.attribute.toggle_info=Left = toggle; Right = reset;

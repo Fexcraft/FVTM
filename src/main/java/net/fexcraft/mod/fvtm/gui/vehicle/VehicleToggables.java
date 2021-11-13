@@ -22,13 +22,13 @@ import net.minecraft.world.World;
 public class VehicleToggables extends GenericGui<VehicleContainer> {
 
 	private static final ResourceLocation texture = new ResourceLocation("fvtm:textures/gui/vehicle_toggables.png");
-	private static String CURRENT_PAGE, OPEN_EDITOR, NOT_EDITABLE, TOGGLE_VALUE, TOGGLE_INFO;
+	private static String SCROLL, OPEN_EDITOR, NOT_EDITABLE, TOGGLE_VALUE, TOGGLE_INFO;
 	private ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	private ArrayList<String> ttip = new ArrayList<String>();
 	private BasicButton[] edit = new BasicButton[14], togg = new BasicButton[14], sort = new BasicButton[4];
 	private BasicText[] rows = new BasicText[14];
 	private String SORT_TEXT[] = new String[4];
-	private int page;
+	private int scroll;
 	private GenericVehicle veh;
 
 	public VehicleToggables(EntityPlayer player, World world, int x, int y, int z){
@@ -38,7 +38,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		container.gui = this;
 		this.xSize = 256;
 		this.ySize = 218;
-		page = 0;
+		scroll = 0;
 		veh = (GenericVehicle)(player.getRidingEntity() instanceof GenericVehicle ? player.getRidingEntity() : world.getEntityByID(y));
 		SeatCache seat = veh.getSeatOf(player);
 		veh.getVehicleData().getAttributes().values().forEach(attr -> {
@@ -49,7 +49,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				attributes.add(attr);
 			}
 		});
-		CURRENT_PAGE = I18n.format("gui.fvtm.vehicle.attribute.current_page");
+		SCROLL = I18n.format("gui.fvtm.vehicle.attribute.scroll_value");
 		OPEN_EDITOR = I18n.format("gui.fvtm.vehicle.attribute.open_editor");
 		TOGGLE_VALUE = I18n.format("gui.fvtm.vehicle.attribute.toggle_value");
 		TOGGLE_INFO = I18n.format("gui.fvtm.vehicle.attribute.toggle_info");
@@ -67,7 +67,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			this.buttons.put("edit" + i, edit[i] = new BasicButton("edit" + i, guiLeft + 237, guiTop + 7 + (i * 14), 12, 244, 12, 12, true).alpha(false));
 			this.buttons.put("togg" + i, togg[i] = new BasicButton("togg" + i, guiLeft + 223, guiTop + 7 + (i * 14), 0, 244, 12, 12, true).alpha(false));
 		}
-		this.texts.put("status", new BasicText(guiLeft + 44, guiTop + 203, 224, MapColor.SNOW.colorValue, CURRENT_PAGE + " -/-"));
+		this.texts.put("status", new BasicText(guiLeft + 44, guiTop + 203, 224, MapColor.SNOW.colorValue, SCROLL + " -/-"));
 		this.buttons.put("prev", new BasicButton("prev", guiLeft + 235, guiTop + 204, 235, 204, 6, 6, true));
 		this.buttons.put("next", new BasicButton("next", guiLeft + 242, guiTop + 204, 242, 204, 6, 6, true));
 		this.buttons.put("sall", sort[0] = new BasicButton("sall", guiLeft + 7, guiTop + 203, 7, 203, 8, 8, true));
@@ -129,7 +129,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		if(button.name.startsWith("togg")){
 			int row = Integer.parseInt(button.name.replace("togg", ""));
 			NBTTagCompound packet = new NBTTagCompound();
-			Attribute<?> attr = attributes.get(page * 14 + row);
+			Attribute<?> attr = attributes.get(scroll + row);
 			packet.setString("target_listener", "fvtm:gui");
 			packet.setString("task", "attr_toggle");
 			packet.setString("attr", attr.id());
@@ -152,15 +152,15 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 
 	private void updatePage(Integer i){
 		if(i != null){
-			page += i;
-			if(page < 0) page = 0;
+			scroll += i;
+			if(scroll < 0) scroll = 0;
 		}
-		texts.get("status").string = CURRENT_PAGE + " " + (page + 1) + "/" + (attributes.size() / 14 + 1);
+		texts.get("status").string = SCROLL + " " + (scroll + 1) + "/" + (attributes.size() / 14 + 1);
 	}
 
 	private void updateTexts(){
 		for(int k = 0; k < 14; k++){
-			int l = page * 14 + k;
+			int l = scroll + k;
 			if(l >= attributes.size()){
 				rows[k].string = "------";
 				edit[k].enabled = edit[k].visible = false;
@@ -184,7 +184,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		ttip.clear();
 		for(int i = 0; i < rows.length; i++){
 			if(rows[i].hovered(mouseX, mouseY)){
-				int k = page * 14 + i;
+				int k = scroll + i;
 				if(k < attributes.size()){
 					Attribute<?> attr = attributes.get(k);
 					ttip.add(PARAGRAPH_SIGN + "6V: " + PARAGRAPH_SIGN + "7" + attr.string_value());

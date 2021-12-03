@@ -155,7 +155,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			scroll += i;
 			if(scroll < 0) scroll = 0;
 		}
-		texts.get("status").string = SCROLL + " " + (scroll + 1);
+		texts.get("status").string = SCROLL + " " + scroll;
 	}
 
 	private void updateTexts(){

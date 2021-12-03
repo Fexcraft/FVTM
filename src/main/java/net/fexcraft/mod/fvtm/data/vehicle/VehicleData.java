@@ -860,4 +860,8 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		return new ArrayList<>(attributes.keySet()).indexOf(attribute.id());
 	}
 
+	public Attribute<?> getAttributeByIndex(int idx){
+		return new ArrayList<>(attributes.values()).get(idx);
+	}
+
 }

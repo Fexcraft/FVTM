@@ -120,6 +120,7 @@ public class GuiHandler implements IGuiHandler {
 			case WIRE_RELAY_MAIN:
 			case WIRE_RELAY_EDIT:
 			case WIRE_EDIT: return new WireRelayContainer(player, world, x, y, z, true);
+			case VEHICLE_ATTRIBUTE_EDITOR: return new VehicleContainer(player, world, x, y, z);
 		}
 		return null;
 	}
@@ -159,6 +160,7 @@ public class GuiHandler implements IGuiHandler {
 				case WIRE_RELAY_MAIN: return new WireRelayChooser(player, world, x, y, z);
 				case WIRE_RELAY_EDIT: return new WireRelayEditor(player, world, x, y, z);
 				case WIRE_EDIT: return new WireEditor(player, world, x, y, z);
+				case VEHICLE_ATTRIBUTE_EDITOR: return new AttributeEditor(player, world, x, y, z);
 			}
 		}
 		catch(Exception e){

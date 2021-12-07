@@ -76,7 +76,6 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 		this.buttons.put("sedt", sort[1] = new BasicButton("sedt", guiLeft + 16, guiTop + 203, 16, 203, 8, 8, true));
 		this.buttons.put("sext", sort[2] = new BasicButton("sext", guiLeft + 25, guiTop + 203, 25, 203, 8, 8, true));
 		this.buttons.put("seat", sort[3] = new BasicButton("seat", guiLeft + 34, guiTop + 203, 34, 203, 8, 8, true));
-		this.updatePage(0);
 	}
 
 	@Override

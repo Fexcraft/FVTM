@@ -1,5 +1,8 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_TOGGABLES;
+
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
@@ -7,6 +10,8 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -98,7 +103,23 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		//
+		switch(key){
+			case "retn":{
+				openGui(VEHICLE_TOGGABLES, new int[] { 0, veh.getEntityId(), 0 }, LISTENERID);
+				return true;
+			}
+			case "help":{
+				GuiScreen parent = this;
+				this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, "https://fexcraft.net/wiki/mod/fvtm/attribute", 31102009, true){
+	                @Override
+	                public void drawScreen(int mouseX, int mouseY, float partialTicks){
+	                    parent.drawScreen(-1, -1, partialTicks);
+	                    super.drawScreen(mouseX, mouseY, partialTicks);
+	                }
+	            });
+				return true;
+			}
+		}
 		return false;
 	}
 

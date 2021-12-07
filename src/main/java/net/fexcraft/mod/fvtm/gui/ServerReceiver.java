@@ -123,8 +123,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				else{
 					attr.value(attr.parseValue(packet.nbt.getString("value")));
 				}
-				packet.nbt.setString("value", attr.string_value());
-				PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
+				((GenericVehicle)veh).sendAttributeUpdate(attr);
 				break;
 			}
 			case "update_container_holder":{

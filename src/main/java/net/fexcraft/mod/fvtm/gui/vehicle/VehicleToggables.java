@@ -29,6 +29,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 	private BasicText[] rows = new BasicText[14];
 	private String SORT_TEXT[] = new String[4];
 	private int scroll;
+	private static int lv = -1;
 	private GenericVehicle veh;
 
 	public VehicleToggables(EntityPlayer player, World world, int x, int y, int z){
@@ -49,6 +50,8 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 				attributes.add(attr);
 			}
 		});
+		if(lv != veh.getEntityId()) scroll = 0;
+		lv = veh.getEntityId();
 		SCROLL = I18n.format("gui.fvtm.vehicle.attribute.scroll_value");
 		OPEN_EDITOR = I18n.format("gui.fvtm.vehicle.attribute.open_editor");
 		TOGGLE_VALUE = I18n.format("gui.fvtm.vehicle.attribute.toggle_value");

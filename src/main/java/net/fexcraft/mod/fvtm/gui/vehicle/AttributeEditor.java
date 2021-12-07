@@ -6,6 +6,8 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_TOGGABLES;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
@@ -14,6 +16,7 @@ import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -117,6 +120,26 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 	                    super.drawScreen(mouseX, mouseY, partialTicks);
 	                }
 	            });
+				return true;
+			}
+			case "apply":{
+				NBTTagCompound packet = new NBTTagCompound();
+				packet.setString("target_listener", "fvtm:gui");
+				packet.setString("task", "attr_update");
+				packet.setString("value", field.getText());
+				packet.setString("attr", attr.id());
+				packet.setInteger("entity", veh.getEntity().getEntityId());
+				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
+				return true;
+			}
+			case "reset":{
+				NBTTagCompound packet = new NBTTagCompound();
+				packet.setString("target_listener", "fvtm:gui");
+				packet.setString("task", "attr_update");
+				packet.setBoolean("reset", true);
+				packet.setString("attr", attr.id());
+				packet.setInteger("entity", veh.getEntity().getEntityId());
+				PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 				return true;
 			}
 		}

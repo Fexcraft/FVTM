@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.data.attribute.Modifier;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.resources.I18n;
@@ -107,6 +108,16 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 		for(int i = 0; i < info.length; i++){
 			if(info[i].hovered(mouseX, mouseY)){
 				//
+			}
+		}
+		if(info[7].hovered(mouseX, mouseY)){
+			for(String str : attr.seats()){
+				ttip.add(str);
+			}
+		}
+		if(info[8].hovered(mouseX, mouseY)){
+			for(Modifier<?> mod : attr.getModifiers()){
+				ttip.add(mod.id() + (mod.origin() == null ? "" : " [" + mod.origin() + "]"));
 			}
 		}
 		if(help.hovered(mouseX, mouseY)){

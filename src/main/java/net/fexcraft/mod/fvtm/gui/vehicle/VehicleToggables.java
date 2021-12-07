@@ -142,7 +142,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 			return true;
 		}
 		if(button.name.startsWith("edit")){
-			int row = Integer.parseInt(button.name.replace("edit", ""));
+			int row = Integer.parseInt(button.name.replace("edit", "")) + scroll;
 			if(row >= attributes.size()) return true;
 			openGui(VEHICLE_ATTRIBUTE_EDITOR, new int[] { veh.getVehicleData().getAttributeIndex(attributes.get(row)), veh.getEntityId(), 0 }, LISTENERID);
 			return true;

@@ -263,7 +263,7 @@ public class JunctionAdjuster extends GenericGui<JunctionAdjusterContainer> {
 		}
 		else if(button.name.equals("help")){
 			GuiScreen parent = this;
-			this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, "https://github.com/Fexcraft/FVTM/wiki/Junction", 31102009, true){
+			this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, "https://fexcraft.net/wiki/mod/fvtm/rail-junction", 31102009, true){
                 @Override
                 public void drawScreen(int mouseX, int mouseY, float partialTicks){
                     parent.drawScreen(-1, -1, partialTicks);

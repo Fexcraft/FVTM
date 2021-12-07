@@ -62,7 +62,24 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "attr_update":{
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
-				attr.value(attr.parseValue(packet.nbt.getString("value")));
+				if(attr.valuetype().isTristate()){
+					if(packet.nbt.hasKey("reset") && packet.nbt.getBoolean("reset")){
+						attr.reset();
+					}
+					else{
+						attr.value(packet.nbt.getBoolean("value"));
+					}
+				}
+				else if(attr.valuetype().isFloat()){
+					attr.value(packet.nbt.getFloat("value"));
+				}
+				else if(attr.valuetype().isInteger()){
+					attr.value(packet.nbt.getInteger("value"));
+				}
+				else if(attr.valuetype().isString()){
+					attr.value(packet.nbt.getString("value"));
+				}
+				else attr.value(packet.nbt.getString("value"));
 				break;
 			}
 			case "update_container_holder":{

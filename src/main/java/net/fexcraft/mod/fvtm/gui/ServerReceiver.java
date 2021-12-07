@@ -107,10 +107,22 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				break;
 			}
 			case "attr_update":{
+				boolean reset = packet.nbt.hasKey("reset") && packet.nbt.getBoolean("reset");
 				VehicleEntity veh = (VehicleEntity)player.world.getEntityByID(packet.nbt.getInteger("entity"));
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
-				// TODO other checks?
-				attr.value(attr.parseValue(packet.nbt.getString("value")));
+				if(!attr.editable() && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
+					Print.chat(player, "No permission. [ED]");
+				}
+				if(player.getRidingEntity() != veh.getEntity() && !attr.external() &&!Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
+					Print.chat(player, "No permission. [EX]");
+					return;
+				}
+				if(reset){
+					attr.reset();
+				}
+				else{
+					attr.value(attr.parseValue(packet.nbt.getString("value")));
+				}
 				packet.nbt.setString("value", attr.string_value());
 				PacketHandler.getInstance().sendToAllAround(packet, Resources.getTargetPoint(veh.getEntity()));
 				break;

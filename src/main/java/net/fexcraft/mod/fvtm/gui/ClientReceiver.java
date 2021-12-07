@@ -64,7 +64,7 @@ public class ClientReceiver implements IPacketListener<PacketNBTTagCompound> {
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
 				if(attr.valuetype().isTristate()){
 					if(packet.nbt.hasKey("reset") && packet.nbt.getBoolean("reset")){
-						attr.reset();
+						attr.value(null);
 					}
 					else{
 						attr.value(packet.nbt.getBoolean("value"));

@@ -28,8 +28,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 	private BasicButton[] edit = new BasicButton[14], togg = new BasicButton[14], sort = new BasicButton[4];
 	private BasicText[] rows = new BasicText[14];
 	private String SORT_TEXT[] = new String[4];
-	private int scroll;
-	private static int lv = -1;
+	private static int scroll, lv = -1;
 	private GenericVehicle veh;
 
 	public VehicleToggables(EntityPlayer player, World world, int x, int y, int z){

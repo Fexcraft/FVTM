@@ -15,7 +15,6 @@ import net.fexcraft.mod.fvtm.data.container.ContainerSlot;
 import net.fexcraft.mod.fvtm.data.container.ContainerType;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleEntity;
-import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.util.Axes;
 import net.fexcraft.mod.fvtm.util.LoopSound;
@@ -261,7 +260,7 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		if(attr == null) return;
 		NBTTagCompound packet = new NBTTagCompound();
 		packet.setString("target_listener", "fvtm:gui");
-		packet.setString("task", attr.valuetype().isString() ? "attr_update" : "attr_toggle");
+		packet.setString("task", "attr_update");
 		packet.setString("attr", attr.id());
 		packet.setInteger("entity", getEntityId());
 		if(attr.valuetype().isTristate()){
@@ -282,7 +281,8 @@ public abstract class GenericVehicle extends Entity implements VehicleEntity, Co
 		else if(attr.valuetype().isString()){
 			packet.setString("value", attr.string_value());
 		}
-		ServerReceiver.INSTANCE.process(packet, null, world);
+		else packet.setString("value", attr.string_value());
+		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(packet), Resources.getTargetPoint(this));
 	}
 
 	public void sendAttributeUpdate(String id){

@@ -192,7 +192,7 @@ public class VehicleToggables extends GenericGui<VehicleContainer> {
 						ttip.add(PARAGRAPH_SIGN + "bG: " + PARAGRAPH_SIGN + "7" + attr.group());
 					}
 					if(attr.hasPerm()){
-						ttip.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + attributes.get(i).perm());
+						ttip.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + "7" + attributes.get(i).perm());
 					}
 					if(!attr.editable()){
 						ttip.add(PARAGRAPH_SIGN + "o" + PARAGRAPH_SIGN + "e" + NOT_EDITABLE);

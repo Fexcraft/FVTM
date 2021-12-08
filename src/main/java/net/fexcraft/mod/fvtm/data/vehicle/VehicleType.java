@@ -96,7 +96,7 @@ public enum VehicleType {
 				if(vehicle.isTrailerOrWagon()){
 					attrs.add(new FloatAttribute("trailer_weight_ratio", 0.2f).minmax(0f, 1f));
 				}
-				attrs.add(new StringAttribute("license_plate", "FVTM").editable(false).perm("fvtm.attribute.license_plate"));
+				attrs.add(new StringAttribute("license_plate", "FVTM").external(true).editable(false).perm("fvtm.attribute.license_plate"));
 				break;
 			}
 			case RAIL:{

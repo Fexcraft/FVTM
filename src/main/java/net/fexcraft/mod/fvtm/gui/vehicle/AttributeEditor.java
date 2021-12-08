@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.gui.vehicle;
 
+import static net.fexcraft.lib.mc.utils.Formatter.PARAGRAPH_SIGN;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 import static net.fexcraft.mod.fvtm.gui.GuiHandler.VEHICLE_TOGGABLES;
 
@@ -61,7 +62,7 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 	@Override
 	protected void init(){
 		for(int i = 0; i < info.length; i++){
-			this.texts.put("info" + i, info[i] = new BasicText(guiLeft + 9, guiTop + 28 + (i * 14), 190, MapColor.BLACK.colorValue, "------").hoverable(true));
+			this.texts.put("info" + i, info[i] = new BasicText(guiLeft + 9, guiTop + 28 + (i * 14), 190, MapColor.BLACK.colorValue, "------").autoscale().hoverable(true));
 		}
 		this.texts.put("status", new BasicText(guiLeft + 9, guiTop + 9, 165, MapColor.SNOW.colorValue, "").autoscale());
 		this.buttons.put("help", help = new BasicButton("help", guiLeft + 176, guiTop + 7, 176, 7, 12, 12, true));
@@ -153,6 +154,9 @@ public class AttributeEditor extends GenericGui<VehicleContainer> {
 			if(info[i].hovered(mouseX, mouseY)){
 				//
 			}
+		}
+		if(info[6].hovered(mouseX, mouseY)){
+			ttip.add(PARAGRAPH_SIGN + "6P: " + PARAGRAPH_SIGN + "7" + attr.perm());
 		}
 		if(info[7].hovered(mouseX, mouseY)){
 			for(String str : attr.seats()){

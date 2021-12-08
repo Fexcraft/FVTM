@@ -17,6 +17,7 @@ public class Perms {
 	public static final Perm ROAD_PLACER_ITEM = new Perm("fvtm.item.road_placer");
 	public static final Perm EDIT_INTERNAL_ATTRIBUTES = new Perm("fvtm.attribute.edit_internal");
 	public static final Perm EDIT_NON_EDITABLE_ATTRIBUTES = new Perm("fvtm.attribute.edit_non_editable");
+	public static final Perm ATTR_LICENSE_PLATE = new Perm("fvtm.attribute.license_plate");
 	//public static final Perm ROAD_PLACER_GUI_NOBLOCK = new Perm("fvtm.gui.road_placer.noblock");
 	
 	public static void register(){
@@ -26,6 +27,7 @@ public class Perms {
 		//PermissionAPI.registerNode(ROAD_PLACER_GUI_NOBLOCK.id(), Config.NO_RAIL_BLOCKS ? ALL : OP, "Allows to place road blocks without inventory consumption via the RoadPlacer GUI.");
 		PermissionAPI.registerNode(EDIT_INTERNAL_ATTRIBUTES.id(), OP, "Permission to edit internal attributes (which are not marked as external) when being outside a vehicle.");
 		PermissionAPI.registerNode(EDIT_NON_EDITABLE_ATTRIBUTES.id(), OP, "Permission to edit non editable attributes.");
+		PermissionAPI.registerNode(ATTR_LICENSE_PLATE.id(), OP, "Permission to edit license plate attributes.");
 	}
 	
 	public static class Perm {

@@ -51,6 +51,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				final Attribute<?> attr = veh.getVehicleData().getAttribute(attribute);
 				if(!attr.editable() && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
 					Print.chat(player, "No permission. [ED]");
+					return;
 				}
 				if(player.getRidingEntity() != veh.getEntity() && !attr.external() &&!Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
 					Print.chat(player, "No permission. [EX]");
@@ -112,6 +113,7 @@ public class ServerReceiver implements IPacketListener<PacketNBTTagCompound> {
 				Attribute<?> attr = veh.getVehicleData().getAttribute(packet.nbt.getString("attr"));
 				if(!attr.editable() && !Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
 					Print.chat(player, "No permission. [ED]");
+					return;
 				}
 				if(player.getRidingEntity() != veh.getEntity() && !attr.external() &&!Perms.EDIT_INTERNAL_ATTRIBUTES.has(player) && (attr.hasPerm() ? !PermissionAPI.hasPermission(player, attr.perm()) : true)){
 					Print.chat(player, "No permission. [EX]");

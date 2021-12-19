@@ -1,7 +1,0 @@
-{
-    "RegistryName": "gep:turn_left",
-    "Addon": "fvtm:gep",
-    "Description": "Turn Left - Sign",
-    "Texture": "gep:textures/roadsigns/turn_left.png",
-    "Model": "round_flat"
-}

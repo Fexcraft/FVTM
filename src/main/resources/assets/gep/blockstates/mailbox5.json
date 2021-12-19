@@ -1,9 +1,0 @@
-{
-    "variants": {
-        "normal": { "model": "gep:mailbox5" },
-        "facing=north": { "model": "gep:mailbox5", "y": 0 },
-        "facing=south": { "model": "gep:mailbox5", "y": 180 },
-        "facing=west":  { "model": "gep:mailbox5", "y": 270 },
-        "facing=east":  { "model": "gep:mailbox5", "y": 90 }
-    }
-}

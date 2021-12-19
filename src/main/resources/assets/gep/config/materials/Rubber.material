@@ -1,8 +1,0 @@
-{
-    "RegistryName": "gep:rubber",
-    "Addon": "fvtm:gep",
-    "Name": "Rubber",
-    "MaxItemStackSize": 16,
-    "OreDictionary": "dyeBlack",
-    "ItemBurnTime": 80
-}

@@ -1,9 +1,0 @@
-{
-    "RegistryName": "gep:super95",
-    "Addon": "fvtm:gep",
-    "Name": "Standard Super 95",
-    "Description": "GEP SUPER95",
-    "PrimaryGroup": "petrol",
-    "SecondaryGroup": "super95",
-    "Quality": 0.95
-}

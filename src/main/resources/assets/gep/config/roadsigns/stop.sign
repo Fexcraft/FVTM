@@ -1,7 +1,0 @@
-{
-    "RegistryName": "gep:stop",
-    "Addon": "fvtm:gep",
-    "Description": "Stop - Sign",
-    "Texture": "gep:textures/roadsigns/stop.png",
-    "Model": "octagon"
-}

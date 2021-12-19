@@ -1,7 +1,0 @@
-{
-    "RegistryName": "gep:ahead_only",
-    "Addon": "fvtm:gep",
-    "Description": "Ahead Only - Sign",
-    "Texture": "gep:textures/roadsigns/ahead_only.png",
-    "Model": "round_flat"
-}

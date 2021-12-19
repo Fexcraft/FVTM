@@ -1,7 +1,0 @@
-{
-    "RegistryName": "gep:road_closed",
-    "Addon": "fvtm:gep",
-    "Description": "European Type \"Road Closed\" Sign",
-    "Texture": "gep:textures/roadsigns/road_closed.png",
-    "Model": "circle;layer:0"
-}

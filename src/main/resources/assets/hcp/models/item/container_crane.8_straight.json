@@ -1,6 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "hcp:items/container_crane_8"
-    }
-}

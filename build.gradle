@@ -89,11 +89,9 @@ dependencies {
 	if(localrepos.exists()){
 		print "LocalRepos marker exists, using local copies.\n"
 		compile project(':FCL')
-		compile project(':GEP')
 	}
 	else{
 		compile 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
-		compile 'com.github.Fexcraft:GEP:main-SNAPSHOT'
 	}
 
 }

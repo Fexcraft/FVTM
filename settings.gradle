@@ -1,4 +1,2 @@
 include ':FCL'
 project(':FCL').projectDir = new File(settingsDir, '../FCL')
-include ':GEP'
-project(':GEP').projectDir = new File(settingsDir, '../GEP')

@@ -106,7 +106,7 @@ public class GBlockCraftChoose extends GenericGui<GBlockCraftChooseContainer> {
 	}
 	
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float pticks, int mouseX, int mouseY){
+    public void drawGuiContainerBackgroundLayer(float pticks, int mouseX, int mouseY){
 		super.drawGuiContainerBackgroundLayer(pticks, mouseX, mouseY);
 		if(hovered >= 0 && !hoverlines.isEmpty()){
 			this.drawHoveringText(hoverlines, guiLeft + 7 + 64, guiTop + 17 + (hovered * 14));

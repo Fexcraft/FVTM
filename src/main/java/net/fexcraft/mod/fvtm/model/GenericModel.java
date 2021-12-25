@@ -119,10 +119,10 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		}
 	}
 	
-	public GenericModel(Object[] stream, String type){
-		if(!type.equals("fmf")) return;
+	public <M extends GenericModel<T, K>> M parse(Object[] stream, String type){
+		if(!type.equals("fmf")) return (M)this;
 		try{
-			HashMap<String, Object> data = FMFParser.parse(this, (InputStream)stream[0]);
+			HashMap<String, Object> data = stream[0] instanceof InputStream ? FMFParser.parse(this, (InputStream)stream[0]) : (HashMap<String, Object>)stream[0];
 			smooth_shading = data.containsKey("SmoothShading") && Boolean.parseBoolean(data.get("SmoothShading").toString());
 			if(data.containsKey("Programs")){
 				for(String string : ((List<String>)data.get("Programs"))){
@@ -227,6 +227,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			e.printStackTrace();
 			Static.stop();
 		}
+		return (M)this;
 	}
 
 	/**

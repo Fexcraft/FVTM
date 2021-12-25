@@ -38,7 +38,10 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
 	
 	public ContainerModel(JsonObject obj){ super(obj); }
 	
-	public ContainerModel(Object[] stream, String type){ super(stream, type); }
+	@Override
+	public ContainerModel parse(Object[] stream, String type){
+		return super.parse(stream, type);
+	}
 	
 	public ContainerModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
     

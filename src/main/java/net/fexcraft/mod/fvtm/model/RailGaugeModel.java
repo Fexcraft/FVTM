@@ -41,7 +41,10 @@ public class RailGaugeModel extends GenericModel<Track, Integer> {
 	
 	public RailGaugeModel(JsonObject obj){ super(obj); }
 	
-	public RailGaugeModel(Object[] stream, String type){ super(stream, type); }
+	@Override
+	public RailGaugeModel parse(Object[] stream, String type){
+		return super.parse(stream, type);
+	}
 	
 	public RailGaugeModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
 		super(loc, data, objgroups, exclude);

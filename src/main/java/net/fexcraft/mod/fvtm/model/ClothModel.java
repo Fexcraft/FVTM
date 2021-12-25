@@ -1,6 +1,10 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -10,6 +14,7 @@ import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.data.root.RenderCache;
 import net.fexcraft.mod.fvtm.item.ClothItem;
 import net.minecraft.entity.Entity;
@@ -24,7 +29,37 @@ public class ClothModel extends GenericModel<ClothItem, ArrayList<String>> {
 	
 	public ClothModel(JsonObject obj){ super(obj); }
 	
-	public ClothModel(Object[] stream, String type){ super(stream, type); }
+	@Override
+	public ClothModel parse(Object[] stream, String type){
+		if(!type.equals("fmf")) return this;
+		try{
+			HashMap<String, Object> data = FMFParser.parse(this, (InputStream)stream[0]);
+			super.parse(new Object[]{ data }, type);
+			if(data.containsKey("SetGroupAs")){
+				for(String string : ((List<String>)data.get("SetGroupAs"))){
+					String[] args = string.trim().split(" ");
+					if(!groups.contains(args[0])) continue;
+					try{
+						String group = args[0];
+						String model = args[1];
+						float x = args.length > 2 ? Float.parseFloat(args[2]) : 0;
+						float y = args.length > 3 ? Float.parseFloat(args[3]) : 0;
+						float z = args.length > 4 ? Float.parseFloat(args[4]) : 0;
+						setGroupAs(group, model, x, y, z);
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}
+			if(stream.length > 1) for(Closeable c : (Closeable[])stream[1]) c.close();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+			Static.stop();
+		}
+		return this;
+	}
 	
 	public ClothModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
 		super(loc, data, objgroups, exclude);

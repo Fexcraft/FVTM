@@ -8,8 +8,6 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonElement;
 
-import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
@@ -26,7 +24,6 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class TurboList extends ArrayList<ModelRendererTurbo> {
 	
-	private ArrayList<Polyhedron<?>> hedrons = new ArrayList<>();
 	public static final TurboList EMPTY = new TurboList("fvtm:empty");
 	public static final ProgramMap PROGRAMS = new ProgramMap();
 	//
@@ -50,11 +47,7 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 		if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(offX, offY, offZ);
 		if(rotX != 0f) GL11.glRotatef(rotX, 1, 0, 0); if(rotY != 0f) GL11.glRotatef(rotY, 0, 1, 0); if(rotZ != 0f) GL11.glRotatef(rotZ, 0, 0, 1);*/
 		if(hasprog) for(Program program : programs) program.preRender(this, ent, data, color, part, cache);
-		if(visible){
-			for(ModelRendererTurbo turbo : this) turbo.render(scale);
-			check();
-			for(Polyhedron<?> poly : hedrons) poly.render();
-		}
+		if(visible) for(ModelRendererTurbo turbo : this) turbo.render(scale);
 		if(hasprog) for(Program program : programs) program.postRender(this, ent, data, color, part, cache);
 		/*if(offX != 0f || offY != 0f || offZ != 0f) GL11.glTranslatef(-offX, -offY, -offZ);
 		GL11.glPopMatrix();*/
@@ -62,28 +55,12 @@ public class TurboList extends ArrayList<ModelRendererTurbo> {
 
 	public void renderBlock(TileEntity tile, BlockData data, RenderCache cache){
 		if(hasprog) for(Program program : programs) program.preRender(this, tile, data, cache);
-		if(visible){
-			for(ModelRendererTurbo turbo : this) turbo.render(scale);
-			check();
-			for(Polyhedron<?> poly : hedrons) poly.render();
-		}
+		if(visible) for(ModelRendererTurbo turbo : this) turbo.render(scale);
 		if(hasprog) for(Program program : programs) program.postRender(this, tile, data, cache);
-	}
-	
-	boolean checked = false;
-	
-	private void check(){
-		if(checked) return;
-		for(ModelRendererTurbo turbo : this){
-			hedrons.add(new Polyhedron<>().importMRT(turbo, Static.sixteenth));
-		}
-		checked = true;
 	}
 
 	public void renderPlain(){
 		for(ModelRendererTurbo turbo : this) turbo.render(scale);
-		check();
-		for(Polyhedron<?> poly : hedrons) poly.render();
 	}
 
 	public void translate(float x, float y, float z){

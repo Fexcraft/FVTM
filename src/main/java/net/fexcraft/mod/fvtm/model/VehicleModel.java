@@ -39,7 +39,10 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	
 	public VehicleModel(JsonObject obj){ super(obj); }
 	
-	public VehicleModel(Object[] stream, String type){ super(stream, type); }
+	@Override
+	public VehicleModel parse(Object[] stream, String type){
+		return super.parse(stream, type);
+	}
 	
 	public VehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
 

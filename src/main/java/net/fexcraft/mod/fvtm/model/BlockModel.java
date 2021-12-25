@@ -42,7 +42,10 @@ public class BlockModel extends GenericModel<BlockData, TileEntity> implements F
 	
 	public BlockModel(JsonObject obj){ super(obj); }
 	
-	public BlockModel(Object[] stream, String type){ super(stream, type); }
+	@Override
+	public BlockModel parse(Object[] stream, String type){
+		return super.parse(stream, type);
+	}
 	
 	public BlockModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
 

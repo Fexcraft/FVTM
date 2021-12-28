@@ -247,6 +247,20 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			this.textureY = 256;
 			e.printStackTrace();
 		}
+		try{
+			float scale = Float.parseFloat(ObjParser.getCommentValue(objdata, "ItemScale:"));
+			if(this instanceof VehicleModel){
+				((VehicleModel)this).item_scale.setAll(scale);
+			}
+			else if(this instanceof BlockModel){
+				((BlockModel)this).gui_scale_x = scale;
+				((BlockModel)this).gui_scale_y = scale;
+				((BlockModel)this).gui_scale_z = scale;
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 		boolean flip_x = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipAxes:"));
 		boolean flip_f = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipFaces:"));
 		boolean flip_u = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipU:"));

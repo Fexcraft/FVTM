@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.data.attribute;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -23,6 +24,7 @@ import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * 5th prototype.
@@ -36,6 +38,7 @@ public abstract class Attribute<VT> {
 	private TreeSet<Modifier<?>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
+	private HashMap<String, ResourceLocation> icons;
 	private String target, origin, group, perm;
 	private boolean editable, external, sync;
 	private VT value, initial;
@@ -169,6 +172,24 @@ public abstract class Attribute<VT> {
 	
 	public Attribute<VT> perm(String perm){
 		this.perm = perm;
+		return this;
+	}
+	
+	public HashMap<String, ResourceLocation> icons(){
+		return icons;
+	}
+	
+	public Attribute<VT> icons(HashMap<String, ResourceLocation> icons){
+		this.icons = icons;
+		return this;
+	}
+	
+	public Attribute<VT> icons(String... icons){
+		if(!hasIcons()) icons(new HashMap<>());
+		for(int i = 0; i < icons.length; i += 2){
+			if(i >= icons.length ) break;
+			this.icons().put(icons[i], new ResourceLocation(icons[i + 1]));
+		}
 		return this;
 	}
 	
@@ -490,6 +511,9 @@ public abstract class Attribute<VT> {
 		if(obj.has("group")) attr.group(obj.get("group").getAsString());
 		if(obj.has("sync")) attr.sync(obj.get("sync").getAsBoolean());
 		if(obj.has("perm")) attr.perm(obj.get("perm").getAsString());
+		if(obj.has("icons")){
+			
+		}
 		return attr;
 	}
 
@@ -502,6 +526,10 @@ public abstract class Attribute<VT> {
 
 	public boolean hasPerm(){
 		return perm != null;
+	}
+	
+	public boolean hasIcons(){
+		return icons != null;
 	}
 
 }

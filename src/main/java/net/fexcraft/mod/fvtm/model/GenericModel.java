@@ -264,11 +264,9 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 			e.printStackTrace();
 		}
 		try{
-			float scale = Float.parseFloat(ObjParser.getCommentValue(objdata, "ItemScale:"));
-			if(this instanceof VehicleModel){
-				((VehicleModel)this).item_scale.setAll(scale);
-			}
-			else if(this instanceof BlockModel){
+			String val = ObjParser.getCommentValue(objdata, "ItemScale:");
+			float scale = val == null ? 1 : Float.parseFloat(val);
+			if(this instanceof BlockModel){
 				((BlockModel)this).gui_scale_x = scale;
 				((BlockModel)this).gui_scale_y = scale;
 				((BlockModel)this).gui_scale_z = scale;

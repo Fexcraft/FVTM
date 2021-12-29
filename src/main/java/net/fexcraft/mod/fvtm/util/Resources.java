@@ -77,14 +77,7 @@ import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.RoadSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.model.BlockModel;
-import net.fexcraft.mod.fvtm.model.ClothModel;
-import net.fexcraft.mod.fvtm.model.ContainerModel;
-import net.fexcraft.mod.fvtm.model.PartModel;
-import net.fexcraft.mod.fvtm.model.RailGaugeModel;
-import net.fexcraft.mod.fvtm.model.RoadSignModel;
-import net.fexcraft.mod.fvtm.model.VehicleModel;
-import net.fexcraft.mod.fvtm.model.WireModel;
+import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
@@ -567,7 +560,7 @@ public class Resources {
 				}
 				case "fmf":{
 					Object[] stream = getModelInputStreamWithFallback(new ResourceLocation(name));
-					model = clazz.getConstructor(Object[].class, String.class).newInstance(stream, ext);
+					model = ((GenericModel<T, K>)clazz.getConstructor().newInstance()).parse(stream, ext);
 					break;
 				}
 				case "": default: return (Model<T, K>)getEmptyModelFromClass(clazz);

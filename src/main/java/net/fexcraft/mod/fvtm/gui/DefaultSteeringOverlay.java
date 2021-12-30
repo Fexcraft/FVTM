@@ -1,11 +1,5 @@
 package net.fexcraft.mod.fvtm.gui;
 
-import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_BACK;
-import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_FALSE;
-import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_TRI0;
-import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_TRI1;
-import static net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui.ICON_BOOL_TRUE;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -65,13 +59,17 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	public static final ResourceLocation PBRAKE_ON = new ResourceLocation("fvtm:textures/gui/icons/pbrake_on.png");
 	public static final ResourceLocation BRAKE_OFF = new ResourceLocation("fvtm:textures/gui/icons/brake_off.png");
 	public static final ResourceLocation BRAKE_ON = new ResourceLocation("fvtm:textures/gui/icons/brake_on.png");
+	public static final ResourceLocation WARN_OFF = new ResourceLocation("fvtm:textures/gui/icons/warning_lights_off.png");
+	public static final ResourceLocation WARN_ON = new ResourceLocation("fvtm:textures/gui/icons/warning_lights_on.png");
 	//
 	public static String NO_ENGINE, SPEED, FUEL, TRAILER, THROTTLE, GEAR, RPM;
 	//
 	protected static final RGB HOVER = new RGB(0, 255, 0, 0.5f);
-	protected static final int perpage = 8;
+	protected static final int perpage = 9;
 	protected static int scroll = 0, page, timer, clicktimer, lastgear = -100;
 	protected static ArrayList<Attribute<?>> attributes = new ArrayList<>();
+	protected static ArrayList<String> hard_attr = new ArrayList<>(), offset = new ArrayList<>();
+	protected static boolean turnsig = false, warnsig = false, railed;
 	public static CopyOnWriteArrayList<Object> STRS = new CopyOnWriteArrayList<>();
 	private static int maxspeed = 1;
 	private static String gear_label;
@@ -85,7 +83,6 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		scroll = 0;
 		page = 0;
 		lastgear = 100;
-		attributes.clear();
 		NO_ENGINE = I18n.format("gui.fvtm.overlay.default.no_engine");
 		SPEED = I18n.format("gui.fvtm.overlay.default.speed");
 		FUEL = I18n.format("gui.fvtm.overlay.default.fuel");
@@ -94,6 +91,19 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		RPM = I18n.format("gui.fvtm.overlay.default.rpm");
 		TRAILER = I18n.format("gui.fvtm.overlay.default.trailer");
 		//maxspeed = 1;
+		loadAttrs();
+		hard_attr.clear();
+		turnsig = root.seat().vehicle.getVehicleData().getAttributes().containsKey("turn_lights");
+		warnsig = root.seat().vehicle.getVehicleData().getAttributes().containsKey("warning_lights");
+		if(turnsig) hard_attr.add("turn_lights");
+		if(railed = root.seat().vehicle.isRailType()){
+			//
+		}
+		else{
+			hard_attr.add("lights_fog");
+			hard_attr.add("lights_long");
+		}
+		hard_attr.add("lights");
 	}
 
 	@Override
@@ -254,6 +264,10 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
 		int yoff = Config.OVERLAY_ON_BOTTOM ? root.height - 40 : -5;
 		root.drawTexturedModalRect(0, yoff, 0, 0, 256, Config.OVERLAY_ON_BOTTOM ? 40 : 45);
+		boolean wide = root.width > 256 + 158;
+		if(wide){
+			root.drawTexturedModalRect(root.width - 158, yoff, 0, root.toggables ? 166 : 211, 158, Config.OVERLAY_ON_BOTTOM ? 40 : 45);
+		}
 		boolean noengine = false;
 		if(!data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine")){
 			root.mc.getTextureManager().bindTexture(ENGINE_MISSING);
@@ -262,34 +276,47 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		else{
 			root.mc.getTextureManager().bindTexture(data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() ? ENGINE_ON : ENGINE_OFF);
 		}
-		root.drawRectIcon(root.width - 33, 1 + yoff, 32, 32);
-		//
-		if(!ent.isRailType()){
-			//this.mc.getTextureManager().bindTexture(ConstructorGui.ANVIL);
-			//drawRectIcon(width - 97 - 16, 1, 80, 16);
-			boolean turnleft = DefaultPrograms.BLINKER_TOGGLE && (data.getTurnLightLeft() || data.getWarningLights());
+		root.drawRectIcon(root.width - 150, yoff + 8, 15, 15);
+		offset.clear();
+		offset.add("engine");
+		if(root.uni12){
+			root.mc.getTextureManager().bindTexture(((ULandVehicle)root.seat().vehicle).braking ? BRAKE_ON : BRAKE_OFF);
+			root.drawRectIcon(root.width - 134, yoff + 8, 16, 16);
+			root.mc.getTextureManager().bindTexture(((ULandVehicle)root.seat().vehicle).pbrake ? PBRAKE_ON : PBRAKE_OFF);
+			root.drawRectIcon(root.width - 118, yoff + 8, 16, 16);
+			offset.add("brake");
+			offset.add("pbrake");
+		}
+		if(turnsig){
+			boolean turnleft = DefaultPrograms.BLINKER_TOGGLE && (data.getTurnLightLeft() || (warnsig && data.getWarningLights()));
 			root.mc.getTextureManager().bindTexture(turnleft ? INDICATOR_LEFT_ON : INDICATOR_LEFT_OFF);
-			root.drawRectIcon(root.width - 97 - 16, 1 + yoff, 16, 16);
-			boolean turnright = DefaultPrograms.BLINKER_TOGGLE && (data.getTurnLightRight() || data.getWarningLights());
-			root.mc.getTextureManager().bindTexture(turnright ? INDICATOR_RIGHT_ON : INDICATOR_RIGHT_OFF);
-			root.drawRectIcon(root.width - 65 + 16, 1 + yoff, 16, 16);
-			//
-			root.mc.getTextureManager().bindTexture(data.getAttribute("lights").boolean_value() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF);
-			root.drawRectIcon(root.width - 97 + 32, 1 + yoff, 16, 16);
-			root.mc.getTextureManager().bindTexture(data.getAttribute("lights_long").boolean_value() ? LIGHTS_HIGH_ON : LIGHTS_HIGH_OFF);
-			root.drawRectIcon(root.width - 97 + 16, 1 + yoff, 16, 16);
+			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+			offset.add("turn_lights_left");
+		}
+		if(!railed){
 			root.mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").boolean_value() ? LIGHTS_FOG_ON : LIGHTS_FOG_OFF);
-			root.drawRectIcon(root.width - 97, 1 + yoff, 16, 16);
-			//
-			if(root.uni12){
-				root.mc.getTextureManager().bindTexture(((ULandVehicle)root.seat().vehicle).pbrake ? PBRAKE_ON : PBRAKE_OFF);
-				root.drawRectIcon(root.width - 97 - 34, 1 + yoff, 16, 16);
-				root.mc.getTextureManager().bindTexture(((ULandVehicle)root.seat().vehicle).braking ? BRAKE_ON : BRAKE_OFF);
-				root.drawRectIcon(root.width - 97 - 50, 1 + yoff, 16, 16);
-			}
+			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+			offset.add("lights_fog");
+			root.mc.getTextureManager().bindTexture(data.getAttribute("lights_long").boolean_value() ? LIGHTS_HIGH_ON : LIGHTS_HIGH_OFF);
+			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+			offset.add("lights_long");
+		}
+		root.mc.getTextureManager().bindTexture(data.getAttribute("lights").boolean_value() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF);
+		root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+		offset.add("lights");
+		if(turnsig){
+			boolean turnright = DefaultPrograms.BLINKER_TOGGLE && (data.getTurnLightRight() || (warnsig && data.getWarningLights()));
+			root.mc.getTextureManager().bindTexture(turnright ? INDICATOR_RIGHT_ON : INDICATOR_RIGHT_OFF);
+			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+			offset.add("warning_lights");
+		}
+		if(warnsig){
+			root.mc.getTextureManager().bindTexture(data.getWarningLights() ? WARN_ON : WARN_OFF);
+			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+			offset.add("");
 		}
 		//
-		if(!attributes.isEmpty()){
+		/*if(!attributes.isEmpty()){
 			int offset = 0;
 			for(int j = 0; j < perpage; j++){
 				int i = page * perpage + j;
@@ -330,7 +357,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 				root.drawTexturedModalRect(root.width - width, offset + 12, 0, 0, width, 12);
 				root.mc.fontRenderer.drawString(string, root.width - width + 2, offset + 15, 0xffffff);
 			}
-		}
+		}*/
 		//
 		if(timer > 0) timer--;
 		if(clicktimer > 0) clicktimer--;
@@ -346,9 +373,15 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		RGB.BLUE.glColorApply();
 		root.drawTexturedModalRect(66, 8 + yoff, 66, 8, (int)(ent.getSpeed() / (float)maxspeed * 100), 7);
 		GL11.glPushMatrix();
-		GL11.glTranslatef(70, 9 + yoff, 0);
+		GL11.glTranslatef(68, 9 + yoff, 0);
 		GL11.glScalef(0.8f, 0.8f, 0.8f);
-		root.mc.fontRenderer.drawString(Formatter.format("&7" + format((int)ent.getSpeed()) + "&f/&7" + maxspeed), 0, 0, 0);
+		root.mc.fontRenderer.drawString(Formatter.format("&7" + format((int)ent.getSpeed())), 0, 0, 0);
+		GL11.glPopMatrix();
+		GL11.glPushMatrix();
+		String str0 = maxspeed + "";
+		GL11.glTranslatef(165 - root.mc.fontRenderer.getStringWidth(str0) * 0.8f, 9 + yoff, 0);
+		GL11.glScalef(0.8f, 0.8f, 0.8f);
+		root.mc.fontRenderer.drawString(Formatter.format("&7" + str0), 0, 0, 0);
 		GL11.glPopMatrix();
 		//
 		root.mc.fontRenderer.drawString(FUEL, 8, 30 + yoff, 0xffffff);
@@ -357,9 +390,15 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		root.drawTexturedModalRect(66, 30 + yoff, 66, 30, (int)(data.getStoredFuel() / (float)data.getFuelCapacity() * 100), 7);
 		RGB.glColorReset();
 		GL11.glPushMatrix();
-		GL11.glTranslatef(70, 31 + yoff, 0);
+		GL11.glTranslatef(68, 31 + yoff, 0);
 		GL11.glScalef(0.8f, 0.8f, 0.8f);
-		root.mc.fontRenderer.drawString(Formatter.format(fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 0, 0, 0xffffff);
+		root.mc.fontRenderer.drawString(Formatter.format(fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel())), 0, 0, 0xffffff);
+		GL11.glPopMatrix();
+		GL11.glPushMatrix();
+		str0 = ent.getVehicleData().getFuelCapacity() + "";
+		GL11.glTranslatef(165 - root.mc.fontRenderer.getStringWidth(str0) * 0.8f, 31 + yoff, 0);
+		GL11.glScalef(0.8f, 0.8f, 0.8f);
+		root.mc.fontRenderer.drawString(Formatter.format("&b" + str0), 0, 0, 0);
 		GL11.glPopMatrix();
 		//
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
@@ -412,16 +451,6 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		return d < 0.3 ? d < 0.1 ? "&c" : "&e" : "&a";
 	}
 
-	private String throttleColour(double throttle){
-		if(throttle > 0.7){ return throttle > 0.9 ? "&c" : "&e"; }
-		if(throttle < -0.7){ return throttle < -0.9 ? "&c" : "&e"; }
-		return "&f";
-	}
-
-	private String pc(double f){
-		return format(f * 100);
-	}
-
 	private static final DecimalFormat df = new DecimalFormat("##.##");
 	// static { df.setRoundingMode(RoundingMode.DOWN); }
 
@@ -432,15 +461,19 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	@Override
 	public void onToggablesToggle(){
 		Print.debug("Toggled " + (root.toggables ? "ON" : "OFF"));
-		attributes.clear();
 		if(!root.toggables) return;
+		if(attributes.isEmpty()) loadAttrs();
+		Print.debug("ATTRS " + attributes.size());
+	}
+
+	private void loadAttrs(){
+		attributes.clear();
 		if(root.seat() == null || root.seat().vehicle == null) return;
 		for(Attribute<?> attr : root.seat().vehicle.getVehicleData().getAttributes().values()){
 			if(attr.seats().contains(root.seat().seatdata.name)){
 				attributes.add(attr);
 			}
 		}
-		Print.debug("ATTRS " + attributes.size());
 	}
 
 }

@@ -253,7 +253,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks, GenericVehicle ent, VehicleData data){
 		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
 		int yoff = Config.OVERLAY_ON_BOTTOM ? root.height - 40 : -5;
-		root.drawTexturedModalRect(0, yoff, 0, 0, 256, 40);
+		root.drawTexturedModalRect(0, yoff, 0, 0, 256, Config.OVERLAY_ON_BOTTOM ? 40 : 45);
 		boolean noengine = false;
 		if(!data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine")){
 			root.mc.getTextureManager().bindTexture(ENGINE_MISSING);

@@ -45,6 +45,8 @@ import net.minecraft.util.ResourceLocation;
  *
  */
 public class DefaultSteeringOverlay extends AddonSteeringOverlay {
+
+	public static final ResourceLocation OVERLAY_TEX = new ResourceLocation("fvtm:textures/gui/vehicle_overlay.png");
 	
 	public static final ResourceLocation ENGINE_MISSING = new ResourceLocation("fvtm:textures/gui/icons/engine_missing.png");
 	public static final ResourceLocation ENGINE_ON = new ResourceLocation("fvtm:textures/gui/icons/engine_on.png");
@@ -71,6 +73,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	protected static int scroll = 0, page, timer, clicktimer, lastgear = -100;
 	protected static ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	public static CopyOnWriteArrayList<Object> STRS = new CopyOnWriteArrayList<>();
+	private static int maxspeed = 1;
 	private static String gear_label;
 
 	public DefaultSteeringOverlay(VehicleSteeringOverlay root, EntityPlayer player){
@@ -90,6 +93,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		GEAR = I18n.format("gui.fvtm.overlay.default.gear");
 		RPM = I18n.format("gui.fvtm.overlay.default.rpm");
 		TRAILER = I18n.format("gui.fvtm.overlay.default.trailer");
+		//maxspeed = 1;
 	}
 
 	@Override
@@ -247,9 +251,9 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks, GenericVehicle ent, VehicleData data){
-		root.mc.getTextureManager().bindTexture(ConstructorGui.STONE);
-		int yoff = Config.OVERLAY_ON_BOTTOM ? root.height - 34 : 0;
-		root.drawTexturedModalRect(0, yoff, 0, 0, root.width, 34);
+		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
+		int yoff = Config.OVERLAY_ON_BOTTOM ? root.height - 40 : -5;
+		root.drawTexturedModalRect(0, yoff, 0, 0, 256, 40);
 		boolean noengine = false;
 		if(!data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine")){
 			root.mc.getTextureManager().bindTexture(ENGINE_MISSING);
@@ -332,26 +336,43 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		if(clicktimer > 0) clicktimer--;
 		//
 		if(noengine){
-			root.mc.fontRenderer.drawString(NO_ENGINE, 7, 7 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(NO_ENGINE, 8, 8 + yoff, 0xffffff);
 			GL11.glPopMatrix();
 			return;
 		}
-		root.mc.fontRenderer.drawString(Formatter.format(SPEED + " " + format((int)ent.getSpeed())), 7, 3 + yoff, 0xffffff);
-		root.mc.fontRenderer.drawString(Formatter.format(FUEL + " " + fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 7, 25 + yoff, 0xffffff);
+		root.mc.fontRenderer.drawString(SPEED, 8, 8 + yoff, 0xffffff);
+		if(ent.getSpeed() > maxspeed) maxspeed = ent.getSpeed();
+		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
+		RGB.BLUE.glColorApply();
+		root.drawTexturedModalRect(66, 8 + yoff, 66, 8, (int)(ent.getSpeed() / (float)maxspeed * 100), 7);
+		GL11.glPushMatrix();
+		GL11.glTranslatef(70, 9 + yoff, 0);
+		GL11.glScalef(0.8f, 0.8f, 0.8f);
+		root.mc.fontRenderer.drawString(Formatter.format("&7" + format((int)ent.getSpeed()) + "&f/&7" + maxspeed), 0, 0, 0);
+		GL11.glPopMatrix();
+		//
+		root.mc.fontRenderer.drawString(FUEL, 8, 30 + yoff, 0xffffff);
+		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
+		RGB.BLACK.glColorApply();
+		root.drawTexturedModalRect(66, 30 + yoff, 66, 30, (int)(data.getStoredFuel() / (float)data.getFuelCapacity() * 100), 7);
+		RGB.glColorReset();
+		GL11.glPushMatrix();
+		GL11.glTranslatef(70, 31 + yoff, 0);
+		GL11.glScalef(0.8f, 0.8f, 0.8f);
+		root.mc.fontRenderer.drawString(Formatter.format(fuelColour(ent.getVehicleData()) + format(ent.getVehicleData().getStoredFuel()) + "&f/&b" + ent.getVehicleData().getFuelCapacity()), 0, 0, 0xffffff);
+		GL11.glPopMatrix();
+		//
 		if(!ent.isRailType() && ent.getCoupledEntity(false) != null){
-			root.mc.fontRenderer.drawString(Formatter.format(TRAILER), 167, 25 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(Formatter.format(TRAILER), 170, 30 + yoff, 0xffffff);
 		}
+		//
+		root.mc.fontRenderer.drawString(Formatter.format(THROTTLE + " "), 8, 19 + yoff, 0xffffff);
+		root.mc.getTextureManager().bindTexture(OVERLAY_TEX);
+		(ent.throttle > 0.8 ? ConstructorGui.RGB_ORANGE : RGB.GREEN).glColorApply();
+		root.drawTexturedModalRect(66, 19 + yoff, 66, 19, (int)(ent.throttle * 100), 7);
+		RGB.glColorReset();
+		//
 		if(root.uni12){
-			root.mc.fontRenderer.drawString(Formatter.format(THROTTLE + " "), 7, 14 + yoff, 0xffffff);
-			{
-				RGB.BLACK.glColorApply();
-				root.mc.getTextureManager().bindTexture(ConstructorGui.STONE);
-				root.drawTexturedModalRect(59, 13 + yoff, 0, 0, 102, 10);
-				RGB.glColorReset();
-				(ent.throttle > 0.8 ? ConstructorGui.RGB_ORANGE : RGB.GREEN).glColorApply();
-				root.drawTexturedModalRect(60, 14 + yoff, 0, 0, (int)(ent.throttle * 100), 8);
-				RGB.glColorReset();
-			}
 			ULandVehicle veh = (ULandVehicle)root.seat().vehicle;
 			int gear = veh.getVehicleData().getAttributeInteger("gear", 0);
 			if(lastgear != gear){
@@ -368,11 +389,8 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 					gear_label += gear;
 				}
 			}
-			root.mc.fontRenderer.drawString(Formatter.format(RPM + " " + (veh.crpm / 100 * 100)), 167, 3 + yoff, 0xffffff);
-			root.mc.fontRenderer.drawString(Formatter.format(GEAR + " " + gear_label), 167, 14 + yoff, 0xffffff);
-		}
-		else{
-			root.mc.fontRenderer.drawString(Formatter.format(THROTTLE + " " + throttleColour(ent.throttle) + pc(ent.throttle) + "%"), 7, 14 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(Formatter.format(RPM + " " + (veh.crpm / 100 * 100)), 170, 8 + yoff, 0xffffff);
+			root.mc.fontRenderer.drawString(Formatter.format(GEAR + " " + gear_label), 170, 19 + yoff, 0xffffff);
 		}
 		if(Command.OTHER && root.seat().vehicle.wheels != null){//debug info
 			for(int i = 0; i < root.seat().vehicle.wheels.length; i++){
@@ -390,7 +408,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	}
 
 	private String fuelColour(VehicleData data){
-		double d = data.getStoredFuel() / data.getFuelCapacity();
+		float d = data.getStoredFuel() / (float)data.getFuelCapacity();
 		return d < 0.3 ? d < 0.1 ? "&c" : "&e" : "&a";
 	}
 

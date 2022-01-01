@@ -23,15 +23,7 @@ import net.fexcraft.mod.fvtm.data.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.WheelSlot;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.PartSlot.PartSlots;
-import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.DataType;
-import net.fexcraft.mod.fvtm.data.root.Lockable;
-import net.fexcraft.mod.fvtm.data.root.Model;
-import net.fexcraft.mod.fvtm.data.root.Sound;
-import net.fexcraft.mod.fvtm.data.root.Soundable;
-import net.fexcraft.mod.fvtm.data.root.Tabbed;
-import net.fexcraft.mod.fvtm.data.root.Textureable;
-import net.fexcraft.mod.fvtm.data.root.TypeCore;
+import net.fexcraft.mod.fvtm.data.root.*;
 import net.fexcraft.mod.fvtm.event.TypeEvents;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
@@ -121,13 +113,16 @@ public class Vehicle extends TypeCore<Vehicle> implements Textureable.TextureHol
 		List<Attribute<?>> attrs = type.getDefaultAttributesForType(this);
 		for(Attribute<?> attr : attrs){
 			if(!attributes.containsKey(attr.id())){
-				Attribute<?> copy = attr.copy(null);
-				attributes.put(copy.id(), copy);
+				//Attribute<?> copy = attr.copy(null);
+				//attributes.put(copy.id(), copy);
+				attributes.put(attr.id(), attr);
 			}
 			else{
-				attributes.get(attr.id()).minmax(attr.min(), attr.max()).group(attr.group()).sync(attr.sync());
+				attributes.get(attr.id()).minmax(attr.min(), attr.max()).group(attr.group()).sync(attr.sync()).icons(attr.icons(), false);
+				
 			}
 		}
+		//
 		if(obj.has("WheelPositions")){
 			JsonArray array = obj.get("WheelPositions").getAsJsonArray();
 			for(JsonElement elm : array){

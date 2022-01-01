@@ -66,7 +66,8 @@ public enum VehicleType {
 		attrs.add(new FloatAttribute("fuel_quality", 0f).minmax(0, 10f));
 		attrs.add(new IntegerAttribute("fuel_stored", 0).minmax(0, Integer.MAX_VALUE));
 		//animation
-		attrs.add(new BooleanAttribute("lights", false).addSeat("driver").sync(true));
+		attrs.add(new BooleanAttribute("lights", false).addSeat("driver").sync(true)
+			.icons("true", "fvtm:textures/gui/icons/lights_low_on.png", "false", "fvtm:textures/gui/icons/lights_low_off.png"));
 		attrs.add(new FloatAttribute("throttle", 0f).minmax(-10f, 10f));
 		attrs.add(new BooleanAttribute("front_connected", false).editable(false));
 		attrs.add(new BooleanAttribute("rear_connected", false).editable(false));
@@ -81,13 +82,17 @@ public enum VehicleType {
 		attrs.add(new IntegerAttribute("generated_keys", 0).minmax(0, 8).editable(false));
 		switch(this){
 			case LAND:{
-				attrs.add(new BooleanAttribute("lights_fog", false).addSeat("driver").sync(true));
-				attrs.add(new BooleanAttribute("lights_long", false).addSeat("driver").sync(true));
+				attrs.add(new BooleanAttribute("lights_fog", false).addSeat("driver").sync(true)
+						.icons("true", "fvtm:textures/gui/icons/lights_fog_on.png", "false", "fvtm:textures/gui/icons/lights_fog_off.png"));
+				attrs.add(new BooleanAttribute("lights_long", false).addSeat("driver").sync(true)
+						.icons("true", "fvtm:textures/gui/icons/lights_high_on.png", "false", "fvtm:textures/gui/icons/lights_high_off.png"));
 				attrs.add(new BooleanAttribute("lights_other", false).addSeat("driver").sync(true));
 				//attrs.add(new BooleanAttribute("turn_light_left", false).setSeat("driver"));
 				//attrs.add(new BooleanAttribute("turn_light_right", false).setSeat("driver"));
-				attrs.add(new TriStateAttribute("turn_lights", (Boolean)null).addSeat("driver").sync(true));
-				attrs.add(new BooleanAttribute("warning_lights", false).addSeat("driver").sync(true));
+				attrs.add(new TriStateAttribute("turn_lights", (Boolean)null).addSeat("driver").sync(true)
+					.icons("true", "fvtm:textures/gui/icons/turn_indicator_right.png", "false", "fvtm:textures/gui/icons/turn_indicator_left.png", "null", "fvtm:textures/gui/icons/turn_indicator.png"));
+				attrs.add(new BooleanAttribute("warning_lights", false).addSeat("driver").sync(true)
+						.icons("true", "fvtm:textures/gui/icons/warning_lights_on.png", "false", "fvtm:textures/gui/icons/warning_lights_off.png"));
 				//
 				attrs.add(new FloatAttribute("steering_angle", 0f).minmax(-90f, 90f));
 				attrs.add(new FloatAttribute("wheel_angle", 0f).minmax(-360f, 360f));

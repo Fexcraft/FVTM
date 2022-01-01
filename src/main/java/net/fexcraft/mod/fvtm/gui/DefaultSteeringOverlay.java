@@ -17,7 +17,6 @@ import net.fexcraft.mod.fvtm.data.addon.AddonSteeringOverlay;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorGui;
-import net.fexcraft.mod.fvtm.model.DefaultPrograms;
 import net.fexcraft.mod.fvtm.sys.legacy.WheelEntity;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
@@ -45,28 +44,16 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	public static final ResourceLocation ENGINE_MISSING = new ResourceLocation("fvtm:textures/gui/icons/engine_missing.png");
 	public static final ResourceLocation ENGINE_ON = new ResourceLocation("fvtm:textures/gui/icons/engine_on.png");
 	public static final ResourceLocation ENGINE_OFF = new ResourceLocation("fvtm:textures/gui/icons/engine_off.png");
-	public static final ResourceLocation INDICATOR_LEFT_OFF = new ResourceLocation("fvtm:textures/gui/icons/indicator_left.png");
-	public static final ResourceLocation INDICATOR_LEFT_ON = new ResourceLocation("fvtm:textures/gui/icons/indicator_left_glow.png");
-	public static final ResourceLocation INDICATOR_RIGHT_OFF = new ResourceLocation("fvtm:textures/gui/icons/indicator_right.png");
-	public static final ResourceLocation INDICATOR_RIGHT_ON = new ResourceLocation("fvtm:textures/gui/icons/indicator_right_glow.png");
-	public static final ResourceLocation LIGHTS_LOW_OFF = new ResourceLocation("fvtm:textures/gui/icons/lights_low_off.png");
-	public static final ResourceLocation LIGHTS_LOW_ON = new ResourceLocation("fvtm:textures/gui/icons/lights_low_on.png");
-	public static final ResourceLocation LIGHTS_HIGH_OFF = new ResourceLocation("fvtm:textures/gui/icons/lights_high_off.png");
-	public static final ResourceLocation LIGHTS_HIGH_ON = new ResourceLocation("fvtm:textures/gui/icons/lights_high_on.png");
-	public static final ResourceLocation LIGHTS_FOG_OFF = new ResourceLocation("fvtm:textures/gui/icons/lights_fog_off.png");
-	public static final ResourceLocation LIGHTS_FOG_ON = new ResourceLocation("fvtm:textures/gui/icons/lights_fog_on.png");
 	public static final ResourceLocation PBRAKE_OFF = new ResourceLocation("fvtm:textures/gui/icons/pbrake_off.png");
 	public static final ResourceLocation PBRAKE_ON = new ResourceLocation("fvtm:textures/gui/icons/pbrake_on.png");
 	public static final ResourceLocation BRAKE_OFF = new ResourceLocation("fvtm:textures/gui/icons/brake_off.png");
 	public static final ResourceLocation BRAKE_ON = new ResourceLocation("fvtm:textures/gui/icons/brake_on.png");
-	public static final ResourceLocation WARN_OFF = new ResourceLocation("fvtm:textures/gui/icons/warning_lights_off.png");
-	public static final ResourceLocation WARN_ON = new ResourceLocation("fvtm:textures/gui/icons/warning_lights_on.png");
 	//
 	public static String NO_ENGINE, SPEED, FUEL, TRAILER, THROTTLE, GEAR, RPM;
 	//
 	protected static final RGB HOVER = new RGB(0, 255, 0, 0.5f);
-	protected static final int perpage = 9;
-	protected static int scroll = 0, page, timer, clicktimer, lastgear = -100;
+	protected static final int row = 9, row2 = row + row;
+	protected static int scroll, page, timer, clicktimer, lastgear = -100;
 	protected static ArrayList<Attribute<?>> attributes = new ArrayList<>();
 	protected static ArrayList<String> hard_attr = new ArrayList<>(), offset = new ArrayList<>();
 	protected static boolean turnsig = false, warnsig = false, railed;
@@ -80,8 +67,7 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 
 	@Override
 	public void init(){
-		scroll = 0;
-		page = 0;
+		scroll = page = 0;
 		lastgear = 100;
 		NO_ENGINE = I18n.format("gui.fvtm.overlay.default.no_engine");
 		SPEED = I18n.format("gui.fvtm.overlay.default.speed");
@@ -96,13 +82,10 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		turnsig = root.seat().vehicle.getVehicleData().getAttributes().containsKey("turn_lights");
 		warnsig = root.seat().vehicle.getVehicleData().getAttributes().containsKey("warning_lights");
 		if(turnsig) hard_attr.add("turn_lights");
-		if(railed = root.seat().vehicle.isRailType()){
-			//
-		}
-		else{
-			hard_attr.add("lights_fog");
-			hard_attr.add("lights_long");
-		}
+		if(warnsig) hard_attr.add("warning_lights");
+		railed = root.seat().vehicle.isRailType();
+		hard_attr.add("lights_fog");
+		hard_attr.add("lights_long");
 		hard_attr.add("lights");
 	}
 
@@ -114,17 +97,40 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	@Override
 	public void scroll(int wheel){
 		if(root.toggables){
-			scroll(wheel, false);
+			scroll += wheel > 0 ? -1 : 1;
+			checkscr();
 		}
 		else player.inventory.changeCurrentItem(wheel);
 	}
 
-	private void scroll(int wheel, boolean usetimer){
-		if(usetimer) if(timer > 0) return;
-		scroll += wheel > 0 ? -1 : 1;
-		if(scroll >= perpage) scroll = 0;
-		if(scroll < 0) scroll = 0; // 0 was -1;
-		if(usetimer) timer = 10;
+	private void checkscr(){
+		if(scroll >= row2){
+			scroll = 0;
+			page++;
+		}
+		else if(scroll < 0){
+			scroll = row2 - 1;
+			page--;
+		}
+		if(page < 0) page = 0;
+		//
+		int index = page * row2 + scroll;
+		if(index < (root.uni12 ? 4 : 2)){
+			Print.bar(root.mc.player, Formatter.format("&a" + offset.get(index)));
+		}
+		else{
+			Attribute<?> attr = index < offset.size() ? root.seat().vehicle.getVehicleData().getAttribute(offset.get(index)) : getSoftAttr(index - offset.size());
+			if(attr == null) return;
+			Print.bar(root.mc.player, Formatter.format("&eA&7: &a" + attr.id() + " &7: &b" + attr.string_value()));
+		}
+	}
+
+	private void scroll(int x, int y){
+		if(timer > 0) return;
+		if(x != 0) scroll += x;
+		if(y != 0) page += y;
+		checkscr();
+		timer = 10;
 	}
 
 	@Override
@@ -140,10 +146,22 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 	}
 
 	protected void processToggleClick(int i){
-		if(scroll < 0 || scroll > perpage) return;
+		if(scroll < 0 || page < 0 || scroll >= row2) return;
 		if(clicktimer > 0) return;
 		NBTTagCompound packet = new NBTTagCompound();
-		Attribute<?> attr = attributes.get((page * perpage) + scroll);
+		int index = page * row + scroll;
+		if(index < 2) return;//TODO engine toggle support
+		if((index == 1 || index == 2) && root.uni12) return;
+		Attribute<?> attr = null;
+		if(index < offset.size()){
+			attr = root.seat().vehicle.getVehicleData().getAttribute(offset.get(index));
+		}
+		else{
+			index -= offset.size();
+			if(index >= attributes.size()) return;
+			attr = getSoftAttr(index);
+		}
+		if(attr == null) return;
 		packet.setString("target_listener", GuiHandler.LISTENERID);
 		packet.setString("task", "attr_toggle");
 		packet.setString("attr", attr.id());
@@ -154,14 +172,15 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		PacketHandler.getInstance().sendToServer(new PacketNBTTagCompound(packet));
 		clicktimer += 10;
 	}
-
-	protected void page(int am){
-		if(timer > 0) return;
-		page += am;
-		if(page > attributes.size() / perpage) page = 0;
-		if(page < 0) page = 0;
-		timer = 15;
-		scroll = 0;
+	
+	public Attribute<?> getSoftAttr(int index){
+		int i = 0;
+		for(Attribute<?> attr : attributes){
+			if(hard_attr.contains(attr.id())) continue;
+			if(i == index) return attr;
+			i++;
+		}
+		return null;
 	}
 
 	@Override
@@ -189,19 +208,19 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 			root.seat().onKeyPress(KeyPress.TURN_RIGHT, player);
 		}
 		if(isKeyDown(KeyHandler.arrow_up.getKeyCode())){
-			if(root.toggables) scroll(1, true);
+			if(root.toggables) scroll(0, -1);
 			else root.seat().onKeyPress(root.seat().vehicle.getVehicleType().isAirVehicle() ? KeyPress.ACCELERATE : KeyPress.GEAR_UP, player);
 		}
 		if(isKeyDown(KeyHandler.arrow_down.getKeyCode())){
-			if(root.toggables) scroll(-1, true);
+			if(root.toggables) scroll(0, 1);
 			else root.seat().onKeyPress(root.seat().vehicle.getVehicleType().isAirVehicle() ? KeyPress.DECELERATE : KeyPress.GEAR_DOWN, player);
 		}
 		if(isKeyDown(KeyHandler.arrow_left.getKeyCode())){
-			if(root.toggables) page(-1);
+			if(root.toggables) scroll(-1, 0);
 			else root.seat().onKeyPress(KeyPress.ROLL_LEFT, player);
 		}
 		if(isKeyDown(KeyHandler.arrow_right.getKeyCode())){
-			if(root.toggables) page(1);
+			if(root.toggables) scroll(1, 0);
 			else root.seat().onKeyPress(KeyPress.ROLL_RIGHT, player);
 		}
 		if(root.uni12){
@@ -268,96 +287,63 @@ public class DefaultSteeringOverlay extends AddonSteeringOverlay {
 		if(wide){
 			root.drawTexturedModalRect(root.width - 158, yoff, 0, root.toggables ? 166 : 211, 158, Config.OVERLAY_ON_BOTTOM ? 40 : 45);
 		}
-		boolean noengine = false;
-		if(!data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine")){
-			root.mc.getTextureManager().bindTexture(ENGINE_MISSING);
-			noengine = true;
-		}
-		else{
-			root.mc.getTextureManager().bindTexture(data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() ? ENGINE_ON : ENGINE_OFF);
-		}
-		root.drawRectIcon(root.width - 150, yoff + 8, 15, 15);
-		offset.clear();
-		offset.add("engine");
-		if(root.uni12){
-			root.mc.getTextureManager().bindTexture(((ULandVehicle)root.seat().vehicle).braking ? BRAKE_ON : BRAKE_OFF);
-			root.drawRectIcon(root.width - 134, yoff + 8, 16, 16);
-			root.mc.getTextureManager().bindTexture(((ULandVehicle)root.seat().vehicle).pbrake ? PBRAKE_ON : PBRAKE_OFF);
-			root.drawRectIcon(root.width - 118, yoff + 8, 16, 16);
-			offset.add("brake");
-			offset.add("pbrake");
-		}
-		if(turnsig){
-			boolean turnleft = DefaultPrograms.BLINKER_TOGGLE && (data.getTurnLightLeft() || (warnsig && data.getWarningLights()));
-			root.mc.getTextureManager().bindTexture(turnleft ? INDICATOR_LEFT_ON : INDICATOR_LEFT_OFF);
+		if(root.toggables) root.drawTexturedModalRect(root.width - 150 + (scroll % row * 16), yoff + 8 + (scroll >= row ? 16 : 0), 240, 240, 16, 16);
+		boolean noengine = !data.hasPart("engine") || !data.getPart("engine").hasFunction("fvtm:engine");
+		if(page == 0){
+			if(noengine){
+				root.mc.getTextureManager().bindTexture(ENGINE_MISSING);
+			}
+			else{
+				root.mc.getTextureManager().bindTexture(data.getPart("engine").getFunction(EngineFunction.class, "fvtm:engine").isOn() ? ENGINE_ON : ENGINE_OFF);
+			}
+			root.drawRectIcon(root.width - 150, yoff + 8, 16, 16);
+			offset.clear();
+			offset.add("engine");
+			if(root.uni12){
+				root.mc.getTextureManager().bindTexture(((ULandVehicle)root.seat().vehicle).braking ? BRAKE_ON : BRAKE_OFF);
+				root.drawRectIcon(root.width - 134, yoff + 8, 16, 16);
+				root.mc.getTextureManager().bindTexture(((ULandVehicle)root.seat().vehicle).pbrake ? PBRAKE_ON : PBRAKE_OFF);
+				root.drawRectIcon(root.width - 118, yoff + 8, 16, 16);
+				offset.add("brake");
+				offset.add("parking/hand brake");
+			}
+			if(!railed){
+				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").getCurrentIcon());
+				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+				offset.add("lights_fog");
+				root.mc.getTextureManager().bindTexture(data.getAttribute("lights_long").getCurrentIcon());
+				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+				offset.add("lights_long");
+			}
+			root.mc.getTextureManager().bindTexture(data.getAttribute("lights").getCurrentIcon());
 			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
-			offset.add("turn_lights_left");
-		}
-		if(!railed){
-			root.mc.getTextureManager().bindTexture(data.getAttribute("lights_fog").boolean_value() ? LIGHTS_FOG_ON : LIGHTS_FOG_OFF);
-			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
-			offset.add("lights_fog");
-			root.mc.getTextureManager().bindTexture(data.getAttribute("lights_long").boolean_value() ? LIGHTS_HIGH_ON : LIGHTS_HIGH_OFF);
-			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
-			offset.add("lights_long");
-		}
-		root.mc.getTextureManager().bindTexture(data.getAttribute("lights").boolean_value() ? LIGHTS_LOW_ON : LIGHTS_LOW_OFF);
-		root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
-		offset.add("lights");
-		if(turnsig){
-			boolean turnright = DefaultPrograms.BLINKER_TOGGLE && (data.getTurnLightRight() || (warnsig && data.getWarningLights()));
-			root.mc.getTextureManager().bindTexture(turnright ? INDICATOR_RIGHT_ON : INDICATOR_RIGHT_OFF);
-			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
-			offset.add("warning_lights");
-		}
-		if(warnsig){
-			root.mc.getTextureManager().bindTexture(data.getWarningLights() ? WARN_ON : WARN_OFF);
-			root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
-			offset.add("");
+			offset.add("lights");
+			if(turnsig){
+				root.mc.getTextureManager().bindTexture(data.getAttribute("turn_lights").getCurrentIcon());
+				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+				offset.add("turn_lights");
+			}
+			if(warnsig){
+				root.mc.getTextureManager().bindTexture(data.getAttribute("warning_lights").getCurrentIcon());
+				root.drawRectIcon(root.width - 150 + offset.size() * 16, yoff + 8, 16, 16);
+				offset.add("warning_lights");
+			}
 		}
 		//
-		/*if(!attributes.isEmpty()){
-			int offset = 0;
-			for(int j = 0; j < perpage; j++){
-				int i = page * perpage + j;
-				if(i >= attributes.size()){
-					if(scroll >= j) scroll = j - 1;
-					break;
-				}
-				Attribute<?> attr = attributes.get(i);
-				offset = j * 12 + (yoff > 0 ? 0 : 34);
-				root.mc.renderEngine.bindTexture(ICON_BOOL_BACK);
-				if(attr.valuetype().isTristate()){
-					int width = root.fontRenderer().getStringWidth(attr.id());
-					if(scroll == j) HOVER.glColorApply();
-					root.drawTexturedModalRect(root.width - width - 14, offset, 0, 0, width + 2, 12);
-					if(scroll == j) RGB.glColorReset();
-					root.mc.fontRenderer.drawString(attr.id(), root.width - width - 12, offset + 3, 0xffffff);
-					if(attr.valuetype().isBoolean()){
-						root.mc.renderEngine.bindTexture(attr.boolean_value() ? ICON_BOOL_TRUE : ICON_BOOL_FALSE);
-					}
-					else{
-						root.mc.renderEngine.bindTexture(attr.conditional_tristate(ICON_BOOL_FALSE, ICON_BOOL_TRI1, ICON_BOOL_TRI0));
-					}
-					root.drawRectIcon(root.width - 12, offset, 12, 12);
-				}
-				else{
-					String str = attr.id() + " - " + attr.float_value();
-					int width = root.fontRenderer().getStringWidth(str);
-					if(scroll == j) HOVER.glColorApply();
-					root.drawTexturedModalRect(root.width - width - 2, offset, 0, 0, width + 2, 12);
-					if(scroll == j) RGB.glColorReset();
-					root.mc.fontRenderer.drawString(str, root.width - width, offset + 3, 0xffffff);
-				}
+		int a = offset.size(), m = page * row2;
+		for(Attribute<?> attr : attributes){
+			if(hard_attr.contains(attr.id())) continue;
+			if(a < m){
+				a++;
+				continue;
 			}
-			if(attributes.size() > 8){
-				root.mc.renderEngine.bindTexture(ICON_BOOL_BACK);
-				String string = "Page " + (page + 1) + "/" + (attributes.size() / perpage + 1);
-				int width = root.fontRenderer().getStringWidth(string) + 4;
-				root.drawTexturedModalRect(root.width - width, offset + 12, 0, 0, width, 12);
-				root.mc.fontRenderer.drawString(string, root.width - width + 2, offset + 15, 0xffffff);
-			}
-		}*/
+			if(a >= m + row2) break;
+			int x = root.width - 150 + (a % 9) * 16;
+			int y = a - m > 8 ? 24 : 8;
+			root.mc.getTextureManager().bindTexture(attr.getCurrentIcon());
+			root.drawRectIcon(x, yoff + y, 16, 16);
+			a++;
+		}
 		//
 		if(timer > 0) timer--;
 		if(clicktimer > 0) clicktimer--;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Consumer;
@@ -35,6 +36,7 @@ public abstract class Attribute<VT> {
 	public static final Comparator<Modifier<?>> MODIFIER_COMPARATOR = new Comparator<Modifier<?>>() {
 		@Override public int compare(Modifier<?> m0, Modifier<?> m1){ return m0.priority.compareTo(m1.priority); }
 	};
+	private static final ResourceLocation DEF_ICON = new ResourceLocation("fvtm:textures/gui/icons/attr_other.png");
 	private TreeSet<Modifier<?>> modifiers = new TreeSet<>(MODIFIER_COMPARATOR);
 	private ArrayList<String> seats = new ArrayList<>();
 	private TreeMap<String, AttributeBB> abbs = null;
@@ -179,13 +181,21 @@ public abstract class Attribute<VT> {
 		return icons;
 	}
 	
-	public Attribute<VT> icons(HashMap<String, ResourceLocation> icons){
-		this.icons = icons;
+	public Attribute<VT> icons(HashMap<String, ResourceLocation> icons, boolean override){
+		if(this.icons == null) this.icons = new HashMap<>();
+		if(icons == null) return this;
+		if(override){
+			this.icons.putAll(icons);
+			return this;
+		}
+		for(String key : icons.keySet()){
+			if(!this.icons.containsKey(key)) this.icons.put(key, icons.get(key));
+		}
 		return this;
 	}
 	
 	public Attribute<VT> icons(String... icons){
-		if(!hasIcons()) icons(new HashMap<>());
+		if(this.icons == null) this.icons = new HashMap<>();
 		for(int i = 0; i < icons.length; i += 2){
 			if(i >= icons.length ) break;
 			this.icons().put(icons[i], new ResourceLocation(icons[i + 1]));
@@ -418,7 +428,7 @@ public abstract class Attribute<VT> {
 		Attribute<VT> attr = copyNewInstance();
 		return attr.minmax(min(), max()).value(value())//.setSeat(seat())
 			.target(target()).group(group()).origin(origin)
-			.editable(editable()).external(external()).sync(sync())
+			.editable(editable()).external(external()).sync(sync()).icons(icons, true)
 			.perm(perm()).copyAABBs(this).copySeats(this);
 	}
 
@@ -512,7 +522,12 @@ public abstract class Attribute<VT> {
 		if(obj.has("sync")) attr.sync(obj.get("sync").getAsBoolean());
 		if(obj.has("perm")) attr.perm(obj.get("perm").getAsString());
 		if(obj.has("icons")){
-			
+			ArrayList<String> arr = new ArrayList<>();
+			for(Entry<String, JsonElement> entry : obj.get("icons").getAsJsonObject().entrySet()){
+				arr.add(entry.getKey());
+				arr.add(entry.getValue().getAsString());
+			}
+			attr.icons(arr.toArray(new String[0]));
 		}
 		return attr;
 	}
@@ -530,6 +545,25 @@ public abstract class Attribute<VT> {
 	
 	public boolean hasIcons(){
 		return icons != null;
+	}
+
+	public ResourceLocation getCurrentIcon(){
+		if(!hasIcons()) return DEF_ICON;
+		return icons.containsKey(string_value()) ? icons.get(string_value()) : icons.containsKey("default") ? icons.get("default") : DEF_ICON;
+	}
+
+	public void genDefaultIcons(){
+		if(this instanceof BooleanAttribute){
+			icons(null, false);
+			if(!icons.containsKey("true")) icons.put("true", new ResourceLocation("fvtm:textures/gui/icons/attr_bool_true.png"));
+			if(!icons.containsKey("false")) icons.put("false", new ResourceLocation("fvtm:textures/gui/icons/attr_bool_false.png"));
+		}
+		if(this instanceof TriStateAttribute){
+			icons(null, false);
+			if(!icons.containsKey("true")) icons.put("true", new ResourceLocation("fvtm:textures/gui/icons/attr_tristate_true.png"));
+			if(!icons.containsKey("false")) icons.put("false", new ResourceLocation("fvtm:textures/gui/icons/attr_tristate_false.png"));
+			if(!icons.containsKey("null")) icons.put("null", new ResourceLocation("fvtm:textures/gui/icons/attr_tristate_null.png"));
+		}
 	}
 
 }

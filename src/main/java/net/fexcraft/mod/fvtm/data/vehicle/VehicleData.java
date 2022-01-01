@@ -224,6 +224,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 			}
 			attributes.get(attr.id()).copyAABBs(attr).external(attr.external()).perm(attr.perm());
 		}
+		if(Static.isClient()) for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
 		//
 		this.selected_texture = compound.getInteger("SelectedTexture");
 		if(selected_texture < 0){
@@ -446,6 +447,11 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	public String getAttributeString(String id, String def){
 		Attribute<?> attr = getAttribute(id);
 		return attr == null ? def : attr.string_value();
+	}
+
+	public Boolean getAttributeTristate(String id, Boolean def){
+		Attribute<?> attr = getAttribute(id);
+		return attr == null ? def : attr.tristate_value();
 	}
 	
 	/** @return null if installed successfully. */

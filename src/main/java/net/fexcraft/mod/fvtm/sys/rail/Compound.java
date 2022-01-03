@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -111,6 +112,11 @@ public abstract class Compound {
 			for(int i = 0; i < list.tagCount(); i++){
 				compound = (NBTTagCompound)list.get(i);
 				if(!compound.hasKey("region")) return;
+				if(Resources.getVehicle(compound.getString("Vehicle")) == null){
+					Print.log("COMPOUND(" + id + ") Rail Vehicle with id '" + compound.getString("Vehicle") + "' not found, removing.");
+					Print.log("NBT:" + compound);
+					continue;
+				}
 				curr = new RailEntity(region == null ? system.getRegions().get(compound.getIntArray("region")) : region, this).read(compound);
 				if(curr == null) continue;
 				if(prev != null){

@@ -20,6 +20,7 @@ import net.fexcraft.mod.fvtm.sys.rail.Compound.Singular;
 import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.sys.uni.PathKey;
 import net.fexcraft.mod.fvtm.sys.uni.RegionKey;
+import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.command.ICommandSender;
@@ -291,23 +292,32 @@ public class RailSystem extends DetachedSystem {
 				if(single){
 					region = getRegions().get(com.getIntArray("region"), true);
 					if(region == null || !region.loaded) continue;
+					if(Resources.getVehicle(com.getString("Vehicle")) == null){
+						Print.log("SINGULAR Rail Vehicle with id '" + com.getString("Vehicle") + "' not found, removing.");
+						Print.log("NBT:" + com);
+						torem.add(uid);
+						continue;
+					}
 					Singular singular = new Singular(region, com.getLong("Compound"), com);
 					if(singular.getEntitites().size() == 0) continue;
-					singular.forward = com.getBoolean("forward"); torem.add(uid);
+					singular.forward = com.getBoolean("forward");
 					region.spawnEntity(singular.getEntitites().get(0).start());
+					torem.add(uid);
 				}
 				else{
 					NBTTagList ents = (NBTTagList)com.getTag("Entities"); boolean allregionsloaded = true;
 					for(NBTBase bas : ents){
-						NBTTagCompound nbt = (NBTTagCompound)bas; if(!nbt.hasKey("region")) continue;
+						NBTTagCompound nbt = (NBTTagCompound)bas;
+						if(!nbt.hasKey("region")) continue;
 						region = getRegions().get(nbt.getIntArray("region"), true);
 						if(region == null || !region.loaded){ allregionsloaded = false; break; }
 					}
 					if(allregionsloaded){
 						Compound.Multiple multiple = new Compound.Multiple(this, null, uid, ents);
 						if(multiple.getEntitites().size() == 0) continue;
-						multiple.forward = com.getBoolean("Forward"); torem.add(uid);
+						multiple.forward = com.getBoolean("Forward");
 						for(RailEntity ent : multiple.entities) ent.region.spawnEntity(ent.start());
+						torem.add(uid);
 					}
 				}
 			}

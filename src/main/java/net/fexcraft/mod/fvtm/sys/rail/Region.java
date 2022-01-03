@@ -306,7 +306,9 @@ public class Region {
 	}
 
 	public void spawnEntity(RailEntity ent){
-		Print.debug("Spawning Entity " + ent.uid + "!"); entities.put(ent.getUID(), ent); if(world.getWorld().isRemote) return;
+		Print.debug("Spawning Entity " + ent.uid + "!");
+		entities.put(ent.getUID(), ent);
+		if(world.getWorld().isRemote) return;
 		/*NBTTagCompound compound = ent.write(null); compound.setString("target_listener", "fvtm:railsys");
 		compound.setString("task", "spawn_railentity"); compound.setIntArray("XZ", key.toArray());
 		PacketHandler.getInstance().sendToAllAround(new PacketNBTTagCompound(compound),

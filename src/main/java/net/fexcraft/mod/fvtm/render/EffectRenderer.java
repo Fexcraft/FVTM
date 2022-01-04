@@ -41,13 +41,15 @@ import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -444,7 +446,7 @@ public class EffectRenderer {
     	}
     }
     
-    private MRWrapper getWrapper(ModelPlayer model, RenderPlayer renderer, String key){
+    private MRWrapper getWrapper(ModelBiped model, RenderLivingBase<?> renderer, String key){
 		switch(key){
 			case "head": return MRWrapper.get(model, model.bipedHead, renderer, key);
 			case "body": return MRWrapper.get(model, model.bipedBody, renderer, key);
@@ -490,6 +492,21 @@ public class EffectRenderer {
 			GlStateManager.translate(event.getX(), event.getY(), event.getZ());
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(-event.getX(), -event.getY(), -event.getZ());
+		}
+		//
+		if(event.getRenderer().getMainModel() instanceof ModelBiped == false) return;
+    	EntityLivingBase entity = event.getEntity();
+    	ModelBiped model = (ModelBiped)event.getRenderer().getMainModel();
+    	MRWrapper wrapper;
+		for(ItemStack stack : entity.getArmorInventoryList()){
+			if(stack.getItem() instanceof ClothItem){
+    			ClothItem item = (ClothItem)stack.getItem();
+    			for(String key : item.getType().getModel().getClothGroups().keySet()){
+    				wrapper = getWrapper(model, event.getRenderer(), key);
+    				if(wrapper == null) continue;
+    				wrapper.set(entity, item, item.getType().getModel().getClothGroups().get(key), key);
+    			}
+			}
 		}
     }
     

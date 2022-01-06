@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
-import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.NBTToJson;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
@@ -34,6 +33,8 @@ import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.data.root.Soundable;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
+import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.fexcraft.mod.fvtm.util.function.ColorFunction;
@@ -54,15 +55,14 @@ import net.minecraft.util.math.Vec3d;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Textureable, Lockable, Soundable {
+public class VehicleData extends DataCore<Vehicle, VehicleData> implements Colorable, Lockable, Soundable, TextureUser {
 	
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected int selected_texture;
-	protected String extex, preset, lockcode;
-	protected ResourceLocation seltex;
-	protected boolean isTextureExternal, locked;
+	protected Textureable texture;
+	protected String preset, lockcode;
+	protected boolean locked;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
 	protected TreeMap<String, Vec3d> wheelpos = new TreeMap<>();
 	protected ArrayList<Seat> seats = new ArrayList<>();
@@ -130,11 +130,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		compound.setTag("Attributes", alist);
 		//
-		compound.setInteger("SelectedTexture", selected_texture);
-		if(seltex != null || extex != null || selected_texture < 0){
-			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
-			compound.setBoolean("ExternalTexture", isTextureExternal);
-		}
+		texture.save(compound);
 		for(String str : channels.keySet()){
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
 		}
@@ -226,18 +222,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		}
 		if(Static.isClient()) for(Attribute<?> attr : attributes.values()) attr.genDefaultIcons();
 		//
-		this.selected_texture = compound.getInteger("SelectedTexture");
-		if(selected_texture < 0){
-			isTextureExternal = compound.getBoolean("ExternalTexture");
-			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
-			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
-		}
-		else{
-			seltex = null;
-			extex = null;
-			isTextureExternal = false;
-		}
-		if(selected_texture >= type.getDefaultTextures().size()) selected_texture = 0;
+		texture.load(compound, type);
 		//
 		if(compound.hasKey("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");
@@ -613,49 +598,6 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 		stack.setTagCompound(this.write(new NBTTagCompound()));
 		return stack;
 	}
-
-	@Override
-	public ResourceLocation getTexture(){
-		return selected_texture < 0 ? this.getCustomTexture() : type.getDefaultTextures().get(selected_texture);
-	}
-
-	@Override
-	public int getSelectedTexture(){
-		return selected_texture;
-	}
-
-	@Override
-	public ResourceLocation getCustomTexture(){
-		return isTextureExternal ? ExternalTextureHelper.get(extex) : seltex;
-	}
-
-	@Override
-	public String getCustomTextureString(){
-		return isTextureExternal ? extex : seltex == null ? "" : seltex.toString();
-	}
-
-	@Override
-	public boolean isExternalTexture(){
-		return isTextureExternal;
-	}
-
-	@Override
-	public void setSelectedTexture(int i, String tex, boolean ex){
-		if(i < 0){
-			this.isTextureExternal = ex; this.selected_texture = -1;
-			this.seltex = ex ? null : new ResourceLocation(tex);
-			this.extex = ex ? tex : null;
-		}
-		else{
-			this.selected_texture = i >= type.getDefaultTextures().size() ? type.getDefaultTextures().size() - 1 : i;
-			this.seltex = null; this.extex = null;
-		}
-	}
-
-	@Override
-	public TextureHolder getHolder(){
-		return type;
-	}
 	
 	public TreeMap<String, WheelSlot> getWheelSlots(){
 		return wheels;
@@ -868,6 +810,16 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public Attribute<?> getAttributeByIndex(int idx){
 		return new ArrayList<>(attributes.values()).get(idx);
+	}
+
+	@Override
+	public Textureable getTexture(){
+		return texture;
+	}
+
+	@Override
+	public TextureHolder getTexHolder(){
+		return type;
 	}
 
 }

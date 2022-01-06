@@ -57,31 +57,31 @@ public class ConstructorVTM extends ConstructorGui {
 		this.cfields[10] = new TextField(10, fontRenderer, 2, 20 + (10 * buttonheight), xSize - 4, 10).setMaxLength(1024);
 		this.fields.put("field4", cfields[4]); this.fields.put("field7", cfields[7]); this.fields.put("field10", cfields[10]);
 		//
-		cfields[ 7].setText(textur == null ? "no data" :  textur.isExternalTexture() ? "" : textur.getCustomTextureString());
-		cfields[10].setText(textur == null ? "no data" : !textur.isExternalTexture() ? "" : textur.getCustomTextureString());
+		cfields[ 7].setText(textur == null ? "no data" :  textur.isExternal() ? "" : textur.getCustom());
+		cfields[10].setText(textur == null ? "no data" : !textur.isExternal() ? "" : textur.getCustom());
 	}
 	
 	private Textureable getTextureable(){
 		VehicleData vdata = container.getTileEntity().getVehicleData();
 		ContainerData condata = container.getTileEntity().getContainerData();
-		return part() == null ? vdata == null ? condata == null ? container.getTileEntity().getBlockData() : condata : vdata : vdata.getPart(part());
+		return (part() == null ? vdata == null ? condata == null ? container.getTileEntity().getBlockData() : condata : vdata : vdata.getPart(part())).getTexture();
 	}
 
 	private void updateIconsAndButtons(){
 		Textureable textur = getTextureable();
-		if(textur.getSelectedTexture() < 0){
-			tbuttons[1].string = "gui.fvtm.constructor.texture.tex_" + (textur.isExternalTexture() ? "external" : "internal");
+		if(textur.getSelected() < 0){
+			tbuttons[1].string = "gui.fvtm.constructor.texture.tex_" + (textur.isExternal() ? "external" : "internal");
 			tbuttons[1].translate();
 			cfields[4].setText(" - - - - ");
 		}
 		else{
 			tbuttons[1].string = "gui.fvtm.constructor.texture.tex_supplied";
 			tbuttons[1].translate();
-			tbuttons[1].string += ":" + textur.getSelectedTexture();
-			cfields[4].setText(textur.getHolder().getDefaultTextures().get(textur.getSelectedTexture()).getName());
+			tbuttons[1].string += ":" + textur.getSelected();
+			cfields[4].setText(textur.getHolder().getDefaultTextures().get(textur.getSelected()).getName());
 		}
-		prev.enabled = textur.getSelectedTexture() > 0;
-		next.enabled = textur.getSelectedTexture() < textur.getHolder().getDefaultTextures().size() - 1;
+		prev.enabled = textur.getSelected() > 0;
+		next.enabled = textur.getSelected() < textur.getHolder().getDefaultTextures().size() - 1;
 	}
 	
 	@Override
@@ -95,7 +95,7 @@ public class ConstructorVTM extends ConstructorGui {
 		if(button.name.equals("button12")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		else if(button.name.endsWith("_supplied")){
 			Textureable textur = getTextureable();
-			int i = textur.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);
+			int i = textur.getSelected() + (button.name.startsWith("next") ? 1 : -1);
 			if(i >= textur.getHolder().getDefaultTextures().size() || i < 0){
 				Print.debug("invalid id " + i);
 				return true;

@@ -135,7 +135,7 @@ public class PartModel extends GenericModel<VehicleData, String> implements FCLI
 	}
 
 	public void renderItem(ItemStack item, PartData data, WheelData ihdata, EntityLivingBase entity){
-		bindTexture(data.getTexture());
+		bindTexture(data.getCurrentTexture());
 		for(TurboList list : groups) list.renderPlain();
 	}
 

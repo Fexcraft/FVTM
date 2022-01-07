@@ -117,7 +117,7 @@ public class BlockModel extends GenericModel<BlockData, TileEntity> implements F
             {
                 GL11.glPushMatrix();
                 GL11.glRotatef(180f, 1, 0, 0); GL11.glRotatef(180f, 0, 1, 0);
-                super.bindTexture(data.getTexture());
+                super.bindTexture(data.getCurrentTexture());
                 model.render(data, null, null, null);
                 GL11.glPopMatrix();
             }

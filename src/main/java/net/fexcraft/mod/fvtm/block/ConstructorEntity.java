@@ -9,7 +9,7 @@ import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
-import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.gui.constructor.ConstructorContainer;
 import net.fexcraft.mod.fvtm.model.block.ConstructorLiftModel;
@@ -130,16 +130,16 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 			case "vtm_supplied":{
 				if(nocon(container) && noveh(container) && noblk(container)) return;
 				int i = packet.getInteger("value");
-				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
+				TextureUser textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
 				if(textur == null && packet.hasKey("part")){
 					container.setTitleText("tile.fvtm.constructor.texture.invalid_part", RGB.RED.packed);
 					return;
 				}
-				if(i < 0 || i >= textur.getHolder().getDefaultTextures().size()){
+				if(i < 0 || i >= textur.getTexHolder().getDefaultTextures().size()){
 					container.setTitleText("tile.fvtm.constructor.texture.invalid_supplied_id", RGB.RED.packed);
 					return;
 				}
-				textur.setSelectedTexture(i, null, false);
+				textur.getTexture().setSelectedTexture(textur.getTexHolder(), i, null, false);
 				container.setTitleText("tile.fvtm.constructor.texture.applied", null);
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}
@@ -147,13 +147,13 @@ public class ConstructorEntity extends TileEntity implements IPacketReceiver<Pac
 				if(nocon(container) && noveh(container) && noblk(container)) return;
 				String value = packet.getString("value");
 				boolean external = packet.getBoolean("external");
-				Textureable textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
+				TextureUser textur = packet.hasKey("part") ? this.getVehicleData().getPart(packet.getString("part")) : cdata == null ? bdata == null ? this.getVehicleData() : this.getBlockData() : this.getContainerData();
 				if(textur == null && packet.hasKey("part")){
 					container.setTitleText("tile.fvtm.constructor.texture.invalid_part", RGB.RED.packed);
 					return;
 				}
 				//TODO check if custom textures are allowed;
-				textur.setSelectedTexture(-1, value, external);
+				textur.getTexture().setSelectedTexture(textur.getTexHolder(), -1, value, external);
 				container.setTitleText("tile.fvtm.constructor.texture.applied", null);
 				this.updateClient(cdata == null ? bdata == null ? "vehicle" : "block" : "container"); return;
 			}

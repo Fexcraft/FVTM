@@ -97,10 +97,10 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 		{
 			GL11.glPushMatrix();
 			GL11.glRotated(180d, 1, 0, 0);
-			bindTexture(data.getTexture());
+			bindTexture(data.getCurrentTexture());
 			model.render(data, null, null, null);
 			for(java.util.Map.Entry<String, PartData> entry : data.getParts().entrySet()){
-				bindTexture(entry.getValue().getTexture());
+				bindTexture(entry.getValue().getCurrentTexture());
             	if(entry.getValue().isInstalledOnSwivelPoint()){
             		GL11.glPushMatrix();
     	            PartModel.translateAndRotatePartOnSwivelPointFast(data, entry.getValue());

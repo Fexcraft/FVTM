@@ -5,10 +5,11 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Pos;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.Textureable.TextureHolder;
+import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -19,13 +20,10 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class PartData extends DataCore<Part, PartData> implements Textureable {
+public class PartData extends DataCore<Part, PartData> implements TextureUser {
 	
 	protected TreeMap<String, Function> functions = new TreeMap<>();
-	protected int selected_texture;
-	protected String extex;
-	protected ResourceLocation seltex;
-	protected boolean isTextureExternal;
+	protected Textureable texture = new Textureable();
 	protected Pos currentpos = new Pos(0, 0, 0);
 	protected Rot currentrot = new Rot();
 	//protected Vec3f currentrot = new Vec3f();//TODO add this?
@@ -46,11 +44,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		currentrot.toNBT("CurrentRot", compound);
 		if(rotpoint != null && !rotpoint.equals("vehicle")) compound.setString("SwivelPoint", rotpoint);
 		//
-		compound.setInteger("SelectedTexture", selected_texture);
-		if(seltex != null || extex != null || selected_texture < 0){
-			compound.setString("CustomTexture", seltex == null ? extex : seltex.toString());
-			compound.setBoolean("ExternalTexture", isTextureExternal);
-		}
+		texture.save(compound);
 		//
 		NBTTagList flist = new NBTTagList();
 		for(Function func : functions.values()){
@@ -70,18 +64,7 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		currentrot = Rot.fromNBT("CurrentRot", compound);
 		rotpoint = compound.hasKey("SwivelPoint") ? compound.getString("SwivelPoint") : null;
 		//
-		this.selected_texture = compound.getInteger("SelectedTexture");
-		if(selected_texture < 0){
-			isTextureExternal = compound.getBoolean("ExternalTexture");
-			seltex = isTextureExternal ? null : new ResourceLocation(compound.getString("CustomTexture"));
-			extex = isTextureExternal ? compound.getString("CustomTexture") : null;
-		}
-		else{
-			seltex = null;
-			extex = null;
-			isTextureExternal = false;
-		}
-		if(selected_texture >= type.getDefaultTextures().size()) selected_texture = 0;
+		texture.load(compound, type);
 		//
 		NBTTagList flist = (NBTTagList)compound.getTag("Functions");
 		if(flist != null){
@@ -121,31 +104,6 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 		return stack;
 	}
 
-	@Override
-	public ResourceLocation getTexture(){
-		return selected_texture < 0 ? this.getCustomTexture() : type.getDefaultTextures().get(selected_texture);
-	}
-
-	@Override
-	public int getSelectedTexture(){
-		return selected_texture;
-	}
-
-	@Override
-	public ResourceLocation getCustomTexture(){
-		return isTextureExternal ? ExternalTextureHelper.get(extex) : seltex;
-	}
-
-	@Override
-	public String getCustomTextureString(){
-		return isTextureExternal ? extex : seltex == null ? "" : seltex.toString();
-	}
-
-	@Override
-	public boolean isExternalTexture(){
-		return isTextureExternal;
-	}
-
 	public Pos getInstalledPos(){
 		return currentpos;
 	}
@@ -173,24 +131,6 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 	public boolean isInstalledOnSwivelPoint(){
 		return rotpoint != null;
 	}
-
-	@Override
-	public void setSelectedTexture(int i, String tex, boolean ex){
-		if(i < 0){
-			this.isTextureExternal = ex; this.selected_texture = -1;
-			this.seltex = ex ? null : new ResourceLocation(tex);
-			this.extex = ex ? tex : null;
-		}
-		else{
-			this.selected_texture = i >= type.getDefaultTextures().size() ? type.getDefaultTextures().size() - 1 : i;
-			this.seltex = null; this.extex = null;
-		}
-	}
-
-	@Override
-	public TextureHolder getHolder(){
-		return type;
-	}
 	
 	public Map<String, Function> getFunctions(){
 		return functions;
@@ -210,6 +150,16 @@ public class PartData extends DataCore<Part, PartData> implements Textureable {
 
 	public boolean hasFunction(String string){
 		return getFunction(string) != null;
+	}
+
+	@Override
+	public Textureable getTexture(){
+		return texture;
+	}
+
+	@Override
+	public TextureHolder getTexHolder(){
+		return type;
 	}
 
 }

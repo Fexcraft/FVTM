@@ -54,7 +54,7 @@ public class ContainerBlockRenderer extends TileEntitySpecialRenderer<ContainerE
         ContainerData condata = te.getContainerData();
         if(condata != null){
             if(condata.getType().getModel() != null){
-                ModelBase.bindTexture(condata.getTexture());
+                ModelBase.bindTexture(condata.getCurrentTexture());
                 condata.getType().getModel().render(condata, null, null, te.getCapability(Capabilities.RENDERCACHE, null));
             }
         }

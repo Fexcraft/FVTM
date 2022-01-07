@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.data.root;
 
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
-import net.fexcraft.lib.mc.registry.UCResourceLocation;
+import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.mod.fvtm.util.Resources;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 public class Textureable {
 	
 	private ResourceLocation currtex = Resources.NULL_TEXTURE;
-	private String custom;
+	private String custom = "";
 	private boolean external;
 	private int selected;
 	
@@ -33,9 +33,11 @@ public class Textureable {
 		if(idx < 0){
 			external = ext;
 			selected = -1;
-			currtex = new UCResourceLocation(custom = tex);
+			custom = tex;
+			currtex = ext ? ExternalTextureHelper.get(custom) : new ResourceLocation(custom);
 		}
 		else{
+			external = false;
 			if(idx > holder.getDefaultTextures().size()){
 				currtex = holder.getDefaultTextures().get(selected = holder.getDefaultTextures().size() - 1);
 			}
@@ -77,21 +79,24 @@ public class Textureable {
 
 	public void save(NBTTagCompound compound){
 		compound.setInteger("SelectedTexture", selected);
-		if(external) compound.setBoolean("ExternalTexture", external);
-		compound.setString("CurrentTexture", currtex.toString());
+		compound.setBoolean("ExternalTexture", external);
+		compound.setString("CurrentTexture", external ? currtex.getPath() : currtex.toString());
 	}
 
 	public void load(NBTTagCompound compound, TextureHolder holder){
 		selected = compound.getInteger("SelectedTexture");
-		if(selected < 0){
-			external = compound.getBoolean("ExternalTexture");
-			custom = compound.getString("CustomTexture");
-		}
+		external = compound.getBoolean("ExternalTexture");
+		if(selected < 0) selected = -1;
 		if(!compound.hasKey("CurrentTexture")){
-			if(selected < 0) currtex = new UCResourceLocation(custom);
+			custom = compound.getString("CustomTexture");
+			if(selected < 0) currtex = external ? ExternalTextureHelper.get(custom) : new ResourceLocation(custom);
 			else currtex = holder.getDefaultTextures().get(selected > holder.getDefaultTextures().size() ? 0 : selected);
 		}
-		else currtex = new UCResourceLocation(compound.getString("CurrentTexture"));
+		else{
+			String str = compound.getString("CurrentTexture");
+			currtex = external ? ExternalTextureHelper.get(str) : new ResourceLocation(str);
+			custom = selected < 0 ? external ? str : currtex.toString() : "";
+		}
 	}
 
 }

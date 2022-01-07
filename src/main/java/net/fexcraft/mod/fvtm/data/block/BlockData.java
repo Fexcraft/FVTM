@@ -19,8 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class BlockData extends DataCore<Block, BlockData> implements Colorable, TextureUser {
 	
-	protected Textureable texture;
-	//
+	protected Textureable texture = new Textureable();
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected MultiBlockData multidata;
 

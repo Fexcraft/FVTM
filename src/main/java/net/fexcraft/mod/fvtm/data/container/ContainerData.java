@@ -26,7 +26,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 public class ContainerData extends DataCore<Container, ContainerData> implements Colorable, Lockable, TextureUser {
 
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected Textureable texture;
+	protected Textureable texture = new Textureable();
 	protected String lockcode;
 	protected boolean locked;
     private NonNullList<ItemStack> stacks;

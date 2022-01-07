@@ -60,7 +60,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected Textureable texture;
+	protected Textureable texture = new Textureable();
 	protected String preset, lockcode;
 	protected boolean locked;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();

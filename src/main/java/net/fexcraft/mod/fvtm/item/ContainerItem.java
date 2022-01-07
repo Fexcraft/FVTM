@@ -65,7 +65,7 @@ public class ContainerItem extends TypeCoreItem<Container> implements DataCoreIt
 	private String getTexTitle(ContainerData data){
 		if(data.getSelectedTexture() >= 0){
 			return "[" + data.getSelectedTexture() + "] " + data.getType().getDefaultTextures().get(data.getSelectedTexture()).getName();
-		} else return data.isExternalTexture() ? "external" : "internal";
+		} else return data.isTextureExternal() ? "external" : "internal";
 	}
 
 	@Override

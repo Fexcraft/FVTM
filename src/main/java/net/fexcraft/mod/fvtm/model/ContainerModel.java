@@ -114,7 +114,7 @@ public class ContainerModel extends GenericModel<ContainerData, Object> implemen
             {
                 GL11.glPushMatrix();
                 GL11.glRotated(180d, 1, 0, 0);
-                bindTexture(data.getTexture());
+                bindTexture(data.getCurrentTexture());
                 model.render(data, null);
                 //
                 GL11.glPopMatrix();

@@ -91,7 +91,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             Model<VehicleData, Object> modvec = vehicledata.getType().getModel();
             try{
                 if(modvec != null){
-                    ModelBase.bindTexture(vehicledata.getTexture());
+                    ModelBase.bindTexture(vehicledata.getCurrentTexture());
                     float[] heightoffset = { 0 };
                     if(vehicledata.getType().getVehicleType().isRailVehicle() && !vehicledata.getWheelPositions().isEmpty()){
                     	vehicledata.getWheelPositions().values().forEach(cons -> {
@@ -103,7 +103,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
                     GL11.glTranslated(0, heightoffset[0], 0);
                     modvec.render(vehicledata, null, null, null);
                     vehicledata.getParts().forEach((key, partdata) -> {
-                        ModelBase.bindTexture(partdata.getTexture());
+                        ModelBase.bindTexture(partdata.getCurrentTexture());
                         if(partdata.isInstalledOnSwivelPoint()){
                     		GL11.glPushMatrix();
                     		PartModel.translateAndRotatePartOnSwivelPointFast(vehicledata, partdata);
@@ -129,7 +129,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
             //GL11.glTranslated(0, 1.5F, 0);
             Model<ContainerData, Object> model = tile.getContainerData().getType().getModel();
             if(model != null){
-                ModelBase.bindTexture(tile.getContainerData().getTexture());
+                ModelBase.bindTexture(tile.getContainerData().getCurrentTexture());
                 model.render(tile.getContainerData(), null);
                 //ModelBase.bindTexture(lifttexture);
             }
@@ -137,7 +137,7 @@ public class ConstructorCenterRenderer extends TileEntitySpecialRenderer<ConstCe
         else if(tile.getBlockData() != null){
         	Model<BlockData, TileEntity> model = tile.getBlockData().getType().getModel();
         	if(model != null){
-                ModelBase.bindTexture(tile.getBlockData().getTexture());
+                ModelBase.bindTexture(tile.getBlockData().getCurrentTexture());
                 model.render(tile.getBlockData(), null);
         	}
         }

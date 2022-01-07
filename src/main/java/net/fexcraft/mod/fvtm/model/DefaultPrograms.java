@@ -1539,7 +1539,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, Entity ent, VehicleData data, Colorable color, String part, RenderCache cache){
-			ModelBase.bindTexture(part == null ? data.getTexture() : data.getPart(part).getTexture());
+			ModelBase.bindTexture(part == null ? data.getCurrentTexture() : data.getPart(part).getCurrentTexture());
 		}
 
 		@Override
@@ -1549,7 +1549,7 @@ public class DefaultPrograms {
 		
 		@Override
 		public void preRender(TurboList list, TileEntity ent, BlockData data, RenderCache cache){
-			ModelBase.bindTexture(data.getTexture());
+			ModelBase.bindTexture(data.getCurrentTexture());
 		}
 		
 		@Override

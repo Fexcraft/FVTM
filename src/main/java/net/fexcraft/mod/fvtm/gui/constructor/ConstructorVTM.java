@@ -5,7 +5,7 @@ import static net.fexcraft.mod.fvtm.gui.GuiHandler.LISTENERID;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.container.ContainerData;
-import net.fexcraft.mod.fvtm.data.root.Textureable;
+import net.fexcraft.mod.fvtm.data.root.Textureable.TextureUser;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -47,7 +47,7 @@ public class ConstructorVTM extends ConstructorGui {
 		this.menutitle.string = "gui.fvtm.constructor.texture.menu_title_" + title;
 		this.menutitle.translate();
 		if(part() != null) menutitle.string = menutitle.string.replace("$0", part());
-		Textureable textur = getTextureable();
+		TextureUser textur = getTextureable();
 		this.buttons.put("next_supplied", next = new IconButton("next_supplied", 3, 0, false, ICON_RIGHT));
 		this.buttons.put("prev_supplied", prev = new IconButton("prev_supplied", 3, 1, false, ICON_LEFT));
 		this.buttons.put("in_apply", new IconButton("in_apply", 6, 0, false, ICON_RIGHT));
@@ -57,31 +57,31 @@ public class ConstructorVTM extends ConstructorGui {
 		this.cfields[10] = new TextField(10, fontRenderer, 2, 20 + (10 * buttonheight), xSize - 4, 10).setMaxLength(1024);
 		this.fields.put("field4", cfields[4]); this.fields.put("field7", cfields[7]); this.fields.put("field10", cfields[10]);
 		//
-		cfields[ 7].setText(textur == null ? "no data" :  textur.isExternal() ? "" : textur.getCustom());
-		cfields[10].setText(textur == null ? "no data" : !textur.isExternal() ? "" : textur.getCustom());
+		cfields[ 7].setText(textur == null ? "no data" :  textur.isTextureExternal() ? "" : textur.getCustomTexture());
+		cfields[10].setText(textur == null ? "no data" : !textur.isTextureExternal() ? "" : textur.getCustomTexture());
 	}
 	
-	private Textureable getTextureable(){
+	private TextureUser getTextureable(){
 		VehicleData vdata = container.getTileEntity().getVehicleData();
 		ContainerData condata = container.getTileEntity().getContainerData();
-		return (part() == null ? vdata == null ? condata == null ? container.getTileEntity().getBlockData() : condata : vdata : vdata.getPart(part())).getTexture();
+		return part() == null ? vdata == null ? condata == null ? container.getTileEntity().getBlockData() : condata : vdata : vdata.getPart(part());
 	}
 
 	private void updateIconsAndButtons(){
-		Textureable textur = getTextureable();
-		if(textur.getSelected() < 0){
-			tbuttons[1].string = "gui.fvtm.constructor.texture.tex_" + (textur.isExternal() ? "external" : "internal");
+		TextureUser textur = getTextureable();
+		if(textur.getSelectedTexture() < 0){
+			tbuttons[1].string = "gui.fvtm.constructor.texture.tex_" + (textur.isTextureExternal() ? "external" : "internal");
 			tbuttons[1].translate();
 			cfields[4].setText(" - - - - ");
 		}
 		else{
 			tbuttons[1].string = "gui.fvtm.constructor.texture.tex_supplied";
 			tbuttons[1].translate();
-			tbuttons[1].string += ":" + textur.getSelected();
-			cfields[4].setText(textur.getHolder().getDefaultTextures().get(textur.getSelected()).getName());
+			tbuttons[1].string += ":" + textur.getSelectedTexture();
+			cfields[4].setText(textur.getTexHolder().getDefaultTextures().get(textur.getSelectedTexture()).getName());
 		}
-		prev.enabled = textur.getSelected() > 0;
-		next.enabled = textur.getSelected() < textur.getHolder().getDefaultTextures().size() - 1;
+		prev.enabled = textur.getSelectedTexture() > 0;
+		next.enabled = textur.getSelectedTexture() < textur.getTexHolder().getDefaultTextures().size() - 1;
 	}
 	
 	@Override
@@ -94,9 +94,9 @@ public class ConstructorVTM extends ConstructorGui {
 		if(super.buttonClicked(mouseX, mouseY, mouseButton, key, button)) return true;
 		if(button.name.equals("button12")) openGui(CONSTRUCTOR_MAIN, xyz, LISTENERID);
 		else if(button.name.endsWith("_supplied")){
-			Textureable textur = getTextureable();
-			int i = textur.getSelected() + (button.name.startsWith("next") ? 1 : -1);
-			if(i >= textur.getHolder().getDefaultTextures().size() || i < 0){
+			TextureUser textur = getTextureable();
+			int i = textur.getSelectedTexture() + (button.name.startsWith("next") ? 1 : -1);
+			if(i >= textur.getTexHolder().getDefaultTextures().size() || i < 0){
 				Print.debug("invalid id " + i);
 				return true;
 			}

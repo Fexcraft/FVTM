@@ -57,6 +57,22 @@ public class Textureable {
 		
 		public TextureHolder getTexHolder();
 		
+		public default ResourceLocation getCurrentTexture(){
+			return getTexture().currtex;
+		}
+		
+		public default int getSelectedTexture(){
+			return getTexture().selected;
+		}
+		
+		public default boolean isTextureExternal(){
+			return getTexture().external;
+		}
+		
+		public default String getCustomTexture(){
+			return getTexture().custom;
+		}
+		
 	}
 
 	public void save(NBTTagCompound compound){

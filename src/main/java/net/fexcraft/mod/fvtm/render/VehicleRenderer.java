@@ -55,11 +55,11 @@ public class VehicleRenderer {
 	            GL11.glRotatef(180f, 0f, 0f, 1f);
 	            Model<VehicleData, Object> modVehicle = vehicle.getVehicleData().getType().getModel();
 	            if(modVehicle != null){
-	                ModelBase.bindTexture(vehicle.getVehicleData().getTexture());
+	                ModelBase.bindTexture(vehicle.getVehicleData().getCurrentTexture());
 	                modVehicle.render(vehicle.getVehicleData(), null, vehicle, cache);
 	                if(vehicle.getVehicleData().getParts().size() > 0){
 	                	for(java.util.Map.Entry<String, PartData> entry : vehicle.getVehicleData().getParts().entrySet()){
-	                    	ModelBase.bindTexture(entry.getValue().getTexture());
+	                    	ModelBase.bindTexture(entry.getValue().getCurrentTexture());
 	                    	if(entry.getValue().isInstalledOnSwivelPoint()){
 	                    		GL11.glPushMatrix();
 	                    		PartModel.translateAndRotatePartOnSwivelPoint(vehicle.getVehicleData(), entry.getValue(), ticks);

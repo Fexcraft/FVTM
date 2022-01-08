@@ -116,6 +116,19 @@ public enum VehicleType {
 				attrs.add(new LongAttribute("section_on", 0l));
 				break;
 			}
+			case WATER:{
+				attrs.add(new BooleanAttribute("lights_fog", false).addSeat("driver").sync(true)
+						.icons("true", "fvtm:textures/gui/icons/lights_fog_on.png", "false", "fvtm:textures/gui/icons/lights_fog_off.png"));
+				attrs.add(new BooleanAttribute("lights_long", false).addSeat("driver").sync(true)
+						.icons("true", "fvtm:textures/gui/icons/lights_high_on.png", "false", "fvtm:textures/gui/icons/lights_high_off.png"));
+				attrs.add(new BooleanAttribute("lights_other", false).addSeat("driver").sync(true));
+				attrs.add(new FloatAttribute("steering_angle", 0f).minmax(-90f, 90f));
+				attrs.add(new FloatAttribute("wheel_angle", 0f).minmax(-360f, 360f));
+				attrs.add(new FloatAttribute("max_steering_angle", 35f).minmax(-90f, 90f).editable(false));
+				attrs.add(new FloatAttribute("max_towing", 3500f).minmax(1, Integer.MAX_VALUE).editable(false));
+				attrs.add(new StringAttribute("license_plate", "FVTM").external(true).editable(false).perm("fvtm.attribute.license_plate"));
+				break;
+			}
 			default: break;
 		}
 		return attrs;

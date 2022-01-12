@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 
@@ -113,7 +113,7 @@ public class WireSystem extends DetachedSystem {
 		
 	}
 	
-	public static class RegionMap extends HashMap<RegionKey, WireRegion> {
+	public static class RegionMap extends ConcurrentHashMap<RegionKey, WireRegion> {
 		
 		private WireSystem root;
 		public RegionMap(WireSystem data){ this.root = data; }

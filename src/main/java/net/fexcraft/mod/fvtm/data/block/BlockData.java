@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.data.root.DataCore;
 import net.fexcraft.mod.fvtm.data.root.Textureable;
@@ -19,12 +20,13 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class BlockData extends DataCore<Block, BlockData> implements Colorable, TextureUser {
 	
-	protected Textureable texture = new Textureable();
+	protected Textureable texture;
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
 	protected MultiBlockData multidata;
 
 	public BlockData(Block type){
 		super(type);
+		texture = new Textureable(type);
 		for(Entry<String, RGB> entry : type.getDefaultColorChannels().entrySet()){
 			channels.put(entry.getKey(), entry.getValue().copy());
 		}
@@ -37,6 +39,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 		compound.setString("Block", type.getRegistryName().toString());
 		//
 		texture.save(compound);
+		Print.debug(type.textures);
 		//
 		for(String str : channels.keySet()){
 			compound.setInteger("RGB_" + str, channels.get(str).packed);
@@ -48,6 +51,7 @@ public class BlockData extends DataCore<Block, BlockData> implements Colorable, 
 	@Override
 	public BlockData read(NBTTagCompound compound){
 		texture.load(compound, type);
+		Print.debug(type.textures);
 		//
 		if(compound.hasKey("RGBPrimary")){
 			channels.get("primary").packed = compound.getInteger("RGBPrimary");

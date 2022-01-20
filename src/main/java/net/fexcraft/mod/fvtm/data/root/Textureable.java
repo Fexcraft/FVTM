@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.data.root;
 
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
-import net.fexcraft.lib.mc.utils.Print;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -85,7 +84,6 @@ public class Textureable {
 		compound.setInteger("SelectedTexture", selected);
 		compound.setBoolean("ExternalTexture", external);
 		compound.setString("CurrentTexture", external ? currtex.getPath() : currtex.toString());
-		Print.debug(currtex, selected, external, custom);
 	}
 
 	public void load(NBTTagCompound compound, TextureHolder holder){
@@ -102,7 +100,6 @@ public class Textureable {
 			currtex = external ? ExternalTextureHelper.get(str) : new ResourceLocation(str);
 			custom = selected < 0 ? external ? str : currtex.toString() : "";
 		}
-		Print.debug(currtex, selected, external, custom);
 	}
 
 }

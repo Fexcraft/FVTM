@@ -60,7 +60,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 	protected TreeMap<String, Attribute<?>> attributes = new TreeMap<>();
 	protected TreeMap<String, PartData> parts = new TreeMap<>();
 	protected TreeMap<String, RGB> channels = new TreeMap<>();
-	protected Textureable texture = new Textureable();
+	protected Textureable texture;
 	protected String preset, lockcode;
 	protected boolean locked;
 	protected TreeMap<String, WheelSlot> wheels = new TreeMap<>();
@@ -77,6 +77,7 @@ public class VehicleData extends DataCore<Vehicle, VehicleData> implements Color
 
 	public VehicleData(Vehicle type){
 		super(type);
+		texture = new Textureable(type);
 		rotpoints.put("vehicle", rootpoint = new SwivelPoint("vehicle", null));
 		for(SwivelPoint point : type.getDefaultSwivelPoints().values()){
 			rotpoints.put(point.id, point.clone(null));

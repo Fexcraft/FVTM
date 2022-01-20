@@ -23,7 +23,7 @@ import net.minecraft.util.ResourceLocation;
 public class PartData extends DataCore<Part, PartData> implements TextureUser {
 	
 	protected TreeMap<String, Function> functions = new TreeMap<>();
-	protected Textureable texture = new Textureable();
+	protected Textureable texture;
 	protected Pos currentpos = new Pos(0, 0, 0);
 	protected Rot currentrot = new Rot();
 	//protected Vec3f currentrot = new Vec3f();//TODO add this?
@@ -31,6 +31,7 @@ public class PartData extends DataCore<Part, PartData> implements TextureUser {
 
 	public PartData(Part type){
 		super(type);
+		texture = new Textureable(type);
 		for(Function func : type.functions){
 			this.functions.put(func.getId(), func.copy(type));
 		}

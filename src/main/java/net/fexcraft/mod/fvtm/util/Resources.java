@@ -509,8 +509,10 @@ public class Resources {
 		if(bake) name = name.substring(6);
 		Model<T, K> model = null;
 		if(MODELS.containsKey(name)){
-			model = bake ? (Model<T, K>)getEmptyModelFromClass(clazz) : (Model<T, K>)MODELS.get(name);
-			return bake && model instanceof BlockModel ? model : (Model<T, K>)MODELS.get(name);
+			if(bake && getEmptyModelFromClass(clazz) instanceof BlockModel){
+				return (Model<T, K>)getEmptyModelFromClass(clazz);
+			}
+			return (Model<T, K>)MODELS.get(name);
 		}
 		if(FCLRegistry.getModel(name) != null){
 			try{

@@ -505,13 +505,14 @@ public class Resources {
 		if(name == null || name.equals("") || name.equals("null")){
 			return (Model<T, K>)getEmptyModelFromClass(clazz);
 		}
-		boolean bake = clazz == BlockModel.class && name.startsWith("baked|");
+		boolean bake = name.startsWith("baked|");
 		if(bake) name = name.substring(6);
+		Model<T, K> model = null;
 		if(MODELS.containsKey(name)){
-			return bake ? (Model<T, K>)getEmptyModelFromClass(clazz) : (Model<T, K>)MODELS.get(name);
+			model = bake ? (Model<T, K>)getEmptyModelFromClass(clazz) : (Model<T, K>)MODELS.get(name);
+			return bake && model instanceof BlockModel ? model : (Model<T, K>)MODELS.get(name);
 		}
 		if(FCLRegistry.getModel(name) != null){
-			Model<T, K> model;
 			try{
 				model = (Model<T, K>)((Class<?>)FCLRegistry.getModel(name)).newInstance();
 			}
@@ -523,7 +524,6 @@ public class Resources {
 			return model;
 		}
 		String ext = FilenameUtils.getExtension(name);
-		Model<T, K> model = null;
 		try{
 			switch(ext){
 				case "class":
@@ -576,7 +576,7 @@ public class Resources {
 			return (Model<T, K>)getEmptyModelFromClass(clazz);
 		}
 		MODELS.put(name, model);
-		if(bake){
+		if(bake && model instanceof BlockModel){
 			FCLBlockModelLoader.addBlockModel(new ResourceLocation(name), (FCLBlockModel)model);
 			return (Model<T, K>)getEmptyModelFromClass(clazz);
 		}

@@ -102,7 +102,7 @@ public class Block extends TypeCore<Block> implements Textureable.TextureHolder,
 		this.oredict = obj.has("OreDictionary") ? obj.get("OreDictionary").getAsString() : null;
 		//
 		this.modelid = obj.has("Model") ? obj.get("Model").getAsString() : null;
-		if(modelid == null || modelid.equals("null")) plain_model = true;//in other words, json models
+		if(modelid == null || modelid.equals("null") || modelid.startsWith("baked|")) plain_model = true;//in other words, json models
 		if(obj.has("AABBs")){
 			obj.get("AABBs").getAsJsonObject().entrySet().forEach(entry -> {
 				try{

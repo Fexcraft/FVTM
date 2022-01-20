@@ -46,7 +46,7 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 	public GroupList groups = new GroupList();
 	public Transforms transforms = new Transforms();
 	private ArrayList<String> creators = new ArrayList<>();
-	protected int textureX, textureY;
+	public int textureX, textureY;
 	public boolean smooth_shading;
 	protected String name;
 	

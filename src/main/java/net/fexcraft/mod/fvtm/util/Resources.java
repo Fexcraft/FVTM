@@ -33,6 +33,8 @@ import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.registry.FCLRegistry;
 import net.fexcraft.lib.mc.registry.NamedResourceLocation;
+import net.fexcraft.lib.mc.render.FCLBlockModel;
+import net.fexcraft.lib.mc.render.FCLBlockModelLoader;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.InternalAddon;
@@ -503,8 +505,10 @@ public class Resources {
 		if(name == null || name.equals("") || name.equals("null")){
 			return (Model<T, K>)getEmptyModelFromClass(clazz);
 		}
+		boolean bake = clazz == BlockModel.class && name.startsWith("baked|");
+		if(bake) name = name.substring(6);
 		if(MODELS.containsKey(name)){
-			return (Model<T, K>)MODELS.get(name);
+			return bake ? (Model<T, K>)getEmptyModelFromClass(clazz) : (Model<T, K>)MODELS.get(name);
 		}
 		if(FCLRegistry.getModel(name) != null){
 			Model<T, K> model;
@@ -572,6 +576,10 @@ public class Resources {
 			return (Model<T, K>)getEmptyModelFromClass(clazz);
 		}
 		MODELS.put(name, model);
+		if(bake){
+			FCLBlockModelLoader.addBlockModel(new ResourceLocation(name), (FCLBlockModel)model);
+			return (Model<T, K>)getEmptyModelFromClass(clazz);
+		}
 		return model;
 	}
 

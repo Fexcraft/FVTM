@@ -84,6 +84,7 @@ public class VehicleRenderer {
             EffectRenderer.renderToggableInfo(vehicle);
             EffectRenderer.renderContainerInfo(vehicle, rot);
             EffectRenderer.renderSeats(vehicle);
+            GL11.glTranslated(-x, -y, -z);
         }
 		GL11.glPopMatrix();
     }

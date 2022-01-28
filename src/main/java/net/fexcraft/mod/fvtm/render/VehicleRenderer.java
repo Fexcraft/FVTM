@@ -38,8 +38,8 @@ public class VehicleRenderer {
         	if(!RenderView.FRUSTUM.isBoundingBoxInFrustum(vehicle.renderbox == null ? vehicle.getEntityBoundingBox() : vehicle.renderbox.offset(x, y, z))) continue;
         	//
         	EffectRenderer.RENDER_VEHPOS.put(vehicle.getEntityId(), new double[]{ x, y, z });
-            GL11.glPushMatrix();
             GL11.glTranslated(x, y, z);
+            GL11.glPushMatrix();
             Vec3f rot = EffectRenderer.getRotations(vehicle, ticks);
             GL11.glRotatef(rot.x, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(rot.y, 0.0F, 0.0F, 1.0F);

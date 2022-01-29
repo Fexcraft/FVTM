@@ -88,6 +88,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 		private Entity entity;
 		private ContainerHolderWrapper conhol;
 		private ContainerSlot[] slots = new ContainerSlot[0];
+		private String[] ids = new String[0];
 		public boolean setup;
 		
 		public Implementation(){}
@@ -106,6 +107,8 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 				if(!compound.hasKey("Slot" + i)) continue;//this rather bad
 				slots[i] = new ContainerSlot().read(compound.getCompoundTag("Slot" + i));
 			}
+			ids = new String[slots.length];
+			for(int i = 0; i < slots.length; i++) ids[i] = slots[i].id;
 		}
 
 		public Implementation setEntity(Entity ent){
@@ -126,9 +129,7 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public String[] getContainerSlotIds(){
-			String[] strings = new String[slots.length];
-			for(int i = 0; i < strings.length; i++) strings[i] = slots[i].id;
-			return strings;
+			return ids;
 		}
 
 		@Override
@@ -139,12 +140,21 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 				con.position = slot.position; con.rotation = slot.rotation; return;
 			}
 			ContainerSlot[] arr = new ContainerSlot[slots.length + 1];
-			for(int i = 0; i < slots.length; i++) arr[i] = slots[i];
-			arr[slots.length] = slot; slots = arr; this.sync(false);
+			String[] idz = new String[slots.length + 1];
+			for(int i = 0; i < slots.length; i++){
+				arr[i] = slots[i];
+				idz[i] = slots[i].id;
+			}
+			arr[slots.length] = slot;
+			idz[slots.length] = slot.id;
+			slots = arr;
+			ids = idz;
+			this.sync(false);
 		}
 
 		private boolean contains(String id){
-			for(String str : this.getContainerSlotIds()) if(str.equals(id)) return true; return false;
+			for(String str : ids) if(str.equals(id)) return true;
+			return false;
 		}
 
 		@SideOnly(Side.CLIENT) @Override

@@ -296,11 +296,7 @@ public class ContainerScript extends VehicleScript {
 						}
 						i++;//+= firstcon.getContainerType().length();
 					}
-					if(index == null){
-						cap = null;
-						capent = null;
-						break;
-					}
+					if(index == null) capent = null;
 				}
 				else{
 					Vec3d capos = cap.getWrapper().getContainerSlotPosition(str, cap);

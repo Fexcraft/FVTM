@@ -137,7 +137,9 @@ public class ContainerHolderUtil implements ICapabilitySerializable<NBTBase> {
 			if(setup){ Print.log(entity.getName() + " --> Tried to register a new Container Slot, but setup is already over."); return; }
 			if(contains(slot.id)){
 				ContainerSlot con = getContainerSlot(slot.id);
-				con.position = slot.position; con.rotation = slot.rotation; return;
+				con.position = slot.position;
+				con.rotation = slot.rotation;
+				return;
 			}
 			ContainerSlot[] arr = new ContainerSlot[slots.length + 1];
 			String[] idz = new String[slots.length + 1];

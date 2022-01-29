@@ -36,7 +36,6 @@ import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SeatCache;
 import net.fexcraft.mod.fvtm.util.Command;
 import net.fexcraft.mod.fvtm.util.ResizeUtil;
-import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.DefaultPartInstallHandler.DPIHData;
 import net.minecraft.client.Minecraft;
@@ -55,6 +54,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -331,7 +331,7 @@ public class EffectRenderer {
 	public static void renderContainerInfo(Entity entity, Vec3f rot){
         if((tempholder = entity.getCapability(Capabilities.CONTAINER, null)) != null) tempholder.render(0, 0, 0, rot.x, rot.y, rot.z);
         if(!Command.CONTAINER) return;
-    	if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug(0, 0, 0, rot.x, rot.y, rot.z);
+    	//if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug(0, 0, 0, rot.x, rot.y, rot.z);
     	if(tempholder != null){
     		ContainerHolderWrapper ent = tempholder.getWrapper();
     		for(String slotid : tempholder.getContainerSlotIds()){
@@ -344,9 +344,22 @@ public class EffectRenderer {
     		}
     	}
 	}
-	
-	public static void renderContainerDebug(Entity entity, Vec3f rot){
 
+	/** Method version for cases where wrapper and holder isn't the same entity (e.g. compat mods). */
+	public static void renderContainerInfo(World world, ContainerHolderWrapper entity, ContainerHolder holder, Vec3f rot){
+        if((tempholder = holder) != null) tempholder.render(0, 0, 0, rot.x, rot.y, rot.z);
+        if(!Command.CONTAINER) return;
+    	//if(tempholder != null) ((ContainerHolderUtil.Implementation)tempholder).renderDebug(0, 0, 0, rot.x, rot.y, rot.z);
+    	if(tempholder != null){
+    		for(String slotid : tempholder.getContainerSlotIds()){
+    			ContainerSlot slot = tempholder.getContainerSlot(slotid);
+    			ContainerType type = ContainerType.values()[Time.getSecond() % 5];
+            	for(int i = 0; i < slot.length; i += type.length()){
+            		Vec3d vec = entity.getContainerInSlotPosition(slot.id, tempholder, type, i);
+            		world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, vec.x, vec.y, vec.z, 0, 0, 0);
+            	}
+    		}
+    	}
 	}
 	
 	public static void renderSeats(GenericVehicle vehicle){

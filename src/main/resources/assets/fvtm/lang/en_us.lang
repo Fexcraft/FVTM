@@ -258,7 +258,7 @@ item.fvtm:train_adjuster.name=Train Adjuster
 itemGroup.fvtm:fvtm=FVTM [Internal-Addon]
 itemGroup.fvtm:presets=FVTM Presets
 itemGroup.fvtm:road_signs=FVTM Road Signs
-fvtm:standard.gauge_desc=&9The &a125% &9scale (compared to 1:1 real scale)\n&7&lStandard Gauge &r&9of FVTM.
+fvtm:standard.gauge_desc=&9The &a125% &9scale (compared to 1:1 real scale)\n&7&lStandard Gauge &r&9of FVTM.\n&6Wooden Ties
 fvtm.recipes.blocks=FVTM Blocks
 
 

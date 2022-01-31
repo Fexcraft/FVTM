@@ -27,7 +27,7 @@ public class Config {
     	WIRESYS = "FVTM Wire System";//,
     	//PROTOTYPING = "Prototyping";
     public static boolean VEHICLES_NEED_FUEL, VEHICLE_DROP_CONTENTS, ROADTOOL_FOR_ALL, OVERLAY_ON_BOTTOM;
-    public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS, DISABLE_LIGHT_BEAMS;
+    public static boolean RENDER_OUT_OF_VIEW, RENDER_VEHILE_MODELS_AS_ITEMS, RENDER_BLOCK_MODELS_AS_ITEMS, DISABLE_LIGHT_BEAMS;
     public static boolean DISABLE_RAIL_BLOCKS, DISABLE_RAILS, DISABLE_ROADS, UNBREAKABLE_CONTAINERS;
     public static boolean LOAD_ALL_RESOURCEPACKS, DISABLE_WIRES, RENDER_VEHICLES_SEPARATELY, DISABLE_PARTICLES;
     public static double VEHICLE_UPDATE_RANGE, U12_MOTION_SCALE;
@@ -77,6 +77,7 @@ public class Config {
     	{//CLIENT
             RENDER_OUT_OF_VIEW = config.getBoolean("render_out_of_view", CLIENT, false, "If vehicles should be rendered out of default view.");
             RENDER_VEHILE_MODELS_AS_ITEMS = config.getBoolean("render_vehicle_models_as_items", CLIENT, true, "If the Vehicle's model should be rendered as Item. Could cause laggs.");
+            RENDER_BLOCK_MODELS_AS_ITEMS = config.getBoolean("render_block_models_as_items", CLIENT, true, "If the (non-vanilla) Block models should be rendered as Item.");
             BLINKER_INTERVAL = config.getInt("blinker_interval", CLIENT, 750, 100, 2000, "Blinker/Turn Signal toggle interval, in milliseconds.");
             if(Static.side().isClient()){
             	net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();

@@ -247,7 +247,7 @@ public class Addon extends TypeCore<Addon> {
 					}
 					else if(data == DataType.BLOCK){
 						Block block = (Block)core;
-						if(!block.hasPlainModel()){
+						if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
 						}
 					}
@@ -283,7 +283,7 @@ public class Addon extends TypeCore<Addon> {
 					}
 					else if(data == DataType.BLOCK){
 						Block block = (Block)core;
-						if(!block.hasPlainModel()){
+						if(!block.hasPlainModel() && Config.RENDER_BLOCK_MODELS_AS_ITEMS){
 							net.fexcraft.lib.mc.render.FCLItemModelLoader.addItemModel(core.getRegistryName(), BlockModel.EMPTY);
 						}
 					}

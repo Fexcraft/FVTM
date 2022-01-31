@@ -51,7 +51,7 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn){
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag){
         tooltip.add(Formatter.format("&9Name: &7" + type.getName()));
         for(String s : type.getDescription()){
             tooltip.add(Formatter.format(I18n.format(s)));
@@ -64,12 +64,17 @@ public class RailGaugeItem extends TypeCoreItem<RailGauge> implements JunctionGr
             }
         }
         tooltip.add(Formatter.format("&9- - - - - - &7-"));
-        tooltip.add(Formatter.format("&6Usage:"));
-        tooltip.add(Formatter.format("&b- Rightclick twice in the same position to create a Junction."));
-        tooltip.add(Formatter.format("&b- Rightclick in sequence between 2 Junctions to create a track."));
-        tooltip.add(Formatter.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
-        tooltip.add(Formatter.format("&b- Rightclick + Sneak (on empty cache) to open GUI."));
-        tooltip.add(Formatter.format("&o&bNote that without zoom (in GUI) only &o&7corner or centered &o&bJunction positions are available."));
+        if(flag.isAdvanced()){
+            tooltip.add(Formatter.format("&6Usage:"));
+            tooltip.add(Formatter.format("&b- Rightclick twice in the same position to create a Junction."));
+            tooltip.add(Formatter.format("&b- Rightclick in sequence between 2 Junctions to create a track."));
+            tooltip.add(Formatter.format("&b- Rightclick + Sneak to reset point cache (sequence)."));
+            tooltip.add(Formatter.format("&b- Rightclick + Sneak (on empty cache) to open GUI."));
+            tooltip.add(Formatter.format("&o&bNote that without zoom (in GUI) only &o&7corner or centered &o&bJunction positions are available."));
+        }
+        else{
+            tooltip.add(Formatter.format("&6Enable advanced tooltips for item usage info."));
+        }
         tooltip.add(Formatter.format("&9- - - - - - &7-"));
         if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("fvtm:railpoints")){
         	NBTTagList list = (NBTTagList)stack.getTagCompound().getTag("fvtm:railpoints");

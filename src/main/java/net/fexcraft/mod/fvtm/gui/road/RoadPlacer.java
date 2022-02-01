@@ -21,7 +21,7 @@ import net.fexcraft.mod.fvtm.block.generated.G_ROAD;
 import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
-import net.fexcraft.mod.fvtm.sys.road.Road;
+import net.fexcraft.mod.fvtm.item.RoadToolItem.Road;
 import net.fexcraft.mod.fvtm.util.Compat;
 import net.fexcraft.mod.fvtm.util.Vec316f;
 import net.minecraft.block.Block;
@@ -372,10 +372,10 @@ public class RoadPlacer extends GenericGui<RoadPlacerContainer> {
 			clearPreview();
 		}
 		else if(pos == null){
-			demoroad = new Road(null, points.toArray(new Vec316f[0]));
+			demoroad = new Road(points.toArray(new Vec316f[0]));
 		}
 		else{
-			demoroad = new Road(null, points.toArray(new Vec316f[0]), pos);
+			demoroad = new Road(points.toArray(new Vec316f[0]), pos);
 		}
 		if(demoroad != null){
 			clearPreview();

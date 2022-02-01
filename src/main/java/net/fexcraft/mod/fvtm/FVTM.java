@@ -18,7 +18,6 @@ import net.fexcraft.mod.fvtm.block.generated.SignalTileEntity;
 import net.fexcraft.mod.fvtm.block.generated.SwitchTileEntity;
 import net.fexcraft.mod.fvtm.data.Passenger;
 import net.fexcraft.mod.fvtm.data.PlayerData;
-import net.fexcraft.mod.fvtm.data.RoadSystem;
 import net.fexcraft.mod.fvtm.data.VehicleAndPartDataCache;
 import net.fexcraft.mod.fvtm.data.block.MultiBlockCache;
 import net.fexcraft.mod.fvtm.data.container.ContainerHolder;
@@ -31,7 +30,6 @@ import net.fexcraft.mod.fvtm.gui.ClientReceiver;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
 import net.fexcraft.mod.fvtm.gui.ServerReceiver;
 import net.fexcraft.mod.fvtm.item.JunctionToolItem;
-import net.fexcraft.mod.fvtm.item.RoadSysItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.SignalItem0;
 import net.fexcraft.mod.fvtm.item.TrainAdjuster;
@@ -48,7 +46,6 @@ import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
 import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
-import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.handler.RVStore;
@@ -111,7 +108,6 @@ public class FVTM {
 		GameRegistry.registerTileEntity(RailEntity.class, new ResourceLocation("fvtm:rail"));
 		CapabilityManager.INSTANCE.register(VehicleAndPartDataCache.class, new VAPDataCache.Storage(), new VAPDataCache.Callable());
 		CapabilityManager.INSTANCE.register(ContainerHolder.class, new ContainerHolderUtil.Storage(), new ContainerHolderUtil.Callable());
-		if(!Config.DISABLE_ROADS) CapabilityManager.INSTANCE.register(RoadSystem.class, new RoadDataSerializer.Storage(), new RoadDataSerializer.Callable());
 		CapabilityManager.INSTANCE.register(MultiBlockCache.class, new MultiBlockCacheSerializer.Storage(), new MultiBlockCacheSerializer.Callable());
 		CapabilityManager.INSTANCE.register(PlayerData.class, new PlayerDataHandler.Storage(), new PlayerDataHandler.Callable());
 		CapabilityManager.INSTANCE.register(Passenger.class, new PassengerCapHandler.Storage(), new PassengerCapHandler.Callable());
@@ -183,7 +179,6 @@ public class FVTM {
 			TrainAdjuster.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			RoadToolItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			Asphalt.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
-			RoadSysItem.INSTANCE.setCreativeTab(InternalAddon.INSTANCE.getDefaultCreativeTab());
 			//
 			if(net.fexcraft.mod.fvtm.model.DefaultPrograms.BLINKER_TIMER == null){
 				net.fexcraft.mod.fvtm.model.DefaultPrograms.setupBlinkerTimer();
@@ -206,17 +201,14 @@ public class FVTM {
 		Resources.loadRecipes();
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ServerReceiver());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.rail.RecServer());
-		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.road.RecServer());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new net.fexcraft.mod.fvtm.sys.wire.RecServer());
 		PacketHandler.registerListener(PacketHandlerType.NBT, Side.SERVER, new ListenerServer());
 		if(event.getSide().isClient()){
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ClientReceiver());
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.rail.RecClient());
-			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.road.RecClient());
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new net.fexcraft.mod.fvtm.sys.wire.RecClient());
 			PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new ListenerClient());
 			MinecraftForge.EVENT_BUS.register(new RailRenderer());
-			MinecraftForge.EVENT_BUS.register(new RoadRenderer());
 			MinecraftForge.EVENT_BUS.register(new EffectRenderer());
 		}
 	}

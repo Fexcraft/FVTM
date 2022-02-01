@@ -34,6 +34,7 @@ public class Config {
     public static int RAIL_PLACING_GRID, RAIL_SEGMENTATOR, MAX_RAIL_TRACK_LENGTH, ROAD_PLACING_GRID, MAX_ROAD_LENGTH, BLINKER_INTERVAL, U12_SYNC_RATE;
     public static int WIRE_SEGMENTATOR, MAX_WIRE_LENGTH;
 	public static long UNLOAD_INTERVAL;
+	public static String[] DEFAULT_TRAFFIC_SIGN_LIBRARIES;
 
     public static final void initalize(FMLPreInitializationEvent event, File file){
         config = new Configuration(file, "4.0", true);
@@ -94,6 +95,7 @@ public class Config {
             UNBREAKABLE_CONTAINERS = config.getBoolean("unbreakable_containers", GENERAL, false, "If containers should be unbreakable (via tools/hand).");
             ROADTOOL_FOR_ALL = config.getBoolean("road_tool_for_all", GENERAL, false, "When not using a Forge PermissionsAPI compatible permission manager, to allow any player to use the Road Placing Tool.");
             LOAD_ALL_RESOURCEPACKS = config.getBoolean("load_all_resourcepacks", GENERAL, true, "If true all lite packs in /resoucepacks/ will be loaded, otherwhise when false, only the active ones.");
+            DEFAULT_TRAFFIC_SIGN_LIBRARIES = config.getStringList("traffic_sign_libraries", RAILSYS, new String[]{ "http://fexcraft.net/files/mod_data/fvtm/default_traffic_sign_library.json" }, "List of External Traffic Sign Libraries");
     	}
     	{//LEGACY
     		

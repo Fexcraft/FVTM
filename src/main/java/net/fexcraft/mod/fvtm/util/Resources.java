@@ -88,7 +88,6 @@ import net.fexcraft.mod.fvtm.util.caps.MultiBlockCacheSerializer;
 import net.fexcraft.mod.fvtm.util.caps.PassengerCapHandler;
 import net.fexcraft.mod.fvtm.util.caps.PlayerDataHandler;
 import net.fexcraft.mod.fvtm.util.caps.RenderCacheHandler;
-import net.fexcraft.mod.fvtm.util.caps.RoadDataSerializer;
 import net.fexcraft.mod.fvtm.util.caps.VAPDataCache;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.fexcraft.mod.fvtm.util.function.*;
@@ -775,7 +774,6 @@ public class Resources {
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
 		//event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
 		SystemManager.onAttachWorldCapabilities(event);
-		if(!Config.DISABLE_ROADS) event.addCapability(new ResourceLocation("fvtm:roaddata"), new RoadDataSerializer(event.getObject(), event.getObject().provider.getDimension()));
 		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
 	}
 	

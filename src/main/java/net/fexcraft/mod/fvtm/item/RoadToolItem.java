@@ -14,7 +14,8 @@ import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.JunctionGridItem;
 import net.fexcraft.mod.fvtm.gui.GuiHandler;
-import net.fexcraft.mod.fvtm.sys.road.Road;
+import net.fexcraft.mod.fvtm.sys.uni.Path;
+import net.fexcraft.mod.fvtm.sys.uni.PathType;
 import net.fexcraft.mod.fvtm.util.Compat;
 import net.fexcraft.mod.fvtm.util.Perms;
 import net.fexcraft.mod.fvtm.util.Vec316f;
@@ -144,7 +145,7 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	@SuppressWarnings("deprecation")
 	public EnumActionResult placeRoad(EntityPlayer player, World world, ItemStack stack, Vec316f vector, NBTTagList list, ICommandSender sender, boolean noblocks){
 		Print.debug(list);
-		Road _road = new Road(null, getVectors(list, true));
+		Road _road = new Road(getVectors(list, true));
 		if(_road.length > Config.MAX_ROAD_LENGTH){
 			Print.chatbar(sender, "&cRoad vector length exceeds the configured max length.");
 			return EnumActionResult.FAIL;
@@ -416,6 +417,28 @@ public class RoadToolItem extends Item implements JunctionGridItem {
 	@Override
 	public boolean hasVectors(){
 		return true;
+	}
+	
+	public static class Road extends Path {
+
+		public Road(Vec316f[] vec316fs){
+			super(vec316fs);
+		}
+		
+		public Road(Vec316f[] vec316fs, Vec316f vector){
+			super(vec316fs, vector);
+		}
+
+		@Override
+		public Vec3f getVectorPosition(float distance, boolean reverse){
+			return super.getVectorPosition0(distance, reverse);
+		}
+
+		@Override
+		public PathType getType(){
+			return PathType.ROAD;
+		}
+		
 	}
 
 }

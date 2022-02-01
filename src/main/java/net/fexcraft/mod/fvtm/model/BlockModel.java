@@ -47,7 +47,9 @@ public class BlockModel extends GenericModel<BlockData, TileEntity> implements F
 		return super.parse(stream, type);
 	}
 	
-	public BlockModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
+	public BlockModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
+		super(loc, data, objgroups, exclude);
+	}
 
 	@Override
 	public void render(BlockData data, TileEntity tile){

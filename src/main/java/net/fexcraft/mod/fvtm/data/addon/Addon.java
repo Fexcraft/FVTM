@@ -40,6 +40,7 @@ import net.fexcraft.mod.fvtm.model.PartModel;
 import net.fexcraft.mod.fvtm.model.VehicleModel;
 import net.fexcraft.mod.fvtm.sys.condition.Condition;
 import net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.util.DataUtil;
 import net.fexcraft.mod.fvtm.util.PresetTab;
 import net.fexcraft.mod.fvtm.util.Resources;
@@ -149,6 +150,30 @@ public class Addon extends TypeCore<Addon> {
 					cond = new Condition(registryname.getPath() + ":" + entry.getKey(), jsn.asMap());
 				}
 				ConditionRegistry.register(cond);
+			}
+		}
+		if(obj.has("TrafficSigns")){
+			JsonObject tsn = obj.get("TrafficSigns").getAsJsonObject();
+			TrafficSignLibrary.AddonLib lib = new TrafficSignLibrary.AddonLib(registryname.getPath());
+			if(tsn.has("backgrounds")){
+				for(Entry<String, JsonElement> elm : tsn.get("backgrounds").getAsJsonObject().entrySet()){
+					lib.backgrounds.put(elm.getKey(), elm.getValue().getAsString());
+				}
+			}
+			if(tsn.has("components")){
+				for(Entry<String, JsonElement> elm : tsn.get("components").getAsJsonObject().entrySet()){
+					lib.components.put(elm.getKey(), elm.getValue().getAsString());
+				}
+			}
+			if(tsn.has("fonts")){
+				for(Entry<String, JsonElement> elm : tsn.get("fonts").getAsJsonObject().entrySet()){
+					lib.fonts.put(elm.getKey(), elm.getValue().getAsJsonObject());
+				}
+			}
+			if(tsn.has("presets")){
+				for(Entry<String, JsonElement> elm : tsn.get("presets").getAsJsonObject().entrySet()){
+					lib.fonts.put(elm.getKey(), elm.getValue().getAsJsonObject());
+				}
 			}
 		}
 		return this;

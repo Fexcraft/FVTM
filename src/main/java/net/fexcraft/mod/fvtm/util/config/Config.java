@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.block.ContainerBlock;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.uni12.ULandVehicle;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigElement;
@@ -95,7 +96,8 @@ public class Config {
             UNBREAKABLE_CONTAINERS = config.getBoolean("unbreakable_containers", GENERAL, false, "If containers should be unbreakable (via tools/hand).");
             ROADTOOL_FOR_ALL = config.getBoolean("road_tool_for_all", GENERAL, false, "When not using a Forge PermissionsAPI compatible permission manager, to allow any player to use the Road Placing Tool.");
             LOAD_ALL_RESOURCEPACKS = config.getBoolean("load_all_resourcepacks", GENERAL, true, "If true all lite packs in /resoucepacks/ will be loaded, otherwhise when false, only the active ones.");
-            DEFAULT_TRAFFIC_SIGN_LIBRARIES = config.getStringList("traffic_sign_libraries", RAILSYS, new String[]{ "http://fexcraft.net/files/mod_data/fvtm/default_traffic_sign_library.json" }, "List of External Traffic Sign Libraries");
+            DEFAULT_TRAFFIC_SIGN_LIBRARIES = config.getStringList("traffic_sign_libraries", RAILSYS, new String[]{ "default_fexcraft;http://fexcraft.net/files/mod_data/fvtm/default_traffic_sign_library.json" }, "List of External Traffic Sign Libraries. Separate ID from URL using a semicolon.");
+            TrafficSignLibrary.load(true);
     	}
     	{//LEGACY
     		

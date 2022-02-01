@@ -36,6 +36,6 @@ public class Capabilities {
 	
 	/** TrafficSign Chunk Storage */
 	@CapabilityInject(TrafficSigns.class)
-	public static final Capability<Passenger> TRAFFIC_SIGNS = null;
+	public static final Capability<TrafficSigns> TRAFFIC_SIGNS = null;
 	
 }

@@ -22,8 +22,6 @@ public interface VehicleAndPartDataCache {
 
 	public @Nullable PartData getPartData();
 
-	public @Nullable RoadSign getRSData();
-
 	public @Nullable ContainerData getContainerData();
 
 	public @Nullable BlockData getBlockData();

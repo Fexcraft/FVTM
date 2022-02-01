@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.Block;
@@ -28,7 +27,6 @@ public enum DataType {
 	CONTAINER(".container", "containers", Container.class),
 	CONSUMABLE(".consumable", "consumables", Consumable.class),
 	FUEL(".fuel", "fuels", Fuel.class),
-	ROADSIGN(".sign", "roadsigns", RoadSign.class),
 	BLOCK(".block", "blocks", Block.class),
 	RAILGAUGE(".gauge", "railgauges", RailGauge.class),
 	CLOTH(".cloth", "clothes", Cloth.class),
@@ -49,7 +47,6 @@ public enum DataType {
 			case VEHICLE: return (IForgeRegistry<T>)Resources.VEHICLES;
 			case MATERIAL: return (IForgeRegistry<T>)Resources.MATERIALS;
 			case FUEL: return (IForgeRegistry<T>)Resources.ALLFUELS;
-			case ROADSIGN: return (IForgeRegistry<T>)Resources.ROADSIGNS;
 			case CONSUMABLE: return (IForgeRegistry<T>)Resources.CONSUMABLES;
 			case CONTAINER: return (IForgeRegistry<T>)Resources.CONTAINERS;
 			case BLOCK: return (IForgeRegistry<T>)Resources.BLOCKS;
@@ -77,7 +74,6 @@ public enum DataType {
 				Resources.FUELS.get(fuel.getPrimaryGroup()).get(fuel.getSecondaryGroup()).add(fuel);
 				Resources.ALLFUELS.register((Fuel)core); return;
 			}
-			case ROADSIGN:{ Resources.ROADSIGNS.register((RoadSign)core); return; }
 			case CONSUMABLE:{ Resources.CONSUMABLES.register((Consumable)core); return; }
 			case CONTAINER:{ Resources.CONTAINERS.register((Container)core); return; }
 			case BLOCK:{ Resources.BLOCKS.register((Block)core); return; }

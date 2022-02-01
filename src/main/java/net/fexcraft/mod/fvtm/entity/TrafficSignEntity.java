@@ -1,45 +1,44 @@
 package net.fexcraft.mod.fvtm.entity;
 
-import java.nio.charset.StandardCharsets;
-
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fvtm.data.RoadSign;
+import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.util.Resources;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData {
+public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnData {
 	
     private boolean locked = false;
-    public EnumFacing facing;
-    public RoadSign sign;
+    public float rotation;
 
-    public RoadSignEntity(World world){
-        super(world); stepHeight = 0; setSize(0.75f, 0.75f); locked = false;
+    public TrafficSignEntity(World world){
+        super(world);
+        stepHeight = 0;
+        setSize(0.75f, 0.75f);
+        locked = false;
     }
 
-    public RoadSignEntity(World world, EnumFacing facing, RoadSign sign){
-        this(world); this.facing = facing; this.sign = sign; if(sign == null) this.setDead();
+    public TrafficSignEntity(World world, float rotation){
+        this(world);
+        this.rotation = rotation;
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer){
     	try{
-            buffer.writeByte(facing.getIndex()); buffer.writeBoolean(locked);
-            String regname = sign.getRegistryName().toString();
-        	buffer.writeInt(regname.length());
-        	buffer.writeCharSequence(regname, StandardCharsets.UTF_8);
+            buffer.writeFloat(rotation);
+            buffer.writeBoolean(locked);
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -49,8 +48,8 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void readSpawnData(ByteBuf buffer){
     	try{
-        	facing = EnumFacing.byIndex(buffer.readByte()); locked = buffer.readBoolean();
-        	sign = Resources.getRoadSign(buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString());
+        	rotation = buffer.readFloat();
+        	locked = buffer.readBoolean();
     	}
     	catch(Exception e){
 			e.printStackTrace();
@@ -59,19 +58,14 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
 
 	@Override
     protected void readEntityFromNBT(NBTTagCompound compound){
-    	facing = EnumFacing.byIndex(compound.getByte("facing"));
+    	rotation = compound.getFloat("rotation");
         locked = compound.getBoolean("locked");
-        sign = Resources.getRoadSign(compound.getString("fvtm:roadsign"));
-        if(sign == null){
-        	Print.log("DESPAWNING ROAD SIGN ENTITY - REASON: sign not found in registry - ID: " + compound.getString("fvtm:roadsign"));
-        }
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound){
-    	compound.setByte("facing", (byte)facing.getIndex());
+    	compound.setFloat("rotation", rotation);
     	compound.setBoolean("locked", locked);
-    	compound.setString("fvtm:roadsign", sign.getRegistryName().toString());
     }
     
 	@Override
@@ -121,12 +115,8 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
         }
         ItemStack stack = player.getHeldItem(hand);
         if(!stack.isEmpty() && stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getType().isVehicleKey()){
-            /*if(this.isLocked()){
-                this.unlock(world, player, stack, (KeyItem)stack.getItem());
-            }
-            else{
-                this.lock(world, player, stack, (KeyItem)stack.getItem());
-            }*/
+            locked = !locked;
+            Print.chat(player, "Toggled sign status.");
             return true;
         }
         if(locked){
@@ -134,7 +124,8 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
             return true;
         }
         if(stack.isEmpty()){
-        	//GenericGui.openGui("fvtm", 700, new int[]{ this.getEntityId(), 0, 0 }, player); return true;
+        	Print.chat(player, "< open gui >");
+        	return true;
         }
         return false;
     }
@@ -157,7 +148,9 @@ public class RoadSignEntity extends Entity implements IEntityAdditionalSpawnData
     
     @Override
     public ItemStack getPickedResult(RayTraceResult target){
-        return sign == null ? new ItemStack(Items.FEATHER) : sign.newItemStack();
+    	Chunk chunk = world.getChunk(getPosition());
+    	TrafficSigns cap = chunk == null ? null : chunk.getCapability(Capabilities.TRAFFIC_SIGNS, null);
+        return cap == null ? new ItemStack(Items.FEATHER) : cap.signToItem(getPosition());
     }
 
 }

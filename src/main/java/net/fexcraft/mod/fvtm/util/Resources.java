@@ -49,7 +49,6 @@ import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.RailGauge;
-import net.fexcraft.mod.fvtm.data.RoadSign;
 import net.fexcraft.mod.fvtm.data.TextureSupply;
 import net.fexcraft.mod.fvtm.data.WireType;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
@@ -77,7 +76,7 @@ import net.fexcraft.mod.fvtm.event.ResourceEvents;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.RoadSignItem;
+import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
@@ -140,7 +139,6 @@ public class Resources {
 	public static IForgeRegistry<Vehicle> VEHICLES;
 	public static IForgeRegistry<Material> MATERIALS;
 	public static IForgeRegistry<Fuel> ALLFUELS;
-	public static IForgeRegistry<RoadSign> ROADSIGNS;
 	public static IForgeRegistry<Consumable> CONSUMABLES;
 	public static IForgeRegistry<Container> CONTAINERS;
 	public static IForgeRegistry<Block> BLOCKS;
@@ -176,7 +174,6 @@ public class Resources {
 		VEHICLES = new RegistryBuilder<Vehicle>().setName(new ResourceLocation("fvtm:vehicles")).setType(Vehicle.class).create();
 		MATERIALS = new RegistryBuilder<Material>().setName(new ResourceLocation("fvtm:materials")).setType(Material.class).create();
 		ALLFUELS = new RegistryBuilder<Fuel>().setName(new ResourceLocation("fvtm:fuels")).setType(Fuel.class).create();
-		ROADSIGNS = new RegistryBuilder<RoadSign>().setName(new ResourceLocation("fvtm:roadsigns")).setType(RoadSign.class).create();
 		CONSUMABLES = new RegistryBuilder<Consumable>().setName(new ResourceLocation("fvtm:consumables")).setType(Consumable.class).create();
 		CONTAINERS = new RegistryBuilder<Container>().setName(new ResourceLocation("fvtm:containers")).setType(Container.class).create();
 		BLOCKS = new RegistryBuilder<Block>().setName(new ResourceLocation("fvtm:blocks")).setType(Block.class).create();
@@ -276,8 +273,6 @@ public class Resources {
 		searchInAddonsFor(DataType.BLOCK);
 		searchInAddonsFor(DataType.PART);
 		searchInAddonsFor(DataType.VEHICLE);
-		//
-		searchInAddonsFor(DataType.ROADSIGN);
 	}
 	
 	private static Method cl_method;
@@ -589,7 +584,7 @@ public class Resources {
 		if(clazz == ContainerModel.class) return ContainerModel.EMPTY;
 		if(clazz == PartModel.class) return PartModel.EMPTY;
 		if(clazz == VehicleModel.class) return VehicleModel.EMPTY;
-		if(clazz == RoadSignModel.class) return RoadSignModel.EMPTY;
+		if(clazz == TrafficSignModel.class) return TrafficSignModel.EMPTY;
 		if(clazz == BlockModel.class) return BlockModel.EMPTY;
 		if(clazz == RailGaugeModel.class) return RailGaugeModel.EMPTY;
 		if(clazz == ClothModel.class) return ClothModel.EMPTY;
@@ -753,18 +748,10 @@ public class Resources {
 	public static String getFuelName(ResourceLocation resloc){
 		Fuel fuel = getFuel(resloc); return fuel == null ? "not-found" : fuel.getName();
 	}
-
-	public static RoadSign getRoadSign(String string){
-		return getRoadSign(new ResourceLocation(string));
-	}
-
-	private static RoadSign getRoadSign(ResourceLocation resloc){
-		return ROADSIGNS.getValue(resloc);
-	}	
 	
 	@SubscribeEvent
 	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
-		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof RoadSignItem
+		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof TrafficSignItem
 			|| event.getObject().getItem() instanceof ContainerItem || event.getObject().getItem() instanceof BlockItem){
 			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
 		}

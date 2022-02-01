@@ -4,8 +4,8 @@ import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.block.StreetPost;
-import net.fexcraft.mod.fvtm.entity.RoadSignEntity;
 import net.fexcraft.mod.fvtm.entity.StreetSign;
+import net.fexcraft.mod.fvtm.entity.TrafficSignEntity;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.state.IBlockState;
@@ -43,7 +43,7 @@ public class StreetSignItem extends Item {
 		}
 		AxisAlignedBB aabb = new AxisAlignedBB(pos); boolean found = false;
 		for(Entity e : world.loadedEntityList){
-			if((e instanceof StreetSign || e instanceof RoadSignEntity) && e.getEntityBoundingBox().intersects(aabb)){
+			if((e instanceof StreetSign || e instanceof TrafficSignEntity) && e.getEntityBoundingBox().intersects(aabb)){
 				found = true; break;
 			}
 		}
@@ -51,7 +51,7 @@ public class StreetSignItem extends Item {
     		Entity entity = null;
     		switch(enttype){
 				case 0: entity = new StreetSign(world, side); break;
-				case 1: entity = new RoadSignEntity(world, side, ((RoadSignItem)stack.getItem()).getType(stack)); break;
+				case 1: entity = new TrafficSignEntity(world, side.getHorizontalAngle()); break;
 				default: Print.bar(player, "ERROR, Invalid Entity Type in ITEM."); return false;
 			}
     		entity.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);

@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import net.fexcraft.lib.mc.api.registry.fItem;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fvtm.FVTM;
-import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -38,18 +37,6 @@ public class TrafficSignItem extends Item {
             tooltip.add(Formatter.format("&7&oNo Tag Compound."));
     		return;
     	}
-    }
-
-    @SuppressWarnings("deprecation")
-	@Override
-    public String getItemStackDisplayName(ItemStack stack){
-    	if(!stack.getCapability(Capabilities.VAPDATA, null).overridesLang(false)){
-        	String langname = "item." + stack.getItem().getRegistryName().toString() + ".name";
-        	langname = net.minecraft.util.text.translation.I18n.translateToLocal(langname).trim();
-        	if(langname.length() > 0) return langname;
-        	stack.getCapability(Capabilities.VAPDATA, null).overridesLang(true);
-    	}
-        return super.getItemStackDisplayName(stack);
     }
     
     @Override

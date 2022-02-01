@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import com.google.gson.JsonObject;
 
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.model.FRLModel;
 import net.fexcraft.mod.fvtm.util.config.Config;
@@ -30,7 +29,6 @@ public class TrafficSignLibrary {
 		if(!CACHE.exists()) CACHE.mkdirs();
 		TrafficSignLibrary.side = side;
 		load(false);
-		Static.stop();
 	}
 
 	public static void load(boolean reload){

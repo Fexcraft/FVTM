@@ -76,7 +76,6 @@ import net.fexcraft.mod.fvtm.event.ResourceEvents;
 import net.fexcraft.mod.fvtm.item.BlockItem;
 import net.fexcraft.mod.fvtm.item.ContainerItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.TrafficSignItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
@@ -751,7 +750,7 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event){
-		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem || event.getObject().getItem() instanceof TrafficSignItem
+		if(event.getObject().getItem() instanceof VehicleItem || event.getObject().getItem() instanceof PartItem
 			|| event.getObject().getItem() instanceof ContainerItem || event.getObject().getItem() instanceof BlockItem){
 			event.addCapability(new ResourceLocation("fvtm:vapdatacache"), new VAPDataCache(event.getObject()));
 		}

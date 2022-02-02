@@ -1,12 +1,16 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
 import net.fexcraft.mod.fvtm.data.Capabilities;
@@ -35,16 +39,46 @@ public class VehicleModel extends GenericModel<VehicleData, Object> implements F
 	public final TransformMap item_translate = new TransformMap(1);
 	public final TransformMap item_rotate = new TransformMap(2);
 	
-	public VehicleModel(){ super(); }
+	public VehicleModel(){
+		super();
+	}
 	
-	public VehicleModel(JsonObject obj){ super(obj); }
+	public VehicleModel(JsonObject obj){
+		super(obj);
+	}
 	
 	@Override
 	public VehicleModel parse(Object[] stream, String type){
+		try{
+			HashMap<String, Object> data = FMFParser.parse(this, (InputStream)stream[0]);
+			if(data.containsKey("ItemScale")){
+				try{
+					item_scale.setAll(Float.parseFloat(data.get("ItemScale").toString()));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			stream[0] = data;
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 		return super.parse(stream, type);
 	}
 	
-	public VehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){ super(loc, data, objgroups, exclude); }
+	public VehicleModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
+		super(loc, data, objgroups, exclude);
+		try{
+			String val = ObjParser.getCommentValue(data, "ItemScale:");
+			if(val != null){
+				item_scale.setAll(Float.parseFloat(val));
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void render(VehicleData data, Object key){

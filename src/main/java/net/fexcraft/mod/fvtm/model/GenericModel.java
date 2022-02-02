@@ -124,22 +124,6 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		try{
 			HashMap<String, Object> data = stream[0] instanceof InputStream ? FMFParser.parse(this, (InputStream)stream[0]) : (HashMap<String, Object>)stream[0];
 			smooth_shading = data.containsKey("SmoothShading") && Boolean.parseBoolean(data.get("SmoothShading").toString());
-			if(data.containsKey("ItemScale")){
-				try{
-					float scale = Float.parseFloat(data.get("ItemScale").toString());
-					if(this instanceof VehicleModel){
-						((VehicleModel)this).item_scale.setAll(scale);
-					}
-					else if(this instanceof BlockModel){
-						((BlockModel)this).gui_scale_x = scale;
-						((BlockModel)this).gui_scale_y = scale;
-						((BlockModel)this).gui_scale_z = scale;
-					}
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
 			if(data.containsKey("Programs")){
 				for(String string : ((List<String>)data.get("Programs"))){
 					String[] args = string.trim().split(" ");
@@ -261,18 +245,6 @@ public abstract class GenericModel<T, K> implements Model<T, K> {
 		catch(Exception e){
 			this.textureX = 256;
 			this.textureY = 256;
-			e.printStackTrace();
-		}
-		try{
-			String val = ObjParser.getCommentValue(objdata, "ItemScale:");
-			float scale = val == null ? 1 : Float.parseFloat(val);
-			if(this instanceof BlockModel){
-				((BlockModel)this).gui_scale_x = scale;
-				((BlockModel)this).gui_scale_y = scale;
-				((BlockModel)this).gui_scale_z = scale;
-			}
-		}
-		catch(Exception e){
 			e.printStackTrace();
 		}
 		boolean flip_x = Boolean.parseBoolean(ObjParser.getCommentValue(objdata, "FlipAxes:"));

@@ -33,6 +33,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	private BasicText title;
 	private TabMode tabmode = TabMode.LIST;
 	private ComponentMode commode = ComponentMode.BASE;
+	private static int left_scroll, right_scroll;
 	//
 	private ArrayList<String> ttip = new ArrayList<String>();
 	
@@ -47,6 +48,8 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	@Override
 	protected void init(){
 		int black = MapColor.BLACK.colorIndex;
+		int lightgray = MapColor.SILVER.colorValue;
+		int darkgray = MapColor.GRAY.colorValue;
 		buttons.put("prev", prev = new TSEButton("prev", guiLeft + 7, guiTop + 7, 135, 7, 12, 12, true));
 		buttons.put("next", next = new TSEButton("next", guiLeft + 237, guiTop + 7, 365, 7, 12, 12, true));
 		buttons.put("search", search = new TSEButton("search", guiLeft + 21, guiTop + 7, 149, 7, 12, 12, true));
@@ -61,7 +64,7 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("zoom_in", zoom_in = new TSEButton("z+", guiLeft + 18, guiTop + 203, 146, 203, 12, 12, true));
 		buttons.put("zoom_out", zoom_out = new TSEButton("z-", guiLeft + 31, guiTop + 203, 159, 203, 12, 12, true));
 		buttons.put("confirm", confirm = new TSEButton("confirm", guiLeft + 226, guiTop + 203, 354, 203, 12, 12, true));
-		buttons.put("cancel", confirm = new TSEButton("cancel", guiLeft + 213, guiTop + 203, 341, 203, 12, 12, true));
+		buttons.put("cancel", cancel = new TSEButton("cancel", guiLeft + 213, guiTop + 203, 341, 203, 12, 12, true));
 		//
 		buttons.put("cm_b", cm_b = new TSEButton("cmb", guiLeft + 102, guiTop + 203, 230, 203, 12, 12, true));
 		buttons.put("cm_c", cm_c = new TSEButton("cmc", guiLeft + 115, guiTop + 203, 243, 203, 12, 12, true));
@@ -72,7 +75,15 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		buttons.put("c_dw", c_dw = new TSEButton("cdw", guiLeft + 57, guiTop + 203, 185, 203, 12, 12, true));
 		buttons.put("c_lr", c_lr = new TSEButton("clr", guiLeft + 70, guiTop + 203, 198, 203, 12, 12, true));
 		buttons.put("c_rg", c_rg = new TSEButton("crg", guiLeft + 83, guiTop + 203, 211, 203, 12, 12, true));
-		
+		//
+		for(int i = 0; i < 15; i++){
+			buttons.put("list_r_" + i, new TSEButton("lr" + i, guiLeft + 251, guiTop + 21 + i * 12, 379, 21 + i * 12, 110, 10, true));
+			texts.put("list_r_" + i, new BasicText(guiLeft + 253, guiTop + 23 + i * 12, 106, lightgray, "R" + i).autoscale());
+			//
+			buttons.put("list_l_" + i, new TSEButton("ll" + i, guiLeft - 105, guiTop + 21 + i * 12, 0, 334 + i * 12, 110, 10, true));
+			texts.put("list_l_" + i, new BasicText(guiLeft - 103, guiTop + 23 + i * 12, 106, darkgray, "L" + i).autoscale());
+		}
+		//
 	}
 
 	@Override
@@ -124,6 +135,19 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		drawRect(guiLeft + 173, guiTop + 206, 301, 206, 72, 16);
 		drawRect(guiLeft - 99, guiTop + 206, 29, 206, 28, 8);
 		drawRect(guiLeft + 327, guiTop + 206, 455, 206, 28, 8);
+		switch(tabmode){
+			case COLOR:
+				drawRect(guiLeft - 105, guiTop + 21, 0, 112, 110, 178);
+				break;
+			case EDIT:
+				drawRect(guiLeft - 105, guiTop + 21, 0, 224, 110, 178);
+				break;
+			case LIST:
+				drawRect(guiLeft - 105, guiTop + 21, 0, 334, 110, 178);
+				break;
+			default:
+				break;
+		}
 	}
 	
 	@Override
@@ -155,6 +179,15 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		if(c_dw.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_down"));
 		if(c_lr.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_left"));
 		if(c_rg.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_right"));
+		//
+		for(int i = 0; i < 15; i++){
+			if(buttons.get("list_r_" + i).hovered(mouseX, mouseY)) ttip.add(texts.get("list_r_" + i).string);
+		}
+		if(tabmode.list()){
+			for(int i = 0; i < 15; i++){
+				if(buttons.get("list_l_" + i).hovered(mouseX, mouseY)) ttip.add(texts.get("list_l_" + i).string);
+			}
+		}
 		//
 	    if(ttip.size() > 0) this.drawHoveringText(ttip, mouseX, mouseY, mc.fontRenderer);
 	}

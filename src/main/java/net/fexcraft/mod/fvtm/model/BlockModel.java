@@ -1,13 +1,17 @@
 package net.fexcraft.mod.fvtm.model;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import net.fexcraft.lib.common.utils.ObjParser;
 import net.fexcraft.lib.common.utils.ObjParser.ObjModel;
 import net.fexcraft.lib.mc.render.FCLBlockModel;
 import net.fexcraft.lib.mc.render.FCLItemModel;
@@ -34,21 +38,53 @@ public class BlockModel extends GenericModel<BlockData, TileEntity> implements F
     public float gui_translate_x = 0;
     public float gui_translate_y = 0;
     public float gui_translate_z = 0;
-    public float gui_scale_x = 0.75f;
-    public float gui_scale_y = 0.75f;
-    public float gui_scale_z = 0.75f;
+    public float gui_scale_x = 0;
+    public float gui_scale_y = 0;
+    public float gui_scale_z = 0;
 	
-	public BlockModel(){ super(); }
+	public BlockModel(){
+		super();
+	}
 	
-	public BlockModel(JsonObject obj){ super(obj); }
+	public BlockModel(JsonObject obj){
+		super(obj);
+	}
 	
 	@Override
 	public BlockModel parse(Object[] stream, String type){
+		try{
+			HashMap<String, Object> data = FMFParser.parse(this, (InputStream)stream[0]);
+			if(data.containsKey("ItemScale")){
+				try{
+					float scale = Float.parseFloat(data.get("ItemScale").toString());
+					gui_scale_x = scale;
+					gui_scale_y = scale;
+					gui_scale_z = scale;
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			stream[0] = data;
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 		return super.parse(stream, type);
 	}
 	
 	public BlockModel(ResourceLocation loc, ObjModel data, ArrayList<String> objgroups, boolean exclude){
 		super(loc, data, objgroups, exclude);
+		try{
+			String val = ObjParser.getCommentValue(data, "ItemScale:");
+			float scale = val == null ? 0.75f : Float.parseFloat(val);
+			gui_scale_x = scale;
+			gui_scale_y = scale;
+			gui_scale_z = scale;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override

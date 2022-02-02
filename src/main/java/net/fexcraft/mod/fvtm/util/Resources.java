@@ -79,6 +79,7 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.model.*;
 import net.fexcraft.mod.fvtm.sys.particle.Particle;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignCapHandler;
 import net.fexcraft.mod.fvtm.sys.uni.GenericVehicle;
 import net.fexcraft.mod.fvtm.sys.uni.SystemManager;
 import net.fexcraft.mod.fvtm.util.caps.ContainerHolderUtil;
@@ -108,6 +109,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -758,9 +760,13 @@ public class Resources {
 	
 	@SubscribeEvent
 	public void onAttachWorldCapabilities(AttachCapabilitiesEvent<World> event){
-		//event.addCapability(new ResourceLocation("fvtm:resources"), new WorldResourcesUtil(event.getObject()));
 		SystemManager.onAttachWorldCapabilities(event);
 		event.addCapability(new ResourceLocation("fvtm:multiblocks"), new MultiBlockCacheSerializer(event.getObject()));
+	}
+	
+	@SubscribeEvent
+	public void onAttachChunkCapabilities(AttachCapabilitiesEvent<Chunk> event){
+		event.addCapability(new ResourceLocation("fvtm:trafficsigns"), new TrafficSignCapHandler(event.getObject()));
 	}
 	
 	@SubscribeEvent

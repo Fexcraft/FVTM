@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.entity;
 
+import static net.fexcraft.mod.fvtm.gui.GuiHandler.TSEDITOR;
+
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.fvtm.FVTM;
 import net.fexcraft.mod.fvtm.data.Capabilities;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.sys.tsign.TrafficSigns;
@@ -124,7 +127,7 @@ public class TrafficSignEntity extends Entity implements IEntityAdditionalSpawnD
             return true;
         }
         if(stack.isEmpty()){
-        	Print.chat(player, "< open gui >");
+        	player.openGui(FVTM.getInstance(), TSEDITOR, world, (int)posX, (int)posY, (int)posZ);
         	return true;
         }
         return false;

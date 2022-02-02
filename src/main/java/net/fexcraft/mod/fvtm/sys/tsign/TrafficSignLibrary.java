@@ -3,17 +3,21 @@ package net.fexcraft.mod.fvtm.sys.tsign;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.google.gson.JsonObject;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fvtm.model.FRLModel;
+import net.fexcraft.mod.fvtm.sys.uni.DetachedSystem;
 import net.fexcraft.mod.fvtm.util.config.Config;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TrafficSignLibrary {
-	
+public class TrafficSignLibrary extends DetachedSystem {
+
 	public static HashMap<String, Object> PRESETS = new HashMap<>();
 	public static HashMap<String, String> BACKGROUNDS = new HashMap<>();
 	public static HashMap<String, String> COMPONENTS = new HashMap<>();
@@ -96,6 +100,44 @@ public class TrafficSignLibrary {
 			for(Entry<String, JsonObject> entry : fonts.entrySet()) FONTS.put(id + ":" + entry.getKey(), entry.getValue());
 		}
 		
+	}
+	
+	// Detached-System Implementation //
+	
+	public static ConcurrentLinkedQueue<Chunk> CHUNKS = new ConcurrentLinkedQueue<>();
+	
+	public TrafficSignLibrary(World world){
+		super(world);
+	}
+
+	@Override
+	public boolean hasTimer(){
+		return false;
+	}
+
+	@Override
+	public void unload(){
+		CHUNKS.clear();
+	}
+
+	@Override
+	public void onChunkLoad(Chunk chunk){
+		CHUNKS.add(chunk);
+	}
+
+	@Override
+	public void onChunkUnload(Chunk chunk){
+		CHUNKS.remove(chunk);
+	}
+
+	@Override
+	public void onServerTick(){
+		//
+	}
+
+	@Override
+	public void onClientTick() {
+		//
 	}
 
 }

@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.tsign;
 
+import java.util.HashMap;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,6 +11,7 @@ import net.minecraft.world.chunk.Chunk;
 
 public class TrafficSignCapability implements TrafficSigns {
 	
+	private HashMap<BlockPos, TrafficSignData> signs = new HashMap<>();
 	private Chunk chunk;
 
 	public TrafficSignCapability setChunk(Chunk chunk){
@@ -36,6 +39,11 @@ public class TrafficSignCapability implements TrafficSigns {
 	public ItemStack signToItem(BlockPos position){
 		//
 		return null;
+	}
+
+	@Override
+	public HashMap<BlockPos, TrafficSignData> getSigns(){
+		return signs;
 	}
 
 }

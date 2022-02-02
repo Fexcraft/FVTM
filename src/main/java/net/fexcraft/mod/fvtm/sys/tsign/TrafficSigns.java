@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm.sys.tsign;
 
+import java.util.HashMap;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,5 +17,7 @@ public interface TrafficSigns {
 	public void sync(boolean side);
 
 	public ItemStack signToItem(BlockPos position);
+
+	public HashMap<BlockPos, TrafficSignData> getSigns();
 
 }

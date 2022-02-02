@@ -33,6 +33,7 @@ public class RenderView extends Render<RenderViewEntity> implements IRenderFacto
             FRUSTUM.setPosition(cx, cy, cz);
         	RailRenderer.renderRails(entity.world, cx, cy, cz, ticks);
         	VehicleRenderer.renderVehicles(entity.world, cx, cy, cz, ticks);
+        	TrafficSignRenderer.renderTrafficSigns(entity.world, cx, cy, cz, ticks);
         	WireRenderer.renderWires(entity.world, cx, cy, cz, ticks);
         	ParticleRenderer.renderParticles(entity.world, cx, cy, cz, ticks);
         }

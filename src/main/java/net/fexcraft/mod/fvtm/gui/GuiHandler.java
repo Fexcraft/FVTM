@@ -28,6 +28,8 @@ import net.fexcraft.mod.fvtm.gui.road.RoadPlacerFill;
 import net.fexcraft.mod.fvtm.gui.road.RoadPlacerFillContainer;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjuster;
 import net.fexcraft.mod.fvtm.gui.sign.StreetSignAdjusterContainer;
+import net.fexcraft.mod.fvtm.gui.tsign.TrafficSignEditor;
+import net.fexcraft.mod.fvtm.gui.tsign.TrafficSignEditorContainer;
 import net.fexcraft.mod.fvtm.gui.vehicle.*;
 import net.fexcraft.mod.fvtm.gui.wire.WireEditor;
 import net.fexcraft.mod.fvtm.gui.wire.WireRelayChooser;
@@ -52,6 +54,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int ROADTOOLCUSTOMFILL = 704;
 	public static final int SPAWNSYS = 705;
 	public static final int RAILPLACER = 706;
+	public static final int TSEDITOR = 709;
 	public static final int WIRE_RELAY_MAIN = 710;
 	public static final int WIRE_RELAY_EDIT = 711;
 	public static final int WIRE_EDIT = 712;
@@ -96,6 +99,7 @@ public class GuiHandler implements IGuiHandler {
 			case ROADTOOLCUSTOMFILL: return new RoadPlacerCustomFillContainer(player, x, y, z);
 			case SPAWNSYS: return new SpawnSystemContainer(player, x, y, z);
 			case RAILPLACER: return new RailPlacerContainer(player, x, y, z);
+			case TSEDITOR: return new TrafficSignEditorContainer(player, x, y, z);
 			case CONSTRUCTOR_MAIN:
 			case CONSTRUCTOR_STATUS:
 			case CONSTRUCTOR_VEHINFO:
@@ -136,6 +140,7 @@ public class GuiHandler implements IGuiHandler {
 				case ROADTOOLCUSTOMFILL: return new RoadPlacerCustomFill(player, x, y, z);
 				case SPAWNSYS: return new SpawnSystemChooser(player, x, y, z);
 				case RAILPLACER: return new RailPlacer(player, x, y, z);
+				case TSEDITOR: return new TrafficSignEditor(player, x, y, z);
 				case CONSTRUCTOR_MAIN: return new ConstructorMain(player, world, x, y, z);
 				case CONSTRUCTOR_STATUS: return new ConstructorStatus(player, world, x, y, z);
 				case CONSTRUCTOR_VEHINFO: return new ConstructorVehicleInfo(player, world, x, y, z);

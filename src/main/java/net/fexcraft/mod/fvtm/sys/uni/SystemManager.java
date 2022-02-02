@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fvtm.sys.rail.RailSystem;
+import net.fexcraft.mod.fvtm.sys.tsign.TrafficSignLibrary;
 import net.fexcraft.mod.fvtm.sys.wire.WireSystem;
 import net.fexcraft.mod.fvtm.util.config.Config;
 import net.minecraft.world.World;
@@ -90,6 +91,11 @@ public class SystemManager {
 				SYSTEMS_DIM.get(dim).put(Systems.WIRE, sys);
 			}
 		}
+		
+		if(!SYSTEMS.containsKey(Systems.TRAFFICSIGN)) SYSTEMS.put(Systems.TRAFFICSIGN, new ConcurrentHashMap<>());
+		TrafficSignLibrary tsys = new TrafficSignLibrary(event.getObject());
+		SYSTEMS.get(Systems.TRAFFICSIGN).put(dim, tsys);
+		SYSTEMS_DIM.get(dim).put(Systems.TRAFFICSIGN, tsys);
 	}
 	
 	private static long getDate(){
@@ -139,7 +145,7 @@ public class SystemManager {
 	
 	public static enum Systems {
 		
-		RAIL, ROAD, WIRE, ENTITY
+		RAIL, ROAD, WIRE, ENTITY, TRAFFICSIGN
 		
 	}
 

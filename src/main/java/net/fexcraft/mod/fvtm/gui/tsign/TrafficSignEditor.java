@@ -26,6 +26,10 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	//
 	private TSEButton prev, next, search;
 	private TSEButton lup, ldw, rup, rdw;
+	private TSEButton zoom_in, zoom_out;
+	private TSEButton cm_b, cm_c, cm_f, cm_p;
+	private TSEButton c_up, c_dw, c_lr, c_rg;
+	private TSEButton cancel, confirm;
 	private BasicText title;
 	private TabMode tabmode = TabMode.LIST;
 	private ComponentMode commode = ComponentMode.BASE;
@@ -51,8 +55,23 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		//
 		buttons.put("lup", lup = new TSEButton("lup", guiLeft - 96, guiTop + 201, 32, 201, 10, 10, true));
 		buttons.put("ldw", ldw = new TSEButton("ldw", guiLeft - 84, guiTop + 201, 44, 201, 10, 10, true));
-		buttons.put("rup", lup = new TSEButton("rup", guiLeft + 330, guiTop + 201, 458, 201, 10, 10, true));
-		buttons.put("rdw", ldw = new TSEButton("rdw", guiLeft + 342, guiTop + 201, 470, 201, 10, 10, true));
+		buttons.put("rup", rup = new TSEButton("rup", guiLeft + 330, guiTop + 201, 458, 201, 10, 10, true));
+		buttons.put("rdw", rdw = new TSEButton("rdw", guiLeft + 342, guiTop + 201, 470, 201, 10, 10, true));
+		//
+		buttons.put("zoom_in", zoom_in = new TSEButton("z+", guiLeft + 18, guiTop + 203, 146, 203, 12, 12, true));
+		buttons.put("zoom_out", zoom_out = new TSEButton("z-", guiLeft + 31, guiTop + 203, 159, 203, 12, 12, true));
+		buttons.put("confirm", confirm = new TSEButton("confirm", guiLeft + 226, guiTop + 203, 354, 203, 12, 12, true));
+		buttons.put("cancel", confirm = new TSEButton("cancel", guiLeft + 213, guiTop + 203, 341, 203, 12, 12, true));
+		//
+		buttons.put("cm_b", cm_b = new TSEButton("cmb", guiLeft + 102, guiTop + 203, 230, 203, 12, 12, true));
+		buttons.put("cm_c", cm_c = new TSEButton("cmc", guiLeft + 115, guiTop + 203, 243, 203, 12, 12, true));
+		buttons.put("cm_f", cm_f = new TSEButton("cmf", guiLeft + 128, guiTop + 203, 256, 203, 12, 12, true));
+		buttons.put("cm_p", cm_p = new TSEButton("cmp", guiLeft + 141, guiTop + 203, 269, 203, 12, 12, true));
+		//
+		buttons.put("c_up", c_up = new TSEButton("cup", guiLeft + 44, guiTop + 203, 172, 203, 12, 12, true));
+		buttons.put("c_dw", c_dw = new TSEButton("cdw", guiLeft + 57, guiTop + 203, 185, 203, 12, 12, true));
+		buttons.put("c_lr", c_lr = new TSEButton("clr", guiLeft + 70, guiTop + 203, 198, 203, 12, 12, true));
+		buttons.put("c_rg", c_rg = new TSEButton("crg", guiLeft + 83, guiTop + 203, 211, 203, 12, 12, true));
 		
 	}
 
@@ -114,12 +133,35 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 		if(next.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.next") + " //TODO");
 		if(search.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.search_" + (title.visible ? "off" : "on")));
 		if(title.hovered(mouseX, mouseY)) ttip.add(title.string);
+		//
+		if(tabmode.list()){
+			if(lup.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.left_up"));
+			if(ldw.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.left_down"));
+		}
+		if(rup.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.right_up"));
+		if(rdw.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.right_down"));
+		//
+		if(zoom_in.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.zoom_in"));
+		if(zoom_out.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.zoom_out"));
+		if(confirm.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.confirm"));
+		if(cancel.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.cancel"));
+		//
+		if(cm_b.hovered(mouseX, mouseY)) ttip.add(I18n.format(commode.base() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_base"));
+		if(cm_c.hovered(mouseX, mouseY)) ttip.add(I18n.format(commode.component() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_component"));
+		if(cm_f.hovered(mouseX, mouseY)) ttip.add(I18n.format(commode.font() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_font"));
+		if(cm_p.hovered(mouseX, mouseY)) ttip.add(I18n.format(commode.preset() ? "gui.fvtm.trafficsigneditor.mode_current" : "gui.fvtm.trafficsigneditor.mode_preset"));
+		//
+		if(c_up.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_up"));
+		if(c_dw.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_down"));
+		if(c_lr.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_left"));
+		if(c_rg.hovered(mouseX, mouseY)) ttip.add(I18n.format("gui.fvtm.trafficsigneditor.move_right"));
+		//
 	    if(ttip.size() > 0) this.drawHoveringText(ttip, mouseX, mouseY, mc.fontRenderer);
 	}
 
 	@Override
 	protected boolean buttonClicked(int mouseX, int mouseY, int mouseButton, String key, BasicButton button){
-		if(button == search){
+		if(key.equals("search")){
 			TextField field = fields.get("search");
 			if(field.getVisible()){
 				field.setText("");
@@ -153,13 +195,33 @@ public class TrafficSignEditor extends GenericGui<TrafficSignEditorContainer> {
 	
 	private static enum TabMode {
 		
-		LIST, COLOR, EDIT
+		LIST, COLOR, EDIT;
+
+		public boolean list() {
+			return this == LIST;
+		}
 		
 	}
 	
 	private static enum ComponentMode {
 		
-		BASE, COMPONENT, FONT, PRESET
+		BASE, COMPONENT, FONT, PRESET;
+
+		public boolean base(){
+			return this == BASE;
+		}
+
+		public boolean component(){
+			return this == COMPONENT;
+		}
+
+		public boolean font(){
+			return this == FONT;
+		}
+
+		public boolean preset(){
+			return this == PRESET;
+		}
 		
 	}
 	

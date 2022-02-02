@@ -47,7 +47,9 @@ public class TrafficSignCapHandler implements ICapabilitySerializable<NBTBase> {
 
 		@Override
 		public void readNBT(Capability<TrafficSigns> capability, TrafficSigns instance, EnumFacing side, NBTBase nbt){
-			instance.read(side, (NBTTagCompound)nbt);
+			if(nbt instanceof NBTTagCompound){
+				instance.read(side, (NBTTagCompound)nbt);
+			}
 			instance.sync(false);
 		}
 		

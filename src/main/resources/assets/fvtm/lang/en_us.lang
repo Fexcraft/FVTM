@@ -93,6 +93,11 @@ gui.fvtm.constructor.texture.tex_internal=internal
 gui.fvtm.constructor.texture.tex_external=external
 gui.fvtm.constructor.texture.not_found_in_memory=Texture not found in memory.
 //
+gui.fvtm.trafficsigneditor.prev=Previous Pack: 
+gui.fvtm.trafficsigneditor.next=Next Pack: 
+gui.fvtm.trafficsigneditor.search_off=Search in selected pack.
+gui.fvtm.trafficsigneditor.search_on=Disable search.
+//
 tile.fvtm.constructor.constructor_connect.no_tile=No TileEntity at selected position. [SERVER]
 tile.fvtm.constructor.constructor_connect.wrong_type=Tile at position is of wrong type.
 tile.fvtm.constructor.constructor_connect.already_connected=Tile at position has already connection data.
